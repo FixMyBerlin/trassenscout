@@ -1,5 +1,3 @@
-import { AllLayers, generateLayers } from "@/src/core/components/Map/AllLayers"
-import { AllSources } from "@/src/core/components/Map/AllSources"
 import {
   createGeoJSONFromString,
   detectGeometryType,
@@ -8,10 +6,13 @@ import {
 import { FieldConfig } from "@/src/app/beteiligung/_shared/types"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
+import { AllLayers, generateLayers } from "@/src/core/components/Map/AllLayers"
+import { AllSources } from "@/src/core/components/Map/AllSources"
 import { BackgroundSwitcher, LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
 import { getMapStyle, getVectorStyleUrl } from "@/src/core/components/Map/mapStyleConfig"
 import { getStaticOverlayForProject } from "@/src/core/components/Map/staticOverlay/getStaticOverlayForProject"
 import { StaticOverlay } from "@/src/core/components/Map/staticOverlay/StaticOverlay"
+import { StaticOverlayPlacement } from "@/src/core/components/Map/staticOverlay/staticOverlay.types"
 import SurveyStaticPin from "@/src/core/components/Map/SurveyStaticPin"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import maplibregl from "maplibre-gl"
@@ -164,7 +165,12 @@ export const EditableSurveyResponseFormMap = ({
         onLoad={(event) => handleMapLoad(event)}
         onIdle={() => setMapLoading(false)}
       >
-        {staticOverlay && <StaticOverlay config={staticOverlay} />}
+        {staticOverlay && (
+          <StaticOverlay
+            config={staticOverlay}
+            placement={StaticOverlayPlacement.editableSurveyResponseFormMap}
+          />
+        )}
         {geometryCategorySource}
         {mapData && (
           <>
