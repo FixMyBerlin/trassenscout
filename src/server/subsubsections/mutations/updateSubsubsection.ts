@@ -9,7 +9,7 @@ import { subsubsectionGeometryTypeValidationRefine } from "@/src/server/shared/u
 import { typeSubsubsectionGeometry } from "@/src/server/subsubsections/utils/typeSubsubsectionGeometry"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
-import { m2mFields, type M2MFieldsType } from "../m2mFields"
+import { m2mFieldRelationNames, m2mFields, type M2MFieldsType } from "../m2mFields"
 import { SubsubsectionWithPosition } from "../queries/getSubsubsection"
 import { SubsubsectionBaseSchema } from "../schema"
 
@@ -24,8 +24,9 @@ export default resolver.pipe(
     const disconnect: Record<M2MFieldsType | string, { set: [] }> = {}
     const connect: Record<M2MFieldsType | string, { connect: { id: number }[] | undefined }> = {}
     m2mFields.forEach((fieldName) => {
-      disconnect[fieldName] = { set: [] }
-      connect[fieldName] = {
+      const relationName = m2mFieldRelationNames[fieldName]
+      disconnect[relationName] = { set: [] }
+      connect[relationName] = {
         connect: data[fieldName] ? data[fieldName].map((id: number) => ({ id })) : [],
       }
       delete data[fieldName]
