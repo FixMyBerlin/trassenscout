@@ -45,23 +45,25 @@ model User {
   phone          String?
   institution    String? // Organisation / Kommune
 
-  tokens                  Token[]
-  sessions                Session[]
-  subsections             Subsection[]
-  memberships             Membership[]
-  Subsubsection           Subsubsection[]
-  invites                 Invite[]
-  SurveyResponseComment   SurveyResponseComment[]
-  LogEntry                LogEntry[]
-  SystemLogEntry          SystemLogEntry[]
+  tokens                   Token[]
+  sessions                 Session[]
+  subsections              Subsection[]
+  memberships              Membership[]
+  Subsubsection            Subsubsection[]
+  invites                  Invite[]
+  SurveyResponseComment    SurveyResponseComment[]
+  LogEntry                 LogEntry[]
+  SystemLogEntry           SystemLogEntry[]
   //
-  projectRecordsAuthored  ProjectRecord[]         @relation("ProjectRecordAuthor")
-  projectRecordsUpdated   ProjectRecord[]         @relation("ProjectRecordUpdatedBy")
-  projectRecordsReviewed  ProjectRecord[]         @relation("ProjectRecordReviewedBy")
-  uploadsCreated          Upload[]                @relation("UploadCreatedBy")
-  uploadsUpdated          Upload[]                @relation("UploadUpdatedBy")
+  projectRecordsAuthored   ProjectRecord[]         @relation("ProjectRecordAuthor")
+  projectRecordsUpdated    ProjectRecord[]         @relation("ProjectRecordUpdatedBy")
+  projectRecordsReviewed   ProjectRecord[]         @relation("ProjectRecordReviewedBy")
+  projectRecordsAssignedTo ProjectRecord[]         @relation("ProjectRecordAssignedTo")
+  uploadsCreated           Upload[]                @relation("UploadCreatedBy")
+  uploadsUpdated           Upload[]                @relation("UploadUpdatedBy")
   //
-  supportDocumentsCreated SupportDocument[]       @relation("SupportDocumentCreatedBy")
+  supportDocumentsCreated  SupportDocument[]       @relation("SupportDocumentCreatedBy")
+  projectRecords           ProjectRecord[]
 }
 
 enum UserRoleEnum {
@@ -344,28 +346,28 @@ model Subsubsection {
   grantsOtherFunding            Float? //  Zuwendungen aus anderen Förderprogrammen
   ownFunds                      Float? //  Einsatz Eigenmittel
 
-  qualityLevel                      QualityLevel?                    @relation(fields: [qualityLevelId], references: [id])
-  qualityLevelId                    Int?
+  qualityLevel                     QualityLevel?                     @relation(fields: [qualityLevelId], references: [id])
+  qualityLevelId                   Int?
   //
-  manager                           User?                            @relation(fields: [managerId], references: [id])
-  managerId                         Int?
+  manager                          User?                             @relation(fields: [managerId], references: [id])
+  managerId                        Int?
   //
-  subsection                        Subsection                       @relation(fields: [subsectionId], references: [id])
-  subsectionId                      Int
+  subsection                       Subsection                        @relation(fields: [subsectionId], references: [id])
+  subsectionId                     Int
   //
-  uploads                           Upload[]
-  projectRecords                    ProjectRecord[]
+  uploads                          Upload[]
+  projectRecords                   ProjectRecord[]
   //
-  SubsubsectionStatus               SubsubsectionStatus?             @relation(fields: [subsubsectionStatusId], references: [id])
-  subsubsectionStatusId             Int?
+  SubsubsectionStatus              SubsubsectionStatus?              @relation(fields: [subsubsectionStatusId], references: [id])
+  subsubsectionStatusId            Int?
   //
-  SubsubsectionTask                 SubsubsectionTask?               @relation(fields: [subsubsectionTaskId], references: [id])
-  subsubsectionTaskId               Int?
+  SubsubsectionTask                SubsubsectionTask?                @relation(fields: [subsubsectionTaskId], references: [id])
+  subsubsectionTaskId              Int?
   //
-  SubsubsectionInfra                SubsubsectionInfra?              @relation(fields: [subsubsectionInfraId], references: [id])
-  subsubsectionInfraId              Int?
+  SubsubsectionInfra               SubsubsectionInfra?               @relation(fields: [subsubsectionInfraId], references: [id])
+  subsubsectionInfraId             Int?
   //
-  SubsubsectionInfrastructureTypes  SubsubsectionInfrastructureType[] @relation("SubsubsectionInfrastructureTypes")
+  SubsubsectionInfrastructureTypes SubsubsectionInfrastructureType[] @relation("SubsubsectionInfrastructureTypes")
 
   specialFeatures SubsubsectionSpecial[] // - UNUSED
 
@@ -459,15 +461,15 @@ model SubsubsectionInfra {
 }
 
 model SubsubsectionInfrastructureType {
-  id                             Int               @id @default(autoincrement())
-  createdAt                      DateTime          @default(now())
-  updatedAt                      DateTime          @updatedAt
+  id                               Int             @id @default(autoincrement())
+  createdAt                        DateTime        @default(now())
+  updatedAt                        DateTime        @updatedAt
   //
-  slug                           String // shortTitle and URL Slug
-  title                          String
+  slug                             String // shortTitle and URL Slug
+  title                            String
   //
-  project                        Project           @relation(fields: [projectId], references: [id])
-  projectId                      Int
+  project                          Project         @relation(fields: [projectId], references: [id])
+  projectId                        Int
   SubsubsectionInfrastructureTypes Subsubsection[] @relation("SubsubsectionInfrastructureTypes")
 
   @@unique([projectId, slug])
@@ -748,6 +750,9 @@ model ProjectRecord {
   userId                     Int?
   projectRecordAuthorType    ProjectRecordType        @default(SYSTEM)
   //
+  assignedTo                 User?                    @relation("ProjectRecordAssignedTo", fields: [assignedToId], references: [id])
+  assignedToId               Int?
+  //
   updatedBy                  User?                    @relation("ProjectRecordUpdatedBy", fields: [updatedById], references: [id])
   updatedById                Int?
   projectRecordUpdatedByType ProjectRecordType?
@@ -764,6 +769,7 @@ model ProjectRecord {
   reviewedBy                 User?                    @relation("ProjectRecordReviewedBy", fields: [reviewedById], references: [id])
   reviewedById               Int?
   reviewNotes                String?
+  user                       User?                    @relation(fields: [userId], references: [id])
 }
 
 enum ProjectRecordType {
