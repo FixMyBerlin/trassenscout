@@ -40,14 +40,14 @@ const EditableSurveyResponseAdditionalFilterFields = ({
   const part1Fields = getFlatSurveyFormFields(part1Config)
   const part2Fields = getFlatSurveyFormFields(part2Config)
   const part3Fields = getFlatSurveyFormFields(part3Config)
+  const showOhvVorgangsId =
+    surveySlug === "ohv-haltestellenfoerderung" &&
+    typeof surveyPart2ResponseData.vorgangsId === "string" &&
+    surveyPart2ResponseData.vorgangsId.length > 0
 
   const filteredPart2Responses = Object.entries(surveyPart2ResponseData).filter(
     ([key]) =>
-      !(
-        surveySlug === "ohv-haltestellenfoerderung" &&
-        key === "subsubsectionId" &&
-        typeof surveyPart2ResponseData.vorgangsId === "string"
-      ) &&
+      key !== "vorgangsId" &&
       !standardFieldsForFilter.includes(key) &&
       // !key.startsWith("geometry") &&
       !additionaFilterKeysPart2ForFilter.includes(key),
@@ -68,6 +68,16 @@ const EditableSurveyResponseAdditionalFilterFields = ({
     <div className="rounded-lg border border-gray-200 bg-white p-2 md:max-w-(--breakpoint-md)">
       <table className="min-w-full">
         <tbody className="divide-y divide-gray-200 bg-white">
+          {showOhvVorgangsId && (
+            <tr>
+              <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900">
+                Vorgangs-ID
+              </td>
+              <td className="px-6 py-4 text-sm text-gray-500">
+                {String(surveyPart2ResponseData.vorgangsId)}
+              </td>
+            </tr>
+          )}
           {additionalFilterFields &&
             additionalFilterFields.map((item) => {
               const fieldKey = String(item.id)
@@ -101,11 +111,7 @@ const EditableSurveyResponseAdditionalFilterFields = ({
               )
             })}
           {filteredPart2Responses.map(([key, value]) => {
-            const isHistoricalOhvVorgangsId =
-              surveySlug === "ohv-haltestellenfoerderung" && key === "subsubsectionId"
-            const field = part2Fields.find(
-              (f) => f.name === (isHistoricalOhvVorgangsId ? "vorgangsId" : key),
-            )
+            const field = part2Fields.find((f) => f.name === key)
             return (
               <tr key={key}>
                 <td className="px-6 py-4 text-sm font-medium text-gray-900">

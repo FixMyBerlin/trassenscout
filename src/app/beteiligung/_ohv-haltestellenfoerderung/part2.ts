@@ -123,18 +123,6 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
             markdown: `Bitte nutzen Sie das Formular für jeweils nur eine Maßnahmenmeldung. Sie können weitere Maßnahmenmeldungen in einem weiteren Schritt hinzufügen und absenden.`,
           },
         },
-        {
-          name: "vorgangsId",
-          component: "SurveyVorgangsIdField",
-          componentType: "form",
-          validation: fieldValidationEnum["requiredString"],
-          defaultValue: "",
-          props: {
-            label: "Vorgangs-ID",
-            description:
-              "Diese Vorgangsnummer wird automatisch vergeben und dient der eindeutigen Identifizierung Ihres Antrags über den gesamten Bearbeitungsprozess hinweg.",
-          },
-        },
         // Gegenstand der Förderung/SubsubsectionInfrastructureType
         {
           name: "category",
