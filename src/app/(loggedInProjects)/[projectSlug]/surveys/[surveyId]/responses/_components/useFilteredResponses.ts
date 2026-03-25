@@ -72,13 +72,11 @@ export const useFilteredResponses = (
     .filter((response) => {
       if (!categories) return true
 
-      const responseCategory = response.data[userCategoryQuestionId]
+      const responseCategory = response.data[userCategoryQuestionId] || []
 
-      if (Array.isArray(responseCategory)) {
-        return responseCategory.some((category) => categories.includes(String(category)))
-      }
-
-      return categories.includes(String(responseCategory))
+      return responseCategory.some((category: string | number) =>
+        categories.includes(String(category)),
+      )
     })
     // Handle `searchterm`
     .filter((response) => {

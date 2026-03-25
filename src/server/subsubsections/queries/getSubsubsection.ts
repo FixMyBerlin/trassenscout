@@ -47,13 +47,13 @@ export default resolver.pipe(
         },
       },
       include: {
+        ...includeM2mFields,
         manager: { select: { firstName: true, lastName: true } },
         subsection: { select: { slug: true } },
         qualityLevel: { select: { title: true, slug: true, url: true } },
         SubsubsectionInfrastructureTypes: { select: { id: true, title: true, slug: true } },
         SubsubsectionInfra: { select: { title: true, slug: true } },
         SubsubsectionStatus: { select: { title: true, slug: true, style: true } },
-        ...includeM2mFields,
       },
     }
 
