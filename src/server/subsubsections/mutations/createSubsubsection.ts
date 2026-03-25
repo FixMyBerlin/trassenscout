@@ -7,7 +7,7 @@ import {
 } from "@/src/authorization/extractProjectSlug"
 import { subsubsectionGeometryTypeValidationRefine } from "@/src/server/shared/utils/geometryTypeValidation"
 import { resolver } from "@blitzjs/rpc"
-import { m2mFields, M2MFieldsType } from "../m2mFields"
+import { m2mFieldRelationNames, m2mFields, M2MFieldsType } from "../m2mFields"
 import { SubsubsectionBaseSchema } from "../schema"
 
 const CreateSubsubsectionSchema = subsubsectionGeometryTypeValidationRefine(
@@ -20,7 +20,7 @@ export default resolver.pipe(
   async ({ projectSlug, ...data }) => {
     const connect: Record<M2MFieldsType | string, { connect: { id: number }[] | undefined }> = {}
     m2mFields.forEach((fieldName) => {
-      connect[fieldName] = {
+      connect[m2mFieldRelationNames[fieldName]] = {
         connect: data[fieldName] ? data[fieldName].map((id: number) => ({ id })) : [],
       }
       delete data[fieldName]

@@ -12,7 +12,11 @@ import {
 } from "@/src/core/routes/subsectionRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
-import { M2MFieldsType, m2mFields } from "@/src/server/subsubsections/m2mFields"
+import {
+  M2MFieldsType,
+  m2mFieldRelationNames,
+  m2mFields,
+} from "@/src/server/subsubsections/m2mFields"
 import deleteSubsubsection from "@/src/server/subsubsections/mutations/deleteSubsubsection"
 import updateSubsubsection from "@/src/server/subsubsections/mutations/updateSubsubsection"
 import getSubsubsection from "@/src/server/subsubsections/queries/getSubsubsection"
@@ -72,10 +76,11 @@ export const EditSubsubsectionClient = ({ initialSubsubsection }: Props) => {
 
   const m2mFieldsInitialValues: Record<M2MFieldsType | string, string[]> = {}
   m2mFields.forEach((fieldName) => {
-    if (fieldName in subsubsection) {
+    const relationName = m2mFieldRelationNames[fieldName]
+    if (relationName in subsubsection) {
       m2mFieldsInitialValues[fieldName] = Array.from(
         // @ts-expect-error
-        subsubsection[fieldName].values(),
+        subsubsection[relationName].values(),
         // @ts-expect-error
         (obj) => String(obj.id),
       )

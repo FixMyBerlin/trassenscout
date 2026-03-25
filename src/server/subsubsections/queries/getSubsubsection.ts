@@ -6,7 +6,7 @@ import { GeometryWithTypeDiscriminated } from "@/src/server/shared/utils/geometr
 import { typeSubsubsectionGeometry } from "@/src/server/subsubsections/utils/typeSubsubsectionGeometry"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
-import { m2mFields } from "../m2mFields"
+import { m2mFieldRelationNames, m2mFields } from "../m2mFields"
 
 const GetSubsubsection = z.object({
   projectSlug: z.string(),
@@ -14,9 +14,11 @@ const GetSubsubsection = z.object({
   subsubsectionSlug: z.string(),
 })
 
-const includeM2mFields = {}
+const includeM2mFields: Record<string, { select: { id: true } }> = {}
 // @ts-ignore
-m2mFields.forEach((fieldName) => (includeM2mFields[fieldName] = { select: { id: true } }))
+m2mFields.forEach((fieldName) => {
+  includeM2mFields[m2mFieldRelationNames[fieldName]] = { select: { id: true } }
+})
 
 // We store full GeoJSON geometry objects. The geometry type must match the enum type.
 export type SubsubsectionWithPosition = Omit<Subsubsection, "geometry" | "type"> &
