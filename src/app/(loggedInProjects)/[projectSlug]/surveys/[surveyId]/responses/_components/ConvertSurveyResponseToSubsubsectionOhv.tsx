@@ -36,22 +36,21 @@ export type ConvertSurveyResponseToSubsubsectionProps = {
   surveySlug: AllowedSurveySlugs
 }
 
-export const ConvertSurveyResponseToSubsubsectionOhv = ({
+type ConvertWithLookupProps = ConvertSurveyResponseToSubsubsectionProps & {
+  normalizedResponseSlug: string
+  normalizedResponseSubsectionSlug: string
+}
+
+const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
   response,
   projectSlug,
   surveySlug,
-}: ConvertSurveyResponseToSubsubsectionProps) => {
+  normalizedResponseSlug,
+  normalizedResponseSubsectionSlug,
+}: ConvertWithLookupProps) => {
   const [convertError, setConvertError] = useState<string | null>(null)
   const [createSubsubsectionMutation, { isLoading }] = useMutation(createSubsubsection)
   const router = useRouter()
-
-  // Normalize the slug for the subsubsection
-  const normalizedResponseSlug =
-    typeof response.data["vorgangsId"] === "string" ? response.data["vorgangsId"].toLowerCase() : null
-
-  const normalizedResponseSubsectionSlug = response.data["commune"]
-    ? response.data["commune"].toLowerCase()
-    : null
 
   // Check if subsubsection already exists
   const [subsubsection] = useQuery(
@@ -63,13 +62,8 @@ export const ConvertSurveyResponseToSubsubsectionOhv = ({
     },
     {
       suspense: false,
-      enabled: Boolean(normalizedResponseSlug && normalizedResponseSubsectionSlug),
     },
   )
-
-  if (projectSlug !== "ohv") {
-    return null
-  }
 
   // Determine if subsubsection exists based on query result
   // If we have data, it exists. If error is NotFoundError, it doesn't exist.
@@ -222,5 +216,36 @@ export const ConvertSurveyResponseToSubsubsectionOhv = ({
         </button>
       </div>
     </div>
+  )
+}
+
+export const ConvertSurveyResponseToSubsubsectionOhv = ({
+  response,
+  projectSlug,
+  surveySlug,
+}: ConvertSurveyResponseToSubsubsectionProps) => {
+  const normalizedResponseSlug =
+    typeof response.data["vorgangsId"] === "string" ? response.data["vorgangsId"].toLowerCase() : null
+
+  const normalizedResponseSubsectionSlug = response.data["commune"]
+    ? response.data["commune"].toLowerCase()
+    : null
+
+  if (projectSlug !== "ohv") {
+    return null
+  }
+
+  if (!normalizedResponseSlug || !normalizedResponseSubsectionSlug) {
+    return null
+  }
+
+  return (
+    <ConvertSurveyResponseToSubsubsectionOhvWithLookup
+      response={response}
+      projectSlug={projectSlug}
+      surveySlug={surveySlug}
+      normalizedResponseSlug={normalizedResponseSlug}
+      normalizedResponseSubsectionSlug={normalizedResponseSubsectionSlug}
+    />
   )
 }

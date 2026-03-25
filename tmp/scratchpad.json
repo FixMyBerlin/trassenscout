@@ -1,0 +1,29 @@
+{
+    "subsubsectionId": "15",
+    "category": [
+        "buswendeschleifen",
+        "beschleunigung"
+    ],
+    "commune": "unbekannt",
+    "geometryCategory": "[13.145828247070312,52.840106069621186]",
+    "feedbackText": "fds",
+    "stateOfConstruction": "",
+    "costs": 3222,
+    "coFinancing": "unknown",
+    "fundingSource": "",
+    "programName": "",
+    "sharedBuilding": "unknown",
+    "realisationYear": "2030",
+    "uploads": [],
+    "uploadsDescription": "",
+    "contact": "",
+    "phone": "",
+    "email": "ewa.agnieszka.flis@gmail.com",
+    "declaration": true,
+    "geometryCategorySourceId": "https://tilda-geo.de/api/uploads/ohv-haltestellen",
+    "geometryCategoryFeatureId": 675166326,
+    "geometryCategoryId": "de:12065:900203703::1",
+    "hsName": "Neuendorf",
+    "routeIds": "5234_3, 5234_700",
+    "surveyBusinessId": "547010_003"
+}
