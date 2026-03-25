@@ -46,7 +46,7 @@ export const ConvertSurveyResponseToSubsubsectionOhv = ({
   const router = useRouter()
 
   // Normalize the slug for the subsubsection
-  const normalizedResponseSlug = response.data["subsubsectionId"]
+  const normalizedResponseSlug = response.data["vorgangsId"]
     ? response.data["subsubsectionId"].toLowerCase()
     : null
 
