@@ -246,6 +246,7 @@ Wir bestätigen den Eingang Ihrer Meldung über das Online-Formular unter folgen
 
 Folgende Angaben wurden übermittelt:
 
+- **Vorgangs-ID**: {{vorgangsId}}
 - **Gegenstand der Förderung**: {{category}}
 - **Kommune**: {{commune}}
 - **Beschreibung der Dokumente**: {{uploadsDescription}}
@@ -253,7 +254,7 @@ Folgende Angaben wurden übermittelt:
 - **Name der Haltestelle**: {{hsName}}
 - **Maßnahmenbeschreibung und Zielsetzung**: {{feedbackText}}
 - **Stand der Bauvorbereitung**: {{stateOfConstruction}}
-- **Kostenschätzung**: {{costs}}
+- **Kostenberechnung**: {{costs}}
 - **Ko-Finanzierung**: {{coFinancing}}
 - **Ko-Finanzierung: Mittelgeber und Programm**: {{fundingSource}}
 - **Gemeinschaftsbauwerk**: {{sharedBuilding}}
@@ -272,6 +273,7 @@ i. A. Alexander Greifenberg
 im Auftrag des Landkreises Oberhavel
 `,
     fields: [
+      "vorgangsId",
       "commune",
       "category",
       "uploadsDescription",
@@ -306,7 +308,7 @@ Folgende Angaben wurden übermittelt:
 - **Name der Haltestelle**: {{hsName}}
 - **Maßnahmenbeschreibung und Zielsetzung**: {{feedbackText}}
 - **Stand der Bauvorbereitung**: {{stateOfConstruction}}
-- **Kostenschätzung**: {{costs}}
+- **Kostenberechnung**: {{costs}}
 - **Ko-Finanzierung**: {{coFinancing}}
 - **Ko-Finanzierung: Mittelgeber und Programm**: {{fundingSource}}
 - **Gemeinschaftsbauwerk**: {{sharedBuilding}}
