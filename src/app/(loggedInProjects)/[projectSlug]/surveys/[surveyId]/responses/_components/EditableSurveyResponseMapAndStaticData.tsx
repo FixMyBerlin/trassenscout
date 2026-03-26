@@ -70,7 +70,12 @@ const EditableSurveyResponseMapAndStaticData = ({
 
   const maptilerUrl = metaConfig.maptilerUrl
 
-  const userCategoryIds = response.data[categoryId] || []
+  const userCategoryValue = response.data[categoryId]
+  const userCategoryIds = Array.isArray(userCategoryValue)
+    ? userCategoryValue
+    : userCategoryValue != null && userCategoryValue !== ""
+      ? [userCategoryValue]
+      : []
   const surveyCategoryOptions = getSurveyCategoryOptions(surveySlug)
   const userCategoryLabels = userCategoryIds
     .map(

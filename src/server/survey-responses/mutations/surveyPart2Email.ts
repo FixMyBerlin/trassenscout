@@ -53,7 +53,11 @@ const buildFieldValues = ({
 
     if (field?.component === "SurveyCheckboxGroup") {
       const props = field.props as any
-      const selectedValues = value.map((v: string | number) => String(v))
+      const selectedValues = Array.isArray(value)
+        ? value.map((v) => String(v))
+        : value != null && value !== ""
+          ? [String(value)]
+          : []
 
       if (props.options) {
         const labels = selectedValues.map((selectedValue: string) => {

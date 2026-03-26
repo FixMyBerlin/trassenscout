@@ -72,9 +72,14 @@ export const useFilteredResponses = (
     .filter((response) => {
       if (!categories) return true
 
-      const responseCategory = response.data[userCategoryQuestionId] || []
+      const responseCategoryValue = response.data[userCategoryQuestionId]
+      const responseCategories = Array.isArray(responseCategoryValue)
+        ? responseCategoryValue
+        : responseCategoryValue != null && responseCategoryValue !== ""
+          ? [responseCategoryValue]
+          : []
 
-      return responseCategory.some((category: string | number) =>
+      return responseCategories.some((category: string | number) =>
         categories.includes(String(category)),
       )
     })
