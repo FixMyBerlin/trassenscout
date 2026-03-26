@@ -17,7 +17,6 @@ import { SurveyMarkdown } from "@/src/app/beteiligung/_components/layout/SurveyM
 import { TBackendConfig } from "@/src/app/beteiligung/_shared/backend-types"
 import { fieldValidationEnum } from "@/src/app/beteiligung/_shared/fieldvalidationEnum"
 import { AnyFieldApi } from "@tanstack/react-form"
-import { LineString, MultiLineString, Point, Polygon } from "geojson"
 import type {
   CircleLayerSpecification,
   FillLayerSpecification,
@@ -334,13 +333,6 @@ export type FormConfig = {
     primaryColor: string
     darkColor: string
     lightColor: string
-    // geometryFallback is used for surveys rs8 adn frm7 that have a geometry-category question
-    // starting with radnetz BB all surveys have geometry-category questions
-    geoCategoryFallback?:
-      | LineString["coordinates"]
-      | MultiLineString["coordinates"]
-      | Polygon["coordinates"]
-      | Point["coordinates"]
     // todo deletedQuestions
   }
   // fka survey part

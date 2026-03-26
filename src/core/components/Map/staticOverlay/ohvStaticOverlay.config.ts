@@ -8,6 +8,38 @@ import type { StaticOverlayConfig } from "./staticOverlay.types"
  */
 export const ohvStaticOverlayConfig: StaticOverlayConfig = {
   sources: {
+    // TODO comment in when geometries are simplified in tilda
+    // grenzenLandkreis: {
+    //   tildaUrl: "https://tilda-geo.de/api/uploads/ohv-grenzen-landkreis",
+    //   type: "pmtiles",
+    //   layers: [
+    //     {
+    //       id: "ohv-grenzen-landkreis--line",
+    //       type: "line",
+    //       filter: ["all"],
+    //       layout: { "line-round-limit": 100 },
+    //       paint: {
+    //         "line-color": "hsla(0, 0%, 20%, 0.56)",
+    //         "line-width": ["interpolate", ["linear"], ["zoom"], 5, 1, 8, 2, 12, 3, 16, 6],
+    //       },
+    //     },
+    //     {
+    //       id: "ohv-grenzen-landkreis--symbol",
+    //       type: "symbol",
+    //       filter: ["all"],
+    //       layout: {
+    //         "text-field": "Grenze Landkreis Oberhavel",
+    //         "symbol-placement": "line",
+    //         "text-offset": [0, 0],
+    //         "text-anchor": "top",
+    //         "text-font": ["Roboto Regular", "Arial Unicode MS Regular"],
+    //         "text-padding": 4,
+    //         "text-size": 12,
+    //       },
+    //       paint: { "text-color": "hsla(0, 0%, 0%, 0.38)" },
+    //     },
+    //   ],
+    // },
     haltestellen: {
       tildaUrl: "https://tilda-geo.de/api/uploads/ohv-haltestellen",
       type: "geojson",

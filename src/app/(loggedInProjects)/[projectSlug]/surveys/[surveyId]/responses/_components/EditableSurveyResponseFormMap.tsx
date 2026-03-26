@@ -5,7 +5,6 @@ import {
 } from "@/src/app/beteiligung/_components/form/map/utils"
 import { FieldConfig } from "@/src/app/beteiligung/_shared/types"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
-import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { AllLayers, generateLayers } from "@/src/core/components/Map/AllLayers"
 import { AllSources } from "@/src/core/components/Map/AllSources"
 import { BackgroundSwitcher, LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
@@ -29,6 +28,7 @@ type Props = {
   marker: { lat: number; lng: number } | undefined
   geometryCategoryCoordinates?: string
   geoCategoryQuestion?: GeoCategoryFieldConfig
+  configBounds: [number, number, number, number]
   maptilerUrl: string
   surveySlug: AllowedSurveySlugs
 }
@@ -39,6 +39,7 @@ export const EditableSurveyResponseFormMap = ({
   surveySlug,
   geometryCategoryCoordinates,
   geoCategoryQuestion,
+  configBounds,
 }: Props) => {
   const projectSlug = useProjectSlug()
   const staticOverlay = getStaticOverlayForProject(projectSlug ?? "")
@@ -54,10 +55,6 @@ export const EditableSurveyResponseFormMap = ({
     }
   }, [])
 
-  const metaDefinition = getConfigBySurveySlug(surveySlug, "meta")
-  // TODO handle fallback geometry differently
-  const fallbackGeometry = JSON.stringify(metaDefinition.geoCategoryFallback)
-
   const handleLayerSwitch = (layer: LayerType) => {
     setSelectedLayer(layer)
   }
@@ -68,12 +65,12 @@ export const EditableSurveyResponseFormMap = ({
     setMapLoading(true)
   }
 
-  const geometryCategoryGeoJSON = createGeoJSONFromString(
-    geometryCategoryCoordinates ? geometryCategoryCoordinates : fallbackGeometry || "[]",
-  )
-  const geometryCategoryGeometryType = detectGeometryType(
-    geometryCategoryCoordinates ? geometryCategoryCoordinates : fallbackGeometry || "[]",
-  )
+  const geometryCategoryGeoJSON = geometryCategoryCoordinates
+    ? createGeoJSONFromString(geometryCategoryCoordinates)
+    : undefined
+  const geometryCategoryGeometryType = geometryCategoryCoordinates
+    ? detectGeometryType(geometryCategoryCoordinates)
+    : "unknown"
 
   // Define different paint styles for different geometry types
   const geometryPaintMap = {
@@ -113,9 +110,14 @@ export const EditableSurveyResponseFormMap = ({
       }
     }
 
-    const geometryString = geometryCategoryCoordinates || JSON.stringify(fallbackGeometry)
+    if (geometryCategoryCoordinates) {
+      return getInitialViewStateFromGeometryString(geometryCategoryCoordinates)
+    }
 
-    return getInitialViewStateFromGeometryString(geometryString)
+    return {
+      bounds: configBounds,
+      fitBoundsOptions: { padding: 70 },
+    }
   }
 
   const renderGeometryLayer = () => {
@@ -142,7 +144,9 @@ export const EditableSurveyResponseFormMap = ({
   }
 
   const geometryCategorySource =
-    geometryCategoryCoordinates && geometryCategoryGeometryType !== "unknown" ? (
+    geometryCategoryCoordinates &&
+    geometryCategoryGeoJSON &&
+    geometryCategoryGeometryType !== "unknown" ? (
       <Source
         id="geometryCategory"
         key="geometryCategory"

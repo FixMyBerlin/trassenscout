@@ -5,6 +5,7 @@ import { getSurveyCategoryOptions } from "@/src/app/(loggedInProjects)/[projectS
 import { surveyResponsesMapHref } from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/_utils/SurveyHrefs"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { createGeoJSONFromString } from "@/src/app/beteiligung/_components/form/map/utils"
+import { FieldConfig } from "@/src/app/beteiligung/_shared/types"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getQuestionIdBySurveySlug"
@@ -26,6 +27,32 @@ import {
   GeoCategoryFieldConfig,
 } from "./EditableSurveyResponseFormMap"
 import EditableSurveyResponseUserText from "./EditableSurveyResponseUserText"
+
+type FormFieldConfig = Extract<FieldConfig, { componentType: "form" }>
+
+/**
+ * Retrieve the `config.bounds` from the survey field config to use as the map's
+ * initial viewport when a response has neither a location pin nor geometry coordinates.
+ */
+const getConfigBoundsFromFieldConfig = (
+  feedbackQuestions: FormFieldConfig[],
+  locationId: string,
+  geometryCategoryId: string,
+): [number, number, number, number] => {
+  const locationQuestion = feedbackQuestions.find((q) => q.name === locationId)
+  if (locationQuestion) {
+    // @ts-expect-error locationQuestion is of type LocationFieldConfig
+    return locationQuestion.props.mapProps.config.bounds
+  }
+
+  const geoCategoryQuestion = feedbackQuestions.find((q) => q.name === geometryCategoryId)
+  if (geoCategoryQuestion) {
+    // @ts-expect-error geoCategoryQuestion is of type GeoCategoryFieldConfig
+    return geoCategoryQuestion.props.mapProps.config.bounds
+  }
+
+  throw new Error("Survey config must have either a location or geometryCategory field")
+}
 
 type Props = {
   response: Prettify<
@@ -67,6 +94,11 @@ const EditableSurveyResponseMapAndStaticData = ({
   const locationId = getQuestionIdBySurveySlug(surveySlug, "location")
 
   const geoCategoryQuestion = feedbackQuestions.find((q) => q.name === geometryCategoryId)
+  const configBounds = getConfigBoundsFromFieldConfig(
+    feedbackQuestions,
+    locationId,
+    geometryCategoryId,
+  )
 
   const maptilerUrl = metaConfig.maptilerUrl
 
@@ -192,6 +224,7 @@ const EditableSurveyResponseMapAndStaticData = ({
                   geometryCategoryId && response.data[geometryCategoryId]
                 }
                 geoCategoryQuestion={geoCategoryQuestion as GeoCategoryFieldConfig}
+                configBounds={configBounds}
                 maptilerUrl={maptilerUrl}
               />
             </MapProvider>
