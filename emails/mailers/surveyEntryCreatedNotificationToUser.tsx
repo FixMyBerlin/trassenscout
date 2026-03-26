@@ -46,7 +46,10 @@ function generateOsmLink(fieldName: string, value: string): string {
 
     // Handle location fields
     if (fieldName === "location") {
-      const locationData = JSON.parse(value) as { lat: number; lng: number }
+      const locationData =
+        typeof value === "string"
+          ? (JSON.parse(value) as { lat: number; lng: number })
+          : (value as unknown as { lat: number; lng: number })
       if (locationData.lat && locationData.lng) {
         return `https://www.openstreetmap.org/?mlat=${locationData.lat}&mlon=${locationData.lng}&zoom=16`
       }
