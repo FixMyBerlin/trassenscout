@@ -176,7 +176,7 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           name: "location",
           componentType: "form",
           component: "SwitchableMapWithLegend",
-          validation: fieldValidationEnum["conditionalRequiredLatLng"],
+          validation: fieldValidationEnum["requiredLatLng"],
           defaultValue: null,
           props: {
             label: "Maßnahmenverortung",

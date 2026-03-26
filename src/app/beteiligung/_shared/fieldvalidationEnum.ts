@@ -67,7 +67,7 @@ export const fieldValidationEnum = {
     required: true,
   },
   requiredLatLng: {
-    zodSchema: z.object({ lat: z.number(), lng: z.number() }),
+    zodSchema: z.object({ lat: z.number(), lng: z.number() }, { message: "Pflichtfeld." }),
     required: true,
   },
   optionalArrayOfNumber: {

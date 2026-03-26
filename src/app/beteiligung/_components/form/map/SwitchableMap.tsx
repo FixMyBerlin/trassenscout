@@ -280,9 +280,9 @@ export const SwitchableMap = ({
 
   const handlePinModeChange = (next: boolean) => {
     setIsPin(next)
+    field.handleChange(null)
     if (!next) return
     clearGeoCategorySelectionAndHighlight()
-    field.handleChange(null)
     if (placePinAtMapCenter()) return
     queueMicrotask(() => {
       if (placePinAtMapCenter()) return

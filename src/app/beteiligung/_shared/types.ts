@@ -165,7 +165,9 @@ export type FieldConfig =
   | ({
       component: "SwitchableMapWithLegend"
       componentType: "form"
-      validation: (typeof fieldValidationEnum)["conditionalRequiredLatLng"]
+      validation:
+        | (typeof fieldValidationEnum)["conditionalRequiredLatLng"]
+        | (typeof fieldValidationEnum)["requiredLatLng"]
       defaultValue: object | null
     } & FormFieldBase & {
         props: Omit<ComponentProps<typeof SwitchableMapWithLegend>, "required">
