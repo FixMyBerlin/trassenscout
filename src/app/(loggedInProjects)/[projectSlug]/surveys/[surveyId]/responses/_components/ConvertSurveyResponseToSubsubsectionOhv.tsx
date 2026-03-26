@@ -10,6 +10,7 @@
 import { parseSwitchableMapLocationFieldValue } from "@/src/app/beteiligung/_components/form/map/utils"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getQuestionIdBySurveySlug"
+import { Notice } from "@/src/core/components/Notice/Notice"
 import { blueButtonStyles, linkStyles } from "@/src/core/components/links/styles"
 import { subsubsectionDashboardRoute } from "@/src/core/routes/subsectionRoutes"
 import { Prettify } from "@/src/core/types"
@@ -19,7 +20,7 @@ import getSubsubsectionInfrastructureTypesWithCount from "@/src/server/subsubsec
 import createSubsubsection from "@/src/server/subsubsections/mutations/createSubsubsection"
 import getSubsubsection from "@/src/server/subsubsections/queries/getSubsubsection"
 import getFeedbackSurveyResponsesWithSurveyDataAndComments from "@/src/server/survey-responses/queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
-import { invalidateQuery, invoke, useMutation, useQuery } from "@blitzjs/rpc"
+import { invalidateQuery, invoke, useMutation } from "@blitzjs/rpc"
 import { point } from "@turf/helpers"
 import { NotFoundError } from "blitz"
 import Link from "next/link"
@@ -41,6 +42,17 @@ type ConvertWithLookupProps = ConvertSurveyResponseToSubsubsectionProps & {
   normalizedResponseSubsectionSlug: string
 }
 
+const isNotFoundError = (error: unknown) => {
+  if (error instanceof NotFoundError) return true
+
+  const candidate = error as { name?: string; code?: string; message?: string } | null
+  return (
+    candidate?.name === "NotFoundError" ||
+    candidate?.code === "P2025" ||
+    candidate?.message === "No Subsubsection found"
+  )
+}
+
 const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
   response,
   projectSlug,
@@ -49,29 +61,29 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
   normalizedResponseSubsectionSlug,
 }: ConvertWithLookupProps) => {
   const [convertError, setConvertError] = useState<string | null>(null)
+  const [existingSubsubsectionSlug, setExistingSubsubsectionSlug] = useState<string | null>(null)
   const [createSubsubsectionMutation, { isLoading }] = useMutation(createSubsubsection)
   const router = useRouter()
-
-  // Check if subsubsection already exists
-  const [subsubsection] = useQuery(
-    getSubsubsection,
-    {
-      projectSlug,
-      subsectionSlug: normalizedResponseSubsectionSlug,
-      subsubsectionSlug: normalizedResponseSlug,
-    },
-    {
-      suspense: false,
-    },
-  )
-
-  // Determine if subsubsection exists based on query result
-  // If we have data, it exists. If error is NotFoundError, it doesn't exist.
-  const exists = subsubsection !== undefined
 
   const handleConvertToMaßnahme = async () => {
     try {
       setConvertError(null)
+      setExistingSubsubsectionSlug(null)
+
+      try {
+        const existingSubsubsection = await invoke(getSubsubsection, {
+          projectSlug,
+          subsectionSlug: normalizedResponseSubsectionSlug,
+          subsubsectionSlug: normalizedResponseSlug,
+        })
+
+        setExistingSubsubsectionSlug(existingSubsubsection.slug)
+        return
+      } catch (error) {
+        if (!isNotFoundError(error)) {
+          throw error
+        }
+      }
 
       // Look up subsection by commune slug
       let subsection
@@ -81,7 +93,7 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
           subsectionSlug: normalizedResponseSubsectionSlug.toLowerCase(),
         })
       } catch (error) {
-        if (error instanceof NotFoundError) {
+        if (isNotFoundError(error)) {
           throw new Error(
             `Kein Abschnitt mit dem Slug "${normalizedResponseSubsectionSlug}" gefunden. Bitte stellen Sie sicher, dass ein Abschnitt mit diesem Slug im Projekt existiert.`,
           )
@@ -176,45 +188,43 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
     }
   }
 
-  // If subsubsection exists, show link
-  if (exists && subsubsection) {
-    return (
-      <div className="mt-4 flex justify-end">
-        <div className="text-sm text-gray-600">
-          Diese Meldung wurde bereits als Maßnahme angelegt.{" "}
-          <Link
-            href={subsubsectionDashboardRoute(
-              projectSlug,
-              normalizedResponseSubsectionSlug,
-              normalizedResponseSlug,
-            )}
-            className={linkStyles}
-          >
-            Zur Maßnahme
-          </Link>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className="mt-4 space-y-2">
       {/* <FormSuccess message="Maßnahme erfolgreich erstellt" show={isSuccess} /> */}
+      {existingSubsubsectionSlug && (
+        <Notice type="warn" title="Maßnahme bereits vorhanden">
+          <p>
+            Diese Meldung wurde bereits als Maßnahme angelegt.{" "}
+            <Link
+              href={subsubsectionDashboardRoute(
+                projectSlug,
+                normalizedResponseSubsectionSlug,
+                existingSubsubsectionSlug,
+              )}
+              className={linkStyles}
+            >
+              Zur Maßnahme
+            </Link>
+          </p>
+        </Notice>
+      )}
       {convertError && (
         <div className="rounded-sm bg-red-50 p-4 text-red-800">
           <p className="text-sm">{convertError}</p>
         </div>
       )}
-      <div className="flex justify-end">
-        <button
-          type="button"
-          onClick={handleConvertToMaßnahme}
-          className={blueButtonStyles}
-          disabled={isLoading}
-        >
-          {isLoading ? "Wird erstellt..." : "Meldung in Maßnahme überführen"}
-        </button>
-      </div>
+      {!existingSubsubsectionSlug && (
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={handleConvertToMaßnahme}
+            className={blueButtonStyles}
+            disabled={isLoading}
+          >
+            {isLoading ? "Wird erstellt..." : "Meldung in Maßnahme überführen"}
+          </button>
+        </div>
+      )}
     </div>
   )
 }
