@@ -95,9 +95,15 @@ export default resolver.pipe(
     const surveySlug = rawSurveyResponsePart2[0]?.surveySession.survey.slug as
       | AllowedSurveySlugs
       | undefined
-    const part1Fields = getFlatSurveyFormFields(surveySlug ? getConfigBySurveySlug(surveySlug, "part1") : null)
-    const part2Fields = getFlatSurveyFormFields(surveySlug ? getConfigBySurveySlug(surveySlug, "part2") : null)
-    const part3Fields = getFlatSurveyFormFields(surveySlug ? getConfigBySurveySlug(surveySlug, "part3") : null)
+    const part1Fields = getFlatSurveyFormFields(
+      surveySlug ? getConfigBySurveySlug(surveySlug, "part1") : null,
+    )
+    const part2Fields = getFlatSurveyFormFields(
+      surveySlug ? getConfigBySurveySlug(surveySlug, "part2") : null,
+    )
+    const part3Fields = getFlatSurveyFormFields(
+      surveySlug ? getConfigBySurveySlug(surveySlug, "part3") : null,
+    )
 
     const rawSurveyResponsePart2WithPart1AndPart3Responses = rawSurveyResponsePart2?.map(
       (responsePart2) => {
@@ -162,12 +168,14 @@ export default resolver.pipe(
         .sort()
         .map((option) => {
           const fieldOptions: Array<{ key: string | number; label: string }> = Array.isArray(
-            (field?.props as { options?: Array<{ key: string | number; label: string }> } | undefined)
-              ?.options,
+            (
+              field?.props as
+                | { options?: Array<{ key: string | number; label: string }> }
+                | undefined
+            )?.options,
           )
-            ? (
-                field?.props as { options?: Array<{ key: string | number; label: string }> }
-              ).options || []
+            ? (field?.props as { options?: Array<{ key: string | number; label: string }> })
+                .options || []
             : []
           const label =
             fieldOptions.find((opt) => String(opt.key) === String(option))?.label || option

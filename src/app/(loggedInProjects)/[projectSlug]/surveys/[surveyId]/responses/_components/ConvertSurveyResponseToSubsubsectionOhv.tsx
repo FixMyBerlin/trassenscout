@@ -235,7 +235,9 @@ export const ConvertSurveyResponseToSubsubsectionOhv = ({
   surveySlug,
 }: ConvertSurveyResponseToSubsubsectionProps) => {
   const normalizedResponseSlug =
-    typeof response.data["vorgangsId"] === "string" ? response.data["vorgangsId"].toLowerCase() : null
+    typeof response.data["vorgangsId"] === "string"
+      ? response.data["vorgangsId"].toLowerCase()
+      : null
 
   const normalizedResponseSubsectionSlug = response.data["commune"]
     ? response.data["commune"].toLowerCase()
