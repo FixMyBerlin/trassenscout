@@ -193,11 +193,11 @@ const EditableSurveyResponseMapAndStaticData = ({
           {/* CATEGORY */}
           <div className="flex shrink-0 flex-col items-start gap-4">
             <h4 className="font-semibold">{categoryLabel}</h4>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex w-full flex-wrap gap-2">
               {userCategoryLabels.map((label) => (
                 <div
                   key={label}
-                  className="rounded-sm bg-gray-300 p-3 px-4 font-semibold whitespace-nowrap"
+                  className="max-w-full rounded-sm bg-gray-300 p-3 px-4 font-semibold whitespace-normal break-words"
                 >
                   {label}
                 </div>
