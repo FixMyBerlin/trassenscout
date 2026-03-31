@@ -13,5 +13,6 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
   updatedAt: new Date(),
   exportEnabled: false,
   aiEnabled: false,
+  landAcquisitionModuleEnabled: false,
   showLogEntries: false,
 }
