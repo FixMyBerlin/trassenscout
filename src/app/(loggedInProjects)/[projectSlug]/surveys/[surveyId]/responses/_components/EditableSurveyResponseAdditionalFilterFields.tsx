@@ -40,14 +40,14 @@ const EditableSurveyResponseAdditionalFilterFields = ({
   const part1Fields = getFlatSurveyFormFields(part1Config)
   const part2Fields = getFlatSurveyFormFields(part2Config)
   const part3Fields = getFlatSurveyFormFields(part3Config)
-  const showOhvVorgangsId =
+  const showOhvReferenceId =
     surveySlug === "ohv-haltestellenfoerderung" &&
-    typeof surveyPart2ResponseData.vorgangsId === "string" &&
-    surveyPart2ResponseData.vorgangsId.length > 0
+    typeof surveyPart2ResponseData.referenceId === "string" &&
+    surveyPart2ResponseData.referenceId.length > 0
 
   const filteredPart2Responses = Object.entries(surveyPart2ResponseData).filter(
     ([key]) =>
-      key !== "vorgangsId" &&
+      key !== "referenceId" &&
       !standardFieldsForFilter.includes(key) &&
       // !key.startsWith("geometry") &&
       !additionaFilterKeysPart2ForFilter.includes(key),
@@ -68,13 +68,13 @@ const EditableSurveyResponseAdditionalFilterFields = ({
     <div className="rounded-lg border border-gray-200 bg-white p-2 md:max-w-(--breakpoint-md)">
       <table className="min-w-full">
         <tbody className="divide-y divide-gray-200 bg-white">
-          {showOhvVorgangsId && (
+          {showOhvReferenceId && (
             <tr>
               <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900">
                 Vorgangs-ID
               </td>
               <td className="px-6 py-4 text-sm text-gray-500">
-                {String(surveyPart2ResponseData.vorgangsId)}
+                {String(surveyPart2ResponseData.referenceId)}
               </td>
             </tr>
           )}

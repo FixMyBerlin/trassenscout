@@ -66,7 +66,7 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
     2: null,
     3: null,
   })
-  const [vorgangsIdByPart, setVorgangsIdByPart] = useState<Record<1 | 2 | 3, string | null>>({
+  const [referenceIdByPart, setReferenceIdByPart] = useState<Record<1 | 2 | 3, string | null>>({
     1: null,
     2: null,
     3: null,
@@ -98,9 +98,9 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
       source: "FORM",
       status: surveyResponseDefaultStatus,
     })
-    const parsedData = JSON.parse(data) as { vorgangsId?: string }
+    const parsedData = JSON.parse(data) as { referenceId?: string }
     setResponseIdByPart((prev) => ({ ...prev, [part]: id }))
-    setVorgangsIdByPart((prev) => ({ ...prev, [part]: parsedData.vorgangsId ?? null }))
+    setReferenceIdByPart((prev) => ({ ...prev, [part]: parsedData.referenceId ?? null }))
     return id
   }
 
@@ -161,9 +161,9 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
         value,
       })
       const submittedData = JSON.parse(response.data) as Record<string, unknown>
-      const submittedVorgangsId =
-        typeof submittedData.vorgangsId === "string" ? submittedData.vorgangsId : null
-      setVorgangsIdByPart((prev) => ({ ...prev, 2: submittedVorgangsId }))
+      const submittedReferenceId =
+        typeof submittedData.referenceId === "string" ? submittedData.referenceId : null
+      setReferenceIdByPart((prev) => ({ ...prev, 2: submittedReferenceId }))
       await surveyPart2EmailMutation({
         surveySessionId: surveySessionId_,
         data: submittedData,
@@ -227,7 +227,7 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
           stage="part1"
           handleSubmit={handleSurveyPart1Submit}
           surveyResponseId={responseIdByPart[1]}
-          vorgangsId={vorgangsIdByPart[1]}
+          vorgangsId={referenceIdByPart[1]}
           surveySessionId={surveySessionId}
           onStartPart={() => handleStartPart(1)}
         />
@@ -244,7 +244,7 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
           stage="part2"
           handleSubmit={handleSurveyPart2Submit}
           surveyResponseId={responseIdByPart[2]}
-          vorgangsId={vorgangsIdByPart[2]}
+          vorgangsId={referenceIdByPart[2]}
           surveySessionId={surveySessionId}
           onStartPart={() => handleStartPart(2)}
         />
@@ -259,7 +259,7 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
           stage="part3"
           handleSubmit={handleSurveyPart3Submit}
           surveyResponseId={responseIdByPart[3]}
-          vorgangsId={vorgangsIdByPart[3]}
+          vorgangsId={referenceIdByPart[3]}
           surveySessionId={surveySessionId}
           onStartPart={() => handleStartPart(3)}
         />

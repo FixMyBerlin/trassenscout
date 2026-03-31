@@ -99,7 +99,7 @@ Wir bestätigen den Eingang Ihrer Meldung über das Online-Formular unter folgen
 
 Folgende Angaben wurden übermittelt:
 
-- **Vorgangs-ID**: {{vorgangsId}}
+- **Vorgangs-ID**: {{referenceId}}
 - **Gegenstand der Förderung**: {{category}}
 - **Kommune**: {{commune}}
 - **Beschreibung der Dokumente**: {{uploadsDescription}}
@@ -126,7 +126,7 @@ i. A. Alexander Greifenberg
 im Auftrag des Landkreises Oberhavel
 `,
     fields: [
-      "vorgangsId",
+      "referenceId",
       "commune",
       "category",
       "uploadsDescription",
@@ -153,7 +153,7 @@ im Auftrag des Landkreises Oberhavel
 
 Folgende Angaben wurden übermittelt:
 
-- **Vorgangs-ID**: {{vorgangsId}}
+- **Vorgangs-ID**: {{referenceId}}
 - **Gegenstand der Förderung**: {{category}}
 - **Kommune**: {{commune}}
 - **Beschreibung der Dokumente**: {{uploadsDescription}}
@@ -178,7 +178,7 @@ Mit freundlichen Grüßen
 Trassenscout
 `,
     fields: [
-      "vorgangsId",
+      "referenceId",
       "commune",
       "category",
       "uploadsDescription",

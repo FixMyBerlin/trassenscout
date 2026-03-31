@@ -324,6 +324,8 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           },
           props: {
             label: "Ko-Finanzierung: Mittelgeber und Programm",
+            description:
+              "Bitte geben Sie an, wie der Eigenanteil der Kommune sowie ggf. Beiträge Dritter (z. B. andere Träger oder Förderprogramme) finanziert werden. Voraussetzung ist, dass die Gesamtfinanzierung einschließlich Folgekosten gesichert ist und durch einen Finanzierungsplan nachgewiesen wird.",
           },
         },
         {
@@ -340,7 +342,7 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
                 key: "yes",
                 label: "Ja",
                 description:
-                  "Bei Gemeinschaftsbauwerken mit weiteren Projektpartnern laden Sie bitte vorhandene Vereinbarungen oder Abstimmungsunterlagen hoch. Spätestens im Rahmen der Förderantragstellung sind diese einzureichen.",
+                  "Ein Gemeinschaftsbauwerk liegt vor, wenn Anlagen gemeinsam mit einem anderen Baulastträger errichtet werden (z. B. an Bahnhöfen). In diesem Fall ist vor Antragstellung eine vertragliche Regelung zur Aufteilung der Kosten zwischen den Beteiligten erforderlich.",
               },
             ],
           },
