@@ -13,7 +13,7 @@ export const subsubsectionFieldTranslations = {
   qualityLevelId: "Ausbaustandard",
   subsubsectionInfraId: "Führungsform",
   subsubsectionStatusId: "Phase",
-  subsubsectionInfrastructureTypeIds: "Fördergegenstände",
+  subsubsectionInfrastructureTypeIds: "Gegenstände der Förderung",
   estimatedConstructionDateString: "Angestrebtes Baujahr",
   mapillaryKey: "Mapillary Bild Referenz",
   managerId: "Projektleiter:in",

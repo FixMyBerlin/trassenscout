@@ -10,7 +10,7 @@ import "server-only"
 import { SubsubsectionInfrastructureTypesTable } from "./_components/SubsubsectionInfrastructureTypesTable"
 
 export const metadata: Metadata = {
-  title: "Fördergegenstand",
+  title: "Gegenstand der Förderung",
   robots: {
     index: false,
   },
@@ -38,7 +38,7 @@ export default async function SubsubsectionInfrastructureTypesPage({
 
   return (
     <>
-      <PageHeader title="Fördergegenstand" className="mt-12" />
+      <PageHeader title="Gegenstand der Förderung" className="mt-12" />
       <SubsubsectionInfrastructureTypesTable
         subsubsectionInfrastructureTypes={subsubsectionInfrastructureTypes}
         fromPath={fromParam}
@@ -50,7 +50,7 @@ export default async function SubsubsectionInfrastructureTypesPage({
           className="mt-4"
           href={`/${projectSlug}/subsubsection-infrastructure-type/new${appendFrom}` as Route}
         >
-          Neuer Fördergegenstand
+          Neuen Gegenstand der Förderung hinzufügen
         </Link>
       </IfUserCanEdit>
       <IfUserCanEdit>

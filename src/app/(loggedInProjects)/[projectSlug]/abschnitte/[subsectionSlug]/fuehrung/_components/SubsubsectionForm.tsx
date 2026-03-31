@@ -196,7 +196,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           href={`/${projectSlug}/subsubsection-infrastructure-type` as Route}
           className="py-2"
         >
-          Fördergegenstand verwalten…
+          Gegenstände der Förderung verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
       <div className="flex items-end gap-5">

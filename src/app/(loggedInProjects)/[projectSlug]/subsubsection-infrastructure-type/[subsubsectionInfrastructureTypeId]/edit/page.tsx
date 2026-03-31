@@ -7,7 +7,7 @@ import { Metadata } from "next"
 import "server-only"
 
 export const metadata: Metadata = {
-  title: seoEditTitle("Fördergegenstand"),
+  title: seoEditTitle("Gegenstand der Förderung"),
   robots: {
     index: false,
   },
@@ -31,7 +31,7 @@ export default async function EditSubsubsectionInfrastructureTypePage({
 
   return (
     <>
-      <PageHeader title="Fördergegenstand bearbeiten" className="mt-12" />
+      <PageHeader title="Gegenstand der Förderung bearbeiten" className="mt-12" />
       <EditSubsubsectionInfrastructureTypeForm
         subsubsectionInfrastructureType={subsubsectionInfrastructureType}
         projectSlug={projectSlug}

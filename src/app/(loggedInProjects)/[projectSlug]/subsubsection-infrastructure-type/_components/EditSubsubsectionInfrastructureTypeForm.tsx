@@ -78,7 +78,7 @@ export const EditSubsubsectionInfrastructureTypeForm = ({
         }
       />
 
-      <BackLink href={returnPath} text="Zurück zu den Fördergegenständen" />
+      <BackLink href={returnPath} text="Zurück zu den Gegenständen der Förderung" />
 
       <SuperAdminLogData data={{ subsubsectionInfrastructureType }} />
     </>
