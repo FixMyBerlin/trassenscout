@@ -1,14 +1,8 @@
-import {
-  MultiPolygonGeometrySchema,
-  PolygonGeometrySchema,
-} from "@/src/core/utils/geojson-schemas"
+import { MultiPolygonGeometrySchema, PolygonGeometrySchema } from "@/src/core/utils/geojson-schemas"
 import { InputNumberOrNullSchema } from "@/src/core/utils/schema-shared"
 import { z } from "zod"
 
-export const DealAreaGeometrySchema = z.union([
-  PolygonGeometrySchema,
-  MultiPolygonGeometrySchema,
-])
+export const DealAreaGeometrySchema = z.union([PolygonGeometrySchema, MultiPolygonGeometrySchema])
 
 export const DealAreaSchema = z.object({
   subsubsectionId: z.coerce.number(),
