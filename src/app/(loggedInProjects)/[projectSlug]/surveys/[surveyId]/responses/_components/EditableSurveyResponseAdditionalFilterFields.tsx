@@ -34,15 +34,33 @@ const EditableSurveyResponseAdditionalFilterFields = ({
   ]
   const additionaFilterKeysPart2ForFilter =
     additionalFilterFields?.filter((f) => f.surveyPart === "part2").map((f) => f.id) || []
+  const part1Config = getConfigBySurveySlug(surveySlug, "part1")
   const part2Config = getConfigBySurveySlug(surveySlug, "part2")
+  const part3Config = getConfigBySurveySlug(surveySlug, "part3")
+  const part1Fields = getFlatSurveyFormFields(part1Config)
   const part2Fields = getFlatSurveyFormFields(part2Config)
+  const part3Fields = getFlatSurveyFormFields(part3Config)
+  const showOhvReferenceId =
+    surveySlug === "ohv-haltestellenfoerderung" &&
+    typeof surveyPart2ResponseData.referenceId === "string" &&
+    surveyPart2ResponseData.referenceId.length > 0
 
   const filteredPart2Responses = Object.entries(surveyPart2ResponseData).filter(
     ([key]) =>
+      key !== "referenceId" &&
       !standardFieldsForFilter.includes(key) &&
       // !key.startsWith("geometry") &&
       !additionaFilterKeysPart2ForFilter.includes(key),
   )
+
+  const partLookup: Record<
+    string,
+    { fields: ReturnType<typeof getFlatSurveyFormFields>; data: Record<string, unknown> | null }
+  > = {
+    part1: { fields: part1Fields, data: surveyPart1ResponseData },
+    part2: { fields: part2Fields, data: surveyPart2ResponseData },
+    part3: { fields: part3Fields, data: surveyPart3ResponseData },
+  }
 
   if (!additionalFilterFields?.length && !filteredPart2Responses.length) return null
 
@@ -50,27 +68,48 @@ const EditableSurveyResponseAdditionalFilterFields = ({
     <div className="rounded-lg border border-gray-200 bg-white p-2 md:max-w-(--breakpoint-md)">
       <table className="min-w-full">
         <tbody className="divide-y divide-gray-200 bg-white">
+          {showOhvReferenceId && (
+            <tr>
+              <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900">
+                Vorgangs-ID
+              </td>
+              <td className="px-6 py-4 text-sm text-gray-500">
+                {String(surveyPart2ResponseData.referenceId)}
+              </td>
+            </tr>
+          )}
           {additionalFilterFields &&
-            additionalFilterFields.map((item) => (
-              <tr key={item.id}>
-                <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900">
-                  {item.label}
-                </td>
-                <td className="px-6 py-4 text-sm text-gray-500">
-                  {item.surveyPart === "part1"
-                    ? surveyPart1ResponseData
-                      ? surveyPart1ResponseData[String(item.id)] || "-"
-                      : "(kein Umfrage-Teil zu diesem Eintrag)"
-                    : item.surveyPart === "part2"
-                      ? surveyPart2ResponseData[String(item.id)] || "-"
-                      : item.surveyPart === "part3"
-                        ? surveyPart3ResponseData
-                          ? surveyPart3ResponseData[String(item.id)] || "-"
-                          : "(kein Umfrage-Teil zu diesem Eintrag)"
-                        : "(unbekannter Umfrage-Teil)"}
-                </td>
-              </tr>
-            ))}
+            additionalFilterFields.map((item) => {
+              const fieldKey = String(item.id)
+              const part = partLookup[item.surveyPart]
+              const field = part?.fields.find((f) => f.name === fieldKey)
+              const value = part?.data?.[fieldKey]
+              const hasResponseData = part != null && part.data != null
+
+              if (!hasResponseData) {
+                return (
+                  <tr key={item.id}>
+                    <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900">
+                      {item.label}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-500">
+                      (kein Umfrage-Teil zu diesem Eintrag)
+                    </td>
+                  </tr>
+                )
+              }
+
+              return (
+                <tr key={item.id}>
+                  <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900">
+                    {field?.props?.label || item.label}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-500">
+                    <SurveyResponseFieldValue field={field} value={value} />
+                  </td>
+                </tr>
+              )
+            })}
           {filteredPart2Responses.map(([key, value]) => {
             const field = part2Fields.find((f) => f.name === key)
             return (

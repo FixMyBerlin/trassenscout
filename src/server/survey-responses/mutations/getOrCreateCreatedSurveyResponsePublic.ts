@@ -29,6 +29,7 @@ export default resolver.pipe(
       },
       select: {
         id: true,
+        data: true,
       },
     })
 
@@ -45,6 +46,7 @@ export default resolver.pipe(
       },
       select: {
         id: true,
+        data: true,
       },
     })
   },

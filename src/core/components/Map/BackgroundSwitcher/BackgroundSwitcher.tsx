@@ -9,13 +9,14 @@ import { CheckIcon, ChevronDownIcon } from "@heroicons/react/20/solid"
 import { clsx } from "clsx"
 import { Fragment } from "react"
 
-export type LayerType = "vector" | "satellite"
+export type LayerType = "vector" | "satellite" | "osm_carto"
 
 export type ControlPosition = "top-left" | "top-right" | "bottom-left" | "bottom-right"
 
 const labels: { [index: string]: string } = {
   vector: "Kartenlayer einblenden",
   satellite: "Satellitenlayer einblenden",
+  osm_carto: "OSM-Karte einblenden",
 }
 
 const positionClasses: Record<ControlPosition, string> = {

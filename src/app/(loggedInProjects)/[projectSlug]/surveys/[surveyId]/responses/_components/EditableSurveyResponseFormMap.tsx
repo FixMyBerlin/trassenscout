@@ -1,5 +1,3 @@
-import { AllLayers, generateLayers } from "@/src/app/beteiligung/_components/form/map/AllLayers"
-import { AllSources } from "@/src/app/beteiligung/_components/form/map/AllSources"
 import {
   createGeoJSONFromString,
   detectGeometryType,
@@ -7,9 +5,14 @@ import {
 } from "@/src/app/beteiligung/_components/form/map/utils"
 import { FieldConfig } from "@/src/app/beteiligung/_shared/types"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
-import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
+import { AllLayers, generateLayers } from "@/src/core/components/Map/AllLayers"
+import { AllSources } from "@/src/core/components/Map/AllSources"
 import { BackgroundSwitcher, LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
+import { getMapStyle, getVectorStyleUrl } from "@/src/core/components/Map/mapStyleConfig"
+import { getStaticOverlayForProject } from "@/src/core/components/Map/staticOverlay/getStaticOverlayForProject"
+import { StaticOverlay } from "@/src/core/components/Map/staticOverlay/StaticOverlay"
 import SurveyStaticPin from "@/src/core/components/Map/SurveyStaticPin"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 import * as pmtiles from "pmtiles"
@@ -25,6 +28,7 @@ type Props = {
   marker: { lat: number; lng: number } | undefined
   geometryCategoryCoordinates?: string
   geoCategoryQuestion?: GeoCategoryFieldConfig
+  configBounds: [number, number, number, number]
   maptilerUrl: string
   surveySlug: AllowedSurveySlugs
 }
@@ -35,7 +39,10 @@ export const EditableSurveyResponseFormMap = ({
   surveySlug,
   geometryCategoryCoordinates,
   geoCategoryQuestion,
+  configBounds,
 }: Props) => {
+  const projectSlug = useProjectSlug()
+  const staticOverlay = getStaticOverlayForProject(projectSlug ?? "")
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
   const [mapLoading, setMapLoading] = useState(true)
 
@@ -48,16 +55,9 @@ export const EditableSurveyResponseFormMap = ({
     }
   }, [])
 
-  const metaDefinition = getConfigBySurveySlug(surveySlug, "meta")
-  const fallbackGeometry = JSON.stringify(metaDefinition.geoCategoryFallback)
-
   const handleLayerSwitch = (layer: LayerType) => {
     setSelectedLayer(layer)
   }
-
-  const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
-  const vectorStyle = `${maptilerUrl}?key=${maptilerApiKey}`
-  const satelliteStyle = `https://api.maptiler.com/maps/hybrid/style.json?key=${maptilerApiKey}`
 
   const mapData = geoCategoryQuestion ? geoCategoryQuestion.props.mapProps.mapData : undefined
 
@@ -65,12 +65,12 @@ export const EditableSurveyResponseFormMap = ({
     setMapLoading(true)
   }
 
-  const geometryCategoryGeoJSON = createGeoJSONFromString(
-    geometryCategoryCoordinates ? geometryCategoryCoordinates : fallbackGeometry || "[]",
-  )
-  const geometryCategoryGeometryType = detectGeometryType(
-    geometryCategoryCoordinates ? geometryCategoryCoordinates : fallbackGeometry || "[]",
-  )
+  const geometryCategoryGeoJSON = geometryCategoryCoordinates
+    ? createGeoJSONFromString(geometryCategoryCoordinates)
+    : undefined
+  const geometryCategoryGeometryType = geometryCategoryCoordinates
+    ? detectGeometryType(geometryCategoryCoordinates)
+    : "unknown"
 
   // Define different paint styles for different geometry types
   const geometryPaintMap = {
@@ -110,9 +110,14 @@ export const EditableSurveyResponseFormMap = ({
       }
     }
 
-    const geometryString = geometryCategoryCoordinates || JSON.stringify(fallbackGeometry)
+    if (geometryCategoryCoordinates) {
+      return getInitialViewStateFromGeometryString(geometryCategoryCoordinates)
+    }
 
-    return getInitialViewStateFromGeometryString(geometryString)
+    return {
+      bounds: configBounds,
+      fitBoundsOptions: { padding: 70 },
+    }
   }
 
   const renderGeometryLayer = () => {
@@ -139,7 +144,9 @@ export const EditableSurveyResponseFormMap = ({
   }
 
   const geometryCategorySource =
-    geometryCategoryCoordinates && geometryCategoryGeometryType !== "unknown" ? (
+    geometryCategoryCoordinates &&
+    geometryCategoryGeoJSON &&
+    geometryCategoryGeometryType !== "unknown" ? (
       <Source
         id="geometryCategory"
         key="geometryCategory"
@@ -156,11 +163,12 @@ export const EditableSurveyResponseFormMap = ({
         id="mainMap"
         initialViewState={getInitialViewState()}
         scrollZoom={false}
-        mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
+        mapStyle={getMapStyle(selectedLayer, getVectorStyleUrl(maptilerUrl))}
         // Set map state for <MapData>:
         onLoad={(event) => handleMapLoad(event)}
         onIdle={() => setMapLoading(false)}
       >
+        {staticOverlay && <StaticOverlay config={staticOverlay} />}
         {geometryCategorySource}
         {mapData && (
           <>

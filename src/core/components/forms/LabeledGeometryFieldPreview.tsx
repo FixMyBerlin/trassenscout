@@ -1,5 +1,5 @@
 import { Link } from "@/src/core/components/links"
-import { vectorStyle } from "@/src/core/components/Map/BaseMap"
+import { defaultVectorStyleUrl } from "@/src/core/components/Map/mapStyleConfig"
 import { geometryBbox } from "@/src/core/components/Map/utils/bboxHelpers"
 import { lineStringToGeoJSON } from "@/src/core/components/Map/utils/lineStringToGeoJSON"
 import { pointToGeoJSON } from "@/src/core/components/Map/utils/pointToGeoJSON"
@@ -86,7 +86,7 @@ export const LabeledGeometryFieldPreview = ({ name, hasError }: Props) => {
             key={validGeometry ? JSON.stringify(validGeometry) : "empty"}
             initialViewState={initialViewState}
             id="preview"
-            mapStyle={vectorStyle}
+            mapStyle={defaultVectorStyleUrl}
             scrollZoom={false}
           >
             <NavigationControl showCompass={false} />

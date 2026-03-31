@@ -32,10 +32,15 @@ export const SurveyNumberfield = ({
         <Input
           id={field.name}
           name={field.name}
-          type="number"
+          type="text"
+          inputMode="numeric"
+          pattern="[0-9]*"
           value={field.state.value === null ? "" : field.state.value}
           onChange={(e) => {
             const value = e.target.value
+            if (!/^\d*$/.test(value)) {
+              return
+            }
             field.handleChange(value === "" ? null : Number(value))
           }}
           placeholder={placeholder}

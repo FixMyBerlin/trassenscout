@@ -6,7 +6,7 @@ import { GeometryWithTypeDiscriminated } from "@/src/server/shared/utils/geometr
 import { typeSubsubsectionGeometry } from "@/src/server/subsubsections/utils/typeSubsubsectionGeometry"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
-import { m2mFields } from "../m2mFields"
+import { m2mFieldRelationNames, m2mFields } from "../m2mFields"
 
 const GetSubsubsection = z.object({
   projectSlug: z.string(),
@@ -14,9 +14,11 @@ const GetSubsubsection = z.object({
   subsubsectionSlug: z.string(),
 })
 
-const includeM2mFields = {}
+const includeM2mFields: Record<string, { select: { id: true } }> = {}
 // @ts-ignore
-m2mFields.forEach((fieldName) => (includeM2mFields[fieldName] = { select: { id: true } }))
+m2mFields.forEach((fieldName) => {
+  includeM2mFields[m2mFieldRelationNames[fieldName]] = { select: { id: true } }
+})
 
 // We store full GeoJSON geometry objects. The geometry type must match the enum type.
 export type SubsubsectionWithPosition = Omit<Subsubsection, "geometry" | "type"> &
@@ -25,7 +27,7 @@ export type SubsubsectionWithPosition = Omit<Subsubsection, "geometry" | "type">
   } & { subsection: { slug: string } } & {
     qualityLevel?: Pick<QualityLevel, "title" | "slug" | "url">
   } & { SubsubsectionTask?: { title: string } } & {
-    SubsubsectionInfrastructureType?: { title: string }
+    SubsubsectionInfrastructureTypes: { id: number; title: string; slug: string }[]
   } & { SubsubsectionStatus?: { title: string; slug: string; style: string } } & {
     SubsubsectionInfra?: { title: string; slug: string }
   }
@@ -45,13 +47,13 @@ export default resolver.pipe(
         },
       },
       include: {
+        ...includeM2mFields,
         manager: { select: { firstName: true, lastName: true } },
         subsection: { select: { slug: true } },
         qualityLevel: { select: { title: true, slug: true, url: true } },
-        SubsubsectionInfrastructureType: { select: { title: true } },
+        SubsubsectionInfrastructureTypes: { select: { id: true, title: true, slug: true } },
         SubsubsectionInfra: { select: { title: true, slug: true } },
         SubsubsectionStatus: { select: { title: true, slug: true, style: true } },
-        ...includeM2mFields,
       },
     }
 

@@ -5,6 +5,7 @@ import { getSurveyCategoryOptions } from "@/src/app/(loggedInProjects)/[projectS
 import { surveyResponsesMapHref } from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/_utils/SurveyHrefs"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { createGeoJSONFromString } from "@/src/app/beteiligung/_components/form/map/utils"
+import { FieldConfig } from "@/src/app/beteiligung/_shared/types"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getQuestionIdBySurveySlug"
@@ -26,6 +27,32 @@ import {
   GeoCategoryFieldConfig,
 } from "./EditableSurveyResponseFormMap"
 import EditableSurveyResponseUserText from "./EditableSurveyResponseUserText"
+
+type FormFieldConfig = Extract<FieldConfig, { componentType: "form" }>
+
+/**
+ * Retrieve the `config.bounds` from the survey field config to use as the map's
+ * initial viewport when a response has neither a location pin nor geometry coordinates.
+ */
+const getConfigBoundsFromFieldConfig = (
+  feedbackQuestions: FormFieldConfig[],
+  locationId: string,
+  geometryCategoryId: string,
+): [number, number, number, number] => {
+  const locationQuestion = feedbackQuestions.find((q) => q.name === locationId)
+  if (locationQuestion) {
+    // @ts-expect-error locationQuestion is of type LocationFieldConfig
+    return locationQuestion.props.mapProps.config.bounds
+  }
+
+  const geoCategoryQuestion = feedbackQuestions.find((q) => q.name === geometryCategoryId)
+  if (geoCategoryQuestion) {
+    // @ts-expect-error geoCategoryQuestion is of type GeoCategoryFieldConfig
+    return geoCategoryQuestion.props.mapProps.config.bounds
+  }
+
+  throw new Error("Survey config must have either a location or geometryCategory field")
+}
 
 type Props = {
   response: Prettify<
@@ -67,12 +94,27 @@ const EditableSurveyResponseMapAndStaticData = ({
   const locationId = getQuestionIdBySurveySlug(surveySlug, "location")
 
   const geoCategoryQuestion = feedbackQuestions.find((q) => q.name === geometryCategoryId)
+  const configBounds = getConfigBoundsFromFieldConfig(
+    feedbackQuestions,
+    locationId,
+    geometryCategoryId,
+  )
 
   const maptilerUrl = metaConfig.maptilerUrl
 
-  const userCategoryId = response.data[categoryId]
+  const userCategoryValue = response.data[categoryId]
+  const userCategoryIds = Array.isArray(userCategoryValue)
+    ? userCategoryValue
+    : userCategoryValue != null && userCategoryValue !== ""
+      ? [userCategoryValue]
+      : []
   const surveyCategoryOptions = getSurveyCategoryOptions(surveySlug)
-  const userCategoryLabel = surveyCategoryOptions.find((o) => o.value == userCategoryId)?.label
+  const userCategoryLabels = userCategoryIds
+    .map(
+      (selectedCategoryId: string | number) =>
+        surveyCategoryOptions.find((o) => String(o.value) === String(selectedCategoryId))?.label,
+    )
+    .filter(Boolean) as string[]
 
   const additionalFilterFields = backendConfig.additionalFilters
 
@@ -151,8 +193,15 @@ const EditableSurveyResponseMapAndStaticData = ({
           {/* CATEGORY */}
           <div className="flex shrink-0 flex-col items-start gap-4">
             <h4 className="font-semibold">{categoryLabel}</h4>
-            <div className="rounded-sm bg-gray-300 p-3 px-4 font-semibold whitespace-nowrap">
-              {userCategoryLabel}
+            <div className="flex w-full flex-wrap gap-2">
+              {userCategoryLabels.map((label) => (
+                <div
+                  key={label}
+                  className="max-w-full rounded-sm bg-gray-300 p-3 px-4 font-semibold break-words whitespace-normal"
+                >
+                  {label}
+                </div>
+              ))}
             </div>
           </div>
           {/* TABEL */}
@@ -175,6 +224,7 @@ const EditableSurveyResponseMapAndStaticData = ({
                   geometryCategoryId && response.data[geometryCategoryId]
                 }
                 geoCategoryQuestion={geoCategoryQuestion as GeoCategoryFieldConfig}
+                configBounds={configBounds}
                 maptilerUrl={maptilerUrl}
               />
             </MapProvider>

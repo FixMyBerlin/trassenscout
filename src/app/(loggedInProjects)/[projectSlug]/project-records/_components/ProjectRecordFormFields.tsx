@@ -4,6 +4,7 @@ import { ProjectRecordEmailSource } from "@/src/app/(loggedInProjects)/[projectS
 import { UploadDropzone } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzone"
 import { UploadDropzoneContainer } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzoneContainer"
 import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
+import { getUserSelectOptions } from "@/src/app/_components/users/utils/getUserSelectOptions"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import {
   LabeledCheckboxGroup,
@@ -16,6 +17,7 @@ import { frenchQuote, shortTitle } from "@/src/core/components/text"
 import { NumberArraySchema } from "@/src/core/utils/schema-shared"
 import createProjectRecordTopic from "@/src/server/ProjectRecordTopics/mutations/createProjectRecordTopic"
 import getProjectRecordTopicsByProject from "@/src/server/ProjectRecordTopics/queries/getProjectRecordTopicsByProject"
+import getProjectUsers from "@/src/server/memberships/queries/getProjectUsers"
 import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import getSubsubsections from "@/src/server/subsubsections/queries/getSubsubsections"
 import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
@@ -39,6 +41,7 @@ type Props = {
 export const ProjectRecordFormFields = ({ projectSlug, emailSource, splitView }: Props) => {
   const [{ subsections }] = useQuery(getSubsections, { projectSlug })
   const [{ subsubsections }] = useQuery(getSubsubsections, { projectSlug })
+  const [users] = useQuery(getProjectUsers, { projectSlug, role: "EDITOR" })
   const [{ projectRecordTopics }, { refetch: refetchTopics }] = useQuery(
     getProjectRecordTopicsByProject,
     { projectSlug },
@@ -79,6 +82,8 @@ export const ProjectRecordFormFields = ({ projectSlug, emailSource, splitView }:
     shortTitle(subsection.slug),
   ])
   subsectionOptions.unshift(["", "Keine Angabe"])
+
+  const assignedToOptions = getUserSelectOptions(users)
 
   const subsubsectionOptions: [string | number, string][] = subsubsections
     .filter((subsubsection) => (subsectionId ? subsubsection.subsectionId == subsectionId : true))
@@ -141,7 +146,6 @@ export const ProjectRecordFormFields = ({ projectSlug, emailSource, splitView }:
               label={subsubsectionLabel}
             />
           </div>
-
           <LabeledTextareaField name="body" optional label="Notizen (Markdown)" rows={20} />
           <div className="flex flex-col gap-3">
             <LabeledCheckboxGroup
@@ -172,6 +176,12 @@ export const ProjectRecordFormFields = ({ projectSlug, emailSource, splitView }:
               </button>
             </div>
           </div>
+          <LabeledSelect
+            optional
+            name="assignedToId"
+            options={assignedToOptions}
+            label="Zugewiesen an"
+          />
         </div>
 
         {emailSource && splitView && <ProjectRecordEmailSource email={emailSource} />}

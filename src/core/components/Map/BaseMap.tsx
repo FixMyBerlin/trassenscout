@@ -22,15 +22,12 @@ import {
   getUnifiedLayerId,
   type UnifiedFeatureProperties,
 } from "./layers/UnifiedFeaturesLayer"
+import { getMapStyle } from "./mapStyleConfig"
 import { StaticOverlay } from "./staticOverlay/StaticOverlay"
 import type { StaticOverlayConfig } from "./staticOverlay/staticOverlay.types"
 import { useMapHighlight, type MapHighlightLevel } from "./useMapHighlight"
 import { useSlugFeatureMap } from "./useSlugFeatureMap"
 import { mergeFeatureCollections } from "./utils/mergeFeatureCollections"
-
-const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
-export const vectorStyle = `https://api.maptiler.com/maps/a4824657-3edd-4fbd-925e-1af40ab06e9c/style.json?key=${maptilerApiKey}`
-const satelliteStyle = `https://api.maptiler.com/maps/hybrid/style.json?key=${maptilerApiKey}`
 
 export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
   Partial<
@@ -197,7 +194,7 @@ export const BaseMap = ({
           id={mapId}
           reuseMaps={reuseMaps}
           initialViewState={initialViewState}
-          mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
+          mapStyle={getMapStyle(selectedLayer)}
           scrollZoom={false}
           cursor={cursorStyle}
           onMouseMove={handleMouseMoveInternal}

@@ -46,14 +46,16 @@ Die Förderlinie verfolgt das Ziel, die Mobilität in der Region zu stärken, kl
 
 Bitte beachten Sie: Die Maßnahmenmeldung über dieses Formular stellt noch keinen Förderantrag dar. Sie dient als strukturierte Vorprüfung im Rahmen des Landkreiskonzepts und bildet die Grundlage für die Auswahl und Priorisierung der Projekte im Rahmen des jährlichen Fortschreibungsprozesses.
 
-## Fördergegenstand
+## Gegenstand der Förderung
 
 Die Kommunen können Maßnahmenvorschläge zu allen förderfähigen Gegenständen gemäß Ziffer 2.1 der Förderrichtlinie eintragen. Dazu gehören:
-- Bau oder Ausbau von Zentralen Omnibusbahnhöfen (ZOB)
+- Zentrale Omnibusbahnhöfe (ZOB)
 - Haltestelleneinrichtungen
-- Buswendeschleifen und Bahnhofsvorplätze
-- Park-and-Ride- (P&R) und Bike-and-Ride-Anlagen (B&R)
+- Buswendeschleifen / Bahnhofsvorplätze als Verknüpfungs- und Umsteigeanlagen unterschiedlicher Verkehrsträger (sofern sie nicht bereits im Zusammenhang mit Straßenbaumaßnahmen gefördert werden)
+- Umsteigeparkplätze ausgenommen Parkhäuser (P&R-, B&R-Anlagen)
 - Beschleunigungsmaßnahmen für den ÖPNV
+- Weiterentwicklung von ÖPNV-Haltestellen zu intermodalen Mobilitätsknotenpunkten
+- Taxistellplätze
 
 ## Fristen
 
@@ -77,13 +79,13 @@ E-Mail: [a.greifenberg@ohbv.de](mailto:a.greifenberg@ohbv.de)
 
 **Weitere Informationen**\\
 Die Maßnahmenmeldung wird nicht zwischengespeichert, d.h. bei Verlassen der Seite gehen alle eingetragenen Informationen verloren. Nach dem Absenden der Maßnahmenmeldung können Sie nicht mehr auf Ihre getätigten Eingaben zugreifen. Deshalb ist es sinnvoll die Maßnahmenmeldung erst dann auszufüllen und abzusenden, sobald Sie alle wichtigen Informationen für die Maßnahmenmeldung beisammen haben. Folgende Informationen werden im Rahmen der Maßnahmenmeldung abgefragt:
-- Auswahl des Fördergegenstands
+- Auswahl des Gegenstandes der Förderung
 - Upload für Dokumente (optional)
 - Beschreibung der Dokumente (optional)
 - Bezug zu vorhandener Haltestelle durch Auswahl auf Karte
 - Maßnahmenbeschreibung und Zielsetzung
 - Stand der Bauvorbereitung (optional)
-- Kostenschätzung (€)
+- Kostenberechnung
 - Angaben zur Ko-Finanzierung (wenn ja, Mittelgeber und Programm)
 - Angaben zum geschätzten Kostenaufwand
 - Abfrage ob Gemeinschaftsbauwerk
@@ -121,70 +123,60 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
             markdown: `Bitte nutzen Sie das Formular für jeweils nur eine Maßnahmenmeldung. Sie können weitere Maßnahmenmeldungen in einem weiteren Schritt hinzufügen und absenden.`,
           },
         },
-        {
-          name: "subsubsectionId",
-          component: "SurveyResponseIdField",
-          componentType: "form",
-          validation: fieldValidationEnum["requiredString"],
-          defaultValue: "",
-          props: {
-            label: "Vorgangs-ID",
-            description:
-              "Diese Vorgangsnummer wird automatisch vergeben und dient der eindeutigen Identifizierung Ihres Antrags über den gesamten Bearbeitungsprozess hinweg.",
-          },
-        },
-        // Fördergegenstand/SubsubsectionInfrastructureType
+        // Gegenstand der Förderung/SubsubsectionInfrastructureType
         {
           name: "category",
           componentType: "form",
-          component: "SurveyRadiobuttonGroup",
-          validation: fieldValidationEnum["requiredString"],
-          defaultValue: "",
+          component: "SurveyCheckboxGroup",
+          validation: fieldValidationEnum["requiredArrayOfString"],
+          defaultValue: [],
           props: {
-            label: "Bitte wählen Sie den Fördergegenstand aus.",
+            label: "Bitte wählen Sie den Gegenstand der Förderung aus.",
             options: [
-              { key: "zob", label: "Bau oder Ausbau von Zentralen Omnibusbahnhöfen (ZOB)" },
+              { key: "zob", label: "Zentrale Omnibusbahnhöfe (ZOB)" },
               { key: "haltestelleneinrichtungen", label: "Haltestelleneinrichtungen" },
-              { key: "buswendeschleifen", label: "Buswendeschleifen und Bahnhofsvorplätze" },
-              { key: "pandr", label: "Park-and-Ride- (P&R) und Bike-and-Ride-Anlagen (B&R)" },
+              {
+                key: "buswendeschleifen",
+                label:
+                  "Buswendeschleifen / Bahnhofsvorplätze als Verknüpfungs- und Umsteigeanlagen unterschiedlicher Verkehrsträger (sofern sie nicht bereits im Zusammenhang mit Straßenbaumaßnahmen gefördert werden)",
+              },
+              {
+                key: "pandr",
+                label: "Umsteigeparkplätze ausgenommen Parkhäuser (P&R-, B&R-Anlagen)",
+              },
               { key: "beschleunigung", label: "Beschleunigungsmaßnahmen für den ÖPNV" },
+              {
+                key: "intermodale_mobilitaetsknoten",
+                label:
+                  "Weiterentwicklung von ÖPNV-Haltestellen zu intermodalen Mobilitätsknotenpunkten",
+              },
+              { key: "taxistellplaetze", label: "Taxistellplätze" },
             ],
           },
         },
         {
           name: "commune",
-          component: "SurveyReadonlyTextfield",
+          component: "SurveySelect",
           componentType: "form",
           validation: fieldValidationEnum["requiredString"],
-          defaultValue: "",
+          defaultValue: "unknown",
           props: {
             label: "Name der meldenden Kommune",
+            readOnly: true,
             description: "Dieses Feld wird automatisch ausgefüllt.",
             // placeholder: "Kommune auswählen",
-            queryId: "commune",
-            // options: [
-            //   { key: "hennigsdorf", label: "Hennigsdorf" },
-            //   { key: "oranienburg", label: "Oranienburg" },
-            //   { key: "velten", label: "Velten" },
-            //   { key: "hohenneuendorf", label: "Hohen Neuendorf" },
-            //   { key: "zehdenick", label: "Zehdenick" },
-            //   { key: "kremmen", label: "Kremmen" },
-            //   { key: "fuerstenberg", label: "Fürstenberg(Havel)" },
-            //   { key: "liebenwalde", label: "Liebenwalde" },
-            //   { key: "muehlenbeckerland", label: "Mühlenbecker Land" },
-            //   { key: "glienickenordbahn", label: "Glienicke/Nordbahn" },
-            //   { key: "oberkrämer", label: "Oberkrämer" },
-            //   { key: "loewenbergerland", label: "Löwenberger Land" },
-            //   { key: "birkenwerder", label: "Birkenwerder" },
-            //   { key: "leegebruch", label: "Leegebruch" },
-            // ],
+            queryId: "id",
+            options: [
+              ...communes_bboxes.map((c) => ({ key: c.id, label: c.name })),
+              { key: "unknown", label: "unbekannt" },
+            ],
           },
         },
         {
-          name: "geometryCategory",
+          name: "location",
           componentType: "form",
-          component: "SurveyGeoCategoryMapWithLegend",
-          validation: fieldValidationEnum["requiredString"],
+          component: "SwitchableMapWithLegend",
+          validation: fieldValidationEnum["requiredLatLng"],
           defaultValue: null,
           props: {
             label: "Maßnahmenverortung",
@@ -247,7 +239,7 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           props: { label: "Name der ausgewählten Haltestelle" },
         },
         {
-          name: "routeIds",
+          name: "hsName",
           componentType: "form",
           component: "hidden",
           props: { label: "IDs der Routen" },
@@ -279,8 +271,9 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           validation: fieldValidationEnum["requiredNumber"],
           defaultValue: null,
           props: {
-            label: "Kostenschätzung (€)",
-            description: "Zahlen bitte ohne Punkt und Komma eingeben.",
+            label: "Kostenberechnung",
+            description:
+              "Bitte tragen Sie hier ausschließlich die förderfähigen Baukosten ein. Nicht förderfähig sind u. a. Verwaltungskosten, Planungsleistungen (HOAI) sowie Grunderwerb.",
           },
         },
         {
@@ -288,13 +281,22 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           component: "SurveyRadiobuttonGroup",
           componentType: "form",
           validation: fieldValidationEnum["requiredString"],
-          defaultValue: "unknown",
+          defaultValue: "no",
           props: {
             label: "Ko-Finanzierung",
             options: [
-              { key: "yes", label: "Ja" },
               { key: "no", label: "Nein" },
-              { key: "unknown", label: "keine Angabe" },
+              {
+                key: "planned",
+                label: "Ja – geplant",
+                description: "Bitte nachreichen sobald vorhanden",
+              },
+              {
+                key: "approved",
+                label: "Ja – bewilligt",
+                description:
+                  "Liegt bereits ein Bewilligungsbescheid zur Ko-Finanzierung vor, bitten wir um Upload des entsprechenden Dokuments.",
+              },
             ],
           },
           // this deletes the value of fundingSource if condition is not met
@@ -304,9 +306,8 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
                 console.log(
                   `${fieldApi.name} has changed to: ${fieldApi.state.value} --> resetting conditionalCase1A`,
                 )
-              if (fieldApi.state.value === "no" || fieldApi.state.value === "unknown") {
+              if (fieldApi.state.value === "no") {
                 fieldApi.form.setFieldValue("fundingSource", "") // reset value of fundingSource if condition is not met
-                fieldApi.form.setFieldValue("programName", "") // reset value of programName if condition is not met
               }
             },
           },
@@ -319,24 +320,12 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           defaultValue: "",
           condition: {
             fieldName: "coFinancing",
-            conditionFn: (fieldValue) => fieldValue === "yes",
+            conditionFn: (fieldValue) => fieldValue === "planned" || fieldValue === "approved",
           },
           props: {
-            label: "Ko-Finanzierung: Mittelgeber",
-          },
-        },
-        {
-          name: "programName",
-          component: "SurveyTextfield",
-          componentType: "form",
-          validation: fieldValidationEnum["conditionalOptionalString"],
-          defaultValue: "",
-          condition: {
-            fieldName: "coFinancing",
-            conditionFn: (fieldValue) => fieldValue === "yes",
-          },
-          props: {
-            label: "Ko-Finanzierung: Programm",
+            label: "Ko-Finanzierung: Mittelgeber und Programm",
+            description:
+              "Bitte geben Sie an, wie der Eigenanteil der Kommune sowie ggf. Beiträge Dritter (z. B. andere Träger oder Förderprogramme) finanziert werden. Voraussetzung ist, dass die Gesamtfinanzierung einschließlich Folgekosten gesichert ist und durch einen Finanzierungsplan nachgewiesen wird.",
           },
         },
         {
@@ -344,13 +333,17 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           component: "SurveyRadiobuttonGroup",
           componentType: "form",
           validation: fieldValidationEnum["requiredString"],
-          defaultValue: "unknown",
+          defaultValue: "no",
           props: {
             label: "Gemeinschaftsbauwerk",
             options: [
-              { key: "yes", label: "Ja" },
               { key: "no", label: "Nein" },
-              { key: "unknown", label: "keine Angabe" },
+              {
+                key: "yes",
+                label: "Ja",
+                description:
+                  "Ein Gemeinschaftsbauwerk liegt vor, wenn Anlagen gemeinsam mit einem anderen Baulastträger errichtet werden (z. B. an Bahnhöfen). In diesem Fall ist vor Antragstellung eine vertragliche Regelung zur Aufteilung der Kosten zwischen den Beteiligten erforderlich.",
+              },
             ],
           },
         },

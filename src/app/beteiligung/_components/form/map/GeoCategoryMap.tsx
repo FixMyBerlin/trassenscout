@@ -1,12 +1,15 @@
-import { AllLayers, generateLayers } from "@/src/app/beteiligung/_components/form/map/AllLayers"
-import { AllSources } from "@/src/app/beteiligung/_components/form/map/AllSources"
 import {
   LayerType,
   SurveyBackgroundSwitcher,
 } from "@/src/app/beteiligung/_components/form/map/BackgroundSwitcher"
 import { installMapGrabIfTest } from "@/src/app/beteiligung/_components/form/map/installMapGrab"
 import { SurveyMapGeoCategoryInfoPanel } from "@/src/app/beteiligung/_components/form/map/MapGeoCategoryInfoPanel"
-import { getInitialViewStateFromGeometryString } from "@/src/app/beteiligung/_components/form/map/utils"
+import {
+  featureStateTargetForMapSource,
+  getInitialViewStateFromGeometryString,
+} from "@/src/app/beteiligung/_components/form/map/utils"
+import { AllLayers, generateLayers } from "@/src/core/components/Map/AllLayers"
+import { AllSources } from "@/src/core/components/Map/AllSources"
 
 import { useFieldContext } from "@/src/app/beteiligung/_shared/hooks/form-context"
 import { MapData } from "@/src/app/beteiligung/_shared/types"
@@ -90,12 +93,10 @@ export const SurveyGeoCategoryMap = ({
       geometryCategoryFeatureId
     ) {
       mainMap.getMap().setFeatureState(
-        {
-          source: geometryCategorySourceId,
+        featureStateTargetForMapSource(mapData, geometryCategorySourceId, {
           id: geometryCategoryFeatureId,
           [geoCategoryIdDefinition.propertyName]: geoCategoryId,
-          sourceLayer: "default",
-        },
+        }),
         { selected: true },
       )
     }
@@ -151,24 +152,20 @@ export const SurveyGeoCategoryMap = ({
     // Clear previous selection state if exists
     if (previouslySelectedFeatureId && previouslySelectedSourceId && mainMap) {
       mainMap.getMap().setFeatureState(
-        {
+        featureStateTargetForMapSource(mapData, previouslySelectedSourceId, {
           id: previouslySelectedFeatureId,
-          source: previouslySelectedSourceId,
-          sourceLayer: "default",
-        },
+        }),
         { selected: false },
       )
     }
 
     // Set new selection state
-    if (geoCategoryId !== undefined && mainMap) {
+    if (geoCategoryId !== undefined && mainMap && featureId !== undefined) {
       mainMap.getMap().setFeatureState(
-        {
+        featureStateTargetForMapSource(mapData, sourceId, {
           id: featureId,
-          source: sourceId,
           [geoCategoryIdDefinition.propertyName]: geoCategoryId,
-          sourceLayer: "default",
-        },
+        }),
         { selected: true },
       )
     }

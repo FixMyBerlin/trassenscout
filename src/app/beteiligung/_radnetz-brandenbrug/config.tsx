@@ -2,7 +2,7 @@ import { part1Config } from "@/src/app/beteiligung/_radnetz-brandenbrug/part1"
 import { part2Config } from "@/src/app/beteiligung/_radnetz-brandenbrug/part2"
 import { FormConfig } from "@/src/app/beteiligung/_shared/types"
 
-export const formConfig = {
+export const formConfig: FormConfig = {
   meta: {
     version: 1,
     title: "Beteiligung",

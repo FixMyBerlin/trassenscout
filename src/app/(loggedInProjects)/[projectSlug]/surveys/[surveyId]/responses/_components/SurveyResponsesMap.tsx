@@ -38,9 +38,13 @@ export function SurveyResponsesMap({ projectSlug, surveyId, survey, tabs }: Prop
   )
   const { responseDetails } = useResponseDetails()
 
-  const { mapSelection } = useMapSelection(
-    feedbackSurveyResponses?.length ? [feedbackSurveyResponses[0]!.id] : [],
+  const geometryCategoryId = getQuestionIdBySurveySlug(survey.slug, "geometryCategory")
+  const locationId = getQuestionIdBySurveySlug(survey.slug, "location")
+
+  const firstLocatedResponse = feedbackSurveyResponses.find(
+    (r) => r.data[locationId] || (geometryCategoryId && r.data[geometryCategoryId]),
   )
+  const { mapSelection } = useMapSelection(firstLocatedResponse ? [firstLocatedResponse.id] : [])
 
   const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
   const [{ surveyResponseTopics: topics }, { refetch: refetchTopics }] = useQuery(
@@ -72,17 +76,16 @@ export function SurveyResponsesMap({ projectSlug, surveyId, survey, tabs }: Prop
   const part2Fields = getFlatSurveyFormFields(part2Definition)
   const metaDefinition = getConfigBySurveySlug(survey.slug, "meta")
 
-  const geometryCategoryId = getQuestionIdBySurveySlug(survey.slug, "geometryCategory")
-  const locationId = getQuestionIdBySurveySlug(survey.slug, "location")
-
   const mapProps = // @ts-expect-error
     part2Fields.find((q) => [locationId, geometryCategoryId].includes(q.name))?.props.mapProps
 
   const maptilerUrl = metaDefinition.maptilerUrl
 
   const geoCategoryQuestion = part2Fields.find((q) => q.name === geometryCategoryId)
-  // @ts-expect-error
-  const mapData = geoCategoryQuestion ? geoCategoryQuestion.props.mapProps.mapData : undefined
+
+  const responsesWithoutLocation = feedbackSurveyResponses.filter(
+    (r) => !r.data[locationId] && !(geometryCategoryId && r.data[geometryCategoryId]),
+  )
 
   if (!feedbackSurveyResponses?.length) return null
 
@@ -122,7 +125,6 @@ export function SurveyResponsesMap({ projectSlug, surveyId, survey, tabs }: Prop
               surveyResponses={feedbackSurveyResponses}
               locationRef={locationId}
               surveySlug={survey.slug}
-              additionalMapData={mapData}
             />
           </section>
           <section className="rounded-md drop-shadow-md lg:w-[580px]">
@@ -147,6 +149,29 @@ export function SurveyResponsesMap({ projectSlug, surveyId, survey, tabs }: Prop
             ))}
           </section>
         </div>
+        {responsesWithoutLocation.length > 0 && (
+          <div className="mx-auto max-w-7xl px-6 pb-8">
+            <H3>Beiträge ohne Verortung</H3>
+            <section className="mt-4">
+              {responsesWithoutLocation.map((response) => (
+                <div
+                  key={response.id}
+                  className="w-full overflow-hidden border border-b-0 border-gray-300 text-sm first:rounded-t-xl last:rounded-b-xl last:border-b"
+                >
+                  <EditableSurveyResponseListItem
+                    isAccordion
+                    showMap={false}
+                    response={response}
+                    operators={operators}
+                    topics={topics}
+                    refetchResponsesAndTopics={refetchResponsesAndTopics}
+                    mapProps={mapProps}
+                  />
+                </div>
+              ))}
+            </section>
+          </div>
+        )}
       </div>
     </>
   )

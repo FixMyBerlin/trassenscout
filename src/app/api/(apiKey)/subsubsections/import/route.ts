@@ -6,7 +6,11 @@ import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { subsubsectionGeometryTypeValidationRefine } from "@/src/server/shared/utils/geometryTypeValidation"
 import { typeSubsectionGeometry } from "@/src/server/subsections/utils/typeSubsectionGeometry"
 import { ImportSubsubsectionDataSchema } from "@/src/server/subsubsections/importSchema"
-import { m2mFields, type M2MFieldsType } from "@/src/server/subsubsections/m2mFields"
+import {
+  m2mFieldRelationNames,
+  m2mFields,
+  type M2MFieldsType,
+} from "@/src/server/subsubsections/m2mFields"
 import { z } from "zod"
 import { withApiKey } from "../../_utils/withApiKey"
 
@@ -200,13 +204,14 @@ export const POST = withApiKey(async ({ request }) => {
     // Handle m2m fields
     const connect: Record<M2MFieldsType | string, { connect: { id: number }[] | undefined }> = {}
     m2mFields.forEach((fieldName) => {
+      const relationName = m2mFieldRelationNames[fieldName]
       if (subsubsectionData[fieldName]) {
-        connect[fieldName] = {
+        connect[relationName] = {
           connect: subsubsectionData[fieldName].map((id: number) => ({ id })),
         }
         delete subsubsectionData[fieldName]
       } else {
-        connect[fieldName] = { connect: [] }
+        connect[relationName] = { connect: [] }
       }
     })
 
@@ -217,7 +222,7 @@ export const POST = withApiKey(async ({ request }) => {
       // Update: first disconnect all m2m relations, then reconnect and update
       const disconnect: Record<M2MFieldsType | string, { set: [] }> = {}
       m2mFields.forEach((fieldName) => {
-        disconnect[fieldName] = { set: [] }
+        disconnect[m2mFieldRelationNames[fieldName]] = { set: [] }
       })
 
       await db.subsubsection.update({

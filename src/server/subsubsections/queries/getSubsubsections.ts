@@ -48,7 +48,7 @@ export default resolver.pipe(
             subsection: { select: { slug: true } },
             qualityLevel: { select: { title: true, slug: true, url: true } },
             SubsubsectionTask: { select: { title: true } }, // Include subsubsectionTask if needed
-            SubsubsectionInfrastructureType: { select: { title: true } },
+            SubsubsectionInfrastructureTypes: { select: { id: true, title: true, slug: true } },
             SubsubsectionStatus: { select: { title: true, slug: true, style: true } },
             SubsubsectionInfra: { select: { title: true, slug: true } },
           },

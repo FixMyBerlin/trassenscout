@@ -32,14 +32,14 @@ export const GET = withProjectMembership(viewerRoles, async ({ params }) => {
   const surveyDefinition = getConfigBySurveySlug(survey.slug, "part1")
   const feedbackDefinition = getConfigBySurveySlug(survey.slug, "part2")
   const backendDefinition = getConfigBySurveySlug(survey.slug, "backend")
-  const metaDefinition = getConfigBySurveySlug(survey.slug, "meta")
-
-  const geometryCategoryId = getQuestionIdBySurveySlug(survey.slug, "geometryCategory")
+  const geometryCategoryIdRaw = getQuestionIdBySurveySlug(survey.slug, "geometryCategory")
   const locationId = getQuestionIdBySurveySlug(survey.slug, "location")
 
   const isLocationQuestionId = getQuestionIdBySurveySlug(survey.slug, "enableLocation")
 
   const feedbackQuestions = getFlatSurveyFormFields(feedbackDefinition)
+  const hasGeometryCategory = feedbackQuestions.some((q) => q.name === geometryCategoryIdRaw)
+  const geometryCategoryId = hasGeometryCategory ? geometryCategoryIdRaw : undefined
   const surveyQuestions = getFlatSurveyFormFields(surveyDefinition)
 
   let surveySessions: Prettify<Awaited<ReturnType<typeof getSurveySessionsWithResponses>>>
@@ -107,7 +107,7 @@ export const GET = withProjectMembership(viewerRoles, async ({ params }) => {
     note: string | undefined
     operator: string | undefined
     comments: string | undefined
-    "geometry-category": string
+    "geometry-category": string | undefined
   }
 
   // add headers for all questions
@@ -134,7 +134,9 @@ export const GET = withProjectMembership(viewerRoles, async ({ params }) => {
       title: `${(labels || defaultLabels).topics?.sg}: ${topic.title}`,
     })
   })
-  headers.push({ id: "geometry-category", title: "Geometrie-Bezug im WKT-Format" })
+  if (geometryCategoryId) {
+    headers.push({ id: "geometry-category", title: "Geometrie-Bezug im WKT-Format" })
+  }
 
   const csvData: Result[] = []
 
@@ -279,6 +281,7 @@ export const GET = withProjectMembership(viewerRoles, async ({ params }) => {
                   break
                 // todo
                 // case "SurveyGeoCategoryMapWithLegend":
+                // case "SwitchableMapWithLegend":
                 default:
                   // @ts-expect-error data is of type unknown and index type
                   row[questionId] = data[questionId] || ""
@@ -286,12 +289,11 @@ export const GET = withProjectMembership(viewerRoles, async ({ params }) => {
               }
             }
           })
-          // the geometry-category question is handled separately: we need to convert the coordinates to WKT to be able to import them into QGIS
-          row["geometry-category"] =
-            coordinatesToWkt(
-              // @ts-expect-error data is of type unknown
-              data[geometryCategoryId] || JSON.stringify(metaDefinition.geoCategoryFallback),
-            ) || ""
+          if (geometryCategoryId) {
+            // @ts-expect-error data is of type unknown
+            const geometryValue = data[geometryCategoryId]
+            row["geometry-category"] = geometryValue ? (coordinatesToWkt(geometryValue) ?? "") : ""
+          }
 
           surveyResponseTopics.forEach((t) => {
             // @ts-expect-error data is of type unknown and index type

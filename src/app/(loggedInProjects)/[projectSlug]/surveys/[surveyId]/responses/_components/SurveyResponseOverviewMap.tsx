@@ -1,9 +1,11 @@
-import { AllLayers, generateLayers } from "@/src/app/beteiligung/_components/form/map/AllLayers"
-import { AllSources } from "@/src/app/beteiligung/_components/form/map/AllSources"
 import { createGeoJSONFromString } from "@/src/app/beteiligung/_components/form/map/utils"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { BackgroundSwitcher, LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
+import { getMapStyle, getVectorStyleUrl } from "@/src/core/components/Map/mapStyleConfig"
+import { getStaticOverlayForProject } from "@/src/core/components/Map/staticOverlay/getStaticOverlayForProject"
+import { StaticOverlay } from "@/src/core/components/Map/staticOverlay/StaticOverlay"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { featureCollection, point } from "@turf/helpers"
 import maplibregl, {
   DataDrivenPropertyValueSpecification,
@@ -30,9 +32,7 @@ type Props = {
   surveyResponses: any[]
   locationRef: string
   categoryGeometryRef?: string
-  //todo survey clean up after survey BB
   surveySlug: AllowedSurveySlugs
-  additionalMapData?: any
 }
 
 export const SurveyResponseOverviewMap = ({
@@ -42,14 +42,14 @@ export const SurveyResponseOverviewMap = ({
   locationRef,
   surveyResponses,
   surveySlug,
-  additionalMapData,
 }: Props) => {
+  const projectSlug = useProjectSlug()
+  const staticOverlay = getStaticOverlayForProject(projectSlug ?? "")
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
   const { responseDetails, setResponseDetails } = useResponseDetails()
   const { mapSelection, setMapSelection } = useMapSelection(
     surveyResponses?.length ? [surveyResponses[0]?.id] : [],
   )
-  const metaConfig = getConfigBySurveySlug(surveySlug, "meta")
   const [cursorStyle, setCursorStyle] = useState("grab")
   const surveyResponsesWithLocation = surveyResponses.filter((r) => r.data[locationRef])
   // Setup pmtiles
@@ -61,32 +61,28 @@ export const SurveyResponseOverviewMap = ({
     }
   }, [])
 
-  const surveyResponsesGeometryCategoryCoordinates = surveyResponses.map((response) => {
-    return {
-      geometryCoordinates:
-        categoryGeometryRef && response.data[categoryGeometryRef]
-          ? response.data[categoryGeometryRef]
-          : // we need to provide a fallback geometry for rs8 & frm7 where the geometry category was not introduced yet
-            JSON.stringify(metaConfig.geoCategoryFallback),
-      responseId: Number(response.id),
-      status: response.status,
-      hasLocation: Boolean(response.data[locationRef]),
-    }
-  })
+  // Only include responses that have geometry coordinates (geometryCategory or location)
+  const surveyResponsesWithGeometryCategory = surveyResponses.filter(
+    (r) => categoryGeometryRef && r.data[categoryGeometryRef],
+  )
 
-  const surveyResponsesWithoutLocationFeatures = surveyResponsesGeometryCategoryCoordinates
-    .filter(({ hasLocation }) => !hasLocation)
-    .map(({ geometryCoordinates, responseId, status }) =>
-      createGeoJSONFromString(geometryCoordinates, { status, id: responseId }, { id: responseId }),
+  const surveyResponsesWithoutLocationFeatures = surveyResponsesWithGeometryCategory
+    .filter((r) => !r.data[locationRef])
+    .map((r) =>
+      createGeoJSONFromString(
+        r.data[categoryGeometryRef!],
+        { status: r.status, id: r.id },
+        { id: r.id },
+      ),
     )
 
-  const surveyResponsesGeometryCategoryFeatures = surveyResponsesGeometryCategoryCoordinates
-    .filter(({ hasLocation }) => hasLocation)
-    .map(({ geometryCoordinates, responseId, status }) =>
+  const surveyResponsesGeometryCategoryFeatures = surveyResponsesWithGeometryCategory
+    .filter((r) => r.data[locationRef])
+    .map((r) =>
       createGeoJSONFromString(
-        geometryCoordinates,
-        { status, geometryCategoryFor: responseId },
-        { id: `geometryCategory-${responseId}` },
+        r.data[categoryGeometryRef!],
+        { status: r.status, geometryCategoryFor: r.id },
+        { id: `geometryCategory-${r.id}` },
       ),
     )
 
@@ -447,11 +443,6 @@ export const SurveyResponseOverviewMap = ({
     setSelectedLayer(layer)
   }
 
-  const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
-
-  const vectorStyle = `${maptilerUrl}?key=${maptilerApiKey}`
-  const satelliteStyle = `https://api.maptiler.com/maps/hybrid/style.json?key=${maptilerApiKey}`
-
   const handleMapClick = (event: MapLayerMouseEvent) => {
     const selectedResponses = event.features
     //  for some reason the mapSelection had duplicated entries
@@ -480,7 +471,7 @@ export const SurveyResponseOverviewMap = ({
         initialViewState={{
           bounds: defaultViewState,
         }}
-        mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
+        mapStyle={getMapStyle(selectedLayer, getVectorStyleUrl(maptilerUrl))}
         minZoom={6}
         maxZoom={20}
         onClick={handleMapClick}
@@ -493,12 +484,7 @@ export const SurveyResponseOverviewMap = ({
         ]}
         cursor={cursorStyle}
       >
-        {additionalMapData && (
-          <>
-            <AllSources mapData={additionalMapData} />
-            <AllLayers layers={[...generateLayers(additionalMapData)]} />
-          </>
-        )}
+        {staticOverlay && <StaticOverlay config={staticOverlay} />}
         {surveyResponsesSource}
         {geometryCategorySource}
         <BackgroundSwitcher

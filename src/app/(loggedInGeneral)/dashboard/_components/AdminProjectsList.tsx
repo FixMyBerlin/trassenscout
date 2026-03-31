@@ -3,8 +3,10 @@ import { invoke } from "@/src/blitz-server"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { Link } from "@/src/core/components/links/Link"
 import { shortTitle } from "@/src/core/components/text"
+import { pillShellSmClassName } from "@/src/core/utils/pillClassNames"
 import getProjects from "@/src/server/projects/queries/getProjects"
 import getCurrentUser from "@/src/server/users/queries/getCurrentUser"
+import { clsx } from "clsx"
 import "server-only"
 
 export const AdminProjectsList = async () => {
@@ -45,16 +47,20 @@ export const AdminProjectsList = async () => {
                 </strong>
                 <span className="inline-flex items-center gap-2">
                   <span
-                    className={`inline-flex items-center rounded-full border border-gray-200 bg-gray-50 px-2 py-0.5 text-xs font-medium ${
-                      project.subsectionCount === 0 ? "text-gray-700/60" : "text-gray-700"
-                    }`}
+                    className={clsx(
+                      pillShellSmClassName,
+                      "border border-gray-200 bg-gray-50",
+                      project.subsectionCount === 0 ? "text-gray-700/60" : "text-gray-700",
+                    )}
                   >
                     {project.subsectionCount} Abschnitte
                   </span>
                   <span
-                    className={`inline-flex items-center rounded-full border border-gray-200 bg-gray-50 px-2 py-0.5 text-xs font-medium ${
-                      project.subsubsectionCount === 0 ? "text-gray-700/60" : "text-gray-700"
-                    }`}
+                    className={clsx(
+                      pillShellSmClassName,
+                      "border border-gray-200 bg-gray-50",
+                      project.subsubsectionCount === 0 ? "text-gray-700/60" : "text-gray-700",
+                    )}
                   >
                     {project.subsubsectionCount} Teilabschnitte
                   </span>

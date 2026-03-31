@@ -20,4 +20,8 @@ RUN npx blitz@2.2.4 build
 
 RUN npm install --global pm2
 
+# Don't use root user for execution, see https://www.docker.com/blog/understanding-the-docker-user-instruction/
+RUN chown -R node:node /app
+USER 1000:1000
+
 CMD npx blitz@2.2.4 prisma migrate deploy && exec pm2-runtime node -- ./node_modules/next/dist/bin/next start -p 3000

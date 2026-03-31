@@ -66,8 +66,14 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
     2: null,
     3: null,
   })
+  const [referenceIdByPart, setReferenceIdByPart] = useState<Record<1 | 2 | 3, string | null>>({
+    1: null,
+    2: null,
+    3: null,
+  })
 
   const [progress, setProgress] = useState(getprogressBarDefinitionBySurveySlug(surveySlug, stage))
+  const surveyMeta = getConfigBySurveySlug(surveySlug, "meta")
 
   const getOrCreateSurveySessionId = async () => {
     if (surveySessionId) {
@@ -85,14 +91,16 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
   // Create a (CREATED) response when starting a part
   const createPendingResponse = async (part: 1 | 2 | 3) => {
     const surveySessionId_ = await getOrCreateSurveySessionId()
-    const { id } = await getOrCreateCreatedSurveyResponseMutation({
+    const { id, data } = await getOrCreateCreatedSurveyResponseMutation({
       surveySessionId: surveySessionId_,
       surveyPart: part,
       data: "{}",
       source: "FORM",
       status: surveyResponseDefaultStatus,
     })
+    const parsedData = JSON.parse(data) as { referenceId?: string }
     setResponseIdByPart((prev) => ({ ...prev, [part]: id }))
+    setReferenceIdByPart((prev) => ({ ...prev, [part]: parsedData.referenceId ?? null }))
     return id
   }
 
@@ -106,7 +114,7 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
     surveySessionId: number
     value: unknown
   }) => {
-    const response = await updateSurveyResponsePublicMutation({
+    return await updateSurveyResponsePublicMutation({
       id,
       surveySessionId: sessionId,
       data: JSON.stringify(value),
@@ -147,14 +155,18 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
     // delete value.enableLocation
     void (async () => {
       const surveySessionId_ = await getOrCreateSurveySessionId()
-      await updateResponseSubmitted({
+      const response = await updateResponseSubmitted({
         id: meta.surveyResponseId,
         surveySessionId: surveySessionId_,
         value,
       })
+      const submittedData = JSON.parse(response.data) as Record<string, unknown>
+      const submittedReferenceId =
+        typeof submittedData.referenceId === "string" ? submittedData.referenceId : null
+      setReferenceIdByPart((prev) => ({ ...prev, 2: submittedReferenceId }))
       await surveyPart2EmailMutation({
         surveySessionId: surveySessionId_,
-        data: value,
+        data: submittedData,
         surveySlug,
         searchParams: allParams,
       })
@@ -215,6 +227,7 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
           stage="part1"
           handleSubmit={handleSurveyPart1Submit}
           surveyResponseId={responseIdByPart[1]}
+          vorgangsId={referenceIdByPart[1]}
           surveySessionId={surveySessionId}
           onStartPart={() => handleStartPart(1)}
         />
@@ -231,6 +244,7 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
           stage="part2"
           handleSubmit={handleSurveyPart2Submit}
           surveyResponseId={responseIdByPart[2]}
+          vorgangsId={referenceIdByPart[2]}
           surveySessionId={surveySessionId}
           onStartPart={() => handleStartPart(2)}
         />
@@ -245,6 +259,7 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
           stage="part3"
           handleSubmit={handleSurveyPart3Submit}
           surveyResponseId={responseIdByPart[3]}
+          vorgangsId={referenceIdByPart[3]}
           surveySessionId={surveySessionId}
           onStartPart={() => handleStartPart(3)}
         />
@@ -257,7 +272,7 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
 
   return (
     <ProgressContext.Provider value={{ progress, setProgress }}>
-      <ProgressBar />
+      {!surveyMeta.hideProgressBar && <ProgressBar />}
       <SurveyContainer>
         <Debug className="border border-red-500">
           <code>stage: {stage}</code>

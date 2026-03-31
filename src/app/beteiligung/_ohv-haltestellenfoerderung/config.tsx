@@ -1,6 +1,8 @@
 import { part2Config } from "@/src/app/beteiligung/_ohv-haltestellenfoerderung/part2"
 import { FormConfig } from "@/src/app/beteiligung/_shared/types"
 
+export const OHV_VORGANGS_ID_PREFIX = "547010"
+
 export const formConfig: FormConfig = {
   meta: {
     version: 1,
@@ -8,6 +10,7 @@ export const formConfig: FormConfig = {
     logoUrl: "https://www.oberhavel.de/media/custom/2244_71430_1_g.PNG?1606723864",
     canonicalUrl: "https://www.oberhavel.de/",
     maptilerUrl: "https://api.maptiler.com/maps/b09268b1-91d0-42e2-9518-321a1a94738f/style.json",
+    hideProgressBar: true,
     primaryColor: "#006ab2",
     darkColor: "#00375D",
     lightColor: "#B8D5E9",
@@ -46,7 +49,7 @@ Nach Erstellung des Maßnahmenprogramms wird dieses per E-Mail an die Kommunen �
     disableNote: true,
     labels: {
       category: {
-        sg: "Fördergegenstand",
+        sg: "Gegenstand der Förderung",
       },
       comment: {
         sg: "Gesprächsnotiz",
@@ -96,17 +99,17 @@ Wir bestätigen den Eingang Ihrer Meldung über das Online-Formular unter folgen
 
 Folgende Angaben wurden übermittelt:
 
-- **Fördergegenstand**: {{category}}
+- **Vorgangs-ID**: {{referenceId}}
+- **Gegenstand der Förderung**: {{category}}
 - **Kommune**: {{commune}}
 - **Beschreibung der Dokumente**: {{uploadsDescription}}
-- **Verortung der Maßnahme:** {{geometryCategory}}
+- **Verortung der Maßnahme:** {{location}}
 - **Name der Haltestelle**: {{hsName}}
 - **Maßnahmenbeschreibung und Zielsetzung**: {{feedbackText}}
 - **Stand der Bauvorbereitung**: {{stateOfConstruction}}
-- **Kostenschätzung**: {{costs}}
+- **Kostenberechnung**: {{costs}}
 - **Ko-Finanzierung**: {{coFinancing}}
-- **Ko-Finanzierung: Mittelgeber**: {{fundingSource}}
-- **Ko-Finanzierung: Programm**: {{programName}}
+- **Ko-Finanzierung: Mittelgeber und Programm**: {{fundingSource}}
 - **Gemeinschaftsbauwerk**: {{sharedBuilding}}
 - **Voraussichtliches Realisierungsjahr**: {{realisationYear}}
 - **Kontaktperson (optional)**: {{contact}}
@@ -123,6 +126,7 @@ i. A. Alexander Greifenberg
 im Auftrag des Landkreises Oberhavel
 `,
     fields: [
+      "referenceId",
       "commune",
       "category",
       "uploadsDescription",
@@ -132,14 +136,66 @@ im Auftrag des Landkreises Oberhavel
       "costs",
       "coFinancing",
       "fundingSource",
-      "programName",
       "sharedBuilding",
       "realisationYear",
       "contact",
       "phone",
       "email",
-      "geometryCategory",
+      "location",
       "surveyUrl",
     ],
+  },
+  adminEmail: {
+    subject: "Neue Maßnahmenmeldung zur Haltestellenförderung im Landkreis Oberhavel",
+    markdown: `Sehr geehrte Damen und Herren,
+
+über das Online-Formular zur Haltestellenförderung im Landkreis Oberhavel ist eine neue Maßnahmenmeldung eingegangen.
+
+Folgende Angaben wurden übermittelt:
+
+- **Vorgangs-ID**: {{referenceId}}
+- **Gegenstand der Förderung**: {{category}}
+- **Kommune**: {{commune}}
+- **Beschreibung der Dokumente**: {{uploadsDescription}}
+- **Verortung der Maßnahme**: {{location}}
+- **Name der Haltestelle**: {{hsName}}
+- **Maßnahmenbeschreibung und Zielsetzung**: {{feedbackText}}
+- **Stand der Bauvorbereitung**: {{stateOfConstruction}}
+- **Kostenberechnung**: {{costs}}
+- **Ko-Finanzierung**: {{coFinancing}}
+- **Ko-Finanzierung: Mittelgeber und Programm**: {{fundingSource}}
+- **Gemeinschaftsbauwerk**: {{sharedBuilding}}
+- **Voraussichtliches Realisierungsjahr**: {{realisationYear}}
+- **Kontaktperson (optional)**: {{contact}}
+- **Telefonnummer (optional)**: {{phone}}
+- **E-Mail-Adresse**: {{email}}
+
+Das Formular erreichen Sie unter folgendem Link:
+{{surveyUrl}}
+
+Mit freundlichen Grüßen
+
+Trassenscout
+`,
+    fields: [
+      "referenceId",
+      "commune",
+      "category",
+      "uploadsDescription",
+      "hsName",
+      "feedbackText",
+      "stateOfConstruction",
+      "costs",
+      "coFinancing",
+      "fundingSource",
+      "sharedBuilding",
+      "realisationYear",
+      "contact",
+      "phone",
+      "email",
+      "location",
+      "surveyUrl",
+    ],
+    recipients: ["lk@dummy.de", "ohbv@dummy.de"],
   },
 }

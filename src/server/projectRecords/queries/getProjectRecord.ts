@@ -58,6 +58,13 @@ export default resolver.pipe(
             lastName: true,
           },
         },
+        assignedTo: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
         uploads: {
           orderBy: { id: "desc" },
           select: {

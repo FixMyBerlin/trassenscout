@@ -2,6 +2,7 @@ import { SurveyCheckbox } from "@/src/app/beteiligung/_components/form/Checkbox"
 import { SurveyCheckboxGroup } from "@/src/app/beteiligung/_components/form/CheckboxGroup"
 import { SurveyGeoCategoryMapWithLegend } from "@/src/app/beteiligung/_components/form/map/GeoCategoryMapWithLegend"
 import { SurveySimpleMapWithLegend } from "@/src/app/beteiligung/_components/form/map/SimpleMapWithLegend"
+import { SwitchableMapWithLegend } from "@/src/app/beteiligung/_components/form/map/SwitchableMapWithLegend"
 import { SurveyNumberfield } from "@/src/app/beteiligung/_components/form/Numberfield"
 import { SurveyPageTitle } from "@/src/app/beteiligung/_components/form/PageTitle"
 import { SurveyRadiobuttonGroup } from "@/src/app/beteiligung/_components/form/RadiobuttonGroup"
@@ -11,11 +12,11 @@ import { SurveySelect } from "@/src/app/beteiligung/_components/form/Select"
 import { SurveyTextarea } from "@/src/app/beteiligung/_components/form/Textarea"
 import { SurveyTextfield } from "@/src/app/beteiligung/_components/form/Textfield"
 import { SurveyUploadField } from "@/src/app/beteiligung/_components/form/UploadField"
+import { SurveyVorgangsIdField } from "@/src/app/beteiligung/_components/form/VorgangsIdField"
 import { SurveyMarkdown } from "@/src/app/beteiligung/_components/layout/SurveyMarkdown"
 import { TBackendConfig } from "@/src/app/beteiligung/_shared/backend-types"
 import { fieldValidationEnum } from "@/src/app/beteiligung/_shared/fieldvalidationEnum"
 import { AnyFieldApi } from "@tanstack/react-form"
-import { LineString, MultiLineString, Point, Polygon } from "geojson"
 import type {
   CircleLayerSpecification,
   FillLayerSpecification,
@@ -25,11 +26,19 @@ import type {
 } from "maplibre-gl"
 import { ComponentProps, ReactNode } from "react"
 
+/** How the resource at `tildaUrl` is exposed for map sources (GeoJSON vs PMTiles). */
+export const MapSourceType = {
+  geojson: "geojson",
+  pmtiles: "pmtiles",
+} as const
+export type MapSourceType = (typeof MapSourceType)[keyof typeof MapSourceType]
+
 export type MapData = {
   sources: {
     // Source `id`
     [sourceId: string]: {
-      pmTilesUrl: string
+      tildaUrl: string
+      type: MapSourceType
       layers: ((
         | Omit<FillLayerSpecification, "source" | "source-layer" | "metadata">
         | Omit<LineLayerSpecification, "source" | "source-layer" | "metadata">
@@ -109,6 +118,16 @@ export type FieldConfig =
         props: Omit<ComponentProps<typeof SurveyReadonlyTextfield>, "required">
       })
   | ({
+      component: "SurveyVorgangsIdField"
+      componentType: "form"
+      validation:
+        | (typeof fieldValidationEnum)["optionalString"]
+        | (typeof fieldValidationEnum)["requiredString"]
+      defaultValue: string
+    } & FormFieldBase & {
+        props: Omit<ComponentProps<typeof SurveyVorgangsIdField>, "required" | "vorgangsId">
+      })
+  | ({
       component: "SurveyResponseIdField"
       componentType: "form"
       validation:
@@ -142,6 +161,16 @@ export type FieldConfig =
       defaultValue: object | null
     } & FormFieldBase & {
         props: Omit<ComponentProps<typeof SurveyGeoCategoryMapWithLegend>, "required">
+      })
+  | ({
+      component: "SwitchableMapWithLegend"
+      componentType: "form"
+      validation:
+        | (typeof fieldValidationEnum)["conditionalRequiredLatLng"]
+        | (typeof fieldValidationEnum)["requiredLatLng"]
+      defaultValue: object | null
+    } & FormFieldBase & {
+        props: Omit<ComponentProps<typeof SwitchableMapWithLegend>, "required">
       })
   | ({
       component: "SurveyCheckbox"
@@ -242,6 +271,13 @@ export type EmailConfig = {
   fields: string[] // Array of field names to include in email as [label]: value
 }
 
+export type AdminEmailConfig = {
+  subject: string
+  markdown: string
+  fields: string[]
+  recipients: string[]
+}
+
 export type IntroButton = {
   label: string
   action: Stage | "next"
@@ -294,17 +330,11 @@ export type FormConfig = {
     logoUrl: string
     canonicalUrl: string
     maptilerUrl: string
+    hideProgressBar?: boolean
     tildaUrl?: string
     primaryColor: string
     darkColor: string
     lightColor: string
-    // geometryFallback is used for surveys rs8 adn frm7 that have a geometry-category question
-    // starting with radnetz BB all surveys have geometry-category questions
-    geoCategoryFallback?:
-      | LineString["coordinates"]
-      | MultiLineString["coordinates"]
-      | Polygon["coordinates"]
-      | Point["coordinates"]
     // todo deletedQuestions
   }
   // fka survey part
@@ -327,6 +357,7 @@ export type FormConfig = {
   }
   backend: TBackendConfig
   email: EmailConfig | null
+  adminEmail?: AdminEmailConfig | null
 }
 
 export type SurveyFieldRadioOrCheckboxGroupConfig = Extract<

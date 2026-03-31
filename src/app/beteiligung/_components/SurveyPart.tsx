@@ -26,10 +26,12 @@ type ConfigFieldWithProps = {
 function getFieldPropsWithSurveyResponseContext({
   configField,
   surveyResponseId,
+  vorgangsId,
   surveySessionId,
 }: {
   configField: ConfigFieldWithProps
   surveyResponseId: number | null
+  vorgangsId: string | null
   surveySessionId: number | null
 }) {
   // Special handling for SurveyUploadField to pass surveyResponseId and surveySessionId
@@ -51,6 +53,12 @@ function getFieldPropsWithSurveyResponseContext({
       surveyResponseId,
     }
   }
+  if (configField.component === "SurveyVorgangsIdField" && vorgangsId !== null) {
+    return {
+      ...configField.props,
+      vorgangsId,
+    }
+  }
   return configField.props
 }
 
@@ -67,6 +75,7 @@ type Props = {
   isIntro: boolean
   setIsIntro: (intro: boolean) => void
   surveyResponseId: number | null
+  vorgangsId: string | null
   surveySessionId: number | null
   onStartPart: () => Promise<void>
 }
@@ -78,6 +87,7 @@ export const SurveyPart = ({
   setIsIntro,
   isIntro,
   surveyResponseId,
+  vorgangsId,
   surveySessionId,
   onStartPart,
 }: Props) => {
@@ -275,6 +285,7 @@ export const SurveyPart = ({
                                     // configField has more properties; we only need component + props here
                                     configField,
                                     surveyResponseId,
+                                    vorgangsId,
                                     surveySessionId,
                                   })
                                   return (
@@ -306,6 +317,7 @@ export const SurveyPart = ({
                             // configField has more properties; we only need component + props here
                             configField,
                             surveyResponseId,
+                            vorgangsId,
                             surveySessionId,
                           })
                           return (

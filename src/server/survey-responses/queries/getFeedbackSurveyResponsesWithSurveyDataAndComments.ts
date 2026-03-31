@@ -1,4 +1,5 @@
 import db, { SurveyResponseStateEnum } from "@/db"
+import { getFlatSurveyFormFields } from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_utils/getFlatSurveyFormFields"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
@@ -91,6 +92,18 @@ export default resolver.pipe(
           "backend",
         )?.additionalFilters
       : []
+    const surveySlug = rawSurveyResponsePart2[0]?.surveySession.survey.slug as
+      | AllowedSurveySlugs
+      | undefined
+    const part1Fields = getFlatSurveyFormFields(
+      surveySlug ? getConfigBySurveySlug(surveySlug, "part1") : null,
+    )
+    const part2Fields = getFlatSurveyFormFields(
+      surveySlug ? getConfigBySurveySlug(surveySlug, "part2") : null,
+    )
+    const part3Fields = getFlatSurveyFormFields(
+      surveySlug ? getConfigBySurveySlug(surveySlug, "part3") : null,
+    )
 
     const rawSurveyResponsePart2WithPart1AndPart3Responses = rawSurveyResponsePart2?.map(
       (responsePart2) => {
@@ -127,6 +140,12 @@ export default resolver.pipe(
       .sort((a, b) => b.id - a.id)
 
     const additionalFilterQuestionsWithResponseOptions = additionalFilters?.map((question) => {
+      const field =
+        question.surveyPart === "part1"
+          ? part1Fields.find((f) => String(f.name) === String(question.id))
+          : question.surveyPart === "part3"
+            ? part3Fields.find((f) => String(f.name) === String(question.id))
+            : part2Fields.find((f) => String(f.name) === String(question.id))
       const questionDatas = parsedAndSorted
         .map((responseItem) => {
           let result: string | null
@@ -148,7 +167,19 @@ export default resolver.pipe(
       let uniqueSortedResponseOptions = Array.from(new Set(questionDatas))
         .sort()
         .map((option) => {
-          return { value: option, label: option }
+          const fieldOptions: Array<{ key: string | number; label: string }> = Array.isArray(
+            (
+              field?.props as
+                | { options?: Array<{ key: string | number; label: string }> }
+                | undefined
+            )?.options,
+          )
+            ? (field?.props as { options?: Array<{ key: string | number; label: string }> })
+                .options || []
+            : []
+          const label =
+            fieldOptions.find((opt) => String(opt.key) === String(option))?.label || option
+          return { value: option, label }
         })
       // Add "Alle" to the beginning of the options array
       uniqueSortedResponseOptions = [

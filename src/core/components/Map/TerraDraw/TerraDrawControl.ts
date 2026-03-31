@@ -11,6 +11,7 @@ import { convertFeaturesToGeometry, convertGeometryToFeatures } from "./utils/ge
 
 export class TerraDrawControl {
   private draw: TerraDraw | null = null
+  private map: MapLibreMap | null = null
   private onChange?: (geometry: SupportedGeometry | null, geometryType: string | null) => void
   private initialGeometry?: SupportedGeometry
   private currentMode: TerraDrawMode = "select"
@@ -21,6 +22,8 @@ export class TerraDrawControl {
   private pendingMode: TerraDrawMode | null = null
   private ignoreNextChangeCount = 0
   private selectedIds: Array<string | number> = []
+  private restorePending = false
+  private styleLoadHandler = () => this.reinitAfterStyleChange()
 
   constructor(
     onChange?: (geometry: SupportedGeometry | null, geometryType: string | null) => void,
@@ -31,141 +34,166 @@ export class TerraDrawControl {
   }
 
   onAdd(map: MapLibreMap) {
-    this.draw = new TerraDraw({
-      adapter: new TerraDrawMapLibreGLAdapter({ map }),
-      modes: createTerraDrawModes(),
-    })
+    this.map = map
+    this.draw = this.createDrawInstance(map)
+    // Re-initialize TerraDraw when map style changes (e.g. vector ↔ satellite).
+    // MapLibre replaces the entire style, so TerraDraw's layers are removed and must be re-added.
+    map.on("style.load", this.styleLoadHandler)
 
-    // Initialize Terra Draw after map loads
-    const initializeDraw = () => {
+    const init = () => {
       if (!this.draw) return
-
       this.draw.start()
-
-      // Mark as initialized immediately after start
       this.isInitialized = true
-
-      // Load initial geometry if provided BEFORE setting the mode
-      // This is required for select mode to recognize the features.
-      // Only add when store is empty to avoid duplicate geometry on React Strict Mode double-mount.
-      if (this.initialGeometry && this.draw && this.draw.getSnapshot().length === 0) {
-        // Terra Draw only accepts Point, LineString, and Polygon (not Multi* geometries)
-        // Convert Multi* geometries to individual features
-        const featuresToAdd = convertGeometryToFeatures(this.initialGeometry)
-
-        // Ignore the change events to prevent form update loop
-        this.ignoreNextChangeCount = featuresToAdd.length
-
-        const validationResults = this.draw.addFeatures(featuresToAdd)
-
-        if (isDev) {
-          const invalidResults = validationResults.filter((r) => !r?.valid)
-          if (invalidResults.length > 0) {
-            console.error(
-              `[Terra Draw] ❌ ${invalidResults.length} feature(s) failed validation:`,
-              invalidResults.map((r) => r.reason),
-            )
-          }
-        }
-      }
-
-      // Determine appropriate starting mode based on geometry
-      // Set mode AFTER adding features so select mode recognizes them
-      const defaultMode = getDefaultModeForGeometry(this.initialGeometry)
-      this.draw.setMode(defaultMode)
-      this.currentMode = defaultMode
-
-      // Notify parent of initial mode
-      if (this.onModeChange) {
-        this.onModeChange(defaultMode)
-      }
-
-      // Don't auto-select features on initial load
-      // Let users click the feature in select mode to see edit handles
-      // This matches the natural Terra Draw interaction pattern
-      if (isDev && this.initialGeometry && defaultMode === "select") {
-        console.log("[Terra Draw] Started in select mode - click a feature to edit it")
-      }
-
-      // Notify that buttons should be updated after loading initial features
-      if (this.initialGeometry && this.onButtonsChange) {
-        this.onButtonsChange()
-      }
-
-      // Track selection through events
-      this.draw.on("select", (id) => {
-        if (!this.selectedIds.includes(id)) {
-          this.selectedIds = [...this.selectedIds, id]
-        }
-        if (this.onSelectionChange) {
-          this.onSelectionChange()
-        }
-      })
-
-      this.draw.on("deselect", () => {
-        this.selectedIds = []
-        if (this.onSelectionChange) {
-          this.onSelectionChange()
-        }
-      })
-
-      // Set up change listener
-      this.draw.on("change", () => {
-        if (!this.draw) return
-
-        // Notify selection change
-        if (this.onSelectionChange) {
-          this.onSelectionChange()
-        }
-
-        // Skip onChange callback if this is a programmatic update
-        if (this.ignoreNextChangeCount > 0) {
-          this.ignoreNextChangeCount--
-          return
-        }
-
-        let snapshot = this.draw.getSnapshot()
-
-        // Cleanup: filter to keep only features matching the first feature's type family
-        // This handles edge cases where mixed types might exist despite button disabling
-        snapshot = cleanupMixedFeatures(snapshot)
-
-        // Convert features to appropriate geometry
-        const resultGeometry = convertFeaturesToGeometry(snapshot)
-
-        if (resultGeometry && this.onChange) {
-          this.onChange(resultGeometry, resultGeometry.type)
-        }
-      })
-
-      // Apply any pending mode change
+      this.restoreStateAndAttachListeners()
       if (this.pendingMode && this.draw) {
         this.draw.setMode(this.pendingMode)
         this.currentMode = this.pendingMode
-        if (this.onModeChange) {
-          this.onModeChange(this.pendingMode)
-        }
+        this.onModeChange?.(this.pendingMode)
         this.pendingMode = null
       }
     }
 
-    // Wait for map to be fully loaded before initializing TerraDraw
-    // Use map.loaded() and 'load' event (not isStyleLoaded() and 'style.load')
-    // This follows the @watergis/maplibre-gl-terradraw pattern and ensures the map
-    // is ready to accept all layers (both React Source/Layer and TerraDraw layers)
-    if (map.loaded()) {
-      initializeDraw()
-    } else {
-      map.once("load", () => {
-        initializeDraw()
-      })
-    }
-
-    // Required by IControl interface, but unused (Terra Draw renders via adapter)
+    // Wait for map to be fully loaded before initializing TerraDraw.
+    // Use map.loaded() and 'load' event (not isStyleLoaded() and 'style.load') so the map
+    // is ready to accept all layers (both React Source/Layer and TerraDraw layers).
+    if (map.loaded()) init()
+    else map.once("load", init)
+    // Required by IControl interface, but unused (Terra Draw renders via adapter).
     return document.createElement("div")
   }
 
+  private createDrawInstance(map: MapLibreMap) {
+    return new TerraDraw({
+      adapter: new TerraDrawMapLibreGLAdapter({ map }),
+      modes: createTerraDrawModes(),
+    })
+  }
+
+  /**
+   * Restore features + mode (from initial geometry or from reinit snapshot), then attach event listeners.
+   * Called after start() on initial load and after style-change reinit.
+   */
+  private restoreStateAndAttachListeners(restore?: {
+    snapshot: ReturnType<TerraDraw["getSnapshot"]>
+    mode: TerraDrawMode
+  }) {
+    if (!this.draw) return
+
+    if (restore) {
+      this.ignoreNextChangeCount = restore.snapshot.length
+      if (restore.snapshot.length > 0) this.draw.addFeatures(restore.snapshot)
+      this.draw.setMode(restore.mode)
+      this.currentMode = restore.mode
+    } else {
+      // Load initial geometry only when store is empty (avoids duplicate geometry on React Strict Mode double-mount).
+      // Set mode AFTER adding features so select mode recognizes them.
+      if (this.initialGeometry && this.draw.getSnapshot().length === 0) {
+        const featuresToAdd = convertGeometryToFeatures(this.initialGeometry)
+        this.ignoreNextChangeCount = featuresToAdd.length
+        const results = this.draw.addFeatures(featuresToAdd)
+        if (isDev) {
+          const invalid = results.filter((r) => !r?.valid)
+          if (invalid.length > 0) {
+            console.error(
+              `[Terra Draw] ❌ ${invalid.length} feature(s) failed validation:`,
+              invalid.map((r) => r.reason),
+            )
+          }
+        }
+      }
+      const defaultMode = getDefaultModeForGeometry(this.initialGeometry)
+      this.draw.setMode(defaultMode)
+      this.currentMode = defaultMode
+      this.onModeChange?.(defaultMode)
+      if (this.initialGeometry) this.onButtonsChange?.()
+      if (isDev && this.initialGeometry && defaultMode === "select") {
+        console.log("[Terra Draw] Started in select mode - click a feature to edit it")
+      }
+    }
+
+    this.setupTerraDrawListeners()
+  }
+
+  private setupTerraDrawListeners() {
+    if (!this.draw) return
+
+    this.draw.on("select", (id) => {
+      if (!this.selectedIds.includes(id)) {
+        this.selectedIds = [...this.selectedIds, id]
+      }
+      if (this.onSelectionChange) {
+        this.onSelectionChange()
+      }
+    })
+
+    this.draw.on("deselect", () => {
+      this.selectedIds = []
+      if (this.onSelectionChange) {
+        this.onSelectionChange()
+      }
+    })
+
+    this.draw.on("change", () => {
+      if (!this.draw) return
+
+      // Notify selection change
+      if (this.onSelectionChange) {
+        this.onSelectionChange()
+      }
+
+      // Skip onChange callback if this is a programmatic update
+      if (this.ignoreNextChangeCount > 0) {
+        this.ignoreNextChangeCount--
+        return
+      }
+
+      let snapshot = this.draw.getSnapshot()
+
+      // Cleanup: filter to keep only features matching the first feature's type family
+      // This handles edge cases where mixed types might exist despite button disabling
+      snapshot = cleanupMixedFeatures(snapshot)
+
+      // Convert features to appropriate geometry
+      const resultGeometry = convertFeaturesToGeometry(snapshot)
+
+      if (resultGeometry && this.onChange) {
+        this.onChange(resultGeometry, resultGeometry.type)
+      }
+    })
+  }
+
+  /**
+   * Re-initialize after map style change (e.g. vector ↔ satellite).
+   * MapLibre replaces the entire style, so our layers are gone; we restore from in-memory snapshot.
+   */
+  private reinitAfterStyleChange() {
+    if (!this.draw || !this.isInitialized || !this.map) return
+    // Ignore duplicate style.load (e.g. react-map-gl fires twice on layer switch); only first run has valid snapshot.
+    if (this.restorePending) return
+    this.restorePending = true
+
+    const snapshot = this.draw.getSnapshot()
+    const mode = this.currentMode
+    const snapshotForRestore = snapshot.slice()
+
+    // Do not call this.draw.stop() — after style change the map style was replaced, so TerraDraw's
+    // layers/sources no longer exist; stop() would call setData() on undefined and throw.
+    this.draw = null
+
+    this.draw = this.createDrawInstance(this.map)
+    this.draw.start()
+    this.restoreStateAndAttachListeners({ snapshot: snapshotForRestore, mode })
+    this.selectedIds = []
+    this.onSelectionChange?.()
+    this.onButtonsChange?.()
+    this.restorePending = false
+  }
+
   onRemove() {
+    if (this.map) {
+      this.map.off("style.load", this.styleLoadHandler)
+      this.map = null
+    }
     if (this.draw) {
       this.draw.stop()
       this.draw = null
@@ -173,6 +201,7 @@ export class TerraDrawControl {
     this.isInitialized = false
     this.pendingMode = null
     this.ignoreNextChangeCount = 0
+    this.restorePending = false
   }
 
   setMode(mode: TerraDrawMode) {
