@@ -197,7 +197,7 @@ const EditableSurveyResponseMapAndStaticData = ({
               {userCategoryLabels.map((label) => (
                 <div
                   key={label}
-                  className="max-w-full rounded-sm bg-gray-300 p-3 px-4 font-semibold whitespace-normal break-words"
+                  className="max-w-full rounded-sm bg-gray-300 p-3 px-4 font-semibold break-words whitespace-normal"
                 >
                   {label}
                 </div>

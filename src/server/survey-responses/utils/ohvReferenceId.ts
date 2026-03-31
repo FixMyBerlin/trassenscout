@@ -1,7 +1,7 @@
 import db from "@/db"
 import { OHV_VORGANGS_ID_PREFIX } from "@/src/app/beteiligung/_ohv-haltestellenfoerderung/config"
 
-const REFERENCE_ID_PATTERN = new RegExp(`^${OHV_VORGANGS_ID_PREFIX}-(\\d+)$`)
+const REFERENCE_ID_PATTERN = new RegExp(`^${OHV_VORGANGS_ID_PREFIX}_(\\d+)$`)
 
 export const parseOhvReferenceIdRunningNumber = (data: string): number | null => {
   const parsedData = JSON.parse(data) as { referenceId?: unknown }
@@ -35,5 +35,5 @@ export const createNextOhvReferenceId = async (
     return runningNumber && runningNumber > highest ? runningNumber : highest
   }, 0)
 
-  return `${OHV_VORGANGS_ID_PREFIX}-${highestRunningNumber + 1}`
+  return `${OHV_VORGANGS_ID_PREFIX}_${highestRunningNumber + 1}`
 }
