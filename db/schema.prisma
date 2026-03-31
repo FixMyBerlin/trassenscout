@@ -147,6 +147,7 @@ model Project {
   partnerLogoSrcs                  String[] // - UNUSED
   exportEnabled                    Boolean                           @default(false)
   aiEnabled                        Boolean                           @default(false)
+  landAcquisitionModuleEnabled     Boolean                           @default(false)
   showLogEntries                   Boolean                           @default(false) // When true, non-admins see this project's log entries ("Änderungen in …") on the "Meine Projekte" dashboard. Admins always see all projects.
   //
   surveyResponseTopics             SurveyResponseTopic[]
@@ -302,22 +303,23 @@ model NetworkHierarchy {
 }
 
 model Subsubsection {
-  id              Int               @id @default(autoincrement())
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
+  id                 Int               @id @default(autoincrement())
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
   //
-  slug            String // shortTitle and URL Slug
-  subTitle        String?
-  type            GeometryTypeEnum  @default(LINE) // Maßnahmen Geometrietyp - fka Führungsform - UNUSED
-  location        LocationEnum? // Lage: innerorts/außerorts
-  geometry        Json
-  labelPos        LabelPositionEnum @default(top)
-  lengthM         Float? // Meter
-  width           Float? // Meter
-  widthExisting   Float? // Meter - UNUSED
-  description     String? // Anmerkungen
-  mapillaryKey    String?
-  isExistingInfra Boolean?          @default(false) // Bestandsführung
+  slug               String // shortTitle and URL Slug
+  subTitle           String?
+  type               GeometryTypeEnum  @default(LINE) // Maßnahmen Geometrietyp - fka Führungsform - UNUSED
+  location           LocationEnum? // Lage: innerorts/außerorts
+  geometry           Json
+  labelPos           LabelPositionEnum @default(top)
+  lengthM            Float? // Meter
+  width              Float? // Meter
+  widthExisting      Float? // Meter - UNUSED
+  description        String? // Anmerkungen
+  mapillaryKey       String?
+  isExistingInfra    Boolean?          @default(false) // Bestandsführung
+  hasLandAcquisition Boolean           @default(false)
 
   maxSpeed        Float? // Maximalgeschwindigkeit
   trafficLoad     Int? // Verkehrsbelastung
@@ -356,6 +358,7 @@ model Subsubsection {
   //
   uploads                          Upload[]
   projectRecords                   ProjectRecord[]
+  dealAreas                        DealArea[]
   //
   SubsubsectionStatus              SubsubsectionStatus?              @relation(fields: [subsubsectionStatusId], references: [id])
   subsubsectionStatusId            Int?
@@ -371,6 +374,28 @@ model Subsubsection {
   specialFeatures SubsubsectionSpecial[] // - UNUSED
 
   @@unique([subsectionId, slug])
+}
+
+model Parcel {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  dealAreas DealArea[]
+}
+
+model DealArea {
+  id                    Int      @id @default(autoincrement())
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  geometry              Json
+  acquisitionComplexity Int? // 1 = gering, 2 = mittel, 3 = hoch
+  description           String?
+
+  subsubsection   Subsubsection @relation(fields: [subsubsectionId], references: [id])
+  subsubsectionId Int
+  parcel          Parcel?       @relation(fields: [parcelId], references: [id])
+  parcelId        Int?
 }
 
 enum GeometryTypeEnum {
