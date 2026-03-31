@@ -5,8 +5,8 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
-import { GeometryByGeometryType } from "@/src/server/shared/utils/geometrySchemas"
 import { typeDealAreaGeometry } from "@/src/server/dealAreas/utils/typeDealAreaGeometry"
+import { GeometryByGeometryType } from "@/src/server/shared/utils/geometrySchemas"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
 
