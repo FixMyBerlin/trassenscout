@@ -1,17 +1,33 @@
 import { test as base } from "@/tests/_utils/support"
 
-export const test = base.extend({
-  page: async ({ page }, use, testInfo) => {
+type ConsoleErrorFixtures = {
+  allowedConsoleErrors: Array<string | RegExp>
+}
+
+const isAllowedError = (message: string, allowedErrors: Array<string | RegExp>) =>
+  allowedErrors.some((allowedError) =>
+    typeof allowedError === "string" ? message.includes(allowedError) : allowedError.test(message)
+  )
+
+export const test = base.extend<ConsoleErrorFixtures>({
+  allowedConsoleErrors: [[], { option: true }],
+  page: async ({ page, allowedConsoleErrors }, use, testInfo) => {
     const errors: string[] = []
 
     page.on("console", (message) => {
       if (message.type() !== "error") return
 
-      errors.push(`[console.${message.type()}] ${message.text()}`)
+      const formattedMessage = `[console.${message.type()}] ${message.text()}`
+      if (isAllowedError(formattedMessage, allowedConsoleErrors)) return
+
+      errors.push(formattedMessage)
     })
 
     page.on("pageerror", (error) => {
-      errors.push(`[pageerror] ${error.message}`)
+      const formattedMessage = `[pageerror] ${error.message}`
+      if (isAllowedError(formattedMessage, allowedConsoleErrors)) return
+
+      errors.push(formattedMessage)
     })
 
     await use(page)
