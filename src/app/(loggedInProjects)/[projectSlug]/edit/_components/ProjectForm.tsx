@@ -1,6 +1,7 @@
 "use client"
 
 import { UserSelectOptions } from "@/src/app/_components/users/utils/getUserSelectOptions"
+import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import {
   Form,
   FormProps,
@@ -23,14 +24,16 @@ export const ProjectForm = ({ users, ...props }: Props) => {
         help="Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren."
       />
       <LabeledTextField type="text" name="subTitle" label="Untertitel" optional />
-      <LabeledSelect
-        name="alkisStateKey"
-        label="Bundesland (ALKIS-Daten)"
-        optional
-        // @ts-expect-error
-        options={getBundeslandSelectOptions()}
-        // help="Steuert die ALKIS-WMS-Hintergrundkarte in den Projektkarten, sofern für das gewählte Bundesland ein Dienst hinterlegt ist."
-      />
+      <SuperAdminBox>
+        <LabeledSelect
+          name="alkisStateKey"
+          label="Bundesland (ALKIS-Daten)"
+          optional
+          // @ts-expect-error
+          options={getBundeslandSelectOptions()}
+          // help="Steuert die ALKIS-WMS-Hintergrundkarte in den Projektkarten, sofern für das gewählte Bundesland ein Dienst hinterlegt ist."
+        />
+      </SuperAdminBox>
       {/* UNUSED */}
       {/* <LabeledTextField
         optional
