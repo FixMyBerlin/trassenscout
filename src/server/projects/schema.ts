@@ -13,6 +13,7 @@ export const ProjectSchema = z.object({
   exportEnabled: z.coerce.boolean(),
   aiEnabled: z.coerce.boolean(),
   alkisStateKey: z.nativeEnum(StateKeyEnum),
+  landAcquisitionModuleEnabled: z.coerce.boolean(),
 })
 
 export type ProjectType = z.infer<typeof ProjectSchema>

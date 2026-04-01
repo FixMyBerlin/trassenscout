@@ -29,7 +29,13 @@ describe("createLogEntry mutation", async () => {
     },
   })
   const project = await createProject(
-    { slug: "test", exportEnabled: false, aiEnabled: false, alkisStateKey: StateKeyEnum.DISABLED },
+    {
+      slug: "test",
+      exportEnabled: false,
+      aiEnabled: false,
+      alkisStateKey: StateKeyEnum.DISABLED,
+      landAcquisitionModuleEnabled: false,
+    },
     mockCtx,
   )
   const subsectionInput = {

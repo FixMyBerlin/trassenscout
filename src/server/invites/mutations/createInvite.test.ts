@@ -32,6 +32,7 @@ describe("createInvite mutation", () => {
         exportEnabled: false,
         aiEnabled: false,
         alkisStateKey: StateKeyEnum.DISABLED,
+        landAcquisitionModuleEnabled: false,
       },
       mockCtx,
     )
