@@ -18,6 +18,7 @@ export default resolver.pipe(
     await db.subsubsection.findFirstOrThrow({
       where: {
         id: input.subsubsectionId,
+        type: { in: ["LINE", "POLYGON"] },
         subsection: {
           project: {
             slug: projectSlug,
@@ -27,10 +28,27 @@ export default resolver.pipe(
       select: { id: true },
     })
 
+    await db.parcel.findFirstOrThrow({
+      where: { id: input.parcelId },
+      select: { id: true },
+    })
+
+    if (input.dealAreaStatusId) {
+      await db.dealAreaStatus.findFirstOrThrow({
+        where: {
+          id: input.dealAreaStatusId,
+          project: {
+            slug: projectSlug,
+          },
+        },
+        select: { id: true },
+      })
+    }
+
     const dealArea = await db.dealArea.create({
       data: {
         ...input,
-        parcelId: input.parcelId ?? null,
+        dealAreaStatusId: input.dealAreaStatusId ?? null,
       },
     })
 

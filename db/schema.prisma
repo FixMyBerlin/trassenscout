@@ -172,6 +172,7 @@ model Project {
   projectRecords                   ProjectRecord[]
   projectRecordTopics              ProjectRecordTopic[]
   ProjectRecordEmail               ProjectRecordEmail[]
+  dealAreaStatuses                 DealAreaStatus[]
 }
 
 enum StateKeyEnum {
@@ -324,23 +325,22 @@ model NetworkHierarchy {
 }
 
 model Subsubsection {
-  id                 Int               @id @default(autoincrement())
-  createdAt          DateTime          @default(now())
-  updatedAt          DateTime          @updatedAt
+  id              Int               @id @default(autoincrement())
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
   //
-  slug               String // shortTitle and URL Slug
-  subTitle           String?
-  type               GeometryTypeEnum  @default(LINE) // Maßnahmen Geometrietyp - fka Führungsform - UNUSED
-  location           LocationEnum? // Lage: innerorts/außerorts
-  geometry           Json
-  labelPos           LabelPositionEnum @default(top)
-  lengthM            Float? // Meter
-  width              Float? // Meter
-  widthExisting      Float? // Meter - UNUSED
-  description        String? // Anmerkungen
-  mapillaryKey       String?
-  isExistingInfra    Boolean?          @default(false) // Bestandsführung
-  hasLandAcquisition Boolean           @default(false)
+  slug            String // shortTitle and URL Slug
+  subTitle        String?
+  type            GeometryTypeEnum  @default(LINE) // Maßnahmen Geometrietyp - fka Führungsform - UNUSED
+  location        LocationEnum? // Lage: innerorts/außerorts
+  geometry        Json
+  labelPos        LabelPositionEnum @default(top)
+  lengthM         Float? // Meter
+  width           Float? // Meter
+  widthExisting   Float? // Meter - UNUSED
+  description     String? // Anmerkungen
+  mapillaryKey    String?
+  isExistingInfra Boolean?          @default(false) // Bestandsführung
 
   maxSpeed        Float? // Maximalgeschwindigkeit
   trafficLoad     Int? // Verkehrsbelastung
@@ -398,25 +398,42 @@ model Subsubsection {
 }
 
 model Parcel {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  officialId String?
 
   dealAreas DealArea[]
 }
 
-model DealArea {
-  id                    Int      @id @default(autoincrement())
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
-  geometry              Json
-  acquisitionComplexity Int? // 1 = gering, 2 = mittel, 3 = hoch
-  description           String?
+model DealAreaStatus {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  slug      String
+  title     String
+  style     Int
 
-  subsubsection   Subsubsection @relation(fields: [subsubsectionId], references: [id])
-  subsubsectionId Int
-  parcel          Parcel?       @relation(fields: [parcelId], references: [id])
-  parcelId        Int?
+  project   Project    @relation(fields: [projectId], references: [id])
+  projectId Int
+  dealAreas DealArea[]
+
+  @@unique([projectId, slug])
+}
+
+model DealArea {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  geometry    Json
+  description String?
+
+  subsubsection    Subsubsection   @relation(fields: [subsubsectionId], references: [id])
+  subsubsectionId  Int
+  parcel           Parcel          @relation(fields: [parcelId], references: [id])
+  parcelId         Int
+  dealAreaStatus   DealAreaStatus? @relation(fields: [dealAreaStatusId], references: [id])
+  dealAreaStatusId Int?
 }
 
 enum GeometryTypeEnum {

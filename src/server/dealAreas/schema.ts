@@ -6,9 +6,9 @@ export const DealAreaGeometrySchema = z.union([PolygonGeometrySchema, MultiPolyg
 
 export const DealAreaSchema = z.object({
   subsubsectionId: z.coerce.number(),
-  parcelId: InputNumberOrNullSchema,
+  parcelId: z.coerce.number(),
   geometry: DealAreaGeometrySchema,
-  acquisitionComplexity: z.union([z.literal(1), z.literal(2), z.literal(3)]).nullish(),
+  dealAreaStatusId: InputNumberOrNullSchema,
   description: z.string().nullish(),
 })
 

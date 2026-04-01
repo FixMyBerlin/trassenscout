@@ -167,7 +167,7 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
               )}
               {infrastructureTypeTitles.length > 0 && (
                 <tr>
-                  <th className="align-top py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
+                  <th className="py-4 pr-3 pl-3 text-left align-top text-sm font-medium text-gray-900">
                     Gegenstände der Förderung
                   </th>
                   <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
