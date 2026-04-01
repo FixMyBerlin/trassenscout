@@ -149,6 +149,7 @@ model Project {
   aiEnabled                        Boolean                           @default(false)
   landAcquisitionModuleEnabled     Boolean                           @default(false)
   showLogEntries                   Boolean                           @default(false) // When true, non-admins see this project's log entries ("Änderungen in …") on the "Meine Projekte" dashboard. Admins always see all projects.
+  alkisStateKey                    StateKeyEnum                      @default(DISABLED)
   //
   surveyResponseTopics             SurveyResponseTopic[]
   subsections                      Subsection[]
@@ -171,6 +172,26 @@ model Project {
   projectRecords                   ProjectRecord[]
   projectRecordTopics              ProjectRecordTopic[]
   ProjectRecordEmail               ProjectRecordEmail[]
+}
+
+enum StateKeyEnum {
+  BADEN_WUERTTEMBERG
+  BAYERN
+  BERLIN
+  BRANDENBURG
+  BREMEN
+  HAMBURG
+  HESSEN
+  MECKLENBURG_VORPOMMERN
+  NIEDERSACHSEN
+  NORDRHEIN_WESTFALEN
+  RHEINLAND_PFALZ
+  SAARLAND
+  SACHSEN
+  SACHSEN_ANHALT
+  SCHLESWIG_HOLSTEIN
+  THUERINGEN
+  DISABLED
 }
 
 model Membership {

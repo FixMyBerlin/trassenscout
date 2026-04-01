@@ -4,9 +4,11 @@ import { UserSelectOptions } from "@/src/app/_components/users/utils/getUserSele
 import {
   Form,
   FormProps,
+  LabeledSelect,
   LabeledTextareaField,
   LabeledTextField,
 } from "@/src/core/components/forms"
+import { getBundeslandSelectOptions } from "@/src/core/components/Map/alkisStateConfig"
 import { z } from "zod"
 
 type Props = FormProps<z.ZodType<any, any>> & { users: UserSelectOptions }
@@ -21,6 +23,14 @@ export const ProjectForm = ({ users, ...props }: Props) => {
         help="Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren."
       />
       <LabeledTextField type="text" name="subTitle" label="Untertitel" optional />
+      <LabeledSelect
+        name="alkisStateKey"
+        label="Bundesland (ALKIS-Daten)"
+        optional
+        // @ts-expect-error
+        options={getBundeslandSelectOptions()}
+        // help="Steuert die ALKIS-WMS-Hintergrundkarte in den Projektkarten, sofern für das gewählte Bundesland ein Dienst hinterlegt ist."
+      />
       {/* UNUSED */}
       {/* <LabeledTextField
         optional

@@ -1,4 +1,4 @@
-import db, { LabelPositionEnum } from "@/db"
+import db, { LabelPositionEnum, StateKeyEnum } from "@/db"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import createProject from "../../projects/mutations/createProject"
 import createSubsection from "../../subsections/mutations/createSubsection"
@@ -29,7 +29,7 @@ describe("createLogEntry mutation", async () => {
     },
   })
   const project = await createProject(
-    { slug: "test", exportEnabled: false, aiEnabled: false },
+    { slug: "test", exportEnabled: false, aiEnabled: false, alkisStateKey: StateKeyEnum.DISABLED },
     mockCtx,
   )
   const subsectionInput = {

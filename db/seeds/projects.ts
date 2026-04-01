@@ -1,4 +1,4 @@
-import db, { Project } from "../index"
+import db, { Project, StateKeyEnum } from "../index"
 
 const seedProjects = async () => {
   const seedData: Omit<Project, "id" | "createdAt" | "updatedAt">[] = [
@@ -14,6 +14,7 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
       aiEnabled: false,
       landAcquisitionModuleEnabled: false,
       showLogEntries: false,
+      alkisStateKey: StateKeyEnum.DISABLED,
     },
     {
       slug: "rs3000",
@@ -25,6 +26,7 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
       aiEnabled: false,
       landAcquisitionModuleEnabled: false,
       showLogEntries: false,
+      alkisStateKey: StateKeyEnum.DISABLED,
     },
     {
       slug: "rs0v1",
@@ -36,6 +38,7 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
       aiEnabled: false,
       landAcquisitionModuleEnabled: false,
       showLogEntries: false,
+      alkisStateKey: StateKeyEnum.DISABLED,
     },
     {
       slug: "rs0v2",
@@ -47,6 +50,7 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
       aiEnabled: false,
       landAcquisitionModuleEnabled: false,
       showLogEntries: false,
+      alkisStateKey: StateKeyEnum.DISABLED,
     },
   ]
 

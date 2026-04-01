@@ -1,4 +1,5 @@
 import { SlugSchema } from "@/src/core/utils/schema-shared"
+import { StateKeyEnum } from "@prisma/client"
 import { z } from "zod"
 
 const ProjectSlugSchema = SlugSchema.max(15, { message: "Pflichtfeld. Maximal 15 Zeichen." })
@@ -11,6 +12,7 @@ export const ProjectSchema = z.object({
   partnerLogoSrcs: z.array(z.string()).nullish(),
   exportEnabled: z.coerce.boolean(),
   aiEnabled: z.coerce.boolean(),
+  alkisStateKey: z.nativeEnum(StateKeyEnum),
 })
 
 export type ProjectType = z.infer<typeof ProjectSchema>

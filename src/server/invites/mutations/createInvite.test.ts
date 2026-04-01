@@ -1,4 +1,4 @@
-import db from "@/db"
+import db, { StateKeyEnum } from "@/db"
 import previewEmail from "preview-email"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { z } from "zod"
@@ -27,7 +27,12 @@ describe("createInvite mutation", () => {
 
     // Create Project
     const project = await createProject(
-      { slug: "test", exportEnabled: false, aiEnabled: false },
+      {
+        slug: "test",
+        exportEnabled: false,
+        aiEnabled: false,
+        alkisStateKey: StateKeyEnum.DISABLED,
+      },
       mockCtx,
     )
     expect(project.slug).toBe("test")
