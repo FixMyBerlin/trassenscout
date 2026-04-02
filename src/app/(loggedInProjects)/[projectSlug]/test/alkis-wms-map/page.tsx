@@ -1,7 +1,7 @@
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { Metadata } from "next"
 import "server-only"
-import { AlkisWmsTestMap } from "./_components/AlkisWmsTestMap"
+import { AlkisWmsMapProjectClient } from "./_components/AlkisWmsMapProjectClient"
 
 export const metadata: Metadata = {
   robots: "noindex",
@@ -17,10 +17,7 @@ export default function AlkisWmsBerlinTestMapPage() {
         description="Hardcoded WMS-GetMap (Raster-Tiles) gegen das Geoportal Berlin. Nur zur Entwicklung, nicht für Produktion."
       />
 
-      <section className="mt-12">
-        <AlkisWmsTestMap />
-      </section>
+      <AlkisWmsMapProjectClient />
     </>
   )
 }
-

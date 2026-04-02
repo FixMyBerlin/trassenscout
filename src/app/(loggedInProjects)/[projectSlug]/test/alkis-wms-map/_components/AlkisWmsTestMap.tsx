@@ -1,9 +1,18 @@
 "use client"
 
 import { BackgroundSwitcher, type LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
+import { SubsubsectionMarkers } from "@/src/core/components/Map/markers/SubsubsectionMarkers"
 import { getMapStyle } from "@/src/core/components/Map/mapStyleConfig"
+import {
+  subsubsectionDashboardRoute,
+  subsubsectionEditRoute,
+} from "@/src/core/routes/subsectionRoutes"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
+import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
+import { SubsubsectionGeometryLayers } from "../../_components/SubsubsectionGeometryLayers"
 import "maplibre-gl/dist/maplibre-gl.css"
-import { useMemo, useRef, useState } from "react"
+import { useRouter } from "next/navigation"
+import { useCallback, useMemo, useRef, useState } from "react"
 import Map, { Layer, NavigationControl, ScaleControl, Source, type MapRef } from "react-map-gl/maplibre"
 
 const MIN_WMS_ZOOM = 14
@@ -23,8 +32,14 @@ const BERLIN_WMS_TILES = [
     "&BBOX={bbox-epsg-3857}",
 ]
 
-export function AlkisWmsTestMap() {
+type Props = {
+  subsubsections: SubsubsectionWithPosition[]
+}
+
+export function AlkisWmsTestMap({ subsubsections }: Props) {
   const mapRef = useRef<MapRef | null>(null)
+  const router = useRouter()
+  const projectSlug = useProjectSlug()
 
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
   const [zoom, setZoom] = useState<number>(15)
@@ -33,6 +48,24 @@ export function AlkisWmsTestMap() {
   const mapStyle = useMemo(() => getMapStyle(selectedLayer), [selectedLayer])
 
   const showZoomHint = zoom < MIN_WMS_ZOOM
+
+  const handleSubsubsectionSelect = useCallback(
+    ({
+      subsectionSlug,
+      subsubsectionSlug,
+      edit,
+    }: {
+      subsectionSlug: string
+      subsubsectionSlug: string
+      edit: boolean
+    }) => {
+      const url = edit
+        ? subsubsectionEditRoute(projectSlug, subsectionSlug, subsubsectionSlug)
+        : subsubsectionDashboardRoute(projectSlug, subsectionSlug, subsubsectionSlug)
+      router.push(url, { scroll: edit })
+    },
+    [projectSlug, router],
+  )
 
   return (
     <div className="relative w-full overflow-clip rounded-md border border-gray-200 shadow-sm">
@@ -74,6 +107,16 @@ export function AlkisWmsTestMap() {
               }}
             />
           </Source>
+
+          <SubsubsectionGeometryLayers subsubsections={subsubsections} />
+
+          {subsubsections.length > 0 && (
+            <SubsubsectionMarkers
+              subsubsections={subsubsections}
+              pageSubsectionSlug={null}
+              onSelect={handleSubsubsectionSelect}
+            />
+          )}
         </Map>
       </div>
 
@@ -121,4 +164,3 @@ export function AlkisWmsTestMap() {
     </div>
   )
 }
-

@@ -1,10 +1,19 @@
 "use client"
 
 import { BackgroundSwitcher, type LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
+import { SubsubsectionMarkers } from "@/src/core/components/Map/markers/SubsubsectionMarkers"
 import { getMapStyle } from "@/src/core/components/Map/mapStyleConfig"
+import {
+  subsubsectionDashboardRoute,
+  subsubsectionEditRoute,
+} from "@/src/core/routes/subsectionRoutes"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
+import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
+import { SubsubsectionGeometryLayers } from "../../_components/SubsubsectionGeometryLayers"
 import type { FeatureCollection, Geometry } from "geojson"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
+import { useRouter } from "next/navigation"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import Map, {
   Layer,
@@ -84,10 +93,16 @@ function bboxKey(bounds: maplibregl.LngLatBounds) {
   ].join(",")
 }
 
-export function AlkisTestMap() {
+type Props = {
+  subsubsections: SubsubsectionWithPosition[]
+}
+
+export function AlkisTestMap({ subsubsections }: Props) {
   const mapRef = useRef<MapRef | null>(null)
   const debounceTimerRef = useRef<number | null>(null)
   const abortRef = useRef<AbortController | null>(null)
+  const router = useRouter()
+  const projectSlug = useProjectSlug()
 
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
   const [zoom, setZoom] = useState<number>(15)
@@ -110,6 +125,24 @@ export function AlkisTestMap() {
   useEffect(() => {
     setSelectedParcel(null)
   }, [parcels])
+
+  const handleSubsubsectionSelect = useCallback(
+    ({
+      subsectionSlug,
+      subsubsectionSlug,
+      edit,
+    }: {
+      subsectionSlug: string
+      subsubsectionSlug: string
+      edit: boolean
+    }) => {
+      const url = edit
+        ? subsubsectionEditRoute(projectSlug, subsectionSlug, subsubsectionSlug)
+        : subsubsectionDashboardRoute(projectSlug, subsectionSlug, subsubsectionSlug)
+      router.push(url, { scroll: edit })
+    },
+    [projectSlug, router],
+  )
 
   const fetchParcelsNow = useCallback(async () => {
     const map = mapRef.current?.getMap()
@@ -271,6 +304,16 @@ export function AlkisTestMap() {
             />
           </Source>
 
+          <SubsubsectionGeometryLayers subsubsections={subsubsections} />
+
+          {subsubsections.length > 0 && (
+            <SubsubsectionMarkers
+              subsubsections={subsubsections}
+              pageSubsectionSlug={null}
+              onSelect={handleSubsubsectionSelect}
+            />
+          )}
+
           {selectedParcel && (
             <Popup
               longitude={selectedParcel.longitude}
@@ -337,4 +380,3 @@ export function AlkisTestMap() {
     </div>
   )
 }
-

@@ -1,7 +1,7 @@
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { Metadata } from "next"
 import "server-only"
-import { AlkisTestMap } from "./_components/AlkisTestMap"
+import { AlkisWfsMapProjectClient } from "./_components/AlkisWfsMapProjectClient"
 
 export const metadata: Metadata = {
   robots: "noindex",
@@ -17,10 +17,7 @@ export default function AlkisBerlinTestMapPage() {
         description="Hardcoded WFS-GetFeature (BBOX) gegen das Geoportal Berlin. Nur zur Entwicklung, nicht für Produktion."
       />
 
-      <section className="mt-12">
-        <AlkisTestMap />
-      </section>
+      <AlkisWfsMapProjectClient />
     </>
   )
 }
-
