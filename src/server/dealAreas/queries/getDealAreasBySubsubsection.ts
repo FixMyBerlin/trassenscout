@@ -18,6 +18,12 @@ const GetDealAreasBySubsubsectionSchema = ProjectSlugRequiredSchema.merge(
 
 export type DealAreaWithTypedGeometry = Omit<DealArea, "geometry"> & {
   geometry: GeometryByGeometryType<"POLYGON">
+  dealAreaStatus: {
+    id: number
+    slug: string
+    title: string
+    style: number
+  } | null
 }
 
 export default resolver.pipe(
@@ -32,6 +38,16 @@ export default resolver.pipe(
             project: {
               slug: projectSlug,
             },
+          },
+        },
+      },
+      include: {
+        dealAreaStatus: {
+          select: {
+            id: true,
+            slug: true,
+            title: true,
+            style: true,
           },
         },
       },
