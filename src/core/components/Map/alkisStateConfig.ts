@@ -22,7 +22,7 @@ export type AlkisBackgroundConfigEntry = {
  * Column mapping: “WFS-URL” → `wfsUrl`, “Attributname Flurstücksnummer” → `parcelPropertyKey`,
  * “Projektion” → `projection`.
  *
- * Uncomment `wmsUrl` / `layerName` where marked TODO when WMS endpoints are verified.
+ * Add `wmsUrl` / `layerName` when verified (see `scripts/alkis-wms-audit.ts` and generated `scripts/alkis-wms-audit-results.md`).
  */
 export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> = {
   BADEN_WUERTTEMBERG: {
@@ -39,9 +39,8 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
   BERLIN: {
     label: "Berlin",
     enabled: true,
-    // TODO: verify WMS URL and layer name
-    // wmsUrl: "https://gdi.berlin.de/services/wms/alkis",
-    // layerName: "a_alkis_raster",
+    wmsUrl: "https://gdi.berlin.de/services/wms/alkis_flurstuecke",
+    layerName: "flurstuecke",
     wfsUrl: "https://gdi.berlin.de/services/wfs/alkis_flurstuecke",
     parcelPropertyKey: "alkis_flurstuecke:flurstuecke",
     projection: "EPSG:25833",
@@ -78,10 +77,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
   MECKLENBURG_VORPOMMERN: {
     label: "Mecklenburg-Vorpommern",
     enabled: true,
-    // TODO: verify WMS URL and layer name
-    // wmsUrl: "https://www.geodaten-mv.de/dienste/alkis_wms",
-    // layerName:
-    //   "adv_alkis_flurstuecke,adv_alkis_gebaeude,adv_alkis_verkehr,adv_alkis_tatsaechliche_nutzung",
+    // WMS: not verified (see scripts/alkis-wms-audit-results.md)
     wfsUrl: "https://www.geodaten-mv.de/dienste/alkis_wfs_einfach",
     parcelPropertyKey: "ave:Flurstueck",
     projection: "EPSG:25833",
@@ -97,10 +93,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
   NORDRHEIN_WESTFALEN: {
     label: "Nordrhein-Westfalen",
     enabled: true,
-    // TODO: verify WMS URL and layer name
-    // wmsUrl: "https://www.wms.nrw.de/geobasis/wms_nw_alkis",
-    // layerName:
-    //   "adv_alkis_flurstuecke,adv_alkis_gebaeude,adv_alkis_verkehr,adv_alkis_tatsaechliche_nutzung",
+    // WMS: not verified (see scripts/alkis-wms-audit-results.md)
     wfsUrl: "https://www.wfs.nrw.de/geobasis/wfs_nw_alkis_vereinfacht",
     parcelPropertyKey: "ave:Flurstueck",
     projection: "EPSG:25832",
