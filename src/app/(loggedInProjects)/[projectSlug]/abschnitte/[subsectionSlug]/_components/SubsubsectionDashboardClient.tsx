@@ -3,10 +3,10 @@
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Breadcrumb } from "@/src/core/components/Breadcrumb/Breadcrumb"
-import { Notice } from "@/src/core/components/Notice/Notice"
-import { Spinner } from "@/src/core/components/Spinner"
 import { SubsubsectionIcon } from "@/src/core/components/Map/Icons"
 import { SubsubsectionMapWithProvider } from "@/src/core/components/Map/SubsubsectionMapWithProvider"
+import { Notice } from "@/src/core/components/Notice/Notice"
+import { Spinner } from "@/src/core/components/Spinner"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { subsubsectionEditRoute } from "@/src/core/routes/subsectionRoutes"
@@ -17,13 +17,19 @@ import getSubsubsection from "@/src/server/subsubsections/queries/getSubsubsecti
 import getSubsubsections from "@/src/server/subsubsections/queries/getSubsubsections"
 import { useQuery } from "@blitzjs/rpc"
 import { SubsubsectionDetailsContent } from "./SubsubsectionDetailsContent"
+import { SubsubsectionLandAcquisitionContent } from "./SubsubsectionLandAcquisitionContent"
+import { SubsubsectionTabKey, SubsubsectionTabs } from "./SubsubsectionTabs"
 
 const defaultQueryOptions = {
   refetchOnWindowFocus: false,
   refetchOnReconnect: false,
 }
 
-export const SubsubsectionDashboardClient = () => {
+type Props = {
+  activeTab?: SubsubsectionTabKey
+}
+
+export const SubsubsectionDashboardClient = ({ activeTab = "general" }: Props) => {
   const projectSlug = useProjectSlug()
   const subsectionSlug = useSlug("subsectionSlug")
   const subsubsectionSlug = useSlug("subsubsectionSlug")
@@ -92,8 +98,14 @@ export const SubsubsectionDashboardClient = () => {
           </IfUserCanEdit>
         }
       />
+      <SubsubsectionTabs
+        projectSlug={projectSlug}
+        subsectionSlug={subsectionSlug!}
+        subsubsectionSlug={subsubsectionSlug!}
+        showLandAcquisitionTab={subsubsection.subsection.project.landAcquisitionModuleEnabled}
+      />
 
-      <div className="relative mt-12 flex w-full items-start gap-6">
+      <div className="relative flex w-full items-start gap-6">
         <div className="min-w-0 flex-1">
           <SubsubsectionMapWithProvider
             key={`map-subsubsection-${subsubsectionSlug}`}
@@ -103,23 +115,12 @@ export const SubsubsectionDashboardClient = () => {
           />
         </div>
 
-        <div className="min-w-0 flex-1 self-stretch max-h-[calc(100vh-10rem)]">
-          <SubsubsectionDetailsContent
-            subsubsection={subsubsection}
-            header={
-              <div className="flex items-center justify-between gap-3 px-1 pt-1 pb-2">
-                <h2 className="text-lg font-semibold text-gray-700">Allgemeines</h2>
-                <IfUserCanEdit>
-                  <Link
-                    icon="edit"
-                    href={subsubsectionEditRoute(projectSlug, subsectionSlug!, subsubsectionSlug!)}
-                  >
-                    bearbeiten
-                  </Link>
-                </IfUserCanEdit>
-              </div>
-            }
-          />
+        <div className="max-h-[calc(100vh-10rem)] min-w-0 flex-1 self-stretch">
+          {activeTab === "land-acquisition" ? (
+            <SubsubsectionLandAcquisitionContent subsubsectionId={subsubsection.id} />
+          ) : (
+            <SubsubsectionDetailsContent subsubsection={subsubsection} />
+          )}
         </div>
       </div>
 

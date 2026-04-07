@@ -19,8 +19,8 @@ import {
 } from "@/src/core/components/text"
 import { H2 } from "@/src/core/components/text/Headings"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
-import { subsubsectionEditRoute } from "@/src/core/routes/subsectionRoutes"
 import { subsubsectionUploadEditRoute } from "@/src/core/routes/uploadRoutes"
+import { subsubsectionEditRoute } from "@/src/core/routes/subsectionRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
 import { subsubsectionLocationLabelMap } from "@/src/core/utils/subsubsectionLocationLabelMap"
@@ -31,14 +31,15 @@ import { useQuery } from "@blitzjs/rpc"
 import { PlusIcon } from "@heroicons/react/16/solid"
 import { clsx } from "clsx"
 import { useState } from "react"
+import { SubsubsectionPanel } from "./SubsubsectionPanel"
 
 type Props = {
   subsubsection: TGetSubsubsection
-  header?: React.ReactNode
   className?: string
+  header?: React.ReactNode
 }
 
-export const SubsubsectionDetailsContent = ({ subsubsection, header, className }: Props) => {
+export const SubsubsectionDetailsContent = ({ subsubsection, className, header }: Props) => {
   const subsectionSlug = useSlug("subsectionSlug")
   const subsubsectionSlug = useSlug("subsubsectionSlug")
   const projectSlug = useProjectSlug()
@@ -66,15 +67,21 @@ export const SubsubsectionDetailsContent = ({ subsubsection, header, className }
   )
 
   return (
-    <section
-      className={clsx(
-        "flex h-full min-h-0 flex-col overflow-hidden rounded-lg border border-gray-200 bg-white p-4 shadow-sm",
-        className,
-      )}
+    <SubsubsectionPanel
+      title="Allgemeines"
+      action={
+        <IfUserCanEdit>
+          <Link
+            icon="edit"
+            href={subsubsectionEditRoute(projectSlug, subsectionSlug!, subsubsectionSlug!)}
+          >
+            bearbeiten
+          </Link>
+        </IfUserCanEdit>
+      }
+      className={className}
+      header={header}
     >
-      {header}
-
-      <div className="min-h-0 flex-1 overflow-y-auto pt-6 pr-1">
         {subsubsection.description && (
           <section className="bg-gray-100 px-4 py-3">
             <Markdown markdown={subsubsection.description} className="text-sm leading-tight" />
@@ -237,9 +244,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, header, className }
         </div>
 
         <section className="mt-10 space-y-3">
-          <H2 className="text-lg font-semibold text-gray-700 sm:text-lg">
-            Protokolleinträge
-          </H2>
+          <H2 className="text-lg font-semibold text-gray-700 sm:text-lg">Protokolleinträge</H2>
           {showSuccess && (
             <FormSuccess message="Protokolleintrag erfolgreich erstellt" show={showSuccess} />
           )}
@@ -312,9 +317,9 @@ export const SubsubsectionDetailsContent = ({ subsubsection, header, className }
             </IfUserCanEdit>
           </div>
         </section>
-      </div>
+      
 
       <SuperAdminLogData data={{ subsubsection, uploads, projectRecords }} />
-    </section>
+    </SubsubsectionPanel>
   )
 }

@@ -24,7 +24,7 @@ m2mFields.forEach((fieldName) => {
 export type SubsubsectionWithPosition = Omit<Subsubsection, "geometry" | "type"> &
   GeometryWithTypeDiscriminated & {
     manager: { firstName: string; lastName: string } | null
-  } & { subsection: { slug: string } } & {
+  } & { subsection: { slug: string; project: { landAcquisitionModuleEnabled: boolean } } } & {
     qualityLevel?: Pick<QualityLevel, "title" | "slug" | "url">
   } & { SubsubsectionTask?: { title: string } } & {
     SubsubsectionInfrastructureTypes: { id: number; title: string; slug: string }[]
@@ -51,7 +51,12 @@ const getSubsubsection = resolver.pipe(
       include: {
         ...includeM2mFields,
         manager: { select: { firstName: true, lastName: true } },
-        subsection: { select: { slug: true } },
+        subsection: {
+          select: {
+            slug: true,
+            project: { select: { landAcquisitionModuleEnabled: true } },
+          },
+        },
         qualityLevel: { select: { title: true, slug: true, url: true } },
         SubsubsectionTask: { select: { title: true } },
         SubsubsectionInfrastructureTypes: { select: { id: true, title: true, slug: true } },

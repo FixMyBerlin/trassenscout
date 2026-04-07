@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 }
 
 export default function SubsubsectionDashboardPage() {
-  return <SubsubsectionDashboardClient />
+  return <SubsubsectionDashboardClient activeTab="general" />
 }
