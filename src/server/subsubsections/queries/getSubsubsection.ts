@@ -32,7 +32,9 @@ export type SubsubsectionWithPosition = Omit<Subsubsection, "geometry" | "type">
     SubsubsectionInfra?: { title: string; slug: string }
   }
 
-export default resolver.pipe(
+export type TGetSubsubsection = Awaited<ReturnType<typeof getSubsubsection>>
+
+const getSubsubsection = resolver.pipe(
   resolver.zod(GetSubsubsection),
   authorizeProjectMember(extractProjectSlug, viewerRoles),
   async ({ projectSlug, subsectionSlug, subsubsectionSlug }) => {
@@ -51,6 +53,7 @@ export default resolver.pipe(
         manager: { select: { firstName: true, lastName: true } },
         subsection: { select: { slug: true } },
         qualityLevel: { select: { title: true, slug: true, url: true } },
+        SubsubsectionTask: { select: { title: true } },
         SubsubsectionInfrastructureTypes: { select: { id: true, title: true, slug: true } },
         SubsubsectionInfra: { select: { title: true, slug: true } },
         SubsubsectionStatus: { select: { title: true, slug: true, style: true } },
@@ -61,3 +64,5 @@ export default resolver.pipe(
     return typeSubsubsectionGeometry(subsubsection)
   },
 )
+
+export default getSubsubsection
