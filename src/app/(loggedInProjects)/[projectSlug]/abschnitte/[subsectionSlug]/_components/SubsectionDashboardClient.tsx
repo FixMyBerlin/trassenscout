@@ -17,16 +17,11 @@ import { useSlug } from "@/src/core/routes/useSlug"
 import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import getSubsubsections from "@/src/server/subsubsections/queries/getSubsubsections"
 import { useQuery } from "@blitzjs/rpc"
-import { useRouter } from "next/navigation"
-import { mapillaryLink } from "../_utils/mapillaryLink"
 import { SubsectionUploadsSection } from "./SubsectionUploadsSection"
-import { SubsubsectionMapSidebar } from "./SubsubsectionMapSidebar"
 import { SubsubsectionTable } from "./SubsubsectionTable"
 
 export const SubsectionDashboardClient = () => {
-  const router = useRouter()
   const subsectionSlug = useSlug("subsectionSlug")
-  const subsubsectionSlug = useSlug("subsubsectionSlug")
   const projectSlug = useProjectSlug()
 
   const [subsectionsResult, { isLoading: subsectionsLoading }] = useQuery(
@@ -40,25 +35,7 @@ export const SubsectionDashboardClient = () => {
   const subsections = subsectionsResult?.subsections ?? []
   const subsection = subsections.find((ss) => ss.slug === subsectionSlug)
 
-  // QUERY 1: All subsubsections for the map (max 249 - default of query)
-  // The map component needs ALL subsubsections for the entire project to render
-  // the full geometry/overlay. We accept that with very large projects, some
-  // might be missing (visual degradation), but the map remains functional and a notice is shown.
   const [subsubsectionsResult, { isLoading: subsubsectionsLoading }] = useQuery(
-    getSubsubsections,
-    { projectSlug, take: 249 },
-    {
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
-    },
-  )
-  const subsubsections = subsubsectionsResult?.subsubsections ?? []
-  const subsubsectionsHasMore = subsubsectionsResult?.hasMore
-  const subsubsectionsCount = subsubsectionsResult?.count
-
-  // QUERY 2: server-side filtered subsubsections for the table/sidebar (max 249 - default of query)
-  // Ensure selected subsection's subsubsections are always fully loaded for the table and sidebar, even in large projects.
-  const [filteredSubsubsectionsResult, { isLoading: filteredSubsubsectionsLoading }] = useQuery(
     getSubsubsections,
     { projectSlug, where: { subsectionId: subsection?.id } },
     {
@@ -67,29 +44,16 @@ export const SubsectionDashboardClient = () => {
       refetchOnReconnect: false,
     },
   )
-  const subsubsectionsForSubsection = filteredSubsubsectionsResult?.subsubsections ?? []
-  const subsubsection = subsubsectionsForSubsection.find((ss) => ss.slug === subsubsectionSlug)
+  const subsubsections = subsubsectionsResult?.subsubsections ?? []
+  const subsubsectionsHasMore = subsubsectionsResult?.hasMore
+  const subsubsectionsCount = subsubsectionsResult?.count
 
-  // Merge: ensure all subsubsections from the current subsection are in the map data,
-  // even if they were truncated in Query 1.
-  const subsubsectionsForMap = [
-    ...subsubsections,
-    ...subsubsectionsForSubsection.filter(
-      (filtered) => !subsubsections.some((ss) => ss.id === filtered.id),
-    ),
-  ]
-
-  if (
-    (subsectionsLoading || subsubsectionsLoading || filteredSubsubsectionsLoading) &&
-    !subsection
-  ) {
+  if ((subsectionsLoading || subsubsectionsLoading) && !subsection) {
     return <Spinner page />
   }
   if (!subsection) {
     return null
   }
-
-  const mapillaryHref = subsubsection && mapillaryLink(subsubsection)
 
   return (
     <>
@@ -118,30 +82,13 @@ export const SubsectionDashboardClient = () => {
       <div className="relative mt-12 flex w-full gap-10">
         <div className="w-full">
           <SubsubsectionMapWithProvider
-            key={`map-${subsubsectionSlug ? "subsubsection" : "subsection"}`}
+            key="map-subsection"
             subsections={subsections}
             selectedSubsection={subsection}
-            subsubsections={subsubsectionsForMap}
+            subsubsections={subsubsections}
           />
-          {mapillaryHref && (
-            <Link blank href={mapillaryHref} className="block text-xs">
-              Mapillary öffnen
-            </Link>
-          )}
-          <SubsubsectionTable
-            subsubsections={subsubsectionsForSubsection}
-            compact={Boolean(subsubsection)}
-          />
+          <SubsubsectionTable subsubsections={subsubsections} compact={false} />
         </div>
-
-        {subsubsection && (
-          <SubsubsectionMapSidebar
-            subsubsection={subsubsection}
-            onClose={() => {
-              router.push(`/${projectSlug}/abschnitte/${subsectionSlug}`, { scroll: false })
-            }}
-          />
-        )}
       </div>
 
       <SubsectionUploadsSection subsectionId={subsection.id} />
@@ -151,9 +98,6 @@ export const SubsectionDashboardClient = () => {
           subsections,
           subsection,
           subsubsections,
-          subsubsectionsForMap,
-          subsubsectionsForSubsection,
-          subsubsection,
         }}
       />
     </>

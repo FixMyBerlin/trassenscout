@@ -1,5 +1,5 @@
 import { Metadata } from "next"
-import { SubsectionDashboardClient } from "../../_components/SubsectionDashboardClient"
+import { SubsubsectionDashboardClient } from "../../_components/SubsubsectionDashboardClient"
 
 export const metadata: Metadata = {
   title: "Eintrag",
@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 }
 
 export default function SubsubsectionDashboardPage() {
-  return <SubsectionDashboardClient />
+  return <SubsubsectionDashboardClient />
 }
