@@ -48,6 +48,10 @@ export const SubsubsectionTabs = ({
       : []),
   ]
 
+  if (tabs.length <= 1) {
+    return null
+  }
+
   return (
     <nav className="mt-8 mb-6 max-w-md">
       <div className="sm:hidden">
