@@ -2,6 +2,9 @@ FROM node:24-trixie-slim
 
 WORKDIR /app
 
+ARG NEXT_PUBLIC_APP_ORIGIN
+ARG NEXT_PUBLIC_APP_ENV
+
 COPY package* ./
 
 RUN npm install-clean --legacy-peer-deps
@@ -11,9 +14,6 @@ COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV TZ=Europe/Berlin
-
-ARG NEXT_PUBLIC_APP_ORIGIN
-ARG NEXT_PUBLIC_APP_ENV
 
 RUN npx blitz@2.2.4 prisma generate
 RUN npx blitz@2.2.4 build
