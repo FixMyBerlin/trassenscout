@@ -1,3 +1,4 @@
+import { DealAreaGeometrySchema } from "@/src/server/dealAreas/schema"
 import { booleanIntersects } from "@turf/boolean-intersects"
 import { featureCollection } from "@turf/helpers"
 import { intersect } from "@turf/intersect"
@@ -34,7 +35,7 @@ export function computePotentialDealAreas(
 
     results.push({
       id: String(seq),
-      geometry: intersection.geometry,
+      geometry: DealAreaGeometrySchema.parse(intersection.geometry),
       gmlId,
       selected: true,
     })

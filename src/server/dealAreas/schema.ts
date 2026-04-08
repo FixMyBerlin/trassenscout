@@ -3,6 +3,7 @@ import { InputNumberOrNullSchema } from "@/src/core/utils/schema-shared"
 import { z } from "zod"
 
 export const DealAreaGeometrySchema = z.union([PolygonGeometrySchema, MultiPolygonGeometrySchema])
+export type TDealAreaGeometrySchema = z.infer<typeof DealAreaGeometrySchema>
 
 export const DealAreaSchema = z.object({
   subsubsectionId: z.coerce.number(),

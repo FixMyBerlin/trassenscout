@@ -8,6 +8,7 @@ import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlu
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { FormSuccess } from "@/src/core/components/forms/FormSuccess"
+import { SelectListbox } from "@/src/core/components/forms/SelectListbox"
 import { blueButtonStyles, Link } from "@/src/core/components/links"
 import { subsubsectionEditRoute } from "@/src/core/routes/subsectionRoutes"
 import { subsubsectionUploadEditRoute } from "@/src/core/routes/uploadRoutes"
@@ -100,21 +101,17 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
     >
       <div className="space-y-8">
         {dealAreas.length > 1 && (
-          <select
-            value={dealAreaId ?? ""}
-            onChange={(event) => {
-              const value = event.target.value
-              void setDealAreaId(value ? Number(value) : null)
+          <SelectListbox
+            value={dealAreaId ?? null}
+            onChange={(value) => {
+              void setDealAreaId(value)
             }}
-            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 shadow-xs focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-hidden"
-          >
-            <option value="">Dealfläche auswählen</option>
-            {dealAreas.map((dealArea) => (
-              <option key={dealArea.id} value={dealArea.id}>
-                {`Dealfläche ${dealArea.parcel.gmlId ?? dealArea.id}`}
-              </option>
-            ))}
-          </select>
+            placeholder="Dealfläche auswählen"
+            options={dealAreas.map((dealArea) => ({
+              value: dealArea.id,
+              label: `Dealfläche ${dealArea.id}`,
+            }))}
+          />
         )}
 
         <div className="space-y-3">

@@ -1,8 +1,8 @@
-import type { MultiPolygon, Polygon } from "geojson"
+import type { TDealAreaGeometrySchema } from "@/src/server/dealAreas/schema"
 
 export type PotentialDealArea = {
   id: string
-  geometry: Polygon | MultiPolygon
+  geometry: TDealAreaGeometrySchema
   gmlId: string
   selected: boolean
 }
