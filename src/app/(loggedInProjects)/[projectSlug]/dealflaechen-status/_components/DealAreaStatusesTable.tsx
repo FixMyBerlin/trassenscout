@@ -34,7 +34,7 @@ export const DealAreaStatusesTable = ({ dealAreaStatuses, fromPath }: Props) => 
     if (window.confirm(`Den Eintrag mit ID ${dealAreaStatusId} unwiderruflich löschen?`)) {
       try {
         await deleteDealAreaStatusMutation({ projectSlug, id: dealAreaStatusId })
-        router.push(`/${projectSlug}/deal-area-status` as Route)
+        router.push(`/${projectSlug}/dealflaechen-status` as Route)
         router.refresh()
       } catch {
         alert(
@@ -99,7 +99,7 @@ export const DealAreaStatusesTable = ({ dealAreaStatuses, fromPath }: Props) => 
                   <ButtonWrapper className="justify-end">
                     <Link
                       icon="edit"
-                      href={`/${projectSlug}/deal-area-status/${status.id}/edit${appendFrom}` as Route}
+                      href={`/${projectSlug}/dealflaechen-status/${status.id}/edit${appendFrom}` as Route}
                     >
                       Bearbeiten
                     </Link>

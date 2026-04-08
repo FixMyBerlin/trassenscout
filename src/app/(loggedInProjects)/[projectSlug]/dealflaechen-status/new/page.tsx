@@ -22,7 +22,7 @@ export default async function NewDealAreaStatusPage({
   searchParams,
 }: Props) {
   const fromParam = searchParams?.from
-  const listPath = `/${projectSlug}/deal-area-status` as Route
+  const listPath = `/${projectSlug}/dealflaechen-status` as Route
   const appendFrom = fromParam ? `?from=${encodeURIComponent(fromParam)}` : ""
 
   return (

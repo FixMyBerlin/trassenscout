@@ -1,4 +1,4 @@
-import { EditDealAreaStatusForm } from "@/src/app/(loggedInProjects)/[projectSlug]/deal-area-status/_components/EditDealAreaStatusForm"
+import { EditDealAreaStatusForm } from "@/src/app/(loggedInProjects)/[projectSlug]/dealflaechen-status/_components/EditDealAreaStatusForm"
 import { invoke } from "@/src/blitz-server"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitle } from "@/src/core/components/text"
