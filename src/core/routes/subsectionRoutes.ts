@@ -25,7 +25,7 @@ export const subsubsectionLandAcquisitionRoute = (
   subsectionSlug: string,
   subsubsectionSlug: string,
 ): Route => {
-  return `/${projectSlug}/abschnitte/${subsectionSlug}/fuehrung/${subsubsectionSlug}/grunderwerb` as Route
+  return `/${projectSlug}/abschnitte/${subsectionSlug}/fuehrung/${subsubsectionSlug}/land-acquisition` as Route
 }
 
 export const subsubsectionEditRoute = (

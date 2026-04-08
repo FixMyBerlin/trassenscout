@@ -1,6 +1,6 @@
 "use client"
 
-import { SubsubsectionGeometryLayers } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/[subsubsectionSlug]/deal-areas/new/_components/SubsubsectionGeometryLayers"
+import { SubsubsectionGeometryLayers } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/[subsubsectionSlug]/land-acquisition/deal-areas/new/_components/SubsubsectionGeometryLayers"
 import { BackgroundSwitcher, type LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
 import { getMapStyle } from "@/src/core/components/Map/mapStyleConfig"
 import { geometryBbox } from "@/src/core/components/Map/utils/bboxHelpers"

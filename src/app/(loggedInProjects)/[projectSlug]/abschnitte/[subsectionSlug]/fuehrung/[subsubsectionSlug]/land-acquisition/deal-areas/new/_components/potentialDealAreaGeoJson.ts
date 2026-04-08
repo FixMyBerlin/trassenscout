@@ -1,4 +1,4 @@
-import type { Feature, FeatureCollection, MultiPolygon, Polygon } from "geojson"
+import type { Feature, MultiPolygon, Polygon } from "geojson"
 import type { PotentialDealArea } from "./potentialDealAreaTypes"
 
 export function bufferOutlineFeatureCollection(
