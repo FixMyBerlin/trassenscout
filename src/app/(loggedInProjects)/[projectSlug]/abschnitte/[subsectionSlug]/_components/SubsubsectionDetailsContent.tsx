@@ -253,6 +253,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
             projectRecords={projectRecords}
             openLinksInNewTab
             highlightId={createdProjectRecordId}
+            bleed={false}
           />
         ) : (
           <ZeroCase small visible name="Protokolleinträge" />

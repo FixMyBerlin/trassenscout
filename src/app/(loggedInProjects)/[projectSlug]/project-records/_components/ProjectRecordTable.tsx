@@ -32,6 +32,7 @@ export const ProjectRecordsTable = ({
   withSubsection,
   withSubsubsection,
   openLinksInNewTab,
+  bleed = true,
 }: {
   projectRecords:
     | Awaited<ReturnType<typeof getProjectRecords>>
@@ -42,6 +43,7 @@ export const ProjectRecordsTable = ({
   withSubsection?: boolean
   withSubsubsection?: boolean
   openLinksInNewTab?: boolean
+  bleed?: boolean
 }) => {
   const projectSlug = useProjectSlug()
   const { filter, setFilter } = useFilters()
@@ -56,7 +58,7 @@ export const ProjectRecordsTable = ({
 
   return (
     <>
-      <TableWrapper>
+      <TableWrapper bleed={bleed}>
         <div className="@container min-w-full divide-y divide-gray-300 text-sm text-gray-900">
           <div className="flex flex-row bg-gray-50">
             <div className="grid w-full grid-cols-2 @lg:grid-cols-3">

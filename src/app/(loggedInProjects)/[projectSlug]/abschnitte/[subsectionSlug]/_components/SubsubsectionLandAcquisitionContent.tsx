@@ -211,6 +211,7 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
                     projectRecords={projectRecords}
                     openLinksInNewTab
                     highlightId={createdProjectRecordId}
+                    bleed={false}
                   />
                 ) : (
                   <p className="my-4 text-base text-gray-500">
@@ -302,7 +303,9 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
         </div>
       </div>
 
-      <SuperAdminLogData data={{ dealAreas, selectedDealArea, dealAreaId, projectRecords, uploads }} />
+      <SuperAdminLogData
+        data={{ dealAreas, selectedDealArea, dealAreaId, projectRecords, uploads }}
+      />
     </SubsubsectionPanel>
   )
 }
