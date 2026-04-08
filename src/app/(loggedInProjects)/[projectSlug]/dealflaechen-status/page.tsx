@@ -21,7 +21,10 @@ type Props = {
   searchParams: { from?: string }
 }
 
-export default async function DealAreaStatusesPage({ params: { projectSlug }, searchParams }: Props) {
+export default async function DealAreaStatusesPage({
+  params: { projectSlug },
+  searchParams,
+}: Props) {
   const { dealAreaStatuses } = await invoke(getDealAreaStatuses, { projectSlug })
   const fromParam = searchParams?.from
   const appendFrom = fromParam ? `?from=${encodeURIComponent(fromParam)}` : ""

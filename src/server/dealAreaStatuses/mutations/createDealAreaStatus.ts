@@ -5,8 +5,8 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
-import { getProjectIdBySlug } from "@/src/server/projects/queries/getProjectIdBySlug"
 import { DealAreaStatus } from "@/src/server/dealAreaStatuses/schema"
+import { getProjectIdBySlug } from "@/src/server/projects/queries/getProjectIdBySlug"
 import { resolver } from "@blitzjs/rpc"
 
 const CreateDealAreaStatusSchema = ProjectSlugRequiredSchema.merge(

@@ -99,7 +99,9 @@ export const DealAreaStatusesTable = ({ dealAreaStatuses, fromPath }: Props) => 
                   <ButtonWrapper className="justify-end">
                     <Link
                       icon="edit"
-                      href={`/${projectSlug}/dealflaechen-status/${status.id}/edit${appendFrom}` as Route}
+                      href={
+                        `/${projectSlug}/dealflaechen-status/${status.id}/edit${appendFrom}` as Route
+                      }
                     >
                       Bearbeiten
                     </Link>

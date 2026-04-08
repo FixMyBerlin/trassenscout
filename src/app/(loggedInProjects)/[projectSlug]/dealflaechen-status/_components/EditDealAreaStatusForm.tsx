@@ -27,7 +27,9 @@ export const EditDealAreaStatusForm = ({ dealAreaStatus, projectSlug, fromParam 
   const [deleteDealAreaStatusMutation] = useMutation(deleteDealAreaStatus)
 
   const listPath = `/${projectSlug}/dealflaechen-status`
-  const returnPath = (fromParam ? `${listPath}?from=${encodeURIComponent(fromParam)}` : listPath) as Route
+  const returnPath = (
+    fromParam ? `${listPath}?from=${encodeURIComponent(fromParam)}` : listPath
+  ) as Route
 
   type HandleSubmit = z.infer<typeof DealAreaStatusFormSchema>
   const handleSubmit = async (values: HandleSubmit) => {
