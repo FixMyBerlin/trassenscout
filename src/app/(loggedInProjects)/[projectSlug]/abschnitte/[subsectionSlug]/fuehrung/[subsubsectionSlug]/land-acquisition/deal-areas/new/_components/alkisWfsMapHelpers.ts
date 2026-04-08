@@ -1,9 +1,6 @@
 import { MAX_FEATURES } from "./dealAreaMapConstants"
 
-export function buildAlkisWfsProxyUrl(
-  projectSlug: string,
-  bbox: [number, number, number, number],
-) {
+export function buildAlkisWfsProxyUrl(projectSlug: string, bbox: [number, number, number, number]) {
   const params = new URLSearchParams({
     bbox: bbox.join(","),
     count: String(MAX_FEATURES),

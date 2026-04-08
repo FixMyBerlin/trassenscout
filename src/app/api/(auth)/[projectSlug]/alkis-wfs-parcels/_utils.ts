@@ -9,9 +9,6 @@ import { promisify } from "node:util"
 const execFileAsync = promisify(execFile)
 
 // Avoid "+" in MIME type because some WFS implementations decode it as whitespace.
-// TODO(ALKIS-WFS): Not every state WFS exposes GML 3.2.1 (or GML at all) for GetFeature.
-// When jsonOutputFormat is null we still request this MIME; add per-state output formats
-// and/or fallbacks (e.g. other XML/GML profiles, Shapefile zip) where servers differ.
 const GML_OUTPUT_FORMAT = "text/xml; subtype=gml/3.2.1"
 
 export function buildWfsGetFeatureUrl(params: {
@@ -42,51 +39,46 @@ export function buildWfsGetFeatureUrl(params: {
 }
 
 export function getWfsOutputFormat(config: AlkisBackgroundConfigEntry) {
-  return config.jsonOutputFormat?.trim() ? config.jsonOutputFormat.trim() : GML_OUTPUT_FORMAT
+  return config.wfsOutputFormat?.trim() ? config.wfsOutputFormat.trim() : GML_OUTPUT_FORMAT
 }
 
-// TODO(ALKIS-WFS): Response may not be GML (depends on OUTPUTFORMAT the server honors).
-export async function convertGmlToGeoJson(
-  gmlContent: string,
-  label: string,
-): Promise<{ ok: true; geojson: string } | { ok: false; stderr: string }> {
-  const name = `alkis-wfs-${randomBytes(8).toString("hex")}.gml`
-  const gmlPath = join(tmpdir(), name)
+function sniffTempExtension(body: string): string {
+  const t = body.trimStart()
+  if (t.startsWith("<")) return ".gml"
+  if (t.startsWith("{") || t.startsWith("[")) return ".json"
+  return ".dat"
+}
+
+function tryJsonFeatureCollectionFastPath(
+  raw: string,
+): { ok: true; geojson: string } | { ok: false } {
+  let parsed: unknown
   try {
-    await writeFile(gmlPath, gmlContent, "utf8")
-    const { stdout, stderr } = await execFileAsync(
-      "ogr2ogr",
-      ["-f", "GeoJSON", "/vsistdout/", gmlPath, "-t_srs", "EPSG:4326"],
-      { maxBuffer: 80 * 1024 * 1024 },
-    )
-    if (stderr?.trim()) {
-      console.warn(`ogr2ogr stderr (${label}):`, stderr.trim())
-    }
-    if (!stdout.trim()) {
-      // Some WFS/GML drivers emit empty stdout for valid empty result sets.
-      return { ok: true, geojson: JSON.stringify({ type: "FeatureCollection", features: [] }) }
-    }
-    return { ok: true, geojson: stdout }
-  } catch (e) {
-    const stderr =
-      e && typeof e === "object" && "stderr" in e
-        ? String((e as { stderr?: Buffer }).stderr ?? "")
-        : e instanceof Error
-          ? e.message
-          : String(e)
-    return { ok: false, stderr }
-  } finally {
-    await unlink(gmlPath).catch(() => {})
+    parsed = JSON.parse(raw) as unknown
+  } catch {
+    return { ok: false }
   }
+  if (
+    !parsed ||
+    typeof parsed !== "object" ||
+    !("type" in parsed) ||
+    (parsed as { type?: unknown }).type !== "FeatureCollection"
+  ) {
+    return { ok: false }
+  }
+  return { ok: true, geojson: JSON.stringify(parsed) }
 }
 
-export function parseAndValidateFeatureCollectionJson(raw: string, label: string) {
+function validateFeatureCollectionJson(
+  raw: string,
+  label: string,
+): { ok: true; geojson: string } | { ok: false; error: string } {
   let parsed: unknown
   try {
     parsed = JSON.parse(raw) as unknown
   } catch {
     return {
-      ok: false as const,
+      ok: false,
       error: `WFS ${label} lieferte kein gültiges JSON.`,
     }
   }
@@ -101,9 +93,53 @@ export function parseAndValidateFeatureCollectionJson(raw: string, label: string
         ? String((parsed as { type: unknown }).type)
         : typeof parsed
     return {
-      ok: false as const,
+      ok: false,
       error: `WFS ${label} lieferte kein gültiges GeoJSON (erwartet FeatureCollection, erhalten: ${t})`,
     }
   }
-  return { ok: true as const, featureCollection: parsed }
+  return { ok: true, geojson: JSON.stringify(parsed) }
+}
+
+/**
+ * Parses a WFS GetFeature response as GeoJSON FeatureCollection.
+ * Tries JSON first; otherwise writes a temp file and runs ogr2ogr (GDAL format auto-detection).
+ */
+export async function convertWfsResponseToGeoJson(
+  bodyText: string,
+  label: string,
+): Promise<{ ok: true; geojson: string } | { ok: false; error: string }> {
+  const fast = tryJsonFeatureCollectionFastPath(bodyText)
+  if (fast.ok) {
+    return fast
+  }
+
+  const ext = sniffTempExtension(bodyText)
+  const name = `alkis-wfs-${randomBytes(8).toString("hex")}${ext}`
+  const tempPath = join(tmpdir(), name)
+  try {
+    await writeFile(tempPath, bodyText, "utf8")
+    const { stdout, stderr } = await execFileAsync(
+      "ogr2ogr",
+      ["-f", "GeoJSON", "/vsistdout/", tempPath, "-t_srs", "EPSG:4326"],
+      { maxBuffer: 80 * 1024 * 1024 },
+    )
+    if (stderr?.trim()) {
+      console.warn(`ogr2ogr stderr (${label}):`, stderr.trim())
+    }
+    const out = stdout.trim() ? stdout : JSON.stringify({ type: "FeatureCollection", features: [] })
+    return validateFeatureCollectionJson(out, label)
+  } catch (e) {
+    const stderr =
+      e && typeof e === "object" && "stderr" in e
+        ? String((e as { stderr?: Buffer }).stderr ?? "")
+        : e instanceof Error
+          ? e.message
+          : String(e)
+    return {
+      ok: false,
+      error: `Konvertierung zu GeoJSON via ogr2ogr fehlgeschlagen für ${label}: ${stderr}`,
+    }
+  } finally {
+    await unlink(tempPath).catch(() => {})
+  }
 }

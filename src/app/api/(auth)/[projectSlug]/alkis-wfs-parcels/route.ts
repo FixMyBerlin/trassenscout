@@ -3,12 +3,7 @@ import { withProjectMembership } from "@/src/app/api/(auth)/_utils/withProjectMe
 import { viewerRoles } from "@/src/authorization/constants"
 import { alkisStateConfig } from "@/src/core/components/Map/alkisStateConfig"
 import { StateKeyEnum } from "@prisma/client"
-import {
-  buildWfsGetFeatureUrl,
-  convertGmlToGeoJson,
-  getWfsOutputFormat,
-  parseAndValidateFeatureCollectionJson,
-} from "./_utils"
+import { buildWfsGetFeatureUrl, convertWfsResponseToGeoJson, getWfsOutputFormat } from "./_utils"
 
 // opts into Node runtime (Edge cannot spawn ogr2ogr like this)
 export const runtime = "nodejs"
@@ -139,34 +134,12 @@ export const GET = withProjectMembership(viewerRoles, async ({ params, request }
     )
   }
 
-  // TODO(ALKIS-WFS): Branching is "GeoJSON MIME configured" vs "else assume GML + ogr2ogr".
-  // Some WFS endpoints return neither; support explicit per-state parsers / output formats.
-  if (config.jsonOutputFormat?.trim()) {
-    const validation = parseAndValidateFeatureCollectionJson(bodyText, config.label)
-    if (!validation.ok) {
-      return jsonError(validation.error, 500)
-    }
-    return new Response(JSON.stringify(validation.featureCollection), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    })
-  }
-
-  // TODO(ALKIS-WFS): Only valid if the WFS actually returned GML (or something ogr2ogr understands).
-  const converted = await convertGmlToGeoJson(bodyText, config.label)
+  const converted = await convertWfsResponseToGeoJson(bodyText, config.label)
   if (!converted.ok) {
-    return jsonError(
-      `GML-zu-GeoJSON-Konvertierung via ogr2ogr fehlgeschlagen für ${config.label}: ${converted.stderr}`,
-      500,
-    )
+    return jsonError(converted.error, 500)
   }
 
-  const validation = parseAndValidateFeatureCollectionJson(converted.geojson, config.label)
-  if (!validation.ok) {
-    return jsonError(validation.error, 500)
-  }
-
-  return new Response(JSON.stringify(validation.featureCollection), {
+  return new Response(converted.geojson, {
     status: 200,
     headers: { "Content-Type": "application/json" },
   })

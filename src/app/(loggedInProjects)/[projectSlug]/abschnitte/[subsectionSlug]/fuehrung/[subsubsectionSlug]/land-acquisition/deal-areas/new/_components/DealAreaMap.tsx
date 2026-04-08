@@ -10,9 +10,9 @@ import type { SupportedGeometry } from "@/src/server/shared/utils/geometrySchema
 import getSubsubsection, {
   type SubsubsectionWithPosition,
 } from "@/src/server/subsubsections/queries/getSubsubsection"
+import { bbox } from "@turf/bbox"
 import type { FeatureCollection, Geometry } from "geojson"
 import "maplibre-gl/dist/maplibre-gl.css"
-import { bbox } from "@turf/bbox"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import Map, {
   Layer,
@@ -75,7 +75,6 @@ export function DealAreaMap({
       computeBufferPolygonFeature(subsubsectionEntity.geometry as SupportedGeometry, bufferRadius),
     [subsubsectionEntity.geometry, bufferRadius],
   )
-
 
   // Use the buffer polygon's bbox so the WFS request covers parcels up to bufferRadius beyond the geometry.
   const fetchBbox = useMemo(() => {
@@ -170,15 +169,11 @@ export function DealAreaMap({
       const feature = event.features?.[0]
       if (!feature?.properties) return
 
-      const gmlId = String(
-        (feature.properties as Record<string, unknown>).gml_id ?? "",
-      )
+      const gmlId = String((feature.properties as Record<string, unknown>).gml_id ?? "")
       if (!gmlId) return
 
       setPotentialDealAreas(
-        potentialDealAreas.map((a) =>
-          a.gmlId === gmlId ? { ...a, selected: !a.selected } : a,
-        ),
+        potentialDealAreas.map((a) => (a.gmlId === gmlId ? { ...a, selected: !a.selected } : a)),
       )
     },
     [potentialDealAreas, setPotentialDealAreas],

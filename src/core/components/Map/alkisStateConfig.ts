@@ -13,11 +13,11 @@ export type AlkisBackgroundConfigEntry = {
   // WFS pojection - verified by current manual GetFeature tests (see conversation history).
   projection: "EPSG:25832" | "EPSG:25833" | null
   /**
-   * If set, WFS can return GeoJSON directly (no ogr2ogr).
-   * TODO(ALKIS-WFS): Null currently means "request default GML 3.2.1 + ogr2ogr", but not all
-   * state services expose that; extend config when a state needs a different OUTPUTFORMAT or pipeline.
+   * MIME type for WFS `OUTPUTFORMAT` (GetFeature). Does not select the response parser:
+   * the API always tries JSON FeatureCollection first, then ogr2ogr with GDAL auto-detection.
+   * If null, the default GML 3.2.1 MIME is requested.
    */
-  jsonOutputFormat: string | null
+  wfsOutputFormat: string | null
   /** Whether GetFeature accepts SRSNAME=EPSG:4326 in the BBOX. If false, BBOX reprojection is required (not implemented yet). */
   supports4326: boolean
   /**
@@ -48,7 +48,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     parcelPropertyKey: "nora:v_al_flurstueck",
     projection: "EPSG:25832",
     attribution: null,
-    jsonOutputFormat: "application/json",
+    wfsOutputFormat: "application/json",
     supports4326: true,
     bboxAxisOrder: "lonlat",
   },
@@ -61,7 +61,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     parcelPropertyKey: null,
     projection: null,
     attribution: null,
-    jsonOutputFormat: null,
+    wfsOutputFormat: null,
     supports4326: true,
     bboxAxisOrder: "latlon",
   },
@@ -74,7 +74,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     parcelPropertyKey: "alkis_flurstuecke:flurstuecke",
     projection: "EPSG:25833",
     attribution: "© Geoportal Berlin / ALKIS",
-    jsonOutputFormat: "application/json",
+    wfsOutputFormat: "application/json",
     supports4326: true,
     bboxAxisOrder: "lonlat",
   },
@@ -87,7 +87,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     parcelPropertyKey: "ave:Flurstueck",
     projection: "EPSG:25833",
     attribution: null,
-    jsonOutputFormat: null,
+    wfsOutputFormat: null,
     supports4326: true,
     bboxAxisOrder: "latlon",
   },
@@ -100,7 +100,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     parcelPropertyKey: "adv:AX_Flurstueck",
     projection: "EPSG:25832",
     attribution: null,
-    jsonOutputFormat: null,
+    wfsOutputFormat: null,
     supports4326: true,
     bboxAxisOrder: "latlon",
   },
@@ -113,7 +113,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     parcelPropertyKey: "ave:Flurstueck",
     projection: "EPSG:25832",
     attribution: null,
-    jsonOutputFormat: null,
+    wfsOutputFormat: null,
     supports4326: true,
     bboxAxisOrder: "lonlat",
   },
@@ -126,7 +126,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     parcelPropertyKey: "ave:Flurstueck",
     projection: "EPSG:25832",
     attribution: null,
-    jsonOutputFormat: null,
+    wfsOutputFormat: null,
     supports4326: true,
     bboxAxisOrder: "latlon",
   },
@@ -139,7 +139,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     parcelPropertyKey: "ave:Flurstueck",
     projection: "EPSG:25833",
     attribution: "© GeoPortal MV / ALKIS",
-    jsonOutputFormat: null,
+    wfsOutputFormat: null,
     supports4326: false,
     bboxAxisOrder: "latlon",
   },
@@ -152,7 +152,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     parcelPropertyKey: "ave:Flurstueck",
     projection: "EPSG:25832",
     attribution: null,
-    jsonOutputFormat: null,
+    wfsOutputFormat: null,
     supports4326: true,
     bboxAxisOrder: "latlon",
   },
@@ -165,7 +165,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     parcelPropertyKey: "ave:Flurstueck",
     projection: "EPSG:25832",
     attribution: "© Geobasis NRW / ALKIS",
-    jsonOutputFormat: null,
+    wfsOutputFormat: null,
     supports4326: true,
     bboxAxisOrder: "latlon",
   },
@@ -178,7 +178,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     parcelPropertyKey: "ave:Flurstueck",
     projection: "EPSG:25832",
     attribution: null,
-    jsonOutputFormat: "application/json; subtype=geojson",
+    wfsOutputFormat: "application/json; subtype=geojson",
     supports4326: true,
     bboxAxisOrder: "latlon",
   },
@@ -191,7 +191,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     parcelPropertyKey: "ALKIS_ALKIS_WFS_ohne_Eig:Flurstueck",
     projection: "EPSG:25832",
     attribution: null,
-    jsonOutputFormat: null,
+    wfsOutputFormat: null,
     supports4326: true,
     bboxAxisOrder: "latlon",
   },
@@ -204,7 +204,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     parcelPropertyKey: "ave:Flurstueck",
     projection: "EPSG:25833",
     attribution: null,
-    jsonOutputFormat: null,
+    wfsOutputFormat: null,
     supports4326: false,
     bboxAxisOrder: "latlon",
   },
@@ -218,7 +218,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     parcelPropertyKey: "ave:Flurstueck",
     projection: "EPSG:25832",
     attribution: null,
-    jsonOutputFormat: null,
+    wfsOutputFormat: null,
     supports4326: true,
     bboxAxisOrder: "latlon",
   },
@@ -231,7 +231,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     parcelPropertyKey: "cp:CadastralParcel",
     projection: "EPSG:25832",
     attribution: null,
-    jsonOutputFormat: null,
+    wfsOutputFormat: null,
     supports4326: true,
     bboxAxisOrder: "latlon",
   },
@@ -244,7 +244,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     parcelPropertyKey: "ave:Flurstueck",
     projection: "EPSG:25832",
     attribution: null,
-    jsonOutputFormat: null,
+    wfsOutputFormat: null,
     supports4326: false,
     bboxAxisOrder: "latlon",
   },
@@ -257,7 +257,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     parcelPropertyKey: null,
     projection: null,
     attribution: null,
-    jsonOutputFormat: null,
+    wfsOutputFormat: null,
     supports4326: true,
     bboxAxisOrder: "latlon",
   },
