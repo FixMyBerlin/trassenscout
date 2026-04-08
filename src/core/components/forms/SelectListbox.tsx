@@ -49,7 +49,11 @@ export function SelectListbox<T extends string | number>({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-gray-200/5 focus:outline-hidden sm:text-sm">
+            <div className="absolute z-10 mt-1 w-full">
+              <ListboxOptions
+                static
+                className="max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-gray-200/5 focus:outline-hidden sm:text-sm"
+              >
               <ListboxOption
                 value={null}
                 className={({ active }) =>
@@ -62,10 +66,7 @@ export function SelectListbox<T extends string | number>({
                 {({ selected, active }) => (
                   <>
                     <span
-                      className={clsx(
-                        selected ? "font-semibold" : "font-normal",
-                        "block truncate",
-                      )}
+                      className={clsx(selected ? "font-semibold" : "font-normal", "block truncate")}
                     >
                       {placeholder}
                     </span>
@@ -118,7 +119,8 @@ export function SelectListbox<T extends string | number>({
                   )}
                 </ListboxOption>
               ))}
-            </ListboxOptions>
+              </ListboxOptions>
+            </div>
           </Transition>
         </div>
       )}

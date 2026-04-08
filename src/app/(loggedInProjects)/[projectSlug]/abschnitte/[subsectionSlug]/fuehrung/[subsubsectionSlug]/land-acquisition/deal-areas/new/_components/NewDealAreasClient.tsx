@@ -1,14 +1,14 @@
 "use client"
 
-import { useMutation } from "@blitzjs/rpc"
-import { LabeledTextField } from "@/src/core/components/forms/LabeledTextField"
 import { FormSuccess } from "@/src/core/components/forms/FormSuccess"
+import { LabeledTextField } from "@/src/core/components/forms/LabeledTextField"
 import { blueButtonStyles } from "@/src/core/components/links"
 import { subsubsectionLandAcquisitionRoute } from "@/src/core/routes/subsectionRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
 import createDealAreasFromSelection from "@/src/server/dealAreas/mutations/createDealAreasFromSelection"
 import getSubsubsection from "@/src/server/subsubsections/queries/getSubsubsection"
+import { useMutation } from "@blitzjs/rpc"
 import clsx from "clsx"
 import { useRouter } from "next/navigation"
 import { useMemo, useState } from "react"
@@ -82,7 +82,9 @@ export function NewDealAreasClient({ initialSubsubsection }: Props) {
         firstCreatedDealAreaId ? `${targetUrl}?dealAreaId=${firstCreatedDealAreaId}` : targetUrl,
       )
     } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : "Dealflächen konnten nicht erstellt werden.")
+      setSubmitError(
+        error instanceof Error ? error.message : "Dealflächen konnten nicht erstellt werden.",
+      )
     }
   }
 
