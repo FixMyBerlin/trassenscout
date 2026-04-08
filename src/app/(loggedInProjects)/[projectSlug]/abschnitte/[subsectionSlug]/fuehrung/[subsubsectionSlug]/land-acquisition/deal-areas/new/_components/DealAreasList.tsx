@@ -25,7 +25,7 @@ export function DealAreasList({ potentialDealAreas, setPotentialDealAreas }: Pro
       <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm">
         <button
           type="button"
-          className={clsx(linkStyles, "font-medium underline")}
+          className={clsx(linkStyles, "font-medium underline hover:cursor-pointer")}
           onClick={() => {
             toggleAll(true)
           }}
@@ -35,7 +35,7 @@ export function DealAreasList({ potentialDealAreas, setPotentialDealAreas }: Pro
         <span className="text-gray-300">|</span>
         <button
           type="button"
-          className={clsx(linkStyles, "font-medium underline")}
+          className={clsx(linkStyles, "font-medium underline hover:cursor-pointer")}
           onClick={() => {
             toggleAll(false)
           }}
@@ -44,12 +44,18 @@ export function DealAreasList({ potentialDealAreas, setPotentialDealAreas }: Pro
         </button>
       </div>
       <h3 className="text-sm font-semibold text-gray-900">Potenzielle Dealflächen</h3>
-      <ul className="max-h-80 overflow-y-auto text-sm">
+      <ul className="max-h-80 overflow-y-auto px-2 text-sm">
         {potentialDealAreas.length === 0 && (
           <li className="text-gray-500">Keine Flächen im Pufferbereich.</li>
         )}
         {potentialDealAreas.map((area) => (
-          <li key={area.id} className="border-b border-gray-100 py-2 last:border-b-0">
+          <li
+            key={area.id}
+            className={clsx(
+              "border-b border-gray-100 p-2 last:border-b-0",
+              area.selected ? "bg-blue-50" : "opacity-60",
+            )}
+          >
             <div className="flex break-inside-avoid items-start">
               <div className="flex h-5 items-center">
                 <input
@@ -64,10 +70,15 @@ export function DealAreasList({ potentialDealAreas, setPotentialDealAreas }: Pro
               </div>
               <label
                 htmlFor={`deal-area-${area.id}`}
-                className="block min-w-0 flex-1 cursor-pointer pl-3 text-sm font-medium text-gray-700 hover:text-gray-900"
+                className={clsx(
+                  "block min-w-0 flex-1 cursor-pointer pl-3 text-sm font-medium",
+                  area.selected ? "text-gray-900" : "text-gray-400",
+                )}
               >
                 <span className="font-semibold">#{area.id}</span>{" "}
-                <span className="text-gray-600">{area.gmlId || "(keine gml_id)"}</span>
+                <span className={area.selected ? "text-gray-600" : "text-gray-400"}>
+                  {area.gmlId || "(keine gml_id)"}
+                </span>
               </label>
             </div>
           </li>

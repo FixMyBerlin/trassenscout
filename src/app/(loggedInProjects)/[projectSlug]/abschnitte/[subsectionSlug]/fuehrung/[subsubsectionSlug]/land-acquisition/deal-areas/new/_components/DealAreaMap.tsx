@@ -4,21 +4,18 @@ import { SubsubsectionGeometryLayers } from "@/src/app/(loggedInProjects)/[proje
 import { BackgroundSwitcher, type LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
 import { getMapStyle } from "@/src/core/components/Map/mapStyleConfig"
 import { geometryBbox } from "@/src/core/components/Map/utils/bboxHelpers"
-import { getCentralPointOfGeometry } from "@/src/core/components/Map/utils/getCentralPointOfGeometry"
 import { Spinner } from "@/src/core/components/Spinner"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import type { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
 import getSubsubsection, {
   type SubsubsectionWithPosition,
 } from "@/src/server/subsubsections/queries/getSubsubsection"
-import { clsx } from "clsx"
 import type { FeatureCollection, Geometry } from "geojson"
 import "maplibre-gl/dist/maplibre-gl.css"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import Map, {
   Layer,
   MapLayerMouseEvent,
-  Marker,
   NavigationControl,
   Popup,
   ScaleControl,
@@ -69,7 +66,7 @@ export function DealAreaMap({
   const lastBboxKeyRef = useRef<string | null>(null)
 
   const [cursor, setCursor] = useState<"grab" | "pointer">("grab")
-  const [selectedParcel, setSelectedParcel] = useState<{
+  const [contextParcel, setContextParcel] = useState<{
     longitude: number
     latitude: number
     properties: Record<string, unknown>
@@ -107,7 +104,7 @@ export function DealAreaMap({
   }, [subsubsectionEntity.geometry])
 
   useEffect(() => {
-    setSelectedParcel(null)
+    setContextParcel(null)
   }, [parcels])
 
   useEffect(() => {
@@ -205,18 +202,24 @@ export function DealAreaMap({
 
   const showZoomHint = zoom < MIN_FETCH_ZOOM
 
-  const handleParcelClick = useCallback((event: MapLayerMouseEvent) => {
-    const feature = event.features?.[0]
-    if (!feature?.properties) {
-      setSelectedParcel(null)
-      return
-    }
-    setSelectedParcel({
-      longitude: event.lngLat.lng,
-      latitude: event.lngLat.lat,
-      properties: feature.properties as Record<string, unknown>,
-    })
-  }, [])
+  const handleParcelClick = useCallback(
+    (event: MapLayerMouseEvent) => {
+      const feature = event.features?.[0]
+      if (!feature?.properties) return
+
+      const gmlId = String(
+        (feature.properties as Record<string, unknown>).gml_id ?? "",
+      )
+      if (!gmlId) return
+
+      setPotentialDealAreas(
+        potentialDealAreas.map((a) =>
+          a.gmlId === gmlId ? { ...a, selected: !a.selected } : a,
+        ),
+      )
+    },
+    [potentialDealAreas, setPotentialDealAreas],
+  )
 
   const handleParcelMouseMove = useCallback((event: MapLayerMouseEvent) => {
     setCursor((event.features?.length ?? 0) > 0 ? "pointer" : "grab")
@@ -224,6 +227,20 @@ export function DealAreaMap({
 
   const handleMapMouseLeave = useCallback(() => {
     setCursor("grab")
+  }, [])
+
+  const handleContextMenu = useCallback((event: MapLayerMouseEvent) => {
+    event.preventDefault()
+    const feature = event.features?.[0]
+    if (!feature?.properties) {
+      setContextParcel(null)
+      return
+    }
+    setContextParcel({
+      longitude: event.lngLat.lng,
+      latitude: event.lngLat.lat,
+      properties: feature.properties as Record<string, unknown>,
+    })
   }, [])
 
   return (
@@ -236,6 +253,7 @@ export function DealAreaMap({
           cursor={cursor}
           interactiveLayerIds={[...PARCEL_LAYER_IDS]}
           onClick={handleParcelClick}
+          onContextMenu={handleContextMenu}
           onMouseMove={handleParcelMouseMove}
           onMouseLeave={handleMapMouseLeave}
           onLoad={(event) => {
@@ -342,45 +360,27 @@ export function DealAreaMap({
             />
           </Source>
 
-          {potentialDealAreas.map((area) => {
-            const [lng, lat] = getCentralPointOfGeometry(area.geometry)
-            return (
-              <Marker key={area.id} longitude={lng} latitude={lat} anchor="center">
-                <div
-                  className={clsx(
-                    "rounded-md border border-gray-400 bg-white px-2 py-1 text-xs font-bold shadow-sm",
-                    !area.selected && "opacity-40",
-                  )}
-                >
-                  #{area.id}
-                </div>
-              </Marker>
-            )
-          })}
-
-          {selectedParcel && (
+          {contextParcel && (
             <Popup
-              longitude={selectedParcel.longitude}
-              latitude={selectedParcel.latitude}
+              longitude={contextParcel.longitude}
+              latitude={contextParcel.latitude}
               anchor="bottom"
               closeButton
               closeOnClick={false}
               maxWidth="320px"
-              onClose={() => {
-                setSelectedParcel(null)
-              }}
+              onClose={() => setContextParcel(null)}
             >
               <div className="max-h-64 overflow-y-auto text-xs text-gray-800">
                 <p className="mb-2 font-semibold text-gray-900">Flurstück</p>
                 <dl className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] gap-x-2 gap-y-1">
-                  {sortedPropertyEntries(selectedParcel.properties).map(([key, value]) => (
+                  {sortedPropertyEntries(contextParcel.properties).map(([key, value]) => (
                     <div key={key} className="contents">
                       <dt className="wrap-break-word text-gray-500">{key}</dt>
                       <dd className="font-medium wrap-break-word">{formatPropertyValue(value)}</dd>
                     </div>
                   ))}
                 </dl>
-                {sortedPropertyEntries(selectedParcel.properties).length === 0 && (
+                {sortedPropertyEntries(contextParcel.properties).length === 0 && (
                   <p className="text-gray-500">Keine Attribute in diesem Feature.</p>
                 )}
               </div>
@@ -409,7 +409,12 @@ export function DealAreaMap({
           )}
           {error && <span className="text-rose-700">{error}</span>}
           {zoom >= MIN_FETCH_ZOOM && !loading && error == null && (
-            <span>{parcels.features.length} Flurstücke aus ALKIS geladen.</span>
+            <>
+              <span>{parcels.features.length} Flurstücke aus ALKIS geladen.</span>
+              <span className="text-gray-500">
+                Klick = auswählen/abwählen · Rechtsklick = Details
+              </span>
+            </>
           )}
         </div>
       </div>
