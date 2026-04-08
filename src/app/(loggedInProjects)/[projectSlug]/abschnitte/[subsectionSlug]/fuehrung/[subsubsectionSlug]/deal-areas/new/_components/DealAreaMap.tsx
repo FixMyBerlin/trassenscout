@@ -4,83 +4,56 @@ import { SubsubsectionGeometryLayers } from "@/src/app/(loggedInProjects)/[proje
 import { BackgroundSwitcher, type LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
 import { getMapStyle } from "@/src/core/components/Map/mapStyleConfig"
 import { geometryBbox } from "@/src/core/components/Map/utils/bboxHelpers"
+import { getCentralPointOfGeometry } from "@/src/core/components/Map/utils/getCentralPointOfGeometry"
 import { Spinner } from "@/src/core/components/Spinner"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
+import type { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
 import getSubsubsection, {
   type SubsubsectionWithPosition,
 } from "@/src/server/subsubsections/queries/getSubsubsection"
+import { clsx } from "clsx"
 import type { FeatureCollection, Geometry } from "geojson"
-import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import Map, {
   Layer,
   MapLayerMouseEvent,
+  Marker,
   NavigationControl,
   Popup,
   ScaleControl,
   Source,
   useMap,
 } from "react-map-gl/maplibre"
-
-const MIN_FETCH_ZOOM = 14
-const FETCH_DEBOUNCE_MS = 300
-const MAX_FEATURES = 5000
-
-const emptyFeatureCollection: FeatureCollection<Geometry, Record<string, unknown>> = {
-  type: "FeatureCollection",
-  features: [],
-}
-
-const PARCEL_LAYER_IDS = [
-  "alkis-parcels-fill-hit",
-  "alkis-parcels-line-base",
-  "alkis-parcels-line-dash",
-] as const
-
-function formatPropertyValue(value: unknown) {
-  if (value === null || value === undefined) return ""
-  if (typeof value === "object") {
-    try {
-      return JSON.stringify(value, null, 0)
-    } catch {
-      return String(value)
-    }
-  }
-  return String(value)
-}
-
-function sortedPropertyEntries(props: Record<string, unknown> | null | undefined) {
-  if (!props) return []
-  return Object.entries(props)
-    .filter(([, v]) => v !== undefined && v !== null && v !== "")
-    .sort(([a], [b]) => a.localeCompare(b, "de"))
-}
-
-function buildProxyUrl(projectSlug: string, bounds: maplibregl.LngLatBounds) {
-  const bbox = [bounds.getWest(), bounds.getSouth(), bounds.getEast(), bounds.getNorth()].join(",")
-  const params = new URLSearchParams({
-    bbox,
-    count: String(MAX_FEATURES),
-  })
-  return `/api/${projectSlug}/alkis-wfs?${params.toString()}`
-}
-
-function bboxKey(bounds: maplibregl.LngLatBounds) {
-  const round = (n: number) => Math.round(n * 1e5) / 1e5
-  return [
-    round(bounds.getWest()),
-    round(bounds.getSouth()),
-    round(bounds.getEast()),
-    round(bounds.getNorth()),
-  ].join(",")
-}
+import { bboxKey, buildAlkisWfsProxyUrl } from "./alkisWfsMapHelpers"
+import { computeBufferPolygonFeature } from "./computeBufferPolygonFeature"
+import { computePotentialDealAreas } from "./computePotentialDealAreas"
+import {
+  emptyFeatureCollection,
+  FETCH_DEBOUNCE_MS,
+  MIN_FETCH_ZOOM,
+  PARCEL_LAYER_IDS,
+} from "./dealAreaMapConstants"
+import { formatPropertyValue, sortedPropertyEntries } from "./parcelFeatureProperties"
+import {
+  bufferOutlineFeatureCollection,
+  potentialDealAreasToFeatureCollection,
+} from "./potentialDealAreaGeoJson"
+import type { PotentialDealArea } from "./potentialDealAreaTypes"
 
 type Props = {
   subsubsection: Awaited<ReturnType<typeof getSubsubsection>>
+  bufferRadius: number
+  potentialDealAreas: PotentialDealArea[]
+  setPotentialDealAreas: (areas: PotentialDealArea[]) => void
 }
 
-export function DealAreaMap({ subsubsection }: Props) {
+export function DealAreaMap({
+  subsubsection,
+  bufferRadius,
+  potentialDealAreas,
+  setPotentialDealAreas,
+}: Props) {
   const subsubsectionEntity = subsubsection as SubsubsectionWithPosition
   const { mainMap } = useMap()
   const debounceTimerRef = useRef<number | null>(null)
@@ -104,6 +77,27 @@ export function DealAreaMap({ subsubsection }: Props) {
 
   const mapStyle = useMemo(() => getMapStyle(selectedLayer), [selectedLayer])
 
+  const bufferPolygonFeature = useMemo(
+    () =>
+      computeBufferPolygonFeature(subsubsectionEntity.geometry as SupportedGeometry, bufferRadius),
+    [subsubsectionEntity.geometry, bufferRadius],
+  )
+
+  const bufferOutlineData = useMemo(
+    () => bufferOutlineFeatureCollection(bufferPolygonFeature),
+    [bufferPolygonFeature],
+  )
+
+  const selectedDealAreasFc = useMemo(
+    () => potentialDealAreasToFeatureCollection(potentialDealAreas, true),
+    [potentialDealAreas],
+  )
+
+  const deselectedDealAreasFc = useMemo(
+    () => potentialDealAreasToFeatureCollection(potentialDealAreas, false),
+    [potentialDealAreas],
+  )
+
   const initialViewState = useMemo(() => {
     const [w, s, e, n] = geometryBbox(subsubsectionEntity.geometry)
     return {
@@ -115,6 +109,14 @@ export function DealAreaMap({ subsubsection }: Props) {
   useEffect(() => {
     setSelectedParcel(null)
   }, [parcels])
+
+  useEffect(() => {
+    if (!bufferPolygonFeature) {
+      setPotentialDealAreas([])
+      return
+    }
+    setPotentialDealAreas(computePotentialDealAreas(bufferPolygonFeature, parcels))
+  }, [bufferPolygonFeature, parcels, setPotentialDealAreas])
 
   const fetchParcelsNow = useCallback(async () => {
     if (!mainMap) return
@@ -136,6 +138,7 @@ export function DealAreaMap({ subsubsection }: Props) {
     lastBboxKeyRef.current = key
 
     abortRef.current?.abort()
+    // request can be cancelled from the outside
     const controller = new AbortController()
     abortRef.current = controller
 
@@ -143,7 +146,7 @@ export function DealAreaMap({ subsubsection }: Props) {
       setLoading(true)
       setError(null)
 
-      const url = buildProxyUrl(projectSlug, bounds)
+      const url = buildAlkisWfsProxyUrl(projectSlug, bounds)
       const res = await fetch(url, {
         signal: controller.signal,
         headers: {
@@ -178,6 +181,7 @@ export function DealAreaMap({ subsubsection }: Props) {
     }
   }, [mainMap, projectSlug])
 
+  // debounces the actual work so every tiny move does not fire a request
   const scheduleFetch = useCallback(() => {
     if (debounceTimerRef.current != null) {
       window.clearTimeout(debounceTimerRef.current)
@@ -281,6 +285,79 @@ export function DealAreaMap({ subsubsection }: Props) {
 
           <SubsubsectionGeometryLayers subsubsections={[subsubsectionEntity]} />
 
+          <Source id="deal-buffer-outline" type="geojson" data={bufferOutlineData}>
+            <Layer
+              id="deal-buffer-outline-line"
+              type="line"
+              source="deal-buffer-outline"
+              paint={{
+                "line-color": "#2563eb",
+                "line-opacity": 0.5,
+                "line-width": 2,
+                "line-dasharray": [6, 3],
+              }}
+            />
+          </Source>
+
+          <Source id="potential-deal-deselected" type="geojson" data={deselectedDealAreasFc}>
+            <Layer
+              id="potential-deal-deselected-fill"
+              type="fill"
+              source="potential-deal-deselected"
+              paint={{
+                "fill-color": "#94a3b8",
+                "fill-opacity": 0.3,
+              }}
+            />
+            <Layer
+              id="potential-deal-deselected-line"
+              type="line"
+              source="potential-deal-deselected"
+              paint={{
+                "line-color": "#94a3b8",
+                "line-width": 1,
+                "line-dasharray": [4, 2],
+              }}
+            />
+          </Source>
+
+          <Source id="potential-deal-selected" type="geojson" data={selectedDealAreasFc}>
+            <Layer
+              id="potential-deal-selected-fill"
+              type="fill"
+              source="potential-deal-selected"
+              paint={{
+                "fill-color": "#2563eb",
+                "fill-opacity": 0.35,
+              }}
+            />
+            <Layer
+              id="potential-deal-selected-line"
+              type="line"
+              source="potential-deal-selected"
+              paint={{
+                "line-color": "#2563eb",
+                "line-width": 2,
+              }}
+            />
+          </Source>
+
+          {potentialDealAreas.map((area) => {
+            const [lng, lat] = getCentralPointOfGeometry(area.geometry)
+            return (
+              <Marker key={area.id} longitude={lng} latitude={lat} anchor="center">
+                <div
+                  className={clsx(
+                    "rounded-md border border-gray-400 bg-white px-2 py-1 text-xs font-bold shadow-sm",
+                    !area.selected && "opacity-40",
+                  )}
+                >
+                  #{area.id}
+                </div>
+              </Marker>
+            )
+          })}
+
           {selectedParcel && (
             <Popup
               longitude={selectedParcel.longitude}
@@ -332,7 +409,7 @@ export function DealAreaMap({ subsubsection }: Props) {
           )}
           {error && <span className="text-rose-700">{error}</span>}
           {zoom >= MIN_FETCH_ZOOM && !loading && error == null && (
-            <span>{parcels.features.length} Features geladen.</span>
+            <span>{parcels.features.length} Flurstücke aus ALKIS geladen.</span>
           )}
         </div>
       </div>

@@ -1,0 +1,44 @@
+import { booleanIntersects } from "@turf/boolean-intersects"
+import { featureCollection } from "@turf/helpers"
+import { intersect } from "@turf/intersect"
+import type { Feature, FeatureCollection, Geometry, MultiPolygon, Polygon } from "geojson"
+import type { PotentialDealArea } from "./potentialDealAreaTypes"
+
+export function computePotentialDealAreas(
+  bufferPolygonFeature: Feature<Polygon | MultiPolygon>,
+  parcels: FeatureCollection<Geometry, Record<string, unknown>>,
+) {
+  const bufferFeature = bufferPolygonFeature
+  const results: PotentialDealArea[] = []
+  let seq = 0
+
+  for (const parcel of parcels.features) {
+    const geom = parcel.geometry
+    if (geom.type !== "Polygon" && geom.type !== "MultiPolygon") continue
+
+    const parcelFeature: Feature<Polygon | MultiPolygon> = {
+      type: "Feature",
+      properties: parcel.properties ?? {},
+      geometry: geom,
+    }
+
+    if (!booleanIntersects(parcelFeature, bufferFeature)) continue
+
+    const intersection = intersect(featureCollection([bufferFeature, parcelFeature]))
+    if (!intersection?.geometry) continue
+
+    seq += 1
+    const gmlId = String(
+      (parcel.properties as Record<string, unknown> | null | undefined)?.gml_id ?? "",
+    )
+
+    results.push({
+      id: String(seq),
+      geometry: intersection.geometry,
+      gmlId,
+      selected: true,
+    })
+  }
+
+  return results
+}

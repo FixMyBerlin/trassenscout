@@ -12,7 +12,11 @@ export type AlkisBackgroundConfigEntry = {
   attribution: string | null
   // WFS pojection - verified by current manual GetFeature tests (see conversation history).
   projection: "EPSG:25832" | "EPSG:25833" | null
-  /** If set, WFS can return GeoJSON directly (no ogr2ogr). */
+  /**
+   * If set, WFS can return GeoJSON directly (no ogr2ogr).
+   * TODO(ALKIS-WFS): Null currently means "request default GML 3.2.1 + ogr2ogr", but not all
+   * state services expose that; extend config when a state needs a different OUTPUTFORMAT or pipeline.
+   */
   jsonOutputFormat: string | null
   /** Whether GetFeature accepts SRSNAME=EPSG:4326 in the BBOX. If false, BBOX reprojection is required (not implemented yet). */
   supports4326: boolean

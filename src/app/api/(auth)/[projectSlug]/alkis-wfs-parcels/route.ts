@@ -10,6 +10,7 @@ import {
   parseAndValidateFeatureCollectionJson,
 } from "./_utils"
 
+// opts into Node runtime (Edge cannot spawn ogr2ogr like this)
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
 
@@ -85,13 +86,11 @@ export const GET = withProjectMembership(viewerRoles, async ({ params, request }
     )
   }
 
-  const layerParam = url.searchParams.get("layer")?.trim()
-  const typename = layerParam || parcelKey
   const outputFormat = getWfsOutputFormat(config)
 
   const getFeatureUrl = buildWfsGetFeatureUrl({
     wfsUrl,
-    typename,
+    typename: parcelKey,
     west,
     south,
     east,
