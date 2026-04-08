@@ -12,6 +12,7 @@ import getSubsubsection, {
 } from "@/src/server/subsubsections/queries/getSubsubsection"
 import type { FeatureCollection, Geometry } from "geojson"
 import "maplibre-gl/dist/maplibre-gl.css"
+import { bbox } from "@turf/bbox"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import Map, {
   Layer,
@@ -20,17 +21,11 @@ import Map, {
   Popup,
   ScaleControl,
   Source,
-  useMap,
 } from "react-map-gl/maplibre"
-import { bboxKey, buildAlkisWfsProxyUrl } from "./alkisWfsMapHelpers"
+import { buildAlkisWfsProxyUrl } from "./alkisWfsMapHelpers"
 import { computeBufferPolygonFeature } from "./computeBufferPolygonFeature"
 import { computePotentialDealAreas } from "./computePotentialDealAreas"
-import {
-  emptyFeatureCollection,
-  FETCH_DEBOUNCE_MS,
-  MIN_FETCH_ZOOM,
-  PARCEL_LAYER_IDS,
-} from "./dealAreaMapConstants"
+import { emptyFeatureCollection, PARCEL_LAYER_IDS } from "./dealAreaMapConstants"
 import { formatPropertyValue, sortedPropertyEntries } from "./parcelFeatureProperties"
 import {
   bufferOutlineFeatureCollection,
@@ -52,18 +47,14 @@ export function DealAreaMap({
   setPotentialDealAreas,
 }: Props) {
   const subsubsectionEntity = subsubsection as SubsubsectionWithPosition
-  const { mainMap } = useMap()
-  const debounceTimerRef = useRef<number | null>(null)
   const abortRef = useRef<AbortController | null>(null)
   const projectSlug = useProjectSlug()
 
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
-  const [zoom, setZoom] = useState<number>(15)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [parcels, setParcels] =
     useState<FeatureCollection<Geometry, Record<string, unknown>>>(emptyFeatureCollection)
-  const lastBboxKeyRef = useRef<string | null>(null)
 
   const [cursor, setCursor] = useState<"grab" | "pointer">("grab")
   const [contextParcel, setContextParcel] = useState<{
@@ -74,11 +65,23 @@ export function DealAreaMap({
 
   const mapStyle = useMemo(() => getMapStyle(selectedLayer), [selectedLayer])
 
+  const subsubsectionBbox = useMemo(
+    () => geometryBbox(subsubsectionEntity.geometry),
+    [subsubsectionEntity.geometry],
+  )
+
   const bufferPolygonFeature = useMemo(
     () =>
       computeBufferPolygonFeature(subsubsectionEntity.geometry as SupportedGeometry, bufferRadius),
     [subsubsectionEntity.geometry, bufferRadius],
   )
+
+
+  // Use the buffer polygon's bbox so the WFS request covers parcels up to bufferRadius beyond the geometry.
+  const fetchBbox = useMemo(() => {
+    if (!bufferPolygonFeature) return subsubsectionBbox
+    return bbox(bufferPolygonFeature) as [number, number, number, number]
+  }, [bufferPolygonFeature, subsubsectionBbox])
 
   const bufferOutlineData = useMemo(
     () => bufferOutlineFeatureCollection(bufferPolygonFeature),
@@ -96,12 +99,12 @@ export function DealAreaMap({
   )
 
   const initialViewState = useMemo(() => {
-    const [w, s, e, n] = geometryBbox(subsubsectionEntity.geometry)
+    const [w, s, e, n] = subsubsectionBbox
     return {
       bounds: [w, s, e, n] as [number, number, number, number],
       fitBoundsOptions: { padding: 40 },
     }
-  }, [subsubsectionEntity.geometry])
+  }, [subsubsectionBbox])
 
   useEffect(() => {
     setContextParcel(null)
@@ -115,92 +118,52 @@ export function DealAreaMap({
     setPotentialDealAreas(computePotentialDealAreas(bufferPolygonFeature, parcels))
   }, [bufferPolygonFeature, parcels, setPotentialDealAreas])
 
-  const fetchParcelsNow = useCallback(async () => {
-    if (!mainMap) return
-
-    const zoom = mainMap.getZoom()
-    if (zoom < MIN_FETCH_ZOOM) {
-      abortRef.current?.abort()
-      abortRef.current = null
-      setLoading(false)
-      setError(null)
-      setParcels(emptyFeatureCollection)
-      lastBboxKeyRef.current = null
-      return
-    }
-
-    const bounds = mainMap.getBounds()
-    const key = bboxKey(bounds)
-    if (lastBboxKeyRef.current === key) return
-    lastBboxKeyRef.current = key
-
+  useEffect(() => {
     abortRef.current?.abort()
-    // request can be cancelled from the outside
     const controller = new AbortController()
     abortRef.current = controller
 
-    try {
-      setLoading(true)
-      setError(null)
+    async function fetchParcels() {
+      try {
+        setLoading(true)
+        setError(null)
 
-      const url = buildAlkisWfsProxyUrl(projectSlug, bounds)
-      const res = await fetch(url, {
-        signal: controller.signal,
-        headers: {
-          Accept: "application/json",
-        },
-      })
+        const url = buildAlkisWfsProxyUrl(projectSlug, fetchBbox)
+        const res = await fetch(url, {
+          signal: controller.signal,
+          headers: { Accept: "application/json" },
+        })
 
-      if (!res.ok) {
-        let msg = `WFS Fehler: HTTP ${res.status}`
-        try {
-          const errBody = (await res.json()) as { error?: string }
-          if (errBody.error) msg = errBody.error
-        } catch {
-          // keep generic message
+        if (!res.ok) {
+          let msg = `WFS Fehler: HTTP ${res.status}`
+          try {
+            const errBody = (await res.json()) as { error?: string }
+            if (errBody.error) msg = errBody.error
+          } catch {
+            // keep generic message
+          }
+          throw new Error(msg)
         }
-        throw new Error(msg)
+
+        const json = (await res.json()) as FeatureCollection<Geometry, Record<string, unknown>>
+        if (!json || json.type !== "FeatureCollection" || !Array.isArray(json.features)) {
+          throw new Error("Unerwartetes WFS JSON-Format (kein GeoJSON FeatureCollection).")
+        }
+
+        setParcels(json)
+      } catch (e) {
+        if ((e as Error).name === "AbortError") return
+        console.error(e)
+        setParcels(emptyFeatureCollection)
+        setError((e as Error).message ?? "Unbekannter Fehler beim Laden der Flurstücke.")
+      } finally {
+        setLoading(false)
       }
-
-      const json = (await res.json()) as FeatureCollection<Geometry, Record<string, unknown>>
-      if (!json || json.type !== "FeatureCollection" || !Array.isArray(json.features)) {
-        throw new Error("Unerwartetes WFS JSON-Format (kein GeoJSON FeatureCollection).")
-      }
-
-      setParcels(json)
-    } catch (e) {
-      if ((e as Error).name === "AbortError") return
-      console.error(e)
-      setParcels(emptyFeatureCollection)
-      setError((e as Error).message ?? "Unbekannter Fehler beim Laden der Flurstücke.")
-    } finally {
-      setLoading(false)
     }
-  }, [mainMap, projectSlug])
 
-  // debounces the actual work so every tiny move does not fire a request
-  const scheduleFetch = useCallback(() => {
-    if (debounceTimerRef.current != null) {
-      window.clearTimeout(debounceTimerRef.current)
-    }
-    debounceTimerRef.current = window.setTimeout(() => {
-      void fetchParcelsNow()
-    }, FETCH_DEBOUNCE_MS)
-  }, [fetchParcelsNow])
-
-  useEffect(() => {
-    return () => {
-      if (debounceTimerRef.current != null) window.clearTimeout(debounceTimerRef.current)
-      abortRef.current?.abort()
-    }
-  }, [])
-
-  useEffect(() => {
-    if (!mainMap) return
-    void fetchParcelsNow()
-  }, [mainMap, fetchParcelsNow])
-
-  const showZoomHint = zoom < MIN_FETCH_ZOOM
+    void fetchParcels()
+    return () => controller.abort()
+  }, [projectSlug, fetchBbox])
 
   const handleParcelClick = useCallback(
     (event: MapLayerMouseEvent) => {
@@ -256,14 +219,6 @@ export function DealAreaMap({
           onContextMenu={handleContextMenu}
           onMouseMove={handleParcelMouseMove}
           onMouseLeave={handleMapMouseLeave}
-          onLoad={(event) => {
-            setZoom(event.target.getZoom())
-            scheduleFetch()
-          }}
-          onMoveEnd={(event) => {
-            setZoom(event.target.getZoom())
-            scheduleFetch()
-          }}
         >
           <NavigationControl showCompass={false} />
           <ScaleControl />
@@ -389,6 +344,12 @@ export function DealAreaMap({
         </Map>
       </div>
 
+      <div className="pointer-events-none absolute inset-x-0 top-3 z-10 flex justify-center">
+        <div className="pointer-events-auto rounded-md bg-gray-800 px-3 py-1.5 text-sm text-white">
+          Klick = auswählen/abwählen · Rechtsklick = Details
+        </div>
+      </div>
+
       <BackgroundSwitcher
         position="top-left"
         value={selectedLayer}
@@ -399,22 +360,14 @@ export function DealAreaMap({
 
       <div className="pointer-events-none absolute inset-x-0 bottom-10 mx-12 flex justify-center">
         <div className="pointer-events-auto flex max-w-full flex-wrap items-center justify-center gap-2 rounded bg-white/80 p-4 px-8 text-center text-base text-gray-800">
-          {showZoomHint && (
-            <span>Zoome näher ran (Zoom ≥ {MIN_FETCH_ZOOM}), um Flurstücke zu laden.</span>
-          )}
           {loading && (
             <div className="flex items-center justify-center">
               <Spinner size="5" />
             </div>
           )}
           {error && <span className="text-rose-700">{error}</span>}
-          {zoom >= MIN_FETCH_ZOOM && !loading && error == null && (
-            <>
-              <span>{parcels.features.length} Flurstücke aus ALKIS geladen.</span>
-              <span className="text-gray-500">
-                Klick = auswählen/abwählen · Rechtsklick = Details
-              </span>
-            </>
+          {!loading && error == null && (
+            <span>{parcels.features.length} Flurstücke aus ALKIS geladen.</span>
           )}
         </div>
       </div>

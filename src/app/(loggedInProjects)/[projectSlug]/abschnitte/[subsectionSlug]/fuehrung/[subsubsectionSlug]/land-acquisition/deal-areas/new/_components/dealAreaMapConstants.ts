@@ -1,7 +1,5 @@
 import type { FeatureCollection, Geometry } from "geojson"
 
-export const MIN_FETCH_ZOOM = 14
-export const FETCH_DEBOUNCE_MS = 300
 export const MAX_FEATURES = 5000
 
 export const emptyFeatureCollection: FeatureCollection<Geometry, Record<string, unknown>> = {
