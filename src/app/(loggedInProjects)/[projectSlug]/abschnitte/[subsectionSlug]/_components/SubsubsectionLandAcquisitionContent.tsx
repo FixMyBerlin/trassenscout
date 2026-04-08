@@ -111,7 +111,7 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
             <option value="">Dealfläche auswählen</option>
             {dealAreas.map((dealArea) => (
               <option key={dealArea.id} value={dealArea.id}>
-                {`Dealfläche ${dealArea.parcel.officialId ?? dealArea.id}`}
+                {`Dealfläche ${dealArea.parcel.gmlId ?? dealArea.id}`}
               </option>
             ))}
           </select>
@@ -182,8 +182,7 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
                           Flurstücknummer
                         </th>
                         <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
-                          {selectedDealArea.parcel.officialId ??
-                            `Parcel ${selectedDealArea.parcel.id}`}
+                          {selectedDealArea.parcel.gmlId ?? `Parcel ${selectedDealArea.parcel.id}`}
                         </td>
                       </tr>
                       <tr>

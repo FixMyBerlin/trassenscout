@@ -401,7 +401,7 @@ model Parcel {
   id         Int      @id @default(autoincrement())
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  officialId String?
+  gmlId      String?  @unique
 
   dealAreas DealArea[]
 }

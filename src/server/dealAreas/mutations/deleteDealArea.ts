@@ -14,17 +14,45 @@ export default resolver.pipe(
   resolver.zod(DeleteDealAreaSchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
   async ({ id, projectSlug }) => {
-    return await db.dealArea.deleteMany({
-      where: {
-        id,
-        subsubsection: {
-          subsection: {
-            project: {
-              slug: projectSlug,
+    return await db.$transaction(async (tx) => {
+      const dealArea = await tx.dealArea.findFirstOrThrow({
+        where: {
+          id,
+          subsubsection: {
+            subsection: {
+              project: {
+                slug: projectSlug,
+              },
             },
           },
         },
-      },
+        select: {
+          id: true,
+          parcelId: true,
+        },
+      })
+
+      await tx.dealArea.delete({
+        where: {
+          id: dealArea.id,
+        },
+      })
+
+      const remainingDealAreas = await tx.dealArea.count({
+        where: {
+          parcelId: dealArea.parcelId,
+        },
+      })
+
+      if (remainingDealAreas === 0) {
+        await tx.parcel.delete({
+          where: {
+            id: dealArea.parcelId,
+          },
+        })
+      }
+
+      return { count: 1 }
     })
   },
 )
