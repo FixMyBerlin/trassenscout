@@ -6,6 +6,7 @@ import {
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
 import { resolver } from "@blitzjs/rpc"
+import { validateDealAreaInput } from "../_utils/validateDealAreaInput"
 import { DealAreaSchema } from "../schema"
 import { typeDealAreaGeometry } from "../utils/typeDealAreaGeometry"
 
@@ -15,35 +16,12 @@ export default resolver.pipe(
   resolver.zod(CreateDealAreaSchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
   async ({ projectSlug, ...input }) => {
-    await db.subsubsection.findFirstOrThrow({
-      where: {
-        id: input.subsubsectionId,
-        type: { in: ["LINE", "POLYGON"] },
-        subsection: {
-          project: {
-            slug: projectSlug,
-          },
-        },
-      },
-      select: { id: true },
+    await validateDealAreaInput({
+      projectSlug,
+      subsubsectionId: input.subsubsectionId,
+      parcelId: input.parcelId,
+      dealAreaStatusId: input.dealAreaStatusId,
     })
-
-    await db.parcel.findFirstOrThrow({
-      where: { id: input.parcelId },
-      select: { id: true },
-    })
-
-    if (input.dealAreaStatusId) {
-      await db.dealAreaStatus.findFirstOrThrow({
-        where: {
-          id: input.dealAreaStatusId,
-          project: {
-            slug: projectSlug,
-          },
-        },
-        select: { id: true },
-      })
-    }
 
     const dealArea = await db.dealArea.create({
       data: {
