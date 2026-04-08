@@ -9,6 +9,8 @@ COPY package* ./
 
 RUN npm install-clean --legacy-peer-deps
 
+RUN apt-get update && apt-get install -y --no-install-recommends gdal-bin && rm -rf /var/lib/apt/lists/*
+
 # see .dockerignore for what is getting copied
 COPY . .
 
