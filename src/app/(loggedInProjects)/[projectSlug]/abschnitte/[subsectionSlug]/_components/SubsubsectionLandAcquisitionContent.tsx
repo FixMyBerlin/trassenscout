@@ -15,12 +15,12 @@ import { subsubsectionUploadEditRoute } from "@/src/core/routes/uploadRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
 import getDealAreasBySubsubsection from "@/src/server/dealAreas/queries/getDealAreasBySubsubsection"
-import getProjectRecordsByDealArea from "@/src/server/projectRecords/queries/getProjectRecordsByDealArea"
-import getUploadsByDealArea from "@/src/server/uploads/queries/getUploadsByDealArea"
+import getProjectRecordsBySubsubsection from "@/src/server/projectRecords/queries/getProjectRecordsBySubsubsection"
+import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
 import { useQuery } from "@blitzjs/rpc"
 import { PlusIcon } from "@heroicons/react/16/solid"
 import clsx from "clsx"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { SubsubsectionPanel } from "./SubsubsectionPanel"
 import { useDealAreaSelection } from "./useDealAreaSelection.nuqs"
 
@@ -52,30 +52,44 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
 
   const selectedDealArea = dealAreas.find((dealArea) => dealArea.id === dealAreaId)
 
-  const [projectRecords = [], { refetch: refetchProjectRecords }] = useQuery(
-    getProjectRecordsByDealArea,
+  const [allProjectRecords = [], { refetch: refetchProjectRecords }] = useQuery(
+    getProjectRecordsBySubsubsection,
     {
       projectSlug,
-      dealAreaId: selectedDealArea?.id ?? 0,
+      subsubsectionId,
     },
     {
-      enabled: !!selectedDealArea,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
     },
   )
 
-  const [{ uploads = [] } = { uploads: [] }, { refetch: refetchUploads }] = useQuery(
-    getUploadsByDealArea,
+  const [{ uploads: allUploads = [] } = { uploads: [] }, { refetch: refetchUploads }] = useQuery(
+    getUploadsWithSubsections,
     {
       projectSlug,
-      dealAreaId: selectedDealArea?.id ?? 0,
+      where: {
+        subsubsectionId,
+      },
     },
     {
-      enabled: !!selectedDealArea,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
     },
+  )
+
+  const projectRecords = useMemo(
+    () =>
+      selectedDealArea
+        ? allProjectRecords.filter((projectRecord) => projectRecord.dealAreaId === selectedDealArea.id)
+        : [],
+    [allProjectRecords, selectedDealArea],
+  )
+
+  const uploads = useMemo(
+    () =>
+      selectedDealArea ? allUploads.filter((upload) => upload.dealAreaId === selectedDealArea.id) : [],
+    [allUploads, selectedDealArea],
   )
 
   useEffect(() => {

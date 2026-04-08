@@ -54,40 +54,8 @@ export function SelectListbox<T extends string | number>({
                 static
                 className="max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-gray-200/5 focus:outline-hidden sm:text-sm"
               >
-              <ListboxOption
-                value={null}
-                className={({ active }) =>
-                  clsx(
-                    active ? "bg-blue-600 text-white" : "text-gray-900",
-                    "relative cursor-default py-2 pr-9 pl-3 select-none",
-                  )
-                }
-              >
-                {({ selected, active }) => (
-                  <>
-                    <span
-                      className={clsx(selected ? "font-semibold" : "font-normal", "block truncate")}
-                    >
-                      {placeholder}
-                    </span>
-                    {selected ? (
-                      <span
-                        className={clsx(
-                          active ? "text-white" : "text-blue-600",
-                          "absolute inset-y-0 right-0 flex items-center pr-4",
-                        )}
-                      >
-                        <CheckIcon className="h-5 w-5" aria-hidden="true" />
-                      </span>
-                    ) : null}
-                  </>
-                )}
-              </ListboxOption>
-
-              {options.map((option) => (
                 <ListboxOption
-                  key={option.value}
-                  value={option.value}
+                  value={null}
                   className={({ active }) =>
                     clsx(
                       active ? "bg-blue-600 text-white" : "text-gray-900",
@@ -103,7 +71,7 @@ export function SelectListbox<T extends string | number>({
                           "block truncate",
                         )}
                       >
-                        {option.label}
+                        {placeholder}
                       </span>
                       {selected ? (
                         <span
@@ -118,7 +86,42 @@ export function SelectListbox<T extends string | number>({
                     </>
                   )}
                 </ListboxOption>
-              ))}
+
+                {options.map((option) => (
+                  <ListboxOption
+                    key={option.value}
+                    value={option.value}
+                    className={({ active }) =>
+                      clsx(
+                        active ? "bg-blue-600 text-white" : "text-gray-900",
+                        "relative cursor-default py-2 pr-9 pl-3 select-none",
+                      )
+                    }
+                  >
+                    {({ selected, active }) => (
+                      <>
+                        <span
+                          className={clsx(
+                            selected ? "font-semibold" : "font-normal",
+                            "block truncate",
+                          )}
+                        >
+                          {option.label}
+                        </span>
+                        {selected ? (
+                          <span
+                            className={clsx(
+                              active ? "text-white" : "text-blue-600",
+                              "absolute inset-y-0 right-0 flex items-center pr-4",
+                            )}
+                          >
+                            <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                          </span>
+                        ) : null}
+                      </>
+                    )}
+                  </ListboxOption>
+                ))}
               </ListboxOptions>
             </div>
           </Transition>
