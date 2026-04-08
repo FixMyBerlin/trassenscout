@@ -137,7 +137,10 @@ export const SubsubsectionDashboardClient = ({ activeTab = "general" }: Props) =
 
         <div className="max-h-[calc(100vh-10rem)] min-w-0 flex-1 self-stretch">
           {activeTab === "land-acquisition" ? (
-            <SubsubsectionLandAcquisitionContent subsubsectionId={subsubsection.id} />
+            <SubsubsectionLandAcquisitionContent
+              subsectionId={subsection.id}
+              subsubsectionId={subsubsection.id}
+            />
           ) : (
             <SubsubsectionDetailsContent subsubsection={subsubsection} />
           )}

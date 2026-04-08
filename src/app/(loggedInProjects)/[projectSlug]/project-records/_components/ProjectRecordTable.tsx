@@ -15,6 +15,7 @@ import {
 } from "@/src/core/routes/projectRecordRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import getProjectRecords from "@/src/server/projectRecords/queries/getProjectRecords"
+import getProjectRecordsByDealArea from "@/src/server/projectRecords/queries/getProjectRecordsByDealArea"
 import getProjectRecordsBySubsubsection from "@/src/server/projectRecords/queries/getProjectRecordsBySubsubsection"
 import { Disclosure, DisclosureButton, DisclosurePanel, Transition } from "@headlessui/react"
 import { ChevronDownIcon, SparklesIcon } from "@heroicons/react/20/solid"
@@ -34,6 +35,7 @@ export const ProjectRecordsTable = ({
 }: {
   projectRecords:
     | Awaited<ReturnType<typeof getProjectRecords>>
+    | Awaited<ReturnType<typeof getProjectRecordsByDealArea>>
     | Awaited<ReturnType<typeof getProjectRecordsBySubsubsection>>
   highlightId?: number | null
   isTopicFilter?: boolean

@@ -1,26 +1,41 @@
 "use client"
 
+import { ProjectRecordNewModal } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordNewModal"
+import { ProjectRecordsTable } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordTable"
+import { UploadDropzone } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzone"
+import { UploadDropzoneContainer } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzoneContainer"
+import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
-import { Link } from "@/src/core/components/links"
+import { FormSuccess } from "@/src/core/components/forms/FormSuccess"
+import { blueButtonStyles, Link } from "@/src/core/components/links"
 import { subsubsectionEditRoute } from "@/src/core/routes/subsectionRoutes"
+import { subsubsectionUploadEditRoute } from "@/src/core/routes/uploadRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
 import getDealAreasBySubsubsection from "@/src/server/dealAreas/queries/getDealAreasBySubsubsection"
+import getProjectRecordsByDealArea from "@/src/server/projectRecords/queries/getProjectRecordsByDealArea"
+import getUploadsByDealArea from "@/src/server/uploads/queries/getUploadsByDealArea"
 import { useQuery } from "@blitzjs/rpc"
-import { useEffect } from "react"
+import { PlusIcon } from "@heroicons/react/16/solid"
+import clsx from "clsx"
+import { useEffect, useState } from "react"
 import { SubsubsectionPanel } from "./SubsubsectionPanel"
 import { useDealAreaSelection } from "./useDealAreaSelection.nuqs"
 
 type Props = {
   subsubsectionId: number
+  subsectionId: number
 }
 
-export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId }: Props) => {
+export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectionId }: Props) => {
   const projectSlug = useProjectSlug()
   const subsectionSlug = useSlug("subsectionSlug")
   const subsubsectionSlug = useSlug("subsubsectionSlug")
   const { dealAreaId, setDealAreaId } = useDealAreaSelection()
+  const [isProjectRecordModalOpen, setIsProjectRecordModalOpen] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
+  const [createdProjectRecordId, setCreatedProjectRecordId] = useState<null | number>(null)
 
   const [dealAreas] = useQuery(
     getDealAreasBySubsubsection,
@@ -35,6 +50,32 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId }: Props) 
   )
 
   const selectedDealArea = dealAreas.find((dealArea) => dealArea.id === dealAreaId)
+
+  const [projectRecords = [], { refetch: refetchProjectRecords }] = useQuery(
+    getProjectRecordsByDealArea,
+    {
+      projectSlug,
+      dealAreaId: selectedDealArea?.id ?? 0,
+    },
+    {
+      enabled: !!selectedDealArea,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
+  )
+
+  const [{ uploads = [] } = { uploads: [] }, { refetch: refetchUploads }] = useQuery(
+    getUploadsByDealArea,
+    {
+      projectSlug,
+      dealAreaId: selectedDealArea?.id ?? 0,
+    },
+    {
+      enabled: !!selectedDealArea,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
+  )
 
   useEffect(() => {
     const onlyDealArea = dealAreas[0]
@@ -157,6 +198,95 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId }: Props) 
                   </table>
                 </div>
               </div>
+
+              <section className="mt-10 space-y-3">
+                <h2 className="text-lg font-semibold text-gray-700 sm:text-lg">
+                  Protokolleinträge
+                </h2>
+                {showSuccess && (
+                  <FormSuccess message="Protokolleintrag erfolgreich erstellt" show={showSuccess} />
+                )}
+                {projectRecords.length > 0 ? (
+                  <ProjectRecordsTable
+                    projectRecords={projectRecords}
+                    openLinksInNewTab
+                    highlightId={createdProjectRecordId}
+                  />
+                ) : (
+                  <p className="my-4 text-base text-gray-500">
+                    Es wurden noch keine Protokolleinträge eingetragen.
+                  </p>
+                )}
+                <IfUserCanEdit>
+                  <button
+                    onClick={() => setIsProjectRecordModalOpen(true)}
+                    className={clsx(blueButtonStyles, "mt-5 items-center justify-center gap-1")}
+                  >
+                    <PlusIcon className="size-3.5" /> Neuer Protokolleintrag
+                  </button>
+                </IfUserCanEdit>
+
+                <ProjectRecordNewModal
+                  projectSlug={projectSlug}
+                  open={isProjectRecordModalOpen}
+                  onClose={() => setIsProjectRecordModalOpen(false)}
+                  onSuccess={async (projectRecordId) => {
+                    setCreatedProjectRecordId(projectRecordId)
+                    setShowSuccess(true)
+                    setTimeout(() => {
+                      setShowSuccess(false)
+                      setCreatedProjectRecordId(null)
+                    }, 3000)
+                    await refetchProjectRecords()
+                  }}
+                  initialValues={{
+                    subsectionId,
+                    subsubsectionId,
+                    dealAreaId: selectedDealArea.id,
+                  }}
+                />
+              </section>
+
+              <section className="mt-10 space-y-3">
+                <h2 className="text-lg font-semibold text-gray-700 sm:text-lg">Dokumente</h2>
+                {!uploads.length && (
+                  <p className="my-4 text-base text-gray-500">
+                    Es wurden noch keine Dokumente eingetragen.
+                  </p>
+                )}
+                <div className="grid grid-cols-2 gap-3">
+                  {uploads.map((upload) => (
+                    <UploadPreviewClickable
+                      key={upload.id}
+                      uploadId={upload.id}
+                      projectSlug={projectSlug}
+                      size="grid"
+                      editUrl={subsubsectionUploadEditRoute(
+                        projectSlug,
+                        subsectionSlug!,
+                        subsubsectionSlug!,
+                        upload.id,
+                      )}
+                      onDeleted={async () => {
+                        await refetchUploads()
+                      }}
+                    />
+                  ))}
+                  <IfUserCanEdit>
+                    <UploadDropzoneContainer className="h-36 rounded-md p-0">
+                      <UploadDropzone
+                        fillContainer
+                        subsectionId={subsectionId}
+                        subsubsectionId={subsubsectionId}
+                        dealAreaId={selectedDealArea.id}
+                        onUploadComplete={async () => {
+                          await refetchUploads()
+                        }}
+                      />
+                    </UploadDropzoneContainer>
+                  </IfUserCanEdit>
+                </div>
+              </section>
             </section>
           ) : (
             <>
@@ -172,7 +302,7 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId }: Props) 
         </div>
       </div>
 
-      <SuperAdminLogData data={{ dealAreas, selectedDealArea, dealAreaId }} />
+      <SuperAdminLogData data={{ dealAreas, selectedDealArea, dealAreaId, projectRecords, uploads }} />
     </SubsubsectionPanel>
   )
 }

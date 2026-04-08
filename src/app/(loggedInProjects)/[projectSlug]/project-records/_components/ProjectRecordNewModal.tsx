@@ -19,7 +19,9 @@ type Props = {
   onClose: () => void
   onSuccess?: (projectRecordId: number) => void | Promise<void>
   initialValues?: {
+    subsectionId?: number
     subsubsectionId?: number
+    dealAreaId?: number
   }
 }
 
@@ -55,8 +57,14 @@ export const ProjectRecordNewModal = ({
 
   const formInitialValues = {
     date: getDate(new Date()),
+    ...(initialValues?.subsectionId && {
+      subsectionId: initialValues.subsectionId,
+    }),
     ...(initialValues?.subsubsectionId && {
       subsubsectionId: initialValues.subsubsectionId,
+    }),
+    ...(initialValues?.dealAreaId && {
+      dealAreaId: initialValues.dealAreaId,
     }),
   }
 
