@@ -89,7 +89,11 @@ export const SubsubsectionDashboardClient = ({ activeTab = "general" }: Props) =
       ? [
           {
             name: "Grunderwerb",
-            href: subsubsectionLandAcquisitionRoute(projectSlug, subsectionSlug!, subsubsectionSlug!),
+            href: subsubsectionLandAcquisitionRoute(
+              projectSlug,
+              subsectionSlug!,
+              subsubsectionSlug!,
+            ),
           },
         ]
       : []),

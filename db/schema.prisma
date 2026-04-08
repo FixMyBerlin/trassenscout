@@ -434,6 +434,8 @@ model DealArea {
   parcelId         Int
   dealAreaStatus   DealAreaStatus? @relation(fields: [dealAreaStatusId], references: [id])
   dealAreaStatusId Int?
+  uploads          Upload[]
+  projectRecords   ProjectRecord[]
 }
 
 enum GeometryTypeEnum {
@@ -591,6 +593,8 @@ model Upload {
   subsectionId         Int?
   Subsubsection        Subsubsection?      @relation(fields: [subsubsectionId], references: [id])
   subsubsectionId      Int?
+  dealArea             DealArea?           @relation(fields: [dealAreaId], references: [id])
+  dealAreaId           Int?
   projectRecordEmail   ProjectRecordEmail? @relation(fields: [projectRecordEmailId], references: [id])
   projectRecordEmailId Int?
   surveyResponse       SurveyResponse?     @relation(fields: [surveyResponseId], references: [id])
@@ -807,6 +811,9 @@ model ProjectRecord {
   //
   subsubsection              Subsubsection?           @relation(fields: [subsubsectionId], references: [id], onDelete: Cascade)
   subsubsectionId            Int?
+  //
+  dealArea                   DealArea?                @relation(fields: [dealAreaId], references: [id], onDelete: Cascade)
+  dealAreaId                 Int?
   //
   author                     User?                    @relation("ProjectRecordAuthor", fields: [userId], references: [id])
   userId                     Int?

@@ -141,7 +141,8 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId }: Props) 
                           Flurstücknummer
                         </th>
                         <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
-                          {selectedDealArea.parcel.officialId ?? `Parcel ${selectedDealArea.parcel.id}`}
+                          {selectedDealArea.parcel.officialId ??
+                            `Parcel ${selectedDealArea.parcel.id}`}
                         </td>
                       </tr>
                       <tr>
