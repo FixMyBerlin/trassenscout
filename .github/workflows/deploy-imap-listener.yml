@@ -18,21 +18,17 @@ jobs:
     if: ${{ needs.diff_imap.outputs.changes == 'true' }}
     environment:
       name: ${{ inputs.ENVIRONMENT }}
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v6
 
-      - name: "AWS: Install CLI"
-        run: |
-          curl --fail -s -S "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip awscliv2.zip
-          sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
-
       - name: "AWS: Configure credentials"
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
           aws-region: eu-central-1
 
       - name: Setup buildx
@@ -45,13 +41,15 @@ jobs:
           file: ./docker/imap-listener/Dockerfile
           push: false
           load: true
-          cache-from: type=gha
+          cache-from: |
+            type=gha
+            type=registry,ref=${{ vars.ECR_REGISTRY }}/trassenscout/imap-listener:${{ inputs.ENVIRONMENT }}-latest
           cache-to: type=gha,mode=max
           tags: |
-            public.ecr.aws/n0p8j4k5/trassenscout/imap-listener:${{ github.sha }}
-            public.ecr.aws/n0p8j4k5/trassenscout/imap-listener:${{ inputs.ENVIRONMENT }}-latest
+            ${{ vars.ECR_REGISTRY }}/trassenscout/imap-listener:${{ github.sha }}
+            ${{ vars.ECR_REGISTRY }}/trassenscout/imap-listener:${{ inputs.ENVIRONMENT }}-latest
 
       - name: Push IMAP listener image
         run: |
-          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/n0p8j4k5/
-          docker push --all-tags public.ecr.aws/n0p8j4k5/trassenscout/imap-listener
+          aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${{ vars.ECR_REGISTRY }}
+          docker push --all-tags ${{ vars.ECR_REGISTRY }}/trassenscout/imap-listener

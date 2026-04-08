@@ -70,6 +70,8 @@ jobs:
 
             LUCKY_CLOUD_TOKEN='${{ secrets.LUCKY_CLOUD_TOKEN }}'
 
+            ECR_REGISTRY='${{ vars.ECR_REGISTRY }}'
+
             # IMAP Listener Configuration
             IMAP_HOST='${{ vars.IMAP_HOST }}'
             IMAP_PORT='${{ vars.IMAP_PORT }}'
