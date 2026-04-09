@@ -38,7 +38,7 @@ export default async function DealAreaStatusesPage({
           button="blue"
           icon="plus"
           className="mt-4"
-          href={`/${projectSlug}/dealflaechen-status/new${appendFrom}` as Route}
+          href={`/${projectSlug}/deal-area-status/new${appendFrom}` as Route}
         >
           Neuer Status
         </Link>

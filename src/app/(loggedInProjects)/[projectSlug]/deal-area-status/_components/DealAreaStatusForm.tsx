@@ -5,7 +5,7 @@ import {
   LabeledTextField,
 } from "@/src/core/components/forms"
 import { z } from "zod"
-import { dealAreaStatusStyleOptions } from "../_utils/dealAreaStatusStyleUi"
+import { dealAreaStatusStyleOptions } from "../_utils/dealAreaStatusStyles"
 
 export const DealAreaStatusFormSchema = z.object({
   slug: z.string().min(1, { message: "Pflichtfeld." }),

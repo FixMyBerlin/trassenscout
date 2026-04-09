@@ -18,7 +18,7 @@ export const NewDealAreaStatusForm = ({ projectSlug, fromParam }: Props) => {
   const router = useRouter()
   const [createDealAreaStatusMutation] = useMutation(createDealAreaStatus)
 
-  const listPath = `/${projectSlug}/dealflaechen-status`
+  const listPath = `/${projectSlug}/deal-area-status`
   const returnPath = fromParam ? `${listPath}?from=${encodeURIComponent(fromParam)}` : listPath
 
   type HandleSubmit = z.infer<typeof DealAreaStatusFormSchema>

@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation"
 import {
   dealAreaStatusStyleBadgeClasses,
   dealAreaStatusStyleTranslations,
-} from "../_utils/dealAreaStatusStyleUi"
+} from "../_utils/dealAreaStatusStyles"
 
 type Props = {
   dealAreaStatuses: PromiseReturnType<typeof getDealAreaStatuses>["dealAreaStatuses"]
@@ -34,7 +34,7 @@ export const DealAreaStatusesTable = ({ dealAreaStatuses, fromPath }: Props) => 
     if (window.confirm(`Den Eintrag mit ID ${dealAreaStatusId} unwiderruflich löschen?`)) {
       try {
         await deleteDealAreaStatusMutation({ projectSlug, id: dealAreaStatusId })
-        router.push(`/${projectSlug}/dealflaechen-status` as Route)
+        router.push(`/${projectSlug}/deal-area-status` as Route)
         router.refresh()
       } catch {
         alert(
@@ -100,7 +100,7 @@ export const DealAreaStatusesTable = ({ dealAreaStatuses, fromPath }: Props) => 
                     <Link
                       icon="edit"
                       href={
-                        `/${projectSlug}/dealflaechen-status/${status.id}/edit${appendFrom}` as Route
+                        `/${projectSlug}/deal-area-status/${status.id}/edit${appendFrom}` as Route
                       }
                     >
                       Bearbeiten
