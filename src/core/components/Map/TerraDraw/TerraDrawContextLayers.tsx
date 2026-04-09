@@ -201,3 +201,47 @@ export const GeometryDrawingDealAreaParcelContextLayers = ({
     </Source>
   )
 }
+
+type GeometryDrawingDealAreaPreviewLayersProps = {
+  geometry: Polygon | MultiPolygon
+}
+
+export const GeometryDrawingDealAreaPreviewLayers = ({
+  geometry,
+}: GeometryDrawingDealAreaPreviewLayersProps) => {
+  const previewFeatureCollection = useMemo(
+    () => ({
+      type: "FeatureCollection" as const,
+      features: [
+        {
+          type: "Feature" as const,
+          geometry,
+          properties: null,
+        },
+      ],
+    }),
+    [geometry],
+  )
+
+  return (
+    <Source id="terra_draw_deal_area_preview" type="geojson" data={previewFeatureCollection}>
+      <Layer
+        id="terra_draw_deal_area_preview_fill"
+        type="fill"
+        paint={{
+          "fill-color": "#DC2626",
+          "fill-opacity": 0.22,
+        }}
+      />
+      <Layer
+        id="terra_draw_deal_area_preview_outline"
+        type="line"
+        paint={{
+          "line-color": "#DC2626",
+          "line-width": 3,
+          "line-opacity": 0.95,
+        }}
+      />
+    </Source>
+  )
+}

@@ -3,7 +3,7 @@ import type { SupportedGeometry } from "@/src/server/shared/utils/geometrySchema
 import type { Map as MapLibreMap } from "maplibre-gl"
 import { TerraDraw } from "terra-draw"
 import { TerraDrawMapLibreGLAdapter } from "terra-draw-maplibre-gl-adapter"
-import { createTerraDrawModes, type TerraDrawValidation } from "./terraDrawConfig"
+import { createTerraDrawModes, type TerraDrawModeConfig } from "./terraDrawConfig"
 import type { TerraDrawMode } from "./useTerraDrawControl"
 import { calculateEnabledButtons, getDefaultModeForGeometry } from "./utils/buttonState"
 import { cleanupMixedFeatures } from "./utils/featureFiltering"
@@ -23,7 +23,7 @@ export class TerraDrawControl {
   private ignoreNextChangeCount = 0
   private selectedIds: Array<string | number> = []
   private restorePending = false
-  private polygonValidation?: TerraDrawValidation
+  private modeConfig?: TerraDrawModeConfig
   private styleLoadHandler = () => this.reinitAfterStyleChange()
   private queueAutoSelect = () => {
     queueMicrotask(() => {
@@ -53,11 +53,11 @@ export class TerraDrawControl {
   constructor(
     onChange?: (geometry: SupportedGeometry | null, geometryType: string | null) => void,
     initialGeometry?: SupportedGeometry,
-    polygonValidation?: TerraDrawValidation,
+    modeConfig?: TerraDrawModeConfig,
   ) {
     this.onChange = onChange
     this.initialGeometry = initialGeometry
-    this.polygonValidation = polygonValidation
+    this.modeConfig = modeConfig
   }
 
   onAdd(map: MapLibreMap) {
@@ -95,7 +95,7 @@ export class TerraDrawControl {
   private createDrawInstance(map: MapLibreMap) {
     return new TerraDraw({
       adapter: new TerraDrawMapLibreGLAdapter({ map }),
-      modes: createTerraDrawModes({ polygonValidation: this.polygonValidation }),
+      modes: createTerraDrawModes(this.modeConfig),
     })
   }
 

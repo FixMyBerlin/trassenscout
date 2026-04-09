@@ -1,6 +1,5 @@
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
 import { getStaticOverlayForProject } from "@/src/core/components/Map/staticOverlay/getStaticOverlayForProject"
-import type { TerraDrawValidation } from "@/src/core/components/Map/TerraDraw/terraDrawConfig"
 import { TerraDrawHint } from "@/src/core/components/Map/TerraDraw/TerraDrawHint"
 import { TerraDrawProvider } from "@/src/core/components/Map/TerraDraw/TerraDrawProvider"
 import { TerraDrawToolbar } from "@/src/core/components/Map/TerraDraw/TerraDrawToolbar"
@@ -19,9 +18,10 @@ type Props = {
   allowedTypes: AllowedType[]
   subsection?: TGetSubsection
   children?: React.ReactNode
+  displayedGeometry?: SupportedGeometry
   showHint?: boolean
   syncTransformedGeometryToMap?: boolean
-  polygonValidation?: TerraDrawValidation
+  hideUnselectedPolygonOutline?: boolean
   transformGeometry?: (
     geometry: SupportedGeometry | null,
     geometryType: string | null,
@@ -35,13 +35,15 @@ export const GeometryDrawingMap = ({
   allowedTypes,
   subsection,
   children,
+  displayedGeometry,
   showHint = true,
   syncTransformedGeometryToMap = true,
-  polygonValidation,
+  hideUnselectedPolygonOutline = false,
   transformGeometry,
 }: Props) => {
   const { watch, setValue } = useFormContext()
   const geometry = watch("geometry") as SupportedGeometry | undefined
+  const geometryForMap = displayedGeometry ?? geometry
   const updateTerraDrawRef = useRef<
     ((geometry: SupportedGeometry | null, ignoreChangeEvents?: boolean) => void) | null
   >(null)
@@ -57,8 +59,8 @@ export const GeometryDrawingMap = ({
   const initialViewState = useMemo(() => {
     let targetGeometry: SupportedGeometry | undefined
 
-    if (geometry) {
-      targetGeometry = geometry
+    if (geometryForMap) {
+      targetGeometry = geometryForMap
     } else if (subsection) {
       targetGeometry = subsection.geometry
     }
@@ -73,7 +75,7 @@ export const GeometryDrawingMap = ({
     }
 
     return undefined
-  }, [geometry, subsection])
+  }, [geometryForMap, subsection])
 
   const defaultViewState = {
     longitude: 13.404954,
@@ -82,6 +84,18 @@ export const GeometryDrawingMap = ({
   }
 
   const handleChange = (geo: SupportedGeometry | null, geoType: string | null) => {
+    const resetToCurrentPolygonShell =
+      allowedTypes.length === 1 &&
+      allowedTypes[0] === "polygon" &&
+      geo &&
+      geoType !== "Polygon" &&
+      geoType !== "MultiPolygon"
+
+    if (resetToCurrentPolygonShell) {
+      updateTerraDrawRef.current?.(geometryForMap ?? null, true)
+      return
+    }
+
     const nextState = transformGeometry
       ? transformGeometry(geo, geoType)
       : { geometry: geo, geometryType: geoType }
@@ -117,9 +131,9 @@ export const GeometryDrawingMap = ({
         {children}
         <div className="absolute top-4 left-4 z-10 flex flex-col gap-2.5">
           <TerraDrawProvider
-            initialGeometry={geometry}
+            initialGeometry={geometryForMap}
             onChange={handleChange}
-            polygonValidation={polygonValidation}
+            modeConfig={{ hideUnselectedPolygonOutline }}
           >
             {({
               mode,

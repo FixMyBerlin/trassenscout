@@ -7,14 +7,6 @@ import {
   TerraDrawSelectMode,
 } from "terra-draw"
 
-export type TerraDrawValidation = (
-  feature: GeoJSONStoreFeatures,
-  context: unknown,
-) => {
-  valid: boolean
-  reason?: string
-}
-
 export const TERRA_DRAW_COLORS = {
   /** Yellow – selected (edit mode) or the feature being drawn (add mode) */
   drawing: "#F8C62B" as HexColor,
@@ -31,14 +23,22 @@ export const TERRA_DRAW_COLORS = {
 const colorByDrawingState = (feature: GeoJSONStoreFeatures) =>
   feature.properties?.currentlyDrawing ? TERRA_DRAW_COLORS.drawing : TERRA_DRAW_COLORS.unselected
 
+const polygonFillOpacityByState = (feature: GeoJSONStoreFeatures) =>
+  feature.properties?.currentlyDrawing ? 0.3 : 0
+
+export type TerraDrawModeConfig = {
+  hideUnselectedPolygonOutline?: boolean
+}
+
+const polygonOutlineOpacityByState =
+  ({ hideUnselectedPolygonOutline }: TerraDrawModeConfig) =>
+  (feature: GeoJSONStoreFeatures) =>
+    feature.properties?.currentlyDrawing ? 1 : hideUnselectedPolygonOutline ? 0 : 1
+
 // DOCS STYLING: https://github.com/JamesLMilner/terra-draw/blob/main/guides/5.STYLING.md
 // In add/draw mode: existing features = blue (unselected), the one being drawn = yellow (colorByDrawingState).
 // In edit/select mode: unselected = blue (from these mode styles), selected = yellow (from SelectMode selected* styles).
-type TerraDrawModeConfig = {
-  polygonValidation?: TerraDrawValidation
-}
-
-export const createTerraDrawModes = ({ polygonValidation }: TerraDrawModeConfig = {}) => [
+export const createTerraDrawModes = (config: TerraDrawModeConfig = {}) => [
   new TerraDrawPointMode({
     styles: { pointColor: colorByDrawingState },
   }),
@@ -49,11 +49,11 @@ export const createTerraDrawModes = ({ polygonValidation }: TerraDrawModeConfig 
     styles: { lineStringColor: colorByDrawingState },
   }),
   new TerraDrawPolygonMode({
-    validation: polygonValidation,
     styles: {
       outlineColor: colorByDrawingState,
+      outlineOpacity: polygonOutlineOpacityByState(config),
       fillColor: colorByDrawingState,
-      fillOpacity: 0.3,
+      fillOpacity: polygonFillOpacityByState,
     },
   }),
   new TerraDrawSelectMode({
@@ -89,7 +89,6 @@ export const createTerraDrawModes = ({ polygonValidation }: TerraDrawModeConfig 
       },
       polygon: {
         feature: {
-          validation: polygonValidation,
           draggable: true,
           coordinates: {
             draggable: true,

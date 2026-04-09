@@ -4,14 +4,14 @@ import {
 } from "@/src/core/store/terraDrawHint.zustand"
 import { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
 import { useEffect } from "react"
-import type { TerraDrawValidation } from "./terraDrawConfig"
+import type { TerraDrawModeConfig } from "./terraDrawConfig"
 import type { TerraDrawMode } from "./useTerraDrawControl"
 import { useTerraDrawControl } from "./useTerraDrawControl"
 
 type Props = {
   initialGeometry?: SupportedGeometry
   onChange?: (geometry: SupportedGeometry | null, geometryType: string | null) => void
-  polygonValidation?: TerraDrawValidation
+  modeConfig?: TerraDrawModeConfig
   children?: (api: {
     mode: TerraDrawMode
     setMode: (mode: TerraDrawMode) => void
@@ -34,12 +34,7 @@ type Props = {
 
 // Provides Terra Draw API to children via render props
 // Actual feature rendering happens in Terra Draw (MapLibre canvas), not React
-export const TerraDrawProvider = ({
-  initialGeometry,
-  onChange,
-  polygonValidation,
-  children,
-}: Props) => {
+export const TerraDrawProvider = ({ initialGeometry, onChange, modeConfig, children }: Props) => {
   const setHintMode = useTerraDrawHintSetMode()
   const setHintGeometryType = useTerraDrawHintSetGeometryType()
 
@@ -47,7 +42,7 @@ export const TerraDrawProvider = ({
     initialGeometry,
     onChange,
     onModeChange: setHintMode,
-    polygonValidation,
+    modeConfig,
   })
 
   useEffect(() => {
