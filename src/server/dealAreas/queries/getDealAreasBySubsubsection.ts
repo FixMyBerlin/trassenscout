@@ -21,6 +21,7 @@ export type DealAreaWithTypedGeometry = Omit<DealArea, "geometry"> & {
   parcel: {
     id: number
     gmlId: string | null
+    geometry: GeometryByGeometryType<"POLYGON"> | null
   }
   dealAreaStatus: {
     id: number
@@ -50,6 +51,7 @@ export default resolver.pipe(
           select: {
             id: true,
             gmlId: true,
+            geometry: true,
           },
         },
         dealAreaStatus: {

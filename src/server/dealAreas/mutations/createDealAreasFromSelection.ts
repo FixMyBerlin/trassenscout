@@ -17,6 +17,7 @@ const CreateDealAreasFromSelectionSchema = ProjectSlugRequiredSchema.merge(
         z.object({
           gmlId: z.string().trim().min(1, "gmlId is required"),
           geometry: DealAreaGeometrySchema,
+          parcelGeometry: DealAreaGeometrySchema,
           description: z.string().nullish(),
           dealAreaStatusId: z.coerce.number().nullish(),
         }),
@@ -76,11 +77,15 @@ export default resolver.pipe(
           },
           create: {
             gmlId: dealArea.gmlId,
+            geometry: dealArea.parcelGeometry,
           },
-          update: {},
+          update: {
+            geometry: dealArea.parcelGeometry,
+          },
           select: {
             id: true,
             gmlId: true,
+            geometry: true,
           },
         })
 

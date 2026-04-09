@@ -402,6 +402,7 @@ model Parcel {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   gmlId      String?  @unique
+  geometry   Json?
 
   dealAreas DealArea[]
 }

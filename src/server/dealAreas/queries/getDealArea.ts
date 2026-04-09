@@ -6,6 +6,7 @@ import {
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
 import { typeDealAreaGeometry } from "@/src/server/dealAreas/utils/typeDealAreaGeometry"
+import { typeGeometry } from "@/src/server/shared/utils/typeGeometry"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
 
@@ -35,6 +36,7 @@ export default resolver.pipe(
           select: {
             id: true,
             gmlId: true,
+            geometry: true,
           },
         },
         dealAreaStatus: {
@@ -48,6 +50,16 @@ export default resolver.pipe(
       },
     })
 
-    return typeDealAreaGeometry(dealArea)
+    const typedDealArea = typeDealAreaGeometry(dealArea)
+
+    return {
+      ...typedDealArea,
+      parcel: {
+        ...typedDealArea.parcel,
+        geometry: typedDealArea.parcel.geometry
+          ? typeGeometry(typedDealArea.parcel.geometry, ["POLYGON"])
+          : null,
+      },
+    }
   },
 )

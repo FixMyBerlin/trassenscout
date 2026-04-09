@@ -36,6 +36,7 @@ export function computePotentialDealAreas(
     results.push({
       id: String(seq),
       geometry: DealAreaGeometrySchema.parse(intersection.geometry),
+      parcelGeometry: DealAreaGeometrySchema.parse(parcelFeature.geometry),
       gmlId,
       selected: true,
     })

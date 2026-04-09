@@ -66,6 +66,7 @@ export function NewDealAreasClient({ initialSubsubsection }: Props) {
         dealAreas: selectedDealAreas.map((dealArea) => ({
           gmlId: dealArea.gmlId,
           geometry: dealArea.geometry,
+          parcelGeometry: dealArea.parcelGeometry,
         })),
       })
 
