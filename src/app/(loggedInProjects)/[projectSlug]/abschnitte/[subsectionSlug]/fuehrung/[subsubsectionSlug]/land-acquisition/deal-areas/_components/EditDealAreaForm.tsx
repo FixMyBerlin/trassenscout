@@ -8,6 +8,7 @@ import { subsubsectionLandAcquisitionRoute } from "@/src/core/routes/subsectionR
 import deleteDealArea from "@/src/server/dealAreas/mutations/deleteDealArea"
 import updateDealArea from "@/src/server/dealAreas/mutations/updateDealArea"
 import getDealArea from "@/src/server/dealAreas/queries/getDealArea"
+import { SupportedGeometrySchema } from "@/src/server/shared/utils/geometrySchemas"
 import { useMutation } from "@blitzjs/rpc"
 import { PromiseReturnType } from "blitz"
 import { Route } from "next"
@@ -43,7 +44,7 @@ export const EditDealAreaForm = ({
     subsubsectionSlug,
   )
   const parcelGeometry = DealAreaFormSchema.shape.geometry.parse(dealArea.parcel.geometry)
-  const subsubsectionGeometry = dealArea.subsubsection.geometry
+  const subsubsectionGeometry = SupportedGeometrySchema.parse(dealArea.subsubsection.geometry)
 
   type HandleSubmit = z.infer<typeof DealAreaFormSchema>
   const handleSubmit = async (values: HandleSubmit) => {
