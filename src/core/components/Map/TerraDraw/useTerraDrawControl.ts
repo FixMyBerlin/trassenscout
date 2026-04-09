@@ -2,6 +2,7 @@ import { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
 import { useState } from "react"
 import { useControl } from "react-map-gl/maplibre"
 import { TerraDrawControl } from "./TerraDrawControl"
+import type { TerraDrawValidation } from "./terraDrawConfig"
 import { calculateEnabledButtons, getDefaultModeForGeometry } from "./utils/buttonState"
 
 export type TerraDrawMode = "point" | "linestring" | "freehand-linestring" | "polygon" | "select"
@@ -10,11 +11,17 @@ type Props = {
   initialGeometry?: SupportedGeometry
   onChange?: (geometry: SupportedGeometry | null, geometryType: string | null) => void
   onModeChange?: (mode: TerraDrawMode) => void
+  polygonValidation?: TerraDrawValidation
 }
 
 // Custom hook to integrate Terra Draw with react-map-gl using the useControl pattern
 // Manages terra-draw lifecycle internally without exposing refs or requiring useEffect in consumers
-export const useTerraDrawControl = ({ initialGeometry, onChange, onModeChange }: Props) => {
+export const useTerraDrawControl = ({
+  initialGeometry,
+  onChange,
+  onModeChange,
+  polygonValidation,
+}: Props) => {
   const [mode, setModeState] = useState<TerraDrawMode>(() =>
     getDefaultModeForGeometry(initialGeometry),
   )
@@ -51,7 +58,7 @@ export const useTerraDrawControl = ({ initialGeometry, onChange, onModeChange }:
         }
       }
 
-      const ctrl = new TerraDrawControl(wrappedOnChange, initialGeometry)
+      const ctrl = new TerraDrawControl(wrappedOnChange, initialGeometry, polygonValidation)
       ctrl.setOnModeChange((mode) => {
         setModeState(mode)
         onModeChange?.(mode)

@@ -1,5 +1,6 @@
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
 import { getStaticOverlayForProject } from "@/src/core/components/Map/staticOverlay/getStaticOverlayForProject"
+import type { TerraDrawValidation } from "@/src/core/components/Map/TerraDraw/terraDrawConfig"
 import { TerraDrawHint } from "@/src/core/components/Map/TerraDraw/TerraDrawHint"
 import { TerraDrawProvider } from "@/src/core/components/Map/TerraDraw/TerraDrawProvider"
 import { TerraDrawToolbar } from "@/src/core/components/Map/TerraDraw/TerraDrawToolbar"
@@ -18,9 +19,27 @@ type Props = {
   allowedTypes: AllowedType[]
   subsection?: TGetSubsection
   children?: React.ReactNode
+  showHint?: boolean
+  syncTransformedGeometryToMap?: boolean
+  polygonValidation?: TerraDrawValidation
+  transformGeometry?: (
+    geometry: SupportedGeometry | null,
+    geometryType: string | null,
+  ) => {
+    geometry: SupportedGeometry | null
+    geometryType: string | null
+  }
 }
 
-export const GeometryDrawingMap = ({ allowedTypes, subsection, children }: Props) => {
+export const GeometryDrawingMap = ({
+  allowedTypes,
+  subsection,
+  children,
+  showHint = true,
+  syncTransformedGeometryToMap = true,
+  polygonValidation,
+  transformGeometry,
+}: Props) => {
   const { watch, setValue } = useFormContext()
   const geometry = watch("geometry") as SupportedGeometry | undefined
   const updateTerraDrawRef = useRef<
@@ -63,9 +82,21 @@ export const GeometryDrawingMap = ({ allowedTypes, subsection, children }: Props
   }
 
   const handleChange = (geo: SupportedGeometry | null, geoType: string | null) => {
-    if (geo && geoType) {
-      setValue("geometry", geo, { shouldValidate: true })
-      setValue("type", mapGeoTypeToEnum(geoType), { shouldValidate: true })
+    const nextState = transformGeometry
+      ? transformGeometry(geo, geoType)
+      : { geometry: geo, geometryType: geoType }
+
+    if (
+      syncTransformedGeometryToMap &&
+      nextState.geometry !== geo &&
+      JSON.stringify(nextState.geometry) !== JSON.stringify(geo)
+    ) {
+      updateTerraDrawRef.current?.(nextState.geometry, true)
+    }
+
+    if (nextState.geometry && nextState.geometryType) {
+      setValue("geometry", nextState.geometry, { shouldValidate: true })
+      setValue("type", mapGeoTypeToEnum(nextState.geometryType), { shouldValidate: true })
     } else {
       setValue("geometry", undefined, { shouldValidate: true })
       setValue("type", undefined, { shouldValidate: true })
@@ -85,7 +116,11 @@ export const GeometryDrawingMap = ({ allowedTypes, subsection, children }: Props
       >
         {children}
         <div className="absolute top-4 left-4 z-10 flex flex-col gap-2.5">
-          <TerraDrawProvider initialGeometry={geometry} onChange={handleChange}>
+          <TerraDrawProvider
+            initialGeometry={geometry}
+            onChange={handleChange}
+            polygonValidation={polygonValidation}
+          >
             {({
               mode,
               setMode,
@@ -128,7 +163,7 @@ export const GeometryDrawingMap = ({ allowedTypes, subsection, children }: Props
               )
             }}
           </TerraDrawProvider>
-          <TerraDrawHint />
+          {showHint ? <TerraDrawHint /> : null}
         </div>
       </BaseMap>
     </div>

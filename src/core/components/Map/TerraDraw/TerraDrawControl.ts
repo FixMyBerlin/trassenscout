@@ -3,7 +3,7 @@ import type { SupportedGeometry } from "@/src/server/shared/utils/geometrySchema
 import type { Map as MapLibreMap } from "maplibre-gl"
 import { TerraDraw } from "terra-draw"
 import { TerraDrawMapLibreGLAdapter } from "terra-draw-maplibre-gl-adapter"
-import { createTerraDrawModes } from "./terraDrawConfig"
+import { createTerraDrawModes, type TerraDrawValidation } from "./terraDrawConfig"
 import type { TerraDrawMode } from "./useTerraDrawControl"
 import { calculateEnabledButtons, getDefaultModeForGeometry } from "./utils/buttonState"
 import { cleanupMixedFeatures } from "./utils/featureFiltering"
@@ -23,14 +23,41 @@ export class TerraDrawControl {
   private ignoreNextChangeCount = 0
   private selectedIds: Array<string | number> = []
   private restorePending = false
+  private polygonValidation?: TerraDrawValidation
   private styleLoadHandler = () => this.reinitAfterStyleChange()
+  private queueAutoSelect = () => {
+    queueMicrotask(() => {
+      this.maybeAutoSelectExistingFeature()
+    })
+  }
+  private selectFirstFeature() {
+    if (!this.draw) return
+
+    const firstFeature = this.draw.getSnapshot()[0]
+    if (!firstFeature?.id) return
+
+    this.draw.selectFeature(firstFeature.id, "select")
+    this.selectedIds = [firstFeature.id]
+    this.onSelectionChange?.()
+  }
+
+  private maybeAutoSelectExistingFeature() {
+    if (!this.draw || this.currentMode !== "select" || this.selectedIds.length > 0) return
+
+    const snapshot = this.draw.getSnapshot()
+    if (snapshot.length !== 1) return
+
+    this.selectFirstFeature()
+  }
 
   constructor(
     onChange?: (geometry: SupportedGeometry | null, geometryType: string | null) => void,
     initialGeometry?: SupportedGeometry,
+    polygonValidation?: TerraDrawValidation,
   ) {
     this.onChange = onChange
     this.initialGeometry = initialGeometry
+    this.polygonValidation = polygonValidation
   }
 
   onAdd(map: MapLibreMap) {
@@ -49,6 +76,9 @@ export class TerraDrawControl {
         this.draw.setMode(this.pendingMode)
         this.currentMode = this.pendingMode
         this.onModeChange?.(this.pendingMode)
+        if (this.pendingMode === "select") {
+          this.queueAutoSelect()
+        }
         this.pendingMode = null
       }
     }
@@ -65,7 +95,7 @@ export class TerraDrawControl {
   private createDrawInstance(map: MapLibreMap) {
     return new TerraDraw({
       adapter: new TerraDrawMapLibreGLAdapter({ map }),
-      modes: createTerraDrawModes(),
+      modes: createTerraDrawModes({ polygonValidation: this.polygonValidation }),
     })
   }
 
@@ -107,11 +137,12 @@ export class TerraDrawControl {
       this.onModeChange?.(defaultMode)
       if (this.initialGeometry) this.onButtonsChange?.()
       if (isDev && this.initialGeometry && defaultMode === "select") {
-        console.log("[Terra Draw] Started in select mode - click a feature to edit it")
+        console.log("[Terra Draw] Started in select mode with the first feature selected")
       }
     }
 
     this.setupTerraDrawListeners()
+    this.queueAutoSelect()
   }
 
   private setupTerraDrawListeners() {
@@ -212,6 +243,9 @@ export class TerraDrawControl {
         }
         this.draw.setMode(mode)
         this.currentMode = mode
+        if (mode === "select") {
+          this.queueAutoSelect()
+        }
       }
       if (this.onModeChange) {
         this.onModeChange(mode)
@@ -252,6 +286,9 @@ export class TerraDrawControl {
         this.ignoreNextChangeCount = featuresToAdd.length
       }
       this.draw.addFeatures(featuresToAdd)
+      if (this.currentMode === "select") {
+        this.queueAutoSelect()
+      }
     }
   }
 

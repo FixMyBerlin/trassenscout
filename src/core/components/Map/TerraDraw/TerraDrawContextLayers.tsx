@@ -9,7 +9,9 @@ import { getSubsubsectionFeatures } from "@/src/core/components/Map/utils/getSub
 import { mergeFeatureCollections } from "@/src/core/components/Map/utils/mergeFeatureCollections"
 import { TSubsections } from "@/src/server/subsections/queries/getSubsections"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
+import type { MultiPolygon, Polygon } from "geojson"
 import { useMemo } from "react"
+import { Layer, Source } from "react-map-gl/maplibre"
 
 type GeometryDrawingSubsectionContextLayersProps = {
   subsections: TSubsections
@@ -152,5 +154,50 @@ export const GeometryDrawingSubsubsectionContextLayers = ({
         />
       )}
     </>
+  )
+}
+
+type GeometryDrawingDealAreaParcelContextLayersProps = {
+  parcelGeometry: Polygon | MultiPolygon
+}
+
+export const GeometryDrawingDealAreaParcelContextLayers = ({
+  parcelGeometry,
+}: GeometryDrawingDealAreaParcelContextLayersProps) => {
+  const parcelFeatureCollection = useMemo(
+    () => ({
+      type: "FeatureCollection" as const,
+      features: [
+        {
+          type: "Feature" as const,
+          geometry: parcelGeometry,
+          properties: null,
+        },
+      ],
+    }),
+    [parcelGeometry],
+  )
+
+  return (
+    <Source id="terra_draw_deal_area_parcel" type="geojson" data={parcelFeatureCollection}>
+      <Layer
+        id="terra_draw_deal_area_parcel_fill"
+        type="fill"
+        paint={{
+          "fill-color": "#F59E0B",
+          "fill-opacity": 0.08,
+        }}
+      />
+      <Layer
+        id="terra_draw_deal_area_parcel_outline"
+        type="line"
+        paint={{
+          "line-color": "#D97706",
+          "line-width": 3,
+          "line-opacity": 0.95,
+          "line-dasharray": [2, 1],
+        }}
+      />
+    </Source>
   )
 }
