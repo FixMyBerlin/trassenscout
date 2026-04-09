@@ -77,7 +77,7 @@ export function DealAreasList({ potentialDealAreas, setPotentialDealAreas }: Pro
               >
                 <span className="font-semibold">#{area.id}</span>{" "}
                 <span className={area.selected ? "text-gray-600" : "text-gray-400"}>
-                  {area.gmlId || "(keine gml_id)"}
+                  area.alkisParcelId ({area.alkisParcelIdSource})
                 </span>
               </label>
             </div>

@@ -64,7 +64,8 @@ export function NewDealAreasClient({ initialSubsubsection }: Props) {
         projectSlug,
         subsubsectionId: initialSubsubsection.id,
         dealAreas: selectedDealAreas.map((dealArea) => ({
-          gmlId: dealArea.gmlId,
+          alkisParcelId: dealArea.alkisParcelId,
+          alkisParcelIdSource: dealArea.alkisParcelIdSource,
           geometry: dealArea.geometry,
           parcelGeometry: dealArea.parcelGeometry,
         })),

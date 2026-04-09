@@ -15,7 +15,8 @@ const CreateDealAreasFromSelectionSchema = ProjectSlugRequiredSchema.merge(
     dealAreas: z
       .array(
         z.object({
-          gmlId: z.string().trim().min(1, "gmlId is required"),
+          alkisParcelId: z.string().trim().min(1, "alkisParcelId is required"),
+          alkisParcelIdSource: z.string(),
           geometry: DealAreaGeometrySchema,
           parcelGeometry: DealAreaGeometrySchema,
           description: z.string().nullish(),
@@ -73,18 +74,21 @@ export default resolver.pipe(
       for (const dealArea of dealAreas) {
         const parcel = await tx.parcel.upsert({
           where: {
-            gmlId: dealArea.gmlId,
+            alkisParcelId: dealArea.alkisParcelId,
           },
           create: {
-            gmlId: dealArea.gmlId,
+            alkisParcelId: dealArea.alkisParcelId,
+            alkisParcelIdSource: dealArea.alkisParcelIdSource,
             geometry: dealArea.parcelGeometry,
           },
           update: {
             geometry: dealArea.parcelGeometry,
+            alkisParcelIdSource: dealArea.alkisParcelIdSource,
           },
           select: {
             id: true,
-            gmlId: true,
+            alkisParcelId: true,
+            alkisParcelIdSource: true,
             geometry: true,
           },
         })

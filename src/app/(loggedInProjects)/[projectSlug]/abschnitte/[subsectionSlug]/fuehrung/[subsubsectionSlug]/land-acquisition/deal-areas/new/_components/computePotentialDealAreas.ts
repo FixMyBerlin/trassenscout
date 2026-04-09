@@ -29,15 +29,20 @@ export function computePotentialDealAreas(
     if (!intersection?.geometry) continue
 
     seq += 1
-    const gmlId = String(
-      (parcel.properties as Record<string, unknown> | null | undefined)?.gml_id ?? "",
-    )
+    const props = parcel.properties as Record<string, unknown>
+    const alkisParcelId = props.alkisParcelId
+    const alkisParcelIdSource = props.alkisParcelIdSource
 
     results.push({
       id: String(seq),
       geometry: DealAreaGeometrySchema.parse(intersection.geometry),
       parcelGeometry: DealAreaGeometrySchema.parse(parcelFeature.geometry),
-      gmlId,
+      // oth properties are always present as strings after injectAlkisParcelIdsIntoGeoJson
+      // @ts-ignore
+      alkisParcelId,
+      // oth properties are always present as strings after injectAlkisParcelIdsIntoGeoJson
+      // @ts-ignore
+      alkisParcelIdSource,
       selected: true,
     })
   }

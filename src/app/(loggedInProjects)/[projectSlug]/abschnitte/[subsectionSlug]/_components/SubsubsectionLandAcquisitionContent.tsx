@@ -217,10 +217,11 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
                       </tr>
                       <tr>
                         <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
-                          Flurstücknummer
+                          Flurstücknummer ({selectedDealArea.parcel.alkisParcelIdSource})
                         </th>
                         <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
-                          {selectedDealArea.parcel.gmlId ?? `Parcel ${selectedDealArea.parcel.id}`}
+                          {selectedDealArea.parcel.alkisParcelId ??
+                            `Parcel ${selectedDealArea.parcel.id}`}
                         </td>
                       </tr>
                       <tr>

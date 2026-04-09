@@ -1,4 +1,5 @@
 import type { AlkisBackgroundConfigEntry } from "@/src/core/components/Map/alkisStateConfig"
+import type { Feature, FeatureCollection, Geometry } from "geojson"
 import { execFile } from "node:child_process"
 import { randomBytes } from "node:crypto"
 import { unlink, writeFile } from "node:fs/promises"
@@ -142,4 +143,65 @@ export async function convertWfsResponseToGeoJson(
   } finally {
     await unlink(tempPath).catch(() => {})
   }
+}
+
+function stringifyFeatureId(v: unknown) {
+  if (v == null) return ""
+  if (typeof v === "string") return v.trim()
+  if (typeof v === "number" || typeof v === "boolean") return String(v)
+  return ""
+}
+
+function resolveAlkisParcelId(feature: Feature<Geometry>, configuredKey: string | null) {
+  const props = (feature.properties ?? {}) as Record<string, unknown>
+  const key = configuredKey?.trim()
+
+  if (key) {
+    const fromKey = stringifyFeatureId(props[key])
+    if (fromKey) return { alkisParcelId: fromKey, alkisParcelIdSource: key }
+  }
+
+  const fromFs = stringifyFeatureId(props.flurstueckskennzeichen)
+  if (fromFs) return { alkisParcelId: fromFs, alkisParcelIdSource: "flurstueckskennzeichen" }
+
+  const fromGml = stringifyFeatureId(props.gml_id)
+  if (fromGml) return { alkisParcelId: fromGml, alkisParcelIdSource: "gml_id" }
+
+  if (feature.id !== undefined && feature.id !== null) {
+    const fromId = stringifyFeatureId(feature.id as unknown)
+    if (fromId) return { alkisParcelId: fromId, alkisParcelIdSource: "feature.id" }
+  }
+
+  return { alkisParcelId: "", alkisParcelIdSource: "none" }
+}
+
+/**
+ * Adds normalized `alkisParcelId` and `alkisParcelIdSource` to every feature (see plan: Flurstückskennzeichen).
+ */
+export function injectAlkisParcelIdsIntoGeoJson(
+  geojsonString: string,
+  alkisParcelIdPropertyKey: string | null,
+) {
+  let parsed: unknown
+  try {
+    parsed = JSON.parse(geojsonString) as unknown
+  } catch {
+    return { ok: false, error: "GeoJSON konnte nicht geparst werden." }
+  }
+  if (
+    !parsed ||
+    typeof parsed !== "object" ||
+    !("type" in parsed) ||
+    (parsed as { type?: unknown }).type !== "FeatureCollection"
+  ) {
+    return { ok: false, error: "Erwartet wurde eine GeoJSON FeatureCollection." }
+  }
+  const fc = parsed as FeatureCollection<Geometry>
+  const features = Array.isArray(fc.features) ? fc.features : []
+  for (const f of features) {
+    if (!f || f.type !== "Feature") continue
+    const { alkisParcelId, alkisParcelIdSource } = resolveAlkisParcelId(f, alkisParcelIdPropertyKey)
+    f.properties = { ...(f.properties ?? {}), alkisParcelId, alkisParcelIdSource }
+  }
+  return { ok: true, geojson: JSON.stringify(parsed) }
 }

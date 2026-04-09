@@ -169,11 +169,13 @@ export function DealAreaMap({
       const feature = event.features?.[0]
       if (!feature?.properties) return
 
-      const gmlId = String((feature.properties as Record<string, unknown>).gml_id ?? "")
-      if (!gmlId) return
+      const alkisParcelId = (feature.properties as Record<string, unknown>).alkisParcelId
+      if (!alkisParcelId) return
 
       setPotentialDealAreas(
-        potentialDealAreas.map((a) => (a.gmlId === gmlId ? { ...a, selected: !a.selected } : a)),
+        potentialDealAreas.map((a) =>
+          a.alkisParcelId === alkisParcelId ? { ...a, selected: !a.selected } : a,
+        ),
       )
     },
     [potentialDealAreas, setPotentialDealAreas],

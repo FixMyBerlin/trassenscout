@@ -35,7 +35,8 @@ export default resolver.pipe(
         parcel: {
           select: {
             id: true,
-            gmlId: true,
+            alkisParcelId: true,
+            alkisParcelIdSource: true,
             geometry: true,
           },
         },

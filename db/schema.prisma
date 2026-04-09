@@ -398,11 +398,12 @@ model Subsubsection {
 }
 
 model Parcel {
-  id         Int      @id @default(autoincrement())
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  gmlId      String?  @unique
-  geometry   Json?
+  id                  Int      @id @default(autoincrement())
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  alkisParcelId       String   @unique
+  alkisParcelIdSource String
+  geometry            Json?
 
   dealAreas DealArea[]
 }

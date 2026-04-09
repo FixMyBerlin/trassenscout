@@ -9,6 +9,12 @@ export type AlkisBackgroundConfigEntry = {
   wfsUrl: string | null
   /** WFS feature type / layer id; spreadsheet column “Attributname Flurstücksnummer”. */
   parcelPropertyKey: string | null
+  /**
+   * WFS / GeoJSON feature property that holds the Flurstückskennzeichen (see `alkisStateConfig` block
+   * comment: Flurstücksuche spreadsheet). The WFS proxy also falls back to `flurstueckskennzeichen`,
+   * `gml_id`, and `feature.id` when this is unset or empty.
+   */
+  alkisParcelIdPropertyKey: string | null
   attribution: string | null
   // WFS pojection - verified by current manual GetFeature tests (see conversation history).
   projection: "EPSG:25832" | "EPSG:25833" | null
@@ -36,6 +42,12 @@ export type AlkisBackgroundConfigEntry = {
  * — original plugin: https://www.flurstueckssuche.de/files/Flurstuecksuche_de.zip (Flurstücksuche).
  * Column mapping: “WFS-URL” → `wfsUrl`, “Attributname Flurstücksnummer” → `parcelPropertyKey`.
  *
+ * `alkisParcelIdPropertyKey` (Flurstückskennzeichen attribute names) are taken from the same spreadsheet’s
+ * example direct GetFeature URLs (Filter / `ValueReference` / `PropertyName` for `{flurstueck_kennzeichen}`).
+ *
+ * TODO: verify `alkisParcelIdPropertyKey` / WFS behaviour for special cases (e.g. Bremen — spreadsheet URL
+ * differs from our `wfsUrl`; Sachsen — stored query `kennzeichen` instead of a plain filter property).
+ *
  * Uncomment `wmsUrl` / `layerName` where marked TODO when WMS endpoints are verified.
  */
 export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> = {
@@ -46,6 +58,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     layerName: null,
     wfsUrl: "https://owsproxy.lgl-bw.de/owsproxy/wfs/WFS_LGL-BW_ALKIS",
     parcelPropertyKey: "nora:v_al_flurstueck",
+    alkisParcelIdPropertyKey: "flurstueckskennzeichen",
     projection: "EPSG:25832",
     attribution: null,
     wfsOutputFormat: "application/json",
@@ -59,6 +72,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     layerName: null,
     wfsUrl: null,
     parcelPropertyKey: null,
+    alkisParcelIdPropertyKey: null,
     projection: null,
     attribution: null,
     wfsOutputFormat: null,
@@ -72,6 +86,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     layerName: "a_alkis_raster",
     wfsUrl: "https://gdi.berlin.de/services/wfs/alkis_flurstuecke",
     parcelPropertyKey: "alkis_flurstuecke:flurstuecke",
+    alkisParcelIdPropertyKey: "fsko",
     projection: "EPSG:25833",
     attribution: "© Geoportal Berlin / ALKIS",
     wfsOutputFormat: "application/json",
@@ -85,6 +100,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     layerName: null,
     wfsUrl: "https://isk.geobasis-bb.de/ows/alkis_vereinf_wfs",
     parcelPropertyKey: "ave:Flurstueck",
+    alkisParcelIdPropertyKey: "flstkennz",
     projection: "EPSG:25833",
     attribution: null,
     wfsOutputFormat: null,
@@ -98,6 +114,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     layerName: null,
     wfsUrl: "https://opendata.lgln.niedersachsen.de/doorman/noauth/alkishb_wfs_sf",
     parcelPropertyKey: "adv:AX_Flurstueck",
+    alkisParcelIdPropertyKey: "flstkennz",
     projection: "EPSG:25832",
     attribution: null,
     wfsOutputFormat: null,
@@ -111,6 +128,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     layerName: null,
     wfsUrl: "https://geodienste.hamburg.de/WFS_HH_ALKIS_vereinfacht",
     parcelPropertyKey: "ave:Flurstueck",
+    alkisParcelIdPropertyKey: "flstkennz",
     projection: "EPSG:25832",
     attribution: null,
     wfsOutputFormat: null,
@@ -124,6 +142,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     layerName: null,
     wfsUrl: "https://www.gds.hessen.de/wfs2/aaa-suite/cgi-bin/alkis/vereinf/wfs",
     parcelPropertyKey: "ave:Flurstueck",
+    alkisParcelIdPropertyKey: "flstkennz",
     projection: "EPSG:25832",
     attribution: null,
     wfsOutputFormat: null,
@@ -137,6 +156,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     layerName: null,
     wfsUrl: "https://www.geodaten-mv.de/dienste/alkis_wfs_einfach",
     parcelPropertyKey: "ave:Flurstueck",
+    alkisParcelIdPropertyKey: "flstkennz",
     projection: "EPSG:25833",
     attribution: "© GeoPortal MV / ALKIS",
     wfsOutputFormat: null,
@@ -150,6 +170,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     layerName: null,
     wfsUrl: "https://opendata.lgln.niedersachsen.de/doorman/noauth/alkis_wfs_einfach",
     parcelPropertyKey: "ave:Flurstueck",
+    alkisParcelIdPropertyKey: "flstkennz",
     projection: "EPSG:25832",
     attribution: null,
     wfsOutputFormat: null,
@@ -163,6 +184,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     layerName: null,
     wfsUrl: "https://www.wfs.nrw.de/geobasis/wfs_nw_alkis_vereinfacht",
     parcelPropertyKey: "ave:Flurstueck",
+    alkisParcelIdPropertyKey: "flstkennz",
     projection: "EPSG:25832",
     attribution: "© Geobasis NRW / ALKIS",
     wfsOutputFormat: null,
@@ -176,6 +198,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     layerName: null,
     wfsUrl: "https://www.geoportal.rlp.de/registry/wfs/519",
     parcelPropertyKey: "ave:Flurstueck",
+    alkisParcelIdPropertyKey: "flstkennz",
     projection: "EPSG:25832",
     attribution: null,
     wfsOutputFormat: "application/json; subtype=geojson",
@@ -189,6 +212,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     layerName: null,
     wfsUrl: "https://geoportal.saarland.de/registry/wfs/414",
     parcelPropertyKey: "ALKIS_ALKIS_WFS_ohne_Eig:Flurstueck",
+    alkisParcelIdPropertyKey: "nationalCadastralReference",
     projection: "EPSG:25832",
     attribution: null,
     wfsOutputFormat: null,
@@ -202,6 +226,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     layerName: null,
     wfsUrl: "https://geodienste.sachsen.de/aaa/public_alkis/vereinf/wfs",
     parcelPropertyKey: "ave:Flurstueck",
+    alkisParcelIdPropertyKey: "flstkennz",
     projection: "EPSG:25833",
     attribution: null,
     wfsOutputFormat: null,
@@ -216,6 +241,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     wfsUrl:
       "https://www.geodatenportal.sachsen-anhalt.de/wss/service/ST_LVermGeo_ALKIS_WFS_OpenData/guest",
     parcelPropertyKey: "ave:Flurstueck",
+    alkisParcelIdPropertyKey: "flstkennz",
     projection: "EPSG:25832",
     attribution: null,
     wfsOutputFormat: null,
@@ -229,6 +255,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     layerName: null,
     wfsUrl: "https://service.gdi-sh.de/SH_INSPIREDOWNLOAD_AI_CP_ALKIS",
     parcelPropertyKey: "cp:CadastralParcel",
+    alkisParcelIdPropertyKey: "nationalCadastralReference",
     projection: "EPSG:25832",
     attribution: null,
     wfsOutputFormat: null,
@@ -242,6 +269,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     layerName: null,
     wfsUrl: "https://www.geoproxy.geoportal-th.de/geoproxy/services/adv_alkis_wfs",
     parcelPropertyKey: "ave:Flurstueck",
+    alkisParcelIdPropertyKey: "flstkennz",
     projection: "EPSG:25832",
     attribution: null,
     wfsOutputFormat: null,
@@ -255,6 +283,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
     layerName: null,
     wfsUrl: null,
     parcelPropertyKey: null,
+    alkisParcelIdPropertyKey: null,
     projection: null,
     attribution: null,
     wfsOutputFormat: null,
@@ -265,7 +294,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisBackgroundConfigEntry> 
 
 export function isAlkisBackgroundAvailableForProject(
   alkisStateKey: StateKeyEnum | null | undefined,
-): boolean {
+) {
   if (alkisStateKey == null) return false
   const entry = alkisStateConfig[alkisStateKey]
   if (entry.enabled !== true) return false
