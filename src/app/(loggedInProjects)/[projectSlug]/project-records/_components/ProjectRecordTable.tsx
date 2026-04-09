@@ -22,6 +22,7 @@ import { ChevronDownIcon, SparklesIcon } from "@heroicons/react/20/solid"
 import clsx from "clsx"
 import { format } from "date-fns"
 import { de } from "date-fns/locale"
+import { ProjectRecordAssignedToPill } from "./ProjectRecordAssignedToPill"
 import { ProjectRecordReviewBadge } from "./ProjectRecordReviewBadge"
 import { ProjectRecordTopicsList } from "./ProjectRecordTopicsList"
 
@@ -56,16 +57,23 @@ export const ProjectRecordsTable = ({
     if (topic) setFilter({ ...filter, searchterm: topic })
   }
 
+  const handleAssigneeClick = (assigneeSearchText: string): void => {
+    if (assigneeSearchText) setFilter({ ...filter, searchterm: assigneeSearchText })
+  }
+
   return (
     <>
       <TableWrapper bleed={bleed}>
         <div className="@container min-w-full divide-y divide-gray-300 text-sm text-gray-900">
           <div className="flex flex-row bg-gray-50">
-            <div className="grid w-full grid-cols-2 @lg:grid-cols-3">
+            <div className="grid w-full grid-cols-2 @lg:grid-cols-4">
               <div className={clsx(spaceClasses, "font-medium uppercase")}>Datum</div>
               <div className={clsx(spaceClasses, "font-medium uppercase")}>Titel</div>
               <div className={clsx(spaceClasses, "hidden font-medium uppercase @lg:block")}>
                 Tags
+              </div>
+              <div className={clsx(spaceClasses, "hidden font-medium uppercase @lg:block")}>
+                Zugewiesen
               </div>
             </div>
             <div className="p-2">
@@ -87,7 +95,7 @@ export const ProjectRecordsTable = ({
                         <div className="flex flex-row hover:bg-gray-50">
                           <div
                             className={clsx(
-                              "grid w-full grow grid-cols-2 @lg:grid-cols-3",
+                              "grid w-full grow grid-cols-2 @lg:grid-cols-4",
                               highlightId === projectRecord.id && "bg-green-50",
                             )}
                           >
@@ -115,6 +123,22 @@ export const ProjectRecordsTable = ({
                                     isInteractive={isTopicFilter}
                                     onTopicClick={handleTopicClick}
                                   />
+                                </div>
+                              </div>
+                            </div>
+                            <div className={clsx("hidden @lg:block", spaceClasses)}>
+                              <div className="flex items-center justify-start">
+                                <div onClick={(e) => e.stopPropagation()}>
+                                  {projectRecord.assignedTo ? (
+                                    <ProjectRecordAssignedToPill
+                                      assignedTo={projectRecord.assignedTo}
+                                      variant="list"
+                                      isInteractive={isTopicFilter}
+                                      onAssigneeClick={handleAssigneeClick}
+                                    />
+                                  ) : (
+                                    "—"
+                                  )}
                                 </div>
                               </div>
                             </div>
@@ -213,6 +237,18 @@ export const ProjectRecordsTable = ({
                                   isInteractive={isTopicFilter}
                                   onTopicClick={handleTopicClick}
                                 />
+                              </div>
+                              <div onClick={(e) => e.stopPropagation()}>
+                                {projectRecord.assignedTo ? (
+                                  <ProjectRecordAssignedToPill
+                                    variant="list"
+                                    assignedTo={projectRecord.assignedTo}
+                                    isInteractive={isTopicFilter}
+                                    onAssigneeClick={handleAssigneeClick}
+                                  />
+                                ) : (
+                                  <span className="text-gray-500">—</span>
+                                )}
                               </div>
                               <div className="flex shrink-0 items-center gap-2">
                                 <ProjectRecordReviewBadge reviewState={projectRecord.reviewState} />

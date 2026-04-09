@@ -1,6 +1,5 @@
 "use client"
 
-import { ProjectRecordAssignedToPill } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordAssignedToPill"
 import { CreateEditReviewHistory } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordCreateEditReviewHistory"
 import { ProjectRecordSummary } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordSummary"
 import { ReprocessProjectRecordButton } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ReprocessProjectRecordButton"
@@ -44,12 +43,6 @@ export const ProjectRecordDetailClient = ({ projectRecord }: Props) => {
     }
   }, [aiSuggestions])
 
-  const assignedToPill = projectRecord.assignedTo && (
-    <div className="mb-4 flex flex-wrap items-center gap-2">
-      <ProjectRecordAssignedToPill assignedTo={projectRecord.assignedTo} />
-    </div>
-  )
-
   return (
     <>
       {aiSuggestions ? (
@@ -58,7 +51,6 @@ export const ProjectRecordDetailClient = ({ projectRecord }: Props) => {
           <div id="ai-suggestions-form" className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <div>
               <h2 className="mb-4 text-lg font-medium">Aktueller Protokolleintrag</h2>
-              {assignedToPill}
               <ProjectRecordSummary projectRecord={projectRecord} />
             </div>
 
@@ -85,7 +77,6 @@ export const ProjectRecordDetailClient = ({ projectRecord }: Props) => {
             </IfUserCanEdit>
           </SuperAdminBox>
 
-          {assignedToPill}
           <ProjectRecordSummary projectRecord={projectRecord} />
           <CreateEditReviewHistory projectRecord={projectRecord} />
         </>

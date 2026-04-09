@@ -1,6 +1,8 @@
+import { ProjectRecordAssignedToPill } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordAssignedToPill"
 import { ProjectRecordEmailSourceText } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordEmailSource"
 import { createProjectRecordFilterUrl } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/filter/createFilterUrl"
 import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
+import { getFullname } from "@/src/app/_components/users/utils/getFullname"
 import { Link, linkStyles } from "@/src/core/components/links"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { projectRecordUploadEditRoute } from "@/src/core/routes/uploadRoutes"
@@ -17,6 +19,24 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
   return (
     <div className="my-6 space-y-6 font-medium">
       <div className="grid max-w-3xl grid-cols-6 gap-3">
+        {projectRecord.assignedTo && (
+          <>
+            <span className="text-gray-500">Zugewiesen: </span>
+            <span className="col-span-5">
+              <Link
+                classNameOverwrites="inline-flex rounded-md text-inherit no-underline hover:opacity-90 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-orange-500/40"
+                href={createProjectRecordFilterUrl(projectRecord.project.slug, {
+                  searchterm: getFullname(projectRecord.assignedTo)!.trim(),
+                })}
+              >
+                <ProjectRecordAssignedToPill
+                  assignedTo={projectRecord.assignedTo}
+                  variant="detail"
+                />
+              </Link>
+            </span>
+          </>
+        )}
         <span className="text-gray-500">am/bis: </span>
         <span className="col-span-5">
           {format(new Date(projectRecord.date!), "P", { locale: de })}

@@ -42,4 +42,11 @@ export const projectRecordInclude = {
       lastName: true,
     },
   },
+  assignedTo: {
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+    },
+  },
 } as const
