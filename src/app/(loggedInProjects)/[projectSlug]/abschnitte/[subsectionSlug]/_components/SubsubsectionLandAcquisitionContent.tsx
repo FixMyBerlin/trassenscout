@@ -10,7 +10,7 @@ import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogD
 import { FormSuccess } from "@/src/core/components/forms/FormSuccess"
 import { SelectListbox } from "@/src/core/components/forms/SelectListbox"
 import { blueButtonStyles, Link } from "@/src/core/components/links"
-import { subsubsectionEditRoute } from "@/src/core/routes/subsectionRoutes"
+import { dealAreaEditRoute, dealAreaNewRoute } from "@/src/core/routes/subsectionRoutes"
 import { subsubsectionUploadEditRoute } from "@/src/core/routes/uploadRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
@@ -81,14 +81,18 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
   const projectRecords = useMemo(
     () =>
       selectedDealArea
-        ? allProjectRecords.filter((projectRecord) => projectRecord.dealAreaId === selectedDealArea.id)
+        ? allProjectRecords.filter(
+            (projectRecord) => projectRecord.dealAreaId === selectedDealArea.id,
+          )
         : [],
     [allProjectRecords, selectedDealArea],
   )
 
   const uploads = useMemo(
     () =>
-      selectedDealArea ? allUploads.filter((upload) => upload.dealAreaId === selectedDealArea.id) : [],
+      selectedDealArea
+        ? allUploads.filter((upload) => upload.dealAreaId === selectedDealArea.id)
+        : [],
     [allUploads, selectedDealArea],
   )
 
@@ -103,14 +107,21 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
     <SubsubsectionPanel
       title="Grunderwerb"
       action={
-        <IfUserCanEdit>
-          <Link
-            icon="edit"
-            href={subsubsectionEditRoute(projectSlug, subsectionSlug!, subsubsectionSlug!)}
-          >
-            bearbeiten
-          </Link>
-        </IfUserCanEdit>
+        selectedDealArea ? (
+          <IfUserCanEdit>
+            <Link
+              icon="edit"
+              href={dealAreaEditRoute(
+                projectSlug,
+                subsectionSlug!,
+                subsubsectionSlug!,
+                selectedDealArea.id,
+              )}
+            >
+              bearbeiten
+            </Link>
+          </IfUserCanEdit>
+        ) : null
       }
     >
       <div className="space-y-8">
@@ -137,6 +148,17 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
               <p className="max-w-xl text-base text-gray-500">
                 Um den Grunderwerb zu verwalten, legen Sie bitte Dealflächen an.
               </p>
+              <IfUserCanEdit>
+                <div className="pt-2">
+                  <Link
+                    href={dealAreaNewRoute(projectSlug, subsectionSlug!, subsubsectionSlug!)}
+                    button
+                    icon="plus"
+                  >
+                    Dealflächen anlegen
+                  </Link>
+                </div>
+              </IfUserCanEdit>
             </>
           ) : selectedDealArea ? (
             <section className="space-y-6">
@@ -145,7 +167,12 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
                 <IfUserCanEdit>
                   <Link
                     icon="edit"
-                    href={subsubsectionEditRoute(projectSlug, subsectionSlug!, subsubsectionSlug!)}
+                    href={dealAreaEditRoute(
+                      projectSlug,
+                      subsectionSlug!,
+                      subsubsectionSlug!,
+                      selectedDealArea.id,
+                    )}
                   >
                     bearbeiten
                   </Link>
