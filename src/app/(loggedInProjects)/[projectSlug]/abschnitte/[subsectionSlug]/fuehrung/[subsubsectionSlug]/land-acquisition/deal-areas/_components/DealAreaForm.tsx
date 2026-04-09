@@ -53,7 +53,10 @@ export function DealAreaForm<S extends z.ZodType<any, any>>({
           options={dealAreaStatusOptions}
           outerProps={{ className: "grow" }}
         />
-        <LinkWithFormDirtyConfirm href={`/${projectSlug}/deal-area-status` as Route} className="py-2">
+        <LinkWithFormDirtyConfirm
+          href={`/${projectSlug}/deal-area-status` as Route}
+          className="py-2"
+        >
           Status verwalten…
         </LinkWithFormDirtyConfirm>
       </div>

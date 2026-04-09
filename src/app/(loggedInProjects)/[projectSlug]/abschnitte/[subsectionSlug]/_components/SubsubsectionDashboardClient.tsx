@@ -1,16 +1,13 @@
 "use client"
 
-import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Breadcrumb } from "@/src/core/components/Breadcrumb/Breadcrumb"
 import { SubsubsectionIcon } from "@/src/core/components/Map/Icons"
 import { Spinner } from "@/src/core/components/Spinner"
 import { TabsApp } from "@/src/core/components/Tabs/TabsApp"
-import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import {
   subsubsectionDashboardRoute,
-  subsubsectionEditRoute,
   subsubsectionLandAcquisitionRoute,
 } from "@/src/core/routes/subsectionRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
@@ -96,25 +93,12 @@ export const SubsubsectionDashboardClient = ({ activeTab = "general" }: Props) =
         titleIcon={<SubsubsectionIcon slug={subsubsection.slug} />}
         titleIconZoom={1}
         className="mt-12"
-        action={
-          <IfUserCanEdit>
-            <Link
-              icon="edit"
-              href={subsubsectionEditRoute(projectSlug, subsectionSlug!, subsubsectionSlug!)}
-            >
-              bearbeiten
-            </Link>
-          </IfUserCanEdit>
-        }
       />
       {tabs.length > 1 && <TabsApp tabs={tabs} className="mt-8 max-w-md" />}
 
       <div className="relative flex w-full items-start gap-6">
         <div className="min-w-0 flex-1">
-          <SubsubsectionPageMap
-            subsubsection={subsubsection}
-            activeTab={activeTab}
-          />
+          <SubsubsectionPageMap subsubsection={subsubsection} activeTab={activeTab} />
         </div>
 
         <div className="max-h-[calc(100vh-10rem)] min-w-0 flex-1 self-stretch">

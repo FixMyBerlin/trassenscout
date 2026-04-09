@@ -35,7 +35,7 @@ export function SelectListbox<T extends string | number>({
     <Listbox value={value} onChange={onChange}>
       {({ open }) => (
         <div className={clsx("relative", className)}>
-          <ListboxButton className="relative w-full cursor-default rounded-md border border-gray-300 bg-white px-3 py-2.5 pr-10 text-left text-sm font-medium text-gray-900 shadow-xs focus:border-blue-500 focus:ring-1 focus:ring-inset focus:ring-blue-500 focus:outline-hidden">
+          <ListboxButton className="relative w-full cursor-default rounded-md border border-gray-300 bg-white px-3 py-2.5 pr-10 text-left text-sm font-medium text-gray-900 shadow-xs focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-hidden focus:ring-inset">
             <span className="block truncate">{selectedOption?.label ?? placeholder}</span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
               <ChevronDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />

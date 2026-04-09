@@ -1,8 +1,6 @@
 "use client"
 
-import { CurrentUserCanIcon } from "@/src/app/_components/memberships/CurrentUserCanIcon"
 import { clsx } from "clsx"
-import { useTryProjectSlug } from "../../routes/useProjectSlug"
 import { H1, H2 } from "../text/Headings"
 
 type Props = {
@@ -24,8 +22,6 @@ export const PageHeader = ({
   action,
   className,
 }: Props) => {
-  const projectSlug = useTryProjectSlug()
-
   const styledDescription =
     typeof description === "string" ? (
       <p className="mt-5 text-base text-gray-500">{description}</p>
@@ -36,16 +32,19 @@ export const PageHeader = ({
   return (
     <section className={clsx("mb-12 space-y-3", className)}>
       {(titleIcon || action) && (
-        <div className="mt-5 flex items-start justify-between">
+        <div
+          className={clsx(
+            "mt-5 flex items-start",
+            action && "justify-between",
+          )}
+        >
           {/* empty span should be rendered if no title icon to keep position of action */}
           <div className="flex items-center gap-3">
             <span style={{ zoom: titleIconZoom }} className="mb-1 shrink-0">
               {titleIcon}
             </span>
           </div>
-          <div className="flex items-center gap-2">
-            {action} <CurrentUserCanIcon projectSlug={projectSlug!} />
-          </div>
+          {action && <div className="flex items-center gap-2">{action}</div>}
         </div>
       )}
       {(title || subtitle || description) && (

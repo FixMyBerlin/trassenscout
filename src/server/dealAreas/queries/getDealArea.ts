@@ -7,8 +7,8 @@ import {
 } from "@/src/authorization/extractProjectSlug"
 import { typeDealAreaGeometry } from "@/src/server/dealAreas/utils/typeDealAreaGeometry"
 import { typeGeometry } from "@/src/server/shared/utils/typeGeometry"
-import { GeometryTypeEnum } from "@prisma/client"
 import { resolver } from "@blitzjs/rpc"
+import { GeometryTypeEnum } from "@prisma/client"
 import { z } from "zod"
 
 const GetDealAreaSchema = ProjectSlugRequiredSchema.merge(

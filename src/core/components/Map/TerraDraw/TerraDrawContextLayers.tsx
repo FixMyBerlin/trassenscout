@@ -1,5 +1,5 @@
-import { LineEndPointsLayer } from "@/src/core/components/Map/layers/LineEndPointsLayer"
 import { subsubsectionColors } from "@/src/core/components/Map/colors/subsubsectionColors"
+import { LineEndPointsLayer } from "@/src/core/components/Map/layers/LineEndPointsLayer"
 import { SubsectionHullsLayer } from "@/src/core/components/Map/layers/SubsectionHullsLayer"
 import {
   UnifiedFeaturesLayer,
@@ -9,8 +9,8 @@ import { computeBufferPolygonFeature } from "@/src/core/components/Map/utils/com
 import { getSubsectionFeatures } from "@/src/core/components/Map/utils/getSubsectionFeatures"
 import { getSubsubsectionFeatures } from "@/src/core/components/Map/utils/getSubsubsectionFeatures"
 import { mergeFeatureCollections } from "@/src/core/components/Map/utils/mergeFeatureCollections"
-import { TSubsections } from "@/src/server/subsections/queries/getSubsections"
 import { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
+import { TSubsections } from "@/src/server/subsections/queries/getSubsections"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import type { MultiPolygon, Polygon } from "geojson"
 import { useMemo } from "react"
@@ -229,7 +229,10 @@ export const GeometryDrawingDealAreaSubsubsectionContextLayers = ({
   )
 
   const bufferOutlineFeatureCollection = useMemo(() => {
-    const bufferedGeometry = computeBufferPolygonFeature(geometry, DEAL_AREA_EDIT_BUFFER_RADIUS_METERS)
+    const bufferedGeometry = computeBufferPolygonFeature(
+      geometry,
+      DEAL_AREA_EDIT_BUFFER_RADIUS_METERS,
+    )
 
     if (!bufferedGeometry?.geometry) {
       return { type: "FeatureCollection" as const, features: [] }
