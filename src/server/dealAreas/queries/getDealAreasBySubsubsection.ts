@@ -22,7 +22,7 @@ export type DealAreaWithTypedGeometry = Omit<DealArea, "geometry"> & {
     id: number
     alkisParcelId: string
     alkisParcelIdSource: string
-    geometry: GeometryByGeometryType<"POLYGON"> | null
+    geometry: GeometryByGeometryType<"POLYGON">
   }
   dealAreaStatus: {
     id: number

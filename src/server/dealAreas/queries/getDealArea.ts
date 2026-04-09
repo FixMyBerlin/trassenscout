@@ -57,9 +57,7 @@ export default resolver.pipe(
       ...typedDealArea,
       parcel: {
         ...typedDealArea.parcel,
-        geometry: typedDealArea.parcel.geometry
-          ? typeGeometry(typedDealArea.parcel.geometry, ["POLYGON"])
-          : null,
+        geometry: typeGeometry(typedDealArea.parcel.geometry, ["POLYGON"]),
       },
     }
   },

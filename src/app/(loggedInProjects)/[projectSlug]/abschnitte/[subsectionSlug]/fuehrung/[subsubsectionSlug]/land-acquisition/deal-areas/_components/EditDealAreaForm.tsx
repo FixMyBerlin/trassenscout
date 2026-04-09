@@ -42,9 +42,7 @@ export const EditDealAreaForm = ({
     subsectionSlug,
     subsubsectionSlug,
   )
-  const parcelGeometry = DealAreaFormSchema.shape.geometry.parse(
-    dealArea.parcel.geometry ?? dealArea.geometry,
-  )
+  const parcelGeometry = DealAreaFormSchema.shape.geometry.parse(dealArea.parcel.geometry)
 
   type HandleSubmit = z.infer<typeof DealAreaFormSchema>
   const handleSubmit = async (values: HandleSubmit) => {

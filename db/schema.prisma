@@ -403,7 +403,7 @@ model Parcel {
   updatedAt           DateTime @updatedAt
   alkisParcelId       String   @unique
   alkisParcelIdSource String
-  geometry            Json?
+  geometry            Json
 
   dealAreas DealArea[]
 }
