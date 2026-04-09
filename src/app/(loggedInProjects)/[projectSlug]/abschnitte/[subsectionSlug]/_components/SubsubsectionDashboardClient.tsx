@@ -4,8 +4,6 @@ import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Breadcrumb } from "@/src/core/components/Breadcrumb/Breadcrumb"
 import { SubsubsectionIcon } from "@/src/core/components/Map/Icons"
-import { SubsubsectionMapWithProvider } from "@/src/core/components/Map/SubsubsectionMapWithProvider"
-import { Notice } from "@/src/core/components/Notice/Notice"
 import { Spinner } from "@/src/core/components/Spinner"
 import { TabsApp } from "@/src/core/components/Tabs/TabsApp"
 import { Link } from "@/src/core/components/links"
@@ -17,12 +15,12 @@ import {
 } from "@/src/core/routes/subsectionRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
-import getSubsections from "@/src/server/subsections/queries/getSubsections"
+import getSubsection from "@/src/server/subsections/queries/getSubsection"
 import getSubsubsection from "@/src/server/subsubsections/queries/getSubsubsection"
-import getSubsubsections from "@/src/server/subsubsections/queries/getSubsubsections"
 import { useQuery } from "@blitzjs/rpc"
 import { SubsubsectionDetailsContent } from "./SubsubsectionDetailsContent"
 import { SubsubsectionLandAcquisitionContent } from "./SubsubsectionLandAcquisitionContent"
+import { SubsubsectionPageMap } from "./SubsubsectionPageMap"
 
 export type SubsubsectionTabKey = "general" | "land-acquisition"
 
@@ -40,13 +38,17 @@ export const SubsubsectionDashboardClient = ({ activeTab = "general" }: Props) =
   const subsectionSlug = useSlug("subsectionSlug")
   const subsubsectionSlug = useSlug("subsubsectionSlug")
 
-  const [subsectionsResult, { isLoading: subsectionsLoading }] = useQuery(
-    getSubsections,
-    { projectSlug },
-    defaultQueryOptions,
+  const [subsection, { isLoading: subsectionLoading }] = useQuery(
+    getSubsection,
+    {
+      projectSlug,
+      subsectionSlug: subsectionSlug!,
+    },
+    {
+      enabled: Boolean(subsectionSlug),
+      ...defaultQueryOptions,
+    },
   )
-  const subsections = subsectionsResult?.subsections ?? []
-  const subsection = subsections.find((ss) => ss.slug === subsectionSlug)
 
   const [subsubsection, { isLoading: subsubsectionLoading }] = useQuery(
     getSubsubsection,
@@ -61,19 +63,7 @@ export const SubsubsectionDashboardClient = ({ activeTab = "general" }: Props) =
     },
   )
 
-  const [subsubsectionsResult, { isLoading: subsubsectionsLoading }] = useQuery(
-    getSubsubsections,
-    { projectSlug, where: { subsection: { slug: subsectionSlug } } },
-    {
-      enabled: Boolean(subsectionSlug),
-      ...defaultQueryOptions,
-    },
-  )
-  const subsubsections = subsubsectionsResult?.subsubsections ?? []
-  const subsubsectionsHasMore = subsubsectionsResult?.hasMore
-  const subsubsectionsCount = subsubsectionsResult?.count
-
-  if ((subsectionsLoading || subsubsectionLoading || subsubsectionsLoading) && !subsubsection) {
+  if ((subsectionLoading || subsubsectionLoading) && !subsubsection) {
     return <Spinner page />
   }
   if (!subsection || !subsubsection) {
@@ -102,12 +92,6 @@ export const SubsubsectionDashboardClient = ({ activeTab = "general" }: Props) =
   return (
     <>
       <Breadcrumb />
-      {subsubsectionsHasMore && (
-        <Notice title="Einträge" type="warn">
-          Es werden nur {subsubsections.length} von {subsubsectionsCount} Einträge auf der Karte
-          angezeigt. Bitte kontaktieren Sie den Support.
-        </Notice>
-      )}
       <PageHeader
         titleIcon={<SubsubsectionIcon slug={subsubsection.slug} />}
         titleIconZoom={1}
@@ -127,11 +111,9 @@ export const SubsubsectionDashboardClient = ({ activeTab = "general" }: Props) =
 
       <div className="relative flex w-full items-start gap-6">
         <div className="min-w-0 flex-1">
-          <SubsubsectionMapWithProvider
-            key={`map-subsubsection-${subsubsectionSlug}`}
-            subsections={subsections}
-            selectedSubsection={subsection}
-            subsubsections={subsubsections}
+          <SubsubsectionPageMap
+            subsubsection={subsubsection}
+            activeTab={activeTab}
           />
         </div>
 
@@ -149,10 +131,8 @@ export const SubsubsectionDashboardClient = ({ activeTab = "general" }: Props) =
 
       <SuperAdminLogData
         data={{
-          subsections,
           subsection,
           subsubsection,
-          subsubsections,
         }}
       />
     </>
