@@ -1,7 +1,10 @@
 import { invoke } from "@/src/blitz-server"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { longTitle, seoIndexTitle } from "@/src/core/components/text"
+import { subsubsectionLandAcquisitionRoute } from "@/src/core/routes/subsectionRoutes"
 import getSubsubsection from "@/src/server/subsubsections/queries/getSubsubsection"
+import { GeometryTypeEnum } from "@prisma/client"
+import { redirect } from "next/navigation"
 import "server-only"
 import { NewDealAreasClient } from "./_components/NewDealAreasClient"
 
@@ -33,6 +36,10 @@ export default async function NewDealAreasPage({
     subsectionSlug,
     subsubsectionSlug,
   })
+
+  if (subsubsection.type === GeometryTypeEnum.POINT) {
+    redirect(subsubsectionLandAcquisitionRoute(projectSlug, subsectionSlug, subsubsectionSlug))
+  }
 
   return (
     <>

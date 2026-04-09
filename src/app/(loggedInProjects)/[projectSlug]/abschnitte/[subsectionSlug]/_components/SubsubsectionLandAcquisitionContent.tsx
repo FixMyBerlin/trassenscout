@@ -20,6 +20,7 @@ import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWi
 import { useQuery } from "@blitzjs/rpc"
 import { PlusIcon } from "@heroicons/react/16/solid"
 import clsx from "clsx"
+import { GeometryTypeEnum } from "@prisma/client"
 import { useEffect, useMemo, useState } from "react"
 import { SubsubsectionPanel } from "./SubsubsectionPanel"
 import { useDealAreaSelection } from "./useDealAreaSelection.nuqs"
@@ -27,13 +28,19 @@ import { useDealAreaSelection } from "./useDealAreaSelection.nuqs"
 type Props = {
   subsubsectionId: number
   subsectionId: number
+  subsubsectionType: GeometryTypeEnum
 }
 
-export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectionId }: Props) => {
+export const SubsubsectionLandAcquisitionContent = ({
+  subsubsectionId,
+  subsectionId,
+  subsubsectionType,
+}: Props) => {
   const projectSlug = useProjectSlug()
   const subsectionSlug = useSlug("subsectionSlug")
   const subsubsectionSlug = useSlug("subsubsectionSlug")
   const { dealAreaId, setDealAreaId } = useDealAreaSelection()
+  const canCreateDealAreas = subsubsectionType !== GeometryTypeEnum.POINT
   const [isProjectRecordModalOpen, setIsProjectRecordModalOpen] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
   const [createdProjectRecordId, setCreatedProjectRecordId] = useState<null | number>(null)
@@ -104,26 +111,7 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
   }, [dealAreaId, dealAreas, setDealAreaId])
 
   return (
-    <SubsubsectionPanel
-      title="Grunderwerb"
-      action={
-        selectedDealArea ? (
-          <IfUserCanEdit>
-            <Link
-              icon="edit"
-              href={dealAreaEditRoute(
-                projectSlug,
-                subsectionSlug!,
-                subsubsectionSlug!,
-                selectedDealArea.id,
-              )}
-            >
-              bearbeiten
-            </Link>
-          </IfUserCanEdit>
-        ) : null
-      }
-    >
+    <SubsubsectionPanel title="Grunderwerb">
       <div className="space-y-8">
         {dealAreas.length > 1 && (
           <SelectListbox
@@ -146,19 +134,23 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
                 Es wurden noch keine Dealflächen angelegt
               </h3>
               <p className="max-w-xl text-base text-gray-500">
-                Um den Grunderwerb zu verwalten, legen Sie bitte Dealflächen an.
+                {canCreateDealAreas
+                  ? "Um den Grunderwerb zu verwalten, legen Sie bitte Dealflächen an."
+                  : "Für punktförmige Einträge können keine Dealflächen angelegt werden."}
               </p>
-              <IfUserCanEdit>
-                <div className="pt-2">
-                  <Link
-                    href={dealAreaNewRoute(projectSlug, subsectionSlug!, subsubsectionSlug!)}
-                    button
-                    icon="plus"
-                  >
-                    Dealflächen anlegen
-                  </Link>
-                </div>
-              </IfUserCanEdit>
+              {canCreateDealAreas && (
+                <IfUserCanEdit>
+                  <div className="pt-2">
+                    <Link
+                      href={dealAreaNewRoute(projectSlug, subsectionSlug!, subsubsectionSlug!)}
+                      button
+                      icon="plus"
+                    >
+                      Dealflächen anlegen
+                    </Link>
+                  </div>
+                </IfUserCanEdit>
+              )}
             </>
           ) : selectedDealArea ? (
             <section className="space-y-6">
