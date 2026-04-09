@@ -35,7 +35,7 @@ export function SelectListbox<T extends string | number>({
     <Listbox value={value} onChange={onChange}>
       {({ open }) => (
         <div className={clsx("relative", className)}>
-          <ListboxButton className="relative w-full cursor-default rounded-md border border-gray-300 bg-white py-3 pr-10 pl-4 text-left text-sm font-medium text-gray-900 shadow-xs focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-hidden">
+          <ListboxButton className="relative w-full cursor-default rounded-md border border-gray-300 bg-white px-3 py-2.5 pr-10 text-left text-sm font-medium text-gray-900 shadow-xs focus:border-blue-500 focus:ring-1 focus:ring-inset focus:ring-blue-500 focus:outline-hidden">
             <span className="block truncate">{selectedOption?.label ?? placeholder}</span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
               <ChevronDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
@@ -52,7 +52,7 @@ export function SelectListbox<T extends string | number>({
             <div className="absolute z-10 mt-1 w-full">
               <ListboxOptions
                 static
-                className="max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-gray-200/5 focus:outline-hidden sm:text-sm"
+                className="max-h-60 overflow-auto rounded-md border border-gray-300 bg-white py-1 text-base shadow-lg focus:outline-hidden sm:text-sm"
               >
                 <ListboxOption
                   value={null}

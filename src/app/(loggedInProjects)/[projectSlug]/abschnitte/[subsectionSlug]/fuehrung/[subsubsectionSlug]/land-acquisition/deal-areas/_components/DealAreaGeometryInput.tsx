@@ -5,6 +5,7 @@ import { GeometryInputBase } from "@/src/core/components/forms/GeometryInputBase
 import {
   GeometryDrawingDealAreaParcelContextLayers,
   GeometryDrawingDealAreaPreviewLayers,
+  GeometryDrawingDealAreaSubsubsectionContextLayers,
 } from "@/src/core/components/Map/TerraDraw/TerraDrawContextLayers"
 import { DealAreaGeometrySchema, type TDealAreaGeometrySchema } from "@/src/server/dealAreas/schema"
 import { type SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
@@ -15,6 +16,7 @@ import { useFormContext } from "react-hook-form"
 
 type Props = {
   parcelGeometry: TDealAreaGeometrySchema
+  subsubsectionGeometry: SupportedGeometry
 }
 
 const isDealAreaGeometryType = (
@@ -36,7 +38,7 @@ const removePolygonHoles = (geometry: TDealAreaGeometrySchema): TDealAreaGeometr
   }
 }
 
-export const DealAreaGeometryInput = ({ parcelGeometry }: Props) => {
+export const DealAreaGeometryInput = ({ parcelGeometry, subsubsectionGeometry }: Props) => {
   const { watch } = useFormContext()
   const rawGeometry = watch("geometry")
   const currentGeometry = useMemo(() => DealAreaGeometrySchema.parse(rawGeometry), [rawGeometry])
@@ -93,6 +95,7 @@ export const DealAreaGeometryInput = ({ parcelGeometry }: Props) => {
         syncTransformedGeometryToMap={false}
         transformGeometry={transformGeometry}
       >
+        <GeometryDrawingDealAreaSubsubsectionContextLayers geometry={subsubsectionGeometry} />
         <GeometryDrawingDealAreaParcelContextLayers parcelGeometry={parcelGeometry} />
         <GeometryDrawingDealAreaPreviewLayers geometry={currentGeometry} />
       </GeometryDrawingMap>

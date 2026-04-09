@@ -3,6 +3,7 @@
 import { SubsubsectionGeometryLayers } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/[subsubsectionSlug]/land-acquisition/deal-areas/new/_components/SubsubsectionGeometryLayers"
 import { BackgroundSwitcher, type LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
 import { getMapStyle } from "@/src/core/components/Map/mapStyleConfig"
+import { computeBufferPolygonFeature } from "@/src/core/components/Map/utils/computeBufferPolygonFeature"
 import { geometryBbox } from "@/src/core/components/Map/utils/bboxHelpers"
 import { Spinner } from "@/src/core/components/Spinner"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
@@ -23,7 +24,6 @@ import Map, {
   Source,
 } from "react-map-gl/maplibre"
 import { buildAlkisWfsProxyUrl } from "./alkisWfsMapHelpers"
-import { computeBufferPolygonFeature } from "./computeBufferPolygonFeature"
 import { computePotentialDealAreas } from "./computePotentialDealAreas"
 import { emptyFeatureCollection, PARCEL_LAYER_IDS } from "./dealAreaMapConstants"
 import { formatPropertyValue, sortedPropertyEntries } from "./parcelFeatureProperties"

@@ -54,6 +54,7 @@ export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
     staticOverlay?: StaticOverlayConfig
     backgroundSwitcherPosition?: "top-left" | "top-right" | "bottom-left" | "bottom-right"
     selectableLayerIdSuffix?: string // Defaults to "" if not provided
+    interactiveUnifiedFeatures?: boolean
     colorSchema: "subsection" | "subsubsection"
     restrictHighlightToLevel?: MapHighlightLevel
   }
@@ -79,6 +80,7 @@ export const BaseMap = ({
   staticOverlay,
   backgroundSwitcherPosition = "top-left",
   selectableLayerIdSuffix = "",
+  interactiveUnifiedFeatures = true,
   colorSchema,
   restrictHighlightToLevel,
 }: BaseMapProps) => {
@@ -205,8 +207,12 @@ export const BaseMap = ({
           onIdle={onIdle}
           interactiveLayerIds={[
             ...(interactiveLayerIds ?? []),
-            ...(unifiedFeatures ? getUnifiedClickTargetLayerIds(selectableLayerIdSuffix) : []),
-            ...(lineEndPoints ? [getLineEndPointsLayerId(selectableLayerIdSuffix)] : []),
+            ...(unifiedFeatures && interactiveUnifiedFeatures
+              ? getUnifiedClickTargetLayerIds(selectableLayerIdSuffix)
+              : []),
+            ...(lineEndPoints && interactiveUnifiedFeatures
+              ? [getLineEndPointsLayerId(selectableLayerIdSuffix)]
+              : []),
           ]}
           hash={hash || false}
         >
@@ -217,7 +223,7 @@ export const BaseMap = ({
             <UnifiedFeaturesLayer
               features={unifiedFeatures}
               layerIdSuffix={selectableLayerIdSuffix}
-              interactive={true}
+              interactive={interactiveUnifiedFeatures}
               colorSchema={colorSchema}
               layersBetweenLinesAndPoints={
                 lineEndPoints ? (

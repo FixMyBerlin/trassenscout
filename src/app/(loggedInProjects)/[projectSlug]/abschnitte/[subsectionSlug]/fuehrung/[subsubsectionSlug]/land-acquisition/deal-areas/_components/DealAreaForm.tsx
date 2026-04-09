@@ -6,6 +6,7 @@ import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { InputNumberOrNullSchema } from "@/src/core/utils/schema-shared"
 import { DealAreaGeometrySchema, type TDealAreaGeometrySchema } from "@/src/server/dealAreas/schema"
 import getDealAreaStatuses from "@/src/server/dealAreaStatuses/queries/getDealAreaStatuses"
+import { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
 import { useQuery } from "@blitzjs/rpc"
 import { Route } from "next"
 import { z } from "zod"
@@ -21,10 +22,12 @@ export const DealAreaFormSchema = z.object({
 
 type Props<S extends z.ZodType<any, any>> = FormProps<S> & {
   parcelGeometry: TDealAreaGeometrySchema
+  subsubsectionGeometry: SupportedGeometry
 }
 
 export function DealAreaForm<S extends z.ZodType<any, any>>({
   parcelGeometry,
+  subsubsectionGeometry,
   ...props
 }: Props<S>) {
   const projectSlug = useProjectSlug()
@@ -54,7 +57,10 @@ export function DealAreaForm<S extends z.ZodType<any, any>>({
           Status verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
-      <DealAreaGeometryInput parcelGeometry={parcelGeometry} />
+      <DealAreaGeometryInput
+        parcelGeometry={parcelGeometry}
+        subsubsectionGeometry={subsubsectionGeometry}
+      />
     </Form>
   )
 }

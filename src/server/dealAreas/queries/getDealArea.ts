@@ -7,6 +7,7 @@ import {
 } from "@/src/authorization/extractProjectSlug"
 import { typeDealAreaGeometry } from "@/src/server/dealAreas/utils/typeDealAreaGeometry"
 import { typeGeometry } from "@/src/server/shared/utils/typeGeometry"
+import { GeometryTypeEnum } from "@prisma/client"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
 
@@ -40,6 +41,11 @@ export default resolver.pipe(
             geometry: true,
           },
         },
+        subsubsection: {
+          select: {
+            geometry: true,
+          },
+        },
         dealAreaStatus: {
           select: {
             id: true,
@@ -58,6 +64,14 @@ export default resolver.pipe(
       parcel: {
         ...typedDealArea.parcel,
         geometry: typeGeometry(typedDealArea.parcel.geometry, ["POLYGON"]),
+      },
+      subsubsection: {
+        ...typedDealArea.subsubsection,
+        geometry: typeGeometry(typedDealArea.subsubsection.geometry, [
+          GeometryTypeEnum.POINT,
+          GeometryTypeEnum.LINE,
+          GeometryTypeEnum.POLYGON,
+        ]),
       },
     }
   },

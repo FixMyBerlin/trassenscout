@@ -24,13 +24,16 @@ export function computeBufferPolygonFeature(
 ) {
   const features = geometryToFeatures(geometry)
   if (features.length === 0) return null
+
   const buffered = buffer(featureCollection(features as Feature[]), bufferRadiusMeters, {
     units: "meters",
   })
   if (!buffered || buffered.features.length === 0) return null
+
   if (buffered.features.length === 1) {
     return polygonalFeatureFromBufferOutput(buffered.features[0] ?? null)
   }
+
   const merged = union(featureCollection(buffered.features))
   return polygonalFeatureFromBufferOutput(merged ?? null)
 }

@@ -3,6 +3,8 @@
 import { useDealAreaSelection } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/_components/useDealAreaSelection.nuqs"
 import { dealAreaStatusStyles } from "@/src/app/(loggedInProjects)/[projectSlug]/deal-area-status/_utils/dealAreaStatusStyles"
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
+import { subsectionColors } from "@/src/core/components/Map/colors/subsectionColors"
+import { subsubsectionColors } from "@/src/core/components/Map/colors/subsubsectionColors"
 import { MapFooter } from "@/src/core/components/Map/MapFooter"
 import { getStaticOverlayForProject } from "@/src/core/components/Map/staticOverlay/getStaticOverlayForProject"
 import { subsectionLegendConfig } from "@/src/core/components/Map/SubsectionSubsubsectionMap.legendConfig"
@@ -21,6 +23,7 @@ import type {
 } from "@/src/server/subsubsections/queries/getSubsubsection"
 import { useQuery } from "@blitzjs/rpc"
 import { feature, featureCollection } from "@turf/helpers"
+import type { MultiPolygon, Polygon } from "geojson"
 import type { ExpressionSpecification, MapLayerMouseEvent } from "maplibre-gl"
 import { useMemo } from "react"
 import { Layer, Source } from "react-map-gl/maplibre"
@@ -112,6 +115,19 @@ export const SubsubsectionPageMap = ({ subsubsection, activeTab }: Props) => {
     [unselectedDealAreas],
   )
 
+  const parcelFeatureCollection = useMemo(
+    () =>
+      featureCollection(
+        dealAreas.map((dealArea) =>
+          feature(dealArea.parcel.geometry as Polygon | MultiPolygon, {
+            parcelId: dealArea.parcel.id,
+            featureId: `deal-area-parcel-${dealArea.parcel.id}`,
+          }),
+        ),
+      ),
+    [dealAreas],
+  )
+
   const mapBbox = useMemo(() => {
     const geometries: SupportedGeometry[] = [subsubsection.geometry as SupportedGeometry]
     if (isLandAcquisition) {
@@ -152,11 +168,32 @@ export const SubsubsectionPageMap = ({ subsubsection, activeTab }: Props) => {
           subsubsectionLineEndPoints?.features.length ? subsubsectionLineEndPoints : undefined
         }
         selectableLayerIdSuffix="_subsubsection_detail"
+        interactiveUnifiedFeatures={!isLandAcquisition}
         colorSchema="subsubsection"
         staticOverlay={getStaticOverlayForProject(projectSlug)}
       >
         {isLandAcquisition && (
           <>
+            <Source id="deal-area-parcels" type="geojson" data={parcelFeatureCollection}>
+              <Layer
+                id="deal-area-parcels-fill"
+                type="fill"
+                paint={{
+                  "fill-color": subsectionColors.hull.current,
+                  "fill-opacity": 0.05,
+                }}
+              />
+              <Layer
+                id="deal-area-parcels-outline"
+                type="line"
+                paint={{
+                  "line-color": subsectionColors.hull.current,
+                  "line-width": 2,
+                  "line-opacity": 0.3,
+                }}
+              />
+            </Source>
+
             <Source id="deal-area-unselected" type="geojson" data={unselectedDealAreasFc}>
               <Layer
                 id="deal-area-fill-unselected"
@@ -187,7 +224,7 @@ export const SubsubsectionPageMap = ({ subsubsection, activeTab }: Props) => {
                 id="deal-area-fill-selected"
                 type="fill"
                 paint={{
-                  "fill-color": "#dc2626",
+                  "fill-color": subsubsectionColors.polygon.selected,
                   "fill-opacity": 0.38,
                 }}
               />
@@ -195,7 +232,7 @@ export const SubsubsectionPageMap = ({ subsubsection, activeTab }: Props) => {
                 id="deal-area-line-selected"
                 type="line"
                 paint={{
-                  "line-color": "#dc2626",
+                  "line-color": subsubsectionColors.polygon.selected,
                   "line-width": 3,
                   "line-opacity": 1,
                 }}
