@@ -4,7 +4,7 @@ export type PotentialDealArea = {
   id: string
   geometry: TDealAreaGeometrySchema
   parcelGeometry: TDealAreaGeometrySchema
-  alkisParcelId: string
+  alkisParcelId: string | null
   alkisParcelIdSource: string
   selected: boolean
 }

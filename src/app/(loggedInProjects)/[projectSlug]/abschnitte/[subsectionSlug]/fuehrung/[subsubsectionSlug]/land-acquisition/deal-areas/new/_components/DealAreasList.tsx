@@ -11,12 +11,17 @@ type Props = {
 
 export function DealAreasList({ potentialDealAreas, setPotentialDealAreas }: Props) {
   const toggleAll = (selected: boolean) => {
-    setPotentialDealAreas(potentialDealAreas.map((a) => ({ ...a, selected })))
+    setPotentialDealAreas(
+      potentialDealAreas.map((a) => (a.alkisParcelId != null ? { ...a, selected } : a)),
+    )
   }
 
   const toggleOne = (id: string) => {
     setPotentialDealAreas(
-      potentialDealAreas.map((a) => (a.id === id ? { ...a, selected: !a.selected } : a)),
+      potentialDealAreas.map((a) => {
+        if (a.id !== id || a.alkisParcelId == null) return a
+        return { ...a, selected: !a.selected }
+      }),
     )
   }
 
@@ -61,8 +66,9 @@ export function DealAreasList({ potentialDealAreas, setPotentialDealAreas }: Pro
                 <input
                   id={`deal-area-${area.id}`}
                   type="checkbox"
-                  className="h-4 w-4 cursor-pointer rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  className="h-4 w-4 cursor-pointer rounded border-gray-300 text-blue-600 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
                   checked={area.selected}
+                  disabled={area.alkisParcelId == null}
                   onChange={() => {
                     toggleOne(area.id)
                   }}
@@ -76,9 +82,13 @@ export function DealAreasList({ potentialDealAreas, setPotentialDealAreas }: Pro
                 )}
               >
                 <span className="font-semibold">#{area.id}</span>{" "}
-                <span className={area.selected ? "text-gray-600" : "text-gray-400"}>
-                  area.alkisParcelId ({area.alkisParcelIdSource})
-                </span>
+                {area.alkisParcelId != null ? (
+                  <span className={area.selected ? "text-gray-600" : "text-gray-400"}>
+                    {area.alkisParcelId} ({area.alkisParcelIdSource})
+                  </span>
+                ) : (
+                  <span className="text-red-400">Kein Flurstückskennzeichen</span>
+                )}
               </label>
             </div>
           </li>

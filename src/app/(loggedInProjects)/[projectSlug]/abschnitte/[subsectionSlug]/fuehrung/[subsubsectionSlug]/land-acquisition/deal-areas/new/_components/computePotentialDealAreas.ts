@@ -30,20 +30,16 @@ export function computePotentialDealAreas(
 
     seq += 1
     const props = parcel.properties as Record<string, unknown>
-    const alkisParcelId = props.alkisParcelId
-    const alkisParcelIdSource = props.alkisParcelIdSource
+    const alkisParcelId = (props.alkisParcelId as string | null) ?? null
+    const alkisParcelIdSource = props.alkisParcelIdSource as string
 
     results.push({
       id: String(seq),
       geometry: DealAreaGeometrySchema.parse(intersection.geometry),
       parcelGeometry: DealAreaGeometrySchema.parse(parcelFeature.geometry),
-      // oth properties are always present as strings after injectAlkisParcelIdsIntoGeoJson
-      // @ts-ignore
       alkisParcelId,
-      // oth properties are always present as strings after injectAlkisParcelIdsIntoGeoJson
-      // @ts-ignore
       alkisParcelIdSource,
-      selected: true,
+      selected: alkisParcelId !== null,
     })
   }
 

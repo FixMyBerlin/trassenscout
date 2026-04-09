@@ -172,7 +172,7 @@ function resolveAlkisParcelId(feature: Feature<Geometry>, configuredKey: string 
     if (fromId) return { alkisParcelId: fromId, alkisParcelIdSource: "feature.id" }
   }
 
-  return { alkisParcelId: "", alkisParcelIdSource: "none" }
+  return { alkisParcelId: null, alkisParcelIdSource: "none" }
 }
 
 /**
@@ -186,7 +186,7 @@ export function injectAlkisParcelIdsIntoGeoJson(
   try {
     parsed = JSON.parse(geojsonString) as unknown
   } catch {
-    return { ok: false, error: "GeoJSON konnte nicht geparst werden." }
+    return { ok: false as const, error: "GeoJSON konnte nicht geparst werden." }
   }
   if (
     !parsed ||
@@ -194,7 +194,7 @@ export function injectAlkisParcelIdsIntoGeoJson(
     !("type" in parsed) ||
     (parsed as { type?: unknown }).type !== "FeatureCollection"
   ) {
-    return { ok: false, error: "Erwartet wurde eine GeoJSON FeatureCollection." }
+    return { ok: false as const, error: "Erwartet wurde eine GeoJSON FeatureCollection." }
   }
   const fc = parsed as FeatureCollection<Geometry>
   const features = Array.isArray(fc.features) ? fc.features : []
@@ -203,5 +203,5 @@ export function injectAlkisParcelIdsIntoGeoJson(
     const { alkisParcelId, alkisParcelIdSource } = resolveAlkisParcelId(f, alkisParcelIdPropertyKey)
     f.properties = { ...(f.properties ?? {}), alkisParcelId, alkisParcelIdSource }
   }
-  return { ok: true, geojson: JSON.stringify(parsed) }
+  return { ok: true as const, geojson: JSON.stringify(parsed) }
 }

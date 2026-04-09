@@ -60,10 +60,15 @@ export function NewDealAreasClient({ initialSubsubsection }: Props) {
     try {
       setSubmitError(null)
 
+      const submittable = selectedDealAreas.filter(
+        (da): da is typeof da & { alkisParcelId: string } => da.alkisParcelId != null,
+      )
+      if (!submittable.length) return
+
       const createdDealAreas = await createDealAreasMutation({
         projectSlug,
         subsubsectionId: initialSubsubsection.id,
-        dealAreas: selectedDealAreas.map((dealArea) => ({
+        dealAreas: submittable.map((dealArea) => ({
           alkisParcelId: dealArea.alkisParcelId,
           alkisParcelIdSource: dealArea.alkisParcelIdSource,
           geometry: dealArea.geometry,

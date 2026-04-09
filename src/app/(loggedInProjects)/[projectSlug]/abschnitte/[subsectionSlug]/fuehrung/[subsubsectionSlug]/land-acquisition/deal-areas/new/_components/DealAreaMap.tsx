@@ -169,8 +169,10 @@ export function DealAreaMap({
       const feature = event.features?.[0]
       if (!feature?.properties) return
 
-      const alkisParcelId = (feature.properties as Record<string, unknown>).alkisParcelId
-      if (!alkisParcelId) return
+      const alkisParcelId = (feature.properties as Record<string, unknown>).alkisParcelId as
+        | string
+        | null
+      if (alkisParcelId == null) return
 
       setPotentialDealAreas(
         potentialDealAreas.map((a) =>
