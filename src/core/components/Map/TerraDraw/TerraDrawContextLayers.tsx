@@ -12,7 +12,7 @@ import { mergeFeatureCollections } from "@/src/core/components/Map/utils/mergeFe
 import { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
 import { TSubsections } from "@/src/server/subsections/queries/getSubsections"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
-import type { MultiPolygon, Polygon } from "geojson"
+import type { FeatureCollection, Geometry, MultiPolygon, Polygon } from "geojson"
 import { useMemo } from "react"
 import { Layer, Source } from "react-map-gl/maplibre"
 
@@ -164,20 +164,24 @@ type GeometryDrawingDealAreaParcelContextLayersProps = {
   parcelGeometry: Polygon | MultiPolygon
 }
 
+function singleGeometryFeatureCollection<T extends Geometry>(geometry: T): FeatureCollection<T, null> {
+  return {
+    type: "FeatureCollection",
+    features: [
+      {
+        type: "Feature",
+        geometry,
+        properties: null,
+      },
+    ],
+  }
+}
+
 export const GeometryDrawingDealAreaParcelContextLayers = ({
   parcelGeometry,
 }: GeometryDrawingDealAreaParcelContextLayersProps) => {
   const parcelFeatureCollection = useMemo(
-    () => ({
-      type: "FeatureCollection" as const,
-      features: [
-        {
-          type: "Feature" as const,
-          geometry: parcelGeometry,
-          properties: null,
-        },
-      ],
-    }),
+    () => singleGeometryFeatureCollection(parcelGeometry),
     [parcelGeometry],
   )
 
@@ -214,19 +218,7 @@ const DEAL_AREA_EDIT_BUFFER_RADIUS_METERS = 20
 export const GeometryDrawingDealAreaSubsubsectionContextLayers = ({
   geometry,
 }: GeometryDrawingDealAreaSubsubsectionContextLayersProps) => {
-  const subsubsectionFeatureCollection = useMemo(
-    () => ({
-      type: "FeatureCollection" as const,
-      features: [
-        {
-          type: "Feature" as const,
-          geometry,
-          properties: null,
-        },
-      ],
-    }),
-    [geometry],
-  )
+  const subsubsectionFeatureCollection = useMemo(() => singleGeometryFeatureCollection(geometry), [geometry])
 
   const bufferOutlineFeatureCollection = useMemo(() => {
     const bufferedGeometry = computeBufferPolygonFeature(
@@ -238,16 +230,7 @@ export const GeometryDrawingDealAreaSubsubsectionContextLayers = ({
       return { type: "FeatureCollection" as const, features: [] }
     }
 
-    return {
-      type: "FeatureCollection" as const,
-      features: [
-        {
-          type: "Feature" as const,
-          geometry: bufferedGeometry.geometry,
-          properties: null,
-        },
-      ],
-    }
+    return singleGeometryFeatureCollection(bufferedGeometry.geometry)
   }, [geometry])
 
   return (
@@ -313,16 +296,7 @@ export const GeometryDrawingDealAreaPreviewLayers = ({
   geometry,
 }: GeometryDrawingDealAreaPreviewLayersProps) => {
   const previewFeatureCollection = useMemo(
-    () => ({
-      type: "FeatureCollection" as const,
-      features: [
-        {
-          type: "Feature" as const,
-          geometry,
-          properties: null,
-        },
-      ],
-    }),
+    () => singleGeometryFeatureCollection(geometry),
     [geometry],
   )
 

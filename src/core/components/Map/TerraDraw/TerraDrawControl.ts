@@ -25,29 +25,10 @@ export class TerraDrawControl {
   private restorePending = false
   private modeConfig?: TerraDrawModeConfig
   private styleLoadHandler = () => this.reinitAfterStyleChange()
-  private queueAutoSelect = () => {
-    queueMicrotask(() => {
-      this.maybeAutoSelectExistingFeature()
-    })
-  }
-  private selectFirstFeature() {
-    if (!this.draw) return
 
-    const firstFeature = this.draw.getSnapshot()[0]
-    if (!firstFeature?.id) return
-
-    this.draw.selectFeature(firstFeature.id, "select")
-    this.selectedIds = [firstFeature.id]
+  private resetSelectionState() {
+    this.selectedIds = []
     this.onSelectionChange?.()
-  }
-
-  private maybeAutoSelectExistingFeature() {
-    if (!this.draw || this.currentMode !== "select" || this.selectedIds.length > 0) return
-
-    const snapshot = this.draw.getSnapshot()
-    if (snapshot.length !== 1) return
-
-    this.selectFirstFeature()
   }
 
   constructor(
@@ -76,9 +57,6 @@ export class TerraDrawControl {
         this.draw.setMode(this.pendingMode)
         this.currentMode = this.pendingMode
         this.onModeChange?.(this.pendingMode)
-        if (this.pendingMode === "select") {
-          this.queueAutoSelect()
-        }
         this.pendingMode = null
       }
     }
@@ -137,12 +115,11 @@ export class TerraDrawControl {
       this.onModeChange?.(defaultMode)
       if (this.initialGeometry) this.onButtonsChange?.()
       if (isDev && this.initialGeometry && defaultMode === "select") {
-        console.log("[Terra Draw] Started in select mode with the first feature selected")
+        console.log("[Terra Draw] Started in select mode - click a feature to edit it")
       }
     }
 
     this.setupTerraDrawListeners()
-    this.queueAutoSelect()
   }
 
   private setupTerraDrawListeners() {
@@ -243,9 +220,6 @@ export class TerraDrawControl {
         }
         this.draw.setMode(mode)
         this.currentMode = mode
-        if (mode === "select") {
-          this.queueAutoSelect()
-        }
       }
       if (this.onModeChange) {
         this.onModeChange(mode)
@@ -263,6 +237,7 @@ export class TerraDrawControl {
   clear() {
     if (this.draw && this.isInitialized) {
       this.draw.clear()
+      this.resetSelectionState()
       // Don't ignore the change event - we want to notify that geometry was cleared
       if (this.onChange) {
         this.onChange(null, null)
@@ -277,6 +252,7 @@ export class TerraDrawControl {
 
     // Clear existing features
     this.draw.clear()
+    this.resetSelectionState()
 
     if (geometry) {
       // Convert geometry to features and add them
@@ -286,9 +262,6 @@ export class TerraDrawControl {
         this.ignoreNextChangeCount = featuresToAdd.length
       }
       this.draw.addFeatures(featuresToAdd)
-      if (this.currentMode === "select") {
-        this.queueAutoSelect()
-      }
     }
   }
 
