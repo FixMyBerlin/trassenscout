@@ -18,7 +18,7 @@ export const useFilteredProjectRecords = (
     const cleanedSearchterm = searchterm.trim().toLowerCase().replace(/#/g, "").trim()
 
     const assigneeName = projectRecord.assignedTo
-      ? getFullname(projectRecord.assignedTo)?.trim().toLowerCase() ?? ""
+      ? (getFullname(projectRecord.assignedTo)?.trim().toLowerCase() ?? "")
       : ""
 
     return (

@@ -8,9 +8,7 @@ import {
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
 
-const DeleteDealAreaSchema = ProjectSlugRequiredSchema.merge(
-  z.object({ id: z.number() }),
-)
+const DeleteDealAreaSchema = ProjectSlugRequiredSchema.merge(z.object({ id: z.number() }))
 
 export default resolver.pipe(
   resolver.zod(DeleteDealAreaSchema),
