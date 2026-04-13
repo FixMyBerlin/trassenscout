@@ -5,6 +5,8 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
+import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
+import { Ctx } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
 import { validateDealAreaInput } from "../_utils/validateDealAreaInput"
@@ -18,8 +20,8 @@ const UpdateDealAreaSchema = ProjectSlugRequiredSchema.merge(
 export default resolver.pipe(
   resolver.zod(UpdateDealAreaSchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
-  async ({ id, projectSlug, ...data }) => {
-    await db.dealArea.findFirstOrThrow({
+  async ({ id, projectSlug, ...data }, ctx: Ctx) => {
+    const previous = await db.dealArea.findFirstOrThrow({
       where: {
         id,
         subsubsection: {
@@ -30,7 +32,14 @@ export default resolver.pipe(
           },
         },
       },
-      select: { id: true },
+      select: {
+        id: true,
+        subsubsectionId: true,
+        parcelId: true,
+        geometry: true,
+        description: true,
+        dealAreaStatusId: true,
+      },
     })
 
     await validateDealAreaInput({
@@ -46,6 +55,15 @@ export default resolver.pipe(
         ...data,
         dealAreaStatusId: data.dealAreaStatusId ?? null,
       },
+    })
+
+    await createLogEntry({
+      action: "UPDATE",
+      message: `Erwerbsfläche ${dealArea.id} aktualisiert`,
+      userId: ctx.session.userId,
+      projectSlug,
+      previousRecord: previous,
+      updatedRecord: dealArea,
     })
 
     return typeDealAreaGeometry(dealArea)

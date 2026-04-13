@@ -5,6 +5,8 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
+import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
+import { Ctx } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
 import { validateDealAreaInput } from "../_utils/validateDealAreaInput"
 import { DealAreaSchema } from "../schema"
@@ -15,7 +17,7 @@ const CreateDealAreaSchema = ProjectSlugRequiredSchema.merge(DealAreaSchema)
 export default resolver.pipe(
   resolver.zod(CreateDealAreaSchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
-  async ({ projectSlug, ...input }) => {
+  async ({ projectSlug, ...input }, ctx: Ctx) => {
     await validateDealAreaInput({
       projectSlug,
       subsubsectionId: input.subsubsectionId,
@@ -28,6 +30,13 @@ export default resolver.pipe(
         ...input,
         dealAreaStatusId: input.dealAreaStatusId ?? null,
       },
+    })
+
+    await createLogEntry({
+      action: "CREATE",
+      message: `Erwerbsfläche ${dealArea.id} erstellt`,
+      userId: ctx.session.userId,
+      projectSlug,
     })
 
     return typeDealAreaGeometry(dealArea)

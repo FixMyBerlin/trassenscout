@@ -6,6 +6,8 @@ import {
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
 import { DealAreaGeometrySchema } from "@/src/server/dealAreas/schema"
+import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
+import { Ctx } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
 
@@ -30,7 +32,7 @@ const CreateDealAreasFromSelectionSchema = ProjectSlugRequiredSchema.merge(
 export default resolver.pipe(
   resolver.zod(CreateDealAreasFromSelectionSchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
-  async ({ projectSlug, subsubsectionId, dealAreas }) => {
+  async ({ projectSlug, subsubsectionId, dealAreas }, ctx: Ctx) => {
     await db.subsubsection.findFirstOrThrow({
       where: {
         id: subsubsectionId,
@@ -68,8 +70,23 @@ export default resolver.pipe(
       }
     }
 
-    return await db.$transaction(async (tx) => {
+    const alkisParcelIds = Array.from(new Set(dealAreas.map((dealArea) => dealArea.alkisParcelId)))
+    const existingParcels = await db.parcel.findMany({
+      where: {
+        alkisParcelId: {
+          in: alkisParcelIds,
+        },
+      },
+      select: {
+        alkisParcelId: true,
+      },
+    })
+    const existingParcelIdSet = new Set(existingParcels.map((parcel) => parcel.alkisParcelId))
+
+    const result = await db.$transaction(async (tx) => {
       const createdDealAreas = []
+      const createdParcelIds = new Set<string>()
+      const updatedParcelIds = new Set<string>()
 
       for (const dealArea of dealAreas) {
         const parcel = await tx.parcel.upsert({
@@ -93,6 +110,13 @@ export default resolver.pipe(
           },
         })
 
+        if (existingParcelIdSet.has(dealArea.alkisParcelId)) {
+          updatedParcelIds.add(dealArea.alkisParcelId)
+        } else {
+          createdParcelIds.add(dealArea.alkisParcelId)
+          existingParcelIdSet.add(dealArea.alkisParcelId)
+        }
+
         const createdDealArea = await tx.dealArea.create({
           data: {
             subsubsectionId,
@@ -110,7 +134,25 @@ export default resolver.pipe(
         createdDealAreas.push(createdDealArea)
       }
 
-      return createdDealAreas
+      return {
+        createdDealAreas,
+        createdParcelsCount: createdParcelIds.size,
+        updatedParcelsCount: updatedParcelIds.size,
+      }
     })
+
+    const parcelParts = [`${result.createdParcelsCount} Flurstücke neu angelegt`]
+    if (result.updatedParcelsCount > 0) {
+      parcelParts.push(`${result.updatedParcelsCount} Flurstücke aktualisiert`)
+    }
+
+    await createLogEntry({
+      action: "CREATE",
+      message: `${result.createdDealAreas.length} Erwerbsflächen erstellt, ${parcelParts.join(", ")}`,
+      userId: ctx.session.userId,
+      projectSlug,
+    })
+
+    return result.createdDealAreas
   },
 )
