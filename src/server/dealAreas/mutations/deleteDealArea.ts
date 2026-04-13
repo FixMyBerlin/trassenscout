@@ -5,6 +5,7 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
+import { deleteDealAreasAndOrphanParcels } from "@/src/server/dealAreas/_utils/deleteDealAreasAndOrphanParcels"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
 
@@ -28,29 +29,10 @@ export default resolver.pipe(
         },
         select: {
           id: true,
-          parcelId: true,
         },
       })
 
-      await tx.dealArea.delete({
-        where: {
-          id: dealArea.id,
-        },
-      })
-
-      const remainingDealAreas = await tx.dealArea.count({
-        where: {
-          parcelId: dealArea.parcelId,
-        },
-      })
-
-      if (remainingDealAreas === 0) {
-        await tx.parcel.delete({
-          where: {
-            id: dealArea.parcelId,
-          },
-        })
-      }
+      await deleteDealAreasAndOrphanParcels(tx, { id: dealArea.id })
 
       return { count: 1 }
     })

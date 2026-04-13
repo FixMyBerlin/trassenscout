@@ -6,6 +6,7 @@ import getProjects from "@/src/server/projects/queries/getProjects"
 import { Metadata } from "next"
 import "server-only"
 import { AdminEnableProjectExportApi } from "./[projectSlug]/subsections/_components/AdminEnableProjectExportApi"
+import { AdminAlkisLandAcquisitionDemoTools } from "./_components/AdminAlkisLandAcquisitionDemoTools"
 import { AdminEnableProjectAi } from "./_components/AdminEnableProjectAi"
 import { AdminEnableProjectLandAcquisition } from "./_components/AdminEnableProjectLandAcquisition"
 import { AdminEnableProjectShowLogEntries } from "./_components/AdminEnableProjectShowLogEntries"
@@ -52,6 +53,7 @@ export default async function AdminProjectsPage() {
           )
         })}
       </ul>
+      <AdminAlkisLandAcquisitionDemoTools />
     </>
   )
 }

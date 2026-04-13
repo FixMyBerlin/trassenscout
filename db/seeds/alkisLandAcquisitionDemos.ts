@@ -39,6 +39,10 @@ export const ALKIS_LAND_ACQUISITION_DEMO_ENTRIES: AlkisLandAcquisitionDemoEntry[
     center: requireStateTestCoordinate(spec.alkisStateKey),
   }))
 
+/** Fixed demo project slugs — used by admin seed/teardown mutations. */
+export const ALKIS_LAND_ACQUISITION_DEMO_PROJECT_SLUGS: readonly string[] =
+  ALKIS_LAND_ACQUISITION_DEMO_ENTRIES.map((e) => e.slug)
+
 export function alkisLandAcquisitionDemoProjects(): Omit<
   Project,
   "id" | "createdAt" | "updatedAt"

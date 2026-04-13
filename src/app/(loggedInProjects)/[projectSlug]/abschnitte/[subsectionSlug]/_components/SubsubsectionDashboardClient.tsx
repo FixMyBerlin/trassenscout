@@ -15,6 +15,7 @@ import { useSlug } from "@/src/core/routes/useSlug"
 import getSubsection from "@/src/server/subsections/queries/getSubsection"
 import getSubsubsection from "@/src/server/subsubsections/queries/getSubsubsection"
 import { useQuery } from "@blitzjs/rpc"
+import { SubsubsectionDeleteAllDealAreasAdmin } from "./SubsubsectionDeleteAllDealAreasAdmin"
 import { SubsubsectionDetailsContent } from "./SubsubsectionDetailsContent"
 import { SubsubsectionLandAcquisitionContent } from "./SubsubsectionLandAcquisitionContent"
 import { SubsubsectionPageMap } from "./SubsubsectionPageMap"
@@ -113,6 +114,13 @@ export const SubsubsectionDashboardClient = ({ activeTab = "general" }: Props) =
           )}
         </div>
       </div>
+
+      <SubsubsectionDeleteAllDealAreasAdmin
+        projectSlug={projectSlug}
+        subsectionSlug={subsectionSlug!}
+        subsubsectionSlug={subsubsectionSlug!}
+        subsubsectionId={subsubsection.id}
+      />
 
       <SuperAdminLogData
         data={{
