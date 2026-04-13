@@ -42,7 +42,7 @@ export const ProjectRecordsTable = ({
   if (!projectRecords.length) return null
 
   /** Datum 1 · Titel 2 · Tags 2 · Zugewiesen 1 · Dokumente 0.5 */
-  const projectRecordColWeightTotal = 1 + 2.5 + 2.5 + 1 + 0.5
+  const projectRecordColWeightTotal = 1 + 3 + 3 + 1 + 0.5
   const projectRecordColWidth = (weight: number): { width: string } => ({
     width: `${(weight / projectRecordColWeightTotal) * 100}%`,
   })
