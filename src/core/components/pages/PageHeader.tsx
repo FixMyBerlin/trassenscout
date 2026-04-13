@@ -32,12 +32,7 @@ export const PageHeader = ({
   return (
     <section className={clsx("mb-12 space-y-3", className)}>
       {(titleIcon || action) && (
-        <div
-          className={clsx(
-            "mt-5 flex items-start",
-            action && "justify-between",
-          )}
-        >
+        <div className={clsx("mt-5 flex items-start", action && "justify-between")}>
           {/* empty span should be rendered if no title icon to keep position of action */}
           <div className="flex items-center gap-3">
             <span style={{ zoom: titleIconZoom }} className="mb-1 shrink-0">
