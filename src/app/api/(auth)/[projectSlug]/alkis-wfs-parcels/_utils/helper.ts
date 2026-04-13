@@ -1,4 +1,3 @@
-import type { AlkisBackgroundConfigEntry } from "@/src/core/components/Map/alkisStateConfig"
 import type { Feature, FeatureCollection, Geometry } from "geojson"
 import { execFile } from "node:child_process"
 import { randomBytes } from "node:crypto"
@@ -39,8 +38,8 @@ export function buildWfsGetFeatureUrl(params: {
   return url.toString()
 }
 
-export function getWfsOutputFormat(config: AlkisBackgroundConfigEntry) {
-  return config.wfsOutputFormat?.trim() ? config.wfsOutputFormat.trim() : GML_OUTPUT_FORMAT
+export function getWfsOutputFormat(wfsOutputFormat: string | null | undefined) {
+  return wfsOutputFormat?.trim() ? wfsOutputFormat.trim() : GML_OUTPUT_FORMAT
 }
 
 function sniffTempExtension(body: string): string {

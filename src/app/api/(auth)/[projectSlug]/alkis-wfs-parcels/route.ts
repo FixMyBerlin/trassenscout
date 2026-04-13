@@ -1,14 +1,14 @@
 import db from "@/db"
+import { alkisStateConfig } from "@/src/app/api/(auth)/[projectSlug]/alkis-wfs-parcels/_utils/alkisStateConfig"
 import { withProjectMembership } from "@/src/app/api/(auth)/_utils/withProjectMembership"
 import { viewerRoles } from "@/src/authorization/constants"
-import { alkisStateConfig } from "@/src/core/components/Map/alkisStateConfig"
 import { StateKeyEnum } from "@prisma/client"
 import {
   buildWfsGetFeatureUrl,
   convertWfsResponseToGeoJson,
   getWfsOutputFormat,
   injectAlkisParcelIdsIntoGeoJson,
-} from "./_utils"
+} from "./_utils/helper"
 
 // opts into Node runtime (Edge cannot spawn ogr2ogr like this)
 export const runtime = "nodejs"
@@ -86,7 +86,7 @@ export const GET = withProjectMembership(viewerRoles, async ({ params, request }
     )
   }
 
-  const outputFormat = getWfsOutputFormat(config)
+  const outputFormat = getWfsOutputFormat(config.wfsOutputFormat)
 
   const getFeatureUrl = buildWfsGetFeatureUrl({
     wfsUrl,

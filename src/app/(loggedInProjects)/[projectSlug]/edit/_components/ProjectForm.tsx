@@ -1,6 +1,7 @@
 "use client"
 
 import { UserSelectOptions } from "@/src/app/_components/users/utils/getUserSelectOptions"
+import { getBundeslandSelectOptions } from "@/src/app/api/(auth)/[projectSlug]/alkis-wfs-parcels/_utils/alkisStateConfig"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import {
   Form,
@@ -9,7 +10,6 @@ import {
   LabeledTextareaField,
   LabeledTextField,
 } from "@/src/core/components/forms"
-import { getBundeslandSelectOptions } from "@/src/core/components/Map/alkisStateConfig"
 import { z } from "zod"
 
 type Props = FormProps<z.ZodType<any, any>> & { users: UserSelectOptions }

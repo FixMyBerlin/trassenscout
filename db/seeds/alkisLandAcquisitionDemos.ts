@@ -1,9 +1,10 @@
+import { requireStateTestCoordinate } from "../../src/shared/alkisStateTestCoordinates"
 import type { Prisma, Project } from "../index"
 import { StateKeyEnum } from "../index"
 
 /**
  * One seed project per Bundesland to exercise `DealAreaMap` + ALKIS WFS proxy.
- * Representative centers match `scripts/alkis-wfs/shared/constants.ts` (STATE_TEST_COORDINATES).
+ * Centers come from `src/shared/alkisStateTestCoordinates.ts` (STATE_TEST_COORDINATES).
  */
 export type AlkisLandAcquisitionDemoEntry = {
   slug: string
@@ -12,38 +13,31 @@ export type AlkisLandAcquisitionDemoEntry = {
   center: { lon: number; lat: number }
 }
 
-export const ALKIS_LAND_ACQUISITION_DEMO_ENTRIES: AlkisLandAcquisitionDemoEntry[] = [
-  {
-    slug: "rs-berlin",
-    subTitle: "Seed: ALKIS demo Berlin",
-    alkisStateKey: StateKeyEnum.BERLIN,
-    center: { lon: 13.405, lat: 52.52 },
-  },
+const SEED_DEMO_SPECS = [
+  { slug: "rs-berlin", subTitle: "Seed: ALKIS demo Berlin", alkisStateKey: StateKeyEnum.BERLIN },
   {
     slug: "rs-baden-wuerttemberg",
     subTitle: "Seed: ALKIS demo Baden-Württemberg",
     alkisStateKey: StateKeyEnum.BADEN_WUERTTEMBERG,
-    center: { lon: 9.1829, lat: 48.7758 },
   },
-  {
-    slug: "rs-hessen",
-    subTitle: "Seed: ALKIS demo Hessen",
-    alkisStateKey: StateKeyEnum.HESSEN,
-    center: { lon: 8.2417, lat: 50.0782 },
-  },
+  { slug: "rs-hessen", subTitle: "Seed: ALKIS demo Hessen", alkisStateKey: StateKeyEnum.HESSEN },
   {
     slug: "rs-brandenburg",
     subTitle: "Seed: ALKIS demo Brandenburg",
     alkisStateKey: StateKeyEnum.BRANDENBURG,
-    center: { lon: 13.0645, lat: 52.4009 },
   },
   {
     slug: "rs-nordrhein-westfalen",
     subTitle: "Seed: ALKIS demo Nordrhein-Westfalen",
     alkisStateKey: StateKeyEnum.NORDRHEIN_WESTFALEN,
-    center: { lon: 6.7735, lat: 51.2277 },
   },
-]
+] as const satisfies readonly { slug: string; subTitle: string; alkisStateKey: StateKeyEnum }[]
+
+export const ALKIS_LAND_ACQUISITION_DEMO_ENTRIES: AlkisLandAcquisitionDemoEntry[] =
+  SEED_DEMO_SPECS.map((spec) => ({
+    ...spec,
+    center: requireStateTestCoordinate(spec.alkisStateKey),
+  }))
 
 export function alkisLandAcquisitionDemoProjects(): Omit<
   Project,
