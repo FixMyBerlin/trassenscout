@@ -1,5 +1,10 @@
 "use client"
 
+import {
+  polygonFeatureToFeatureCollection,
+  potentialAcquisitionAreasToFeatureCollection,
+} from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/[subsubsectionSlug]/land-acquisition/acquisition-areas/new/_components/potentialAcquisitionAreaGeoJson"
+import { PotentialAcquisitionArea } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/[subsubsectionSlug]/land-acquisition/acquisition-areas/new/_components/potentialAcquisitionAreaTypes"
 import { SubsubsectionGeometryLayers } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/[subsubsectionSlug]/land-acquisition/acquisition-areas/new/_components/SubsubsectionGeometryLayers"
 import { BackgroundSwitcher, type LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
 import { getMapStyle } from "@/src/core/components/Map/mapStyleConfig"
@@ -12,6 +17,7 @@ import getSubsubsection, {
   type SubsubsectionWithPosition,
 } from "@/src/server/subsubsections/queries/getSubsubsection"
 import { bbox } from "@turf/bbox"
+import { featureCollection } from "@turf/helpers"
 import type { FeatureCollection, Geometry } from "geojson"
 import "maplibre-gl/dist/maplibre-gl.css"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
@@ -23,15 +29,10 @@ import Map, {
   ScaleControl,
   Source,
 } from "react-map-gl/maplibre"
-import { emptyFeatureCollection, PARCEL_LAYER_IDS } from "./acquisitionAreaMapConstants"
+import { PARCEL_LAYER_IDS } from "./acquisitionAreaMapConstants"
 import { buildAlkisWfsProxyUrl } from "./alkisWfsMapHelpers"
 import { computePotentialAcquisitionAreas } from "./computePotentialAcquisitionAreas"
 import { formatPropertyValue, sortedPropertyEntries } from "./parcelFeatureProperties"
-import {
-  bufferOutlineFeatureCollection,
-  potentialAcquisitionAreasToFeatureCollection,
-} from "./potentialAcquisitionAreaGeoJson"
-import type { PotentialAcquisitionArea } from "./potentialAcquisitionAreaTypes"
 
 type Props = {
   subsubsection: Awaited<ReturnType<typeof getSubsubsection>>
@@ -53,8 +54,9 @@ export function AcquisitionAreaMap({
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [parcels, setParcels] =
-    useState<FeatureCollection<Geometry, Record<string, unknown>>>(emptyFeatureCollection)
+  const [parcels, setParcels] = useState<FeatureCollection<Geometry, Record<string, unknown>>>(
+    featureCollection([]),
+  )
 
   const [cursor, setCursor] = useState<"grab" | "pointer">("grab")
   const [contextParcel, setContextParcel] = useState<{
@@ -83,7 +85,7 @@ export function AcquisitionAreaMap({
   }, [bufferPolygonFeature, subsubsectionBbox])
 
   const bufferOutlineData = useMemo(
-    () => bufferOutlineFeatureCollection(bufferPolygonFeature),
+    () => polygonFeatureToFeatureCollection(bufferPolygonFeature),
     [bufferPolygonFeature],
   )
 
@@ -153,7 +155,7 @@ export function AcquisitionAreaMap({
       } catch (e) {
         if ((e as Error).name === "AbortError") return
         console.error(e)
-        setParcels(emptyFeatureCollection)
+        setParcels(featureCollection([]))
         setError((e as Error).message ?? "Unbekannter Fehler beim Laden der Flurstücke.")
       } finally {
         setLoading(false)

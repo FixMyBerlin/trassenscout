@@ -1,12 +1,10 @@
+import { feature, featureCollection } from "@turf/helpers"
 import type { Feature, FeatureCollection, GeoJsonProperties, Geometry } from "geojson"
 import { alkisStateConfig } from "../../../../app/api/(auth)/[projectSlug]/alkis-wfs-parcels/_utils/alkisStateConfig"
 
 export type AlkisViewportBbox = [west: number, south: number, east: number, north: number]
 
-export const emptyAlkisFeatureCollection: FeatureCollection<Geometry, GeoJsonProperties> = {
-  type: "FeatureCollection",
-  features: [],
-}
+export const emptyAlkisFeatureCollection = featureCollection([])
 
 type FetchAlkisParcelsArgs = {
   alkisStateKey: keyof typeof alkisStateConfig
@@ -51,14 +49,13 @@ function normalizeFeatureCollection(data: unknown): FeatureCollection<Geometry, 
     throw new Error("Unexpected ALKIS WFS response format")
   }
 
-  return {
-    type: "FeatureCollection",
-    features: data.features.map((feature, index) => {
-      if (typeof feature !== "object" || feature === null) {
+  return featureCollection(
+    data.features.map((featureData, index) => {
+      if (typeof featureData !== "object" || featureData === null) {
         throw new Error("Unexpected ALKIS feature format")
       }
 
-      const typedFeature = feature as {
+      const typedFeature = featureData as {
         type?: Feature["type"]
         id?: string | number
         properties?: GeoJsonProperties
@@ -66,13 +63,11 @@ function normalizeFeatureCollection(data: unknown): FeatureCollection<Geometry, 
       }
 
       return {
-        type: "Feature",
-        ...typedFeature,
+        ...feature(typedFeature.geometry, typedFeature.properties ?? {}),
         id: typedFeature.id ?? typedFeature.properties?.id ?? `alkis-${index}`,
-        properties: typedFeature.properties ?? {},
       }
     }),
-  }
+  )
 }
 
 export async function fetchAlkisParcels({

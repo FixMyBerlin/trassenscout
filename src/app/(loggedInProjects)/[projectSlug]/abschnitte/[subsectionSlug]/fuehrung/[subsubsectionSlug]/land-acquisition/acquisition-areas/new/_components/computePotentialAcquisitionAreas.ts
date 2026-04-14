@@ -1,6 +1,6 @@
 import { AcquisitionAreaGeometrySchema } from "@/src/server/acquisitionAreas/schema"
 import { booleanIntersects } from "@turf/boolean-intersects"
-import { featureCollection } from "@turf/helpers"
+import { feature, featureCollection } from "@turf/helpers"
 import { intersect } from "@turf/intersect"
 import type { Feature, FeatureCollection, Geometry, MultiPolygon, Polygon } from "geojson"
 import type { PotentialAcquisitionArea } from "./potentialAcquisitionAreaTypes"
@@ -17,11 +17,7 @@ export function computePotentialAcquisitionAreas(
     const geom = parcel.geometry
     if (geom.type !== "Polygon" && geom.type !== "MultiPolygon") continue
 
-    const parcelFeature: Feature<Polygon | MultiPolygon> = {
-      type: "Feature",
-      properties: parcel.properties ?? {},
-      geometry: geom,
-    }
+    const parcelFeature = feature(geom, parcel.properties ?? {})
 
     if (!booleanIntersects(parcelFeature, bufferFeature)) continue
 

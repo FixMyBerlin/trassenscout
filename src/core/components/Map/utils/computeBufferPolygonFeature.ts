@@ -1,7 +1,7 @@
 import { geometryToFeatures } from "@/src/core/components/Map/utils/geometryToFeatures"
 import type { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
 import { buffer } from "@turf/buffer"
-import { featureCollection } from "@turf/helpers"
+import { feature, featureCollection } from "@turf/helpers"
 import { union } from "@turf/union"
 import type { Feature, Geometry, MultiPolygon, Polygon } from "geojson"
 
@@ -11,11 +11,7 @@ function isPolygonalGeometry(geometry: Geometry): geometry is Polygon | MultiPol
 
 function polygonalFeatureFromBufferOutput(f: Feature<Geometry> | undefined | null) {
   if (!f?.geometry || !isPolygonalGeometry(f.geometry)) return null
-  return {
-    type: "Feature" as const,
-    properties: f.properties ?? {},
-    geometry: f.geometry,
-  }
+  return feature(f.geometry, f.properties ?? {})
 }
 
 export function computeBufferPolygonFeature(

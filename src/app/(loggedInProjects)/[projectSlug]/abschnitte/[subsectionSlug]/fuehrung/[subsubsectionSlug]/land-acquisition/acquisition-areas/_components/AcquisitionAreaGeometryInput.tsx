@@ -12,7 +12,7 @@ import {
   type TAcquisitionAreaGeometrySchema,
 } from "@/src/server/acquisitionAreas/schema"
 import { type SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
-import { featureCollection } from "@turf/helpers"
+import { feature, featureCollection } from "@turf/helpers"
 import { intersect } from "@turf/turf"
 import { useCallback, useMemo, useRef } from "react"
 import { useFormContext } from "react-hook-form"
@@ -66,8 +66,8 @@ export const AcquisitionAreaGeometryInput = ({ parcelGeometry, subsubsectionGeom
 
       const clippedFeature = intersect(
         featureCollection([
-          { type: "Feature", geometry: polygonGeometry, properties: {} },
-          { type: "Feature", geometry: parcelGeometry, properties: {} },
+          feature(polygonGeometry, {}),
+          feature(parcelGeometry, {}),
         ]),
       )
 
