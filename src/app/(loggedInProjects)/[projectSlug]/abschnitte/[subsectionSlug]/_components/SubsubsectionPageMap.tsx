@@ -1,7 +1,8 @@
 "use client"
 
-import { useDealAreaSelection } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/_components/useDealAreaSelection.nuqs"
-import { dealAreaStatusStyles } from "@/src/app/(loggedInProjects)/[projectSlug]/deal-area-status/_utils/dealAreaStatusStyles"
+import { useAcquisitionAreaSelection } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/_components/useAcquisitionAreaSelection.nuqs"
+
+import { acquisitionAreaStatusStyles } from "@/src/app/(loggedInProjects)/[projectSlug]/acquisition-area-status/_utils/acquisitionAreaStatusStyles"
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
 import { subsectionColors } from "@/src/core/components/Map/colors/subsectionColors"
 import { subsubsectionColors } from "@/src/core/components/Map/colors/subsubsectionColors"
@@ -12,10 +13,10 @@ import { geometriesBbox } from "@/src/core/components/Map/utils/bboxHelpers"
 import { getSubsubsectionFeatures } from "@/src/core/components/Map/utils/getSubsubsectionFeatures"
 import { polygonToGeoJSON } from "@/src/core/components/Map/utils/polygonToGeoJSON"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
-import getDealAreasBySubsubsection, {
-  type DealAreaWithTypedGeometry,
-} from "@/src/server/dealAreas/queries/getDealAreasBySubsubsection"
-import type { TDealAreaGeometrySchema } from "@/src/server/dealAreas/schema"
+import getAcquisitionAreasBySubsubsection, {
+  type AcquisitionAreaWithTypedGeometry,
+} from "@/src/server/acquisitionAreas/queries/getAcquisitionAreasBySubsubsection"
+import type { TAcquisitionAreaGeometrySchema } from "@/src/server/acquisitionAreas/schema"
 import type { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
 import type {
   SubsubsectionWithPosition,
@@ -29,14 +30,14 @@ import { useMemo } from "react"
 import { Layer, Source } from "react-map-gl/maplibre"
 import type { SubsubsectionTabKey } from "./SubsubsectionDashboardClient"
 
-const dealAreaColorExpression: ExpressionSpecification = [
+const acquisitionAreaColorExpression: ExpressionSpecification = [
   "match",
   ["coalesce", ["get", "statusStyle"], 1],
   2,
-  dealAreaStatusStyles[2].color,
+  acquisitionAreaStatusStyles[2].color,
   3,
-  dealAreaStatusStyles[3].color,
-  dealAreaStatusStyles[1].color,
+  acquisitionAreaStatusStyles[3].color,
+  acquisitionAreaStatusStyles[1].color,
 ]
 
 type Props = {
@@ -51,11 +52,11 @@ const defaultQueryOptions = {
 
 export const SubsubsectionPageMap = ({ subsubsection, activeTab }: Props) => {
   const projectSlug = useProjectSlug()
-  const { dealAreaId, setDealAreaId } = useDealAreaSelection()
+  const { acquisitionAreaId, setAcquisitionAreaId } = useAcquisitionAreaSelection()
   const isLandAcquisition = activeTab === "land-acquisition"
 
-  const [dealAreas = []] = useQuery(
-    getDealAreasBySubsubsection,
+  const [acquisitionAreas = []] = useQuery(
+    getAcquisitionAreasBySubsubsection,
     {
       projectSlug,
       subsubsectionId: subsubsection.id,
@@ -80,71 +81,71 @@ export const SubsubsectionPageMap = ({ subsubsection, activeTab }: Props) => {
     [subsubsection],
   )
 
-  const selectedDealAreas = useMemo(
-    () => dealAreas.filter((dealArea) => dealArea.id === dealAreaId),
-    [dealAreaId, dealAreas],
+  const selectedAcquisitionAreas = useMemo(
+    () => acquisitionAreas.filter((acquisitionArea) => acquisitionArea.id === acquisitionAreaId),
+    [acquisitionAreaId, acquisitionAreas],
   )
 
-  const unselectedDealAreas = useMemo(
-    () => dealAreas.filter((dealArea) => dealArea.id !== dealAreaId),
-    [dealAreaId, dealAreas],
+  const unselectedAcquisitionAreas = useMemo(
+    () => acquisitionAreas.filter((acquisitionArea) => acquisitionArea.id !== acquisitionAreaId),
+    [acquisitionAreaId, acquisitionAreas],
   )
 
-  const toDealAreaFeatureCollection = (areas: DealAreaWithTypedGeometry[]) =>
+  const toAcquisitionAreaFeatureCollection = (areas: AcquisitionAreaWithTypedGeometry[]) =>
     featureCollection(
-      areas.flatMap((dealArea) =>
-        polygonToGeoJSON(dealArea.geometry as TDealAreaGeometrySchema, {
-          dealAreaId: dealArea.id,
-          statusStyle: dealArea.dealAreaStatus?.style ?? 1,
+      areas.flatMap((acquisitionArea) =>
+        polygonToGeoJSON(acquisitionArea.geometry as TAcquisitionAreaGeometrySchema, {
+          acquisitionAreaId: acquisitionArea.id,
+          statusStyle: acquisitionArea.acquisitionAreaStatus?.style ?? 1,
         }).map((item, index) =>
           feature(item.geometry, {
             ...item.properties,
-            featureId: `deal-area-${dealArea.id}-${index}`,
+            featureId: `acquisition-area-${acquisitionArea.id}-${index}`,
           }),
         ),
       ),
     )
 
-  const selectedDealAreasFc = useMemo(
-    () => toDealAreaFeatureCollection(selectedDealAreas),
-    [selectedDealAreas],
+  const selectedAcquisitionAreasFc = useMemo(
+    () => toAcquisitionAreaFeatureCollection(selectedAcquisitionAreas),
+    [selectedAcquisitionAreas],
   )
 
-  const unselectedDealAreasFc = useMemo(
-    () => toDealAreaFeatureCollection(unselectedDealAreas),
-    [unselectedDealAreas],
+  const unselectedAcquisitionAreasFc = useMemo(
+    () => toAcquisitionAreaFeatureCollection(unselectedAcquisitionAreas),
+    [unselectedAcquisitionAreas],
   )
 
   const parcelFeatureCollection = useMemo(
     () =>
       featureCollection(
-        dealAreas.map((dealArea) =>
-          feature(dealArea.parcel.geometry as Polygon | MultiPolygon, {
-            parcelId: dealArea.parcel.id,
-            featureId: `deal-area-parcel-${dealArea.parcel.id}`,
+        acquisitionAreas.map((acquisitionArea) =>
+          feature(acquisitionArea.parcel.geometry as Polygon | MultiPolygon, {
+            parcelId: acquisitionArea.parcel.id,
+            featureId: `acquisition-area-parcel-${acquisitionArea.parcel.id}`,
           }),
         ),
       ),
-    [dealAreas],
+    [acquisitionAreas],
   )
 
   const mapBbox = useMemo(() => {
     const geometries: SupportedGeometry[] = [subsubsection.geometry as SupportedGeometry]
     if (isLandAcquisition) {
-      dealAreas.forEach((dealArea) => {
-        geometries.push(dealArea.geometry as SupportedGeometry)
+      acquisitionAreas.forEach((acquisitionArea) => {
+        geometries.push(acquisitionArea.geometry as SupportedGeometry)
       })
     }
     return geometriesBbox(geometries)
-  }, [dealAreas, isLandAcquisition, subsubsection.geometry])
+  }, [acquisitionAreas, isLandAcquisition, subsubsection.geometry])
 
   const handleClickMap = (event: MapLayerMouseEvent) => {
     if (!isLandAcquisition) return
 
-    const clickedDealAreaId = Number(event.features?.at(0)?.properties?.dealAreaId)
-    if (!Number.isFinite(clickedDealAreaId)) return
+    const clickedAcquisitionAreaId = Number(event.features?.at(0)?.properties?.acquisitionAreaId)
+    if (!Number.isFinite(clickedAcquisitionAreaId)) return
 
-    void setDealAreaId(clickedDealAreaId)
+    void setAcquisitionAreaId(clickedAcquisitionAreaId)
   }
 
   return (
@@ -158,7 +159,7 @@ export const SubsubsectionPageMap = ({ subsubsection, activeTab }: Props) => {
         onClick={handleClickMap}
         interactiveLayerIds={
           isLandAcquisition
-            ? ["deal-area-click-target-unselected", "deal-area-click-target-selected"]
+            ? ["acquisition-area-click-target-unselected", "acquisition-area-click-target-selected"]
             : undefined
         }
         lines={subsubsectionLines?.features.length ? subsubsectionLines : undefined}
@@ -174,9 +175,9 @@ export const SubsubsectionPageMap = ({ subsubsection, activeTab }: Props) => {
       >
         {isLandAcquisition && (
           <>
-            <Source id="deal-area-parcels" type="geojson" data={parcelFeatureCollection}>
+            <Source id="acquisition-area-parcels" type="geojson" data={parcelFeatureCollection}>
               <Layer
-                id="deal-area-parcels-fill"
+                id="acquisition-area-parcels-fill"
                 type="fill"
                 paint={{
                   "fill-color": subsectionColors.hull.current,
@@ -184,7 +185,7 @@ export const SubsubsectionPageMap = ({ subsubsection, activeTab }: Props) => {
                 }}
               />
               <Layer
-                id="deal-area-parcels-outline"
+                id="acquisition-area-parcels-outline"
                 type="line"
                 paint={{
                   "line-color": subsectionColors.hull.current,
@@ -194,34 +195,38 @@ export const SubsubsectionPageMap = ({ subsubsection, activeTab }: Props) => {
               />
             </Source>
 
-            <Source id="deal-area-unselected" type="geojson" data={unselectedDealAreasFc}>
+            <Source
+              id="acquisition-area-unselected"
+              type="geojson"
+              data={unselectedAcquisitionAreasFc}
+            >
               <Layer
-                id="deal-area-fill-unselected"
+                id="acquisition-area-fill-unselected"
                 type="fill"
                 paint={{
-                  "fill-color": dealAreaColorExpression,
+                  "fill-color": acquisitionAreaColorExpression,
                   "fill-opacity": 0.32,
                 }}
               />
               <Layer
-                id="deal-area-line-unselected"
+                id="acquisition-area-line-unselected"
                 type="line"
                 paint={{
-                  "line-color": dealAreaColorExpression,
+                  "line-color": acquisitionAreaColorExpression,
                   "line-width": 2,
                   "line-opacity": 0.9,
                 }}
               />
               <Layer
-                id="deal-area-click-target-unselected"
+                id="acquisition-area-click-target-unselected"
                 type="fill"
                 paint={{ "fill-opacity": 0 }}
               />
             </Source>
 
-            <Source id="deal-area-selected" type="geojson" data={selectedDealAreasFc}>
+            <Source id="acquisition-area-selected" type="geojson" data={selectedAcquisitionAreasFc}>
               <Layer
-                id="deal-area-fill-selected"
+                id="acquisition-area-fill-selected"
                 type="fill"
                 paint={{
                   "fill-color": subsubsectionColors.polygon.selected,
@@ -229,7 +234,7 @@ export const SubsubsectionPageMap = ({ subsubsection, activeTab }: Props) => {
                 }}
               />
               <Layer
-                id="deal-area-line-selected"
+                id="acquisition-area-line-selected"
                 type="line"
                 paint={{
                   "line-color": subsubsectionColors.polygon.selected,
@@ -238,7 +243,7 @@ export const SubsubsectionPageMap = ({ subsubsection, activeTab }: Props) => {
                 }}
               />
               <Layer
-                id="deal-area-click-target-selected"
+                id="acquisition-area-click-target-selected"
                 type="fill"
                 paint={{ "fill-opacity": 0 }}
               />

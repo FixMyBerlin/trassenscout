@@ -12,7 +12,7 @@ export const ProjectRecordSchema = z.object({
   body: z.string().nullish(),
   subsectionId: InputNumberOrNullSchema,
   subsubsectionId: InputNumberOrNullSchema,
-  dealAreaId: InputNumberOrNullSchema,
+  acquisitionAreaId: InputNumberOrNullSchema,
   assignedToId: InputNumberOrNullSchema,
   userId: InputNumberOrNullSchema,
   projectRecordAuthorType: z.nativeEnum(ProjectRecordType),

@@ -160,7 +160,7 @@ export const GeometryDrawingSubsubsectionContextLayers = ({
   )
 }
 
-type GeometryDrawingDealAreaParcelContextLayersProps = {
+type GeometryDrawingAcquisitionAreaParcelContextLayersProps = {
   parcelGeometry: Polygon | MultiPolygon
 }
 
@@ -179,18 +179,18 @@ function singleGeometryFeatureCollection<T extends Geometry>(
   }
 }
 
-export const GeometryDrawingDealAreaParcelContextLayers = ({
+export const GeometryDrawingAcquisitionAreaParcelContextLayers = ({
   parcelGeometry,
-}: GeometryDrawingDealAreaParcelContextLayersProps) => {
+}: GeometryDrawingAcquisitionAreaParcelContextLayersProps) => {
   const parcelFeatureCollection = useMemo(
     () => singleGeometryFeatureCollection(parcelGeometry),
     [parcelGeometry],
   )
 
   return (
-    <Source id="terra_draw_deal_area_parcel" type="geojson" data={parcelFeatureCollection}>
+    <Source id="terra_draw_acquisition_area_parcel" type="geojson" data={parcelFeatureCollection}>
       <Layer
-        id="terra_draw_deal_area_parcel_fill"
+        id="terra_draw_acquisition_area_parcel_fill"
         type="fill"
         paint={{
           "fill-color": "#38BDF8",
@@ -198,7 +198,7 @@ export const GeometryDrawingDealAreaParcelContextLayers = ({
         }}
       />
       <Layer
-        id="terra_draw_deal_area_parcel_outline"
+        id="terra_draw_acquisition_area_parcel_outline"
         type="line"
         paint={{
           "line-color": "#2C62A9",
@@ -211,15 +211,15 @@ export const GeometryDrawingDealAreaParcelContextLayers = ({
   )
 }
 
-type GeometryDrawingDealAreaSubsubsectionContextLayersProps = {
+type GeometryDrawingAcquisitionAreaSubsubsectionContextLayersProps = {
   geometry: SupportedGeometry
 }
 
 const DEAL_AREA_EDIT_BUFFER_RADIUS_METERS = 20
 
-export const GeometryDrawingDealAreaSubsubsectionContextLayers = ({
+export const GeometryDrawingAcquisitionAreaSubsubsectionContextLayers = ({
   geometry,
-}: GeometryDrawingDealAreaSubsubsectionContextLayersProps) => {
+}: GeometryDrawingAcquisitionAreaSubsubsectionContextLayersProps) => {
   const subsubsectionFeatureCollection = useMemo(
     () => singleGeometryFeatureCollection(geometry),
     [geometry],
@@ -241,12 +241,12 @@ export const GeometryDrawingDealAreaSubsubsectionContextLayers = ({
   return (
     <>
       <Source
-        id="terra_draw_deal_area_subsubsection"
+        id="terra_draw_acquisition_area_subsubsection"
         type="geojson"
         data={subsubsectionFeatureCollection}
       >
         <Layer
-          id="terra_draw_deal_area_subsubsection_fill"
+          id="terra_draw_acquisition_area_subsubsection_fill"
           type="fill"
           paint={{
             "fill-color": subsubsectionColors.polygon.unselected,
@@ -254,7 +254,7 @@ export const GeometryDrawingDealAreaSubsubsectionContextLayers = ({
           }}
         />
         <Layer
-          id="terra_draw_deal_area_subsubsection_line"
+          id="terra_draw_acquisition_area_subsubsection_line"
           type="line"
           paint={{
             "line-color": subsubsectionColors.line.unselected,
@@ -263,7 +263,7 @@ export const GeometryDrawingDealAreaSubsubsectionContextLayers = ({
           }}
         />
         <Layer
-          id="terra_draw_deal_area_subsubsection_point"
+          id="terra_draw_acquisition_area_subsubsection_point"
           type="circle"
           paint={{
             "circle-radius": 6,
@@ -274,12 +274,12 @@ export const GeometryDrawingDealAreaSubsubsectionContextLayers = ({
         />
       </Source>
       <Source
-        id="terra_draw_deal_area_subsubsection_buffer"
+        id="terra_draw_acquisition_area_subsubsection_buffer"
         type="geojson"
         data={bufferOutlineFeatureCollection}
       >
         <Layer
-          id="terra_draw_deal_area_subsubsection_buffer"
+          id="terra_draw_acquisition_area_subsubsection_buffer"
           type="line"
           paint={{
             "line-color": "#2563eb",
@@ -293,22 +293,22 @@ export const GeometryDrawingDealAreaSubsubsectionContextLayers = ({
   )
 }
 
-type GeometryDrawingDealAreaPreviewLayersProps = {
+type GeometryDrawingAcquisitionAreaPreviewLayersProps = {
   geometry: Polygon | MultiPolygon
 }
 
-export const GeometryDrawingDealAreaPreviewLayers = ({
+export const GeometryDrawingAcquisitionAreaPreviewLayers = ({
   geometry,
-}: GeometryDrawingDealAreaPreviewLayersProps) => {
+}: GeometryDrawingAcquisitionAreaPreviewLayersProps) => {
   const previewFeatureCollection = useMemo(
     () => singleGeometryFeatureCollection(geometry),
     [geometry],
   )
 
   return (
-    <Source id="terra_draw_deal_area_preview" type="geojson" data={previewFeatureCollection}>
+    <Source id="terra_draw_acquisition_area_preview" type="geojson" data={previewFeatureCollection}>
       <Layer
-        id="terra_draw_deal_area_preview_fill"
+        id="terra_draw_acquisition_area_preview_fill"
         type="fill"
         paint={{
           "fill-color": "#DC2626",
@@ -316,7 +316,7 @@ export const GeometryDrawingDealAreaPreviewLayers = ({
         }}
       />
       <Layer
-        id="terra_draw_deal_area_preview_outline"
+        id="terra_draw_acquisition_area_preview_outline"
         type="line"
         paint={{
           "line-color": "#DC2626",

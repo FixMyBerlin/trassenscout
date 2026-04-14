@@ -5,7 +5,7 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
-import { validateDealAreaScope } from "@/src/server/dealAreas/_utils/validateDealAreaScope"
+import { validateAcquisitionAreaScope } from "@/src/server/acquisitionAreas/_utils/validateAcquisitionAreaScope"
 import { Ctx } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
@@ -36,9 +36,9 @@ export default resolver.pipe(
       data: disconnect,
     })
 
-    await validateDealAreaScope({
+    await validateAcquisitionAreaScope({
       projectSlug,
-      dealAreaId: data.dealAreaId,
+      acquisitionAreaId: data.acquisitionAreaId,
       subsectionId: data.subsectionId,
       subsubsectionId: data.subsubsectionId,
     })

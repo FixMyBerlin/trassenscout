@@ -28,21 +28,21 @@ export const subsubsectionLandAcquisitionRoute = (
   return `/${projectSlug}/abschnitte/${subsectionSlug}/fuehrung/${subsubsectionSlug}/land-acquisition` as Route
 }
 
-export const dealAreaEditRoute = (
+export const acquisitionAreaEditRoute = (
   projectSlug: string,
   subsectionSlug: string,
   subsubsectionSlug: string,
-  dealAreaId: number,
+  acquisitionAreaId: number,
 ): Route => {
-  return `/${projectSlug}/abschnitte/${subsectionSlug}/fuehrung/${subsubsectionSlug}/land-acquisition/deal-areas/${dealAreaId}/edit` as Route
+  return `/${projectSlug}/abschnitte/${subsectionSlug}/fuehrung/${subsubsectionSlug}/land-acquisition/acquisition-areas/${acquisitionAreaId}/edit` as Route
 }
 
-export const dealAreaNewRoute = (
+export const acquisitionAreaNewRoute = (
   projectSlug: string,
   subsectionSlug: string,
   subsubsectionSlug: string,
 ): Route => {
-  return `/${projectSlug}/abschnitte/${subsectionSlug}/fuehrung/${subsubsectionSlug}/land-acquisition/deal-areas/new` as Route
+  return `/${projectSlug}/abschnitte/${subsectionSlug}/fuehrung/${subsubsectionSlug}/land-acquisition/acquisition-areas/new` as Route
 }
 
 export const subsubsectionEditRoute = (

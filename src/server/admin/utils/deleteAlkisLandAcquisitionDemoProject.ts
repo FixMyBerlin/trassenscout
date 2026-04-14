@@ -1,5 +1,5 @@
 import type { Prisma } from "@/db"
-import { deleteDealAreasAndOrphanParcels } from "@/src/server/dealAreas/_utils/deleteDealAreasAndOrphanParcels"
+import { deleteAcquisitionAreasAndOrphanParcels } from "@/src/server/acquisitionAreas/_utils/deleteAcquisitionAreasAndOrphanParcels"
 
 /**
  * Removes one demo project and all rows that reference it (RESTRICT FK order).
@@ -27,7 +27,7 @@ export async function deleteAlkisLandAcquisitionDemoProject(
   await tx.invite.deleteMany({ where: { projectId } })
   await tx.contact.deleteMany({ where: { projectId } })
 
-  await deleteDealAreasAndOrphanParcels(tx, {
+  await deleteAcquisitionAreasAndOrphanParcels(tx, {
     subsubsection: { subsection: { projectId } },
   })
 
@@ -37,7 +37,7 @@ export async function deleteAlkisLandAcquisitionDemoProject(
   await tx.subsection.deleteMany({ where: { projectId } })
 
   await tx.networkHierarchy.deleteMany({ where: { projectId } })
-  await tx.dealAreaStatus.deleteMany({ where: { projectId } })
+  await tx.acquisitionAreaStatus.deleteMany({ where: { projectId } })
   await tx.qualityLevel.deleteMany({ where: { projectId } })
   await tx.subsubsectionStatus.deleteMany({ where: { projectId } })
   await tx.subsubsectionTask.deleteMany({ where: { projectId } })

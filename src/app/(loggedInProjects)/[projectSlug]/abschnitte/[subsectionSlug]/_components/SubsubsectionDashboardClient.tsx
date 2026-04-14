@@ -1,5 +1,6 @@
 "use client"
 
+import { SubsubsectionDeleteAllAcquisitionAreasAdmin } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/_components/SubsubsectionDeleteAllAcquisitionAreasAdmin"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Breadcrumb } from "@/src/core/components/Breadcrumb/Breadcrumb"
 import { SubsubsectionIcon } from "@/src/core/components/Map/Icons"
@@ -15,7 +16,6 @@ import { useSlug } from "@/src/core/routes/useSlug"
 import getSubsection from "@/src/server/subsections/queries/getSubsection"
 import getSubsubsection from "@/src/server/subsubsections/queries/getSubsubsection"
 import { useQuery } from "@blitzjs/rpc"
-import { SubsubsectionDeleteAllDealAreasAdmin } from "./SubsubsectionDeleteAllDealAreasAdmin"
 import { SubsubsectionDetailsContent } from "./SubsubsectionDetailsContent"
 import { SubsubsectionLandAcquisitionContent } from "./SubsubsectionLandAcquisitionContent"
 import { SubsubsectionPageMap } from "./SubsubsectionPageMap"
@@ -115,7 +115,7 @@ export const SubsubsectionDashboardClient = ({ activeTab = "general" }: Props) =
         </div>
       </div>
 
-      <SubsubsectionDeleteAllDealAreasAdmin
+      <SubsubsectionDeleteAllAcquisitionAreasAdmin
         projectSlug={projectSlug}
         subsectionSlug={subsectionSlug!}
         subsubsectionSlug={subsubsectionSlug!}

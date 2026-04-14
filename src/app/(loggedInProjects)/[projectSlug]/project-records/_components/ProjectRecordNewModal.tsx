@@ -21,7 +21,7 @@ type Props = {
   initialValues?: {
     subsectionId?: number
     subsubsectionId?: number
-    dealAreaId?: number
+    acquisitionAreaId?: number
   }
 }
 
@@ -63,8 +63,8 @@ export const ProjectRecordNewModal = ({
     ...(initialValues?.subsubsectionId && {
       subsubsectionId: initialValues.subsubsectionId,
     }),
-    ...(initialValues?.dealAreaId && {
-      dealAreaId: initialValues.dealAreaId,
+    ...(initialValues?.acquisitionAreaId && {
+      acquisitionAreaId: initialValues.acquisitionAreaId,
     }),
   }
 
