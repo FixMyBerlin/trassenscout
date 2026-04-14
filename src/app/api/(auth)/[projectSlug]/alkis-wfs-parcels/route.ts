@@ -70,8 +70,15 @@ export const GET = withProjectMembership(viewerRoles, async ({ params, request }
   }
 
   const config = alkisStateConfig[project.alkisStateKey]
-  const wfsUrl = config.wfsUrl?.trim()
-  const parcelKey = config.parcelPropertyKey?.trim()
+  if (config.wfs.url === false) {
+    return jsonError(
+      `ALKIS-WFS für ${config.label} ist nicht verfügbar (kein WFS-Endpunkt konfiguriert).`,
+      400,
+    )
+  }
+
+  const wfsUrl = config.wfs.url.trim()
+  const parcelKey = config.wfs.parcelPropertyKey.trim()
   if (!wfsUrl || !parcelKey) {
     return jsonError(
       `ALKIS-WFS für ${config.label} ist nicht verfügbar (kein WFS-Endpunkt konfiguriert).`,
@@ -79,14 +86,14 @@ export const GET = withProjectMembership(viewerRoles, async ({ params, request }
     )
   }
 
-  if (!config.supports4326) {
+  if (!config.wfs.supports4326) {
     return jsonError(
       `ALKIS-WFS für ${config.label} unterstützt kein EPSG:4326. BBOX-Transformation ist noch nicht implementiert.`,
       501,
     )
   }
 
-  const outputFormat = getWfsOutputFormat(config.wfsOutputFormat)
+  const outputFormat = getWfsOutputFormat(config.wfs.wfsOutputFormat)
 
   const getFeatureUrl = buildWfsGetFeatureUrl({
     wfsUrl,
@@ -97,7 +104,7 @@ export const GET = withProjectMembership(viewerRoles, async ({ params, request }
     north,
     count,
     outputFormat,
-    bboxAxisOrder: config.bboxAxisOrder,
+    bboxAxisOrder: config.wfs.bboxAxisOrder,
   })
 
   const controller = new AbortController()
@@ -146,7 +153,7 @@ export const GET = withProjectMembership(viewerRoles, async ({ params, request }
 
   const normalized = injectAlkisParcelIdsIntoGeoJson(
     converted.geojson,
-    config.alkisParcelIdPropertyKey,
+    config.wfs.alkisParcelIdPropertyKey,
   )
   if (!normalized.ok) {
     return jsonError(normalized.error, 500)

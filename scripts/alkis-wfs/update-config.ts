@@ -2,6 +2,8 @@
 import {
   alkisStateConfig,
   type AlkisStateConfigEntry,
+  type AlkisWfsConfig,
+  type AlkisWmsConfig,
 } from "@/src/app/api/(auth)/[projectSlug]/alkis-wfs-parcels/_utils/alkisStateConfig"
 import { StateKeyEnum } from "@prisma/client"
 import { readFileSync, writeFileSync } from "node:fs"
@@ -35,45 +37,111 @@ function toLiteral(value: string | null): string {
   return value === null ? "null" : JSON.stringify(value)
 }
 
+function wfsSupportsJsonFromOutputFormat(fmt: string | null): boolean {
+  return (fmt ?? "").toLowerCase().includes("json")
+}
+
+function mergeWfs(base: AlkisStateConfigEntry, useSuggested: boolean, suggested?: SuggestedConfig): AlkisWfsConfig {
+  if (base.wfs.url === false) {
+    return { url: false }
+  }
+
+  const b = base.wfs
+  const nextUrl = useSuggested ? (suggested?.wfsUrl ?? b.url) : b.url
+  const nextTypename = useSuggested
+    ? (suggested?.parcelPropertyKey ?? b.parcelPropertyKey)
+    : b.parcelPropertyKey
+  const trimmedUrl = typeof nextUrl === "string" ? nextUrl.trim() : ""
+  const trimmedTypename = typeof nextTypename === "string" ? nextTypename.trim() : ""
+  if (!trimmedUrl || !trimmedTypename) {
+    return { url: false }
+  }
+
+  const alkisParcelIdPropertyKey = useSuggested
+    ? (suggested?.alkisParcelIdPropertyKey ?? b.alkisParcelIdPropertyKey)
+    : b.alkisParcelIdPropertyKey
+  const projectionRaw = useSuggested ? (suggested?.projection ?? b.projection) : b.projection
+  const projection =
+    projectionRaw === "EPSG:25832" || projectionRaw === "EPSG:25833" ? projectionRaw : b.projection
+
+  const wfsOutputFormat = useSuggested
+    ? (suggested?.wfsOutputFormat ?? b.wfsOutputFormat)
+    : b.wfsOutputFormat
+  const supports4326 = useSuggested
+    ? (suggested?.supports4326 ?? b.supports4326)
+    : b.supports4326
+  const bboxAxisOrder = useSuggested
+    ? (suggested?.bboxAxisOrder ?? b.bboxAxisOrder)
+    : b.bboxAxisOrder
+
+  const effectiveOutput = useSuggested
+    ? (suggested?.wfsOutputFormat ?? b.wfsOutputFormat)
+    : b.wfsOutputFormat
+
+  return {
+    url: trimmedUrl,
+    parcelPropertyKey: trimmedTypename,
+    alkisParcelIdPropertyKey,
+    projection,
+    wfsOutputFormat,
+    supports4326,
+    bboxAxisOrder,
+    wfsSupportsJson: wfsSupportsJsonFromOutputFormat(effectiveOutput ?? null),
+  }
+}
+
+function buildNextEntry(base: AlkisStateConfigEntry, audit: AuditStateResult | undefined): AlkisStateConfigEntry {
+  const isAuditVerified = audit?.verified === true
+  const useSuggested = isAuditVerified
+  const suggested = audit?.suggestedConfig
+
+  return {
+    label: base.label,
+    enabled: base.enabled,
+    attribution: base.attribution,
+    specialCaseNote: base.specialCaseNote,
+    wms: base.wms,
+    wfs: mergeWfs(base, useSuggested, suggested),
+  }
+}
+
+function renderWms(wms: AlkisWmsConfig): string[] {
+  if (wms.url === false) {
+    return ["    wms: { url: false },"]
+  }
+  return [
+    "    wms: {",
+    `      url: ${JSON.stringify(wms.url)},`,
+    `      layerName: ${JSON.stringify(wms.layerName)},`,
+    "    },",
+  ]
+}
+
+function renderWfs(wfs: AlkisWfsConfig): string[] {
+  if (wfs.url === false) {
+    return ["    wfs: { url: false },"]
+  }
+  return [
+    "    wfs: {",
+    `      url: ${JSON.stringify(wfs.url)},`,
+    `      parcelPropertyKey: ${JSON.stringify(wfs.parcelPropertyKey)},`,
+    `      alkisParcelIdPropertyKey: ${toLiteral(wfs.alkisParcelIdPropertyKey)},`,
+    `      projection: ${JSON.stringify(wfs.projection)},`,
+    `      wfsOutputFormat: ${toLiteral(wfs.wfsOutputFormat)},`,
+    `      supports4326: ${wfs.supports4326},`,
+    `      bboxAxisOrder: ${JSON.stringify(wfs.bboxAxisOrder)},`,
+    `      wfsSupportsJson: ${wfs.wfsSupportsJson},`,
+    "    },",
+  ]
+}
+
 function renderEntry(
   key: StateKeyEnum,
   base: AlkisStateConfigEntry,
   audit: AuditStateResult | undefined,
 ): string {
-  /** Strict: only true when audit JSON has boolean `verified: true` (never TODO for verified states). */
   const isAuditVerified = audit?.verified === true
-  const useSuggested = isAuditVerified
-  const suggested = audit?.suggestedConfig
-  const next = {
-    label: base.label,
-    enabled: base.enabled,
-    wmsUrl: base.wmsUrl,
-    layerName: base.layerName,
-    wfsUrl: useSuggested ? (suggested?.wfsUrl ?? base.wfsUrl) : base.wfsUrl,
-    parcelPropertyKey: useSuggested
-      ? (suggested?.parcelPropertyKey ?? base.parcelPropertyKey)
-      : base.parcelPropertyKey,
-    alkisParcelIdPropertyKey: useSuggested
-      ? (suggested?.alkisParcelIdPropertyKey ?? base.alkisParcelIdPropertyKey)
-      : base.alkisParcelIdPropertyKey,
-    projection: useSuggested ? (suggested?.projection ?? base.projection) : base.projection,
-    attribution: base.attribution,
-    specialCaseNote: base.specialCaseNote,
-    wfsOutputFormat: useSuggested
-      ? (suggested?.wfsOutputFormat ?? base.wfsOutputFormat)
-      : base.wfsOutputFormat,
-    supports4326: useSuggested ? (suggested?.supports4326 ?? base.supports4326) : base.supports4326,
-    bboxAxisOrder: useSuggested
-      ? (suggested?.bboxAxisOrder ?? base.bboxAxisOrder)
-      : base.bboxAxisOrder,
-    wfsSupportsJson: (
-      (useSuggested
-        ? (suggested?.wfsOutputFormat ?? base.wfsOutputFormat)
-        : base.wfsOutputFormat) ?? ""
-    )
-      .toLowerCase()
-      .includes("json"),
-  } as const
+  const next = buildNextEntry(base, audit)
 
   const lines: string[] = []
   if (!isAuditVerified && key !== StateKeyEnum.DISABLED) {
@@ -86,18 +154,10 @@ function renderEntry(
   lines.push(`  ${key}: {`)
   lines.push(`    label: ${JSON.stringify(next.label)},`)
   lines.push(`    enabled: ${next.enabled},`)
-  lines.push(`    wmsUrl: ${toLiteral(next.wmsUrl)},`)
-  lines.push(`    layerName: ${toLiteral(next.layerName)},`)
-  lines.push(`    wfsUrl: ${toLiteral(next.wfsUrl)},`)
-  lines.push(`    parcelPropertyKey: ${toLiteral(next.parcelPropertyKey)},`)
-  lines.push(`    alkisParcelIdPropertyKey: ${toLiteral(next.alkisParcelIdPropertyKey)},`)
-  lines.push(`    projection: ${toLiteral(next.projection)},`)
   lines.push(`    attribution: ${toLiteral(next.attribution)},`)
   lines.push(`    specialCaseNote: ${toLiteral(next.specialCaseNote)},`)
-  lines.push(`    wfsOutputFormat: ${toLiteral(next.wfsOutputFormat)},`)
-  lines.push(`    supports4326: ${next.supports4326},`)
-  lines.push(`    bboxAxisOrder: ${JSON.stringify(next.bboxAxisOrder)},`)
-  lines.push(`    wfsSupportsJson: ${next.wfsSupportsJson},`)
+  lines.push(...renderWms(next.wms))
+  lines.push(...renderWfs(next.wfs))
   lines.push("  },")
   return lines.join("\n")
 }
@@ -120,22 +180,35 @@ function main() {
 
   const out = `import { StateKeyEnum } from "@prisma/client"
 
-export type AlkisStateConfigEntry = {
-  label: string
-  enabled: boolean
-  wmsUrl: string | null
-  layerName: string | null
-  wfsUrl: string | null
-  parcelPropertyKey: string | null
+/** WMS background: absent (\`url: false\`) or URL + layer name together. */
+export type AlkisWmsConfig =
+  | { url: false }
+  | { url: string; layerName: string }
+
+export type AlkisWfsDisabled = { url: false }
+
+export type AlkisWfsEnabled = {
+  url: string
+  parcelPropertyKey: string
   alkisParcelIdPropertyKey: string | null
-  attribution: string | null
-  /** Optional human note (endpoint quirks, audit limitations); not used at runtime. */
-  specialCaseNote: string | null
-  projection: "EPSG:25832" | "EPSG:25833" | null
+  projection: "EPSG:25832" | "EPSG:25833"
   wfsOutputFormat: string | null
   supports4326: boolean
   bboxAxisOrder: "lonlat" | "latlon"
+  /** Derived from \`wfsOutputFormat\` (JSON / GeoJSON MIME). */
   wfsSupportsJson: boolean
+}
+
+export type AlkisWfsConfig = AlkisWfsDisabled | AlkisWfsEnabled
+
+export type AlkisStateConfigEntry = {
+  label: string
+  enabled: boolean
+  attribution: string | null
+  /** Optional human note (endpoint quirks, audit limitations); not used at runtime. */
+  specialCaseNote: string | null
+  wms: AlkisWmsConfig
+  wfs: AlkisWfsConfig
 }
 
 /**
@@ -153,8 +226,10 @@ export function isAlkisBackgroundAvailableForProject(
   if (alkisStateKey == null) return false
   const entry = alkisStateConfig[alkisStateKey]
   if (entry.enabled !== true) return false
-  const hasWms = Boolean(entry.wmsUrl?.trim() && entry.layerName?.trim())
-  const hasWfs = Boolean(entry.wfsUrl?.trim() && entry.parcelPropertyKey?.trim())
+  const hasWms =
+    entry.wms.url !== false && Boolean(entry.wms.url.trim() && entry.wms.layerName.trim())
+  const hasWfs =
+    entry.wfs.url !== false && Boolean(entry.wfs.url.trim() && entry.wfs.parcelPropertyKey.trim())
   return hasWms || hasWfs
 }
 

@@ -86,15 +86,26 @@ async function auditOne(
   entry: AlkisStateConfigEntry,
 ): Promise<StateAuditResult> {
   // Snapshot of WFS-related fields as used for this run (trimmed URLs/keys).
-  const configured = {
-    wfsUrl: entry.wfsUrl?.trim() || null,
-    parcelPropertyKey: entry.parcelPropertyKey?.trim() || null,
-    alkisParcelIdPropertyKey: entry.alkisParcelIdPropertyKey?.trim() || null,
-    projection: entry.projection,
-    wfsOutputFormat: entry.wfsOutputFormat?.trim() || null,
-    supports4326: entry.supports4326,
-    bboxAxisOrder: entry.bboxAxisOrder,
-  } as const
+  const configured =
+    entry.wfs.url === false
+      ? ({
+          wfsUrl: null,
+          parcelPropertyKey: null,
+          alkisParcelIdPropertyKey: null,
+          projection: null,
+          wfsOutputFormat: null,
+          supports4326: true,
+          bboxAxisOrder: "latlon" as const,
+        } as const)
+      : ({
+          wfsUrl: entry.wfs.url.trim() || null,
+          parcelPropertyKey: entry.wfs.parcelPropertyKey.trim() || null,
+          alkisParcelIdPropertyKey: entry.wfs.alkisParcelIdPropertyKey?.trim() || null,
+          projection: entry.wfs.projection,
+          wfsOutputFormat: entry.wfs.wfsOutputFormat?.trim() || null,
+          supports4326: entry.wfs.supports4326,
+          bboxAxisOrder: entry.wfs.bboxAxisOrder,
+        } as const)
 
   const now = new Date().toISOString()
   const specialCaseNote = entry.specialCaseNote?.trim() || null

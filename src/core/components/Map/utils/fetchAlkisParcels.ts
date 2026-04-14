@@ -77,18 +77,17 @@ export async function fetchAlkisParcels({
 }: FetchAlkisParcelsArgs): Promise<FeatureCollection<Geometry, GeoJsonProperties>> {
   const config = alkisStateConfig[alkisStateKey]
   if (
-    !config?.wfsUrl ||
-    !config.parcelPropertyKey ||
-    config.wfsSupportsJson !== true ||
-    config.supports4326 !== true
+    config.wfs.url === false ||
+    config.wfs.wfsSupportsJson !== true ||
+    config.wfs.supports4326 !== true
   ) {
     return emptyAlkisFeatureCollection
   }
 
-  // `parcelPropertyKey` currently stores the WFS feature type name in the shared config.
+  // `parcelPropertyKey` stores the WFS feature type name in the shared config.
   const url = buildAlkisWfsUrl({
-    wfsUrl: config.wfsUrl,
-    typeName: config.parcelPropertyKey,
+    wfsUrl: config.wfs.url,
+    typeName: config.wfs.parcelPropertyKey,
     bbox,
   })
 

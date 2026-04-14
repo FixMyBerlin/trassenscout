@@ -63,12 +63,12 @@ Per project, the proxy uses `project.alkisStateKey` and reads state-specific con
 
 - `src/app/api/(auth)/[projectSlug]/alkis-wfs-parcels/_utils/alkisStateConfig.ts`
 
-For that state, it builds a `GetFeature` request from:
+For that state, it builds a `GetFeature` request from the nested `wfs` block (when `wfs.url` is set):
 
-- `wfsUrl`: upstream WFS endpoint
-- `parcelPropertyKey`: WFS `TYPENAMES` value (parcel feature type)
-- `bboxAxisOrder`: whether `BBOX` is sent as `lon,lat` or `lat,lon`
-- `wfsOutputFormat`: requested `OUTPUTFORMAT` (or default GML)
+- `wfs.url`: upstream WFS endpoint
+- `wfs.parcelPropertyKey`: WFS `TYPENAMES` value (parcel feature type)
+- `wfs.bboxAxisOrder`: whether `BBOX` is sent as `lon,lat` or `lat,lon`
+- `wfs.wfsOutputFormat`: requested `OUTPUTFORMAT` (or default GML)
 
 The returned parcel features (geometry + original properties) are then normalized and returned as GeoJSON.
 
@@ -76,7 +76,7 @@ The returned parcel features (geometry + original properties) are then normalize
 
 `alkisParcelId` is resolved per feature using this fallback order:
 
-1. `properties[config.alkisParcelIdPropertyKey]` (state-specific preferred source)
+1. `properties[config.wfs.alkisParcelIdPropertyKey]` (state-specific preferred source, when WFS is configured)
 2. `properties.flurstueckskennzeichen`
 3. `properties.gml_id`
 4. `feature.id`
