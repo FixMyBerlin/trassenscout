@@ -180,9 +180,15 @@ export const GeometryDrawingAcquisitionAreaParcelContextLayers = ({
   )
 
   return (
-    <Source id="terra_draw_acquisition_area_parcel" type="geojson" data={parcelFeatureCollection}>
+    <>
+      <Source
+        id="terra_draw_acquisition_area_parcel"
+        type="geojson"
+        data={parcelFeatureCollection}
+      />
       <Layer
         id="terra_draw_acquisition_area_parcel_fill"
+        source="terra_draw_acquisition_area_parcel"
         type="fill"
         paint={{
           "fill-color": "#38BDF8",
@@ -191,6 +197,7 @@ export const GeometryDrawingAcquisitionAreaParcelContextLayers = ({
       />
       <Layer
         id="terra_draw_acquisition_area_parcel_outline"
+        source="terra_draw_acquisition_area_parcel"
         type="line"
         paint={{
           "line-color": "#2C62A9",
@@ -199,7 +206,7 @@ export const GeometryDrawingAcquisitionAreaParcelContextLayers = ({
           "line-dasharray": [2, 1],
         }}
       />
-    </Source>
+    </>
   )
 }
 
@@ -234,51 +241,53 @@ export const GeometryDrawingAcquisitionAreaSubsubsectionContextLayers = ({
         id="terra_draw_acquisition_area_subsubsection"
         type="geojson"
         data={subsubsectionFeatureCollection}
-      >
-        <Layer
-          id="terra_draw_acquisition_area_subsubsection_fill"
-          type="fill"
-          paint={{
-            "fill-color": subsubsectionColors.polygon.unselected,
-            "fill-opacity": 0.12,
-          }}
-        />
-        <Layer
-          id="terra_draw_acquisition_area_subsubsection_line"
-          type="line"
-          paint={{
-            "line-color": subsubsectionColors.line.unselected,
-            "line-width": 2,
-            "line-opacity": 0.7,
-          }}
-        />
-        <Layer
-          id="terra_draw_acquisition_area_subsubsection_point"
-          type="circle"
-          paint={{
-            "circle-radius": 6,
-            "circle-color": subsubsectionColors.point.default,
-            "circle-stroke-width": 1,
-            "circle-stroke-color": subsubsectionColors.line.borderColor,
-          }}
-        />
-      </Source>
+      />
+      <Layer
+        id="terra_draw_acquisition_area_subsubsection_fill"
+        source="terra_draw_acquisition_area_subsubsection"
+        type="fill"
+        paint={{
+          "fill-color": subsubsectionColors.polygon.unselected,
+          "fill-opacity": 0.12,
+        }}
+      />
+      <Layer
+        id="terra_draw_acquisition_area_subsubsection_line"
+        source="terra_draw_acquisition_area_subsubsection"
+        type="line"
+        paint={{
+          "line-color": subsubsectionColors.line.unselected,
+          "line-width": 2,
+          "line-opacity": 0.7,
+        }}
+      />
+      <Layer
+        id="terra_draw_acquisition_area_subsubsection_point"
+        source="terra_draw_acquisition_area_subsubsection"
+        type="circle"
+        paint={{
+          "circle-radius": 6,
+          "circle-color": subsubsectionColors.point.default,
+          "circle-stroke-width": 1,
+          "circle-stroke-color": subsubsectionColors.line.borderColor,
+        }}
+      />
       <Source
         id="terra_draw_acquisition_area_subsubsection_buffer"
         type="geojson"
         data={bufferOutlineFeatureCollection}
-      >
-        <Layer
-          id="terra_draw_acquisition_area_subsubsection_buffer"
-          type="line"
-          paint={{
-            "line-color": "#2563eb",
-            "line-opacity": 0.5,
-            "line-width": 2,
-            "line-dasharray": [6, 3],
-          }}
-        />
-      </Source>
+      />
+      <Layer
+        id="terra_draw_acquisition_area_subsubsection_buffer_line"
+        source="terra_draw_acquisition_area_subsubsection_buffer"
+        type="line"
+        paint={{
+          "line-color": "#2563eb",
+          "line-opacity": 0.5,
+          "line-width": 2,
+          "line-dasharray": [6, 3],
+        }}
+      />
     </>
   )
 }
@@ -296,9 +305,15 @@ export const GeometryDrawingAcquisitionAreaPreviewLayers = ({
   )
 
   return (
-    <Source id="terra_draw_acquisition_area_preview" type="geojson" data={previewFeatureCollection}>
+    <>
+      <Source
+        id="terra_draw_acquisition_area_preview"
+        type="geojson"
+        data={previewFeatureCollection}
+      />
       <Layer
         id="terra_draw_acquisition_area_preview_fill"
+        source="terra_draw_acquisition_area_preview"
         type="fill"
         paint={{
           "fill-color": "#DC2626",
@@ -307,6 +322,7 @@ export const GeometryDrawingAcquisitionAreaPreviewLayers = ({
       />
       <Layer
         id="terra_draw_acquisition_area_preview_outline"
+        source="terra_draw_acquisition_area_preview"
         type="line"
         paint={{
           "line-color": "#DC2626",
@@ -314,6 +330,6 @@ export const GeometryDrawingAcquisitionAreaPreviewLayers = ({
           "line-opacity": 0.95,
         }}
       />
-    </Source>
+    </>
   )
 }
