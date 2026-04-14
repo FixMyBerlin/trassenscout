@@ -10,7 +10,7 @@ export const UploadMarkerIcon = ({ upload }: Props) => {
 
   return (
     <div className="flex items-center justify-center rounded-full bg-white p-1.5 shadow-md ring-1 ring-gray-300">
-      <Icon className="h-4 w-4 text-gray-700" />
+      <Icon className="size-4 text-gray-700" />
     </div>
   )
 }

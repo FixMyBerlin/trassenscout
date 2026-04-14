@@ -19,7 +19,7 @@ export const FormSuccess = ({ message, show, className }: Props) => {
         className,
       )}
     >
-      <CheckIcon className={clsx("h-4 w-4", show ? "text-green-600" : "invisible")} />
+      <CheckIcon className={clsx("size-4", show ? "text-green-600" : "invisible")} />
       <span className="font-mono text-sm leading-tight">{show ? message : ""}</span>
     </div>
   )

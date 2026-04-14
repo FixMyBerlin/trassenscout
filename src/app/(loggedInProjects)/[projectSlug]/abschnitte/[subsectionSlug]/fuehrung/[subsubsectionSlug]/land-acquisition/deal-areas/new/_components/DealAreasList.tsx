@@ -66,7 +66,7 @@ export function DealAreasList({ potentialDealAreas, setPotentialDealAreas }: Pro
                 <input
                   id={`deal-area-${area.id}`}
                   type="checkbox"
-                  className="h-4 w-4 cursor-pointer rounded border-gray-300 text-blue-600 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="size-4 cursor-pointer rounded border-gray-300 text-blue-600 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
                   checked={area.selected}
                   disabled={area.alkisParcelId == null}
                   onChange={() => {

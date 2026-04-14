@@ -82,7 +82,7 @@ export const QualityLevelsTable = ({ qualityLevels, fromPath }: Props) => {
                         className="flex items-center gap-1 font-semibold"
                         href={qualityLevel.url}
                       >
-                        {qualityLevel.title} <ArrowUpRightIcon className="h-4 w-4" />
+                        {qualityLevel.title} <ArrowUpRightIcon className="size-4" />
                       </Link>
                     ) : (
                       <strong className="font-semibold">{qualityLevel.title}</strong>

@@ -7,7 +7,7 @@ export const FooterBuildByLineAndFeedback = () => {
         Gebaut mit{" "}
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="inline-block h-5 w-5"
+          className="inline-block size-5"
           viewBox="0 0 20 20"
           fill="currentColor"
         >
@@ -20,7 +20,7 @@ export const FooterBuildByLineAndFeedback = () => {
         und{" "}
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="inline-block h-7 w-7"
+          className="inline-block size-7"
           style={{ transform: "scaleX(-1)" }}
           viewBox="0 0 1760 757.33331"
           fill="currentColor"

@@ -178,7 +178,7 @@ export const ProjectRecordEmailsTable = ({ projectRecordEmails }: Props) => {
                     disabled={processing === email.id || !email.projectId}
                     className="flex items-center gap-1 rounded-sm bg-blue-600 px-2 py-1 text-xs text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    <SparklesIcon className="h-3 w-3" />
+                    <SparklesIcon className="size-3" />
                     {processing === email.id ? "Verarbeite..." : "Mit KI prozessieren"}
                   </button>
                 </Tooltip>

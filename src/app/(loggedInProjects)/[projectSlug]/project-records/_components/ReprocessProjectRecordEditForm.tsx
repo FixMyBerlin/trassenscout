@@ -77,7 +77,7 @@ export const ReprocessProjectRecordEditForm = ({
     <div className="rounded-lg bg-blue-50 p-6">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="flex items-center gap-2 text-lg font-medium">
-          <SparklesIcon className="h-5 w-5 text-blue-600" />
+          <SparklesIcon className="size-5 text-blue-600" />
           KI-Vorschlag für verbesserten Protokolleintrag
         </h2>
         <button

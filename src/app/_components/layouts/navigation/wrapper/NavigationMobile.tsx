@@ -35,9 +35,9 @@ export const NavigationMobile = ({ homeLink, homeLinkText, menuItems, projects }
                 <DisclosureButton className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:ring-2 focus:ring-white focus:outline-hidden focus:ring-inset">
                   <span className="sr-only">Hauptmenü öffnen</span>
                   {open ? (
-                    <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
+                    <XMarkIcon className="block size-6" aria-hidden="true" />
                   ) : (
-                    <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
+                    <Bars3Icon className="block size-6" aria-hidden="true" />
                   )}
                 </DisclosureButton>
               )}

@@ -15,7 +15,7 @@ export const FormErrorBox = ({ fieldMeta, allCurrentFieldsOfPage }: Props) => {
   return (
     <>
       <FieldWithErrorContainer className="flex gap-2" hasError>
-        <XCircleIcon className="h-6 w-6 shrink-0 text-red-500" />
+        <XCircleIcon className="size-6 shrink-0 text-red-500" />
         <ul>
           <p className="text-sm text-red-800">Bitte korrigieren Sie die folgenden Angaben:</p>
           {errors.map(({ key, label, message }) => (

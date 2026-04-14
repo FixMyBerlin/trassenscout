@@ -127,9 +127,9 @@ const EditableSurveyResponseListItem = ({
 
           {isAccordion &&
             (open ? (
-              <ChevronUpIcon className="h-5 w-5 shrink-0 text-gray-700 group-hover:text-black" />
+              <ChevronUpIcon className="size-5 shrink-0 text-gray-700 group-hover:text-black" />
             ) : (
-              <ChevronDownIcon className="h-5 w-5 shrink-0 text-gray-700 group-hover:text-black" />
+              <ChevronDownIcon className="size-5 shrink-0 text-gray-700 group-hover:text-black" />
             ))}
         </div>
       </button>

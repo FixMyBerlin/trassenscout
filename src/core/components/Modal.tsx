@@ -19,7 +19,7 @@ export const ModalCloseButton = ({ onClose }: { onClose: () => void }) => {
       aria-label="Schließen"
     >
       <span className="sr-only">Schließen</span>
-      <XMarkIcon className="h-6 w-6" />
+      <XMarkIcon className="size-6" />
     </button>
   )
 }
