@@ -34,7 +34,7 @@ export default resolver.pipe(
         parcel: {
           select: {
             id: true,
-            alkisParcelId: true,
+            officialId: true,
           },
         },
         dealAreaStatus: {
