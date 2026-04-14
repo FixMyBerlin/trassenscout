@@ -1,6 +1,6 @@
+import { PotentialAcquisitionArea } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/[subsubsectionSlug]/land-acquisition/acquisition-areas/new/_components/potentialAcquisitionAreaTypes"
 import { feature, featureCollection } from "@turf/helpers"
 import type { Feature, MultiPolygon, Polygon } from "geojson"
-import type { PotentialAcquisitionArea } from "./potentialAcquisitionAreaTypes"
 
 export function polygonFeatureToFeatureCollection(
   polygonFeature: Feature<Polygon | MultiPolygon> | null,
@@ -11,11 +11,8 @@ export function polygonFeatureToFeatureCollection(
   return featureCollection([polygonFeature])
 }
 
-export function potentialAcquisitionAreasToFeatureCollection(
-  areas: PotentialAcquisitionArea[],
-  selected: boolean,
-) {
+export function potentialAcquisitionAreasToFeatureCollection(areas: PotentialAcquisitionArea[]) {
   return featureCollection(
-    areas.filter((a) => a.selected === selected).map((a) => feature(a.geometry)),
+    areas.map((a) => feature(a.geometry, { featureId: a.id, alkisParcelId: a.alkisParcelId })),
   )
 }

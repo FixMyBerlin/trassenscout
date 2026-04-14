@@ -1,6 +1,12 @@
 "use client"
 
 import {
+  ACQUISITION_POTENTIAL_AREAS_SOURCE_ID,
+  AcquisitionAlkisParcelsLayers,
+  AcquisitionAreaOverlaysLayers,
+  getAcquisitionClickTargetLayerIds,
+} from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/[subsubsectionSlug]/land-acquisition/acquisition-areas/new/_components/AcquisitionAreaLayers"
+import {
   polygonFeatureToFeatureCollection,
   potentialAcquisitionAreasToFeatureCollection,
 } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/[subsubsectionSlug]/land-acquisition/acquisition-areas/new/_components/potentialAcquisitionAreaGeoJson"
@@ -19,7 +25,7 @@ import { bbox } from "@turf/bbox"
 import { featureCollection } from "@turf/helpers"
 import type { FeatureCollection, Geometry } from "geojson"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { Layer, MapLayerMouseEvent, Popup, Source } from "react-map-gl/maplibre"
+import { MapLayerMouseEvent, Popup, useMap } from "react-map-gl/maplibre"
 import { buildAlkisWfsProxyUrl } from "./alkisWfsMapHelpers"
 import { computePotentialAcquisitionAreas } from "./computePotentialAcquisitionAreas"
 import { formatPropertyValue, sortedPropertyEntries } from "./parcelFeatureProperties"
@@ -31,11 +37,28 @@ type Props = {
   setPotentialAcquisitionAreas: (areas: PotentialAcquisitionArea[]) => void
 }
 
-const PARCEL_LAYER_IDS = [
-  "alkis-parcels-fill-hit",
-  "alkis-parcels-line-base",
-  "alkis-parcels-line-dash",
-] as const
+function PotentialAcquisitionAreasFeatureState({
+  potentialAcquisitionAreas,
+}: {
+  potentialAcquisitionAreas: PotentialAcquisitionArea[]
+}) {
+  const { mainMap } = useMap()
+
+  useEffect(() => {
+    if (!mainMap) return
+    const map = mainMap.getMap()
+    if (!map.getSource(ACQUISITION_POTENTIAL_AREAS_SOURCE_ID)) return
+
+    for (const area of potentialAcquisitionAreas) {
+      map.setFeatureState(
+        { source: ACQUISITION_POTENTIAL_AREAS_SOURCE_ID, id: area.id },
+        { selected: area.selected },
+      )
+    }
+  }, [mainMap, potentialAcquisitionAreas])
+
+  return null
+}
 
 export function AcquisitionAreaMap({
   subsubsection,
@@ -81,13 +104,8 @@ export function AcquisitionAreaMap({
     [bufferPolygonFeature],
   )
 
-  const selectedAcquisitionAreasFc = useMemo(
-    () => potentialAcquisitionAreasToFeatureCollection(potentialAcquisitionAreas, true),
-    [potentialAcquisitionAreas],
-  )
-
-  const deselectedAcquisitionAreasFc = useMemo(
-    () => potentialAcquisitionAreasToFeatureCollection(potentialAcquisitionAreas, false),
+  const acquisitionAreasFc = useMemo(
+    () => potentialAcquisitionAreasToFeatureCollection(potentialAcquisitionAreas),
     [potentialAcquisitionAreas],
   )
 
@@ -196,112 +214,25 @@ export function AcquisitionAreaMap({
       <BaseMap
         id="mainMap"
         initialViewState={initialViewState}
-        interactiveLayerIds={[...PARCEL_LAYER_IDS]}
+        interactiveLayerIds={getAcquisitionClickTargetLayerIds()}
         onClick={handleParcelClick}
         onContextMenu={handleContextMenu}
         scrollZoom
         classHeight="h-[520px]"
         colorSchema="subsubsection"
       >
-        <Source id="alkis-parcels" type="geojson" data={parcels}>
-          <Layer
-            id="alkis-parcels-fill-hit"
-            type="fill"
-            source="alkis-parcels"
-            filter={["match", ["geometry-type"], ["Polygon", "MultiPolygon"], true, false]}
-            paint={{
-              "fill-color": "#ec4899",
-              "fill-opacity": 0.08,
-            }}
-          />
-          <Layer
-            id="alkis-parcels-line-base"
-            type="line"
-            source="alkis-parcels"
-            paint={{
-              "line-color": "#ec4899",
-              "line-opacity": 0.28,
-              "line-width": 2,
-            }}
-          />
-          <Layer
-            id="alkis-parcels-line-dash"
-            type="line"
-            source="alkis-parcels"
-            paint={{
-              "line-color": "#ec4899",
-              "line-width": 1.5,
-              "line-dasharray": [3, 2],
-            }}
-          />
-        </Source>
+        <AcquisitionAlkisParcelsLayers parcels={parcels} />
 
         <SubsubsectionGeometryLayers subsubsections={[subsubsectionEntity]} />
 
-        <Source id="acquisition-buffer-outline" type="geojson" data={bufferOutlineData}>
-          <Layer
-            id="acquisition-buffer-outline-line"
-            type="line"
-            source="acquisition-buffer-outline"
-            paint={{
-              "line-color": "#2563eb",
-              "line-opacity": 0.5,
-              "line-width": 2,
-              "line-dasharray": [6, 3],
-            }}
-          />
-        </Source>
+        <AcquisitionAreaOverlaysLayers
+          bufferOutlineData={bufferOutlineData}
+          acquisitionAreasFc={acquisitionAreasFc}
+        />
 
-        <Source
-          id="potential-acquisition-deselected"
-          type="geojson"
-          data={deselectedAcquisitionAreasFc}
-        >
-          <Layer
-            id="potential-acquisition-deselected-fill"
-            type="fill"
-            source="potential-acquisition-deselected"
-            paint={{
-              "fill-color": "#94a3b8",
-              "fill-opacity": 0.3,
-            }}
-          />
-          <Layer
-            id="potential-acquisition-deselected-line"
-            type="line"
-            source="potential-acquisition-deselected"
-            paint={{
-              "line-color": "#94a3b8",
-              "line-width": 1,
-              "line-dasharray": [4, 2],
-            }}
-          />
-        </Source>
-
-        <Source
-          id="potential-acquisition-selected"
-          type="geojson"
-          data={selectedAcquisitionAreasFc}
-        >
-          <Layer
-            id="potential-acquisition-selected-fill"
-            type="fill"
-            source="potential-acquisition-selected"
-            paint={{
-              "fill-color": "#2563eb",
-              "fill-opacity": 0.35,
-            }}
-          />
-          <Layer
-            id="potential-acquisition-selected-line"
-            type="line"
-            source="potential-acquisition-selected"
-            paint={{
-              "line-color": "#2563eb",
-              "line-width": 2,
-            }}
-          />
-        </Source>
+        <PotentialAcquisitionAreasFeatureState
+          potentialAcquisitionAreas={potentialAcquisitionAreas}
+        />
 
         {contextParcel && (
           <Popup
@@ -330,7 +261,6 @@ export function AcquisitionAreaMap({
           </Popup>
         )}
       </BaseMap>
-      
 
       <div className="pointer-events-none absolute inset-x-0 top-3 z-10 flex justify-center">
         <div className="pointer-events-auto rounded-md bg-gray-800 px-3 py-1.5 text-sm text-white">
