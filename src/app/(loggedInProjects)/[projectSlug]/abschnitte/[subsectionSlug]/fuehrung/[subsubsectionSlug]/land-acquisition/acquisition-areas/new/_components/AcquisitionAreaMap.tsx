@@ -29,7 +29,6 @@ import Map, {
   ScaleControl,
   Source,
 } from "react-map-gl/maplibre"
-import { PARCEL_LAYER_IDS } from "./acquisitionAreaMapConstants"
 import { buildAlkisWfsProxyUrl } from "./alkisWfsMapHelpers"
 import { computePotentialAcquisitionAreas } from "./computePotentialAcquisitionAreas"
 import { formatPropertyValue, sortedPropertyEntries } from "./parcelFeatureProperties"
@@ -40,6 +39,12 @@ type Props = {
   potentialAcquisitionAreas: PotentialAcquisitionArea[]
   setPotentialAcquisitionAreas: (areas: PotentialAcquisitionArea[]) => void
 }
+
+const PARCEL_LAYER_IDS = [
+  "alkis-parcels-fill-hit",
+  "alkis-parcels-line-base",
+  "alkis-parcels-line-dash",
+] as const
 
 export function AcquisitionAreaMap({
   subsubsection,

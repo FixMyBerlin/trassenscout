@@ -1,5 +1,4 @@
-import { MAX_FEATURES } from "./acquisitionAreaMapConstants"
-
+const MAX_FEATURES = 5000
 export function buildAlkisWfsProxyUrl(projectSlug: string, bbox: [number, number, number, number]) {
   const params = new URLSearchParams({
     bbox: bbox.join(","),
