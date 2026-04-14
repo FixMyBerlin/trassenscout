@@ -1,3 +1,4 @@
+import { subsubsectionColors } from "@/src/core/components/Map/colors/subsubsectionColors"
 import { LineEndPointsLayer } from "@/src/core/components/Map/layers/LineEndPointsLayer"
 import { SubsectionHullsLayer } from "@/src/core/components/Map/layers/SubsectionHullsLayer"
 import {
@@ -7,7 +8,6 @@ import {
 import { getSubsectionFeatures } from "@/src/core/components/Map/utils/getSubsectionFeatures"
 import { getSubsubsectionFeatures } from "@/src/core/components/Map/utils/getSubsubsectionFeatures"
 import { mergeFeatureCollections } from "@/src/core/components/Map/utils/mergeFeatureCollections"
-import { subsubsectionColors } from "@/src/core/components/Map/colors/subsubsectionColors"
 import { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
 import { TSubsections } from "@/src/server/subsections/queries/getSubsections"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
