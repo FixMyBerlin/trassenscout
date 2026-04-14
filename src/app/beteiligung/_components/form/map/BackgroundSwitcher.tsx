@@ -45,7 +45,7 @@ export const SurveyBackgroundSwitcher = ({
             <ListboxButton className="focus:border-black-500 relative cursor-default rounded-md border border-gray-300 bg-white py-1 pr-10 pl-3 text-left shadow-xs focus:ring-1 focus:ring-(--survey-primary-color) focus:outline-hidden sm:text-sm">
               <span className="block truncate">{labels[value]}</span>
               <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                <ChevronDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                <ChevronDownIcon className="size-5 text-gray-400" aria-hidden="true" />
               </span>
             </ListboxButton>
 
@@ -83,7 +83,7 @@ export const SurveyBackgroundSwitcher = ({
                           <span
                             className={clsx("absolute inset-y-0 right-0 flex items-center pr-4")}
                           >
-                            <CheckIcon className="h-4 w-4" aria-hidden="true" />
+                            <CheckIcon className="size-4" aria-hidden="true" />
                           </span>
                         ) : null}
                       </>

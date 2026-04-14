@@ -6,9 +6,9 @@ import { uploadWithSubsectionsInclude } from "@/src/server/uploads/_utils/upload
 import { resolver } from "@blitzjs/rpc"
 import { paginate } from "blitz"
 
-type GetUploadsByDealAreaInput = {
+type GetUploadsByAcquisitionAreaInput = {
   projectSlug: string
-  dealAreaId: number
+  acquisitionAreaId: number
 } & Pick<Prisma.UploadFindManyArgs, "orderBy" | "skip" | "take">
 
 export default resolver.pipe(
@@ -16,14 +16,14 @@ export default resolver.pipe(
   authorizeProjectMember(extractProjectSlug, viewerRoles),
   async ({
     projectSlug,
-    dealAreaId,
+    acquisitionAreaId,
     orderBy = { id: "desc" },
     skip = 0,
     take = 100,
-  }: GetUploadsByDealAreaInput) => {
+  }: GetUploadsByAcquisitionAreaInput) => {
     const safeWhere = {
       project: { slug: projectSlug },
-      dealAreaId,
+      acquisitionAreaId,
       OR: [
         { projectRecords: { none: {} } },
         {

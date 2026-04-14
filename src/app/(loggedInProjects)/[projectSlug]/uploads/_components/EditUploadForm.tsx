@@ -111,7 +111,7 @@ export const EditUploadForm = ({ upload, returnPath, returnText, showDelete = tr
     summary: upload.summary,
     subsectionId: upload.subsectionId,
     subsubsectionId: upload.subsubsectionId,
-    dealAreaId: upload.dealAreaId,
+    acquisitionAreaId: upload.acquisitionAreaId,
     projectRecordEmailId: upload.projectRecordEmailId,
     mimeType: upload.mimeType,
     latitude: upload.latitude,

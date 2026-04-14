@@ -1,4 +1,8 @@
 import db, { Prisma } from "../index"
+import {
+  ALKIS_LAND_ACQUISITION_DEMO_ENTRIES,
+  buildAlkisLandAcquisitionDemoSubsection,
+} from "./alkisLandAcquisitionDemos"
 import { subsubsectionsForLine3, subsubsectionsForPoly3 } from "./subsection_subsubsections"
 
 // lengthM is NOT calculated here but arbitrary values to satisfy the schema
@@ -243,6 +247,14 @@ const seedSubsections = async () => {
 
   for (const data of seedData) {
     await db.subsection.create({ data })
+  }
+
+  for (const def of ALKIS_LAND_ACQUISITION_DEMO_ENTRIES) {
+    const project = await db.project.findUnique({ where: { slug: def.slug } })
+    if (!project) continue
+    await db.subsection.create({
+      data: buildAlkisLandAcquisitionDemoSubsection(project.id, def.center),
+    })
   }
 }
 

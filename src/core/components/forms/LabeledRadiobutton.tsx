@@ -58,7 +58,7 @@ export const LabeledRadiobutton = forwardRef<
           }}
           id={key}
           className={clsx(
-            "h-4 w-4 cursor-pointer",
+            "size-4 cursor-pointer",
             hasError
               ? "border-red-800 text-red-500 shadow-xs shadow-red-200 focus:ring-red-800"
               : readonly || disabled

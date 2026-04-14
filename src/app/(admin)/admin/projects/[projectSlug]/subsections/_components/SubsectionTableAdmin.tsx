@@ -134,14 +134,14 @@ export const SubsectionTableAdmin = ({ subsections }: Props) => {
                   </td>
                   <td className="space-y-2 pr-2">
                     <Link href={`/${projectSlug}/abschnitte/${subsection.slug}/edit`}>
-                      <PencilSquareIcon className="h-4 w-4" />
+                      <PencilSquareIcon className="size-4" />
                       <span className="sr-only">Bearbeiten</span>
                     </Link>
                     <button
                       className="text-blue-500 hover:text-blue-800"
                       onClick={() => handleDeleteSubsection(subsection.id)}
                     >
-                      <TrashIcon className="h-4 w-4" />
+                      <TrashIcon className="size-4" />
                     </button>
                   </td>
                 </tr>

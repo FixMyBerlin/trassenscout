@@ -6,7 +6,7 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
-import { validateDealAreaScope } from "@/src/server/dealAreas/_utils/validateDealAreaScope"
+import { validateAcquisitionAreaScope } from "@/src/server/acquisitionAreas/_utils/validateAcquisitionAreaScope"
 import { getProjectIdBySlug } from "@/src/server/projects/queries/getProjectIdBySlug"
 import { extractExifFromS3 } from "@/src/server/uploads/_utils/extractExifFromS3"
 import { Ctx } from "@blitzjs/next"
@@ -37,9 +37,9 @@ export default resolver.pipe(
 
     const exifData = shouldExtract ? await extractExifFromS3(input.externalUrl) : null
 
-    await validateDealAreaScope({
+    await validateAcquisitionAreaScope({
       projectSlug,
-      dealAreaId: input.dealAreaId,
+      acquisitionAreaId: input.acquisitionAreaId,
       subsectionId: input.subsectionId,
       subsubsectionId: input.subsubsectionId,
     })

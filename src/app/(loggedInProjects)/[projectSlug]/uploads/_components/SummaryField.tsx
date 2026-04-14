@@ -98,7 +98,7 @@ export const SummaryField = ({
           disabled={isGeneratingSummary}
           className={twJoin(blueButtonStyles, "mt-2 gap-1")}
         >
-          <SparklesIcon className="h-3 w-3" />
+          <SparklesIcon className="size-3" />
           <p className={isGeneratingSummary ? "animate-pulse" : ""}>
             {isGeneratingSummary
               ? "Dokument wird mit KI zusammengefasst..."

@@ -37,7 +37,7 @@ export const LabeledInputRadioCheckbox = ({
             {...props}
             className={clsx(
               type === "checkbox" && "rounded-xs",
-              "mr-2 h-4 w-4 cursor-pointer border-gray-300 leading-none text-blue-500 focus:ring-blue-500",
+              "mr-2 size-4 cursor-pointer border-gray-300 leading-none text-blue-500 focus:ring-blue-500",
             )}
           />
           <span style={labelSpanStyle} className={classNameLabelSpan}>

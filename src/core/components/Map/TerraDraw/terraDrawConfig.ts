@@ -23,10 +23,22 @@ export const TERRA_DRAW_COLORS = {
 const colorByDrawingState = (feature: GeoJSONStoreFeatures) =>
   feature.properties?.currentlyDrawing ? TERRA_DRAW_COLORS.drawing : TERRA_DRAW_COLORS.unselected
 
+const polygonFillOpacityByState = (feature: GeoJSONStoreFeatures) =>
+  feature.properties?.currentlyDrawing ? 0.3 : 0
+
+export type TerraDrawModeConfig = {
+  hideUnselectedPolygonOutline?: boolean
+}
+
+const polygonOutlineOpacityByState =
+  ({ hideUnselectedPolygonOutline }: TerraDrawModeConfig) =>
+  (feature: GeoJSONStoreFeatures) =>
+    feature.properties?.currentlyDrawing ? 1 : hideUnselectedPolygonOutline ? 0 : 1
+
 // DOCS STYLING: https://github.com/JamesLMilner/terra-draw/blob/main/guides/5.STYLING.md
 // In add/draw mode: existing features = blue (unselected), the one being drawn = yellow (colorByDrawingState).
 // In edit/select mode: unselected = blue (from these mode styles), selected = yellow (from SelectMode selected* styles).
-export const createTerraDrawModes = () => [
+export const createTerraDrawModes = (config: TerraDrawModeConfig = {}) => [
   new TerraDrawPointMode({
     styles: { pointColor: colorByDrawingState },
   }),
@@ -39,8 +51,9 @@ export const createTerraDrawModes = () => [
   new TerraDrawPolygonMode({
     styles: {
       outlineColor: colorByDrawingState,
+      outlineOpacity: polygonOutlineOpacityByState(config),
       fillColor: colorByDrawingState,
-      fillOpacity: 0.3,
+      fillOpacity: polygonFillOpacityByState,
     },
   }),
   new TerraDrawSelectMode({

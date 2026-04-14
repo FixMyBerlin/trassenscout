@@ -60,7 +60,7 @@ export const EditSurveyResponseCommentForm = ({ comment, commentLabel }: Props) 
         onClick={() => setOpen(true)}
         className={clsx("flex items-center gap-2", linkStyles)}
       >
-        <PencilIcon className="h-3.5 w-3.5 shrink-0" />
+        <PencilIcon className="size-3.5 shrink-0" />
         <p>bearbeiten</p>
       </button>
 
@@ -106,7 +106,7 @@ export const EditSurveyResponseCommentForm = ({ comment, commentLabel }: Props) 
           className={clsx("mt-4 flex w-full items-end justify-end gap-2", linkStyles)}
         >
           <p>{commentLabel} löschen</p>
-          <TrashIcon className={clsx(linkStyles, "h-6 w-6")} />
+          <TrashIcon className={clsx(linkStyles, "size-6")} />
         </button>
       </Modal>
     </>

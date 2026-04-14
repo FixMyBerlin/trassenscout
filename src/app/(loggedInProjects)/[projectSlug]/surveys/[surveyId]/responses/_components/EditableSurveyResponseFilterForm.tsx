@@ -321,7 +321,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
           className={clsx(linkStyles, "mt-4 flex items-center gap-2 px-4 pb-2")}
           onClick={handleFilterReset}
         >
-          <XMarkIcon className="h-4 w-4" />
+          <XMarkIcon className="size-4" />
           <span>Alle Filter zurücksetzen</span>
         </button>
       </details>

@@ -7,7 +7,8 @@ import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import getProjectRecords from "@/src/server/projectRecords/queries/getProjectRecords"
-import getProjectRecordsByDealArea from "@/src/server/projectRecords/queries/getProjectRecordsByDealArea"
+
+import getProjectRecordsByAcquisitionArea from "@/src/server/projectRecords/queries/getProjectRecordsByAcquisitionArea"
 import getProjectRecordsBySubsubsection from "@/src/server/projectRecords/queries/getProjectRecordsBySubsubsection"
 import { DocumentIcon } from "@heroicons/react/24/outline"
 import clsx from "clsx"
@@ -27,7 +28,7 @@ export const ProjectRecordsTable = ({
 }: {
   projectRecords:
     | Awaited<ReturnType<typeof getProjectRecords>>
-    | Awaited<ReturnType<typeof getProjectRecordsByDealArea>>
+    | Awaited<ReturnType<typeof getProjectRecordsByAcquisitionArea>>
     | Awaited<ReturnType<typeof getProjectRecordsBySubsubsection>>
   highlightId?: number | null
   isTopicFilter?: boolean

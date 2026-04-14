@@ -165,7 +165,7 @@ const EditableSurveyResponseMapAndStaticData = ({
       <div className={clsx("grid gap-6 md:gap-4", showMap && "md:grid-cols-2")}>
         {tildaUrl && !showMap && (
           <Link target="_blank" href={tildaUrl} className="flex items-center gap-2">
-            <ArrowUpRightIcon className="h-3 w-3" />
+            <ArrowUpRightIcon className="size-3" />
             In Tilda öffnen
           </Link>
         )}
@@ -173,7 +173,7 @@ const EditableSurveyResponseMapAndStaticData = ({
         <div className="flex flex-col gap-6">
           {response.source !== "FORM" && (
             <span className="flex flex-row items-center gap-2">
-              <EnvelopeIcon className="h-4 w-4" />
+              <EnvelopeIcon className="size-4" />
               <span>per {getTranslatedSource(response.source)} eingegangen </span>
               <IfUserCanEdit>
                 <span>| </span>
@@ -236,12 +236,12 @@ const EditableSurveyResponseMapAndStaticData = ({
                 })}
                 className="flex items-center gap-2"
               >
-                <ArrowsPointingOutIcon className="h-4 w-4" />
+                <ArrowsPointingOutIcon className="size-4" />
                 In großer Karte öffnen
               </Link>
               {tildaUrl && (
                 <Link target="_blank" href={tildaUrl} className="flex items-center gap-2">
-                  <ArrowUpRightIcon className="h-3 w-3" />
+                  <ArrowUpRightIcon className="size-3" />
                   In Tilda öffnen
                 </Link>
               )}

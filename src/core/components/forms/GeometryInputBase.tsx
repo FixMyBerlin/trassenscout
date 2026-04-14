@@ -10,6 +10,7 @@ type GeometryInputBaseProps = {
   children: ReactNode
   /** Determines which geometry types are allowed. "subsection" allows LineString and Polygon only. "subsubsection" allows all types (Point, LineString, Polygon). */
   allowedGeometryTypesFor?: "subsection" | "subsubsection"
+  showPreviewLink?: boolean
 }
 
 export const GeometryInputBase = ({
@@ -17,6 +18,7 @@ export const GeometryInputBase = ({
   description,
   children,
   allowedGeometryTypesFor,
+  showPreviewLink = true,
 }: GeometryInputBaseProps) => {
   const { watch } = useFormContext()
   const geometry = watch("geometry") as Geometry
@@ -44,7 +46,9 @@ export const GeometryInputBase = ({
     )
   }
 
-  const previewLink = <GeoJSONPreviewLink onOpen={() => setIsPreviewOpen(true)} />
+  const previewLink = showPreviewLink ? (
+    <GeoJSONPreviewLink onOpen={() => setIsPreviewOpen(true)} />
+  ) : null
 
   return (
     <section className={description || isPreviewOpen ? "space-y-2" : ""}>
@@ -54,7 +58,7 @@ export const GeometryInputBase = ({
       </div>
       {description && <p className="text-sm text-gray-500">{description}</p>}
 
-      {isPreviewOpen && (
+      {showPreviewLink && isPreviewOpen && (
         <GeoJSONPreviewPanel
           geometry={geometry}
           onEdit={() => setIsRawMode(true)}

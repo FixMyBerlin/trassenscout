@@ -1,5 +1,6 @@
 "use client"
 
+import { useAcquisitionAreaSelection } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/_components/useAcquisitionAreaSelection.nuqs"
 import { ProjectRecordNewModal } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordNewModal"
 import { ProjectRecordsTable } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordTable"
 import { UploadDropzone } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzone"
@@ -8,37 +9,47 @@ import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlu
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { FormSuccess } from "@/src/core/components/forms/FormSuccess"
+import { SelectListbox } from "@/src/core/components/forms/SelectListbox"
 import { blueButtonStyles, Link } from "@/src/core/components/links"
-import { subsubsectionEditRoute } from "@/src/core/routes/subsectionRoutes"
+import {
+  acquisitionAreaEditRoute,
+  acquisitionAreaNewRoute,
+} from "@/src/core/routes/subsectionRoutes"
 import { subsubsectionUploadEditRoute } from "@/src/core/routes/uploadRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
-import getDealAreasBySubsubsection from "@/src/server/dealAreas/queries/getDealAreasBySubsubsection"
-import getProjectRecordsByDealArea from "@/src/server/projectRecords/queries/getProjectRecordsByDealArea"
-import getUploadsByDealArea from "@/src/server/uploads/queries/getUploadsByDealArea"
+import getAcquisitionAreasBySubsubsection from "@/src/server/acquisitionAreas/queries/getAcquisitionAreasBySubsubsection"
+import getProjectRecordsBySubsubsection from "@/src/server/projectRecords/queries/getProjectRecordsBySubsubsection"
+import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
 import { useQuery } from "@blitzjs/rpc"
 import { PlusIcon } from "@heroicons/react/16/solid"
+import { GeometryTypeEnum } from "@prisma/client"
 import clsx from "clsx"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { SubsubsectionPanel } from "./SubsubsectionPanel"
-import { useDealAreaSelection } from "./useDealAreaSelection.nuqs"
 
 type Props = {
   subsubsectionId: number
   subsectionId: number
+  subsubsectionType: GeometryTypeEnum
 }
 
-export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectionId }: Props) => {
+export const SubsubsectionLandAcquisitionContent = ({
+  subsubsectionId,
+  subsectionId,
+  subsubsectionType,
+}: Props) => {
   const projectSlug = useProjectSlug()
   const subsectionSlug = useSlug("subsectionSlug")
   const subsubsectionSlug = useSlug("subsubsectionSlug")
-  const { dealAreaId, setDealAreaId } = useDealAreaSelection()
+  const { acquisitionAreaId, setAcquisitionAreaId } = useAcquisitionAreaSelection()
+  const canCreateAcquisitionAreas = subsubsectionType !== GeometryTypeEnum.POINT
   const [isProjectRecordModalOpen, setIsProjectRecordModalOpen] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
   const [createdProjectRecordId, setCreatedProjectRecordId] = useState<null | number>(null)
 
-  const [dealAreas] = useQuery(
-    getDealAreasBySubsubsection,
+  const [acquisitionAreas] = useQuery(
+    getAcquisitionAreasBySubsubsection,
     {
       projectSlug,
       subsubsectionId,
@@ -49,102 +60,134 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
     },
   )
 
-  const selectedDealArea = dealAreas.find((dealArea) => dealArea.id === dealAreaId)
+  const selectedAcquisitionArea = acquisitionAreas.find(
+    (acquisitionArea) => acquisitionArea.id === acquisitionAreaId,
+  )
 
-  const [projectRecords = [], { refetch: refetchProjectRecords }] = useQuery(
-    getProjectRecordsByDealArea,
+  const [allProjectRecords = [], { refetch: refetchProjectRecords }] = useQuery(
+    getProjectRecordsBySubsubsection,
     {
       projectSlug,
-      dealAreaId: selectedDealArea?.id ?? 0,
+      subsubsectionId,
     },
     {
-      enabled: !!selectedDealArea,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
     },
   )
 
-  const [{ uploads = [] } = { uploads: [] }, { refetch: refetchUploads }] = useQuery(
-    getUploadsByDealArea,
+  const [{ uploads: allUploads = [] } = { uploads: [] }, { refetch: refetchUploads }] = useQuery(
+    getUploadsWithSubsections,
     {
       projectSlug,
-      dealAreaId: selectedDealArea?.id ?? 0,
+      where: {
+        subsubsectionId,
+      },
     },
     {
-      enabled: !!selectedDealArea,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
     },
+  )
+
+  const projectRecords = useMemo(
+    () =>
+      selectedAcquisitionArea
+        ? allProjectRecords.filter(
+            (projectRecord) => projectRecord.acquisitionAreaId === selectedAcquisitionArea.id,
+          )
+        : [],
+    [allProjectRecords, selectedAcquisitionArea],
+  )
+
+  const uploads = useMemo(
+    () =>
+      selectedAcquisitionArea
+        ? allUploads.filter((upload) => upload.acquisitionAreaId === selectedAcquisitionArea.id)
+        : [],
+    [allUploads, selectedAcquisitionArea],
   )
 
   useEffect(() => {
-    const onlyDealArea = dealAreas[0]
-    if (dealAreas.length === 1 && onlyDealArea && dealAreaId !== onlyDealArea.id) {
-      void setDealAreaId(onlyDealArea.id)
+    const onlyAcquisitionArea = acquisitionAreas[0]
+    if (
+      acquisitionAreas.length === 1 &&
+      onlyAcquisitionArea &&
+      acquisitionAreaId !== onlyAcquisitionArea.id
+    ) {
+      void setAcquisitionAreaId(onlyAcquisitionArea.id)
     }
-  }, [dealAreaId, dealAreas, setDealAreaId])
+  }, [acquisitionAreaId, acquisitionAreas, setAcquisitionAreaId])
 
   return (
-    <SubsubsectionPanel
-      title="Grunderwerb"
-      action={
-        <IfUserCanEdit>
-          <Link
-            icon="edit"
-            href={subsubsectionEditRoute(projectSlug, subsectionSlug!, subsubsectionSlug!)}
-          >
-            bearbeiten
-          </Link>
-        </IfUserCanEdit>
-      }
-    >
+    <SubsubsectionPanel title="Grunderwerb">
       <div className="space-y-8">
-        {dealAreas.length > 1 && (
-          <select
-            value={dealAreaId ?? ""}
-            onChange={(event) => {
-              const value = event.target.value
-              void setDealAreaId(value ? Number(value) : null)
+        {acquisitionAreas.length > 1 && (
+          <SelectListbox
+            value={acquisitionAreaId ?? null}
+            onChange={(value) => {
+              void setAcquisitionAreaId(value)
             }}
-            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 shadow-xs focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-hidden"
-          >
-            <option value="">Dealfläche auswählen</option>
-            {dealAreas.map((dealArea) => (
-              <option key={dealArea.id} value={dealArea.id}>
-                {`Dealfläche ${dealArea.parcel.officialId ?? dealArea.id}`}
-              </option>
-            ))}
-          </select>
+            placeholder="Dealfläche auswählen"
+            options={acquisitionAreas.map((acquisitionArea) => ({
+              value: acquisitionArea.id,
+              label: `Dealfläche ${acquisitionArea.id}`,
+            }))}
+          />
         )}
 
         <div className="space-y-3">
-          {!dealAreas.length ? (
+          {!acquisitionAreas.length ? (
             <>
               <h3 className="text-lg font-semibold text-gray-700">
                 Es wurden noch keine Dealflächen angelegt
               </h3>
               <p className="max-w-xl text-base text-gray-500">
-                Um den Grunderwerb zu verwalten, legen Sie bitte Dealflächen an.
+                {canCreateAcquisitionAreas
+                  ? "Um den Grunderwerb zu verwalten, legen Sie bitte Dealflächen an."
+                  : "Für punktförmige Einträge können keine Dealflächen angelegt werden."}
               </p>
+              {canCreateAcquisitionAreas && (
+                <IfUserCanEdit>
+                  <div className="pt-2">
+                    <Link
+                      href={acquisitionAreaNewRoute(
+                        projectSlug,
+                        subsectionSlug!,
+                        subsubsectionSlug!,
+                      )}
+                      button
+                      icon="plus"
+                    >
+                      Dealflächen anlegen
+                    </Link>
+                  </div>
+                </IfUserCanEdit>
+              )}
             </>
-          ) : selectedDealArea ? (
+          ) : selectedAcquisitionArea ? (
             <section className="space-y-6">
               <div className="flex items-center justify-between gap-3">
                 <h3 className="text-lg font-semibold text-gray-700">Allgemeine Informationen</h3>
                 <IfUserCanEdit>
                   <Link
                     icon="edit"
-                    href={subsubsectionEditRoute(projectSlug, subsectionSlug!, subsubsectionSlug!)}
+                    href={acquisitionAreaEditRoute(
+                      projectSlug,
+                      subsectionSlug!,
+                      subsubsectionSlug!,
+                      selectedAcquisitionArea.id,
+                    )}
                   >
                     bearbeiten
                   </Link>
                 </IfUserCanEdit>
               </div>
 
-              {selectedDealArea.description && (
+              {selectedAcquisitionArea.description && (
                 <section className="bg-gray-100 px-4 py-3">
                   <p className="text-sm leading-tight text-gray-700">
-                    {selectedDealArea.description}
+                    {selectedAcquisitionArea.description}
                   </p>
                 </section>
               )}
@@ -174,16 +217,16 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
                           ID
                         </th>
                         <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
-                          {selectedDealArea.id}
+                          {selectedAcquisitionArea.id}
                         </td>
                       </tr>
                       <tr>
                         <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
-                          Flurstücknummer
+                          Flurstücknummer ({selectedAcquisitionArea.parcel.alkisParcelIdSource})
                         </th>
                         <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
-                          {selectedDealArea.parcel.officialId ??
-                            `Parcel ${selectedDealArea.parcel.id}`}
+                          {selectedAcquisitionArea.parcel.alkisParcelId ??
+                            `Parcel ${selectedAcquisitionArea.parcel.id}`}
                         </td>
                       </tr>
                       <tr>
@@ -191,7 +234,7 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
                           Phase
                         </th>
                         <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
-                          {selectedDealArea.dealAreaStatus?.title ?? "k.A."}
+                          {selectedAcquisitionArea.acquisitionAreaStatus?.title ?? "k.A."}
                         </td>
                       </tr>
                     </tbody>
@@ -243,7 +286,7 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
                   initialValues={{
                     subsectionId,
                     subsubsectionId,
-                    dealAreaId: selectedDealArea.id,
+                    acquisitionAreaId: selectedAcquisitionArea.id,
                   }}
                 />
               </section>
@@ -279,7 +322,7 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
                         fillContainer
                         subsectionId={subsectionId}
                         subsubsectionId={subsubsectionId}
-                        dealAreaId={selectedDealArea.id}
+                        acquisitionAreaId={selectedAcquisitionArea.id}
                         onUploadComplete={async () => {
                           await refetchUploads()
                         }}
@@ -304,7 +347,13 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
       </div>
 
       <SuperAdminLogData
-        data={{ dealAreas, selectedDealArea, dealAreaId, projectRecords, uploads }}
+        data={{
+          acquisitionAreas,
+          selectedAcquisitionArea,
+          acquisitionAreaId,
+          projectRecords,
+          uploads,
+        }}
       />
     </SubsubsectionPanel>
   )

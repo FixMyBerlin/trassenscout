@@ -10,10 +10,10 @@ type Props = {
 }
 
 const statusIcon = {
-  XMARK: <XMarkIcon className="h-4 w-4" />,
-  DOCUMENT: <DocumentTextIcon className="h-4 w-4" />,
-  CLOCK: <ClockIcon className="h-4 w-4" />,
-  CHECKMARK: <CheckIcon className="h-4 w-4" />,
+  XMARK: <XMarkIcon className="size-4" />,
+  DOCUMENT: <DocumentTextIcon className="size-4" />,
+  CLOCK: <ClockIcon className="size-4" />,
+  CHECKMARK: <CheckIcon className="size-4" />,
 }
 
 export const StatusLabel = ({ icon, label, color, className }: Props) => {

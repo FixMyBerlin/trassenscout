@@ -47,10 +47,10 @@ export const SurveyCheckboxGroup = ({ label, description, options, required }: C
               <div className="flex h-full min-h-10 items-center">
                 <span
                   className={clsx(
-                    "relative h-4 w-4 rounded-sm border border-gray-300 text-(--survey-primary-color) transition-colors group-hover:border-gray-400 focus:ring-0",
+                    "relative size-4 rounded-sm border border-gray-300 text-(--survey-primary-color) transition-colors group-hover:border-gray-400 focus:ring-0",
                   )}
                 />
-                <span className="absolute h-4 w-4 rounded-sm bg-(--survey-primary-color) opacity-0 transition group-data-checked:opacity-100" />
+                <span className="absolute size-4 rounded-sm bg-(--survey-primary-color) opacity-0 transition group-data-checked:opacity-100" />
                 <CheckIcon className="absolute hidden size-4 fill-white group-data-checked:block" />
               </div>
               {/* we do not use the simple pattern from the headless UI demos as we want the whole item to be clickable incl. label etc; we use p instead of Label from headless UI as Label breaks the hover for some reason */}

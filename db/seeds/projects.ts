@@ -1,4 +1,5 @@
 import db, { Project, StateKeyEnum } from "../index"
+import { alkisLandAcquisitionDemoProjects } from "./alkisLandAcquisitionDemos"
 
 const seedProjects = async () => {
   const seedData: Omit<Project, "id" | "createdAt" | "updatedAt">[] = [
@@ -52,6 +53,7 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
       showLogEntries: false,
       alkisStateKey: StateKeyEnum.DISABLED,
     },
+    ...alkisLandAcquisitionDemoProjects(),
   ]
 
   for (const data of seedData) {

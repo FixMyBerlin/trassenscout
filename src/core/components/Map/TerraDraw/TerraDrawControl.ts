@@ -3,7 +3,7 @@ import type { SupportedGeometry } from "@/src/server/shared/utils/geometrySchema
 import type { Map as MapLibreMap } from "maplibre-gl"
 import { TerraDraw } from "terra-draw"
 import { TerraDrawMapLibreGLAdapter } from "terra-draw-maplibre-gl-adapter"
-import { createTerraDrawModes } from "./terraDrawConfig"
+import { createTerraDrawModes, type TerraDrawModeConfig } from "./terraDrawConfig"
 import type { TerraDrawMode } from "./useTerraDrawControl"
 import { calculateEnabledButtons, getDefaultModeForGeometry } from "./utils/buttonState"
 import { cleanupMixedFeatures } from "./utils/featureFiltering"
@@ -23,14 +23,22 @@ export class TerraDrawControl {
   private ignoreNextChangeCount = 0
   private selectedIds: Array<string | number> = []
   private restorePending = false
+  private modeConfig?: TerraDrawModeConfig
   private styleLoadHandler = () => this.reinitAfterStyleChange()
+
+  private resetSelectionState() {
+    this.selectedIds = []
+    this.onSelectionChange?.()
+  }
 
   constructor(
     onChange?: (geometry: SupportedGeometry | null, geometryType: string | null) => void,
     initialGeometry?: SupportedGeometry,
+    modeConfig?: TerraDrawModeConfig,
   ) {
     this.onChange = onChange
     this.initialGeometry = initialGeometry
+    this.modeConfig = modeConfig
   }
 
   onAdd(map: MapLibreMap) {
@@ -65,7 +73,7 @@ export class TerraDrawControl {
   private createDrawInstance(map: MapLibreMap) {
     return new TerraDraw({
       adapter: new TerraDrawMapLibreGLAdapter({ map }),
-      modes: createTerraDrawModes(),
+      modes: createTerraDrawModes(this.modeConfig),
     })
   }
 
@@ -229,6 +237,7 @@ export class TerraDrawControl {
   clear() {
     if (this.draw && this.isInitialized) {
       this.draw.clear()
+      this.resetSelectionState()
       // Don't ignore the change event - we want to notify that geometry was cleared
       if (this.onChange) {
         this.onChange(null, null)
@@ -243,6 +252,7 @@ export class TerraDrawControl {
 
     // Clear existing features
     this.draw.clear()
+    this.resetSelectionState()
 
     if (geometry) {
       // Convert geometry to features and add them
