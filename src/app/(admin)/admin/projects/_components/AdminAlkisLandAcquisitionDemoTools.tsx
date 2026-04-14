@@ -9,7 +9,9 @@ import { useState } from "react"
 
 export const AdminAlkisLandAcquisitionDemoTools = () => {
   const [seedMutation, { isLoading: seedLoading }] = useMutation(seedAlkisLandAcquisitionDemos)
-  const [deleteMutation, { isLoading: deleteLoading }] = useMutation(deleteAlkisLandAcquisitionDemos)
+  const [deleteMutation, { isLoading: deleteLoading }] = useMutation(
+    deleteAlkisLandAcquisitionDemos,
+  )
   const [message, setMessage] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -79,7 +81,9 @@ export const AdminAlkisLandAcquisitionDemoTools = () => {
         </pre>
       ) : null}
       {error ? (
-        <p className="mt-4 rounded border border-red-200 bg-red-50 p-3 text-sm text-red-900">{error}</p>
+        <p className="mt-4 rounded border border-red-200 bg-red-50 p-3 text-sm text-red-900">
+          {error}
+        </p>
       ) : null}
     </section>
   )

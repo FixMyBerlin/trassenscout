@@ -164,7 +164,9 @@ type GeometryDrawingDealAreaParcelContextLayersProps = {
   parcelGeometry: Polygon | MultiPolygon
 }
 
-function singleGeometryFeatureCollection<T extends Geometry>(geometry: T): FeatureCollection<T, null> {
+function singleGeometryFeatureCollection<T extends Geometry>(
+  geometry: T,
+): FeatureCollection<T, null> {
   return {
     type: "FeatureCollection",
     features: [
@@ -218,7 +220,10 @@ const DEAL_AREA_EDIT_BUFFER_RADIUS_METERS = 20
 export const GeometryDrawingDealAreaSubsubsectionContextLayers = ({
   geometry,
 }: GeometryDrawingDealAreaSubsubsectionContextLayersProps) => {
-  const subsubsectionFeatureCollection = useMemo(() => singleGeometryFeatureCollection(geometry), [geometry])
+  const subsubsectionFeatureCollection = useMemo(
+    () => singleGeometryFeatureCollection(geometry),
+    [geometry],
+  )
 
   const bufferOutlineFeatureCollection = useMemo(() => {
     const bufferedGeometry = computeBufferPolygonFeature(

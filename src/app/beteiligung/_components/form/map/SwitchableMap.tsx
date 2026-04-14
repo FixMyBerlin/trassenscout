@@ -332,7 +332,7 @@ export const SwitchableMap = ({
                   "relative size-4 cursor-pointer rounded-full border border-gray-300 transition-colors group-hover:border-gray-400 focus:ring-0",
                 )}
               />
-              <span className="absolute m-[2px] size-4 size-3 rounded-full border-4 border-(--survey-primary-color) opacity-0 transition group-data-checked:opacity-100" />
+              <span className="absolute m-[2px] size-3 size-4 rounded-full border-4 border-(--survey-primary-color) opacity-0 transition group-data-checked:opacity-100" />
             </div>
             {/* we do not use the simple pattern from the headless UI demos as we want the whole item to be clickable incl. label etc; we use p instead of Label from headless UI as Label breaks the hover for some reason */}{" "}
             <div className={formClasses.labelItemWrapper}>

@@ -1,5 +1,5 @@
-import { ALKIS_LAND_ACQUISITION_DEMO_PROJECT_SLUGS } from "@/db/seeds/alkisLandAcquisitionDemos"
 import db from "@/db"
+import { ALKIS_LAND_ACQUISITION_DEMO_PROJECT_SLUGS } from "@/db/seeds/alkisLandAcquisitionDemos"
 import { assertAlkisDemoMutationAllowed } from "@/src/server/admin/utils/alkisDemoMutationEnvGate"
 import { deleteAlkisLandAcquisitionDemoProject } from "@/src/server/admin/utils/deleteAlkisLandAcquisitionDemoProject"
 import { resolver } from "@blitzjs/rpc"
