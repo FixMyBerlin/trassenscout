@@ -13,6 +13,6 @@ export function formatPropertyValue(value: unknown) {
 export function sortedPropertyEntries(props: Record<string, unknown> | null | undefined) {
   if (!props) return []
   return Object.entries(props)
-    .filter(([, v]) => v !== undefined && v !== null && v !== "")
+    .filter(Boolean)
     .sort(([a], [b]) => a.localeCompare(b, "de"))
 }
