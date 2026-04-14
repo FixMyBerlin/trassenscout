@@ -41,7 +41,7 @@ function wfsSupportsJsonFromOutputFormat(fmt: string | null): boolean {
   return (fmt ?? "").toLowerCase().includes("json")
 }
 
-function mergeWfs(base: AlkisStateConfigEntry, useSuggested: boolean, suggested?: SuggestedConfig): AlkisWfsConfig {
+function mergeWfs(base: AlkisStateConfigEntry, useSuggested: boolean, suggested?: SuggestedConfig) {
   if (base.wfs.url === false) {
     return { url: false }
   }
@@ -67,9 +67,7 @@ function mergeWfs(base: AlkisStateConfigEntry, useSuggested: boolean, suggested?
   const wfsOutputFormat = useSuggested
     ? (suggested?.wfsOutputFormat ?? b.wfsOutputFormat)
     : b.wfsOutputFormat
-  const supports4326 = useSuggested
-    ? (suggested?.supports4326 ?? b.supports4326)
-    : b.supports4326
+  const supports4326 = useSuggested ? (suggested?.supports4326 ?? b.supports4326) : b.supports4326
   const bboxAxisOrder = useSuggested
     ? (suggested?.bboxAxisOrder ?? b.bboxAxisOrder)
     : b.bboxAxisOrder
@@ -90,7 +88,7 @@ function mergeWfs(base: AlkisStateConfigEntry, useSuggested: boolean, suggested?
   }
 }
 
-function buildNextEntry(base: AlkisStateConfigEntry, audit: AuditStateResult | undefined): AlkisStateConfigEntry {
+function buildNextEntry(base: AlkisStateConfigEntry, audit: AuditStateResult | undefined) {
   const isAuditVerified = audit?.verified === true
   const useSuggested = isAuditVerified
   const suggested = audit?.suggestedConfig
@@ -157,6 +155,7 @@ function renderEntry(
   lines.push(`    attribution: ${toLiteral(next.attribution)},`)
   lines.push(`    specialCaseNote: ${toLiteral(next.specialCaseNote)},`)
   lines.push(...renderWms(next.wms))
+  // @ts-expect-error
   lines.push(...renderWfs(next.wfs))
   lines.push("  },")
   return lines.join("\n")

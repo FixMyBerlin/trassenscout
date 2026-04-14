@@ -65,10 +65,7 @@ export const AcquisitionAreaGeometryInput = ({ parcelGeometry, subsubsectionGeom
       const polygonGeometry = AcquisitionAreaGeometrySchema.parse(geometry)
 
       const clippedFeature = intersect(
-        featureCollection([
-          feature(polygonGeometry, {}),
-          feature(parcelGeometry, {}),
-        ]),
+        featureCollection([feature(polygonGeometry, {}), feature(parcelGeometry, {})]),
       )
 
       if (!clippedFeature?.geometry) {

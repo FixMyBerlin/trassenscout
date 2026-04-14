@@ -8,9 +8,7 @@ import { StateKeyEnum } from "@prisma/client"
 // - Nordrhein-Westfalen
 
 /** WMS background: absent (`url: false`) or URL + layer name together. */
-export type AlkisWmsConfig =
-  | { url: false }
-  | { url: string; layerName: string }
+export type AlkisWmsConfig = { url: false } | { url: string; layerName: string }
 
 export type AlkisWfsDisabled = { url: false }
 
