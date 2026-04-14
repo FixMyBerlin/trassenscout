@@ -36,11 +36,13 @@ export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
       | "onMouseMove"
       | "onMouseLeave"
       | "onClick"
+      | "onContextMenu"
       | "onZoomEnd"
       | "onLoad"
       | "onIdle"
       | "hash"
       | "reuseMaps"
+      | "scrollZoom"
     >
   > & {
     interactiveLayerIds?: string[]
@@ -55,7 +57,7 @@ export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
     backgroundSwitcherPosition?: "top-left" | "top-right" | "bottom-left" | "bottom-right"
     selectableLayerIdSuffix?: string // Defaults to "" if not provided
     interactiveUnifiedFeatures?: boolean
-    colorSchema: "subsection" | "subsubsection"
+    colorSchema?: "subsection" | "subsubsection"
     restrictHighlightToLevel?: MapHighlightLevel
   }
 
@@ -65,12 +67,14 @@ export const BaseMap = ({
   onMouseMove,
   onMouseLeave,
   onClick,
+  onContextMenu,
   onZoomEnd,
   onLoad,
   onIdle,
   interactiveLayerIds,
   hash,
   reuseMaps = true,
+  scrollZoom,
   lines,
   polygons,
   points,
@@ -197,11 +201,12 @@ export const BaseMap = ({
           reuseMaps={reuseMaps}
           initialViewState={initialViewState}
           mapStyle={getMapStyle(selectedLayer)}
-          scrollZoom={false}
+          scrollZoom={scrollZoom}
           cursor={cursorStyle}
           onMouseMove={handleMouseMoveInternal}
           onMouseLeave={handleMouseLeaveInternal}
           onClick={handleClickInternal}
+          onContextMenu={onContextMenu}
           onZoomEnd={onZoomEnd}
           onLoad={onLoad}
           onIdle={onIdle}
