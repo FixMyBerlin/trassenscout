@@ -1,5 +1,5 @@
-import { NewSurveyResponseCommentForm } from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_components/comments/NewSurveyResponseCommentForm"
-import { SurveyResponseCommentField } from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_components/comments/SurveyResponseCommentField"
+import { CommentField } from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_components/comments/CommentField"
+import { NewCommentForm } from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_components/comments/NewCommentForm"
 import { ConvertSurveyResponseToSubsubsectionOhv } from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_components/ConvertSurveyResponseToSubsubsectionOhv"
 import { EditableSurveyResponseForm } from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_components/EditableSurveyResponseForm"
 import EditableSurveyResponseMapAndStaticData from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_components/EditableSurveyResponseMapAndStaticData"
@@ -16,9 +16,13 @@ import { Prettify } from "@/src/core/types"
 
 import { useUserCan } from "@/src/app/_components/memberships/hooks/useUserCan"
 import getOperatorsWithCount from "@/src/server/operators/queries/getOperatorsWithCount"
+import createSurveyResponseComment from "@/src/server/survey-response-comments/mutations/createSurveyResponseComment"
+import deleteSurveyResponseComment from "@/src/server/survey-response-comments/mutations/deleteSurveyResponseComment"
+import updateSurveyResponseComment from "@/src/server/survey-response-comments/mutations/updateSurveyResponseComment"
 import getSurveyResponseTopicsByProject from "@/src/server/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import getFeedbackSurveyResponsesWithSurveyDataAndComments from "@/src/server/survey-responses/queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
 import { useSession } from "@blitzjs/auth"
+import { invalidateQuery, useMutation } from "@blitzjs/rpc"
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/16/solid"
 import clsx from "clsx"
 import { useEffect } from "react"
@@ -51,6 +55,9 @@ const EditableSurveyResponseListItem = ({
 }: EditableSurveyResponseListItemProps) => {
   const { responseDetails, setResponseDetails } = useResponseDetails()
   const projectSlug = useProjectSlug()
+  const [createSurveyResponseCommentMutation] = useMutation(createSurveyResponseComment)
+  const [updateSurveyResponseCommentMutation] = useMutation(updateSurveyResponseComment)
+  const [deleteSurveyResponseCommentMutation] = useMutation(deleteSurveyResponseComment)
   const open = !isAccordion ? true : parseInt(String(responseDetails)) === response.id
   const surveySlug = response.surveySession.survey.slug as AllowedSurveySlugs
 
@@ -89,6 +96,10 @@ const EditableSurveyResponseListItem = ({
   const userTextPreview = response.data[text1Id] || response.data[text2Id]
   const commentLabel = labels.comment?.sg || defaultBackendConfig.labels.comment.sg
   const commentHelp = labels.comment?.help || defaultBackendConfig.labels.comment.help
+
+  const invalidateFeedbackSurveyResponses = () => {
+    invalidateQuery(getFeedbackSurveyResponsesWithSurveyDataAndComments)
+  }
 
   return (
     <article data-open={open} className="bg-white">
@@ -164,16 +175,47 @@ const EditableSurveyResponseListItem = ({
               {response.surveyResponseComments?.map((comment) => {
                 return (
                   <li key={comment.id}>
-                    <SurveyResponseCommentField comment={comment} commentLabel={commentLabel} />
+                    <CommentField
+                      comment={comment}
+                      commentLabel={commentLabel}
+                      mutateComment={{
+                        update: (body) =>
+                          updateSurveyResponseCommentMutation(
+                            {
+                              projectSlug: projectSlug!,
+                              commentId: comment.id,
+                              body,
+                            },
+                            { onSuccess: invalidateFeedbackSurveyResponses },
+                          ),
+                        remove: () =>
+                          deleteSurveyResponseCommentMutation(
+                            {
+                              projectSlug: projectSlug!,
+                              commentId: comment.id,
+                            },
+                            { onSuccess: invalidateFeedbackSurveyResponses },
+                          ),
+                      }}
+                    />
                   </li>
                 )
               })}
               <IfUserCanEdit>
                 <li>
-                  <NewSurveyResponseCommentForm
-                    surveyResponseId={response.id}
+                  <NewCommentForm
                     commentLabel={commentLabel}
                     commentHelp={commentHelp}
+                    createComment={async (body) =>
+                      createSurveyResponseCommentMutation(
+                        {
+                          projectSlug: projectSlug!,
+                          surveyResponseId: response.id,
+                          body,
+                        },
+                        { onSuccess: invalidateFeedbackSurveyResponses },
+                      )
+                    }
                   />
                 </li>
               </IfUserCanEdit>

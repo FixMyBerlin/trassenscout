@@ -65,4 +65,22 @@ export const projectRecordInclude = {
       lastName: true,
     },
   },
+  projectRecordComments: {
+    select: {
+      id: true,
+      projectRecordId: true,
+      createdAt: true,
+      updatedAt: true,
+      body: true,
+      author: {
+        select: {
+          id: true,
+          role: true,
+          firstName: true,
+          lastName: true,
+        },
+      },
+    },
+    orderBy: { id: "asc" },
+  },
 } as const

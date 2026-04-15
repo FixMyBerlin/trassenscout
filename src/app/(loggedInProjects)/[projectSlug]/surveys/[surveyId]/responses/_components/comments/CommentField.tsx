@@ -1,19 +1,30 @@
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { proseClasses } from "@/src/core/components/text"
+import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
+import getFeedbackSurveyResponsesWithSurveyDataAndComments from "@/src/server/survey-responses/queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
 import { clsx } from "clsx"
 import dompurify from "dompurify"
-import { EditableSurveyResponseListItemProps } from "../EditableSurveyResponseListItem"
-import { EditSurveyResponseCommentForm } from "./EditSurveyResponseCommentForm"
+import { EditCommentForm } from "./EditCommentForm"
 import { localDateTime } from "./utils/localDateTime"
 import { wasUpdated } from "./utils/wasUpdated"
 
 type Props = {
-  comment: EditableSurveyResponseListItemProps["response"]["surveyResponseComments"][number]
+  comment:
+    | NonNullable<
+        Awaited<
+          ReturnType<typeof getFeedbackSurveyResponsesWithSurveyDataAndComments>
+        >["feedbackSurveyResponses"][number]["surveyResponseComments"][number]
+      >
+    | NonNullable<Awaited<ReturnType<typeof getProjectRecord>>["projectRecordComments"][number]>
   commentLabel: string
+  mutateComment: {
+    update: (body: string) => void
+    remove: () => void
+  }
 }
 
-export const SurveyResponseCommentField = ({ comment, commentLabel }: Props) => {
+export const CommentField = ({ comment, commentLabel, mutateComment }: Props) => {
   const { author } = comment
   return (
     <div className="rounded-lg border border-gray-300 bg-blue-50 p-3 text-gray-700">
@@ -36,7 +47,11 @@ export const SurveyResponseCommentField = ({ comment, commentLabel }: Props) => 
           {wasUpdated(comment) && <>, aktualisiert {localDateTime(comment.updatedAt)}</>}
         </div>
         <IfUserCanEdit>
-          <EditSurveyResponseCommentForm comment={comment} commentLabel={commentLabel} />
+          <EditCommentForm
+            comment={comment}
+            commentLabel={commentLabel}
+            mutateComment={mutateComment}
+          />
         </IfUserCanEdit>
       </div>
     </div>

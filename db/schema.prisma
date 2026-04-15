@@ -63,6 +63,7 @@ model User {
   uploadsUpdated           Upload[]                @relation("UploadUpdatedBy")
   //
   supportDocumentsCreated  SupportDocument[]       @relation("SupportDocumentCreatedBy")
+  projectRecordComments    ProjectRecordComment[]
 }
 
 enum UserRoleEnum {
@@ -840,6 +841,21 @@ model ProjectRecord {
   reviewedBy                 User?                    @relation("ProjectRecordReviewedBy", fields: [reviewedById], references: [id])
   reviewedById               Int?
   reviewNotes                String?
+  projectRecordComments      ProjectRecordComment[]
+}
+
+model ProjectRecordComment {
+  id              Int           @id @default(autoincrement())
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  //
+  author          User          @relation(fields: [userId], references: [id])
+  userId          Int
+  //
+  projectRecord   ProjectRecord @relation(fields: [projectRecordId], references: [id], onDelete: Cascade)
+  projectRecordId Int
+  //
+  body            String
 }
 
 enum ProjectRecordType {
