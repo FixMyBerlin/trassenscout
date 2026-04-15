@@ -66,7 +66,12 @@ const getSubsubsection = resolver.pipe(
     }
 
     const subsubsection = await db.subsubsection.findFirstOrThrow(query)
-    return typeSubsubsectionGeometry(subsubsection)
+    // tbd
+    // with invoke() we get a type error here when we use the return value in the client component
+    // Type assertion needed: TypeScript can't infer the discriminated union relationship
+    // between `type` and `geometry` fields, even though typeSubsubsectionGeometry ensures
+    // they match at runtime.
+    return typeSubsubsectionGeometry(subsubsection) as SubsubsectionWithPosition
   },
 )
 

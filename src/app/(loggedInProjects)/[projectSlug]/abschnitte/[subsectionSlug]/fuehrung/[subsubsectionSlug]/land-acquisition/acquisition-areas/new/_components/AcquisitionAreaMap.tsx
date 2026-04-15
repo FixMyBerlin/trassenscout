@@ -17,11 +17,7 @@ import { geometryBbox } from "@/src/core/components/Map/utils/bboxHelpers"
 import { computeBufferPolygonFeature } from "@/src/core/components/Map/utils/computeBufferPolygonFeature"
 import { Spinner } from "@/src/core/components/Spinner"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
-import type { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
-import getSubsubsection, {
-  type SubsubsectionWithPosition,
-} from "@/src/server/subsubsections/queries/getSubsubsection"
-import { bbox } from "@turf/bbox"
+import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import { featureCollection } from "@turf/helpers"
 import type { FeatureCollection, Geometry } from "geojson"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
@@ -31,7 +27,7 @@ import { computePotentialAcquisitionAreas } from "./computePotentialAcquisitionA
 import { formatPropertyValue, sortedPropertyEntries } from "./parcelFeatureProperties"
 
 type Props = {
-  subsubsection: Awaited<ReturnType<typeof getSubsubsection>>
+  subsubsection: SubsubsectionWithPosition
   bufferRadius: number
   potentialAcquisitionAreas: PotentialAcquisitionArea[]
   setPotentialAcquisitionAreas: (areas: PotentialAcquisitionArea[]) => void
@@ -66,7 +62,8 @@ export function AcquisitionAreaMap({
   potentialAcquisitionAreas,
   setPotentialAcquisitionAreas,
 }: Props) {
-  const subsubsectionEntity = subsubsection as SubsubsectionWithPosition
+  if (!subsubsection) return null
+
   const abortRef = useRef<AbortController | null>(null)
   const projectSlug = useProjectSlug()
 
@@ -83,21 +80,19 @@ export function AcquisitionAreaMap({
   } | null>(null)
 
   const subsubsectionBbox = useMemo(
-    () => geometryBbox(subsubsectionEntity.geometry),
-    [subsubsectionEntity.geometry],
+    () => geometryBbox(subsubsection.geometry),
+    [subsubsection.geometry],
   )
 
   const bufferPolygonFeature = useMemo(
-    () =>
-      computeBufferPolygonFeature(subsubsectionEntity.geometry as SupportedGeometry, bufferRadius),
-    [subsubsectionEntity.geometry, bufferRadius],
+    () => computeBufferPolygonFeature(subsubsection.geometry, bufferRadius),
+    [subsubsection.geometry, bufferRadius],
   )
 
-  // Use the buffer polygon's bbox so the WFS request covers parcels up to bufferRadius beyond the geometry.
-  const fetchBbox = useMemo(() => {
-    if (!bufferPolygonFeature) return subsubsectionBbox
-    return bbox(bufferPolygonFeature) as [number, number, number, number]
-  }, [bufferPolygonFeature, subsubsectionBbox])
+  const fetchBbox = useMemo(
+    () => geometryBbox(bufferPolygonFeature?.geometry ?? subsubsection.geometry),
+    [bufferPolygonFeature, subsubsection.geometry],
+  )
 
   const bufferOutlineData = useMemo(
     () => polygonFeatureToFeatureCollection(bufferPolygonFeature),
@@ -221,10 +216,7 @@ export function AcquisitionAreaMap({
         classHeight="h-[520px]"
         colorSchema="subsubsection"
       >
-        <BackgroundGeometryLayers
-          subsubsections={[subsubsectionEntity]}
-          colorSchema="subsubsection"
-        />
+        <BackgroundGeometryLayers subsubsections={[subsubsection]} colorSchema="subsubsection" />
         <AcquisitionAlkisParcelsLayers parcels={parcels} />
 
         <AcquisitionAreaOverlaysLayers

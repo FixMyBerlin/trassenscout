@@ -7,7 +7,7 @@ import { subsubsectionLandAcquisitionRoute } from "@/src/core/routes/subsectionR
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
 import createAcquisitionAreasFromSelection from "@/src/server/acquisitionAreas/mutations/createAcquisitionAreasFromSelection"
-import getSubsubsection from "@/src/server/subsubsections/queries/getSubsubsection"
+import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import { useMutation } from "@blitzjs/rpc"
 import clsx from "clsx"
 import { useRouter } from "next/navigation"
@@ -19,7 +19,7 @@ import { AcquisitionAreasList } from "./AcquisitionAreasList"
 import type { PotentialAcquisitionArea } from "./potentialAcquisitionAreaTypes"
 
 type Props = {
-  initialSubsubsection: Awaited<ReturnType<typeof getSubsubsection>>
+  initialSubsubsection: SubsubsectionWithPosition
 }
 
 type BufferRadiusForm = {
