@@ -1,21 +1,15 @@
 "use client"
 
 import { CreateEditReviewHistory } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordCreateEditReviewHistory"
+import { ProjectRecordCommentsSection } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordCommentsSection"
 import { ProjectRecordSummary } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordSummary"
 import { ReprocessProjectRecordButton } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ReprocessProjectRecordButton"
 import { ReprocessProjectRecordEditForm } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ReprocessProjectRecordEditForm"
-import { CommentField } from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_components/comments/CommentField"
-import { NewCommentForm } from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_components/comments/NewCommentForm"
-import { useUserCan } from "@/src/app/_components/memberships/hooks/useUserCan"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
-import createProjectRecordComment from "@/src/server/project-record-comments/mutations/createProjectRecordComment"
-import deleteProjectRecordComment from "@/src/server/project-record-comments/mutations/deleteProjectRecordComment"
-import updateProjectRecordComment from "@/src/server/project-record-comments/mutations/updateProjectRecordComment"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
-import { useSession } from "@blitzjs/auth"
-import { invalidateQuery, useMutation, useQuery } from "@blitzjs/rpc"
+import { useQuery } from "@blitzjs/rpc"
 import { useEffect, useState } from "react"
 
 export type ReprocessedProjectRecord = {
@@ -40,15 +34,6 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord }: Props) => {
     },
   )
   const [aiSuggestions, setAiSuggestions] = useState<ReprocessedProjectRecord | null>(null)
-  const session = useSession()
-  const isEditorOrAdmin = useUserCan().edit || session.role === "ADMIN"
-  const [createProjectRecordCommentMutation] = useMutation(createProjectRecordComment)
-  const [updateProjectRecordCommentMutation] = useMutation(updateProjectRecordComment)
-  const [deleteProjectRecordCommentMutation] = useMutation(deleteProjectRecordComment)
-
-  const invalidateProjectRecordQueries = () => {
-    invalidateQuery(getProjectRecord)
-  }
 
   const handleAiSuggestions = (suggestions: ReprocessedProjectRecord) => {
     setAiSuggestions(suggestions)
@@ -106,60 +91,7 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord }: Props) => {
           <CreateEditReviewHistory projectRecord={projectRecord} />
         </>
       )}
-      <div>
-        {(!!projectRecord.projectRecordComments.length || isEditorOrAdmin) && (
-          <h4 className="mb-3 font-semibold">Kommentare</h4>
-        )}
-        <ul className="flex max-w-3xl flex-col gap-4">
-          {projectRecord.projectRecordComments?.map((comment) => {
-            return (
-              <li key={comment.id}>
-                <CommentField
-                  comment={comment}
-                  commentLabel="Kommentar"
-                  mutateComment={{
-                    update: (body) =>
-                      updateProjectRecordCommentMutation(
-                        {
-                          projectSlug: projectSlug!,
-                          commentId: comment.id,
-                          body,
-                        },
-                        { onSuccess: invalidateProjectRecordQueries },
-                      ),
-                    remove: () =>
-                      deleteProjectRecordCommentMutation(
-                        {
-                          projectSlug: projectSlug!,
-                          commentId: comment.id,
-                        },
-                        { onSuccess: invalidateProjectRecordQueries },
-                      ),
-                  }}
-                />
-              </li>
-            )
-          })}
-          <IfUserCanEdit>
-            <li>
-              <NewCommentForm
-                commentLabel="Kommentar"
-                commentHelp="Hier können Sie einen Kommentar zum Protokolleintrag hinzufügen."
-                createComment={async (body) =>
-                  createProjectRecordCommentMutation(
-                    {
-                      projectSlug: projectSlug!,
-                      projectRecordId: projectRecord.id,
-                      body,
-                    },
-                    { onSuccess: invalidateProjectRecordQueries },
-                  )
-                }
-              />
-            </li>
-          </IfUserCanEdit>
-        </ul>
-      </div>
+      <ProjectRecordCommentsSection projectRecord={projectRecord} />
     </>
   )
 }
