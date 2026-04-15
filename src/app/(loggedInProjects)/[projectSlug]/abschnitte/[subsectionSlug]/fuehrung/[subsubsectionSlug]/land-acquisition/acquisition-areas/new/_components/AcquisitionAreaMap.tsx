@@ -79,38 +79,21 @@ export function AcquisitionAreaMap({
     properties: Record<string, unknown>
   } | null>(null)
 
-  const subsubsectionBbox = useMemo(
-    () => geometryBbox(subsubsection.geometry),
-    [subsubsection.geometry],
-  )
-
   const bufferPolygonFeature = useMemo(
     () => computeBufferPolygonFeature(subsubsection.geometry, bufferRadius),
     [subsubsection.geometry, bufferRadius],
   )
 
-  const fetchBbox = useMemo(
-    () => geometryBbox(bufferPolygonFeature?.geometry ?? subsubsection.geometry),
-    [bufferPolygonFeature, subsubsection.geometry],
+  const bufferOutlineData = polygonFeatureToFeatureCollection(bufferPolygonFeature)
+  const acquisitionAreasFc = potentialAcquisitionAreasToFeatureCollection(
+    potentialAcquisitionAreas,
   )
 
-  const bufferOutlineData = useMemo(
-    () => polygonFeatureToFeatureCollection(bufferPolygonFeature),
-    [bufferPolygonFeature],
-  )
-
-  const acquisitionAreasFc = useMemo(
-    () => potentialAcquisitionAreasToFeatureCollection(potentialAcquisitionAreas),
-    [potentialAcquisitionAreas],
-  )
-
-  const initialViewState = useMemo(() => {
-    const [w, s, e, n] = subsubsectionBbox
-    return {
-      bounds: [w, s, e, n] as [number, number, number, number],
-      fitBoundsOptions: { padding: 40 },
-    }
-  }, [subsubsectionBbox])
+  const [w, s, e, n] = geometryBbox(subsubsection.geometry)
+  const initialViewState = {
+    bounds: [w, s, e, n] as [number, number, number, number],
+    fitBoundsOptions: { padding: 40 },
+  }
 
   useEffect(() => {
     setContextParcel(null)
@@ -134,6 +117,9 @@ export function AcquisitionAreaMap({
         setLoading(true)
         setError(null)
 
+        const fetchBbox = geometryBbox(
+          bufferPolygonFeature?.geometry ?? subsubsection.geometry,
+        )
         const url = buildAlkisWfsProxyUrl(projectSlug, fetchBbox)
         const res = await fetch(url, {
           signal: controller.signal,
@@ -169,7 +155,7 @@ export function AcquisitionAreaMap({
 
     void fetchParcels()
     return () => controller.abort()
-  }, [projectSlug, fetchBbox])
+  }, [projectSlug, bufferPolygonFeature, subsubsection.geometry])
 
   const handleParcelClick = useCallback(
     (event: MapLayerMouseEvent) => {
