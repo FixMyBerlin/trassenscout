@@ -82,7 +82,8 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
                   )}?acquisitionAreaId=${projectRecord.acquisitionArea.id}` as Route
                 }
               >
-                {projectRecord.acquisitionArea.id} ({projectRecord.acquisitionArea.parcel.alkisParcelId})
+                {projectRecord.acquisitionArea.id} (
+                {projectRecord.acquisitionArea.parcel.alkisParcelId})
               </Link>
             ) : (
               <span className="col-span-5">Keine Angabe</span>

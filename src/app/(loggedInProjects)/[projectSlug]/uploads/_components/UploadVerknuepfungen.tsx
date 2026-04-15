@@ -1,7 +1,7 @@
 import { Link } from "@/src/core/components/links"
-import { subsubsectionLandAcquisitionRoute } from "@/src/core/routes/subsectionRoutes"
 import { longTitle, shortTitle } from "@/src/core/components/text/titles"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
+import { subsubsectionLandAcquisitionRoute } from "@/src/core/routes/subsectionRoutes"
 import { Route } from "next"
 
 import { formatBerlinTime } from "@/src/core/utils/formatBerlinTime"

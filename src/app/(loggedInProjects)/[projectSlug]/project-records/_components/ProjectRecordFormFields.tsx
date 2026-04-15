@@ -161,12 +161,7 @@ export const ProjectRecordFormFields = ({
     if (!stillCompatible) {
       setValue("acquisitionAreaId", null, { shouldDirty: true })
     }
-  }, [
-    filteredAcquisitionAreas,
-    landAcquisitionModuleEnabled,
-    selectedAcquisitionAreaId,
-    setValue,
-  ])
+  }, [filteredAcquisitionAreas, landAcquisitionModuleEnabled, selectedAcquisitionAreaId, setValue])
 
   return (
     <>
@@ -181,7 +176,11 @@ export const ProjectRecordFormFields = ({
             </div>
           </div>
 
-          <div className={landAcquisitionModuleEnabled ? "grid grid-cols-3 gap-4" : "grid grid-cols-2 gap-4"}>
+          <div
+            className={
+              landAcquisitionModuleEnabled ? "grid grid-cols-3 gap-4" : "grid grid-cols-2 gap-4"
+            }
+          >
             <LabeledSelect
               optional
               name="subsectionId"

@@ -123,17 +123,14 @@ const UploadSubsectionFields = ({
     if (!stillCompatible) {
       setValue("acquisitionAreaId", null, { shouldDirty: true })
     }
-  }, [
-    filteredAcquisitionAreas,
-    landAcquisitionModuleEnabled,
-    selectedAcquisitionAreaId,
-    setValue,
-  ])
+  }, [filteredAcquisitionAreas, landAcquisitionModuleEnabled, selectedAcquisitionAreaId, setValue])
 
   return (
     <div
       className={
-        landAcquisitionModuleEnabled ? "grid grid-cols-1 gap-4 sm:grid-cols-3" : "grid grid-cols-1 gap-4 sm:grid-cols-2"
+        landAcquisitionModuleEnabled
+          ? "grid grid-cols-1 gap-4 sm:grid-cols-3"
+          : "grid grid-cols-1 gap-4 sm:grid-cols-2"
       }
     >
       <LabeledSelect

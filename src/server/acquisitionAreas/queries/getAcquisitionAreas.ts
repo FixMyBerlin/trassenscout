@@ -42,7 +42,11 @@ export default resolver.pipe(
           },
         },
       },
-      orderBy: [{ subsubsection: { subsection: { slug: "asc" } } }, { subsubsection: { slug: "asc" } }, { id: "asc" }],
+      orderBy: [
+        { subsubsection: { subsection: { slug: "asc" } } },
+        { subsubsection: { slug: "asc" } },
+        { id: "asc" },
+      ],
     })
   },
 )

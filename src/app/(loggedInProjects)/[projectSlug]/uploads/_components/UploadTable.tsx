@@ -13,9 +13,9 @@ import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import { Tooltip } from "@/src/core/components/Tooltip/Tooltip"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import {
-  subsubsectionLandAcquisitionRoute,
   subsectionDashboardRoute,
   subsubsectionDashboardRoute,
+  subsubsectionLandAcquisitionRoute,
 } from "@/src/core/routes/subsectionRoutes"
 import { uploadEditRoute } from "@/src/core/routes/uploadRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
@@ -158,12 +158,12 @@ const UploadTableRow = ({
             {upload.subsection &&
               !upload.Subsubsection &&
               !(landAcquisitionModuleEnabled && upload.acquisitionArea) && (
-              <li>
-                <Link href={subsectionDashboardRoute(projectSlug, upload.subsection.slug)}>
-                  Planungsabschnitt: {shortTitle(upload.subsection.slug)}
-                </Link>
-              </li>
-            )}
+                <li>
+                  <Link href={subsectionDashboardRoute(projectSlug, upload.subsection.slug)}>
+                    Planungsabschnitt: {shortTitle(upload.subsection.slug)}
+                  </Link>
+                </li>
+              )}
             {upload.Subsubsection && !(landAcquisitionModuleEnabled && upload.acquisitionArea) && (
               <li>
                 <Link
