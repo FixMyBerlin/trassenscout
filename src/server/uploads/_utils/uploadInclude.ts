@@ -27,4 +27,25 @@ export const uploadWithSubsectionsInclude = {
       lastName: true,
     },
   },
+  project: {
+    select: {
+      landAcquisitionModuleEnabled: true,
+    },
+  },
+  acquisitionArea: {
+    select: {
+      id: true,
+      subsubsection: {
+        select: {
+          slug: true,
+          subsection: { select: { slug: true } },
+        },
+      },
+      parcel: {
+        select: {
+          alkisParcelId: true,
+        },
+      },
+    },
+  },
 } as const

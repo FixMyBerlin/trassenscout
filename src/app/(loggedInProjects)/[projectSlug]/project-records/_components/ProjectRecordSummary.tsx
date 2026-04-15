@@ -5,10 +5,12 @@ import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlu
 import { getFullname } from "@/src/app/_components/users/utils/getFullname"
 import { Link, linkStyles } from "@/src/core/components/links"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
+import { subsubsectionLandAcquisitionRoute } from "@/src/core/routes/subsectionRoutes"
 import { projectRecordUploadEditRoute } from "@/src/core/routes/uploadRoutes"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
 import { format } from "date-fns"
 import { de } from "date-fns/locale"
+import { Route } from "next"
 import { twJoin } from "tailwind-merge"
 
 type Props = {
@@ -64,6 +66,28 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
           </Link>
         ) : (
           <span className="col-span-5">Keine Angabe</span>
+        )}
+
+        {projectRecord.project.landAcquisitionModuleEnabled && (
+          <>
+            <div className="text-gray-500">Dealfläche: </div>
+            {projectRecord.acquisitionArea ? (
+              <Link
+                className="col-span-5"
+                href={
+                  `${subsubsectionLandAcquisitionRoute(
+                    projectRecord.project.slug,
+                    projectRecord.acquisitionArea.subsubsection.subsection.slug,
+                    projectRecord.acquisitionArea.subsubsection.slug,
+                  )}?acquisitionAreaId=${projectRecord.acquisitionArea.id}` as Route
+                }
+              >
+                {projectRecord.acquisitionArea.id} ({projectRecord.acquisitionArea.parcel.alkisParcelId})
+              </Link>
+            ) : (
+              <span className="col-span-5">Keine Angabe</span>
+            )}
+          </>
         )}
       </div>
 

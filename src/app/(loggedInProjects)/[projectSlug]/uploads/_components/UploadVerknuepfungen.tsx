@@ -1,13 +1,24 @@
 import { Link } from "@/src/core/components/links"
+import { subsubsectionLandAcquisitionRoute } from "@/src/core/routes/subsectionRoutes"
 import { longTitle, shortTitle } from "@/src/core/components/text/titles"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
+import { Route } from "next"
 
 import { formatBerlinTime } from "@/src/core/utils/formatBerlinTime"
 
 type Props = {
   projectSlug: string
+  landAcquisitionModuleEnabled?: boolean
   subsection: { slug: string } | null
   subsubsection: { slug: string } | null
+  acquisitionArea: {
+    id: number
+    subsubsection: {
+      slug: string
+      subsection: { slug: string }
+    }
+    parcel: { alkisParcelId: string }
+  } | null
   projectRecords: { id: number; title: string; date: Date | null }[] | null
   projectRecordEmail: { createdAt: Date } | null
   surveyResponse: { id: number; surveySession: { survey: { slug: string } } } | null
@@ -16,8 +27,10 @@ type Props = {
 
 export const UploadVerknuepfungen = ({
   projectSlug,
+  landAcquisitionModuleEnabled = false,
   subsection,
   subsubsection,
+  acquisitionArea,
   projectRecords,
   projectRecordEmail,
   surveyResponse,
@@ -26,11 +39,13 @@ export const UploadVerknuepfungen = ({
   const hasSubsection = subsection !== null
   const hasSubsubsection = subsubsection !== null
   const hasProjectRecords = projectRecords != null && projectRecords.length > 0
+  const hasAcquisitionArea = landAcquisitionModuleEnabled && acquisitionArea !== null
   const hasProjectRecordEmail = projectRecordEmail !== null
   const hasSurveyResponse = surveyResponse !== null
   const hasRelations =
     hasSubsection ||
     hasSubsubsection ||
+    hasAcquisitionArea ||
     hasProjectRecords ||
     hasProjectRecordEmail ||
     hasSurveyResponse
@@ -40,27 +55,43 @@ export const UploadVerknuepfungen = ({
       <h4 className="text-sm font-medium">Verknüpfungen:</h4>
       {hasRelations ? (
         <ul className="mt-1.5 list-inside list-disc space-y-0.5 pl-4 text-sm">
-          {hasSubsection && (
+          {hasSubsection && !hasSubsubsection && !hasAcquisitionArea && (
             <li>
               <strong className="font-medium">Planungsabschnitt: </strong>
               {shortTitle(subsection!.slug)} ({subsection!.slug})
             </li>
           )}
-          {hasSubsubsection && (
+          {hasSubsubsection && !hasAcquisitionArea && (
             <li>
               <strong className="font-medium">Eintrag:</strong> {longTitle(subsubsection!.slug)}
+            </li>
+          )}
+          {hasAcquisitionArea && (
+            <li>
+              <strong className="font-medium">Dealfläche:</strong>{" "}
+              <Link
+                href={
+                  `${subsubsectionLandAcquisitionRoute(
+                    projectSlug,
+                    acquisitionArea!.subsubsection.subsection.slug,
+                    acquisitionArea!.subsubsection.slug,
+                  )}?acquisitionAreaId=${acquisitionArea!.id}` as Route
+                }
+              >
+                {acquisitionArea!.id} ({acquisitionArea!.parcel.alkisParcelId})
+              </Link>
             </li>
           )}
           {hasProjectRecords && (
             <li>
               <em className="font-medium">Protokolleinträge: </em>
               {projectRecords!.map((record, index) => (
-                <>
-                  <Link key={record.id} href={projectRecordDetailRoute(projectSlug, record.id)}>
+                <span key={record.id}>
+                  <Link href={projectRecordDetailRoute(projectSlug, record.id)}>
                     {record.title} {record.date && formatBerlinTime(record.date, "P")}
                   </Link>
                   {index < projectRecords!.length - 1 && ", "}
-                </>
+                </span>
               ))}
             </li>
           )}

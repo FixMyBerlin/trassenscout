@@ -115,6 +115,7 @@ export const EditProjectRecordForm = ({
         <ProjectRecordFormFields
           projectSlug={projectSlug}
           splitView={needsReview}
+          landAcquisitionModuleEnabled={projectRecord.project.landAcquisitionModuleEnabled}
           emailSource={projectRecord.projectRecordEmail}
         />
 

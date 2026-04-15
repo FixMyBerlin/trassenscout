@@ -62,6 +62,7 @@ export default resolver.pipe(
           select: {
             aiEnabled: true,
             slug: true,
+            landAcquisitionModuleEnabled: true,
           },
         },
         surveyResponse: {
@@ -69,6 +70,22 @@ export default resolver.pipe(
             surveySession: {
               include: {
                 survey: { select: { slug: true } },
+              },
+            },
+          },
+        },
+        acquisitionArea: {
+          select: {
+            id: true,
+            subsubsection: {
+              select: {
+                slug: true,
+                subsection: { select: { slug: true } },
+              },
+            },
+            parcel: {
+              select: {
+                alkisParcelId: true,
               },
             },
           },

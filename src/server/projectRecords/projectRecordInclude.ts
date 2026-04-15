@@ -13,6 +13,22 @@ export const projectRecordInclude = {
       },
     },
   },
+  acquisitionArea: {
+    select: {
+      id: true,
+      subsubsection: {
+        select: {
+          slug: true,
+          subsection: { select: { slug: true } },
+        },
+      },
+      parcel: {
+        select: {
+          alkisParcelId: true,
+        },
+      },
+    },
+  },
   uploads: {
     orderBy: { id: "desc" },
     select: {
