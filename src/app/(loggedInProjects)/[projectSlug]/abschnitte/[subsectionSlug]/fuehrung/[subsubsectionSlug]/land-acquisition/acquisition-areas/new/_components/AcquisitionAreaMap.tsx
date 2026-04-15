@@ -85,15 +85,7 @@ export function AcquisitionAreaMap({
   )
 
   const bufferOutlineData = polygonFeatureToFeatureCollection(bufferPolygonFeature)
-  const acquisitionAreasFc = potentialAcquisitionAreasToFeatureCollection(
-    potentialAcquisitionAreas,
-  )
-
-  const [w, s, e, n] = geometryBbox(subsubsection.geometry)
-  const initialViewState = {
-    bounds: [w, s, e, n] as [number, number, number, number],
-    fitBoundsOptions: { padding: 40 },
-  }
+  const acquisitionAreasFc = potentialAcquisitionAreasToFeatureCollection(potentialAcquisitionAreas)
 
   useEffect(() => {
     setContextParcel(null)
@@ -117,9 +109,7 @@ export function AcquisitionAreaMap({
         setLoading(true)
         setError(null)
 
-        const fetchBbox = geometryBbox(
-          bufferPolygonFeature?.geometry ?? subsubsection.geometry,
-        )
+        const fetchBbox = geometryBbox(bufferPolygonFeature?.geometry ?? subsubsection.geometry)
         const url = buildAlkisWfsProxyUrl(projectSlug, fetchBbox)
         const res = await fetch(url, {
           signal: controller.signal,
@@ -194,7 +184,10 @@ export function AcquisitionAreaMap({
     <div className="relative w-full">
       <BaseMap
         id="mainMap"
-        initialViewState={initialViewState}
+        initialViewState={{
+          bounds: geometryBbox(bufferPolygonFeature?.geometry ?? subsubsection.geometry),
+          fitBoundsOptions: { padding: 40 },
+        }}
         interactiveLayerIds={getAcquisitionClickTargetLayerIds()}
         onClick={handleParcelClick}
         onContextMenu={handleContextMenu}
