@@ -11,7 +11,7 @@ import {
   potentialAcquisitionAreasToFeatureCollection,
 } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/[subsubsectionSlug]/land-acquisition/acquisition-areas/new/_components/potentialAcquisitionAreaGeoJson"
 import { PotentialAcquisitionArea } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/[subsubsectionSlug]/land-acquisition/acquisition-areas/new/_components/potentialAcquisitionAreaTypes"
-import { SubsubsectionGeometryLayers } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/[subsubsectionSlug]/land-acquisition/acquisition-areas/new/_components/SubsubsectionGeometryLayers"
+import { BackgroundGeometryLayers } from "@/src/core/components/Map/BackgroundGeometryLayers"
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
 import { geometryBbox } from "@/src/core/components/Map/utils/bboxHelpers"
 import { computeBufferPolygonFeature } from "@/src/core/components/Map/utils/computeBufferPolygonFeature"
@@ -221,9 +221,11 @@ export function AcquisitionAreaMap({
         classHeight="h-[520px]"
         colorSchema="subsubsection"
       >
+        <BackgroundGeometryLayers
+          subsubsections={[subsubsectionEntity]}
+          colorSchema="subsubsection"
+        />
         <AcquisitionAlkisParcelsLayers parcels={parcels} />
-
-        <SubsubsectionGeometryLayers subsubsections={[subsubsectionEntity]} />
 
         <AcquisitionAreaOverlaysLayers
           bufferOutlineData={bufferOutlineData}
