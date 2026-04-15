@@ -10,7 +10,7 @@ import getProjectRecords from "@/src/server/projectRecords/queries/getProjectRec
 
 import getProjectRecordsByAcquisitionArea from "@/src/server/projectRecords/queries/getProjectRecordsByAcquisitionArea"
 import getProjectRecordsBySubsubsection from "@/src/server/projectRecords/queries/getProjectRecordsBySubsubsection"
-import { DocumentIcon } from "@heroicons/react/24/outline"
+import { ChatBubbleBottomCenterTextIcon, DocumentIcon } from "@heroicons/react/24/outline"
 import clsx from "clsx"
 import { format } from "date-fns"
 import { de } from "date-fns/locale"
@@ -138,10 +138,20 @@ export const ProjectRecordsTable = ({
                         )}
                       </div>
                     </td>
-                    <td className={clsx(spaceClasses, "text-right align-top tabular-nums")}>
+                    <td
+                      className={clsx(
+                        spaceClasses,
+                        "flex items-center justify-end gap-2 tabular-nums @lg:gap-4",
+                      )}
+                    >
                       <span className="inline-flex items-center justify-end gap-1 text-xs">
                         <DocumentIcon className="size-4 shrink-0" />
                         {projectRecord.uploads?.length ?? 0}
+                      </span>
+                      <span className="inline-flex items-center justify-end gap-1 text-xs">
+                        <ChatBubbleBottomCenterTextIcon className="size-4 shrink-0" />
+                        {/* @ts-ignore todo I am not sure why ts is complaining here   */}
+                        {projectRecord.projectRecordComments?.length ?? 0}
                       </span>
                     </td>
                   </tr>
