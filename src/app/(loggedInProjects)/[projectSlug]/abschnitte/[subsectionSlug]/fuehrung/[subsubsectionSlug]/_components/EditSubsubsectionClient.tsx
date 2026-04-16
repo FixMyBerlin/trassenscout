@@ -1,5 +1,6 @@
 "use client"
 
+import { SubsubsectionForm } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/[subsubsectionSlug]/_components/SubsubsectionForm"
 import { getDate } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/splitStartAt"
 import { BackLink } from "@/src/core/components/forms/BackLink"
 import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
@@ -24,7 +25,6 @@ import { SubsubsectionFormSchema } from "@/src/server/subsubsections/schema"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/navigation"
 import { z } from "zod"
-import { SubsubsectionForm } from "../../../_components/SubsubsectionForm"
 
 type Props = {
   initialSubsubsection: Awaited<ReturnType<typeof getSubsubsection>>

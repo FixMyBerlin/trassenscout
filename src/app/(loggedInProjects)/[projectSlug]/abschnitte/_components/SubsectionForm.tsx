@@ -21,8 +21,9 @@ import { PriorityEnum } from "@prisma/client"
 import { Route } from "next"
 import { Suspense } from "react"
 import { z } from "zod"
-import { LabeledRadiobuttonGroupLabelPos } from "../[subsectionSlug]/fuehrung/_components/LabeledRadiobuttonGroupLabelPos"
-import { LinkWithFormDirtyConfirm } from "../[subsectionSlug]/fuehrung/_components/LinkWithFormDirtyConfirm"
+
+import { LinkWithFormDirtyConfirm } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/[subsubsectionSlug]/_components/LinkWithFormDirtyConfirm"
+import { LabeledRadiobuttonGroupLabelPos } from "@/src/core/components/forms/TrafficLoadGroup"
 import { getPriorityTranslation } from "../_utils/getPriorityTranslation"
 import { SubsectionGeometryInput } from "./SubsectionGeometryInput"
 

@@ -1,4 +1,4 @@
-import { NewAcquisitionAreasClient } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/[subsubsectionSlug]/land-acquisition/acquisition-areas/new/_components/NewAcquisitionAreasClient"
+import { NewAcquisitionAreasClient } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/[subsubsectionSlug]/land-acquisition/acquisition-areas/[acquisitionAreaId]/_components/NewAcquisitionAreasClient"
 import { invoke } from "@/src/blitz-server"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { longTitle, seoIndexTitle } from "@/src/core/components/text"

@@ -1,6 +1,7 @@
 "use client"
 
-import { AcquisitionAreaGeometryInput } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/[subsubsectionSlug]/land-acquisition/acquisition-areas/_components/AcquisitionAreaGeometryInput"
+import { LinkWithFormDirtyConfirm } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/[subsubsectionSlug]/_components/LinkWithFormDirtyConfirm"
+import { AcquisitionAreaGeometryInput } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/[subsubsectionSlug]/land-acquisition/acquisition-areas/[acquisitionAreaId]/_components/AcquisitionAreaGeometryInput"
 import { Form, FormProps, LabeledSelect, LabeledTextareaField } from "@/src/core/components/forms"
 import { createFormOptions } from "@/src/core/components/forms/_utils/createFormOptions"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
@@ -14,7 +15,6 @@ import { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
 import { useQuery } from "@blitzjs/rpc"
 import { Route } from "next"
 import { z } from "zod"
-import { LinkWithFormDirtyConfirm } from "../../../../_components/LinkWithFormDirtyConfirm"
 
 export const AcquisitionAreaFormSchema = z.object({
   description: z.string().nullish(),
