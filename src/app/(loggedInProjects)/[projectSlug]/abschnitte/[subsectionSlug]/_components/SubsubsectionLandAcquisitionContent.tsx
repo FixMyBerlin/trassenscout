@@ -11,6 +11,7 @@ import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogD
 import { FormSuccess } from "@/src/core/components/forms/FormSuccess"
 import { SelectListbox } from "@/src/core/components/forms/SelectListbox"
 import { blueButtonStyles, Link } from "@/src/core/components/links"
+import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import {
   acquisitionAreaEditRoute,
   acquisitionAreaNewRoute,
@@ -19,13 +20,13 @@ import { subsubsectionUploadEditRoute } from "@/src/core/routes/uploadRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
 import getAcquisitionAreasBySubsubsection from "@/src/server/acquisitionAreas/queries/getAcquisitionAreasBySubsubsection"
-import getProjectRecordsBySubsubsection from "@/src/server/projectRecords/queries/getProjectRecordsBySubsubsection"
-import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
+import getProjectRecordsByAcquisitionArea from "@/src/server/projectRecords/queries/getProjectRecordsByAcquisitionArea"
+import getUploadsByAcquisitionArea from "@/src/server/uploads/queries/getUploadsByAcquisitionArea"
 import { useQuery } from "@blitzjs/rpc"
 import { PlusIcon } from "@heroicons/react/16/solid"
 import { GeometryTypeEnum } from "@prisma/client"
 import clsx from "clsx"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import { SubsubsectionPanel } from "./SubsubsectionPanel"
 
 type Props = {
@@ -63,48 +64,30 @@ export const SubsubsectionLandAcquisitionContent = ({
     (acquisitionArea) => acquisitionArea.id === acquisitionAreaId,
   )
 
-  const [allProjectRecords = [], { refetch: refetchProjectRecords }] = useQuery(
-    getProjectRecordsBySubsubsection,
+  const [projectRecords, { refetch: refetchProjectRecords }] = useQuery(
+    getProjectRecordsByAcquisitionArea,
     {
       projectSlug,
-      subsubsectionId,
+      acquisitionAreaId: selectedAcquisitionArea?.id ?? undefined,
     },
     {
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
+      enabled: Boolean(selectedAcquisitionArea),
     },
   )
 
-  const [{ uploads: allUploads = [] } = { uploads: [] }, { refetch: refetchUploads }] = useQuery(
-    getUploadsWithSubsections,
+  const [uploads, { refetch: refetchUploads }] = useQuery(
+    getUploadsByAcquisitionArea,
     {
       projectSlug,
-      where: {
-        subsubsectionId,
-      },
+      acquisitionAreaId: selectedAcquisitionArea?.id ?? undefined,
     },
     {
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
+      enabled: Boolean(selectedAcquisitionArea),
     },
-  )
-
-  const projectRecords = useMemo(
-    () =>
-      selectedAcquisitionArea
-        ? allProjectRecords.filter(
-            (projectRecord) => projectRecord.acquisitionAreaId === selectedAcquisitionArea.id,
-          )
-        : [],
-    [allProjectRecords, selectedAcquisitionArea],
-  )
-
-  const uploads = useMemo(
-    () =>
-      selectedAcquisitionArea
-        ? allUploads.filter((upload) => upload.acquisitionAreaId === selectedAcquisitionArea.id)
-        : [],
-    [allUploads, selectedAcquisitionArea],
   )
 
   useEffect(() => {
@@ -237,7 +220,7 @@ export const SubsubsectionLandAcquisitionContent = ({
                 {showSuccess && (
                   <FormSuccess message="Protokolleintrag erfolgreich erstellt" show={showSuccess} />
                 )}
-                {projectRecords.length > 0 ? (
+                {projectRecords && projectRecords?.length > 0 ? (
                   <ProjectRecordsTable
                     projectRecords={projectRecords}
                     openLinksInNewTab
@@ -245,9 +228,7 @@ export const SubsubsectionLandAcquisitionContent = ({
                     bleed={false}
                   />
                 ) : (
-                  <p className="my-4 text-base text-gray-500">
-                    Es wurden noch keine Protokolleinträge eingetragen.
-                  </p>
+                  <ZeroCase small visible name="Protokolleinträge" />
                 )}
                 <IfUserCanEdit>
                   <button
@@ -281,13 +262,9 @@ export const SubsubsectionLandAcquisitionContent = ({
 
               <section className="mt-10 space-y-3">
                 <h2 className="text-lg font-semibold text-gray-700 sm:text-lg">Dokumente</h2>
-                {!uploads.length && (
-                  <p className="my-4 text-base text-gray-500">
-                    Es wurden noch keine Dokumente eingetragen.
-                  </p>
-                )}
+                {!uploads?.length && <ZeroCase small visible name="Dokumente" />}
                 <div className="grid grid-cols-2 gap-3">
-                  {uploads.map((upload) => (
+                  {uploads?.map((upload) => (
                     <UploadPreviewClickable
                       key={upload.id}
                       uploadId={upload.id}

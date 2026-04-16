@@ -22,57 +22,14 @@ export default resolver.pipe(
       orderBy: { date: "desc" },
       include: {
         projectRecordTopics: true,
-        subsection: true,
-        subsubsection: {
-          include: {
-            subsection: {
-              select: { slug: true },
-            },
-          },
-        },
-        acquisitionArea: {
-          select: {
-            id: true,
-            subsubsection: {
-              select: {
-                slug: true,
-                subsection: { select: { slug: true } },
-              },
-            },
-            parcel: {
-              select: {
-                alkisParcelId: true,
-              },
-            },
-          },
-        },
         uploads: {
-          orderBy: { id: "desc" },
           select: {
             id: true,
-            title: true,
-            externalUrl: true,
           },
         },
-        author: {
+        projectRecordComments: {
           select: {
             id: true,
-            firstName: true,
-            lastName: true,
-          },
-        },
-        updatedBy: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-          },
-        },
-        reviewedBy: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
           },
         },
         assignedTo: {
