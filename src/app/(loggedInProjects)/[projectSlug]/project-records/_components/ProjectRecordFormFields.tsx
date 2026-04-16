@@ -253,6 +253,7 @@ export const ProjectRecordFormFields = ({
               <UploadPreviewClickable
                 key={upload.id}
                 uploadId={upload.id}
+                upload={upload}
                 projectSlug={projectSlug}
                 size="grid"
                 onDeleted={async () => {

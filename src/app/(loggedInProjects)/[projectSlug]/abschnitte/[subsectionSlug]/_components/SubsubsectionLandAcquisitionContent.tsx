@@ -262,6 +262,7 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
                     <UploadPreviewClickable
                       key={upload.id}
                       uploadId={upload.id}
+                      upload={upload}
                       projectSlug={projectSlug}
                       size="grid"
                       editUrl={subsubsectionUploadEditRoute(

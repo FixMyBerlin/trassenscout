@@ -82,6 +82,7 @@ export const EditableSurveyResponseUploadsSection = ({
               <UploadPreviewClickable
                 key={upload.id}
                 uploadId={upload.id}
+                upload={upload}
                 projectSlug={projectSlug}
                 size="grid"
                 editUrl={surveyResponseUploadEditRoute(
@@ -106,6 +107,7 @@ export const EditableSurveyResponseUploadsSection = ({
             <UploadPreviewClickable
               key={upload.id}
               uploadId={upload.id}
+              upload={upload}
               projectSlug={projectSlug}
               size="grid"
               editUrl={surveyResponseUploadEditRoute(projectSlug, surveyId, responseId, upload.id)}

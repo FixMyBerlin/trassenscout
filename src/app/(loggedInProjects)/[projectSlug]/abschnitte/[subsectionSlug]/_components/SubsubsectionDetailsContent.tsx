@@ -292,6 +292,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
             <UploadPreviewClickable
               key={upload.id}
               uploadId={upload.id}
+              upload={upload}
               projectSlug={projectSlug}
               size="grid"
               editUrl={subsubsectionUploadEditRoute(

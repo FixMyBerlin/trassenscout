@@ -116,6 +116,7 @@ const UploadTableRow = ({
           <div className="-mt-0.5 -mb-0.5 -ml-1">
             <UploadPreviewClickable
               uploadId={upload.id}
+              upload={upload}
               projectSlug={projectSlug}
               size="table"
               editUrl={uploadEditRoute(projectSlug, upload.id)}
