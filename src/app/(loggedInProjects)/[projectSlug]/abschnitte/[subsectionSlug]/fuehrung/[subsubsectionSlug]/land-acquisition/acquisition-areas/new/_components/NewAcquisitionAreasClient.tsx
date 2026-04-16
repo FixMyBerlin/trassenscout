@@ -1,6 +1,6 @@
 "use client"
 
-import { FormSuccess } from "@/src/core/components/forms/FormSuccess"
+import { Form } from "@/src/core/components/forms"
 import { LabeledTextField } from "@/src/core/components/forms/LabeledTextField"
 import { blueButtonStyles } from "@/src/core/components/links"
 import { subsubsectionLandAcquisitionRoute } from "@/src/core/routes/subsectionRoutes"
@@ -12,7 +12,7 @@ import { useMutation } from "@blitzjs/rpc"
 import clsx from "clsx"
 import { useRouter } from "next/navigation"
 import { useMemo, useState } from "react"
-import { FormProvider, useForm } from "react-hook-form"
+import { useFormContext } from "react-hook-form"
 import { MapProvider } from "react-map-gl/maplibre"
 import { AcquisitionAreaMap } from "./AcquisitionAreaMap"
 import { AcquisitionAreasList } from "./AcquisitionAreasList"
@@ -24,6 +24,50 @@ type Props = {
 
 type BufferRadiusForm = {
   bufferRadiusInput: string
+}
+
+type BufferRadiusControlsProps = {
+  onApplyRadius: (radius: number) => void
+}
+
+function BufferRadiusControls({ onApplyRadius }: BufferRadiusControlsProps) {
+  const form = useFormContext<BufferRadiusForm>()
+
+  const applyBufferRadius = () => {
+    const raw = form.getValues("bufferRadiusInput")
+    const v = Number.parseFloat(String(raw).replace(",", "."))
+    if (!Number.isFinite(v) || v < 0) return
+    onApplyRadius(v)
+    form.setValue("bufferRadiusInput", String(v))
+  }
+
+  return (
+    <div className="mb-4 flex flex-col gap-2">
+      <div className="min-w-0 flex-1">
+        <LabeledTextField
+          name="bufferRadiusInput"
+          label="Buffer-Radius um den Eintrag (m)"
+          type="number"
+          min={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault()
+              applyBufferRadius()
+            }
+          }}
+        />
+      </div>
+      <div>
+        <button
+          type="button"
+          className={clsx(blueButtonStyles, "shrink-0")}
+          onClick={applyBufferRadius}
+        >
+          Übernehmen
+        </button>
+      </div>
+    </div>
+  )
 }
 
 export function NewAcquisitionAreasClient({ initialSubsubsection }: Props) {
@@ -41,22 +85,10 @@ export function NewAcquisitionAreasClient({ initialSubsubsection }: Props) {
   const [showSuccess, setShowSuccess] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
 
-  const form = useForm<BufferRadiusForm>({
-    defaultValues: { bufferRadiusInput: "20" },
-  })
-
   const selectedAcquisitionAreas = useMemo(
     () => potentialAcquisitionAreas.filter((acquisitionArea) => acquisitionArea.selected),
     [potentialAcquisitionAreas],
   )
-
-  const applyBufferRadius = () => {
-    const raw = form.getValues("bufferRadiusInput")
-    const v = Number.parseFloat(String(raw).replace(",", "."))
-    if (!Number.isFinite(v) || v < 0) return
-    setBufferRadius(v)
-    form.setValue("bufferRadiusInput", String(v))
-  }
 
   const handleCreateAcquisitionAreas = async () => {
     if (!selectedAcquisitionAreas.length) return
@@ -115,50 +147,18 @@ export function NewAcquisitionAreasClient({ initialSubsubsection }: Props) {
         </MapProvider>
       </div>
       <aside className="w-full shrink-0 rounded-md border border-gray-200 bg-white p-4 shadow-xs lg:w-80">
-        <FormProvider {...form}>
-          <div className="mb-4 flex flex-col gap-2">
-            <div className="min-w-0 flex-1">
-              <LabeledTextField
-                name="bufferRadiusInput"
-                label="Buffer-Radius um den Eintrag (m)"
-                type="number"
-                min={0}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault()
-                    applyBufferRadius()
-                  }
-                }}
-              />
-            </div>
-            <div>
-              <button
-                type="button"
-                className={clsx(blueButtonStyles, "shrink-0")}
-                onClick={applyBufferRadius}
-              >
-                Übernehmen
-              </button>
-            </div>
-          </div>
-        </FormProvider>
+        <Form
+          initialValues={{ bufferRadiusInput: "20" }}
+          submitText="Dealflächen erstellen"
+          onSubmit={handleCreateAcquisitionAreas}
+        >
+          <BufferRadiusControls onApplyRadius={setBufferRadius} />
+        </Form>
         <div className="mb-4 space-y-3">
           <p className="text-sm text-gray-500">
             {selectedAcquisitionAreas.length} von {potentialAcquisitionAreas.length} Dealflächen
             ausgewählt
           </p>
-          <FormSuccess message="Dealflächen erfolgreich erstellt" show={showSuccess} />
-          {submitError ? <p className="text-sm text-red-600">{submitError}</p> : null}
-          <button
-            type="button"
-            className={clsx(blueButtonStyles, "w-full")}
-            onClick={() => {
-              void handleCreateAcquisitionAreas()
-            }}
-            disabled={isLoading || selectedAcquisitionAreas.length === 0}
-          >
-            {isLoading ? "Dealflächen werden erstellt..." : "Dealflächen erstellen"}
-          </button>
         </div>
         <AcquisitionAreasList
           potentialAcquisitionAreas={potentialAcquisitionAreas}
