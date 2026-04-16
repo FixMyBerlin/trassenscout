@@ -17,7 +17,6 @@ export const validateAcquisitionAreaInput = async ({
   await db.subsubsection.findFirstOrThrow({
     where: {
       id: subsubsectionId,
-      type: { in: ["LINE", "POLYGON"] },
       subsection: {
         project: {
           slug: projectSlug,
