@@ -48,7 +48,7 @@ export default async function ProjectRecordsNeedsReviewPage({
       ) : (
         <>
           <ProjectRecordsNeedsReviewInfoBanner />
-          <ProjectRecordsTable projectRecords={projectRecords} withSubsection withSubsubsection />
+          <ProjectRecordsTable projectRecords={projectRecords} />
         </>
       )}
     </>
