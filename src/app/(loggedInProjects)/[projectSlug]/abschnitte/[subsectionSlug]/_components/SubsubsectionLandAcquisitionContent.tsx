@@ -247,8 +247,6 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
                     await refetchProjectRecords()
                   }}
                   initialValues={{
-                    subsectionId,
-                    subsubsectionId,
                     acquisitionAreaId: selectedAcquisitionArea.id,
                   }}
                 />
