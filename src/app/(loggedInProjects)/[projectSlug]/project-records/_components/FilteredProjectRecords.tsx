@@ -39,7 +39,7 @@ export const FilteredProjectRecords = ({ projectRecords, highlightId }: Props) =
             </button>
           </div>
           <p className="mt-2 text-sm text-gray-500">
-            Tags, Titel, Inhalte und Abschnitte durchsuchen
+            Tags, Titel, Inhalte, Abschnitte und Zugewiesene durchsuchen
           </p>
         </form>
         <button
@@ -50,10 +50,6 @@ export const FilteredProjectRecords = ({ projectRecords, highlightId }: Props) =
           <XMarkIcon className="size-4" />
           <span>Filter zurücksetzen</span>
         </button>
-        <p className="mt-4 text-sm text-gray-500">
-          {filteredProjectRecords.length} Protokoll
-          {filteredProjectRecords.length !== 1 ? "einträge" : "eintrag"}
-        </p>
       </div>
       {projectRecords.length === 0 ? (
         <ZeroCase visible={projectRecords.length} name="Protokolleinträge" />

@@ -46,10 +46,10 @@ export const SurveyCheckbox = ({
             <div className="relative">
               <span
                 className={clsx(
-                  "block h-4 w-4 rounded-sm border border-gray-300 transition-colors group-hover:border-gray-400",
+                  "block size-4 rounded-sm border border-gray-300 transition-colors group-hover:border-gray-400",
                 )}
               />
-              <span className="absolute inset-0 h-4 w-4 rounded-sm bg-(--survey-primary-color) opacity-0 transition group-data-checked:opacity-100" />
+              <span className="absolute inset-0 size-4 rounded-sm bg-(--survey-primary-color) opacity-0 transition group-data-checked:opacity-100" />
               <CheckIcon className="absolute inset-0 size-4 fill-white opacity-0 group-data-checked:opacity-100" />
             </div>
           </div>

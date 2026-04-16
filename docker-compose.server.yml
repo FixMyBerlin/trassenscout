@@ -1,7 +1,7 @@
 services:
   app:
     container_name: app
-    image: public.ecr.aws/n0p8j4k5/trassenscout/app:${NEXT_PUBLIC_APP_ENV}-latest
+    image: ${ECR_REGISTRY}/trassenscout/app:${NEXT_PUBLIC_APP_ENV}-latest
     ports:
       - "3000:3000"
     restart: unless-stopped
@@ -86,7 +86,7 @@ services:
       driver: journald
   imap-listener:
     container_name: imap-listener
-    image: public.ecr.aws/n0p8j4k5/trassenscout/imap-listener:${NEXT_PUBLIC_APP_ENV}-latest
+    image: ${ECR_REGISTRY}/trassenscout/imap-listener:${NEXT_PUBLIC_APP_ENV}-latest
     restart: unless-stopped
     env_file: ".env"
     environment:

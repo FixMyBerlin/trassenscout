@@ -18,11 +18,32 @@ type Props = {
   allowedTypes: AllowedType[]
   subsection?: TGetSubsection
   children?: React.ReactNode
+  displayedGeometry?: SupportedGeometry
+  showHint?: boolean
+  syncTransformedGeometryToMap?: boolean
+  hideUnselectedPolygonOutline?: boolean
+  transformGeometry?: (
+    geometry: SupportedGeometry | null,
+    geometryType: string | null,
+  ) => {
+    geometry: SupportedGeometry | null
+    geometryType: string | null
+  }
 }
 
-export const GeometryDrawingMap = ({ allowedTypes, subsection, children }: Props) => {
+export const GeometryDrawingMap = ({
+  allowedTypes,
+  subsection,
+  children,
+  displayedGeometry,
+  showHint = true,
+  syncTransformedGeometryToMap = true,
+  hideUnselectedPolygonOutline = false,
+  transformGeometry,
+}: Props) => {
   const { watch, setValue } = useFormContext()
   const geometry = watch("geometry") as SupportedGeometry | undefined
+  const geometryForMap = displayedGeometry ?? geometry
   const updateTerraDrawRef = useRef<
     ((geometry: SupportedGeometry | null, ignoreChangeEvents?: boolean) => void) | null
   >(null)
@@ -38,8 +59,8 @@ export const GeometryDrawingMap = ({ allowedTypes, subsection, children }: Props
   const initialViewState = useMemo(() => {
     let targetGeometry: SupportedGeometry | undefined
 
-    if (geometry) {
-      targetGeometry = geometry
+    if (geometryForMap) {
+      targetGeometry = geometryForMap
     } else if (subsection) {
       targetGeometry = subsection.geometry
     }
@@ -54,7 +75,7 @@ export const GeometryDrawingMap = ({ allowedTypes, subsection, children }: Props
     }
 
     return undefined
-  }, [geometry, subsection])
+  }, [geometryForMap, subsection])
 
   const defaultViewState = {
     longitude: 13.404954,
@@ -63,9 +84,33 @@ export const GeometryDrawingMap = ({ allowedTypes, subsection, children }: Props
   }
 
   const handleChange = (geo: SupportedGeometry | null, geoType: string | null) => {
-    if (geo && geoType) {
-      setValue("geometry", geo, { shouldValidate: true })
-      setValue("type", mapGeoTypeToEnum(geoType), { shouldValidate: true })
+    const resetToCurrentPolygonShell =
+      allowedTypes.length === 1 &&
+      allowedTypes[0] === "polygon" &&
+      geo &&
+      geoType !== "Polygon" &&
+      geoType !== "MultiPolygon"
+
+    if (resetToCurrentPolygonShell) {
+      updateTerraDrawRef.current?.(geometryForMap ?? null, true)
+      return
+    }
+
+    const nextState = transformGeometry
+      ? transformGeometry(geo, geoType)
+      : { geometry: geo, geometryType: geoType }
+
+    if (
+      syncTransformedGeometryToMap &&
+      nextState.geometry !== geo &&
+      JSON.stringify(nextState.geometry) !== JSON.stringify(geo)
+    ) {
+      updateTerraDrawRef.current?.(nextState.geometry, true)
+    }
+
+    if (nextState.geometry && nextState.geometryType) {
+      setValue("geometry", nextState.geometry, { shouldValidate: true })
+      setValue("type", mapGeoTypeToEnum(nextState.geometryType), { shouldValidate: true })
     } else {
       setValue("geometry", undefined, { shouldValidate: true })
       setValue("type", undefined, { shouldValidate: true })
@@ -85,7 +130,11 @@ export const GeometryDrawingMap = ({ allowedTypes, subsection, children }: Props
       >
         {children}
         <div className="absolute top-4 left-4 z-10 flex flex-col gap-2.5">
-          <TerraDrawProvider initialGeometry={geometry} onChange={handleChange}>
+          <TerraDrawProvider
+            initialGeometry={geometryForMap}
+            onChange={handleChange}
+            modeConfig={{ hideUnselectedPolygonOutline }}
+          >
             {({
               mode,
               setMode,
@@ -128,7 +177,7 @@ export const GeometryDrawingMap = ({ allowedTypes, subsection, children }: Props
               )
             }}
           </TerraDrawProvider>
-          <TerraDrawHint />
+          {showHint ? <TerraDrawHint /> : null}
         </div>
       </BaseMap>
     </div>

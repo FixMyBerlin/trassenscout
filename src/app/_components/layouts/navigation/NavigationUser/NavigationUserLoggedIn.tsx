@@ -37,7 +37,7 @@ export const NavigationUserLoggedIn = ({ user }: Props) => {
           >
             <span className="sr-only">User-Menü</span>
             <div
-              className="flex h-8 w-8 items-center justify-center text-lg font-semibold tracking-tighter text-gray-50 uppercase"
+              className="flex size-8 items-center justify-center text-lg font-semibold tracking-tighter text-gray-50 uppercase"
               aria-hidden="true"
             >
               {getInitials(user)}

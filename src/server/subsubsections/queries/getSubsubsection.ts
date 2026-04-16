@@ -24,7 +24,7 @@ m2mFields.forEach((fieldName) => {
 export type SubsubsectionWithPosition = Omit<Subsubsection, "geometry" | "type"> &
   GeometryWithTypeDiscriminated & {
     manager: { firstName: string; lastName: string } | null
-  } & { subsection: { slug: string } } & {
+  } & { subsection: { slug: string; project: { landAcquisitionModuleEnabled: boolean } } } & {
     qualityLevel?: Pick<QualityLevel, "title" | "slug" | "url">
   } & { SubsubsectionTask?: { title: string } } & {
     SubsubsectionInfrastructureTypes: { id: number; title: string; slug: string }[]
@@ -32,7 +32,9 @@ export type SubsubsectionWithPosition = Omit<Subsubsection, "geometry" | "type">
     SubsubsectionInfra?: { title: string; slug: string }
   }
 
-export default resolver.pipe(
+export type TGetSubsubsection = Awaited<ReturnType<typeof getSubsubsection>>
+
+const getSubsubsection = resolver.pipe(
   resolver.zod(GetSubsubsection),
   authorizeProjectMember(extractProjectSlug, viewerRoles),
   async ({ projectSlug, subsectionSlug, subsubsectionSlug }) => {
@@ -49,8 +51,14 @@ export default resolver.pipe(
       include: {
         ...includeM2mFields,
         manager: { select: { firstName: true, lastName: true } },
-        subsection: { select: { slug: true } },
+        subsection: {
+          select: {
+            slug: true,
+            project: { select: { landAcquisitionModuleEnabled: true } },
+          },
+        },
         qualityLevel: { select: { title: true, slug: true, url: true } },
+        SubsubsectionTask: { select: { title: true } },
         SubsubsectionInfrastructureTypes: { select: { id: true, title: true, slug: true } },
         SubsubsectionInfra: { select: { title: true, slug: true } },
         SubsubsectionStatus: { select: { title: true, slug: true, style: true } },
@@ -58,6 +66,13 @@ export default resolver.pipe(
     }
 
     const subsubsection = await db.subsubsection.findFirstOrThrow(query)
-    return typeSubsubsectionGeometry(subsubsection)
+    // tbd
+    // with invoke() we get a type error here when we use the return value in the client component
+    // Type assertion needed: TypeScript can't infer the discriminated union relationship
+    // between `type` and `geometry` fields, even though typeSubsubsectionGeometry ensures
+    // they match at runtime.
+    return typeSubsubsectionGeometry(subsubsection) as SubsubsectionWithPosition
   },
 )
+
+export default getSubsubsection

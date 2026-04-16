@@ -41,7 +41,7 @@ export const ProjectsSwitch = ({ projects }: Props) => {
             <span className="sr-only">Trassenwechsel</span>
             {currentProject ? shortTitle(currentProject.slug) : "Projekt wählen"}
             <ChevronDownIcon
-              className="-mr-1.5 ml-0.5 h-5 w-5 text-gray-900 hover:text-black"
+              className="-mr-1.5 ml-0.5 size-5 text-gray-900 hover:text-black"
               aria-hidden="true"
             />
           </MenuButton>

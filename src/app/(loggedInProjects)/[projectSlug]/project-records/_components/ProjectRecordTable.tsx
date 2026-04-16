@@ -1,44 +1,40 @@
 "use client"
 
 import { useFilters } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/filter/useFilters.nuqs"
-import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
-import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "@/src/core/components/links"
-import { GeometryIcon } from "@/src/core/components/Map/Icons/GeometryIcon"
-import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
-import { shortTitle } from "@/src/core/components/text"
-import {
-  projectRecordDetailRoute,
-  projectRecordEditRoute,
-} from "@/src/core/routes/projectRecordRoutes"
+import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import getProjectRecords from "@/src/server/projectRecords/queries/getProjectRecords"
+
+import getProjectRecordsByAcquisitionArea from "@/src/server/projectRecords/queries/getProjectRecordsByAcquisitionArea"
 import getProjectRecordsBySubsubsection from "@/src/server/projectRecords/queries/getProjectRecordsBySubsubsection"
-import { Disclosure, DisclosureButton, DisclosurePanel, Transition } from "@headlessui/react"
-import { ChevronDownIcon, SparklesIcon } from "@heroicons/react/20/solid"
+import { ChatBubbleBottomCenterTextIcon, DocumentIcon } from "@heroicons/react/24/outline"
 import clsx from "clsx"
 import { format } from "date-fns"
 import { de } from "date-fns/locale"
-import { ProjectRecordReviewBadge } from "./ProjectRecordReviewBadge"
+import { ProjectRecordAssignedToPill } from "./ProjectRecordAssignedToPill"
 import { ProjectRecordTopicsList } from "./ProjectRecordTopicsList"
 
 export const ProjectRecordsTable = ({
   projectRecords,
+  openLinksInNewTab,
   highlightId,
   isTopicFilter,
   withSubsection,
   withSubsubsection,
-  openLinksInNewTab,
+  bleed = true,
 }: {
   projectRecords:
     | Awaited<ReturnType<typeof getProjectRecords>>
+    | Awaited<ReturnType<typeof getProjectRecordsByAcquisitionArea>>
     | Awaited<ReturnType<typeof getProjectRecordsBySubsubsection>>
   highlightId?: number | null
   isTopicFilter?: boolean
   withSubsection?: boolean
   withSubsubsection?: boolean
+  bleed?: boolean
   openLinksInNewTab?: boolean
 }) => {
   const projectSlug = useProjectSlug()
@@ -46,214 +42,123 @@ export const ProjectRecordsTable = ({
 
   if (!projectRecords.length) return null
 
+  /** Datum 1 · Titel 2 · Tags 2 · Zugewiesen 1 · Dokumente 0.5 */
+  const projectRecordColWeightTotal = 1 + 3 + 3 + 1 + 0.5
+  const projectRecordColWidth = (weight: number): { width: string } => ({
+    width: `${(weight / projectRecordColWeightTotal) * 100}%`,
+  })
+
   const spaceClasses = "px-3 py-2"
 
   const handleTopicClick = (topic: string): void => {
     if (topic) setFilter({ ...filter, searchterm: topic })
   }
 
+  const handleAssigneeClick = (assigneeSearchText: string): void => {
+    if (assigneeSearchText) setFilter({ ...filter, searchterm: assigneeSearchText })
+  }
+
   return (
     <>
-      <TableWrapper>
-        <div className="@container min-w-full divide-y divide-gray-300 text-sm text-gray-900">
-          <div className="flex flex-row bg-gray-50">
-            <div className="grid w-full grid-cols-2 @lg:grid-cols-3">
-              <div className={clsx(spaceClasses, "font-medium uppercase")}>Datum</div>
-              <div className={clsx(spaceClasses, "font-medium uppercase")}>Titel</div>
-              <div className={clsx(spaceClasses, "hidden font-medium uppercase @lg:block")}>
-                Tags
-              </div>
-            </div>
-            <div className="p-2">
-              <div className="h-5 w-5 shrink-0" />
-            </div>
-          </div>
-          <div className="divide-y divide-gray-200 bg-white">
-            {projectRecords.map((projectRecord) => (
-              <div key={projectRecord.id}>
-                <Disclosure>
-                  {({ open }) => (
-                    <>
-                      <DisclosureButton
-                        className={clsx(
-                          "group w-full text-left focus:outline-hidden focus-visible:ring focus-visible:ring-gray-500/75",
-                          { "border-b border-gray-100": !open },
+      <TableWrapper bleed={bleed}>
+        <div className="@container w-full">
+          <table className="min-w-full table-fixed border-collapse text-left text-sm text-gray-700">
+            <colgroup>
+              <col style={projectRecordColWidth(1)} />
+              <col style={projectRecordColWidth(2)} />
+              <col style={projectRecordColWidth(2)} />
+              <col style={projectRecordColWidth(1)} />
+              <col style={projectRecordColWidth(0.5)} />
+            </colgroup>
+            <thead>
+              <tr className="border-b border-gray-300 bg-gray-50">
+                <th scope="col" className={clsx(spaceClasses, "font-medium uppercase")}>
+                  Datum
+                </th>
+                <th scope="col" className={clsx(spaceClasses, "font-medium uppercase")}>
+                  Titel
+                </th>
+                <th
+                  scope="col"
+                  className={clsx(spaceClasses, "hidden font-medium uppercase @lg:table-cell")}
+                >
+                  Tags
+                </th>
+                <th
+                  scope="col"
+                  className={clsx(spaceClasses, "hidden font-medium uppercase @lg:table-cell")}
+                >
+                  Zugewiesen
+                </th>
+                <th scope="col" className={clsx(spaceClasses, "sr-only")}>
+                  Dokumente
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200 bg-white">
+              {projectRecords.map((projectRecord) => {
+                const detailHref = projectRecordDetailRoute(projectSlug, projectRecord.id)
+
+                return (
+                  <tr
+                    key={projectRecord.id}
+                    className={clsx(
+                      "border-b border-gray-100",
+                      highlightId === projectRecord.id && "bg-green-50",
+                    )}
+                  >
+                    <td className={clsx(spaceClasses, "align-top")}>
+                      {projectRecord.date
+                        ? format(new Date(projectRecord.date), "P", { locale: de })
+                        : "—"}
+                    </td>
+                    <td className={clsx("max-w-0 align-top", spaceClasses)}>
+                      <Link href={detailHref} title={projectRecord.title} blank={openLinksInNewTab}>
+                        {projectRecord.title}
+                      </Link>
+                    </td>
+                    <td className={clsx("hidden align-top @lg:table-cell", spaceClasses)}>
+                      <div className="flex items-center justify-between gap-2">
+                        <ProjectRecordTopicsList
+                          topics={projectRecord.projectRecordTopics}
+                          isInteractive={isTopicFilter}
+                          onTopicClick={handleTopicClick}
+                        />
+                      </div>
+                    </td>
+                    <td className={clsx("hidden align-top @lg:table-cell", spaceClasses)}>
+                      <div className="flex items-center justify-start">
+                        {projectRecord.assignedTo && (
+                          <ProjectRecordAssignedToPill
+                            assignedTo={projectRecord.assignedTo}
+                            variant="list"
+                            isInteractive={isTopicFilter}
+                            onAssigneeClick={handleAssigneeClick}
+                          />
                         )}
-                      >
-                        <div className="flex flex-row hover:bg-gray-50">
-                          <div
-                            className={clsx(
-                              "grid w-full grow grid-cols-2 @lg:grid-cols-3",
-                              highlightId === projectRecord.id && "bg-green-50",
-                            )}
-                          >
-                            <div className={clsx(spaceClasses, "flex justify-start")}>
-                              {projectRecord.date
-                                ? format(new Date(projectRecord.date), "P", { locale: de })
-                                : "—"}
-                            </div>
-                            <div
-                              className={clsx(
-                                spaceClasses,
-                                "max-w-xs min-w-0 truncate font-semibold text-blue-500",
-                              )}
-                              title={projectRecord.title}
-                            >
-                              {projectRecord.title}
-                            </div>
-                            <div className={clsx("hidden @lg:block", spaceClasses)}>
-                              <div className="flex items-center justify-between gap-2">
-                                {/* workaround with stopPropagation to Prevent disclosure toggle */}
-                                {/* for now we use this workaround since we propably do not use the disclosure component in the table anyway  */}
-                                <div onClick={(e) => e.stopPropagation()}>
-                                  <ProjectRecordTopicsList
-                                    topics={projectRecord.projectRecordTopics}
-                                    isInteractive={isTopicFilter}
-                                    onTopicClick={handleTopicClick}
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="p-2">
-                            <ChevronDownIcon className="h-5 w-5 shrink-0 text-gray-700 group-hover:text-black group-data-open:rotate-180" />
-                          </div>
-                        </div>
-                      </DisclosureButton>
-                      <Transition
-                        show={open}
-                        enter="transition duration-100 ease-out"
-                        enterFrom="transform scale-95 opacity-0"
-                        enterTo="transform scale-100 opacity-100"
-                        leave="transition duration-75 ease-out"
-                        leaveFrom="transform scale-100 opacity-100"
-                        leaveTo="transform scale-95 opacity-0"
-                      >
-                        <DisclosurePanel
-                          static
-                          className={clsx(
-                            "flex flex-col items-start gap-6 overflow-clip p-3 text-sm @lg:flex-row",
-                            {
-                              "border-b border-gray-100": open,
-                            },
-                          )}
-                        >
-                          {projectRecord.body && (
-                            // for some reasons prose modifiers did not work here
-                            <div className="rounded-md bg-blue-50 p-2">
-                              <Markdown
-                                className="line-clamp-6 [&_ol]:ml-4 [&_ol]:list-decimal [&_ol]:leading-tight [&_p]:text-base [&_ul]:ml-4 [&_ul]:list-disc [&_ul]:leading-tight"
-                                markdown={projectRecord.body}
-                              />
-                            </div>
-                          )}
-                          {/* PA */}
-                          {withSubsection && projectRecord.subsection && (
-                            <div>
-                              <p className="mb-2 font-medium text-gray-500">Abschnitt: </p>
-                              <div className="flex items-center gap-2">
-                                <Link
-                                  href={`/${projectSlug}/abschnitte/${projectRecord.subsection.slug}`}
-                                >
-                                  {shortTitle(projectRecord.subsection.slug)}
-                                </Link>
-                                <GeometryIcon
-                                  type={projectRecord.subsection.type}
-                                  className="size-4"
-                                />
-                              </div>
-                            </div>
-                          )}
-                          {/* Eintrag */}
-                          {withSubsubsection && projectRecord.subsubsection && (
-                            <div>
-                              <p className="mb-2 font-medium text-gray-500">Eintrag: </p>
-                              <div className="flex items-center gap-2">
-                                <Link
-                                  href={`/${projectSlug}/abschnitte/${projectRecord.subsubsection.subsection.slug}/fuehrung/${projectRecord.subsubsection.slug}`}
-                                >
-                                  {shortTitle(projectRecord.subsubsection.slug)}
-                                </Link>
-                                <GeometryIcon
-                                  type={projectRecord.subsubsection.type}
-                                  className="size-4"
-                                />
-                              </div>
-                            </div>
-                          )}
-                          {/* Uploads */}
-                          {projectRecord.uploads && projectRecord.uploads.length > 0 && (
-                            <div>
-                              <p className="mb-2 font-medium text-gray-500">
-                                Dokumente ({projectRecord.uploads.length}):
-                              </p>
-                              <div className="flex flex-wrap gap-2">
-                                {projectRecord.uploads.slice(0, 5).map((upload) => (
-                                  <UploadPreviewClickable
-                                    key={upload.id}
-                                    uploadId={upload.id}
-                                    projectSlug={projectSlug}
-                                    size="table"
-                                  />
-                                ))}
-                                {projectRecord.uploads.length > 5 && <span>…</span>}
-                              </div>
-                            </div>
-                          )}
-                          {/* Topics and " Bestätigung"-Pill */}
-                          <div className="@lg:hidden">
-                            <div className="flex flex-col gap-6">
-                              <div onClick={(e) => e.stopPropagation()}>
-                                <ProjectRecordTopicsList
-                                  topics={projectRecord.projectRecordTopics}
-                                  isInteractive={isTopicFilter}
-                                  onTopicClick={handleTopicClick}
-                                />
-                              </div>
-                              <div className="flex shrink-0 items-center gap-2">
-                                <ProjectRecordReviewBadge reviewState={projectRecord.reviewState} />
-                              </div>
-                            </div>
-                          </div>
-                          {/* Action Buttons */}
-                          <div className="flex grow items-end gap-3 @lg:flex-col">
-                            <IfUserCanEdit>
-                              {projectRecord.reviewState === "NEEDSREVIEW" ? (
-                                <Link
-                                  className="inline-flex items-center justify-center gap-1"
-                                  // icon="edit"
-                                  href={projectRecordEditRoute(projectSlug, projectRecord.id)}
-                                  blank={openLinksInNewTab}
-                                >
-                                  <SparklesIcon className="h-3.5 w-3.5" />
-                                  Bearbeiten und bestätigen
-                                </Link>
-                              ) : (
-                                <Link
-                                  icon="edit"
-                                  href={projectRecordEditRoute(projectSlug, projectRecord.id)}
-                                  blank={openLinksInNewTab}
-                                >
-                                  Bearbeiten
-                                </Link>
-                              )}
-                            </IfUserCanEdit>
-                            <Link
-                              icon="details"
-                              href={projectRecordDetailRoute(projectSlug, projectRecord.id)}
-                              blank={openLinksInNewTab}
-                            >
-                              Detailansicht
-                            </Link>
-                          </div>
-                        </DisclosurePanel>
-                      </Transition>
-                    </>
-                  )}
-                </Disclosure>
-              </div>
-            ))}
-          </div>
+                      </div>
+                    </td>
+                    <td
+                      className={clsx(
+                        spaceClasses,
+                        "flex items-center justify-end gap-2 tabular-nums @lg:gap-4",
+                      )}
+                    >
+                      <span className="inline-flex items-center justify-end gap-1 text-xs">
+                        <DocumentIcon className="size-4 shrink-0" />
+                        {projectRecord.uploads?.length ?? 0}
+                      </span>
+                      <span className="inline-flex items-center justify-end gap-1 text-xs">
+                        <ChatBubbleBottomCenterTextIcon className="size-4 shrink-0" />
+                        {/* @ts-ignore todo I am not sure why ts is complaining here   */}
+                        {projectRecord.projectRecordComments?.length ?? 0}
+                      </span>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
         </div>
       </TableWrapper>
 

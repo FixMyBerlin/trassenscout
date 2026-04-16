@@ -54,7 +54,7 @@ export default async function ProjectRecordDetail({
         />
       )}
 
-      <ProjectRecordDetailClient projectRecord={projectRecord} />
+      <ProjectRecordDetailClient initialProjectRecord={projectRecord} />
 
       <ActionBar
         className="mt-6"

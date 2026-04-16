@@ -17,18 +17,20 @@ import { frenchQuote, shortTitle } from "@/src/core/components/text"
 import { NumberArraySchema } from "@/src/core/utils/schema-shared"
 import createProjectRecordTopic from "@/src/server/ProjectRecordTopics/mutations/createProjectRecordTopic"
 import getProjectRecordTopicsByProject from "@/src/server/ProjectRecordTopics/queries/getProjectRecordTopicsByProject"
+import getAcquisitionAreas from "@/src/server/acquisitionAreas/queries/getAcquisitionAreas"
 import getProjectUsers from "@/src/server/memberships/queries/getProjectUsers"
 import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import getSubsubsections from "@/src/server/subsubsections/queries/getSubsubsections"
 import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import clsx from "clsx"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
 
 type Props = {
   splitView?: boolean
   projectSlug: string
+  landAcquisitionModuleEnabled?: boolean
   emailSource?: {
     from: string | null
     subject: string | null
@@ -38,9 +40,19 @@ type Props = {
   } | null
 }
 
-export const ProjectRecordFormFields = ({ projectSlug, emailSource, splitView }: Props) => {
+export const ProjectRecordFormFields = ({
+  projectSlug,
+  emailSource,
+  splitView,
+  landAcquisitionModuleEnabled = false,
+}: Props) => {
   const [{ subsections }] = useQuery(getSubsections, { projectSlug })
   const [{ subsubsections }] = useQuery(getSubsubsections, { projectSlug })
+  const [acquisitionAreas = []] = useQuery(
+    getAcquisitionAreas,
+    { projectSlug },
+    { enabled: landAcquisitionModuleEnabled },
+  )
   const [users] = useQuery(getProjectUsers, { projectSlug, role: "EDITOR" })
   const [{ projectRecordTopics }, { refetch: refetchTopics }] = useQuery(
     getProjectRecordTopicsByProject,
@@ -50,6 +62,8 @@ export const ProjectRecordFormFields = ({ projectSlug, emailSource, splitView }:
   const [createProjectRecordTopicMutation] = useMutation(createProjectRecordTopic)
   const { watch, setValue } = useFormContext()
   const subsectionId = watch("subsectionId")
+  const subsubsectionId = watch("subsubsectionId")
+  const acquisitionAreaId = watch("acquisitionAreaId")
   const uploadsValue = watch("uploads")
   const uploadIds = NumberArraySchema.parse(uploadsValue)
 
@@ -94,6 +108,28 @@ export const ProjectRecordFormFields = ({ projectSlug, emailSource, splitView }:
     ])
   subsubsectionOptions.unshift(["", "Keine Angabe"])
 
+  const selectedSubsectionId = subsectionId ? Number(subsectionId) : null
+  const selectedSubsubsectionId = subsubsectionId ? Number(subsubsectionId) : null
+  const selectedAcquisitionAreaId = acquisitionAreaId ? Number(acquisitionAreaId) : null
+
+  const filteredAcquisitionAreas = acquisitionAreas.filter((acquisitionArea) => {
+    if (selectedSubsubsectionId) return acquisitionArea.subsubsectionId === selectedSubsubsectionId
+    if (selectedSubsectionId) {
+      return acquisitionArea.subsubsection.subsectionId === selectedSubsectionId
+    }
+    return true
+  })
+
+  const acquisitionAreaOptions: [string | number, string][] = filteredAcquisitionAreas.map(
+    (acquisitionArea) => [
+      acquisitionArea.id,
+      `${acquisitionArea.id} ${acquisitionArea.parcel.alkisParcelId} (${shortTitle(
+        acquisitionArea.subsubsection.slug,
+      )}/${shortTitle(acquisitionArea.subsubsection.subsection.slug)})`,
+    ],
+  )
+  acquisitionAreaOptions.unshift(["", "Keine Angabe"])
+
   const selectedSubsection = subsectionId
     ? subsections.find((s) => s.id === Number(subsectionId))
     : null
@@ -117,6 +153,16 @@ export const ProjectRecordFormFields = ({ projectSlug, emailSource, splitView }:
     setNewTopic("")
   }
 
+  useEffect(() => {
+    if (!landAcquisitionModuleEnabled || !selectedAcquisitionAreaId) return
+    const stillCompatible = filteredAcquisitionAreas.some(
+      (acquisitionArea) => acquisitionArea.id === selectedAcquisitionAreaId,
+    )
+    if (!stillCompatible) {
+      setValue("acquisitionAreaId", null, { shouldDirty: true })
+    }
+  }, [filteredAcquisitionAreas, landAcquisitionModuleEnabled, selectedAcquisitionAreaId, setValue])
+
   return (
     <>
       <div className={splitView ? "flex gap-6" : ""}>
@@ -130,7 +176,11 @@ export const ProjectRecordFormFields = ({ projectSlug, emailSource, splitView }:
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div
+            className={
+              landAcquisitionModuleEnabled ? "grid grid-cols-3 gap-4" : "grid grid-cols-2 gap-4"
+            }
+          >
             <LabeledSelect
               optional
               name="subsectionId"
@@ -145,6 +195,14 @@ export const ProjectRecordFormFields = ({ projectSlug, emailSource, splitView }:
               options={subsubsectionOptions}
               label={subsubsectionLabel}
             />
+            {landAcquisitionModuleEnabled && (
+              <LabeledSelect
+                optional
+                name="acquisitionAreaId"
+                options={acquisitionAreaOptions}
+                label="Zuordnung zur Verhandlungsfläche"
+              />
+            )}
           </div>
           <LabeledTextareaField name="body" optional label="Notizen (Markdown)" rows={20} />
           <div className="flex flex-col gap-3">
@@ -195,6 +253,7 @@ export const ProjectRecordFormFields = ({ projectSlug, emailSource, splitView }:
               <UploadPreviewClickable
                 key={upload.id}
                 uploadId={upload.id}
+                upload={upload}
                 projectSlug={projectSlug}
                 size="grid"
                 onDeleted={async () => {

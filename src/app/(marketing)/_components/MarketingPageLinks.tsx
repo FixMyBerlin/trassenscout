@@ -28,7 +28,7 @@ export const MarketingPageLinks = () => {
   return (
     <section className="rounded-2xl border border-gray-100 p-6">
       <h2 className="flex items-center text-sm font-semibold text-gray-900">
-        <GlobeAltIcon className="h-7 w-7 flex-none text-gray-400" />
+        <GlobeAltIcon className="size-7 flex-none text-gray-400" />
         <span className="my-auto ml-3">Im Netz</span>
       </h2>
       <ol className="mt-6 space-y-2">

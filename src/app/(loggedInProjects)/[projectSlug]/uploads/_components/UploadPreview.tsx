@@ -8,21 +8,29 @@ import {
 import getUploadWithRelations from "@/src/server/uploads/queries/getUploadWithRelations"
 import { useQuery } from "@blitzjs/rpc"
 import { UserGroupIcon } from "@heroicons/react/24/outline"
+import { Upload } from "@prisma/client"
 import { twJoin } from "tailwind-merge"
 
+type UploadPreviewData = Pick<Upload, "id" | "mimeType" | "title" | "externalUrl" | "collaborationUrl">
+
 type Props = {
-  uploadId: number
   projectSlug: string
   size: UploadSize
   showTitle: boolean
   onClick?: () => void
-}
+} & ({ uploadId: number; upload?: never } | { upload: UploadPreviewData; uploadId?: never })
 
-export const UploadPreview = ({ uploadId, projectSlug, size, showTitle, onClick }: Props) => {
-  const [upload] = useQuery(
+export const UploadPreview = (props: Props) => {
+  const { projectSlug, size, showTitle, onClick } = props
+
+  const uploadFromProps = "upload" in props ? props.upload : undefined
+  const uploadId = "uploadId" in props ? props.uploadId : uploadFromProps?.id
+
+  const [uploadFromQuery] = useQuery(
     getUploadWithRelations,
-    { projectSlug, id: uploadId },
+    { projectSlug, id: uploadId! },
     {
+      enabled: !uploadFromProps && Boolean(uploadId),
       // Prevent refetching to avoid NotFoundError when upload is deleted
       retry: false,
       retryOnMount: false,
@@ -32,6 +40,8 @@ export const UploadPreview = ({ uploadId, projectSlug, size, showTitle, onClick 
       staleTime: Infinity,
     },
   )
+
+  const upload = uploadFromProps ?? uploadFromQuery
 
   // Check if upload was marked as deleted or is null
   if (!upload || (upload as any).__deleted) return null

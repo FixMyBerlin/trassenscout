@@ -106,8 +106,10 @@ export const UploadDetailModal = ({
         <div className="border-t border-gray-200 pt-3">
           <UploadVerknuepfungen
             projectSlug={projectSlug}
+            landAcquisitionModuleEnabled={upload.project?.landAcquisitionModuleEnabled ?? false}
             subsection={upload.subsection}
             subsubsection={upload.Subsubsection}
+            acquisitionArea={upload.acquisitionArea}
             projectRecords={upload.projectRecords}
             projectRecordEmail={upload.projectRecordEmail}
             surveyResponse={upload.surveyResponse}

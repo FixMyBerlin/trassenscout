@@ -12,6 +12,9 @@ type Props = {
  * Check fuehrung first since /fuehrung paths also contain /abschnitte/
  */
 const getBackLinkText = (fromPath: string): string => {
+  if (fromPath.includes("/land-acquisition/acquisition-areas/")) {
+    return "Zurück zum Formular der Verhandlungsfläche"
+  }
   if (fromPath.includes("/fuehrung")) {
     return "Zurück zum Formular des Eintrags"
   }

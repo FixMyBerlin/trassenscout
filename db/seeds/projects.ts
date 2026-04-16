@@ -1,4 +1,5 @@
-import db, { Project } from "../index"
+import db, { Project, StateKeyEnum } from "../index"
+import { alkisLandAcquisitionDemoProjects } from "./alkisLandAcquisitionDemos"
 
 const seedProjects = async () => {
   const seedData: Omit<Project, "id" | "createdAt" | "updatedAt">[] = [
@@ -12,7 +13,9 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
       partnerLogoSrcs: ["rsv8-logo.png", "test.png"],
       exportEnabled: false,
       aiEnabled: false,
+      landAcquisitionModuleEnabled: false,
       showLogEntries: false,
+      alkisStateKey: StateKeyEnum.DISABLED,
     },
     {
       slug: "rs3000",
@@ -22,7 +25,9 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
       partnerLogoSrcs: [],
       exportEnabled: false,
       aiEnabled: false,
+      landAcquisitionModuleEnabled: false,
       showLogEntries: false,
+      alkisStateKey: StateKeyEnum.DISABLED,
     },
     {
       slug: "rs0v1",
@@ -32,7 +37,9 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
       partnerLogoSrcs: [],
       exportEnabled: false,
       aiEnabled: false,
+      landAcquisitionModuleEnabled: false,
       showLogEntries: false,
+      alkisStateKey: StateKeyEnum.DISABLED,
     },
     {
       slug: "rs0v2",
@@ -42,8 +49,11 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
       partnerLogoSrcs: [],
       exportEnabled: false,
       aiEnabled: false,
+      landAcquisitionModuleEnabled: false,
       showLogEntries: false,
+      alkisStateKey: StateKeyEnum.DISABLED,
     },
+    ...alkisLandAcquisitionDemoProjects(),
   ]
 
   for (const data of seedData) {

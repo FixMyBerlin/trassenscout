@@ -30,6 +30,22 @@ export default resolver.pipe(
             },
           },
         },
+        acquisitionArea: {
+          select: {
+            id: true,
+            subsubsection: {
+              select: {
+                slug: true,
+                subsection: { select: { slug: true } },
+              },
+            },
+            parcel: {
+              select: {
+                alkisParcelId: true,
+              },
+            },
+          },
+        },
         uploads: {
           orderBy: { id: "desc" },
           select: {
@@ -53,6 +69,13 @@ export default resolver.pipe(
           },
         },
         reviewedBy: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+        assignedTo: {
           select: {
             id: true,
             firstName: true,

@@ -34,8 +34,24 @@ export default resolver.pipe(
             },
           },
         },
+        acquisitionArea: {
+          select: {
+            id: true,
+            subsubsection: {
+              select: {
+                slug: true,
+                subsection: { select: { slug: true } },
+              },
+            },
+            parcel: {
+              select: {
+                alkisParcelId: true,
+              },
+            },
+          },
+        },
         project: {
-          select: { slug: true, aiEnabled: true },
+          select: { slug: true, aiEnabled: true, landAcquisitionModuleEnabled: true },
         },
         author: {
           select: {
@@ -87,6 +103,24 @@ export default resolver.pipe(
             subject: true,
             uploads: { select: { id: true, title: true } },
           },
+        },
+        projectRecordComments: {
+          select: {
+            id: true,
+            projectRecordId: true,
+            createdAt: true,
+            updatedAt: true,
+            body: true,
+            author: {
+              select: {
+                id: true,
+                role: true,
+                firstName: true,
+                lastName: true,
+              },
+            },
+          },
+          orderBy: { id: "asc" },
         },
       },
     })

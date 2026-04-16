@@ -63,6 +63,7 @@ model User {
   uploadsUpdated           Upload[]                @relation("UploadUpdatedBy")
   //
   supportDocumentsCreated  SupportDocument[]       @relation("SupportDocumentCreatedBy")
+  projectRecordComments    ProjectRecordComment[]
 }
 
 enum UserRoleEnum {
@@ -147,7 +148,9 @@ model Project {
   partnerLogoSrcs                  String[] // - UNUSED
   exportEnabled                    Boolean                           @default(false)
   aiEnabled                        Boolean                           @default(false)
+  landAcquisitionModuleEnabled     Boolean                           @default(false)
   showLogEntries                   Boolean                           @default(false) // When true, non-admins see this project's log entries ("Änderungen in …") on the "Meine Projekte" dashboard. Admins always see all projects.
+  alkisStateKey                    StateKeyEnum                      @default(DISABLED)
   //
   surveyResponseTopics             SurveyResponseTopic[]
   subsections                      Subsection[]
@@ -170,6 +173,27 @@ model Project {
   projectRecords                   ProjectRecord[]
   projectRecordTopics              ProjectRecordTopic[]
   ProjectRecordEmail               ProjectRecordEmail[]
+  acquisitionAreaStatuses          AcquisitionAreaStatus[]
+}
+
+enum StateKeyEnum {
+  BADEN_WUERTTEMBERG
+  BAYERN
+  BERLIN
+  BRANDENBURG
+  BREMEN
+  HAMBURG
+  HESSEN
+  MECKLENBURG_VORPOMMERN
+  NIEDERSACHSEN
+  NORDRHEIN_WESTFALEN
+  RHEINLAND_PFALZ
+  SAARLAND
+  SACHSEN
+  SACHSEN_ANHALT
+  SCHLESWIG_HOLSTEIN
+  THUERINGEN
+  DISABLED
 }
 
 model Membership {
@@ -356,6 +380,7 @@ model Subsubsection {
   //
   uploads                          Upload[]
   projectRecords                   ProjectRecord[]
+  acquisitionAreas                 AcquisitionArea[]
   //
   SubsubsectionStatus              SubsubsectionStatus?              @relation(fields: [subsubsectionStatusId], references: [id])
   subsubsectionStatusId            Int?
@@ -371,6 +396,50 @@ model Subsubsection {
   specialFeatures SubsubsectionSpecial[] // - UNUSED
 
   @@unique([subsectionId, slug])
+}
+
+model Parcel {
+  id                  Int      @id @default(autoincrement())
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  alkisParcelId       String   @unique
+  alkisParcelIdSource String
+  geometry            Json
+
+  acquisitionAreas AcquisitionArea[]
+}
+
+model AcquisitionAreaStatus {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  slug      String
+  title     String
+  style     Int
+
+  project          Project           @relation(fields: [projectId], references: [id])
+  projectId        Int
+  acquisitionAreas AcquisitionArea[]
+
+  @@unique([projectId, slug])
+}
+
+model AcquisitionArea {
+  id            Int      @id @default(autoincrement())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  geometry      Json
+  description   String?
+  bufferRadiusM Float? // Buffer radius in meters
+
+  subsubsection           Subsubsection          @relation(fields: [subsubsectionId], references: [id])
+  subsubsectionId         Int
+  parcel                  Parcel                 @relation(fields: [parcelId], references: [id])
+  parcelId                Int
+  acquisitionAreaStatus   AcquisitionAreaStatus? @relation(fields: [acquisitionAreaStatusId], references: [id])
+  acquisitionAreaStatusId Int?
+  uploads                 Upload[]
+  projectRecords          ProjectRecord[]
 }
 
 enum GeometryTypeEnum {
@@ -528,6 +597,8 @@ model Upload {
   subsectionId         Int?
   Subsubsection        Subsubsection?      @relation(fields: [subsubsectionId], references: [id])
   subsubsectionId      Int?
+  acquisitionArea      AcquisitionArea?    @relation(fields: [acquisitionAreaId], references: [id])
+  acquisitionAreaId    Int?
   projectRecordEmail   ProjectRecordEmail? @relation(fields: [projectRecordEmailId], references: [id])
   projectRecordEmailId Int?
   surveyResponse       SurveyResponse?     @relation(fields: [surveyResponseId], references: [id])
@@ -745,6 +816,9 @@ model ProjectRecord {
   subsubsection              Subsubsection?           @relation(fields: [subsubsectionId], references: [id], onDelete: Cascade)
   subsubsectionId            Int?
   //
+  acquisitionArea            AcquisitionArea?         @relation(fields: [acquisitionAreaId], references: [id], onDelete: Cascade)
+  acquisitionAreaId          Int?
+  //
   author                     User?                    @relation("ProjectRecordAuthor", fields: [userId], references: [id])
   userId                     Int?
   projectRecordAuthorType    ProjectRecordType        @default(SYSTEM)
@@ -768,6 +842,21 @@ model ProjectRecord {
   reviewedBy                 User?                    @relation("ProjectRecordReviewedBy", fields: [reviewedById], references: [id])
   reviewedById               Int?
   reviewNotes                String?
+  projectRecordComments      ProjectRecordComment[]
+}
+
+model ProjectRecordComment {
+  id              Int           @id @default(autoincrement())
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  //
+  author          User          @relation(fields: [userId], references: [id])
+  userId          Int
+  //
+  projectRecord   ProjectRecord @relation(fields: [projectRecordId], references: [id], onDelete: Cascade)
+  projectRecordId Int
+  //
+  body            String
 }
 
 enum ProjectRecordType {

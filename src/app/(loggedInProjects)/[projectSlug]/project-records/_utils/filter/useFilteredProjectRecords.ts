@@ -1,3 +1,4 @@
+import { getFullname } from "@/src/app/_components/users/utils/getFullname"
 import getProjectRecords from "@/src/server/projectRecords/queries/getProjectRecords"
 import { useFilters } from "./useFilters.nuqs"
 
@@ -16,13 +17,18 @@ export const useFilteredProjectRecords = (
     // Remove hashtags from search term and trim any remaining whitespace
     const cleanedSearchterm = searchterm.trim().toLowerCase().replace(/#/g, "").trim()
 
+    const assigneeName = projectRecord.assignedTo
+      ? (getFullname(projectRecord.assignedTo)?.trim().toLowerCase() ?? "")
+      : ""
+
     return (
       projectRecord.title?.toLowerCase().includes(cleanedSearchterm) ||
       projectRecord.body?.toLowerCase().includes(cleanedSearchterm) ||
       projectRecord.projectRecordTopics.some((topic) =>
         topic.title.toLowerCase().includes(cleanedSearchterm),
       ) ||
-      projectRecord.subsection?.slug.toLowerCase().includes(cleanedSearchterm)
+      projectRecord.subsection?.slug.toLowerCase().includes(cleanedSearchterm) ||
+      assigneeName.includes(cleanedSearchterm)
     )
   })
 

@@ -50,7 +50,7 @@ export const LabeledCheckbox = forwardRef<HTMLInputElement, LabeledCheckboxProps
             id={key}
             {...props}
             className={clsx(
-              "h-4 w-4 cursor-pointer rounded",
+              "size-4 cursor-pointer rounded",
               hasError
                 ? "border-red-800 text-red-500 shadow-xs shadow-red-200 focus:ring-red-800"
                 : readonly || disabled

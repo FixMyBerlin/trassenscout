@@ -5,6 +5,7 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
+import { validateAcquisitionAreaScope } from "@/src/server/acquisitionAreas/_utils/validateAcquisitionAreaScope"
 import { Ctx } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
@@ -33,6 +34,13 @@ export default resolver.pipe(
     await db.upload.update({
       where: { id },
       data: disconnect,
+    })
+
+    await validateAcquisitionAreaScope({
+      projectSlug,
+      acquisitionAreaId: data.acquisitionAreaId,
+      subsectionId: data.subsectionId,
+      subsubsectionId: data.subsubsectionId,
     })
 
     const currentUserId = ctx.session.userId

@@ -18,7 +18,7 @@ export const Breadcrumb = ({ pages }: Props) => {
         <li className="flex">
           <div className="flex items-center">
             <Link href="/dashboard" className="text-gray-400 hover:text-gray-500">
-              <HomeIcon className="h-5 w-5 shrink-0" aria-hidden="true" />
+              <HomeIcon className="size-5 shrink-0" aria-hidden="true" />
               <span className="sr-only">Meine Projekte (Öffentliche Ansicht)</span>
             </Link>
           </div>

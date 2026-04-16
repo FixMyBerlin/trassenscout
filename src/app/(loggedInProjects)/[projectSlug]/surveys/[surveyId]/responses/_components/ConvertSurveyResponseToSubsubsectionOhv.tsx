@@ -10,6 +10,7 @@
 import { parseSwitchableMapLocationFieldValue } from "@/src/app/beteiligung/_components/form/map/utils"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getQuestionIdBySurveySlug"
+import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { Notice } from "@/src/core/components/Notice/Notice"
 import { blueButtonStyles, linkStyles } from "@/src/core/components/links/styles"
 import { subsubsectionDashboardRoute } from "@/src/core/routes/subsectionRoutes"
@@ -252,12 +253,14 @@ export const ConvertSurveyResponseToSubsubsectionOhv = ({
   }
 
   return (
-    <ConvertSurveyResponseToSubsubsectionOhvWithLookup
-      response={response}
-      projectSlug={projectSlug}
-      surveySlug={surveySlug}
-      normalizedResponseSlug={normalizedResponseSlug}
-      normalizedResponseSubsectionSlug={normalizedResponseSubsectionSlug}
-    />
+    <SuperAdminBox>
+      <ConvertSurveyResponseToSubsubsectionOhvWithLookup
+        response={response}
+        projectSlug={projectSlug}
+        surveySlug={surveySlug}
+        normalizedResponseSlug={normalizedResponseSlug}
+        normalizedResponseSubsectionSlug={normalizedResponseSubsectionSlug}
+      />
+    </SuperAdminBox>
   )
 }

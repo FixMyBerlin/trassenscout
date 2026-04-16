@@ -4,13 +4,29 @@ import { ReactNode } from "react"
 type Props = {
   className?: string
   children: ReactNode
+  bleed?: boolean
 }
 
-export const TableWrapper = ({ className, children }: Props) => {
+export const TableWrapper = ({ className, children, bleed = true }: Props) => {
   return (
-    <div className={clsx(className, "-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8")}>
-      <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-        <div className="not-prose overflow-hidden shadow-sm ring-1 ring-gray-200 md:rounded-lg">
+    <div
+      className={clsx(
+        className,
+        bleed ? "-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8" : "w-full overflow-x-hidden",
+      )}
+    >
+      <div
+        className={clsx(
+          "min-w-0 py-2 align-middle",
+          bleed ? "inline-block min-w-full md:px-6 lg:px-8" : "w-full",
+        )}
+      >
+        <div
+          className={clsx(
+            "not-prose overflow-hidden shadow-sm md:rounded-lg",
+            bleed ? "ring-1 ring-gray-200" : "border border-gray-200",
+          )}
+        >
           {children}
         </div>
       </div>

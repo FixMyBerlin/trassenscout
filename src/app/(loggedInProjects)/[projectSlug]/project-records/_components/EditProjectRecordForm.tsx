@@ -1,5 +1,6 @@
 "use client"
 
+import { ProjectRecordCommentsSection } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordCommentsSection"
 import { CreateEditReviewHistory } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordCreateEditReviewHistory"
 import { ProjectRecordDeleteActionBar } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordDeleteActionBar"
 import { ProjectRecordFormFields } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordFormFields"
@@ -14,27 +15,31 @@ import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMes
 import { Link } from "@/src/core/components/links"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import { m2mFields, M2MFieldsType } from "@/src/server/projectRecords/m2mFields"
-import deleteProjectRecord from "@/src/server/projectRecords/mutations/deleteProjectRecord"
 import updateProjectRecord from "@/src/server/projectRecords/mutations/updateProjectRecord"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
 import { ProjectRecordFormSchema } from "@/src/server/projectRecords/schemas"
-import { useMutation } from "@blitzjs/rpc"
+import { useMutation, useQuery } from "@blitzjs/rpc"
 import { ProjectRecordReviewState } from "@prisma/client"
 import { Route } from "next"
 import { useRouter } from "next/navigation"
 import { z } from "zod"
 
 export const EditProjectRecordForm = ({
-  projectRecord,
+  initialProjectRecord,
 }: {
-  projectRecord: Awaited<ReturnType<typeof getProjectRecord>>
+  initialProjectRecord: Awaited<ReturnType<typeof getProjectRecord>>
 }) => {
   const router = useRouter()
-  const needsReview = projectRecord.reviewState !== ProjectRecordReviewState.APPROVED
+  const needsReview = initialProjectRecord.reviewState !== ProjectRecordReviewState.APPROVED
   const [updateProjectRecordMutation] = useMutation(updateProjectRecord)
-  const [deleteProjectRecordMutation] = useMutation(deleteProjectRecord)
-
-  const projectSlug = projectRecord.project.slug
+  const projectSlug = initialProjectRecord.project.slug
+  const [projectRecord] = useQuery(
+    getProjectRecord,
+    { projectSlug, id: initialProjectRecord.id },
+    {
+      initialData: initialProjectRecord,
+    },
+  )
 
   const handleSubmit = async (values: z.infer<typeof ProjectRecordFormSchema>) => {
     try {
@@ -115,6 +120,7 @@ export const EditProjectRecordForm = ({
         <ProjectRecordFormFields
           projectSlug={projectSlug}
           splitView={needsReview}
+          landAcquisitionModuleEnabled={projectRecord.project.landAcquisitionModuleEnabled}
           emailSource={projectRecord.projectRecordEmail}
         />
 
@@ -122,6 +128,8 @@ export const EditProjectRecordForm = ({
       </Form>
 
       <CreateEditReviewHistory projectRecord={projectRecord} />
+
+      <ProjectRecordCommentsSection projectRecord={projectRecord} />
 
       <BackLink href={showPath} text="Zurück zum Protokolleintrag" />
 

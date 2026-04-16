@@ -109,7 +109,7 @@ export function SurveyResponses({ projectSlug, surveyId, survey, tabs }: Props) 
             className="mb-12 flex gap-1"
             href={`/api/${projectSlug}/surveys/${survey.id}/part2/results`}
           >
-            <ArrowDownTrayIcon className="mr-1 h-5 w-5" />
+            <ArrowDownTrayIcon className="mr-1 size-5" />
             Alle Daten als .csv herunterladen
           </Link>
         </div>

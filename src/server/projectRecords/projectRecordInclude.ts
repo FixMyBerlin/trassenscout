@@ -13,6 +13,22 @@ export const projectRecordInclude = {
       },
     },
   },
+  acquisitionArea: {
+    select: {
+      id: true,
+      subsubsection: {
+        select: {
+          slug: true,
+          subsection: { select: { slug: true } },
+        },
+      },
+      parcel: {
+        select: {
+          alkisParcelId: true,
+        },
+      },
+    },
+  },
   uploads: {
     orderBy: { id: "desc" },
     select: {
@@ -41,5 +57,30 @@ export const projectRecordInclude = {
       firstName: true,
       lastName: true,
     },
+  },
+  assignedTo: {
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+    },
+  },
+  projectRecordComments: {
+    select: {
+      id: true,
+      projectRecordId: true,
+      createdAt: true,
+      updatedAt: true,
+      body: true,
+      author: {
+        select: {
+          id: true,
+          role: true,
+          firstName: true,
+          lastName: true,
+        },
+      },
+    },
+    orderBy: { id: "asc" },
   },
 } as const

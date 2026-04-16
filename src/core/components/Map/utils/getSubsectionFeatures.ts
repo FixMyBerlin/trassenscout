@@ -6,7 +6,7 @@ import { extractLineEndpoints } from "./extractLineEndpoints"
 import { lineStringToGeoJSON } from "./lineStringToGeoJSON"
 import { polygonToGeoJSON } from "./polygonToGeoJSON"
 
-type SubsectionForFeatures =
+export type SubsectionForFeatures =
   | {
       slug: string
       type: typeof GeometryTypeEnum.LINE

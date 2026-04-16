@@ -10,6 +10,7 @@ import { FORM_ERROR, Form } from "@/src/core/components/forms/Form"
 import { shortTitle } from "@/src/core/components/text/titles"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { formatFileSize } from "@/src/core/utils/formatFileSize"
+import getAcquisitionAreas from "@/src/server/acquisitionAreas/queries/getAcquisitionAreas"
 import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import getSubsubsections from "@/src/server/subsubsections/queries/getSubsubsections"
 import { getFilenameFromS3 } from "@/src/server/uploads/_utils/url"
@@ -20,7 +21,8 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import { PromiseReturnType } from "blitz"
 import { Route } from "next"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useFormContext } from "react-hook-form"
 import { z } from "zod"
 import { DeleteUploadActionBar } from "./DeleteUploadActionBar"
 import { LuckyCloudActionBar } from "./LuckyCloudActionBar"
@@ -32,15 +34,32 @@ import { UploadPreview } from "./UploadPreview"
 import { UploadVerknuepfungen } from "./UploadVerknuepfungen"
 
 type UploadSubsectionFieldsProps = {
+  projectSlug: string
+  landAcquisitionModuleEnabled: boolean
   subsections: Awaited<ReturnType<typeof getSubsections>>["subsections"]
   subsubsections: Awaited<ReturnType<typeof getSubsubsections>>["subsubsections"]
-  returnPath: Route
 }
 
 const UploadSubsectionFields = ({
+  projectSlug,
+  landAcquisitionModuleEnabled,
   subsections,
   subsubsections,
-}: Omit<UploadSubsectionFieldsProps, "returnPath">) => {
+}: UploadSubsectionFieldsProps) => {
+  const { watch, setValue } = useFormContext<z.infer<typeof UploadSchema>>()
+  const subsectionId = watch("subsectionId")
+  const subsubsectionId = watch("subsubsectionId")
+  const acquisitionAreaId = watch("acquisitionAreaId")
+  const [acquisitionAreas = []] = useQuery(
+    getAcquisitionAreas,
+    { projectSlug },
+    { enabled: landAcquisitionModuleEnabled },
+  )
+
+  const selectedSubsectionId = subsectionId ? Number(subsectionId) : null
+  const selectedSubsubsectionId = subsubsectionId ? Number(subsubsectionId) : null
+  const selectedAcquisitionAreaId = acquisitionAreaId ? Number(acquisitionAreaId) : null
+
   // We use `""` here to signify the "All" case which gets translated to `NULL`
   const subsectionOptions: LabeledSelectProps["options"] = [["", "Übergreifendes Dokument"]]
   subsections.forEach((ss) => {
@@ -63,13 +82,63 @@ const UploadSubsectionFields = ({
     )
   subsubsectionOptions.unshift(["", "Keine Angabe"])
 
+  const filteredAcquisitionAreas = acquisitionAreas.filter((acquisitionArea) => {
+    if (selectedSubsubsectionId) {
+      return acquisitionArea.subsubsectionId === selectedSubsubsectionId
+    }
+    if (selectedSubsectionId) {
+      return acquisitionArea.subsubsection.subsectionId === selectedSubsectionId
+    }
+    return true
+  })
+
+  const acquisitionAreaOptions: LabeledSelectProps["options"] = filteredAcquisitionAreas.map(
+    (acquisitionArea) =>
+      [
+        acquisitionArea.id,
+        `${acquisitionArea.id} ${acquisitionArea.parcel.alkisParcelId} (${shortTitle(
+          acquisitionArea.subsubsection.slug,
+        )}/${shortTitle(acquisitionArea.subsubsection.subsection.slug)})`,
+      ] as [number, string],
+  )
+  acquisitionAreaOptions.unshift(["", "Keine Angabe"])
+
+  const handleSubsectionChange = (newSubsectionId: string) => {
+    const nextSubsectionId = newSubsectionId ? Number(newSubsectionId) : null
+    const currentSubsubsectionId = subsubsectionId ? Number(subsubsectionId) : null
+
+    if (currentSubsubsectionId) {
+      const selectedSubsubsection = subsubsections.find((s) => s.id === currentSubsubsectionId)
+      if (selectedSubsubsection && selectedSubsubsection.subsectionId !== nextSubsectionId) {
+        setValue("subsubsectionId", null)
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (!landAcquisitionModuleEnabled || !selectedAcquisitionAreaId) return
+    const stillCompatible = filteredAcquisitionAreas.some(
+      (acquisitionArea) => acquisitionArea.id === selectedAcquisitionAreaId,
+    )
+    if (!stillCompatible) {
+      setValue("acquisitionAreaId", null, { shouldDirty: true })
+    }
+  }, [filteredAcquisitionAreas, landAcquisitionModuleEnabled, selectedAcquisitionAreaId, setValue])
+
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <div
+      className={
+        landAcquisitionModuleEnabled
+          ? "grid grid-cols-1 gap-4 sm:grid-cols-3"
+          : "grid grid-cols-1 gap-4 sm:grid-cols-2"
+      }
+    >
       <LabeledSelect
         name="subsectionId"
         label="Zuordnung zum Planungsabschnitt"
         options={subsectionOptions}
         optional
+        onChange={handleSubsectionChange}
       />
       <LabeledSelect
         name="subsubsectionId"
@@ -77,6 +146,14 @@ const UploadSubsectionFields = ({
         options={subsubsectionOptions}
         optional
       />
+      {landAcquisitionModuleEnabled && (
+        <LabeledSelect
+          name="acquisitionAreaId"
+          label="Zuordnung zur Verhandlungsfläche"
+          options={acquisitionAreaOptions}
+          optional
+        />
+      )}
     </div>
   )
 }
@@ -111,6 +188,7 @@ export const EditUploadForm = ({ upload, returnPath, returnText, showDelete = tr
     summary: upload.summary,
     subsectionId: upload.subsectionId,
     subsubsectionId: upload.subsubsectionId,
+    acquisitionAreaId: upload.acquisitionAreaId,
     projectRecordEmailId: upload.projectRecordEmailId,
     mimeType: upload.mimeType,
     latitude: upload.latitude,
@@ -195,7 +273,12 @@ export const EditUploadForm = ({ upload, returnPath, returnText, showDelete = tr
               </div>
             </div>
           </div>
-          <UploadSubsectionFields subsections={subsections} subsubsections={subsubsections} />
+          <UploadSubsectionFields
+            projectSlug={projectSlug}
+            landAcquisitionModuleEnabled={upload.project?.landAcquisitionModuleEnabled ?? false}
+            subsections={subsections}
+            subsubsections={subsubsections}
+          />
           {upload.id && (
             <SummaryField
               uploadId={upload.id}
@@ -237,8 +320,10 @@ export const EditUploadForm = ({ upload, returnPath, returnText, showDelete = tr
       <UploadVerknuepfungen
         className="mt-4"
         projectSlug={projectSlug}
+        landAcquisitionModuleEnabled={upload.project?.landAcquisitionModuleEnabled ?? false}
         subsection={upload.subsection}
         subsubsection={upload.Subsubsection}
+        acquisitionArea={upload.acquisitionArea}
         projectRecords={upload.projectRecords}
         projectRecordEmail={upload.projectRecordEmail}
         surveyResponse={upload.surveyResponse}

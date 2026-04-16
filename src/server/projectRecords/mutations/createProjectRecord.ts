@@ -4,6 +4,7 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
+import { validateAcquisitionAreaScope } from "@/src/server/acquisitionAreas/_utils/validateAcquisitionAreaScope"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { m2mFields, M2MFieldsType } from "@/src/server/projectRecords/m2mFields"
 import { ProjectRecordSchema } from "@/src/server/projectRecords/schemas"
@@ -33,6 +34,13 @@ export default resolver.pipe(
     })
     const projectId = await getProjectIdBySlug(projectSlug)
     const currentUserId = ctx.session.userId
+
+    await validateAcquisitionAreaScope({
+      projectSlug,
+      acquisitionAreaId: data.acquisitionAreaId,
+      subsectionId: data.subsectionId,
+      subsubsectionId: data.subsubsectionId,
+    })
 
     const record = await db.projectRecord.create({
       // @ts-expect-error The whole `m2mFields` is way to hard to type but apparently working

@@ -1,7 +1,7 @@
 import { clsx } from "clsx"
 
 const sizeClasses = {
-  "5": "h-5 w-5",
+  "5": "size-5",
   "12": "h-12 w-12",
 }
 

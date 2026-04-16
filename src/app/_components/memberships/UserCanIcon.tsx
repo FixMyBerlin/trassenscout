@@ -8,7 +8,7 @@ type Props = { role: MembershipRole; isAdmin: boolean; className?: string }
 
 export const UserCanIcon = ({ role, isAdmin, className }: Props) => {
   const title = isAdmin ? "Trassenscout-Admin ('Superadmin')" : roleTranslation[role]
-  const classes = clsx(className || "h-4 w-4", isAdmin ? "text-purple-400" : "")
+  const classes = clsx(className || "size-4", isAdmin ? "text-purple-400" : "")
 
   switch (role) {
     case "VIEWER":

@@ -6,6 +6,7 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
+import { validateAcquisitionAreaScope } from "@/src/server/acquisitionAreas/_utils/validateAcquisitionAreaScope"
 import { getProjectIdBySlug } from "@/src/server/projects/queries/getProjectIdBySlug"
 import { extractExifFromS3 } from "@/src/server/uploads/_utils/extractExifFromS3"
 import { Ctx } from "@blitzjs/next"
@@ -35,6 +36,13 @@ export default resolver.pipe(
     const shouldExtract = isImage(input.mimeType) && !input.latitude && !input.longitude
 
     const exifData = shouldExtract ? await extractExifFromS3(input.externalUrl) : null
+
+    await validateAcquisitionAreaScope({
+      projectSlug,
+      acquisitionAreaId: input.acquisitionAreaId,
+      subsectionId: input.subsectionId,
+      subsubsectionId: input.subsubsectionId,
+    })
 
     const currentUserId = ctx.session.userId
 

@@ -1,14 +1,15 @@
 "use client"
 
-import { ProjectRecordAssignedToPill } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordAssignedToPill"
+import { ProjectRecordCommentsSection } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordCommentsSection"
 import { CreateEditReviewHistory } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordCreateEditReviewHistory"
 import { ProjectRecordSummary } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordSummary"
 import { ReprocessProjectRecordButton } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ReprocessProjectRecordButton"
 import { ReprocessProjectRecordEditForm } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ReprocessProjectRecordEditForm"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
-
+import { useQuery } from "@blitzjs/rpc"
 import { useEffect, useState } from "react"
 
 export type ReprocessedProjectRecord = {
@@ -20,10 +21,18 @@ export type ReprocessedProjectRecord = {
 }
 
 type Props = {
-  projectRecord: Awaited<ReturnType<typeof getProjectRecord>>
+  initialProjectRecord: Awaited<ReturnType<typeof getProjectRecord>>
 }
 
-export const ProjectRecordDetailClient = ({ projectRecord }: Props) => {
+export const ProjectRecordDetailClient = ({ initialProjectRecord }: Props) => {
+  const projectSlug = useProjectSlug()
+  const [projectRecord] = useQuery(
+    getProjectRecord,
+    { projectSlug, id: initialProjectRecord.id },
+    {
+      initialData: initialProjectRecord,
+    },
+  )
   const [aiSuggestions, setAiSuggestions] = useState<ReprocessedProjectRecord | null>(null)
 
   const handleAiSuggestions = (suggestions: ReprocessedProjectRecord) => {
@@ -44,12 +53,6 @@ export const ProjectRecordDetailClient = ({ projectRecord }: Props) => {
     }
   }, [aiSuggestions])
 
-  const assignedToPill = projectRecord.assignedTo && (
-    <div className="mb-4 flex flex-wrap items-center gap-2">
-      <ProjectRecordAssignedToPill assignedTo={projectRecord.assignedTo} />
-    </div>
-  )
-
   return (
     <>
       {aiSuggestions ? (
@@ -58,7 +61,6 @@ export const ProjectRecordDetailClient = ({ projectRecord }: Props) => {
           <div id="ai-suggestions-form" className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <div>
               <h2 className="mb-4 text-lg font-medium">Aktueller Protokolleintrag</h2>
-              {assignedToPill}
               <ProjectRecordSummary projectRecord={projectRecord} />
             </div>
 
@@ -85,11 +87,11 @@ export const ProjectRecordDetailClient = ({ projectRecord }: Props) => {
             </IfUserCanEdit>
           </SuperAdminBox>
 
-          {assignedToPill}
           <ProjectRecordSummary projectRecord={projectRecord} />
           <CreateEditReviewHistory projectRecord={projectRecord} />
         </>
       )}
+      <ProjectRecordCommentsSection projectRecord={projectRecord} />
     </>
   )
 }

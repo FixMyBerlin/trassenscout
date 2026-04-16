@@ -6,7 +6,7 @@ import "server-only"
 import { NewSubsubsectionInfrastructureTypeForm } from "../_components/NewSubsubsectionInfrastructureTypeForm"
 
 export const metadata: Metadata = {
-  title: seoNewTitle("Fördergegenstand"),
+  title: seoNewTitle("Gegenstand der Förderung"),
   robots: {
     index: false,
   },
@@ -27,7 +27,7 @@ export default async function NewSubsubsectionInfrastructureTypePage({
 
   return (
     <>
-      <PageHeader title="Fördergegenstand hinzufügen" className="mt-12" />
+      <PageHeader title="Gegenstand der Förderung hinzufügen" className="mt-12" />
       <NewSubsubsectionInfrastructureTypeForm projectSlug={projectSlug} fromParam={fromParam} />
       <hr className="my-5 text-gray-200" />
       <Link href={`${listPath}${appendFrom}` as Route}>Zurück zur Übersicht</Link>

@@ -1,12 +1,11 @@
 "use client"
 
-import { CurrentUserCanIcon } from "@/src/app/_components/memberships/CurrentUserCanIcon"
 import { clsx } from "clsx"
-import { useTryProjectSlug } from "../../routes/useProjectSlug"
 import { H1, H2 } from "../text/Headings"
 
 type Props = {
   titleIcon?: React.ReactNode
+  titleIconZoom?: number
   title?: string
   subtitle?: string | null
   description?: string | React.ReactNode
@@ -16,14 +15,13 @@ type Props = {
 
 export const PageHeader = ({
   titleIcon,
+  titleIconZoom = 1.8,
   title,
   subtitle,
   description,
   action,
   className,
 }: Props) => {
-  const projectSlug = useTryProjectSlug()
-
   const styledDescription =
     typeof description === "string" ? (
       <p className="mt-5 text-base text-gray-500">{description}</p>
@@ -34,24 +32,23 @@ export const PageHeader = ({
   return (
     <section className={clsx("mb-12 space-y-3", className)}>
       {(titleIcon || action) && (
-        <div className="mt-5 flex items-start justify-between">
+        <div className={clsx("mt-5 flex items-start", action && "justify-between")}>
           {/* empty span should be rendered if no title icon to keep position of action */}
           <div className="flex items-center gap-3">
-            <span style={{ zoom: 1.8 }} className="mb-1 shrink-0">
+            <span style={{ zoom: titleIconZoom }} className="mb-1 shrink-0">
               {titleIcon}
             </span>
           </div>
-          <div className="flex items-center gap-2">
-            {action} <CurrentUserCanIcon projectSlug={projectSlug!} />
-          </div>
+          {action && <div className="flex items-center gap-2">{action}</div>}
         </div>
       )}
-      <div>
-        <H1>{title}</H1>
-
-        {Boolean(subtitle) && <H2 className="mt-3">{subtitle}</H2>}
-        {Boolean(description) && styledDescription}
-      </div>
+      {(title || subtitle || description) && (
+        <div>
+          {Boolean(title) && <H1>{title}</H1>}
+          {Boolean(subtitle) && <H2 className="mt-3">{subtitle}</H2>}
+          {Boolean(description) && styledDescription}
+        </div>
+      )}
     </section>
   )
 }

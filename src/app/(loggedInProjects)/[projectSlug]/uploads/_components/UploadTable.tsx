@@ -15,6 +15,7 @@ import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import {
   subsectionDashboardRoute,
   subsubsectionDashboardRoute,
+  subsubsectionLandAcquisitionRoute,
 } from "@/src/core/routes/subsectionRoutes"
 import { uploadEditRoute } from "@/src/core/routes/uploadRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
@@ -23,6 +24,7 @@ import { formatBerlinTime } from "@/src/core/utils/formatBerlinTime"
 import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
 import { MapPinIcon, UserGroupIcon } from "@heroicons/react/24/outline"
 import { PromiseReturnType } from "blitz"
+import { Route } from "next"
 
 // NOTE:
 // This version of "IfUserCanEdit" currently only works in the Next.js app directory.
@@ -106,6 +108,7 @@ const UploadTableRow = ({
   onDelete?: () => Promise<void>
 }) => {
   const hasLocation = upload.latitude !== null && upload.longitude !== null
+  const landAcquisitionModuleEnabled = upload.project?.landAcquisitionModuleEnabled ?? false
   return (
     <tr>
       <td className="py-2 pr-3 pl-4 text-sm sm:pl-6">
@@ -113,6 +116,7 @@ const UploadTableRow = ({
           <div className="-mt-0.5 -mb-0.5 -ml-1">
             <UploadPreviewClickable
               uploadId={upload.id}
+              upload={upload}
               projectSlug={projectSlug}
               size="table"
               editUrl={uploadEditRoute(projectSlug, upload.id)}
@@ -152,14 +156,16 @@ const UploadTableRow = ({
       {withRelations && (
         <td className="px-3 py-2 text-sm text-gray-500">
           <ul className="flex flex-col gap-1">
-            {upload.subsection && (
-              <li>
-                <Link href={subsectionDashboardRoute(projectSlug, upload.subsection.slug)}>
-                  Planungsabschnitt: {shortTitle(upload.subsection.slug)}
-                </Link>
-              </li>
-            )}
-            {upload.Subsubsection && (
+            {upload.subsection &&
+              !upload.Subsubsection &&
+              !(landAcquisitionModuleEnabled && upload.acquisitionArea) && (
+                <li>
+                  <Link href={subsectionDashboardRoute(projectSlug, upload.subsection.slug)}>
+                    Planungsabschnitt: {shortTitle(upload.subsection.slug)}
+                  </Link>
+                </li>
+              )}
+            {upload.Subsubsection && !(landAcquisitionModuleEnabled && upload.acquisitionArea) && (
               <li>
                 <Link
                   href={subsubsectionDashboardRoute(
@@ -181,6 +187,22 @@ const UploadTableRow = ({
                   </Link>
                 </li>
               ))}
+            {landAcquisitionModuleEnabled && upload.acquisitionArea && (
+              <li>
+                <Link
+                  href={
+                    `${subsubsectionLandAcquisitionRoute(
+                      projectSlug,
+                      upload.acquisitionArea.subsubsection.subsection.slug,
+                      upload.acquisitionArea.subsubsection.slug,
+                    )}?acquisitionAreaId=${upload.acquisitionArea.id}` as Route
+                  }
+                >
+                  Verhandlungsfläche: {upload.acquisitionArea.id} (
+                  {upload.acquisitionArea.parcel.alkisParcelId})
+                </Link>
+              </li>
+            )}
           </ul>
         </td>
       )}

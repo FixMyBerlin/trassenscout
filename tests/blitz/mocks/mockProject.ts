@@ -1,4 +1,4 @@
-import { Project } from "@prisma/client"
+import { Project, StateKeyEnum } from "@prisma/client"
 
 export const mockProject: Project = {
   id: 1,
@@ -13,5 +13,7 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
   updatedAt: new Date(),
   exportEnabled: false,
   aiEnabled: false,
+  landAcquisitionModuleEnabled: false,
   showLogEntries: false,
+  alkisStateKey: StateKeyEnum.DISABLED,
 }

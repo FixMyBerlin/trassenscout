@@ -103,7 +103,7 @@ export const ContactTable = ({ contacts, currentUserEmail, projectSlug }: Props)
                   <div className="flex items-center justify-end gap-4 text-right">
                     <IfUserCanEdit>
                       <Link href={`/${projectSlug}/contacts/${contact.id}` as Route}>
-                        <TrashIcon className="h-4 w-4" />
+                        <TrashIcon className="size-4" />
                       </Link>
                     </IfUserCanEdit>
                     <LabeledCheckbox

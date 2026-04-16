@@ -1,0 +1,2 @@
+ALTER TABLE "Parcel"
+ALTER COLUMN "geometry" SET NOT NULL;

@@ -3,49 +3,38 @@ import { linkStyles } from "@/src/core/components/links"
 import { Modal, ModalCloseButton } from "@/src/core/components/Modal"
 import { H3 } from "@/src/core/components/text"
 import { HeadingWithAction } from "@/src/core/components/text/HeadingWithAction"
-import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
-import deleteSurveyResponseComment from "@/src/server/survey-response-comments/mutations/deleteSurveyResponseComment"
-import updateSurveyResponseComment from "@/src/server/survey-response-comments/mutations/updateSurveyResponseComment"
+import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
 import getFeedbackSurveyResponsesWithSurveyDataAndComments from "@/src/server/survey-responses/queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
 import { useSession } from "@blitzjs/auth"
-import { invalidateQuery, useMutation } from "@blitzjs/rpc"
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline"
 import { clsx } from "clsx"
 import dompurify from "dompurify"
 import { useState } from "react"
-import { EditableSurveyResponseListItemProps } from "../EditableSurveyResponseListItem"
 
 type Props = {
-  comment: EditableSurveyResponseListItemProps["response"]["surveyResponseComments"][number]
+  comment:
+    | NonNullable<
+        Awaited<
+          ReturnType<typeof getFeedbackSurveyResponsesWithSurveyDataAndComments>
+        >["feedbackSurveyResponses"][number]["surveyResponseComments"][number]
+      >
+    | NonNullable<Awaited<ReturnType<typeof getProjectRecord>>["projectRecordComments"][number]>
   commentLabel: string
+  mutateComment: {
+    update: (body: string) => void
+    remove: () => void
+  }
 }
 
-export const EditSurveyResponseCommentForm = ({ comment, commentLabel }: Props) => {
-  const projectSlug = useProjectSlug()
-  const [updateSurveyResponseCommentMutation, { isLoading, error }] = useMutation(
-    updateSurveyResponseComment,
-  )
-  const [deleteSurveyResponseCommentMutation] = useMutation(deleteSurveyResponseComment)
+export const EditCommentForm = ({ comment, commentLabel, mutateComment }: Props) => {
   const [open, setOpen] = useState(false)
   const session = useSession()
 
-  // todo any
-  const handleSubmit = async (values: any) => {
+  const handleSubmit = async (values: { body: string }) => {
     const sanitize = (input: string) => (input ? dompurify.sanitize(input) : input)
-    updateSurveyResponseCommentMutation(
-      {
-        projectSlug: projectSlug!,
-        commentId: comment.id,
-        body: sanitize(values.body),
-      },
-      // todo tryout when the serach also includes the comment
-      {
-        onSuccess: () => {
-          invalidateQuery(getFeedbackSurveyResponsesWithSurveyDataAndComments)
-          setOpen(false)
-        },
-      },
-    )
+    const body = sanitize(values.body)
+    await mutateComment.update(body)
+    setOpen(false)
   }
 
   const isAuthorOrAdmin = comment.author.id === session.userId || session.role === "ADMIN"
@@ -60,7 +49,7 @@ export const EditSurveyResponseCommentForm = ({ comment, commentLabel }: Props) 
         onClick={() => setOpen(true)}
         className={clsx("flex items-center gap-2", linkStyles)}
       >
-        <PencilIcon className="h-3.5 w-3.5 shrink-0" />
+        <PencilIcon className="size-3.5 shrink-0" />
         <p>bearbeiten</p>
       </button>
 
@@ -80,8 +69,6 @@ export const EditSurveyResponseCommentForm = ({ comment, commentLabel }: Props) 
             defaultValue={comment.body}
             required
           />
-          {/* @ts-expect-errors TODO Research how the error message is provided by Blitz */}
-          {error ? <p className="text-red-500">{error.message}</p> : null}
         </Form>
 
         <button
@@ -93,12 +80,9 @@ export const EditSurveyResponseCommentForm = ({ comment, commentLabel }: Props) 
             ) {
               try {
                 setOpen(false)
-                await deleteSurveyResponseCommentMutation({
-                  projectSlug,
-                  commentId: comment.id,
-                })
-              } catch (error: any) {
-                window.alert(error.toString())
+                await mutateComment.remove()
+              } catch (error: unknown) {
+                window.alert(String(error))
                 console.error(error)
               }
             }
@@ -106,7 +90,7 @@ export const EditSurveyResponseCommentForm = ({ comment, commentLabel }: Props) 
           className={clsx("mt-4 flex w-full items-end justify-end gap-2", linkStyles)}
         >
           <p>{commentLabel} löschen</p>
-          <TrashIcon className={clsx(linkStyles, "h-6 w-6")} />
+          <TrashIcon className={clsx(linkStyles, "size-6")} />
         </button>
       </Modal>
     </>

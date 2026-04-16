@@ -1,14 +1,11 @@
 "use client"
 
 import { blueButtonStyles, linkStyles } from "@/src/core/components/links/styles"
+import { BackgroundGeometryLayers } from "@/src/core/components/Map/BackgroundGeometryLayers"
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
-import type { LineEndPointFeatureProperties } from "@/src/core/components/Map/layers/LineEndPointsLayer"
-import type { UnifiedFeatureProperties } from "@/src/core/components/Map/layers/UnifiedFeaturesLayer"
 import { getStaticOverlayForProject } from "@/src/core/components/Map/staticOverlay/getStaticOverlayForProject"
 import { UploadMarkers } from "@/src/core/components/Map/UploadMarkers"
 import { geometriesBbox, geometryBbox } from "@/src/core/components/Map/utils/bboxHelpers"
-import { getSubsectionFeatures } from "@/src/core/components/Map/utils/getSubsectionFeatures"
-import { getSubsubsectionFeatures } from "@/src/core/components/Map/utils/getSubsubsectionFeatures"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { TGetSubsection } from "@/src/server/subsections/queries/getSubsection"
 import getSubsections from "@/src/server/subsections/queries/getSubsections"
@@ -16,8 +13,6 @@ import getSubsubsections from "@/src/server/subsubsections/queries/getSubsubsect
 import { UploadSchema } from "@/src/server/uploads/schema"
 import { useQuery } from "@blitzjs/rpc"
 import { XMarkIcon } from "@heroicons/react/16/solid"
-import { featureCollection } from "@turf/helpers"
-import type { Feature, FeatureCollection, LineString, Point, Polygon } from "geojson"
 import { useFormContext } from "react-hook-form"
 import { Marker, MarkerDragEvent } from "react-map-gl/maplibre"
 import { twMerge } from "tailwind-merge"
@@ -38,65 +33,12 @@ export const UploadLocationMap = () => {
   const currentSubsection = subsections.find((ss: TGetSubsection) => {
     return ss.id === subsectionId
   })
-  const currentSubsubsection = subsubsections.find((ss) => {
-    return ss.id === subsubsectionId
-  })
   const filteredSubsubsections = !subsectionId
     ? subsubsections
     : subsubsections.filter((ss) => ss.subsection.slug === currentSubsection?.slug)
 
   // Determine color schema based on whether subsubsectionId exists
   const colorSchema = subsubsectionId ? ("subsubsection" as const) : ("subsection" as const)
-
-  // Extract subsection features
-  const {
-    lines: subsectionLines,
-    lineEndPoints: subsectionLineEndPoints,
-    polygons: subsectionPolygons,
-  } = getSubsectionFeatures({
-    subsections,
-    highlight: "currentSubsection",
-    selectedSubsectionSlug: currentSubsection?.slug ?? "",
-  })
-
-  // Extract subsubsection features
-  const subsubsectionFeatures = getSubsubsectionFeatures({
-    subsubsections: filteredSubsubsections,
-    selectedSubsubsectionSlug: currentSubsubsection?.slug ?? null,
-  })
-
-  // Combine features for BaseMap
-  const subsectionFeaturesList = subsectionLines?.features || []
-  const subsubsectionFeaturesList = subsubsectionFeatures.lines?.features || []
-  const allLines: FeatureCollection<LineString, UnifiedFeatureProperties> | undefined =
-    subsectionFeaturesList.length === 0 && subsubsectionFeaturesList.length === 0
-      ? undefined
-      : featureCollection([
-          ...(subsectionFeaturesList as Feature<LineString, UnifiedFeatureProperties>[]),
-          ...(subsubsectionFeaturesList as Feature<LineString, UnifiedFeatureProperties>[]),
-        ])
-
-  const subsectionPolygonsList = subsectionPolygons?.features || []
-  const subsubsectionPolygonsList = subsubsectionFeatures.polygons?.features || []
-  const allPolygons: FeatureCollection<Polygon, UnifiedFeatureProperties> | undefined =
-    subsectionPolygonsList.length === 0 && subsubsectionPolygonsList.length === 0
-      ? undefined
-      : featureCollection([
-          ...(subsectionPolygonsList as Feature<Polygon, UnifiedFeatureProperties>[]),
-          ...(subsubsectionPolygonsList as Feature<Polygon, UnifiedFeatureProperties>[]),
-        ])
-
-  const subsubsectionPointsList = subsubsectionFeatures.points?.features || []
-  const allPoints = subsubsectionPointsList.length === 0 ? undefined : subsubsectionFeatures.points
-
-  const allLineEndPoints: FeatureCollection<Point, LineEndPointFeatureProperties> | undefined =
-    !subsectionLineEndPoints?.features?.length &&
-    !subsubsectionFeatures.lineEndPoints?.features?.length
-      ? undefined
-      : (featureCollection([
-          ...(subsectionLineEndPoints?.features ?? []),
-          ...(subsubsectionFeatures.lineEndPoints?.features ?? []),
-        ]) as FeatureCollection<Point, LineEndPointFeatureProperties>)
 
   // Get current position from form values
   const hasPosition = typeof latitude === "number" && typeof longitude === "number"
@@ -141,13 +83,14 @@ export const UploadLocationMap = () => {
           initialViewState={initialViewState!}
           classHeight={hasPosition ? undefined : "h-32 sm:h-[166px]"}
           colorSchema={colorSchema}
-          lines={allLines}
-          polygons={allPolygons}
-          points={allPoints}
-          lineEndPoints={allLineEndPoints}
           interactiveLayerIds={[]}
           staticOverlay={getStaticOverlayForProject(projectSlug)}
         >
+          <BackgroundGeometryLayers
+            subsections={subsections}
+            subsubsections={filteredSubsubsections}
+            colorSchema={colorSchema}
+          />
           <UploadMarkers projectSlug={projectSlug} interactive={false} />
           {hasPosition && (
             <Marker

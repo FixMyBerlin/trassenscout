@@ -1,9 +1,12 @@
 "use client"
 
 import { UserSelectOptions } from "@/src/app/_components/users/utils/getUserSelectOptions"
+import { getBundeslandSelectOptions } from "@/src/app/api/(auth)/[projectSlug]/alkis-wfs-parcels/_utils/alkisStateConfig"
+import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import {
   Form,
   FormProps,
+  LabeledSelect,
   LabeledTextareaField,
   LabeledTextField,
 } from "@/src/core/components/forms"
@@ -21,6 +24,16 @@ export const ProjectForm = ({ users, ...props }: Props) => {
         help="Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren."
       />
       <LabeledTextField type="text" name="subTitle" label="Untertitel" optional />
+      <SuperAdminBox>
+        <LabeledSelect
+          name="alkisStateKey"
+          label="Bundesland (ALKIS-Daten)"
+          optional
+          // @ts-expect-error
+          options={getBundeslandSelectOptions()}
+          // help="Steuert die ALKIS-WMS-Hintergrundkarte in den Projektkarten, sofern für das gewählte Bundesland ein Dienst hinterlegt ist."
+        />
+      </SuperAdminBox>
       {/* UNUSED */}
       {/* <LabeledTextField
         optional
