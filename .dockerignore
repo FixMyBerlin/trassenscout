@@ -5,3 +5,4 @@ test
 .env
 .editorconfig
 imap-listener
+node_modules
