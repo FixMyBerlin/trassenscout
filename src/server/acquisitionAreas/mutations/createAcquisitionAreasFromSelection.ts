@@ -38,7 +38,6 @@ export default resolver.pipe(
     await db.subsubsection.findFirstOrThrow({
       where: {
         id: subsubsectionId,
-        type: { in: ["LINE", "POLYGON"] },
         subsection: {
           project: {
             slug: projectSlug,

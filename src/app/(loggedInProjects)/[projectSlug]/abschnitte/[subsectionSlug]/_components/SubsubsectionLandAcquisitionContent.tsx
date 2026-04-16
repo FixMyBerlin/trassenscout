@@ -43,7 +43,6 @@ export const SubsubsectionLandAcquisitionContent = ({
   const subsectionSlug = useSlug("subsectionSlug")
   const subsubsectionSlug = useSlug("subsubsectionSlug")
   const { acquisitionAreaId, setAcquisitionAreaId } = useAcquisitionAreaSelection()
-  const canCreateAcquisitionAreas = subsubsectionType !== GeometryTypeEnum.POINT
   const [isProjectRecordModalOpen, setIsProjectRecordModalOpen] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
   const [createdProjectRecordId, setCreatedProjectRecordId] = useState<null | number>(null)
@@ -142,28 +141,17 @@ export const SubsubsectionLandAcquisitionContent = ({
               <h3 className="text-lg font-semibold text-gray-700">
                 Es wurden noch keine Dealflächen angelegt
               </h3>
-              <p className="max-w-xl text-base text-gray-500">
-                {canCreateAcquisitionAreas
-                  ? "Um den Grunderwerb zu verwalten, legen Sie bitte Dealflächen an."
-                  : "Für punktförmige Einträge können keine Dealflächen angelegt werden."}
-              </p>
-              {canCreateAcquisitionAreas && (
-                <IfUserCanEdit>
-                  <div className="pt-2">
-                    <Link
-                      href={acquisitionAreaNewRoute(
-                        projectSlug,
-                        subsectionSlug!,
-                        subsubsectionSlug!,
-                      )}
-                      button
-                      icon="plus"
-                    >
-                      Dealflächen anlegen
-                    </Link>
-                  </div>
-                </IfUserCanEdit>
-              )}
+              <IfUserCanEdit>
+                <div className="pt-2">
+                  <Link
+                    href={acquisitionAreaNewRoute(projectSlug, subsectionSlug!, subsubsectionSlug!)}
+                    button
+                    icon="plus"
+                  >
+                    Dealflächen anlegen
+                  </Link>
+                </div>
+              </IfUserCanEdit>
             </>
           ) : selectedAcquisitionArea ? (
             <section className="space-y-6">
