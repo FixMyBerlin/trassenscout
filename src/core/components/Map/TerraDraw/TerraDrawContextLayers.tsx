@@ -5,7 +5,6 @@ import {
   UnifiedFeaturesLayer,
   type UnifiedFeatureProperties,
 } from "@/src/core/components/Map/layers/UnifiedFeaturesLayer"
-import { computeBufferPolygonFeature } from "@/src/core/components/Map/utils/computeBufferPolygonFeature"
 import { getSubsectionFeatures } from "@/src/core/components/Map/utils/getSubsectionFeatures"
 import { getSubsubsectionFeatures } from "@/src/core/components/Map/utils/getSubsubsectionFeatures"
 import { mergeFeatureCollections } from "@/src/core/components/Map/utils/mergeFeatureCollections"
@@ -214,7 +213,7 @@ type GeometryDrawingAcquisitionAreaSubsubsectionContextLayersProps = {
   geometry: SupportedGeometry
 }
 
-const DEAL_AREA_EDIT_BUFFER_RADIUS_METERS = 20
+// const DEAL_AREA_EDIT_BUFFER_RADIUS_METERS = 20
 
 export const GeometryDrawingAcquisitionAreaSubsubsectionContextLayers = ({
   geometry,
@@ -223,17 +222,17 @@ export const GeometryDrawingAcquisitionAreaSubsubsectionContextLayers = ({
     () => singleGeometryFeatureCollection(geometry),
     [geometry],
   )
+  // TODO bufferRadius: decide if we want to show and allow editing / interaction form<-->map
+  // const bufferOutlineFeatureCollection = useMemo(() => {
+  //   const bufferedGeometry = computeBufferPolygonFeature(
+  //     geometry,
+  //     DEAL_AREA_EDIT_BUFFER_RADIUS_METERS,
+  //   )
 
-  const bufferOutlineFeatureCollection = useMemo(() => {
-    const bufferedGeometry = computeBufferPolygonFeature(
-      geometry,
-      DEAL_AREA_EDIT_BUFFER_RADIUS_METERS,
-    )
+  //   if (!bufferedGeometry?.geometry) return featureCollection([])
 
-    if (!bufferedGeometry?.geometry) return featureCollection([])
-
-    return singleGeometryFeatureCollection(bufferedGeometry.geometry)
-  }, [geometry])
+  //   return singleGeometryFeatureCollection(bufferedGeometry.geometry)
+  // }, [geometry])
 
   return (
     <>
@@ -272,7 +271,7 @@ export const GeometryDrawingAcquisitionAreaSubsubsectionContextLayers = ({
           "circle-stroke-color": subsubsectionColors.line.borderColor,
         }}
       />
-      <Source
+      {/* <Source
         id="terra_draw_acquisition_area_subsubsection_buffer"
         type="geojson"
         data={bufferOutlineFeatureCollection}
@@ -287,7 +286,7 @@ export const GeometryDrawingAcquisitionAreaSubsubsectionContextLayers = ({
           "line-width": 2,
           "line-dasharray": [6, 3],
         }}
-      />
+      /> */}
     </>
   )
 }

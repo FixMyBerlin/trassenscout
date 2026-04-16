@@ -12,6 +12,7 @@ export const AcquisitionAreaSchema = z.object({
   subsubsectionId: z.coerce.number(),
   parcelId: z.coerce.number(),
   geometry: AcquisitionAreaGeometrySchema,
+  bufferRadiusM: InputNumberOrNullSchema,
   acquisitionAreaStatusId: InputNumberOrNullSchema,
   description: z.string().nullish(),
 })

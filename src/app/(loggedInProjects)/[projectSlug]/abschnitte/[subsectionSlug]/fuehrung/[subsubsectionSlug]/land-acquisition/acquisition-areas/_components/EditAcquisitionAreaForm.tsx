@@ -60,6 +60,7 @@ export const EditAcquisitionAreaForm = ({
         parcelId: acquisitionArea.parcelId,
         geometry: values.geometry,
         description: values.description || null,
+        bufferRadiusM: values.bufferRadiusM,
         acquisitionAreaStatusId: values.acquisitionAreaStatusId,
       })
       router.push(returnPath)
@@ -80,6 +81,7 @@ export const EditAcquisitionAreaForm = ({
         initialValues={
           {
             description: acquisitionArea.description ?? "",
+            bufferRadiusM: acquisitionArea.bufferRadiusM ?? "",
             acquisitionAreaStatusId: acquisitionArea.acquisitionAreaStatusId ?? "",
             geometry: acquisitionArea.geometry,
             type: "POLYGON",

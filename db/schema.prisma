@@ -425,11 +425,12 @@ model AcquisitionAreaStatus {
 }
 
 model AcquisitionArea {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  geometry    Json
-  description String?
+  id            Int      @id @default(autoincrement())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  geometry      Json
+  description   String?
+  bufferRadiusM Float? // Buffer radius in meters
 
   subsubsection           Subsubsection          @relation(fields: [subsubsectionId], references: [id])
   subsubsectionId         Int

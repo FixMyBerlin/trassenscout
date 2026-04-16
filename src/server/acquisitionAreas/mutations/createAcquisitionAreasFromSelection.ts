@@ -5,6 +5,7 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
+import { InputNumberOrNullSchema } from "@/src/core/utils/schema-shared"
 import { AcquisitionAreaGeometrySchema } from "@/src/server/acquisitionAreas/schema"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { Ctx } from "@blitzjs/next"
@@ -21,6 +22,7 @@ const CreateAcquisitionAreasFromSelectionSchema = ProjectSlugRequiredSchema.merg
           alkisParcelIdSource: z.string(),
           geometry: AcquisitionAreaGeometrySchema,
           parcelGeometry: AcquisitionAreaGeometrySchema,
+          bufferRadiusM: InputNumberOrNullSchema,
           description: z.string().nullish(),
           acquisitionAreaStatusId: z.coerce.number().nullish(),
         }),
@@ -126,6 +128,7 @@ export default resolver.pipe(
             subsubsectionId,
             parcelId: parcel.id,
             geometry: acquisitionArea.geometry,
+            bufferRadiusM: acquisitionArea.bufferRadiusM ?? null,
             description: acquisitionArea.description ?? null,
             acquisitionAreaStatusId: acquisitionArea.acquisitionAreaStatusId ?? null,
           },

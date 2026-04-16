@@ -18,6 +18,7 @@ import { LinkWithFormDirtyConfirm } from "../../../../_components/LinkWithFormDi
 
 export const AcquisitionAreaFormSchema = z.object({
   description: z.string().nullish(),
+  bufferRadiusM: InputNumberOrNullSchema,
   acquisitionAreaStatusId: InputNumberOrNullSchema,
   geometry: AcquisitionAreaGeometrySchema,
   type: z.literal("POLYGON").optional(),
@@ -50,6 +51,14 @@ export function AcquisitionAreaForm<S extends z.ZodType<any, any>>({
   return (
     <Form<S> {...props}>
       <LabeledTextareaField name="description" label="Beschreibung" optional />
+      {/* TODO bufferRadius: decide if we want to show and allow editing / interaction form<-->map */}
+      {/* <LabeledTextField
+        name="bufferRadiusM"
+        label="Buffer-Radius (m)"
+        type="number"
+        min={0}
+        optional
+      /> */}
       <div className="flex items-end gap-5">
         <LabeledSelect
           name="acquisitionAreaStatusId"

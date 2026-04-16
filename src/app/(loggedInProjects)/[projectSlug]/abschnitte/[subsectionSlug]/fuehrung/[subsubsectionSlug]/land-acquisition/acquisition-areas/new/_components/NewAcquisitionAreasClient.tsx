@@ -77,6 +77,7 @@ export function NewAcquisitionAreasClient({ initialSubsubsection }: Props) {
           alkisParcelIdSource: acquisitionArea.alkisParcelIdSource,
           geometry: acquisitionArea.geometry,
           parcelGeometry: acquisitionArea.parcelGeometry,
+          bufferRadiusM: bufferRadius,
         })),
       })
 
