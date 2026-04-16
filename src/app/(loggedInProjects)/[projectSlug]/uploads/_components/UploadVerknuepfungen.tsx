@@ -68,7 +68,7 @@ export const UploadVerknuepfungen = ({
           )}
           {hasAcquisitionArea && (
             <li>
-              <strong className="font-medium">Dealfläche:</strong>{" "}
+              <strong className="font-medium">Verhandlungsfläche:</strong>{" "}
               <Link
                 href={
                   `${subsubsectionLandAcquisitionRoute(

@@ -149,7 +149,7 @@ const UploadSubsectionFields = ({
       {landAcquisitionModuleEnabled && (
         <LabeledSelect
           name="acquisitionAreaId"
-          label="Zuordnung zur Dealfläche"
+          label="Zuordnung zur Verhandlungsfläche"
           options={acquisitionAreaOptions}
           optional
         />

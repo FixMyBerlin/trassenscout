@@ -129,7 +129,9 @@ export function NewAcquisitionAreasClient({ initialSubsubsection }: Props) {
       )
     } catch (error) {
       setSubmitError(
-        error instanceof Error ? error.message : "Dealflächen konnten nicht erstellt werden.",
+        error instanceof Error
+          ? error.message
+          : "Verhandlungsflächen konnten nicht erstellt werden.",
       )
     }
   }
@@ -149,15 +151,15 @@ export function NewAcquisitionAreasClient({ initialSubsubsection }: Props) {
       <aside className="w-full shrink-0 rounded-md border border-gray-200 bg-white p-4 shadow-xs lg:w-80">
         <Form
           initialValues={{ bufferRadiusInput: "20" }}
-          submitText="Dealflächen erstellen"
+          submitText="Verhandlungsflächen erstellen"
           onSubmit={handleCreateAcquisitionAreas}
         >
           <BufferRadiusControls onApplyRadius={setBufferRadius} />
         </Form>
         <div className="mb-4 space-y-3">
           <p className="text-sm text-gray-500">
-            {selectedAcquisitionAreas.length} von {potentialAcquisitionAreas.length} Dealflächen
-            ausgewählt
+            {selectedAcquisitionAreas.length} von {potentialAcquisitionAreas.length}{" "}
+            Verhandlungsflächen ausgewählt
           </p>
         </div>
         <AcquisitionAreasList

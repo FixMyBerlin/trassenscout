@@ -7,7 +7,7 @@ import { Metadata } from "next"
 import "server-only"
 
 export const metadata: Metadata = {
-  title: seoEditTitle("Dealfläche"),
+  title: seoEditTitle("Verhandlungsfläche"),
   robots: {
     index: false,
   },
@@ -32,7 +32,7 @@ export default async function EditAcquisitionAreaPage({
 
   return (
     <>
-      <PageHeader title={`Dealfläche ${acquisitionArea.id} bearbeiten`} className="mt-12" />
+      <PageHeader title={`Verhandlungsfläche ${acquisitionArea.id} bearbeiten`} className="mt-12" />
       <EditAcquisitionAreaForm
         acquisitionArea={acquisitionArea}
         projectSlug={projectSlug}

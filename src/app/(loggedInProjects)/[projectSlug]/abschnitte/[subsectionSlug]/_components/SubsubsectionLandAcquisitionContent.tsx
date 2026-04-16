@@ -127,10 +127,10 @@ export const SubsubsectionLandAcquisitionContent = ({
             onChange={(value) => {
               void setAcquisitionAreaId(value)
             }}
-            placeholder="Dealfläche auswählen"
+            placeholder="Verhandlungsfläche auswählen"
             options={acquisitionAreas.map((acquisitionArea) => ({
               value: acquisitionArea.id,
-              label: `Dealfläche ${acquisitionArea.id}`,
+              label: `Verhandlungsfläche ${acquisitionArea.id}`,
             }))}
           />
         )}
@@ -139,7 +139,7 @@ export const SubsubsectionLandAcquisitionContent = ({
           {!acquisitionAreas.length ? (
             <>
               <h3 className="text-lg font-semibold text-gray-700">
-                Es wurden noch keine Dealflächen angelegt
+                Es wurden noch keine Verhandlungsflächen angelegt
               </h3>
               <IfUserCanEdit>
                 <div className="pt-2">
@@ -148,7 +148,7 @@ export const SubsubsectionLandAcquisitionContent = ({
                     button
                     icon="plus"
                   >
-                    Dealflächen anlegen
+                    Verhandlungsflächen anlegen
                   </Link>
                 </div>
               </IfUserCanEdit>
@@ -323,11 +323,11 @@ export const SubsubsectionLandAcquisitionContent = ({
           ) : (
             <>
               <h3 className="text-lg font-semibold text-gray-700">
-                Es wurde noch keine Dealfläche ausgewählt
+                Es wurde noch keine Verhandlungsfläche ausgewählt
               </h3>
               <p className="max-w-xl text-base text-gray-500">
-                Bitte wählen Sie eine Dealfläche aus, um den Grunderwerb zu managen. Dies können Sie
-                über den Dropdown tun oder später per Klick auf die lila Fläche in der Karte.
+                Nutzen Sie das Dropdown-Menü oder klicken Sie direkt auf eine Fläche in der Karte,
+                um den Grunderwerb eine Verhandlungsfläche auszuwählen.
               </p>
             </>
           )}

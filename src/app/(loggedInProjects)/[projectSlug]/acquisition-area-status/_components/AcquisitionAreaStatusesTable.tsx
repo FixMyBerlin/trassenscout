@@ -64,7 +64,7 @@ export const AcquisitionAreaStatusesTable = ({ acquisitionAreaStatuses, fromPath
               Darstellung
             </th>
             <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-              Anzahl Dealflächen in diesem Status
+              Anzahl Verhandlungsflächen in diesem Status
             </th>
             <th
               scope="col"
@@ -95,7 +95,7 @@ export const AcquisitionAreaStatusesTable = ({ acquisitionAreaStatuses, fromPath
               </td>
               <td className="px-3 py-4 text-sm text-gray-500">
                 {status.acquisitionAreaCount}{" "}
-                {status.acquisitionAreaCount === 1 ? "Dealfläche" : "Dealflächen"}
+                {status.acquisitionAreaCount === 1 ? "Verhandlungsfläche" : "Verhandlungsflächen"}
               </td>
               <td className="py-4 text-sm font-medium whitespace-nowrap sm:pr-6">
                 <IfUserCanEdit>

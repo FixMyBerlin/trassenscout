@@ -90,7 +90,7 @@ export const EditAcquisitionAreaForm = ({
         onSubmit={handleSubmit}
         actionBarRight={
           <DeleteActionBar
-            itemTitle={`Dealfläche ${acquisitionArea.id}`}
+            itemTitle={`Verhandlungsfläche ${acquisitionArea.id}`}
             onDelete={() => deleteAcquisitionAreaMutation({ id: acquisitionArea.id, projectSlug })}
             returnPath={indexPath}
           />

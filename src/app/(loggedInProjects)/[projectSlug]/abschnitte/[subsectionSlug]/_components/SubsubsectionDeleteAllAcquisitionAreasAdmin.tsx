@@ -29,7 +29,7 @@ export const SubsubsectionDeleteAllAcquisitionAreasAdmin = ({
     setFeedback(null)
     if (
       !window.confirm(
-        "Alle Dealflächen dieses Eintrags unwiderruflich löschen? Verknüpfte Projektdokumentation kann entfallen.",
+        "Alle Verhandlungsflächen dieses Eintrags unwiderruflich löschen? Verknüpfte Projektdokumentation kann entfallen.",
       )
     ) {
       return
@@ -45,7 +45,7 @@ export const SubsubsectionDeleteAllAcquisitionAreasAdmin = ({
       invalidateQuery(getProjectRecordsBySubsubsection)
       invalidateQuery(getUploadsWithSubsections)
       setFeedback(
-        `Gelöscht: ${result.deletedAcquisitionAreas} Dealfläche(n). Hinweis: verknüpfte Projektdokumentation zu diesen Flächen kann entfallen (Datenbank-Cascade).`,
+        `Gelöscht: ${result.deletedAcquisitionAreas} Verhandlungsfläche(n). Hinweis: verknüpfte Projektdokumentation zu diesen Flächen kann entfallen (Datenbank-Cascade).`,
       )
     } catch (e: unknown) {
       setFeedback(e instanceof Error ? e.message : String(e))
@@ -56,8 +56,8 @@ export const SubsubsectionDeleteAllAcquisitionAreasAdmin = ({
     <SuperAdminBox className="my-6">
       <p className="mt-1 text-xs text-gray-700">
         Entfernt alle Grunderwerbs-Flächen und ggf. leere ALKIS-Parcels für Eintrag-ID{" "}
-        {subsubsectionId}. Projektdokumentation, die nur über eine Dealfläche verknüpft war, kann
-        entfallen.
+        {subsubsectionId}. Projektdokumentation, die nur über eine Verhandlungsfläche verknüpft war,
+        kann entfallen.
       </p>
       <button
         type="button"
@@ -65,7 +65,7 @@ export const SubsubsectionDeleteAllAcquisitionAreasAdmin = ({
         disabled={isLoading}
         onClick={() => void handleClick()}
       >
-        {isLoading ? "Wird gelöscht…" : "Alle Dealflächen dieses Eintrags löschen"}
+        {isLoading ? "Wird gelöscht…" : "Alle Verhandlungsflächen dieses Eintrags löschen"}
       </button>
       {feedback ? <p className="mt-3 text-xs text-gray-800">{feedback}</p> : null}
     </SuperAdminBox>

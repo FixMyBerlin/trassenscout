@@ -197,7 +197,7 @@ const UploadTableRow = ({
                     )}?acquisitionAreaId=${upload.acquisitionArea.id}` as Route
                   }
                 >
-                  Dealfläche: {upload.acquisitionArea.id} (
+                  Verhandlungsfläche: {upload.acquisitionArea.id} (
                   {upload.acquisitionArea.parcel.alkisParcelId})
                 </Link>
               </li>

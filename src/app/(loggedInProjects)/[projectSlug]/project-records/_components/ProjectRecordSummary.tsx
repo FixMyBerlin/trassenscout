@@ -70,7 +70,7 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
 
         {projectRecord.project.landAcquisitionModuleEnabled && (
           <>
-            <div className="text-gray-500">Dealfläche: </div>
+            <div className="text-gray-500">Verhandlungsfläche: </div>
             {projectRecord.acquisitionArea ? (
               <Link
                 className="col-span-5"

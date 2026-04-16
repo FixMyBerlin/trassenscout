@@ -51,7 +51,7 @@ export function AcquisitionAreasList({
           Keine auswählen
         </button>
       </div>
-      <h3 className="text-sm font-semibold text-gray-900">Potenzielle Dealflächen</h3>
+      <h3 className="text-sm font-semibold text-gray-900">Potenzielle Verhandlungsflächen</h3>
       <ul className="max-h-80 overflow-y-auto px-2 text-sm">
         {potentialAcquisitionAreas.length === 0 && (
           <li className="text-gray-500">Keine Flächen im Pufferbereich.</li>

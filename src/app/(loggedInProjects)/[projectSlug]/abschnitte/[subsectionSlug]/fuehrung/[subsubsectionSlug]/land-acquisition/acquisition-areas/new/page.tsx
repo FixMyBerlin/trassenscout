@@ -16,7 +16,7 @@ export async function generateMetadata({
     subsubsectionSlug: params.subsubsectionSlug,
   })
   return {
-    title: seoIndexTitle("Dealflächen erstellen", longTitle(subsubsection.slug)),
+    title: seoIndexTitle("Verhandlungsflächen erstellen", longTitle(subsubsection.slug)),
     robots: "noindex",
   }
 }
@@ -36,7 +36,7 @@ export default async function NewAcquisitionAreasPage({
 
   return (
     <>
-      <PageHeader title="Dealflächen des Eintrags erstellen" className="mt-12" />
+      <PageHeader title="Verhandlungsflächen des Eintrags erstellen" className="mt-12" />
       <NewAcquisitionAreasClient initialSubsubsection={subsubsection} />
     </>
   )

@@ -200,7 +200,7 @@ export const ProjectRecordFormFields = ({
                 optional
                 name="acquisitionAreaId"
                 options={acquisitionAreaOptions}
-                label="Zuordnung zur Dealfläche"
+                label="Zuordnung zur Verhandlungsfläche"
               />
             )}
           </div>

@@ -13,7 +13,7 @@ type Props = {
  */
 const getBackLinkText = (fromPath: string): string => {
   if (fromPath.includes("/land-acquisition/acquisition-areas/")) {
-    return "Zurück zum Formular der Dealfläche"
+    return "Zurück zum Formular der Verhandlungsfläche"
   }
   if (fromPath.includes("/fuehrung")) {
     return "Zurück zum Formular des Eintrags"

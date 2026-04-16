@@ -89,7 +89,7 @@ export const AcquisitionAreaGeometryInput = ({ parcelGeometry, subsubsectionGeom
   return (
     <GeometryInputBase
       label="Geometrie"
-      description="Bearbeiten Sie die Geometrie direkt auf der Karte. Die Dealfläche wird dabei automatisch auf das Flurstück zugeschnitten."
+      description="Bearbeiten Sie die Geometrie direkt auf der Karte. Die Verhandlungsfläche wird dabei automatisch auf das Flurstück zugeschnitten."
       showPreviewLink={false}
     >
       <GeometryDrawingMap

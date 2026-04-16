@@ -37,13 +37,13 @@ export const validateAcquisitionAreaScope = async ({
   })
 
   if (!acquisitionArea) {
-    throw new Error("Dealfläche nicht gefunden.")
+    throw new Error("Verhandlungsfläche nicht gefunden.")
   }
   if (subsubsectionId && subsubsectionId !== acquisitionArea.subsubsectionId) {
-    throw new Error("Dealfläche passt nicht zum ausgewählten Eintrag.")
+    throw new Error("Verhandlungsfläche passt nicht zum ausgewählten Eintrag.")
   }
   if (subsectionId && subsectionId !== acquisitionArea.subsubsection.subsectionId) {
-    throw new Error("Dealfläche passt nicht zum ausgewählten Planungsabschnitt.")
+    throw new Error("Verhandlungsfläche passt nicht zum ausgewählten Planungsabschnitt.")
   }
 
   return acquisitionArea
