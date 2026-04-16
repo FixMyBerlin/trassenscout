@@ -62,8 +62,6 @@ export function AcquisitionAreaMap({
   potentialAcquisitionAreas,
   setPotentialAcquisitionAreas,
 }: Props) {
-  if (!subsubsection) return null
-
   const abortRef = useRef<AbortController | null>(null)
   const projectSlug = useProjectSlug()
 
