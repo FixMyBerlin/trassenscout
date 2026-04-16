@@ -24,7 +24,6 @@ import getProjectRecordsByAcquisitionArea from "@/src/server/projectRecords/quer
 import getUploadsByAcquisitionArea from "@/src/server/uploads/queries/getUploadsByAcquisitionArea"
 import { useQuery } from "@blitzjs/rpc"
 import { PlusIcon } from "@heroicons/react/16/solid"
-import { GeometryTypeEnum } from "@prisma/client"
 import clsx from "clsx"
 import { useEffect, useState } from "react"
 import { SubsubsectionPanel } from "./SubsubsectionPanel"
@@ -32,14 +31,9 @@ import { SubsubsectionPanel } from "./SubsubsectionPanel"
 type Props = {
   subsubsectionId: number
   subsectionId: number
-  subsubsectionType: GeometryTypeEnum
 }
 
-export const SubsubsectionLandAcquisitionContent = ({
-  subsubsectionId,
-  subsectionId,
-  subsubsectionType,
-}: Props) => {
+export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectionId }: Props) => {
   const projectSlug = useProjectSlug()
   const subsectionSlug = useSlug("subsectionSlug")
   const subsubsectionSlug = useSlug("subsubsectionSlug")

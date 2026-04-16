@@ -107,7 +107,6 @@ export const SubsubsectionDashboardClient = ({ activeTab = "general" }: Props) =
             <SubsubsectionLandAcquisitionContent
               subsectionId={subsection.id}
               subsubsectionId={subsubsection.id}
-              subsubsectionType={subsubsection.type}
             />
           ) : (
             <SubsubsectionDetailsContent subsubsection={subsubsection} />
