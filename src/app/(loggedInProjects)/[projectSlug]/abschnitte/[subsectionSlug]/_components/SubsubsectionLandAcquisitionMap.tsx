@@ -50,7 +50,7 @@ const defaultQueryOptions = {
   refetchOnReconnect: false,
 }
 
-export const SubsubsectionPageMap = ({ subsubsection, activeTab }: Props) => {
+export const SubsubsectionLandAcquisitionMap = ({ subsubsection, activeTab }: Props) => {
   const projectSlug = useProjectSlug()
   const { acquisitionAreaId, setAcquisitionAreaId } = useAcquisitionAreaSelection()
   const isLandAcquisition = activeTab === "land-acquisition"
