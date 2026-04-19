@@ -10,7 +10,7 @@ import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { FormSuccess } from "@/src/core/components/forms/FormSuccess"
 import { SelectListbox } from "@/src/core/components/forms/SelectListbox"
-import { blueButtonStyles, Link } from "@/src/core/components/links"
+import { blueButtonStyles, Link, whiteButtonStyles } from "@/src/core/components/links"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import {
   acquisitionAreaEditRoute,
@@ -19,11 +19,16 @@ import {
 import { subsubsectionUploadEditRoute } from "@/src/core/routes/uploadRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
+import deleteAllAcquisitionAreasForSubsubsection from "@/src/server/acquisitionAreas/mutations/deleteAllAcquisitionAreasForSubsubsection"
 import getAcquisitionAreasBySubsubsection from "@/src/server/acquisitionAreas/queries/getAcquisitionAreasBySubsubsection"
 import getProjectRecordsByAcquisitionArea from "@/src/server/projectRecords/queries/getProjectRecordsByAcquisitionArea"
+import getProjectRecordsBySubsubsection from "@/src/server/projectRecords/queries/getProjectRecordsBySubsubsection"
+import getSubsubsection from "@/src/server/subsubsections/queries/getSubsubsection"
 import getUploadsByAcquisitionArea from "@/src/server/uploads/queries/getUploadsByAcquisitionArea"
-import { useQuery } from "@blitzjs/rpc"
+import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
+import { invalidateQuery, useMutation, useQuery } from "@blitzjs/rpc"
 import { PlusIcon } from "@heroicons/react/16/solid"
+import { TrashIcon } from "@heroicons/react/24/outline"
 import clsx from "clsx"
 import { useEffect, useState } from "react"
 import { SubsubsectionPanel } from "./SubsubsectionPanel"
@@ -41,6 +46,8 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
   const [isProjectRecordModalOpen, setIsProjectRecordModalOpen] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
   const [createdProjectRecordId, setCreatedProjectRecordId] = useState<null | number>(null)
+  const [deleteAllAcquisitionAreasMutation, { isLoading: isDeletingAllAcquisitionAreas }] =
+    useMutation(deleteAllAcquisitionAreasForSubsubsection)
 
   const [acquisitionAreas] = useQuery(
     getAcquisitionAreasBySubsubsection,
@@ -94,6 +101,36 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
       void setAcquisitionAreaId(onlyAcquisitionArea.id)
     }
   }, [acquisitionAreaId, acquisitionAreas, setAcquisitionAreaId])
+
+  const handleDeleteAllAcquisitionAreas = async () => {
+    if (
+      !window.confirm(
+        "Alle Verhandlungsflächen dieses Eintrags unwiderruflich löschen? Verknüpfte Projektdokumentation kann entfallen.",
+      )
+    ) {
+      return
+    }
+
+    try {
+      await deleteAllAcquisitionAreasMutation({
+        projectSlug,
+        subsectionSlug: subsectionSlug!,
+        subsubsectionSlug: subsubsectionSlug!,
+      })
+      await setAcquisitionAreaId(null)
+      await Promise.all([
+        invalidateQuery(getSubsubsection),
+        invalidateQuery(getAcquisitionAreasBySubsubsection),
+        invalidateQuery(getProjectRecordsByAcquisitionArea),
+        invalidateQuery(getProjectRecordsBySubsubsection),
+        invalidateQuery(getUploadsByAcquisitionArea),
+        invalidateQuery(getUploadsWithSubsections),
+      ])
+    } catch (error) {
+      console.error("Error deleting all acquisition areas:", error)
+      alert("Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.")
+    }
+  }
 
   return (
     <SubsubsectionPanel title="Grunderwerb">
@@ -297,6 +334,19 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
                 Nutzen Sie das Dropdown-Menü oder klicken Sie direkt auf eine Fläche in der Karte,
                 um den Grunderwerb eine Verhandlungsfläche auszuwählen.
               </p>
+              <IfUserCanEdit>
+                <button
+                  type="button"
+                  className={clsx(whiteButtonStyles, "gap-2 ring-inset")}
+                  disabled={isDeletingAllAcquisitionAreas}
+                  onClick={() => void handleDeleteAllAcquisitionAreas()}
+                >
+                  <TrashIcon className="size-5" />
+                  {isDeletingAllAcquisitionAreas
+                    ? "Wird gelöscht…"
+                    : "Alle Verhandlungsflächen dieses Eintrags löschen"}
+                </button>
+              </IfUserCanEdit>
             </>
           )}
         </div>
