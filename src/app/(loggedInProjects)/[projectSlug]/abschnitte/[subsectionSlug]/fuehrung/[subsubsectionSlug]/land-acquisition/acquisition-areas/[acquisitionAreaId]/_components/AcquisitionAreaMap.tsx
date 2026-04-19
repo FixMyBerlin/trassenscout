@@ -31,6 +31,7 @@ type Props = {
   bufferRadius: number
   potentialAcquisitionAreas: PotentialAcquisitionArea[]
   setPotentialAcquisitionAreas: (areas: PotentialAcquisitionArea[]) => void
+  classHeight?: string
 }
 
 function PotentialAcquisitionAreasFeatureState({
@@ -61,6 +62,7 @@ export function AcquisitionAreaMap({
   bufferRadius,
   potentialAcquisitionAreas,
   setPotentialAcquisitionAreas,
+  classHeight = "h-96 sm:h-[500px]",
 }: Props) {
   const abortRef = useRef<AbortController | null>(null)
   const projectSlug = useProjectSlug()
@@ -190,7 +192,7 @@ export function AcquisitionAreaMap({
         onClick={handleParcelClick}
         onContextMenu={handleContextMenu}
         scrollZoom
-        classHeight="h-[520px]"
+        classHeight={classHeight}
         colorSchema="subsubsection"
       >
         <BackgroundGeometryLayers subsubsections={[subsubsection]} colorSchema="subsubsection" />

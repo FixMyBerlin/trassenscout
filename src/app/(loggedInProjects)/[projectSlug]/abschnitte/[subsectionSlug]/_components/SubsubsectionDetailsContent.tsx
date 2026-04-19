@@ -57,16 +57,16 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
   const hasCostEstimate = subsubsection.costEstimate != null
   const hasGeneralInfoRows = Boolean(
     subsubsection.SubsubsectionTask?.title ||
-      locationLabel ||
-      hasLength ||
-      hasWidth ||
-      hasCostEstimate ||
-      infrastructureTypeTitles.length > 0 ||
-      subsubsection.qualityLevel?.title ||
-      subsubsection.SubsubsectionInfra?.title ||
-      subsubsection.SubsubsectionStatus?.title ||
-      subsubsection.estimatedConstructionDateString ||
-      subsubsection.manager,
+    locationLabel ||
+    hasLength ||
+    hasWidth ||
+    hasCostEstimate ||
+    infrastructureTypeTitles.length > 0 ||
+    subsubsection.qualityLevel?.title ||
+    subsubsection.SubsubsectionInfra?.title ||
+    subsubsection.SubsubsectionStatus?.title ||
+    subsubsection.estimatedConstructionDateString ||
+    subsubsection.manager,
   )
 
   const [{ uploads }, { refetch: refetchUploads }] = useQuery(getUploadsWithSubsections, {

@@ -5,6 +5,7 @@ import { clsx } from "clsx"
 import { PropsWithoutRef, ReactNode, useState } from "react"
 import { FormProvider, UseFormProps, useForm } from "react-hook-form"
 import { IntlProvider } from "react-intl"
+import { twMerge } from "tailwind-merge"
 import { z } from "zod"
 import { FormError } from "./FormError"
 import { errorMessageTranslations } from "./errorMessageTranslations"
@@ -61,7 +62,7 @@ export function Form<S extends z.ZodType<any, any>>({
     <IntlProvider messages={errorMessageTranslations} locale="de" defaultLocale="de">
       <FormProvider {...ctx}>
         <form
-          className={clsx("space-y-6", className)}
+          className={twMerge(clsx("space-y-6", className))}
           onSubmit={ctx.handleSubmit(async (values) => {
             const result = (await onSubmit(values)) || {}
             for (const [key, value] of Object.entries(result)) {

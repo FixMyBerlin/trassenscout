@@ -2,6 +2,7 @@ import { ErrorMessage } from "@hookform/error-message"
 import { clsx } from "clsx"
 import { ComponentPropsWithoutRef, forwardRef, PropsWithoutRef } from "react"
 import { useFormContext } from "react-hook-form"
+import { twMerge } from "tailwind-merge"
 
 export interface LabeledTextFieldProps extends PropsWithoutRef<JSX.IntrinsicElements["input"]> {
   /** Field name. */
@@ -32,6 +33,7 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
     { name, label, help, outerProps, labelProps, optional, disabled, inlineLeadingAddon, ...props },
     ref,
   ) {
+    const { className: labelClassName, ...restLabelProps } = labelProps ?? {}
     const {
       register,
       formState: { isSubmitting, errors },
@@ -58,9 +60,9 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
     return (
       <div {...outerProps}>
         <label
-          {...labelProps}
+          {...restLabelProps}
           htmlFor={name}
-          className="mb-1 block text-sm font-medium text-gray-700"
+          className={twMerge("mb-1 block text-sm font-medium text-gray-700", labelClassName)}
         >
           {label}
           {optional && <> (optional)</>}
