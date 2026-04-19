@@ -1,5 +1,10 @@
 "use client"
 
+import {
+  acquisitionAreaParcelFillPaint,
+  acquisitionAreaParcelLineBasePaint,
+  acquisitionAreaParcelLineDashPaint,
+} from "@/src/core/components/Map/colors/acquisitionAreaParcelLayerStyles"
 import type { FeatureCollection, GeoJsonProperties, Geometry } from "geojson"
 import type { ExpressionSpecification } from "maplibre-gl"
 import { Layer, Source } from "react-map-gl/maplibre"
@@ -40,30 +45,19 @@ export function AcquisitionAlkisParcelsLayers({ parcels }: AcquisitionAlkisParce
         type="fill"
         source={alkisId}
         filter={["match", ["geometry-type"], ["Polygon", "MultiPolygon"], true, false]}
-        paint={{
-          "fill-color": "#ec4899",
-          "fill-opacity": 0.08,
-        }}
+        paint={acquisitionAreaParcelFillPaint}
       />
       <Layer
         id={`${alkisId}-line-base`}
         type="line"
         source={alkisId}
-        paint={{
-          "line-color": "#ec4899",
-          "line-opacity": 0.28,
-          "line-width": 2,
-        }}
+        paint={acquisitionAreaParcelLineBasePaint}
       />
       <Layer
         id={`${alkisId}-line-dash`}
         type="line"
         source={alkisId}
-        paint={{
-          "line-color": "#ec4899",
-          "line-width": 1.5,
-          "line-dasharray": [3, 2],
-        }}
+        paint={acquisitionAreaParcelLineDashPaint}
       />
     </>
   )

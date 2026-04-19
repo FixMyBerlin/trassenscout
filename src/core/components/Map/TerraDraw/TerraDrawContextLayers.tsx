@@ -1,3 +1,8 @@
+import {
+  acquisitionAreaParcelFillPaint,
+  acquisitionAreaParcelLineBasePaint,
+  acquisitionAreaParcelLineDashPaint,
+} from "@/src/core/components/Map/colors/acquisitionAreaParcelLayerStyles"
 import { subsubsectionColors } from "@/src/core/components/Map/colors/subsubsectionColors"
 import { LineEndPointsLayer } from "@/src/core/components/Map/layers/LineEndPointsLayer"
 import { SubsectionHullsLayer } from "@/src/core/components/Map/layers/SubsectionHullsLayer"
@@ -189,21 +194,19 @@ export const GeometryDrawingAcquisitionAreaParcelContextLayers = ({
         id="terra_draw_acquisition_area_parcel_fill"
         source="terra_draw_acquisition_area_parcel"
         type="fill"
-        paint={{
-          "fill-color": "#38BDF8",
-          "fill-opacity": 0.08,
-        }}
+        paint={acquisitionAreaParcelFillPaint}
       />
       <Layer
-        id="terra_draw_acquisition_area_parcel_outline"
+        id="terra_draw_acquisition_area_parcel_line_base"
         source="terra_draw_acquisition_area_parcel"
         type="line"
-        paint={{
-          "line-color": "#2C62A9",
-          "line-width": 3,
-          "line-opacity": 0.95,
-          "line-dasharray": [2, 1],
-        }}
+        paint={acquisitionAreaParcelLineBasePaint}
+      />
+      <Layer
+        id="terra_draw_acquisition_area_parcel_line_dash"
+        source="terra_draw_acquisition_area_parcel"
+        type="line"
+        paint={acquisitionAreaParcelLineDashPaint}
       />
     </>
   )
