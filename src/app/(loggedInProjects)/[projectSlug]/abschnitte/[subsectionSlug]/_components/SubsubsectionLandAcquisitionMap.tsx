@@ -4,9 +4,9 @@ import { useAcquisitionAreaSelection } from "@/src/app/(loggedInProjects)/[proje
 
 import { acquisitionAreaStatusStyles } from "@/src/app/(loggedInProjects)/[projectSlug]/acquisition-area-status/_utils/acquisitionAreaStatusStyles"
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
-import { landAcquisitionLegendConfig } from "@/src/core/components/Map/LandAcquisitionMap.legendConfig"
 import { subsectionColors } from "@/src/core/components/Map/colors/subsectionColors"
 import { subsubsectionColors } from "@/src/core/components/Map/colors/subsubsectionColors"
+import { landAcquisitionLegendConfig } from "@/src/core/components/Map/LandAcquisitionMap.legendConfig"
 import { MapFooter } from "@/src/core/components/Map/MapFooter"
 import { getStaticOverlayForProject } from "@/src/core/components/Map/staticOverlay/getStaticOverlayForProject"
 import { subsectionLegendConfig } from "@/src/core/components/Map/SubsectionSubsubsectionMap.legendConfig"
@@ -252,7 +252,9 @@ export const SubsubsectionLandAcquisitionMap = ({ subsubsection, activeTab }: Pr
           </>
         )}
       </BaseMap>
-      <MapFooter legendItemsConfig={isLandAcquisition ? landAcquisitionLegendConfig : subsectionLegendConfig} />
+      <MapFooter
+        legendItemsConfig={isLandAcquisition ? landAcquisitionLegendConfig : subsectionLegendConfig}
+      />
     </>
   )
 }

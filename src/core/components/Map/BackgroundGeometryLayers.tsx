@@ -12,7 +12,10 @@ import {
   getSubsectionFeatures,
   type SubsectionForFeatures,
 } from "@/src/core/components/Map/utils/getSubsectionFeatures"
-import { getSubsubsectionFeatures } from "@/src/core/components/Map/utils/getSubsubsectionFeatures"
+import {
+  getSubsubsectionFeatures,
+  type SubsubsectionForFeatures,
+} from "@/src/core/components/Map/utils/getSubsubsectionFeatures"
 import type { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
 import type { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import { featureCollection } from "@turf/helpers"
@@ -23,22 +26,55 @@ const LAYER_SUFFIX = "_background_geometry"
 type Props = {
   subsections?: SubsectionForFeatures[]
   subsubsections?: SubsubsectionWithPosition[]
+  subsubsectionGeometries?: SupportedGeometry[]
+  showPoints?: boolean
+  showLineEndPoints?: boolean
   colorSchema: "subsection" | "subsubsection"
 }
 
 /**
  * Non-interactive subsection / subsubsection geometries for map context (same styling as the main map).
  */
-export function BackgroundGeometryLayers({ subsections, subsubsections, colorSchema }: Props) {
+export function BackgroundGeometryLayers({
+  subsections,
+  subsubsections,
+  subsubsectionGeometries,
+  showPoints = true,
+  showLineEndPoints = true,
+  colorSchema,
+}: Props) {
   const subsectionFeatures =
     subsections && subsections.length > 0
       ? getSubsectionFeatures({ subsections, highlight: "all" })
       : null
 
+  const backgroundSubsubsections: SubsubsectionForFeatures[] = []
+  subsubsectionGeometries?.forEach((geometry, index) => {
+    const base = {
+      slug: `background-subsubsection-${index}`,
+      subsection: { slug: `background-subsection-${index}` },
+      SubsubsectionStatus: null,
+    }
+
+    if (geometry.type === "LineString" || geometry.type === "MultiLineString") {
+      backgroundSubsubsections.push({ ...base, type: "LINE", geometry })
+      return
+    }
+    if (geometry.type === "Point" || geometry.type === "MultiPoint") {
+      backgroundSubsubsections.push({ ...base, type: "POINT", geometry })
+      return
+    }
+    if (geometry.type === "Polygon" || geometry.type === "MultiPolygon") {
+      backgroundSubsubsections.push({ ...base, type: "POLYGON", geometry })
+    }
+  })
+
+  const subsubsectionsForFeatures = [...(subsubsections ?? []), ...backgroundSubsubsections]
+
   const subsubsectionFeatures =
-    subsubsections && subsubsections.length > 0
+    subsubsectionsForFeatures.length > 0
       ? getSubsubsectionFeatures({
-          subsubsections,
+          subsubsections: subsubsectionsForFeatures,
           selectedSubsubsectionSlug: null,
         })
       : null
@@ -56,13 +92,13 @@ export function BackgroundGeometryLayers({ subsections, subsubsections, colorSch
   const polygons = polygonFeatures.length === 0 ? undefined : featureCollection(polygonFeatures)
 
   const pointFeatures: Feature<SupportedGeometry, UnifiedFeatureProperties>[] = [
-    ...(subsubsectionFeatures?.points.features ?? []),
+    ...(showPoints ? subsubsectionFeatures?.points.features ?? [] : []),
   ]
   const points = pointFeatures.length === 0 ? undefined : featureCollection(pointFeatures)
 
   const endPointFeatures: Feature<Point, LineEndPointFeatureProperties>[] = [
-    ...(subsectionFeatures?.lineEndPoints.features ?? []),
-    ...(subsubsectionFeatures?.lineEndPoints.features ?? []),
+    ...(showLineEndPoints ? subsectionFeatures?.lineEndPoints.features ?? [] : []),
+    ...(showLineEndPoints ? subsubsectionFeatures?.lineEndPoints.features ?? [] : []),
   ]
   const lineEndPoints =
     endPointFeatures.length === 0 ? undefined : featureCollection(endPointFeatures)

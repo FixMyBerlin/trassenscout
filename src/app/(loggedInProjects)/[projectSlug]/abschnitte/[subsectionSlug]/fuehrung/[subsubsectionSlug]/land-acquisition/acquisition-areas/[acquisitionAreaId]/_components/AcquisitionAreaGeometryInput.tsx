@@ -2,11 +2,11 @@
 
 import { GeometryDrawingMap } from "@/src/core/components/forms/GeometryDrawingMap"
 import { GeometryInputBase } from "@/src/core/components/forms/GeometryInputBase"
+import { BackgroundGeometryLayers } from "@/src/core/components/Map/BackgroundGeometryLayers"
 import { landAcquisitionEditLegendConfig } from "@/src/core/components/Map/LandAcquisitionEditMap.legendConfig"
 import {
   GeometryDrawingAcquisitionAreaParcelContextLayers,
   GeometryDrawingAcquisitionAreaPreviewLayers,
-  GeometryDrawingAcquisitionAreaSubsubsectionContextLayers,
 } from "@/src/core/components/Map/TerraDraw/TerraDrawContextLayers"
 import {
   AcquisitionAreaGeometrySchema,
@@ -103,8 +103,11 @@ export const AcquisitionAreaGeometryInput = ({ parcelGeometry, subsubsectionGeom
         syncTransformedGeometryToMap={false}
         transformGeometry={transformGeometry}
       >
-        <GeometryDrawingAcquisitionAreaSubsubsectionContextLayers
-          geometry={subsubsectionGeometry}
+        <BackgroundGeometryLayers
+          subsubsectionGeometries={[subsubsectionGeometry]}
+          colorSchema="subsubsection"
+          showPoints={false}
+          showLineEndPoints={false}
         />
         <GeometryDrawingAcquisitionAreaParcelContextLayers parcelGeometry={parcelGeometry} />
         <GeometryDrawingAcquisitionAreaPreviewLayers geometry={currentGeometry} />

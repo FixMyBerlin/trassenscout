@@ -1,6 +1,6 @@
-import { clsx } from "clsx"
 import { GeoJSONPreviewLink, GeoJSONPreviewPanel } from "@/src/core/components/forms/GeoJSONPreview"
 import { LabeledGeometryField } from "@/src/core/components/forms/LabeledGeometryField"
+import { clsx } from "clsx"
 import type { Geometry } from "geojson"
 import { ReactNode, useState } from "react"
 import { useFormContext } from "react-hook-form"
@@ -69,7 +69,12 @@ export const GeometryInputBase = ({
         />
       )}
 
-      <div className={clsx("rounded-md border border-gray-200 bg-gray-100 p-2", contentContainerClassName)}>
+      <div
+        className={clsx(
+          "rounded-md border border-gray-200 bg-gray-100 p-2",
+          contentContainerClassName,
+        )}
+      >
         {children}
       </div>
     </section>
