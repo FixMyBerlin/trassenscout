@@ -161,15 +161,15 @@ export function NewAcquisitionAreasClient({ initialSubsubsection }: Props) {
           <div className="space-y-2">
             <h2 className="text-lg font-semibold text-gray-900">Verhandlungsflächen generieren</h2>
             <p className="text-gray-500">
-              Erstellen Sie automatisch neue Verhandlungsflächen durch einen räumlichen Abgleich
-              mit den ALKIS-Flurstücken.
+              Erstellen Sie automatisch neue Verhandlungsflächen durch einen räumlichen Abgleich mit
+              den ALKIS-Flurstücken.
             </p>
           </div>
 
           <Form
             className="mt-4 flex flex-col gap-2 space-y-0"
             initialValues={{ bufferRadiusInput: "20" }}
-            submitText="Verhandlungsflächen erstellen"
+            submitText="Ausgewählte Verhandlungsflächen erstellen"
             onSubmit={handleCreateAcquisitionAreas}
           >
             <BufferRadiusControls onApplyRadius={setBufferRadius} />
@@ -178,9 +178,9 @@ export function NewAcquisitionAreasClient({ initialSubsubsection }: Props) {
                 2. Schritt: Auswahl der Verhandlungsflächen
               </h3>
               <p>
-                Wählen Sie in der Karte oder der Liste die Flächen aus, die Sie für den
-                Grunderwerb übernehmen möchten. Die Geometrien können nach der Erstellung jederzeit
-                individuell von Ihnen angepasst werden.
+                Wählen Sie in der Karte oder der Liste die Flächen aus, die Sie für den Grunderwerb
+                übernehmen möchten. Die Geometrien können nach der Erstellung jederzeit individuell
+                von Ihnen angepasst werden.
               </p>
               <p>
                 <span className="italic">Hinweis:</span> Eine Änderung des Puffers berechnet die

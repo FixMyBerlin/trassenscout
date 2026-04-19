@@ -58,10 +58,7 @@ export function AcquisitionAreasList({
         {potentialAcquisitionAreas.map((area) => (
           <li
             key={area.id}
-            className={clsx(
-              "px-3 py-3",
-              area.selected ? "bg-blue-50" : "bg-transparent",
-            )}
+            className={clsx("px-3 py-3", area.selected ? "bg-blue-50" : "bg-transparent")}
           >
             <div className="flex break-inside-avoid items-start">
               <div className="flex h-5 items-center">
@@ -89,7 +86,12 @@ export function AcquisitionAreasList({
                     <span className={area.selected ? "text-gray-800" : "text-gray-400"}>
                       {area.alkisParcelId}
                     </span>
-                    <p className={clsx("leading-tight", area.selected ? "text-gray-600" : "text-gray-400")}>
+                    <p
+                      className={clsx(
+                        "leading-tight",
+                        area.selected ? "text-gray-600" : "text-gray-400",
+                      )}
+                    >
                       ({area.alkisParcelIdSource})
                     </p>
                   </>
