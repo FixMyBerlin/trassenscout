@@ -3,6 +3,7 @@ import {
   acquisitionAreaParcelLineBasePaint,
   acquisitionAreaParcelLineDashPaint,
 } from "@/src/core/components/Map/colors/acquisitionAreaParcelLayerStyles"
+import { acquisitionAreaColors } from "@/src/core/components/Map/colors/acquisitionAreaColors"
 import { subsubsectionColors } from "@/src/core/components/Map/colors/subsubsectionColors"
 import { LineEndPointsLayer } from "@/src/core/components/Map/layers/LineEndPointsLayer"
 import { SubsectionHullsLayer } from "@/src/core/components/Map/layers/SubsectionHullsLayer"
@@ -318,7 +319,7 @@ export const GeometryDrawingAcquisitionAreaPreviewLayers = ({
         source="terra_draw_acquisition_area_preview"
         type="fill"
         paint={{
-          "fill-color": "#DC2626",
+          "fill-color": acquisitionAreaColors.negotiationAreaEdit,
           "fill-opacity": 0.22,
         }}
       />
@@ -327,7 +328,7 @@ export const GeometryDrawingAcquisitionAreaPreviewLayers = ({
         source="terra_draw_acquisition_area_preview"
         type="line"
         paint={{
-          "line-color": "#DC2626",
+          "line-color": acquisitionAreaColors.negotiationAreaEdit,
           "line-width": 3,
           "line-opacity": 0.95,
         }}

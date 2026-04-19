@@ -1,3 +1,4 @@
+import { clsx } from "clsx"
 import { GeoJSONPreviewLink, GeoJSONPreviewPanel } from "@/src/core/components/forms/GeoJSONPreview"
 import { LabeledGeometryField } from "@/src/core/components/forms/LabeledGeometryField"
 import type { Geometry } from "geojson"
@@ -11,6 +12,7 @@ type GeometryInputBaseProps = {
   /** Determines which geometry types are allowed. "subsection" allows LineString and Polygon only. "subsubsection" allows all types (Point, LineString, Polygon). */
   allowedGeometryTypesFor?: "subsection" | "subsubsection"
   showPreviewLink?: boolean
+  contentContainerClassName?: string
 }
 
 export const GeometryInputBase = ({
@@ -19,6 +21,7 @@ export const GeometryInputBase = ({
   children,
   allowedGeometryTypesFor,
   showPreviewLink = true,
+  contentContainerClassName,
 }: GeometryInputBaseProps) => {
   const { watch } = useFormContext()
   const geometry = watch("geometry") as Geometry
@@ -66,7 +69,9 @@ export const GeometryInputBase = ({
         />
       )}
 
-      <div className="rounded-md border border-gray-200 bg-gray-100 p-2">{children}</div>
+      <div className={clsx("rounded-md border border-gray-200 bg-gray-100 p-2", contentContainerClassName)}>
+        {children}
+      </div>
     </section>
   )
 }

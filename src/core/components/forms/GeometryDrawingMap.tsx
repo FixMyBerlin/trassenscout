@@ -1,4 +1,6 @@
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
+import { MapFooter } from "@/src/core/components/Map/MapFooter"
+import { type LegendItemConfig } from "@/src/core/components/Map/MapLegend"
 import { getStaticOverlayForProject } from "@/src/core/components/Map/staticOverlay/getStaticOverlayForProject"
 import { TerraDrawHint } from "@/src/core/components/Map/TerraDraw/TerraDrawHint"
 import { TerraDrawProvider } from "@/src/core/components/Map/TerraDraw/TerraDrawProvider"
@@ -22,6 +24,7 @@ type Props = {
   showHint?: boolean
   syncTransformedGeometryToMap?: boolean
   hideUnselectedPolygonOutline?: boolean
+  legendItemsConfig?: LegendItemConfig[]
   transformGeometry?: (
     geometry: SupportedGeometry | null,
     geometryType: string | null,
@@ -39,6 +42,7 @@ export const GeometryDrawingMap = ({
   showHint = true,
   syncTransformedGeometryToMap = true,
   hideUnselectedPolygonOutline = false,
+  legendItemsConfig,
   transformGeometry,
 }: Props) => {
   const { watch, setValue } = useFormContext()
@@ -118,68 +122,71 @@ export const GeometryDrawingMap = ({
   }
 
   return (
-    <div className="relative h-[500px] w-full overflow-clip rounded-md border border-gray-200">
-      <BaseMap
-        id="terra-draw-map"
-        // Critical to avoid a bug where the Terra Draw Geometries where hidden during navigation between pages (Subsubsection => Subsubsection/Edit)
-        reuseMaps={false}
-        initialViewState={initialViewState || defaultViewState}
-        backgroundSwitcherPosition="bottom-left"
-        colorSchema="subsection"
-        staticOverlay={getStaticOverlayForProject(projectSlug)}
-      >
-        {children}
-        <div className="absolute top-4 left-4 z-10 flex flex-col gap-2.5">
-          <TerraDrawProvider
-            initialGeometry={geometryForMap}
-            onChange={handleChange}
-            modeConfig={{ hideUnselectedPolygonOutline }}
-          >
-            {({
-              mode,
-              setMode,
-              clear,
-              updateFeatures,
-              deleteSelected,
-              selectedIds,
-              hasGeometries,
-              enabledButtons,
-            }) => {
-              // Store updateFeatures in ref so SnappingControls can use it
-              updateTerraDrawRef.current = updateFeatures
-              return (
-                <TerraDrawToolbar
-                  mode={mode}
-                  setMode={setMode}
-                  onClear={clear}
-                  deleteSelected={deleteSelected}
-                  selectedIds={selectedIds}
-                  hasGeometries={hasGeometries}
-                  showPoint={showPoint}
-                  showLine={showLine}
-                  showPolygon={showPolygon}
-                  enabledButtons={enabledButtons}
-                  trailingButtons={
-                    null
-                    // TODO: Disabled for now, does currently not work.
-                    // subsection ? (
-                    //   <SnappingControls
-                    //     subsection={subsection}
-                    //     geometry={geometry}
-                    //     handleChange={handleChange}
-                    //     updateTerraDraw={(geo, ignoreChangeEvents) =>
-                    //       updateTerraDrawRef.current?.(geo, ignoreChangeEvents)
-                    //     }
-                    //   />
-                    // ) : null
-                  }
-                />
-              )
-            }}
-          </TerraDrawProvider>
-          {showHint ? <TerraDrawHint /> : null}
-        </div>
-      </BaseMap>
+    <div>
+      <div className="relative h-[500px] w-full overflow-clip rounded-md border border-gray-200">
+        <BaseMap
+          id="terra-draw-map"
+          // Critical to avoid a bug where the Terra Draw Geometries where hidden during navigation between pages (Subsubsection => Subsubsection/Edit)
+          reuseMaps={false}
+          initialViewState={initialViewState || defaultViewState}
+          backgroundSwitcherPosition="bottom-left"
+          colorSchema="subsection"
+          staticOverlay={getStaticOverlayForProject(projectSlug)}
+        >
+          {children}
+          <div className="absolute top-4 left-4 z-10 flex flex-col gap-2.5">
+            <TerraDrawProvider
+              initialGeometry={geometryForMap}
+              onChange={handleChange}
+              modeConfig={{ hideUnselectedPolygonOutline }}
+            >
+              {({
+                mode,
+                setMode,
+                clear,
+                updateFeatures,
+                deleteSelected,
+                selectedIds,
+                hasGeometries,
+                enabledButtons,
+              }) => {
+                // Store updateFeatures in ref so SnappingControls can use it
+                updateTerraDrawRef.current = updateFeatures
+                return (
+                  <TerraDrawToolbar
+                    mode={mode}
+                    setMode={setMode}
+                    onClear={clear}
+                    deleteSelected={deleteSelected}
+                    selectedIds={selectedIds}
+                    hasGeometries={hasGeometries}
+                    showPoint={showPoint}
+                    showLine={showLine}
+                    showPolygon={showPolygon}
+                    enabledButtons={enabledButtons}
+                    trailingButtons={
+                      null
+                      // TODO: Disabled for now, does currently not work.
+                      // subsection ? (
+                      //   <SnappingControls
+                      //     subsection={subsection}
+                      //     geometry={geometry}
+                      //     handleChange={handleChange}
+                      //     updateTerraDraw={(geo, ignoreChangeEvents) =>
+                      //       updateTerraDrawRef.current?.(geo, ignoreChangeEvents)
+                      //     }
+                      //   />
+                      // ) : null
+                    }
+                  />
+                )
+              }}
+            </TerraDrawProvider>
+            {showHint ? <TerraDrawHint /> : null}
+          </div>
+        </BaseMap>
+      </div>
+      {legendItemsConfig && <MapFooter legendItemsConfig={legendItemsConfig} />}
     </div>
   )
 }
