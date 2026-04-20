@@ -7,6 +7,7 @@ import { useMutation } from "@blitzjs/rpc"
 import { Route } from "next"
 import { useRouter } from "next/navigation"
 import { z } from "zod"
+import { type AcquisitionAreaStatusStyle } from "../_utils/acquisitionAreaStatusStyles"
 import {
   AcquisitionAreaStatusForm,
   AcquisitionAreaStatusFormSchema,
@@ -29,7 +30,7 @@ export const NewAcquisitionAreaStatusForm = ({ projectSlug, fromParam }: Props) 
     try {
       await createAcquisitionAreaStatusMutation({
         ...values,
-        style: Number(values.style) as 1 | 2 | 3,
+        style: Number(values.style) as AcquisitionAreaStatusStyle,
         projectSlug,
       })
       router.push(returnPath as Route)

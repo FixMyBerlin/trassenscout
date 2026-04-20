@@ -3,10 +3,11 @@
 import { useAcquisitionAreaSelection } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/_components/useAcquisitionAreaSelection.nuqs"
 
 import { acquisitionAreaStatusStyles } from "@/src/app/(loggedInProjects)/[projectSlug]/acquisition-area-status/_utils/acquisitionAreaStatusStyles"
+import getAcquisitionAreaStatuses from "@/src/server/acquisitionAreaStatuses/queries/getAcquisitionAreaStatuses"
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
 import { subsectionColors } from "@/src/core/components/Map/colors/subsectionColors"
 import { subsubsectionColors } from "@/src/core/components/Map/colors/subsubsectionColors"
-import { landAcquisitionLegendConfig } from "@/src/core/components/Map/LandAcquisitionMap.legendConfig"
+import { getLandAcquisitionLegendConfig } from "@/src/core/components/Map/LandAcquisitionMap.legendConfig"
 import { MapFooter } from "@/src/core/components/Map/MapFooter"
 import { getStaticOverlayForProject } from "@/src/core/components/Map/staticOverlay/getStaticOverlayForProject"
 import { subsectionLegendConfig } from "@/src/core/components/Map/SubsectionSubsubsectionMap.legendConfig"
@@ -38,6 +39,8 @@ const acquisitionAreaColorExpression: ExpressionSpecification = [
   acquisitionAreaStatusStyles[2].color,
   3,
   acquisitionAreaStatusStyles[3].color,
+  4,
+  acquisitionAreaStatusStyles[4].color,
   acquisitionAreaStatusStyles[1].color,
 ]
 
@@ -62,6 +65,14 @@ export const SubsubsectionLandAcquisitionMap = ({ subsubsection, activeTab }: Pr
       projectSlug,
       subsubsectionId: subsubsection.id,
     },
+    {
+      enabled: isLandAcquisition,
+      ...defaultQueryOptions,
+    },
+  )
+  const [acquisitionAreaStatusesResult] = useQuery(
+    getAcquisitionAreaStatuses,
+    { projectSlug },
     {
       enabled: isLandAcquisition,
       ...defaultQueryOptions,
@@ -139,6 +150,14 @@ export const SubsubsectionLandAcquisitionMap = ({ subsubsection, activeTab }: Pr
     }
     return geometriesBbox(geometries)
   }, [acquisitionAreas, isLandAcquisition, subsubsection.geometry])
+
+  const landAcquisitionLegendConfig = useMemo(
+    () =>
+      getLandAcquisitionLegendConfig(
+        (acquisitionAreaStatusesResult?.acquisitionAreaStatuses ?? []).map((status) => status.style),
+      ),
+    [acquisitionAreaStatusesResult],
+  )
 
   const handleClickMap = (event: MapLayerMouseEvent) => {
     if (!isLandAcquisition) return

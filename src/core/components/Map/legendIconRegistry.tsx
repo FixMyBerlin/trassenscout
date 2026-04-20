@@ -106,6 +106,30 @@ export const legendIconRegistry = {
     borderWidth: 2,
     borderStyle: "solid",
   },
+  acquisitionAreaPolygonStatus1: {
+    type: GeometryTypeEnum.POLYGON,
+    color: acquisitionAreaColors.statusByStyle[1],
+    borderWidth: 2,
+    borderStyle: "solid",
+  },
+  acquisitionAreaPolygonStatus2: {
+    type: GeometryTypeEnum.POLYGON,
+    color: acquisitionAreaColors.statusByStyle[2],
+    borderWidth: 2,
+    borderStyle: "solid",
+  },
+  acquisitionAreaPolygonStatus3: {
+    type: GeometryTypeEnum.POLYGON,
+    color: acquisitionAreaColors.statusByStyle[3],
+    borderWidth: 2,
+    borderStyle: "solid",
+  },
+  acquisitionAreaPolygonStatus4: {
+    type: GeometryTypeEnum.POLYGON,
+    color: acquisitionAreaColors.statusByStyle[4],
+    borderWidth: 2,
+    borderStyle: "solid",
+  },
   acquisitionAreaPolygonEdit: {
     type: GeometryTypeEnum.POLYGON,
     color: acquisitionAreaColors.negotiationAreaEdit,

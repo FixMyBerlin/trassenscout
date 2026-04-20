@@ -14,6 +14,7 @@ import { clsx } from "clsx"
 import { Route } from "next"
 import { useRouter } from "next/navigation"
 import {
+  type AcquisitionAreaStatusStyle,
   acquisitionAreaStatusStyleBadgeClasses,
   acquisitionAreaStatusStyleTranslations,
 } from "../_utils/acquisitionAreaStatusStyles"
@@ -87,10 +88,10 @@ export const AcquisitionAreaStatusesTable = ({ acquisitionAreaStatuses, fromPath
                 <span
                   className={clsx(
                     "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
-                    acquisitionAreaStatusStyleBadgeClasses[status.style as 1 | 2 | 3],
+                    acquisitionAreaStatusStyleBadgeClasses[status.style as AcquisitionAreaStatusStyle],
                   )}
                 >
-                  {acquisitionAreaStatusStyleTranslations[status.style as 1 | 2 | 3]}
+                  {acquisitionAreaStatusStyleTranslations[status.style as AcquisitionAreaStatusStyle]}
                 </span>
               </td>
               <td className="px-3 py-4 text-sm text-gray-500">
