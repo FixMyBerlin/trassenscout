@@ -14,7 +14,7 @@ This folder contains a reproducible pipeline for collecting and updating ALKIS-W
     - `scripts/alkis-wfs/results/audit-results.md` (human report)
 - `bun scripts/alkis-wfs/update-config.ts`
   - Reads `audit-results.json`.
-  - Updates `src/app/api/(auth)/[projectSlug]/alkis-wfs-parcels/_utils/alkisStateConfig.ts`.
+  - Updates `src/server/alkis/alkisStateConfig.ts`.
   - Keeps manual fields (`label`, `enabled`, `attribution`, `specialCaseNote`, and the whole `wms` object) unchanged; merges audit suggestions into `wfs` when verified.
   - Writes `// TODO: unverified` comments for states that were not verified.
 

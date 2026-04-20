@@ -1,8 +1,5 @@
 #!/usr/bin/env bun
-import {
-  alkisStateConfig,
-  type AlkisStateConfigEntry,
-} from "@/src/app/api/(auth)/[projectSlug]/alkis-wfs-parcels/_utils/alkisStateConfig"
+import { alkisStateConfig, type AlkisStateConfigEntry } from "@/src/server/alkis/alkisStateConfig"
 import { StateKeyEnum } from "@prisma/client"
 import { mkdirSync, writeFileSync } from "node:fs"
 import { join } from "node:path"

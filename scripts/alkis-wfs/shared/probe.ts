@@ -3,7 +3,7 @@ import {
   convertWfsResponseToGeoJson,
   getWfsOutputFormat,
   injectAlkisParcelIdsIntoGeoJson,
-} from "@/src/app/api/(auth)/[projectSlug]/alkis-wfs-parcels/_utils/helper"
+} from "@/src/server/alkis/utils/alkisWfs"
 import type { StateKeyEnum } from "@prisma/client"
 import {
   DEFAULT_COUNT,

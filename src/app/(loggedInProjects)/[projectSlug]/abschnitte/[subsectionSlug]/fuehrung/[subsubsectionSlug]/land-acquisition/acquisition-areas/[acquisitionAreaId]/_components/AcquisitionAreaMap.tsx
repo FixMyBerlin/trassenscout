@@ -17,12 +17,12 @@ import { geometryBbox } from "@/src/core/components/Map/utils/bboxHelpers"
 import { computeBufferPolygonFeature } from "@/src/core/components/Map/utils/computeBufferPolygonFeature"
 import { Spinner } from "@/src/core/components/Spinner"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
+import getAlkisWfsParcels from "@/src/server/alkis/queries/getAlkisWfsParcels"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
+import { useQuery } from "@blitzjs/rpc"
 import { featureCollection } from "@turf/helpers"
-import type { FeatureCollection, Geometry } from "geojson"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { MapLayerMouseEvent, Popup, useMap } from "react-map-gl/maplibre"
-import { buildAlkisWfsProxyUrl } from "./alkisWfsMapHelpers"
 import { computePotentialAcquisitionAreas } from "./computePotentialAcquisitionAreas"
 import { formatPropertyValue, sortedPropertyEntries } from "./parcelFeatureProperties"
 
@@ -64,14 +64,7 @@ export function AcquisitionAreaMap({
   setPotentialAcquisitionAreas,
   classHeight = "h-96 sm:h-[500px]",
 }: Props) {
-  const abortRef = useRef<AbortController | null>(null)
   const projectSlug = useProjectSlug()
-
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [parcels, setParcels] = useState<FeatureCollection<Geometry, Record<string, unknown>>>(
-    featureCollection([]),
-  )
 
   const [contextParcel, setContextParcel] = useState<{
     longitude: number
@@ -83,6 +76,21 @@ export function AcquisitionAreaMap({
     () => computeBufferPolygonFeature(subsubsection.geometry, bufferRadius),
     [subsubsection.geometry, bufferRadius],
   )
+
+  const [parcelsData, { isLoading, error }] = useQuery(
+    getAlkisWfsParcels,
+    {
+      projectSlug,
+      bbox: geometryBbox(bufferPolygonFeature?.geometry ?? subsubsection.geometry),
+    },
+    {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      keepPreviousData: true,
+    },
+  )
+  const parcels = parcelsData ?? featureCollection([])
+  const errorMessage = error instanceof Error ? error.message : null
 
   const bufferOutlineData = polygonFeatureToFeatureCollection(bufferPolygonFeature)
   const acquisitionAreasFc = potentialAcquisitionAreasToFeatureCollection(potentialAcquisitionAreas)
@@ -98,54 +106,6 @@ export function AcquisitionAreaMap({
     }
     setPotentialAcquisitionAreas(computePotentialAcquisitionAreas(bufferPolygonFeature, parcels))
   }, [bufferPolygonFeature, parcels, setPotentialAcquisitionAreas])
-
-  useEffect(() => {
-    abortRef.current?.abort()
-    const controller = new AbortController()
-    abortRef.current = controller
-
-    async function fetchParcels() {
-      try {
-        setLoading(true)
-        setError(null)
-
-        const fetchBbox = geometryBbox(bufferPolygonFeature?.geometry ?? subsubsection.geometry)
-        const url = buildAlkisWfsProxyUrl(projectSlug, fetchBbox)
-        const res = await fetch(url, {
-          signal: controller.signal,
-          headers: { Accept: "application/json" },
-        })
-
-        if (!res.ok) {
-          let msg = `WFS Fehler: HTTP ${res.status}`
-          try {
-            const errBody = (await res.json()) as { error?: string }
-            if (errBody.error) msg = errBody.error
-          } catch {
-            // keep generic message
-          }
-          throw new Error(msg)
-        }
-
-        const json = (await res.json()) as FeatureCollection<Geometry, Record<string, unknown>>
-        if (!json || json.type !== "FeatureCollection" || !Array.isArray(json.features)) {
-          throw new Error("Unerwartetes WFS JSON-Format (kein GeoJSON FeatureCollection).")
-        }
-
-        setParcels(json)
-      } catch (e) {
-        if ((e as Error).name === "AbortError") return
-        console.error(e)
-        setParcels(featureCollection([]))
-        setError((e as Error).message ?? "Unbekannter Fehler beim Laden der Flurstücke.")
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    void fetchParcels()
-    return () => controller.abort()
-  }, [projectSlug, bufferPolygonFeature, subsubsection.geometry])
 
   const handleParcelClick = useCallback(
     (event: MapLayerMouseEvent) => {
@@ -243,13 +203,13 @@ export function AcquisitionAreaMap({
 
       <div className="pointer-events-none absolute inset-x-0 bottom-10 mx-12 flex justify-center">
         <div className="pointer-events-auto flex max-w-full flex-wrap items-center justify-center gap-2 rounded bg-white/80 p-4 px-8 text-center text-base text-gray-800">
-          {loading && (
+          {isLoading && (
             <div className="flex items-center justify-center">
               <Spinner size="5" />
             </div>
           )}
-          {error && <span className="text-rose-700">{error}</span>}
-          {!loading && error == null && (
+          {errorMessage && <span className="text-rose-700">{errorMessage}</span>}
+          {!isLoading && errorMessage == null && (
             <span>{parcels.features.length} Flurstücke aus ALKIS geladen.</span>
           )}
         </div>
