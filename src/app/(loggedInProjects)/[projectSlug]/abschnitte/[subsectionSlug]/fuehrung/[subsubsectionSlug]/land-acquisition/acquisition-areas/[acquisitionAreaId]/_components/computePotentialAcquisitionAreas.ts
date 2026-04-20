@@ -37,7 +37,7 @@ export function computePotentialAcquisitionAreas(
       parcelGeometry: AcquisitionAreaGeometrySchema.parse(parcelFeature.geometry),
       alkisParcelId,
       alkisParcelIdSource,
-      selected: alkisParcelId !== null,
+      selected: false,
     })
   }
 
