@@ -3,7 +3,6 @@
 import { useAcquisitionAreaSelection } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/_components/useAcquisitionAreaSelection.nuqs"
 
 import { acquisitionAreaStatusStyles } from "@/src/app/(loggedInProjects)/[projectSlug]/acquisition-area-status/_utils/acquisitionAreaStatusStyles"
-import getAcquisitionAreaStatuses from "@/src/server/acquisitionAreaStatuses/queries/getAcquisitionAreaStatuses"
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
 import { subsectionColors } from "@/src/core/components/Map/colors/subsectionColors"
 import { subsubsectionColors } from "@/src/core/components/Map/colors/subsubsectionColors"
@@ -19,6 +18,7 @@ import getAcquisitionAreasBySubsubsection, {
   type AcquisitionAreaWithTypedGeometry,
 } from "@/src/server/acquisitionAreas/queries/getAcquisitionAreasBySubsubsection"
 import type { TAcquisitionAreaGeometrySchema } from "@/src/server/acquisitionAreas/schema"
+import getAcquisitionAreaStatuses from "@/src/server/acquisitionAreaStatuses/queries/getAcquisitionAreaStatuses"
 import type { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
 import type {
   SubsubsectionWithPosition,
@@ -154,7 +154,9 @@ export const SubsubsectionLandAcquisitionMap = ({ subsubsection, activeTab }: Pr
   const landAcquisitionLegendConfig = useMemo(
     () =>
       getLandAcquisitionLegendConfig(
-        (acquisitionAreaStatusesResult?.acquisitionAreaStatuses ?? []).map((status) => status.style),
+        (acquisitionAreaStatusesResult?.acquisitionAreaStatuses ?? []).map(
+          (status) => status.style,
+        ),
       ),
     [acquisitionAreaStatusesResult],
   )

@@ -88,10 +88,16 @@ export const AcquisitionAreaStatusesTable = ({ acquisitionAreaStatuses, fromPath
                 <span
                   className={clsx(
                     "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
-                    acquisitionAreaStatusStyleBadgeClasses[status.style as AcquisitionAreaStatusStyle],
+                    acquisitionAreaStatusStyleBadgeClasses[
+                      status.style as AcquisitionAreaStatusStyle
+                    ],
                   )}
                 >
-                  {acquisitionAreaStatusStyleTranslations[status.style as AcquisitionAreaStatusStyle]}
+                  {
+                    acquisitionAreaStatusStyleTranslations[
+                      status.style as AcquisitionAreaStatusStyle
+                    ]
+                  }
                 </span>
               </td>
               <td className="px-3 py-4 text-sm text-gray-500">
