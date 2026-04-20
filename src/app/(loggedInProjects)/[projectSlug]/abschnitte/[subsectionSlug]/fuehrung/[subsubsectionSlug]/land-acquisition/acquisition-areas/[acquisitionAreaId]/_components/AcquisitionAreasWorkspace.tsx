@@ -4,7 +4,6 @@ import { Form } from "@/src/core/components/forms"
 import { LabeledTextField } from "@/src/core/components/forms/LabeledTextField"
 import { blueButtonStyles } from "@/src/core/components/links"
 import { subsubsectionLandAcquisitionRoute } from "@/src/core/routes/subsectionRoutes"
-import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
 import createAcquisitionAreasFromSelection from "@/src/server/acquisitionAreas/mutations/createAcquisitionAreasFromSelection"
 import type { AlkisWfsParcelFeatureCollection } from "@/src/server/alkis/alkisWfsParcelGeoJsonTypes"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
@@ -96,8 +95,6 @@ export function AcquisitionAreasWorkspace({
   desktopSharedHeightClass,
 }: Props) {
   const router = useRouter()
-  const subsectionSlug = useSlug("subsectionSlug")
-  const subsubsectionSlug = useSlug("subsubsectionSlug")
   const [potentialAcquisitionAreas, setPotentialAcquisitionAreas] = useState(
     basePotentialAcquisitionAreas,
   )
@@ -141,8 +138,8 @@ export function AcquisitionAreasWorkspace({
       const firstCreatedAcquisitionAreaId = createdAcquisitionAreas[0]?.id
       const targetUrl = subsubsectionLandAcquisitionRoute(
         projectSlug,
-        subsectionSlug,
-        subsubsectionSlug,
+        initialSubsubsection.subsection.slug,
+        initialSubsubsection.slug,
       )
 
       router.push(
