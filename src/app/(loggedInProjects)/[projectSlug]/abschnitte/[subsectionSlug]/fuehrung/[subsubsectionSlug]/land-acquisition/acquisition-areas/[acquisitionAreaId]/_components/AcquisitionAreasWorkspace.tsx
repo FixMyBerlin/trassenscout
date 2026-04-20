@@ -132,6 +132,7 @@ export function AcquisitionAreasWorkspace({
           geometry: acquisitionArea.geometry,
           parcelGeometry: acquisitionArea.parcelGeometry,
           bufferRadiusM: bufferRadius,
+          mode: acquisitionArea.existingAcquisitionAreaId ? acquisitionArea.existingMode : "create",
         })),
       })
 

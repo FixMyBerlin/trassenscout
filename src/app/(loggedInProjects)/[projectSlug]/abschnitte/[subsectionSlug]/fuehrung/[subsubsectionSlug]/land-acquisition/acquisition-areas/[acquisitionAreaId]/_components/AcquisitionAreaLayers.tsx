@@ -73,6 +73,8 @@ const fillColor: ExpressionSpecification = [
   "case",
   ["boolean", ["feature-state", "selected"], false],
   "#2563eb",
+  ["boolean", ["get", "hasExistingAcquisitionArea"], false],
+  "#f59e0b",
   "#94a3b8",
 ]
 
@@ -87,6 +89,8 @@ const lineColor: ExpressionSpecification = [
   "case",
   ["boolean", ["feature-state", "selected"], false],
   "#2563eb",
+  ["boolean", ["get", "hasExistingAcquisitionArea"], false],
+  "#f59e0b",
   "#94a3b8",
 ]
 
@@ -101,6 +105,8 @@ const lineDasharray: ExpressionSpecification = [
   "case",
   ["boolean", ["feature-state", "selected"], false],
   ["literal", [1, 0]],
+  ["boolean", ["get", "hasExistingAcquisitionArea"], false],
+  ["literal", [2, 1]],
   ["literal", [4, 2]],
 ]
 

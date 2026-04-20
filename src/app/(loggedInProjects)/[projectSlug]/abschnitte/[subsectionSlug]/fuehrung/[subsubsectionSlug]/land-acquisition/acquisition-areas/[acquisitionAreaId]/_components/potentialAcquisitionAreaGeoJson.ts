@@ -13,6 +13,12 @@ export function polygonFeatureToFeatureCollection(
 
 export function potentialAcquisitionAreasToFeatureCollection(areas: PotentialAcquisitionArea[]) {
   return featureCollection(
-    areas.map((a) => feature(a.geometry, { featureId: a.id, alkisParcelId: a.alkisParcelId })),
+    areas.map((a) =>
+      feature(a.geometry, {
+        featureId: a.id,
+        alkisParcelId: a.alkisParcelId,
+        hasExistingAcquisitionArea: Boolean(a.existingAcquisitionAreaId),
+      }),
+    ),
   )
 }

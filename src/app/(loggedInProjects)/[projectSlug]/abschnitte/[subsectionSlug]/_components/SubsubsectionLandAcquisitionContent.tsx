@@ -333,6 +333,17 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
                 um den Grunderwerb eine Verhandlungsfläche auszuwählen.
               </p>
               <IfUserCanEdit>
+                <div className="pt-1">
+                  <Link
+                    href={acquisitionAreaNewRoute(projectSlug, subsectionSlug!, subsubsectionSlug!)}
+                    button
+                    icon="plus"
+                  >
+                    Weitere Verhandlungsflächen anlegen
+                  </Link>
+                </div>
+              </IfUserCanEdit>
+              <IfUserCanEdit>
                 <button
                   type="button"
                   className={clsx(whiteButtonStyles, "gap-2 ring-inset")}

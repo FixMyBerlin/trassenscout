@@ -28,6 +28,15 @@ export function AcquisitionAreasList({
     )
   }
 
+  const setExistingMode = (id: string, mode: "keep" | "update") => {
+    setPotentialAcquisitionAreas(
+      potentialAcquisitionAreas.map((a) => {
+        if (a.id !== id || !a.existingAcquisitionAreaId) return a
+        return { ...a, existingMode: mode }
+      }),
+    )
+  }
+
   return (
     <div className="flex flex-col gap-3">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
@@ -94,6 +103,33 @@ export function AcquisitionAreasList({
                     >
                       ({area.alkisParcelIdSource})
                     </p>
+                    {area.existingAcquisitionAreaId && (
+                      <div className="mt-2 space-y-1">
+                        <p className="text-xs font-medium text-amber-700">
+                          Bereits vorhanden als Verhandlungsfläche #{area.existingAcquisitionAreaId}
+                        </p>
+                        <div className="flex items-center gap-4 text-xs">
+                          <label className="inline-flex items-center gap-1">
+                            <input
+                              type="radio"
+                              name={`existing-mode-${area.id}`}
+                              checked={area.existingMode === "keep"}
+                              onChange={() => setExistingMode(area.id, "keep")}
+                            />
+                            Bestehende Geometrie behalten
+                          </label>
+                          <label className="inline-flex items-center gap-1">
+                            <input
+                              type="radio"
+                              name={`existing-mode-${area.id}`}
+                              checked={area.existingMode === "update"}
+                              onChange={() => setExistingMode(area.id, "update")}
+                            />
+                            Mit neuem Puffer aktualisieren
+                          </label>
+                        </div>
+                      </div>
+                    )}
                   </>
                 ) : (
                   <span className="text-red-400">Kein Flurstückskennzeichen</span>

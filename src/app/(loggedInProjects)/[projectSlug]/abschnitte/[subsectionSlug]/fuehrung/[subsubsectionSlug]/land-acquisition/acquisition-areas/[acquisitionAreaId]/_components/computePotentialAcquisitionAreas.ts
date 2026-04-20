@@ -38,6 +38,8 @@ export function computePotentialAcquisitionAreas(
       alkisParcelId,
       alkisParcelIdSource,
       selected: false,
+      existingAcquisitionAreaId: null,
+      existingMode: "keep",
     })
   }
 
