@@ -49,26 +49,6 @@ function sniffTempExtension(body: string): string {
   return ".dat"
 }
 
-function tryJsonFeatureCollectionFastPath(
-  raw: string,
-): { ok: true; geojson: string } | { ok: false } {
-  let parsed: unknown
-  try {
-    parsed = JSON.parse(raw) as unknown
-  } catch {
-    return { ok: false }
-  }
-  if (
-    !parsed ||
-    typeof parsed !== "object" ||
-    !("type" in parsed) ||
-    (parsed as { type?: unknown }).type !== "FeatureCollection"
-  ) {
-    return { ok: false }
-  }
-  return { ok: true, geojson: JSON.stringify(parsed) }
-}
-
 function validateFeatureCollectionJson(
   raw: string,
   label: string,
@@ -102,15 +82,17 @@ function validateFeatureCollectionJson(
 
 /**
  * Parses a WFS GetFeature response as GeoJSON FeatureCollection.
- * Tries JSON first; otherwise writes a temp file and runs ogr2ogr (GDAL format auto-detection).
+ * Uses configured format support:
+ * - JSON-capable endpoints: validate response directly as GeoJSON.
+ * - non-JSON endpoints: convert via ogr2ogr (GDAL format auto-detection).
  */
 export async function convertWfsResponseToGeoJson(
   bodyText: string,
   label: string,
+  wfsSupportsJson: boolean,
 ): Promise<{ ok: true; geojson: string } | { ok: false; error: string }> {
-  const fast = tryJsonFeatureCollectionFastPath(bodyText)
-  if (fast.ok) {
-    return fast
+  if (wfsSupportsJson) {
+    return validateFeatureCollectionJson(bodyText, label)
   }
 
   const ext = sniffTempExtension(bodyText)

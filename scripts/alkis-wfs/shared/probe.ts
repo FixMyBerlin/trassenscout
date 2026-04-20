@@ -79,6 +79,11 @@ function bboxFromPoint(lon: number, lat: number, delta: number): [number, number
   return [lon - delta, lat - delta, lon + delta, lat + delta]
 }
 
+function outputFormatLooksJson(fmt: string): boolean {
+  const lower = fmt.toLowerCase()
+  return lower.includes("json") || lower.includes("geo+json")
+}
+
 export async function probeGetFeatureForState(params: {
   stateKey: StateKeyEnum
   label: string
@@ -170,7 +175,11 @@ export async function probeGetFeatureForState(params: {
         continue
       }
 
-      const converted = await convertWfsResponseToGeoJson(res.body, params.label)
+      const converted = await convertWfsResponseToGeoJson(
+        res.body,
+        params.label,
+        outputFormatLooksJson(outputFormat),
+      )
       if (!converted.ok) {
         const reported = parseWfsNumberReturned(res.body)
         if (reported !== null && reported > 0) {

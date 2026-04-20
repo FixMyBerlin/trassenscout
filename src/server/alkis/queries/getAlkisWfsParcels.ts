@@ -114,7 +114,11 @@ export default resolver.pipe(
       )
     }
 
-    const converted = await convertWfsResponseToGeoJson(bodyText, config.label)
+    const converted = await convertWfsResponseToGeoJson(
+      bodyText,
+      config.label,
+      config.wfs.wfsSupportsJson,
+    )
     if (!converted.ok) {
       throw new Error(converted.error)
     }
