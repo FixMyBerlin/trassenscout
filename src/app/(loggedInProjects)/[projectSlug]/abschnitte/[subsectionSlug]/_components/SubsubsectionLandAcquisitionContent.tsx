@@ -152,9 +152,10 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
         <div className="space-y-3">
           {!acquisitionAreas.length ? (
             <>
-              <h3 className="text-lg font-semibold text-gray-700">
-                Es wurden noch keine Verhandlungsflächen angelegt
-              </h3>
+              <p className="max-w-xl text-base text-gray-500">
+                Es wurden noch keine Verhandlungsflächen angelegt. Legen Sie neue
+                Verhandlungsflächen für diesen Eintrag an.
+              </p>
               <IfUserCanEdit>
                 <div className="pt-2">
                   <Link
@@ -327,9 +328,6 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
             </section>
           ) : (
             <>
-              <h3 className="text-lg font-semibold text-gray-700">
-                Es wurde noch keine Verhandlungsfläche ausgewählt
-              </h3>
               <p className="max-w-xl text-base text-gray-500">
                 Nutzen Sie das Dropdown-Menü oder klicken Sie direkt auf eine Fläche in der Karte,
                 um den Grunderwerb eine Verhandlungsfläche auszuwählen.
