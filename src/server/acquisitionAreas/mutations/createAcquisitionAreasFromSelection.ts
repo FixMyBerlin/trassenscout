@@ -191,7 +191,10 @@ export default resolver.pipe(
         })
 
         createdAcquisitionAreas.push(createdAcquisitionArea)
-        existingAcquisitionAreasByAlkisParcelId.set(acquisitionArea.alkisParcelId, createdAcquisitionArea.id)
+        existingAcquisitionAreasByAlkisParcelId.set(
+          acquisitionArea.alkisParcelId,
+          createdAcquisitionArea.id,
+        )
       }
 
       return {

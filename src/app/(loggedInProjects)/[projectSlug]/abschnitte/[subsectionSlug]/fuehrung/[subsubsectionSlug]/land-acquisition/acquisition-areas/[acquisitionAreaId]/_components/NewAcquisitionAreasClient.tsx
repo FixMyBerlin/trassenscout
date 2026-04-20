@@ -53,30 +53,27 @@ export function NewAcquisitionAreasClient({ initialSubsubsection }: Props) {
   const parcels = parcelsData ?? EMPTY_PARCELS
   const errorMessage = error instanceof Error ? error.message : null
 
-  const basePotentialAcquisitionAreas = useMemo(
-    () => {
-      if (!bufferPolygonFeature) return []
+  const basePotentialAcquisitionAreas = useMemo(() => {
+    if (!bufferPolygonFeature) return []
 
-      const existingByAlkisParcelId = new Map(
-        existingAcquisitionAreas
-          .map((area) => [area.parcel.alkisParcelId, area.id] as const)
-          .filter(([alkisParcelId]) => Boolean(alkisParcelId)),
-      )
+    const existingByAlkisParcelId = new Map(
+      existingAcquisitionAreas
+        .map((area) => [area.parcel.alkisParcelId, area.id] as const)
+        .filter(([alkisParcelId]) => Boolean(alkisParcelId)),
+    )
 
-      return computePotentialAcquisitionAreas(bufferPolygonFeature, parcels).map((area) => {
-        const existingAcquisitionAreaId = area.alkisParcelId
-          ? (existingByAlkisParcelId.get(area.alkisParcelId) ?? null)
-          : null
+    return computePotentialAcquisitionAreas(bufferPolygonFeature, parcels).map((area) => {
+      const existingAcquisitionAreaId = area.alkisParcelId
+        ? (existingByAlkisParcelId.get(area.alkisParcelId) ?? null)
+        : null
 
-        return {
-          ...area,
-          existingAcquisitionAreaId,
-          existingMode: "keep" as const,
-        }
-      })
-    },
-    [bufferPolygonFeature, parcels, existingAcquisitionAreas],
-  )
+      return {
+        ...area,
+        existingAcquisitionAreaId,
+        existingMode: "keep" as const,
+      }
+    })
+  }, [bufferPolygonFeature, parcels, existingAcquisitionAreas])
 
   const desktopSharedHeightClass = "lg:h-[620px] xl:h-[700px] 2xl:h-[780px]"
   const mapHeightClass = clsx("h-96 sm:h-[500px]", desktopSharedHeightClass)
