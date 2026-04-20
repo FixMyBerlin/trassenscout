@@ -14,21 +14,19 @@ import { PotentialAcquisitionArea } from "@/src/app/(loggedInProjects)/[projectS
 import { BackgroundGeometryLayers } from "@/src/core/components/Map/BackgroundGeometryLayers"
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
 import { geometryBbox } from "@/src/core/components/Map/utils/bboxHelpers"
-import { computeBufferPolygonFeature } from "@/src/core/components/Map/utils/computeBufferPolygonFeature"
 import { Spinner } from "@/src/core/components/Spinner"
-import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
-import getAlkisWfsParcels from "@/src/server/alkis/queries/getAlkisWfsParcels"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
-import { useQuery } from "@blitzjs/rpc"
-import { featureCollection } from "@turf/helpers"
+import type { Feature, FeatureCollection, Geometry, MultiPolygon, Polygon } from "geojson"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { MapLayerMouseEvent, Popup, useMap } from "react-map-gl/maplibre"
-import { computePotentialAcquisitionAreas } from "./computePotentialAcquisitionAreas"
 import { formatPropertyValue, sortedPropertyEntries } from "./parcelFeatureProperties"
 
 type Props = {
   subsubsection: SubsubsectionWithPosition
-  bufferRadius: number
+  bufferPolygonFeature: Feature<Polygon | MultiPolygon> | null
+  parcels: FeatureCollection<Geometry, Record<string, unknown>>
+  isLoading: boolean
+  errorMessage: string | null
   potentialAcquisitionAreas: PotentialAcquisitionArea[]
   setPotentialAcquisitionAreas: (areas: PotentialAcquisitionArea[]) => void
   classHeight?: string
@@ -41,71 +39,46 @@ function PotentialAcquisitionAreasFeatureState({
 }) {
   const { mainMap } = useMap()
 
-  useEffect(() => {
-    if (!mainMap) return
-    const map = mainMap.getMap()
-    if (!map.getSource(ACQUISITION_POTENTIAL_AREAS_SOURCE_ID)) return
+  useEffect(
+    function syncPotentialAreaFeatureState() {
+      if (!mainMap) return
+      const map = mainMap.getMap()
+      if (!map.getSource(ACQUISITION_POTENTIAL_AREAS_SOURCE_ID)) return
 
-    for (const area of potentialAcquisitionAreas) {
-      map.setFeatureState(
-        { source: ACQUISITION_POTENTIAL_AREAS_SOURCE_ID, id: area.id },
-        { selected: area.selected },
-      )
-    }
-  }, [mainMap, potentialAcquisitionAreas])
+      for (const area of potentialAcquisitionAreas) {
+        map.setFeatureState(
+          { source: ACQUISITION_POTENTIAL_AREAS_SOURCE_ID, id: area.id },
+          { selected: area.selected },
+        )
+      }
+    },
+    [mainMap, potentialAcquisitionAreas],
+  )
 
   return null
 }
 
 export function AcquisitionAreaMap({
   subsubsection,
-  bufferRadius,
+  bufferPolygonFeature,
+  parcels,
+  isLoading,
+  errorMessage,
   potentialAcquisitionAreas,
   setPotentialAcquisitionAreas,
   classHeight = "h-96 sm:h-[500px]",
 }: Props) {
-  const projectSlug = useProjectSlug()
-
   const [contextParcel, setContextParcel] = useState<{
     longitude: number
     latitude: number
     properties: Record<string, unknown>
   } | null>(null)
 
-  const bufferPolygonFeature = useMemo(
-    () => computeBufferPolygonFeature(subsubsection.geometry, bufferRadius),
-    [subsubsection.geometry, bufferRadius],
+  const bufferOutlineData = useMemo(
+    () => polygonFeatureToFeatureCollection(bufferPolygonFeature),
+    [bufferPolygonFeature],
   )
-
-  const [parcelsData, { isLoading, error }] = useQuery(
-    getAlkisWfsParcels,
-    {
-      projectSlug,
-      bbox: geometryBbox(bufferPolygonFeature?.geometry ?? subsubsection.geometry),
-    },
-    {
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
-      keepPreviousData: true,
-    },
-  )
-  const parcels = parcelsData ?? featureCollection([])
-  const errorMessage = error instanceof Error ? error.message : null
-
-  const bufferOutlineData = polygonFeatureToFeatureCollection(bufferPolygonFeature)
   const acquisitionAreasFc = potentialAcquisitionAreasToFeatureCollection(potentialAcquisitionAreas)
-
-  useEffect(() => {
-    setContextParcel(null)
-  }, [parcels])
-
-  useEffect(() => {
-    if (!bufferPolygonFeature) {
-      setPotentialAcquisitionAreas([])
-      return
-    }
-    setPotentialAcquisitionAreas(computePotentialAcquisitionAreas(bufferPolygonFeature, parcels))
-  }, [bufferPolygonFeature, parcels, setPotentialAcquisitionAreas])
 
   const handleParcelClick = useCallback(
     (event: MapLayerMouseEvent) => {
