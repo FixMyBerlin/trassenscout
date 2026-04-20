@@ -92,13 +92,13 @@ export function BackgroundGeometryLayers({
   const polygons = polygonFeatures.length === 0 ? undefined : featureCollection(polygonFeatures)
 
   const pointFeatures: Feature<SupportedGeometry, UnifiedFeatureProperties>[] = [
-    ...(showPoints ? subsubsectionFeatures?.points.features ?? [] : []),
+    ...(showPoints ? (subsubsectionFeatures?.points.features ?? []) : []),
   ]
   const points = pointFeatures.length === 0 ? undefined : featureCollection(pointFeatures)
 
   const endPointFeatures: Feature<Point, LineEndPointFeatureProperties>[] = [
-    ...(showLineEndPoints ? subsectionFeatures?.lineEndPoints.features ?? [] : []),
-    ...(showLineEndPoints ? subsubsectionFeatures?.lineEndPoints.features ?? [] : []),
+    ...(showLineEndPoints ? (subsectionFeatures?.lineEndPoints.features ?? []) : []),
+    ...(showLineEndPoints ? (subsubsectionFeatures?.lineEndPoints.features ?? []) : []),
   ]
   const lineEndPoints =
     endPointFeatures.length === 0 ? undefined : featureCollection(endPointFeatures)

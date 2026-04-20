@@ -140,7 +140,7 @@ export function NewAcquisitionAreasClient({ initialSubsubsection }: Props) {
 
   return (
     <div className="flex flex-col gap-4 lg:flex-row lg:items-stretch">
-      <div className="min-w-0 lg:flex-[4]">
+      <div className="min-w-0 lg:flex-4">
         <MapProvider>
           <AcquisitionAreaMap
             subsubsection={initialSubsubsection}
