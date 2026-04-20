@@ -6,10 +6,11 @@ import { blueButtonStyles } from "@/src/core/components/links"
 import { subsubsectionLandAcquisitionRoute } from "@/src/core/routes/subsectionRoutes"
 import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
 import createAcquisitionAreasFromSelection from "@/src/server/acquisitionAreas/mutations/createAcquisitionAreasFromSelection"
+import type { AlkisWfsParcelFeatureCollection } from "@/src/server/alkis/alkisWfsParcelGeoJsonTypes"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import { useMutation } from "@blitzjs/rpc"
 import clsx from "clsx"
-import type { Feature, FeatureCollection, Geometry, MultiPolygon, Polygon } from "geojson"
+import type { Feature, MultiPolygon, Polygon } from "geojson"
 import { useRouter } from "next/navigation"
 import { useEffect, useMemo, useState } from "react"
 import { useFormContext } from "react-hook-form"
@@ -73,7 +74,7 @@ type Props = {
   bufferRadius: number
   onApplyRadius: (radius: number) => void
   bufferPolygonFeature: Feature<Polygon | MultiPolygon> | null
-  parcels: FeatureCollection<Geometry, Record<string, unknown>>
+  parcels: AlkisWfsParcelFeatureCollection
   isLoading: boolean
   errorMessage: string | null
   basePotentialAcquisitionAreas: PotentialAcquisitionArea[]

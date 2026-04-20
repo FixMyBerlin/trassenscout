@@ -15,8 +15,9 @@ import { BackgroundGeometryLayers } from "@/src/core/components/Map/BackgroundGe
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
 import { geometryBbox } from "@/src/core/components/Map/utils/bboxHelpers"
 import { Spinner } from "@/src/core/components/Spinner"
+import type { AlkisWfsParcelFeatureCollection } from "@/src/server/alkis/alkisWfsParcelGeoJsonTypes"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
-import type { Feature, FeatureCollection, Geometry, MultiPolygon, Polygon } from "geojson"
+import type { Feature, MultiPolygon, Polygon } from "geojson"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { MapLayerMouseEvent, Popup, useMap } from "react-map-gl/maplibre"
 import { formatPropertyValue, sortedPropertyEntries } from "./parcelFeatureProperties"
@@ -24,7 +25,7 @@ import { formatPropertyValue, sortedPropertyEntries } from "./parcelFeaturePrope
 type Props = {
   subsubsection: SubsubsectionWithPosition
   bufferPolygonFeature: Feature<Polygon | MultiPolygon> | null
-  parcels: FeatureCollection<Geometry, Record<string, unknown>>
+  parcels: AlkisWfsParcelFeatureCollection
   isLoading: boolean
   errorMessage: string | null
   potentialAcquisitionAreas: PotentialAcquisitionArea[]
@@ -85,9 +86,7 @@ export function AcquisitionAreaMap({
       const feature = event.features?.[0]
       if (!feature?.properties) return
 
-      const alkisParcelId = (feature.properties as Record<string, unknown>).alkisParcelId as
-        | string
-        | null
+      const { alkisParcelId } = feature.properties
       if (alkisParcelId == null) return
 
       setPotentialAcquisitionAreas(
@@ -109,7 +108,7 @@ export function AcquisitionAreaMap({
     setContextParcel({
       longitude: event.lngLat.lng,
       latitude: event.lngLat.lat,
-      properties: feature.properties as Record<string, unknown>,
+      properties: feature.properties,
     })
   }, [])
 

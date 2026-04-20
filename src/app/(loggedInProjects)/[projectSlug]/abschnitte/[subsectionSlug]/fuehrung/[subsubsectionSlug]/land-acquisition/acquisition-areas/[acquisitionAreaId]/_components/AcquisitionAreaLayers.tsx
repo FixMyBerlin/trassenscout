@@ -5,6 +5,7 @@ import {
   acquisitionAreaParcelLineBasePaint,
   acquisitionAreaParcelLineDashPaint,
 } from "@/src/core/components/Map/colors/acquisitionAreaParcelLayerStyles"
+import type { AlkisWfsParcelProperties } from "@/src/server/alkis/alkisWfsParcelGeoJsonTypes"
 import type { FeatureCollection, GeoJsonProperties, Geometry } from "geojson"
 import type { ExpressionSpecification } from "maplibre-gl"
 import { Layer, Source } from "react-map-gl/maplibre"
@@ -27,7 +28,7 @@ export function getAcquisitionClickTargetLayerIds() {
 }
 
 export type AcquisitionAlkisParcelsLayersProps = {
-  parcels: FeatureCollection<Geometry, GeoJsonProperties>
+  parcels: FeatureCollection<Geometry, AlkisWfsParcelProperties>
 }
 
 /**

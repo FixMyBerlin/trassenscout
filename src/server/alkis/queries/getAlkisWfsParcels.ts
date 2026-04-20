@@ -6,6 +6,7 @@ import {
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
 import { alkisStateConfig } from "@/src/server/alkis/alkisStateConfig"
+import type { AlkisWfsParcelFeatureCollection } from "@/src/server/alkis/alkisWfsParcelGeoJsonTypes"
 import {
   buildWfsGetFeatureUrl,
   convertWfsResponseToGeoJson,
@@ -15,7 +16,6 @@ import {
 import { resolver } from "@blitzjs/rpc"
 import { StateKeyEnum } from "@prisma/client"
 import { NotFoundError } from "blitz"
-import type { FeatureCollection, Geometry } from "geojson"
 import { z } from "zod"
 
 const GetAlkisWfsParcelsSchema = ProjectSlugRequiredSchema.merge(
@@ -131,6 +131,6 @@ export default resolver.pipe(
       throw new Error(normalized.error)
     }
 
-    return JSON.parse(normalized.geojson) as FeatureCollection<Geometry, Record<string, unknown>>
+    return JSON.parse(normalized.geojson) as AlkisWfsParcelFeatureCollection
   },
 )

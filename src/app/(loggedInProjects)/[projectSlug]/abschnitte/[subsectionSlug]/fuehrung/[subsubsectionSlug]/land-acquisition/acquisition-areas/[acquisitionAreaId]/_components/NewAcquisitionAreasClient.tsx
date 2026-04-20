@@ -3,17 +3,17 @@
 import { geometryBbox } from "@/src/core/components/Map/utils/bboxHelpers"
 import { computeBufferPolygonFeature } from "@/src/core/components/Map/utils/computeBufferPolygonFeature"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
+import type { AlkisWfsParcelFeatureCollection } from "@/src/server/alkis/alkisWfsParcelGeoJsonTypes"
 import getAlkisWfsParcels from "@/src/server/alkis/queries/getAlkisWfsParcels"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import { useQuery } from "@blitzjs/rpc"
 import { featureCollection } from "@turf/helpers"
 import clsx from "clsx"
-import type { FeatureCollection, Geometry } from "geojson"
 import { useMemo, useState } from "react"
 import { AcquisitionAreasWorkspace } from "./AcquisitionAreasWorkspace"
 import { computePotentialAcquisitionAreas } from "./computePotentialAcquisitionAreas"
 
-const EMPTY_PARCELS: FeatureCollection<Geometry, Record<string, unknown>> = featureCollection([])
+const EMPTY_PARCELS: AlkisWfsParcelFeatureCollection = featureCollection([])
 
 type Props = {
   initialSubsubsection: SubsubsectionWithPosition
