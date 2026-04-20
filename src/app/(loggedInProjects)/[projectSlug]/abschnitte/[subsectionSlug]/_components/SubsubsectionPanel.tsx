@@ -22,7 +22,7 @@ export const SubsubsectionPanel = ({
   return (
     <section
       className={clsx(
-        "flex h-full min-h-0 flex-col overflow-hidden rounded-lg border border-gray-200 bg-white p-4 shadow-sm",
+        "flex flex-col rounded-lg border border-gray-200 bg-white p-4 shadow-sm",
         className,
       )}
     >
@@ -33,9 +33,7 @@ export const SubsubsectionPanel = ({
         </div>
       )}
 
-      <div className={clsx("min-h-0 flex-1 overflow-y-auto pt-6 pr-1", contentClassName)}>
-        {children}
-      </div>
+      <div className={clsx("pt-6 pr-1", contentClassName)}>{children}</div>
     </section>
   )
 }
