@@ -1,14 +1,12 @@
-import { isDev } from "@/src/core/utils/isEnv"
 import type { Feature, FeatureCollection, Geometry } from "geojson"
 import { execFile } from "node:child_process"
 import { randomBytes } from "node:crypto"
-import { mkdir, unlink, writeFile } from "node:fs/promises"
+import { unlink, writeFile } from "node:fs/promises"
+import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { promisify } from "node:util"
 
 const execFileAsync = promisify(execFile)
-const ALKIS_WFS_TEMP_DIR = join(process.cwd(), "tmp", "alkis-wfs")
-const KEEP_TEMP_FILES = isDev
 
 // Avoid "+" in MIME type because some WFS implementations decode it as whitespace.
 const GML_OUTPUT_FORMAT = "text/xml; subtype=gml/3.2.1"
@@ -97,11 +95,9 @@ export async function convertWfsResponseToGeoJson(
     return validateFeatureCollectionJson(bodyText, label)
   }
 
-  await mkdir(ALKIS_WFS_TEMP_DIR, { recursive: true })
   const ext = sniffTempExtension(bodyText)
   const name = `alkis-wfs-${randomBytes(8).toString("hex")}${ext}`
-  const tempPath = join(ALKIS_WFS_TEMP_DIR, name)
-  const gfsPath = `${tempPath.slice(0, -ext.length)}.gfs`
+  const tempPath = join(tmpdir(), name)
   try {
     await writeFile(tempPath, bodyText, "utf8")
     const { stdout, stderr } = await execFileAsync(
@@ -126,10 +122,7 @@ export async function convertWfsResponseToGeoJson(
       error: `Konvertierung zu GeoJSON via ogr2ogr fehlgeschlagen für ${label}: ${stderr}`,
     }
   } finally {
-    if (!KEEP_TEMP_FILES) {
-      await unlink(tempPath).catch(() => {})
-      await unlink(gfsPath).catch(() => {})
-    }
+    await unlink(tempPath).catch(() => {})
   }
 }
 
