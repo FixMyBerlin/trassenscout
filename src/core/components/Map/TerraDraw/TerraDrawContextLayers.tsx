@@ -206,10 +206,12 @@ export const GeometryDrawingAcquisitionAreaParcelContextLayers = ({
 
 type GeometryDrawingAcquisitionAreaPreviewLayersProps = {
   geometry: Polygon | MultiPolygon
+  color?: string
 }
 
 export const GeometryDrawingAcquisitionAreaPreviewLayers = ({
   geometry,
+  color = acquisitionAreaColors.negotiationAreaEdit,
 }: GeometryDrawingAcquisitionAreaPreviewLayersProps) => {
   const previewFeatureCollection = useMemo(
     () => singleGeometryFeatureCollection(geometry),
@@ -228,7 +230,7 @@ export const GeometryDrawingAcquisitionAreaPreviewLayers = ({
         source="terra_draw_acquisition_area_preview"
         type="fill"
         paint={{
-          "fill-color": acquisitionAreaColors.negotiationAreaEdit,
+          "fill-color": color,
           "fill-opacity": 0.22,
         }}
       />
@@ -237,7 +239,7 @@ export const GeometryDrawingAcquisitionAreaPreviewLayers = ({
         source="terra_draw_acquisition_area_preview"
         type="line"
         paint={{
-          "line-color": acquisitionAreaColors.negotiationAreaEdit,
+          "line-color": color,
           "line-width": 3,
           "line-opacity": 0.95,
         }}
