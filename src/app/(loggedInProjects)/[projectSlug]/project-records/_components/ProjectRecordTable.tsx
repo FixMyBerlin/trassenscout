@@ -7,8 +7,8 @@ import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import getProjectRecords from "@/src/server/projectRecords/queries/getProjectRecords"
-
 import getProjectRecordsByAcquisitionArea from "@/src/server/projectRecords/queries/getProjectRecordsByAcquisitionArea"
+import getProjectRecordsNeedsReview from "@/src/server/projectRecords/queries/getProjectRecordsNeedsReview"
 import getProjectRecordsBySubsubsection from "@/src/server/projectRecords/queries/getProjectRecordsBySubsubsection"
 import { ChatBubbleBottomCenterTextIcon, DocumentIcon } from "@heroicons/react/24/outline"
 import clsx from "clsx"
@@ -28,6 +28,7 @@ export const ProjectRecordsTable = ({
     | Awaited<ReturnType<typeof getProjectRecords>>
     | Awaited<ReturnType<typeof getProjectRecordsByAcquisitionArea>>
     | Awaited<ReturnType<typeof getProjectRecordsBySubsubsection>>
+    | Awaited<ReturnType<typeof getProjectRecordsNeedsReview>>
   highlightId?: number | null
   isTopicFilter?: boolean
   bleed?: boolean
@@ -142,12 +143,11 @@ export const ProjectRecordsTable = ({
                     >
                       <span className="inline-flex items-center justify-end gap-1 text-xs">
                         <DocumentIcon className="size-4 shrink-0" />
-                        {projectRecord.uploads?.length ?? 0}
+                        {projectRecord.uploadCount}
                       </span>
                       <span className="inline-flex items-center justify-end gap-1 text-xs">
                         <ChatBubbleBottomCenterTextIcon className="size-4 shrink-0" />
-                        {/* @ts-ignore todo I am not sure why ts is complaining here   */}
-                        {projectRecord.projectRecordComments?.length ?? 0}
+                        {projectRecord.commentCount}
                       </span>
                     </td>
                   </tr>

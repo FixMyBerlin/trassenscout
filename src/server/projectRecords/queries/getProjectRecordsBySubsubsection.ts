@@ -46,13 +46,8 @@ export default resolver.pipe(
             },
           },
         },
-        uploads: {
-          orderBy: { id: "desc" },
-          select: {
-            id: true,
-            title: true,
-            externalUrl: true,
-          },
+        _count: {
+          select: { projectRecordComments: true, uploads: true },
         },
         author: {
           select: {
@@ -85,6 +80,10 @@ export default resolver.pipe(
       },
     })
 
-    return projectRecords
+    return projectRecords.map(({ _count, ...rest }) => ({
+      ...rest,
+      commentCount: _count.projectRecordComments,
+      uploadCount: _count.uploads,
+    }))
   },
 )

@@ -21,10 +21,21 @@ export default resolver.pipe(
       include: projectRecordInclude,
     })
 
+    const projectRecordsWithCommentAndUploadCount = projectRecords.map((record) => ({
+      ...record,
+      commentCount: record.projectRecordComments.length,
+      uploadCount: record.uploads.length,
+    }))
+
     // If the project has AI disabled, entries created by the system are excluded from the results.
-    if (projectRecords.length > 0 && !projectRecords[0]?.project?.aiEnabled) {
-      return projectRecords.filter((record) => record.projectRecordAuthorType !== "SYSTEM")
+    if (
+      projectRecordsWithCommentAndUploadCount.length > 0 &&
+      !projectRecordsWithCommentAndUploadCount[0]?.project?.aiEnabled
+    ) {
+      return projectRecordsWithCommentAndUploadCount.filter(
+        (record) => record.projectRecordAuthorType !== "SYSTEM",
+      )
     }
-    return projectRecords
+    return projectRecordsWithCommentAndUploadCount
   },
 )

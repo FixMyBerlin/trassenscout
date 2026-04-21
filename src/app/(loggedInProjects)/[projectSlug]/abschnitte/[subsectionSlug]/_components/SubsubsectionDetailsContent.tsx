@@ -82,6 +82,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
       subsubsectionId: subsubsection.id,
     },
   )
+
   const [linkedSurveyResponse] = useQuery(getLinkedSurveyResponseForSubsubsection, {
     projectSlug,
     subsubsectionSlug: subsubsection.slug,
