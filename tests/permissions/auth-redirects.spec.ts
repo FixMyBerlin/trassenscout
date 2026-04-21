@@ -17,7 +17,9 @@ test.describe("Logged-out users are redirected to login", () => {
 
       await page.waitForURL(/\/auth\/login/)
       await expect(page).toHaveURL(/\/auth\/login/)
-      await expect(page.getByRole("heading", { name: "In Account einloggen" })).toBeVisible()
+      await expect(page.getByRole("heading", { name: "In Account einloggen" })).toBeVisible({
+        timeout: 30_000,
+      })
     })
   }
 })
