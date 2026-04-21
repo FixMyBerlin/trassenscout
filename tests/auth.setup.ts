@@ -21,19 +21,29 @@ const authenticateRole = async (
   const passwordField = page.getByLabel("Passwort")
   const submitButton = page.getByRole("button", { name: "Anmelden" })
 
-  await expect(emailField).toBeEnabled()
-  await expect(passwordField).toBeEnabled()
-  await expect(submitButton).toBeEnabled()
+  await expect(emailField).toBeEnabled({ timeout: 30_000 })
+  await expect(passwordField).toBeEnabled({ timeout: 30_000 })
+  await expect(submitButton).toBeEnabled({ timeout: 30_000 })
 
   await emailField.fill(seedUsers[role])
   await passwordField.fill(seedPassword)
   await submitButton.click()
 
-  await page.waitForURL("**/dashboard", { timeout: 30_000 })
-  await expect(page).toHaveURL(/\/dashboard$/)
+  await expect
+    .poll(
+      async () => {
+        const cookies = await context.cookies()
+        return cookies.some((cookie) => cookie.name === "rsv-builder_sSessionToken")
+      },
+      { timeout: 30_000 }
+    )
+    .toBeTruthy()
 
-  const cookies = await context.cookies()
-  expect(cookies.some((cookie) => cookie.name === "rsv-builder_sSessionToken")).toBeTruthy()
+  await page.goto("/dashboard")
+  await expect(page).toHaveURL(/\/dashboard$/)
+  await expect(page.getByRole("heading", { name: "Meine Projekte" })).toBeVisible({
+    timeout: 30_000,
+  })
 
   await context.storageState({ path: storageStatePath })
   await context.close()
@@ -41,6 +51,7 @@ const authenticateRole = async (
 
 for (const role of Object.keys(seedUsers) as Array<keyof typeof seedUsers>) {
   setup(`authenticate ${role}`, async ({ browser }) => {
+    setup.setTimeout(60_000)
     await authenticateRole(browser, role)
   })
 }

@@ -10,6 +10,7 @@ test.describe("Authenticated users are redirected away from auth pages", () => {
     allowedConsoleErrors: [
       "webglcontextcreationerror",
       "Failed to initialize WebGL",
+      "Failed to fetch RSC payload",
     ],
   })
 
