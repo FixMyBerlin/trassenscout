@@ -71,11 +71,7 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
       projectSlug,
       acquisitionAreaId: selectedAcquisitionArea?.id ?? undefined,
     },
-    {
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
-      enabled: Boolean(selectedAcquisitionArea),
-    },
+    { enabled: Boolean(selectedAcquisitionArea) },
   )
 
   const [uploads, { refetch: refetchUploads }] = useQuery(

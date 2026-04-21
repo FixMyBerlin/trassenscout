@@ -31,8 +31,6 @@ export const ProjectRecordsFormAndTable = ({
     { projectSlug },
     {
       initialData: initialProjectRecords,
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
     },
   )
   const [createProjectRecordMutation] = useMutation(createProjectRecord)
