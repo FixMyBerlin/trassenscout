@@ -66,4 +66,3 @@ export default resolver.pipe(
     return null
   },
 )
-
