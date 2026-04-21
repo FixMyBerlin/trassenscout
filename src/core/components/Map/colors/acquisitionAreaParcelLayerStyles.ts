@@ -2,18 +2,19 @@ import { acquisitionAreaColors } from "@/src/core/components/Map/colors/acquisit
 import type { FillLayerSpecification, LineLayerSpecification } from "maplibre-gl"
 
 export const acquisitionAreaParcelFillPaint: FillLayerSpecification["paint"] = {
-  "fill-color": acquisitionAreaColors.parcel,
-  "fill-opacity": 0.08,
+  "fill-color": acquisitionAreaColors.parcelFill,
+  "fill-opacity": 0.1,
 }
 
 export const acquisitionAreaParcelLineBasePaint: LineLayerSpecification["paint"] = {
   "line-color": acquisitionAreaColors.parcel,
-  "line-opacity": 0.28,
+  "line-opacity": 0.5,
   "line-width": 2,
 }
 
 export const acquisitionAreaParcelLineDashPaint: LineLayerSpecification["paint"] = {
   "line-color": acquisitionAreaColors.parcel,
+  "line-opacity": 0.5,
   "line-width": 1.5,
   "line-dasharray": [3, 2],
 }

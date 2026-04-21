@@ -2,7 +2,6 @@
 
 import {
   acquisitionAreaParcelFillPaint,
-  acquisitionAreaParcelLineBasePaint,
   acquisitionAreaParcelLineDashPaint,
 } from "@/src/core/components/Map/colors/acquisitionAreaParcelLayerStyles"
 import type { AlkisWfsParcelProperties } from "@/src/server/alkis/alkisWfsParcelGeoJsonTypes"
@@ -24,7 +23,7 @@ export const ACQUISITION_POTENTIAL_AREAS_SOURCE_ID = ACQUISITION_SOURCE_IDS.pote
  */
 export function getAcquisitionClickTargetLayerIds() {
   const id = ACQUISITION_SOURCE_IDS.alkisParcels
-  return [`${id}-fill-hit`, `${id}-line-base`, `${id}-line-dash`]
+  return [`${id}-fill-hit`, `${id}-line-dash`]
 }
 
 export type AcquisitionAlkisParcelsLayersProps = {
@@ -47,12 +46,6 @@ export function AcquisitionAlkisParcelsLayers({ parcels }: AcquisitionAlkisParce
         source={alkisId}
         filter={["match", ["geometry-type"], ["Polygon", "MultiPolygon"], true, false]}
         paint={acquisitionAreaParcelFillPaint}
-      />
-      <Layer
-        id={`${alkisId}-line-base`}
-        type="line"
-        source={alkisId}
-        paint={acquisitionAreaParcelLineBasePaint}
       />
       <Layer
         id={`${alkisId}-line-dash`}

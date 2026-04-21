@@ -4,7 +4,10 @@ import { useAcquisitionAreaSelection } from "@/src/app/(loggedInProjects)/[proje
 
 import { acquisitionAreaStatusStyles } from "@/src/app/(loggedInProjects)/[projectSlug]/acquisition-area-status/_utils/acquisitionAreaStatusStyles"
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
-import { subsectionColors } from "@/src/core/components/Map/colors/subsectionColors"
+import {
+  acquisitionAreaParcelFillPaint,
+  acquisitionAreaParcelLineDashPaint,
+} from "@/src/core/components/Map/colors/acquisitionAreaParcelLayerStyles"
 import { subsubsectionColors } from "@/src/core/components/Map/colors/subsubsectionColors"
 import { getLandAcquisitionLegendConfig } from "@/src/core/components/Map/LandAcquisitionMap.legendConfig"
 import { MapFooter } from "@/src/core/components/Map/MapFooter"
@@ -201,19 +204,12 @@ export const SubsubsectionLandAcquisitionMap = ({ subsubsection, activeTab }: Pr
               <Layer
                 id="acquisition-area-parcels-fill"
                 type="fill"
-                paint={{
-                  "fill-color": subsectionColors.hull.current,
-                  "fill-opacity": 0.05,
-                }}
+                paint={acquisitionAreaParcelFillPaint}
               />
               <Layer
                 id="acquisition-area-parcels-outline"
                 type="line"
-                paint={{
-                  "line-color": subsectionColors.hull.current,
-                  "line-width": 2,
-                  "line-opacity": 0.3,
-                }}
+                paint={acquisitionAreaParcelLineDashPaint}
               />
             </Source>
 

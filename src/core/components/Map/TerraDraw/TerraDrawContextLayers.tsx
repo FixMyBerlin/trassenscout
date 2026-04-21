@@ -1,7 +1,6 @@
 import { acquisitionAreaColors } from "@/src/core/components/Map/colors/acquisitionAreaColors"
 import {
   acquisitionAreaParcelFillPaint,
-  acquisitionAreaParcelLineBasePaint,
   acquisitionAreaParcelLineDashPaint,
 } from "@/src/core/components/Map/colors/acquisitionAreaParcelLayerStyles"
 import { LineEndPointsLayer } from "@/src/core/components/Map/layers/LineEndPointsLayer"
@@ -194,12 +193,6 @@ export const GeometryDrawingAcquisitionAreaParcelContextLayers = ({
         source="terra_draw_acquisition_area_parcel"
         type="fill"
         paint={acquisitionAreaParcelFillPaint}
-      />
-      <Layer
-        id="terra_draw_acquisition_area_parcel_line_base"
-        source="terra_draw_acquisition_area_parcel"
-        type="line"
-        paint={acquisitionAreaParcelLineBasePaint}
       />
       <Layer
         id="terra_draw_acquisition_area_parcel_line_dash"
