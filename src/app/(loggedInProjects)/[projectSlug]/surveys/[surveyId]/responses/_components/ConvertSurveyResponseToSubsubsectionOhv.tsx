@@ -10,7 +10,6 @@
 import { parseSwitchableMapLocationFieldValue } from "@/src/app/beteiligung/_components/form/map/utils"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getQuestionIdBySurveySlug"
-import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { Notice } from "@/src/core/components/Notice/Notice"
 import { blueButtonStyles, linkStyles } from "@/src/core/components/links/styles"
 import { subsubsectionDashboardRoute } from "@/src/core/routes/subsectionRoutes"
@@ -206,9 +205,7 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
       {/* <FormSuccess message="Maßnahme erfolgreich erstellt" show={isSuccess} /> */}
       {existingSubsubsectionSlug && (
         <Notice type="warn" title="Verknüpfung zur Maßnahmenplanung">
-          <p>
-            Aus diesem Beitrag wurde ein Maßnahmeneintrag erstellt.
-          </p>
+          <p>Aus diesem Beitrag wurde ein Maßnahmeneintrag erstellt.</p>
           <p className="mt-2">
             Verknüpfung sichtbar:{" "}
             <Link
@@ -268,14 +265,12 @@ export const ConvertSurveyResponseToSubsubsectionOhv = ({
   }
 
   return (
-    <SuperAdminBox>
-      <ConvertSurveyResponseToSubsubsectionOhvWithLookup
-        response={response}
-        projectSlug={projectSlug}
-        surveySlug={surveySlug}
-        normalizedResponseSlug={normalizedResponseSlug}
-        normalizedResponseSubsectionSlug={normalizedResponseSubsectionSlug}
-      />
-    </SuperAdminBox>
+    <ConvertSurveyResponseToSubsubsectionOhvWithLookup
+      response={response}
+      projectSlug={projectSlug}
+      surveySlug={surveySlug}
+      normalizedResponseSlug={normalizedResponseSlug}
+      normalizedResponseSubsectionSlug={normalizedResponseSubsectionSlug}
+    />
   )
 }
