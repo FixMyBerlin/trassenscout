@@ -23,18 +23,19 @@ export const getLandAcquisitionLegendConfig = (
   acquisitionAreaStatusStyles: number[],
 ): LegendItemConfig[] => {
   const statusIconIds = Array.from(
-    new Set(
-      acquisitionAreaStatusStyles.map(
+    new Set<LegendIconId>([
+      "acquisitionAreaPolygonStatus1",
+      ...acquisitionAreaStatusStyles.map(
         (style) => iconIdByAcquisitionAreaStatusStyle[style] ?? "acquisitionAreaPolygonStatus1",
       ),
-    ),
-  ) as LegendIconId[]
+    ]),
+  )
 
   return [
     ...baseLegendConfig,
     {
       text: "Verhandlungsflächen nach Phase",
-      iconIds: statusIconIds.length ? statusIconIds : ["acquisitionAreaPolygonStatus1"],
+      iconIds: statusIconIds,
     },
   ]
 }

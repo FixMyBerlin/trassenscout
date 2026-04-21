@@ -5,7 +5,7 @@ import type { AcquisitionAreaStatusStyle } from "@/src/app/(loggedInProjects)/[p
 import { GeometryDrawingMap } from "@/src/core/components/forms/GeometryDrawingMap"
 import { GeometryInputBase } from "@/src/core/components/forms/GeometryInputBase"
 import { BackgroundGeometryLayers } from "@/src/core/components/Map/BackgroundGeometryLayers"
-import { landAcquisitionEditLegendConfig } from "@/src/core/components/Map/LandAcquisitionEditMap.legendConfig"
+import { getLandAcquisitionEditLegendConfig } from "@/src/core/components/Map/LandAcquisitionEditMap.legendConfig"
 import {
   GeometryDrawingAcquisitionAreaParcelContextLayers,
   GeometryDrawingAcquisitionAreaPreviewLayers,
@@ -84,6 +84,10 @@ export const AcquisitionAreaGeometryInput = ({ parcelGeometry, subsubsectionGeom
       acquisitionAreaStatusStyles[1].color,
     [currentAcquisitionAreaStatusStyle],
   )
+  const legendItemsConfig = useMemo(
+    () => getLandAcquisitionEditLegendConfig(currentAcquisitionAreaStatusStyle),
+    [currentAcquisitionAreaStatusStyle],
+  )
   const editableGeometry = useMemo(() => removePolygonHoles(currentGeometry), [currentGeometry])
   const lastValidGeometryRef = useRef<TAcquisitionAreaGeometrySchema>(currentGeometry)
 
@@ -131,7 +135,7 @@ export const AcquisitionAreaGeometryInput = ({ parcelGeometry, subsubsectionGeom
         allowedTypes={["polygon"]}
         displayedGeometry={editableGeometry}
         hideUnselectedPolygonOutline
-        legendItemsConfig={landAcquisitionEditLegendConfig}
+        legendItemsConfig={legendItemsConfig}
         showHint={false}
         syncTransformedGeometryToMap={false}
         transformGeometry={transformGeometry}
