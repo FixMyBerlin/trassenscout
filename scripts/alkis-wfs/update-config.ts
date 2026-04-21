@@ -4,7 +4,7 @@ import {
   type AlkisStateConfigEntry,
   type AlkisWfsConfig,
   type AlkisWmsConfig,
-} from "@/src/app/api/(auth)/[projectSlug]/alkis-wfs-parcels/_utils/alkisStateConfig"
+} from "@/src/server/alkis/alkisStateConfig"
 import { StateKeyEnum } from "@prisma/client"
 import { readFileSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
@@ -261,12 +261,8 @@ export function getBundeslandSelectOptions() {
     "..",
     "..",
     "src",
-    "app",
-    "api",
-    "(auth)",
-    "[projectSlug]",
-    "alkis-wfs-parcels",
-    "_utils",
+    "server",
+    "alkis",
     "alkisStateConfig.ts",
   )
   writeFileSync(targetPath, out, "utf8")

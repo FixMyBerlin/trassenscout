@@ -1,4 +1,9 @@
-import { subsubsectionColors } from "@/src/core/components/Map/colors/subsubsectionColors"
+import { acquisitionAreaColors } from "@/src/core/components/Map/colors/acquisitionAreaColors"
+import {
+  acquisitionAreaParcelFillPaint,
+  acquisitionAreaParcelLineBasePaint,
+  acquisitionAreaParcelLineDashPaint,
+} from "@/src/core/components/Map/colors/acquisitionAreaParcelLayerStyles"
 import { LineEndPointsLayer } from "@/src/core/components/Map/layers/LineEndPointsLayer"
 import { SubsectionHullsLayer } from "@/src/core/components/Map/layers/SubsectionHullsLayer"
 import {
@@ -8,7 +13,6 @@ import {
 import { getSubsectionFeatures } from "@/src/core/components/Map/utils/getSubsectionFeatures"
 import { getSubsubsectionFeatures } from "@/src/core/components/Map/utils/getSubsubsectionFeatures"
 import { mergeFeatureCollections } from "@/src/core/components/Map/utils/mergeFeatureCollections"
-import { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
 import { TSubsections } from "@/src/server/subsections/queries/getSubsections"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import { feature, featureCollection } from "@turf/helpers"
@@ -189,104 +193,20 @@ export const GeometryDrawingAcquisitionAreaParcelContextLayers = ({
         id="terra_draw_acquisition_area_parcel_fill"
         source="terra_draw_acquisition_area_parcel"
         type="fill"
-        paint={{
-          "fill-color": "#38BDF8",
-          "fill-opacity": 0.08,
-        }}
+        paint={acquisitionAreaParcelFillPaint}
       />
       <Layer
-        id="terra_draw_acquisition_area_parcel_outline"
+        id="terra_draw_acquisition_area_parcel_line_base"
         source="terra_draw_acquisition_area_parcel"
         type="line"
-        paint={{
-          "line-color": "#2C62A9",
-          "line-width": 3,
-          "line-opacity": 0.95,
-          "line-dasharray": [2, 1],
-        }}
-      />
-    </>
-  )
-}
-
-type GeometryDrawingAcquisitionAreaSubsubsectionContextLayersProps = {
-  geometry: SupportedGeometry
-}
-
-// const DEAL_AREA_EDIT_BUFFER_RADIUS_METERS = 20
-
-export const GeometryDrawingAcquisitionAreaSubsubsectionContextLayers = ({
-  geometry,
-}: GeometryDrawingAcquisitionAreaSubsubsectionContextLayersProps) => {
-  const subsubsectionFeatureCollection = useMemo(
-    () => singleGeometryFeatureCollection(geometry),
-    [geometry],
-  )
-  // TODO bufferRadius: decide if we want to show and allow editing / interaction form<-->map
-  // const bufferOutlineFeatureCollection = useMemo(() => {
-  //   const bufferedGeometry = computeBufferPolygonFeature(
-  //     geometry,
-  //     DEAL_AREA_EDIT_BUFFER_RADIUS_METERS,
-  //   )
-
-  //   if (!bufferedGeometry?.geometry) return featureCollection([])
-
-  //   return singleGeometryFeatureCollection(bufferedGeometry.geometry)
-  // }, [geometry])
-
-  return (
-    <>
-      <Source
-        id="terra_draw_acquisition_area_subsubsection"
-        type="geojson"
-        data={subsubsectionFeatureCollection}
+        paint={acquisitionAreaParcelLineBasePaint}
       />
       <Layer
-        id="terra_draw_acquisition_area_subsubsection_fill"
-        source="terra_draw_acquisition_area_subsubsection"
-        type="fill"
-        paint={{
-          "fill-color": subsubsectionColors.polygon.unselected,
-          "fill-opacity": 0.12,
-        }}
-      />
-      <Layer
-        id="terra_draw_acquisition_area_subsubsection_line"
-        source="terra_draw_acquisition_area_subsubsection"
+        id="terra_draw_acquisition_area_parcel_line_dash"
+        source="terra_draw_acquisition_area_parcel"
         type="line"
-        paint={{
-          "line-color": subsubsectionColors.line.unselected,
-          "line-width": 2,
-          "line-opacity": 0.7,
-        }}
+        paint={acquisitionAreaParcelLineDashPaint}
       />
-      <Layer
-        id="terra_draw_acquisition_area_subsubsection_point"
-        source="terra_draw_acquisition_area_subsubsection"
-        type="circle"
-        paint={{
-          "circle-radius": 6,
-          "circle-color": subsubsectionColors.point.default,
-          "circle-stroke-width": 1,
-          "circle-stroke-color": subsubsectionColors.line.borderColor,
-        }}
-      />
-      {/* <Source
-        id="terra_draw_acquisition_area_subsubsection_buffer"
-        type="geojson"
-        data={bufferOutlineFeatureCollection}
-      />
-      <Layer
-        id="terra_draw_acquisition_area_subsubsection_buffer_line"
-        source="terra_draw_acquisition_area_subsubsection_buffer"
-        type="line"
-        paint={{
-          "line-color": "#2563eb",
-          "line-opacity": 0.5,
-          "line-width": 2,
-          "line-dasharray": [6, 3],
-        }}
-      /> */}
     </>
   )
 }
@@ -315,7 +235,7 @@ export const GeometryDrawingAcquisitionAreaPreviewLayers = ({
         source="terra_draw_acquisition_area_preview"
         type="fill"
         paint={{
-          "fill-color": "#DC2626",
+          "fill-color": acquisitionAreaColors.negotiationAreaEdit,
           "fill-opacity": 0.22,
         }}
       />
@@ -324,7 +244,7 @@ export const GeometryDrawingAcquisitionAreaPreviewLayers = ({
         source="terra_draw_acquisition_area_preview"
         type="line"
         paint={{
-          "line-color": "#DC2626",
+          "line-color": acquisitionAreaColors.negotiationAreaEdit,
           "line-width": 3,
           "line-opacity": 0.95,
         }}

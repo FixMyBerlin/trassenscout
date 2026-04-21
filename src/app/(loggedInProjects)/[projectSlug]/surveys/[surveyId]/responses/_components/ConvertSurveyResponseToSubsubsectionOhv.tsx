@@ -10,12 +10,10 @@
 import { parseSwitchableMapLocationFieldValue } from "@/src/app/beteiligung/_components/form/map/utils"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getQuestionIdBySurveySlug"
-import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { Notice } from "@/src/core/components/Notice/Notice"
 import { blueButtonStyles, linkStyles } from "@/src/core/components/links/styles"
 import { subsubsectionDashboardRoute } from "@/src/core/routes/subsectionRoutes"
 import { Prettify } from "@/src/core/types"
-import getProjectUsers from "@/src/server/memberships/queries/getProjectUsers"
 import getSubsection from "@/src/server/subsections/queries/getSubsection"
 import getSubsubsectionInfrastructureTypesWithCount from "@/src/server/subsubsectionInfrastructureType/queries/getSubsubsectionInfrastructureTypesWithCount"
 import createSubsubsection from "@/src/server/subsubsections/mutations/createSubsubsection"
@@ -25,8 +23,7 @@ import { invalidateQuery, invoke, useMutation } from "@blitzjs/rpc"
 import { point } from "@turf/helpers"
 import { NotFoundError } from "blitz"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 export type ConvertSurveyResponseToSubsubsectionProps = {
   response: Prettify<
@@ -64,13 +61,15 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
   const [convertError, setConvertError] = useState<string | null>(null)
   const [existingSubsubsectionSlug, setExistingSubsubsectionSlug] = useState<string | null>(null)
   const [createSubsubsectionMutation, { isLoading }] = useMutation(createSubsubsection)
-  const router = useRouter()
+  const [hasCheckedExistingEntry, setHasCheckedExistingEntry] = useState(false)
 
-  const handleConvertToMaßnahme = async () => {
-    try {
-      setConvertError(null)
-      setExistingSubsubsectionSlug(null)
+  useEffect(() => {
+    let isMounted = true
+    setHasCheckedExistingEntry(false)
+    setConvertError(null)
+    setExistingSubsubsectionSlug(null)
 
+    const lookupExistingSubsubsection = async () => {
       try {
         const existingSubsubsection = await invoke(getSubsubsection, {
           projectSlug,
@@ -78,20 +77,41 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
           subsubsectionSlug: normalizedResponseSlug,
         })
 
-        setExistingSubsubsectionSlug(existingSubsubsection.slug)
-        return
+        if (isMounted) {
+          setExistingSubsubsectionSlug(existingSubsubsection.slug)
+        }
       } catch (error) {
         if (!isNotFoundError(error)) {
-          throw error
+          if (isMounted) {
+            setConvertError("Verknüpfte Maßnahme konnte nicht geprüft werden.")
+          }
+          return
+        }
+      } finally {
+        if (isMounted) {
+          setHasCheckedExistingEntry(true)
         }
       }
+    }
+
+    void lookupExistingSubsubsection()
+
+    return () => {
+      isMounted = false
+    }
+  }, [normalizedResponseSlug, normalizedResponseSubsectionSlug, projectSlug])
+
+  const handleConvertToMassnahme = async () => {
+    try {
+      setConvertError(null)
+      setExistingSubsubsectionSlug(null)
 
       // Look up subsection by commune slug
       let subsection
       try {
         subsection = await invoke(getSubsection, {
           projectSlug,
-          subsectionSlug: normalizedResponseSubsectionSlug.toLowerCase(),
+          subsectionSlug: normalizedResponseSubsectionSlug,
         })
       } catch (error) {
         if (isNotFoundError(error)) {
@@ -120,13 +140,6 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
       const subsubsectionInfrastructureTypeIds = matchingInfrastructureTypes.map(
         (infraType) => infraType.id,
       )
-
-      // Get project users and find matching user by email
-      const projectUsers = await invoke(getProjectUsers, { projectSlug })
-      const responseEmail = response.data["email"]
-      const matchingUser = responseEmail
-        ? projectUsers.find((user) => user.email === responseEmail)
-        : null
 
       // Location is `{ lng, lat }` from SwitchableMap (legacy `[lng, lat]` JSON still parses via utils)
       const locationPoint = parseSwitchableMapLocationFieldValue(response.data["location"])
@@ -180,12 +193,10 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
         subsubsectionSlug: result.slug,
       })
 
-      router.push(
-        subsubsectionDashboardRoute(projectSlug, normalizedResponseSubsectionSlug, result.slug),
-      )
-    } catch (error: any) {
+      setExistingSubsubsectionSlug(result.slug)
+    } catch (error: unknown) {
       console.error("Error converting survey response to subsubsection:", error)
-      setConvertError(error.message || "Ein Fehler ist aufgetreten")
+      setConvertError(error instanceof Error ? error.message : "Ein Fehler ist aufgetreten")
     }
   }
 
@@ -193,9 +204,10 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
     <div className="mt-4 space-y-2">
       {/* <FormSuccess message="Maßnahme erfolgreich erstellt" show={isSuccess} /> */}
       {existingSubsubsectionSlug && (
-        <Notice type="warn" title="Maßnahme bereits vorhanden">
-          <p>
-            Diese Meldung wurde bereits als Maßnahme angelegt.{" "}
+        <Notice type="warn" title="Verknüpfung zur Maßnahmenplanung">
+          <p>Aus diesem Beitrag wurde ein Maßnahmeneintrag erstellt.</p>
+          <p className="mt-2">
+            Verknüpfung sichtbar:{" "}
             <Link
               href={subsubsectionDashboardRoute(
                 projectSlug,
@@ -218,11 +230,11 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
         <div className="flex justify-end">
           <button
             type="button"
-            onClick={handleConvertToMaßnahme}
+            onClick={handleConvertToMassnahme}
             className={blueButtonStyles}
-            disabled={isLoading}
+            disabled={isLoading || !hasCheckedExistingEntry}
           >
-            {isLoading ? "Wird erstellt..." : "Meldung in Maßnahme überführen"}
+            {isLoading ? "Wird erstellt..." : "In Maßnahmenplanung überführen"}
           </button>
         </div>
       )}
@@ -253,14 +265,12 @@ export const ConvertSurveyResponseToSubsubsectionOhv = ({
   }
 
   return (
-    <SuperAdminBox>
-      <ConvertSurveyResponseToSubsubsectionOhvWithLookup
-        response={response}
-        projectSlug={projectSlug}
-        surveySlug={surveySlug}
-        normalizedResponseSlug={normalizedResponseSlug}
-        normalizedResponseSubsectionSlug={normalizedResponseSubsectionSlug}
-      />
-    </SuperAdminBox>
+    <ConvertSurveyResponseToSubsubsectionOhvWithLookup
+      response={response}
+      projectSlug={projectSlug}
+      surveySlug={surveySlug}
+      normalizedResponseSlug={normalizedResponseSlug}
+      normalizedResponseSubsectionSlug={normalizedResponseSubsectionSlug}
+    />
   )
 }

@@ -56,8 +56,6 @@ export const FilteredProjectRecords = ({ projectRecords, highlightId }: Props) =
       ) : (
         <ProjectRecordsTable
           isTopicFilter
-          withSubsection
-          withSubsubsection
           projectRecords={filteredProjectRecords}
           highlightId={highlightId}
         />

@@ -5,32 +5,32 @@ import {
   AcquisitionAlkisParcelsLayers,
   AcquisitionAreaOverlaysLayers,
   getAcquisitionClickTargetLayerIds,
-} from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/[subsubsectionSlug]/land-acquisition/acquisition-areas/new/_components/AcquisitionAreaLayers"
+} from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/[subsubsectionSlug]/land-acquisition/acquisition-areas/[acquisitionAreaId]/_components/AcquisitionAreaLayers"
 import {
   polygonFeatureToFeatureCollection,
   potentialAcquisitionAreasToFeatureCollection,
-} from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/[subsubsectionSlug]/land-acquisition/acquisition-areas/new/_components/potentialAcquisitionAreaGeoJson"
-import { PotentialAcquisitionArea } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/[subsubsectionSlug]/land-acquisition/acquisition-areas/new/_components/potentialAcquisitionAreaTypes"
+} from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/[subsubsectionSlug]/land-acquisition/acquisition-areas/[acquisitionAreaId]/_components/potentialAcquisitionAreaGeoJson"
+import { PotentialAcquisitionArea } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/[subsubsectionSlug]/land-acquisition/acquisition-areas/[acquisitionAreaId]/_components/potentialAcquisitionAreaTypes"
 import { BackgroundGeometryLayers } from "@/src/core/components/Map/BackgroundGeometryLayers"
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
 import { geometryBbox } from "@/src/core/components/Map/utils/bboxHelpers"
-import { computeBufferPolygonFeature } from "@/src/core/components/Map/utils/computeBufferPolygonFeature"
 import { Spinner } from "@/src/core/components/Spinner"
-import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
+import type { AlkisWfsParcelFeatureCollection } from "@/src/server/alkis/alkisWfsParcelGeoJsonTypes"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
-import { featureCollection } from "@turf/helpers"
-import type { FeatureCollection, Geometry } from "geojson"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import type { Feature, MultiPolygon, Polygon } from "geojson"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { MapLayerMouseEvent, Popup, useMap } from "react-map-gl/maplibre"
-import { buildAlkisWfsProxyUrl } from "./alkisWfsMapHelpers"
-import { computePotentialAcquisitionAreas } from "./computePotentialAcquisitionAreas"
 import { formatPropertyValue, sortedPropertyEntries } from "./parcelFeatureProperties"
 
 type Props = {
   subsubsection: SubsubsectionWithPosition
-  bufferRadius: number
+  bufferPolygonFeature: Feature<Polygon | MultiPolygon> | null
+  parcels: AlkisWfsParcelFeatureCollection
+  isLoading: boolean
+  errorMessage: string | null
   potentialAcquisitionAreas: PotentialAcquisitionArea[]
   setPotentialAcquisitionAreas: (areas: PotentialAcquisitionArea[]) => void
+  classHeight?: string
 }
 
 function PotentialAcquisitionAreasFeatureState({
@@ -40,119 +40,53 @@ function PotentialAcquisitionAreasFeatureState({
 }) {
   const { mainMap } = useMap()
 
-  useEffect(() => {
-    if (!mainMap) return
-    const map = mainMap.getMap()
-    if (!map.getSource(ACQUISITION_POTENTIAL_AREAS_SOURCE_ID)) return
+  useEffect(
+    function syncPotentialAreaFeatureState() {
+      if (!mainMap) return
+      const map = mainMap.getMap()
+      if (!map.getSource(ACQUISITION_POTENTIAL_AREAS_SOURCE_ID)) return
 
-    for (const area of potentialAcquisitionAreas) {
-      map.setFeatureState(
-        { source: ACQUISITION_POTENTIAL_AREAS_SOURCE_ID, id: area.id },
-        { selected: area.selected },
-      )
-    }
-  }, [mainMap, potentialAcquisitionAreas])
+      for (const area of potentialAcquisitionAreas) {
+        map.setFeatureState(
+          { source: ACQUISITION_POTENTIAL_AREAS_SOURCE_ID, id: area.id },
+          { selected: area.selected },
+        )
+      }
+    },
+    [mainMap, potentialAcquisitionAreas],
+  )
 
   return null
 }
 
 export function AcquisitionAreaMap({
   subsubsection,
-  bufferRadius,
+  bufferPolygonFeature,
+  parcels,
+  isLoading,
+  errorMessage,
   potentialAcquisitionAreas,
   setPotentialAcquisitionAreas,
+  classHeight = "h-96 sm:h-[500px]",
 }: Props) {
-  const abortRef = useRef<AbortController | null>(null)
-  const projectSlug = useProjectSlug()
-
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [parcels, setParcels] = useState<FeatureCollection<Geometry, Record<string, unknown>>>(
-    featureCollection([]),
-  )
-
   const [contextParcel, setContextParcel] = useState<{
     longitude: number
     latitude: number
     properties: Record<string, unknown>
   } | null>(null)
 
-  const bufferPolygonFeature = useMemo(
-    () => computeBufferPolygonFeature(subsubsection.geometry, bufferRadius),
-    [subsubsection.geometry, bufferRadius],
+  const bufferOutlineData = useMemo(
+    () => polygonFeatureToFeatureCollection(bufferPolygonFeature),
+    [bufferPolygonFeature],
   )
-
-  const bufferOutlineData = polygonFeatureToFeatureCollection(bufferPolygonFeature)
   const acquisitionAreasFc = potentialAcquisitionAreasToFeatureCollection(potentialAcquisitionAreas)
-
-  useEffect(() => {
-    setContextParcel(null)
-  }, [parcels])
-
-  useEffect(() => {
-    if (!bufferPolygonFeature) {
-      setPotentialAcquisitionAreas([])
-      return
-    }
-    setPotentialAcquisitionAreas(computePotentialAcquisitionAreas(bufferPolygonFeature, parcels))
-  }, [bufferPolygonFeature, parcels, setPotentialAcquisitionAreas])
-
-  useEffect(() => {
-    abortRef.current?.abort()
-    const controller = new AbortController()
-    abortRef.current = controller
-
-    async function fetchParcels() {
-      try {
-        setLoading(true)
-        setError(null)
-
-        const fetchBbox = geometryBbox(bufferPolygonFeature?.geometry ?? subsubsection.geometry)
-        const url = buildAlkisWfsProxyUrl(projectSlug, fetchBbox)
-        const res = await fetch(url, {
-          signal: controller.signal,
-          headers: { Accept: "application/json" },
-        })
-
-        if (!res.ok) {
-          let msg = `WFS Fehler: HTTP ${res.status}`
-          try {
-            const errBody = (await res.json()) as { error?: string }
-            if (errBody.error) msg = errBody.error
-          } catch {
-            // keep generic message
-          }
-          throw new Error(msg)
-        }
-
-        const json = (await res.json()) as FeatureCollection<Geometry, Record<string, unknown>>
-        if (!json || json.type !== "FeatureCollection" || !Array.isArray(json.features)) {
-          throw new Error("Unerwartetes WFS JSON-Format (kein GeoJSON FeatureCollection).")
-        }
-
-        setParcels(json)
-      } catch (e) {
-        if ((e as Error).name === "AbortError") return
-        console.error(e)
-        setParcels(featureCollection([]))
-        setError((e as Error).message ?? "Unbekannter Fehler beim Laden der Flurstücke.")
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    void fetchParcels()
-    return () => controller.abort()
-  }, [projectSlug, bufferPolygonFeature, subsubsection.geometry])
 
   const handleParcelClick = useCallback(
     (event: MapLayerMouseEvent) => {
       const feature = event.features?.[0]
       if (!feature?.properties) return
 
-      const alkisParcelId = (feature.properties as Record<string, unknown>).alkisParcelId as
-        | string
-        | null
+      const { alkisParcelId } = feature.properties
       if (alkisParcelId == null) return
 
       setPotentialAcquisitionAreas(
@@ -174,7 +108,7 @@ export function AcquisitionAreaMap({
     setContextParcel({
       longitude: event.lngLat.lng,
       latitude: event.lngLat.lat,
-      properties: feature.properties as Record<string, unknown>,
+      properties: feature.properties,
     })
   }, [])
 
@@ -190,7 +124,7 @@ export function AcquisitionAreaMap({
         onClick={handleParcelClick}
         onContextMenu={handleContextMenu}
         scrollZoom
-        classHeight="h-[520px]"
+        classHeight={classHeight}
         colorSchema="subsubsection"
       >
         <BackgroundGeometryLayers subsubsections={[subsubsection]} colorSchema="subsubsection" />
@@ -241,13 +175,13 @@ export function AcquisitionAreaMap({
 
       <div className="pointer-events-none absolute inset-x-0 bottom-10 mx-12 flex justify-center">
         <div className="pointer-events-auto flex max-w-full flex-wrap items-center justify-center gap-2 rounded bg-white/80 p-4 px-8 text-center text-base text-gray-800">
-          {loading && (
+          {isLoading && (
             <div className="flex items-center justify-center">
               <Spinner size="5" />
             </div>
           )}
-          {error && <span className="text-rose-700">{error}</span>}
-          {!loading && error == null && (
+          {errorMessage && <span className="text-rose-700">{errorMessage}</span>}
+          {!isLoading && errorMessage == null && (
             <span>{parcels.features.length} Flurstücke aus ALKIS geladen.</span>
           )}
         </div>

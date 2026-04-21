@@ -11,7 +11,10 @@ import { UserGroupIcon } from "@heroicons/react/24/outline"
 import { Upload } from "@prisma/client"
 import { twJoin } from "tailwind-merge"
 
-type UploadPreviewData = Pick<Upload, "id" | "mimeType" | "title" | "externalUrl" | "collaborationUrl">
+type UploadPreviewData = Pick<
+  Upload,
+  "id" | "mimeType" | "title" | "externalUrl" | "collaborationUrl"
+>
 
 type Props = {
   projectSlug: string

@@ -47,7 +47,7 @@ export const EditCommentForm = ({ comment, commentLabel, mutateComment }: Props)
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className={clsx("flex items-center gap-2", linkStyles)}
+        className={clsx("flex items-center gap-2 hover:cursor-pointer", linkStyles)}
       >
         <PencilIcon className="size-3.5 shrink-0" />
         <p>bearbeiten</p>
@@ -87,7 +87,10 @@ export const EditCommentForm = ({ comment, commentLabel, mutateComment }: Props)
               }
             }
           }}
-          className={clsx("mt-4 flex w-full items-end justify-end gap-2", linkStyles)}
+          className={clsx(
+            "mt-4 flex w-full items-end justify-end gap-2 hover:cursor-pointer",
+            linkStyles,
+          )}
         >
           <p>{commentLabel} löschen</p>
           <TrashIcon className={clsx(linkStyles, "size-6")} />

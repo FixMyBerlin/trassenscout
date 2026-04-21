@@ -1,13 +1,14 @@
 import { AcquisitionAreaGeometrySchema } from "@/src/server/acquisitionAreas/schema"
+import type { AlkisWfsParcelFeatureCollection } from "@/src/server/alkis/alkisWfsParcelGeoJsonTypes"
 import { booleanIntersects } from "@turf/boolean-intersects"
 import { feature, featureCollection } from "@turf/helpers"
 import { intersect } from "@turf/intersect"
-import type { Feature, FeatureCollection, Geometry, MultiPolygon, Polygon } from "geojson"
+import type { Feature, MultiPolygon, Polygon } from "geojson"
 import type { PotentialAcquisitionArea } from "./potentialAcquisitionAreaTypes"
 
 export function computePotentialAcquisitionAreas(
   bufferPolygonFeature: Feature<Polygon | MultiPolygon>,
-  parcels: FeatureCollection<Geometry, Record<string, unknown>>,
+  parcels: AlkisWfsParcelFeatureCollection,
 ) {
   const bufferFeature = bufferPolygonFeature
   const results: PotentialAcquisitionArea[] = []
@@ -17,7 +18,10 @@ export function computePotentialAcquisitionAreas(
     const geom = parcel.geometry
     if (geom.type !== "Polygon" && geom.type !== "MultiPolygon") continue
 
-    const parcelFeature = feature(geom, parcel.properties ?? {})
+    const props = parcel.properties
+    if (!props) continue
+
+    const parcelFeature = feature(geom, props)
 
     if (!booleanIntersects(parcelFeature, bufferFeature)) continue
 
@@ -25,9 +29,7 @@ export function computePotentialAcquisitionAreas(
     if (!intersection?.geometry) continue
 
     seq += 1
-    const props = parcel.properties as Record<string, unknown>
-    const alkisParcelId = (props.alkisParcelId as string | null) ?? null
-    const alkisParcelIdSource = props.alkisParcelIdSource as string
+    const { alkisParcelId, alkisParcelIdSource } = props
 
     results.push({
       id: String(seq),
@@ -35,7 +37,9 @@ export function computePotentialAcquisitionAreas(
       parcelGeometry: AcquisitionAreaGeometrySchema.parse(parcelFeature.geometry),
       alkisParcelId,
       alkisParcelIdSource,
-      selected: alkisParcelId !== null,
+      selected: false,
+      existingAcquisitionAreaId: null,
+      existingMode: "keep",
     })
   }
 

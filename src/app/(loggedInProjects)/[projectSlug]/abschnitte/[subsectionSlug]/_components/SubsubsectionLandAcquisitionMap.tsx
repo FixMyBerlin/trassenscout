@@ -6,6 +6,7 @@ import { acquisitionAreaStatusStyles } from "@/src/app/(loggedInProjects)/[proje
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
 import { subsectionColors } from "@/src/core/components/Map/colors/subsectionColors"
 import { subsubsectionColors } from "@/src/core/components/Map/colors/subsubsectionColors"
+import { getLandAcquisitionLegendConfig } from "@/src/core/components/Map/LandAcquisitionMap.legendConfig"
 import { MapFooter } from "@/src/core/components/Map/MapFooter"
 import { getStaticOverlayForProject } from "@/src/core/components/Map/staticOverlay/getStaticOverlayForProject"
 import { subsectionLegendConfig } from "@/src/core/components/Map/SubsectionSubsubsectionMap.legendConfig"
@@ -17,6 +18,7 @@ import getAcquisitionAreasBySubsubsection, {
   type AcquisitionAreaWithTypedGeometry,
 } from "@/src/server/acquisitionAreas/queries/getAcquisitionAreasBySubsubsection"
 import type { TAcquisitionAreaGeometrySchema } from "@/src/server/acquisitionAreas/schema"
+import getAcquisitionAreaStatuses from "@/src/server/acquisitionAreaStatuses/queries/getAcquisitionAreaStatuses"
 import type { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
 import type {
   SubsubsectionWithPosition,
@@ -37,6 +39,8 @@ const acquisitionAreaColorExpression: ExpressionSpecification = [
   acquisitionAreaStatusStyles[2].color,
   3,
   acquisitionAreaStatusStyles[3].color,
+  4,
+  acquisitionAreaStatusStyles[4].color,
   acquisitionAreaStatusStyles[1].color,
 ]
 
@@ -50,7 +54,7 @@ const defaultQueryOptions = {
   refetchOnReconnect: false,
 }
 
-export const SubsubsectionPageMap = ({ subsubsection, activeTab }: Props) => {
+export const SubsubsectionLandAcquisitionMap = ({ subsubsection, activeTab }: Props) => {
   const projectSlug = useProjectSlug()
   const { acquisitionAreaId, setAcquisitionAreaId } = useAcquisitionAreaSelection()
   const isLandAcquisition = activeTab === "land-acquisition"
@@ -61,6 +65,14 @@ export const SubsubsectionPageMap = ({ subsubsection, activeTab }: Props) => {
       projectSlug,
       subsubsectionId: subsubsection.id,
     },
+    {
+      enabled: isLandAcquisition,
+      ...defaultQueryOptions,
+    },
+  )
+  const [acquisitionAreaStatusesResult] = useQuery(
+    getAcquisitionAreaStatuses,
+    { projectSlug },
     {
       enabled: isLandAcquisition,
       ...defaultQueryOptions,
@@ -138,6 +150,16 @@ export const SubsubsectionPageMap = ({ subsubsection, activeTab }: Props) => {
     }
     return geometriesBbox(geometries)
   }, [acquisitionAreas, isLandAcquisition, subsubsection.geometry])
+
+  const landAcquisitionLegendConfig = useMemo(
+    () =>
+      getLandAcquisitionLegendConfig(
+        (acquisitionAreaStatusesResult?.acquisitionAreaStatuses ?? []).map(
+          (status) => status.style,
+        ),
+      ),
+    [acquisitionAreaStatusesResult],
+  )
 
   const handleClickMap = (event: MapLayerMouseEvent) => {
     if (!isLandAcquisition) return
@@ -251,7 +273,9 @@ export const SubsubsectionPageMap = ({ subsubsection, activeTab }: Props) => {
           </>
         )}
       </BaseMap>
-      <MapFooter legendItemsConfig={subsectionLegendConfig} />
+      <MapFooter
+        legendItemsConfig={isLandAcquisition ? landAcquisitionLegendConfig : subsectionLegendConfig}
+      />
     </>
   )
 }

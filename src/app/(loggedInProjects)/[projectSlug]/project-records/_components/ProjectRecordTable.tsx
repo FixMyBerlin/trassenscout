@@ -7,9 +7,9 @@ import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import getProjectRecords from "@/src/server/projectRecords/queries/getProjectRecords"
-
 import getProjectRecordsByAcquisitionArea from "@/src/server/projectRecords/queries/getProjectRecordsByAcquisitionArea"
 import getProjectRecordsBySubsubsection from "@/src/server/projectRecords/queries/getProjectRecordsBySubsubsection"
+import getProjectRecordsNeedsReview from "@/src/server/projectRecords/queries/getProjectRecordsNeedsReview"
 import { ChatBubbleBottomCenterTextIcon, DocumentIcon } from "@heroicons/react/24/outline"
 import clsx from "clsx"
 import { format } from "date-fns"
@@ -22,18 +22,15 @@ export const ProjectRecordsTable = ({
   openLinksInNewTab,
   highlightId,
   isTopicFilter,
-  withSubsection,
-  withSubsubsection,
   bleed = true,
 }: {
   projectRecords:
     | Awaited<ReturnType<typeof getProjectRecords>>
     | Awaited<ReturnType<typeof getProjectRecordsByAcquisitionArea>>
     | Awaited<ReturnType<typeof getProjectRecordsBySubsubsection>>
+    | Awaited<ReturnType<typeof getProjectRecordsNeedsReview>>
   highlightId?: number | null
   isTopicFilter?: boolean
-  withSubsection?: boolean
-  withSubsubsection?: boolean
   bleed?: boolean
   openLinksInNewTab?: boolean
 }) => {
@@ -41,12 +38,6 @@ export const ProjectRecordsTable = ({
   const { filter, setFilter } = useFilters()
 
   if (!projectRecords.length) return null
-
-  /** Datum 1 · Titel 2 · Tags 2 · Zugewiesen 1 · Dokumente 0.5 */
-  const projectRecordColWeightTotal = 1 + 3 + 3 + 1 + 0.5
-  const projectRecordColWidth = (weight: number): { width: string } => ({
-    width: `${(weight / projectRecordColWeightTotal) * 100}%`,
-  })
 
   const spaceClasses = "px-3 py-2"
 
@@ -64,11 +55,12 @@ export const ProjectRecordsTable = ({
         <div className="@container w-full">
           <table className="min-w-full table-fixed border-collapse text-left text-sm text-gray-700">
             <colgroup>
-              <col style={projectRecordColWidth(1)} />
-              <col style={projectRecordColWidth(2)} />
-              <col style={projectRecordColWidth(2)} />
-              <col style={projectRecordColWidth(1)} />
-              <col style={projectRecordColWidth(0.5)} />
+              {/* Small containers only show Datum/Titel/Dokumente */}
+              <col className="w-[24%] @xl:w-[10%]" />
+              <col className="w-[58%] @xl:w-[45%]" />
+              <col className="hidden @xl:table-column @xl:w-[25%]" />
+              <col className="hidden @xl:table-column @xl:w-[10%]" />
+              <col className="w-[18%] @xl:w-[10%]" />
             </colgroup>
             <thead>
               <tr className="border-b border-gray-300 bg-gray-50">
@@ -80,13 +72,13 @@ export const ProjectRecordsTable = ({
                 </th>
                 <th
                   scope="col"
-                  className={clsx(spaceClasses, "hidden font-medium uppercase @lg:table-cell")}
+                  className={clsx(spaceClasses, "hidden font-medium uppercase @xl:table-cell")}
                 >
                   Tags
                 </th>
                 <th
                   scope="col"
-                  className={clsx(spaceClasses, "hidden font-medium uppercase @lg:table-cell")}
+                  className={clsx(spaceClasses, "hidden font-medium uppercase @xl:table-cell")}
                 >
                   Zugewiesen
                 </th>
@@ -112,12 +104,17 @@ export const ProjectRecordsTable = ({
                         ? format(new Date(projectRecord.date), "P", { locale: de })
                         : "—"}
                     </td>
-                    <td className={clsx("max-w-0 align-top", spaceClasses)}>
-                      <Link href={detailHref} title={projectRecord.title} blank={openLinksInNewTab}>
+                    <td className={clsx("align-top", spaceClasses)}>
+                      <Link
+                        className="w-full"
+                        href={detailHref}
+                        title={projectRecord.title}
+                        blank={openLinksInNewTab}
+                      >
                         {projectRecord.title}
                       </Link>
                     </td>
-                    <td className={clsx("hidden align-top @lg:table-cell", spaceClasses)}>
+                    <td className={clsx("hidden align-top @xl:table-cell", spaceClasses)}>
                       <div className="flex items-center justify-between gap-2">
                         <ProjectRecordTopicsList
                           topics={projectRecord.projectRecordTopics}
@@ -126,7 +123,7 @@ export const ProjectRecordsTable = ({
                         />
                       </div>
                     </td>
-                    <td className={clsx("hidden align-top @lg:table-cell", spaceClasses)}>
+                    <td className={clsx("hidden align-top @xl:table-cell", spaceClasses)}>
                       <div className="flex items-center justify-start">
                         {projectRecord.assignedTo && (
                           <ProjectRecordAssignedToPill
@@ -141,17 +138,16 @@ export const ProjectRecordsTable = ({
                     <td
                       className={clsx(
                         spaceClasses,
-                        "flex items-center justify-end gap-2 tabular-nums @lg:gap-4",
+                        "flex items-center justify-end gap-2 tabular-nums @xl:gap-4",
                       )}
                     >
                       <span className="inline-flex items-center justify-end gap-1 text-xs">
                         <DocumentIcon className="size-4 shrink-0" />
-                        {projectRecord.uploads?.length ?? 0}
+                        {projectRecord.uploadCount}
                       </span>
                       <span className="inline-flex items-center justify-end gap-1 text-xs">
                         <ChatBubbleBottomCenterTextIcon className="size-4 shrink-0" />
-                        {/* @ts-ignore todo I am not sure why ts is complaining here   */}
-                        {projectRecord.projectRecordComments?.length ?? 0}
+                        {projectRecord.commentCount}
                       </span>
                     </td>
                   </tr>

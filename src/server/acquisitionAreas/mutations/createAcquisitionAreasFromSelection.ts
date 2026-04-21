@@ -25,6 +25,7 @@ const CreateAcquisitionAreasFromSelectionSchema = ProjectSlugRequiredSchema.merg
           bufferRadiusM: InputNumberOrNullSchema,
           description: z.string().nullish(),
           acquisitionAreaStatusId: z.coerce.number().nullish(),
+          mode: z.enum(["create", "update", "keep"]).default("create"),
         }),
       )
       .min(1, "At least one acquisition area is required"),
@@ -90,8 +91,35 @@ export default resolver.pipe(
 
     const result = await db.$transaction(async (tx) => {
       const createdAcquisitionAreas = []
+      let updatedAcquisitionAreasCount = 0
+      let keptAcquisitionAreasCount = 0
       const createdParcelIds = new Set<string>()
       const updatedParcelIds = new Set<string>()
+
+      const existingAcquisitionAreas = await tx.acquisitionArea.findMany({
+        where: {
+          subsubsectionId,
+          parcel: {
+            alkisParcelId: {
+              in: alkisParcelIds,
+            },
+          },
+        },
+        select: {
+          id: true,
+          parcel: {
+            select: {
+              alkisParcelId: true,
+            },
+          },
+        },
+      })
+      const existingAcquisitionAreasByAlkisParcelId = new Map(
+        existingAcquisitionAreas.map((acquisitionArea) => [
+          acquisitionArea.parcel.alkisParcelId,
+          acquisitionArea.id,
+        ]),
+      )
 
       for (const acquisitionArea of acquisitionAreas) {
         const parcel = await tx.parcel.upsert({
@@ -110,8 +138,6 @@ export default resolver.pipe(
           select: {
             id: true,
             alkisParcelId: true,
-            alkisParcelIdSource: true,
-            geometry: true,
           },
         })
 
@@ -120,6 +146,33 @@ export default resolver.pipe(
         } else {
           createdParcelIds.add(acquisitionArea.alkisParcelId)
           existingParcelIdSet.add(acquisitionArea.alkisParcelId)
+        }
+
+        const existingAcquisitionAreaId = existingAcquisitionAreasByAlkisParcelId.get(
+          acquisitionArea.alkisParcelId,
+        )
+
+        if (acquisitionArea.mode === "keep" && existingAcquisitionAreaId) {
+          keptAcquisitionAreasCount += 1
+          continue
+        }
+
+        if (acquisitionArea.mode === "update" && existingAcquisitionAreaId) {
+          await tx.acquisitionArea.update({
+            where: { id: existingAcquisitionAreaId },
+            data: {
+              geometry: acquisitionArea.geometry,
+              bufferRadiusM: acquisitionArea.bufferRadiusM ?? null,
+            },
+            select: { id: true },
+          })
+          updatedAcquisitionAreasCount += 1
+          continue
+        }
+
+        if (acquisitionArea.mode === "create" && existingAcquisitionAreaId) {
+          keptAcquisitionAreasCount += 1
+          continue
         }
 
         const createdAcquisitionArea = await tx.acquisitionArea.create({
@@ -138,10 +191,16 @@ export default resolver.pipe(
         })
 
         createdAcquisitionAreas.push(createdAcquisitionArea)
+        existingAcquisitionAreasByAlkisParcelId.set(
+          acquisitionArea.alkisParcelId,
+          createdAcquisitionArea.id,
+        )
       }
 
       return {
         createdAcquisitionAreas,
+        updatedAcquisitionAreasCount,
+        keptAcquisitionAreasCount,
         createdParcelsCount: createdParcelIds.size,
         updatedParcelsCount: updatedParcelIds.size,
       }
@@ -154,7 +213,7 @@ export default resolver.pipe(
 
     await createLogEntry({
       action: "CREATE",
-      message: `${result.createdAcquisitionAreas.length} Erwerbsflächen erstellt, ${parcelParts.join(", ")}`,
+      message: `${result.createdAcquisitionAreas.length} Erwerbsflächen erstellt, ${result.updatedAcquisitionAreasCount} aktualisiert, ${result.keptAcquisitionAreasCount} unverändert, ${parcelParts.join(", ")}`,
       userId: ctx.session.userId,
       projectSlug,
     })

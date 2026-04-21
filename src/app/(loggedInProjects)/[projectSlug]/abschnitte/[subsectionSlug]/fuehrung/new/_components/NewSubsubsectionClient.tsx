@@ -1,5 +1,7 @@
 "use client"
 
+import { SubsubsectionForm } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/[subsubsectionSlug]/_components/SubsubsectionForm"
+import { SubsubsectionSchemaAdminBox } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/[subsubsectionSlug]/_components/SubsubsectionSchemaAdminBox"
 import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { subsubsectionDashboardRoute } from "@/src/core/routes/subsectionRoutes"
@@ -12,8 +14,6 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import { LocationEnum } from "@prisma/client"
 import { useRouter } from "next/navigation"
 import { z } from "zod"
-import { SubsubsectionForm } from "../../_components/SubsubsectionForm"
-import { SubsubsectionSchemaAdminBox } from "../../_components/SubsubsectionSchemaAdminBox"
 
 const NewSubsubsectionSchema = SubsubsectionBaseSchema.omit({
   subsectionId: true,

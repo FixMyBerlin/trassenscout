@@ -26,6 +26,7 @@ import { useSlug } from "@/src/core/routes/useSlug"
 import { subsubsectionLocationLabelMap } from "@/src/core/utils/subsubsectionLocationLabelMap"
 import getProjectRecordsBySubsubsection from "@/src/server/projectRecords/queries/getProjectRecordsBySubsubsection"
 import { TGetSubsubsection } from "@/src/server/subsubsections/queries/getSubsubsection"
+import getLinkedSurveyResponseForSubsubsection from "@/src/server/survey-responses/queries/getLinkedSurveyResponseForSubsubsection"
 import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
 import { useQuery } from "@blitzjs/rpc"
 import { PlusIcon } from "@heroicons/react/16/solid"
@@ -52,6 +53,22 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
   const infrastructureTypeTitles = subsubsection.SubsubsectionInfrastructureTypes.map(
     (type) => type.title,
   ).filter(Boolean)
+  const hasLength = subsubsection.lengthM != null
+  const hasWidth = subsubsection.width != null
+  const hasCostEstimate = subsubsection.costEstimate != null
+  const hasGeneralInfoRows = Boolean(
+    subsubsection.SubsubsectionTask?.title ||
+    locationLabel ||
+    hasLength ||
+    hasWidth ||
+    hasCostEstimate ||
+    infrastructureTypeTitles.length > 0 ||
+    subsubsection.qualityLevel?.title ||
+    subsubsection.SubsubsectionInfra?.title ||
+    subsubsection.SubsubsectionStatus?.title ||
+    subsubsection.estimatedConstructionDateString ||
+    subsubsection.manager,
+  )
 
   const [{ uploads }, { refetch: refetchUploads }] = useQuery(getUploadsWithSubsections, {
     projectSlug,
@@ -65,6 +82,11 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
       subsubsectionId: subsubsection.id,
     },
   )
+
+  const [linkedSurveyResponse] = useQuery(getLinkedSurveyResponseForSubsubsection, {
+    projectSlug,
+    subsubsectionSlug: subsubsection.slug,
+  })
 
   return (
     <SubsubsectionPanel
@@ -83,167 +105,177 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
       header={header}
     >
       {subsubsection.description && (
-        <section className="bg-gray-100 px-4 py-3">
+        <section className="mb-6 bg-gray-100 px-4 py-3">
           <Markdown markdown={subsubsection.description} className="text-sm leading-tight" />
         </section>
       )}
-      <div className="mt-6 overflow-x-auto rounded-md border border-gray-200">
-        <div className="inline-block min-w-full align-middle">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="sr-only">
-              <tr>
-                <th
-                  scope="col"
-                  className="py-3.5 pr-3 pl-3 text-left text-sm font-semibold text-gray-900"
-                >
-                  Attribut
-                </th>
-                <th
-                  scope="col"
-                  className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                >
-                  Wert
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
-              {subsubsection.SubsubsectionTask?.title && (
+      {hasGeneralInfoRows ? (
+        <div className="overflow-x-auto rounded-md border border-gray-200">
+          <div className="inline-block min-w-full align-middle">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="sr-only">
                 <tr>
-                  <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
-                    Eintragstyp
+                  <th
+                    scope="col"
+                    className="py-3.5 pr-3 pl-3 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Attribut
                   </th>
-                  <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
-                    {subsubsection.SubsubsectionTask.title}
-                  </td>
+                  <th
+                    scope="col"
+                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Wert
+                  </th>
                 </tr>
-              )}
-              {locationLabel && (
-                <tr>
-                  <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
-                    Lage
-                  </th>
-                  <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
-                    {locationLabel}
-                  </td>
-                </tr>
-              )}
-              {subsubsection.lengthM !== null && subsubsection.lengthM !== undefined && (
-                <tr>
-                  <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
-                    Länge
-                  </th>
-                  <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
-                    {formattedLength(subsubsection.lengthM)}
-                  </td>
-                </tr>
-              )}
-              {subsubsection.width !== null && subsubsection.width !== undefined && (
-                <tr>
-                  <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
-                    Breite
-                  </th>
-                  <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
-                    {formattedWidth(subsubsection.width)}
-                  </td>
-                </tr>
-              )}
-              {!!subsubsection.costEstimate && (
-                <tr>
-                  <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
-                    Kostenschätzung
-                  </th>
-                  <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
-                    {formattedEuro(subsubsection.costEstimate)}
-                  </td>
-                </tr>
-              )}
-              {infrastructureTypeTitles.length > 0 && (
-                <tr>
-                  <th className="py-4 pr-3 pl-4 text-left align-top text-sm font-normal text-gray-700">
-                    Gegenstände der Förderung
-                  </th>
-                  <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
-                    <div className="flex flex-wrap gap-2">
-                      {infrastructureTypeTitles.map((title) => (
-                        <span
-                          key={title}
-                          className="rounded-sm bg-gray-200 px-3 py-1.5 font-medium text-gray-700"
+              </thead>
+              <tbody className="divide-y divide-gray-200 bg-white">
+                {subsubsection.SubsubsectionTask?.title && (
+                  <tr>
+                    <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
+                      Eintragstyp
+                    </th>
+                    <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
+                      {subsubsection.SubsubsectionTask.title}
+                    </td>
+                  </tr>
+                )}
+                {locationLabel && (
+                  <tr>
+                    <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
+                      Lage
+                    </th>
+                    <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
+                      {locationLabel}
+                    </td>
+                  </tr>
+                )}
+                {hasLength && (
+                  <tr>
+                    <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
+                      Länge
+                    </th>
+                    <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
+                      {formattedLength(subsubsection.lengthM)}
+                    </td>
+                  </tr>
+                )}
+                {hasWidth && (
+                  <tr>
+                    <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
+                      Breite
+                    </th>
+                    <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
+                      {formattedWidth(subsubsection.width)}
+                    </td>
+                  </tr>
+                )}
+                {hasCostEstimate && (
+                  <tr>
+                    <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
+                      Kostenschätzung
+                    </th>
+                    <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
+                      {formattedEuro(subsubsection.costEstimate)}
+                    </td>
+                  </tr>
+                )}
+                {infrastructureTypeTitles.length > 0 && (
+                  <tr>
+                    <th className="py-4 pr-3 pl-4 text-left align-top text-sm font-normal text-gray-700">
+                      Gegenstände der Förderung
+                    </th>
+                    <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
+                      <div className="flex flex-wrap gap-2">
+                        {infrastructureTypeTitles.map((title) => (
+                          <span
+                            key={title}
+                            className="rounded-sm bg-gray-200 px-3 py-1.5 font-medium text-gray-700"
+                          >
+                            {title}
+                          </span>
+                        ))}
+                      </div>
+                    </td>
+                  </tr>
+                )}
+                {subsubsection.qualityLevel?.title && (
+                  <tr>
+                    <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
+                      Ausbaustandard
+                    </th>
+                    <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
+                      {subsubsection.qualityLevel.url ? (
+                        <Link
+                          blank
+                          className="flex items-center gap-1 text-gray-400 hover:text-gray-600"
+                          href={subsubsection.qualityLevel.url}
                         >
-                          {title}
-                        </span>
-                      ))}
-                    </div>
-                  </td>
-                </tr>
-              )}
-              {subsubsection.qualityLevel?.title && (
-                <tr>
-                  <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
-                    Ausbaustandard
-                  </th>
-                  <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
-                    {subsubsection.qualityLevel.url ? (
-                      <Link
-                        blank
-                        className="flex items-center gap-1 text-gray-400 hover:text-gray-600"
-                        href={subsubsection.qualityLevel.url}
-                      >
-                        {subsubsection.qualityLevel.title}
-                      </Link>
-                    ) : (
-                      subsubsection.qualityLevel.title
-                    )}
-                  </td>
-                </tr>
-              )}
-              {subsubsection.SubsubsectionInfra?.title && (
-                <tr>
-                  <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
-                    Führungsform
-                  </th>
-                  <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
-                    {shortTitle(subsubsection.SubsubsectionInfra.slug)} -{" "}
-                    {subsubsection.SubsubsectionInfra.title}
-                  </td>
-                </tr>
-              )}
-              {subsubsection.SubsubsectionStatus?.title && (
-                <tr>
-                  <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
-                    Phase
-                  </th>
-                  <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
-                    {shortTitle(subsubsection.SubsubsectionStatus.slug)} -{" "}
-                    {subsubsection.SubsubsectionStatus.title}
-                  </td>
-                </tr>
-              )}
-              {subsubsection.estimatedConstructionDateString && (
-                <tr>
-                  <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
-                    Angestrebtes Baujahr
-                  </th>
-                  <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
-                    {subsubsection.estimatedConstructionDateString}
-                  </td>
-                </tr>
-              )}
-              {subsubsection.manager && (
-                <tr>
-                  <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
-                    Ansprechpartner:in
-                  </th>
-                  <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
-                    {getFullname(subsubsection.manager)}
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                          {subsubsection.qualityLevel.title}
+                        </Link>
+                      ) : (
+                        subsubsection.qualityLevel.title
+                      )}
+                    </td>
+                  </tr>
+                )}
+                {subsubsection.SubsubsectionInfra?.title && (
+                  <tr>
+                    <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
+                      Führungsform
+                    </th>
+                    <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
+                      {shortTitle(subsubsection.SubsubsectionInfra.slug)} -{" "}
+                      {subsubsection.SubsubsectionInfra.title}
+                    </td>
+                  </tr>
+                )}
+                {subsubsection.SubsubsectionStatus?.title && (
+                  <tr>
+                    <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
+                      Phase
+                    </th>
+                    <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
+                      {shortTitle(subsubsection.SubsubsectionStatus.slug)} -{" "}
+                      {subsubsection.SubsubsectionStatus.title}
+                    </td>
+                  </tr>
+                )}
+                {subsubsection.estimatedConstructionDateString && (
+                  <tr>
+                    <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
+                      Angestrebtes Baujahr
+                    </th>
+                    <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
+                      {subsubsection.estimatedConstructionDateString}
+                    </td>
+                  </tr>
+                )}
+                {subsubsection.manager && (
+                  <tr>
+                    <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
+                      Ansprechpartner:in
+                    </th>
+                    <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
+                      {getFullname(subsubsection.manager)}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
+      ) : (
+        <section className="rounded-md border border-gray-200 bg-white p-4">
+          <h3 className="text-base font-medium text-gray-700">Angaben fehlen.</h3>
+          <p className="mt-1.5 text-base text-gray-700">
+            Erfassen Sie hier Eckdaten wie Typ, Status und Beschreibung. Über Bearbeiten (oben
+            rechts) können Sie diese direkt hinzufügen.
+          </p>
+        </section>
+      )}
 
-      <section className="mt-10 space-y-3">
+      <section className="mt-6 space-y-3">
         <H2 className="text-lg font-semibold text-gray-700 sm:text-lg">Protokolleinträge</H2>
         {showSuccess && (
           <FormSuccess message="Protokolleintrag erfolgreich erstellt" show={showSuccess} />
@@ -286,6 +318,19 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
 
       <section className="mt-10 space-y-3">
         <H2 className="text-lg font-semibold text-gray-700 sm:text-lg">Dokumente</H2>
+        {linkedSurveyResponse && (
+          <div className="rounded-md border border-gray-200 bg-gray-50 p-4 text-sm text-gray-700">
+            <p>Dieser Eintrag wurde aus folgendem Beitrag erstellt:</p>
+            <p className="mt-1">
+              <Link
+                href={`/${projectSlug}/surveys/${linkedSurveyResponse.surveyId}/responses?responseDetails=${linkedSurveyResponse.surveyResponseId}`}
+              >
+                Beitrag mit der ID {linkedSurveyResponse.surveyResponseId} - Formular{" "}
+                {linkedSurveyResponse.surveySlug}
+              </Link>
+            </p>
+          </div>
+        )}
         {!uploads.length && <ZeroCase small visible name="Dokumente" />}
         <div className="grid grid-cols-2 gap-3">
           {uploads.map((upload) => (

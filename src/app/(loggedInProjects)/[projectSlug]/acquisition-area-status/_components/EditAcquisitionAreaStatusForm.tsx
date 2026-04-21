@@ -14,6 +14,10 @@ import { Route } from "next"
 import { useRouter } from "next/navigation"
 import { z } from "zod"
 import {
+  type AcquisitionAreaStatusStyle,
+  type AcquisitionAreaStatusStyleValue,
+} from "../_utils/acquisitionAreaStatusStyles"
+import {
   AcquisitionAreaStatusForm,
   AcquisitionAreaStatusFormSchema,
 } from "./AcquisitionAreaStatusForm"
@@ -45,7 +49,7 @@ export const EditAcquisitionAreaStatusForm = ({
         ...values,
         id: acquisitionAreaStatus.id,
         projectId: acquisitionAreaStatus.projectId,
-        style: Number(values.style) as 1 | 2 | 3,
+        style: Number(values.style) as AcquisitionAreaStatusStyle,
         projectSlug,
       })
       router.push(returnPath)
@@ -64,7 +68,7 @@ export const EditAcquisitionAreaStatusForm = ({
         initialValues={{
           slug: acquisitionAreaStatus.slug,
           title: acquisitionAreaStatus.title,
-          style: String(acquisitionAreaStatus.style) as "1" | "2" | "3",
+          style: String(acquisitionAreaStatus.style) as AcquisitionAreaStatusStyleValue,
         }}
         onSubmit={handleSubmit}
         actionBarRight={

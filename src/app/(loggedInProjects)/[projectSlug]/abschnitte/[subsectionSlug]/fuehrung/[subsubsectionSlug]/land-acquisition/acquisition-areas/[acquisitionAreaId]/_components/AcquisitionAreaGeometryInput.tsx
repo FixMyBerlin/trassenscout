@@ -2,10 +2,11 @@
 
 import { GeometryDrawingMap } from "@/src/core/components/forms/GeometryDrawingMap"
 import { GeometryInputBase } from "@/src/core/components/forms/GeometryInputBase"
+import { BackgroundGeometryLayers } from "@/src/core/components/Map/BackgroundGeometryLayers"
+import { landAcquisitionEditLegendConfig } from "@/src/core/components/Map/LandAcquisitionEditMap.legendConfig"
 import {
   GeometryDrawingAcquisitionAreaParcelContextLayers,
   GeometryDrawingAcquisitionAreaPreviewLayers,
-  GeometryDrawingAcquisitionAreaSubsubsectionContextLayers,
 } from "@/src/core/components/Map/TerraDraw/TerraDrawContextLayers"
 import {
   AcquisitionAreaGeometrySchema,
@@ -90,18 +91,23 @@ export const AcquisitionAreaGeometryInput = ({ parcelGeometry, subsubsectionGeom
     <GeometryInputBase
       label="Geometrie"
       description="Bearbeiten Sie die Geometrie direkt auf der Karte. Die Verhandlungsfläche wird dabei automatisch auf das Flurstück zugeschnitten."
+      contentContainerClassName="border-0 bg-transparent p-0"
       showPreviewLink={false}
     >
       <GeometryDrawingMap
         allowedTypes={["polygon"]}
         displayedGeometry={editableGeometry}
         hideUnselectedPolygonOutline
+        legendItemsConfig={landAcquisitionEditLegendConfig}
         showHint={false}
         syncTransformedGeometryToMap={false}
         transformGeometry={transformGeometry}
       >
-        <GeometryDrawingAcquisitionAreaSubsubsectionContextLayers
-          geometry={subsubsectionGeometry}
+        <BackgroundGeometryLayers
+          subsubsectionGeometries={[subsubsectionGeometry]}
+          colorSchema="subsubsection"
+          showPoints={false}
+          showLineEndPoints={false}
         />
         <GeometryDrawingAcquisitionAreaParcelContextLayers parcelGeometry={parcelGeometry} />
         <GeometryDrawingAcquisitionAreaPreviewLayers geometry={currentGeometry} />

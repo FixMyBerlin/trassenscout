@@ -1,3 +1,4 @@
+import { acquisitionAreaColors } from "@/src/core/components/Map/colors/acquisitionAreaColors"
 import { subsectionColors } from "@/src/core/components/Map/colors/subsectionColors"
 import { subsubsectionColors } from "@/src/core/components/Map/colors/subsubsectionColors"
 import {
@@ -84,6 +85,54 @@ export const legendIconRegistry = {
   subsubsectionPolygonGreen: {
     type: GeometryTypeEnum.POLYGON,
     color: subsubsectionColors.polygon.green,
+    borderWidth: 2,
+    borderStyle: "solid",
+  },
+  acquisitionParcelPolygon: {
+    type: GeometryTypeEnum.POLYGON,
+    color: subsectionColors.hull.current,
+    borderWidth: 2,
+    borderStyle: "solid",
+  },
+  acquisitionParcelPolygonEdit: {
+    type: GeometryTypeEnum.POLYGON,
+    color: acquisitionAreaColors.parcel,
+    borderWidth: 2,
+    borderStyle: "dashed",
+  },
+  acquisitionAreaPolygon: {
+    type: GeometryTypeEnum.POLYGON,
+    color: acquisitionAreaColors.negotiationArea,
+    borderWidth: 2,
+    borderStyle: "solid",
+  },
+  acquisitionAreaPolygonStatus1: {
+    type: GeometryTypeEnum.POLYGON,
+    color: acquisitionAreaColors.statusByStyle[1],
+    borderWidth: 2,
+    borderStyle: "solid",
+  },
+  acquisitionAreaPolygonStatus2: {
+    type: GeometryTypeEnum.POLYGON,
+    color: acquisitionAreaColors.statusByStyle[2],
+    borderWidth: 2,
+    borderStyle: "solid",
+  },
+  acquisitionAreaPolygonStatus3: {
+    type: GeometryTypeEnum.POLYGON,
+    color: acquisitionAreaColors.statusByStyle[3],
+    borderWidth: 2,
+    borderStyle: "solid",
+  },
+  acquisitionAreaPolygonStatus4: {
+    type: GeometryTypeEnum.POLYGON,
+    color: acquisitionAreaColors.statusByStyle[4],
+    borderWidth: 2,
+    borderStyle: "solid",
+  },
+  acquisitionAreaPolygonEdit: {
+    type: GeometryTypeEnum.POLYGON,
+    color: acquisitionAreaColors.negotiationAreaEdit,
     borderWidth: 2,
     borderStyle: "solid",
   },

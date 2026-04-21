@@ -33,39 +33,49 @@ export const part2Config: SurveyPart2 = {
   progressBarDefinition: 2,
   intro: {
     type: "standard",
-    title: "Maßnahmenmeldung für Bushaltestellen und Businfrastruktur im Landkreis Oberhavel",
-    description: `Der Landkreis Oberhavel stellt im Rahmen seines 5-Jahresprogramms zur Förderung des ÖPNV, insbesondere im Bereich der Haltestellen- und Businfrastruktur, ein systematisiertes und digitales Verfahren zur Maßnahmenmeldung durch die Kommunen zur Verfügung.
+    title:
+      "Maßnahmenmeldung für die Vergabe von Zuschüssen für Bau- und Ausbaumaßnahmen- an Verknüpfungs- und Zugangsanlagen im Bereich des übrigen ÖPNV im Landkreis Oberhavel",
+    description: `Der Landkreis Oberhavel gewährt nach Maßgabe des Gesetzes über den öffentlichen Personennahverkehr des Landes Brandenburg (ÖPNVG) und in entsprechender Anwendung der Verwaltungsvorschriften (VV) zu §§ 23 und 44 der Landeshaushaltsordnung (LHO) Zuwendungen für Investitionen zur Verbesserung der kommunalen Infrastruktur im Bereich des übrigen ÖPNV (Vorhaben).
 
-Im Rahmen dieses Projekts wird nun diese Plattform für das landkreisweite Förderverfahren im Bereich des ÖPNV eingesetzt. Ziel ist es, die Qualität der kommunalen Eingaben zu erhöhen, die interne Prüfung und Weiterverarbeitung zu vereinfachen und Grundlagen für die spätere Förderantragstellung zu schaffen.
+Im Fokus der Investitionsförderung stehen kommunale Maßnahmen, die zur Attraktivitätssteigerung und besseren Nutzbarkeit des übrigen ÖPNV beitragen sollen. Die gezielte Förderung von Mobilitätsmaßnahmen stärkt den übrigen ÖPNV in den Regionen, kann bedarfsgerechte Mobilitätsangebote aufrechterhalten oder ausbauen und damit die Erreichbarkeit besonders im ländlichen Raum sichern.
 
-## Förderlinie
+## Förderrichtlinie
 
-[Grundlage für die Maßnahmenmeldung ist die Förderrichtlinie des Landes Brandenburg zur Verbesserung der Infrastruktur im öffentlichen Personennahverkehr.](https://drive.google.com/file/d/10Gz4PWZYTVBen2wnlOnL3E68Cpctgwz5/view) Im Fokus stehen kommunale Maßnahmen, die zur Attraktivitätssteigerung und besseren Nutzbarkeit des ÖPNV beitragen.
+Grundlage für das Aufsetzen des 5-Jahres-Förderprogramms ist der Kreistagsbeschluss Nr. 3/0110 des Kreistags Landkreis Oberhavel vom 23. Februar 2005, mit dem die Förderrichtlinie über die Vergabe von Zuschüssen für Bau- und Ausbaumaßnahmen an Verknüpfungs- und Zugangsanlagen im Bereich des übrigen ÖPNV beschlossen wurde.
 
-Die Förderlinie verfolgt das Ziel, die Mobilität in der Region zu stärken, klimafreundliche Verkehrsangebote auszubauen und die Erreichbarkeit im ländlichen Raum zu sichern. Voraussetzung für eine Förderung ist die nachvollziehbare Begründung des Bedarfs, eine Einordnung in kommunale oder regionale Planungen sowie die Einhaltung technischer und qualitativer Standards.
+Für die Umsetzung des Beschlusses stellt der Landkreis auf dieser Plattform ein systematisiertes und digitales Verfahren für die Antragstellenden zur Verfügung. Die Plattform wird für das landkreisweite Förderverfahren eingesetzt mit den Zielen, die Qualität der kommunalen Eingaben zu erhöhen, die Prüfung und Weiterverarbeitung von Informationen zu vereinfachen und Grundlagen für die spätere Förderantragstellung zu schaffen. Sie bildet neben dem 2-stufigen Prozess von der Vorhabenmeldung zur Antragstellung auch nachgelagerte Anforderungen an den Nachweis der Mittelverwendung ab.
 
 Bitte beachten Sie: Die Maßnahmenmeldung über dieses Formular stellt noch keinen Förderantrag dar. Sie dient als strukturierte Vorprüfung im Rahmen des Landkreiskonzepts und bildet die Grundlage für die Auswahl und Priorisierung der Projekte im Rahmen des jährlichen Fortschreibungsprozesses.
 
-## Gegenstand der Förderung
+## Fördergegenstand
 
-Die Kommunen können Maßnahmenvorschläge zu allen förderfähigen Gegenständen gemäß Ziffer 2.1 der Förderrichtlinie eintragen. Dazu gehören:
-- Zentrale Omnibusbahnhöfe (ZOB)
-- Haltestelleneinrichtungen
-- Buswendeschleifen / Bahnhofsvorplätze als Verknüpfungs- und Umsteigeanlagen unterschiedlicher Verkehrsträger (sofern sie nicht bereits im Zusammenhang mit Straßenbaumaßnahmen gefördert werden)
-- Umsteigeparkplätze ausgenommen Parkhäuser (P&R-, B&R-Anlagen)
-- Beschleunigungsmaßnahmen für den ÖPNV
+Voraussetzung für eine Förderung ist die nachvollziehbare Begründung des Bedarfs, eine Einordnung in kommunale oder regionale Planungen sowie die Einhaltung technischer und qualitativer Standards.
+
+Alle Städte, Gemeinden und Ämter des Landkreises Oberhavel sowie öffentlich oder privatrechtlich organisierte Verkehrsunternehmen des ÖPNV, soweit sie gemeinwirtschaftliche Leistungen oder förderfähige Verkehrsleistungen im Landkreises Oberhavel erbringen, können Maßnahmenvorschläge zu Bau-, Ausbau- und Modernisierungsvorhaben folgender Maßnahmenbereiche einreichen:
+- Zentrale Omnibusbahnhöfe (ZOB);
+- Haltestelleneinrichtungen;
+- Buswendeschleifen / Bahnhofsvorplätze als Verknüpfungs- und Umsteigeanlagen unterschiedlicher Verkehrsträger (sofern sie nicht bereits im Zusammenhang mit Straßenbaumaßnahmen gefördert werden);
+- Umsteigeparkplätze ausgenommen Parkhäuser (P&R-, B&R-Anlagen);
+- Beschleunigungsmaßnahmen für den ÖPNV,
 - Weiterentwicklung von ÖPNV-Haltestellen zu intermodalen Mobilitätsknotenpunkten
 - Taxistellplätze
 
 ## Fristen
 
-Das digitale Meldeverfahren läuft noch bis zum 30.09.2025. Bis dahin können Sie auf dem gleichen Wege noch weitere Maßnahmen melden. Nach Abschluss des Meldeverfahrens werden die eingegangenen Meldungen durch die OHV gesichtet und in Rücksprache mit dem Landkreis geprüft. Die Entscheidung über die Aufnahme in das 5-Jahresprogramm liegt beim Landkreis. Der Landkreis zieht ggf. intern weitere Abteilungen hinzu, wie z. B. für Schulwegsicherheit.
+- 31.01. Ende Anmeldung für Vorhaben mit Umsetzung im folgenden Kalenderjahr
+- 30.04. Bestätigung der Finanzierung für das Folgejahr durch den Landkreis
+- 31.05. Versand des bestätigten Programms sowie der strukturellen Bedarfserfassung durch den Landkreis
+- 30.09. Ende Antragstellung für Vorhaben mit Umsetzung im folgenden Kalenderjahr
 
-Nach Erstellung des Maßnahmenprogramms wird dieses per E-Mail an die Kommunen übermittelt. Die E-Mail enthält als Anlage die Zusammenstellung der aufgenommenen Maßnahmen. Die Kommunen erhalten auf dieser Grundlage in einem gesonderten Schritt die Aufforderung zur Antragstellung.
+Die Plattform ist für das Anmelde- und Antragsverfahren grundsätzlich immer geöffnet. Sie können daher jederzeit Vorhaben melden bzw. Anträge stellen und Unterlagen hochladen. Für die Erstellung des 5-Jahresprogramms sind jedoch die oben genannten Fristen zwingend zu beachten. Eintragungen, die nach den genannten Stichtagen getätigt werden, können für das jeweils nächste 5-Jahresprogramm nicht berücksichtigt werden.
+
+Nach dem Stichtag des Anmeldeverfahrens werden die eingegangenen Meldungen durch die OHBV gesichtet und in Rücksprache mit dem Landkreis geprüft. Die Entscheidungen über die Aufnahme in das 5-Jahresprogramm sowie eine etwaige Konsultation anderer Fachbereiche der Verwaltung liegen beim Landkreis.
+
+Nach Erstellung des 5-Jahresprogramms wird dieses digital an alle Angemeldeten übermittelt. Die Benachrichtigung enthält als Anlage die Zusammenstellung der aufgenommenen Maßnahmen mit einem 5-Jahres-Horizont - für das jeweils folgende Kalenderjahr in Form eines bestätigen Finanzierungsplans, für die darauffolgenden vier Kalenderjahre als nicht bestätigte strukturelle Bedarfserfassung. Die im Finanzierungsplan enthaltenen angemeldeten Vorhaben erhalten auf dieser Grundlage in einem gesonderten Schritt die Aufforderung zur Antragstellung.
 
 ## Kontakt
 
-Sollte es noch unbeantwortete Fragen oder Schwierigkeiten bei dem digitalen Meldeverfahren geben, können Sie den  Landkreis Oberhavel kontaktieren. Antworten auf häufig gestellte Fragen finden Sie am dieser Seite.
+Sollte es noch offene Punkte oder Herausforderungen beim digitalen Verfahren geben, können Sie den Landkreis Oberhavel kontaktieren. Antworten auf häufig gestellte Fragen finden Sie auf dieser Seite.
 
 **Ansprechperson** \\
 Alexander Greifenberg (Teamleiter Verkehrsplanung)\\
@@ -78,21 +88,22 @@ Fax: +493301699333\\
 E-Mail: [a.greifenberg@ohbv.de](mailto:a.greifenberg@ohbv.de)
 
 **Weitere Informationen**\\
-Die Maßnahmenmeldung wird nicht zwischengespeichert, d.h. bei Verlassen der Seite gehen alle eingetragenen Informationen verloren. Nach dem Absenden der Maßnahmenmeldung können Sie nicht mehr auf Ihre getätigten Eingaben zugreifen. Deshalb ist es sinnvoll die Maßnahmenmeldung erst dann auszufüllen und abzusenden, sobald Sie alle wichtigen Informationen für die Maßnahmenmeldung beisammen haben. Folgende Informationen werden im Rahmen der Maßnahmenmeldung abgefragt:
-- Auswahl des Gegenstandes der Förderung
-- Upload für Dokumente (optional)
-- Beschreibung der Dokumente (optional)
+Die Maßnahmenmeldung wird nicht zwischengespeichert, d.h. bei Verlassen der Seite gehen alle eingetragenen Informationen verloren. Nach dem Absenden der Maßnahmenmeldung können Sie nicht mehr auf Ihre getätigten Eingaben zugreifen. Deshalb ist es sinnvoll, die Maßnahmenmeldung erst dann auszufüllen und abzusenden, sobald Sie alle wichtigen Informationen für die Maßnahmenmeldung vorliegen haben. Folgende Informationen werden im Rahmen der Maßnahmenmeldung abgefragt:
+- Auswahl des Fördergegenstands
 - Bezug zu vorhandener Haltestelle durch Auswahl auf Karte
 - Maßnahmenbeschreibung und Zielsetzung
-- Stand der Bauvorbereitung (optional)
-- Kostenberechnung
-- Angaben zur Ko-Finanzierung (wenn ja, Mittelgeber und Programm)
-- Angaben zum geschätzten Kostenaufwand
 - Abfrage ob Gemeinschaftsbauwerk
-- Voraussichtliches Realisierungsjahr (optional)
+- Stand der Bauvorbereitung (optional)
+- Vereinfachte Kostenberechnung (€)
+- Upload für Dokumente (optional) gemäß 7.3 der Förderrichtlinie, mindestens
+- Planungsunterlagen gemäß HOAI, Leistungsphase 2;
+- Finanzierungsmodell;
+- Beschreibung der Dokumente (optional)
+- Angaben zur Ko-Finanzierung (wenn ja, Mittelgeber und Programm)
+- Voraussichtliches Realisierungsjahr
 - Name, Telefonnummer und E-Mail-Adresse der zuständigen Kontaktperson
 
-Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://trassenscout.de/datenschutz) zu. Die Daten werden gemäß DSGVO verarbeitet und nur für die Durchführung dieses digitalen Meldeverfahrens gespeichert.`,
+Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://trassenscout.de/datenschutz) zu. Die Daten werden gemäß DSGVO verarbeitet und nur für die Durchführung dieses digitalen Förderverfahrens gespeichert.`,
     buttons: [
       { action: "next", label: "Maßnahme melden", position: "right", color: "primaryColor" },
     ],

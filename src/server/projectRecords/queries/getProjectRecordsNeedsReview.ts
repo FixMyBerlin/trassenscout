@@ -4,7 +4,6 @@ import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
 import { resolver } from "@blitzjs/rpc"
 import { ProjectRecordReviewState } from "@prisma/client"
 import db from "db"
-import { projectRecordInclude } from "../projectRecordInclude"
 
 type GetProjectRecordsNeedsReviewInput = { projectSlug: string }
 
@@ -12,15 +11,31 @@ export default resolver.pipe(
   // @ts-ignore
   authorizeProjectMember(extractProjectSlug, editorRoles),
   async ({ projectSlug }: GetProjectRecordsNeedsReviewInput) => {
-    const projectRecords = await db.projectRecord.findMany({
+    const rows = await db.projectRecord.findMany({
       where: {
         project: { slug: projectSlug },
         reviewState: ProjectRecordReviewState.NEEDSREVIEW,
       },
       orderBy: { date: "desc" },
-      include: projectRecordInclude,
+      include: {
+        projectRecordTopics: true,
+        _count: {
+          select: { projectRecordComments: true, uploads: true },
+        },
+        assignedTo: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
     })
 
-    return projectRecords
+    return rows.map(({ _count, ...rest }) => ({
+      ...rest,
+      commentCount: _count.projectRecordComments,
+      uploadCount: _count.uploads,
+    }))
   },
 )

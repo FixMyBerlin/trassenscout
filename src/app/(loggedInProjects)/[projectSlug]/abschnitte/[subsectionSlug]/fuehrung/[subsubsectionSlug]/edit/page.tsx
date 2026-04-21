@@ -1,10 +1,10 @@
+import { EditSubsubsectionClient } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/[subsubsectionSlug]/_components/EditSubsubsectionClient"
 import { invoke } from "@/src/blitz-server"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitleSlug } from "@/src/core/components/text"
 import getSubsubsection from "@/src/server/subsubsections/queries/getSubsubsection"
 import "server-only"
-import { EditSubsubsectionClient } from "./_components/EditSubsubsectionClient"
 
 export async function generateMetadata({
   params,

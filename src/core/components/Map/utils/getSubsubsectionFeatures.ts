@@ -1,14 +1,33 @@
 import { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import { feature, featureCollection, point } from "@turf/helpers"
-import type { Feature, FeatureCollection, LineString, Point, Polygon } from "geojson"
+import type {
+  Feature,
+  FeatureCollection,
+  LineString,
+  MultiLineString,
+  MultiPoint,
+  MultiPolygon,
+  Point,
+  Polygon,
+} from "geojson"
 import { extractLineEndpoints } from "./extractLineEndpoints"
 import { lineStringToGeoJSON } from "./lineStringToGeoJSON"
 import { pointToGeoJSON } from "./pointToGeoJSON"
 import { polygonToGeoJSON } from "./polygonToGeoJSON"
 
+export type SubsubsectionForFeatures = {
+  slug: string
+  subsection: { slug: string }
+  SubsubsectionStatus?: { style: string } | null
+} & (
+  | { type: "LINE"; geometry: LineString | MultiLineString }
+  | { type: "POINT"; geometry: Point | MultiPoint }
+  | { type: "POLYGON"; geometry: Polygon | MultiPolygon }
+)
+
 type Props = {
-  subsubsections: SubsubsectionWithPosition[]
+  subsubsections: (SubsubsectionWithPosition | SubsubsectionForFeatures)[]
   selectedSubsubsectionSlug: string | null
 }
 

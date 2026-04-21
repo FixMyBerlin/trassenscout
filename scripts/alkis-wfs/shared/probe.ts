@@ -3,7 +3,7 @@ import {
   convertWfsResponseToGeoJson,
   getWfsOutputFormat,
   injectAlkisParcelIdsIntoGeoJson,
-} from "@/src/app/api/(auth)/[projectSlug]/alkis-wfs-parcels/_utils/helper"
+} from "@/src/server/alkis/utils/alkisWfs"
 import type { StateKeyEnum } from "@prisma/client"
 import {
   DEFAULT_COUNT,
@@ -77,6 +77,11 @@ function detectParcelIdPropertyKey(keys: string[]): string | null {
 
 function bboxFromPoint(lon: number, lat: number, delta: number): [number, number, number, number] {
   return [lon - delta, lat - delta, lon + delta, lat + delta]
+}
+
+function outputFormatLooksJson(fmt: string): boolean {
+  const lower = fmt.toLowerCase()
+  return lower.includes("json") || lower.includes("geo+json")
 }
 
 export async function probeGetFeatureForState(params: {
@@ -170,7 +175,11 @@ export async function probeGetFeatureForState(params: {
         continue
       }
 
-      const converted = await convertWfsResponseToGeoJson(res.body, params.label)
+      const converted = await convertWfsResponseToGeoJson(
+        res.body,
+        params.label,
+        outputFormatLooksJson(outputFormat),
+      )
       if (!converted.ok) {
         const reported = parseWfsNumberReturned(res.body)
         if (reported !== null && reported > 0) {

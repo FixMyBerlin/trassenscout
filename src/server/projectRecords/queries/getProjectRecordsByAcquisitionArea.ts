@@ -22,15 +22,8 @@ export default resolver.pipe(
       orderBy: { date: "desc" },
       include: {
         projectRecordTopics: true,
-        uploads: {
-          select: {
-            id: true,
-          },
-        },
-        projectRecordComments: {
-          select: {
-            id: true,
-          },
+        _count: {
+          select: { projectRecordComments: true, uploads: true },
         },
         assignedTo: {
           select: {
@@ -42,6 +35,10 @@ export default resolver.pipe(
       },
     })
 
-    return projectRecords
+    return projectRecords.map(({ _count, ...rest }) => ({
+      ...rest,
+      commentCount: _count.projectRecordComments,
+      uploadCount: _count.uploads,
+    }))
   },
 )

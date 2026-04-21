@@ -10,7 +10,7 @@ import { acquisitionAreaStatusStyleOptions } from "../_utils/acquisitionAreaStat
 export const AcquisitionAreaStatusFormSchema = z.object({
   slug: z.string().min(1, { message: "Pflichtfeld." }),
   title: z.string().min(2, { message: "Pflichtfeld. Mindestens 2 Zeichen." }),
-  style: z.union([z.literal("1"), z.literal("2"), z.literal("3")]),
+  style: z.union([z.literal("1"), z.literal("2"), z.literal("3"), z.literal("4")]),
 })
 
 export function AcquisitionAreaStatusForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
