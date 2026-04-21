@@ -26,6 +26,7 @@ import { useSlug } from "@/src/core/routes/useSlug"
 import { subsubsectionLocationLabelMap } from "@/src/core/utils/subsubsectionLocationLabelMap"
 import getProjectRecordsBySubsubsection from "@/src/server/projectRecords/queries/getProjectRecordsBySubsubsection"
 import { TGetSubsubsection } from "@/src/server/subsubsections/queries/getSubsubsection"
+import getLinkedSurveyResponseForSubsubsection from "@/src/server/survey-responses/queries/getLinkedSurveyResponseForSubsubsection"
 import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
 import { useQuery } from "@blitzjs/rpc"
 import { PlusIcon } from "@heroicons/react/16/solid"
@@ -81,6 +82,10 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
       subsubsectionId: subsubsection.id,
     },
   )
+  const [linkedSurveyResponse] = useQuery(getLinkedSurveyResponseForSubsubsection, {
+    projectSlug,
+    subsubsectionSlug: subsubsection.slug,
+  })
 
   return (
     <SubsubsectionPanel
@@ -312,6 +317,19 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
 
       <section className="mt-10 space-y-3">
         <H2 className="text-lg font-semibold text-gray-700 sm:text-lg">Dokumente</H2>
+        {linkedSurveyResponse && (
+          <div className="rounded-md border border-gray-200 bg-gray-50 p-4 text-sm text-gray-700">
+            <p>Dieser Eintrag wurde aus folgendem Beitrag erstellt:</p>
+            <p className="mt-1">
+              <Link
+                href={`/${projectSlug}/surveys/${linkedSurveyResponse.surveyId}/responses?responseDetails=${linkedSurveyResponse.surveyResponseId}`}
+              >
+                Beitrag mit der ID {linkedSurveyResponse.surveyResponseId} - Formular{" "}
+                {linkedSurveyResponse.surveySlug}
+              </Link>
+            </p>
+          </div>
+        )}
         {!uploads.length && <ZeroCase small visible name="Dokumente" />}
         <div className="grid grid-cols-2 gap-3">
           {uploads.map((upload) => (
