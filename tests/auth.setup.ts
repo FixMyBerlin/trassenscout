@@ -41,7 +41,7 @@ const authenticateRole = async (
 
   await page.goto("/dashboard")
   await expect(page).toHaveURL(/\/dashboard$/)
-  await expect(page.getByRole("heading", { name: "Meine Projekte" })).toBeVisible({
+  await expect(page.getByRole("button", { name: "User-Menü" })).toBeVisible({
     timeout: 30_000,
   })
 
