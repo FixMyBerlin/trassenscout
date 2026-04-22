@@ -7,6 +7,12 @@ const projectPages = [
   { path: `/${projectSlug}`, heading: "RS23", title: /Projekt/ },
   { path: `/${projectSlug}/contacts`, heading: "Externe Kontakte", title: /Kontakte/ },
   { path: `/${projectSlug}/uploads`, heading: "Dokumente", title: /Dokumente/ },
+  { path: `/${projectSlug}/project-records`, heading: "Projektprotokoll", title: /Projektprotokoll/ },
+  { path: `/${projectSlug}/operators`, heading: "Baulastträger", title: /Baulastträger/ },
+  { path: `/${projectSlug}/quality-levels`, heading: "Ausbaustandards", title: /Ausbaustandards/ },
+  { path: `/${projectSlug}/network-hierarchy`, heading: "Netzstufen", title: /Netzstufen/ },
+  { path: `/${projectSlug}/subsection-status`, heading: "Status", title: /Status/ },
+  { path: `/${projectSlug}/subsubsection-status`, heading: "Phase", title: /Phase/ },
 ] as const
 
 test.describe("Project smoke", () => {
