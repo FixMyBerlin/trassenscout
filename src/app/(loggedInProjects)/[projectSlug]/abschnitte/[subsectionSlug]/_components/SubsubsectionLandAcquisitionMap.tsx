@@ -144,6 +144,14 @@ export const SubsubsectionLandAcquisitionMap = ({ subsubsection, activeTab }: Pr
     [acquisitionAreas],
   )
 
+  const acquisitionAreaIdByParcelId = useMemo(
+    () =>
+      new Map(
+        acquisitionAreas.map((acquisitionArea) => [acquisitionArea.parcel.id, acquisitionArea.id]),
+      ),
+    [acquisitionAreas],
+  )
+
   const mapBbox = useMemo(() => {
     const geometries: SupportedGeometry[] = [subsubsection.geometry as SupportedGeometry]
     if (isLandAcquisition) {
@@ -167,10 +175,20 @@ export const SubsubsectionLandAcquisitionMap = ({ subsubsection, activeTab }: Pr
   const handleClickMap = (event: MapLayerMouseEvent) => {
     if (!isLandAcquisition) return
 
-    const clickedAcquisitionAreaId = Number(event.features?.at(0)?.properties?.acquisitionAreaId)
-    if (!Number.isFinite(clickedAcquisitionAreaId)) return
+    const clickedFeature = event.features?.at(0)
+    const clickedAcquisitionAreaId = Number(clickedFeature?.properties?.acquisitionAreaId)
+    if (Number.isFinite(clickedAcquisitionAreaId)) {
+      void setAcquisitionAreaId(clickedAcquisitionAreaId)
+      return
+    }
 
-    void setAcquisitionAreaId(clickedAcquisitionAreaId)
+    const clickedParcelId = Number(clickedFeature?.properties?.parcelId)
+    if (!Number.isFinite(clickedParcelId)) return
+
+    const acquisitionAreaIdFromParcel = acquisitionAreaIdByParcelId.get(clickedParcelId)
+    if (!acquisitionAreaIdFromParcel) return
+
+    void setAcquisitionAreaId(acquisitionAreaIdFromParcel)
   }
 
   return (
@@ -184,7 +202,12 @@ export const SubsubsectionLandAcquisitionMap = ({ subsubsection, activeTab }: Pr
         onClick={handleClickMap}
         interactiveLayerIds={
           isLandAcquisition
-            ? ["acquisition-area-click-target-unselected", "acquisition-area-click-target-selected"]
+            ? [
+                "acquisition-area-click-target-unselected",
+                "acquisition-area-click-target-selected",
+                "acquisition-area-parcels-fill",
+                "acquisition-area-parcels-outline",
+              ]
             : undefined
         }
         lines={subsubsectionLines?.features.length ? subsubsectionLines : undefined}
