@@ -1,4 +1,6 @@
 import { EditQualityLevelForm } from "@/src/app/(loggedInProjects)/[projectSlug]/quality-levels/_components/EditQualityLevelForm"
+import { authorizeProjectMember } from "@/src/app/(loggedInProjects)/_utils/authorizeProjectMember"
+import { editorRoles } from "@/src/authorization/constants"
 import { invoke } from "@/src/blitz-server"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitle } from "@/src/core/components/text"
@@ -22,6 +24,8 @@ export default async function EditQualityLevelPage({
   params: { projectSlug, qualityLevelId },
   searchParams,
 }: Props) {
+  await authorizeProjectMember(projectSlug, editorRoles)
+
   const qualityLevel = await invoke(getQualityLevel, {
     projectSlug,
     id: Number(qualityLevelId),
