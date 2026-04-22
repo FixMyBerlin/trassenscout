@@ -107,26 +107,25 @@ export const SubsubsectionMap = ({ subsections, selectedSubsection, subsubsectio
     }
   }
 
-  // Calculate bbox including subsection and selected subsubsection if present (for initial view)
+  // Calculate initial bbox:
+  // - with selected subsubsection: focus on selected measure geometry
+  // - without selected subsubsection: keep overview of subsection + all subsubsections
   const mapBbox = useMemo(() => {
-    const geometries: SupportedGeometry[] = [selectedSubsection.geometry]
-
     if (pageSubsubsectionSlug) {
-      // When a subsubsection is selected: include only the selected one
+      // When a subsubsection is selected: zoom to the selected geometry
       const selectedSubsubsection = filteredSubsubsections.find(
         (subsub) => subsub.slug === pageSubsubsectionSlug,
       )
       if (selectedSubsubsection) {
-        geometries.push(selectedSubsubsection.geometry)
+        return geometriesBbox([selectedSubsubsection.geometry])
       }
-    } else {
-      // When nothing is selected: include all subsubsections
-      filteredSubsubsections.forEach((subsub) => {
-        geometries.push(subsub.geometry)
-      })
-    }
 
-    return geometriesBbox(geometries)
+      // Fallback for stale URL slugs: keep previous behavior
+      return geometriesBbox([selectedSubsection.geometry, ...filteredSubsubsections.map((s) => s.geometry)])
+    } else {
+      // When nothing is selected: include all subsubsections + selected subsection context
+      return geometriesBbox([selectedSubsection.geometry, ...filteredSubsubsections.map((s) => s.geometry)])
+    }
   }, [selectedSubsection.geometry, filteredSubsubsections, pageSubsubsectionSlug])
 
   const { lines: subsectionLines, polygons: subsectionPolygons } = useMemo(
