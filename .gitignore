@@ -68,3 +68,5 @@ db/zod-schema-inspiration/
 TMP/
 /public/pdf.worker.min.mjs
 /tests/.auth/
+TMP/
+
