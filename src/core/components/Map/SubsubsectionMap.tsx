@@ -6,7 +6,6 @@ import {
 } from "@/src/core/routes/subsectionRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
-import { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
 import { TGetSubsection } from "@/src/server/subsections/queries/getSubsection"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import { useRouter } from "next/navigation"
@@ -121,10 +120,16 @@ export const SubsubsectionMap = ({ subsections, selectedSubsection, subsubsectio
       }
 
       // Fallback for stale URL slugs: keep previous behavior
-      return geometriesBbox([selectedSubsection.geometry, ...filteredSubsubsections.map((s) => s.geometry)])
+      return geometriesBbox([
+        selectedSubsection.geometry,
+        ...filteredSubsubsections.map((s) => s.geometry),
+      ])
     } else {
       // When nothing is selected: include all subsubsections + selected subsection context
-      return geometriesBbox([selectedSubsection.geometry, ...filteredSubsubsections.map((s) => s.geometry)])
+      return geometriesBbox([
+        selectedSubsection.geometry,
+        ...filteredSubsubsections.map((s) => s.geometry),
+      ])
     }
   }, [selectedSubsection.geometry, filteredSubsubsections, pageSubsubsectionSlug])
 

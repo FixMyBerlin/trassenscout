@@ -1,7 +1,7 @@
 "use client"
 
-import { acquisitionAreaStatusStyles } from "@/src/app/(loggedInProjects)/[projectSlug]/acquisition-area-status/_utils/acquisitionAreaStatusStyles"
 import type { AcquisitionAreaStatusStyle } from "@/src/app/(loggedInProjects)/[projectSlug]/acquisition-area-status/_utils/acquisitionAreaStatusStyles"
+import { acquisitionAreaStatusStyles } from "@/src/app/(loggedInProjects)/[projectSlug]/acquisition-area-status/_utils/acquisitionAreaStatusStyles"
 import { GeometryDrawingMap } from "@/src/core/components/forms/GeometryDrawingMap"
 import { GeometryInputBase } from "@/src/core/components/forms/GeometryInputBase"
 import { BackgroundGeometryLayers } from "@/src/core/components/Map/BackgroundGeometryLayers"
