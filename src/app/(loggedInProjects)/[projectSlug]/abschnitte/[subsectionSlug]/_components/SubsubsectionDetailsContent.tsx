@@ -283,7 +283,6 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
         {projectRecords.length > 0 ? (
           <ProjectRecordsTable
             projectRecords={projectRecords}
-            openLinksInNewTab
             highlightId={createdProjectRecordId}
             bleed={false}
           />

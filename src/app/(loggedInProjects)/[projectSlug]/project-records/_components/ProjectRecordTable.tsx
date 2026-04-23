@@ -19,7 +19,6 @@ import { ProjectRecordTopicsList } from "./ProjectRecordTopicsList"
 
 export const ProjectRecordsTable = ({
   projectRecords,
-  openLinksInNewTab,
   highlightId,
   isTopicFilter,
   bleed = true,
@@ -32,7 +31,6 @@ export const ProjectRecordsTable = ({
   highlightId?: number | null
   isTopicFilter?: boolean
   bleed?: boolean
-  openLinksInNewTab?: boolean
 }) => {
   const projectSlug = useProjectSlug()
   const { filter, setFilter } = useFilters()
@@ -108,8 +106,8 @@ export const ProjectRecordsTable = ({
                       <Link
                         className="w-full"
                         href={detailHref}
+                        scroll={false}
                         title={projectRecord.title}
-                        blank={openLinksInNewTab}
                       >
                         {projectRecord.title}
                       </Link>

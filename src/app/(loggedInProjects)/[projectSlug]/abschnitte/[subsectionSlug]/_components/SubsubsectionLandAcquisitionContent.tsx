@@ -251,7 +251,6 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
                 {projectRecords && projectRecords?.length > 0 ? (
                   <ProjectRecordsTable
                     projectRecords={projectRecords}
-                    openLinksInNewTab
                     highlightId={createdProjectRecordId}
                     bleed={false}
                   />

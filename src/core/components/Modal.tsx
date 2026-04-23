@@ -8,6 +8,7 @@ type Props = {
   open: boolean
   handleClose: () => void
   className?: string
+  align?: "center" | "right"
 }
 
 export const ModalCloseButton = ({ onClose }: { onClose: () => void }) => {
@@ -24,7 +25,9 @@ export const ModalCloseButton = ({ onClose }: { onClose: () => void }) => {
   )
 }
 
-export const Modal = ({ children, open, handleClose, className }: Props) => {
+export const Modal = ({ children, open, handleClose, className, align = "center" }: Props) => {
+  const isRightAligned = align === "right"
+
   return (
     <Transition show={open} as={Fragment}>
       <Dialog as="div" className="relative z-20" onClose={handleClose}>
@@ -41,7 +44,14 @@ export const Modal = ({ children, open, handleClose, className }: Props) => {
         </TransitionChild>
 
         <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+          <div
+            className={twMerge(
+              "flex min-h-full text-center",
+              isRightAligned
+                ? "items-stretch justify-end p-0"
+                : "items-end justify-center p-4 sm:items-center sm:p-0",
+            )}
+          >
             <TransitionChild
               as={Fragment}
               enter="ease-out duration-300"
@@ -53,7 +63,9 @@ export const Modal = ({ children, open, handleClose, className }: Props) => {
             >
               <DialogPanel
                 className={twMerge(
-                  "relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6",
+                  isRightAligned
+                    ? "relative ml-auto h-dvh w-full max-w-none transform overflow-y-auto bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:w-[clamp(960px,80vw,1280px)] sm:max-w-[calc(100vw-2rem)] sm:p-6"
+                    : "relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6",
                   className,
                 )}
               >

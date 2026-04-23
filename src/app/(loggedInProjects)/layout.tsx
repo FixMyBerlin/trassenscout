@@ -11,7 +11,13 @@ export const metadata: Metadata = {
   },
 }
 
-export default async function LoggedInProjectsLayout({ children }: { children: React.ReactNode }) {
+export default async function LoggedInProjectsLayout({
+  children,
+  modal,
+}: {
+  children: React.ReactNode
+  modal: React.ReactNode
+}) {
   // eslint-disable-next-line react-hooks/rules-of-hooks -- useAuthenticatedBlitzContext is not a hook despite the "use" prefix
   await useAuthenticatedBlitzContext({ redirectTo: "/auth/login" })
 
@@ -22,6 +28,7 @@ export default async function LoggedInProjectsLayout({ children }: { children: R
         <main className="mx-auto w-full max-w-7xl px-6 pb-16 md:px-8">{children}</main>
       </div>
       <FooterProject />
+      {modal}
     </>
   )
 }
