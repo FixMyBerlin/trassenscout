@@ -9,6 +9,9 @@ import createProjectRecordComment from "@/src/server/project-record-comments/mut
 import deleteProjectRecordComment from "@/src/server/project-record-comments/mutations/deleteProjectRecordComment"
 import updateProjectRecordComment from "@/src/server/project-record-comments/mutations/updateProjectRecordComment"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
+import getProjectRecords from "@/src/server/projectRecords/queries/getProjectRecords"
+import getProjectRecordsBySubsubsection from "@/src/server/projectRecords/queries/getProjectRecordsBySubsubsection"
+import getProjectRecordsNeedsReview from "@/src/server/projectRecords/queries/getProjectRecordsNeedsReview"
 import { useSession } from "@blitzjs/auth"
 import { invalidateQuery, useMutation } from "@blitzjs/rpc"
 
@@ -26,6 +29,9 @@ export const ProjectRecordCommentsSection = ({ projectRecord }: Props) => {
 
   const invalidateProjectRecordQueries = () => {
     invalidateQuery(getProjectRecord)
+    invalidateQuery(getProjectRecords)
+    invalidateQuery(getProjectRecordsBySubsubsection)
+    invalidateQuery(getProjectRecordsNeedsReview)
   }
 
   return (
