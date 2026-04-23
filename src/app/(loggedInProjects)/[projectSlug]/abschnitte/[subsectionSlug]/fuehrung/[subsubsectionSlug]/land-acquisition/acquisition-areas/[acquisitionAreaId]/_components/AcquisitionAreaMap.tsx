@@ -179,14 +179,8 @@ export function AcquisitionAreaMap({
         )}
       </BaseMap>
 
-      <div className="pointer-events-none absolute inset-x-0 top-3 z-10 flex justify-center">
-        <div className="pointer-events-auto rounded-md bg-gray-800 px-3 py-1.5 text-sm text-white">
-          Klick = auswählen/abwählen · Rechtsklick = Details
-        </div>
-      </div>
-
       <div className="pointer-events-none absolute inset-x-0 bottom-10 mx-12 flex justify-center">
-        <div className="pointer-events-auto flex max-w-full flex-wrap items-center justify-center gap-2 rounded bg-white/80 p-4 px-8 text-center text-base text-gray-800">
+        <div className="max-w-full rounded bg-white/80 p-4 px-8 text-center text-base text-gray-800">
           {isLoading && (
             <div className="flex items-center justify-center">
               <Spinner size="5" />
@@ -194,8 +188,14 @@ export function AcquisitionAreaMap({
           )}
           {errorMessage && <span className="text-rose-700">{errorMessage}</span>}
           {!isLoading && errorMessage == null && (
-            <span>{parcels.features.length} Flurstücke aus ALKIS geladen.</span>
+            <>
+              <span>{parcels.features.length} Flurstücke aus ALKIS geladen.</span>
+              <br />
+            </>
           )}
+          Klick = auswählen/abwählen
+          <br />
+          Rechtsklick = Details
         </div>
       </div>
     </div>
