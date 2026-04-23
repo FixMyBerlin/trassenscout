@@ -24,7 +24,11 @@ type Props = {
 const submitSchema = z.object({ role: z.nativeEnum(MembershipRoleEnum) })
 
 type HandleSubmit = z.infer<typeof submitSchema>
-export const TeamTableEditMembershipModalForm = ({ editUser, closeModal, onDirtyChange }: Props) => {
+export const TeamTableEditMembershipModalForm = ({
+  editUser,
+  closeModal,
+  onDirtyChange,
+}: Props) => {
   const projectSlug = useProjectSlug()
   const router = useRouter()
 

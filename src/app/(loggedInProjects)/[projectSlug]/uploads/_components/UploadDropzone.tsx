@@ -40,7 +40,8 @@ export const UploadDropzone = ({
       subsectionId: subsectionId || null,
       summary: null,
       subsubsectionId: subsubsectionId || null,
-      projectRecords: projectRecordIds && projectRecordIds.length > 0 ? projectRecordIds : undefined,
+      projectRecords:
+        projectRecordIds && projectRecordIds.length > 0 ? projectRecordIds : undefined,
       surveyResponseId: surveyResponseId || null,
       mimeType: file.type || null,
       fileSize: file.size || null,
