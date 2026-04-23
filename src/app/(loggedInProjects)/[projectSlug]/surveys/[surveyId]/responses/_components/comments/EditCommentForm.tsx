@@ -1,4 +1,4 @@
-import { Form, LabeledTextareaField } from "@/src/core/components/forms"
+import { Form, FormDirtyStateReporter, LabeledTextareaField } from "@/src/core/components/forms"
 import { linkStyles } from "@/src/core/components/links"
 import { Modal, ModalCloseButton } from "@/src/core/components/Modal"
 import { H3 } from "@/src/core/components/text"
@@ -28,12 +28,19 @@ type Props = {
 
 export const EditCommentForm = ({ comment, commentLabel, mutateComment }: Props) => {
   const [open, setOpen] = useState(false)
+  const [isDirty, setIsDirty] = useState(false)
   const session = useSession()
+
+  const handleClose = () => {
+    if (isDirty && !window.confirm("Ungespeicherte Änderungen verwerfen?")) return
+    setOpen(false)
+  }
 
   const handleSubmit = async (values: { body: string }) => {
     const sanitize = (input: string) => (input ? dompurify.sanitize(input) : input)
     const body = sanitize(values.body)
     await mutateComment.update(body)
+    setIsDirty(false)
     setOpen(false)
   }
 
@@ -53,13 +60,14 @@ export const EditCommentForm = ({ comment, commentLabel, mutateComment }: Props)
         <p>bearbeiten</p>
       </button>
 
-      <Modal open={open} handleClose={() => setOpen(false)}>
+      <Modal open={open} handleClose={handleClose}>
         <HeadingWithAction className="mb-2">
           <H3>{commentLabel} bearbeiten</H3>
-          <ModalCloseButton onClose={() => setOpen(false)} />
+          <ModalCloseButton onClose={handleClose} />
         </HeadingWithAction>
 
         <Form onSubmit={handleSubmit} submitText={`${commentLabel} speichern`}>
+          <FormDirtyStateReporter onDirtyChange={setIsDirty} />
           <LabeledTextareaField
             name="body"
             className="min-h-40"
@@ -79,6 +87,7 @@ export const EditCommentForm = ({ comment, commentLabel, mutateComment }: Props)
               window.confirm(`Sind Sie sicher, dass Sie diesen ${commentLabel} löschen möchten?`)
             ) {
               try {
+                setIsDirty(false)
                 setOpen(false)
                 await mutateComment.remove()
               } catch (error: unknown) {

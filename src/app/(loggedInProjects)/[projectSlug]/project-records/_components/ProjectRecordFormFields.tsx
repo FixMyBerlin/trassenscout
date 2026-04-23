@@ -159,7 +159,7 @@ export const ProjectRecordFormFields = ({
       (acquisitionArea) => acquisitionArea.id === selectedAcquisitionAreaId,
     )
     if (!stillCompatible) {
-      setValue("acquisitionAreaId", null, { shouldDirty: true })
+      setValue("acquisitionAreaId", null, { shouldDirty: false })
     }
   }, [filteredAcquisitionAreas, landAcquisitionModuleEnabled, selectedAcquisitionAreaId, setValue])
 
