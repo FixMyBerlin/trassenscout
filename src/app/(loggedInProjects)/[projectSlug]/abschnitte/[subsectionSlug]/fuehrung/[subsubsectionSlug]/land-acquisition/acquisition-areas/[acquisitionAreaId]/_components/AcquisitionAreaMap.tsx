@@ -14,7 +14,10 @@ import { PotentialAcquisitionArea } from "@/src/app/(loggedInProjects)/[projectS
 import { BackgroundGeometryLayers } from "@/src/core/components/Map/BackgroundGeometryLayers"
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
 import { geometryBbox } from "@/src/core/components/Map/utils/bboxHelpers"
+import { ModalCloseButton } from "@/src/core/components/Modal"
 import { Spinner } from "@/src/core/components/Spinner"
+import { H3 } from "@/src/core/components/text"
+import { HeadingWithAction } from "@/src/core/components/text/HeadingWithAction"
 import type { AlkisWfsParcelFeatureCollection } from "@/src/server/alkis/alkisWfsParcelGeoJsonTypes"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import type { Feature, MultiPolygon, Polygon } from "geojson"
@@ -143,25 +146,34 @@ export function AcquisitionAreaMap({
           <Popup
             longitude={contextParcel.longitude}
             latitude={contextParcel.latitude}
-            anchor="bottom"
-            closeButton
-            closeOnClick={false}
-            maxWidth="320px"
+            closeButton={false}
+            closeOnClick
+            maxWidth="400px"
+            className="z-50 [&_.maplibregl-popup-content]:bg-transparent! [&_.maplibregl-popup-content]:p-0!"
             onClose={() => setContextParcel(null)}
           >
-            <div className="max-h-64 overflow-y-auto text-xs text-gray-800">
-              <p className="mb-2 font-semibold text-gray-900">Flurstück</p>
-              <dl className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] gap-x-2 gap-y-1">
-                {sortedPropertyEntries(contextParcel.properties).map(([key, value]) => (
-                  <div key={key} className="contents">
-                    <dt className="wrap-break-word text-gray-500">{key}</dt>
-                    <dd className="font-medium wrap-break-word">{formatPropertyValue(value)}</dd>
-                  </div>
-                ))}
-              </dl>
-              {sortedPropertyEntries(contextParcel.properties).length === 0 && (
-                <p className="text-gray-500">Keine Attribute in diesem Feature.</p>
-              )}
+            <div className="w-full overflow-hidden rounded-lg bg-white text-left shadow-xl">
+              <div className="px-4 pt-5 pb-4 sm:p-6">
+                <HeadingWithAction className="mb-4">
+                  <H3>Flurstück Details</H3>
+                  <ModalCloseButton onClose={() => setContextParcel(null)} />
+                </HeadingWithAction>
+                <div className="max-h-64 overflow-y-auto text-sm text-gray-700">
+                  <dl className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] gap-x-3 gap-y-1.5">
+                    {sortedPropertyEntries(contextParcel.properties).map(([key, value]) => (
+                      <div key={key} className="contents">
+                        <dt className="text-sm wrap-break-word text-gray-500">{key}</dt>
+                        <dd className="text-sm font-medium wrap-break-word text-gray-900">
+                          {formatPropertyValue(value)}
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                  {sortedPropertyEntries(contextParcel.properties).length === 0 && (
+                    <p className="text-sm text-gray-500">Keine Attribute in diesem Feature.</p>
+                  )}
+                </div>
+              </div>
             </div>
           </Popup>
         )}
