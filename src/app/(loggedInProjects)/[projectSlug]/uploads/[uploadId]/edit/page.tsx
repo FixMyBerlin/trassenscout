@@ -1,5 +1,6 @@
 import { EditUploadForm } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/EditUploadForm"
 import { invoke } from "@/src/blitz-server"
+import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitle } from "@/src/core/components/text"
 import getUploadWithRelations from "@/src/server/uploads/queries/getUploadWithRelations"
@@ -23,8 +24,20 @@ export default async function EditUploadPage({ params: { projectSlug, uploadId }
     id: Number(uploadId),
   })
 
-  const returnPath: Route = `/${projectSlug}/uploads` as Route
-  const returnText = "Zurück zu den Dokumenten"
+  let returnPath: Route
+  let returnText: string
+
+  if (upload.projectRecords.length > 0) {
+    returnPath = projectRecordDetailRoute(projectSlug, upload.projectRecords[0]!.id)
+    returnText = "Zurück zum Protokoll"
+  } else if (upload.Subsubsection) {
+    returnPath =
+      `/${projectSlug}/abschnitte/${upload.Subsubsection.subsection.slug}/fuehrung/${upload.Subsubsection.slug}` as Route
+    returnText = "Zurück zum Eintrag"
+  } else {
+    returnPath = `/${projectSlug}/uploads` as Route
+    returnText = "Zurück zu den Dokumenten"
+  }
 
   return (
     <>

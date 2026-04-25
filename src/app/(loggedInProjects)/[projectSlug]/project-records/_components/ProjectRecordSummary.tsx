@@ -6,7 +6,7 @@ import { getFullname } from "@/src/app/_components/users/utils/getFullname"
 import { Link, linkStyles } from "@/src/core/components/links"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { subsubsectionLandAcquisitionRoute } from "@/src/core/routes/subsectionRoutes"
-import { projectRecordUploadEditRoute } from "@/src/core/routes/uploadRoutes"
+import { uploadEditRoute } from "@/src/core/routes/uploadRoutes"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
 import { format } from "date-fns"
 import { de } from "date-fns/locale"
@@ -150,11 +150,7 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
                 uploadId={upload.id}
                 projectSlug={projectRecord.project.slug}
                 size="grid"
-                editUrl={projectRecordUploadEditRoute(
-                  projectRecord.project.slug,
-                  projectRecord.id,
-                  upload.id,
-                )}
+                editUrl={uploadEditRoute(projectRecord.project.slug, upload.id)}
               />
             ))}
           </div>

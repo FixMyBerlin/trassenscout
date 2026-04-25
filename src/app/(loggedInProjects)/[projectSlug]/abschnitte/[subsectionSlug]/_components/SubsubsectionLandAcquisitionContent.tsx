@@ -16,7 +16,7 @@ import {
   acquisitionAreaEditRoute,
   acquisitionAreaNewRoute,
 } from "@/src/core/routes/subsectionRoutes"
-import { subsubsectionUploadEditRoute } from "@/src/core/routes/uploadRoutes"
+import { uploadEditRoute } from "@/src/core/routes/uploadRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
 import deleteAllAcquisitionAreasForSubsubsection from "@/src/server/acquisitionAreas/mutations/deleteAllAcquisitionAreasForSubsubsection"
@@ -296,12 +296,7 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
                       upload={upload}
                       projectSlug={projectSlug}
                       size="grid"
-                      editUrl={subsubsectionUploadEditRoute(
-                        projectSlug,
-                        subsectionSlug!,
-                        subsubsectionSlug!,
-                        upload.id,
-                      )}
+                      editUrl={uploadEditRoute(projectSlug, upload.id)}
                       onDeleted={async () => {
                         await refetchUploads()
                       }}

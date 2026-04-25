@@ -20,7 +20,7 @@ import {
 import { H2 } from "@/src/core/components/text/Headings"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import { subsubsectionEditRoute } from "@/src/core/routes/subsectionRoutes"
-import { subsubsectionUploadEditRoute } from "@/src/core/routes/uploadRoutes"
+import { uploadEditRoute } from "@/src/core/routes/uploadRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
 import { subsubsectionLocationLabelMap } from "@/src/core/utils/subsubsectionLocationLabelMap"
@@ -339,12 +339,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
               upload={upload}
               projectSlug={projectSlug}
               size="grid"
-              editUrl={subsubsectionUploadEditRoute(
-                projectSlug,
-                subsectionSlug!,
-                subsubsectionSlug!,
-                upload.id,
-              )}
+              editUrl={uploadEditRoute(projectSlug, upload.id)}
               onDeleted={async () => {
                 await refetchUploads()
               }}
