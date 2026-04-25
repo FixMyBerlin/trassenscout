@@ -4,7 +4,12 @@ import { SummaryField } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads
 import { UploadLocationMap } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/map/UploadLocationMap"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
-import { FormDirtyStateReporter, LabeledSelect, LabeledSelectProps, LabeledTextField } from "@/src/core/components/forms"
+import {
+  FormDirtyStateReporter,
+  LabeledSelect,
+  LabeledSelectProps,
+  LabeledTextField,
+} from "@/src/core/components/forms"
 import { BackLink } from "@/src/core/components/forms/BackLink"
 import { FORM_ERROR, Form } from "@/src/core/components/forms/Form"
 import { shortTitle } from "@/src/core/components/text/titles"
