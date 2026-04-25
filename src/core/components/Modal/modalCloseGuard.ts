@@ -18,4 +18,3 @@ export const beginModalCloseBlock = () => {
 export const isModalCloseBlocked = () => {
   return activeModalCloseBlocks > 0 || Date.now() < settleUntilMs
 }
-
