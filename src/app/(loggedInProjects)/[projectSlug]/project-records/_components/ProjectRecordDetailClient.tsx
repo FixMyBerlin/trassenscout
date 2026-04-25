@@ -11,7 +11,11 @@ import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
-import { useQuery } from "@blitzjs/rpc"
+import getProjectRecords from "@/src/server/projectRecords/queries/getProjectRecords"
+import getProjectRecordsByAcquisitionArea from "@/src/server/projectRecords/queries/getProjectRecordsByAcquisitionArea"
+import getProjectRecordsBySubsubsection from "@/src/server/projectRecords/queries/getProjectRecordsBySubsubsection"
+import getProjectRecordsNeedsReview from "@/src/server/projectRecords/queries/getProjectRecordsNeedsReview"
+import { invalidateQuery, useQuery } from "@blitzjs/rpc"
 import { useEffect, useState } from "react"
 
 export type ReprocessedProjectRecord = {
@@ -60,6 +64,26 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord }: Props) => {
       initialData: initialProjectRecord,
     },
   )
+  const handleUploaded = async () => {
+    await Promise.all([
+      refetch(),
+      invalidateQuery(getProjectRecords, { projectSlug }),
+      invalidateQuery(getProjectRecordsNeedsReview, { projectSlug }),
+      projectRecord.subsubsectionId
+        ? invalidateQuery(getProjectRecordsBySubsubsection, {
+            projectSlug,
+            subsubsectionId: projectRecord.subsubsectionId,
+          })
+        : null,
+      projectRecord.acquisitionAreaId
+        ? invalidateQuery(getProjectRecordsByAcquisitionArea, {
+            projectSlug,
+            acquisitionAreaId: projectRecord.acquisitionAreaId,
+          })
+        : null,
+    ])
+  }
+
   const [aiSuggestions, setAiSuggestions] = useState<ReprocessedProjectRecord | null>(null)
 
   const handleAiSuggestions = (suggestions: ReprocessedProjectRecord) => {
@@ -91,9 +115,7 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord }: Props) => {
               <ProjectRecordSummary projectRecord={projectRecord} />
               <ProjectRecordQuickUpload
                 projectRecordId={projectRecord.id}
-                onUploaded={async () => {
-                  await refetch()
-                }}
+                onUploaded={handleUploaded}
               />
             </div>
 
@@ -123,9 +145,7 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord }: Props) => {
           <ProjectRecordSummary projectRecord={projectRecord} />
           <ProjectRecordQuickUpload
             projectRecordId={projectRecord.id}
-            onUploaded={async () => {
-              await refetch()
-            }}
+            onUploaded={handleUploaded}
           />
           <CreateEditReviewHistory projectRecord={projectRecord} />
         </>

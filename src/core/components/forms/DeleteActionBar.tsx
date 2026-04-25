@@ -42,8 +42,7 @@ export const DeleteActionBar = ({
     if (window.confirm(`Möchten Sie ${frenchQuote(itemTitle)} wirklich unwiderruflich löschen?`)) {
       try {
         await onDelete()
-        router.push(returnPath as Route<string>)
-        router.refresh()
+        router.replace(returnPath as Route<string>, { scroll: false })
       } catch (error) {
         console.error(`Error deleting ${itemTitle}:`, error)
         alert(

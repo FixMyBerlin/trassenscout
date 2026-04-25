@@ -1,3 +1,4 @@
+import { isModalCloseBlocked } from "@/src/core/components/Modal/modalCloseGuard"
 import { Dialog, DialogPanel, Transition, TransitionChild } from "@headlessui/react"
 import { XMarkIcon } from "@heroicons/react/24/outline"
 import { Fragment } from "react"
@@ -30,7 +31,14 @@ export const Modal = ({ children, open, handleClose, className, align = "center"
 
   return (
     <Transition show={open} as={Fragment}>
-      <Dialog as="div" className="relative z-20" onClose={handleClose}>
+      <Dialog
+        as="div"
+        className="relative z-20"
+        onClose={() => {
+          if (isModalCloseBlocked()) return
+          handleClose()
+        }}
+      >
         <TransitionChild
           as={Fragment}
           enter="ease-out duration-300"
