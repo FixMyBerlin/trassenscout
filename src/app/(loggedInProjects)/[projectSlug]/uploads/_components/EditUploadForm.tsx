@@ -4,7 +4,7 @@ import { SummaryField } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads
 import { UploadLocationMap } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/map/UploadLocationMap"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
-import { LabeledSelect, LabeledSelectProps, LabeledTextField } from "@/src/core/components/forms"
+import { FormDirtyStateReporter, LabeledSelect, LabeledSelectProps, LabeledTextField } from "@/src/core/components/forms"
 import { BackLink } from "@/src/core/components/forms/BackLink"
 import { FORM_ERROR, Form } from "@/src/core/components/forms/Form"
 import { shortTitle } from "@/src/core/components/text/titles"
@@ -170,9 +170,19 @@ type Props = {
    * uploads in surveys yet.
    */
   showDelete?: boolean
+  /** Called after a successful save instead of router.push(returnPath). Use router.back() in modal contexts to avoid polluting the history stack. */
+  onSuccess?: () => void
+  onDirtyChange?: (isDirty: boolean) => void
 }
 
-export const EditUploadForm = ({ upload, returnPath, returnText, showDelete = true }: Props) => {
+export const EditUploadForm = ({
+  upload,
+  returnPath,
+  returnText,
+  showDelete = true,
+  onSuccess,
+  onDirtyChange,
+}: Props) => {
   const router = useRouter()
   const [isGeneratingSummary, setIsGeneratingSummary] = useState(false)
   const projectSlug = useProjectSlug()
@@ -206,7 +216,11 @@ export const EditUploadForm = ({ upload, returnPath, returnText, showDelete = tr
         id: upload.id,
         projectSlug,
       })
-      router.push(returnPath)
+      if (onSuccess) {
+        onSuccess()
+      } else {
+        router.push(returnPath)
+      }
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }
@@ -247,6 +261,7 @@ export const EditUploadForm = ({ upload, returnPath, returnText, showDelete = tr
             </>
           }
         >
+          <FormDirtyStateReporter onDirtyChange={onDirtyChange} />
           <div className="flex justify-center sm:block">
             <div className="flex flex-col gap-10 sm:flex-row">
               <UploadPreview

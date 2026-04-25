@@ -7,6 +7,7 @@ import { HeadingWithAction } from "@/src/core/components/text/HeadingWithAction"
 import getUploadWithRelations from "@/src/server/uploads/queries/getUploadWithRelations"
 import { Route } from "next"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
 
 type Props = {
   upload: Awaited<ReturnType<typeof getUploadWithRelations>>
@@ -16,7 +17,12 @@ type Props = {
 
 export const EditUploadModalClient = ({ upload, returnPath, returnText }: Props) => {
   const router = useRouter()
-  const handleClose = () => router.back()
+  const [isDirty, setIsDirty] = useState(false)
+
+  const handleClose = () => {
+    if (isDirty && !window.confirm("Ungespeicherte Änderungen verwerfen?")) return
+    router.back()
+  }
 
   return (
     <Modal open align="right" handleClose={handleClose} className="space-y-4">
@@ -25,7 +31,13 @@ export const EditUploadModalClient = ({ upload, returnPath, returnText }: Props)
         <ModalCloseButton onClose={handleClose} />
       </HeadingWithAction>
 
-      <EditUploadForm upload={upload} returnPath={returnPath} returnText={returnText} />
+      <EditUploadForm
+        upload={upload}
+        returnPath={returnPath}
+        returnText={returnText}
+        onSuccess={() => router.back()}
+        onDirtyChange={setIsDirty}
+      />
     </Modal>
   )
 }
