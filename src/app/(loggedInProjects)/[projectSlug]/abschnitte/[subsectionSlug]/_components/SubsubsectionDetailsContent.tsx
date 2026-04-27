@@ -285,6 +285,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
             projectRecords={projectRecords}
             highlightId={createdProjectRecordId}
             bleed={false}
+            showAcquisitionAreaColumn
           />
         ) : (
           <ZeroCase small visible name="Protokolleinträge" />
