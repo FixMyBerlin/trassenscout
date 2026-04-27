@@ -32,6 +32,7 @@ export const ProjectRecordEditModalClient = ({
         initialProjectRecord={initialProjectRecord}
         hideBackLink
         onDirtyChange={setIsDirty}
+        onSuccess={() => router.back()}
       />
     </Modal>
   )

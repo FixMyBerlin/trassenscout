@@ -8,7 +8,6 @@ import { H3 } from "@/src/core/components/text"
 import { HeadingWithAction } from "@/src/core/components/text/HeadingWithAction"
 import { projectRecordEditRoute } from "@/src/core/routes/projectRecordRoutes"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
-import { Route } from "next"
 import { useRouter } from "next/navigation"
 
 export const ProjectRecordDetailModalClient = ({
@@ -17,11 +16,7 @@ export const ProjectRecordDetailModalClient = ({
   initialProjectRecord: Awaited<ReturnType<typeof getProjectRecord>>
 }) => {
   const router = useRouter()
-  const editHrefBase = projectRecordEditRoute(
-    initialProjectRecord.project.slug,
-    initialProjectRecord.id,
-  )
-  const editHref = editHrefBase
+  const editHref = projectRecordEditRoute(initialProjectRecord.project.slug, initialProjectRecord.id)
   const handleClose = () => router.back()
 
   return (
@@ -34,10 +29,6 @@ export const ProjectRecordDetailModalClient = ({
               icon="edit"
               href={editHref}
               scroll={false}
-              onClick={(event) => {
-                event.preventDefault()
-                router.replace(editHref as Route, { scroll: false })
-              }}
             >
               Bearbeiten
             </Link>
