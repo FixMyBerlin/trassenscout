@@ -5,11 +5,17 @@ import { CreateEditReviewHistory } from "@/src/app/(loggedInProjects)/[projectSl
 import { ProjectRecordSummary } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordSummary"
 import { ReprocessProjectRecordButton } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ReprocessProjectRecordButton"
 import { ReprocessProjectRecordEditForm } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ReprocessProjectRecordEditForm"
+import { UploadDropzone } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzone"
+import { UploadDropzoneContainer } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzoneContainer"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
-import { useQuery } from "@blitzjs/rpc"
+import getProjectRecords from "@/src/server/projectRecords/queries/getProjectRecords"
+import getProjectRecordsByAcquisitionArea from "@/src/server/projectRecords/queries/getProjectRecordsByAcquisitionArea"
+import getProjectRecordsBySubsubsection from "@/src/server/projectRecords/queries/getProjectRecordsBySubsubsection"
+import getProjectRecordsNeedsReview from "@/src/server/projectRecords/queries/getProjectRecordsNeedsReview"
+import { invalidateQuery, useQuery } from "@blitzjs/rpc"
 import { useEffect, useState } from "react"
 
 export type ReprocessedProjectRecord = {
@@ -24,15 +30,60 @@ type Props = {
   initialProjectRecord: Awaited<ReturnType<typeof getProjectRecord>>
 }
 
+const ProjectRecordQuickUpload = ({
+  projectRecordId,
+  onUploaded,
+}: {
+  projectRecordId: number
+  onUploaded: () => Promise<void>
+}) => {
+  return (
+    <IfUserCanEdit>
+      <div className="mt-4">
+        <label className="mb-2 block text-sm font-medium text-gray-700">Dokumente ergänzen</label>
+        <UploadDropzoneContainer className="h-36 rounded-md p-0">
+          <UploadDropzone
+            fillContainer
+            projectRecordIds={[projectRecordId]}
+            onUploadComplete={async () => {
+              await onUploaded()
+            }}
+          />
+        </UploadDropzoneContainer>
+      </div>
+    </IfUserCanEdit>
+  )
+}
+
 export const ProjectRecordDetailClient = ({ initialProjectRecord }: Props) => {
   const projectSlug = useProjectSlug()
-  const [projectRecord] = useQuery(
+  const [projectRecord, { refetch }] = useQuery(
     getProjectRecord,
     { projectSlug, id: initialProjectRecord.id },
     {
       initialData: initialProjectRecord,
     },
   )
+  const handleUploaded = async () => {
+    await Promise.all([
+      refetch(),
+      invalidateQuery(getProjectRecords, { projectSlug }),
+      invalidateQuery(getProjectRecordsNeedsReview, { projectSlug }),
+      projectRecord.subsubsectionId
+        ? invalidateQuery(getProjectRecordsBySubsubsection, {
+            projectSlug,
+            subsubsectionId: projectRecord.subsubsectionId,
+          })
+        : null,
+      projectRecord.acquisitionAreaId
+        ? invalidateQuery(getProjectRecordsByAcquisitionArea, {
+            projectSlug,
+            acquisitionAreaId: projectRecord.acquisitionAreaId,
+          })
+        : null,
+    ])
+  }
+
   const [aiSuggestions, setAiSuggestions] = useState<ReprocessedProjectRecord | null>(null)
 
   const handleAiSuggestions = (suggestions: ReprocessedProjectRecord) => {
@@ -62,6 +113,10 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord }: Props) => {
             <div>
               <h2 className="mb-4 text-lg font-medium">Aktueller Protokolleintrag</h2>
               <ProjectRecordSummary projectRecord={projectRecord} />
+              <ProjectRecordQuickUpload
+                projectRecordId={projectRecord.id}
+                onUploaded={handleUploaded}
+              />
             </div>
 
             <div>
@@ -88,6 +143,10 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord }: Props) => {
           </SuperAdminBox>
 
           <ProjectRecordSummary projectRecord={projectRecord} />
+          <ProjectRecordQuickUpload
+            projectRecordId={projectRecord.id}
+            onUploaded={handleUploaded}
+          />
           <CreateEditReviewHistory projectRecord={projectRecord} />
         </>
       )}

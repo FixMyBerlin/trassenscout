@@ -13,6 +13,7 @@ type Props = {
   subsubsectionId?: number
   subsectionId?: number
   acquisitionAreaId?: number
+  projectRecordIds?: number[]
   surveyResponseId?: number
   onUploadComplete?: (uploadIds: number[]) => Promise<void>
   fillContainer?: boolean
@@ -22,6 +23,7 @@ export const UploadDropzone = ({
   subsubsectionId,
   subsectionId,
   acquisitionAreaId,
+  projectRecordIds,
   surveyResponseId,
   onUploadComplete,
   fillContainer,
@@ -38,6 +40,8 @@ export const UploadDropzone = ({
       subsectionId: subsectionId || null,
       summary: null,
       subsubsectionId: subsubsectionId || null,
+      projectRecords:
+        projectRecordIds && projectRecordIds.length > 0 ? projectRecordIds : undefined,
       surveyResponseId: surveyResponseId || null,
       mimeType: file.type || null,
       fileSize: file.size || null,

@@ -3,7 +3,7 @@
 import { ProjectRecordFormFields } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordFormFields"
 import { getDate } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/splitStartAt"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
-import { Form, FORM_ERROR } from "@/src/core/components/forms"
+import { Form, FORM_ERROR, FormDirtyStateReporter } from "@/src/core/components/forms"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { Modal, ModalCloseButton } from "@/src/core/components/Modal"
 import { H3 } from "@/src/core/components/text"
@@ -11,6 +11,7 @@ import { HeadingWithAction } from "@/src/core/components/text/HeadingWithAction"
 import createProjectRecord from "@/src/server/projectRecords/mutations/createProjectRecord"
 import { NewProjectRecordFormSchema } from "@/src/server/projectRecords/schemas"
 import { useMutation } from "@blitzjs/rpc"
+import { useState } from "react"
 import { z } from "zod"
 
 type Props = {
@@ -33,6 +34,12 @@ export const ProjectRecordNewModal = ({
   initialValues,
 }: Props) => {
   const [createProjectRecordMutation] = useMutation(createProjectRecord)
+  const [isDirty, setIsDirty] = useState(false)
+
+  const handleClose = () => {
+    if (isDirty && !window.confirm("Ungespeicherte Änderungen verwerfen?")) return
+    onClose()
+  }
 
   type HandleSubmit = z.infer<typeof NewProjectRecordFormSchema>
   const handleSubmit = async (values: HandleSubmit) => {
@@ -49,6 +56,7 @@ export const ProjectRecordNewModal = ({
       if (onSuccess) {
         await onSuccess(projectRecord.id)
       }
+      setIsDirty(false)
       onClose()
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, [])
@@ -70,10 +78,10 @@ export const ProjectRecordNewModal = ({
 
   return (
     <IfUserCanEdit>
-      <Modal open={open} handleClose={onClose} className="space-y-4 sm:max-w-3xl">
+      <Modal open={open} align="right" handleClose={handleClose} className="space-y-4">
         <HeadingWithAction>
           <H3>Neuer Protokolleintrag</H3>
-          <ModalCloseButton onClose={onClose} />
+          <ModalCloseButton onClose={handleClose} />
         </HeadingWithAction>
 
         <Form
@@ -83,6 +91,7 @@ export const ProjectRecordNewModal = ({
           schema={NewProjectRecordFormSchema}
           submitText="Protokolleintrag speichern"
         >
+          <FormDirtyStateReporter onDirtyChange={setIsDirty} />
           <ProjectRecordFormFields projectSlug={projectSlug} />
         </Form>
       </Modal>

@@ -40,7 +40,7 @@ export const UploadDetail = ({ upload }: Props) => {
     <>
       <IfUserCanEdit>
         <ButtonWrapper className="mb-10 space-x-4">
-          <Link button="blue" href={uploadEditRoute(projectSlug, upload.id)}>
+          <Link button="blue" href={uploadEditRoute(projectSlug, upload.id)} scroll={false}>
             Bearbeiten
           </Link>
           <button

@@ -131,7 +131,7 @@ export const UploadDetailModal = ({
         <IfUserCanEdit>
           <ButtonWrapper className="border-t border-gray-200 pt-4">
             {editUrl && (
-              <Link button="blue" href={editUrl}>
+              <Link button="blue" href={editUrl} scroll={false}>
                 Bearbeiten
               </Link>
             )}

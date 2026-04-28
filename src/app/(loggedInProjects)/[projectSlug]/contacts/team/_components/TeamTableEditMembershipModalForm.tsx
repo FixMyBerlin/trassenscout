@@ -1,6 +1,12 @@
 import { roleTranslation } from "@/src/app/_components/memberships/roleTranslation.const"
 import { membershipRoles } from "@/src/authorization/constants"
-import { Form, FORM_ERROR, FormProps, LabeledRadiobuttonGroup } from "@/src/core/components/forms"
+import {
+  Form,
+  FORM_ERROR,
+  FormDirtyStateReporter,
+  FormProps,
+  LabeledRadiobuttonGroup,
+} from "@/src/core/components/forms"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import updateMembershipRole from "@/src/server/memberships/mutations/updateMembershipRole"
 import getProjectUsers from "@/src/server/memberships/queries/getProjectUsers"
@@ -12,12 +18,17 @@ import { z } from "zod"
 type Props = {
   editUser: Awaited<ReturnType<typeof getProjectUsers>>[number]
   closeModal: () => void
+  onDirtyChange?: (isDirty: boolean) => void
 }
 
 const submitSchema = z.object({ role: z.nativeEnum(MembershipRoleEnum) })
 
 type HandleSubmit = z.infer<typeof submitSchema>
-export const TeamTableEditMembershipModalForm = ({ editUser, closeModal }: Props) => {
+export const TeamTableEditMembershipModalForm = ({
+  editUser,
+  closeModal,
+  onDirtyChange,
+}: Props) => {
   const projectSlug = useProjectSlug()
   const router = useRouter()
 
@@ -51,16 +62,22 @@ export const TeamTableEditMembershipModalForm = ({ editUser, closeModal }: Props
       initialValues={{ role: editUser.currentMembershipRole }}
       onSubmit={handleSubmit}
       editUserRole={editUser.currentMembershipRole}
+      onDirtyChange={onDirtyChange}
     />
   )
 }
 
 const TeamTableEditMembershipModalFormFields = <S extends z.ZodType<any, any>>({
   editUserRole,
+  onDirtyChange,
   ...props
-}: FormProps<S> & { editUserRole: MembershipRoleEnum }) => {
+}: FormProps<S> & {
+  editUserRole: MembershipRoleEnum
+  onDirtyChange?: (isDirty: boolean) => void
+}) => {
   return (
     <Form<S> className="max-w-prose" {...props}>
+      <FormDirtyStateReporter onDirtyChange={onDirtyChange} />
       <LabeledRadiobuttonGroup
         scope="role"
         label="Rechte"

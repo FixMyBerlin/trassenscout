@@ -9,7 +9,7 @@ import { ReviewProjectRecordForm } from "@/src/app/(loggedInProjects)/[projectSl
 import { getDate } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/splitStartAt"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
-import { Form, FORM_ERROR } from "@/src/core/components/forms"
+import { Form, FORM_ERROR, FormDirtyStateReporter } from "@/src/core/components/forms"
 import { BackLink } from "@/src/core/components/forms/BackLink"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { Link } from "@/src/core/components/links"
@@ -26,8 +26,14 @@ import { z } from "zod"
 
 export const EditProjectRecordForm = ({
   initialProjectRecord,
+  hideBackLink = false,
+  onDirtyChange,
+  onSuccess,
 }: {
   initialProjectRecord: Awaited<ReturnType<typeof getProjectRecord>>
+  hideBackLink?: boolean
+  onDirtyChange?: (isDirty: boolean) => void
+  onSuccess?: () => void
 }) => {
   const router = useRouter()
   const needsReview = initialProjectRecord.reviewState !== ProjectRecordReviewState.APPROVED
@@ -54,12 +60,16 @@ export const EditProjectRecordForm = ({
         uploads: values.uploads === true ? false : values.uploads,
         projectRecordEmailId: projectRecord.projectRecordEmailId,
       })
-      if (values.reviewState === ProjectRecordReviewState.REJECTED)
-        router.push(`/${projectSlug}/project-records`)
-      else {
-        router.push(projectRecordDetailRoute(projectSlug, projectRecord.id))
+      if (onSuccess) {
+        onSuccess()
+      } else {
+        if (values.reviewState === ProjectRecordReviewState.REJECTED)
+          router.push(`/${projectSlug}/project-records`)
+        else {
+          router.push(projectRecordDetailRoute(projectSlug, projectRecord.id))
+        }
+        router.refresh()
       }
-      router.refresh()
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }
@@ -117,6 +127,7 @@ export const EditProjectRecordForm = ({
           />
         }
       >
+        <FormDirtyStateReporter onDirtyChange={onDirtyChange} />
         <ProjectRecordFormFields
           projectSlug={projectSlug}
           splitView={needsReview}
@@ -131,7 +142,7 @@ export const EditProjectRecordForm = ({
 
       <ProjectRecordCommentsSection projectRecord={projectRecord} />
 
-      <BackLink href={showPath} text="Zurück zum Protokolleintrag" />
+      {!hideBackLink && <BackLink href={showPath} text="Zurück zum Protokolleintrag" />}
 
       <SuperAdminLogData data={{ initialValues: projectRecord }} />
     </>

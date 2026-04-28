@@ -226,7 +226,7 @@ const UploadTableRow = ({
           )}
           {withAction && (
             <IfUserCanEdit>
-              <Link icon="edit" href={uploadEditRoute(projectSlug, upload.id)}>
+              <Link icon="edit" href={uploadEditRoute(projectSlug, upload.id)} scroll={false}>
                 Bearbeiten
               </Link>
               {onDelete && (

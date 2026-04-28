@@ -90,9 +90,9 @@ export const legendIconRegistry = {
   },
   acquisitionParcelPolygon: {
     type: GeometryTypeEnum.POLYGON,
-    color: subsectionColors.hull.current,
+    color: acquisitionAreaColors.parcel,
     borderWidth: 2,
-    borderStyle: "solid",
+    borderStyle: "dashed",
   },
   acquisitionParcelPolygonEdit: {
     type: GeometryTypeEnum.POLYGON,

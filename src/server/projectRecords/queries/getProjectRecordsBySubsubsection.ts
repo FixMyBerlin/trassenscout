@@ -16,8 +16,11 @@ export default resolver.pipe(
     const projectRecords = await db.projectRecord.findMany({
       where: {
         project: { slug: projectSlug },
-        subsubsectionId: subsubsectionId,
         reviewState: { in: ["NEEDSREVIEW", "APPROVED"] }, // Only show reviewed or approved projectRecords to normal users
+        OR: [
+          { subsubsectionId: subsubsectionId },
+          { acquisitionArea: { subsubsectionId: subsubsectionId } },
+        ],
       },
       orderBy: { date: "desc" },
       include: {

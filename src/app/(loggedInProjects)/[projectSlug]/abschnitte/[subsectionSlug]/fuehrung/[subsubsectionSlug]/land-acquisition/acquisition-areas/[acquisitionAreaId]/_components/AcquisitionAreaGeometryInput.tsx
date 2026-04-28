@@ -1,18 +1,23 @@
 "use client"
 
+import type { AcquisitionAreaStatusStyle } from "@/src/app/(loggedInProjects)/[projectSlug]/acquisition-area-status/_utils/acquisitionAreaStatusStyles"
+import { acquisitionAreaStatusStyles } from "@/src/app/(loggedInProjects)/[projectSlug]/acquisition-area-status/_utils/acquisitionAreaStatusStyles"
 import { GeometryDrawingMap } from "@/src/core/components/forms/GeometryDrawingMap"
 import { GeometryInputBase } from "@/src/core/components/forms/GeometryInputBase"
 import { BackgroundGeometryLayers } from "@/src/core/components/Map/BackgroundGeometryLayers"
-import { landAcquisitionEditLegendConfig } from "@/src/core/components/Map/LandAcquisitionEditMap.legendConfig"
+import { getLandAcquisitionEditLegendConfig } from "@/src/core/components/Map/LandAcquisitionEditMap.legendConfig"
 import {
   GeometryDrawingAcquisitionAreaParcelContextLayers,
   GeometryDrawingAcquisitionAreaPreviewLayers,
 } from "@/src/core/components/Map/TerraDraw/TerraDrawContextLayers"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import {
   AcquisitionAreaGeometrySchema,
   type TAcquisitionAreaGeometrySchema,
 } from "@/src/server/acquisitionAreas/schema"
+import getAcquisitionAreaStatuses from "@/src/server/acquisitionAreaStatuses/queries/getAcquisitionAreaStatuses"
 import { type SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
+import { useQuery } from "@blitzjs/rpc"
 import { feature, featureCollection } from "@turf/helpers"
 import { intersect } from "@turf/turf"
 import { useCallback, useMemo, useRef } from "react"
@@ -44,12 +49,44 @@ const removePolygonHoles = (
   }
 }
 
+const toAcquisitionAreaStatusStyle = (style: number): AcquisitionAreaStatusStyle => {
+  if (style === 2 || style === 3 || style === 4) return style
+  return 1
+}
+
 export const AcquisitionAreaGeometryInput = ({ parcelGeometry, subsubsectionGeometry }: Props) => {
+  const projectSlug = useProjectSlug()
   const { watch } = useFormContext()
   const rawGeometry = watch("geometry")
+  const rawAcquisitionAreaStatusId = watch("acquisitionAreaStatusId")
+  const [{ acquisitionAreaStatuses }] = useQuery(
+    getAcquisitionAreaStatuses,
+    { projectSlug },
+    {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
+  )
   const currentGeometry = useMemo(
     () => AcquisitionAreaGeometrySchema.parse(rawGeometry),
     [rawGeometry],
+  )
+  const currentAcquisitionAreaStatusStyle = useMemo<AcquisitionAreaStatusStyle>(() => {
+    const statusId = Number(rawAcquisitionAreaStatusId)
+    if (!Number.isFinite(statusId)) return 1
+
+    const style = acquisitionAreaStatuses.find((status) => status.id === statusId)?.style
+    return toAcquisitionAreaStatusStyle(style ?? 1)
+  }, [acquisitionAreaStatuses, rawAcquisitionAreaStatusId])
+  const currentAcquisitionAreaColor = useMemo(
+    () =>
+      acquisitionAreaStatusStyles[currentAcquisitionAreaStatusStyle]?.color ??
+      acquisitionAreaStatusStyles[1].color,
+    [currentAcquisitionAreaStatusStyle],
+  )
+  const legendItemsConfig = useMemo(
+    () => getLandAcquisitionEditLegendConfig(currentAcquisitionAreaStatusStyle),
+    [currentAcquisitionAreaStatusStyle],
   )
   const editableGeometry = useMemo(() => removePolygonHoles(currentGeometry), [currentGeometry])
   const lastValidGeometryRef = useRef<TAcquisitionAreaGeometrySchema>(currentGeometry)
@@ -98,7 +135,7 @@ export const AcquisitionAreaGeometryInput = ({ parcelGeometry, subsubsectionGeom
         allowedTypes={["polygon"]}
         displayedGeometry={editableGeometry}
         hideUnselectedPolygonOutline
-        legendItemsConfig={landAcquisitionEditLegendConfig}
+        legendItemsConfig={legendItemsConfig}
         showHint={false}
         syncTransformedGeometryToMap={false}
         transformGeometry={transformGeometry}
@@ -110,7 +147,10 @@ export const AcquisitionAreaGeometryInput = ({ parcelGeometry, subsubsectionGeom
           showLineEndPoints={false}
         />
         <GeometryDrawingAcquisitionAreaParcelContextLayers parcelGeometry={parcelGeometry} />
-        <GeometryDrawingAcquisitionAreaPreviewLayers geometry={currentGeometry} />
+        <GeometryDrawingAcquisitionAreaPreviewLayers
+          geometry={currentGeometry}
+          color={currentAcquisitionAreaColor}
+        />
       </GeometryDrawingMap>
     </GeometryInputBase>
   )

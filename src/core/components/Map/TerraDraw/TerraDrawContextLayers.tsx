@@ -1,7 +1,6 @@
 import { acquisitionAreaColors } from "@/src/core/components/Map/colors/acquisitionAreaColors"
 import {
   acquisitionAreaParcelFillPaint,
-  acquisitionAreaParcelLineBasePaint,
   acquisitionAreaParcelLineDashPaint,
 } from "@/src/core/components/Map/colors/acquisitionAreaParcelLayerStyles"
 import { LineEndPointsLayer } from "@/src/core/components/Map/layers/LineEndPointsLayer"
@@ -196,12 +195,6 @@ export const GeometryDrawingAcquisitionAreaParcelContextLayers = ({
         paint={acquisitionAreaParcelFillPaint}
       />
       <Layer
-        id="terra_draw_acquisition_area_parcel_line_base"
-        source="terra_draw_acquisition_area_parcel"
-        type="line"
-        paint={acquisitionAreaParcelLineBasePaint}
-      />
-      <Layer
         id="terra_draw_acquisition_area_parcel_line_dash"
         source="terra_draw_acquisition_area_parcel"
         type="line"
@@ -213,10 +206,12 @@ export const GeometryDrawingAcquisitionAreaParcelContextLayers = ({
 
 type GeometryDrawingAcquisitionAreaPreviewLayersProps = {
   geometry: Polygon | MultiPolygon
+  color?: string
 }
 
 export const GeometryDrawingAcquisitionAreaPreviewLayers = ({
   geometry,
+  color = acquisitionAreaColors.negotiationAreaEdit,
 }: GeometryDrawingAcquisitionAreaPreviewLayersProps) => {
   const previewFeatureCollection = useMemo(
     () => singleGeometryFeatureCollection(geometry),
@@ -235,7 +230,7 @@ export const GeometryDrawingAcquisitionAreaPreviewLayers = ({
         source="terra_draw_acquisition_area_preview"
         type="fill"
         paint={{
-          "fill-color": acquisitionAreaColors.negotiationAreaEdit,
+          "fill-color": color,
           "fill-opacity": 0.22,
         }}
       />
@@ -244,7 +239,7 @@ export const GeometryDrawingAcquisitionAreaPreviewLayers = ({
         source="terra_draw_acquisition_area_preview"
         type="line"
         paint={{
-          "line-color": acquisitionAreaColors.negotiationAreaEdit,
+          "line-color": color,
           "line-width": 3,
           "line-opacity": 0.95,
         }}

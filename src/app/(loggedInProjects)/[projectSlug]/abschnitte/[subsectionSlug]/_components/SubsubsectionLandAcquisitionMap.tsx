@@ -4,7 +4,10 @@ import { useAcquisitionAreaSelection } from "@/src/app/(loggedInProjects)/[proje
 
 import { acquisitionAreaStatusStyles } from "@/src/app/(loggedInProjects)/[projectSlug]/acquisition-area-status/_utils/acquisitionAreaStatusStyles"
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
-import { subsectionColors } from "@/src/core/components/Map/colors/subsectionColors"
+import {
+  acquisitionAreaParcelFillPaint,
+  acquisitionAreaParcelLineDashPaint,
+} from "@/src/core/components/Map/colors/acquisitionAreaParcelLayerStyles"
 import { subsubsectionColors } from "@/src/core/components/Map/colors/subsubsectionColors"
 import { getLandAcquisitionLegendConfig } from "@/src/core/components/Map/LandAcquisitionMap.legendConfig"
 import { MapFooter } from "@/src/core/components/Map/MapFooter"
@@ -141,6 +144,14 @@ export const SubsubsectionLandAcquisitionMap = ({ subsubsection, activeTab }: Pr
     [acquisitionAreas],
   )
 
+  const acquisitionAreaIdByParcelId = useMemo(
+    () =>
+      new Map(
+        acquisitionAreas.map((acquisitionArea) => [acquisitionArea.parcel.id, acquisitionArea.id]),
+      ),
+    [acquisitionAreas],
+  )
+
   const mapBbox = useMemo(() => {
     const geometries: SupportedGeometry[] = [subsubsection.geometry as SupportedGeometry]
     if (isLandAcquisition) {
@@ -164,10 +175,20 @@ export const SubsubsectionLandAcquisitionMap = ({ subsubsection, activeTab }: Pr
   const handleClickMap = (event: MapLayerMouseEvent) => {
     if (!isLandAcquisition) return
 
-    const clickedAcquisitionAreaId = Number(event.features?.at(0)?.properties?.acquisitionAreaId)
-    if (!Number.isFinite(clickedAcquisitionAreaId)) return
+    const clickedFeature = event.features?.at(0)
+    const clickedAcquisitionAreaId = Number(clickedFeature?.properties?.acquisitionAreaId)
+    if (Number.isFinite(clickedAcquisitionAreaId)) {
+      void setAcquisitionAreaId(clickedAcquisitionAreaId)
+      return
+    }
 
-    void setAcquisitionAreaId(clickedAcquisitionAreaId)
+    const clickedParcelId = Number(clickedFeature?.properties?.parcelId)
+    if (!Number.isFinite(clickedParcelId)) return
+
+    const acquisitionAreaIdFromParcel = acquisitionAreaIdByParcelId.get(clickedParcelId)
+    if (!acquisitionAreaIdFromParcel) return
+
+    void setAcquisitionAreaId(acquisitionAreaIdFromParcel)
   }
 
   return (
@@ -181,7 +202,12 @@ export const SubsubsectionLandAcquisitionMap = ({ subsubsection, activeTab }: Pr
         onClick={handleClickMap}
         interactiveLayerIds={
           isLandAcquisition
-            ? ["acquisition-area-click-target-unselected", "acquisition-area-click-target-selected"]
+            ? [
+                "acquisition-area-click-target-unselected",
+                "acquisition-area-click-target-selected",
+                "acquisition-area-parcels-fill",
+                "acquisition-area-parcels-outline",
+              ]
             : undefined
         }
         lines={subsubsectionLines?.features.length ? subsubsectionLines : undefined}
@@ -201,19 +227,12 @@ export const SubsubsectionLandAcquisitionMap = ({ subsubsection, activeTab }: Pr
               <Layer
                 id="acquisition-area-parcels-fill"
                 type="fill"
-                paint={{
-                  "fill-color": subsectionColors.hull.current,
-                  "fill-opacity": 0.05,
-                }}
+                paint={acquisitionAreaParcelFillPaint}
               />
               <Layer
                 id="acquisition-area-parcels-outline"
                 type="line"
-                paint={{
-                  "line-color": subsectionColors.hull.current,
-                  "line-width": 2,
-                  "line-opacity": 0.3,
-                }}
+                paint={acquisitionAreaParcelLineDashPaint}
               />
             </Source>
 

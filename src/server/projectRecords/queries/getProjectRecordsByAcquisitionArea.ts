@@ -22,6 +22,11 @@ export default resolver.pipe(
       orderBy: { date: "desc" },
       include: {
         projectRecordTopics: true,
+        acquisitionArea: {
+          select: {
+            id: true,
+          },
+        },
         _count: {
           select: { projectRecordComments: true, uploads: true },
         },

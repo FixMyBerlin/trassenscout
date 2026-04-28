@@ -1,5 +1,6 @@
 export const acquisitionAreaColors = {
-  parcel: "#ec4899",
+  parcel: "#FF4985",
+  parcelFill: "#FBCFE8",
   negotiationArea: "#A39BFC",
   negotiationAreaEdit: "#DC2626",
   statusByStyle: {

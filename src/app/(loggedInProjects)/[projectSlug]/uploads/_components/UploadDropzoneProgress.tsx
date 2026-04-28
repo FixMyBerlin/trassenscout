@@ -1,6 +1,7 @@
 import { SurveyUploadMetadata } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzoneBase"
 import { getFileIcon } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileIcon"
 import { getFileTypeLabel } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileType"
+import { beginModalCloseBlock } from "@/src/core/components/Modal/modalCloseGuard"
 import { SpinnerIcon } from "@/src/core/components/Spinner"
 import { Tooltip } from "@/src/core/components/Tooltip/Tooltip"
 import { errorMessageTranslations } from "@/src/core/components/forms/errorMessageTranslations"
@@ -71,8 +72,8 @@ export function UploadDropzoneProgress({
   const id = useId()
   const completionTimesRef = useRef<Map<string, number>>(new Map())
   const [isProcessingFiles, setIsProcessingFiles] = useState(false)
-  const selectedFilesCountRef = useRef<number>(0)
   const [dismissedFiles, setDismissedFiles] = useState<Set<string>>(new Set())
+  const endCloseBlockRef = useRef<null | (() => void)>(null)
 
   // Warn user when closing tab during upload (same logic as spinner)
   useEffect(() => {
@@ -105,9 +106,26 @@ export function UploadDropzoneProgress({
   useEffect(() => {
     if (isProcessingFiles && (progresses.length > 0 || error)) {
       setIsProcessingFiles(false)
-      selectedFilesCountRef.current = 0
     }
   }, [progresses, isProcessingFiles, error])
+
+  useEffect(() => {
+    const isActive = isPending || isProcessingFiles
+    if (isActive && !endCloseBlockRef.current) {
+      endCloseBlockRef.current = beginModalCloseBlock()
+    }
+    if (!isActive && endCloseBlockRef.current) {
+      endCloseBlockRef.current()
+      endCloseBlockRef.current = null
+    }
+  }, [isPending, isProcessingFiles])
+
+  useEffect(() => {
+    return () => {
+      endCloseBlockRef.current?.()
+      endCloseBlockRef.current = null
+    }
+  }, [])
 
   // Filter out items that completed more than 5.5 seconds ago (after animation completes)
   // Failed files are never auto-hidden - they must be manually dismissed
@@ -140,7 +158,6 @@ export function UploadDropzoneProgress({
           onErrorDismiss()
         }
         setIsProcessingFiles(true)
-        selectedFilesCountRef.current = files.length
 
         if (uploadOverride) {
           uploadOverride(files, { metadata: surveyMeta })
@@ -162,7 +179,6 @@ export function UploadDropzoneProgress({
     const files = event.target.files
     if (files && files.length > 0) {
       setIsProcessingFiles(true)
-      selectedFilesCountRef.current = files.length
     }
     if (originalOnChange) {
       originalOnChange(event)

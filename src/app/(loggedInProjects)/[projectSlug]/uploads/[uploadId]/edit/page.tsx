@@ -1,9 +1,10 @@
 import { EditUploadForm } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/EditUploadForm"
+import { getUploadReturnTarget } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_utils/getUploadReturnTarget"
 import { invoke } from "@/src/blitz-server"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitle } from "@/src/core/components/text"
 import getUploadWithRelations from "@/src/server/uploads/queries/getUploadWithRelations"
-import { Metadata, Route } from "next"
+import { Metadata } from "next"
 import "server-only"
 
 export const metadata: Metadata = {
@@ -23,8 +24,7 @@ export default async function EditUploadPage({ params: { projectSlug, uploadId }
     id: Number(uploadId),
   })
 
-  const returnPath: Route = `/${projectSlug}/uploads` as Route
-  const returnText = "Zurück zu den Dokumenten"
+  const { returnPath, returnText } = getUploadReturnTarget({ projectSlug, upload })
 
   return (
     <>

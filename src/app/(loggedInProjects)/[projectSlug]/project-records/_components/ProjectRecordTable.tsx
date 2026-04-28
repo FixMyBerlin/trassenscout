@@ -17,12 +17,31 @@ import { de } from "date-fns/locale"
 import { ProjectRecordAssignedToPill } from "./ProjectRecordAssignedToPill"
 import { ProjectRecordTopicsList } from "./ProjectRecordTopicsList"
 
+/**
+ * Column width classes for `table-fixed` layout. Adjust percentages here only.
+ * `default` = without Verhandlungsfläche; `withAcquisitionArea` = extra column on all breakpoints.
+ */
+const projectRecordTableColWidths = {
+  date: {
+    default: "w-[24%] @xl:w-[10%]",
+    withAcquisitionArea: "w-[18%] @xl:w-[10%]",
+  },
+  title: {
+    default: "w-[58%] @xl:w-[45%]",
+    withAcquisitionArea: "min-w-0 w-[36%] @xl:w-[26%]",
+  },
+  acquisitionArea: "w-[28%] @xl:w-[14%]",
+  tags: "hidden @xl:table-column @xl:w-[24%]",
+  assignedTo: "hidden @xl:table-column @xl:w-[10%]",
+  documents: "w-[18%] @xl:w-[10%]",
+} as const
+
 export const ProjectRecordsTable = ({
   projectRecords,
-  openLinksInNewTab,
   highlightId,
   isTopicFilter,
   bleed = true,
+  showAcquisitionAreaColumn = false,
 }: {
   projectRecords:
     | Awaited<ReturnType<typeof getProjectRecords>>
@@ -32,13 +51,12 @@ export const ProjectRecordsTable = ({
   highlightId?: number | null
   isTopicFilter?: boolean
   bleed?: boolean
-  openLinksInNewTab?: boolean
+  showAcquisitionAreaColumn?: boolean
 }) => {
   const projectSlug = useProjectSlug()
   const { filter, setFilter } = useFilters()
 
   if (!projectRecords.length) return null
-
   const spaceClasses = "px-3 py-2"
 
   const handleTopicClick = (topic: string): void => {
@@ -55,12 +73,26 @@ export const ProjectRecordsTable = ({
         <div className="@container w-full">
           <table className="min-w-full table-fixed border-collapse text-left text-sm text-gray-700">
             <colgroup>
-              {/* Small containers only show Datum/Titel/Dokumente */}
-              <col className="w-[24%] @xl:w-[10%]" />
-              <col className="w-[58%] @xl:w-[45%]" />
-              <col className="hidden @xl:table-column @xl:w-[25%]" />
-              <col className="hidden @xl:table-column @xl:w-[10%]" />
-              <col className="w-[18%] @xl:w-[10%]" />
+              <col
+                className={
+                  showAcquisitionAreaColumn
+                    ? projectRecordTableColWidths.date.withAcquisitionArea
+                    : projectRecordTableColWidths.date.default
+                }
+              />
+              <col
+                className={
+                  showAcquisitionAreaColumn
+                    ? projectRecordTableColWidths.title.withAcquisitionArea
+                    : projectRecordTableColWidths.title.default
+                }
+              />
+              {showAcquisitionAreaColumn ? (
+                <col className={projectRecordTableColWidths.acquisitionArea} />
+              ) : null}
+              <col className={projectRecordTableColWidths.tags} />
+              <col className={projectRecordTableColWidths.assignedTo} />
+              <col className={projectRecordTableColWidths.documents} />
             </colgroup>
             <thead>
               <tr className="border-b border-gray-300 bg-gray-50">
@@ -70,6 +102,11 @@ export const ProjectRecordsTable = ({
                 <th scope="col" className={clsx(spaceClasses, "font-medium uppercase")}>
                   Titel
                 </th>
+                {showAcquisitionAreaColumn ? (
+                  <th scope="col" className={clsx(spaceClasses, "font-medium uppercase")}>
+                    Verhandlungsfläche
+                  </th>
+                ) : null}
                 <th
                   scope="col"
                   className={clsx(spaceClasses, "hidden font-medium uppercase @xl:table-cell")}
@@ -108,12 +145,17 @@ export const ProjectRecordsTable = ({
                       <Link
                         className="w-full"
                         href={detailHref}
+                        scroll={false}
                         title={projectRecord.title}
-                        blank={openLinksInNewTab}
                       >
                         {projectRecord.title}
                       </Link>
                     </td>
+                    {showAcquisitionAreaColumn ? (
+                      <td className={clsx("align-top wrap-break-word", spaceClasses)}>
+                        {projectRecord.acquisitionArea?.id ?? "—"}
+                      </td>
+                    ) : null}
                     <td className={clsx("hidden align-top @xl:table-cell", spaceClasses)}>
                       <div className="flex items-center justify-between gap-2">
                         <ProjectRecordTopicsList
