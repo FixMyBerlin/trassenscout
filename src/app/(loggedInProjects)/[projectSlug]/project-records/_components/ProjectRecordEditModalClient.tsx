@@ -37,7 +37,10 @@ export const ProjectRecordEditModalClient = ({
         onSuccess={() => {
           setIsDirty(false)
           router.replace(
-            projectRecordDetailRoute(initialProjectRecord.project.slug, initialProjectRecord.id) as Route,
+            projectRecordDetailRoute(
+              initialProjectRecord.project.slug,
+              initialProjectRecord.id,
+            ) as Route,
             { scroll: false },
           )
         }}

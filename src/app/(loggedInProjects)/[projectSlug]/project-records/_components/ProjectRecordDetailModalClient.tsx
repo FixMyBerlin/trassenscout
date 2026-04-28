@@ -16,7 +16,10 @@ export const ProjectRecordDetailModalClient = ({
   initialProjectRecord: Awaited<ReturnType<typeof getProjectRecord>>
 }) => {
   const router = useRouter()
-  const editHref = projectRecordEditRoute(initialProjectRecord.project.slug, initialProjectRecord.id)
+  const editHref = projectRecordEditRoute(
+    initialProjectRecord.project.slug,
+    initialProjectRecord.id,
+  )
   const handleClose = () => router.back()
 
   return (
@@ -25,11 +28,7 @@ export const ProjectRecordDetailModalClient = ({
         <H3>{initialProjectRecord.title}</H3>
         <div className="flex items-center gap-4">
           <IfUserCanEdit>
-            <Link
-              icon="edit"
-              href={editHref}
-              scroll={false}
-            >
+            <Link icon="edit" href={editHref} scroll={false}>
               Bearbeiten
             </Link>
           </IfUserCanEdit>
