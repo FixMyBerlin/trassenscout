@@ -25,6 +25,7 @@ import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWi
 import { MapPinIcon, UserGroupIcon } from "@heroicons/react/24/outline"
 import { PromiseReturnType } from "blitz"
 import { Route } from "next"
+import { usePathname, useSearchParams } from "next/navigation"
 
 // NOTE:
 // This version of "IfUserCanEdit" currently only works in the Next.js app directory.
@@ -42,6 +43,10 @@ type Props = Prettify<
 
 export const UploadTable = ({ uploads, withAction = true, withRelations, onDelete }: Props) => {
   const projectSlug = useProjectSlug()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const searchParamsString = searchParams?.toString() ?? ""
+  const currentPath = searchParamsString ? `${pathname}?${searchParamsString}` : (pathname ?? "")
 
   if (!uploads.length) {
     return <ZeroCase visible={uploads.length} name="Dokumente" />
@@ -83,6 +88,7 @@ export const UploadTable = ({ uploads, withAction = true, withRelations, onDelet
               key={upload.id}
               upload={upload}
               projectSlug={projectSlug}
+              currentPath={currentPath}
               withAction={withAction}
               withRelations={withRelations}
               onDelete={onDelete}
@@ -97,12 +103,14 @@ export const UploadTable = ({ uploads, withAction = true, withRelations, onDelet
 const UploadTableRow = ({
   upload,
   projectSlug,
+  currentPath,
   withAction,
   withRelations,
   onDelete,
 }: {
   upload: PromiseReturnType<typeof getUploadsWithSubsections>["uploads"][number]
   projectSlug: string
+  currentPath: string
   withAction: boolean
   withRelations: boolean
   onDelete?: () => Promise<void>
@@ -180,13 +188,19 @@ const UploadTableRow = ({
             )}
             {upload.projectRecords &&
               upload.projectRecords.length > 0 &&
-              upload.projectRecords.map((projectRecord) => (
-                <li key={projectRecord.id}>
-                  <Link href={projectRecordDetailRoute(projectSlug, projectRecord.id)}>
-                    Protokolleintrag: {projectRecord.title}
-                  </Link>
-                </li>
-              ))}
+              upload.projectRecords.map((projectRecord) => {
+                const detailPath = projectRecordDetailRoute(projectSlug, projectRecord.id)
+                const appendFrom = currentPath ? `?from=${encodeURIComponent(currentPath)}` : ""
+                const detailHref = `${detailPath}${appendFrom}`
+
+                return (
+                  <li key={projectRecord.id}>
+                    <Link href={detailHref} scroll={false}>
+                      Protokolleintrag: {projectRecord.title}
+                    </Link>
+                  </li>
+                )
+              })}
             {landAcquisitionModuleEnabled && upload.acquisitionArea && (
               <li>
                 <Link

@@ -1,10 +1,12 @@
+"use client"
+
 import { Link } from "@/src/core/components/links"
 import { longTitle, shortTitle } from "@/src/core/components/text/titles"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import { subsubsectionLandAcquisitionRoute } from "@/src/core/routes/subsectionRoutes"
-import { Route } from "next"
-
 import { formatBerlinTime } from "@/src/core/utils/formatBerlinTime"
+import { Route } from "next"
+import { usePathname, useSearchParams } from "next/navigation"
 
 type Props = {
   projectSlug: string
@@ -36,6 +38,11 @@ export const UploadVerknuepfungen = ({
   surveyResponse,
   className,
 }: Props) => {
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const searchParamsString = searchParams?.toString() ?? ""
+  const currentPath = searchParamsString ? `${pathname}?${searchParamsString}` : (pathname ?? "")
+
   const hasSubsection = subsection !== null
   const hasSubsubsection = subsubsection !== null
   const hasProjectRecords = projectRecords != null && projectRecords.length > 0
@@ -85,14 +92,20 @@ export const UploadVerknuepfungen = ({
           {hasProjectRecords && (
             <li>
               <em className="font-medium">Protokolleinträge: </em>
-              {projectRecords!.map((record, index) => (
-                <span key={record.id}>
-                  <Link href={projectRecordDetailRoute(projectSlug, record.id)}>
-                    {record.title} {record.date && formatBerlinTime(record.date, "P")}
-                  </Link>
-                  {index < projectRecords!.length - 1 && ", "}
-                </span>
-              ))}
+              {projectRecords!.map((record, index) => {
+                const detailPath = projectRecordDetailRoute(projectSlug, record.id)
+                const appendFrom = currentPath ? `?from=${encodeURIComponent(currentPath)}` : ""
+                const detailHref = `${detailPath}${appendFrom}`
+
+                return (
+                  <span key={record.id}>
+                    <Link href={detailHref} scroll={false}>
+                      {record.title} {record.date && formatBerlinTime(record.date, "P")}
+                    </Link>
+                    {index < projectRecords!.length - 1 && ", "}
+                  </span>
+                )
+              })}
             </li>
           )}
           {hasSurveyResponse && (
