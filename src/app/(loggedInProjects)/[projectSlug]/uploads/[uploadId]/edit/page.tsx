@@ -1,10 +1,10 @@
 import { EditUploadForm } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/EditUploadForm"
+import { getUploadReturnTarget } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_utils/getUploadReturnTarget"
 import { invoke } from "@/src/blitz-server"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitle } from "@/src/core/components/text"
-import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import getUploadWithRelations from "@/src/server/uploads/queries/getUploadWithRelations"
-import { Metadata, Route } from "next"
+import { Metadata } from "next"
 import "server-only"
 
 export const metadata: Metadata = {
@@ -24,20 +24,7 @@ export default async function EditUploadPage({ params: { projectSlug, uploadId }
     id: Number(uploadId),
   })
 
-  let returnPath: Route
-  let returnText: string
-
-  if (upload.projectRecords.length > 0) {
-    returnPath = projectRecordDetailRoute(projectSlug, upload.projectRecords[0]!.id)
-    returnText = "Zurück zum Protokoll"
-  } else if (upload.Subsubsection) {
-    returnPath =
-      `/${projectSlug}/abschnitte/${upload.Subsubsection.subsection.slug}/fuehrung/${upload.Subsubsection.slug}` as Route
-    returnText = "Zurück zum Eintrag"
-  } else {
-    returnPath = `/${projectSlug}/uploads` as Route
-    returnText = "Zurück zu den Dokumenten"
-  }
+  const { returnPath, returnText } = getUploadReturnTarget({ projectSlug, upload })
 
   return (
     <>
