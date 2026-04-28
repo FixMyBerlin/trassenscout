@@ -7,7 +7,7 @@ import { HeadingWithAction } from "@/src/core/components/text/HeadingWithAction"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
 import { Route } from "next"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 
 export const ProjectRecordEditModalClient = ({
@@ -16,16 +16,14 @@ export const ProjectRecordEditModalClient = ({
   initialProjectRecord: Awaited<ReturnType<typeof getProjectRecord>>
 }) => {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const fromParam = searchParams?.get("from")
   const [isDirty, setIsDirty] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isNavigatingAfterSave, setIsNavigatingAfterSave] = useState(false)
 
   const handleClose = () => {
+    if (isNavigatingAfterSave) return
+    if (isSubmitting) return
     if (isDirty && !window.confirm("Ungespeicherte Änderungen verwerfen?")) return
-    if (fromParam && fromParam.startsWith("/") && !fromParam.startsWith("//")) {
-      router.replace(fromParam as Route, { scroll: false })
-      return
-    }
     router.back()
   }
 
@@ -40,17 +38,15 @@ export const ProjectRecordEditModalClient = ({
         initialProjectRecord={initialProjectRecord}
         hideBackLink
         onDirtyChange={setIsDirty}
+        onSubmittingChange={setIsSubmitting}
         onSuccess={() => {
           setIsDirty(false)
+          setIsNavigatingAfterSave(true)
           const detailPath = projectRecordDetailRoute(
             initialProjectRecord.project.slug,
             initialProjectRecord.id,
           )
-          const appendFrom = fromParam ? `?from=${encodeURIComponent(fromParam)}` : ""
-          router.replace(
-            `${detailPath}${appendFrom}` as Route,
-            { scroll: false },
-          )
+          router.replace(detailPath as Route, { scroll: false })
         }}
       />
     </Modal>

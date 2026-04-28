@@ -8,8 +8,8 @@ import { H3 } from "@/src/core/components/text"
 import { HeadingWithAction } from "@/src/core/components/text/HeadingWithAction"
 import { projectRecordEditRoute } from "@/src/core/routes/projectRecordRoutes"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
-import { Route } from "next"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter } from "next/navigation"
+import { useRef } from "react"
 
 export const ProjectRecordDetailModalClient = ({
   initialProjectRecord,
@@ -17,19 +17,13 @@ export const ProjectRecordDetailModalClient = ({
   initialProjectRecord: Awaited<ReturnType<typeof getProjectRecord>>
 }) => {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const fromParam = searchParams?.get("from") ?? undefined
-  const editPath = projectRecordEditRoute(
+  const isNavigatingToEditRef = useRef(false)
+  const editHref = projectRecordEditRoute(
     initialProjectRecord.project.slug,
     initialProjectRecord.id,
   )
-  const appendFrom = fromParam ? `?from=${encodeURIComponent(fromParam)}` : ""
-  const editHref = `${editPath}${appendFrom}`
   const handleClose = () => {
-    if (fromParam && fromParam.startsWith("/") && !fromParam.startsWith("//")) {
-      router.replace(fromParam as Route, { scroll: false })
-      return
-    }
+    if (isNavigatingToEditRef.current) return
     router.back()
   }
 
@@ -39,7 +33,15 @@ export const ProjectRecordDetailModalClient = ({
         <H3>{initialProjectRecord.title}</H3>
         <div className="flex items-center gap-4">
           <IfUserCanEdit>
-            <Link icon="edit" href={editHref} scroll={false}>
+            <Link
+              icon="edit"
+              href={editHref}
+              replace
+              scroll={false}
+              onClick={() => {
+                isNavigatingToEditRef.current = true
+              }}
+            >
               Bearbeiten
             </Link>
           </IfUserCanEdit>

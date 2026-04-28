@@ -6,7 +6,6 @@ import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import { subsubsectionLandAcquisitionRoute } from "@/src/core/routes/subsectionRoutes"
 import { formatBerlinTime } from "@/src/core/utils/formatBerlinTime"
 import { Route } from "next"
-import { usePathname, useSearchParams } from "next/navigation"
 
 type Props = {
   projectSlug: string
@@ -38,11 +37,6 @@ export const UploadVerknuepfungen = ({
   surveyResponse,
   className,
 }: Props) => {
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
-  const searchParamsString = searchParams?.toString() ?? ""
-  const currentPath = searchParamsString ? `${pathname}?${searchParamsString}` : (pathname ?? "")
-
   const hasSubsection = subsection !== null
   const hasSubsubsection = subsubsection !== null
   const hasProjectRecords = projectRecords != null && projectRecords.length > 0
@@ -93,9 +87,7 @@ export const UploadVerknuepfungen = ({
             <li>
               <em className="font-medium">Protokolleinträge: </em>
               {projectRecords!.map((record, index) => {
-                const detailPath = projectRecordDetailRoute(projectSlug, record.id)
-                const appendFrom = currentPath ? `?from=${encodeURIComponent(currentPath)}` : ""
-                const detailHref = `${detailPath}${appendFrom}`
+                const detailHref = projectRecordDetailRoute(projectSlug, record.id)
 
                 return (
                   <span key={record.id}>

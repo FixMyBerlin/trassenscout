@@ -14,7 +14,6 @@ import { ChatBubbleBottomCenterTextIcon, DocumentIcon } from "@heroicons/react/2
 import clsx from "clsx"
 import { format } from "date-fns"
 import { de } from "date-fns/locale"
-import { usePathname, useSearchParams } from "next/navigation"
 import { ProjectRecordAssignedToPill } from "./ProjectRecordAssignedToPill"
 import { ProjectRecordTopicsList } from "./ProjectRecordTopicsList"
 
@@ -55,17 +54,10 @@ export const ProjectRecordsTable = ({
   showAcquisitionAreaColumn?: boolean
 }) => {
   const projectSlug = useProjectSlug()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
   const { filter, setFilter } = useFilters()
 
   if (!projectRecords.length) return null
   const spaceClasses = "px-3 py-2"
-  const pathnameValue = pathname ?? ""
-  const searchParamsString = searchParams?.toString() ?? ""
-  const currentPath = searchParamsString
-    ? `${pathnameValue}?${searchParamsString}`
-    : pathnameValue
 
   const handleTopicClick = (topic: string): void => {
     if (topic) setFilter({ ...filter, searchterm: topic })
@@ -134,11 +126,7 @@ export const ProjectRecordsTable = ({
             </thead>
             <tbody className="divide-y divide-gray-200 bg-white">
               {projectRecords.map((projectRecord) => {
-                const detailPath = projectRecordDetailRoute(projectSlug, projectRecord.id)
-                const appendFrom = currentPath
-                  ? `?from=${encodeURIComponent(currentPath)}`
-                  : ""
-                const detailHref = `${detailPath}${appendFrom}`
+                const detailHref = projectRecordDetailRoute(projectSlug, projectRecord.id)
 
                 return (
                   <tr
