@@ -35,7 +35,7 @@ export const EditUploadModalClient = ({ upload, returnPath, returnText }: Props)
         upload={upload}
         returnPath={returnPath}
         returnText={returnText}
-        onSuccess={() => router.back()}
+        onSuccess={() => router.replace(returnPath, { scroll: false })}
         onDirtyChange={setIsDirty}
       />
     </Modal>

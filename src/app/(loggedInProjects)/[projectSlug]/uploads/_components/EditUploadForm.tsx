@@ -175,7 +175,7 @@ type Props = {
    * uploads in surveys yet.
    */
   showDelete?: boolean
-  /** Called after a successful save instead of router.push(returnPath). Use router.back() in modal contexts to avoid polluting the history stack. */
+  /** Called after a successful save instead of router.push(returnPath), e.g. for modal-specific navigation. */
   onSuccess?: () => void
   onDirtyChange?: (isDirty: boolean) => void
 }

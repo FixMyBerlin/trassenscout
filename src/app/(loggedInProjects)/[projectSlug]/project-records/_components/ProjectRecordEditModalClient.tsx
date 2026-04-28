@@ -4,7 +4,9 @@ import { EditProjectRecordForm } from "@/src/app/(loggedInProjects)/[projectSlug
 import { Modal, ModalCloseButton } from "@/src/core/components/Modal"
 import { H3 } from "@/src/core/components/text"
 import { HeadingWithAction } from "@/src/core/components/text/HeadingWithAction"
+import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
+import { Route } from "next"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 
@@ -32,7 +34,13 @@ export const ProjectRecordEditModalClient = ({
         initialProjectRecord={initialProjectRecord}
         hideBackLink
         onDirtyChange={setIsDirty}
-        onSuccess={() => router.back()}
+        onSuccess={() => {
+          setIsDirty(false)
+          router.replace(
+            projectRecordDetailRoute(initialProjectRecord.project.slug, initialProjectRecord.id) as Route,
+            { scroll: false },
+          )
+        }}
       />
     </Modal>
   )
