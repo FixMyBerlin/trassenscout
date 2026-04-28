@@ -29,11 +29,13 @@ export const EditProjectRecordForm = ({
   hideBackLink = false,
   onDirtyChange,
   onSuccess,
+  onSubmittingChange,
 }: {
   initialProjectRecord: Awaited<ReturnType<typeof getProjectRecord>>
   hideBackLink?: boolean
   onDirtyChange?: (isDirty: boolean) => void
   onSuccess?: () => void
+  onSubmittingChange?: (isSubmitting: boolean) => void
 }) => {
   const router = useRouter()
   const needsReview = initialProjectRecord.reviewState !== ProjectRecordReviewState.APPROVED
@@ -48,6 +50,7 @@ export const EditProjectRecordForm = ({
   )
 
   const handleSubmit = async (values: z.infer<typeof ProjectRecordFormSchema>) => {
+    onSubmittingChange?.(true)
     try {
       const updated = await updateProjectRecordMutation({
         ...values,
@@ -71,6 +74,7 @@ export const EditProjectRecordForm = ({
         router.refresh()
       }
     } catch (error: any) {
+      onSubmittingChange?.(false)
       return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }
   }
@@ -88,7 +92,7 @@ export const EditProjectRecordForm = ({
   const showPath = projectRecordDetailRoute(projectSlug, projectRecord.id)
   const indexPath =
     projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
-      ? (`/${projectSlug}/project-records/needreview` as Route)
+      ? (`/${projectSlug}/project-records/review/pending` as Route)
       : (`/${projectSlug}/project-records` as Route)
 
   return (
