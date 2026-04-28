@@ -17,8 +17,12 @@ export const ProjectRecordEditModalClient = ({
 }) => {
   const router = useRouter()
   const [isDirty, setIsDirty] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isNavigatingAfterSave, setIsNavigatingAfterSave] = useState(false)
 
   const handleClose = () => {
+    if (isNavigatingAfterSave) return
+    if (isSubmitting) return
     if (isDirty && !window.confirm("Ungespeicherte Änderungen verwerfen?")) return
     router.back()
   }
@@ -34,15 +38,15 @@ export const ProjectRecordEditModalClient = ({
         initialProjectRecord={initialProjectRecord}
         hideBackLink
         onDirtyChange={setIsDirty}
+        onSubmittingChange={setIsSubmitting}
         onSuccess={() => {
           setIsDirty(false)
-          router.replace(
-            projectRecordDetailRoute(
-              initialProjectRecord.project.slug,
-              initialProjectRecord.id,
-            ) as Route,
-            { scroll: false },
+          setIsNavigatingAfterSave(true)
+          const detailPath = projectRecordDetailRoute(
+            initialProjectRecord.project.slug,
+            initialProjectRecord.id,
           )
+          router.replace(detailPath as Route, { scroll: false })
         }}
       />
     </Modal>

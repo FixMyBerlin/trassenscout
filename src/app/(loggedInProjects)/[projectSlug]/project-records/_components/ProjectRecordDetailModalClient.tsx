@@ -9,6 +9,7 @@ import { HeadingWithAction } from "@/src/core/components/text/HeadingWithAction"
 import { projectRecordEditRoute } from "@/src/core/routes/projectRecordRoutes"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
 import { useRouter } from "next/navigation"
+import { useRef } from "react"
 
 export const ProjectRecordDetailModalClient = ({
   initialProjectRecord,
@@ -16,11 +17,15 @@ export const ProjectRecordDetailModalClient = ({
   initialProjectRecord: Awaited<ReturnType<typeof getProjectRecord>>
 }) => {
   const router = useRouter()
+  const isNavigatingToEditRef = useRef(false)
   const editHref = projectRecordEditRoute(
     initialProjectRecord.project.slug,
     initialProjectRecord.id,
   )
-  const handleClose = () => router.back()
+  const handleClose = () => {
+    if (isNavigatingToEditRef.current) return
+    router.back()
+  }
 
   return (
     <Modal open align="right" handleClose={handleClose} className="space-y-4">
@@ -28,7 +33,15 @@ export const ProjectRecordDetailModalClient = ({
         <H3>{initialProjectRecord.title}</H3>
         <div className="flex items-center gap-4">
           <IfUserCanEdit>
-            <Link icon="edit" href={editHref} scroll={false}>
+            <Link
+              icon="edit"
+              href={editHref}
+              replace
+              scroll={false}
+              onClick={() => {
+                isNavigatingToEditRef.current = true
+              }}
+            >
               Bearbeiten
             </Link>
           </IfUserCanEdit>

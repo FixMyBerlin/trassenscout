@@ -17,6 +17,7 @@ import { selectLinkStyle } from "./styles"
 export type LinkProps = {
   href: Route | UrlObject | string
   prefetch?: boolean
+  replace?: boolean
   scroll?: boolean
   className?: string
   classNameOverwrites?: string
@@ -50,6 +51,7 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
     button,
     icon,
     prefetch,
+    replace,
     scroll,
     ...props
   },
@@ -89,6 +91,7 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
   return (
     <NextLink
       prefetch={prefetch}
+      replace={replace}
       scroll={scroll}
       href={href as Route}
       ref={ref}

@@ -1,10 +1,11 @@
+"use client"
+
 import { Link } from "@/src/core/components/links"
 import { longTitle, shortTitle } from "@/src/core/components/text/titles"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import { subsubsectionLandAcquisitionRoute } from "@/src/core/routes/subsectionRoutes"
-import { Route } from "next"
-
 import { formatBerlinTime } from "@/src/core/utils/formatBerlinTime"
+import { Route } from "next"
 
 type Props = {
   projectSlug: string
@@ -85,14 +86,18 @@ export const UploadVerknuepfungen = ({
           {hasProjectRecords && (
             <li>
               <em className="font-medium">Protokolleinträge: </em>
-              {projectRecords!.map((record, index) => (
-                <span key={record.id}>
-                  <Link href={projectRecordDetailRoute(projectSlug, record.id)}>
-                    {record.title} {record.date && formatBerlinTime(record.date, "P")}
-                  </Link>
-                  {index < projectRecords!.length - 1 && ", "}
-                </span>
-              ))}
+              {projectRecords!.map((record, index) => {
+                const detailHref = projectRecordDetailRoute(projectSlug, record.id)
+
+                return (
+                  <span key={record.id}>
+                    <Link href={detailHref} scroll={false}>
+                      {record.title} {record.date && formatBerlinTime(record.date, "P")}
+                    </Link>
+                    {index < projectRecords!.length - 1 && ", "}
+                  </span>
+                )
+              })}
             </li>
           )}
           {hasSurveyResponse && (

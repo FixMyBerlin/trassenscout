@@ -7,9 +7,11 @@ export default async function ProjectRecordDetailModalPage({
 }: {
   params: { projectSlug: string; projectRecordId: string }
 }) {
+  if (!/^\d+$/.test(params.projectRecordId)) return null
+
   const projectRecord = await invoke(getProjectRecord, {
     projectSlug: params.projectSlug,
-    id: parseInt(params.projectRecordId),
+    id: Number(params.projectRecordId),
   })
 
   return <ProjectRecordDetailModalClient initialProjectRecord={projectRecord} />

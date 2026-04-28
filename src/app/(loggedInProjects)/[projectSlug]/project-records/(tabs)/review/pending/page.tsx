@@ -1,13 +1,10 @@
 import { invoke } from "@/src/blitz-server"
-import { PageHeader } from "@/src/core/components/pages/PageHeader"
-import { TabsApp } from "@/src/core/components/Tabs/TabsApp"
 import getProjectRecordsNeedsReview from "@/src/server/projectRecords/queries/getProjectRecordsNeedsReview"
 import { AuthorizationError } from "blitz"
 import { Metadata } from "next"
 import { redirect } from "next/navigation"
 import "server-only"
-import { ProjectRecordsNeedsReviewContent } from "../_components/ProjectRecordsNeedsReviewContent"
-import { getProjectRecordsTabs } from "../_utils/projectRecordsTabs"
+import { ProjectRecordsNeedsReviewContent } from "../../../_components/ProjectRecordsNeedsReviewContent"
 
 export const metadata: Metadata = {
   title: "Bestätigung erforderlich - Projektprotokoll",
@@ -18,8 +15,6 @@ export default async function ProjectRecordsNeedsReviewPage({
 }: {
   params: { projectSlug: string }
 }) {
-  // The query already checks editor permissions via authorizeProjectMember in its resolver pipe
-  // If unauthorized, it will throw AuthorizationError which we catch and redirect
   let projectRecords
   try {
     projectRecords = await invoke(getProjectRecordsNeedsReview, {
@@ -32,13 +27,5 @@ export default async function ProjectRecordsNeedsReviewPage({
     throw error
   }
 
-  const tabs = await getProjectRecordsTabs(params.projectSlug)
-
-  return (
-    <>
-      <PageHeader title="Projektprotokoll" className="mt-12" />
-      <TabsApp tabs={tabs} className="mt-7" />
-      <ProjectRecordsNeedsReviewContent initialProjectRecords={projectRecords} />
-    </>
-  )
+  return <ProjectRecordsNeedsReviewContent initialProjectRecords={projectRecords} />
 }

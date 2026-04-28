@@ -180,13 +180,17 @@ const UploadTableRow = ({
             )}
             {upload.projectRecords &&
               upload.projectRecords.length > 0 &&
-              upload.projectRecords.map((projectRecord) => (
-                <li key={projectRecord.id}>
-                  <Link href={projectRecordDetailRoute(projectSlug, projectRecord.id)}>
-                    Protokolleintrag: {projectRecord.title}
-                  </Link>
-                </li>
-              ))}
+              upload.projectRecords.map((projectRecord) => {
+                const detailHref = projectRecordDetailRoute(projectSlug, projectRecord.id)
+
+                return (
+                  <li key={projectRecord.id}>
+                    <Link href={detailHref} scroll={false}>
+                      Protokolleintrag: {projectRecord.title}
+                    </Link>
+                  </li>
+                )
+              })}
             {landAcquisitionModuleEnabled && upload.acquisitionArea && (
               <li>
                 <Link
