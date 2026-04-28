@@ -7,7 +7,7 @@ import { HeadingWithAction } from "@/src/core/components/text/HeadingWithAction"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
 import { Route } from "next"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
 
 export const ProjectRecordEditModalClient = ({
@@ -16,10 +16,16 @@ export const ProjectRecordEditModalClient = ({
   initialProjectRecord: Awaited<ReturnType<typeof getProjectRecord>>
 }) => {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const fromParam = searchParams?.get("from")
   const [isDirty, setIsDirty] = useState(false)
 
   const handleClose = () => {
     if (isDirty && !window.confirm("Ungespeicherte Änderungen verwerfen?")) return
+    if (fromParam && fromParam.startsWith("/") && !fromParam.startsWith("//")) {
+      router.replace(fromParam as Route, { scroll: false })
+      return
+    }
     router.back()
   }
 
@@ -36,11 +42,13 @@ export const ProjectRecordEditModalClient = ({
         onDirtyChange={setIsDirty}
         onSuccess={() => {
           setIsDirty(false)
+          const detailPath = projectRecordDetailRoute(
+            initialProjectRecord.project.slug,
+            initialProjectRecord.id,
+          )
+          const appendFrom = fromParam ? `?from=${encodeURIComponent(fromParam)}` : ""
           router.replace(
-            projectRecordDetailRoute(
-              initialProjectRecord.project.slug,
-              initialProjectRecord.id,
-            ) as Route,
+            `${detailPath}${appendFrom}` as Route,
             { scroll: false },
           )
         }}

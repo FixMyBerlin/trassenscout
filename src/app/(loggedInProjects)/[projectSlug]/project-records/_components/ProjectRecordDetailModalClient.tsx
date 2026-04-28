@@ -8,7 +8,8 @@ import { H3 } from "@/src/core/components/text"
 import { HeadingWithAction } from "@/src/core/components/text/HeadingWithAction"
 import { projectRecordEditRoute } from "@/src/core/routes/projectRecordRoutes"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
-import { useRouter } from "next/navigation"
+import { Route } from "next"
+import { useRouter, useSearchParams } from "next/navigation"
 
 export const ProjectRecordDetailModalClient = ({
   initialProjectRecord,
@@ -16,11 +17,21 @@ export const ProjectRecordDetailModalClient = ({
   initialProjectRecord: Awaited<ReturnType<typeof getProjectRecord>>
 }) => {
   const router = useRouter()
-  const editHref = projectRecordEditRoute(
+  const searchParams = useSearchParams()
+  const fromParam = searchParams?.get("from") ?? undefined
+  const editPath = projectRecordEditRoute(
     initialProjectRecord.project.slug,
     initialProjectRecord.id,
   )
-  const handleClose = () => router.back()
+  const appendFrom = fromParam ? `?from=${encodeURIComponent(fromParam)}` : ""
+  const editHref = `${editPath}${appendFrom}`
+  const handleClose = () => {
+    if (fromParam && fromParam.startsWith("/") && !fromParam.startsWith("//")) {
+      router.replace(fromParam as Route, { scroll: false })
+      return
+    }
+    router.back()
+  }
 
   return (
     <Modal open align="right" handleClose={handleClose} className="space-y-4">
