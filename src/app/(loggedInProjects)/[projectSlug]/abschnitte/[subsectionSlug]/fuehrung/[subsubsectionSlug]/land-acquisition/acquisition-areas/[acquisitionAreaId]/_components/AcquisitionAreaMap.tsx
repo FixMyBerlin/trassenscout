@@ -16,7 +16,6 @@ import { BaseMap } from "@/src/core/components/Map/BaseMap"
 import { geometryBbox } from "@/src/core/components/Map/utils/bboxHelpers"
 import { ModalCloseButton } from "@/src/core/components/Modal"
 import { Spinner } from "@/src/core/components/Spinner"
-import { H3 } from "@/src/core/components/text"
 import { HeadingWithAction } from "@/src/core/components/text/HeadingWithAction"
 import type { AlkisWfsParcelFeatureCollection } from "@/src/server/alkis/alkisWfsParcelGeoJsonTypes"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
@@ -152,10 +151,10 @@ export function AcquisitionAreaMap({
             className="z-50 [&_.maplibregl-popup-content]:bg-transparent! [&_.maplibregl-popup-content]:p-0!"
             onClose={() => setContextParcel(null)}
           >
-            <div className="w-full overflow-hidden rounded-lg bg-white text-left shadow-xl">
-              <div className="px-4 pt-5 pb-4 sm:p-6">
+            <div className="w-full overflow-hidden bg-white text-left shadow-xl">
+              <div className="p-3">
                 <HeadingWithAction className="mb-4">
-                  <H3>Flurstück Details</H3>
+                  <p className="text-base font-bold">Flurstück Details</p>
                   <ModalCloseButton onClose={() => setContextParcel(null)} />
                 </HeadingWithAction>
                 <div className="max-h-64 overflow-y-auto text-sm text-gray-700">
