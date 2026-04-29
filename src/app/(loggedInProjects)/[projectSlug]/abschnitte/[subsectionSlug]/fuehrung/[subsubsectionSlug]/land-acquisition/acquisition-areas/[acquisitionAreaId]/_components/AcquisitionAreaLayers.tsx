@@ -4,6 +4,10 @@ import {
   acquisitionAreaParcelFillPaint,
   acquisitionAreaParcelLineDashPaint,
 } from "@/src/core/components/Map/colors/acquisitionAreaParcelLayerStyles"
+import {
+  alkisAttributionToHtml,
+  useAlkisAttribution,
+} from "@/src/core/components/Map/useAlkisAttribution"
 import type { AlkisWfsParcelProperties } from "@/src/server/alkis/alkisWfsParcelGeoJsonTypes"
 import type { FeatureCollection, GeoJsonProperties, Geometry } from "geojson"
 import type { ExpressionSpecification } from "maplibre-gl"
@@ -36,10 +40,18 @@ export type AcquisitionAlkisParcelsLayersProps = {
  */
 export function AcquisitionAlkisParcelsLayers({ parcels }: AcquisitionAlkisParcelsLayersProps) {
   const alkisId = ACQUISITION_SOURCE_IDS.alkisParcels
+  const alkisAttribution = useAlkisAttribution()
+  const attributionHtml = alkisAttributionToHtml(alkisAttribution)
 
   return (
     <>
-      <Source id={alkisId} key={alkisId} type="geojson" data={parcels} />
+      <Source
+        id={alkisId}
+        key={alkisId}
+        type="geojson"
+        data={parcels}
+        attribution={attributionHtml}
+      />
       <Layer
         id={`${alkisId}-fill-hit`}
         type="fill"

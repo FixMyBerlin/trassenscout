@@ -2,13 +2,13 @@
 
 import { EditProjectRecordForm } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/EditProjectRecordForm"
 import { Modal, ModalCloseButton } from "@/src/core/components/Modal"
+import { useModalNavigationGuard } from "@/src/core/components/Modal/useModalNavigationGuard"
 import { H3 } from "@/src/core/components/text"
 import { HeadingWithAction } from "@/src/core/components/text/HeadingWithAction"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
 import { Route } from "next"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
 
 export const ProjectRecordEditModalClient = ({
   initialProjectRecord,
@@ -16,14 +16,10 @@ export const ProjectRecordEditModalClient = ({
   initialProjectRecord: Awaited<ReturnType<typeof getProjectRecord>>
 }) => {
   const router = useRouter()
-  const [isDirty, setIsDirty] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isNavigatingAfterSave, setIsNavigatingAfterSave] = useState(false)
+  const navigationGuard = useModalNavigationGuard()
 
   const handleClose = () => {
-    if (isNavigatingAfterSave) return
-    if (isSubmitting) return
-    if (isDirty && !window.confirm("Ungespeicherte Änderungen verwerfen?")) return
+    if (!navigationGuard.canClose()) return
     router.back()
   }
 
@@ -37,11 +33,10 @@ export const ProjectRecordEditModalClient = ({
       <EditProjectRecordForm
         initialProjectRecord={initialProjectRecord}
         hideBackLink
-        onDirtyChange={setIsDirty}
-        onSubmittingChange={setIsSubmitting}
+        onDirtyChange={navigationGuard.setDirty}
+        onSubmittingChange={navigationGuard.setSubmitting}
         onSuccess={() => {
-          setIsDirty(false)
-          setIsNavigatingAfterSave(true)
+          navigationGuard.beginNavigationAfterSave({ holdUntilNextModalMount: true })
           const detailPath = projectRecordDetailRoute(
             initialProjectRecord.project.slug,
             initialProjectRecord.id,

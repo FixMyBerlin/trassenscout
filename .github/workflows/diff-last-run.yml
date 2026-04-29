@@ -2,19 +2,32 @@ name: Diff with last workflow run
 on:
   workflow_call:
     inputs:
+      ENVIRONMENT:
+        type: string
+        required: true
       CHECK_DIFF_LOCATIONS:
         type: string
         required: true
+      ENV_FINGERPRINT_SCOPE:
+        type: string
+        required: false
+        default: ""
     outputs:
       CHANGES:
         description: "Whether the given directories have changed since the last successfull workflow run."
         value: ${{ jobs.diff.outputs.CHANGES }}
+      env_fingerprint_cache_key:
+        description: "Computed cache key for the environment fingerprint."
+        value: ${{ jobs.diff.outputs.env_fingerprint_cache_key }}
 
 jobs:
   diff:
     runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.ENVIRONMENT }}
     outputs:
-      CHANGES: ${{ steps.git_changes.outputs.CHANGES }}
+      CHANGES: ${{ steps.final_changes.outputs.CHANGES }}
+      env_fingerprint_cache_key: ${{ steps.env_hash.outputs.cache_key }}
     steps:
       - name: Get last run commit SHA
         run: |
@@ -29,6 +42,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Checkout last build
+        if: ${{ env.LAST_RUN_SHA != '' }}
         uses: actions/checkout@v6
         with:
           ref: ${{ env.LAST_RUN_SHA }}
@@ -36,9 +50,120 @@ jobs:
       - name: Check for changes
         id: git_changes
         run: |
+          if [ -z "${{ env.LAST_RUN_SHA }}" ]; then
+            echo "CHANGES=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
           if git diff --exit-code ${{ env.LAST_RUN_SHA }} ${{ github.sha }} -- ${{ inputs.CHECK_DIFF_LOCATIONS }} .github/workflows/; then
             echo "CHANGES=false" >> $GITHUB_OUTPUT
           else
             echo "CHANGES=true" >> $GITHUB_OUTPUT
+          fi
+        shell: bash
+
+      - name: Hash environment fingerprint
+        id: env_hash
+        if: ${{ inputs.ENV_FINGERPRINT_SCOPE != '' }}
+        env:
+          NEXT_PUBLIC_APP_ENV: ${{ inputs.ENVIRONMENT }}
+          NEXT_PUBLIC_APP_ORIGIN: ${{ vars.APP_ORIGIN }}
+          APP_DOMAIN: ${{ vars.APP_DOMAIN }}
+          MAILJET_APIKEY_PUBLIC: ${{ secrets.MAILJET_APIKEY_PUBLIC }}
+          MAILJET_APIKEY_PRIVATE: ${{ secrets.MAILJET_APIKEY_PRIVATE }}
+          POSTGRES_DB: ${{ vars.POSTGRES_DB }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_HOST: ${{ vars.POSTGRES_HOST }}
+          SESSION_SECRET_KEY: ${{ secrets.SESSION_SECRET_KEY }}
+          ADMIN_EMAIL: ${{ vars.ADMIN_EMAIL }}
+          S3_UPLOAD_KEY: ${{ secrets.S3_UPLOAD_KEY }}
+          S3_UPLOAD_SECRET: ${{ secrets.S3_UPLOAD_SECRET }}
+          TS_API_KEY: ${{ secrets.TS_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
+          LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
+          LANGFUSE_BASEURL: ${{ vars.LANGFUSE_BASEURL }}
+          LUCKY_CLOUD_TOKEN: ${{ secrets.LUCKY_CLOUD_TOKEN }}
+          IMAP_HOST: ${{ vars.IMAP_HOST }}
+          IMAP_PORT: ${{ vars.IMAP_PORT }}
+          IMAP_USER: ${{ vars.IMAP_USER }}
+          IMAP_PASSWORD: ${{ secrets.IMAP_PASSWORD }}
+        run: |
+          case "${{ inputs.ENV_FINGERPRINT_SCOPE }}" in
+            app)
+              ENV_FINGERPRINT_VALUES=$(printf '%s\n' \
+                "NEXT_PUBLIC_APP_ENV=$NEXT_PUBLIC_APP_ENV" \
+                "NEXT_PUBLIC_APP_ORIGIN=$NEXT_PUBLIC_APP_ORIGIN" \
+                "APP_DOMAIN=$APP_DOMAIN" \
+                "MAILJET_APIKEY_PUBLIC=$MAILJET_APIKEY_PUBLIC" \
+                "MAILJET_APIKEY_PRIVATE=$MAILJET_APIKEY_PRIVATE" \
+                "POSTGRES_DB=$POSTGRES_DB" \
+                "POSTGRES_USER=$POSTGRES_USER" \
+                "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" \
+                "POSTGRES_HOST=$POSTGRES_HOST" \
+                "SESSION_SECRET_KEY=$SESSION_SECRET_KEY" \
+                "ADMIN_EMAIL=$ADMIN_EMAIL" \
+                "S3_UPLOAD_KEY=$S3_UPLOAD_KEY" \
+                "S3_UPLOAD_SECRET=$S3_UPLOAD_SECRET" \
+                "TS_API_KEY=$TS_API_KEY" \
+                "OPENAI_API_KEY=$OPENAI_API_KEY" \
+                "LANGFUSE_SECRET_KEY=$LANGFUSE_SECRET_KEY" \
+                "LANGFUSE_PUBLIC_KEY=$LANGFUSE_PUBLIC_KEY" \
+                "LANGFUSE_BASEURL=$LANGFUSE_BASEURL" \
+                "LUCKY_CLOUD_TOKEN=$LUCKY_CLOUD_TOKEN")
+              ;;
+            imap-listener)
+              ENV_FINGERPRINT_VALUES=$(printf '%s\n' \
+                "NEXT_PUBLIC_APP_ENV=$NEXT_PUBLIC_APP_ENV" \
+                "TS_API_KEY=$TS_API_KEY" \
+                "IMAP_HOST=$IMAP_HOST" \
+                "IMAP_PORT=$IMAP_PORT" \
+                "IMAP_USER=$IMAP_USER" \
+                "IMAP_PASSWORD=$IMAP_PASSWORD")
+              ;;
+            *)
+              echo "hash=" >> $GITHUB_OUTPUT
+              echo "cache_key=" >> $GITHUB_OUTPUT
+              exit 0
+              ;;
+          esac
+
+          HASH=$(printf '%s' "$ENV_FINGERPRINT_VALUES" | sha256sum | awk '{print $1}')
+          CACHE_KEY="env-fingerprint-${{ github.ref_name }}-${{ inputs.ENVIRONMENT }}-${{ inputs.ENV_FINGERPRINT_SCOPE }}-$HASH"
+          echo "hash=$HASH" >> $GITHUB_OUTPUT
+          echo "cache_key=$CACHE_KEY" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Check environment fingerprint cache
+        id: env_fingerprint_cache
+        if: ${{ steps.env_hash.outputs.hash != '' }}
+        uses: actions/cache/restore@v4
+        with:
+          path: .ci/env-fingerprints
+          key: ${{ steps.env_hash.outputs.cache_key }}
+          restore-keys: |
+            env-fingerprint-${{ github.ref_name }}-${{ inputs.ENVIRONMENT }}-${{ inputs.ENV_FINGERPRINT_SCOPE }}-
+          lookup-only: true
+
+      - name: Check for environment changes
+        id: env_changes
+        run: |
+          if [ "${{ steps.env_hash.outputs.hash }}" = "" ]; then
+            echo "CHANGES=false" >> $GITHUB_OUTPUT
+          elif [ "${{ steps.env_fingerprint_cache.outputs.cache-hit }}" = "true" ]; then
+            echo "CHANGES=false" >> $GITHUB_OUTPUT
+          else
+            echo "CHANGES=true" >> $GITHUB_OUTPUT
+          fi
+        shell: bash
+
+      - name: Merge change signals
+        id: final_changes
+        run: |
+          if [ "${{ steps.git_changes.outputs.CHANGES }}" = "true" ] || [ "${{ steps.env_changes.outputs.CHANGES }}" = "true" ]; then
+            echo "CHANGES=true" >> $GITHUB_OUTPUT
+          else
+            echo "CHANGES=false" >> $GITHUB_OUTPUT
           fi
         shell: bash

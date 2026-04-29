@@ -11,11 +11,7 @@ import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
-import getProjectRecords from "@/src/server/projectRecords/queries/getProjectRecords"
-import getProjectRecordsByAcquisitionArea from "@/src/server/projectRecords/queries/getProjectRecordsByAcquisitionArea"
-import getProjectRecordsBySubsubsection from "@/src/server/projectRecords/queries/getProjectRecordsBySubsubsection"
-import getProjectRecordsNeedsReview from "@/src/server/projectRecords/queries/getProjectRecordsNeedsReview"
-import { invalidateQuery, useQuery } from "@blitzjs/rpc"
+import { useQuery } from "@blitzjs/rpc"
 import { useEffect, useState } from "react"
 
 export type ReprocessedProjectRecord = {
@@ -35,7 +31,7 @@ const ProjectRecordQuickUpload = ({
   onUploaded,
 }: {
   projectRecordId: number
-  onUploaded: () => Promise<void>
+  onUploaded: () => void
 }) => {
   return (
     <IfUserCanEdit>
@@ -46,7 +42,7 @@ const ProjectRecordQuickUpload = ({
             fillContainer
             projectRecordIds={[projectRecordId]}
             onUploadComplete={async () => {
-              await onUploaded()
+              onUploaded()
             }}
           />
         </UploadDropzoneContainer>
@@ -64,24 +60,9 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord }: Props) => {
       initialData: initialProjectRecord,
     },
   )
-  const handleUploaded = async () => {
-    await Promise.all([
-      refetch(),
-      invalidateQuery(getProjectRecords, { projectSlug }),
-      invalidateQuery(getProjectRecordsNeedsReview, { projectSlug }),
-      projectRecord.subsubsectionId
-        ? invalidateQuery(getProjectRecordsBySubsubsection, {
-            projectSlug,
-            subsubsectionId: projectRecord.subsubsectionId,
-          })
-        : null,
-      projectRecord.acquisitionAreaId
-        ? invalidateQuery(getProjectRecordsByAcquisitionArea, {
-            projectSlug,
-            acquisitionAreaId: projectRecord.acquisitionAreaId,
-          })
-        : null,
-    ])
+  const handleUploaded = () => {
+    // Keep this non-blocking so upload UX stays smooth in modal/detail routes.
+    void refetch()
   }
 
   const [aiSuggestions, setAiSuggestions] = useState<ReprocessedProjectRecord | null>(null)

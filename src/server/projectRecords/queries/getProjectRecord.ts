@@ -86,6 +86,9 @@ export default resolver.pipe(
           select: {
             id: true,
             title: true,
+            mimeType: true,
+            externalUrl: true,
+            collaborationUrl: true,
           },
         },
         projectRecordTopics: {

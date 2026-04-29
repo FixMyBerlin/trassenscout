@@ -2,12 +2,12 @@
 
 import { EditUploadForm } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/EditUploadForm"
 import { Modal, ModalCloseButton } from "@/src/core/components/Modal"
+import { useModalNavigationGuard } from "@/src/core/components/Modal/useModalNavigationGuard"
 import { H3 } from "@/src/core/components/text"
 import { HeadingWithAction } from "@/src/core/components/text/HeadingWithAction"
 import getUploadWithRelations from "@/src/server/uploads/queries/getUploadWithRelations"
 import { Route } from "next"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
 
 type Props = {
   upload: Awaited<ReturnType<typeof getUploadWithRelations>>
@@ -17,10 +17,10 @@ type Props = {
 
 export const EditUploadModalClient = ({ upload, returnPath, returnText }: Props) => {
   const router = useRouter()
-  const [isDirty, setIsDirty] = useState(false)
+  const navigationGuard = useModalNavigationGuard()
 
   const handleClose = () => {
-    if (isDirty && !window.confirm("Ungespeicherte Änderungen verwerfen?")) return
+    if (!navigationGuard.canClose()) return
     router.back()
   }
 
@@ -35,8 +35,12 @@ export const EditUploadModalClient = ({ upload, returnPath, returnText }: Props)
         upload={upload}
         returnPath={returnPath}
         returnText={returnText}
-        onSuccess={() => router.replace(returnPath, { scroll: false })}
-        onDirtyChange={setIsDirty}
+        onSubmittingChange={navigationGuard.setSubmitting}
+        onSuccess={() => {
+          navigationGuard.beginNavigationAfterSave({ holdUntilNextModalMount: true })
+          router.replace(returnPath, { scroll: false })
+        }}
+        onDirtyChange={navigationGuard.setDirty}
       />
     </Modal>
   )

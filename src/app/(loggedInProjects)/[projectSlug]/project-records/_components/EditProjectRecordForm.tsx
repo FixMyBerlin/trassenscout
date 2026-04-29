@@ -71,7 +71,6 @@ export const EditProjectRecordForm = ({
         else {
           router.push(projectRecordDetailRoute(projectSlug, projectRecord.id))
         }
-        router.refresh()
       }
     } catch (error: any) {
       onSubmittingChange?.(false)
@@ -92,7 +91,7 @@ export const EditProjectRecordForm = ({
   const showPath = projectRecordDetailRoute(projectSlug, projectRecord.id)
   const indexPath =
     projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
-      ? (`/${projectSlug}/project-records/review/pending` as Route)
+      ? (`/${projectSlug}/project-records/needreview` as Route)
       : (`/${projectSlug}/project-records` as Route)
 
   return (
