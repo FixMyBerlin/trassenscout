@@ -13,9 +13,9 @@ on:
         required: false
         default: ""
     outputs:
-      changes:
+      CHANGES:
         description: "Whether the given directories have changed since the last successfull workflow run."
-        value: ${{ jobs.diff.outputs.changes }}
+        value: ${{ jobs.diff.outputs.CHANGES }}
       env_fingerprint_cache_key:
         description: "Computed cache key for the environment fingerprint."
         value: ${{ jobs.diff.outputs.env_fingerprint_cache_key }}
@@ -26,7 +26,7 @@ jobs:
     environment:
       name: ${{ inputs.ENVIRONMENT }}
     outputs:
-      changes: ${{ steps.final_changes.outputs.changes }}
+      CHANGES: ${{ steps.final_changes.outputs.CHANGES }}
       env_fingerprint_cache_key: ${{ steps.env_hash.outputs.cache_key }}
     steps:
       - name: Get last run commit SHA
@@ -51,14 +51,14 @@ jobs:
         id: git_changes
         run: |
           if [ -z "${{ env.LAST_RUN_SHA }}" ]; then
-            echo "changes=true" >> $GITHUB_OUTPUT
+            echo "CHANGES=true" >> $GITHUB_OUTPUT
             exit 0
           fi
 
           if git diff --exit-code ${{ env.LAST_RUN_SHA }} ${{ github.sha }} -- ${{ inputs.CHECK_DIFF_LOCATIONS }} .github/workflows/; then
-            echo "changes=false" >> $GITHUB_OUTPUT
+            echo "CHANGES=false" >> $GITHUB_OUTPUT
           else
-            echo "changes=true" >> $GITHUB_OUTPUT
+            echo "CHANGES=true" >> $GITHUB_OUTPUT
           fi
         shell: bash
 
@@ -150,20 +150,20 @@ jobs:
         id: env_changes
         run: |
           if [ "${{ steps.env_hash.outputs.hash }}" = "" ]; then
-            echo "changes=false" >> $GITHUB_OUTPUT
+            echo "CHANGES=false" >> $GITHUB_OUTPUT
           elif [ "${{ steps.env_fingerprint_cache.outputs.cache-hit }}" = "true" ]; then
-            echo "changes=false" >> $GITHUB_OUTPUT
+            echo "CHANGES=false" >> $GITHUB_OUTPUT
           else
-            echo "changes=true" >> $GITHUB_OUTPUT
+            echo "CHANGES=true" >> $GITHUB_OUTPUT
           fi
         shell: bash
 
       - name: Merge change signals
         id: final_changes
         run: |
-          if [ "${{ steps.git_changes.outputs.changes }}" = "true" ] || [ "${{ steps.env_changes.outputs.changes }}" = "true" ]; then
-            echo "changes=true" >> $GITHUB_OUTPUT
+          if [ "${{ steps.git_changes.outputs.CHANGES }}" = "true" ] || [ "${{ steps.env_changes.outputs.CHANGES }}" = "true" ]; then
+            echo "CHANGES=true" >> $GITHUB_OUTPUT
           else
-            echo "changes=false" >> $GITHUB_OUTPUT
+            echo "CHANGES=false" >> $GITHUB_OUTPUT
           fi
         shell: bash
