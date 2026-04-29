@@ -148,6 +148,7 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
               <UploadPreviewClickable
                 key={upload.id}
                 uploadId={upload.id}
+                upload={upload}
                 projectSlug={projectRecord.project.slug}
                 size="grid"
                 editUrl={uploadEditRoute(projectRecord.project.slug, upload.id)}

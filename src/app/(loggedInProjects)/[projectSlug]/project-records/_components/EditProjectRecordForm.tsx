@@ -71,7 +71,6 @@ export const EditProjectRecordForm = ({
         else {
           router.push(projectRecordDetailRoute(projectSlug, projectRecord.id))
         }
-        router.refresh()
       }
     } catch (error: any) {
       onSubmittingChange?.(false)
