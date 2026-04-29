@@ -11,6 +11,7 @@ import { Link, blueButtonStylesForLinkElement } from "@/src/core/components/link
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { Modal, ModalCloseButton } from "@/src/core/components/Modal"
+import { useModalNavigationGuard } from "@/src/core/components/Modal/useModalNavigationGuard"
 import { H3 } from "@/src/core/components/text"
 import { HeadingWithAction } from "@/src/core/components/text/HeadingWithAction"
 import { formatFileSize } from "@/src/core/utils/formatFileSize"
@@ -37,6 +38,7 @@ export const UploadDetailModal = ({
   onDeleted,
   editUrl,
 }: Props) => {
+  const navigationGuard = useModalNavigationGuard()
   const [upload] = useQuery(
     getUploadWithRelations,
     { projectSlug, id: uploadId! },
@@ -131,7 +133,15 @@ export const UploadDetailModal = ({
         <IfUserCanEdit>
           <ButtonWrapper className="border-t border-gray-200 pt-4">
             {editUrl && (
-              <Link button="blue" href={editUrl} scroll={false}>
+              <Link
+                button="blue"
+                href={editUrl}
+                replace
+                scroll={false}
+                onClick={() => {
+                  navigationGuard.beginNavigationToModal({ holdUntilNextModalMount: true })
+                }}
+              >
                 Bearbeiten
               </Link>
             )}
