@@ -25,7 +25,7 @@ export async function getProjectRecordsTabs(projectSlug: string) {
         ? [
           {
             name: `Bestätigung erforderlich (${needsReviewCount})`,
-            href: `/${projectSlug}/project-records/review/pending` as Route,
+            href: `/${projectSlug}/project-records/needreview` as Route,
           },
         ]
       : []),

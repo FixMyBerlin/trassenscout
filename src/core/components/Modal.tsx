@@ -1,7 +1,10 @@
-import { isModalCloseBlocked } from "@/src/core/components/Modal/modalCloseGuard"
+import {
+  consumePendingMountRelease,
+  isModalCloseBlocked,
+} from "@/src/core/components/Modal/modalCloseGuard"
 import { Dialog, DialogPanel, Transition, TransitionChild } from "@headlessui/react"
 import { XMarkIcon } from "@heroicons/react/24/outline"
-import { Fragment } from "react"
+import { Fragment, useEffect } from "react"
 import { twMerge } from "tailwind-merge"
 
 type Props = {
@@ -28,6 +31,15 @@ export const ModalCloseButton = ({ onClose }: { onClose: () => void }) => {
 
 export const Modal = ({ children, open, handleClose, className, align = "center" }: Props) => {
   const isRightAligned = align === "right"
+
+  // If we are being mounted as the result of a modal-to-modal navigation
+  // (e.g. edit → detail), release the pending close block now that Headless
+  // UI's own useDocumentEvent listeners are live. The resulting
+  // SETTLE_AFTER_BLOCK_RELEASE_MS settle window protects against the spurious
+  // Dialog.onClose events Headless UI fires during rapid route transitions.
+  useEffect(() => {
+    consumePendingMountRelease()?.()
+  }, [])
 
   return (
     <Transition show={open} as={Fragment}>

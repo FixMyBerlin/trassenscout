@@ -92,7 +92,7 @@ export const EditProjectRecordForm = ({
   const showPath = projectRecordDetailRoute(projectSlug, projectRecord.id)
   const indexPath =
     projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
-      ? (`/${projectSlug}/project-records/review/pending` as Route)
+      ? (`/${projectSlug}/project-records/needreview` as Route)
       : (`/${projectSlug}/project-records` as Route)
 
   return (

@@ -30,7 +30,7 @@ export default async function ProjectRecordDetail({
   const needsReview = projectRecord.reviewState !== ProjectRecordReviewState.APPROVED
   const returnPath =
     projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
-      ? (`/${params.projectSlug}/project-records/review/pending` as Route)
+      ? (`/${params.projectSlug}/project-records/needreview` as Route)
       : (`/${params.projectSlug}/project-records` as Route)
 
   return (
