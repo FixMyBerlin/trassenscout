@@ -1,3 +1,5 @@
+"use client"
+
 import { acquisitionAreaColors } from "@/src/core/components/Map/colors/acquisitionAreaColors"
 import {
   acquisitionAreaParcelFillPaint,
@@ -9,6 +11,10 @@ import {
   UnifiedFeaturesLayer,
   type UnifiedFeatureProperties,
 } from "@/src/core/components/Map/layers/UnifiedFeaturesLayer"
+import {
+  alkisAttributionToHtml,
+  useAlkisAttribution,
+} from "@/src/core/components/Map/useAlkisAttribution"
 import { getSubsectionFeatures } from "@/src/core/components/Map/utils/getSubsectionFeatures"
 import { getSubsubsectionFeatures } from "@/src/core/components/Map/utils/getSubsubsectionFeatures"
 import { mergeFeatureCollections } from "@/src/core/components/Map/utils/mergeFeatureCollections"
@@ -176,6 +182,7 @@ function singleGeometryFeatureCollection<T extends Geometry>(
 export const GeometryDrawingAcquisitionAreaParcelContextLayers = ({
   parcelGeometry,
 }: GeometryDrawingAcquisitionAreaParcelContextLayersProps) => {
+  const alkisAttribution = useAlkisAttribution()
   const parcelFeatureCollection = useMemo(
     () => singleGeometryFeatureCollection(parcelGeometry),
     [parcelGeometry],
@@ -187,6 +194,7 @@ export const GeometryDrawingAcquisitionAreaParcelContextLayers = ({
         id="terra_draw_acquisition_area_parcel"
         type="geojson"
         data={parcelFeatureCollection}
+        attribution={alkisAttributionToHtml(alkisAttribution)}
       />
       <Layer
         id="terra_draw_acquisition_area_parcel_fill"

@@ -29,7 +29,14 @@ export type AlkisWfsConfig = AlkisWfsDisabled | AlkisWfsEnabled
 export type AlkisStateConfigEntry = {
   label: string
   enabled: boolean
-  attribution: string | null
+
+  // 1) Source of attribution text/URLs: NOT via script but manually.
+  // They come from official dataset metadata (Geoportals / GDI-DE / CSW), not reliably from WFS GetCapabilities.
+  // The WFS only describes the service technically; legal attribution is defined at dataset/metadata level.
+  // 2) License rules for attribution:
+  // DL-DE BY 2.0 → attribution is required (must show provider/source).
+  // DL-DE Zero 2.0 → no attribution required, but showing source is optional best practice in UI.
+  attribution: { text: string; url: string; license: string } | null
   /** Optional human note (endpoint quirks, audit limitations); not used at runtime. */
   specialCaseNote: string | null
   wms: AlkisWmsConfig
@@ -41,11 +48,16 @@ export type AlkisStateConfigEntry = {
  * Source data: `scripts/alkis-wfs/results/audit-results.json`.
  * Generated at: 2026-04-13T10:02:23.342Z
  */
+
 export const alkisStateConfig: Record<StateKeyEnum, AlkisStateConfigEntry> = {
   BADEN_WUERTTEMBERG: {
     label: "Baden-Württemberg",
     enabled: true,
-    attribution: null,
+    attribution: {
+      text: "© LGL, www.lgl-bw.de",
+      url: "https://www.lgl-bw.de",
+      license: "DL-DE BY 2.0",
+    },
     specialCaseNote: "Uses custom nora namespace and flurstueckskennzeichen property naming.",
     wms: { url: false },
     wfs: {
@@ -72,7 +84,11 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisStateConfigEntry> = {
   BERLIN: {
     label: "Berlin",
     enabled: true,
-    attribution: "© Geoportal Berlin / ALKIS",
+    attribution: {
+      text: "© GeoBasis-DE / Berlin",
+      url: "https://gdi.berlin.de",
+      license: "DL-DE Zero 2.0",
+    },
     specialCaseNote: null,
     wms: { url: false },
     wfs: {
@@ -89,7 +105,11 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisStateConfigEntry> = {
   BRANDENBURG: {
     label: "Brandenburg",
     enabled: true,
-    attribution: null,
+    attribution: {
+      text: "© GeoBasis-DE/LGB",
+      url: "https://geoportal.brandenburg.de",
+      license: "DL-DE BY 2.0",
+    },
     specialCaseNote: null,
     wms: { url: false },
     wfs: {
@@ -141,7 +161,11 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisStateConfigEntry> = {
   HESSEN: {
     label: "Hessen",
     enabled: true,
-    attribution: null,
+    attribution: {
+      text: "© GeoBasis-DE / HVBG",
+      url: "https://gds.hessen.de",
+      license: "DL-DE BY 2.0",
+    },
     specialCaseNote: null,
     wms: { url: false },
     wfs: {
@@ -159,7 +183,11 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisStateConfigEntry> = {
   MECKLENBURG_VORPOMMERN: {
     label: "Mecklenburg-Vorpommern",
     enabled: false,
-    attribution: "© GeoPortal MV / ALKIS",
+    attribution: {
+      text: "© GeoPortal MV / ALKIS",
+      url: "https://www.geoportal-mv.de",
+      license: "DL-DE BY 2.0",
+    },
     specialCaseNote: null,
     wms: { url: false },
     wfs: {
@@ -193,7 +221,11 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisStateConfigEntry> = {
   NORDRHEIN_WESTFALEN: {
     label: "Nordrhein-Westfalen",
     enabled: true,
-    attribution: "© Geobasis NRW / ALKIS",
+    attribution: {
+      text: "© GeoBasis-DE / NRW",
+      url: "https://www.geoportal.nrw",
+      license: "DL-DE Zero 2.0",
+    },
     specialCaseNote: null,
     wms: { url: false },
     wfs: {
@@ -340,6 +372,11 @@ export function isAlkisBackgroundAvailableForProject(
 
 export function isAlkisWfsAvailableForProject(alkisStateKey: StateKeyEnum | null | undefined) {
   return isAlkisBackgroundAvailableForProject(alkisStateKey)
+}
+
+export function getAlkisAttributionForState(alkisStateKey: StateKeyEnum | null | undefined) {
+  if (alkisStateKey == null) return null
+  return alkisStateConfig[alkisStateKey].attribution
 }
 
 export function getBundeslandSelectOptions() {
