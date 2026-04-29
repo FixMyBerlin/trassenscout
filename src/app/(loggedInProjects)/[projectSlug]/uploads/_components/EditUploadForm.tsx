@@ -178,6 +178,7 @@ type Props = {
   /** Called after a successful save instead of router.push(returnPath), e.g. for modal-specific navigation. */
   onSuccess?: () => void
   onDirtyChange?: (isDirty: boolean) => void
+  onSubmittingChange?: (isSubmitting: boolean) => void
 }
 
 export const EditUploadForm = ({
@@ -187,6 +188,7 @@ export const EditUploadForm = ({
   showDelete = true,
   onSuccess,
   onDirtyChange,
+  onSubmittingChange,
 }: Props) => {
   const router = useRouter()
   const [isGeneratingSummary, setIsGeneratingSummary] = useState(false)
@@ -215,6 +217,7 @@ export const EditUploadForm = ({
   }
 
   const handleSubmit = async (values: z.infer<typeof UploadSchema>) => {
+    onSubmittingChange?.(true)
     try {
       await updateUploadMutation({
         ...values,
@@ -227,6 +230,7 @@ export const EditUploadForm = ({
         router.push(returnPath)
       }
     } catch (error: any) {
+      onSubmittingChange?.(false)
       console.error(error)
       return { [FORM_ERROR]: error }
     }
