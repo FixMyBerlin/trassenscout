@@ -22,7 +22,7 @@ export async function getProjectRecordsTabs(projectSlug: string) {
       href: `/${projectSlug}/project-records` as Route,
     },
     ...(canEdit
-        ? [
+      ? [
           {
             name: `Bestätigung erforderlich (${needsReviewCount})`,
             href: `/${projectSlug}/project-records/needreview` as Route,
