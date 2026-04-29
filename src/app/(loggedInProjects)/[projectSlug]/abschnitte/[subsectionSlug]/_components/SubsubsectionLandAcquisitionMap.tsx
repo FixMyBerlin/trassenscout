@@ -13,6 +13,10 @@ import { getLandAcquisitionLegendConfig } from "@/src/core/components/Map/LandAc
 import { MapFooter } from "@/src/core/components/Map/MapFooter"
 import { getStaticOverlayForProject } from "@/src/core/components/Map/staticOverlay/getStaticOverlayForProject"
 import { subsectionLegendConfig } from "@/src/core/components/Map/SubsectionSubsubsectionMap.legendConfig"
+import {
+  alkisAttributionToHtml,
+  useAlkisAttribution,
+} from "@/src/core/components/Map/useAlkisAttribution"
 import { geometriesBbox } from "@/src/core/components/Map/utils/bboxHelpers"
 import { getSubsubsectionFeatures } from "@/src/core/components/Map/utils/getSubsubsectionFeatures"
 import { polygonToGeoJSON } from "@/src/core/components/Map/utils/polygonToGeoJSON"
@@ -59,6 +63,7 @@ const defaultQueryOptions = {
 
 export const SubsubsectionLandAcquisitionMap = ({ subsubsection, activeTab }: Props) => {
   const projectSlug = useProjectSlug()
+  const alkisAttribution = useAlkisAttribution()
   const { acquisitionAreaId, setAcquisitionAreaId } = useAcquisitionAreaSelection()
   const isLandAcquisition = activeTab === "land-acquisition"
 
@@ -223,7 +228,12 @@ export const SubsubsectionLandAcquisitionMap = ({ subsubsection, activeTab }: Pr
       >
         {isLandAcquisition && (
           <>
-            <Source id="acquisition-area-parcels" type="geojson" data={parcelFeatureCollection}>
+            <Source
+              id="acquisition-area-parcels"
+              type="geojson"
+              data={parcelFeatureCollection}
+              attribution={alkisAttributionToHtml(alkisAttribution)}
+            >
               <Layer
                 id="acquisition-area-parcels-fill"
                 type="fill"
