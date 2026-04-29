@@ -1,14 +1,31 @@
 #!/usr/bin/env bun
-import {
-  alkisStateConfig,
-  type AlkisStateConfigEntry,
-  type AlkisWfsConfig,
-  type AlkisWmsConfig,
-} from "@/src/server/alkis/alkisStateConfig"
+import { alkisStateConfig } from "@/src/server/alkis/alkisStateConfig.data"
+import type {
+  AlkisStateConfigEntry,
+  AlkisWfsConfig,
+  AlkisWmsConfig,
+} from "@/src/server/alkis/alkisStateConfig.types"
 import { StateKeyEnum } from "@prisma/client"
 import { readFileSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
 import { AUDIT_SCHEMA_VERSION } from "./shared/constants"
+
+function renderHeader(generatedAt: string): string {
+  return `// Hybrid file maintained by scripts/alkis-wfs/update-config.ts.
+//
+// Auto-managed (overwritten by \`bun scripts/alkis-wfs/update-config.ts\`
+// when the latest audit verifies a state):
+//   wfs.* — url, parcelPropertyKey, alkisParcelIdPropertyKey, projection,
+//           wfsOutputFormat, supports4326, bboxAxisOrder, wfsSupportsJson
+//
+// Manually maintained (edit directly here; the script reads them back
+// and carries them forward unchanged on regeneration):
+//   label, enabled, attribution, specialCaseNote, wms
+//
+// See ./README.md
+//
+// Last regen: ${generatedAt}`
+}
 
 type SuggestedConfig = {
   wfsUrl: string | null
@@ -103,6 +120,19 @@ function buildNextEntry(base: AlkisStateConfigEntry, audit: AuditStateResult | u
   }
 }
 
+function renderAttribution(attribution: AlkisStateConfigEntry["attribution"]): string[] {
+  if (attribution === null) {
+    return ["    attribution: null,"]
+  }
+  return [
+    "    attribution: {",
+    `      text: ${JSON.stringify(attribution.text)},`,
+    `      url: ${JSON.stringify(attribution.url)},`,
+    `      license: ${JSON.stringify(attribution.license)},`,
+    "    },",
+  ]
+}
+
 function renderWms(wms: AlkisWmsConfig): string[] {
   if (wms.url === false) {
     return ["    wms: { url: false },"]
@@ -152,11 +182,10 @@ function renderEntry(
   lines.push(`  ${key}: {`)
   lines.push(`    label: ${JSON.stringify(next.label)},`)
   lines.push(`    enabled: ${next.enabled},`)
-  lines.push(`    attribution: ${toLiteral(next.attribution)},`)
+  lines.push(...renderAttribution(next.attribution))
   lines.push(`    specialCaseNote: ${toLiteral(next.specialCaseNote)},`)
   lines.push(...renderWms(next.wms))
-  // @ts-expect-error
-  lines.push(...renderWfs(next.wfs))
+  lines.push(...renderWfs(next.wfs as AlkisWfsConfig))
   lines.push("  },")
   return lines.join("\n")
 }
@@ -177,82 +206,14 @@ function main() {
     .map((key) => renderEntry(key, alkisStateConfig[key], byKey.get(key)))
     .join("\n")
 
-  const out = `import { StateKeyEnum } from "@prisma/client"
+  const generatedAt = new Date().toISOString()
+  const out = `${renderHeader(generatedAt)}
 
-/** WMS background: absent (\`url: false\`) or URL + layer name together. */
-export type AlkisWmsConfig =
-  | { url: false }
-  | { url: string; layerName: string }
+import { StateKeyEnum } from "@prisma/client"
+import type { AlkisStateConfigEntry } from "./alkisStateConfig.types"
 
-export type AlkisWfsDisabled = { url: false }
-
-export type AlkisWfsEnabled = {
-  url: string
-  parcelPropertyKey: string
-  alkisParcelIdPropertyKey: string | null
-  projection: "EPSG:25832" | "EPSG:25833"
-  wfsOutputFormat: string | null
-  supports4326: boolean
-  bboxAxisOrder: "lonlat" | "latlon"
-  /** Derived from \`wfsOutputFormat\` (JSON / GeoJSON MIME). */
-  wfsSupportsJson: boolean
-}
-
-export type AlkisWfsConfig = AlkisWfsDisabled | AlkisWfsEnabled
-
-export type AlkisStateConfigEntry = {
-  label: string
-  enabled: boolean
-  attribution: string | null
-  /** Optional human note (endpoint quirks, audit limitations); not used at runtime. */
-  specialCaseNote: string | null
-  wms: AlkisWmsConfig
-  wfs: AlkisWfsConfig
-}
-
-/**
- * Auto-generated via \`bun scripts/alkis-wfs/update-config.ts\`.
- * Source data: \`scripts/alkis-wfs/results/audit-results.json\`.
- * Generated at: ${new Date().toISOString()}
- */
 export const alkisStateConfig: Record<StateKeyEnum, AlkisStateConfigEntry> = {
 ${renderedEntries}
-}
-
-export function isAlkisBackgroundAvailableForProject(
-  alkisStateKey: StateKeyEnum | null | undefined,
-) {
-  if (alkisStateKey == null) return false
-  const entry = alkisStateConfig[alkisStateKey]
-  if (entry.enabled !== true) return false
-  const hasWms =
-    entry.wms.url !== false && Boolean(entry.wms.url.trim() && entry.wms.layerName.trim())
-  const hasWfs =
-    entry.wfs.url !== false && Boolean(entry.wfs.url.trim() && entry.wfs.parcelPropertyKey.trim())
-  return hasWms || hasWfs
-}
-
-export function isAlkisWfsAvailableForProject(alkisStateKey: StateKeyEnum | null | undefined) {
-  return isAlkisBackgroundAvailableForProject(alkisStateKey)
-}
-
-export function getBundeslandSelectOptions() {
-  const keys = Object.keys(alkisStateConfig) as StateKeyEnum[]
-  const rows = keys.map((key) => {
-    const entry = alkisStateConfig[key]
-    const disabled = !entry.enabled || key === StateKeyEnum.DISABLED
-    let label = entry.label
-    if (key === StateKeyEnum.BAYERN) {
-      label = \`\${entry.label} (ALKIS-Hintergrund nicht verfügbar)\`
-    } else if (key === StateKeyEnum.DISABLED) {
-      label = entry.label
-    } else if (disabled) {
-      label = \`\${entry.label} (nicht verfügbar)\`
-    }
-    return { key, label, disabled }
-  })
-  rows.sort((a, b) => a.label.localeCompare(b.label, "de"))
-  return [...rows.map((r): [StateKeyEnum, string, boolean] => [r.key, r.label, r.disabled])]
 }
 `
 
@@ -263,7 +224,7 @@ export function getBundeslandSelectOptions() {
     "src",
     "server",
     "alkis",
-    "alkisStateConfig.ts",
+    "alkisStateConfig.data.ts",
   )
   writeFileSync(targetPath, out, "utf8")
   process.stderr.write(`Updated ${targetPath}\n`)
