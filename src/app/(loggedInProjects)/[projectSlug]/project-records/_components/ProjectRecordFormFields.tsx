@@ -70,7 +70,12 @@ export const ProjectRecordFormFields = ({
   const [{ uploads: selectedUploads = [] } = { uploads: [] }] = useQuery(
     getUploadsWithSubsections,
     { projectSlug, where: { id: { in: uploadIds } } },
-    { enabled: uploadIds.length > 0 },
+    {
+      enabled: uploadIds.length > 0,
+      suspense: false,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
   )
 
   const handleSubsectionChange = (newSubsectionId: string) => {
