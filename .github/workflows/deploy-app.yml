@@ -9,8 +9,11 @@ on:
 jobs:
   diff_app:
     uses: ./.github/workflows/diff-last-run.yml
+    secrets: inherit
     with:
+      ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
       CHECK_DIFF_LOCATIONS: src/ db/ public/ emails/ docker/
+      ENV_FINGERPRINT_SCOPE: app
 
   build_app:
     runs-on: ubuntu-latest
@@ -50,3 +53,16 @@ jobs:
           build-args: |
             NEXT_PUBLIC_APP_ENV=${{ inputs.ENVIRONMENT }}
             NEXT_PUBLIC_APP_ORIGIN=${{ vars.APP_ORIGIN }}
+
+      - name: Prepare app environment fingerprint artifact
+        run: |
+          mkdir -p .ci/env-fingerprints
+          echo "${{ needs.diff_app.outputs.env_fingerprint_cache_key }}" > .ci/env-fingerprints/app-${{ inputs.ENVIRONMENT }}.hash
+        shell: bash
+
+      - name: Cache app environment fingerprint
+        if: ${{ needs.diff_app.outputs.env_fingerprint_cache_key != '' }}
+        uses: actions/cache@v4
+        with:
+          path: .ci/env-fingerprints
+          key: ${{ needs.diff_app.outputs.env_fingerprint_cache_key }}
