@@ -4,7 +4,7 @@ import { AuthorizationError } from "blitz"
 import { Metadata } from "next"
 import { redirect } from "next/navigation"
 import "server-only"
-import { ProjectRecordsNeedsReviewContent } from "../../../_components/ProjectRecordsNeedsReviewContent"
+import { ProjectRecordsNeedsReviewContent } from "../../_components/ProjectRecordsNeedsReviewContent"
 
 export const metadata: Metadata = {
   title: "Bestätigung erforderlich - Projektprotokoll",

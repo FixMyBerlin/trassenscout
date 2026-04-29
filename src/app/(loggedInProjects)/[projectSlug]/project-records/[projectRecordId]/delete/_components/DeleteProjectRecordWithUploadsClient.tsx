@@ -49,7 +49,7 @@ export const DeleteProjectRecordWithUploadsClient = ({ deleteInfo, projectSlug }
 
   const returnPath =
     deleteInfo.projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
-      ? (`/${projectSlug}/project-records/review/pending` as Route)
+      ? (`/${projectSlug}/project-records/needreview` as Route)
       : (`/${projectSlug}/project-records` as Route)
 
   const handleSubmit = async () => {
