@@ -1,10 +1,11 @@
 "use client"
 
+import { ProjectRecordEditingStateIndicator } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordEditingStateIndicator"
 import { Link } from "@/src/core/components/links"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/core/components/text"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
-import { pillShellSmClassName } from "@/src/core/utils/pillClassNames"
+import { pillShellClasses } from "@/src/core/utils/pillClassNames"
 import { AdminProjectRecordWithRelations } from "@/src/server/projectRecords/queries/getAllProjectRecordsAdmin"
 import { ProjectRecordReviewState } from "@prisma/client"
 import clsx from "clsx"
@@ -14,7 +15,7 @@ import { de } from "date-fns/locale"
 export const ProjectRecordReviewStatePill = ({ state }: { state: ProjectRecordReviewState }) => (
   <span
     className={clsx(
-      pillShellSmClassName,
+      pillShellClasses,
       "border",
       {
         [ProjectRecordReviewState.NEEDSREVIEW]: "border-yellow-200 bg-yellow-100 text-yellow-800",
@@ -44,7 +45,15 @@ export const AdminProjectRecordsTable = ({
       <TableWrapper className="mt-7">
         <div className="min-w-full divide-y divide-gray-300">
           <div className="bg-gray-50">
-            <div className="grid grid-cols-7">
+            <div className="grid grid-cols-8">
+              <div
+                className={clsx(
+                  spaceClasses,
+                  "text-left text-sm font-semibold text-gray-900 uppercase",
+                )}
+              >
+                <span className="sr-only">Status</span>
+              </div>
               <div
                 className={clsx(
                   spaceClasses,
@@ -98,7 +107,13 @@ export const AdminProjectRecordsTable = ({
           <div className="divide-y divide-gray-200 bg-white">
             {!!projectRecords.length ? (
               projectRecords.map((projectRecord) => (
-                <div key={projectRecord.id} className="grid grid-cols-7">
+                <div key={projectRecord.id} className="grid grid-cols-8">
+                  <div className={clsx(spaceClasses, "text-sm text-gray-900")}>
+                    <ProjectRecordEditingStateIndicator
+                      editingState={projectRecord.editingState}
+                      variant="table"
+                    />
+                  </div>
                   <div className={clsx(spaceClasses, "text-sm text-gray-900")}>
                     {projectRecord.id}
                   </div>

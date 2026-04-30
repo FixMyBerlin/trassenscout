@@ -799,50 +799,56 @@ model ProjectRecordEmail {
 }
 
 model ProjectRecord {
-  id                         Int                      @id @default(autoincrement())
-  createdAt                  DateTime                 @default(now())
-  updatedAt                  DateTime                 @updatedAt
+  id                         Int                       @id @default(autoincrement())
+  createdAt                  DateTime                  @default(now())
+  updatedAt                  DateTime                  @updatedAt
   //
   date                       DateTime?
   title                      String
   body                       String?
+  editingState               ProjectRecordEditingState @default(PENDING)
   //
-  project                    Project                  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  project                    Project                   @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId                  Int
   //
-  subsection                 Subsection?              @relation(fields: [subsectionId], references: [id], onDelete: Cascade)
+  subsection                 Subsection?               @relation(fields: [subsectionId], references: [id], onDelete: Cascade)
   subsectionId               Int?
   //
-  subsubsection              Subsubsection?           @relation(fields: [subsubsectionId], references: [id], onDelete: Cascade)
+  subsubsection              Subsubsection?            @relation(fields: [subsubsectionId], references: [id], onDelete: Cascade)
   subsubsectionId            Int?
   //
-  acquisitionArea            AcquisitionArea?         @relation(fields: [acquisitionAreaId], references: [id], onDelete: Cascade)
+  acquisitionArea            AcquisitionArea?          @relation(fields: [acquisitionAreaId], references: [id], onDelete: Cascade)
   acquisitionAreaId          Int?
   //
-  author                     User?                    @relation("ProjectRecordAuthor", fields: [userId], references: [id])
+  author                     User?                     @relation("ProjectRecordAuthor", fields: [userId], references: [id])
   userId                     Int?
-  projectRecordAuthorType    ProjectRecordType        @default(SYSTEM)
+  projectRecordAuthorType    ProjectRecordType         @default(SYSTEM)
   //
-  assignedTo                 User?                    @relation("ProjectRecordAssignedTo", fields: [assignedToId], references: [id])
+  assignedTo                 User?                     @relation("ProjectRecordAssignedTo", fields: [assignedToId], references: [id])
   assignedToId               Int?
   //
-  updatedBy                  User?                    @relation("ProjectRecordUpdatedBy", fields: [updatedById], references: [id])
+  updatedBy                  User?                     @relation("ProjectRecordUpdatedBy", fields: [updatedById], references: [id])
   updatedById                Int?
   projectRecordUpdatedByType ProjectRecordType?
   //
-  projectRecordEmail         ProjectRecordEmail?      @relation(fields: [projectRecordEmailId], references: [id], onDelete: SetNull)
+  projectRecordEmail         ProjectRecordEmail?       @relation(fields: [projectRecordEmailId], references: [id], onDelete: SetNull)
   projectRecordEmailId       Int?
   //
   projectRecordTopics        ProjectRecordTopic[]
   LogEntry                   LogEntry[]
   uploads                    Upload[]
   //
-  reviewState                ProjectRecordReviewState @default(APPROVED)
+  reviewState                ProjectRecordReviewState  @default(APPROVED)
   reviewedAt                 DateTime? // review metadata tbd
-  reviewedBy                 User?                    @relation("ProjectRecordReviewedBy", fields: [reviewedById], references: [id])
+  reviewedBy                 User?                     @relation("ProjectRecordReviewedBy", fields: [reviewedById], references: [id])
   reviewedById               Int?
   reviewNotes                String?
   projectRecordComments      ProjectRecordComment[]
+}
+
+enum ProjectRecordEditingState {
+  PENDING
+  COMPLETED
 }
 
 model ProjectRecordComment {

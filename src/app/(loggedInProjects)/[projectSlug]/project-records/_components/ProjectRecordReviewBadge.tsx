@@ -1,4 +1,4 @@
-import { pillShellWithGapClassName } from "@/src/core/utils/pillClassNames"
+import { pillShellWithGapClasses } from "@/src/core/utils/pillClassNames"
 import { SparklesIcon } from "@heroicons/react/20/solid"
 import { ProjectRecordReviewState } from "@prisma/client"
 import clsx from "clsx"
@@ -15,7 +15,7 @@ export const ProjectRecordReviewBadge = ({
   return (
     <span
       className={clsx(
-        pillShellWithGapClassName,
+        pillShellWithGapClasses,
         "border border-gray-200 bg-yellow-100 text-gray-700",
       )}
     >

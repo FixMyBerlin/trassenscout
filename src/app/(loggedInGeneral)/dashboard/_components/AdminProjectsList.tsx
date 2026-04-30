@@ -3,7 +3,8 @@ import { invoke } from "@/src/blitz-server"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { Link } from "@/src/core/components/links/Link"
 import { shortTitle } from "@/src/core/components/text"
-import { pillShellSmClassName } from "@/src/core/utils/pillClassNames"
+import { pillShellClasses } from "@/src/core/utils/pillClassNames"
+
 import getProjects from "@/src/server/projects/queries/getProjects"
 import getCurrentUser from "@/src/server/users/queries/getCurrentUser"
 import { clsx } from "clsx"
@@ -48,7 +49,7 @@ export const AdminProjectsList = async () => {
                 <span className="inline-flex items-center gap-2">
                   <span
                     className={clsx(
-                      pillShellSmClassName,
+                      pillShellClasses,
                       "border border-gray-200 bg-gray-50",
                       project.subsectionCount === 0 ? "text-gray-700/60" : "text-gray-700",
                     )}
@@ -57,7 +58,7 @@ export const AdminProjectsList = async () => {
                   </span>
                   <span
                     className={clsx(
-                      pillShellSmClassName,
+                      pillShellClasses,
                       "border border-gray-200 bg-gray-50",
                       project.subsubsectionCount === 0 ? "text-gray-700/60" : "text-gray-700",
                     )}
