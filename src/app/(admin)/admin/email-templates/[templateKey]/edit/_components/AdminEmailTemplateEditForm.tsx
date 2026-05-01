@@ -1,6 +1,8 @@
 "use client"
 
 import { FORM_ERROR } from "@/src/core/components/forms"
+import { blueButtonStyles } from "@/src/core/components/links"
+import deleteEmailTemplate from "@/src/server/emailTemplates/mutations/deleteEmailTemplate"
 import { EmailTemplateKey } from "@/src/server/emailTemplates/registry"
 import previewEmailTemplate from "@/src/server/emailTemplates/mutations/previewEmailTemplate"
 import upsertEmailTemplate from "@/src/server/emailTemplates/mutations/upsertEmailTemplate"
@@ -17,8 +19,9 @@ import { EmailTemplatePreviewPanel } from "./EmailTemplatePreviewPanel"
 export const AdminEmailTemplateEditForm = () => {
   const router = useRouter()
   const templateKey = String(useParams()?.templateKey) as EmailTemplateKey
-  const [template] = useQuery(getEmailTemplate, { key: templateKey })
+  const [template, { refetch }] = useQuery(getEmailTemplate, { key: templateKey })
   const [upsertEmailTemplateMutation] = useMutation(upsertEmailTemplate)
+  const [deleteEmailTemplateMutation] = useMutation(deleteEmailTemplate)
   const [previewEmailTemplateMutation, { isLoading: previewLoading }] =
     useMutation(previewEmailTemplate)
   const [preview, setPreview] = useState<EmailTemplatePreviewResult | null>(null)
@@ -40,8 +43,25 @@ export const AdminEmailTemplateEditForm = () => {
       ctaText: template.ctaText,
     })
     // We only want the initial preview after template load/change.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [template.key])
+
+  const handleResetToDefaults = async () => {
+    if (!window.confirm("Möchten Sie den DB-Override wirklich löschen und auf den Code-Default zurücksetzen?")) {
+      return
+    }
+
+    await deleteEmailTemplateMutation({ key: template.key })
+    const result = await refetch()
+
+    if (result.data) {
+      await handlePreview({
+        subject: result.data.subject,
+        introMarkdown: result.data.introMarkdown,
+        outroMarkdown: result.data.outroMarkdown,
+        ctaText: result.data.ctaText,
+      })
+    }
+  }
 
   const handleSubmit = async (values: EmailTemplateFormValues) => {
     try {
@@ -70,6 +90,7 @@ export const AdminEmailTemplateEditForm = () => {
         </div>
 
         <EmailTemplateForm
+          key={`${template.key}:${template.source}:${template.subject}:${template.introMarkdown}:${template.outroMarkdown}:${template.ctaText}`}
           submitText="Speichern"
           schema={EmailTemplateFormSchema}
           initialValues={{
@@ -80,7 +101,18 @@ export const AdminEmailTemplateEditForm = () => {
           }}
           onSubmit={handleSubmit}
           actionBarLeft={
-            <EmailTemplatePreviewButton onPreview={handlePreview} disabled={previewLoading} />
+            <>
+              <EmailTemplatePreviewButton onPreview={handlePreview} disabled={previewLoading} />
+              {template.source === "db" && (
+                <button
+                  type="button"
+                  className={blueButtonStyles}
+                  onClick={() => void handleResetToDefaults()}
+                >
+                  DB-Override löschen
+                </button>
+              )}
+            </>
           }
         />
       </section>
