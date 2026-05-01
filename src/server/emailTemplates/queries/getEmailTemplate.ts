@@ -12,13 +12,14 @@ export default resolver.pipe(
       key: resolved.key,
       name: resolved.definition.name,
       description: resolved.definition.description,
+      supportsCta: resolved.definition.supportsCta,
       allowedVariables: resolved.definition.allowedVariables,
       sampleContext: resolved.definition.sampleContext,
       source: resolved.source,
       subject: resolved.subject,
       introMarkdown: resolved.introMarkdown,
       outroMarkdown: resolved.outroMarkdown ?? "",
-      ctaText: resolved.ctaText ?? "",
+      ctaText: resolved.definition.supportsCta ? resolved.ctaText ?? "" : "",
     }
   },
 )

@@ -42,8 +42,7 @@ export const AdminEmailTemplateEditForm = () => {
       outroMarkdown: template.outroMarkdown,
       ctaText: template.ctaText,
     })
-    // We only want the initial preview after template load/change.
-  }, [template.key])
+  }, [template.key, template.subject, template.introMarkdown, template.outroMarkdown, template.ctaText])
 
   const handleResetToDefaults = async () => {
     if (!window.confirm("Möchten Sie den DB-Override wirklich löschen und auf den Code-Default zurücksetzen?")) {
@@ -99,6 +98,7 @@ export const AdminEmailTemplateEditForm = () => {
             outroMarkdown: template.outroMarkdown,
             ctaText: template.ctaText,
           }}
+          supportsCta={template.supportsCta}
           onSubmit={handleSubmit}
           actionBarLeft={
             <>

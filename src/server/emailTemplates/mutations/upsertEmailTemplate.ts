@@ -14,11 +14,12 @@ export default resolver.pipe(
   resolver.authorize("ADMIN"),
   async ({ key, subject, introMarkdown, outroMarkdown, ctaText }, ctx) => {
     const definition = getEmailTemplateDefinition(key)
+    const normalizedCtaText = definition.supportsCta ? ctaText : undefined
     const content = {
       subject,
       introMarkdown,
       outroMarkdown,
-      ctaText,
+      ctaText: normalizedCtaText,
     }
 
     const validation = validateEmailTemplateContent(definition.allowedVariables, content)
@@ -40,7 +41,7 @@ export default resolver.pipe(
         subject,
         introMarkdown,
         outroMarkdown: normalizeOptionalString(outroMarkdown),
-        ctaText: normalizeOptionalString(ctaText),
+        ctaText: normalizeOptionalString(normalizedCtaText),
         updatedById: ctx.session.userId,
       },
       create: {
@@ -48,7 +49,7 @@ export default resolver.pipe(
         subject,
         introMarkdown,
         outroMarkdown: normalizeOptionalString(outroMarkdown),
-        ctaText: normalizeOptionalString(ctaText),
+        ctaText: normalizeOptionalString(normalizedCtaText),
         updatedById: ctx.session.userId,
       },
     })

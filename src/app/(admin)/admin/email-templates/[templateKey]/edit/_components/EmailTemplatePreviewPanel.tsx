@@ -8,7 +8,11 @@ type Props = {
   sampleContext: Record<string, string>
 }
 
-export const EmailTemplatePreviewPanel = ({ preview, allowedVariables, sampleContext }: Props) => {
+export const EmailTemplatePreviewPanel = ({
+  preview,
+  allowedVariables,
+  sampleContext,
+}: Props) => {
   return (
     <aside className="space-y-4 rounded-lg border border-gray-200 p-4">
       <div>

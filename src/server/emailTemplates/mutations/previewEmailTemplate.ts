@@ -8,6 +8,7 @@ export default resolver.pipe(
   resolver.authorize("ADMIN"),
   async ({ key, subject, introMarkdown, outroMarkdown, ctaText }) => {
     const definition = getEmailTemplateDefinition(key)
+    const normalizedCtaText = definition.supportsCta ? ctaText : undefined
 
     return await buildEmailTemplatePreview(
       key,
@@ -15,7 +16,7 @@ export default resolver.pipe(
         subject,
         introMarkdown,
         outroMarkdown,
-        ctaText,
+        ctaText: normalizedCtaText,
       },
       definition.sampleContext,
     )

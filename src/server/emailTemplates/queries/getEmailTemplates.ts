@@ -21,6 +21,7 @@ export default resolver.pipe(resolver.authorize("ADMIN"), async () => {
       key: definition.key,
       name: definition.name,
       description: definition.description,
+      supportsCta: definition.supportsCta,
       allowedVariables: definition.allowedVariables,
       sampleContext: definition.sampleContext,
       source: dbTemplate ? "db" : ("defaults" as const),

@@ -15,6 +15,7 @@ export type EmailTemplateDefinition = {
   key: EmailTemplateKey
   name: string
   description: string
+  supportsCta: boolean
   allowedVariables: string[]
   sampleContext: Record<string, string>
   defaults: {
@@ -32,6 +33,7 @@ export const emailTemplateRegistry: Record<EmailTemplateKey, EmailTemplateDefini
     key: emailTemplateKeys.forgotPassword,
     name: "Passwort zurücksetzen",
     description: "E-Mail an Nutzer:innen nach Anforderung eines Passwort-Reset-Links.",
+    supportsCta: true,
     allowedVariables: [],
     sampleContext: {},
     defaults: {
@@ -44,6 +46,7 @@ export const emailTemplateRegistry: Record<EmailTemplateKey, EmailTemplateDefini
     key: emailTemplateKeys.invitationCreatedUser,
     name: "Einladung an Mitwirkende",
     description: "E-Mail an eingeladene Personen zur Mitarbeit in einem Projekt.",
+    supportsCta: true,
     allowedVariables: ["inviterName", "projectName", "loginUrl"],
     sampleContext: {
       inviterName: "Alex Beispiel",
@@ -56,7 +59,7 @@ export const emailTemplateRegistry: Record<EmailTemplateKey, EmailTemplateDefini
 
 # {{inviterName}} hat Sie soeben eingeladen, am Projekt {{projectName}} mitzuwirken.
 
-Bitte registieren Sie sich, um die Einladung anzunehmen.`,
+Bitte registrieren Sie sich, um die Einladung anzunehmen.`,
       outroMarkdown: `Falls Sie schon einen Trassenscout-Account unter dieser E-Mail-Adresse besitzen, [melden Sie sich bitte damit an]({{loginUrl}}), um die Einladung anzunehmen.`,
       ctaText: "Einladung annehmen und registrieren",
     },
@@ -65,6 +68,7 @@ Bitte registieren Sie sich, um die Einladung anzunehmen.`,
     key: emailTemplateKeys.invitationCreatedEditorsNotification,
     name: "Info an Editoren: Einladung erstellt",
     description: "Benachrichtigung an Editor-Mitglieder, dass eine Einladung erstellt wurde.",
+    supportsCta: false,
     allowedVariables: ["projectName", "inviterName", "invitesUrl"],
     sampleContext: {
       projectName: "Radschnellweg Nord",
@@ -75,7 +79,7 @@ Bitte registieren Sie sich, um die Einladung anzunehmen.`,
       subject: "Trassenscout: Neues Teammitglied eingeladen",
       introMarkdown: `Guten Tag!
 
-Diese Mail dient zur Information aller Personen mit der Rolle "Editor" im Projekt {{projectName}}.
+Diese E-Mail dient zur Information aller Personen mit der Rolle "Editor" im Projekt {{projectName}}.
 
 # {{inviterName}} hat soeben eine:n neue:n Mitwirkende:n eingeladen.
 
@@ -87,6 +91,7 @@ Die Liste aller offenen Einladungen finden Sie unter {{invitesUrl}}.`,
     name: "Info an Editoren: Einladung angenommen",
     description:
       "Benachrichtigung an Editor-Mitglieder, dass eine Einladung angenommen wurde.",
+    supportsCta: false,
     allowedVariables: ["projectName", "inviteeName", "roleName", "teamUrl"],
     sampleContext: {
       projectName: "Radschnellweg Nord",
@@ -110,6 +115,7 @@ Das Projektteam kann unter {{teamUrl}} eingesehen werden.`,
     name: "Admin: E-Mail keinem Projekt zugeordnet",
     description:
       "Benachrichtigung an Admins, wenn eine eingehende Projekt-Record-E-Mail keinem Projekt zugeordnet werden konnte.",
+    supportsCta: true,
     allowedVariables: [
       "subjectSuffix",
       "reasonText",
@@ -118,9 +124,9 @@ Das Projektteam kann unter {{teamUrl}} eingesehen werden.`,
       "usedSubaddressLine",
     ],
     sampleContext: {
-      subjectSuffix: "Email ohne Subadressing eingegangen",
+      subjectSuffix: "E-Mail ohne Subadressierung eingegangen",
       reasonText:
-        "Es wurde kein Subadressing genutzt, diese Email ist in der Inbox eingegangen. Die Email wurde im Trassenscout gespeichert und kann im Admin Interface einem Projekt zugeordnet und prozessiert werden.",
+        "Es wurde keine Subadressierung genutzt. Diese E-Mail ist in der Inbox eingegangen. Sie wurde im Trassenscout gespeichert und kann im Admin-Interface einem Projekt zugeordnet und prozessiert werden.",
       senderEmail: "buerger@example.org",
       emailSubject: "Frage zum Projektverlauf",
       usedSubaddressLine: "",
@@ -129,14 +135,14 @@ Das Projektteam kann unter {{teamUrl}} eingesehen werden.`,
       subject: "[Admin] Trassenscout: {{subjectSuffix}}",
       introMarkdown: `Hallo Trassenscout-Admin!
 
-# Eine Email konnte keinem Projekt zugeordnet werden
+# Eine E-Mail konnte keinem Projekt zugeordnet werden
 
 {{reasonText}}
 
 **Absenderadresse:** {{senderEmail}}
 **Betreff:** {{emailSubject}}
 {{usedSubaddressLine}}`,
-      ctaText: "Email im Admin Interface anzeigen",
+      ctaText: "E-Mail im Admin-Interface anzeigen",
     },
   },
   [emailTemplateKeys.projectRecordNeedsReviewAdmin]: {
@@ -144,6 +150,7 @@ Das Projektteam kann unter {{teamUrl}} eingesehen werden.`,
     name: "Admin: E-Mail braucht Prüfung",
     description:
       "Benachrichtigung an Admins, wenn eine eingehende Projekt-Record-E-Mail manuell geprüft werden muss.",
+    supportsCta: true,
     allowedVariables: [
       "projectSlug",
       "subjectSuffix",
@@ -154,7 +161,7 @@ Das Projektteam kann unter {{teamUrl}} eingesehen werden.`,
     ],
     sampleContext: {
       projectSlug: "demo-projekt",
-      subjectSuffix: "Email benötigt Admin-Prüfung",
+      subjectSuffix: "E-Mail benötigt Admin-Prüfung",
       reviewReason: "die Absenderadresse nicht als Teammitglied oder Kontakt im Projekt hinterlegt ist",
       senderEmail: "buerger@example.org",
       emailSubject: "Neue Hinweise zur Strecke",
@@ -165,9 +172,9 @@ Das Projektteam kann unter {{teamUrl}} eingesehen werden.`,
       subject: "[Admin] Trassenscout: {{subjectSuffix}} in Projekt {{projectSlug}}",
       introMarkdown: `Hallo Trassenscout-Admin!
 
-# Eine Email benötigt Admin-Prüfung im Projekt {{projectSlug}}
+# Eine E-Mail benötigt Admin-Prüfung im Projekt {{projectSlug}}
 
-Die Email wurde automatisch als Protokolleintrag erfasst, benötigt jedoch eine Admin-Prüfung, da {{reviewReason}}.
+Die E-Mail wurde automatisch als Protokolleintrag erfasst, benötigt jedoch eine Admin-Prüfung, da {{reviewReason}}.
 
 **Absenderadresse:** {{senderEmail}}
 **Betreff:** {{emailSubject}}
@@ -181,6 +188,7 @@ Bitte prüfen Sie den erstellten Protokolleintrag und entscheiden Sie, ob:
     key: emailTemplateKeys.userCreatedAdminNotification,
     name: "Admin: Nutzerkonto erstellt",
     description: "Benachrichtigung an Admins, wenn sich eine neue Person registriert hat.",
+    supportsCta: true,
     allowedVariables: ["userName", "userMail", "membershipStatusText"],
     sampleContext: {
       userName: "Jamie Beispiel",
@@ -205,6 +213,7 @@ Bitte prüfe den Account und ordne ihn einem Projekt zu.
     key: emailTemplateKeys.userCreatedUserNotification,
     name: "Info an Nutzer:in: Account erstellt",
     description: "Begrüßungs- und Informationsmail nach erfolgreicher Registrierung.",
+    supportsCta: true,
     allowedVariables: ["userName"],
     sampleContext: {
       userName: "Jamie Beispiel",

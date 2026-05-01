@@ -28,11 +28,19 @@ export default async function AdminEmailTemplatesPage() {
             key={template.key}
             className={`rounded-lg border border-gray-200 p-4 ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}
           >
-            <h2 className="font-semibold mt-1">{template.name}</h2>
+            <div className="flex items-start justify-between gap-4">
+              <h2 className="mt-1 font-semibold">{template.name}</h2>
+              <span
+                className={`rounded-full px-2.5 py-1 text-xs font-medium ${
+                  template.source === "db"
+                    ? "bg-blue-100 text-blue-800"
+                    : "bg-gray-200 text-gray-700"
+                }`}
+              >
+                {template.source === "db" ? "DB-Override" : "Code-Default"}
+              </span>
+            </div>
             <p className="mt-1 text-sm text-gray-600">{template.description}</p>
-            <p className="mt-2 text-sm">
-              Quelle: {template.source === "db" ? "DB-Override" : "Code-Default"}
-            </p>
             <p className="mt-1 text-sm text-gray-600">Key: {template.key}</p>
             <div className="mt-3">
               <Link button href={`/admin/email-templates/${template.key}/edit`}>
