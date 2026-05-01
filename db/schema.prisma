@@ -64,6 +64,7 @@ model User {
   //
   supportDocumentsCreated  SupportDocument[]       @relation("SupportDocumentCreatedBy")
   projectRecordComments    ProjectRecordComment[]
+  emailTemplatesUpdated    EmailTemplate[]         @relation("EmailTemplateUpdatedBy")
 }
 
 enum UserRoleEnum {
@@ -711,6 +712,21 @@ model SurveyResponseComment {
   surveyResponseId Int
   //
   body             String
+}
+
+model EmailTemplate {
+  id            Int       @id @default(autoincrement())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  //
+  key           String    @unique
+  subject       String
+  introMarkdown String
+  outroMarkdown String?
+  ctaText       String?
+  //
+  updatedBy     User?     @relation("EmailTemplateUpdatedBy", fields: [updatedById], references: [id])
+  updatedById   Int?
 }
 
 model SystemLogEntry {
