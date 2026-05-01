@@ -16,6 +16,7 @@ export type EmailTemplateDefinition = {
   name: string
   description: string
   allowedVariables: string[]
+  sampleContext: Record<string, string>
   defaults: {
     subject: string
     introMarkdown: string
@@ -32,6 +33,7 @@ export const emailTemplateRegistry: Record<EmailTemplateKey, EmailTemplateDefini
     name: "Passwort zurücksetzen",
     description: "E-Mail an Nutzer:innen nach Anforderung eines Passwort-Reset-Links.",
     allowedVariables: [],
+    sampleContext: {},
     defaults: {
       subject: "Trassenscout: Setzen Sie ihr Passwort zurück",
       introMarkdown: "# Setzen Sie ihr Passwort zurück.",
@@ -43,6 +45,11 @@ export const emailTemplateRegistry: Record<EmailTemplateKey, EmailTemplateDefini
     name: "Einladung an Mitwirkende",
     description: "E-Mail an eingeladene Personen zur Mitarbeit in einem Projekt.",
     allowedVariables: ["inviterName", "projectName", "loginUrl"],
+    sampleContext: {
+      inviterName: "Alex Beispiel",
+      projectName: "Radschnellweg Nord",
+      loginUrl: "https://trassenscout.de/auth/login?inviteToken=demo-token",
+    },
     defaults: {
       subject: "Trassenscout: Ihre Einladung zum Projekt {{projectName}}",
       introMarkdown: `Guten Tag!
@@ -59,6 +66,11 @@ Bitte registieren Sie sich, um die Einladung anzunehmen.`,
     name: "Info an Editoren: Einladung erstellt",
     description: "Benachrichtigung an Editor-Mitglieder, dass eine Einladung erstellt wurde.",
     allowedVariables: ["projectName", "inviterName", "invitesUrl"],
+    sampleContext: {
+      projectName: "Radschnellweg Nord",
+      inviterName: "Alex Beispiel",
+      invitesUrl: "https://trassenscout.de/demo/invites",
+    },
     defaults: {
       subject: "Trassenscout: Neues Teammitglied eingeladen",
       introMarkdown: `Guten Tag!
@@ -76,6 +88,12 @@ Die Liste aller offenen Einladungen finden Sie unter {{invitesUrl}}.`,
     description:
       "Benachrichtigung an Editor-Mitglieder, dass eine Einladung angenommen wurde.",
     allowedVariables: ["projectName", "inviteeName", "roleName", "teamUrl"],
+    sampleContext: {
+      projectName: "Radschnellweg Nord",
+      inviteeName: "Jamie Beispiel",
+      roleName: "Editor",
+      teamUrl: "https://trassenscout.de/demo/contacts/team",
+    },
     defaults: {
       subject: "Trassenscout: Neues Teammitglied ({{projectName}})",
       introMarkdown: `Guten Tag!
@@ -99,6 +117,14 @@ Das Projektteam kann unter {{teamUrl}} eingesehen werden.`,
       "emailSubject",
       "usedSubaddressLine",
     ],
+    sampleContext: {
+      subjectSuffix: "Email ohne Subadressing eingegangen",
+      reasonText:
+        "Es wurde kein Subadressing genutzt, diese Email ist in der Inbox eingegangen. Die Email wurde im Trassenscout gespeichert und kann im Admin Interface einem Projekt zugeordnet und prozessiert werden.",
+      senderEmail: "buerger@example.org",
+      emailSubject: "Frage zum Projektverlauf",
+      usedSubaddressLine: "",
+    },
     defaults: {
       subject: "[Admin] Trassenscout: {{subjectSuffix}}",
       introMarkdown: `Hallo Trassenscout-Admin!
@@ -126,6 +152,15 @@ Das Projektteam kann unter {{teamUrl}} eingesehen werden.`,
       "emailSubject",
       "actionItemsMarkdown",
     ],
+    sampleContext: {
+      projectSlug: "demo-projekt",
+      subjectSuffix: "Email benötigt Admin-Prüfung",
+      reviewReason: "die Absenderadresse nicht als Teammitglied oder Kontakt im Projekt hinterlegt ist",
+      senderEmail: "buerger@example.org",
+      emailSubject: "Neue Hinweise zur Strecke",
+      actionItemsMarkdown:
+        "- Die Absenderadresse als Kontakt zum Projekt hinzugefügt werden soll\n- Der Protokolleintrag genehmigt oder abgelehnt werden soll",
+    },
     defaults: {
       subject: "[Admin] Trassenscout: {{subjectSuffix}} in Projekt {{projectSlug}}",
       introMarkdown: `Hallo Trassenscout-Admin!
@@ -147,6 +182,11 @@ Bitte prüfen Sie den erstellten Protokolleintrag und entscheiden Sie, ob:
     name: "Admin: Nutzerkonto erstellt",
     description: "Benachrichtigung an Admins, wenn sich eine neue Person registriert hat.",
     allowedVariables: ["userName", "userMail", "membershipStatusText"],
+    sampleContext: {
+      userName: "Jamie Beispiel",
+      userMail: "jamie@example.org",
+      membershipStatusText: "Es sind noch keine Mitgliedschaften vorhanden",
+    },
     defaults: {
       subject: "[Admin] Trassenscout: Nutzer:in hat sich registriert",
       introMarkdown: `Liebe Trassenscout-Admins!
@@ -166,6 +206,9 @@ Bitte prüfe den Account und ordne ihn einem Projekt zu.
     name: "Info an Nutzer:in: Account erstellt",
     description: "Begrüßungs- und Informationsmail nach erfolgreicher Registrierung.",
     allowedVariables: ["userName"],
+    sampleContext: {
+      userName: "Jamie Beispiel",
+    },
     defaults: {
       subject: "Trassenscout: Account erstellt",
       introMarkdown: `Guten Tag {{userName}}!

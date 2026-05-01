@@ -1,7 +1,10 @@
 import db from "@/db"
+import { MarkdownMail } from "@/emails/templats/MarkdownMail"
+import { render } from "@react-email/components"
 import { EmailTemplateKey, getEmailTemplateDefinition } from "./registry"
 import {
   EmailTemplateEditableContent,
+  EmailTemplatePreviewResult,
   EmailTemplateValidationResult,
   EmailTemplateVariableContext,
   RenderedEmailTemplate,
@@ -126,5 +129,52 @@ export const resolveAndRenderEmailTemplate = async (
     ...resolvedTemplate,
     ...validation,
     rendered: renderEmailTemplateContent(resolvedTemplate, context),
+  }
+}
+
+export const validateAndRenderEmailTemplateContent = (
+  key: EmailTemplateKey,
+  content: EmailTemplateEditableContent,
+  context: EmailTemplateVariableContext,
+): RenderedEmailTemplate => {
+  const definition = getEmailTemplateDefinition(key)
+  const validation = validateEmailTemplateContent(definition.allowedVariables, content)
+
+  return {
+    key,
+    definition,
+    source: "db",
+    ...content,
+    ...validation,
+    rendered: renderEmailTemplateContent(content, context),
+  }
+}
+
+export const buildEmailTemplatePreview = async (
+  key: EmailTemplateKey,
+  content: EmailTemplateEditableContent,
+  context: EmailTemplateVariableContext,
+): Promise<EmailTemplatePreviewResult> => {
+  const renderedTemplate = validateAndRenderEmailTemplateContent(key, content, context)
+
+  const htmlProps = renderedTemplate.rendered.ctaText
+    ? {
+        introMarkdown: renderedTemplate.rendered.introMarkdown,
+        outroMarkdown: renderedTemplate.rendered.outroMarkdown,
+        ctaText: renderedTemplate.rendered.ctaText,
+        ctaLink: "#preview-generated-in-code",
+      }
+    : {
+        introMarkdown: renderedTemplate.rendered.introMarkdown,
+        outroMarkdown: renderedTemplate.rendered.outroMarkdown,
+      }
+
+  const html = await render(
+    <MarkdownMail {...htmlProps} />,
+  )
+
+  return {
+    ...renderedTemplate,
+    html,
   }
 }

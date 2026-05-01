@@ -38,3 +38,9 @@ export type RenderedEmailTemplate = Prettify<
       }
     }
 >
+
+export type EmailTemplatePreviewResult = Prettify<
+  RenderedEmailTemplate & {
+    html: string
+  }
+>
