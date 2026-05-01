@@ -1,3 +1,5 @@
+import { emailTemplateKeys } from "@/src/server/emailTemplates/registry"
+import { resolveAndRenderEmailTemplate } from "@/src/server/emailTemplates/render"
 import { Route } from "next"
 import { addressNoreply } from "./utils/addresses"
 import { mailUrl } from "./utils/mailUrl"
@@ -10,20 +12,36 @@ type Props = {
 }
 
 export async function userCreatedNotificationToUser(props: Props) {
-  const introMarkdown = `
-Guten Tag ${props.user.name}!
+  const renderedTemplate = await resolveAndRenderEmailTemplate(
+    emailTemplateKeys.userCreatedUserNotification,
+    { userName: props.user.name },
+  )
 
-Herzlich Willkommen im Trassenscout! Diese E-Mail dient zur Information, dass Sie soeben erfolgreich einen Account erstellt haben. 
-`
-
-  const message: Mail = {
-    From: addressNoreply,
-    To: [{ Email: props.user.email, Name: props.user.name }],
-    Subject: "Trassenscout: Account erstellt",
-    introMarkdown,
-    ctaLink: mailUrl(props.path),
-    ctaText: "Trassenscout öffnen",
+  if (!renderedTemplate.isValid) {
+    throw new Error(
+      `Invalid email template "${renderedTemplate.key}": ${renderedTemplate.unknownVariables.join(", ")}`,
+    )
   }
+
+  const ctaLink = mailUrl(props.path)
+
+  const message: Mail = renderedTemplate.rendered.ctaText
+    ? {
+        From: addressNoreply,
+        To: [{ Email: props.user.email, Name: props.user.name }],
+        Subject: renderedTemplate.rendered.subject,
+        introMarkdown: renderedTemplate.rendered.introMarkdown,
+        outroMarkdown: renderedTemplate.rendered.outroMarkdown,
+        ctaLink,
+        ctaText: renderedTemplate.rendered.ctaText,
+      }
+    : {
+        From: addressNoreply,
+        To: [{ Email: props.user.email, Name: props.user.name }],
+        Subject: renderedTemplate.rendered.subject,
+        introMarkdown: renderedTemplate.rendered.introMarkdown,
+        outroMarkdown: renderedTemplate.rendered.outroMarkdown,
+      }
 
   return {
     async send() {

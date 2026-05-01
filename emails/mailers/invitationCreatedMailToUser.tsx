@@ -1,4 +1,5 @@
-import { quote } from "@/src/core/components/text/quote"
+import { emailTemplateKeys } from "@/src/server/emailTemplates/registry"
+import { resolveAndRenderEmailTemplate } from "@/src/server/emailTemplates/render"
 import { Route } from "next"
 import { addressNoreply } from "./utils/addresses"
 import { mailUrl } from "./utils/mailUrl"
@@ -14,26 +15,40 @@ type Props = {
 }
 
 export async function invitationCreatedMailToUser(props: Props) {
-  const introMarkdown = `
-Guten Tag!
+  const renderedTemplate = await resolveAndRenderEmailTemplate(
+    emailTemplateKeys.invitationCreatedUser,
+    {
+      inviterName: props.inviterName,
+      projectName: props.projectName,
+      loginUrl: mailUrl(props.loginPath),
+    },
+  )
 
-# ${props.inviterName} hat Sie soeben eingeladen, am Projekt ${quote(props.projectName)} mitzuwirken.
-
-Bitte registieren Sie sich, um die Einladung anzunehmen.`
-
-  const outroMarkdown = `
-Falls Sie schon einen Trassenscout-Account unter dieser E-Mail-Adresse besitzen, [melden Sie sich bitte damit an]( ${mailUrl(props.loginPath)} ), um die Einladung anzunehmen.
-`
-
-  const message: Mail = {
-    From: addressNoreply,
-    To: [{ Email: props.userEmail }],
-    Subject: `Trassenscout: Ihre Einladung zum Projekt ${quote(props.projectName)}`,
-    introMarkdown,
-    ctaLink: mailUrl(props.signupPath),
-    ctaText: "Einladung annehmen und registrieren",
-    outroMarkdown,
+  if (!renderedTemplate.isValid) {
+    throw new Error(
+      `Invalid email template "${renderedTemplate.key}": ${renderedTemplate.unknownVariables.join(", ")}`,
+    )
   }
+
+  const ctaLink = mailUrl(props.signupPath)
+
+  const message: Mail = renderedTemplate.rendered.ctaText
+    ? {
+        From: addressNoreply,
+        To: [{ Email: props.userEmail }],
+        Subject: renderedTemplate.rendered.subject,
+        introMarkdown: renderedTemplate.rendered.introMarkdown,
+        outroMarkdown: renderedTemplate.rendered.outroMarkdown,
+        ctaLink,
+        ctaText: renderedTemplate.rendered.ctaText,
+      }
+    : {
+        From: addressNoreply,
+        To: [{ Email: props.userEmail }],
+        Subject: renderedTemplate.rendered.subject,
+        introMarkdown: renderedTemplate.rendered.introMarkdown,
+        outroMarkdown: renderedTemplate.rendered.outroMarkdown,
+      }
 
   return {
     async send() {

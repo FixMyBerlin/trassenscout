@@ -1,4 +1,5 @@
-import { quote } from "@/src/core/components/text/quote"
+import { emailTemplateKeys } from "@/src/server/emailTemplates/registry"
+import { resolveAndRenderEmailTemplate } from "@/src/server/emailTemplates/render"
 import { Route } from "next"
 import { addressNoreply } from "./utils/addresses"
 import { mailUrl } from "./utils/mailUrl"
@@ -14,25 +15,28 @@ type Props = {
 }
 
 export async function membershipCreatedNotificationToEditors(props: Props) {
-  const introMarkdown = `
-Guten Tag!
+  const renderedTemplate = await resolveAndRenderEmailTemplate(
+    emailTemplateKeys.membershipCreatedEditorsNotification,
+    {
+      projectName: props.projectName,
+      inviteeName: props.invinteeName,
+      roleName: props.roleName,
+      teamUrl: mailUrl(props.teamPath),
+    },
+  )
 
-Diese E-Mail dient zur Information aller Personen mit der Rolle "Editor" im Projekt ${quote(
-    props.projectName,
-  )}.
-
-# ${quote(props.invinteeName)} hat soeben die Einladung zur Mitarbeit angenommen und hat jetzt ${
-    props.roleName
-  }.
-
-Das Projektteam kann unter ${mailUrl(props.teamPath)} eingesehen werden.
-`
+  if (!renderedTemplate.isValid) {
+    throw new Error(
+      `Invalid email template "${renderedTemplate.key}": ${renderedTemplate.unknownVariables.join(", ")}`,
+    )
+  }
 
   const message: Mail = {
     From: addressNoreply,
     To: [{ Email: props.user.email, Name: props.user.name }],
-    Subject: `Trassenscout: Neues Teammitglied (${quote(props.projectName)})`,
-    introMarkdown,
+    Subject: renderedTemplate.rendered.subject,
+    introMarkdown: renderedTemplate.rendered.introMarkdown,
+    outroMarkdown: renderedTemplate.rendered.outroMarkdown,
   }
 
   return {
