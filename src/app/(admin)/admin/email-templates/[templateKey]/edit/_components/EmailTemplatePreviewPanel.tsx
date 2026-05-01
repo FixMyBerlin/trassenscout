@@ -34,12 +34,19 @@ export const EmailTemplatePreviewPanel = ({ preview, allowedVariables, sampleCon
           <div>
             <h2 className="font-semibold">Preview Status</h2>
             <p className="mt-2 text-sm">
-              Validierung: {preview.isValid ? "OK" : "Unbekannte Variablen gefunden"}
+              Validierung: {preview.isValid ? "OK" : "Fehler gefunden"}
             </p>
             {preview.unknownVariables.length > 0 && (
               <ul className="mt-2 text-sm text-red-700">
                 {preview.unknownVariables.map((variable) => (
                   <li key={variable}>{`{{${variable}}}`}</li>
+                ))}
+              </ul>
+            )}
+            {preview.htmlFields.length > 0 && (
+              <ul className="mt-2 text-sm text-red-700">
+                {preview.htmlFields.map((field) => (
+                  <li key={field}>{`Raw HTML ist nicht erlaubt in: ${field}`}</li>
                 ))}
               </ul>
             )}

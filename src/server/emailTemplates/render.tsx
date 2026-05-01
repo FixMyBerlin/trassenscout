@@ -12,6 +12,7 @@ import {
 } from "./types"
 
 const PLACEHOLDER_REGEX = /{{\s*([a-zA-Z0-9_]+)\s*}}/g
+const HTML_TAG_REGEX = /<[^>]+>/
 
 const normalizeOptionalString = (value: string | null | undefined) =>
   value == null || value === "" ? undefined : value
@@ -47,12 +48,22 @@ export const validateEmailTemplateContent = (
   const usedVariables = extractEmailTemplateVariables(content)
   const allowedSet = new Set(allowedVariables)
   const unknownVariables = usedVariables.filter((variable) => !allowedSet.has(variable))
+  const htmlFields = [
+    ["subject", content.subject],
+    ["introMarkdown", content.introMarkdown],
+    ["outroMarkdown", content.outroMarkdown],
+    ["ctaText", content.ctaText],
+  ]
+    .filter(([, value]) => Boolean(value) && HTML_TAG_REGEX.test(value || ""))
+    .map(([field]) => field)
+    .filter((field): field is string => Boolean(field))
 
   return {
     allowedVariables,
     usedVariables,
     unknownVariables,
-    isValid: unknownVariables.length === 0,
+    htmlFields,
+    isValid: unknownVariables.length === 0 && htmlFields.length === 0,
   }
 }
 

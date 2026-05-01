@@ -23,7 +23,15 @@ export default resolver.pipe(
 
     const validation = validateEmailTemplateContent(definition.allowedVariables, content)
     if (!validation.isValid) {
-      throw new Error(`Unknown template variables: ${validation.unknownVariables.join(", ")}`)
+      if (validation.unknownVariables.length > 0) {
+        throw new Error(`Unknown template variables: ${validation.unknownVariables.join(", ")}`)
+      }
+
+      if (validation.htmlFields.length > 0) {
+        throw new Error(
+          `Raw HTML is not allowed in: ${validation.htmlFields.join(", ")}. Please use Markdown only.`,
+        )
+      }
     }
 
     return await db.emailTemplate.upsert({

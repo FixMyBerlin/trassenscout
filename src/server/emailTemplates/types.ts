@@ -24,6 +24,7 @@ export type EmailTemplateValidationResult = {
   allowedVariables: string[]
   usedVariables: string[]
   unknownVariables: string[]
+  htmlFields: string[]
   isValid: boolean
 }
 
