@@ -9,6 +9,7 @@ import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogD
 import {
   LabeledCheckboxGroup,
   LabeledSelect,
+  LabeledSwitch,
   LabeledTextareaField,
   LabeledTextField,
 } from "@/src/core/components/forms"
@@ -245,7 +246,7 @@ export const ProjectRecordFormFields = ({
               </button>
             </div>
           </div>
-          <div className="flex gap-4">
+          <div className="flex gap-8">
             <LabeledSelect
               optional
               name="assignedToId"
@@ -253,8 +254,26 @@ export const ProjectRecordFormFields = ({
               label="Zugewiesen an"
             />
             <div className="w-48">
-              <LabeledSelect name="editingState" options={editingStateOptions} label="Status" />
+              <LabeledSwitch
+                name="editingState"
+                values={{
+                  off: ProjectRecordEditingState.PENDING,
+                  on: ProjectRecordEditingState.COMPLETED,
+                }}
+                label="Status"
+                stateLabels={{
+                  off: "In Bearbeitung",
+                  on: "Abgeschlossen",
+                }}
+                trackClassNames={{
+                  off: "bg-blue-500",
+                  on: "bg-gray-300",
+                }}
+              />
             </div>
+            {/* <div className="w-48">
+              <LabeledSelect name="editingState" options={editingStateOptions} label="Status" />
+            </div> */}
           </div>
         </div>
 

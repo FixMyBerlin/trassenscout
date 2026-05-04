@@ -9,7 +9,7 @@ function PendingEditingIcon({ className }: { className?: string }) {
   return (
     <span
       className={clsx(
-        "relative inline-flex size-4 shrink-0 items-center justify-center",
+        "relative m-0.5 inline-flex size-4 shrink-0 items-center justify-center",
         className,
       )}
       aria-hidden
