@@ -22,10 +22,8 @@ export function isAlkisBackgroundAvailableForProject(
   if (alkisStateKey == null) return false
   const entry = alkisStateConfig[alkisStateKey]
   if (entry.enabled !== true) return false
-  const hasWms =
-    entry.wms.url !== false && Boolean(entry.wms.url.trim() && entry.wms.layerName.trim())
-  const hasWfs =
-    entry.wfs.url !== false && Boolean(entry.wfs.url.trim() && entry.wfs.parcelPropertyKey.trim())
+  const hasWms = entry.wms.url !== false && Boolean(entry.wms.url && entry.wms.layerName)
+  const hasWfs = entry.wfs.url !== false && Boolean(entry.wfs.url && entry.wfs.parcelPropertyKey)
   return hasWms || hasWfs
 }
 
