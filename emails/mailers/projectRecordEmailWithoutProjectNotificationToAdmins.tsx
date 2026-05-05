@@ -13,17 +13,17 @@ type Props = {
 
 export async function projectRecordEmailWithoutProjectNotificationToAdmins(props: Props) {
   // Determine the reason for notification based on whether projectSlug was provided
-  const hasSubaddressSlug = Boolean(props.projectSlug && props.projectSlug.length > 0)
-  const noSubaddressProvided = !hasSubaddressSlug
+  const noSlugProvided = !props.projectSlug
+  const invalidSlug = props.projectSlug && props.projectSlug.length > 0
 
   let reasonText = ""
   let subjectSuffix = ""
 
-  if (noSubaddressProvided) {
+  if (noSlugProvided) {
     reasonText =
       "Es wurde kein Subadressing genutzt, diese Email ist in der Inbox eingegangen. Die Email wurde im Trassenscout gespeichert und kann im Admin Interface einem Projekt zugeordnet und prozessiert werden."
     subjectSuffix = "Email ohne Subadressing eingegangen"
-  } else if (hasSubaddressSlug && props.projectSlug) {
+  } else if (invalidSlug && props.projectSlug) {
     reasonText = `Das Subadressing entspricht keinem im Trassenscout gespeicherten Projekt (${props.projectSlug}). Die Email wurde im Trassenscout gespeichert und kann im Admin Interface einem Projekt zugeordnet und prozessiert werden.`
     subjectSuffix = "Email mit ungültigem Subadressing eingegangen"
   }
@@ -36,9 +36,7 @@ export async function projectRecordEmailWithoutProjectNotificationToAdmins(props
       senderEmail: props.senderEmail,
       emailSubject: props.emailSubject || "(kein Betreff)",
       usedSubaddressLine:
-        hasSubaddressSlug && props.projectSlug
-          ? `**Verwendetes Subadressing:** ${props.projectSlug}`
-          : "",
+        invalidSlug && props.projectSlug ? `**Verwendetes Subadressing:** ${props.projectSlug}` : "",
     },
   )
   assertValidRenderedTemplate(renderedTemplate)
