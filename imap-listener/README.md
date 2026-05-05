@@ -13,6 +13,12 @@ Long-running Node.js Service, der ein IMAP-Postfach überwacht und neue E-Mails 
   - Bei Fehler → Mail als SEEN markieren + Move zu `/ERROR`
 - **Verarbeitung**: 10 Sekunden Delay zwischen Aufträgen zur API-Entlastung
 
+## Wichtige Mailbox-Voraussetzungen
+
+- Pro IMAP-Postfach müssen die Zielordner **`INBOX/DONE`** und **`INBOX/ERROR`** existieren.
+- Fehlen diese Ordner, startet der Listener nicht korrekt (Startup-Check schlägt fehl).
+- Bei neuen Mailadressen/Postfächern (z.B. dev/staging/prod) die beiden Ordner immer zuerst anlegen.
+
 ## Konfiguration
 
 Die Konfiguration findet in `.env` statt bzw. über GitHub Secrets statt.

@@ -9,6 +9,7 @@ import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogD
 import {
   LabeledCheckboxGroup,
   LabeledSelect,
+  LabeledSwitch,
   LabeledTextareaField,
   LabeledTextField,
 } from "@/src/core/components/forms"
@@ -23,6 +24,7 @@ import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import getSubsubsections from "@/src/server/subsubsections/queries/getSubsubsections"
 import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
 import { useMutation, useQuery } from "@blitzjs/rpc"
+import { ProjectRecordEditingState } from "@prisma/client"
 import clsx from "clsx"
 import { useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
@@ -103,6 +105,11 @@ export const ProjectRecordFormFields = ({
   subsectionOptions.unshift(["", "Keine Angabe"])
 
   const assignedToOptions = getUserSelectOptions(users)
+
+  const editingStateOptions: [string, string][] = [
+    [ProjectRecordEditingState.PENDING, "In Bearbeitung"],
+    [ProjectRecordEditingState.COMPLETED, "Abgeschlossen"],
+  ]
 
   const subsubsectionOptions: [string | number, string][] = subsubsections
     .filter((subsubsection) => (subsectionId ? subsubsection.subsectionId == subsectionId : true))
@@ -239,12 +246,35 @@ export const ProjectRecordFormFields = ({
               </button>
             </div>
           </div>
-          <LabeledSelect
-            optional
-            name="assignedToId"
-            options={assignedToOptions}
-            label="Zugewiesen an"
-          />
+          <div className="flex gap-8">
+            <LabeledSelect
+              optional
+              name="assignedToId"
+              options={assignedToOptions}
+              label="Zugewiesen an"
+            />
+            <div className="w-48">
+              <LabeledSwitch
+                name="editingState"
+                values={{
+                  off: ProjectRecordEditingState.PENDING,
+                  on: ProjectRecordEditingState.COMPLETED,
+                }}
+                label="Status"
+                stateLabels={{
+                  off: "In Bearbeitung",
+                  on: "Abgeschlossen",
+                }}
+                trackClassNames={{
+                  off: "bg-blue-500",
+                  on: "bg-gray-300",
+                }}
+              />
+            </div>
+            {/* <div className="w-48">
+              <LabeledSelect name="editingState" options={editingStateOptions} label="Status" />
+            </div> */}
+          </div>
         </div>
 
         {emailSource && splitView && <ProjectRecordEmailSource email={emailSource} />}

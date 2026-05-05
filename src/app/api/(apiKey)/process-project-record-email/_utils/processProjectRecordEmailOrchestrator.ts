@@ -2,7 +2,7 @@ import { checkProjectAiEnabled } from "@/src/app/api/(apiKey)/process-project-re
 import { isAdminOrProjectMember } from "@/src/app/api/(apiKey)/process-project-record-email/_utils/checkSenderApproval"
 import { uploadEmailAttachments } from "@/src/app/api/(apiKey)/process-project-record-email/_utils/uploadEmailAttachments"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
-import db, { ProjectRecordReviewState, ProjectRecordType } from "db"
+import db, { ProjectRecordEditingState, ProjectRecordReviewState, ProjectRecordType } from "db"
 import { extractWithAI } from "./extractWithAI"
 import { fetchProjectContext } from "./fetchProjectContext"
 import { langfuse } from "./langfuseClient"
@@ -153,6 +153,7 @@ export const processProjectRecordEmailOrchestrator = async ({
   // Create ProjectRecord with AI-extracted data
   const projectRecord = await db.projectRecord.create({
     data: {
+      editingState: ProjectRecordEditingState.PENDING,
       title: combinedResult.title,
       body: combinedResult.body,
       // if date is null or invalid, use parsed date or current date

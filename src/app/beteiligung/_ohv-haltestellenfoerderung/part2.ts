@@ -105,7 +105,7 @@ Die Maßnahmenmeldung wird nicht zwischengespeichert, d.h. bei Verlassen der Sei
 
 Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://trassenscout.de/datenschutz) zu. Die Daten werden gemäß DSGVO verarbeitet und nur für die Durchführung dieses digitalen Förderverfahrens gespeichert.`,
     buttons: [
-      { action: "next", label: "Maßnahme melden", position: "right", color: "primaryColor" },
+      { action: "next", label: "Maßnahme anmelden", position: "right", color: "primaryColor" },
     ],
   },
   buttonLabels: {
@@ -148,8 +148,9 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
               { key: "haltestelleneinrichtungen", label: "Haltestelleneinrichtungen" },
               {
                 key: "buswendeschleifen",
-                label:
-                  "Buswendeschleifen / Bahnhofsvorplätze als Verknüpfungs- und Umsteigeanlagen unterschiedlicher Verkehrsträger (sofern sie nicht bereits im Zusammenhang mit Straßenbaumaßnahmen gefördert werden)",
+                label: "Verknüpfungs- und Umsteigeanlagen",
+                description:
+                  "Buswendeschleifen und Bahnhofsvorplätze zur Verknüpfung unterschiedlicher Verkehrsträger (sofern diese nicht bereits im Zusammenhang mit Straßenbaumaßnahmen gefördert werden).",
               },
               {
                 key: "pandr",
@@ -282,7 +283,7 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           validation: fieldValidationEnum["requiredNumber"],
           defaultValue: null,
           props: {
-            label: "Kostenberechnung",
+            label: "Kostenschätzung",
             description:
               "Bitte tragen Sie hier ausschließlich die förderfähigen Baukosten ein. Nicht förderfähig sind u. a. Verwaltungskosten, Planungsleistungen (HOAI) sowie Grunderwerb.",
           },
@@ -347,13 +348,13 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           defaultValue: "no",
           props: {
             label: "Gemeinschaftsbauwerk",
+            description:
+              "Ein Gemeinschaftsbauwerk liegt vor, wenn Anlagen gemeinsam mit einem anderen Baulastträger errichtet werden (z. B. an Bahnhöfen). In diesem Fall ist vor Antragstellung eine vertragliche Regelung zur Aufteilung der Kosten zwischen den Beteiligten erforderlich.",
             options: [
               { key: "no", label: "Nein" },
               {
                 key: "yes",
                 label: "Ja",
-                description:
-                  "Ein Gemeinschaftsbauwerk liegt vor, wenn Anlagen gemeinsam mit einem anderen Baulastträger errichtet werden (z. B. an Bahnhöfen). In diesem Fall ist vor Antragstellung eine vertragliche Regelung zur Aufteilung der Kosten zwischen den Beteiligten erforderlich.",
               },
             ],
           },

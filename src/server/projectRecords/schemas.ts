@@ -1,7 +1,11 @@
 import { ProjectSlugRequiredSchema } from "@/src/authorization/extractProjectSlug"
 import { InputNumberOrNullSchema } from "@/src/core/utils/schema-shared"
 import { NullableDateSchema, NullableDateSchemaForm } from "@/src/server/subsubsections/schema"
-import { ProjectRecordReviewState, ProjectRecordType } from "@prisma/client"
+import {
+  ProjectRecordEditingState,
+  ProjectRecordReviewState,
+  ProjectRecordType,
+} from "@prisma/client"
 import { z } from "zod"
 
 export const ProjectRecordSchema = z.object({
@@ -25,6 +29,7 @@ export const ProjectRecordSchema = z.object({
   reviewedAt: z.date().nullish(),
   reviewedById: InputNumberOrNullSchema,
   reviewNotes: z.string().nullish(),
+  editingState: z.nativeEnum(ProjectRecordEditingState),
   // copied from SUbsubsection m2m2
   // LIST ALL m2mFields HERE
   // We need to do this manually, since dynamic zod types don't work

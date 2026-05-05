@@ -1,4 +1,5 @@
 import { ProjectRecordAssignedToPill } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordAssignedToPill"
+import { ProjectRecordEditingStateIndicator } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordEditingStateIndicator"
 import { ProjectRecordEmailSourceText } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordEmailSource"
 import { createProjectRecordFilterUrl } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/filter/createFilterUrl"
 import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
@@ -21,6 +22,13 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
   return (
     <div className="my-6 space-y-6 font-medium">
       <div className="grid max-w-3xl grid-cols-4 gap-3">
+        <span className="text-gray-500">Status: </span>
+        <span className="col-span-3">
+          <ProjectRecordEditingStateIndicator
+            editingState={projectRecord.editingState}
+            variant="detail"
+          />
+        </span>
         {projectRecord.assignedTo && (
           <>
             <span className="text-gray-500">Zugewiesen: </span>

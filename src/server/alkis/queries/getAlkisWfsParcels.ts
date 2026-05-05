@@ -50,8 +50,8 @@ export default resolver.pipe(
       )
     }
 
-    const wfsUrl = config.wfs.url.trim()
-    const parcelKey = config.wfs.parcelPropertyKey.trim()
+    const wfsUrl = config.wfs.url
+    const parcelKey = config.wfs.parcelPropertyKey
     if (!wfsUrl || !parcelKey) {
       throw new Error(
         `ALKIS-WFS für ${config.label} ist nicht verfügbar (kein WFS-Endpunkt konfiguriert).`,

@@ -107,7 +107,7 @@ Folgende Angaben wurden übermittelt:
 - **Name der Haltestelle**: {{hsName}}
 - **Maßnahmenbeschreibung und Zielsetzung**: {{feedbackText}}
 - **Stand der Bauvorbereitung**: {{stateOfConstruction}}
-- **Kostenberechnung**: {{costs}}
+- **Kostenschätzung**: {{costs}}
 - **Ko-Finanzierung**: {{coFinancing}}
 - **Ko-Finanzierung: Mittelgeber und Programm**: {{fundingSource}}
 - **Gemeinschaftsbauwerk**: {{sharedBuilding}}
@@ -161,7 +161,7 @@ Folgende Angaben wurden übermittelt:
 - **Name der Haltestelle**: {{hsName}}
 - **Maßnahmenbeschreibung und Zielsetzung**: {{feedbackText}}
 - **Stand der Bauvorbereitung**: {{stateOfConstruction}}
-- **Kostenberechnung**: {{costs}}
+- **Kostenschätzung**: {{costs}}
 - **Ko-Finanzierung**: {{coFinancing}}
 - **Ko-Finanzierung: Mittelgeber und Programm**: {{fundingSource}}
 - **Gemeinschaftsbauwerk**: {{sharedBuilding}}
