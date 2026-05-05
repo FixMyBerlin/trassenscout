@@ -1,6 +1,6 @@
 import { resolver } from "@blitzjs/rpc"
-import { EmailTemplateByKeySchema } from "../schema"
 import { resolveEmailTemplate } from "../render"
+import { EmailTemplateByKeySchema } from "../schema"
 
 export default resolver.pipe(
   resolver.zod(EmailTemplateByKeySchema),
@@ -19,7 +19,7 @@ export default resolver.pipe(
       subject: resolved.subject,
       introMarkdown: resolved.introMarkdown,
       outroMarkdown: resolved.outroMarkdown ?? "",
-      ctaText: resolved.definition.supportsCta ? resolved.ctaText ?? "" : "",
+      ctaText: resolved.definition.supportsCta ? (resolved.ctaText ?? "") : "",
     }
   },
 )

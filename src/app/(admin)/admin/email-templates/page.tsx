@@ -22,7 +22,7 @@ export default async function AdminEmailTemplatesPage() {
         />
       </HeaderWrapper>
 
-      <ul className="list-none pl-0 space-y-6">
+      <ul className="list-none space-y-6 pl-0">
         {templates.map((template, index) => (
           <li
             key={template.key}

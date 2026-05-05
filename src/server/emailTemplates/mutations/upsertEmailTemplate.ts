@@ -1,7 +1,7 @@
 import db from "@/db"
 import { resolver } from "@blitzjs/rpc"
-import { validateEmailTemplateContent } from "../render"
 import { getEmailTemplateDefinition } from "../registry"
+import { validateEmailTemplateContent } from "../render"
 import { UpsertEmailTemplateSchema } from "../schema"
 
 const normalizeOptionalString = (value: string | undefined) => {

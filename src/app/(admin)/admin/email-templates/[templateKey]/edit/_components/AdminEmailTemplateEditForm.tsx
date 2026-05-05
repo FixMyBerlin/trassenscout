@@ -3,11 +3,14 @@
 import { FORM_ERROR } from "@/src/core/components/forms"
 import { blueButtonStyles } from "@/src/core/components/links"
 import deleteEmailTemplate from "@/src/server/emailTemplates/mutations/deleteEmailTemplate"
-import { EmailTemplateKey } from "@/src/server/emailTemplates/registry"
 import previewEmailTemplate from "@/src/server/emailTemplates/mutations/previewEmailTemplate"
 import upsertEmailTemplate from "@/src/server/emailTemplates/mutations/upsertEmailTemplate"
 import getEmailTemplate from "@/src/server/emailTemplates/queries/getEmailTemplate"
-import { EmailTemplateFormSchema, EmailTemplateFormValues } from "@/src/server/emailTemplates/schema"
+import { EmailTemplateKey } from "@/src/server/emailTemplates/registry"
+import {
+  EmailTemplateFormSchema,
+  EmailTemplateFormValues,
+} from "@/src/server/emailTemplates/schema"
 import { EmailTemplatePreviewResult } from "@/src/server/emailTemplates/types"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useParams, useRouter } from "next/navigation"
@@ -42,10 +45,20 @@ export const AdminEmailTemplateEditForm = () => {
       outroMarkdown: template.outroMarkdown,
       ctaText: template.ctaText,
     })
-  }, [template.key, template.subject, template.introMarkdown, template.outroMarkdown, template.ctaText])
+  }, [
+    template.key,
+    template.subject,
+    template.introMarkdown,
+    template.outroMarkdown,
+    template.ctaText,
+  ])
 
   const handleResetToDefaults = async () => {
-    if (!window.confirm("Möchten Sie den DB-Override wirklich löschen und auf den Code-Default zurücksetzen?")) {
+    if (
+      !window.confirm(
+        "Möchten Sie den DB-Override wirklich löschen und auf den Code-Default zurücksetzen?",
+      )
+    ) {
       return
     }
 

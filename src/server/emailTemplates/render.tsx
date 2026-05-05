@@ -90,7 +90,9 @@ export const renderEmailTemplateContent = (
   }
 }
 
-export const resolveEmailTemplate = async (key: EmailTemplateKey): Promise<ResolvedEmailTemplate> => {
+export const resolveEmailTemplate = async (
+  key: EmailTemplateKey,
+): Promise<ResolvedEmailTemplate> => {
   const definition = getEmailTemplateDefinition(key)
 
   const dbTemplate = await db.emailTemplate.findUnique({
@@ -180,9 +182,7 @@ export const buildEmailTemplatePreview = async (
         outroMarkdown: renderedTemplate.rendered.outroMarkdown,
       }
 
-  const html = await render(
-    <MarkdownMail {...htmlProps} />,
-  )
+  const html = await render(<MarkdownMail {...htmlProps} />)
 
   return {
     ...renderedTemplate,

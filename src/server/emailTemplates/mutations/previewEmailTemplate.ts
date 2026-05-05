@@ -1,7 +1,7 @@
 import { resolver } from "@blitzjs/rpc"
+import { getEmailTemplateDefinition } from "../registry"
 import { buildEmailTemplatePreview } from "../render"
 import { UpsertEmailTemplateSchema } from "../schema"
-import { getEmailTemplateDefinition } from "../registry"
 
 export default resolver.pipe(
   resolver.zod(UpsertEmailTemplateSchema),

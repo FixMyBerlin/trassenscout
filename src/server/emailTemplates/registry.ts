@@ -89,8 +89,7 @@ Die Liste aller offenen Einladungen finden Sie unter {{invitesUrl}}.`,
   [emailTemplateKeys.membershipCreatedEditorsNotification]: {
     key: emailTemplateKeys.membershipCreatedEditorsNotification,
     name: "Info an Editoren: Einladung angenommen",
-    description:
-      "Benachrichtigung an Editor-Mitglieder, dass eine Einladung angenommen wurde.",
+    description: "Benachrichtigung an Editor-Mitglieder, dass eine Einladung angenommen wurde.",
     supportsCta: false,
     allowedVariables: ["projectName", "inviteeName", "roleName", "teamUrl"],
     sampleContext: {
@@ -162,7 +161,8 @@ Das Projektteam kann unter {{teamUrl}} eingesehen werden.`,
     sampleContext: {
       projectSlug: "demo-projekt",
       subjectSuffix: "E-Mail benötigt Admin-Prüfung",
-      reviewReason: "die Absenderadresse nicht als Teammitglied oder Kontakt im Projekt hinterlegt ist",
+      reviewReason:
+        "die Absenderadresse nicht als Teammitglied oder Kontakt im Projekt hinterlegt ist",
       senderEmail: "buerger@example.org",
       emailSubject: "Neue Hinweise zur Strecke",
       actionItemsMarkdown:
