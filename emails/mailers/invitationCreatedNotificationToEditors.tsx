@@ -1,9 +1,10 @@
-import { quote } from "@/src/core/components/text/quote"
+import { emailTemplateKeys } from "@/src/server/emailTemplates/registry"
+import { resolveAndRenderEmailTemplate } from "@/src/server/emailTemplates/render"
 import { Route } from "next"
 import { addressNoreply } from "./utils/addresses"
 import { mailUrl } from "./utils/mailUrl"
 import { sendMail } from "./utils/sendMail"
-import { Mail } from "./utils/types"
+import { assertValidRenderedTemplate, buildTemplateMail } from "./utils/templateMail"
 
 type Props = {
   user: { email: string; name: string }
@@ -13,24 +14,20 @@ type Props = {
 }
 
 export async function invitationCreatedNotificationToEditors(props: Props) {
-  const introMarkdown = `
-Guten Tag!
-
-Diese Mail dient zur Information aller Personen mit der Rolle "Editor" im Projekt ${quote(
-    props.projectName,
-  )}.
-
-# ${quote(props.inviterName)} hat soeben eine:n neue:n Mitwirkende:n eingeladen.
-
-Die Liste aller offenen Einladungen finden Sie unter ${mailUrl(props.path)}.
-`
-
-  const message: Mail = {
-    From: addressNoreply,
-    To: [{ Email: props.user.email, Name: props.user.name }],
-    Subject: "Trassenscout: Neues Teammitglied eingeladen",
-    introMarkdown,
-  }
+  const renderedTemplate = await resolveAndRenderEmailTemplate(
+    emailTemplateKeys.invitationCreatedEditorsNotification,
+    {
+      projectName: props.projectName,
+      inviterName: props.inviterName,
+      invitesUrl: mailUrl(props.path),
+    },
+  )
+  assertValidRenderedTemplate(renderedTemplate)
+  const message = buildTemplateMail({
+    from: addressNoreply,
+    to: [{ Email: props.user.email, Name: props.user.name }],
+    template: renderedTemplate,
+  })
 
   return {
     async send() {

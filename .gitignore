@@ -65,3 +65,4 @@ db/zod-schema-inspiration/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+TMP/

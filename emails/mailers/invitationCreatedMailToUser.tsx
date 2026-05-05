@@ -1,9 +1,10 @@
-import { quote } from "@/src/core/components/text/quote"
+import { emailTemplateKeys } from "@/src/server/emailTemplates/registry"
+import { resolveAndRenderEmailTemplate } from "@/src/server/emailTemplates/render"
 import { Route } from "next"
 import { addressNoreply } from "./utils/addresses"
 import { mailUrl } from "./utils/mailUrl"
 import { sendMail } from "./utils/sendMail"
-import { Mail } from "./utils/types"
+import { assertValidRenderedTemplate, buildTemplateMail } from "./utils/templateMail"
 
 type Props = {
   userEmail: string
@@ -14,26 +15,24 @@ type Props = {
 }
 
 export async function invitationCreatedMailToUser(props: Props) {
-  const introMarkdown = `
-Guten Tag!
+  const renderedTemplate = await resolveAndRenderEmailTemplate(
+    emailTemplateKeys.invitationCreatedUser,
+    {
+      inviterName: props.inviterName,
+      projectName: props.projectName,
+      loginUrl: mailUrl(props.loginPath),
+    },
+  )
+  assertValidRenderedTemplate(renderedTemplate)
 
-# ${props.inviterName} hat Sie soeben eingeladen, am Projekt ${quote(props.projectName)} mitzuwirken.
+  const ctaLink = mailUrl(props.signupPath)
 
-Bitte registieren Sie sich, um die Einladung anzunehmen.`
-
-  const outroMarkdown = `
-Falls Sie schon einen Trassenscout-Account unter dieser E-Mail-Adresse besitzen, [melden Sie sich bitte damit an]( ${mailUrl(props.loginPath)} ), um die Einladung anzunehmen.
-`
-
-  const message: Mail = {
-    From: addressNoreply,
-    To: [{ Email: props.userEmail }],
-    Subject: `Trassenscout: Ihre Einladung zum Projekt ${quote(props.projectName)}`,
-    introMarkdown,
-    ctaLink: mailUrl(props.signupPath),
-    ctaText: "Einladung annehmen und registrieren",
-    outroMarkdown,
-  }
+  const message = buildTemplateMail({
+    from: addressNoreply,
+    to: [{ Email: props.userEmail }],
+    template: renderedTemplate,
+    ctaLink,
+  })
 
   return {
     async send() {
