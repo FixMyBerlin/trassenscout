@@ -1,6 +1,9 @@
 "use client"
 
-import { UploadDropzoneBase } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzoneBase"
+import {
+  UploadDropzoneBase,
+  type UploadDropzoneCompleteItem,
+} from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzoneBase"
 import { getAcceptAttribute } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileType"
 import { S3_MAX_FILE_SIZE_BYTES, S3_MAX_FILES } from "@/src/server/uploads/_utils/config"
 import { getS3Url } from "@/src/server/uploads/_utils/url"
@@ -11,7 +14,7 @@ import { useMutation } from "@blitzjs/rpc"
 type Props = {
   surveyResponseId: number
   surveySessionId: number
-  onUploadComplete?: (uploadIds: number[]) => Promise<void> | void
+  onUploadComplete?: (uploads: UploadDropzoneCompleteItem[]) => Promise<void> | void
 }
 
 export const SurveyUploadDropzone = ({
@@ -37,7 +40,7 @@ export const SurveyUploadDropzone = ({
       api="/api/survey-upload"
       surveyMeta={{ surveyResponseId, surveySessionId }}
       createUploadRecord={createUploadRecord}
-      onUploadComplete={onUploadComplete}
+      onSurveyPublicUploadBatchComplete={onUploadComplete}
       fillContainer
       accept={getAcceptAttribute()}
       description={{

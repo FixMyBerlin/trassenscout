@@ -607,6 +607,7 @@ model Upload {
   supportDocumentId    Int?                @unique
   projectRecords       ProjectRecord[]
   LogEntry             LogEntry[]
+  publicDeleteToken    String? // Set only for uploads created via the unauthenticated public survey flow.
   //
   createdBy            User?               @relation("UploadCreatedBy", fields: [createdById], references: [id])
   createdById          Int?

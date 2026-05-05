@@ -23,6 +23,7 @@ const seedUploads = async () => {
       collaborationPath: null,
       surveyResponseId: null,
       supportDocumentId: null,
+      publicDeleteToken: null,
     },
     {
       title: "AWS S3 Image",
@@ -42,6 +43,7 @@ const seedUploads = async () => {
       collaborationPath: null,
       surveyResponseId: null,
       supportDocumentId: null,
+      publicDeleteToken: null,
     },
     {
       title: "Trassenplanung Projekt 1",
@@ -61,6 +63,7 @@ const seedUploads = async () => {
       collaborationPath: null,
       surveyResponseId: null,
       supportDocumentId: null,
+      publicDeleteToken: null,
     },
     {
       title: "FAQ Baulastträger 1",
@@ -80,6 +83,7 @@ const seedUploads = async () => {
       collaborationPath: null,
       surveyResponseId: null,
       supportDocumentId: null,
+      publicDeleteToken: null,
     },
     {
       title: "FAQ Baulastträger 2",
@@ -99,6 +103,7 @@ const seedUploads = async () => {
       collaborationPath: null,
       surveyResponseId: null,
       supportDocumentId: null,
+      publicDeleteToken: null,
     },
     {
       title: "Protokoll Gesamttreffen Projekt 2",
@@ -118,6 +123,7 @@ const seedUploads = async () => {
       collaborationPath: null,
       surveyResponseId: null,
       supportDocumentId: null,
+      publicDeleteToken: null,
     },
     {
       title: "Protokoll ADFC",
@@ -137,6 +143,7 @@ const seedUploads = async () => {
       collaborationPath: null,
       surveyResponseId: null,
       supportDocumentId: null,
+      publicDeleteToken: null,
     },
     {
       title: "Planungsdokument",
@@ -156,6 +163,7 @@ const seedUploads = async () => {
       collaborationPath: null,
       surveyResponseId: null,
       supportDocumentId: null,
+      publicDeleteToken: null,
     },
     {
       title: "Super langer Text in der Beschreibung sehr lang",
@@ -175,6 +183,7 @@ const seedUploads = async () => {
       collaborationPath: null,
       surveyResponseId: null,
       supportDocumentId: null,
+      publicDeleteToken: null,
     },
     {
       title: "Kurz",
@@ -194,6 +203,7 @@ const seedUploads = async () => {
       collaborationPath: null,
       surveyResponseId: null,
       supportDocumentId: null,
+      publicDeleteToken: null,
     },
   ]
 

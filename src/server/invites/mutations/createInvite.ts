@@ -10,17 +10,12 @@ import {
 } from "@/src/authorization/extractProjectSlug"
 import { shortTitle } from "@/src/core/components/text"
 import { getProjectIdBySlug } from "@/src/server/projects/queries/getProjectIdBySlug"
+import { generateSecureToken } from "@/src/server/shared/utils/generateSecureToken"
 import { Ctx } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
-import { randomBytes } from "crypto"
 import { Route } from "next"
 import { createLogEntry } from "../../logEntries/create/createLogEntry"
 import { InviteSchema } from "../schema"
-
-function generateToken(length: number = 32) {
-  const buffer = randomBytes(length)
-  return buffer.toString("base64url")
-}
 
 export const CreateInviteSchema = ProjectSlugRequiredSchema.merge(InviteSchema)
 
@@ -33,7 +28,7 @@ export default resolver.pipe(
 
     const invite = await db.invite.create({
       data: {
-        token: generateToken(),
+        token: generateSecureToken(),
         projectId: projectId!,
         inviterId: userId!,
         ...data,
