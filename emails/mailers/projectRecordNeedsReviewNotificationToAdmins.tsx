@@ -2,7 +2,7 @@ import { emailTemplateKeys } from "@/src/server/emailTemplates/registry"
 import { resolveAndRenderEmailTemplate } from "@/src/server/emailTemplates/render"
 import { addressNoreply } from "./utils/addresses"
 import { sendMailWithoutPreview } from "./utils/sendMailWithoutPreview"
-import { Mail } from "./utils/types"
+import { assertValidRenderedTemplate, buildTemplateMail } from "./utils/templateMail"
 
 type Props = {
   projectSlug: string
@@ -57,30 +57,13 @@ export async function projectRecordNeedsReviewNotificationToAdmins(props: Props)
       actionItemsMarkdown: actionItems.join("\n"),
     },
   )
-
-  if (!renderedTemplate.isValid) {
-    throw new Error(
-      `Invalid email template "${renderedTemplate.key}": ${renderedTemplate.unknownVariables.join(", ")}`,
-    )
-  }
-
-  const message: Mail = renderedTemplate.rendered.ctaText
-    ? {
-        From: addressNoreply,
-        To: [{ Email: process.env.ADMIN_EMAIL }],
-        Subject: renderedTemplate.rendered.subject,
-        introMarkdown: renderedTemplate.rendered.introMarkdown,
-        outroMarkdown: renderedTemplate.rendered.outroMarkdown,
-        ctaLink: props.projectRecordReviewUrl,
-        ctaText: renderedTemplate.rendered.ctaText,
-      }
-    : {
-        From: addressNoreply,
-        To: [{ Email: process.env.ADMIN_EMAIL }],
-        Subject: renderedTemplate.rendered.subject,
-        introMarkdown: renderedTemplate.rendered.introMarkdown,
-        outroMarkdown: renderedTemplate.rendered.outroMarkdown,
-      }
+  assertValidRenderedTemplate(renderedTemplate)
+  const message = buildTemplateMail({
+    from: addressNoreply,
+    to: [{ Email: process.env.ADMIN_EMAIL }],
+    template: renderedTemplate,
+    ctaLink: props.projectRecordReviewUrl,
+  })
 
   return {
     async send() {

@@ -4,7 +4,7 @@ import { Route } from "next"
 import { addressNoreply } from "./utils/addresses"
 import { mailUrl } from "./utils/mailUrl"
 import { sendMail } from "./utils/sendMail"
-import { Mail } from "./utils/types"
+import { assertValidRenderedTemplate, buildTemplateMail } from "./utils/templateMail"
 
 type Props = {
   userEmail: string
@@ -23,32 +23,16 @@ export async function invitationCreatedMailToUser(props: Props) {
       loginUrl: mailUrl(props.loginPath),
     },
   )
-
-  if (!renderedTemplate.isValid) {
-    throw new Error(
-      `Invalid email template "${renderedTemplate.key}": ${renderedTemplate.unknownVariables.join(", ")}`,
-    )
-  }
+  assertValidRenderedTemplate(renderedTemplate)
 
   const ctaLink = mailUrl(props.signupPath)
 
-  const message: Mail = renderedTemplate.rendered.ctaText
-    ? {
-        From: addressNoreply,
-        To: [{ Email: props.userEmail }],
-        Subject: renderedTemplate.rendered.subject,
-        introMarkdown: renderedTemplate.rendered.introMarkdown,
-        outroMarkdown: renderedTemplate.rendered.outroMarkdown,
-        ctaLink,
-        ctaText: renderedTemplate.rendered.ctaText,
-      }
-    : {
-        From: addressNoreply,
-        To: [{ Email: props.userEmail }],
-        Subject: renderedTemplate.rendered.subject,
-        introMarkdown: renderedTemplate.rendered.introMarkdown,
-        outroMarkdown: renderedTemplate.rendered.outroMarkdown,
-      }
+  const message = buildTemplateMail({
+    from: addressNoreply,
+    to: [{ Email: props.userEmail }],
+    template: renderedTemplate,
+    ctaLink,
+  })
 
   return {
     async send() {

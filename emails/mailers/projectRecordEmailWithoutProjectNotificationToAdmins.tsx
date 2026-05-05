@@ -2,7 +2,7 @@ import { emailTemplateKeys } from "@/src/server/emailTemplates/registry"
 import { resolveAndRenderEmailTemplate } from "@/src/server/emailTemplates/render"
 import { addressNoreply } from "./utils/addresses"
 import { sendMailWithoutPreview } from "./utils/sendMailWithoutPreview"
-import { Mail } from "./utils/types"
+import { assertValidRenderedTemplate, buildTemplateMail } from "./utils/templateMail"
 
 type Props = {
   projectSlug?: string
@@ -13,17 +13,17 @@ type Props = {
 
 export async function projectRecordEmailWithoutProjectNotificationToAdmins(props: Props) {
   // Determine the reason for notification based on whether projectSlug was provided
-  const noSlugProvided = !props.projectSlug
-  const invalidSlug = props.projectSlug && props.projectSlug.length > 0
+  const hasSubaddressSlug = Boolean(props.projectSlug && props.projectSlug.length > 0)
+  const noSubaddressProvided = !hasSubaddressSlug
 
   let reasonText = ""
   let subjectSuffix = ""
 
-  if (noSlugProvided) {
+  if (noSubaddressProvided) {
     reasonText =
       "Es wurde kein Subadressing genutzt, diese Email ist in der Inbox eingegangen. Die Email wurde im Trassenscout gespeichert und kann im Admin Interface einem Projekt zugeordnet und prozessiert werden."
     subjectSuffix = "Email ohne Subadressing eingegangen"
-  } else if (invalidSlug && props.projectSlug) {
+  } else if (hasSubaddressSlug && props.projectSlug) {
     reasonText = `Das Subadressing entspricht keinem im Trassenscout gespeicherten Projekt (${props.projectSlug}). Die Email wurde im Trassenscout gespeichert und kann im Admin Interface einem Projekt zugeordnet und prozessiert werden.`
     subjectSuffix = "Email mit ungültigem Subadressing eingegangen"
   }
@@ -35,35 +35,18 @@ export async function projectRecordEmailWithoutProjectNotificationToAdmins(props
       reasonText,
       senderEmail: props.senderEmail,
       emailSubject: props.emailSubject || "(kein Betreff)",
-      usedSubaddressLine: invalidSlug && props.projectSlug
+      usedSubaddressLine: hasSubaddressSlug && props.projectSlug
         ? `**Verwendetes Subadressing:** ${props.projectSlug}`
         : "",
     },
   )
-
-  if (!renderedTemplate.isValid) {
-    throw new Error(
-      `Invalid email template "${renderedTemplate.key}": ${renderedTemplate.unknownVariables.join(", ")}`,
-    )
-  }
-
-  const message: Mail = renderedTemplate.rendered.ctaText
-    ? {
-        From: addressNoreply,
-        To: [{ Email: process.env.ADMIN_EMAIL }],
-        Subject: renderedTemplate.rendered.subject,
-        introMarkdown: renderedTemplate.rendered.introMarkdown,
-        outroMarkdown: renderedTemplate.rendered.outroMarkdown,
-        ctaLink: props.projectRecordEmailUrl,
-        ctaText: renderedTemplate.rendered.ctaText,
-      }
-    : {
-        From: addressNoreply,
-        To: [{ Email: process.env.ADMIN_EMAIL }],
-        Subject: renderedTemplate.rendered.subject,
-        introMarkdown: renderedTemplate.rendered.introMarkdown,
-        outroMarkdown: renderedTemplate.rendered.outroMarkdown,
-      }
+  assertValidRenderedTemplate(renderedTemplate)
+  const message = buildTemplateMail({
+    from: addressNoreply,
+    to: [{ Email: process.env.ADMIN_EMAIL }],
+    template: renderedTemplate,
+    ctaLink: props.projectRecordEmailUrl,
+  })
 
   return {
     async send() {

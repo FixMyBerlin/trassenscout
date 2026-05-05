@@ -4,7 +4,7 @@ import { Route } from "next"
 import { addressNoreply } from "./utils/addresses"
 import { mailUrl } from "./utils/mailUrl"
 import { sendMail } from "./utils/sendMail"
-import { Mail } from "./utils/types"
+import { assertValidRenderedTemplate, buildTemplateMail } from "./utils/templateMail"
 
 type Props = {
   user: { email: string; name: string }
@@ -22,20 +22,12 @@ export async function invitationCreatedNotificationToEditors(props: Props) {
       invitesUrl: mailUrl(props.path),
     },
   )
-
-  if (!renderedTemplate.isValid) {
-    throw new Error(
-      `Invalid email template "${renderedTemplate.key}": ${renderedTemplate.unknownVariables.join(", ")}`,
-    )
-  }
-
-  const message: Mail = {
-    From: addressNoreply,
-    To: [{ Email: props.user.email, Name: props.user.name }],
-    Subject: renderedTemplate.rendered.subject,
-    introMarkdown: renderedTemplate.rendered.introMarkdown,
-    outroMarkdown: renderedTemplate.rendered.outroMarkdown,
-  }
+  assertValidRenderedTemplate(renderedTemplate)
+  const message = buildTemplateMail({
+    from: addressNoreply,
+    to: [{ Email: props.user.email, Name: props.user.name }],
+    template: renderedTemplate,
+  })
 
   return {
     async send() {
