@@ -62,10 +62,7 @@ export const MarkdownMail = ({
               {ctaLink && ctaText ? (
                 <Section className="my-5 flex items-center justify-center text-center">
                   <center>
-                    <Button
-                      style={ctaButton}
-                      href={ctaLink}
-                    >
+                    <Button style={ctaButton} href={ctaLink}>
                       {ctaText}
                     </Button>
                   </center>

@@ -1,10 +1,10 @@
+import { projectRecordAssignedNotificationToUser } from "@/emails/mailers/projectRecordAssignedNotificationToUser"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { editorRoles } from "@/src/authorization/constants"
 import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
-import { projectRecordAssignedNotificationToUser } from "@/emails/mailers/projectRecordAssignedNotificationToUser"
 import { shortTitle } from "@/src/core/components/text"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import { validateAcquisitionAreaScope } from "@/src/server/acquisitionAreas/_utils/validateAcquisitionAreaScope"
