@@ -5,9 +5,9 @@ export const UPLOAD_SIZES = {
     containerHeight: "h-12",
   },
   grid: {
-    iconSize: "size-28" as const,
-    iconPx: 112,
-    containerHeight: "h-28",
+    iconSize: "size-32" as const,
+    iconPx: 128,
+    containerHeight: "h-32",
   },
 } as const
 
