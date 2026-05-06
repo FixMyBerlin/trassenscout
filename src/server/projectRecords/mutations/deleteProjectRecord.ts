@@ -20,7 +20,6 @@ export default resolver.pipe(
         message: `Protokoll-Eintrag ${id} gelöscht`,
         userId: ctx.session.userId,
         projectSlug,
-        projectRecordId: id,
       })
     }
 
