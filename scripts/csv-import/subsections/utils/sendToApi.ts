@@ -1,4 +1,4 @@
-import type { Environment } from "./env"
+import type { Environment } from "../../utils/env"
 
 interface ApiResponse {
   success?: boolean
@@ -8,16 +8,14 @@ interface ApiResponse {
 }
 
 /**
- * Sends subsubsection data to the API endpoint
- * Returns success status and response data
+ * Sends subsection data to the import API
  */
 export async function sendToApi(
   apiEndpoint: string,
   apiKey: string,
-  env: Environment,
+  _env: Environment,
   projectSlug: string,
   subsectionSlug: string,
-  slug: string,
   userId: number,
   data: Record<string, any>,
 ) {
@@ -32,8 +30,7 @@ export async function sendToApi(
       },
       body: JSON.stringify({
         projectSlug,
-        subsectionSlug,
-        slug,
+        slug: subsectionSlug,
         userId,
         data,
       }),

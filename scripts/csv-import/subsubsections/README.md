@@ -3,13 +3,13 @@
 ## Usage
 
 ```bash
-bun scripts/csv-import-subsubsections/index.ts <config-name> <env>
+bun scripts/csv-import/subsubsections/index.ts <config-name> <env>
 ```
 
 ## Example
 
 ```bash
-bun scripts/csv-import-subsubsections/index.ts config-1 staging
+bun scripts/csv-import/subsubsections/index.ts config-1 staging
 ```
 
 ## Arguments

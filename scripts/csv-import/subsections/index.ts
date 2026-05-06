@@ -1,29 +1,33 @@
-import { downloadAndStoreCsv } from "./utils/downloadAndStoreCsv"
-import { apiUrls, getApiKeyForEnv } from "./utils/env"
+import { downloadAndStoreCsv } from "../utils/downloadAndStoreCsv"
+import { apiUrls, getApiKeyForEnv } from "../utils/env"
+import { loadConfig, parseArgs } from "../utils/parseArgs"
+import { parseCsv } from "../utils/parseCsv"
 import { mapRowToSchema } from "./utils/mapRowToSchema"
-import { loadConfig, parseArgs } from "./utils/parseArgs"
-import { parseCsv } from "./utils/parseCsv"
 import { sendToApi } from "./utils/sendToApi"
 import { validateRow } from "./utils/validateRow"
 
+const SCRIPT_ENTRY = "scripts/csv-import/subsections/index.ts"
+
 async function main() {
-  const { configName, env } = await parseArgs()
-  const config = await loadConfig(configName)
+  const { configName, env } = await parseArgs(SCRIPT_ENTRY)
+  const config = await loadConfig(configName, import.meta.dir)
   const apiKey = getApiKeyForEnv(env)
   const apiUrl = apiUrls[env]
-  const apiEndpoint = `${apiUrl}/api/subsubsections/import`
+  const apiEndpoint = `${apiUrl}/api/subsections/import`
 
   console.log("=".repeat(80))
-  console.log("CSV Import Script for Subsubsections", { configName, env, apiUrl, config })
+  console.log("CSV Import Script for Subsections (Planungsabschnitte)", { configName, env, apiUrl, config })
   console.log("=".repeat(80), "\n")
 
-  // Download and store CSV
-  const csvContent = await downloadAndStoreCsv(config.spreadsheetId, config.tableId, configName)
+  const csvContent = await downloadAndStoreCsv(
+    config.spreadsheetId,
+    config.tableId,
+    configName,
+    import.meta.dir,
+  )
 
-  // Parse CSV
-  const rows = parseCsv(csvContent)
+  const rows = parseCsv(csvContent, ["project", "slug"])
 
-  // Statistics
   let processedCount = 0
   let skippedCount = 0
   let successCount = 0
@@ -34,33 +38,25 @@ async function main() {
   console.log("Processing rows...")
   console.log("-".repeat(80))
 
-  // Process each row
   for (const [i, row] of rows.entries()) {
     if (!row) continue
 
-    // Convert array index to CSV row number: row 1 is header (not in array), so array[0] = CSV row 2
     const rowNum = i + 2
 
-    // Extract required fields - lowercase slugs
     const projectSlug = row["project"]?.toString().trim().toLowerCase()
-    const subsectionSlug = row["pa-slug"]?.toString().trim().toLowerCase()
-    const subsubsectionSlug = row["slug"]?.toString().trim().toLowerCase()
+    const subsectionSlug = row["slug"]?.toString().trim().toLowerCase()
 
-    // Check required fields
-    if (!projectSlug || !subsectionSlug || !subsubsectionSlug) {
+    if (!projectSlug || !subsectionSlug) {
       skippedCount++
       const missing = []
       if (!projectSlug) missing.push("project")
-      if (!subsectionSlug) missing.push("pa-slug")
-      if (!subsubsectionSlug) missing.push("slug")
+      if (!subsectionSlug) missing.push("slug")
       console.log(`Row ${rowNum}: ❌ SKIPPED - Missing required fields: ${missing.join(", ")}`)
       continue
     }
 
-    // Map CSV row to schema format
     const { mappedData, unmatchedColumns } = mapRowToSchema(row)
 
-    // Track unmatched columns
     if (unmatchedColumns.length > 0) {
       unmatchedColumns.forEach((col) => unmatchedColumnsSet.add(col))
       const filteredUnmatched = unmatchedColumns.filter((col) => col !== "type")
@@ -69,14 +65,12 @@ async function main() {
       }
     }
 
-    // Inform about missing geometry (not an error - API will preserve existing or add fallback)
     if (!("geometry" in mappedData)) {
       console.log(
         `Row ${rowNum}: ℹ️  Geometry not provided - will preserve existing or use fallback`,
       )
     }
 
-    // Validate with Zod schema
     const validationErrors = validateRow(mappedData)
     if (validationErrors) {
       errorCount++
@@ -94,7 +88,6 @@ async function main() {
       continue
     }
 
-    // Send to API
     processedCount++
     try {
       const result = await sendToApi(
@@ -103,7 +96,6 @@ async function main() {
         env,
         projectSlug,
         subsectionSlug,
-        subsubsectionSlug,
         config.userId,
         mappedData,
       )
@@ -129,9 +121,9 @@ async function main() {
       } else {
         successCount++
         const action = result.response.action || "updated"
-        const url = `${apiUrl}/${projectSlug}/abschnitte/${subsectionSlug}/fuehrung/${subsubsectionSlug}`
+        const url = `${apiUrl}/${projectSlug}/abschnitte/${subsectionSlug}`
         console.log(
-          `Row ${rowNum}: ✓ ${action.toUpperCase()} - ${projectSlug}/${subsectionSlug}/${subsubsectionSlug} → ${url}`,
+          `Row ${rowNum}: ✓ ${action.toUpperCase()} - ${projectSlug}/${subsectionSlug} → ${url}`,
         )
       }
     } catch (error: unknown) {
@@ -147,7 +139,6 @@ async function main() {
 
   console.log("-".repeat(80))
 
-  // Summary
   console.log("=".repeat(80))
   console.log("SUMMARY")
   console.log("=".repeat(80))
@@ -157,7 +148,6 @@ async function main() {
   console.log(`Errors: ${errorCount}`)
   console.log(`Skipped: ${skippedCount}`)
 
-  // Report unmatched columns
   if (unmatchedColumnsSet.size > 0) {
     const unmatchedColumnsList = Array.from(unmatchedColumnsSet).sort()
     console.log("-".repeat(80))
