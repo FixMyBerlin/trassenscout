@@ -3,6 +3,7 @@ export const emailTemplateKeys = {
   invitationCreatedUser: "invitation_created_user",
   invitationCreatedEditorsNotification: "invitation_created_editors_notification",
   membershipCreatedEditorsNotification: "membership_created_editors_notification",
+  projectRecordAssignedUser: "project_record_assigned_user",
   projectRecordEmailWithoutProjectAdmin: "project_record_email_without_project_admin",
   projectRecordNeedsReviewAdmin: "project_record_needs_review_admin",
   userCreatedAdminNotification: "user_created_admin_notification",
@@ -107,6 +108,30 @@ Diese E-Mail dient zur Information aller Personen mit der Rolle "Editor" im Proj
 # {{inviteeName}} hat soeben die Einladung zur Mitarbeit angenommen und hat jetzt {{roleName}}.
 
 Das Projektteam kann unter {{teamUrl}} eingesehen werden.`,
+    },
+  },
+  [emailTemplateKeys.projectRecordAssignedUser]: {
+    key: emailTemplateKeys.projectRecordAssignedUser,
+    name: "Protokolleintrag: Zuweisung",
+    description:
+      "Benachrichtigung an zugewiesene Personen, dass ihnen ein Protokolleintrag zugewiesen wurde.",
+    supportsCta: true,
+    allowedVariables: ["assigneeName", "actorName", "recordTitle", "projectName"],
+    sampleContext: {
+      assigneeName: "Name Beispiel",
+      actorName: "Name Beispiel",
+      recordTitle: "Protokolleintrag #00 – Neue Beispiel Record",
+      projectName: "Radschnellweg Nord",
+    },
+    defaults: {
+      subject:
+        "Trassenscout: Neue Aufgabe – {{actorName}} hat Ihnen einen Protokolleintrag zugewiesen",
+      introMarkdown: `Guten Tag {{assigneeName}}!
+
+# Neue Zuweisung: {{recordTitle}}
+
+**{{actorName}}** hat Ihnen einen Protokolleintrag im Projekt **{{projectName}}** zugewiesen.`,
+      ctaText: "Protokolleintrag öffnen",
     },
   },
   [emailTemplateKeys.projectRecordEmailWithoutProjectAdmin]: {

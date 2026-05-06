@@ -4,7 +4,9 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
-import { longTitle } from "@/src/core/components/text"
+import { longTitle, shortTitle } from "@/src/core/components/text"
+import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
+import { projectRecordAssignedNotificationToUser } from "@/emails/mailers/projectRecordAssignedNotificationToUser"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { m2mFields, M2MFieldsType } from "@/src/server/projectRecords/m2mFields"
 import { ProjectRecordSchema } from "@/src/server/projectRecords/schemas"
@@ -82,6 +84,47 @@ export default resolver.pipe(
         projectRecordUpdatedByType: ProjectRecordType.USER,
       },
     })
+
+    const newAssigneeId = record.assignedToId
+    const previousAssigneeId = previous?.assignedToId ?? null
+    const isNewAssignment = newAssigneeId !== null && newAssigneeId !== previousAssigneeId
+    const isSelfAssignment = newAssigneeId === currentUserId
+
+    if (isNewAssignment && !isSelfAssignment) {
+      const [assignee, actor, project] = await Promise.all([
+        db.user.findUnique({
+          where: { id: newAssigneeId },
+          select: { email: true, firstName: true, lastName: true },
+        }),
+        db.user.findUnique({
+          where: { id: currentUserId! },
+          select: { firstName: true, lastName: true },
+        }),
+        db.project.findUnique({
+          where: { id: record.projectId },
+          select: { slug: true },
+        }),
+      ])
+
+      if (assignee && actor && project) {
+        const assigneeName =
+          [assignee.firstName, assignee.lastName].filter(Boolean).join(" ") || assignee.email
+        const actorName = [actor.firstName, actor.lastName].filter(Boolean).join(" ") || "Unbekannt"
+        const recordTitle = record.title
+        const recordPath = projectRecordDetailRoute(project.slug, record.id)
+
+        await (
+          await projectRecordAssignedNotificationToUser({
+            assigneeEmail: assignee.email,
+            assigneeName,
+            actorName,
+            recordTitle,
+            projectName: shortTitle(project.slug),
+            recordPath,
+          })
+        ).send()
+      }
+    }
 
     await createLogEntry({
       action: "UPDATE",
