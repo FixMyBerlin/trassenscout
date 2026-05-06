@@ -1,3 +1,4 @@
+import { projectRecordAssignedNotificationToUser } from "@/emails/mailers/projectRecordAssignedNotificationToUser"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { editorRoles } from "@/src/authorization/constants"
 import {
@@ -6,7 +7,6 @@ import {
 } from "@/src/authorization/extractProjectSlug"
 import { longTitle, shortTitle } from "@/src/core/components/text"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
-import { projectRecordAssignedNotificationToUser } from "@/emails/mailers/projectRecordAssignedNotificationToUser"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { m2mFields, M2MFieldsType } from "@/src/server/projectRecords/m2mFields"
 import { ProjectRecordSchema } from "@/src/server/projectRecords/schemas"

@@ -36,7 +36,9 @@ export async function projectRecordEmailWithoutProjectNotificationToAdmins(props
       senderEmail: props.senderEmail,
       emailSubject: props.emailSubject || "(kein Betreff)",
       usedSubaddressLine:
-        invalidSlug && props.projectSlug ? `**Verwendetes Subadressing:** ${props.projectSlug}` : "",
+        invalidSlug && props.projectSlug
+          ? `**Verwendetes Subadressing:** ${props.projectSlug}`
+          : "",
     },
   )
   assertValidRenderedTemplate(renderedTemplate)
