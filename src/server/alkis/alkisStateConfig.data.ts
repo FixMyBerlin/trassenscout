@@ -14,7 +14,7 @@
 // Last regen: 2026-04-29T13:44:33.480Z
 
 import { StateKeyEnum } from "@prisma/client"
-import type { AlkisStateConfigEntry } from "./alkisStateConfig.types"
+import { AlkisAttributionLicense, type AlkisStateConfigEntry } from "./alkisStateConfig.types"
 
 export const alkisStateConfig: Record<StateKeyEnum, AlkisStateConfigEntry> = {
   BADEN_WUERTTEMBERG: {
@@ -23,7 +23,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisStateConfigEntry> = {
     attribution: {
       text: "© LGL BW", // ISO 19139 record gmd:organisationName (shortened, © prepended): 'LGL Baden-Württemberg'
       url: "https://www.lgl-bw.de", // ISO 19139 record gmd:URL: 'http://www.lgl-bw.de'
-      license: "DL-DE BY 2.0", // WFS AccessConstraints: 'dl-de/by-2-0'
+      license: AlkisAttributionLicense.DlDeBy20, // WFS AccessConstraints: 'dl-de/by-2-0'
     },
     specialCaseNote: "Uses custom nora namespace and flurstueckskennzeichen property naming.",
     wms: { url: false },
@@ -53,7 +53,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisStateConfigEntry> = {
     attribution: {
       text: "© GeoBasis-DE/Berlin", // manually crafted (license is Zero — no text required); WFS ProviderName: 'Senatsverwaltung für Stadtentwicklung, Bauen und Wohnen Berlin'
       url: "https://www.berlin.de/sen/sbw/stadtdaten/geoportal/liegenschaftskataster/", // ISO 19139 record CI_OnlineResource [information / mehr zum Liegenschaftskataster]
-      license: "DL-DE Zero 2.0", // WFS Fees: 'https://www.govdata.de/dl-de/zero-2-0'
+      license: AlkisAttributionLicense.DlDeZero20, // WFS Fees: 'https://www.govdata.de/dl-de/zero-2-0'
     },
     specialCaseNote: null,
     wms: { url: false },
@@ -74,7 +74,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisStateConfigEntry> = {
     attribution: {
       text: "© GeoBasis-DE/LGB", // WFS AccessConstraints (extracted, © prepended): 'Namensnennung: "GeoBasis-DE/LGB"'
       url: "https://geoportal.brandenburg.de", // provider website
-      license: "DL-DE BY 2.0", // WFS AccessConstraints: 'Datenlizenz Deutschland - Namensnennung - Version 2.0'
+      license: AlkisAttributionLicense.DlDeBy20, // WFS AccessConstraints: 'Datenlizenz Deutschland - Namensnennung - Version 2.0'
     },
     specialCaseNote: null,
     wms: { url: false },
@@ -95,7 +95,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisStateConfigEntry> = {
     attribution: {
       text: "© LGLN", // WFS ProviderName (© prepended): 'LGLN'
       url: "https://opendata.lgln.niedersachsen.de", // derived from WFS endpoint URL
-      license: "CC BY 4.0", // WFS AccessConstraints: 'cc-by/4.0'
+      license: AlkisAttributionLicense.CcBy40, // WFS AccessConstraints: 'cc-by/4.0'
     },
     specialCaseNote:
       "Configured WFS differs from spreadsheet direct URL. Bremen uses LGLN host with typename adv:AX_Flurstueck.",
@@ -117,7 +117,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisStateConfigEntry> = {
     attribution: {
       text: "© LGV Hamburg", // WFS Providername (© prepended) (Note: Fees Quellenvermerk too long for map display: 'Freie und Hansestadt Hamburg, Landesbetrieb Geoinformation und Vermessung (LGV)')
       url: "https://api.hamburg.de/datasets/v1/alkis_vereinfacht", // ISO 19139 record CI_OnlineResource [unspecificurl / OGC API - Features (OAF) Landing Page]
-      license: "DL-DE BY 2.0", // ISO 19139 record licenseId: 'dl-by-de/2.0'
+      license: AlkisAttributionLicense.DlDeBy20, // ISO 19139 record licenseId: 'dl-by-de/2.0'
     },
     specialCaseNote: null,
     wms: { url: false },
@@ -138,7 +138,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisStateConfigEntry> = {
     attribution: {
       text: "© GeoBasis-DE/HVBG", // manually crafted (license is Zero — no text required); WFS ProviderName: 'Hessisches Landesamt für Bodenmanagement und Geoinformation'
       url: "https://gds.hessen.de", // provider website
-      license: "DL-DE Zero 2.0", // WFS AccessConstraints: 'Jede Nutzung ... ohne Einschränkung oder Bedingung erlaubt' (§ 18 HVGG); confirmed at provider website (gds.hessen.de): 'kosten- und lizenzfreien Download'
+      license: AlkisAttributionLicense.DlDeZero20, // WFS AccessConstraints: 'Jede Nutzung ... ohne Einschränkung oder Bedingung erlaubt' (§ 18 HVGG); confirmed at provider website (gds.hessen.de): 'kosten- und lizenzfreien Download'
     },
     specialCaseNote: null,
     wms: { url: false },
@@ -160,7 +160,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisStateConfigEntry> = {
     attribution: {
       text: "© GeoBasis-DE/M-V", // WFS AccessConstraints (year placeholder omitted): '© GeoBasis-DE/M-V <Jahr der letzten Datenlieferung>'
       url: "https://www.laiv-mv.de/Geoinformation/", // ISO 19139 record gmd:URL: 'https://www.laiv-mv.de/Geoinformation/'
-      license: "CC BY 4.0", // laiv-mv.de/Geoinformation/Open_Data_Angebot/ (provider website): 'Creative Commons Namensnennung – 4.0 International (CC BY 4.0)'
+      license: AlkisAttributionLicense.CcBy40, // laiv-mv.de/Geoinformation/Open_Data_Angebot/ (provider website): 'Creative Commons Namensnennung – 4.0 International (CC BY 4.0)'
     },
     specialCaseNote: null,
     wms: { url: false },
@@ -181,7 +181,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisStateConfigEntry> = {
     attribution: {
       text: "© LGLN", // WFS ProviderName (© prepended): 'LGLN'
       url: "https://opendata.lgln.niedersachsen.de", // derived from WFS endpoint URL
-      license: "CC BY 4.0", // WFS AccessConstraints: 'cc-by/4.0'
+      license: AlkisAttributionLicense.CcBy40, // WFS AccessConstraints: 'cc-by/4.0'
     },
     specialCaseNote: null,
     wms: { url: false },
@@ -202,7 +202,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisStateConfigEntry> = {
     attribution: {
       text: "© Geobasis-DE/NRW", // WFS ProviderName (© prepended, normalized): 'Geobasis NRW'
       url: "https://www.geoportal.nrw", // provider website
-      license: "DL-DE Zero 2.0", // WFS Fees: 'https://www.govdata.de/dl-de/zero-2-0'
+      license: AlkisAttributionLicense.DlDeZero20, // WFS Fees: 'https://www.govdata.de/dl-de/zero-2-0'
     },
     specialCaseNote: null,
     wms: { url: false },
@@ -223,7 +223,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisStateConfigEntry> = {
     attribution: {
       text: "© GeoBasis-DE/LVermGeoRP", // WFS Fees (year placeholder omitted, spacing normalized): '©GeoBasis-DE / LVermGeoRP (Jahr des Datenbezugs)'
       url: "https://www.lvermgeo.rlp.de/geodaten-geoshop/open-data", // WFS Fees (attribution example URL): 'http://www.lvermgeo.rlp.de' (open-data subpage)
-      license: "DL-DE BY 2.0", // WFS Fees: 'https://www.govdata.de/dl-de/by-2-0'
+      license: AlkisAttributionLicense.DlDeBy20, // WFS Fees: 'https://www.govdata.de/dl-de/by-2-0'
     },
     specialCaseNote: null,
     wms: { url: false },
@@ -264,7 +264,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisStateConfigEntry> = {
     attribution: {
       text: "© GeoSN", // WFS Fees (short form, © prepended): 'GeoSN'
       url: "https://www.landesvermessung.sachsen.de/liegenschaftskataster-3978.html", // ISO 19139 record CI_OnlineResource (URL path match on 'liegenschaftskataster')
-      license: "DL-DE BY 2.0", // landesvermessung.sachsen.de/allgemeine-nutzungsbedingungen-8954.html (provider website): 'dl-de/by-2-0'
+      license: AlkisAttributionLicense.DlDeBy20, // landesvermessung.sachsen.de/allgemeine-nutzungsbedingungen-8954.html (provider website): 'dl-de/by-2-0'
     },
     specialCaseNote:
       "Spreadsheet direct lookup often uses StoredQuery (kennzeichen); this audit uses BBOX GetFeature probes.",
@@ -286,7 +286,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisStateConfigEntry> = {
     attribution: {
       text: "© GeoBasis-DE/LVermGeo ST", // Nutzungsbedingungen PDF (spacing normalized): '© GeoBasis-DE / LVermGeo ST'
       url: "https://www.lvermgeo.sachsen-anhalt.de/de/gdp-open-data.html", // WFS ServiceContact/OnlineResource: 'http://www.lvermgeo.sachsen-anhalt.de' (open-data subpage)
-      license: "DL-DE BY 2.0", // lvermgeo.sachsen-anhalt.de/de/gdp-open-data.html (provider website): 'Datenlizenz Deutschland – Namensnennung – Version 2.0'
+      license: AlkisAttributionLicense.DlDeBy20, // lvermgeo.sachsen-anhalt.de/de/gdp-open-data.html (provider website): 'Datenlizenz Deutschland – Namensnennung – Version 2.0'
     },
     specialCaseNote: null,
     wms: { url: false },
@@ -307,7 +307,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisStateConfigEntry> = {
     attribution: {
       text: "© GeoBasis-DE/LVermGeo SH", // ISO 19139 record sourceHint: '© GeoBasis-DE/LVermGeo SH/CC BY 4.0'
       url: "https://www.gdi-sh.de", // WFS ServiceContact/OnlineResource: 'https://www.gdi-sh.de/gdish/DE/Organisation/Kst_GDISH' (path stripped)
-      license: "CC BY 4.0", // ISO 19139 record licenseId: 'cc-by/4.0'
+      license: AlkisAttributionLicense.CcBy40, // ISO 19139 record licenseId: 'cc-by/4.0'
     },
     specialCaseNote: "INSPIRE schema is used (cp:CadastralParcel / nationalCadastralReference).",
     wms: { url: false },
@@ -329,7 +329,7 @@ export const alkisStateConfig: Record<StateKeyEnum, AlkisStateConfigEntry> = {
     attribution: {
       text: "© GDI-Th", // ISO 19139 record sourceHint: '© GDI-Th'
       url: "https://geoportal.thueringen.de/gdi-th/download-offene-geodaten/download-liegschaftskataster", // ISO 19139 record CI_OnlineResource [download / Download Liegenschaftskataster (ohne Eigentümerangaben)]
-      license: "DL-DE BY 2.0", // ISO 19139 record licenseId: 'dl-by-de/2.0'
+      license: AlkisAttributionLicense.DlDeBy20, // ISO 19139 record licenseId: 'dl-by-de/2.0'
     },
     specialCaseNote: null,
     wms: { url: false },
