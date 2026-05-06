@@ -63,7 +63,7 @@ export const MarkdownMail = ({
                 <Section className="my-5 flex items-center justify-center text-center">
                   <center>
                     <Button
-                      className="block min-w-52 rounded-sm bg-blue-500 px-4 py-3.5 text-center font-sans text-base text-white no-underline"
+                      style={ctaButton}
                       href={ctaLink}
                     >
                       {ctaText}
@@ -157,3 +157,17 @@ const text = {
 const mainText = { ...text, marginBottom: "14px" }
 
 const list = { ...text, margin: "5px 0" }
+
+const ctaButton = {
+  display: "inline-block",
+  minWidth: "208px",
+  borderRadius: "2px",
+  backgroundColor: "#2C62A9",
+  color: "#ffffff",
+  padding: "14px 16px",
+  textAlign: "center" as const,
+  fontFamily,
+  fontSize: "16px",
+  lineHeight: "20px",
+  textDecoration: "none",
+}
