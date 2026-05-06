@@ -16,7 +16,12 @@ async function main() {
   const apiEndpoint = `${apiUrl}/api/subsections/import`
 
   console.log("=".repeat(80))
-  console.log("CSV Import Script for Subsections (Planungsabschnitte)", { configName, env, apiUrl, config })
+  console.log("CSV Import Script for Subsections (Planungsabschnitte)", {
+    configName,
+    env,
+    apiUrl,
+    config,
+  })
   console.log("=".repeat(80), "\n")
 
   const csvContent = await downloadAndStoreCsv(
