@@ -1,3 +1,10 @@
+import { Upload } from "@prisma/client"
+import {
+  isImageExternalUrl as isImageExternalUrlCore,
+  isImageMimeType,
+  isImageUpload as isImageUploadCore,
+} from "@/src/core/uploads/isImageUpload"
+
 /**
  * Mapping from MIME types to file extensions for the accept attribute
  * This is the source of truth for supported uploads
@@ -85,7 +92,17 @@ export const getFileTypeCategory = (mimeType: string | null | undefined) => {
 }
 
 export const isImage = (mimeType: string | null | undefined) => {
-  return mimeType?.startsWith("image/") ?? false
+  return isImageMimeType(mimeType)
+}
+
+export const isImageExternalUrl = (externalUrl: string | null | undefined) => {
+  return isImageExternalUrlCore(externalUrl)
+}
+
+export const isImageUpload = (
+  upload: Pick<Upload, "mimeType" | "externalUrl"> | { mimeType?: string | null; externalUrl?: string | null },
+) => {
+  return isImageUploadCore(upload)
 }
 
 export const isPdf = (mimeType: string | null | undefined) => {

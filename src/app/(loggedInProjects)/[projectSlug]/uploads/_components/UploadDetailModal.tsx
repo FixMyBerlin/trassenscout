@@ -42,11 +42,29 @@ export const UploadDetailModal = ({
   const [upload] = useQuery(
     getUploadWithRelations,
     { projectSlug, id: uploadId! },
-    { enabled: open && uploadId !== null },
+    {
+      enabled: open && uploadId !== null,
+      suspense: false,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
   )
 
-  // Check if upload was marked as deleted or is null
-  if (!upload || (upload as any).__deleted) return null
+  if (!open || uploadId === null) return null
+
+  if (!upload) {
+    return (
+      <Modal open={open} handleClose={onClose} className="space-y-4 sm:max-w-2xl">
+        <HeadingWithAction>
+          <H3>Dokument wird geladen …</H3>
+          <ModalCloseButton onClose={onClose} />
+        </HeadingWithAction>
+      </Modal>
+    )
+  }
+
+  // Check if upload was marked as deleted
+  if ((upload as any).__deleted) return null
 
   return (
     <Modal open={open} handleClose={onClose} className="space-y-4 sm:max-w-2xl">

@@ -17,7 +17,7 @@ type Props = {
 
 export const UploadMarkers = ({ projectSlug, interactive }: Props) => {
   const excludeUploadId = useTrySlugId("uploadId")
-  const [isVisible, setIsVisible] = useState(true)
+  const [isVisible, setIsVisible] = useState(false)
   const [selectedUploadId, setSelectedUploadId] = useState<number | null>(null)
 
   const [uploads] = useQuery(getGeolocatedUploads, { projectSlug })
