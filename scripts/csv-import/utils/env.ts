@@ -1,3 +1,7 @@
+import { loadEnvConfig } from "@next/env"
+
+loadEnvConfig(process.cwd())
+
 export type Environment = "dev" | "staging" | "production"
 
 export const apiUrls = {
