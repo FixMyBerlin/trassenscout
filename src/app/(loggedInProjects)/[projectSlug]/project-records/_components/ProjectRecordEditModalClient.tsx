@@ -1,11 +1,11 @@
 "use client"
 
 import { EditProjectRecordForm } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/EditProjectRecordForm"
+import { getProjectRecordEditSuccessRoute } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/getProjectRecordEditSuccessRoute"
 import { Modal, ModalCloseButton } from "@/src/core/components/Modal"
 import { useModalNavigationGuard } from "@/src/core/components/Modal/useModalNavigationGuard"
 import { H3 } from "@/src/core/components/text"
 import { HeadingWithAction } from "@/src/core/components/text/HeadingWithAction"
-import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
 import { Route } from "next"
 import { useRouter } from "next/navigation"
@@ -35,13 +35,17 @@ export const ProjectRecordEditModalClient = ({
         hideBackLink
         onDirtyChange={navigationGuard.setDirty}
         onSubmittingChange={navigationGuard.setSubmitting}
-        onSuccess={() => {
+        onSuccess={(reviewState) => {
           navigationGuard.beginNavigationAfterSave({ holdUntilNextModalMount: true })
-          const detailPath = projectRecordDetailRoute(
-            initialProjectRecord.project.slug,
-            initialProjectRecord.id,
+          router.replace(
+            getProjectRecordEditSuccessRoute({
+              projectSlug: initialProjectRecord.project.slug,
+              projectRecordId: initialProjectRecord.id,
+              initialReviewState: initialProjectRecord.reviewState,
+              nextReviewState: reviewState,
+            }) as Route,
+            { scroll: false },
           )
-          router.replace(detailPath as Route, { scroll: false })
         }}
       />
     </Modal>
