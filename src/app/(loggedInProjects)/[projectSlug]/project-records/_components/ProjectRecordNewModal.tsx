@@ -11,6 +11,7 @@ import { HeadingWithAction } from "@/src/core/components/text/HeadingWithAction"
 import createProjectRecord from "@/src/server/projectRecords/mutations/createProjectRecord"
 import { NewProjectRecordFormSchema } from "@/src/server/projectRecords/schemas"
 import { useMutation } from "@blitzjs/rpc"
+import { ProjectRecordEditingState } from "@prisma/client"
 import { useState } from "react"
 import { z } from "zod"
 
@@ -65,6 +66,7 @@ export const ProjectRecordNewModal = ({
 
   const formInitialValues = {
     date: getDate(new Date()),
+    editingState: ProjectRecordEditingState.PENDING,
     ...(initialValues?.subsectionId && {
       subsectionId: initialValues.subsectionId,
     }),

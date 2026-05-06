@@ -30,6 +30,9 @@ export default function AdminDashboardPage() {
           <Link href="/admin/surveys/new">Neue Beteiligung</Link>
         </li>
         <li>
+          <Link href="/admin/email-templates">E-Mail-Templates</Link>
+        </li>
+        <li>
           <Link href="/admin/logEntries">LogEntries</Link>
         </li>
       </ul>

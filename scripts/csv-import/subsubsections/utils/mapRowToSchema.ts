@@ -7,7 +7,7 @@ import {
 } from "@/src/core/utils/geojson-schemas"
 import { FeatureSchema } from "@/src/server/subsections/schema"
 import { SubsubsectionBaseSchema } from "@/src/server/subsubsections/schema"
-import type { CsvRow } from "./parseCsv"
+import type { CsvRow } from "../../utils/parseCsv"
 
 /**
  * Normalizes numeric string by handling comma/decimal separators

@@ -1,20 +1,11 @@
 import { styleText } from "node:util"
 import { parse } from "papaparse"
 
-/**
- * CSV row value type: CSV values are strings (trimmed) or null (for empty cells)
- */
 export type CsvValue = string | null
 
-/**
- * CSV row type: object with string keys and CsvValue values
- */
 export type CsvRow = Record<string, CsvValue>
 
-/**
- * Parses CSV content and validates required columns
- */
-export function parseCsv(csvContent: string) {
+export function parseCsv(csvContent: string, requiredColumns: string[]) {
   console.log(styleText("inverse", " Parsing CSV... "))
 
   const parseResult = parse<CsvRow>(csvContent, {
@@ -41,10 +32,6 @@ export function parseCsv(csvContent: string) {
     process.exit(1)
   }
 
-  // Required CSV columns
-  const requiredColumns = ["project", "pa-slug", "slug"]
-
-  // Check for required columns
   const firstRow = rows[0]
   if (!firstRow) {
     console.error("❌ CSV has no data rows")

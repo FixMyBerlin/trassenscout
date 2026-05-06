@@ -1,14 +1,16 @@
-import { downloadAndStoreCsv } from "./utils/downloadAndStoreCsv"
-import { apiUrls, getApiKeyForEnv } from "./utils/env"
+import { downloadAndStoreCsv } from "../utils/downloadAndStoreCsv"
+import { apiUrls, getApiKeyForEnv } from "../utils/env"
+import { loadConfig, parseArgs } from "../utils/parseArgs"
+import { parseCsv } from "../utils/parseCsv"
 import { mapRowToSchema } from "./utils/mapRowToSchema"
-import { loadConfig, parseArgs } from "./utils/parseArgs"
-import { parseCsv } from "./utils/parseCsv"
 import { sendToApi } from "./utils/sendToApi"
 import { validateRow } from "./utils/validateRow"
 
+const SCRIPT_ENTRY = "scripts/csv-import/subsubsections/index.ts"
+
 async function main() {
-  const { configName, env } = await parseArgs()
-  const config = await loadConfig(configName)
+  const { configName, env } = await parseArgs(SCRIPT_ENTRY)
+  const config = await loadConfig(configName, import.meta.dir)
   const apiKey = getApiKeyForEnv(env)
   const apiUrl = apiUrls[env]
   const apiEndpoint = `${apiUrl}/api/subsubsections/import`
@@ -18,10 +20,14 @@ async function main() {
   console.log("=".repeat(80), "\n")
 
   // Download and store CSV
-  const csvContent = await downloadAndStoreCsv(config.spreadsheetId, config.tableId, configName)
+  const csvContent = await downloadAndStoreCsv(
+    config.spreadsheetId,
+    config.tableId,
+    configName,
+    import.meta.dir,
+  )
 
-  // Parse CSV
-  const rows = parseCsv(csvContent)
+  const rows = parseCsv(csvContent, ["project", "pa-slug", "slug"])
 
   // Statistics
   let processedCount = 0

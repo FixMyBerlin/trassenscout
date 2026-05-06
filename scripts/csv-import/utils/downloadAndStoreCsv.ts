@@ -2,16 +2,14 @@ import { resolve } from "node:path"
 import { styleText } from "node:util"
 
 /**
- * Downloads CSV from Google Sheets and stores it locally for inspection
+ * Downloads CSV from Google Sheets and stores it under `configs/<configName>/` in `scriptRootDir`.
  */
 export async function downloadAndStoreCsv(
   spreadsheetId: string,
   tableId: string,
   configName: string,
+  scriptRootDir: string,
 ) {
-  // Get script directory: go up one level from utils/ to the script directory
-  const scriptDir = resolve(import.meta.dir, "..")
-  // Fetch Google Sheets as CSV
   const csvUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/export?format=csv&gid=${tableId}`
 
   console.log(styleText("inverse", " Fetching CSV from Google Sheets... "), { csvUrl })
@@ -34,13 +32,11 @@ export async function downloadAndStoreCsv(
 
   console.log(`✓ CSV fetched (${csvContent.length} characters)`)
 
-  // Save CSV file for inspection
   const timestamp = new Date().toISOString().replace(/[:.]/g, "-")
   const csvFileName = configName ? `${configName}-${timestamp}.csv` : `csv-${timestamp}.csv`
-  const csvFilePath = resolve(scriptDir, "configs", configName, csvFileName)
+  const csvFilePath = resolve(scriptRootDir, "configs", configName, csvFileName)
 
   try {
-    // Bun.write() automatically creates directories if they don't exist
     await Bun.write(csvFilePath, csvContent)
     console.log("✓ CSV saved", { csvFilePath })
   } catch (error: unknown) {

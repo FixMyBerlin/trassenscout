@@ -17,8 +17,12 @@ import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import { m2mFields, M2MFieldsType } from "@/src/server/projectRecords/m2mFields"
 import updateProjectRecord from "@/src/server/projectRecords/mutations/updateProjectRecord"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
+import getProjectRecords from "@/src/server/projectRecords/queries/getProjectRecords"
+import getProjectRecordsByAcquisitionArea from "@/src/server/projectRecords/queries/getProjectRecordsByAcquisitionArea"
+import getProjectRecordsBySubsubsection from "@/src/server/projectRecords/queries/getProjectRecordsBySubsubsection"
+import getProjectRecordsNeedsReview from "@/src/server/projectRecords/queries/getProjectRecordsNeedsReview"
 import { ProjectRecordFormSchema } from "@/src/server/projectRecords/schemas"
-import { useMutation, useQuery } from "@blitzjs/rpc"
+import { invalidateQuery, useMutation, useQuery } from "@blitzjs/rpc"
 import { ProjectRecordReviewState } from "@prisma/client"
 import { Route } from "next"
 import { useRouter } from "next/navigation"
@@ -63,6 +67,11 @@ export const EditProjectRecordForm = ({
         uploads: values.uploads === true ? false : values.uploads,
         projectRecordEmailId: projectRecord.projectRecordEmailId,
       })
+      // invalidateQuery(getProjectRecord)
+      invalidateQuery(getProjectRecords)
+      invalidateQuery(getProjectRecordsBySubsubsection)
+      invalidateQuery(getProjectRecordsNeedsReview)
+      invalidateQuery(getProjectRecordsByAcquisitionArea)
       if (onSuccess) {
         onSuccess()
       } else {
@@ -140,13 +149,9 @@ export const EditProjectRecordForm = ({
 
         {needsReview && <ReviewProjectRecordForm />}
       </Form>
-
       <CreateEditReviewHistory projectRecord={projectRecord} />
-
       <ProjectRecordCommentsSection projectRecord={projectRecord} />
-
       {!hideBackLink && <BackLink href={showPath} text="Zurück zum Protokolleintrag" />}
-
       <SuperAdminLogData data={{ initialValues: projectRecord }} />
     </>
   )

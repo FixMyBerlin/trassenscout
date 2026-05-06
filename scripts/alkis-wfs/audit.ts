@@ -96,11 +96,11 @@ async function auditOne(
           bboxAxisOrder: "latlon" as const,
         } as const)
       : ({
-          wfsUrl: entry.wfs.url.trim() || null,
-          parcelPropertyKey: entry.wfs.parcelPropertyKey.trim() || null,
-          alkisParcelIdPropertyKey: entry.wfs.alkisParcelIdPropertyKey?.trim() || null,
+          wfsUrl: entry.wfs.url || null,
+          parcelPropertyKey: entry.wfs.parcelPropertyKey || null,
+          alkisParcelIdPropertyKey: entry.wfs.alkisParcelIdPropertyKey || null,
           projection: entry.wfs.projection,
-          wfsOutputFormat: entry.wfs.wfsOutputFormat?.trim() || null,
+          wfsOutputFormat: entry.wfs.wfsOutputFormat || null,
           supports4326: entry.wfs.supports4326,
           bboxAxisOrder: entry.wfs.bboxAxisOrder,
         } as const)

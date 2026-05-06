@@ -1,4 +1,5 @@
 import db, { SurveyResponseStateEnum } from "@/db"
+import { generateSecureToken } from "@/src/server/shared/utils/generateSecureToken"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
 
@@ -41,6 +42,7 @@ export default resolver.pipe(resolver.zod(CreateSurveyUploadPublicSchema), async
   }
 
   const projectId = surveyResponse.surveySession.survey.projectId
+  const publicDeleteToken = generateSecureToken()
 
   // Create the Upload record
   const record = await db.upload.create({
@@ -51,6 +53,7 @@ export default resolver.pipe(resolver.zod(CreateSurveyUploadPublicSchema), async
       externalUrl: input.externalUrl,
       mimeType: input.mimeType ?? null,
       fileSize: input.fileSize ?? null,
+      publicDeleteToken,
       // Public uploads don't have createdById/updatedById
       createdById: null,
       updatedById: null,

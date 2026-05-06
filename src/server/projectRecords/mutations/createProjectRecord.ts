@@ -1,9 +1,12 @@
+import { projectRecordAssignedNotificationToUser } from "@/emails/mailers/projectRecordAssignedNotificationToUser"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { editorRoles } from "@/src/authorization/constants"
 import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
+import { shortTitle } from "@/src/core/components/text"
+import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import { validateAcquisitionAreaScope } from "@/src/server/acquisitionAreas/_utils/validateAcquisitionAreaScope"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { m2mFields, M2MFieldsType } from "@/src/server/projectRecords/m2mFields"
@@ -60,6 +63,41 @@ export default resolver.pipe(
         reviewedAt: null,
       },
     })
+
+    const isNewAssignment = record.assignedToId !== null
+    const isSelfAssignment = record.assignedToId === currentUserId
+
+    if (isNewAssignment && !isSelfAssignment) {
+      const [assignee, actor] = await Promise.all([
+        db.user.findUnique({
+          where: { id: record.assignedToId! },
+          select: { email: true, firstName: true, lastName: true },
+        }),
+        db.user.findUnique({
+          where: { id: currentUserId! },
+          select: { firstName: true, lastName: true },
+        }),
+      ])
+
+      if (assignee && actor) {
+        const assigneeName =
+          [assignee.firstName, assignee.lastName].filter(Boolean).join(" ") || assignee.email
+        const actorName = [actor.firstName, actor.lastName].filter(Boolean).join(" ") || "Unbekannt"
+        const recordTitle = record.title
+        const recordPath = projectRecordDetailRoute(projectSlug, record.id)
+
+        await (
+          await projectRecordAssignedNotificationToUser({
+            assigneeEmail: assignee.email,
+            assigneeName,
+            actorName,
+            recordTitle,
+            projectName: shortTitle(projectSlug),
+            recordPath,
+          })
+        ).send()
+      }
+    }
 
     await createLogEntry({
       action: "CREATE",

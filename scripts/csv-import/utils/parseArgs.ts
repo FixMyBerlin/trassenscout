@@ -15,15 +15,11 @@ interface ScriptArgs {
   env: Environment
 }
 
-/**
- * Parses and validates command line arguments
- * Returns config name and environment
- */
-export async function parseArgs(): Promise<ScriptArgs> {
+export async function parseArgs(usageScriptPath: string): Promise<ScriptArgs> {
   const args = process.argv.slice(2)
 
   if (args.length < 2) {
-    console.error("Usage: bun scripts/csv-import-subsubsections/index.ts <config-name> <env>")
+    console.error(`Usage: bun ${usageScriptPath} <config-name> <env>`)
     console.error("  config-name: Name of the config file (without .ts extension)")
     console.error("  env: Environment (dev, staging, or production)")
     process.exit(1)
@@ -47,20 +43,13 @@ export async function parseArgs(): Promise<ScriptArgs> {
   return { configName, env }
 }
 
-/**
- * Loads and validates config from config file
- */
-export async function loadConfig(configName: string): Promise<Config> {
-  // Get script directory: go up one level from utils/ to the script directory
-  const scriptDir = resolve(import.meta.dir, "..")
-  const configPath = resolve(scriptDir, "configs", `${configName}.ts`)
+export async function loadConfig(configName: string, scriptRootDir: string): Promise<Config> {
+  const configPath = resolve(scriptRootDir, "configs", `${configName}.ts`)
 
   try {
-    // Use dynamic import for TypeScript config files
     const configModule = await import(configPath)
     const rawConfig = configModule.default
 
-    // Validate config against schema
     const config = ConfigSchema.parse(rawConfig)
     return config
   } catch (error: unknown) {

@@ -1,5 +1,5 @@
 import { getFullname } from "@/src/app/_components/users/utils/getFullname"
-import { pillShellWithGapClassName } from "@/src/core/utils/pillClassNames"
+import { pillShellWithGapClasses } from "@/src/core/utils/pillClassNames"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
 import clsx from "clsx"
 
@@ -24,8 +24,8 @@ export const ProjectRecordAssignedToPill = ({
   const filterSearchText = fullName
 
   const className = clsx(
-    pillShellWithGapClassName,
-    "border border-gray-200 bg-orange-100 text-xs text-orange-600",
+    pillShellWithGapClasses,
+    "bg-orange-100 text-xs text-orange-600",
     isInteractive &&
       "cursor-pointer hover:bg-orange-200/90 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-orange-500/40",
   )

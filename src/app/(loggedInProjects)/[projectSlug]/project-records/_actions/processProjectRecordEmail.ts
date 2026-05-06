@@ -10,7 +10,7 @@ import { parseEmail } from "@/src/app/api/(apiKey)/process-project-record-email/
 import { uploadEmailAttachments } from "@/src/app/api/(apiKey)/process-project-record-email/_utils/uploadEmailAttachments"
 import { getBlitzContext } from "@/src/blitz-server"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
-import db, { ProjectRecordReviewState, ProjectRecordType } from "db"
+import db, { ProjectRecordEditingState, ProjectRecordReviewState, ProjectRecordType } from "db"
 
 /**
  * NOTE: All parts related to subsections and subsubsections are temporarily commented out
@@ -139,6 +139,7 @@ export const processProjectRecordEmail = async ({
   // Create ProjectRecord with AI-extracted data
   const projectRecord = await db.projectRecord.create({
     data: {
+      editingState: ProjectRecordEditingState.PENDING,
       title: combinedResult.title,
       body: combinedResult.body,
       // if date is null or invalid, use parsed date or current date

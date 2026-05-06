@@ -1,7 +1,8 @@
-import { quote } from "@/src/core/components/text/quote"
+import { emailTemplateKeys } from "@/src/server/emailTemplates/registry"
+import { resolveAndRenderEmailTemplate } from "@/src/server/emailTemplates/render"
 import { addressNoreply } from "./utils/addresses"
 import { sendMailWithoutPreview } from "./utils/sendMailWithoutPreview"
-import { Mail } from "./utils/types"
+import { assertValidRenderedTemplate, buildTemplateMail } from "./utils/templateMail"
 
 type Props = {
   projectSlug: string
@@ -35,22 +36,6 @@ export async function projectRecordNeedsReviewNotificationToAdmins(props: Props)
   }
   actionItems.push("- Der Protokolleintrag genehmigt oder abgelehnt werden soll")
 
-  const introMarkdown = `
-Hallo Trassenscout-Admin!
-
-# Eine Email benötigt Admin-Prüfung im Projekt ${quote(props.projectSlug)}
-
-Die Email wurde automatisch als Protokolleintrag erfasst, benötigt jedoch eine Admin-Prüfung, da ${reasonText}.
-
-**Absenderadresse:** ${props.senderEmail}
-**Betreff:** ${props.emailSubject || "(kein Betreff)"}
-
-Bitte prüfen Sie den erstellten Protokolleintrag und entscheiden Sie, ob:
-${actionItems.join("\n")}
-
-Den Protokolleintrag können Sie unter ${props.projectRecordReviewUrl} einsehen und bearbeiten.
-`
-
   // Generate subject based on the reason(s)
   let subjectSuffix = ""
   if (!props.isSenderApproved && !props.isAiEnabled) {
@@ -61,14 +46,24 @@ Den Protokolleintrag können Sie unter ${props.projectRecordReviewUrl} einsehen 
     subjectSuffix = "Email mit deaktivierten AI-Funktionen"
   }
 
-  const message: Mail = {
-    From: addressNoreply,
-    To: [{ Email: process.env.ADMIN_EMAIL }],
-    Subject: `[Admin] Trassenscout: ${subjectSuffix} in Projekt ${quote(props.projectSlug)}`,
-    introMarkdown,
+  const renderedTemplate = await resolveAndRenderEmailTemplate(
+    emailTemplateKeys.projectRecordNeedsReviewAdmin,
+    {
+      projectSlug: props.projectSlug,
+      subjectSuffix,
+      reviewReason: reasonText,
+      senderEmail: props.senderEmail,
+      emailSubject: props.emailSubject || "(kein Betreff)",
+      actionItemsMarkdown: actionItems.join("\n"),
+    },
+  )
+  assertValidRenderedTemplate(renderedTemplate)
+  const message = buildTemplateMail({
+    from: addressNoreply,
+    to: [{ Email: process.env.ADMIN_EMAIL }],
+    template: renderedTemplate,
     ctaLink: props.projectRecordReviewUrl,
-    ctaText: "Protokolleintrag prüfen",
-  }
+  })
 
   return {
     async send() {

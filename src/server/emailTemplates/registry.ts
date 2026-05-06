@@ -1,0 +1,258 @@
+export const emailTemplateKeys = {
+  forgotPassword: "forgot_password",
+  invitationCreatedUser: "invitation_created_user",
+  invitationCreatedEditorsNotification: "invitation_created_editors_notification",
+  membershipCreatedEditorsNotification: "membership_created_editors_notification",
+  projectRecordAssignedUser: "project_record_assigned_user",
+  projectRecordEmailWithoutProjectAdmin: "project_record_email_without_project_admin",
+  projectRecordNeedsReviewAdmin: "project_record_needs_review_admin",
+  userCreatedAdminNotification: "user_created_admin_notification",
+  userCreatedUserNotification: "user_created_user_notification",
+} as const
+
+export type EmailTemplateKey = (typeof emailTemplateKeys)[keyof typeof emailTemplateKeys]
+
+export type EmailTemplateDefinition = {
+  key: EmailTemplateKey
+  name: string
+  description: string
+  supportsCta: boolean
+  allowedVariables: string[]
+  sampleContext: Record<string, string>
+  defaults: {
+    subject: string
+    introMarkdown: string
+    outroMarkdown?: string
+    ctaText?: string
+  }
+}
+
+// Survey emails are intentionally excluded for now because they are already
+// configured via survey-specific config and are out of scope for the first MVP.
+export const emailTemplateRegistry: Record<EmailTemplateKey, EmailTemplateDefinition> = {
+  [emailTemplateKeys.forgotPassword]: {
+    key: emailTemplateKeys.forgotPassword,
+    name: "Passwort zurücksetzen",
+    description: "E-Mail an Nutzer:innen nach Anforderung eines Passwort-Reset-Links.",
+    supportsCta: true,
+    allowedVariables: [],
+    sampleContext: {},
+    defaults: {
+      subject: "Trassenscout: Setzen Sie ihr Passwort zurück",
+      introMarkdown: "# Setzen Sie ihr Passwort zurück.",
+      ctaText: "Ein neues Passwort vergeben",
+    },
+  },
+  [emailTemplateKeys.invitationCreatedUser]: {
+    key: emailTemplateKeys.invitationCreatedUser,
+    name: "Einladung an Mitwirkende",
+    description: "E-Mail an eingeladene Personen zur Mitarbeit in einem Projekt.",
+    supportsCta: true,
+    allowedVariables: ["inviterName", "projectName", "loginUrl"],
+    sampleContext: {
+      inviterName: "Alex Beispiel",
+      projectName: "Radschnellweg Nord",
+      loginUrl: "https://trassenscout.de/auth/login?inviteToken=demo-token",
+    },
+    defaults: {
+      subject: "Trassenscout: Ihre Einladung zum Projekt {{projectName}}",
+      introMarkdown: `Guten Tag!
+
+# {{inviterName}} hat Sie soeben eingeladen, am Projekt {{projectName}} mitzuwirken.
+
+Bitte registrieren Sie sich, um die Einladung anzunehmen.`,
+      outroMarkdown: `Falls Sie schon einen Trassenscout-Account unter dieser E-Mail-Adresse besitzen, [melden Sie sich bitte damit an]({{loginUrl}}), um die Einladung anzunehmen.`,
+      ctaText: "Einladung annehmen und registrieren",
+    },
+  },
+  [emailTemplateKeys.invitationCreatedEditorsNotification]: {
+    key: emailTemplateKeys.invitationCreatedEditorsNotification,
+    name: "Info an Editoren: Einladung erstellt",
+    description: "Benachrichtigung an Editor-Mitglieder, dass eine Einladung erstellt wurde.",
+    supportsCta: false,
+    allowedVariables: ["projectName", "inviterName", "invitesUrl"],
+    sampleContext: {
+      projectName: "Radschnellweg Nord",
+      inviterName: "Alex Beispiel",
+      invitesUrl: "https://trassenscout.de/demo/invites",
+    },
+    defaults: {
+      subject: "Trassenscout: Neues Teammitglied eingeladen",
+      introMarkdown: `Guten Tag!
+
+Diese E-Mail dient zur Information aller Personen mit der Rolle "Editor" im Projekt {{projectName}}.
+
+# {{inviterName}} hat soeben eine:n neue:n Mitwirkende:n eingeladen.
+
+Die Liste aller offenen Einladungen finden Sie unter {{invitesUrl}}.`,
+    },
+  },
+  [emailTemplateKeys.membershipCreatedEditorsNotification]: {
+    key: emailTemplateKeys.membershipCreatedEditorsNotification,
+    name: "Info an Editoren: Einladung angenommen",
+    description: "Benachrichtigung an Editor-Mitglieder, dass eine Einladung angenommen wurde.",
+    supportsCta: false,
+    allowedVariables: ["projectName", "inviteeName", "roleName", "teamUrl"],
+    sampleContext: {
+      projectName: "Radschnellweg Nord",
+      inviteeName: "Jamie Beispiel",
+      roleName: "Editor",
+      teamUrl: "https://trassenscout.de/demo/contacts/team",
+    },
+    defaults: {
+      subject: "Trassenscout: Neues Teammitglied ({{projectName}})",
+      introMarkdown: `Guten Tag!
+
+Diese E-Mail dient zur Information aller Personen mit der Rolle "Editor" im Projekt {{projectName}}.
+
+# {{inviteeName}} hat soeben die Einladung zur Mitarbeit angenommen und hat jetzt {{roleName}}.
+
+Das Projektteam kann unter {{teamUrl}} eingesehen werden.`,
+    },
+  },
+  [emailTemplateKeys.projectRecordAssignedUser]: {
+    key: emailTemplateKeys.projectRecordAssignedUser,
+    name: "Protokolleintrag: Zuweisung",
+    description:
+      "Benachrichtigung an zugewiesene Personen, dass ihnen ein Protokolleintrag zugewiesen wurde.",
+    supportsCta: true,
+    allowedVariables: ["assigneeName", "actorName", "recordTitle", "projectName"],
+    sampleContext: {
+      assigneeName: "Name Beispiel",
+      actorName: "Name Beispiel",
+      recordTitle: "Protokolleintrag #00 – Neue Beispiel Record",
+      projectName: "Radschnellweg Nord",
+    },
+    defaults: {
+      subject:
+        "Trassenscout: Neue Aufgabe – {{actorName}} hat Ihnen einen Protokolleintrag zugewiesen",
+      introMarkdown: `Guten Tag {{assigneeName}}!
+
+# Neue Zuweisung: {{recordTitle}}
+
+**{{actorName}}** hat Ihnen einen Protokolleintrag im Projekt **{{projectName}}** zugewiesen.`,
+      ctaText: "Protokolleintrag öffnen",
+    },
+  },
+  [emailTemplateKeys.projectRecordEmailWithoutProjectAdmin]: {
+    key: emailTemplateKeys.projectRecordEmailWithoutProjectAdmin,
+    name: "Admin: E-Mail keinem Projekt zugeordnet",
+    description:
+      "Benachrichtigung an Admins, wenn eine eingehende Projekt-Record-E-Mail keinem Projekt zugeordnet werden konnte.",
+    supportsCta: true,
+    allowedVariables: [
+      "subjectSuffix",
+      "reasonText",
+      "senderEmail",
+      "emailSubject",
+      "usedSubaddressLine",
+    ],
+    sampleContext: {
+      subjectSuffix: "E-Mail ohne Subadressierung eingegangen",
+      reasonText:
+        "Es wurde keine Subadressierung genutzt. Diese E-Mail ist in der Inbox eingegangen. Sie wurde im Trassenscout gespeichert und kann im Admin-Interface einem Projekt zugeordnet und prozessiert werden.",
+      senderEmail: "buerger@example.org",
+      emailSubject: "Frage zum Projektverlauf",
+      usedSubaddressLine: "",
+    },
+    defaults: {
+      subject: "[Admin] Trassenscout: {{subjectSuffix}}",
+      introMarkdown: `Hallo Trassenscout-Admin!
+
+# Eine E-Mail konnte keinem Projekt zugeordnet werden
+
+{{reasonText}}
+
+**Absenderadresse:** {{senderEmail}}
+**Betreff:** {{emailSubject}}
+{{usedSubaddressLine}}`,
+      ctaText: "E-Mail im Admin-Interface anzeigen",
+    },
+  },
+  [emailTemplateKeys.projectRecordNeedsReviewAdmin]: {
+    key: emailTemplateKeys.projectRecordNeedsReviewAdmin,
+    name: "Admin: E-Mail braucht Prüfung",
+    description:
+      "Benachrichtigung an Admins, wenn eine eingehende Projekt-Record-E-Mail manuell geprüft werden muss.",
+    supportsCta: true,
+    allowedVariables: [
+      "projectSlug",
+      "subjectSuffix",
+      "reviewReason",
+      "senderEmail",
+      "emailSubject",
+      "actionItemsMarkdown",
+    ],
+    sampleContext: {
+      projectSlug: "demo-projekt",
+      subjectSuffix: "E-Mail benötigt Admin-Prüfung",
+      reviewReason:
+        "die Absenderadresse nicht als Teammitglied oder Kontakt im Projekt hinterlegt ist",
+      senderEmail: "buerger@example.org",
+      emailSubject: "Neue Hinweise zur Strecke",
+      actionItemsMarkdown:
+        "- Die Absenderadresse als Kontakt zum Projekt hinzugefügt werden soll\n- Der Protokolleintrag genehmigt oder abgelehnt werden soll",
+    },
+    defaults: {
+      subject: "[Admin] Trassenscout: {{subjectSuffix}} in Projekt {{projectSlug}}",
+      introMarkdown: `Hallo Trassenscout-Admin!
+
+# Eine E-Mail benötigt Admin-Prüfung im Projekt {{projectSlug}}
+
+Die E-Mail wurde automatisch als Protokolleintrag erfasst, benötigt jedoch eine Admin-Prüfung, da {{reviewReason}}.
+
+**Absenderadresse:** {{senderEmail}}
+**Betreff:** {{emailSubject}}
+
+Bitte prüfen Sie den erstellten Protokolleintrag und entscheiden Sie, ob:
+{{actionItemsMarkdown}}`,
+      ctaText: "Protokolleintrag prüfen",
+    },
+  },
+  [emailTemplateKeys.userCreatedAdminNotification]: {
+    key: emailTemplateKeys.userCreatedAdminNotification,
+    name: "Admin: Nutzerkonto erstellt",
+    description: "Benachrichtigung an Admins, wenn sich eine neue Person registriert hat.",
+    supportsCta: true,
+    allowedVariables: ["userName", "userMail", "membershipStatusText"],
+    sampleContext: {
+      userName: "Jamie Beispiel",
+      userMail: "jamie@example.org",
+      membershipStatusText: "Es sind noch keine Mitgliedschaften vorhanden",
+    },
+    defaults: {
+      subject: "[Admin] Trassenscout: Nutzer:in hat sich registriert",
+      introMarkdown: `Liebe Trassenscout-Admins!
+
+# Soeben wurde ein neuer Nutzer:innen-Account erstellt.
+
+Bitte prüfe den Account und ordne ihn einem Projekt zu.
+
+* Name: {{userName}}
+* E-Mail: {{userMail}}
+* {{membershipStatusText}}`,
+      ctaText: "Rechte vergeben",
+    },
+  },
+  [emailTemplateKeys.userCreatedUserNotification]: {
+    key: emailTemplateKeys.userCreatedUserNotification,
+    name: "Info an Nutzer:in: Account erstellt",
+    description: "Begrüßungs- und Informationsmail nach erfolgreicher Registrierung.",
+    supportsCta: true,
+    allowedVariables: ["userName"],
+    sampleContext: {
+      userName: "Jamie Beispiel",
+    },
+    defaults: {
+      subject: "Trassenscout: Account erstellt",
+      introMarkdown: `Guten Tag {{userName}}!
+
+Herzlich Willkommen im Trassenscout! Diese E-Mail dient zur Information, dass Sie soeben erfolgreich einen Account erstellt haben.`,
+      ctaText: "Trassenscout öffnen",
+    },
+  },
+}
+
+export const emailTemplateDefinitions = Object.values(emailTemplateRegistry)
+
+export const getEmailTemplateDefinition = (key: EmailTemplateKey) => emailTemplateRegistry[key]

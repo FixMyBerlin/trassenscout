@@ -17,11 +17,19 @@ export type SurveyUploadMetadata = {
   surveySessionId: number
 }
 
+/** Payload for the optional public survey batch callback (Beteiligung only). */
+export type UploadDropzoneCompleteItem = {
+  id: number
+  publicDeleteToken: string | null
+}
+
 type Props = {
   api: string
   surveyMeta?: SurveyUploadMetadata
   createUploadRecord: (file: FileUploadInfo<"complete">) => Promise<{ id: number } | number>
   onUploadComplete?: (uploadIds: number[]) => Promise<void> | void
+  /** Only used by the public survey (`beteiligung`) dropzone — receives delete capability tokens from `createSurveyUploadPublic`. */
+  onSurveyPublicUploadBatchComplete?: (items: UploadDropzoneCompleteItem[]) => Promise<void> | void
   fillContainer?: boolean
   accept?: string
   description?: UploadDropzoneBaseDescription | string
@@ -32,6 +40,7 @@ export const UploadDropzoneBase = ({
   surveyMeta,
   createUploadRecord,
   onUploadComplete,
+  onSurveyPublicUploadBatchComplete,
   fillContainer,
   accept,
   description,
@@ -57,19 +66,28 @@ export const UploadDropzoneBase = ({
       // Silent fail - errors are shown per-file in the UI
     },
     onUploadComplete: async ({ files }: { files: FileUploadInfo<"complete">[] }) => {
-      const uploadIds: number[] = []
+      const uploads: UploadDropzoneCompleteItem[] = []
       for (const file of files) {
         try {
           const result = await createUploadRecord(file)
           const id = typeof result === "number" ? result : result.id
-          uploadIds.push(id)
+          const publicDeleteToken =
+            typeof result === "object" && result !== null
+              ? ((result as { publicDeleteToken?: string | null }).publicDeleteToken ?? null)
+              : null
+          uploads.push({ id, publicDeleteToken })
         } catch (error) {
           console.error("Error creating upload record:", error)
         }
       }
 
+      const uploadIds = uploads.map((u) => u.id)
+
       if (onUploadComplete) {
         await onUploadComplete(uploadIds)
+      }
+      if (onSurveyPublicUploadBatchComplete) {
+        await onSurveyPublicUploadBatchComplete(uploads)
       }
     },
   })

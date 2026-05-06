@@ -1,7 +1,9 @@
+import { emailTemplateKeys } from "@/src/server/emailTemplates/registry"
+import { resolveAndRenderEmailTemplate } from "@/src/server/emailTemplates/render"
 import { addressNoreply } from "./utils/addresses"
 import { mailUrl } from "./utils/mailUrl"
 import { sendMail } from "./utils/sendMail"
-import { Mail } from "./utils/types"
+import { assertValidRenderedTemplate, buildTemplateMail } from "./utils/templateMail"
 
 type Props = {
   userMail: string
@@ -11,30 +13,27 @@ type Props = {
 }
 
 export async function userCreatedNotificationToAdmin(props: Props) {
-  const introMarkdown = `
-Liebe Trassenscout-Admins!
+  const renderedTemplate = await resolveAndRenderEmailTemplate(
+    emailTemplateKeys.userCreatedAdminNotification,
+    {
+      userName: props.userName || "(kein Name)",
+      userMail: props.userMail,
+      membershipStatusText:
+        props.userMembershipCount > 0
+          ? `Es sind bereits ${props.userMembershipCount} Mitgliedschafte(n) eingetragen (Einladungsprozess)`
+          : "Es sind noch keine Mitgliedschaften vorhanden",
+    },
+  )
+  assertValidRenderedTemplate(renderedTemplate)
 
-# Soeben wurde ein neuer Nutzer:innen-Account erstellt.
+  const ctaLink = mailUrl(`/admin/memberships/new?userId=${props.userId}`)
 
-Bitte prüfe den Account und ordne ihn einem Projekt zu.
-
-* Name: ${props.userName}
-* E-Mail: ${props.userMail}
-* ${
-    props.userMembershipCount > 0
-      ? `Es sind bereits ${props.userMembershipCount} Mitgliedschafte(n) eingetragen (Einladungsprozess)`
-      : "Es sind noch keine Mitgliedschaften vorhanden"
-  }
-`
-
-  const message: Mail = {
-    From: addressNoreply,
-    To: [{ Email: process.env.ADMIN_EMAIL }],
-    Subject: "[Admin] Trassenscout: Nutzer:in hat sich registriert",
-    introMarkdown,
-    ctaLink: mailUrl(`/admin/memberships/new?userId=${props.userId}`),
-    ctaText: "Rechte vergeben",
-  }
+  const message = buildTemplateMail({
+    from: addressNoreply,
+    to: [{ Email: process.env.ADMIN_EMAIL }],
+    template: renderedTemplate,
+    ctaLink,
+  })
 
   return {
     async send() {

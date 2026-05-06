@@ -11,10 +11,12 @@ import getProjectRecordsByAcquisitionArea from "@/src/server/projectRecords/quer
 import getProjectRecordsBySubsubsection from "@/src/server/projectRecords/queries/getProjectRecordsBySubsubsection"
 import getProjectRecordsNeedsReview from "@/src/server/projectRecords/queries/getProjectRecordsNeedsReview"
 import { ChatBubbleBottomCenterTextIcon, DocumentIcon } from "@heroicons/react/24/outline"
+import { ProjectRecordEditingState } from "@prisma/client"
 import clsx from "clsx"
 import { format } from "date-fns"
 import { de } from "date-fns/locale"
 import { ProjectRecordAssignedToPill } from "./ProjectRecordAssignedToPill"
+import { ProjectRecordEditingStateIndicator } from "./ProjectRecordEditingStateIndicator"
 import { ProjectRecordTopicsList } from "./ProjectRecordTopicsList"
 
 /**
@@ -22,13 +24,14 @@ import { ProjectRecordTopicsList } from "./ProjectRecordTopicsList"
  * `default` = without Verhandlungsfläche; `withAcquisitionArea` = extra column on all breakpoints.
  */
 const projectRecordTableColWidths = {
+  editingState: "w-[6%] @xl:w-[3%]",
   date: {
-    default: "w-[24%] @xl:w-[10%]",
-    withAcquisitionArea: "w-[18%] @xl:w-[10%]",
+    default: "w-[20%] @xl:w-[9%]",
+    withAcquisitionArea: "w-[16%] @xl:w-[9%]",
   },
   title: {
-    default: "w-[58%] @xl:w-[45%]",
-    withAcquisitionArea: "min-w-0 w-[36%] @xl:w-[26%]",
+    default: "w-[52%] @xl:w-[41%]",
+    withAcquisitionArea: "min-w-0 w-[32%] @xl:w-[24%]",
   },
   acquisitionArea: "w-[28%] @xl:w-[14%]",
   tags: "hidden @xl:table-column @xl:w-[24%]",
@@ -73,6 +76,7 @@ export const ProjectRecordsTable = ({
         <div className="@container w-full">
           <table className="min-w-full table-fixed border-collapse text-left text-sm text-gray-700">
             <colgroup>
+              <col className={projectRecordTableColWidths.editingState} />
               <col
                 className={
                   showAcquisitionAreaColumn
@@ -96,6 +100,9 @@ export const ProjectRecordsTable = ({
             </colgroup>
             <thead>
               <tr className="border-b border-gray-300 bg-gray-50">
+                <th scope="col" className={clsx(spaceClasses, "sr-only font-medium")}>
+                  Status
+                </th>
                 <th scope="col" className={clsx(spaceClasses, "font-medium uppercase")}>
                   Datum
                 </th>
@@ -133,9 +140,18 @@ export const ProjectRecordsTable = ({
                     key={projectRecord.id}
                     className={clsx(
                       "border-b border-gray-100",
-                      highlightId === projectRecord.id && "bg-green-50",
+                      highlightId === projectRecord.id
+                        ? "bg-green-50"
+                        : projectRecord.editingState === ProjectRecordEditingState.COMPLETED &&
+                            "bg-gray-50/90 text-gray-500",
                     )}
                   >
+                    <td className={clsx(spaceClasses, "align-top")}>
+                      <ProjectRecordEditingStateIndicator
+                        editingState={projectRecord.editingState}
+                        variant="table"
+                      />
+                    </td>
                     <td className={clsx(spaceClasses, "align-top")}>
                       {projectRecord.date
                         ? format(new Date(projectRecord.date), "P", { locale: de })
