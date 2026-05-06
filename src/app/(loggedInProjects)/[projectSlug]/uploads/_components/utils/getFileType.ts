@@ -1,9 +1,9 @@
-import { Upload } from "@prisma/client"
 import {
   isImageExternalUrl as isImageExternalUrlCore,
   isImageMimeType,
   isImageUpload as isImageUploadCore,
 } from "@/src/core/uploads/isImageUpload"
+import { Upload } from "@prisma/client"
 
 /**
  * Mapping from MIME types to file extensions for the accept attribute
@@ -100,7 +100,9 @@ export const isImageExternalUrl = (externalUrl: string | null | undefined) => {
 }
 
 export const isImageUpload = (
-  upload: Pick<Upload, "mimeType" | "externalUrl"> | { mimeType?: string | null; externalUrl?: string | null },
+  upload:
+    | Pick<Upload, "mimeType" | "externalUrl">
+    | { mimeType?: string | null; externalUrl?: string | null },
 ) => {
   return isImageUploadCore(upload)
 }

@@ -19,7 +19,9 @@ import { twJoin } from "tailwind-merge"
 type Props = {
   upload:
     | Upload
-    | (Pick<Upload, "id" | "mimeType" | "title" | "externalUrl"> & { previewImageUrl?: string | null })
+    | (Pick<Upload, "id" | "mimeType" | "title" | "externalUrl"> & {
+        previewImageUrl?: string | null
+      })
   projectSlug: string
   size: UploadSize
 }
