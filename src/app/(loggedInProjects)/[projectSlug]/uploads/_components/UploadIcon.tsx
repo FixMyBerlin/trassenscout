@@ -42,7 +42,8 @@ export const UploadIcon = ({ upload, projectSlug, size }: Props) => {
         alt={fileType}
         width={sizeConfig.iconPx}
         height={sizeConfig.iconPx}
-        className={twJoin(sizeConfig.iconSize, "rounded object-cover")}
+        className={twJoin(sizeConfig.iconSize, "cursor-default rounded object-contain select-none")}
+        draggable={false}
         onError={() => setImageError(true)}
       />
     )
