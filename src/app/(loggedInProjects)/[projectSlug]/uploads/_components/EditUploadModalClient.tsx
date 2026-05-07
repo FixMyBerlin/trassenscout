@@ -21,7 +21,7 @@ export const EditUploadModalClient = ({ upload, returnPath, returnText }: Props)
 
   const handleClose = () => {
     if (!navigationGuard.canClose()) return
-    router.back()
+    router.replace(returnPath, { scroll: false })
   }
 
   return (

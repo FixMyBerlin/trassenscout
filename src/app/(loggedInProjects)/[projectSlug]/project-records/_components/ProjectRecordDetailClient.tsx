@@ -51,7 +51,9 @@ const ProjectRecordQuickUpload = ({
   )
 }
 
-export const ProjectRecordDetailClient = ({ initialProjectRecord }: Props) => {
+export const ProjectRecordDetailClient = ({
+  initialProjectRecord,
+}: Props) => {
   const projectSlug = useProjectSlug()
   const [projectRecord, { refetch }] = useQuery(
     getProjectRecord,
@@ -60,7 +62,7 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord }: Props) => {
       initialData: initialProjectRecord,
     },
   )
-  const handleUploaded = () => {
+  const refreshProjectRecord = () => {
     // Keep this non-blocking so upload UX stays smooth in modal/detail routes.
     void refetch()
   }
@@ -73,6 +75,11 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord }: Props) => {
 
   const handleCancelAiSuggestions = () => {
     setAiSuggestions(null)
+  }
+
+  const projectRecordSummaryProps = {
+    projectRecord,
+    onUploadDeleted: refreshProjectRecord,
   }
 
   // Scroll to AI form when suggestions are loaded
@@ -93,10 +100,10 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord }: Props) => {
           <div id="ai-suggestions-form" className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <div>
               <h2 className="mb-4 text-lg font-medium">Aktueller Protokolleintrag</h2>
-              <ProjectRecordSummary projectRecord={projectRecord} />
+              <ProjectRecordSummary {...projectRecordSummaryProps} />
               <ProjectRecordQuickUpload
                 projectRecordId={projectRecord.id}
-                onUploaded={handleUploaded}
+                onUploaded={refreshProjectRecord}
               />
             </div>
 
@@ -123,10 +130,10 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord }: Props) => {
             </IfUserCanEdit>
           </SuperAdminBox>
 
-          <ProjectRecordSummary projectRecord={projectRecord} />
+          <ProjectRecordSummary {...projectRecordSummaryProps} />
           <ProjectRecordQuickUpload
             projectRecordId={projectRecord.id}
-            onUploaded={handleUploaded}
+            onUploaded={refreshProjectRecord}
           />
           <CreateEditReviewHistory projectRecord={projectRecord} />
         </>

@@ -7,7 +7,7 @@ import { getFullname } from "@/src/app/_components/users/utils/getFullname"
 import { Link, linkStyles } from "@/src/core/components/links"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { subsubsectionLandAcquisitionRoute } from "@/src/core/routes/subsectionRoutes"
-import { uploadEditRoute } from "@/src/core/routes/uploadRoutes"
+import { uploadEditRouteForProjectRecord } from "@/src/core/routes/uploadRoutes"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
 import { format } from "date-fns"
 import { de } from "date-fns/locale"
@@ -16,9 +16,15 @@ import { twJoin } from "tailwind-merge"
 
 type Props = {
   projectRecord: Awaited<ReturnType<typeof getProjectRecord>>
+  onUploadDeleted?: () => void | Promise<void>
 }
 
-export const ProjectRecordSummary = ({ projectRecord }: Props) => {
+export const ProjectRecordSummary = ({
+  projectRecord,
+  onUploadDeleted,
+}: Props) => {
+  const projectSlug = projectRecord.project.slug
+
   return (
     <div className="my-6 space-y-6 font-medium">
       <div className="grid max-w-3xl grid-cols-4 gap-3">
@@ -35,7 +41,7 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
             <span className="col-span-3">
               <Link
                 classNameOverwrites="inline-flex rounded-md text-inherit no-underline hover:opacity-90 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-orange-500/40"
-                href={createProjectRecordFilterUrl(projectRecord.project.slug, {
+                href={createProjectRecordFilterUrl(projectSlug, {
                   searchterm: getFullname(projectRecord.assignedTo)!.trim(),
                 })}
               >
@@ -56,7 +62,7 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
         {projectRecord.subsection ? (
           <Link
             className="col-span-3 uppercase"
-            href={`/${projectRecord.project.slug}/abschnitte/${projectRecord.subsection.slug}`}
+            href={`/${projectSlug}/abschnitte/${projectRecord.subsection.slug}`}
           >
             {projectRecord.subsection.slug}
           </Link>
@@ -68,7 +74,7 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
         {projectRecord.subsubsection ? (
           <Link
             className="col-span-3 uppercase"
-            href={`/${projectRecord.project.slug}/abschnitte/${projectRecord.subsubsection.subsection.slug}/fuehrung/${projectRecord.subsubsection.slug}`}
+            href={`/${projectSlug}/abschnitte/${projectRecord.subsubsection.subsection.slug}/fuehrung/${projectRecord.subsubsection.slug}`}
           >
             {projectRecord.subsubsection.slug}
           </Link>
@@ -84,7 +90,7 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
                 className="col-span-3"
                 href={
                   `${subsubsectionLandAcquisitionRoute(
-                    projectRecord.project.slug,
+                    projectSlug,
                     projectRecord.acquisitionArea.subsubsection.subsection.slug,
                     projectRecord.acquisitionArea.subsubsection.slug,
                   )}?acquisitionAreaId=${projectRecord.acquisitionArea.id}` as Route
@@ -134,7 +140,7 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
             {projectRecord.projectRecordTopics.map((topic) => (
               <li className="whitespace-nowrap text-gray-700" key={topic.id}>
                 <Link
-                  href={createProjectRecordFilterUrl(projectRecord.project.slug, {
+                  href={createProjectRecordFilterUrl(projectSlug, {
                     searchterm: topic.title,
                   })}
                 >
@@ -157,9 +163,14 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
                 key={upload.id}
                 uploadId={upload.id}
                 upload={upload}
-                projectSlug={projectRecord.project.slug}
+                projectSlug={projectSlug}
                 size="grid"
-                editUrl={uploadEditRoute(projectRecord.project.slug, upload.id)}
+                onDeleted={onUploadDeleted}
+                editUrl={uploadEditRouteForProjectRecord(
+                  projectSlug,
+                  upload.id,
+                  projectRecord.id,
+                )}
               />
             ))}
           </div>

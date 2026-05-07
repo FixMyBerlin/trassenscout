@@ -3,18 +3,32 @@ import getUploadWithRelations from "@/src/server/uploads/queries/getUploadWithRe
 import { Route } from "next"
 
 type UploadWithRelations = Awaited<ReturnType<typeof getUploadWithRelations>>
+type ReturnTarget = {
+  returnPath: Route
+  returnText: string
+}
+
+export const parseReturnProjectRecordId = (value?: string) => {
+  const parsedValue = Number(value)
+  return Number.isFinite(parsedValue) ? parsedValue : undefined
+}
 
 export const getUploadReturnTarget = ({
   projectSlug,
   upload,
+  returnProjectRecordId,
 }: {
   projectSlug: string
   upload: UploadWithRelations
-}) => {
-  let returnPath: Route
-  let returnText: string
+  returnProjectRecordId?: number
+}): ReturnTarget => {
+  let returnPath: ReturnTarget["returnPath"]
+  let returnText: ReturnTarget["returnText"]
 
-  if (upload.projectRecords.length > 0) {
+  if (returnProjectRecordId) {
+    returnPath = projectRecordDetailRoute(projectSlug, returnProjectRecordId)
+    returnText = "Zurück zum Protokoll"
+  } else if (upload.projectRecords.length > 0) {
     returnPath = projectRecordDetailRoute(projectSlug, upload.projectRecords[0]!.id)
     returnText = "Zurück zum Protokoll"
   } else if (upload.Subsubsection) {

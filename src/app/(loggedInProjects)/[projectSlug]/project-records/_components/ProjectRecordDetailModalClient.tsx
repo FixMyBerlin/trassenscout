@@ -22,6 +22,7 @@ export const ProjectRecordDetailModalClient = ({
     initialProjectRecord.project.slug,
     initialProjectRecord.id,
   )
+
   const handleClose = () => {
     if (!navigationGuard.canClose()) return
     router.back()

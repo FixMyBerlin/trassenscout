@@ -4,6 +4,14 @@ export const uploadEditRoute = (projectSlug: string, uploadId: number): Route =>
   return `/${projectSlug}/uploads/${uploadId}/edit` as Route
 }
 
+export const uploadEditRouteForProjectRecord = (
+  projectSlug: string,
+  uploadId: number,
+  projectRecordId: number,
+): Route => {
+  return `/${projectSlug}/uploads/${uploadId}/edit?returnProjectRecordId=${projectRecordId}` as Route
+}
+
 export const surveyResponseUploadEditRoute = (
   projectSlug: string,
   surveyId: number,
