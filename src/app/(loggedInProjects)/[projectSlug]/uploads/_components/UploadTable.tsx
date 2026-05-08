@@ -6,6 +6,7 @@ import { uploadUrl } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_c
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { getFullname } from "@/src/app/_components/users/utils/getFullname"
 import { Link } from "@/src/core/components/links"
+import { useModalNavigationGuard } from "@/src/core/components/Modal/useModalNavigationGuard"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/core/components/text/titles"
@@ -109,6 +110,10 @@ const UploadTableRow = ({
 }) => {
   const hasLocation = upload.latitude !== null && upload.longitude !== null
   const landAcquisitionModuleEnabled = upload.project?.landAcquisitionModuleEnabled ?? false
+  const navigationGuard = useModalNavigationGuard()
+  const handleEditClick = () => {
+    navigationGuard.beginNavigationToModal({ holdUntilNextModalMount: true })
+  }
   return (
     <tr>
       <td className="py-2 pr-3 pl-4 text-sm sm:pl-6">
@@ -230,7 +235,12 @@ const UploadTableRow = ({
           )}
           {withAction && (
             <IfUserCanEdit>
-              <Link icon="edit" href={uploadEditRoute(projectSlug, upload.id)} scroll={false}>
+              <Link
+                icon="edit"
+                href={uploadEditRoute(projectSlug, upload.id)}
+                scroll={false}
+                onClick={handleEditClick}
+              >
                 Bearbeiten
               </Link>
               {onDelete && (

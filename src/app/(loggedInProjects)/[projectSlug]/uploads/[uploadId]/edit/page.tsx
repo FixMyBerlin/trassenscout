@@ -33,7 +33,6 @@ export default async function EditUploadPage({
 
   const { returnPath, returnText } = getUploadReturnTarget({
     projectSlug,
-    upload,
     returnProjectRecordId: parseReturnProjectRecordId(searchParams?.returnProjectRecordId),
   })
 

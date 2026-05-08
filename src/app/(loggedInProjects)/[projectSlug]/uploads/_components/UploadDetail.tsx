@@ -4,6 +4,7 @@ import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Link, whiteButtonStyles } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
+import { useModalNavigationGuard } from "@/src/core/components/Modal/useModalNavigationGuard"
 import { uploadEditRoute, uploadsListRoute } from "@/src/core/routes/uploadRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import deleteUpload from "@/src/server/uploads/mutations/deleteUpload"
@@ -21,6 +22,10 @@ type Props = {
 export const UploadDetail = ({ upload }: Props) => {
   const router = useRouter()
   const projectSlug = useProjectSlug()
+  const navigationGuard = useModalNavigationGuard()
+  const handleEditClick = () => {
+    navigationGuard.beginNavigationToModal({ holdUntilNextModalMount: true })
+  }
 
   const [deleteUploadMutation] = useMutation(deleteUpload)
   const handleDelete = async () => {
@@ -40,7 +45,12 @@ export const UploadDetail = ({ upload }: Props) => {
     <>
       <IfUserCanEdit>
         <ButtonWrapper className="mb-10 space-x-4">
-          <Link button="blue" href={uploadEditRoute(projectSlug, upload.id)} scroll={false}>
+          <Link
+            button="blue"
+            href={uploadEditRoute(projectSlug, upload.id)}
+            scroll={false}
+            onClick={handleEditClick}
+          >
             Bearbeiten
           </Link>
           <button

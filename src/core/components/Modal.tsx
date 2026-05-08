@@ -29,7 +29,13 @@ export const ModalCloseButton = ({ onClose }: { onClose: () => void }) => {
   )
 }
 
-export const Modal = ({ children, open, handleClose, className, align = "center" }: Props) => {
+export const Modal = ({
+  children,
+  open,
+  handleClose,
+  className,
+  align = "center",
+}: Props) => {
   const isRightAligned = align === "right"
 
   // If we are being mounted as the result of a modal-to-modal navigation

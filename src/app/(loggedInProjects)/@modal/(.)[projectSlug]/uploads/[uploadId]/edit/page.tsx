@@ -22,7 +22,6 @@ export default async function UploadEditModalPage({
 
   const { returnPath, returnText } = getUploadReturnTarget({
     projectSlug,
-    upload,
     returnProjectRecordId: parseReturnProjectRecordId(searchParams?.returnProjectRecordId),
   })
 
