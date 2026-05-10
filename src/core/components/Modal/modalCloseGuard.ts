@@ -2,6 +2,7 @@ let activeModalCloseBlocks = 0
 let settleUntilMs = 0
 
 const SETTLE_AFTER_BLOCK_RELEASE_MS = 1200
+const PENDING_MOUNT_RELEASE_MAX_WAIT_MS = 3000
 
 export const beginModalCloseBlock = () => {
   activeModalCloseBlocks += 1
@@ -30,17 +31,30 @@ export const isModalCloseBlocked = () => {
  * rapid route transitions from closing the newly mounted modal.
  */
 export const blockUntilModalMounts = () => {
+  // Replace any stale pending release to avoid leaking a permanent close block
+  // when no modal ends up mounting (e.g. modal → page navigations).
+  consumePendingMountRelease()?.()
+
   const release = beginModalCloseBlock()
   pendingMountRelease = release
+  pendingMountReleaseTimeout = setTimeout(() => {
+    consumePendingMountRelease()?.()
+  }, PENDING_MOUNT_RELEASE_MAX_WAIT_MS)
 }
 
 let pendingMountRelease: (() => void) | null = null
+let pendingMountReleaseTimeout: ReturnType<typeof setTimeout> | null = null
 
 /**
  * Consume and return the pending mount release set by blockUntilModalMounts(),
  * or null if none is pending. Should be called exactly once per Modal mount.
  */
 export const consumePendingMountRelease = (): (() => void) | null => {
+  if (pendingMountReleaseTimeout) {
+    clearTimeout(pendingMountReleaseTimeout)
+    pendingMountReleaseTimeout = null
+  }
+
   const release = pendingMountRelease
   pendingMountRelease = null
   return release

@@ -40,7 +40,11 @@ export default async function ProjectRecordDetail({
         className="mt-12"
         action={
           <IfUserCanEdit>
-            <Link icon="edit" href={projectRecordEditRoute(params.projectSlug, projectRecordId)}>
+            <Link
+              icon="edit"
+              href={projectRecordEditRoute(params.projectSlug, projectRecordId)}
+              scroll={false}
+            >
               Bearbeiten
             </Link>
           </IfUserCanEdit>

@@ -24,6 +24,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </Suspense>
           </NuqsAdapter>
         </BlitzProvider>
+        <div id="headlessui-portal-root" className="contents" />
         <TailwindResponsiveHelper />
       </body>
     </html>

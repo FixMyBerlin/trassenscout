@@ -24,7 +24,6 @@ type ProjectRecordNeedsReviewBannerProps =
       projectSlug?: string
       projectRecordId?: number
     }
-
 export const ProjectRecordNeedsReviewBanner = (props: ProjectRecordNeedsReviewBannerProps) => {
   return (
     <BannerShell>

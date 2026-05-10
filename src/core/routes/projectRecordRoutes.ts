@@ -1,5 +1,13 @@
 import { Route } from "next"
 
+export const projectRecordsRoute = (projectSlug: string): Route => {
+  return `/${projectSlug}/project-records` as Route
+}
+
+export const projectRecordsNeedsReviewRoute = (projectSlug: string): Route => {
+  return `/${projectSlug}/project-records/needreview` as Route
+}
+
 export const projectRecordDetailRoute = (projectSlug: string, projectRecordId: number): Route => {
   return `/${projectSlug}/project-records/${projectRecordId}` as Route
 }

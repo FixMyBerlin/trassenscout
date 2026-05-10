@@ -1,24 +1,12 @@
 "use client"
 
-import { DeleteUploadButton } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/DeleteUploadButton"
-import { LuckyCloudDocumentLink } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/LuckyCloudDocumentLink"
-import { UploadAuthorAndDates } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadAuthorAndDates"
-import { UploadPreview } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreview"
-import { UploadVerknuepfungen } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadVerknuepfungen"
-import { uploadUrl } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/uploadUrl"
-import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
-import { Link, blueButtonStylesForLinkElement } from "@/src/core/components/links"
-import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
-import { Markdown } from "@/src/core/components/Markdown/Markdown"
+import { UploadDetailPanelContent } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDetailPanelContent"
 import { Modal, ModalCloseButton } from "@/src/core/components/Modal"
 import { useModalNavigationGuard } from "@/src/core/components/Modal/useModalNavigationGuard"
 import { H3 } from "@/src/core/components/text"
 import { HeadingWithAction } from "@/src/core/components/text/HeadingWithAction"
-import { formatFileSize } from "@/src/core/utils/formatFileSize"
-import { getFilenameFromS3 } from "@/src/server/uploads/_utils/url"
 import getUploadWithRelations from "@/src/server/uploads/queries/getUploadWithRelations"
 import { useQuery } from "@blitzjs/rpc"
-import { clsx } from "clsx"
 import { Route } from "next"
 
 type Props = {
@@ -73,111 +61,22 @@ export const UploadDetailModal = ({
         <ModalCloseButton onClose={onClose} />
       </HeadingWithAction>
 
-      {/* Preview */}
-      <div className="flex gap-6">
-        <UploadPreview
-          uploadId={upload.id}
-          projectSlug={projectSlug}
-          size="grid"
-          showTitle={false}
-        />
-        <div className="space-y-5">
-          <div>
-            <h4 className="text-sm font-medium text-gray-700">
-              Dateiname {upload.fileSize && "(Größe)"}
-            </h4>
-            <p className="text-sm text-gray-500">
-              {getFilenameFromS3(upload.externalUrl)}
-              {upload.fileSize && ` (${formatFileSize(upload.fileSize)})`}
-            </p>
-          </div>
-          {upload.collaborationUrl ? (
-            <LuckyCloudDocumentLink collaborationUrl={upload.collaborationUrl} />
-          ) : (
-            <Link
-              blank
-              href={uploadUrl(upload, projectSlug)}
-              className={clsx(blueButtonStylesForLinkElement, "inline-flex items-center gap-2")}
-            >
-              Datei öffnen
-            </Link>
-          )}
-        </div>
-      </div>
-
-      {/* Details */}
-      <div className="space-y-3 text-sm">
-        <UploadAuthorAndDates
-          createdBy={upload.createdBy}
-          createdAt={upload.createdAt}
-          updatedBy={upload.updatedBy ?? undefined}
-          updatedAt={upload.updatedAt ?? undefined}
-        />
-
-        {upload.summary && (
-          <div className="border-t border-gray-200 pt-3">
-            <h4 className="font-medium text-gray-700">Zusammenfassung</h4>
-            <div className="max-h-60 space-y-3 overflow-y-auto text-gray-500">
-              <Markdown className="prose-sm" markdown={upload.summary} />
-            </div>
-          </div>
-        )}
-
-        <div className="border-t border-gray-200 pt-3">
-          <UploadVerknuepfungen
-            projectSlug={projectSlug}
-            landAcquisitionModuleEnabled={upload.project?.landAcquisitionModuleEnabled ?? false}
-            subsection={upload.subsection}
-            subsubsection={upload.Subsubsection}
-            acquisitionArea={upload.acquisitionArea}
-            projectRecords={upload.projectRecords}
-            projectRecordEmail={upload.projectRecordEmail}
-            surveyResponse={upload.surveyResponse}
-          />
-        </div>
-
-        {upload.latitude && upload.longitude && (
-          <div className="border-t border-gray-200 pt-3">
-            <h4 className="text-sm font-medium text-gray-700">Standort:</h4>
-            <p className="text-sm text-gray-500">
-              {upload.latitude}, {upload.longitude}
-            </p>
-          </div>
-        )}
-      </div>
-
-      {/* Actions */}
-      {(editUrl || onDeleted) && (
-        <IfUserCanEdit>
-          <ButtonWrapper className="border-t border-gray-200 pt-4">
-            {editUrl && (
-              <Link
-                button="blue"
-                href={editUrl}
-                replace
-                scroll={false}
-                onClick={() => {
-                  navigationGuard.beginNavigationToModal({ holdUntilNextModalMount: true })
-                }}
-              >
-                Bearbeiten
-              </Link>
-            )}
-            {onDeleted && (
-              <DeleteUploadButton
-                projectSlug={projectSlug}
-                uploadId={upload.id}
-                uploadTitle={upload.title}
-                onDeleted={async () => {
-                  await onDeleted()
-                  onClose()
-                }}
-                className="text-sm"
-              />
-            )}
-          </ButtonWrapper>
-        </IfUserCanEdit>
-      )}
+      <UploadDetailPanelContent
+        upload={upload}
+        projectSlug={projectSlug}
+        editUrl={editUrl}
+        onEditClick={() => {
+          navigationGuard.beginNavigationToModal({ holdUntilNextModalMount: true })
+        }}
+        onDeleted={
+          onDeleted
+            ? async () => {
+                await onDeleted()
+                onClose()
+              }
+            : undefined
+        }
+      />
     </Modal>
   )
 }
