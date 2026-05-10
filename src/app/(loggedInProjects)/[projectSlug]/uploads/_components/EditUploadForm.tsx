@@ -16,13 +16,18 @@ import { shortTitle } from "@/src/core/components/text/titles"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { formatFileSize } from "@/src/core/utils/formatFileSize"
 import getAcquisitionAreas from "@/src/server/acquisitionAreas/queries/getAcquisitionAreas"
+import getProjectRecordsByAcquisitionArea from "@/src/server/projectRecords/queries/getProjectRecordsByAcquisitionArea"
+import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
+import getProjectRecordsBySubsubsection from "@/src/server/projectRecords/queries/getProjectRecordsBySubsubsection"
 import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import getSubsubsections from "@/src/server/subsubsections/queries/getSubsubsections"
 import { getFilenameFromS3 } from "@/src/server/uploads/_utils/url"
 import updateUpload from "@/src/server/uploads/mutations/updateUploadWithSubsections"
+import getUploadsByAcquisitionArea from "@/src/server/uploads/queries/getUploadsByAcquisitionArea"
 import getUploadWithRelations from "@/src/server/uploads/queries/getUploadWithRelations"
+import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
 import { UploadSchema } from "@/src/server/uploads/schema"
-import { useMutation, useQuery } from "@blitzjs/rpc"
+import { invalidateQuery, useMutation, useQuery } from "@blitzjs/rpc"
 import { PromiseReturnType } from "blitz"
 import { Route } from "next"
 import { useRouter } from "next/navigation"
@@ -224,6 +229,24 @@ export const EditUploadForm = ({
         id: upload.id,
         projectSlug,
       })
+
+      const nextProjectRecordIds = Array.isArray(values.projectRecords) ? values.projectRecords : []
+      const projectRecordIdsToRefresh = new Set<number>([
+        ...(upload.projectRecords?.map((projectRecord) => projectRecord.id) ?? []),
+        ...nextProjectRecordIds,
+      ])
+
+      await Promise.all([
+        invalidateQuery(getUploadWithRelations, { projectSlug, id: upload.id }),
+        invalidateQuery(getUploadsWithSubsections),
+        invalidateQuery(getUploadsByAcquisitionArea),
+        invalidateQuery(getProjectRecordsBySubsubsection),
+        invalidateQuery(getProjectRecordsByAcquisitionArea),
+        ...Array.from(projectRecordIdsToRefresh).map((projectRecordId) =>
+          invalidateQuery(getProjectRecord, { projectSlug, id: projectRecordId }),
+        ),
+      ])
+
       if (onSuccess) {
         onSuccess()
       } else {
