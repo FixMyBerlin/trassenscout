@@ -24,7 +24,6 @@ type ProjectRecordNeedsReviewBannerProps =
       projectSlug?: string
       projectRecordId?: number
     }
-
 export const ProjectRecordNeedsReviewBanner = (props: ProjectRecordNeedsReviewBannerProps) => {
   return (
     <BannerShell>
@@ -36,10 +35,7 @@ export const ProjectRecordNeedsReviewBanner = (props: ProjectRecordNeedsReviewBa
         Dieser Protokolleintrag wurde per KI erstellt und muss noch bestätigt werden.
       </p>
       {props.withAction && (
-        <Link
-          href={projectRecordEditRoute(props.projectSlug, props.projectRecordId)}
-          className="text-sm"
-        >
+        <Link href={projectRecordEditRoute(props.projectSlug, props.projectRecordId)} className="text-sm">
           Bearbeiten und bestätigen
         </Link>
       )}

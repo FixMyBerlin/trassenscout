@@ -7,7 +7,6 @@ import { useModalNavigationGuard } from "@/src/core/components/Modal/useModalNav
 import { H3 } from "@/src/core/components/text"
 import { HeadingWithAction } from "@/src/core/components/text/HeadingWithAction"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
-import { Route } from "next"
 import { useRouter } from "next/navigation"
 
 export const ProjectRecordEditModalClient = ({
@@ -43,7 +42,7 @@ export const ProjectRecordEditModalClient = ({
               projectRecordId: initialProjectRecord.id,
               initialReviewState: initialProjectRecord.reviewState,
               nextReviewState: reviewState,
-            }) as Route,
+            }),
             { scroll: false },
           )
         }}
