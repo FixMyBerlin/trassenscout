@@ -18,7 +18,10 @@ export const ProjectRecordDetailModalClient = ({
 }) => {
   const router = useRouter()
   const navigationGuard = useModalNavigationGuard()
-  const editHref = projectRecordEditRoute(initialProjectRecord.project.slug, initialProjectRecord.id)
+  const editHref = projectRecordEditRoute(
+    initialProjectRecord.project.slug,
+    initialProjectRecord.id,
+  )
 
   const handleClose = () => {
     if (!navigationGuard.canClose()) return

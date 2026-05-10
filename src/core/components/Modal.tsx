@@ -4,14 +4,7 @@ import {
 } from "@/src/core/components/Modal/modalCloseGuard"
 import { Dialog, DialogPanel, Transition, TransitionChild } from "@headlessui/react"
 import { XMarkIcon } from "@heroicons/react/24/outline"
-import {
-  createContext,
-  Fragment,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-} from "react"
+import { createContext, Fragment, useCallback, useContext, useEffect, useRef } from "react"
 import { twMerge } from "tailwind-merge"
 
 type Props = {
@@ -106,13 +99,7 @@ export const ModalCloseButton = ({ onClose }: { onClose: () => void }) => {
   )
 }
 
-export const Modal = ({
-  children,
-  open,
-  handleClose,
-  className,
-  align = "center",
-}: Props) => {
+export const Modal = ({ children, open, handleClose, className, align = "center" }: Props) => {
   const isRightAligned = align === "right"
   const initialFocusRef = useRef<HTMLElement | null>(null)
   const registerInitialFocus = useCallback((element: HTMLElement | null) => {

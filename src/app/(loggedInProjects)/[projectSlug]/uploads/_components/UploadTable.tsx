@@ -6,8 +6,8 @@ import { uploadUrl } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_c
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { getFullname } from "@/src/app/_components/users/utils/getFullname"
 import { Link } from "@/src/core/components/links"
-import { useModalNavigationGuard } from "@/src/core/components/Modal/useModalNavigationGuard"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
+import { useModalNavigationGuard } from "@/src/core/components/Modal/useModalNavigationGuard"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/core/components/text/titles"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
@@ -238,13 +238,7 @@ const UploadTableRow = ({
           )}
           {withAction && (
             <IfUserCanEdit>
-              <Link
-                icon="edit"
-                href={editUrl}
-                prefetch
-                scroll={false}
-                onClick={handleEditClick}
-              >
+              <Link icon="edit" href={editUrl} prefetch scroll={false} onClick={handleEditClick}>
                 Bearbeiten
               </Link>
               {onDelete && (

@@ -39,7 +39,9 @@ export default async function EditUploadPage({
   const { returnPath, returnText } = getUploadReturnTarget({
     projectSlug,
     returnTo: parseProjectScopedReturnTo(searchParams?.returnTo, projectSlug),
-    returnProjectRecordId: parseReturnProjectRecordId(searchParams?.[RETURN_PROJECT_RECORD_ID_PARAM]),
+    returnProjectRecordId: parseReturnProjectRecordId(
+      searchParams?.[RETURN_PROJECT_RECORD_ID_PARAM],
+    ),
   })
 
   return (

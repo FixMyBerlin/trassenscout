@@ -33,11 +33,7 @@ const parseRouteAsUrl = (route: Route) => {
   return new URL(String(route), baseUrl)
 }
 
-export const appendQueryParamIfMissing = (
-  route: Route,
-  key: string,
-  value?: string,
-): Route => {
+export const appendQueryParamIfMissing = (route: Route, key: string, value?: string): Route => {
   if (!value) return route
 
   const url = parseRouteAsUrl(route)

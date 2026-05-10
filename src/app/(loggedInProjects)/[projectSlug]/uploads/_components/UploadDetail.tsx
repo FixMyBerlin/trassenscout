@@ -48,13 +48,7 @@ export const UploadDetail = ({ upload }: Props) => {
     <>
       <IfUserCanEdit>
         <ButtonWrapper className="mb-10 space-x-4">
-          <Link
-            button="blue"
-            href={editUrl}
-            prefetch
-            scroll={false}
-            onClick={handleEditClick}
-          >
+          <Link button="blue" href={editUrl} prefetch scroll={false} onClick={handleEditClick}>
             Bearbeiten
           </Link>
           <button

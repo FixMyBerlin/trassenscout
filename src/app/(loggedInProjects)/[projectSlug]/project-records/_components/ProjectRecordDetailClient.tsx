@@ -51,9 +51,7 @@ const ProjectRecordQuickUpload = ({
   )
 }
 
-export const ProjectRecordDetailClient = ({
-  initialProjectRecord,
-}: Props) => {
+export const ProjectRecordDetailClient = ({ initialProjectRecord }: Props) => {
   const projectSlug = useProjectSlug()
   const [projectRecord, { refetch }] = useQuery(
     getProjectRecord,

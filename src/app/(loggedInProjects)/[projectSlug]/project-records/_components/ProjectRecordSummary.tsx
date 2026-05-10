@@ -20,10 +20,7 @@ type Props = {
   onUploadDeleted?: () => void | Promise<void>
 }
 
-export const ProjectRecordSummary = ({
-  projectRecord,
-  onUploadDeleted,
-}: Props) => {
+export const ProjectRecordSummary = ({ projectRecord, onUploadDeleted }: Props) => {
   const projectSlug = projectRecord.project.slug
   const returnTo = useCurrentReturnTo()
 
@@ -168,12 +165,9 @@ export const ProjectRecordSummary = ({
                 projectSlug={projectSlug}
                 size="grid"
                 onDeleted={onUploadDeleted}
-                editUrl={uploadEditRouteForProjectRecord(
-                  projectSlug,
-                  upload.id,
-                  projectRecord.id,
-                  { returnTo },
-                )}
+                editUrl={uploadEditRouteForProjectRecord(projectSlug, upload.id, projectRecord.id, {
+                  returnTo,
+                })}
               />
             ))}
           </div>
