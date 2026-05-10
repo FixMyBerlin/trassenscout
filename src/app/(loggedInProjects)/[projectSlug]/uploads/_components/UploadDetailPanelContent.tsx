@@ -10,6 +10,8 @@ import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { Link, blueButtonStylesForLinkElement } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
+import { appendReturnToToUploadEditRoute } from "@/src/core/routes/uploadRoutes"
+import { useCurrentReturnTo } from "@/src/core/routes/useCurrentPathWithSearch"
 import { formatFileSize } from "@/src/core/utils/formatFileSize"
 import { getFilenameFromS3 } from "@/src/server/uploads/_utils/url"
 import getUploadWithRelations from "@/src/server/uploads/queries/getUploadWithRelations"
@@ -31,6 +33,9 @@ export const UploadDetailPanelContent = ({
   editUrl,
   onEditClick,
 }: Props) => {
+  const returnTo = useCurrentReturnTo()
+  const editHref = editUrl ? appendReturnToToUploadEditRoute(editUrl, returnTo) : undefined
+
   return (
     <div className="space-y-6">
       <div className="flex gap-6">
@@ -106,10 +111,11 @@ export const UploadDetailPanelContent = ({
       {(editUrl || onDeleted) && (
         <IfUserCanEdit>
           <ButtonWrapper className="border-t border-gray-200 pt-4">
-            {editUrl && (
+            {editHref && (
               <Link
                 button="blue"
-                href={editUrl}
+                href={editHref}
+                prefetch
                 replace
                 scroll={false}
                 onClick={onEditClick}

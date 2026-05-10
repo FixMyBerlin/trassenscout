@@ -8,6 +8,7 @@ import { Link, linkStyles } from "@/src/core/components/links"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { subsubsectionLandAcquisitionRoute } from "@/src/core/routes/subsectionRoutes"
 import { uploadEditRouteForProjectRecord } from "@/src/core/routes/uploadRoutes"
+import { useCurrentReturnTo } from "@/src/core/routes/useCurrentPathWithSearch"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
 import { format } from "date-fns"
 import { de } from "date-fns/locale"
@@ -24,6 +25,7 @@ export const ProjectRecordSummary = ({
   onUploadDeleted,
 }: Props) => {
   const projectSlug = projectRecord.project.slug
+  const returnTo = useCurrentReturnTo()
 
   return (
     <div className="my-6 space-y-6 font-medium">
@@ -170,6 +172,7 @@ export const ProjectRecordSummary = ({
                   projectSlug,
                   upload.id,
                   projectRecord.id,
+                  { returnTo },
                 )}
               />
             ))}

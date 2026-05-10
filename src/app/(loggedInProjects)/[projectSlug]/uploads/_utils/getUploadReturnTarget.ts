@@ -14,11 +14,20 @@ export const parseReturnProjectRecordId = (value?: string) => {
 
 export const getUploadReturnTarget = ({
   projectSlug,
+  returnTo,
   returnProjectRecordId,
 }: {
   projectSlug: string
+  returnTo?: Route
   returnProjectRecordId?: number
 }): ReturnTarget => {
+  if (returnTo) {
+    return {
+      returnPath: returnTo,
+      returnText: "Zurück",
+    }
+  }
+
   if (returnProjectRecordId !== undefined) {
     return {
       returnPath: projectRecordDetailRoute(projectSlug, returnProjectRecordId),

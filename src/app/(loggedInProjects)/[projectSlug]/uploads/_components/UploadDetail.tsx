@@ -6,6 +6,7 @@ import { Link, whiteButtonStyles } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { useModalNavigationGuard } from "@/src/core/components/Modal/useModalNavigationGuard"
 import { uploadEditRoute, uploadsListRoute } from "@/src/core/routes/uploadRoutes"
+import { useCurrentReturnTo } from "@/src/core/routes/useCurrentPathWithSearch"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import deleteUpload from "@/src/server/uploads/mutations/deleteUpload"
 import getUploadWithRelations from "@/src/server/uploads/queries/getUploadWithRelations"
@@ -23,6 +24,8 @@ export const UploadDetail = ({ upload }: Props) => {
   const router = useRouter()
   const projectSlug = useProjectSlug()
   const navigationGuard = useModalNavigationGuard()
+  const returnTo = useCurrentReturnTo()
+  const editUrl = uploadEditRoute(projectSlug, upload.id, { returnTo })
   const handleEditClick = () => {
     navigationGuard.beginNavigationToModal({ holdUntilNextModalMount: true })
   }
@@ -47,7 +50,8 @@ export const UploadDetail = ({ upload }: Props) => {
         <ButtonWrapper className="mb-10 space-x-4">
           <Link
             button="blue"
-            href={uploadEditRoute(projectSlug, upload.id)}
+            href={editUrl}
+            prefetch
             scroll={false}
             onClick={handleEditClick}
           >

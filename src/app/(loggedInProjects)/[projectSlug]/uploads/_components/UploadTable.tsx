@@ -19,6 +19,7 @@ import {
   subsubsectionLandAcquisitionRoute,
 } from "@/src/core/routes/subsectionRoutes"
 import { uploadEditRoute } from "@/src/core/routes/uploadRoutes"
+import { useCurrentReturnTo } from "@/src/core/routes/useCurrentPathWithSearch"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { Prettify } from "@/src/core/types"
 import { formatBerlinTime } from "@/src/core/utils/formatBerlinTime"
@@ -111,6 +112,8 @@ const UploadTableRow = ({
   const hasLocation = upload.latitude !== null && upload.longitude !== null
   const landAcquisitionModuleEnabled = upload.project?.landAcquisitionModuleEnabled ?? false
   const navigationGuard = useModalNavigationGuard()
+  const returnTo = useCurrentReturnTo()
+  const editUrl = uploadEditRoute(projectSlug, upload.id, { returnTo })
   const handleEditClick = () => {
     navigationGuard.beginNavigationToModal({ holdUntilNextModalMount: true })
   }
@@ -124,7 +127,7 @@ const UploadTableRow = ({
               upload={upload}
               projectSlug={projectSlug}
               size="table"
-              editUrl={uploadEditRoute(projectSlug, upload.id)}
+              editUrl={editUrl}
               onDeleted={onDelete}
             />
           </div>
@@ -237,7 +240,8 @@ const UploadTableRow = ({
             <IfUserCanEdit>
               <Link
                 icon="edit"
-                href={uploadEditRoute(projectSlug, upload.id)}
+                href={editUrl}
+                prefetch
                 scroll={false}
                 onClick={handleEditClick}
               >

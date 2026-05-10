@@ -4,11 +4,16 @@ import {
   parseReturnProjectRecordId,
 } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_utils/getUploadReturnTarget"
 import { invoke } from "@/src/blitz-server"
+import {
+  parseProjectScopedReturnTo,
+  RETURN_PROJECT_RECORD_ID_PARAM,
+  ReturnToSearchParams,
+} from "@/src/core/routes/returnTo"
 import getUploadWithRelations from "@/src/server/uploads/queries/getUploadWithRelations"
 
 type Props = {
   params: { projectSlug: string; uploadId: string }
-  searchParams?: { returnProjectRecordId?: string }
+  searchParams?: ReturnToSearchParams & { [RETURN_PROJECT_RECORD_ID_PARAM]?: string }
 }
 
 export default async function UploadEditModalPage({
@@ -22,7 +27,8 @@ export default async function UploadEditModalPage({
 
   const { returnPath, returnText } = getUploadReturnTarget({
     projectSlug,
-    returnProjectRecordId: parseReturnProjectRecordId(searchParams?.returnProjectRecordId),
+    returnTo: parseProjectScopedReturnTo(searchParams?.returnTo, projectSlug),
+    returnProjectRecordId: parseReturnProjectRecordId(searchParams?.[RETURN_PROJECT_RECORD_ID_PARAM]),
   })
 
   return <EditUploadModalClient upload={upload} returnPath={returnPath} returnText={returnText} />
