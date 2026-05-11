@@ -7,6 +7,7 @@ import { H3 } from "@/src/core/components/text"
 import { HeadingWithAction } from "@/src/core/components/text/HeadingWithAction"
 import getUploadWithRelations from "@/src/server/uploads/queries/getUploadWithRelations"
 import { useQuery } from "@blitzjs/rpc"
+import { Upload } from "@prisma/client"
 import { Route } from "next"
 
 type Props = {
@@ -16,6 +17,7 @@ type Props = {
   onClose: () => void
   onDeleted?: () => void | Promise<void>
   editUrl?: Route
+  previewUpload?: Pick<Upload, "id" | "title" | "mimeType" | "externalUrl" | "collaborationUrl">
 }
 
 export const UploadDetailModal = ({
@@ -25,6 +27,7 @@ export const UploadDetailModal = ({
   onClose,
   onDeleted,
   editUrl,
+  previewUpload,
 }: Props) => {
   const navigationGuard = useModalNavigationGuard()
   const [upload] = useQuery(
@@ -40,43 +43,35 @@ export const UploadDetailModal = ({
 
   if (!open || uploadId === null) return null
 
-  if (!upload) {
-    return (
-      <Modal open={open} handleClose={onClose} className="space-y-4 sm:max-w-2xl">
-        <HeadingWithAction>
-          <H3>Dokument wird geladen …</H3>
-          <ModalCloseButton onClose={onClose} />
-        </HeadingWithAction>
-      </Modal>
-    )
-  }
+  if (upload && (upload as any).__deleted) return null
 
-  // Check if upload was marked as deleted
-  if ((upload as any).__deleted) return null
+  const title = upload?.title ?? previewUpload?.title ?? "Dokument wird geladen …"
 
   return (
     <Modal open={open} handleClose={onClose} className="space-y-4 sm:max-w-2xl">
       <HeadingWithAction>
-        <H3>{upload.title}</H3>
+        <H3>{title}</H3>
         <ModalCloseButton onClose={onClose} />
       </HeadingWithAction>
 
-      <UploadDetailPanelContent
-        upload={upload}
-        projectSlug={projectSlug}
-        editUrl={editUrl}
-        onEditClick={() => {
-          navigationGuard.beginNavigationToModal({ holdUntilNextModalMount: true })
-        }}
-        onDeleted={
-          onDeleted
-            ? async () => {
-                await onDeleted()
-                onClose()
-              }
-            : undefined
-        }
-      />
+      {upload && (
+        <UploadDetailPanelContent
+          upload={upload}
+          projectSlug={projectSlug}
+          editUrl={editUrl}
+          onEditClick={() => {
+            navigationGuard.beginNavigationToModal({ holdUntilNextModalMount: true })
+          }}
+          onDeleted={
+            onDeleted
+              ? async () => {
+                  await onDeleted()
+                  onClose()
+                }
+              : undefined
+          }
+        />
+      )}
     </Modal>
   )
 }

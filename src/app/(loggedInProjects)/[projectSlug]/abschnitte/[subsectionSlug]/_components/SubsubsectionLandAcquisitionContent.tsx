@@ -25,7 +25,6 @@ import getAcquisitionAreasBySubsubsection from "@/src/server/acquisitionAreas/qu
 import getProjectRecordsByAcquisitionArea from "@/src/server/projectRecords/queries/getProjectRecordsByAcquisitionArea"
 import getProjectRecordsBySubsubsection from "@/src/server/projectRecords/queries/getProjectRecordsBySubsubsection"
 import getSubsubsection from "@/src/server/subsubsections/queries/getSubsubsection"
-import getUploadsByAcquisitionArea from "@/src/server/uploads/queries/getUploadsByAcquisitionArea"
 import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
 import { invalidateQuery, useMutation, useQuery } from "@blitzjs/rpc"
 import { PlusIcon } from "@heroicons/react/16/solid"
@@ -76,11 +75,13 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
     { enabled: Boolean(selectedAcquisitionArea) },
   )
 
-  const [uploads, { refetch: refetchUploads }] = useQuery(
-    getUploadsByAcquisitionArea,
+  const [{ uploads = [] } = { uploads: [] }, { refetch: refetchUploads }] = useQuery(
+    getUploadsWithSubsections,
     {
       projectSlug,
-      acquisitionAreaId: selectedAcquisitionArea?.id ?? undefined,
+      where: {
+        acquisitionAreaId: selectedAcquisitionArea?.id ?? undefined,
+      },
     },
     {
       refetchOnWindowFocus: false,
@@ -121,7 +122,6 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
         invalidateQuery(getAcquisitionAreasBySubsubsection),
         invalidateQuery(getProjectRecordsByAcquisitionArea),
         invalidateQuery(getProjectRecordsBySubsubsection),
-        invalidateQuery(getUploadsByAcquisitionArea),
         invalidateQuery(getUploadsWithSubsections),
       ])
     } catch (error) {
@@ -289,9 +289,9 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
 
               <section className="mt-10 space-y-3">
                 <h2 className="text-lg font-semibold text-gray-700 sm:text-lg">Dokumente</h2>
-                {!uploads?.length && <ZeroCase small visible name="Dokumente" />}
+                {!uploads.length && <ZeroCase small visible name="Dokumente" />}
                 <div className="grid grid-cols-2 gap-3">
-                  {uploads?.map((upload) => (
+                  {uploads.map((upload) => (
                     <UploadPreviewClickable
                       key={upload.id}
                       uploadId={upload.id}
@@ -308,6 +308,8 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
                     <UploadDropzoneContainer className="h-36 rounded-md p-0">
                       <UploadDropzone
                         fillContainer
+                        subsectionId={subsectionId}
+                        subsubsectionId={subsubsectionId}
                         acquisitionAreaId={selectedAcquisitionArea.id}
                         onUploadComplete={async () => {
                           await refetchUploads()
