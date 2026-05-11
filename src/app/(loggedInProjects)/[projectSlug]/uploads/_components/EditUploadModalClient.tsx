@@ -37,9 +37,8 @@ export const EditUploadModalClient = ({ upload, returnPath, returnText }: Props)
         returnText={returnText}
         onSubmittingChange={navigationGuard.setSubmitting}
         onSuccess={async () => {
-          navigationGuard.beginNavigationAfterSave({ holdUntilNextModalMount: true })
+          navigationGuard.beginNavigationAfterSave()
           router.replace(returnPath, { scroll: false })
-          router.refresh()
         }}
         onDirtyChange={navigationGuard.setDirty}
       />

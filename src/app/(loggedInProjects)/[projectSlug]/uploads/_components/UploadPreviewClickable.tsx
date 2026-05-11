@@ -24,6 +24,7 @@ export const UploadPreviewClickable = ({
   onDeleted,
   editUrl,
 }: Props) => {
+
   const [isPreviewOpen, setIsPreviewOpen] = useState(false)
   const effectiveUploadId = upload?.id ?? uploadId
 
@@ -38,6 +39,7 @@ export const UploadPreviewClickable = ({
       />
       <UploadDetailModal
         uploadId={effectiveUploadId}
+        previewUpload={upload}
         projectSlug={projectSlug}
         open={isPreviewOpen}
         onClose={() => setIsPreviewOpen(false)}
