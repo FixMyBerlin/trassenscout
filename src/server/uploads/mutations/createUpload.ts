@@ -22,6 +22,8 @@ export default resolver.pipe(
   async ({ projectSlug, ...input }, ctx: Ctx) => {
     const projectId = await getProjectIdBySlug(projectSlug)
 
+    const subsubsectionIdsForScope = Array.isArray(input.subsubsections) ? input.subsubsections : []
+
     // Extract m2m fields
     const connect: Record<M2MFieldsType | string, { connect: { id: number }[] | undefined }> = {}
     m2mFields.forEach((fieldName) => {

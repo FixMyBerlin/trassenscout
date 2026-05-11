@@ -74,7 +74,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
 
   const [{ uploads }, { refetch: refetchUploads }] = useQuery(getUploadsWithSubsections, {
     projectSlug,
-    where: { subsubsectionId: subsubsection.id },
+    where: { subsubsections: { some: { id: subsubsection.id } } },
   })
 
   const [projectRecords, { refetch: refetchProjectRecords }] = useQuery(
@@ -352,7 +352,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
             <UploadDropzoneContainer className="h-36 rounded-md p-0">
               <UploadDropzone
                 fillContainer
-                subsubsectionId={subsubsection.id}
+                subsubsectionIds={[subsubsection.id]}
                 onUploadComplete={async () => {
                   await refetchUploads()
                 }}

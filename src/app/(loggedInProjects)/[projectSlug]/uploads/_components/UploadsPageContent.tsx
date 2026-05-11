@@ -23,9 +23,9 @@ export const UploadsPageContent = () => {
         AND: [
           { surveyResponseId: { not: null } },
           { subsectionId: null },
-          { subsubsectionId: null },
           { projectRecordEmailId: null },
           { projectRecords: { none: {} } },
+          { subsubsections: { none: {} } },
         ],
       },
     },

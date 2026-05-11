@@ -6,6 +6,7 @@ import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import {
   FormDirtyStateReporter,
+  LabeledCheckboxGroup,
   LabeledSelect,
   LabeledSelectProps,
   LabeledTextField,
@@ -26,7 +27,7 @@ import updateUpload from "@/src/server/uploads/mutations/updateUploadWithSubsect
 import getUploadWithRelations from "@/src/server/uploads/queries/getUploadWithRelations"
 import getUploadsByAcquisitionArea from "@/src/server/uploads/queries/getUploadsByAcquisitionArea"
 import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
-import { UploadSchema } from "@/src/server/uploads/schema"
+import { UploadFormSchema, UploadSchema } from "@/src/server/uploads/schema"
 import { invalidateQuery, useMutation, useQuery } from "@blitzjs/rpc"
 import { PromiseReturnType } from "blitz"
 import { Route } from "next"
@@ -50,15 +51,22 @@ type UploadSubsectionFieldsProps = {
   subsubsections: Awaited<ReturnType<typeof getSubsubsections>>["subsubsections"]
 }
 
+function subsubsectionIdsFromForm(v: unknown): number[] {
+  if (!Array.isArray(v)) return []
+  return v
+    .map((x) => (typeof x === "string" ? parseInt(x, 10) : Number(x)))
+    .filter((n) => !Number.isNaN(n))
+}
+
 const UploadSubsectionFields = ({
   projectSlug,
   landAcquisitionModuleEnabled,
   subsections,
   subsubsections,
 }: UploadSubsectionFieldsProps) => {
-  const { watch, setValue } = useFormContext<z.infer<typeof UploadSchema>>()
+  const { watch, setValue } = useFormContext<z.infer<typeof UploadFormSchema>>()
   const subsectionId = watch("subsectionId")
-  const subsubsectionId = watch("subsubsectionId")
+  const subsubsectionIds = subsubsectionIdsFromForm(watch("subsubsections"))
   const acquisitionAreaId = watch("acquisitionAreaId")
   const [acquisitionAreas = []] = useQuery(
     getAcquisitionAreas,
@@ -67,7 +75,6 @@ const UploadSubsectionFields = ({
   )
 
   const selectedSubsectionId = subsectionId ? Number(subsectionId) : null
-  const selectedSubsubsectionId = subsubsectionId ? Number(subsubsectionId) : null
   const selectedAcquisitionAreaId = acquisitionAreaId ? Number(acquisitionAreaId) : null
 
   // We use `""` here to signify the "All" case which gets translated to `NULL`
@@ -76,26 +83,23 @@ const UploadSubsectionFields = ({
     subsectionOptions.push([ss.id, `${shortTitle(ss.slug)}`] as [number, string])
   })
 
-  // Sort by subsection first, then by subsubsection slug, and include subsection in label
-  const subsubsectionOptions: LabeledSelectProps["options"] = subsubsections
+  const subsubsectionsFilteredBySubsection = selectedSubsectionId
+    ? subsubsections.filter((s) => s.subsectionId === selectedSubsectionId)
+    : subsubsections
+
+  // Sort by subsection first, then by subsubsection slug (same order as before)
+  const subsubsectionCheckboxItems = subsubsectionsFilteredBySubsection
     .sort((a, b) => {
       const subsectionCompare = a.subsection.slug.localeCompare(b.subsection.slug)
       if (subsectionCompare !== 0) return subsectionCompare
       return a.slug.localeCompare(b.slug)
     })
-    .map(
-      (subsubsection) =>
-        [
-          subsubsection.id,
-          `${shortTitle(subsubsection.slug)} (${shortTitle(subsubsection.subsection.slug)})`,
-        ] as [number, string],
-    )
-  subsubsectionOptions.unshift(["", "Keine Angabe"])
+    .map((ss) => ({
+      value: String(ss.id),
+      label: `${shortTitle(ss.slug)} (${shortTitle(ss.subsection.slug)})`,
+    }))
 
   const filteredAcquisitionAreas = acquisitionAreas.filter((acquisitionArea) => {
-    if (selectedSubsubsectionId) {
-      return acquisitionArea.subsubsectionId === selectedSubsubsectionId
-    }
     if (selectedSubsectionId) {
       return acquisitionArea.subsubsection.subsectionId === selectedSubsectionId
     }
@@ -106,22 +110,26 @@ const UploadSubsectionFields = ({
     (acquisitionArea) =>
       [
         acquisitionArea.id,
-        `${acquisitionArea.id} ${acquisitionArea.parcel.alkisParcelId} (${shortTitle(
-          acquisitionArea.subsubsection.slug,
-        )}/${shortTitle(acquisitionArea.subsubsection.subsection.slug)})`,
+        `${acquisitionArea.id} (${shortTitle(acquisitionArea.subsubsection.slug)} / ${shortTitle(acquisitionArea.subsubsection.subsection.slug)})`,
       ] as [number, string],
   )
   acquisitionAreaOptions.unshift(["", "Keine Angabe"])
 
   const handleSubsectionChange = (newSubsectionId: string) => {
     const nextSubsectionId = newSubsectionId ? Number(newSubsectionId) : null
-    const currentSubsubsectionId = subsubsectionId ? Number(subsubsectionId) : null
+    if (subsubsectionIds.length === 0) return
 
-    if (currentSubsubsectionId) {
-      const selectedSubsubsection = subsubsections.find((s) => s.id === currentSubsubsectionId)
-      if (selectedSubsubsection && selectedSubsubsection.subsectionId !== nextSubsectionId) {
-        setValue("subsubsectionId", null)
-      }
+    const allowed = new Set(
+      (nextSubsectionId
+        ? subsubsections.filter((s) => s.subsectionId === nextSubsectionId)
+        : subsubsections
+      ).map((s) => s.id),
+    )
+    const prunedIds = subsubsectionIds.filter((id) => allowed.has(id))
+    if (prunedIds.length !== subsubsectionIds.length) {
+      setValue("subsubsections", prunedIds.map(String) as unknown as number[], {
+        shouldDirty: true,
+      })
     }
   }
 
@@ -136,34 +144,37 @@ const UploadSubsectionFields = ({
   }, [filteredAcquisitionAreas, landAcquisitionModuleEnabled, selectedAcquisitionAreaId, setValue])
 
   return (
-    <div
-      className={
-        landAcquisitionModuleEnabled
-          ? "grid grid-cols-1 gap-4 sm:grid-cols-3"
-          : "grid grid-cols-1 gap-4 sm:grid-cols-2"
-      }
-    >
-      <LabeledSelect
-        name="subsectionId"
-        label="Zuordnung zum Planungsabschnitt"
-        options={subsectionOptions}
-        optional
-        onChange={handleSubsectionChange}
-      />
-      <LabeledSelect
-        name="subsubsectionId"
-        label="Zuordnung zum Eintrag"
-        options={subsubsectionOptions}
-        optional
-      />
-      {landAcquisitionModuleEnabled && (
+    <div className="flex flex-col gap-4">
+      <div
+        className={
+          landAcquisitionModuleEnabled
+            ? "grid grid-cols-1 gap-4 sm:grid-cols-2"
+            : "grid grid-cols-1 gap-4"
+        }
+      >
         <LabeledSelect
-          name="acquisitionAreaId"
-          label="Zuordnung zur Verhandlungsfläche"
-          options={acquisitionAreaOptions}
+          name="subsectionId"
+          label="Zuordnung zum Planungsabschnitt"
+          options={subsectionOptions}
           optional
+          onChange={handleSubsectionChange}
         />
-      )}
+        {landAcquisitionModuleEnabled && (
+          <LabeledSelect
+            name="acquisitionAreaId"
+            label="Zuordnung zur Verhandlungsfläche"
+            options={acquisitionAreaOptions}
+            optional
+          />
+        )}
+      </div>
+      <LabeledCheckboxGroup
+        scope="subsubsections"
+        label="Zuordnung zum Eintrag"
+        optional
+        classNameItemWrapper="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3"
+        items={subsubsectionCheckboxItems}
+      />
     </div>
   )
 }
@@ -230,11 +241,11 @@ export const EditUploadForm = ({
   const initialValues = createUploadFormValues(upload)
   const formKey = getUploadFormKey(upload)
 
-  const handleSubmit = async (values: z.infer<typeof UploadSchema>) => {
+  const handleSubmit = async (values: z.infer<typeof UploadFormSchema>) => {
     onSubmittingChange?.(true)
     try {
       await updateUploadMutation({
-        ...values,
+        ...(values as z.infer<typeof UploadSchema>),
         id: upload.id,
         projectSlug,
       })
@@ -276,7 +287,7 @@ export const EditUploadForm = ({
           key={formKey}
           className="grow"
           submitText="Speichern"
-          schema={UploadSchema}
+          schema={UploadFormSchema}
           initialValues={initialValues}
           onSubmit={handleSubmit}
           disabled={isGeneratingSummary}
@@ -379,7 +390,7 @@ export const EditUploadForm = ({
         projectSlug={projectSlug}
         landAcquisitionModuleEnabled={upload.project?.landAcquisitionModuleEnabled ?? false}
         subsection={upload.subsection}
-        subsubsection={upload.Subsubsection}
+        subsubsections={upload.subsubsections}
         acquisitionArea={upload.acquisitionArea}
         projectRecords={upload.projectRecords}
         projectRecordEmail={upload.projectRecordEmail}

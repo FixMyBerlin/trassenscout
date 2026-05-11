@@ -59,7 +59,6 @@ export default resolver.pipe(resolver.zod(CreateSurveyUploadPublicSchema), async
       updatedById: null,
       // Other fields are null for survey uploads
       subsectionId: null,
-      subsubsectionId: null,
       projectRecordEmailId: null,
       summary: null,
       latitude: null,

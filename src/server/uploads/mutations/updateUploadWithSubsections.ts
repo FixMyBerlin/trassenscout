@@ -19,7 +19,7 @@ export default resolver.pipe(
   resolver.zod(UpdateUploadSchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
   async ({ id, projectSlug, ...data }, ctx: Ctx) => {
-    const previous = await db.upload.findFirst({ where: { id } })
+    const subsubsectionIdsForScope = data.subsubsections || []
 
     // copied from updateSubsubsection.ts
     const disconnect: Record<M2MFieldsType | string, { set: [] }> = {}

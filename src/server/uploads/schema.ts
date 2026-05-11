@@ -16,7 +16,6 @@ export const UploadSchema = z.object({
   acquisitionAreaId: InputNumberOrNullSchema,
   projectRecordEmailId: InputNumberOrNullSchema,
   surveyResponseId: InputNumberOrNullSchema,
-  subsubsectionId: InputNumberOrNullSchema, // TODO Make this more fancy and guard against a case where both subsectionId and subsubsectionId are given
   externalUrl: z.string().url(),
   mimeType: z.string().nullable().optional(),
   fileSize: z.number().int().positive().nullable().optional(),
@@ -26,15 +25,20 @@ export const UploadSchema = z.object({
   collaborationPath: z.string().nullable().optional(),
   // m2mFields
   projectRecords: z.union([z.literal(false), z.array(z.coerce.number())]).optional(),
+  subsubsections: z.union([z.literal(false), z.array(z.coerce.number())]).optional(),
 })
 
 export const UploadFormSchema = UploadSchema.omit({
   projectRecords: true,
+  subsubsections: true,
 }).merge(
   z.object({
     // LIST ALL m2mFields HERE
     // We need to do this manually, since dynamic zod types don't work
     projectRecords: z
+      .union([z.undefined(), z.boolean(), z.array(z.coerce.number())])
+      .transform((v) => v || []),
+    subsubsections: z
       .union([z.undefined(), z.boolean(), z.array(z.coerce.number())])
       .transform((v) => v || []),
   }),

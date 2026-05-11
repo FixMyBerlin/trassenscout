@@ -1,17 +1,15 @@
 "use client"
 
 import { Link } from "@/src/core/components/links"
-import { longTitle, shortTitle } from "@/src/core/components/text/titles"
+import { shortTitle } from "@/src/core/components/text/titles"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
-import { subsubsectionLandAcquisitionRoute } from "@/src/core/routes/subsectionRoutes"
 import { formatBerlinTime } from "@/src/core/utils/formatBerlinTime"
-import { Route } from "next"
 
 type Props = {
   projectSlug: string
   landAcquisitionModuleEnabled?: boolean
   subsection: { slug: string } | null
-  subsubsection: { slug: string } | null
+  subsubsections: { slug: string; subsection: { slug: string } }[]
   acquisitionArea: {
     id: number
     subsubsection: {
@@ -30,7 +28,7 @@ export const UploadVerknuepfungen = ({
   projectSlug,
   landAcquisitionModuleEnabled = false,
   subsection,
-  subsubsection,
+  subsubsections,
   acquisitionArea,
   projectRecords,
   projectRecordEmail,
@@ -38,7 +36,7 @@ export const UploadVerknuepfungen = ({
   className,
 }: Props) => {
   const hasSubsection = subsection !== null
-  const hasSubsubsection = subsubsection !== null
+  const hasSubsubsection = subsubsections?.length > 0
   const hasProjectRecords = projectRecords != null && projectRecords.length > 0
   const hasAcquisitionArea = landAcquisitionModuleEnabled && acquisitionArea !== null
   const hasProjectRecordEmail = projectRecordEmail !== null
@@ -56,31 +54,23 @@ export const UploadVerknuepfungen = ({
       <h4 className="text-sm font-medium">Verknüpfungen:</h4>
       {hasRelations ? (
         <ul className="mt-1.5 list-inside list-disc space-y-0.5 pl-4 text-sm">
-          {hasSubsection && !hasSubsubsection && !hasAcquisitionArea && (
+          {hasSubsection && (
             <li>
               <strong className="font-medium">Planungsabschnitt: </strong>
               {shortTitle(subsection!.slug)} ({subsection!.slug})
             </li>
           )}
-          {hasSubsubsection && !hasAcquisitionArea && (
-            <li>
-              <strong className="font-medium">Eintrag:</strong> {longTitle(subsubsection!.slug)}
-            </li>
-          )}
+          {hasSubsubsection &&
+            subsubsections.map((subsub) => (
+              <li key={`${subsub.subsection.slug}-${subsub.slug}`}>
+                <strong className="font-medium">Eintrag:</strong> {shortTitle(subsub.slug)}
+              </li>
+            ))}
           {hasAcquisitionArea && (
             <li>
               <strong className="font-medium">Verhandlungsfläche:</strong>{" "}
-              <Link
-                href={
-                  `${subsubsectionLandAcquisitionRoute(
-                    projectSlug,
-                    acquisitionArea!.subsubsection.subsection.slug,
-                    acquisitionArea!.subsubsection.slug,
-                  )}?acquisitionAreaId=${acquisitionArea!.id}` as Route
-                }
-              >
-                {acquisitionArea!.id} ({acquisitionArea!.parcel.alkisParcelId})
-              </Link>
+              {shortTitle(String(acquisitionArea!.id))} - Flurstücknr.{" "}
+              {acquisitionArea!.parcel.alkisParcelId}
             </li>
           )}
           {hasProjectRecords && (

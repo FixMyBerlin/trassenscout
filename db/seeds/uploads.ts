@@ -1,17 +1,20 @@
 import db, { Upload } from "../index"
 
 const seedUploads = async () => {
-  const seedFiles: Omit<
+  type SeedUploadRow = Omit<
     Upload,
-    "id" | "createdAt" | "updatedAt" | "createdById" | "updatedById"
-  >[] = [
+    "id" | "createdAt" | "updatedAt" | "createdById" | "updatedById" | "subsubsectionId"
+  > & {
+    subsubsectionIds?: number[]
+  }
+
+  const seedFiles: SeedUploadRow[] = [
     {
       title: "Protokoll Gesamttreffen",
       externalUrl:
         "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
       projectId: 1,
       subsectionId: null,
-      subsubsectionId: null,
       acquisitionAreaId: null,
       summary: null,
       projectRecordEmailId: null,
@@ -31,7 +34,6 @@ const seedUploads = async () => {
         "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
       projectId: 1,
       subsectionId: null,
-      subsubsectionId: null,
       acquisitionAreaId: null,
       summary: null,
       projectRecordEmailId: null,
@@ -51,7 +53,6 @@ const seedUploads = async () => {
         "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
       projectId: 1,
       subsectionId: 1,
-      subsubsectionId: null,
       acquisitionAreaId: null,
       summary: null,
       projectRecordEmailId: null,
@@ -71,7 +72,6 @@ const seedUploads = async () => {
         "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
       projectId: 1,
       subsectionId: 2,
-      subsubsectionId: null,
       acquisitionAreaId: null,
       summary: null,
       projectRecordEmailId: null,
@@ -91,7 +91,6 @@ const seedUploads = async () => {
         "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
       projectId: 1,
       subsectionId: 2,
-      subsubsectionId: null,
       acquisitionAreaId: null,
       summary: null,
       projectRecordEmailId: null,
@@ -111,7 +110,6 @@ const seedUploads = async () => {
         "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
       projectId: 2,
       subsectionId: null,
-      subsubsectionId: null,
       acquisitionAreaId: null,
       summary: null,
       projectRecordEmailId: null,
@@ -131,7 +129,6 @@ const seedUploads = async () => {
         "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
       projectId: 4,
       subsectionId: null,
-      subsubsectionId: null,
       acquisitionAreaId: null,
       summary: null,
       projectRecordEmailId: null,
@@ -151,7 +148,7 @@ const seedUploads = async () => {
         "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
       projectId: 1,
       subsectionId: null,
-      subsubsectionId: 1,
+      subsubsectionIds: [1],
       acquisitionAreaId: null,
       summary: null,
       projectRecordEmailId: null,
@@ -171,7 +168,7 @@ const seedUploads = async () => {
         "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
       projectId: 1,
       subsectionId: null,
-      subsubsectionId: 1,
+      subsubsectionIds: [1],
       acquisitionAreaId: null,
       summary: null,
       projectRecordEmailId: null,
@@ -191,7 +188,7 @@ const seedUploads = async () => {
         "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
       projectId: 1,
       subsectionId: null,
-      subsubsectionId: 1,
+      subsubsectionIds: [1],
       acquisitionAreaId: null,
       summary: null,
       projectRecordEmailId: null,
@@ -207,7 +204,8 @@ const seedUploads = async () => {
     },
   ]
 
-  for (const data of seedFiles) {
+  for (const row of seedFiles) {
+    const { subsubsectionIds, ...data } = row
     // For seed data, assign a default user (user 1) as creator
     // Some uploads have been updated, so they get updatedById set
     const hasBeenUpdated =
@@ -216,6 +214,9 @@ const seedUploads = async () => {
     await db.upload.create({
       data: {
         ...data,
+        ...(subsubsectionIds?.length
+          ? { subsubsections: { connect: subsubsectionIds.map((id) => ({ id })) } }
+          : {}),
         createdById: 1, // Seed data - assign to user 1
         updatedById: hasBeenUpdated ? 1 : null, // Only set if upload has been updated
       },

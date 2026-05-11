@@ -24,7 +24,7 @@ export default resolver.pipe(
       where: { id },
       include: {
         subsection: { select: { id: true, slug: true } },
-        Subsubsection: {
+        subsubsections: {
           select: {
             id: true,
             slug: true,

@@ -30,7 +30,7 @@ export default resolver.pipe(
             subsection: {
               select: { id: true, slug: true },
             },
-            Subsubsection: {
+            subsubsections: {
               select: {
                 id: true,
                 slug: true,
@@ -72,7 +72,7 @@ export default resolver.pipe(
       // Build display data for links (when available)
       const displayData: {
         subsection?: { id: number; slug: string }
-        subsubsection?: { id: number; slug: string; subsectionSlug: string }
+        subsubsections?: Array<{ id: number; slug: string; subsectionSlug: string }>
         otherProjectRecords?: Array<{ id: number; title: string }>
       } = {}
 
@@ -83,13 +83,13 @@ export default resolver.pipe(
           slug: upload.subsection.slug,
         }
       }
-      if (upload.subsubsectionId && upload.Subsubsection) {
-        protectionReasons.subsubsection = upload.subsubsectionId
-        displayData.subsubsection = {
-          id: upload.Subsubsection.id,
-          slug: upload.Subsubsection.slug,
-          subsectionSlug: upload.Subsubsection.subsection.slug,
-        }
+      if (upload.subsubsections.length > 0) {
+        protectionReasons.subsubsection = upload.subsubsections[0]!.id
+        displayData.subsubsections = upload.subsubsections.map((subsub) => ({
+          id: subsub.id,
+          slug: subsub.slug,
+          subsectionSlug: subsub.subsection.slug,
+        }))
       }
 
       // Find other project records (excluding the current one)
@@ -110,14 +110,20 @@ export default resolver.pipe(
       let defaultAction: "save" | "delete" = "delete"
 
       // Rule 1: Uploads linked to subsection/subsubsection/other projectrecords → default Save
-      if (upload.subsectionId || upload.subsubsectionId || otherProjectRecords.length > 0) {
+      if (
+        upload.subsectionId ||
+        upload.subsubsections.length > 0 ||
+        otherProjectRecords.length > 0
+      ) {
         defaultAction = "save"
       }
       // Rule 2: Email-linked uploads
       else if (upload.projectRecordEmailId) {
         // Check if email-only (no subsection/subsubsection, no other projectrecords)
         const isEmailOnly =
-          !upload.subsectionId && !upload.subsubsectionId && otherProjectRecords.length === 0
+          !upload.subsectionId &&
+          upload.subsubsections.length === 0 &&
+          otherProjectRecords.length === 0
 
         // Check if email is only linked to this projectrecord
         const emailProjectRecordIds =

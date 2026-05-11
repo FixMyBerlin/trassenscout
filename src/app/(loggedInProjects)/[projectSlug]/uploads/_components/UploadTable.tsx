@@ -165,7 +165,7 @@ const UploadTableRow = ({
         <td className="px-3 py-2 text-sm text-gray-500">
           <ul className="flex flex-col gap-1">
             {upload.subsection &&
-              !upload.Subsubsection &&
+              upload.subsubsections.length === 0 &&
               !(landAcquisitionModuleEnabled && upload.acquisitionArea) && (
                 <li>
                   <Link href={subsectionDashboardRoute(projectSlug, upload.subsection.slug)}>
@@ -173,19 +173,21 @@ const UploadTableRow = ({
                   </Link>
                 </li>
               )}
-            {upload.Subsubsection && !(landAcquisitionModuleEnabled && upload.acquisitionArea) && (
-              <li>
-                <Link
-                  href={subsubsectionDashboardRoute(
-                    projectSlug,
-                    upload.Subsubsection.subsection.slug,
-                    upload.Subsubsection.slug,
-                  )}
-                >
-                  Eintrag: {shortTitle(upload.Subsubsection.slug)}
-                </Link>
-              </li>
-            )}
+            {upload.subsubsections.length > 0 &&
+              !(landAcquisitionModuleEnabled && upload.acquisitionArea) &&
+              upload.subsubsections.map((subsub) => (
+                <li key={subsub.id}>
+                  <Link
+                    href={subsubsectionDashboardRoute(
+                      projectSlug,
+                      subsub.subsection.slug,
+                      subsub.slug,
+                    )}
+                  >
+                    Eintrag: {shortTitle(subsub.slug)}
+                  </Link>
+                </li>
+              ))}
             {upload.projectRecords &&
               upload.projectRecords.length > 0 &&
               upload.projectRecords.map((projectRecord) => {

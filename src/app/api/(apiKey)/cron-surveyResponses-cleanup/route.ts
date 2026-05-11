@@ -58,9 +58,9 @@ async function runSurveyResponsesCleanup({ apiKey }: { apiKey: string }) {
       where: {
         surveyResponseId,
         subsectionId: null,
-        subsubsectionId: null,
         projectRecordEmailId: null,
         projectRecords: { none: {} },
+        subsubsections: { none: {} },
       },
       select: {
         id: true,
@@ -110,7 +110,7 @@ async function runSurveyResponsesCleanup({ apiKey }: { apiKey: string }) {
         surveyResponseId,
         OR: [
           { subsectionId: { not: null } },
-          { subsubsectionId: { not: null } },
+          { subsubsections: { some: {} } },
           { projectRecordEmailId: { not: null } },
           { projectRecords: { some: {} } },
         ],

@@ -101,22 +101,23 @@ export const DeleteProjectRecordWithUploadsClient = ({ deleteInfo, projectSlug }
       )
     }
 
-    if (upload.displayData?.subsubsection) {
-      const subsubsection = upload.displayData.subsubsection
-      reasons.push(
-        <span key="subsubsection">
-          Eintrag:{" "}
-          <Link
-            href={subsubsectionDashboardRoute(
-              projectSlug,
-              subsubsection.subsectionSlug,
-              subsubsection.slug,
-            )}
-          >
-            {subsubsection.slug}
-          </Link>
-        </span>,
-      )
+    if (upload.displayData?.subsubsections && upload.displayData.subsubsections.length > 0) {
+      for (const subsubsection of upload.displayData.subsubsections) {
+        reasons.push(
+          <span key={`subsubsection-${subsubsection.id}`}>
+            Eintrag:{" "}
+            <Link
+              href={subsubsectionDashboardRoute(
+                projectSlug,
+                subsubsection.subsectionSlug,
+                subsubsection.slug,
+              )}
+            >
+              {subsubsection.slug}
+            </Link>
+          </span>,
+        )
+      }
     }
 
     if (

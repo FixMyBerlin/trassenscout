@@ -597,8 +597,7 @@ model Upload {
   projectId            Int?
   subsection           Subsection?         @relation(fields: [subsectionId], references: [id])
   subsectionId         Int?
-  Subsubsection        Subsubsection?      @relation(fields: [subsubsectionId], references: [id])
-  subsubsectionId      Int?
+  subsubsections       Subsubsection[]
   acquisitionArea      AcquisitionArea?    @relation(fields: [acquisitionAreaId], references: [id])
   acquisitionAreaId    Int?
   projectRecordEmail   ProjectRecordEmail? @relation(fields: [projectRecordEmailId], references: [id])
