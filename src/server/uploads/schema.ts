@@ -12,7 +12,6 @@ import { z } from "zod"
 export const UploadSchema = z.object({
   title: z.string().min(2, { message: "Pflichtfeld. Mindestens 2 Zeichen." }),
   summary: z.string().nullable(),
-  subsectionId: InputNumberOrNullSchema,
   projectRecordEmailId: InputNumberOrNullSchema,
   surveyResponseId: InputNumberOrNullSchema,
   externalUrl: z.string().url(),

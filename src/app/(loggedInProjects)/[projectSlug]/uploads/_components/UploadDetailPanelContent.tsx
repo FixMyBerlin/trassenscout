@@ -90,7 +90,6 @@ export const UploadDetailPanelContent = ({
           <UploadVerknuepfungen
             projectSlug={projectSlug}
             landAcquisitionModuleEnabled={upload.project?.landAcquisitionModuleEnabled ?? false}
-            subsection={upload.subsection}
             subsubsections={upload.subsubsections}
             acquisitionAreas={upload.acquisitionAreas}
             projectRecords={upload.projectRecords}

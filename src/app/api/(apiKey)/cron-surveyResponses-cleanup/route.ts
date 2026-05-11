@@ -52,15 +52,15 @@ async function runSurveyResponsesCleanup({ apiKey }: { apiKey: string }) {
   const uploadDeletionFailedSample: Array<{ uploadId: number; error: string }> = []
 
   for (const { id: surveyResponseId } of candidates) {
-    // Delete only uploads that are NOT related to subsection, subsubsection, projectrecord, or projectRecordEmail.
+    // Delete only uploads that are NOT related to subsubsection, acquisition area, projectrecord, or projectRecordEmail.
     // (ProjectRecord is represented via m2m relation `projectRecords`.)
     const uploadsToDelete: UploadForDeletion[] = await db.upload.findMany({
       where: {
         surveyResponseId,
-        subsectionId: null,
         projectRecordEmailId: null,
         projectRecords: { none: {} },
         subsubsections: { none: {} },
+        acquisitionAreas: { none: {} },
       },
       select: {
         id: true,
@@ -103,14 +103,14 @@ async function runSurveyResponsesCleanup({ apiKey }: { apiKey: string }) {
 
     // Safety net: Public survey uploads are created as "surveyResponse-only" and can't be linked elsewhere
     // by the public flow. However, an admin/backend workflow could later attach the same Upload to a
-    // subsection/subsubsection/projectRecord(/email). In that (unlikely) case we keep the Upload and
+    // subsubsection/acquisition area/projectRecord(/email). In that (unlikely) case we keep the Upload and
     // detach it here to avoid FK constraint issues when deleting the SurveyResponse.
     await db.upload.updateMany({
       where: {
         surveyResponseId,
         OR: [
-          { subsectionId: { not: null } },
           { subsubsections: { some: {} } },
+          { acquisitionAreas: { some: {} } },
           { projectRecordEmailId: { not: null } },
           { projectRecords: { some: {} } },
         ],

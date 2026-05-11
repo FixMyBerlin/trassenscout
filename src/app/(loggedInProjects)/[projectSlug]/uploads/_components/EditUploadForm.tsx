@@ -7,7 +7,6 @@ import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogD
 import {
   FormDirtyStateReporter,
   LabeledCheckboxGroup,
-  LabeledSelect,
   LabeledTextField,
 } from "@/src/core/components/forms"
 import { BackLink } from "@/src/core/components/forms/BackLink"
@@ -19,7 +18,6 @@ import getAcquisitionAreas from "@/src/server/acquisitionAreas/queries/getAcquis
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
 import getProjectRecordsByAcquisitionArea from "@/src/server/projectRecords/queries/getProjectRecordsByAcquisitionArea"
 import getProjectRecordsBySubsubsection from "@/src/server/projectRecords/queries/getProjectRecordsBySubsubsection"
-import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import getSubsubsections from "@/src/server/subsubsections/queries/getSubsubsections"
 import { getFilenameFromS3 } from "@/src/server/uploads/_utils/url"
 import updateUpload from "@/src/server/uploads/mutations/updateUploadWithSubsections"
@@ -43,9 +41,7 @@ import { UploadPreview } from "./UploadPreview"
 import { UploadVerknuepfungen } from "./UploadVerknuepfungen"
 
 type UploadSubsectionFieldsProps = {
-  projectSlug: string
   landAcquisitionModuleEnabled: boolean
-  subsections: Awaited<ReturnType<typeof getSubsections>>["subsections"]
   subsubsections: Awaited<ReturnType<typeof getSubsubsections>>["subsubsections"]
   acquisitionAreas: Awaited<ReturnType<typeof getAcquisitionAreas>>
 }
@@ -53,15 +49,8 @@ type UploadSubsectionFieldsProps = {
 const UploadSubsectionFields = ({
   acquisitionAreas,
   landAcquisitionModuleEnabled,
-  subsections,
   subsubsections,
 }: UploadSubsectionFieldsProps) => {
-  // We use `""` here to signify the "All" case which gets translated to `NULL`
-  const subsectionOptions: [string | number, string][] = [["", "Übergreifendes Dokument"]]
-  subsections.forEach((ss) => {
-    subsectionOptions.push([ss.id, `${shortTitle(ss.slug)}`] as [number, string])
-  })
-
   // Sort by subsection first, then by subsubsection slug (same order as before)
   const subsubsectionCheckboxItems = [...subsubsections]
     .sort((a, b) => {
@@ -91,12 +80,6 @@ const UploadSubsectionFields = ({
 
   return (
     <div className="flex flex-col gap-4">
-      <LabeledSelect
-        name="subsectionId"
-        label="Zuordnung zum Planungsabschnitt"
-        options={subsectionOptions}
-        optional
-      />
       {landAcquisitionModuleEnabled && (
         <LabeledCheckboxGroup
           scope="acquisitionAreas"
@@ -141,7 +124,6 @@ const createUploadFormValues = (upload: UploadWithRelations) => ({
   title: upload.title,
   externalUrl: upload.externalUrl,
   summary: upload.summary,
-  subsectionId: upload.subsectionId,
   subsubsections: upload.subsubsections?.map((s) => String(s.id)) ?? [],
   acquisitionAreas: upload.acquisitionAreas?.map((a) => String(a.id)) ?? [],
   projectRecordEmailId: upload.projectRecordEmailId,
@@ -171,7 +153,6 @@ export const EditUploadForm = ({
   const router = useRouter()
   const [isGeneratingSummary, setIsGeneratingSummary] = useState(false)
   const projectSlug = useProjectSlug()
-  const [{ subsections }] = useQuery(getSubsections, { projectSlug })
   const [{ subsubsections }] = useQuery(getSubsubsections, { projectSlug })
   const [acquisitionAreasData] = useQuery(getAcquisitionAreas, { projectSlug })
   const [updateUploadMutation] = useMutation(updateUpload)
@@ -227,7 +208,6 @@ export const EditUploadForm = ({
           submitText="Speichern"
           schema={UploadFormSchema}
           // @ts-expect-error m2m fields use string ids in the form (for checkbox `value`),
-          // while the schema coerces them to numbers via z.coerce.number()
           initialValues={initialValues}
           onSubmit={handleSubmit}
           disabled={isGeneratingSummary}
@@ -283,9 +263,7 @@ export const EditUploadForm = ({
           </div>
           <UploadSubsectionFields
             acquisitionAreas={acquisitionAreasData}
-            projectSlug={projectSlug}
             landAcquisitionModuleEnabled={upload.project?.landAcquisitionModuleEnabled ?? false}
-            subsections={subsections}
             subsubsections={subsubsections}
           />
           {upload.id && (
@@ -329,7 +307,6 @@ export const EditUploadForm = ({
       <UploadVerknuepfungen
         projectSlug={projectSlug}
         landAcquisitionModuleEnabled={upload.project?.landAcquisitionModuleEnabled ?? false}
-        subsection={upload.subsection}
         subsubsections={upload.subsubsections}
         acquisitionAreas={upload.acquisitionAreas}
         projectRecords={upload.projectRecords}
@@ -337,7 +314,7 @@ export const EditUploadForm = ({
         surveyResponse={upload.surveyResponse}
       />
 
-      <SuperAdminLogData data={{ upload, subsections, returnPath, returnText }} />
+      <SuperAdminLogData data={{ upload, returnPath, returnText }} />
     </>
   )
 }

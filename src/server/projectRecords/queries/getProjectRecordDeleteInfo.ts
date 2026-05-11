@@ -27,15 +27,15 @@ export default resolver.pipe(
         },
         uploads: {
           include: {
-            subsection: {
-              select: { id: true, slug: true },
-            },
             subsubsections: {
               select: {
                 id: true,
                 slug: true,
                 subsection: { select: { slug: true } },
               },
+            },
+            acquisitionAreas: {
+              select: { id: true },
             },
             projectRecords: {
               select: { id: true, title: true },
@@ -63,7 +63,6 @@ export default resolver.pipe(
     const uploadsWithInfo = projectRecord.uploads.map((upload) => {
       // Build protectionReasons with IDs
       const protectionReasons: {
-        subsection?: number
         subsubsection?: number
         otherProjectRecords?: number[]
         projectRecordEmail?: number
@@ -71,18 +70,10 @@ export default resolver.pipe(
 
       // Build display data for links (when available)
       const displayData: {
-        subsection?: { id: number; slug: string }
         subsubsections?: Array<{ id: number; slug: string; subsectionSlug: string }>
         otherProjectRecords?: Array<{ id: number; title: string }>
       } = {}
 
-      if (upload.subsectionId && upload.subsection) {
-        protectionReasons.subsection = upload.subsectionId
-        displayData.subsection = {
-          id: upload.subsection.id,
-          slug: upload.subsection.slug,
-        }
-      }
       if (upload.subsubsections.length > 0) {
         protectionReasons.subsubsection = upload.subsubsections[0]!.id
         displayData.subsubsections = upload.subsubsections.map((subsub) => ({
@@ -109,20 +100,20 @@ export default resolver.pipe(
       // Determine defaultAction
       let defaultAction: "save" | "delete" = "delete"
 
-      // Rule 1: Uploads linked to subsection/subsubsection/other projectrecords → default Save
+      // Rule 1: Uploads linked to subsubsection, acquisition area, or other project records → default Save
       if (
-        upload.subsectionId ||
         upload.subsubsections.length > 0 ||
+        upload.acquisitionAreas.length > 0 ||
         otherProjectRecords.length > 0
       ) {
         defaultAction = "save"
       }
       // Rule 2: Email-linked uploads
       else if (upload.projectRecordEmailId) {
-        // Check if email-only (no subsection/subsubsection, no other projectrecords)
+        // Check if email-only (no subsubsection, no other projectrecords)
         const isEmailOnly =
-          !upload.subsectionId &&
           upload.subsubsections.length === 0 &&
+          upload.acquisitionAreas.length === 0 &&
           otherProjectRecords.length === 0
 
         // Check if email is only linked to this projectrecord

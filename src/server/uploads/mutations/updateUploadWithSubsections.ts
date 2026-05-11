@@ -19,8 +19,6 @@ export default resolver.pipe(
   resolver.zod(UpdateUploadSchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
   async ({ id, projectSlug, ...data }, ctx: Ctx) => {
-    const subsubsectionIdsForScope = data.subsubsections || []
-
     // copied from updateSubsubsection.ts
     const disconnect: Record<M2MFieldsType | string, { set: [] }> = {}
     const connect: Record<M2MFieldsType | string, { connect: { id: number }[] | undefined }> = {}
@@ -42,7 +40,6 @@ export default resolver.pipe(
       // copied from updateSubsubsection.ts
       // @ts-expect-error The whole `m2mFields` is way to hard to type but apparently working
       data: { ...data, ...connect, updatedById: currentUserId },
-      include: { subsection: { select: { id: true, slug: true } } },
     })
   },
 )

@@ -6,10 +6,7 @@ import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
 import { Link } from "@/src/core/components/links"
 import { shortTitle } from "@/src/core/components/text"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
-import {
-  subsectionDashboardRoute,
-  subsubsectionDashboardRoute,
-} from "@/src/core/routes/subsectionRoutes"
+import { subsubsectionDashboardRoute } from "@/src/core/routes/subsectionRoutes"
 import deleteProjectRecordWithUploadsDecision from "@/src/server/projectRecords/mutations/deleteProjectRecordWithUploadsDecision"
 import getProjectRecordDeleteInfo from "@/src/server/projectRecords/queries/getProjectRecordDeleteInfo"
 import { useMutation } from "@blitzjs/rpc"
@@ -89,18 +86,6 @@ export const DeleteProjectRecordWithUploadsClient = ({ deleteInfo, projectSlug }
   const renderProtectionReasons = (upload: DeleteInfo["uploads"][0]) => {
     const reasons: JSX.Element[] = []
 
-    if (upload.displayData?.subsection) {
-      const subsection = upload.displayData.subsection
-      reasons.push(
-        <span key="subsection">
-          Planungsabschnitt:{" "}
-          <Link href={subsectionDashboardRoute(projectSlug, subsection.slug)}>
-            {shortTitle(subsection.slug)}
-          </Link>
-        </span>,
-      )
-    }
-
     if (upload.displayData?.subsubsections && upload.displayData.subsubsections.length > 0) {
       for (const subsubsection of upload.displayData.subsubsections) {
         reasons.push(
@@ -113,7 +98,7 @@ export const DeleteProjectRecordWithUploadsClient = ({ deleteInfo, projectSlug }
                 subsubsection.slug,
               )}
             >
-              {subsubsection.slug}
+              {shortTitle(subsubsection.slug)}
             </Link>
           </span>,
         )

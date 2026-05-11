@@ -4,7 +4,6 @@ import { Link } from "@/src/core/components/links"
 import { shortTitle } from "@/src/core/components/text/titles"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import {
-  subsectionDashboardRoute,
   subsubsectionDashboardRoute,
   subsubsectionLandAcquisitionRoute,
 } from "@/src/core/routes/subsectionRoutes"
@@ -23,7 +22,6 @@ type AcquisitionAreaLink = {
 type Props = {
   projectSlug: string
   landAcquisitionModuleEnabled?: boolean
-  subsection: { slug: string } | null
   subsubsections: { slug: string; subsection: { slug: string } }[]
   acquisitionAreas: AcquisitionAreaLink[]
   projectRecords: { id: number; title: string; date: Date | null }[] | null
@@ -35,7 +33,6 @@ type Props = {
 export const UploadVerknuepfungen = ({
   projectSlug,
   landAcquisitionModuleEnabled,
-  subsection,
   subsubsections,
   acquisitionAreas,
   projectRecords,
@@ -43,14 +40,12 @@ export const UploadVerknuepfungen = ({
   surveyResponse,
   className,
 }: Props) => {
-  const hasSubsection = subsection !== null
   const hasSubsubsection = subsubsections?.length > 0
   const hasProjectRecords = projectRecords != null && projectRecords.length > 0
   const hasAcquisitionAreas = landAcquisitionModuleEnabled && acquisitionAreas.length > 0
   const hasProjectRecordEmail = projectRecordEmail !== null
   const hasSurveyResponse = surveyResponse !== null
   const hasRelations =
-    hasSubsection ||
     hasSubsubsection ||
     hasAcquisitionAreas ||
     hasProjectRecords ||
@@ -73,14 +68,6 @@ export const UploadVerknuepfungen = ({
     <section className={className}>
       {hasRelations ? (
         <ul className="mt-1.5 list-none space-y-0.5 pl-4 text-sm">
-          {hasSubsection && (
-            <li>
-              <strong className="font-medium">Planungsabschnitt: </strong>
-              <Link href={subsectionDashboardRoute(projectSlug, subsection!.slug)}>
-                {shortTitle(subsection!.slug)}
-              </Link>
-            </li>
-          )}
           {hasSubsubsection &&
             (subsubsections.length === 1 ? (
               <li key={`${subsubsections[0]!.subsection.slug}-${subsubsections[0]!.slug}`}>

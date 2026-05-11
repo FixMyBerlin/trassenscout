@@ -295,7 +295,6 @@ model Subsection {
   subsectionStatusId            Int?
   //
   subsubsections                Subsubsection[]
-  uploads                       Upload[]
   LogEntry                      LogEntry[]
   ProjectRecord                 ProjectRecord[]
 
@@ -595,8 +594,6 @@ model Upload {
   //
   project              Project?            @relation(fields: [projectId], references: [id])
   projectId            Int?
-  subsection           Subsection?         @relation(fields: [subsectionId], references: [id])
-  subsectionId         Int?
   subsubsections       Subsubsection[]
   acquisitionAreas     AcquisitionArea[]
   projectRecordEmail   ProjectRecordEmail? @relation(fields: [projectRecordEmailId], references: [id])
@@ -715,17 +712,17 @@ model SurveyResponseComment {
 }
 
 model EmailTemplate {
-  id            Int       @id @default(autoincrement())
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id            Int      @id @default(autoincrement())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
   //
-  key           String    @unique
+  key           String   @unique
   subject       String
   introMarkdown String
   outroMarkdown String?
   ctaText       String?
   //
-  updatedBy     User?     @relation("EmailTemplateUpdatedBy", fields: [updatedById], references: [id])
+  updatedBy     User?    @relation("EmailTemplateUpdatedBy", fields: [updatedById], references: [id])
   updatedById   Int?
 }
 

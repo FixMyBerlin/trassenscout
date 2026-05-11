@@ -14,7 +14,6 @@ const seedUploads = async () => {
       externalUrl:
         "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
       projectId: 1,
-      subsectionId: null,
       summary: null,
       projectRecordEmailId: null,
       mimeType: "image/jpeg",
@@ -32,7 +31,6 @@ const seedUploads = async () => {
       externalUrl:
         "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
       projectId: 1,
-      subsectionId: null,
       summary: null,
       projectRecordEmailId: null,
       mimeType: "image/jpeg",
@@ -50,7 +48,6 @@ const seedUploads = async () => {
       externalUrl:
         "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
       projectId: 1,
-      subsectionId: 1,
       summary: null,
       projectRecordEmailId: null,
       mimeType: "image/jpeg",
@@ -68,7 +65,7 @@ const seedUploads = async () => {
       externalUrl:
         "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
       projectId: 1,
-      subsectionId: 2,
+      subsubsectionIds: [1],
       summary: null,
       projectRecordEmailId: null,
       mimeType: "image/jpeg",
@@ -86,7 +83,7 @@ const seedUploads = async () => {
       externalUrl:
         "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
       projectId: 1,
-      subsectionId: 2,
+      subsubsectionIds: [1],
       summary: null,
       projectRecordEmailId: null,
       mimeType: "image/jpeg",
@@ -104,7 +101,6 @@ const seedUploads = async () => {
       externalUrl:
         "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
       projectId: 2,
-      subsectionId: null,
       summary: null,
       projectRecordEmailId: null,
       mimeType: "image/jpeg",
@@ -122,7 +118,6 @@ const seedUploads = async () => {
       externalUrl:
         "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
       projectId: 4,
-      subsectionId: null,
       summary: null,
       projectRecordEmailId: null,
       mimeType: "image/jpeg",
@@ -140,7 +135,6 @@ const seedUploads = async () => {
       externalUrl:
         "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
       projectId: 1,
-      subsectionId: null,
       subsubsectionIds: [1],
       summary: null,
       projectRecordEmailId: null,
@@ -159,7 +153,6 @@ const seedUploads = async () => {
       externalUrl:
         "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
       projectId: 1,
-      subsectionId: null,
       subsubsectionIds: [1],
       summary: null,
       projectRecordEmailId: null,
@@ -178,7 +171,6 @@ const seedUploads = async () => {
       externalUrl:
         "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
       projectId: 1,
-      subsectionId: null,
       subsubsectionIds: [1],
       summary: null,
       projectRecordEmailId: null,

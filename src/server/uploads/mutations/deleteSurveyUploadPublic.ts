@@ -22,10 +22,10 @@ export default resolver.pipe(resolver.zod(DeleteSurveyUploadPublicSchema), async
       surveyResponseId: input.surveyResponseId,
       publicDeleteToken: input.deleteToken,
       createdById: null,
-      subsectionId: null,
       projectRecordEmailId: null,
       projectRecords: { none: {} },
       subsubsections: { none: {} },
+      acquisitionAreas: { none: {} },
       surveyResponse: {
         id: input.surveyResponseId,
         surveySessionId: input.surveySessionId,

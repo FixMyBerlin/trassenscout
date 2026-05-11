@@ -24,7 +24,6 @@ import { PromiseReturnType } from "blitz"
 // NOTE:
 // This version of "IfUserCanEdit" currently only works in the Next.js app directory.
 // Reason: it relies on app router features.
-// This component is also used in SubsectionUploadsSection (legacy pages router) but with withAction=false.
 // We'll leave this page as-is for now and plan to migrate all remaining pages to the app dir soon.
 
 type Props = Prettify<
@@ -103,7 +102,6 @@ const UploadTableRow = ({
   onDelete?: () => Promise<void>
 }) => {
   const hasLocation = upload.latitude !== null && upload.longitude !== null
-  const landAcquisitionModuleEnabled = upload.project?.landAcquisitionModuleEnabled ?? false
   const navigationGuard = useModalNavigationGuard()
   const returnTo = useCurrentReturnTo()
   const editUrl = uploadEditRoute(projectSlug, upload.id, { returnTo })
@@ -156,65 +154,9 @@ const UploadTableRow = ({
       </td>
       {withRelations && (
         <td className="px-3 py-2 text-sm text-gray-500">
-          {/* <ul className="flex flex-col gap-1">
-            {upload.subsection &&
-              upload.subsubsections.length === 0 &&
-              !(landAcquisitionModuleEnabled && upload.acquisitionArea) && (
-                <li>
-                  <Link href={subsectionDashboardRoute(projectSlug, upload.subsection.slug)}>
-                    Planungsabschnitt: {shortTitle(upload.subsection.slug)}
-                  </Link>
-                </li>
-              )}
-            {upload.subsubsections.length > 0 &&
-              !(landAcquisitionModuleEnabled && upload.acquisitionArea) &&
-              upload.subsubsections.map((subsub) => (
-                <li key={subsub.id}>
-                  <Link
-                    href={subsubsectionDashboardRoute(
-                      projectSlug,
-                      subsub.subsection.slug,
-                      subsub.slug,
-                    )}
-                  >
-                    Eintrag: {shortTitle(subsub.slug)}
-                  </Link>
-                </li>
-              ))}
-            {upload.projectRecords &&
-              upload.projectRecords.length > 0 &&
-              upload.projectRecords.map((projectRecord) => {
-                const detailHref = projectRecordDetailRoute(projectSlug, projectRecord.id)
-
-                return (
-                  <li key={projectRecord.id}>
-                    <Link href={detailHref} scroll={false}>
-                      Protokolleintrag: {projectRecord.title}
-                    </Link>
-                  </li>
-                )
-              })}
-            {landAcquisitionModuleEnabled && upload.acquisitionArea && (
-              <li>
-                <Link
-                  href={
-                    `${subsubsectionLandAcquisitionRoute(
-                      projectSlug,
-                      upload.acquisitionArea.subsubsection.subsection.slug,
-                      upload.acquisitionArea.subsubsection.slug,
-                    )}?acquisitionAreaId=${upload.acquisitionArea.id}` as Route
-                  }
-                >
-                  Verhandlungsfläche: {upload.acquisitionArea.id} (
-                  {upload.acquisitionArea.parcel.alkisParcelId})
-                </Link>
-              </li>
-            )}
-          </ul> */}
           <UploadVerknuepfungen
             projectSlug={projectSlug}
             landAcquisitionModuleEnabled={upload.project?.landAcquisitionModuleEnabled ?? false}
-            subsection={upload.subsection}
             subsubsections={upload.subsubsections}
             acquisitionAreas={upload.acquisitionAreas}
             projectRecords={upload.projectRecords}

@@ -23,12 +23,11 @@ export default resolver.pipe(
     const upload = await db.upload.findFirstOrThrow({
       where: { id },
       include: {
-        subsection: { select: { id: true, slug: true } },
         subsubsections: {
           select: {
             id: true,
             slug: true,
-            subsection: { select: { slug: true } },
+            subsection: { select: { id: true, slug: true } },
           },
         },
         projectRecords: {
@@ -81,7 +80,7 @@ export default resolver.pipe(
             subsubsection: {
               select: {
                 slug: true,
-                subsection: { select: { slug: true } },
+                subsection: { select: { id: true, slug: true } },
               },
             },
             parcel: {

@@ -1,10 +1,9 @@
 export const uploadWithSubsectionsInclude = {
-  subsection: { select: { id: true, slug: true } },
   subsubsections: {
     select: {
       id: true,
       slug: true,
-      subsection: { select: { slug: true } },
+      subsection: { select: { id: true, slug: true } },
     },
   },
   projectRecords: {
@@ -38,7 +37,7 @@ export const uploadWithSubsectionsInclude = {
       subsubsection: {
         select: {
           slug: true,
-          subsection: { select: { slug: true } },
+          subsection: { select: { id: true, slug: true } },
         },
       },
       parcel: {

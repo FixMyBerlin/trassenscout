@@ -11,7 +11,6 @@ import { UploadDropzoneBase } from "./UploadDropzoneBase"
 
 type Props = {
   subsubsectionIds?: number[]
-  subsectionId?: number
   acquisitionAreaIds?: number[]
   projectRecordIds?: number[]
   surveyResponseId?: number
@@ -21,7 +20,6 @@ type Props = {
 
 export const UploadDropzone = ({
   subsubsectionIds,
-  subsectionId,
   acquisitionAreaIds,
   projectRecordIds,
   surveyResponseId,
@@ -37,7 +35,6 @@ export const UploadDropzone = ({
       externalUrl: getS3Url(file.objectInfo.key),
       projectSlug,
       acquisitionAreas: acquisitionAreaIds?.length ? acquisitionAreaIds : undefined,
-      subsectionId: subsectionId || null,
       summary: null,
       subsubsections: subsubsectionIds?.length ? subsubsectionIds : undefined,
       projectRecords: projectRecordIds?.length ? projectRecordIds : undefined,
