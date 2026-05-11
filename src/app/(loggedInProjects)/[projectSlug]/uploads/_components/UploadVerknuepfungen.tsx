@@ -3,10 +3,17 @@
 import { Link } from "@/src/core/components/links"
 import { shortTitle } from "@/src/core/components/text/titles"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
+import {
+  subsectionDashboardRoute,
+  subsubsectionDashboardRoute,
+  subsubsectionLandAcquisitionRoute,
+} from "@/src/core/routes/subsectionRoutes"
 import { formatBerlinTime } from "@/src/core/utils/formatBerlinTime"
+import { Route } from "next"
 
 type Props = {
   projectSlug: string
+  asLinks?: boolean
   landAcquisitionModuleEnabled?: boolean
   subsection: { slug: string } | null
   subsubsections: { slug: string; subsection: { slug: string } }[]
@@ -26,7 +33,8 @@ type Props = {
 
 export const UploadVerknuepfungen = ({
   projectSlug,
-  landAcquisitionModuleEnabled = false,
+  asLinks,
+  landAcquisitionModuleEnabled,
   subsection,
   subsubsections,
   acquisitionArea,
@@ -51,39 +59,120 @@ export const UploadVerknuepfungen = ({
 
   return (
     <section className={className}>
-      <h4 className="text-sm font-medium">Verknüpfungen:</h4>
       {hasRelations ? (
-        <ul className="mt-1.5 list-inside list-disc space-y-0.5 pl-4 text-sm">
+        <ul className="mt-1.5 list-none space-y-0.5 pl-4 text-sm">
           {hasSubsection && (
             <li>
               <strong className="font-medium">Planungsabschnitt: </strong>
-              {shortTitle(subsection!.slug)} ({subsection!.slug})
+              {asLinks ? (
+                <Link href={subsectionDashboardRoute(projectSlug, subsection!.slug)}>
+                  {shortTitle(subsection!.slug)}
+                </Link>
+              ) : (
+                <>
+                  {shortTitle(subsection!.slug)} ({subsection!.slug})
+                </>
+              )}
             </li>
           )}
           {hasSubsubsection &&
-            subsubsections.map((subsub) => (
-              <li key={`${subsub.subsection.slug}-${subsub.slug}`}>
-                <strong className="font-medium">Eintrag:</strong> {shortTitle(subsub.slug)}
+            (subsubsections.length === 1 ? (
+              <li key={`${subsubsections[0]!.subsection.slug}-${subsubsections[0]!.slug}`}>
+                <strong className="font-medium">Eintrag: </strong>
+                {asLinks ? (
+                  <Link
+                    href={subsubsectionDashboardRoute(
+                      projectSlug,
+                      subsubsections[0]!.subsection.slug,
+                      subsubsections[0]!.slug,
+                    )}
+                  >
+                    {shortTitle(subsubsections[0]!.slug)}
+                  </Link>
+                ) : (
+                  <strong className="font-medium">{shortTitle(subsubsections[0]!.slug)}</strong>
+                )}
+              </li>
+            ) : (
+              <li className="flex flex-wrap items-baseline gap-x-2">
+                <strong className="font-medium">Einträge: </strong>
+                <ul className="mt-0.5 flex list-none flex-wrap gap-x-2 pl-0">
+                  {subsubsections.map((subsub) => (
+                    <li key={`${subsub.subsection.slug}-${subsub.slug}`}>
+                      {asLinks ? (
+                        <Link
+                          href={subsubsectionDashboardRoute(
+                            projectSlug,
+                            subsub.subsection.slug,
+                            subsub.slug,
+                          )}
+                        >
+                          {shortTitle(subsub.slug)}
+                        </Link>
+                      ) : (
+                        shortTitle(subsub.slug)
+                      )}
+                    </li>
+                  ))}
+                </ul>
               </li>
             ))}
           {hasAcquisitionArea && (
             <li>
-              <strong className="font-medium">Verhandlungsfläche:</strong>{" "}
-              {shortTitle(String(acquisitionArea!.id))} - Flurstücknr.{" "}
-              {acquisitionArea!.parcel.alkisParcelId}
+              <strong className="font-medium">Verhandlungsfläche: </strong>
+              {asLinks ? (
+                <Link
+                  href={
+                    `${subsubsectionLandAcquisitionRoute(
+                      projectSlug,
+                      acquisitionArea!.subsubsection.subsection.slug,
+                      acquisitionArea!.subsubsection.slug,
+                    )}?acquisitionAreaId=${acquisitionArea!.id}` as Route
+                  }
+                >
+                  {acquisitionArea!.id} ({acquisitionArea!.parcel.alkisParcelId})
+                </Link>
+              ) : (
+                <>
+                  {shortTitle(String(acquisitionArea!.id))} - Flurstücknr.{" "}
+                  {acquisitionArea!.parcel.alkisParcelId}
+                </>
+              )}
             </li>
           )}
           {hasProjectRecords && (
             <li>
-              <em className="font-medium">Protokolleinträge: </em>
-              {projectRecords!.map((record, index) => (
-                <span key={record.id}>
-                  <Link href={projectRecordDetailRoute(projectSlug, record.id)} scroll={false}>
-                    {record.title} {record.date && formatBerlinTime(record.date, "P")}
+              {projectRecords!.length === 1 ? (
+                <>
+                  <strong className="font-medium">Protokolleintrag: </strong>
+                  <Link
+                    href={projectRecordDetailRoute(projectSlug, projectRecords![0]!.id)}
+                    scroll={false}
+                  >
+                    {projectRecords![0]!.title}
+                    {projectRecords![0]!.date && (
+                      <> {formatBerlinTime(projectRecords![0]!.date, "P")}</>
+                    )}
                   </Link>
-                  {index < projectRecords!.length - 1 && ", "}
-                </span>
-              ))}
+                </>
+              ) : (
+                <>
+                  <strong className="font-medium">Protokolleinträge: </strong>
+                  <ul className="mt-0.5 list-inside list-disc space-y-0.5 pl-2">
+                    {projectRecords!.map((record) => (
+                      <li key={record.id}>
+                        <Link
+                          href={projectRecordDetailRoute(projectSlug, record.id)}
+                          scroll={false}
+                        >
+                          {record.title}
+                          {record.date && <> {formatBerlinTime(record.date, "P")}</>}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
             </li>
           )}
           {hasSurveyResponse && (
@@ -95,7 +184,7 @@ export const UploadVerknuepfungen = ({
           )}
           {hasProjectRecordEmail && (
             <li>
-              <strong className="font-medium">E-Mail-Anhang:</strong>{" "}
+              <strong className="font-medium">E-Mail-Anhang: </strong>
               {formatBerlinTime(projectRecordEmail!.createdAt, "dd.MM.yyyy, HH:mm")}
             </li>
           )}

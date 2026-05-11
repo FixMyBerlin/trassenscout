@@ -384,10 +384,10 @@ export const EditUploadForm = ({
         updatedBy={upload.updatedBy ?? undefined}
         updatedAt={upload.updatedAt ?? undefined}
       />
-
+      <h4 className="mt-4 text-sm font-medium">Verknüpfungen:</h4>
       <UploadVerknuepfungen
-        className="mt-4"
         projectSlug={projectSlug}
+        asLinks
         landAcquisitionModuleEnabled={upload.project?.landAcquisitionModuleEnabled ?? false}
         subsection={upload.subsection}
         subsubsections={upload.subsubsections}

@@ -86,6 +86,7 @@ export const UploadDetailPanelContent = ({
         )}
 
         <div className="border-t border-gray-200 pt-3">
+          <h4 className="text-sm font-medium">Verknüpfungen:</h4>
           <UploadVerknuepfungen
             projectSlug={projectSlug}
             landAcquisitionModuleEnabled={upload.project?.landAcquisitionModuleEnabled ?? false}
