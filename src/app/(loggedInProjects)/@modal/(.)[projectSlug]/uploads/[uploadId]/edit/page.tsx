@@ -16,6 +16,8 @@ type Props = {
   searchParams?: ReturnToSearchParams & { [RETURN_PROJECT_RECORD_ID_PARAM]?: string }
 }
 
+export const dynamic = "force-dynamic"
+
 export default async function UploadEditModalPage({
   params: { projectSlug, uploadId },
   searchParams,

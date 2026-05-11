@@ -168,8 +168,10 @@ const UploadSubsectionFields = ({
   )
 }
 
+type UploadWithRelations = PromiseReturnType<typeof getUploadWithRelations>
+
 type Props = {
-  upload: PromiseReturnType<typeof getUploadWithRelations>
+  upload: UploadWithRelations
   returnPath: Route
   returnText: string
   /**
@@ -181,9 +183,31 @@ type Props = {
    */
   showDelete?: boolean
   /** Called after a successful save instead of router.push(returnPath), e.g. for modal-specific navigation. */
-  onSuccess?: () => void
+  onSuccess?: () => void | Promise<void>
   onDirtyChange?: (isDirty: boolean) => void
   onSubmittingChange?: (isSubmitting: boolean) => void
+}
+
+const createUploadFormValues = (upload: UploadWithRelations): z.infer<typeof UploadSchema> => ({
+  title: upload.title,
+  externalUrl: upload.externalUrl,
+  summary: upload.summary,
+  subsectionId: upload.subsectionId,
+  subsubsectionId: upload.subsubsectionId,
+  acquisitionAreaId: upload.acquisitionAreaId,
+  projectRecordEmailId: upload.projectRecordEmailId,
+  mimeType: upload.mimeType,
+  latitude: upload.latitude,
+  longitude: upload.longitude,
+  collaborationUrl: upload.collaborationUrl,
+  collaborationPath: upload.collaborationPath,
+  surveyResponseId: upload.surveyResponseId,
+  projectRecords: upload.projectRecords?.map((projectRecord) => projectRecord.id) ?? [],
+})
+
+const getUploadFormKey = (upload: UploadWithRelations) => {
+  const lastUpdatedAt = upload.updatedAt ?? upload.createdAt
+  return `${upload.id}-${lastUpdatedAt.toISOString()}`
 }
 
 export const EditUploadForm = ({
@@ -203,23 +227,8 @@ export const EditUploadForm = ({
 
   const [updateUploadMutation] = useMutation(updateUpload)
 
-  // Extract only form-relevant fields for initialValues (form expects array of IDs, not full objects)
-  const initialValues: z.infer<typeof UploadSchema> = {
-    title: upload.title,
-    externalUrl: upload.externalUrl,
-    summary: upload.summary,
-    subsectionId: upload.subsectionId,
-    subsubsectionId: upload.subsubsectionId,
-    acquisitionAreaId: upload.acquisitionAreaId,
-    projectRecordEmailId: upload.projectRecordEmailId,
-    mimeType: upload.mimeType,
-    latitude: upload.latitude,
-    longitude: upload.longitude,
-    collaborationUrl: upload.collaborationUrl,
-    collaborationPath: upload.collaborationPath,
-    surveyResponseId: upload.surveyResponseId,
-    projectRecords: upload.projectRecords?.map((pr) => pr.id) ?? [],
-  }
+  const initialValues = createUploadFormValues(upload)
+  const formKey = getUploadFormKey(upload)
 
   const handleSubmit = async (values: z.infer<typeof UploadSchema>) => {
     onSubmittingChange?.(true)
@@ -248,9 +257,10 @@ export const EditUploadForm = ({
       ])
 
       if (onSuccess) {
-        onSuccess()
+        await onSuccess()
       } else {
         router.push(returnPath)
+        router.refresh()
       }
     } catch (error: any) {
       onSubmittingChange?.(false)
@@ -263,7 +273,7 @@ export const EditUploadForm = ({
     <>
       <div className="flex flex-col gap-6 sm:gap-10">
         <Form
-          key={`${upload.collaborationUrl}-${upload.collaborationPath}`}
+          key={formKey}
           className="grow"
           submitText="Speichern"
           schema={UploadSchema}

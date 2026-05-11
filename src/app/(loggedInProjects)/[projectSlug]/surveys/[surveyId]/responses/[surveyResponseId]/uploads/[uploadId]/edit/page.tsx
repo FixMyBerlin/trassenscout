@@ -13,6 +13,7 @@ export const metadata: Metadata = {
     index: false,
   },
 }
+export const dynamic = "force-dynamic"
 
 type Props = {
   params: {
