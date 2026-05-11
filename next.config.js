@@ -1,5 +1,9 @@
 const { withBlitz } = require("@blitzjs/next")
 
+const s3UploadBucket = process.env.S3_UPLOAD_BUCKET || "trassenscout"
+const s3UploadRegion = process.env.S3_UPLOAD_REGION || "eu-central-1"
+const s3UploadHostname = `${s3UploadBucket}.s3.${s3UploadRegion}.amazonaws.com`
+
 /**
  * @type {import('@blitzjs/next').BlitzConfig}
  **/
@@ -16,6 +20,13 @@ module.exports = withBlitz({
   swcMinify: true,
   productionBrowserSourceMaps: true, // build source maps in production – https://nextjs.org/docs/advanced-features/source-maps
   images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: s3UploadHostname,
+        pathname: "/**",
+      },
+    ],
     domains: [
       "tinkering.trassenscout.de",
       "staging.trassenscout.de",

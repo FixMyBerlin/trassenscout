@@ -3,7 +3,7 @@
 import { getFileIcon } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileIcon"
 import {
   getFileTypeLabel,
-  isImage,
+  isImageUpload,
 } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileType"
 import {
   UPLOAD_SIZES,
@@ -17,7 +17,11 @@ import { useState } from "react"
 import { twJoin } from "tailwind-merge"
 
 type Props = {
-  upload: Upload | Pick<Upload, "id" | "mimeType" | "title" | "externalUrl">
+  upload:
+    | Upload
+    | (Pick<Upload, "id" | "mimeType" | "title" | "externalUrl"> & {
+        previewImageUrl?: string | null
+      })
   projectSlug: string
   size: UploadSize
 }
@@ -28,14 +32,18 @@ export const UploadIcon = ({ upload, projectSlug, size }: Props) => {
   const fileType = getFileTypeLabel(upload.mimeType) || "Unbekannt"
   const sizeConfig = UPLOAD_SIZES[size]
 
-  if (isImage(upload.mimeType) && !imageError) {
+  if (isImageUpload(upload) && !imageError) {
+    const previewImageUrl = "previewImageUrl" in upload ? upload.previewImageUrl : undefined
+    const imageSrc = previewImageUrl ?? uploadUrl(upload, projectSlug)
+
     return (
       <Image
-        src={uploadUrl(upload, projectSlug)}
+        src={imageSrc}
         alt={fileType}
         width={sizeConfig.iconPx}
         height={sizeConfig.iconPx}
-        className={twJoin(sizeConfig.iconSize, "rounded object-cover")}
+        className={twJoin(sizeConfig.iconSize, "cursor-default rounded object-contain select-none")}
+        draggable={false}
         onError={() => setImageError(true)}
       />
     )

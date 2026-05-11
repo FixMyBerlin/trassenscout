@@ -186,25 +186,25 @@ const SurveyUploadPreview = ({
 
   return (
     <div className="relative flex flex-col items-start justify-center rounded-md bg-white text-xs">
-      <div className="absolute -top-1 -right-1 z-10">
-        <SurveyDeleteUploadButton
-          variant="icon"
-          surveyResponseId={surveyResponseId}
-          surveySessionId={surveySessionId}
-          uploadId={upload.id}
-          uploadTitle={upload.title}
-          deleteToken={deleteToken}
-          onDeleted={() => onDelete(upload.id)}
-        />
-      </div>
-      <span className={sizeConfig.containerHeight + " w-full overflow-hidden rounded-md"}>
-        <Tooltip content={fileType}>
-          <FileIcon
-            className={twJoin(
-              sizeConfig.iconSize,
-              "rounded-lg border border-gray-200 text-gray-500",
-            )}
+      <span
+        className={
+          sizeConfig.containerHeight +
+          " relative w-full overflow-hidden rounded-md border border-gray-200"
+        }
+      >
+        <div className="absolute top-1 right-1 z-10 size-6 rounded-full border border-gray-200 p-0.5">
+          <SurveyDeleteUploadButton
+            variant="icon"
+            surveyResponseId={surveyResponseId}
+            surveySessionId={surveySessionId}
+            uploadId={upload.id}
+            uploadTitle={upload.title}
+            deleteToken={deleteToken}
+            onDeleted={() => onDelete(upload.id)}
           />
+        </div>
+        <Tooltip content={fileType}>
+          <FileIcon className={twJoin(sizeConfig.iconSize, "text-gray-500")} />
         </Tooltip>
       </span>
       <p className="mt-1 w-full flex-none truncate text-left text-xs">{upload.title || "-"}</p>

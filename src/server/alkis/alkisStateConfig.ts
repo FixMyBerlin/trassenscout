@@ -40,17 +40,28 @@ export function getBundeslandSelectOptions() {
   const keys = Object.keys(alkisStateConfig) as StateKeyEnum[]
   const rows = keys.map((key) => {
     const entry = alkisStateConfig[key]
-    const disabled = !entry.enabled || key === StateKeyEnum.DISABLED
+    const disabled = key === StateKeyEnum.DISABLED ? false : !entry.enabled
     let label = entry.label
     if (key === StateKeyEnum.BAYERN) {
       label = `${entry.label} (ALKIS-Hintergrund nicht verfügbar)`
     } else if (key === StateKeyEnum.DISABLED) {
-      label = entry.label
+      label = "Keine Auswahl"
     } else if (disabled) {
       label = `${entry.label} (nicht verfügbar)`
     }
     return { key, label, disabled }
   })
-  rows.sort((a, b) => a.label.localeCompare(b.label, "de"))
-  return [...rows.map((r): [StateKeyEnum, string, boolean] => [r.key, r.label, r.disabled])]
+
+  const defaultOption = rows.find((row) => row.key === StateKeyEnum.DISABLED)
+  const stateRows = rows.filter((row) => row.key !== StateKeyEnum.DISABLED)
+  stateRows.sort((a, b) => a.label.localeCompare(b.label, "de"))
+
+  if (!defaultOption) {
+    return [...stateRows.map((row): [StateKeyEnum, string, boolean] => [row.key, row.label, row.disabled])]
+  }
+
+  return [
+    [defaultOption.key, defaultOption.label, defaultOption.disabled] as [StateKeyEnum, string, boolean],
+    ...stateRows.map((row): [StateKeyEnum, string, boolean] => [row.key, row.label, row.disabled]),
+  ]
 }

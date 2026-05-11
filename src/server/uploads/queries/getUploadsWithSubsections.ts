@@ -3,6 +3,7 @@ import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMemb
 import { viewerRoles } from "@/src/authorization/constants"
 import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
 import { uploadWithSubsectionsInclude } from "@/src/server/uploads/_utils/uploadInclude"
+import { withUploadPreviewUrl } from "@/src/server/uploads/_utils/withUploadPreviewUrl"
 import { resolver } from "@blitzjs/rpc"
 import { paginate } from "blitz"
 
@@ -56,8 +57,10 @@ export default resolver.pipe(
         }),
     })
 
+    const uploadsWithPreviewUrl = await Promise.all(uploads.map(withUploadPreviewUrl))
+
     return {
-      uploads,
+      uploads: uploadsWithPreviewUrl,
       nextPage,
       hasMore,
       count,

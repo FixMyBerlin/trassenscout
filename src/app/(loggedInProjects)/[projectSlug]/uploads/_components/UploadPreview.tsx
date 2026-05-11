@@ -1,6 +1,7 @@
 "use client"
 
 import { UploadIcon } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadIcon"
+import { isImageUpload } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileType"
 import {
   UPLOAD_SIZES,
   UploadSize,
@@ -14,7 +15,9 @@ import { twJoin } from "tailwind-merge"
 type UploadPreviewData = Pick<
   Upload,
   "id" | "mimeType" | "title" | "externalUrl" | "collaborationUrl"
->
+> & {
+  previewImageUrl?: string | null
+}
 
 type Props = {
   projectSlug: string
@@ -28,12 +31,17 @@ export const UploadPreview = (props: Props) => {
 
   const uploadFromProps = "upload" in props ? props.upload : undefined
   const uploadId = "uploadId" in props ? props.uploadId : uploadFromProps?.id
+  const needsPreviewQuery =
+    Boolean(uploadId) &&
+    (!uploadFromProps ||
+      (isImageUpload(uploadFromProps) &&
+        !("previewImageUrl" in uploadFromProps && uploadFromProps.previewImageUrl)))
 
   const [uploadFromQuery] = useQuery(
     getUploadWithRelations,
     { projectSlug, id: uploadId! },
     {
-      enabled: !uploadFromProps && Boolean(uploadId),
+      enabled: needsPreviewQuery,
       // Prevent refetching to avoid NotFoundError when upload is deleted
       retry: false,
       retryOnMount: false,
@@ -44,7 +52,7 @@ export const UploadPreview = (props: Props) => {
     },
   )
 
-  const upload = uploadFromProps ?? uploadFromQuery
+  const upload = uploadFromQuery ?? uploadFromProps
 
   // Check if upload was marked as deleted or is null
   if (!upload || (upload as any).__deleted) return null
@@ -52,7 +60,12 @@ export const UploadPreview = (props: Props) => {
   const sizeConfig = UPLOAD_SIZES[size]
 
   const iconContainer = (
-    <span className={twJoin(sizeConfig.containerHeight, "w-full overflow-hidden rounded-md")}>
+    <span
+      className={twJoin(
+        sizeConfig.containerHeight,
+        "flex w-full items-center justify-center overflow-hidden rounded-xl",
+      )}
+    >
       <UploadIcon upload={upload} projectSlug={projectSlug} size={size} />
     </span>
   )
@@ -89,7 +102,7 @@ export const UploadPreview = (props: Props) => {
   }
 
   return (
-    <div className={twJoin("relative", containerClassName)}>
+    <div className={twJoin("relative cursor-default", containerClassName)}>
       {collaborationIcon}
       {iconContainer}
       {descriptionText}

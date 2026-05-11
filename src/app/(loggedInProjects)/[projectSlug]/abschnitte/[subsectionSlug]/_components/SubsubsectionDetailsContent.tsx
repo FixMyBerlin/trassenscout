@@ -21,6 +21,7 @@ import { H2 } from "@/src/core/components/text/Headings"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import { subsubsectionEditRoute } from "@/src/core/routes/subsectionRoutes"
 import { uploadEditRoute } from "@/src/core/routes/uploadRoutes"
+import { useCurrentReturnTo } from "@/src/core/routes/useCurrentPathWithSearch"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
 import { subsubsectionLocationLabelMap } from "@/src/core/utils/subsubsectionLocationLabelMap"
@@ -44,6 +45,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
   const subsectionSlug = useSlug("subsectionSlug")
   const subsubsectionSlug = useSlug("subsubsectionSlug")
   const projectSlug = useProjectSlug()
+  const returnTo = useCurrentReturnTo()
   const [isProjectRecordModalOpen, setIsProjectRecordModalOpen] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
   const [createdProjectRecordId, setCreatedProjectRecordId] = useState<null | number>(null)
@@ -340,7 +342,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
               upload={upload}
               projectSlug={projectSlug}
               size="grid"
-              editUrl={uploadEditRoute(projectSlug, upload.id)}
+              editUrl={uploadEditRoute(projectSlug, upload.id, { returnTo })}
               onDeleted={async () => {
                 await refetchUploads()
               }}

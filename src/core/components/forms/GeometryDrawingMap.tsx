@@ -1,4 +1,5 @@
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
+import { GERMANY_VIEW_BOUNDS } from "@/src/core/components/Map/germanyViewBounds"
 import { MapFooter } from "@/src/core/components/Map/MapFooter"
 import { type LegendItemConfig } from "@/src/core/components/Map/MapLegend"
 import { getStaticOverlayForProject } from "@/src/core/components/Map/staticOverlay/getStaticOverlayForProject"
@@ -56,10 +57,7 @@ export const GeometryDrawingMap = ({
   const showLine = allowedTypes.includes("line")
   const showPolygon = allowedTypes.includes("polygon")
 
-  // Calculate initial view bounds (priority order):
-  // 1. If geometry exists (editing mode): use geometry bounds
-  // 2. Else if subsection provided: use subsection bounds
-  // 3. Otherwise: undefined (will use default view)
+  // Priority: form/display geometry, subsection context, then Germany
   const initialViewState = useMemo(() => {
     let targetGeometry: SupportedGeometry | undefined
 
@@ -78,14 +76,11 @@ export const GeometryDrawingMap = ({
       }
     }
 
-    return undefined
+    return {
+      bounds: GERMANY_VIEW_BOUNDS,
+      fitBoundsOptions: { padding: 60 },
+    }
   }, [geometryForMap, subsection])
-
-  const defaultViewState = {
-    longitude: 13.404954,
-    latitude: 52.520008,
-    zoom: 11,
-  }
 
   const handleChange = (geo: SupportedGeometry | null, geoType: string | null) => {
     const resetToCurrentPolygonShell =
@@ -128,7 +123,7 @@ export const GeometryDrawingMap = ({
           id="terra-draw-map"
           // Critical to avoid a bug where the Terra Draw Geometries where hidden during navigation between pages (Subsubsection => Subsubsection/Edit)
           reuseMaps={false}
-          initialViewState={initialViewState || defaultViewState}
+          initialViewState={initialViewState}
           backgroundSwitcherPosition="bottom-left"
           colorSchema="subsection"
           staticOverlay={getStaticOverlayForProject(projectSlug)}

@@ -1,30 +1,42 @@
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
-import getUploadWithRelations from "@/src/server/uploads/queries/getUploadWithRelations"
+import { uploadsListRoute } from "@/src/core/routes/uploadRoutes"
 import { Route } from "next"
 
-type UploadWithRelations = Awaited<ReturnType<typeof getUploadWithRelations>>
+type ReturnTarget = {
+  returnPath: Route
+  returnText: string
+}
+
+export const parseReturnProjectRecordId = (value?: string) => {
+  const parsedValue = Number(value)
+  return Number.isInteger(parsedValue) && parsedValue > 0 ? parsedValue : undefined
+}
 
 export const getUploadReturnTarget = ({
   projectSlug,
-  upload,
+  returnTo,
+  returnProjectRecordId,
 }: {
   projectSlug: string
-  upload: UploadWithRelations
-}) => {
-  let returnPath: Route
-  let returnText: string
-
-  if (upload.projectRecords.length > 0) {
-    returnPath = projectRecordDetailRoute(projectSlug, upload.projectRecords[0]!.id)
-    returnText = "Zurück zum Protokoll"
-  } else if (upload.Subsubsection) {
-    returnPath =
-      `/${projectSlug}/abschnitte/${upload.Subsubsection.subsection.slug}/fuehrung/${upload.Subsubsection.slug}` as Route
-    returnText = "Zurück zum Eintrag"
-  } else {
-    returnPath = `/${projectSlug}/uploads` as Route
-    returnText = "Zurück zu den Dokumenten"
+  returnTo?: Route
+  returnProjectRecordId?: number
+}): ReturnTarget => {
+  if (returnTo) {
+    return {
+      returnPath: returnTo,
+      returnText: "Zurück",
+    }
   }
 
-  return { returnPath, returnText }
+  if (returnProjectRecordId !== undefined) {
+    return {
+      returnPath: projectRecordDetailRoute(projectSlug, returnProjectRecordId),
+      returnText: "Zurück zum Protokoll",
+    }
+  }
+
+  return {
+    returnPath: uploadsListRoute(projectSlug),
+    returnText: "Zurück zu den Dokumenten",
+  }
 }

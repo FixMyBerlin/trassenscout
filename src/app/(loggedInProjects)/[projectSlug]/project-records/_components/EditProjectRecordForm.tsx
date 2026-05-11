@@ -6,6 +6,7 @@ import { ProjectRecordDeleteActionBar } from "@/src/app/(loggedInProjects)/[proj
 import { ProjectRecordFormFields } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordFormFields"
 import { ProjectRecordNeedsReviewBanner } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordNeedsReviewBanner"
 import { ReviewProjectRecordForm } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ReviewProjectRecordForm"
+import { getProjectRecordEditSuccessRoute } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/getProjectRecordEditSuccessRoute"
 import { getDate } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/splitStartAt"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
@@ -38,7 +39,7 @@ export const EditProjectRecordForm = ({
   initialProjectRecord: Awaited<ReturnType<typeof getProjectRecord>>
   hideBackLink?: boolean
   onDirtyChange?: (isDirty: boolean) => void
-  onSuccess?: () => void
+  onSuccess?: (reviewState: ProjectRecordReviewState) => void
   onSubmittingChange?: (isSubmitting: boolean) => void
 }) => {
   const router = useRouter()
@@ -73,13 +74,16 @@ export const EditProjectRecordForm = ({
       invalidateQuery(getProjectRecordsNeedsReview)
       invalidateQuery(getProjectRecordsByAcquisitionArea)
       if (onSuccess) {
-        onSuccess()
+        onSuccess(values.reviewState)
       } else {
-        if (values.reviewState === ProjectRecordReviewState.REJECTED)
-          router.push(`/${projectSlug}/project-records`)
-        else {
-          router.push(projectRecordDetailRoute(projectSlug, projectRecord.id))
-        }
+        router.push(
+          getProjectRecordEditSuccessRoute({
+            projectSlug,
+            projectRecordId: projectRecord.id,
+            initialReviewState: projectRecord.reviewState,
+            nextReviewState: values.reviewState,
+          }),
+        )
       }
     } catch (error: any) {
       onSubmittingChange?.(false)

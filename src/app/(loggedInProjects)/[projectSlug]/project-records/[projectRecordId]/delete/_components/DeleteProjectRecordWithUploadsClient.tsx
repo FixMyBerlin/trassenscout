@@ -129,7 +129,9 @@ export const DeleteProjectRecordWithUploadsClient = ({ deleteInfo, projectSlug }
           {upload.displayData.otherProjectRecords.map((pr, idx) => (
             <span key={pr.id}>
               {idx > 0 && ", "}
-              <Link href={projectRecordDetailRoute(projectSlug, pr.id)}>{pr.title}</Link>
+              <Link href={projectRecordDetailRoute(projectSlug, pr.id)} scroll={false}>
+                {pr.title}
+              </Link>
             </span>
           ))}
         </span>,

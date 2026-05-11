@@ -5,6 +5,7 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
+import { withUploadPreviewUrl } from "@/src/server/uploads/_utils/withUploadPreviewUrl"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
 
@@ -93,6 +94,6 @@ export default resolver.pipe(
       },
     })
 
-    return upload
+    return withUploadPreviewUrl(upload)
   },
 )

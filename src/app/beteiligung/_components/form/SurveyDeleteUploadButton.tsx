@@ -68,7 +68,7 @@ export const SurveyDeleteUploadButton = ({
         className={clsx(linkStyles, "cursor-pointer", className)}
         title="Dokument löschen"
       >
-        <TrashIcon className="size-5" />
+        <TrashIcon className="h-full w-full" />
       </button>
     ) : (
       <Tooltip content={DISABLED_PUBLIC_DELETE_TOOLTIP}>
@@ -79,7 +79,7 @@ export const SurveyDeleteUploadButton = ({
             className={clsx(linkStyles, disabledClasses, className)}
             aria-label="Dokument löschen (nicht verfügbar)"
           >
-            <TrashIcon className="size-5" />
+            <TrashIcon className="h-full w-full" />
           </button>
         </span>
       </Tooltip>

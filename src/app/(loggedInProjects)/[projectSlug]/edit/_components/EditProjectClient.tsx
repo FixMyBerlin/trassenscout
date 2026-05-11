@@ -22,7 +22,7 @@ type Props = {
 export const EditProjectClient = ({ initialProject, initialUsers }: Props) => {
   const router = useRouter()
   const projectSlug = useProjectSlug()
-  const [project, { setQueryData }] = useQuery(
+  const [project] = useQuery(
     getProject,
     { projectSlug },
     {
@@ -53,8 +53,8 @@ export const EditProjectClient = ({ initialProject, initialUsers }: Props) => {
         partnerLogoSrcs: partnerLogoSrcsArray,
         projectSlug,
       })
-      await setQueryData(updated)
       await router.push(projectDashboardRoute(updated.slug))
+      router.refresh()
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }

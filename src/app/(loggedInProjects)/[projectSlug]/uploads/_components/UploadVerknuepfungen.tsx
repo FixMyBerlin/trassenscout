@@ -86,18 +86,14 @@ export const UploadVerknuepfungen = ({
           {hasProjectRecords && (
             <li>
               <em className="font-medium">Protokolleinträge: </em>
-              {projectRecords!.map((record, index) => {
-                const detailHref = projectRecordDetailRoute(projectSlug, record.id)
-
-                return (
-                  <span key={record.id}>
-                    <Link href={detailHref} scroll={false}>
-                      {record.title} {record.date && formatBerlinTime(record.date, "P")}
-                    </Link>
-                    {index < projectRecords!.length - 1 && ", "}
-                  </span>
-                )
-              })}
+              {projectRecords!.map((record, index) => (
+                <span key={record.id}>
+                  <Link href={projectRecordDetailRoute(projectSlug, record.id)} scroll={false}>
+                    {record.title} {record.date && formatBerlinTime(record.date, "P")}
+                  </Link>
+                  {index < projectRecords!.length - 1 && ", "}
+                </span>
+              ))}
             </li>
           )}
           {hasSurveyResponse && (
