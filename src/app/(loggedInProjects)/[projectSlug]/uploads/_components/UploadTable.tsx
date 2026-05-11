@@ -213,7 +213,6 @@ const UploadTableRow = ({
           </ul> */}
           <UploadVerknuepfungen
             projectSlug={projectSlug}
-            asLinks
             landAcquisitionModuleEnabled={upload.project?.landAcquisitionModuleEnabled ?? false}
             subsection={upload.subsection}
             subsubsections={upload.subsubsections}

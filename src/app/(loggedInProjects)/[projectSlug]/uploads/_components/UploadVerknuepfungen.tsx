@@ -22,7 +22,6 @@ type AcquisitionAreaLink = {
 
 type Props = {
   projectSlug: string
-  asLinks?: boolean
   landAcquisitionModuleEnabled?: boolean
   subsection: { slug: string } | null
   subsubsections: { slug: string; subsection: { slug: string } }[]
@@ -35,7 +34,6 @@ type Props = {
 
 export const UploadVerknuepfungen = ({
   projectSlug,
-  asLinks,
   landAcquisitionModuleEnabled,
   subsection,
   subsubsections,
@@ -78,34 +76,24 @@ export const UploadVerknuepfungen = ({
           {hasSubsection && (
             <li>
               <strong className="font-medium">Planungsabschnitt: </strong>
-              {asLinks ? (
-                <Link href={subsectionDashboardRoute(projectSlug, subsection!.slug)}>
-                  {shortTitle(subsection!.slug)}
-                </Link>
-              ) : (
-                <>
-                  {shortTitle(subsection!.slug)} ({subsection!.slug})
-                </>
-              )}
+              <Link href={subsectionDashboardRoute(projectSlug, subsection!.slug)}>
+                {shortTitle(subsection!.slug)}
+              </Link>
             </li>
           )}
           {hasSubsubsection &&
             (subsubsections.length === 1 ? (
               <li key={`${subsubsections[0]!.subsection.slug}-${subsubsections[0]!.slug}`}>
                 <strong className="font-medium">Eintrag: </strong>
-                {asLinks ? (
-                  <Link
-                    href={subsubsectionDashboardRoute(
-                      projectSlug,
-                      subsubsections[0]!.subsection.slug,
-                      subsubsections[0]!.slug,
-                    )}
-                  >
-                    {shortTitle(subsubsections[0]!.slug)}
-                  </Link>
-                ) : (
-                  <strong className="font-medium">{shortTitle(subsubsections[0]!.slug)}</strong>
-                )}
+                <Link
+                  href={subsubsectionDashboardRoute(
+                    projectSlug,
+                    subsubsections[0]!.subsection.slug,
+                    subsubsections[0]!.slug,
+                  )}
+                >
+                  {shortTitle(subsubsections[0]!.slug)}
+                </Link>
               </li>
             ) : (
               <li className="flex flex-wrap items-baseline gap-x-2">
@@ -113,19 +101,15 @@ export const UploadVerknuepfungen = ({
                 <ul className="mt-0.5 flex list-none flex-wrap gap-x-2 pl-0">
                   {subsubsections.map((subsub) => (
                     <li key={`${subsub.subsection.slug}-${subsub.slug}`}>
-                      {asLinks ? (
-                        <Link
-                          href={subsubsectionDashboardRoute(
-                            projectSlug,
-                            subsub.subsection.slug,
-                            subsub.slug,
-                          )}
-                        >
-                          {shortTitle(subsub.slug)}
-                        </Link>
-                      ) : (
-                        shortTitle(subsub.slug)
-                      )}
+                      <Link
+                        href={subsubsectionDashboardRoute(
+                          projectSlug,
+                          subsub.subsection.slug,
+                          subsub.slug,
+                        )}
+                      >
+                        {shortTitle(subsub.slug)}
+                      </Link>
                     </li>
                   ))}
                 </ul>
@@ -135,25 +119,18 @@ export const UploadVerknuepfungen = ({
             (sortedAcquisitionAreas.length === 1 ? (
               <li key={sortedAcquisitionAreas[0]!.id}>
                 <strong className="font-medium">Verhandlungsfläche: </strong>
-                {asLinks ? (
-                  <Link
-                    href={
-                      `${subsubsectionLandAcquisitionRoute(
-                        projectSlug,
-                        sortedAcquisitionAreas[0]!.subsubsection.subsection.slug,
-                        sortedAcquisitionAreas[0]!.subsubsection.slug,
-                      )}?acquisitionAreaId=${sortedAcquisitionAreas[0]!.id}` as Route
-                    }
-                  >
-                    {sortedAcquisitionAreas[0]!.id} (
-                    {sortedAcquisitionAreas[0]!.parcel.alkisParcelId})
-                  </Link>
-                ) : (
-                  <>
-                    {shortTitle(String(sortedAcquisitionAreas[0]!.id))} - Flurstücknr.{" "}
-                    {sortedAcquisitionAreas[0]!.parcel.alkisParcelId}
-                  </>
-                )}
+                <Link
+                  href={
+                    `${subsubsectionLandAcquisitionRoute(
+                      projectSlug,
+                      sortedAcquisitionAreas[0]!.subsubsection.subsection.slug,
+                      sortedAcquisitionAreas[0]!.subsubsection.slug,
+                    )}?acquisitionAreaId=${sortedAcquisitionAreas[0]!.id}` as Route
+                  }
+                >
+                  {sortedAcquisitionAreas[0]!.id} ({sortedAcquisitionAreas[0]!.parcel.alkisParcelId}
+                  )
+                </Link>
               </li>
             ) : (
               <li className="flex flex-wrap items-baseline gap-x-2">
@@ -161,23 +138,17 @@ export const UploadVerknuepfungen = ({
                 <ul className="mt-0.5 flex list-none flex-wrap gap-x-2 pl-0">
                   {sortedAcquisitionAreas.map((area) => (
                     <li key={area.id}>
-                      {asLinks ? (
-                        <Link
-                          href={
-                            `${subsubsectionLandAcquisitionRoute(
-                              projectSlug,
-                              area.subsubsection.subsection.slug,
-                              area.subsubsection.slug,
-                            )}?acquisitionAreaId=${area.id}` as Route
-                          }
-                        >
-                          {area.id} ({area.parcel.alkisParcelId})
-                        </Link>
-                      ) : (
-                        <>
-                          {shortTitle(String(area.id))} - Flurstücknr. {area.parcel.alkisParcelId}
-                        </>
-                      )}
+                      <Link
+                        href={
+                          `${subsubsectionLandAcquisitionRoute(
+                            projectSlug,
+                            area.subsubsection.subsection.slug,
+                            area.subsubsection.slug,
+                          )}?acquisitionAreaId=${area.id}` as Route
+                        }
+                      >
+                        {area.id} ({area.parcel.alkisParcelId})
+                      </Link>
                     </li>
                   ))}
                 </ul>
