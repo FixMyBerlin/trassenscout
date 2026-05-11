@@ -7,17 +7,20 @@ import createSubsections from "@/src/server/subsections/mutations/createSubsecti
 import { TGetSubsection } from "@/src/server/subsections/queries/getSubsection"
 import getSubsectionMaxOrder from "@/src/server/subsections/queries/getSubsectionMaxOrder"
 import { SubsectionsFormSchema } from "@/src/server/subsections/schema"
+import { GERMANY_VIEW_BOUNDS } from "@/src/core/components/Map/germanyViewBounds"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { Subsection } from "@prisma/client"
 import { length, lineString } from "@turf/turf"
 import { useRouter } from "next/navigation"
 import { z } from "zod"
 
+const [west, south, east, north] = GERMANY_VIEW_BOUNDS as [number, number, number, number]
+
 export const defaultGeometryForMultipleSubsectionForm = {
   type: "LineString" as const,
   coordinates: [
-    [5.98865807458, 47.3024876979],
-    [15.0169958839, 54.983104153],
+    [west, south],
+    [east, north],
   ],
 } satisfies TGetSubsection["geometry"]
 
