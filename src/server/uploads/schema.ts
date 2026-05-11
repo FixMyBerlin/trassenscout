@@ -13,7 +13,6 @@ export const UploadSchema = z.object({
   title: z.string().min(2, { message: "Pflichtfeld. Mindestens 2 Zeichen." }),
   summary: z.string().nullable(),
   subsectionId: InputNumberOrNullSchema,
-  acquisitionAreaId: InputNumberOrNullSchema,
   projectRecordEmailId: InputNumberOrNullSchema,
   surveyResponseId: InputNumberOrNullSchema,
   externalUrl: z.string().url(),
@@ -26,11 +25,13 @@ export const UploadSchema = z.object({
   // m2mFields
   projectRecords: z.union([z.literal(false), z.array(z.coerce.number())]).optional(),
   subsubsections: z.union([z.literal(false), z.array(z.coerce.number())]).optional(),
+  acquisitionAreas: z.union([z.literal(false), z.array(z.coerce.number())]).optional(),
 })
 
 export const UploadFormSchema = UploadSchema.omit({
   projectRecords: true,
   subsubsections: true,
+  acquisitionAreas: true,
 }).merge(
   z.object({
     // LIST ALL m2mFields HERE
@@ -39,6 +40,9 @@ export const UploadFormSchema = UploadSchema.omit({
       .union([z.undefined(), z.boolean(), z.array(z.coerce.number())])
       .transform((v) => v || []),
     subsubsections: z
+      .union([z.undefined(), z.boolean(), z.array(z.coerce.number())])
+      .transform((v) => v || []),
+    acquisitionAreas: z
       .union([z.undefined(), z.boolean(), z.array(z.coerce.number())])
       .transform((v) => v || []),
   }),

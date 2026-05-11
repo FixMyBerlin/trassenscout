@@ -8,7 +8,6 @@ import {
   FormDirtyStateReporter,
   LabeledCheckboxGroup,
   LabeledSelect,
-  LabeledSelectProps,
   LabeledTextField,
 } from "@/src/core/components/forms"
 import { BackLink } from "@/src/core/components/forms/BackLink"
@@ -32,8 +31,7 @@ import { invalidateQuery, useMutation, useQuery } from "@blitzjs/rpc"
 import { PromiseReturnType } from "blitz"
 import { Route } from "next"
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
-import { useFormContext } from "react-hook-form"
+import { useState } from "react"
 import { z } from "zod"
 import { DeleteUploadActionBar } from "./DeleteUploadActionBar"
 import { LuckyCloudActionBar } from "./LuckyCloudActionBar"
@@ -49,46 +47,23 @@ type UploadSubsectionFieldsProps = {
   landAcquisitionModuleEnabled: boolean
   subsections: Awaited<ReturnType<typeof getSubsections>>["subsections"]
   subsubsections: Awaited<ReturnType<typeof getSubsubsections>>["subsubsections"]
-}
-
-function subsubsectionIdsFromForm(v: unknown): number[] {
-  if (!Array.isArray(v)) return []
-  return v
-    .map((x) => (typeof x === "string" ? parseInt(x, 10) : Number(x)))
-    .filter((n) => !Number.isNaN(n))
+  acquisitionAreas: Awaited<ReturnType<typeof getAcquisitionAreas>>
 }
 
 const UploadSubsectionFields = ({
-  projectSlug,
+  acquisitionAreas,
   landAcquisitionModuleEnabled,
   subsections,
   subsubsections,
 }: UploadSubsectionFieldsProps) => {
-  const { watch, setValue } = useFormContext<z.infer<typeof UploadFormSchema>>()
-  const subsectionId = watch("subsectionId")
-  const subsubsectionIds = subsubsectionIdsFromForm(watch("subsubsections"))
-  const acquisitionAreaId = watch("acquisitionAreaId")
-  const [acquisitionAreas = []] = useQuery(
-    getAcquisitionAreas,
-    { projectSlug },
-    { enabled: landAcquisitionModuleEnabled },
-  )
-
-  const selectedSubsectionId = subsectionId ? Number(subsectionId) : null
-  const selectedAcquisitionAreaId = acquisitionAreaId ? Number(acquisitionAreaId) : null
-
   // We use `""` here to signify the "All" case which gets translated to `NULL`
-  const subsectionOptions: LabeledSelectProps["options"] = [["", "Übergreifendes Dokument"]]
+  const subsectionOptions: [string | number, string][] = [["", "Übergreifendes Dokument"]]
   subsections.forEach((ss) => {
     subsectionOptions.push([ss.id, `${shortTitle(ss.slug)}`] as [number, string])
   })
 
-  const subsubsectionsFilteredBySubsection = selectedSubsectionId
-    ? subsubsections.filter((s) => s.subsectionId === selectedSubsectionId)
-    : subsubsections
-
   // Sort by subsection first, then by subsubsection slug (same order as before)
-  const subsubsectionCheckboxItems = subsubsectionsFilteredBySubsection
+  const subsubsectionCheckboxItems = [...subsubsections]
     .sort((a, b) => {
       const subsectionCompare = a.subsection.slug.localeCompare(b.subsection.slug)
       if (subsectionCompare !== 0) return subsectionCompare
@@ -99,75 +74,38 @@ const UploadSubsectionFields = ({
       label: `${shortTitle(ss.slug)} (${shortTitle(ss.subsection.slug)})`,
     }))
 
-  const filteredAcquisitionAreas = acquisitionAreas.filter((acquisitionArea) => {
-    if (selectedSubsectionId) {
-      return acquisitionArea.subsubsection.subsectionId === selectedSubsectionId
-    }
-    return true
-  })
-
-  const acquisitionAreaOptions: LabeledSelectProps["options"] = filteredAcquisitionAreas.map(
-    (acquisitionArea) =>
-      [
-        acquisitionArea.id,
-        `${acquisitionArea.id} (${shortTitle(acquisitionArea.subsubsection.slug)} / ${shortTitle(acquisitionArea.subsubsection.subsection.slug)})`,
-      ] as [number, string],
-  )
-  acquisitionAreaOptions.unshift(["", "Keine Angabe"])
-
-  const handleSubsectionChange = (newSubsectionId: string) => {
-    const nextSubsectionId = newSubsectionId ? Number(newSubsectionId) : null
-    if (subsubsectionIds.length === 0) return
-
-    const allowed = new Set(
-      (nextSubsectionId
-        ? subsubsections.filter((s) => s.subsectionId === nextSubsectionId)
-        : subsubsections
-      ).map((s) => s.id),
-    )
-    const prunedIds = subsubsectionIds.filter((id) => allowed.has(id))
-    if (prunedIds.length !== subsubsectionIds.length) {
-      setValue("subsubsections", prunedIds.map(String) as unknown as number[], {
-        shouldDirty: true,
-      })
-    }
-  }
-
-  useEffect(() => {
-    if (!landAcquisitionModuleEnabled || !selectedAcquisitionAreaId) return
-    const stillCompatible = filteredAcquisitionAreas.some(
-      (acquisitionArea) => acquisitionArea.id === selectedAcquisitionAreaId,
-    )
-    if (!stillCompatible) {
-      setValue("acquisitionAreaId", null, { shouldDirty: true })
-    }
-  }, [filteredAcquisitionAreas, landAcquisitionModuleEnabled, selectedAcquisitionAreaId, setValue])
+  const acquisitionAreaCheckboxItems = [...acquisitionAreas]
+    .sort((a, b) => {
+      const subsectionCompare = a.subsubsection.subsection.slug.localeCompare(
+        b.subsubsection.subsection.slug,
+      )
+      if (subsectionCompare !== 0) return subsectionCompare
+      const subsubCompare = a.subsubsection.slug.localeCompare(b.subsubsection.slug)
+      if (subsubCompare !== 0) return subsubCompare
+      return a.id - b.id
+    })
+    .map((acquisitionArea) => ({
+      value: String(acquisitionArea.id),
+      label: `${acquisitionArea.id} - Flurstücknr. ${acquisitionArea.parcel.alkisParcelId} (${shortTitle(acquisitionArea.subsubsection.slug)})`,
+    }))
 
   return (
     <div className="flex flex-col gap-4">
-      <div
-        className={
-          landAcquisitionModuleEnabled
-            ? "grid grid-cols-1 gap-4 sm:grid-cols-2"
-            : "grid grid-cols-1 gap-4"
-        }
-      >
-        <LabeledSelect
-          name="subsectionId"
-          label="Zuordnung zum Planungsabschnitt"
-          options={subsectionOptions}
+      <LabeledSelect
+        name="subsectionId"
+        label="Zuordnung zum Planungsabschnitt"
+        options={subsectionOptions}
+        optional
+      />
+      {landAcquisitionModuleEnabled && (
+        <LabeledCheckboxGroup
+          scope="acquisitionAreas"
+          label="Zuordnung zur Verhandlungsfläche"
           optional
-          onChange={handleSubsectionChange}
+          classNameItemWrapper="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3"
+          items={acquisitionAreaCheckboxItems}
         />
-        {landAcquisitionModuleEnabled && (
-          <LabeledSelect
-            name="acquisitionAreaId"
-            label="Zuordnung zur Verhandlungsfläche"
-            options={acquisitionAreaOptions}
-            optional
-          />
-        )}
-      </div>
+      )}
       <LabeledCheckboxGroup
         scope="subsubsections"
         label="Zuordnung zum Eintrag"
@@ -199,13 +137,13 @@ type Props = {
   onSubmittingChange?: (isSubmitting: boolean) => void
 }
 
-const createUploadFormValues = (upload: UploadWithRelations): z.infer<typeof UploadSchema> => ({
+const createUploadFormValues = (upload: UploadWithRelations) => ({
   title: upload.title,
   externalUrl: upload.externalUrl,
   summary: upload.summary,
   subsectionId: upload.subsectionId,
-  subsubsectionId: upload.subsubsectionId,
-  acquisitionAreaId: upload.acquisitionAreaId,
+  subsubsections: upload.subsubsections?.map((s) => String(s.id)) ?? [],
+  acquisitionAreas: upload.acquisitionAreas?.map((a) => String(a.id)) ?? [],
   projectRecordEmailId: upload.projectRecordEmailId,
   mimeType: upload.mimeType,
   latitude: upload.latitude,
@@ -235,7 +173,7 @@ export const EditUploadForm = ({
   const projectSlug = useProjectSlug()
   const [{ subsections }] = useQuery(getSubsections, { projectSlug })
   const [{ subsubsections }] = useQuery(getSubsubsections, { projectSlug })
-
+  const [acquisitionAreasData] = useQuery(getAcquisitionAreas, { projectSlug })
   const [updateUploadMutation] = useMutation(updateUpload)
 
   const initialValues = createUploadFormValues(upload)
@@ -288,6 +226,8 @@ export const EditUploadForm = ({
           className="grow"
           submitText="Speichern"
           schema={UploadFormSchema}
+          // @ts-expect-error m2m fields use string ids in the form (for checkbox `value`),
+          // while the schema coerces them to numbers via z.coerce.number()
           initialValues={initialValues}
           onSubmit={handleSubmit}
           disabled={isGeneratingSummary}
@@ -342,6 +282,7 @@ export const EditUploadForm = ({
             </div>
           </div>
           <UploadSubsectionFields
+            acquisitionAreas={acquisitionAreasData}
             projectSlug={projectSlug}
             landAcquisitionModuleEnabled={upload.project?.landAcquisitionModuleEnabled ?? false}
             subsections={subsections}
@@ -391,7 +332,7 @@ export const EditUploadForm = ({
         landAcquisitionModuleEnabled={upload.project?.landAcquisitionModuleEnabled ?? false}
         subsection={upload.subsection}
         subsubsections={upload.subsubsections}
-        acquisitionArea={upload.acquisitionArea}
+        acquisitionAreas={upload.acquisitionAreas}
         projectRecords={upload.projectRecords}
         projectRecordEmail={upload.projectRecordEmail}
         surveyResponse={upload.surveyResponse}

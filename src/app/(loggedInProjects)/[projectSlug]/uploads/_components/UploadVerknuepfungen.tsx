@@ -11,20 +11,22 @@ import {
 import { formatBerlinTime } from "@/src/core/utils/formatBerlinTime"
 import { Route } from "next"
 
+type AcquisitionAreaLink = {
+  id: number
+  subsubsection: {
+    slug: string
+    subsection: { slug: string }
+  }
+  parcel: { alkisParcelId: string }
+}
+
 type Props = {
   projectSlug: string
   asLinks?: boolean
   landAcquisitionModuleEnabled?: boolean
   subsection: { slug: string } | null
   subsubsections: { slug: string; subsection: { slug: string } }[]
-  acquisitionArea: {
-    id: number
-    subsubsection: {
-      slug: string
-      subsection: { slug: string }
-    }
-    parcel: { alkisParcelId: string }
-  } | null
+  acquisitionAreas: AcquisitionAreaLink[]
   projectRecords: { id: number; title: string; date: Date | null }[] | null
   projectRecordEmail: { createdAt: Date } | null
   surveyResponse: { id: number; surveySession: { survey: { slug: string } } } | null
@@ -37,7 +39,7 @@ export const UploadVerknuepfungen = ({
   landAcquisitionModuleEnabled,
   subsection,
   subsubsections,
-  acquisitionArea,
+  acquisitionAreas,
   projectRecords,
   projectRecordEmail,
   surveyResponse,
@@ -46,16 +48,28 @@ export const UploadVerknuepfungen = ({
   const hasSubsection = subsection !== null
   const hasSubsubsection = subsubsections?.length > 0
   const hasProjectRecords = projectRecords != null && projectRecords.length > 0
-  const hasAcquisitionArea = landAcquisitionModuleEnabled && acquisitionArea !== null
+  const hasAcquisitionAreas = landAcquisitionModuleEnabled && acquisitionAreas.length > 0
   const hasProjectRecordEmail = projectRecordEmail !== null
   const hasSurveyResponse = surveyResponse !== null
   const hasRelations =
     hasSubsection ||
     hasSubsubsection ||
-    hasAcquisitionArea ||
+    hasAcquisitionAreas ||
     hasProjectRecords ||
     hasProjectRecordEmail ||
     hasSurveyResponse
+
+  const sortedAcquisitionAreas = hasAcquisitionAreas
+    ? [...acquisitionAreas].sort((a, b) => {
+        const subCompare = a.subsubsection.subsection.slug.localeCompare(
+          b.subsubsection.subsection.slug,
+        )
+        if (subCompare !== 0) return subCompare
+        const ssCompare = a.subsubsection.slug.localeCompare(b.subsubsection.slug)
+        if (ssCompare !== 0) return ssCompare
+        return a.id - b.id
+      })
+    : []
 
   return (
     <section className={className}>
@@ -117,29 +131,58 @@ export const UploadVerknuepfungen = ({
                 </ul>
               </li>
             ))}
-          {hasAcquisitionArea && (
-            <li>
-              <strong className="font-medium">Verhandlungsfläche: </strong>
-              {asLinks ? (
-                <Link
-                  href={
-                    `${subsubsectionLandAcquisitionRoute(
-                      projectSlug,
-                      acquisitionArea!.subsubsection.subsection.slug,
-                      acquisitionArea!.subsubsection.slug,
-                    )}?acquisitionAreaId=${acquisitionArea!.id}` as Route
-                  }
-                >
-                  {acquisitionArea!.id} ({acquisitionArea!.parcel.alkisParcelId})
-                </Link>
-              ) : (
-                <>
-                  {shortTitle(String(acquisitionArea!.id))} - Flurstücknr.{" "}
-                  {acquisitionArea!.parcel.alkisParcelId}
-                </>
-              )}
-            </li>
-          )}
+          {hasAcquisitionAreas &&
+            (sortedAcquisitionAreas.length === 1 ? (
+              <li key={sortedAcquisitionAreas[0]!.id}>
+                <strong className="font-medium">Verhandlungsfläche: </strong>
+                {asLinks ? (
+                  <Link
+                    href={
+                      `${subsubsectionLandAcquisitionRoute(
+                        projectSlug,
+                        sortedAcquisitionAreas[0]!.subsubsection.subsection.slug,
+                        sortedAcquisitionAreas[0]!.subsubsection.slug,
+                      )}?acquisitionAreaId=${sortedAcquisitionAreas[0]!.id}` as Route
+                    }
+                  >
+                    {sortedAcquisitionAreas[0]!.id} (
+                    {sortedAcquisitionAreas[0]!.parcel.alkisParcelId})
+                  </Link>
+                ) : (
+                  <>
+                    {shortTitle(String(sortedAcquisitionAreas[0]!.id))} - Flurstücknr.{" "}
+                    {sortedAcquisitionAreas[0]!.parcel.alkisParcelId}
+                  </>
+                )}
+              </li>
+            ) : (
+              <li className="flex flex-wrap items-baseline gap-x-2">
+                <strong className="font-medium">Verhandlungsflächen: </strong>
+                <ul className="mt-0.5 flex list-none flex-wrap gap-x-2 pl-0">
+                  {sortedAcquisitionAreas.map((area) => (
+                    <li key={area.id}>
+                      {asLinks ? (
+                        <Link
+                          href={
+                            `${subsubsectionLandAcquisitionRoute(
+                              projectSlug,
+                              area.subsubsection.subsection.slug,
+                              area.subsubsection.slug,
+                            )}?acquisitionAreaId=${area.id}` as Route
+                          }
+                        >
+                          {area.id} ({area.parcel.alkisParcelId})
+                        </Link>
+                      ) : (
+                        <>
+                          {shortTitle(String(area.id))} - Flurstücknr. {area.parcel.alkisParcelId}
+                        </>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))}
           {hasProjectRecords && (
             <li>
               {projectRecords!.length === 1 ? (

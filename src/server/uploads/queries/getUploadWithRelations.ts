@@ -75,7 +75,7 @@ export default resolver.pipe(
             },
           },
         },
-        acquisitionArea: {
+        acquisitionAreas: {
           select: {
             id: true,
             subsubsection: {

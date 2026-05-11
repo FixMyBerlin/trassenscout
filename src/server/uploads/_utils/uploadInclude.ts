@@ -32,7 +32,7 @@ export const uploadWithSubsectionsInclude = {
       landAcquisitionModuleEnabled: true,
     },
   },
-  acquisitionArea: {
+  acquisitionAreas: {
     select: {
       id: true,
       subsubsection: {
