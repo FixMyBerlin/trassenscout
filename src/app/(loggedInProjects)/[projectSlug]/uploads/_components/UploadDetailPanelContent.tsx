@@ -115,7 +115,7 @@ export const UploadDetailPanelContent = ({
               <Link
                 button="blue"
                 href={editHref}
-                prefetch
+                prefetch={false}
                 replace
                 scroll={false}
                 onClick={onEditClick}
