@@ -33,6 +33,7 @@ type Props = {
   splitView?: boolean
   projectSlug: string
   landAcquisitionModuleEnabled?: boolean
+  disableSuspenseQueries?: boolean
   emailSource?: {
     from: string | null
     subject: string | null
@@ -47,18 +48,29 @@ export const ProjectRecordFormFields = ({
   emailSource,
   splitView,
   landAcquisitionModuleEnabled = false,
+  disableSuspenseQueries = false,
 }: Props) => {
-  const [{ subsections }] = useQuery(getSubsections, { projectSlug })
-  const [{ subsubsections }] = useQuery(getSubsubsections, { projectSlug })
+  const queryOptions = {
+    suspense: !disableSuspenseQueries,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  }
+
+  const [subsectionsData] = useQuery(getSubsections, { projectSlug }, queryOptions)
+  const [subsubsectionsData] = useQuery(getSubsubsections, { projectSlug }, queryOptions)
   const [acquisitionAreas = []] = useQuery(
     getAcquisitionAreas,
     { projectSlug },
-    { enabled: landAcquisitionModuleEnabled },
+    {
+      enabled: landAcquisitionModuleEnabled,
+      ...queryOptions,
+    },
   )
-  const [users] = useQuery(getProjectUsers, { projectSlug, role: "EDITOR" })
-  const [{ projectRecordTopics }, { refetch: refetchTopics }] = useQuery(
+  const [usersData] = useQuery(getProjectUsers, { projectSlug, role: "EDITOR" }, queryOptions)
+  const [projectRecordTopicsData, { refetch: refetchTopics }] = useQuery(
     getProjectRecordTopicsByProject,
     { projectSlug },
+    queryOptions,
   )
   const [newTopic, setNewTopic] = useState("")
   const [createProjectRecordTopicMutation] = useMutation(createProjectRecordTopic)
@@ -69,14 +81,17 @@ export const ProjectRecordFormFields = ({
   const uploadsValue = watch("uploads")
   const uploadIds = NumberArraySchema.parse(uploadsValue)
 
+  const subsections = subsectionsData?.subsections ?? []
+  const subsubsections = subsubsectionsData?.subsubsections ?? []
+  const users = usersData ?? []
+  const projectRecordTopics = projectRecordTopicsData?.projectRecordTopics ?? []
+
   const [{ uploads: selectedUploads = [] } = { uploads: [] }] = useQuery(
     getUploadsWithSubsections,
     { projectSlug, where: { id: { in: uploadIds } } },
     {
       enabled: uploadIds.length > 0,
-      suspense: false,
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
+      ...queryOptions,
     },
   )
 

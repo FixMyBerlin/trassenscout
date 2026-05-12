@@ -10,7 +10,8 @@ import { H3 } from "@/src/core/components/text"
 import { HeadingWithAction } from "@/src/core/components/text/HeadingWithAction"
 import createProjectRecord from "@/src/server/projectRecords/mutations/createProjectRecord"
 import { NewProjectRecordFormSchema } from "@/src/server/projectRecords/schemas"
-import { useMutation } from "@blitzjs/rpc"
+import getProjectRecordTemplatesByProject from "@/src/server/projectRecordTemplates/queries/getProjectRecordTemplatesByProject"
+import { useMutation, useQuery } from "@blitzjs/rpc"
 import { ProjectRecordEditingState } from "@prisma/client"
 import { useState } from "react"
 import { z } from "zod"
@@ -27,6 +28,13 @@ type Props = {
   }
 }
 
+type ProjectRecordTemplateOption = Awaited<
+  ReturnType<typeof getProjectRecordTemplatesByProject>
+>[number]
+
+const pickerOptionButtonClassName =
+  "flex w-full cursor-pointer items-center justify-between rounded-md border border-gray-300 px-3 py-2 text-left text-blue-700 hover:bg-blue-50"
+
 export const ProjectRecordNewModal = ({
   projectSlug,
   open,
@@ -35,11 +43,31 @@ export const ProjectRecordNewModal = ({
   initialValues,
 }: Props) => {
   const [createProjectRecordMutation] = useMutation(createProjectRecord)
+  const [templates = []] = useQuery(
+    getProjectRecordTemplatesByProject,
+    { projectSlug },
+    {
+      suspense: false,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
+  )
   const [isDirty, setIsDirty] = useState(false)
+  const [modalStep, setModalStep] = useState<"picker" | "form">("picker")
+  const [isSwitchingStep, setIsSwitchingStep] = useState(false)
+  const [selectedTemplate, setSelectedTemplate] = useState<ProjectRecordTemplateOption | null>(null)
+
+  const resetAndClose = () => {
+    setIsSwitchingStep(false)
+    setModalStep("picker")
+    setSelectedTemplate(null)
+    setIsDirty(false)
+    onClose()
+  }
 
   const handleClose = () => {
     if (isDirty && !window.confirm("Ungespeicherte Änderungen verwerfen?")) return
-    onClose()
+    resetAndClose()
   }
 
   type HandleSubmit = z.infer<typeof NewProjectRecordFormSchema>
@@ -57,8 +85,7 @@ export const ProjectRecordNewModal = ({
       if (onSuccess) {
         await onSuccess(projectRecord.id)
       }
-      setIsDirty(false)
-      onClose()
+      resetAndClose()
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, [])
     }
@@ -76,17 +103,86 @@ export const ProjectRecordNewModal = ({
     ...(initialValues?.acquisitionAreaId && {
       acquisitionAreaId: initialValues.acquisitionAreaId,
     }),
+    ...(selectedTemplate && {
+      title: selectedTemplate.entryTitle,
+      body: selectedTemplate.body || "",
+      projectRecordTopics: selectedTemplate.topicIds,
+    }),
+  }
+
+  const pickerOpen = open && (modalStep === "picker" || isSwitchingStep)
+  const formOpen = open && (modalStep === "form" || isSwitchingStep)
+
+  const switchToForm = (template: ProjectRecordTemplateOption | null) => {
+    setSelectedTemplate(template)
+    setIsSwitchingStep(true)
+    requestAnimationFrame(() => {
+      setModalStep("form")
+      setIsSwitchingStep(false)
+    })
   }
 
   return (
     <IfUserCanEdit>
-      <Modal open={open} align="right" handleClose={handleClose} className="space-y-4">
+      <Modal
+        open={pickerOpen}
+        handleClose={resetAndClose}
+        align="center"
+        className="space-y-4 sm:max-w-2xl"
+      >
+        <HeadingWithAction>
+          <H3>Neuer Protokolleintrag</H3>
+          <ModalCloseButton onClose={resetAndClose} />
+        </HeadingWithAction>
+
+        <div className="space-y-4">
+          <p className="text-gray-600">
+            Möchten Sie eine Vorlage nutzen oder mit einem leeren Formular starten?
+          </p>
+          <button
+            type="button"
+            onClick={() => switchToForm(null)}
+            className={pickerOptionButtonClassName}
+          >
+            <span>Leeres Formular</span>
+            <span>→</span>
+          </button>
+
+          {!!templates.length && (
+            <>
+              <h4 className="text-lg font-semibold text-gray-700">Vorlagen</h4>
+              <div className="space-y-2">
+                {templates.map((template) => (
+                  <button
+                    key={template.id}
+                    type="button"
+                    onClick={() => switchToForm(template)}
+                    className={pickerOptionButtonClassName}
+                  >
+                    <span>{template.templateTitle}</span>
+                    <span>→</span>
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      </Modal>
+
+      <Modal open={formOpen} handleClose={handleClose} align="right" className="space-y-4">
         <HeadingWithAction>
           <H3>Neuer Protokolleintrag</H3>
           <ModalCloseButton onClose={handleClose} />
         </HeadingWithAction>
 
         <Form
+          key={[
+            "template",
+            selectedTemplate?.id || "blank",
+            initialValues?.subsectionId || "nosubsection",
+            initialValues?.subsubsectionId || "nosubsubsection",
+            initialValues?.acquisitionAreaId || "noacquisitionarea",
+          ].join("-")}
           resetOnSubmit
           onSubmit={handleSubmit}
           initialValues={formInitialValues}
@@ -94,7 +190,7 @@ export const ProjectRecordNewModal = ({
           submitText="Protokolleintrag speichern"
         >
           <FormDirtyStateReporter onDirtyChange={setIsDirty} />
-          <ProjectRecordFormFields projectSlug={projectSlug} />
+          <ProjectRecordFormFields projectSlug={projectSlug} disableSuspenseQueries />
         </Form>
       </Modal>
     </IfUserCanEdit>
