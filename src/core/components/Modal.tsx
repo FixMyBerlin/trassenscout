@@ -158,12 +158,28 @@ export const Modal = ({ children, open, handleClose, className, align = "center"
             >
               <TransitionChild
                 as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                enterTo="opacity-100 translate-y-0 sm:scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                enter={isRightAligned ? "ease-out duration-250" : "ease-out duration-300"}
+                enterFrom={
+                  isRightAligned
+                    ? "opacity-0 translate-x-8 sm:translate-x-12"
+                    : "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                }
+                enterTo={
+                  isRightAligned
+                    ? "opacity-100 translate-x-0"
+                    : "opacity-100 translate-y-0 sm:scale-100"
+                }
+                leave={isRightAligned ? "ease-in duration-200" : "ease-in duration-200"}
+                leaveFrom={
+                  isRightAligned
+                    ? "opacity-100 translate-x-0"
+                    : "opacity-100 translate-y-0 sm:scale-100"
+                }
+                leaveTo={
+                  isRightAligned
+                    ? "opacity-0 translate-x-8 sm:translate-x-12"
+                    : "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                }
               >
                 <DialogPanel
                   className={twMerge(

@@ -173,6 +173,7 @@ model Project {
   SystemLogEntry                   SystemLogEntry[]
   projectRecords                   ProjectRecord[]
   projectRecordTopics              ProjectRecordTopic[]
+  projectRecordTemplates           ProjectRecordTemplate[]
   ProjectRecordEmail               ProjectRecordEmail[]
   acquisitionAreaStatuses          AcquisitionAreaStatus[]
 }
@@ -901,8 +902,21 @@ model ProjectRecordTopic {
   project        Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId      Int
   projectRecords ProjectRecord[]
+  projectRecordTemplates ProjectRecordTemplate[]
 
   @@unique([title, projectId])
+}
+
+model ProjectRecordTemplate {
+  id                Int                @id @default(autoincrement())
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  templateTitle     String
+  entryTitle        String
+  body              String?
+  purpose           String?
+  projects          Project[]
+  projectRecordTopics ProjectRecordTopic[]
 }
 
 model Meta {
