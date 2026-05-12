@@ -24,7 +24,6 @@ export const UploadPreviewClickable = ({
   onDeleted,
   editUrl,
 }: Props) => {
-
   const [isPreviewOpen, setIsPreviewOpen] = useState(false)
   const effectiveUploadId = upload?.id ?? uploadId
 

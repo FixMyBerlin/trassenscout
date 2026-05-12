@@ -1,9 +1,15 @@
 "use client"
 
-import { Form, FormProps, LabeledCheckboxGroup, LabeledTextareaField, LabeledTextField } from "@/src/core/components/forms"
-import getProjects from "@/src/server/projects/queries/getProjects"
+import {
+  Form,
+  FormProps,
+  LabeledCheckboxGroup,
+  LabeledTextareaField,
+  LabeledTextField,
+} from "@/src/core/components/forms"
 import getAdminProjectRecordTopics from "@/src/server/projectRecordTemplates/queries/getAdminProjectRecordTopics"
 import { ProjectRecordTemplateFormSchema } from "@/src/server/projectRecordTemplates/schema"
+import getProjects from "@/src/server/projects/queries/getProjects"
 import { useQuery } from "@blitzjs/rpc"
 import { useEffect, useMemo } from "react"
 import { useFormContext } from "react-hook-form"
@@ -13,9 +19,7 @@ type Props = FormProps<z.ZodType<any, any>>
 
 const toNumericIds = (value: unknown): number[] => {
   if (!Array.isArray(value)) return []
-  return value
-    .map((entry) => Number(entry))
-    .filter((entry) => Number.isInteger(entry) && entry > 0)
+  return value.map((entry) => Number(entry)).filter((entry) => Number.isInteger(entry) && entry > 0)
 }
 
 const ProjectAndTopicFields = () => {
@@ -42,11 +46,7 @@ const ProjectAndTopicFields = () => {
   useEffect(() => {
     const filteredTopicIds = selectedTopicIds.filter((topicId) => availableTopicIds.has(topicId))
     if (filteredTopicIds.length === selectedTopicIds.length) return
-    setValue(
-      "projectRecordTopicIds",
-      filteredTopicIds.map(String),
-      { shouldDirty: true },
-    )
+    setValue("projectRecordTopicIds", filteredTopicIds.map(String), { shouldDirty: true })
   }, [availableTopicIds, selectedTopicIds, setValue])
 
   const projectItems = projects.map((project) => ({
@@ -70,8 +70,7 @@ const ProjectAndTopicFields = () => {
         <p className="mb-0 block text-sm font-medium text-gray-700">Tags (optional)</p>
         {!selectedProjects.length && (
           <p className="mt-0 text-sm text-gray-500">
-            Wählen Sie zuerst ein oder mehrere Projekte aus, um projektspezifische Tags
-            zuzuordnen.
+            Wählen Sie zuerst ein oder mehrere Projekte aus, um projektspezifische Tags zuzuordnen.
           </p>
         )}
         {selectedProjects.map((project) => {

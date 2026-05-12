@@ -1,11 +1,11 @@
 import { AdminProjectRecordTemplatesTable } from "@/src/app/(admin)/admin/project-record-templates/_components/AdminProjectRecordTemplatesTable"
 import { invoke } from "@/src/blitz-server"
 import { Link } from "@/src/core/components/links"
+import getAdminProjectRecordTemplates from "@/src/server/projectRecordTemplates/queries/getAdminProjectRecordTemplates"
 import { Metadata } from "next"
 import "server-only"
 import { Breadcrumb } from "../_components/Breadcrumb"
 import { HeaderWrapper } from "../_components/HeaderWrapper"
-import getAdminProjectRecordTemplates from "@/src/server/projectRecordTemplates/queries/getAdminProjectRecordTemplates"
 
 export const metadata: Metadata = { title: "Vorlagen Protokolleinträge" }
 
