@@ -6,7 +6,7 @@ import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import {
   FormDirtyStateReporter,
-  LabeledCheckboxGroup,
+  LabeledCombobox,
   LabeledTextField,
 } from "@/src/core/components/forms"
 import { BackLink } from "@/src/core/components/forms/BackLink"
@@ -81,19 +81,17 @@ const UploadSubsectionFields = ({
   return (
     <div className="flex flex-col gap-4">
       {landAcquisitionModuleEnabled && (
-        <LabeledCheckboxGroup
+        <LabeledCombobox
           scope="acquisitionAreas"
-          label="Zuordnung zur Verhandlungsfläche"
+          label="Zuordnung zu Verhandlungsflächen"
           optional
-          classNameItemWrapper="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3"
           items={acquisitionAreaCheckboxItems}
         />
       )}
-      <LabeledCheckboxGroup
+      <LabeledCombobox
         scope="subsubsections"
-        label="Zuordnung zum Eintrag"
+        label="Zuordnung zu Einträgen"
         optional
-        classNameItemWrapper="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3"
         items={subsubsectionCheckboxItems}
       />
     </div>
