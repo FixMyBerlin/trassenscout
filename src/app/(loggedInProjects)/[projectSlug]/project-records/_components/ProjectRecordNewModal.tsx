@@ -106,7 +106,9 @@ export const ProjectRecordNewModal = ({
     ...(selectedTemplate && {
       title: selectedTemplate.entryTitle,
       body: selectedTemplate.body || "",
-      projectRecordTopics: selectedTemplate.topicIds,
+      projectRecordTopics: selectedTemplate.topicIds.map(String) as unknown as z.infer<
+        typeof NewProjectRecordFormSchema
+      >["projectRecordTopics"],
     }),
   }
 
