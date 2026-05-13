@@ -2,6 +2,7 @@ import {
   isImageExternalUrl as isImageExternalUrlCore,
   isImageMimeType,
   isImageUpload as isImageUploadCore,
+  isSvgUpload as isSvgUploadCore,
 } from "@/src/core/uploads/isImageUpload"
 import { Upload } from "@prisma/client"
 
@@ -105,6 +106,14 @@ export const isImageUpload = (
     | { mimeType?: string | null; externalUrl?: string | null },
 ) => {
   return isImageUploadCore(upload)
+}
+
+export const isSvgUpload = (
+  upload:
+    | Pick<Upload, "mimeType" | "externalUrl">
+    | { mimeType?: string | null; externalUrl?: string | null },
+) => {
+  return isSvgUploadCore(upload)
 }
 
 export const isPdf = (mimeType: string | null | undefined) => {
