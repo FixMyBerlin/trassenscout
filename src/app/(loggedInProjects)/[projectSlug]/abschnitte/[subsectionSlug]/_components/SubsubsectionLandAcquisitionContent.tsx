@@ -79,9 +79,9 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
     getUploadsWithSubsections,
     {
       projectSlug,
-      where: {
-        acquisitionAreaId: selectedAcquisitionArea?.id ?? undefined,
-      },
+      where: selectedAcquisitionArea
+        ? { acquisitionAreas: { some: { id: selectedAcquisitionArea.id } } }
+        : {},
     },
     {
       refetchOnWindowFocus: false,
