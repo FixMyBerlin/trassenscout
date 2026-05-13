@@ -308,9 +308,7 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
                     <UploadDropzoneContainer className="h-36 rounded-md p-0">
                       <UploadDropzone
                         fillContainer
-                        subsectionId={subsectionId}
-                        subsubsectionId={subsubsectionId}
-                        acquisitionAreaId={selectedAcquisitionArea.id}
+                        acquisitionAreaIds={[selectedAcquisitionArea.id]}
                         onUploadComplete={async () => {
                           await refetchUploads()
                         }}

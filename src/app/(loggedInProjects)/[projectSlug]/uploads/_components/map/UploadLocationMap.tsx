@@ -5,12 +5,11 @@ import { BackgroundGeometryLayers } from "@/src/core/components/Map/BackgroundGe
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
 import { getStaticOverlayForProject } from "@/src/core/components/Map/staticOverlay/getStaticOverlayForProject"
 import { UploadMarkers } from "@/src/core/components/Map/UploadMarkers"
-import { geometriesBbox, geometryBbox } from "@/src/core/components/Map/utils/bboxHelpers"
+import { geometriesBbox } from "@/src/core/components/Map/utils/bboxHelpers"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
-import { TGetSubsection } from "@/src/server/subsections/queries/getSubsection"
 import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import getSubsubsections from "@/src/server/subsubsections/queries/getSubsubsections"
-import { UploadSchema } from "@/src/server/uploads/schema"
+import { UploadFormSchema } from "@/src/server/uploads/schema"
 import { useQuery } from "@blitzjs/rpc"
 import { XMarkIcon } from "@heroicons/react/16/solid"
 import { useFormContext } from "react-hook-form"
@@ -19,37 +18,43 @@ import { twMerge } from "tailwind-merge"
 import { z } from "zod"
 import { UploadPin } from "./UploadPin"
 
+function subsubsectionIdsFromForm(v: unknown): number[] {
+  if (!Array.isArray(v)) return []
+  return v.map((x) => Number(x)).filter((n) => !Number.isNaN(n))
+}
+
 export const UploadLocationMap = () => {
-  const { setValue, watch } = useFormContext<z.infer<typeof UploadSchema>>()
+  const { setValue, watch } = useFormContext<z.infer<typeof UploadFormSchema>>()
   const latitude = watch("latitude")
   const longitude = watch("longitude")
-  const subsectionId = watch("subsectionId")
-  const subsubsectionId = watch("subsubsectionId")
+  const subsubsectionIds = subsubsectionIdsFromForm(watch("subsubsections"))
   const projectSlug = useProjectSlug()
 
   const [{ subsections }] = useQuery(getSubsections, { projectSlug })
   const [{ subsubsections }] = useQuery(getSubsubsections, { projectSlug })
 
-  const currentSubsection = subsections.find((ss: TGetSubsection) => {
-    return ss.id === subsectionId
-  })
-  const filteredSubsubsections = !subsectionId
-    ? subsubsections
-    : subsubsections.filter((ss) => ss.subsection.slug === currentSubsection?.slug)
+  const subsectionSlugsOfSelection =
+    subsubsectionIds.length > 0
+      ? new Set(
+          subsubsections
+            .filter((ss) => subsubsectionIds.includes(ss.id))
+            .map((ss) => ss.subsection.slug),
+        )
+      : null
 
-  // Determine color schema based on whether subsubsectionId exists
-  const colorSchema = subsubsectionId ? ("subsubsection" as const) : ("subsection" as const)
+  const filteredSubsubsections = !subsectionSlugsOfSelection
+    ? subsubsections
+    : subsubsections.filter((ss) => subsectionSlugsOfSelection.has(ss.subsection.slug))
+
+  // Determine color schema based on whether any Eintrag is selected
+  const colorSchema =
+    subsubsectionIds.length > 0 ? ("subsubsection" as const) : ("subsection" as const)
 
   // Get current position from form values
   const hasPosition = typeof latitude === "number" && typeof longitude === "number"
 
-  // 1. If we have a subsection from URL params, use its bbox
-  // 2. Otherwise, use project bbox
-  const mapBbox = currentSubsection
-    ? geometryBbox(currentSubsection.geometry)
-    : subsections.length > 0
-      ? geometriesBbox(subsections.map((ss) => ss.geometry))
-      : undefined
+  const mapBbox =
+    subsections.length > 0 ? geometriesBbox(subsections.map((ss) => ss.geometry)) : undefined
 
   const initialViewState = hasPosition
     ? { latitude, longitude, zoom: 12 }

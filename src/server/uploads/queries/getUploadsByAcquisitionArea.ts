@@ -17,7 +17,7 @@ export default resolver.pipe(
     const uploads = await db.upload.findMany({
       where: {
         project: { slug: projectSlug },
-        acquisitionAreaId,
+        acquisitionAreas: { some: { id: acquisitionAreaId } },
         OR: [
           { projectRecords: { none: {} } },
           {

@@ -5,7 +5,6 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
-import { validateAcquisitionAreaScope } from "@/src/server/acquisitionAreas/_utils/validateAcquisitionAreaScope"
 import { Ctx } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
@@ -20,8 +19,6 @@ export default resolver.pipe(
   resolver.zod(UpdateUploadSchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
   async ({ id, projectSlug, ...data }, ctx: Ctx) => {
-    const previous = await db.upload.findFirst({ where: { id } })
-
     // copied from updateSubsubsection.ts
     const disconnect: Record<M2MFieldsType | string, { set: [] }> = {}
     const connect: Record<M2MFieldsType | string, { connect: { id: number }[] | undefined }> = {}
@@ -36,13 +33,6 @@ export default resolver.pipe(
       data: disconnect,
     })
 
-    await validateAcquisitionAreaScope({
-      projectSlug,
-      acquisitionAreaId: data.acquisitionAreaId,
-      subsectionId: data.subsectionId,
-      subsubsectionId: data.subsubsectionId,
-    })
-
     const currentUserId = ctx.session.userId
 
     return await db.upload.update({
@@ -50,7 +40,6 @@ export default resolver.pipe(
       // copied from updateSubsubsection.ts
       // @ts-expect-error The whole `m2mFields` is way to hard to type but apparently working
       data: { ...data, ...connect, updatedById: currentUserId },
-      include: { subsection: { select: { id: true, slug: true } } },
     })
   },
 )

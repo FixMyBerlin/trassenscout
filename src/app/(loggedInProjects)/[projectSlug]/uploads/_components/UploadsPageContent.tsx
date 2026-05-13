@@ -1,7 +1,7 @@
 "use client"
 
 import { UploadDropzone } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzone"
-import { UploadsTableWithFilter } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadsTableWithFilter"
+import { UploadTable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadTable"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
@@ -22,10 +22,10 @@ export const UploadsPageContent = () => {
       NOT: {
         AND: [
           { surveyResponseId: { not: null } },
-          { subsectionId: null },
-          { subsubsectionId: null },
           { projectRecordEmailId: null },
           { projectRecords: { none: {} } },
+          { subsubsections: { none: {} } },
+          { acquisitionAreas: { none: {} } },
         ],
       },
     },
@@ -40,14 +40,9 @@ export const UploadsPageContent = () => {
           }}
         />
       </div>
-      <UploadsTableWithFilter
-        uploads={uploads}
-        hasMore={hasMore}
-        page={page}
-        onDelete={async () => {
-          await refetchUploads()
-        }}
-      />
+
+      <UploadTable withAction withRelations={true} uploads={uploads} />
+
       <SuperAdminBox>
         <strong>Hinweis:</strong> Uploads, die ausschließlich mit Beteiligungsbeiträgen verknüpft
         sind, werden in dieser Übersicht nicht angezeigt. Diese Uploads sind nur über den jeweiligen
