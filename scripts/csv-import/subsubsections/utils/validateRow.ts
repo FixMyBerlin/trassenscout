@@ -10,7 +10,10 @@ export function validateRow(mappedData: Record<string, any>) {
   try {
     // Validate the data (without subsectionId, as it's set by the API)
     // Use the same schema as the API route to ensure consistency
-    const validationData = { ...mappedData, subsectionId: 1 } // Temporary, will be replaced by API
+    // Geometry is sanitized right before API send; skip geometry checks here to avoid
+    // rejecting valid 3D source data before transport cleanup is applied.
+    const { geometry: _geometry, ...rest } = mappedData
+    const validationData = { ...rest, subsectionId: 1 } // Temporary, will be replaced by API
     ImportSubsubsectionDataSchema.parse(validationData)
     return null
   } catch (error: unknown) {

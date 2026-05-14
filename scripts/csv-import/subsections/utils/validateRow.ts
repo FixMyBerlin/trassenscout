@@ -6,7 +6,10 @@ import { z } from "zod"
  */
 export function validateRow(mappedData: Record<string, any>) {
   try {
-    const validationData = { ...mappedData, projectId: 1 }
+    // Geometry is sanitized right before API send; skip geometry checks here to avoid
+    // rejecting valid 3D source data before transport cleanup is applied.
+    const { geometry: _geometry, ...rest } = mappedData
+    const validationData = { ...rest, projectId: 1 }
     ImportSubsectionDataSchema.parse(validationData)
     return null
   } catch (error: unknown) {

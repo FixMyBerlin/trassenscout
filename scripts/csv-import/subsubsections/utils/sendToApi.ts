@@ -1,3 +1,4 @@
+import truncate from "@turf/truncate"
 import type { Environment } from "../../utils/env"
 
 interface ApiResponse {
@@ -5,6 +6,21 @@ interface ApiResponse {
   action?: string
   error?: string
   details?: Array<{ path?: string; message?: string }>
+}
+
+function truncateGeometryTo2D(geometry: unknown): unknown {
+  if (!geometry || typeof geometry !== "object") {
+    return geometry
+  }
+
+  try {
+    return truncate(geometry as any, {
+      coordinates: 2,
+      mutate: false,
+    })
+  } catch {
+    return geometry
+  }
 }
 
 /**
@@ -24,6 +40,10 @@ export async function sendToApi(
   try {
     const url = new URL(apiEndpoint)
     url.searchParams.set("apiKey", apiKey)
+    const payloadData = {
+      ...data,
+      geometry: truncateGeometryTo2D(data.geometry),
+    }
 
     const response = await fetch(url.toString(), {
       method: "POST",
@@ -35,7 +55,7 @@ export async function sendToApi(
         subsectionSlug,
         slug,
         userId,
-        data,
+        data: payloadData,
       }),
     })
 
