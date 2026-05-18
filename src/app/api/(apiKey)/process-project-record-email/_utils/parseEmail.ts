@@ -2,7 +2,11 @@ import { AddressObject, ParsedMail, simpleParser } from "mailparser"
 
 const getAddressText = (address: AddressObject | AddressObject[] | undefined) => {
   if (!address) return null
-  if (Array.isArray(address)) return address.map((entry) => entry.text).filter(Boolean).join(", ")
+  if (Array.isArray(address))
+    return address
+      .map((entry) => entry.text)
+      .filter(Boolean)
+      .join(", ")
   return address.text || null
 }
 

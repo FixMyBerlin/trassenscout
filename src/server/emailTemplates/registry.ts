@@ -173,8 +173,7 @@ Das Projektteam kann unter {{teamUrl}} eingesehen werden.`,
   [emailTemplateKeys.projectRecordLegacyMailboxMovedSender]: {
     key: emailTemplateKeys.projectRecordLegacyMailboxMovedSender,
     name: "Absender: Legacy-Protokoll-Postfach umgezogen",
-    description:
-      "Hinweismail an Absender, wenn an alte KI-Protokoll-Adressen gesendet wurde.",
+    description: "Hinweismail an Absender, wenn an alte KI-Protokoll-Adressen gesendet wurde.",
     supportsCta: false,
     allowedVariables: [],
     sampleContext: {},
