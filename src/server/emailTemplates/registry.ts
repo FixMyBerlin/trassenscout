@@ -5,6 +5,7 @@ export const emailTemplateKeys = {
   membershipCreatedEditorsNotification: "membership_created_editors_notification",
   projectRecordAssignedUser: "project_record_assigned_user",
   projectRecordEmailWithoutProjectAdmin: "project_record_email_without_project_admin",
+  projectRecordLegacyMailboxMovedSender: "project_record_legacy_mailbox_moved_sender",
   projectRecordNeedsReviewAdmin: "project_record_needs_review_admin",
   userCreatedAdminNotification: "user_created_admin_notification",
   userCreatedUserNotification: "user_created_user_notification",
@@ -167,6 +168,22 @@ Das Projektteam kann unter {{teamUrl}} eingesehen werden.`,
 **Betreff:** {{emailSubject}}
 {{usedSubaddressLine}}`,
       ctaText: "E-Mail im Admin-Interface anzeigen",
+    },
+  },
+  [emailTemplateKeys.projectRecordLegacyMailboxMovedSender]: {
+    key: emailTemplateKeys.projectRecordLegacyMailboxMovedSender,
+    name: "Absender: Legacy-Protokoll-Postfach umgezogen",
+    description:
+      "Hinweismail an Absender, wenn an alte KI-Protokoll-Adressen gesendet wurde.",
+    supportsCta: false,
+    allowedVariables: [],
+    sampleContext: {},
+    defaults: {
+      subject: "Hinweis: Neue Adresse für KI-Protokoll-E-Mails",
+      introMarkdown: `Danke für Ihre E-Mail. Das Postfach wurde umgestellt.
+
+Bitte senden Sie zukünftige KI-Protokoll-E-Mails an:
+- \`protokoll@trassenscout.de\``,
     },
   },
   [emailTemplateKeys.projectRecordNeedsReviewAdmin]: {

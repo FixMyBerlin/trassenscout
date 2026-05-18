@@ -6,6 +6,7 @@ import db, { ProjectRecordEditingState, ProjectRecordReviewState, ProjectRecordT
 import { extractWithAI } from "./extractWithAI"
 import { fetchProjectContext } from "./fetchProjectContext"
 import { langfuse } from "./langfuseClient"
+import { notifySenderLegacyProtocolMailboxMoved } from "./notifySenderLegacyProtocolMailboxMoved"
 import { notifyAdminsProjectRecordEmailWithoutProject } from "./notifyAdminsProjectRecordEmailWithoutProject"
 import { notifyAdminsProjectRecordNeedsReview } from "./notifyAdminsProjectRecordNeedsReview"
 import { parseEmail } from "./parseEmail"
@@ -27,8 +28,14 @@ export const processProjectRecordEmailOrchestrator = async ({
   })
 
   // Parse the email, separate body from attachments
-  const { body, attachments, from, subject, date } = await parseEmail({
+  const { body, attachments, from, fromAddress, to, cc, subject, date } = await parseEmail({
     rawEmailText,
+  })
+
+  await notifySenderLegacyProtocolMailboxMoved({
+    senderEmail: fromAddress,
+    to,
+    cc,
   })
 
   // If project does not exist, create ProjectRecordEmail with project NULL and skip processing and uploading attachments
