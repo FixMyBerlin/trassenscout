@@ -9,6 +9,7 @@ export default resolver.pipe(resolver.authorize("ADMIN"), async () => {
         select: {
           id: true,
           slug: true,
+          aiEnabled: true,
         },
       },
       projectRecords: {
