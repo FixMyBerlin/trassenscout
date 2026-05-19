@@ -12,7 +12,7 @@ import "server-only"
  */
 export async function getProjectRecordsTabs(projectSlug: string) {
   const canEdit = await checkProjectMemberRole(projectSlug, editorRoles)
-  const { approvedCount, needsReviewCount } = await invoke(getProjectRecordsTabCounts, {
+  const { approvedCount, needsReviewCount, aiEnabled } = await invoke(getProjectRecordsTabCounts, {
     projectSlug,
   })
 
@@ -21,7 +21,7 @@ export async function getProjectRecordsTabs(projectSlug: string) {
       name: `Protokolleinträge (${approvedCount})`,
       href: `/${projectSlug}/project-records` as Route,
     },
-    ...(canEdit
+    ...(canEdit && aiEnabled
       ? [
           {
             name: `Bestätigung erforderlich (${needsReviewCount})`,

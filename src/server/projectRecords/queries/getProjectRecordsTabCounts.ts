@@ -20,7 +20,7 @@ export default resolver.pipe(
     })
 
     if (!project) {
-      return { approvedCount: 0, needsReviewCount: 0 }
+      return { approvedCount: 0, needsReviewCount: 0, aiEnabled: false }
     }
 
     const approvedWhereBase = {
@@ -44,6 +44,6 @@ export default resolver.pipe(
       },
     })
 
-    return { approvedCount, needsReviewCount }
+    return { approvedCount, needsReviewCount, aiEnabled: project.aiEnabled }
   },
 )
