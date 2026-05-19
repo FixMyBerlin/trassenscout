@@ -262,12 +262,20 @@ export const ProjectRecordFormFields = ({
             </div>
           </div>
           <div className="flex gap-8">
-            <LabeledSelect
-              optional
-              name="assignedToId"
-              options={assignedToOptions}
-              label="Zugewiesen an"
-            />
+            <div className="space-y-1">
+              <LabeledSelect
+                optional
+                name="assignedToId"
+                options={assignedToOptions}
+                label="Zugewiesen an"
+              />
+              {splitView && (
+                <p className="text-sm text-gray-500">
+                  Alle unbestätigten Protokolleinträge können nur Nutzer mit Editierrechten
+                  zugewiesen werden.
+                </p>
+              )}
+            </div>
             <div className="w-48">
               <LabeledSwitch
                 name="editingState"
