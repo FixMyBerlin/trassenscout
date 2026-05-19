@@ -66,7 +66,14 @@ export const ProjectRecordFormFields = ({
       ...queryOptions,
     },
   )
-  const [usersData] = useQuery(getProjectUsers, { projectSlug, role: "EDITOR" }, queryOptions)
+  const [usersData] = useQuery(
+    getProjectUsers,
+    {
+      projectSlug,
+      role: splitView ? "EDITOR" : undefined,
+    },
+    queryOptions,
+  )
   const [projectRecordTopicsData, { refetch: refetchTopics }] = useQuery(
     getProjectRecordTopicsByProject,
     { projectSlug },
