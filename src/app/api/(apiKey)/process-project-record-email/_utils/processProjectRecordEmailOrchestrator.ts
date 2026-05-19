@@ -23,9 +23,11 @@ export const processProjectRecordEmailOrchestrator = async ({
   projectSlug?: string
 }) => {
   // Check if project exists in database
-  const project = await db.project.findUnique({
-    where: { slug: projectSlug },
-  })
+  const project = projectSlug
+    ? await db.project.findUnique({
+        where: { slug: projectSlug },
+      })
+    : null
 
   // Parse the email, separate body from attachments
   const { body, attachments, from, fromAddress, to, cc, subject, date } = await parseEmail({

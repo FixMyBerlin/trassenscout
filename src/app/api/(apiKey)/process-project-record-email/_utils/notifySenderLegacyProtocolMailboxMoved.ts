@@ -1,13 +1,30 @@
 import { projectRecordLegacyMailboxMovedNotificationToSender } from "@/emails/mailers/projectRecordLegacyMailboxMovedNotificationToSender"
 
-const LEGACY_RECIPIENTS = ["ki@trassenscout.de", "ki-staging@trassenscout.de"]
+const LEGACY_LOCAL_PREFIXES = ["ki", "ki-dev", "ki-staging"] as const
+const LEGACY_DOMAIN = "trassenscout.de"
 
 const normalize = (value: string) => value.toLowerCase()
 
-const recipientContainsLegacy = (recipientText: string | null | undefined) => {
-  if (!recipientText) return false
+const extractEmailAddresses = (recipientText: string | null | undefined) => {
+  if (!recipientText) return []
   const text = normalize(recipientText)
-  return LEGACY_RECIPIENTS.some((legacy) => text.includes(legacy))
+  const matches = text.match(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/g)
+  return matches || []
+}
+
+const isLegacyAddress = (address: string) => {
+  const [localPart, domain] = address.split("@")
+  if (!localPart || !domain) return false
+  if (domain !== LEGACY_DOMAIN) return false
+
+  return LEGACY_LOCAL_PREFIXES.some(
+    (prefix) => localPart === prefix || localPart.startsWith(`${prefix}+`),
+  )
+}
+
+const recipientContainsLegacy = (recipientText: string | null | undefined) => {
+  const addresses = extractEmailAddresses(recipientText)
+  return addresses.some(isLegacyAddress)
 }
 
 export const notifySenderLegacyProtocolMailboxMoved = async ({
@@ -19,9 +36,15 @@ export const notifySenderLegacyProtocolMailboxMoved = async ({
   to?: string | null
   cc?: string | null
 }) => {
-  if (!senderEmail) return
-  if (!recipientContainsLegacy(to) && !recipientContainsLegacy(cc)) return
+  if (!senderEmail) return false
+  if (!recipientContainsLegacy(to) && !recipientContainsLegacy(cc)) return false
 
-  const notification = await projectRecordLegacyMailboxMovedNotificationToSender({ senderEmail })
-  await notification.send()
+  try {
+    const notification = await projectRecordLegacyMailboxMovedNotificationToSender({ senderEmail })
+    await notification.send()
+    return true
+  } catch (error) {
+    console.error("Failed to send legacy mailbox moved notification:", error)
+    return false
+  }
 }
