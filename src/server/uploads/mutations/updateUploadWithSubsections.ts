@@ -19,6 +19,11 @@ export default resolver.pipe(
   resolver.zod(UpdateUploadSchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
   async ({ id, projectSlug, ...data }, ctx: Ctx) => {
+    const project = await db.project.findFirst({
+      where: { slug: projectSlug },
+      select: { landAcquisitionModuleEnabled: true },
+    })
+
     // copied from updateSubsubsection.ts
     const disconnect: Record<M2MFieldsType | string, { set: [] }> = {}
     const connect: Record<M2MFieldsType | string, { connect: { id: number }[] | undefined }> = {}
@@ -27,6 +32,9 @@ export default resolver.pipe(
       connect[fieldName] = { connect: data[fieldName] ? data[fieldName].map((id) => ({ id })) : [] }
       delete data[fieldName]
     })
+    if (!project?.landAcquisitionModuleEnabled) {
+      connect.acquisitionAreas = { connect: [] }
+    }
 
     await db.upload.update({
       where: { id },

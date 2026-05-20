@@ -35,6 +35,10 @@ export default resolver.pipe(
       delete data[fieldName]
     })
     const projectId = await getProjectIdBySlug(projectSlug)
+    const project = await db.project.findUnique({
+      where: { id: projectId },
+      select: { landAcquisitionModuleEnabled: true },
+    })
     const currentUserId = ctx.session.userId
 
     const record = await db.projectRecord.create({
@@ -42,6 +46,7 @@ export default resolver.pipe(
       data: {
         projectId,
         ...data,
+        acquisitionAreaId: project?.landAcquisitionModuleEnabled ? data.acquisitionAreaId : null,
         subsectionId: null,
         ...connect,
         // Set both author and updatedBy to current user on creation

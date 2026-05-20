@@ -32,6 +32,10 @@ export default resolver.pipe(
   authorizeProjectMember(extractProjectSlug, editorRoles),
   async ({ id, projectSlug, reviewState, ...data }, ctx: Ctx) => {
     const previous = await db.projectRecord.findFirst({ where: { id } })
+    const project = await db.project.findUnique({
+      where: { slug: projectSlug },
+      select: { landAcquisitionModuleEnabled: true },
+    })
     const currentUserId = ctx.session.userId
     const isAdmin = ctx.session.role === UserRoleEnum.ADMIN
 
@@ -76,6 +80,7 @@ export default resolver.pipe(
       // @ts-expect-error The whole `m2mFields` is way to hard to type but apparently working
       data: {
         ...data,
+        acquisitionAreaId: project?.landAcquisitionModuleEnabled ? data.acquisitionAreaId : null,
         subsectionId: null,
         ...connect,
         updatedById: currentUserId, // always set updatedById on edit

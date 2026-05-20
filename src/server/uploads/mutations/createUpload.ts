@@ -21,6 +21,10 @@ export default resolver.pipe(
   authorizeProjectMember(extractProjectSlug, editorRoles),
   async ({ projectSlug, ...input }, ctx: Ctx) => {
     const projectId = await getProjectIdBySlug(projectSlug)
+    const project = await db.project.findUnique({
+      where: { id: projectId },
+      select: { landAcquisitionModuleEnabled: true },
+    })
 
     // Extract m2m fields
     const connect: Record<M2MFieldsType | string, { connect: { id: number }[] | undefined }> = {}
@@ -30,6 +34,9 @@ export default resolver.pipe(
       }
       delete input[fieldName]
     })
+    if (!project?.landAcquisitionModuleEnabled) {
+      connect.acquisitionAreas = { connect: [] }
+    }
 
     // Extract EXIF data from S3 if the file type supports EXIF and lat/lng not already provided
     const shouldExtract = isImage(input.mimeType) && !input.latitude && !input.longitude
