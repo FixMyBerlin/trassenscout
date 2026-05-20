@@ -26,7 +26,7 @@ type Props = {
   acquisitionAreas: AcquisitionAreaLink[]
   projectRecords: { id: number; title: string; date: Date | null }[] | null
   projectRecordEmail: { createdAt: Date } | null
-  surveyResponse: { id: number; surveySession: { survey: { slug: string } } } | null
+  surveyResponse: { id: number; surveySession: { survey: { id: number; slug: string } } } | null
   className?: string
 }
 
@@ -179,8 +179,12 @@ export const UploadVerknuepfungen = ({
           {hasSurveyResponse && (
             <li>
               <strong className="font-medium">Beteiligung: </strong>
-              Beitrag mit der ID {surveyResponse.id} - Formular{" "}
-              {surveyResponse.surveySession.survey.slug}
+              <Link
+                href={`/${projectSlug}/surveys/${surveyResponse.surveySession.survey.id}/responses?responseDetails=${surveyResponse.id}`}
+              >
+                Beitrag mit der ID {surveyResponse.id} - Formular{" "}
+                {surveyResponse.surveySession.survey.slug}
+              </Link>
             </li>
           )}
           {hasProjectRecordEmail && (

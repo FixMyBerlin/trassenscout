@@ -69,7 +69,7 @@ export default resolver.pipe(
           include: {
             surveySession: {
               include: {
-                survey: { select: { slug: true } },
+                survey: { select: { id: true, slug: true } },
               },
             },
           },
