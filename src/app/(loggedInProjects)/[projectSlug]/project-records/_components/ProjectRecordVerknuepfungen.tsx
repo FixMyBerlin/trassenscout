@@ -29,7 +29,7 @@ type Props = {
   uploads?: {
     id: number
     title: string
-    createdAt?: Date
+    createdAt: Date
   }[]
   className?: string
 }
@@ -109,4 +109,3 @@ export const ProjectRecordVerknuepfungen = ({
     </section>
   )
 }
-

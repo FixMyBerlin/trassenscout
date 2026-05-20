@@ -85,6 +85,7 @@ export default resolver.pipe(
           select: {
             id: true,
             title: true,
+            createdAt: true,
             mimeType: true,
             externalUrl: true,
             collaborationUrl: true,
