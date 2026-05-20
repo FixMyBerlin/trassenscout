@@ -94,7 +94,6 @@ export const reprocessProjectRecord = async ({
       title: finalResult.title,
       body: finalResult.body,
       date: finalResult.date ? new Date(finalResult.date) : new Date(),
-      // subsectionId: finalResult.subsectionId ? parseInt(finalResult.subsectionId) : undefined,
       // subsubsectionId: finalResult.subsubsectionId ? parseInt(finalResult.subsubsectionId) : undefined,
       projectRecordTopics: finalResult.topics?.map((id) => parseInt(id)) || [],
     },

@@ -151,7 +151,6 @@ export const processProjectRecordEmailOrchestrator = async ({
   const combinedResult = {
     ...finalResult,
     projectId,
-    // subsectionId: finalResult.subsectionId ? parseInt(finalResult.subsectionId) : null,
     // subsubsectionId: finalResult.subsubsectionId ? parseInt(finalResult.subsubsectionId) : null,
     projectRecordTopics:
       finalResult.topics && Array.isArray(finalResult.topics)
@@ -167,7 +166,6 @@ export const processProjectRecordEmailOrchestrator = async ({
       body: combinedResult.body,
       // if date is null or invalid, use parsed date or current date
       date: combinedResult.date ? new Date(combinedResult.date) : date || new Date(),
-      // subsectionId: combinedResult.subsectionId,
       // subsubsectionId: combinedResult.subsubsectionId,
       projectId: combinedResult.projectId,
       projectRecordAuthorType: ProjectRecordType.SYSTEM,
