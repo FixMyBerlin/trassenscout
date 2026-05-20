@@ -19,13 +19,13 @@ export const NoSurveysInfoBox = () => {
                 <span className="underline">Bürgerbeteiligung zu Radschnellverbindungen 8:</span>{" "}
                 Gezielte Abfrage von Meinungen, Hinweise und Anregungen.
               </li>
-              <li>
+              {/* <li>
                 <span className="underline">
                   Förderprogramm Bushaltestellen (Landkreis Oberhavel):
                 </span>{" "}
                 Digitalisiertes Meldeverfahren für Kommunen zur Vorprüfung und Priorisierung von
                 ÖPNV-Infrastrukturmaßnahmen nach Landesrichtlinie.
-              </li>
+              </li> */}
               <li>
                 <span className="underline">Landesweites Radnetz (Brandenburg):</span>{" "}
                 Online-Beteiligung von über 200 Ämtern und Trägern öffentlicher Belange (TÖB). Über
