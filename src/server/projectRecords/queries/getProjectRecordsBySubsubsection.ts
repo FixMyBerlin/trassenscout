@@ -17,15 +17,11 @@ export default resolver.pipe(
       where: {
         project: { slug: projectSlug },
         reviewState: { in: ["NEEDSREVIEW", "APPROVED"] }, // Only show reviewed or approved projectRecords to normal users
-        OR: [
-          { subsubsectionId: subsubsectionId },
-          { acquisitionArea: { subsubsectionId: subsubsectionId } },
-        ],
+        subsubsectionId,
       },
       orderBy: { date: "desc" },
       include: {
         projectRecordTopics: true,
-        subsection: true,
         subsubsection: {
           include: {
             subsection: {

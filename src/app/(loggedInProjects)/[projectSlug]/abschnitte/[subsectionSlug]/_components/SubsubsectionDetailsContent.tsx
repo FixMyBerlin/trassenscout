@@ -19,12 +19,17 @@ import {
 } from "@/src/core/components/text"
 import { H2 } from "@/src/core/components/text/Headings"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
-import { subsubsectionEditRoute } from "@/src/core/routes/subsectionRoutes"
+import {
+  subsubsectionEditRoute,
+  subsubsectionLandAcquisitionRoute,
+} from "@/src/core/routes/subsectionRoutes"
 import { uploadEditRoute } from "@/src/core/routes/uploadRoutes"
 import { useCurrentReturnTo } from "@/src/core/routes/useCurrentPathWithSearch"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
 import { subsubsectionLocationLabelMap } from "@/src/core/utils/subsubsectionLocationLabelMap"
+import { buildRouteWithQuery } from "@/src/core/routes/returnTo"
+import getAcquisitionAreasWithProjectRecordCountBySubsubsection from "@/src/server/acquisitionAreas/queries/getAcquisitionAreasWithProjectRecordCountBySubsubsection"
 import getProjectRecordsBySubsubsection from "@/src/server/projectRecords/queries/getProjectRecordsBySubsubsection"
 import { TGetSubsubsection } from "@/src/server/subsubsections/queries/getSubsubsection"
 import getLinkedSurveyResponseForSubsubsection from "@/src/server/survey-responses/queries/getLinkedSurveyResponseForSubsubsection"
@@ -83,6 +88,16 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
       projectSlug,
       subsubsectionId: subsubsection.id,
     },
+  )
+  const [acquisitionAreaProjectRecordCounts] = useQuery(
+    getAcquisitionAreasWithProjectRecordCountBySubsubsection,
+    {
+      projectSlug,
+      subsubsectionId: subsubsection.id,
+    },
+  )
+  const acquisitionAreasWithProjectRecords = acquisitionAreaProjectRecordCounts.filter(
+    (acquisitionArea) => acquisitionArea.projectRecordCount > 0,
   )
 
   const [linkedSurveyResponse] = useQuery(getLinkedSurveyResponseForSubsubsection, {
@@ -291,6 +306,33 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
           />
         ) : (
           <ZeroCase small visible name="Protokolleinträge" />
+        )}
+        {acquisitionAreasWithProjectRecords.length > 0 && (
+          <div className="rounded-md border border-blue-200 bg-blue-50 p-3 text-sm text-blue-900">
+            <p className="font-medium">Hinweis:</p>
+            <p className="mt-1">
+              In untergeordneten Verhandlungsflächen gibt es zusätzliche Protokolleinträge:
+            </p>
+            <ul className="mt-2 list-inside list-disc space-y-1">
+              {acquisitionAreasWithProjectRecords.map((acquisitionArea) => (
+                <li key={acquisitionArea.id}>
+                  <Link
+                    href={buildRouteWithQuery(
+                      subsubsectionLandAcquisitionRoute(
+                        projectSlug,
+                        subsectionSlug!,
+                        subsubsectionSlug!,
+                      ),
+                      { acquisitionAreaId: acquisitionArea.id },
+                    )}
+                  >
+                    Verhandlungsfläche #{acquisitionArea.id} ({acquisitionArea.projectRecordCount}{" "}
+                    Protokolleinträge)
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
         <IfUserCanEdit>
           <button
