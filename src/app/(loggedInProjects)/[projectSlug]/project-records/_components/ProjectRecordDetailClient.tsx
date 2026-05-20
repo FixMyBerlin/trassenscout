@@ -76,7 +76,6 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord }: Props) => {
 
   const projectRecordSummaryProps = {
     projectRecord,
-    onUploadDeleted: refreshProjectRecord,
   }
 
   // Scroll to AI form when suggestions are loaded
