@@ -42,6 +42,7 @@ export default resolver.pipe(
       data: {
         projectId,
         ...data,
+        subsectionId: null,
         ...connect,
         // Set both author and updatedBy to current user on creation
         // we only have USER type for now

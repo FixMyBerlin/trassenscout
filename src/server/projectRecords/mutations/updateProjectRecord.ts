@@ -76,6 +76,7 @@ export default resolver.pipe(
       // @ts-expect-error The whole `m2mFields` is way to hard to type but apparently working
       data: {
         ...data,
+        subsectionId: null,
         ...connect,
         updatedById: currentUserId, // always set updatedById on edit
         reviewedAt,
