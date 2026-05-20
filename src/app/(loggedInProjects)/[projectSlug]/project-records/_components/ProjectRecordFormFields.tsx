@@ -14,13 +14,12 @@ import {
   LabeledTextField,
 } from "@/src/core/components/forms"
 import { blueButtonStyles } from "@/src/core/components/links"
-import { frenchQuote, shortTitle } from "@/src/core/components/text"
+import { shortTitle } from "@/src/core/components/text"
 import { NumberArraySchema } from "@/src/core/utils/schema-shared"
 import createProjectRecordTopic from "@/src/server/ProjectRecordTopics/mutations/createProjectRecordTopic"
 import getProjectRecordTopicsByProject from "@/src/server/ProjectRecordTopics/queries/getProjectRecordTopicsByProject"
 import getAcquisitionAreas from "@/src/server/acquisitionAreas/queries/getAcquisitionAreas"
 import getProjectUsers from "@/src/server/memberships/queries/getProjectUsers"
-import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import getSubsubsections from "@/src/server/subsubsections/queries/getSubsubsections"
 import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
 import { useMutation, useQuery } from "@blitzjs/rpc"
@@ -56,7 +55,6 @@ export const ProjectRecordFormFields = ({
     refetchOnReconnect: false,
   }
 
-  const [subsectionsData] = useQuery(getSubsections, { projectSlug }, queryOptions)
   const [subsubsectionsData] = useQuery(getSubsubsections, { projectSlug }, queryOptions)
   const [acquisitionAreas = []] = useQuery(
     getAcquisitionAreas,
@@ -82,13 +80,10 @@ export const ProjectRecordFormFields = ({
   const [newTopic, setNewTopic] = useState("")
   const [createProjectRecordTopicMutation] = useMutation(createProjectRecordTopic)
   const { watch, setValue } = useFormContext()
-  const subsectionId = watch("subsectionId")
-  const subsubsectionId = watch("subsubsectionId")
   const acquisitionAreaId = watch("acquisitionAreaId")
   const uploadsValue = watch("uploads")
   const uploadIds = NumberArraySchema.parse(uploadsValue)
 
-  const subsections = subsectionsData?.subsections ?? []
   const subsubsections = subsubsectionsData?.subsubsections ?? []
   const users = usersData ?? []
   const projectRecordTopics = projectRecordTopicsData?.projectRecordTopics ?? []
@@ -102,29 +97,11 @@ export const ProjectRecordFormFields = ({
     },
   )
 
-  const handleSubsectionChange = (newSubsectionId: string) => {
-    const currentSubsubsectionId = watch("subsubsectionId")
-    if (currentSubsubsectionId) {
-      const selectedSubsubsection = subsubsections.find(
-        (s) => s.id === Number(currentSubsubsectionId),
-      )
-      if (selectedSubsubsection && selectedSubsubsection.subsectionId !== Number(newSubsectionId)) {
-        setValue("subsubsectionId", null)
-      }
-    }
-  }
-
   const topicsOptions = projectRecordTopics.length
     ? projectRecordTopics.map((t) => {
         return { value: String(t.id), label: t.title }
       })
     : []
-
-  const subsectionOptions: [string | number, string][] = subsections.map((subsection) => [
-    subsection.id,
-    shortTitle(subsection.slug),
-  ])
-  subsectionOptions.unshift(["", "Keine Angabe"])
 
   const assignedToOptions = getUserSelectOptions(users)
 
@@ -134,7 +111,6 @@ export const ProjectRecordFormFields = ({
   ]
 
   const subsubsectionOptions: [string | number, string][] = subsubsections
-    .filter((subsubsection) => (subsectionId ? subsubsection.subsectionId == subsectionId : true))
     .sort((a, b) => a.subsection.slug.localeCompare(b.subsection.slug))
     .map((subsubsection) => [
       subsubsection.id,
@@ -142,17 +118,9 @@ export const ProjectRecordFormFields = ({
     ])
   subsubsectionOptions.unshift(["", "Keine Angabe"])
 
-  const selectedSubsectionId = subsectionId ? Number(subsectionId) : null
-  const selectedSubsubsectionId = subsubsectionId ? Number(subsubsectionId) : null
   const selectedAcquisitionAreaId = acquisitionAreaId ? Number(acquisitionAreaId) : null
 
-  const filteredAcquisitionAreas = acquisitionAreas.filter((acquisitionArea) => {
-    if (selectedSubsubsectionId) return acquisitionArea.subsubsectionId === selectedSubsubsectionId
-    if (selectedSubsectionId) {
-      return acquisitionArea.subsubsection.subsectionId === selectedSubsectionId
-    }
-    return true
-  })
+  const filteredAcquisitionAreas = acquisitionAreas
 
   const acquisitionAreaOptions: [string | number, string][] = filteredAcquisitionAreas.map(
     (acquisitionArea) => [
@@ -164,13 +132,7 @@ export const ProjectRecordFormFields = ({
   )
   acquisitionAreaOptions.unshift(["", "Keine Angabe"])
 
-  const selectedSubsection = subsectionId
-    ? subsections.find((s) => s.id === Number(subsectionId))
-    : null
-
-  const subsubsectionLabel = selectedSubsection
-    ? `Einträge für ${frenchQuote(shortTitle(selectedSubsection.slug))}`
-    : "Alle Einträge"
+  const subsubsectionLabel = "Einträge"
 
   const handleNewTopicFormSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
@@ -212,17 +174,9 @@ export const ProjectRecordFormFields = ({
 
           <div
             className={
-              landAcquisitionModuleEnabled ? "grid grid-cols-3 gap-4" : "grid grid-cols-2 gap-4"
+              landAcquisitionModuleEnabled ? "grid grid-cols-2 gap-4" : "grid grid-cols-1 gap-4"
             }
           >
-            <LabeledSelect
-              optional
-              name="subsectionId"
-              options={subsectionOptions}
-              label="Planungsabschnitt"
-              onChange={handleSubsectionChange}
-            />
-
             <LabeledSelect
               optional
               name="subsubsectionId"
