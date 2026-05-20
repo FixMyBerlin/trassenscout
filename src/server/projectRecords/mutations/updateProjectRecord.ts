@@ -81,7 +81,6 @@ export default resolver.pipe(
       data: {
         ...data,
         acquisitionAreaId: project?.landAcquisitionModuleEnabled ? data.acquisitionAreaId : null,
-        subsectionId: null,
         ...connect,
         updatedById: currentUserId, // always set updatedById on edit
         reviewedAt,

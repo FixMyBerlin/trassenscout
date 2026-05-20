@@ -47,7 +47,6 @@ export default resolver.pipe(
         projectId,
         ...data,
         acquisitionAreaId: project?.landAcquisitionModuleEnabled ? data.acquisitionAreaId : null,
-        subsectionId: null,
         ...connect,
         // Set both author and updatedBy to current user on creation
         // we only have USER type for now

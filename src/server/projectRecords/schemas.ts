@@ -14,7 +14,6 @@ export const ProjectRecordSchema = z.object({
   date: NullableDateSchema,
   title: z.string().min(2, { message: "Pflichtfeld. Mindestens 2 Zeichen." }),
   body: z.string().nullish(),
-  subsectionId: InputNumberOrNullSchema,
   subsubsectionId: InputNumberOrNullSchema,
   acquisitionAreaId: InputNumberOrNullSchema,
   assignedToId: InputNumberOrNullSchema,
@@ -45,7 +44,6 @@ export const DeleteProjectRecordSchema = ProjectSlugRequiredSchema.merge(
 
 export const NewProjectRecordFormSchema = ProjectRecordSchema.omit({
   date: true,
-  subsectionId: true,
   projectRecordTopics: true,
   uploads: true,
   userId: true,
@@ -74,7 +72,6 @@ export const NewProjectRecordFormSchema = ProjectRecordSchema.omit({
 
 export const ProjectRecordFormSchema = ProjectRecordSchema.omit({
   date: true,
-  subsectionId: true,
   projectRecordTopics: true,
   uploads: true,
   userId: true,

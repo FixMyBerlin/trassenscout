@@ -296,7 +296,6 @@ model Subsection {
   //
   subsubsections                Subsubsection[]
   LogEntry                      LogEntry[]
-  ProjectRecord                 ProjectRecord[]
 
   @@unique([projectId, slug])
   @@unique([projectId, order])
@@ -823,9 +822,6 @@ model ProjectRecord {
   //
   project                    Project                   @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId                  Int
-  //
-  subsection                 Subsection?               @relation(fields: [subsectionId], references: [id], onDelete: Cascade)
-  subsectionId               Int?
   //
   subsubsection              Subsubsection?            @relation(fields: [subsubsectionId], references: [id], onDelete: Cascade)
   subsubsectionId            Int?
