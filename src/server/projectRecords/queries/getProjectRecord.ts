@@ -26,7 +26,6 @@ export default resolver.pipe(
         reviewState: { in: ["NEEDSREVIEW", "APPROVED"] }, // Only show reviewed or approved projectRecords to normal users
       },
       include: {
-        subsection: true,
         subsubsection: {
           include: {
             subsection: {

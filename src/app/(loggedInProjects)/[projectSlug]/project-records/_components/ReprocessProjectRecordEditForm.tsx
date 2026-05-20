@@ -66,7 +66,6 @@ export const ReprocessProjectRecordEditForm = ({
     date: projectRecord.date ? getDate(aiSuggestions.date) : "",
     title: aiSuggestions.title || projectRecord.title,
     body: aiSuggestions.body || projectRecord.body,
-    subsectionId: aiSuggestions.subsectionId ?? projectRecord.subsectionId,
     ...m2mFieldsInitialValues,
     ...(aiSuggestions.projectRecordTopics && aiSuggestions.projectRecordTopics.length > 0
       ? { projectRecordTopics: aiSuggestions.projectRecordTopics.map(String) }

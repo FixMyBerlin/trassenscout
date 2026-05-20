@@ -5,7 +5,6 @@
 export const projectRecordInclude = {
   project: { select: { slug: true, aiEnabled: true } },
   projectRecordTopics: true,
-  subsection: true,
   subsubsection: {
     include: {
       subsection: {

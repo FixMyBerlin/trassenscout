@@ -297,7 +297,7 @@ export const ProjectRecordFormFields = ({
         </div>
       </div>
 
-      <SuperAdminLogData data={{ subsectionId, uploadsValue, uploadIds }} />
+      <SuperAdminLogData data={{ uploadsValue, uploadIds }} />
     </>
   )
 }

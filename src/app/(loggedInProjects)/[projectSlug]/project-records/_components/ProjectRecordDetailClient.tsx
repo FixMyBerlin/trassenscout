@@ -18,7 +18,6 @@ export type ReprocessedProjectRecord = {
   title?: string
   body?: string
   date: Date
-  subsectionId?: number
   projectRecordTopics?: number[]
 }
 

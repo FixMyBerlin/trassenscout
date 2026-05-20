@@ -57,18 +57,6 @@ export const ProjectRecordSummary = ({ projectRecord, onUploadDeleted }: Props) 
           {format(new Date(projectRecord.date!), "P", { locale: de })}
         </span>
 
-        <div className="text-gray-500">Abschnitt: </div>
-        {projectRecord.subsection ? (
-          <Link
-            className="col-span-3 uppercase"
-            href={`/${projectSlug}/abschnitte/${projectRecord.subsection.slug}`}
-          >
-            {projectRecord.subsection.slug}
-          </Link>
-        ) : (
-          <span className="col-span-3">Keine Angabe</span>
-        )}
-
         <div className="text-gray-500">Eintrag: </div>
         {projectRecord.subsubsection ? (
           <Link

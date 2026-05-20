@@ -27,7 +27,6 @@ export const useFilteredProjectRecords = (
       projectRecord.projectRecordTopics.some((topic) =>
         topic.title.toLowerCase().includes(cleanedSearchterm),
       ) ||
-      projectRecord.subsection?.slug.toLowerCase().includes(cleanedSearchterm) ||
       assigneeName.includes(cleanedSearchterm)
     )
   })

@@ -22,7 +22,6 @@ export default resolver.pipe(
           },
         },
         projectRecordTopics: true,
-        subsection: true,
         subsubsection: {
           include: {
             subsection: {

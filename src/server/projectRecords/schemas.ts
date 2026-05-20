@@ -45,6 +45,7 @@ export const DeleteProjectRecordSchema = ProjectSlugRequiredSchema.merge(
 
 export const NewProjectRecordFormSchema = ProjectRecordSchema.omit({
   date: true,
+  subsectionId: true,
   projectRecordTopics: true,
   uploads: true,
   userId: true,
@@ -73,6 +74,7 @@ export const NewProjectRecordFormSchema = ProjectRecordSchema.omit({
 
 export const ProjectRecordFormSchema = ProjectRecordSchema.omit({
   date: true,
+  subsectionId: true,
   projectRecordTopics: true,
   uploads: true,
   userId: true,
