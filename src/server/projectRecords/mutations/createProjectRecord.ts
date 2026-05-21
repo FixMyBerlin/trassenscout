@@ -39,6 +39,8 @@ export default resolver.pipe(
       where: { id: projectId },
       select: { landAcquisitionModuleEnabled: true },
     })
+    const selectedSubsubsectionIds = connect.subsubsections?.connect?.map((row) => row.id) ?? []
+    const selectedAcquisitionAreaIds = connect.acquisitionAreas?.connect?.map((row) => row.id) ?? []
     if (!project?.landAcquisitionModuleEnabled) {
       connect.acquisitionAreas = { connect: [] }
     }
@@ -50,14 +52,12 @@ export default resolver.pipe(
         projectId,
         ...data,
         subsubsectionId:
-          Array.isArray(data.subsubsections) && data.subsubsections.length > 0
-            ? data.subsubsections[0]!
+          selectedSubsubsectionIds.length > 0
+            ? selectedSubsubsectionIds[0]!
             : data.subsubsectionId,
         acquisitionAreaId:
-          project?.landAcquisitionModuleEnabled &&
-          Array.isArray(data.acquisitionAreas) &&
-          data.acquisitionAreas.length > 0
-            ? data.acquisitionAreas[0]!
+          project?.landAcquisitionModuleEnabled && selectedAcquisitionAreaIds.length > 0
+            ? selectedAcquisitionAreaIds[0]!
             : project?.landAcquisitionModuleEnabled
               ? data.acquisitionAreaId
               : null,

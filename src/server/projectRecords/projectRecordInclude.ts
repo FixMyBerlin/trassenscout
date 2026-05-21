@@ -12,7 +12,30 @@ export const projectRecordInclude = {
       },
     },
   },
+  subsubsections: {
+    include: {
+      subsection: {
+        select: { slug: true },
+      },
+    },
+  },
   acquisitionArea: {
+    select: {
+      id: true,
+      subsubsection: {
+        select: {
+          slug: true,
+          subsection: { select: { slug: true } },
+        },
+      },
+      parcel: {
+        select: {
+          alkisParcelId: true,
+        },
+      },
+    },
+  },
+  acquisitionAreas: {
     select: {
       id: true,
       subsubsection: {

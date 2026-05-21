@@ -112,6 +112,8 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
           landAcquisitionModuleEnabled={projectRecord.project.landAcquisitionModuleEnabled}
           subsubsection={projectRecord.subsubsection}
           acquisitionArea={projectRecord.acquisitionArea}
+          subsubsections={projectRecord.subsubsections}
+          acquisitionAreas={projectRecord.acquisitionAreas}
         />
       </div>
 

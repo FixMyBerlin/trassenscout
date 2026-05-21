@@ -21,6 +21,7 @@ type Props = {
   open: boolean
   onClose: () => void
   onSuccess?: (projectRecordId: number) => void | Promise<void>
+  landAcquisitionModuleEnabled?: boolean
   initialValues?: {
     subsubsectionId?: number
     acquisitionAreaId?: number
@@ -39,6 +40,7 @@ export const ProjectRecordNewModal = ({
   open,
   onClose,
   onSuccess,
+  landAcquisitionModuleEnabled = false,
   initialValues,
 }: Props) => {
   const [createProjectRecordMutation] = useMutation(createProjectRecord)
@@ -69,6 +71,13 @@ export const ProjectRecordNewModal = ({
     resetAndClose()
   }
 
+  const createRelationContext: "project" | "subsubsection" | "acquisitionArea" =
+    initialValues?.acquisitionAreaId
+      ? "acquisitionArea"
+      : initialValues?.subsubsectionId
+        ? "subsubsection"
+        : "project"
+
   type HandleSubmit = z.infer<typeof NewProjectRecordFormSchema>
   const handleSubmit = async (values: HandleSubmit) => {
     try {
@@ -97,10 +106,10 @@ export const ProjectRecordNewModal = ({
     date: getDate(new Date()),
     editingState: ProjectRecordEditingState.PENDING,
     ...(initialValues?.subsubsectionId && {
-      subsubsections: [initialValues.subsubsectionId],
+      subsubsections: [String(initialValues.subsubsectionId)],
     }),
     ...(initialValues?.acquisitionAreaId && {
-      acquisitionAreas: [initialValues.acquisitionAreaId],
+      acquisitionAreas: [String(initialValues.acquisitionAreaId)],
     }),
     ...(selectedTemplate && {
       title: selectedTemplate.entryTitle,
@@ -185,12 +194,21 @@ export const ProjectRecordNewModal = ({
           ].join("-")}
           resetOnSubmit
           onSubmit={handleSubmit}
+          // Combobox items use string values; pass string IDs so preselection is visible in UI.
+          // Schema coercion handles number conversion on submit.
+          // @ts-expect-error m2m combobox initial values are string ids
           initialValues={formInitialValues}
           schema={NewProjectRecordFormSchema}
           submitText="Protokolleintrag speichern"
         >
           <FormDirtyStateReporter onDirtyChange={setIsDirty} />
-          <ProjectRecordFormFields projectSlug={projectSlug} disableSuspenseQueries />
+          <ProjectRecordFormFields
+            formMode="create"
+            relationContext={createRelationContext}
+            projectSlug={projectSlug}
+            landAcquisitionModuleEnabled={landAcquisitionModuleEnabled}
+            disableSuspenseQueries
+          />
         </Form>
       </Modal>
     </IfUserCanEdit>

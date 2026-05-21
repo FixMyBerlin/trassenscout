@@ -55,6 +55,13 @@ export const EditProjectRecordForm = ({
     },
   )
 
+  const editRelationContext: "project" | "subsubsection" | "acquisitionArea" =
+    projectRecord.acquisitionAreas.length > 0
+      ? "acquisitionArea"
+      : projectRecord.subsubsections.length > 0
+        ? "subsubsection"
+        : "project"
+
   const handleSubmit = async (values: z.infer<typeof ProjectRecordFormSchema>) => {
     onSubmittingChange?.(true)
     try {
@@ -146,6 +153,8 @@ export const EditProjectRecordForm = ({
       >
         <FormDirtyStateReporter onDirtyChange={onDirtyChange} />
         <ProjectRecordFormFields
+          formMode="edit"
+          relationContext={editRelationContext}
           projectSlug={projectSlug}
           splitView={needsReview}
           landAcquisitionModuleEnabled={projectRecord.project.landAcquisitionModuleEnabled}

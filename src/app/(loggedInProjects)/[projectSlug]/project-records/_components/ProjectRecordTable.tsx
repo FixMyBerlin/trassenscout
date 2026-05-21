@@ -149,6 +149,10 @@ export const ProjectRecordsTable = ({
                 const detailHref = projectRecordDetailRoute(projectSlug, projectRecord.id)
                 const relationSubsubsection =
                   "subsubsection" in projectRecord ? projectRecord.subsubsection : null
+                const relationSubsubsections =
+                  "subsubsections" in projectRecord && Array.isArray(projectRecord.subsubsections)
+                    ? projectRecord.subsubsections
+                    : []
                 const relationAcquisitionArea =
                   "acquisitionArea" in projectRecord &&
                   projectRecord.acquisitionArea &&
@@ -156,6 +160,11 @@ export const ProjectRecordsTable = ({
                   "parcel" in projectRecord.acquisitionArea
                     ? projectRecord.acquisitionArea
                     : null
+                const relationAcquisitionAreas =
+                  "acquisitionAreas" in projectRecord &&
+                  Array.isArray(projectRecord.acquisitionAreas)
+                    ? projectRecord.acquisitionAreas
+                    : []
                 const landAcquisitionEnabled =
                   "project" in projectRecord
                     ? "landAcquisitionModuleEnabled" in projectRecord.project
@@ -206,7 +215,9 @@ export const ProjectRecordsTable = ({
                           projectSlug={projectSlug}
                           landAcquisitionModuleEnabled={landAcquisitionEnabled}
                           subsubsection={relationSubsubsection}
+                          subsubsections={relationSubsubsections}
                           acquisitionArea={relationAcquisitionArea}
+                          acquisitionAreas={relationAcquisitionAreas}
                         />
                       </td>
                     ) : null}

@@ -344,6 +344,9 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
 
         <ProjectRecordNewModal
           projectSlug={projectSlug}
+          landAcquisitionModuleEnabled={
+            subsubsection.subsection.project.landAcquisitionModuleEnabled ?? false
+          }
           open={isProjectRecordModalOpen}
           onClose={() => setIsProjectRecordModalOpen(false)}
           onSuccess={async (projectRecordId) => {

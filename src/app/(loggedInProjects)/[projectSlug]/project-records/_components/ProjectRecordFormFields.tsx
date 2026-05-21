@@ -30,6 +30,8 @@ import { useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
 
 type Props = {
+  formMode?: "create" | "edit"
+  relationContext?: "project" | "subsubsection" | "acquisitionArea"
   splitView?: boolean
   projectSlug: string
   landAcquisitionModuleEnabled?: boolean
@@ -44,6 +46,8 @@ type Props = {
 }
 
 export const ProjectRecordFormFields = ({
+  formMode = "edit",
+  relationContext = "project",
   projectSlug,
   emailSource,
   splitView,
@@ -121,7 +125,8 @@ export const ProjectRecordFormFields = ({
       label: shortTitle(`${subsubsection.slug} (${subsubsection.subsection.slug})`),
     }))
 
-  const filteredAcquisitionAreas = selectedSubsubsectionIds.length
+  const shouldFilterAcquisitionAreas = formMode === "edit" && relationContext === "subsubsection"
+  const filteredAcquisitionAreas = shouldFilterAcquisitionAreas && selectedSubsubsectionIds.length
     ? acquisitionAreas.filter(
         (acquisitionArea) => selectedSubsubsectionIds.includes(acquisitionArea.subsubsectionId),
       )
@@ -135,6 +140,10 @@ export const ProjectRecordFormFields = ({
   }))
 
   const subsubsectionLabel = "Einträge"
+  const showSubsubsectionField = !(formMode === "create" && relationContext === "acquisitionArea")
+  const showAcquisitionAreaField =
+    landAcquisitionModuleEnabled &&
+    !(formMode === "create" && relationContext === "subsubsection")
 
   const handleNewTopicFormSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
@@ -152,7 +161,12 @@ export const ProjectRecordFormFields = ({
   }
 
   useEffect(() => {
-    if (!landAcquisitionModuleEnabled || selectedAcquisitionAreaIds.length === 0) return
+    if (
+      !landAcquisitionModuleEnabled ||
+      !shouldFilterAcquisitionAreas ||
+      selectedAcquisitionAreaIds.length === 0
+    )
+      return
     const filteredIds = filteredAcquisitionAreas.map((acquisitionArea) => acquisitionArea.id)
     const stillCompatibleIds = selectedAcquisitionAreaIds.filter((id) => filteredIds.includes(id))
     if (stillCompatibleIds.length !== selectedAcquisitionAreaIds.length) {
@@ -161,6 +175,7 @@ export const ProjectRecordFormFields = ({
   }, [
     filteredAcquisitionAreas,
     landAcquisitionModuleEnabled,
+    shouldFilterAcquisitionAreas,
     selectedAcquisitionAreaIds,
     setValue,
   ])
@@ -183,13 +198,15 @@ export const ProjectRecordFormFields = ({
               landAcquisitionModuleEnabled ? "grid grid-cols-2 gap-4" : "grid grid-cols-1 gap-4"
             }
           >
-            <LabeledCombobox
-              optional
-              scope="subsubsections"
-              items={subsubsectionItems}
-              label={subsubsectionLabel}
-            />
-            {landAcquisitionModuleEnabled && (
+            {showSubsubsectionField && (
+              <LabeledCombobox
+                optional
+                scope="subsubsections"
+                items={subsubsectionItems}
+                label={subsubsectionLabel}
+              />
+            )}
+            {showAcquisitionAreaField && (
               <LabeledCombobox
                 optional
                 scope="acquisitionAreas"

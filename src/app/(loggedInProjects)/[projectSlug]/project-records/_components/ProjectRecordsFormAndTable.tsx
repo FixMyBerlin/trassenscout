@@ -102,6 +102,9 @@ export const ProjectRecordsFormAndTable = ({
 
       <ProjectRecordNewModal
         projectSlug={projectSlug}
+        landAcquisitionModuleEnabled={
+          projectRecords[0]?.project?.landAcquisitionModuleEnabled ?? false
+        }
         open={isProjectRecordModalOpen}
         onClose={() => setIsProjectRecordModalOpen(false)}
         onSuccess={async (projectRecordId) => {
