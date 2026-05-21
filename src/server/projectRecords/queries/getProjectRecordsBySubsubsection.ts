@@ -21,6 +21,11 @@ export default resolver.pipe(
       },
       orderBy: { date: "desc" },
       include: {
+        project: {
+          select: {
+            landAcquisitionModuleEnabled: true,
+          },
+        },
         projectRecordTopics: true,
         subsubsection: {
           include: {

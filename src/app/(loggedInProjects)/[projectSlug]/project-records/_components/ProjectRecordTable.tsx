@@ -147,6 +147,21 @@ export const ProjectRecordsTable = ({
             <tbody className="divide-y divide-gray-200 bg-white">
               {projectRecords.map((projectRecord) => {
                 const detailHref = projectRecordDetailRoute(projectSlug, projectRecord.id)
+                const relationSubsubsection =
+                  "subsubsection" in projectRecord ? projectRecord.subsubsection : null
+                const relationAcquisitionArea =
+                  "acquisitionArea" in projectRecord &&
+                  projectRecord.acquisitionArea &&
+                  "subsubsection" in projectRecord.acquisitionArea &&
+                  "parcel" in projectRecord.acquisitionArea
+                    ? projectRecord.acquisitionArea
+                    : null
+                const landAcquisitionEnabled =
+                  "project" in projectRecord
+                    ? "landAcquisitionModuleEnabled" in projectRecord.project
+                      ? !!projectRecord.project.landAcquisitionModuleEnabled
+                      : false
+                    : false
 
                 return (
                   <tr
@@ -189,9 +204,9 @@ export const ProjectRecordsTable = ({
                       <td className={clsx("hidden align-top @xl:table-cell", spaceClasses)}>
                         <ProjectRecordVerknuepfungen
                           projectSlug={projectSlug}
-                          landAcquisitionModuleEnabled={true}
-                          subsubsection={projectRecord.subsubsection}
-                          acquisitionArea={projectRecord.acquisitionArea}
+                          landAcquisitionModuleEnabled={landAcquisitionEnabled}
+                          subsubsection={relationSubsubsection}
+                          acquisitionArea={relationAcquisitionArea}
                         />
                       </td>
                     ) : null}
