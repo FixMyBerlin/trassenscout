@@ -34,6 +34,8 @@ export const ProjectRecordSchema = z.object({
   // We need to do this manually, since dynamic zod types don't work
   projectRecordTopics: z.union([z.literal(false), z.array(z.coerce.number())]).optional(),
   uploads: z.union([z.literal(false), z.array(z.coerce.number())]).optional(),
+  subsubsections: z.union([z.literal(false), z.array(z.coerce.number())]).optional(),
+  acquisitionAreas: z.union([z.literal(false), z.array(z.coerce.number())]).optional(),
 })
 
 export const DeleteProjectRecordSchema = ProjectSlugRequiredSchema.merge(
@@ -67,6 +69,12 @@ export const NewProjectRecordFormSchema = ProjectRecordSchema.omit({
     uploads: z
       .union([z.undefined(), z.boolean(), z.array(z.coerce.number())])
       .transform((v) => v || []),
+    subsubsections: z
+      .union([z.undefined(), z.boolean(), z.array(z.coerce.number())])
+      .transform((v) => v || []),
+    acquisitionAreas: z
+      .union([z.undefined(), z.boolean(), z.array(z.coerce.number())])
+      .transform((v) => v || []),
   }),
 )
 
@@ -91,6 +99,12 @@ export const ProjectRecordFormSchema = ProjectRecordSchema.omit({
       .union([z.undefined(), z.boolean(), z.array(z.coerce.number())])
       .transform((v) => v || []),
     uploads: z
+      .union([z.undefined(), z.boolean(), z.array(z.coerce.number())])
+      .transform((v) => v || []),
+    subsubsections: z
+      .union([z.undefined(), z.boolean(), z.array(z.coerce.number())])
+      .transform((v) => v || []),
+    acquisitionAreas: z
       .union([z.undefined(), z.boolean(), z.array(z.coerce.number())])
       .transform((v) => v || []),
   }),

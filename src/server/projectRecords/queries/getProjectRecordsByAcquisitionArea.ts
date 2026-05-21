@@ -16,7 +16,7 @@ export default resolver.pipe(
     const projectRecords = await db.projectRecord.findMany({
       where: {
         project: { slug: projectSlug },
-        acquisitionAreaId,
+        OR: [{ acquisitionAreaId }, { acquisitionAreas: { some: { id: acquisitionAreaId } } }],
         reviewState: { in: ["NEEDSREVIEW", "APPROVED"] },
       },
       orderBy: { date: "desc" },

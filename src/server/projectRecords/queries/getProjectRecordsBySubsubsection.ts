@@ -17,7 +17,7 @@ export default resolver.pipe(
       where: {
         project: { slug: projectSlug },
         reviewState: { in: ["NEEDSREVIEW", "APPROVED"] }, // Only show reviewed or approved projectRecords to normal users
-        subsubsectionId,
+        OR: [{ subsubsectionId }, { subsubsections: { some: { id: subsubsectionId } } }],
       },
       orderBy: { date: "desc" },
       include: {

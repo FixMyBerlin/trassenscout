@@ -39,6 +39,9 @@ export default resolver.pipe(
       where: { id: projectId },
       select: { landAcquisitionModuleEnabled: true },
     })
+    if (!project?.landAcquisitionModuleEnabled) {
+      connect.acquisitionAreas = { connect: [] }
+    }
     const currentUserId = ctx.session.userId
 
     const record = await db.projectRecord.create({
@@ -46,7 +49,18 @@ export default resolver.pipe(
       data: {
         projectId,
         ...data,
-        acquisitionAreaId: project?.landAcquisitionModuleEnabled ? data.acquisitionAreaId : null,
+        subsubsectionId:
+          Array.isArray(data.subsubsections) && data.subsubsections.length > 0
+            ? data.subsubsections[0]!
+            : data.subsubsectionId,
+        acquisitionAreaId:
+          project?.landAcquisitionModuleEnabled &&
+          Array.isArray(data.acquisitionAreas) &&
+          data.acquisitionAreas.length > 0
+            ? data.acquisitionAreas[0]!
+            : project?.landAcquisitionModuleEnabled
+              ? data.acquisitionAreaId
+              : null,
         ...connect,
         // Set both author and updatedBy to current user on creation
         // we only have USER type for now

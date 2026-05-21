@@ -8,6 +8,7 @@ import { getUserSelectOptions } from "@/src/app/_components/users/utils/getUserS
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import {
   LabeledCheckboxGroup,
+  LabeledCombobox,
   LabeledSelect,
   LabeledSwitch,
   LabeledTextareaField,
@@ -80,7 +81,10 @@ export const ProjectRecordFormFields = ({
   const [newTopic, setNewTopic] = useState("")
   const [createProjectRecordTopicMutation] = useMutation(createProjectRecordTopic)
   const { watch, setValue } = useFormContext()
-  const acquisitionAreaId = watch("acquisitionAreaId")
+  const selectedSubsubsectionsValue = watch("subsubsections")
+  const selectedAcquisitionAreasValue = watch("acquisitionAreas")
+  const selectedSubsubsectionIds = NumberArraySchema.parse(selectedSubsubsectionsValue)
+  const selectedAcquisitionAreaIds = NumberArraySchema.parse(selectedAcquisitionAreasValue)
   const uploadsValue = watch("uploads")
   const uploadIds = NumberArraySchema.parse(uploadsValue)
 
@@ -110,27 +114,25 @@ export const ProjectRecordFormFields = ({
     [ProjectRecordEditingState.COMPLETED, "Abgeschlossen"],
   ]
 
-  const subsubsectionOptions: [string | number, string][] = subsubsections
+  const subsubsectionItems = subsubsections
     .sort((a, b) => a.subsection.slug.localeCompare(b.subsection.slug))
-    .map((subsubsection) => [
-      subsubsection.id,
-      shortTitle(`${subsubsection.slug} (${subsubsection.subsection.slug})`),
-    ])
-  subsubsectionOptions.unshift(["", "Keine Angabe"])
+    .map((subsubsection) => ({
+      value: String(subsubsection.id),
+      label: shortTitle(`${subsubsection.slug} (${subsubsection.subsection.slug})`),
+    }))
 
-  const selectedAcquisitionAreaId = acquisitionAreaId ? Number(acquisitionAreaId) : null
+  const filteredAcquisitionAreas = selectedSubsubsectionIds.length
+    ? acquisitionAreas.filter(
+        (acquisitionArea) => selectedSubsubsectionIds.includes(acquisitionArea.subsubsectionId),
+      )
+    : acquisitionAreas
 
-  const filteredAcquisitionAreas = acquisitionAreas
-
-  const acquisitionAreaOptions: [string | number, string][] = filteredAcquisitionAreas.map(
-    (acquisitionArea) => [
-      acquisitionArea.id,
-      `${acquisitionArea.id} ${acquisitionArea.parcel.alkisParcelId} (${shortTitle(
-        acquisitionArea.subsubsection.slug,
-      )}/${shortTitle(acquisitionArea.subsubsection.subsection.slug)})`,
-    ],
-  )
-  acquisitionAreaOptions.unshift(["", "Keine Angabe"])
+  const acquisitionAreaItems = filteredAcquisitionAreas.map((acquisitionArea) => ({
+    value: String(acquisitionArea.id),
+    label: `${acquisitionArea.id} ${acquisitionArea.parcel.alkisParcelId} (${shortTitle(
+      acquisitionArea.subsubsection.slug,
+    )}/${shortTitle(acquisitionArea.subsubsection.subsection.slug)})`,
+  }))
 
   const subsubsectionLabel = "Einträge"
 
@@ -150,14 +152,18 @@ export const ProjectRecordFormFields = ({
   }
 
   useEffect(() => {
-    if (!landAcquisitionModuleEnabled || !selectedAcquisitionAreaId) return
-    const stillCompatible = filteredAcquisitionAreas.some(
-      (acquisitionArea) => acquisitionArea.id === selectedAcquisitionAreaId,
-    )
-    if (!stillCompatible) {
-      setValue("acquisitionAreaId", null, { shouldDirty: false })
+    if (!landAcquisitionModuleEnabled || selectedAcquisitionAreaIds.length === 0) return
+    const filteredIds = filteredAcquisitionAreas.map((acquisitionArea) => acquisitionArea.id)
+    const stillCompatibleIds = selectedAcquisitionAreaIds.filter((id) => filteredIds.includes(id))
+    if (stillCompatibleIds.length !== selectedAcquisitionAreaIds.length) {
+      setValue("acquisitionAreas", stillCompatibleIds.map(String), { shouldDirty: false })
     }
-  }, [filteredAcquisitionAreas, landAcquisitionModuleEnabled, selectedAcquisitionAreaId, setValue])
+  }, [
+    filteredAcquisitionAreas,
+    landAcquisitionModuleEnabled,
+    selectedAcquisitionAreaIds,
+    setValue,
+  ])
 
   return (
     <>
@@ -177,17 +183,17 @@ export const ProjectRecordFormFields = ({
               landAcquisitionModuleEnabled ? "grid grid-cols-2 gap-4" : "grid grid-cols-1 gap-4"
             }
           >
-            <LabeledSelect
+            <LabeledCombobox
               optional
-              name="subsubsectionId"
-              options={subsubsectionOptions}
+              scope="subsubsections"
+              items={subsubsectionItems}
               label={subsubsectionLabel}
             />
             {landAcquisitionModuleEnabled && (
-              <LabeledSelect
+              <LabeledCombobox
                 optional
-                name="acquisitionAreaId"
-                options={acquisitionAreaOptions}
+                scope="acquisitionAreas"
+                items={acquisitionAreaItems}
                 label="Zuordnung zur Verhandlungsfläche"
               />
             )}

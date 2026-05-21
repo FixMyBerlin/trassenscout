@@ -73,13 +73,16 @@ export const ProjectRecordNewModal = ({
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       // Exclude m2m fields that are transformed by the form schema but need different format for mutation
-      const { uploads, projectRecordTopics, ...restValues } = values
+      const { uploads, projectRecordTopics, subsubsections, acquisitionAreas, ...restValues } =
+        values
       const projectRecord = await createProjectRecordMutation({
         ...restValues,
         date: values.date ? new Date(values.date) : null,
         projectSlug,
         uploads: Array.isArray(uploads) ? uploads : undefined,
         projectRecordTopics: Array.isArray(projectRecordTopics) ? projectRecordTopics : undefined,
+        subsubsections: Array.isArray(subsubsections) ? subsubsections : undefined,
+        acquisitionAreas: Array.isArray(acquisitionAreas) ? acquisitionAreas : undefined,
       })
       if (onSuccess) {
         await onSuccess(projectRecord.id)
@@ -94,10 +97,10 @@ export const ProjectRecordNewModal = ({
     date: getDate(new Date()),
     editingState: ProjectRecordEditingState.PENDING,
     ...(initialValues?.subsubsectionId && {
-      subsubsectionId: initialValues.subsubsectionId,
+      subsubsections: [initialValues.subsubsectionId],
     }),
     ...(initialValues?.acquisitionAreaId && {
-      acquisitionAreaId: initialValues.acquisitionAreaId,
+      acquisitionAreas: [initialValues.acquisitionAreaId],
     }),
     ...(selectedTemplate && {
       title: selectedTemplate.entryTitle,

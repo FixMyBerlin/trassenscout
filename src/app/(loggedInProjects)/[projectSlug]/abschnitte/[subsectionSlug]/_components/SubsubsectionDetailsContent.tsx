@@ -302,8 +302,6 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
             projectRecords={projectRecords}
             highlightId={createdProjectRecordId}
             bleed={false}
-            showAcquisitionAreaColumn
-            showRelationsColumn
           />
         ) : (
           <ZeroCase small visible name="Protokolleinträge" />

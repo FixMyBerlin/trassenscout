@@ -68,6 +68,9 @@ export default resolver.pipe(
       connect[fieldName] = { connect: data[fieldName] ? data[fieldName].map((id) => ({ id })) : [] }
       delete data[fieldName]
     })
+    if (!project?.landAcquisitionModuleEnabled) {
+      connect.acquisitionAreas = { connect: [] }
+    }
 
     await db.projectRecord.update({
       where: { id },
@@ -80,7 +83,18 @@ export default resolver.pipe(
       // @ts-expect-error The whole `m2mFields` is way to hard to type but apparently working
       data: {
         ...data,
-        acquisitionAreaId: project?.landAcquisitionModuleEnabled ? data.acquisitionAreaId : null,
+        subsubsectionId:
+          Array.isArray(data.subsubsections) && data.subsubsections.length > 0
+            ? data.subsubsections[0]!
+            : data.subsubsectionId,
+        acquisitionAreaId:
+          project?.landAcquisitionModuleEnabled &&
+          Array.isArray(data.acquisitionAreas) &&
+          data.acquisitionAreas.length > 0
+            ? data.acquisitionAreas[0]!
+            : project?.landAcquisitionModuleEnabled
+              ? data.acquisitionAreaId
+              : null,
         ...connect,
         updatedById: currentUserId, // always set updatedById on edit
         reviewedAt,

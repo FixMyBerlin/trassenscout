@@ -41,7 +41,7 @@ export const ProjectRecordVerknuepfungen = ({
 
   return (
     <section className={className}>
-      <ul className="mt-1.5 list-none space-y-0.5 text-sm">
+      <ul className="mt-1.5 list-none space-y-0.5">
         {hasSubsubsection && subsubsection && (
           <li>
             <strong className="font-medium">Eintrag: </strong>

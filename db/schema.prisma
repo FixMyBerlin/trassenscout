@@ -380,6 +380,7 @@ model Subsubsection {
   //
   uploads                          Upload[]
   projectRecords                   ProjectRecord[]
+  projectRecordRelations           ProjectRecord[]                 @relation("ProjectRecordSubsubsections")
   acquisitionAreas                 AcquisitionArea[]
   //
   SubsubsectionStatus              SubsubsectionStatus?              @relation(fields: [subsubsectionStatusId], references: [id])
@@ -440,6 +441,7 @@ model AcquisitionArea {
   acquisitionAreaStatusId Int?
   uploads                 Upload[]
   projectRecords          ProjectRecord[]
+  projectRecordRelations  ProjectRecord[] @relation("ProjectRecordAcquisitionAreas")
 }
 
 enum GeometryTypeEnum {
@@ -825,9 +827,11 @@ model ProjectRecord {
   //
   subsubsection              Subsubsection?            @relation(fields: [subsubsectionId], references: [id], onDelete: Cascade)
   subsubsectionId            Int?
+  subsubsections             Subsubsection[]           @relation("ProjectRecordSubsubsections")
   //
   acquisitionArea            AcquisitionArea?          @relation(fields: [acquisitionAreaId], references: [id], onDelete: Cascade)
   acquisitionAreaId          Int?
+  acquisitionAreas           AcquisitionArea[]         @relation("ProjectRecordAcquisitionAreas")
   //
   author                     User?                     @relation("ProjectRecordAuthor", fields: [userId], references: [id])
   userId                     Int?

@@ -255,7 +255,6 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
                     projectRecords={projectRecords}
                     highlightId={createdProjectRecordId}
                     bleed={false}
-                    showRelationsColumn
                   />
                 ) : (
                   <ZeroCase small visible name="Protokolleinträge" />

@@ -29,6 +29,25 @@ export default resolver.pipe(
             },
           },
         },
+        subsubsections: {
+          select: {
+            id: true,
+            slug: true,
+            subsection: { select: { slug: true } },
+          },
+        },
+        acquisitionAreas: {
+          select: {
+            id: true,
+            subsubsection: {
+              select: {
+                slug: true,
+                subsection: { select: { slug: true } },
+              },
+            },
+            parcel: { select: { alkisParcelId: true } },
+          },
+        },
         uploads: {
           orderBy: { id: "desc" },
           select: {
