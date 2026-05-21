@@ -18,6 +18,7 @@ import { de } from "date-fns/locale"
 import { ProjectRecordAssignedToPill } from "./ProjectRecordAssignedToPill"
 import { ProjectRecordEditingStateIndicator } from "./ProjectRecordEditingStateIndicator"
 import { ProjectRecordTopicsList } from "./ProjectRecordTopicsList"
+import { ProjectRecordVerknuepfungen } from "./ProjectRecordVerknuepfungen"
 
 /**
  * Column width classes for `table-fixed` layout. Adjust percentages here only.
@@ -35,6 +36,7 @@ const projectRecordTableColWidths = {
   },
   acquisitionArea: "w-[28%] @xl:w-[14%]",
   tags: "hidden @xl:table-column @xl:w-[24%]",
+  relations: "hidden @xl:table-column @xl:w-[24%]",
   assignedTo: "hidden @xl:table-column @xl:w-[10%]",
   documents: "w-[18%] @xl:w-[10%]",
 } as const
@@ -45,6 +47,7 @@ export const ProjectRecordsTable = ({
   isTopicFilter,
   bleed = true,
   showAcquisitionAreaColumn = false,
+  showRelationsColumn = false,
 }: {
   projectRecords:
     | Awaited<ReturnType<typeof getProjectRecords>>
@@ -55,6 +58,7 @@ export const ProjectRecordsTable = ({
   isTopicFilter?: boolean
   bleed?: boolean
   showAcquisitionAreaColumn?: boolean
+  showRelationsColumn?: boolean
 }) => {
   const projectSlug = useProjectSlug()
   const { filter, setFilter } = useFilters()
@@ -94,6 +98,7 @@ export const ProjectRecordsTable = ({
               {showAcquisitionAreaColumn ? (
                 <col className={projectRecordTableColWidths.acquisitionArea} />
               ) : null}
+              {showRelationsColumn ? <col className={projectRecordTableColWidths.relations} /> : null}
               <col className={projectRecordTableColWidths.tags} />
               <col className={projectRecordTableColWidths.assignedTo} />
               <col className={projectRecordTableColWidths.documents} />
@@ -112,6 +117,14 @@ export const ProjectRecordsTable = ({
                 {showAcquisitionAreaColumn ? (
                   <th scope="col" className={clsx(spaceClasses, "font-medium uppercase")}>
                     Verhandlungsfläche
+                  </th>
+                ) : null}
+                {showRelationsColumn ? (
+                  <th
+                    scope="col"
+                    className={clsx(spaceClasses, "hidden font-medium uppercase @xl:table-cell")}
+                  >
+                    Verknüpfungen
                   </th>
                 ) : null}
                 <th
@@ -170,6 +183,16 @@ export const ProjectRecordsTable = ({
                     {showAcquisitionAreaColumn ? (
                       <td className={clsx("align-top wrap-break-word", spaceClasses)}>
                         {projectRecord.acquisitionArea?.id ?? "—"}
+                      </td>
+                    ) : null}
+                    {showRelationsColumn ? (
+                      <td className={clsx("hidden align-top @xl:table-cell", spaceClasses)}>
+                        <ProjectRecordVerknuepfungen
+                          projectSlug={projectSlug}
+                          landAcquisitionModuleEnabled={true}
+                          subsubsection={projectRecord.subsubsection}
+                          acquisitionArea={projectRecord.acquisitionArea}
+                        />
                       </td>
                     ) : null}
                     <td className={clsx("hidden align-top @xl:table-cell", spaceClasses)}>

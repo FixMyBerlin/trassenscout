@@ -67,7 +67,7 @@ export const UploadVerknuepfungen = ({
   return (
     <section className={className}>
       {hasRelations ? (
-        <ul className="mt-1.5 list-none space-y-0.5 pl-4 text-sm">
+        <ul className="mt-1.5 list-none space-y-0.5 text-sm">
           {hasSubsubsection &&
             (subsubsections.length === 1 ? (
               <li key={`${subsubsections[0]!.subsection.slug}-${subsubsections[0]!.slug}`}>
@@ -151,9 +151,6 @@ export const UploadVerknuepfungen = ({
                     scroll={false}
                   >
                     {projectRecords![0]!.title}
-                    {projectRecords![0]!.date && (
-                      <> {formatBerlinTime(projectRecords![0]!.date, "P")}</>
-                    )}
                   </Link>
                 </>
               ) : (
@@ -167,7 +164,6 @@ export const UploadVerknuepfungen = ({
                           scroll={false}
                         >
                           {record.title}
-                          {record.date && <> {formatBerlinTime(record.date, "P")}</>}
                         </Link>
                       </li>
                     ))}

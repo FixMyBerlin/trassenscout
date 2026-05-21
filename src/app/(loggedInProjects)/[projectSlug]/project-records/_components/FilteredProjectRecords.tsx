@@ -58,6 +58,7 @@ export const FilteredProjectRecords = ({ projectRecords, highlightId }: Props) =
           isTopicFilter
           projectRecords={filteredProjectRecords}
           highlightId={highlightId}
+          showRelationsColumn
         />
       )}
     </>

@@ -45,6 +45,13 @@ export default resolver.pipe(
             },
           },
         },
+        uploads: {
+          select: {
+            id: true,
+            title: true,
+            createdAt: true,
+          },
+        },
         _count: {
           select: { projectRecordComments: true, uploads: true },
         },

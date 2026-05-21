@@ -2,11 +2,13 @@ import { ProjectRecordAssignedToPill } from "@/src/app/(loggedInProjects)/[proje
 import { ProjectRecordEditingStateIndicator } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordEditingStateIndicator"
 import { ProjectRecordEmailSourceText } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordEmailSource"
 import { ProjectRecordVerknuepfungen } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordVerknuepfungen"
+import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
 import { createProjectRecordFilterUrl } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/filter/createFilterUrl"
 import { getFullname } from "@/src/app/_components/users/utils/getFullname"
 import { Link, linkStyles } from "@/src/core/components/links"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { useCurrentReturnTo } from "@/src/core/routes/useCurrentPathWithSearch"
+import { uploadEditRouteForProjectRecord } from "@/src/core/routes/uploadRoutes"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
 import { format } from "date-fns"
 import { de } from "date-fns/locale"
@@ -83,7 +85,7 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
       )}
 
       <div>
-        <p className="mb-3 text-gray-500">Tags: </p>
+        <p className="mb-2 text-gray-500">Tags: </p>
         {!!projectRecord.projectRecordTopics.length ? (
           <ul className="list-inside list-none space-y-1">
             {projectRecord.projectRecordTopics.map((topic) => (
@@ -104,17 +106,33 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
       </div>
 
       <div>
-        <p className="mb-1 text-gray-500">Verknüpfungen:</p>
+        <p className="mb-2 text-gray-500">Verknüpfungen:</p>
         <ProjectRecordVerknuepfungen
           projectSlug={projectSlug}
-          projectRecordId={projectRecord.id}
-          returnTo={returnTo}
           landAcquisitionModuleEnabled={projectRecord.project.landAcquisitionModuleEnabled}
           subsubsection={projectRecord.subsubsection}
           acquisitionArea={projectRecord.acquisitionArea}
-          uploads={projectRecord.uploads}
         />
       </div>
+
+      {!!projectRecord.uploads.length && (
+        <div>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+            {projectRecord.uploads.map((upload) => (
+              <UploadPreviewClickable
+                key={upload.id}
+                uploadId={upload.id}
+                upload={upload}
+                projectSlug={projectSlug}
+                size="grid"
+                editUrl={uploadEditRouteForProjectRecord(projectSlug, upload.id, projectRecord.id, {
+                  returnTo,
+                })}
+              />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

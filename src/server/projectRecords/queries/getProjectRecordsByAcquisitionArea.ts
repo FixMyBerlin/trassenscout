@@ -22,9 +22,34 @@ export default resolver.pipe(
       orderBy: { date: "desc" },
       include: {
         projectRecordTopics: true,
+        subsubsection: {
+          include: {
+            subsection: {
+              select: { slug: true },
+            },
+          },
+        },
         acquisitionArea: {
           select: {
             id: true,
+            subsubsection: {
+              select: {
+                slug: true,
+                subsection: { select: { slug: true } },
+              },
+            },
+            parcel: {
+              select: {
+                alkisParcelId: true,
+              },
+            },
+          },
+        },
+        uploads: {
+          select: {
+            id: true,
+            title: true,
+            createdAt: true,
           },
         },
         _count: {
