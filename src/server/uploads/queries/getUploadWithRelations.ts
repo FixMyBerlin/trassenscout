@@ -23,12 +23,11 @@ export default resolver.pipe(
     const upload = await db.upload.findFirstOrThrow({
       where: { id },
       include: {
-        subsection: { select: { id: true, slug: true } },
-        Subsubsection: {
+        subsubsections: {
           select: {
             id: true,
             slug: true,
-            subsection: { select: { slug: true } },
+            subsection: { select: { id: true, slug: true } },
           },
         },
         projectRecords: {
@@ -70,18 +69,18 @@ export default resolver.pipe(
           include: {
             surveySession: {
               include: {
-                survey: { select: { slug: true } },
+                survey: { select: { id: true, slug: true } },
               },
             },
           },
         },
-        acquisitionArea: {
+        acquisitionAreas: {
           select: {
             id: true,
             subsubsection: {
               select: {
                 slug: true,
-                subsection: { select: { slug: true } },
+                subsection: { select: { id: true, slug: true } },
               },
             },
             parcel: {

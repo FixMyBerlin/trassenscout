@@ -1,11 +1,11 @@
 import { invoke } from "@/src/blitz-server"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
-import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import getSurveys from "@/src/server/surveys/queries/getSurveys"
 import { Metadata } from "next"
 import { redirect } from "next/navigation"
 import "server-only"
+import { NoSurveysInfoBox } from "./_components/NoSurveysInfoBox"
 import { surveyHref, surveyResponsesHref } from "./_utils/SurveyHrefs"
 
 export const metadata: Metadata = {
@@ -19,8 +19,8 @@ export default async function SurveysPage({ params }: { params: { projectSlug: s
   if (!surveys.length) {
     return (
       <>
-        <PageHeader title="Beteiligungen" className="mt-12" />
-        <ZeroCase visible={0} name="Beteiligungen" />
+        <PageHeader title="Noch keine Beteiligung aktiv?" className="mt-24" />
+        <NoSurveysInfoBox />
       </>
     )
   }

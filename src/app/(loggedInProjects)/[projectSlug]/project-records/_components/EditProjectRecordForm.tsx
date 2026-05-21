@@ -7,6 +7,7 @@ import { ProjectRecordFormFields } from "@/src/app/(loggedInProjects)/[projectSl
 import { ProjectRecordNeedsReviewBanner } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordNeedsReviewBanner"
 import { ReviewProjectRecordForm } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ReviewProjectRecordForm"
 import { getProjectRecordEditSuccessRoute } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/getProjectRecordEditSuccessRoute"
+import { getM2MInitialValues } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/getM2MInitialValues"
 import { getDate } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/splitStartAt"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
@@ -54,6 +55,13 @@ export const EditProjectRecordForm = ({
     },
   )
 
+  const editRelationContext: "project" | "subsubsection" | "acquisitionArea" =
+    projectRecord.acquisitionAreas.length > 0
+      ? "acquisitionArea"
+      : projectRecord.subsubsections.length > 0
+        ? "subsubsection"
+        : "project"
+
   const handleSubmit = async (values: z.infer<typeof ProjectRecordFormSchema>) => {
     onSubmittingChange?.(true)
     try {
@@ -66,6 +74,8 @@ export const EditProjectRecordForm = ({
         projectRecordTopics:
           values.projectRecordTopics === true ? false : values.projectRecordTopics,
         uploads: values.uploads === true ? false : values.uploads,
+        subsubsections: values.subsubsections === true ? false : values.subsubsections,
+        acquisitionAreas: values.acquisitionAreas === true ? false : values.acquisitionAreas,
         projectRecordEmailId: projectRecord.projectRecordEmailId,
       })
       // invalidateQuery(getProjectRecord)
@@ -94,11 +104,9 @@ export const EditProjectRecordForm = ({
   // m2m copied from subsubsection/edit.tsx
   const m2mFieldsInitialValues: Record<M2MFieldsType | string, string[]> = {}
   m2mFields.forEach((fieldName) => {
-    if (fieldName in projectRecord) {
-      m2mFieldsInitialValues[fieldName] = Array.from(projectRecord[fieldName].values(), (obj) =>
-        String(obj.id),
-      )
-    }
+    m2mFieldsInitialValues[fieldName] = getM2MInitialValues(
+      projectRecord[fieldName as keyof typeof projectRecord],
+    )
   })
 
   const showPath = projectRecordDetailRoute(projectSlug, projectRecord.id)
@@ -145,6 +153,8 @@ export const EditProjectRecordForm = ({
       >
         <FormDirtyStateReporter onDirtyChange={onDirtyChange} />
         <ProjectRecordFormFields
+          formMode="edit"
+          relationContext={editRelationContext}
           projectSlug={projectSlug}
           splitView={needsReview}
           landAcquisitionModuleEnabled={projectRecord.project.landAcquisitionModuleEnabled}

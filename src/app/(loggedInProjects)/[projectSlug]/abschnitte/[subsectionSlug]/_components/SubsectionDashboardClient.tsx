@@ -17,7 +17,6 @@ import { useSlug } from "@/src/core/routes/useSlug"
 import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import getSubsubsections from "@/src/server/subsubsections/queries/getSubsubsections"
 import { useQuery } from "@blitzjs/rpc"
-import { SubsectionUploadsSection } from "./SubsectionUploadsSection"
 import { SubsubsectionTable } from "./SubsubsectionTable"
 
 export const SubsectionDashboardClient = () => {
@@ -90,9 +89,6 @@ export const SubsectionDashboardClient = () => {
           <SubsubsectionTable subsubsections={subsubsections} compact={false} />
         </div>
       </div>
-
-      <SubsectionUploadsSection subsectionId={subsection.id} />
-
       <SuperAdminLogData
         data={{
           subsections,

@@ -16,15 +16,45 @@ export default resolver.pipe(
     const projectRecords = await db.projectRecord.findMany({
       where: {
         project: { slug: projectSlug },
-        acquisitionAreaId,
+        OR: [{ acquisitionAreaId }, { acquisitionAreas: { some: { id: acquisitionAreaId } } }],
         reviewState: { in: ["NEEDSREVIEW", "APPROVED"] },
       },
       orderBy: { date: "desc" },
       include: {
+        project: {
+          select: {
+            landAcquisitionModuleEnabled: true,
+          },
+        },
         projectRecordTopics: true,
+        subsubsection: {
+          include: {
+            subsection: {
+              select: { slug: true },
+            },
+          },
+        },
         acquisitionArea: {
           select: {
             id: true,
+            subsubsection: {
+              select: {
+                slug: true,
+                subsection: { select: { slug: true } },
+              },
+            },
+            parcel: {
+              select: {
+                alkisParcelId: true,
+              },
+            },
+          },
+        },
+        uploads: {
+          select: {
+            id: true,
+            title: true,
+            createdAt: true,
           },
         },
         _count: {

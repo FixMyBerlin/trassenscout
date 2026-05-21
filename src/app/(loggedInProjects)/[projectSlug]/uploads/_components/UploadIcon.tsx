@@ -4,6 +4,7 @@ import { getFileIcon } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/
 import {
   getFileTypeLabel,
   isImageUpload,
+  isSvgUpload,
 } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileType"
 import {
   UPLOAD_SIZES,
@@ -35,6 +36,7 @@ export const UploadIcon = ({ upload, projectSlug, size }: Props) => {
   if (isImageUpload(upload) && !imageError) {
     const previewImageUrl = "previewImageUrl" in upload ? upload.previewImageUrl : undefined
     const imageSrc = previewImageUrl ?? uploadUrl(upload, projectSlug)
+    const isSvg = isSvgUpload(upload)
 
     return (
       <Image
@@ -44,6 +46,7 @@ export const UploadIcon = ({ upload, projectSlug, size }: Props) => {
         height={sizeConfig.iconPx}
         className={twJoin(sizeConfig.iconSize, "cursor-default rounded object-contain select-none")}
         draggable={false}
+        unoptimized={isSvg}
         onError={() => setImageError(true)}
       />
     )

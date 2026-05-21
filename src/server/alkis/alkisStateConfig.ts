@@ -57,11 +57,21 @@ export function getBundeslandSelectOptions() {
   stateRows.sort((a, b) => a.label.localeCompare(b.label, "de"))
 
   if (!defaultOption) {
-    return [...stateRows.map((row): [StateKeyEnum, string, boolean] => [row.key, row.label, row.disabled])]
+    return [
+      ...stateRows.map((row): [StateKeyEnum, string, boolean] => [
+        row.key,
+        row.label,
+        row.disabled,
+      ]),
+    ]
   }
 
   return [
-    [defaultOption.key, defaultOption.label, defaultOption.disabled] as [StateKeyEnum, string, boolean],
+    [defaultOption.key, defaultOption.label, defaultOption.disabled] as [
+      StateKeyEnum,
+      string,
+      boolean,
+    ],
     ...stateRows.map((row): [StateKeyEnum, string, boolean] => [row.key, row.label, row.disabled]),
   ]
 }

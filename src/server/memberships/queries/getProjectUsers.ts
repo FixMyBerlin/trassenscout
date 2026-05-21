@@ -22,6 +22,7 @@ export default resolver.pipe(
       where: {
         memberships: { some: { project: { slug: projectSlug }, ...whereRole } },
       },
+      orderBy: [{ lastName: "asc" }, { firstName: "asc" }, { email: "asc" }],
       select: {
         firstName: true,
         lastName: true,

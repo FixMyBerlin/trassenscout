@@ -39,7 +39,7 @@ export const FilteredProjectRecords = ({ projectRecords, highlightId }: Props) =
             </button>
           </div>
           <p className="mt-2 text-sm text-gray-500">
-            Tags, Titel, Inhalte, Abschnitte und Zugewiesene durchsuchen
+            Tags, Titel, Inhalte, Einträge und Zugewiesene durchsuchen
           </p>
         </form>
         <button
@@ -58,6 +58,7 @@ export const FilteredProjectRecords = ({ projectRecords, highlightId }: Props) =
           isTopicFilter
           projectRecords={filteredProjectRecords}
           highlightId={highlightId}
+          showRelationsColumn
         />
       )}
     </>

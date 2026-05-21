@@ -1,4 +1,14 @@
-import { ParsedMail, simpleParser } from "mailparser"
+import { AddressObject, ParsedMail, simpleParser } from "mailparser"
+
+const getAddressText = (address: AddressObject | AddressObject[] | undefined) => {
+  if (!address) return null
+  if (Array.isArray(address))
+    return address
+      .map((entry) => entry.text)
+      .filter(Boolean)
+      .join(", ")
+  return address.text || null
+}
 
 export const parseEmail = async ({ rawEmailText }: { rawEmailText: string }) => {
   console.log("Parsing email to extract body and attachments...")
@@ -21,6 +31,9 @@ export const parseEmail = async ({ rawEmailText }: { rawEmailText: string }) => 
 
     // Extract additional metadata
     const from = parsed.from?.text || null
+    const fromAddress = parsed.from?.value?.[0]?.address || null
+    const to = getAddressText(parsed.to)
+    const cc = getAddressText(parsed.cc)
     const subject = parsed.subject || null
     const date = parsed.date || null
 
@@ -30,6 +43,9 @@ export const parseEmail = async ({ rawEmailText }: { rawEmailText: string }) => 
       body,
       attachments,
       from,
+      fromAddress,
+      to,
+      cc,
       subject,
       date,
     }
@@ -41,6 +57,9 @@ export const parseEmail = async ({ rawEmailText }: { rawEmailText: string }) => 
       body: rawEmailText,
       attachments: [],
       from: null,
+      fromAddress: null,
+      to: null,
+      cc: null,
       subject: null,
       date: null,
     }

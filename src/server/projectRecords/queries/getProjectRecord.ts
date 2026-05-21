@@ -26,12 +26,18 @@ export default resolver.pipe(
         reviewState: { in: ["NEEDSREVIEW", "APPROVED"] }, // Only show reviewed or approved projectRecords to normal users
       },
       include: {
-        subsection: true,
         subsubsection: {
           include: {
             subsection: {
               select: { slug: true },
             },
+          },
+        },
+        subsubsections: {
+          select: {
+            id: true,
+            slug: true,
+            subsection: { select: { slug: true } },
           },
         },
         acquisitionArea: {
@@ -48,6 +54,18 @@ export default resolver.pipe(
                 alkisParcelId: true,
               },
             },
+          },
+        },
+        acquisitionAreas: {
+          select: {
+            id: true,
+            subsubsection: {
+              select: {
+                slug: true,
+                subsection: { select: { slug: true } },
+              },
+            },
+            parcel: { select: { alkisParcelId: true } },
           },
         },
         project: {
@@ -86,6 +104,7 @@ export default resolver.pipe(
           select: {
             id: true,
             title: true,
+            createdAt: true,
             mimeType: true,
             externalUrl: true,
             collaborationUrl: true,

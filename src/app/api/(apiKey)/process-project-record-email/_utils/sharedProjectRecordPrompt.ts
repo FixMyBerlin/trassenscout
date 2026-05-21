@@ -1,5 +1,4 @@
 type CreateFieldInstructionsParams = {
-  // subsections: Array<{ id: number; slug: string; start: string; end: string }>
   // subsubsections: Array<{ id: number; slug: string; subsection: { slug: string; id: number } }>
   projectRecordTopics: Array<{ id: number; title: string }>
   isReprocessing?: boolean
@@ -8,7 +7,6 @@ type CreateFieldInstructionsParams = {
 }
 
 export const createFieldInstructions = ({
-  // subsections,
   // subsubsections,
   projectRecordTopics,
   isReprocessing,
@@ -52,25 +50,12 @@ Do not include any explanations or commentary.
 `
 }
 
-// #### SUBSECTIONID
-// ${
-//   subsections.length > 0
-//     ? `Identify whether this ${isReprocessing ? "record" : "email"} content relates to a specific route subsection ('Abschnitt' / 'Planungsabschnitt' / 'Bauabschnitt'). ${hasUploads ? `The related document summaries must be considered as well.` : ""}
-
-// Available subsections:
-// ${subsections
-//   .map((s) => `${s.id} (${s.slug.toUpperCase()} - ${s.start}(start) to ${s.end}(end))`)
-//   .join(", ")}
-
-// Assign based on the abbreviations mentioned in the text${subject ? ` and subject` : ""}. Sometimes the abbreviations vary slightly, e.g., 'PA1' can also be written as 'PA 1'. If unclear, return null.`
-//     : "No subsections available for this project; always return null."
-// }
 
 // #### SUBSUBSECTIONID
 // ${
-//   subsubsections.length > 0
+//   subsubsections && subsubsections.length > 0
 //     ? `Identify whether this ${isReprocessing ? "record" : "email"} content relates to a specific route subsubsection ('Maßnahme', 'Unterabschnitt', 'Führung'). ${hasUploads ? `The related document summaries must be considered as well.` : ""}
-
+//
 // Available subsubsections:
 // ${subsubsections
 //   .map(
@@ -78,7 +63,7 @@ Do not include any explanations or commentary.
 //       `${s.id} (short title: ${s.slug.toUpperCase()} - part of subsection ${s.subsection.slug.toUpperCase()})`,
 //   )
 //   .join(", ")}
-
+//
 // Assign based on the abbreviations mentioned in the text${subject ? ` and subject` : ""}. Sometimes the abbreviations vary slightly, e.g., 'RF12' can also be written as 'RF 12'. If unclear, return null.`
 //     : "No subsubsections available for this project; always return null."
 // }

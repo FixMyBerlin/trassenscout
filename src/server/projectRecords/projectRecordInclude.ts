@@ -3,9 +3,8 @@
  * This ensures consistent data structure across all project record queries.
  */
 export const projectRecordInclude = {
-  project: { select: { slug: true, aiEnabled: true } },
+  project: { select: { slug: true, aiEnabled: true, landAcquisitionModuleEnabled: true } },
   projectRecordTopics: true,
-  subsection: true,
   subsubsection: {
     include: {
       subsection: {
@@ -13,7 +12,30 @@ export const projectRecordInclude = {
       },
     },
   },
+  subsubsections: {
+    include: {
+      subsection: {
+        select: { slug: true },
+      },
+    },
+  },
   acquisitionArea: {
+    select: {
+      id: true,
+      subsubsection: {
+        select: {
+          slug: true,
+          subsection: { select: { slug: true } },
+        },
+      },
+      parcel: {
+        select: {
+          alkisParcelId: true,
+        },
+      },
+    },
+  },
+  acquisitionAreas: {
     select: {
       id: true,
       subsubsection: {
