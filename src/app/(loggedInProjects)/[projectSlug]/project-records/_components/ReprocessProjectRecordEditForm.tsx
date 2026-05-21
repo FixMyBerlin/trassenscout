@@ -2,6 +2,7 @@
 
 import { ReprocessedProjectRecord } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordDetailClient"
 import { ProjectRecordFormFields } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordFormFields"
+import { getM2MInitialValues } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/getM2MInitialValues"
 import { getDate } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/splitStartAt"
 import { Form, FORM_ERROR } from "@/src/core/components/forms"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
@@ -34,7 +35,8 @@ export const ReprocessProjectRecordEditForm = ({
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       // Exclude m2m fields that are transformed by the form schema but need different format for mutation
-      const { uploads, projectRecordTopics, ...restValues } = values
+      const { uploads, projectRecordTopics, subsubsections, acquisitionAreas, ...restValues } =
+        values
       await updateProjectRecordMutation({
         ...restValues,
         id: projectRecord.id,
@@ -42,6 +44,8 @@ export const ReprocessProjectRecordEditForm = ({
         projectSlug,
         uploads: Array.isArray(uploads) ? uploads : undefined,
         projectRecordTopics: Array.isArray(projectRecordTopics) ? projectRecordTopics : undefined,
+        subsubsections: Array.isArray(subsubsections) ? subsubsections : undefined,
+        acquisitionAreas: Array.isArray(acquisitionAreas) ? acquisitionAreas : undefined,
       })
       router.refresh()
       onCancel() // Close the AI suggestions view
@@ -53,11 +57,9 @@ export const ReprocessProjectRecordEditForm = ({
   // m2m copied from subsubsection/edit.tsx
   const m2mFieldsInitialValues: Record<M2MFieldsType | string, string[]> = {}
   m2mFields.forEach((fieldName) => {
-    if (fieldName in projectRecord) {
-      m2mFieldsInitialValues[fieldName] = Array.from(projectRecord[fieldName].values(), (obj) =>
-        String(obj.id),
-      )
-    }
+    m2mFieldsInitialValues[fieldName] = getM2MInitialValues(
+      projectRecord[fieldName as keyof typeof projectRecord],
+    )
   })
 
   // Override current projectRecord data with AI suggestions
