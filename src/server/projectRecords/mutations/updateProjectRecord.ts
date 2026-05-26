@@ -85,14 +85,11 @@ export default resolver.pipe(
       // @ts-expect-error The whole `m2mFields` is way to hard to type but apparently working
       data: {
         ...data,
-        subsubsectionId:
-          selectedSubsubsectionIds.length > 0 ? selectedSubsubsectionIds[0]! : data.subsubsectionId,
+        subsubsectionId: selectedSubsubsectionIds.length > 0 ? selectedSubsubsectionIds[0]! : null,
         acquisitionAreaId:
           project?.landAcquisitionModuleEnabled && selectedAcquisitionAreaIds.length > 0
             ? selectedAcquisitionAreaIds[0]!
-            : project?.landAcquisitionModuleEnabled
-              ? data.acquisitionAreaId
-              : null,
+            : null,
         ...connect,
         updatedById: currentUserId, // always set updatedById on edit
         reviewedAt,

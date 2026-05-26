@@ -51,14 +51,11 @@ export default resolver.pipe(
       data: {
         projectId,
         ...data,
-        subsubsectionId:
-          selectedSubsubsectionIds.length > 0 ? selectedSubsubsectionIds[0]! : data.subsubsectionId,
+        subsubsectionId: selectedSubsubsectionIds.length > 0 ? selectedSubsubsectionIds[0]! : null,
         acquisitionAreaId:
           project?.landAcquisitionModuleEnabled && selectedAcquisitionAreaIds.length > 0
             ? selectedAcquisitionAreaIds[0]!
-            : project?.landAcquisitionModuleEnabled
-              ? data.acquisitionAreaId
-              : null,
+            : null,
         ...connect,
         // Set both author and updatedBy to current user on creation
         // we only have USER type for now
