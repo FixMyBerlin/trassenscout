@@ -43,11 +43,14 @@ export function LabeledCombobox({
   const [query, setQuery] = useState("")
   const {
     control,
+    getValues,
     formState: { isSubmitting, errors },
   } = useFormContext()
 
   const hasError = Boolean(errors[scope])
   const disabledOrSubmitting = Boolean(disabled || isSubmitting)
+
+  const selectedItems = getValues(scope)
 
   return (
     <div>
@@ -58,6 +61,11 @@ export function LabeledCombobox({
         >
           {label}
           {optional && <> (optional)</>}
+          {selectedItems?.length > 0 && (
+            <span className="ml-1 inline-flex size-4.5 items-center justify-center rounded-full bg-gray-300 text-xs text-white">
+              {selectedItems.length}
+            </span>
+          )}
         </label>
       )}
 
@@ -91,7 +99,7 @@ export function LabeledCombobox({
                     autoComplete="off"
                     value={query}
                     onBlur={field.onBlur}
-                    placeholder={placeholder ?? "Bitte wählen"}
+                    placeholder={placeholder ?? `${label} suchen`}
                     onChange={(e) => setQuery(e.target.value)}
                     className={clsx(
                       "block w-full appearance-none rounded-md border border-gray-200 px-3 py-2 pr-10 placeholder-gray-400 shadow-xs focus:outline-hidden sm:text-sm",
@@ -108,7 +116,10 @@ export function LabeledCombobox({
                     className="absolute inset-y-0 right-0 flex items-center pr-3"
                     disabled={disabledOrSubmitting}
                   >
-                    <ChevronDownIcon className="size-5 text-gray-400" aria-hidden="true" />
+                    <ChevronDownIcon
+                      className="size-5 cursor-pointer text-gray-400"
+                      aria-hidden="true"
+                    />
                   </ComboboxButton>
 
                   <Transition
