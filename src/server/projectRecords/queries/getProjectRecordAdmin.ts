@@ -22,12 +22,30 @@ export default resolver.pipe(
           },
         },
         projectRecordTopics: true,
-        subsection: true,
         subsubsection: {
           include: {
             subsection: {
               select: { slug: true },
             },
+          },
+        },
+        subsubsections: {
+          select: {
+            id: true,
+            slug: true,
+            subsection: { select: { slug: true } },
+          },
+        },
+        acquisitionAreas: {
+          select: {
+            id: true,
+            subsubsection: {
+              select: {
+                slug: true,
+                subsection: { select: { slug: true } },
+              },
+            },
+            parcel: { select: { alkisParcelId: true } },
           },
         },
         uploads: {

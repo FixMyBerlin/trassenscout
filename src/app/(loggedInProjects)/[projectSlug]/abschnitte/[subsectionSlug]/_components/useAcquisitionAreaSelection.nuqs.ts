@@ -3,7 +3,6 @@
 import { parseAsInteger, useQueryState } from "nuqs"
 import { useCallback, useEffect, useState } from "react"
 
-
 export const useAcquisitionAreaSelection = () => {
   const [urlAcquisitionAreaId, setUrlAcquisitionAreaId] = useQueryState(
     "acquisitionAreaId",

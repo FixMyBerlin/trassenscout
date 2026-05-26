@@ -17,15 +17,16 @@ export default resolver.pipe(
       where: {
         project: { slug: projectSlug },
         reviewState: { in: ["NEEDSREVIEW", "APPROVED"] }, // Only show reviewed or approved projectRecords to normal users
-        OR: [
-          { subsubsectionId: subsubsectionId },
-          { acquisitionArea: { subsubsectionId: subsubsectionId } },
-        ],
+        OR: [{ subsubsectionId }, { subsubsections: { some: { id: subsubsectionId } } }],
       },
       orderBy: { date: "desc" },
       include: {
+        project: {
+          select: {
+            landAcquisitionModuleEnabled: true,
+          },
+        },
         projectRecordTopics: true,
-        subsection: true,
         subsubsection: {
           include: {
             subsection: {
@@ -47,6 +48,13 @@ export default resolver.pipe(
                 alkisParcelId: true,
               },
             },
+          },
+        },
+        uploads: {
+          select: {
+            id: true,
+            title: true,
+            createdAt: true,
           },
         },
         _count: {

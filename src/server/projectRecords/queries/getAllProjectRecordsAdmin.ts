@@ -13,7 +13,6 @@ export default resolver.pipe(resolver.authorize("ADMIN"), async () => {
         },
       },
       projectRecordTopics: true,
-      subsection: true,
       author: {
         select: {
           id: true,

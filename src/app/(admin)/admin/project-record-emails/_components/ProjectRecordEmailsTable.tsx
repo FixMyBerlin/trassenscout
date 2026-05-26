@@ -135,9 +135,16 @@ export const ProjectRecordEmailsTable = ({ projectRecordEmails }: Props) => {
               </td>
               <td className="px-6 py-4 text-sm text-gray-900">
                 {email.project ? (
-                  <Link href={`/${email.project.slug}/project-records`}>
-                    {shortTitle(email.project.slug)}
-                  </Link>
+                  <div className="space-y-1">
+                    <Link href={`/${email.project.slug}/project-records`}>
+                      {shortTitle(email.project.slug)}
+                    </Link>
+                    {email.project.aiEnabled === false && (
+                      <p className="text-xs font-medium text-amber-700">
+                        KI-E-Mail-Protokoll deaktiviert
+                      </p>
+                    )}
+                  </div>
                 ) : (
                   "‼️ Kein Projekt zugeordnet"
                 )}

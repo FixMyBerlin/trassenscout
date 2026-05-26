@@ -5,7 +5,6 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
-import { validateAcquisitionAreaScope } from "@/src/server/acquisitionAreas/_utils/validateAcquisitionAreaScope"
 import { Ctx } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
@@ -20,7 +19,10 @@ export default resolver.pipe(
   resolver.zod(UpdateUploadSchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
   async ({ id, projectSlug, ...data }, ctx: Ctx) => {
-    const previous = await db.upload.findFirst({ where: { id } })
+    const project = await db.project.findFirst({
+      where: { slug: projectSlug },
+      select: { landAcquisitionModuleEnabled: true },
+    })
 
     // copied from updateSubsubsection.ts
     const disconnect: Record<M2MFieldsType | string, { set: [] }> = {}
@@ -30,17 +32,13 @@ export default resolver.pipe(
       connect[fieldName] = { connect: data[fieldName] ? data[fieldName].map((id) => ({ id })) : [] }
       delete data[fieldName]
     })
+    if (!project?.landAcquisitionModuleEnabled) {
+      connect.acquisitionAreas = { connect: [] }
+    }
 
     await db.upload.update({
       where: { id },
       data: disconnect,
-    })
-
-    await validateAcquisitionAreaScope({
-      projectSlug,
-      acquisitionAreaId: data.acquisitionAreaId,
-      subsectionId: data.subsectionId,
-      subsubsectionId: data.subsubsectionId,
     })
 
     const currentUserId = ctx.session.userId
@@ -50,7 +48,6 @@ export default resolver.pipe(
       // copied from updateSubsubsection.ts
       // @ts-expect-error The whole `m2mFields` is way to hard to type but apparently working
       data: { ...data, ...connect, updatedById: currentUserId },
-      include: { subsection: { select: { id: true, slug: true } } },
     })
   },
 )

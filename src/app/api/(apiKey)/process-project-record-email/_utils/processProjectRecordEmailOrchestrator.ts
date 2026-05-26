@@ -8,6 +8,7 @@ import { fetchProjectContext } from "./fetchProjectContext"
 import { langfuse } from "./langfuseClient"
 import { notifyAdminsProjectRecordEmailWithoutProject } from "./notifyAdminsProjectRecordEmailWithoutProject"
 import { notifyAdminsProjectRecordNeedsReview } from "./notifyAdminsProjectRecordNeedsReview"
+import { notifySenderLegacyProtocolMailboxMoved } from "./notifySenderLegacyProtocolMailboxMoved"
 import { parseEmail } from "./parseEmail"
 
 /**
@@ -22,13 +23,21 @@ export const processProjectRecordEmailOrchestrator = async ({
   projectSlug?: string
 }) => {
   // Check if project exists in database
-  const project = await db.project.findUnique({
-    where: { slug: projectSlug },
-  })
+  const project = projectSlug
+    ? await db.project.findUnique({
+        where: { slug: projectSlug },
+      })
+    : null
 
   // Parse the email, separate body from attachments
-  const { body, attachments, from, subject, date } = await parseEmail({
+  const { body, attachments, from, fromAddress, to, cc, subject, date } = await parseEmail({
     rawEmailText,
+  })
+
+  await notifySenderLegacyProtocolMailboxMoved({
+    senderEmail: fromAddress,
+    to,
+    cc,
   })
 
   // If project does not exist, create ProjectRecordEmail with project NULL and skip processing and uploading attachments
@@ -142,7 +151,6 @@ export const processProjectRecordEmailOrchestrator = async ({
   const combinedResult = {
     ...finalResult,
     projectId,
-    // subsectionId: finalResult.subsectionId ? parseInt(finalResult.subsectionId) : null,
     // subsubsectionId: finalResult.subsubsectionId ? parseInt(finalResult.subsubsectionId) : null,
     projectRecordTopics:
       finalResult.topics && Array.isArray(finalResult.topics)
@@ -158,7 +166,6 @@ export const processProjectRecordEmailOrchestrator = async ({
       body: combinedResult.body,
       // if date is null or invalid, use parsed date or current date
       date: combinedResult.date ? new Date(combinedResult.date) : date || new Date(),
-      // subsectionId: combinedResult.subsectionId,
       // subsubsectionId: combinedResult.subsubsectionId,
       projectId: combinedResult.projectId,
       projectRecordAuthorType: ProjectRecordType.SYSTEM,

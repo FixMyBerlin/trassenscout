@@ -1,5 +1,6 @@
 import { invoke } from "@/src/blitz-server"
 import getProjectRecordsNeedsReview from "@/src/server/projectRecords/queries/getProjectRecordsNeedsReview"
+import getProject from "@/src/server/projects/queries/getProject"
 import { AuthorizationError } from "blitz"
 import { Metadata } from "next"
 import { redirect } from "next/navigation"
@@ -17,6 +18,13 @@ export default async function ProjectRecordsNeedsReviewPage({
 }) {
   let projectRecords
   try {
+    const project = await invoke(getProject, {
+      projectSlug: params.projectSlug,
+    })
+    if (!project.aiEnabled) {
+      redirect(`/${params.projectSlug}/project-records`)
+    }
+
     projectRecords = await invoke(getProjectRecordsNeedsReview, {
       projectSlug: params.projectSlug,
     })

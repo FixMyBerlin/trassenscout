@@ -1,3 +1,11 @@
-export const HeaderWrapper = ({ children }: { children: React.ReactNode }) => {
-  return <header className="my-10 flex justify-between">{children}</header>
+import { clsx } from "clsx"
+
+export const HeaderWrapper = ({
+  children,
+  className,
+}: {
+  children: React.ReactNode
+  className?: string
+}) => {
+  return <header className={clsx("my-10 flex justify-between", className)}>{children}</header>
 }

@@ -18,23 +18,43 @@ const IMAGE_EXTENSIONS = new Set([
   "heif",
 ])
 
+const SVG_EXTENSIONS = new Set(["svg"])
+
+const getExternalFileExtension = (externalUrl: string | null | undefined) => {
+  if (!externalUrl) return null
+
+  try {
+    const pathname = new URL(externalUrl, "http://localhost").pathname
+    const filename = decodeURIComponent(pathname.split("/").pop() || "")
+    return filename.split(".").pop()?.toLowerCase() ?? null
+  } catch {
+    return null
+  }
+}
+
 export const isImageMimeType = (mimeType: string | null | undefined) => {
   return mimeType?.startsWith("image/") ?? false
 }
 
 export const isImageExternalUrl = (externalUrl: string | null | undefined) => {
-  if (!externalUrl) return false
+  const extension = getExternalFileExtension(externalUrl)
+  return extension ? IMAGE_EXTENSIONS.has(extension) : false
+}
 
-  try {
-    const pathname = new URL(externalUrl, "http://localhost").pathname
-    const filename = decodeURIComponent(pathname.split("/").pop() || "")
-    const extension = filename.split(".").pop()?.toLowerCase()
-    return extension ? IMAGE_EXTENSIONS.has(extension) : false
-  } catch {
-    return false
-  }
+export const isSvgMimeType = (mimeType: string | null | undefined) => {
+  if (!mimeType) return false
+  return mimeType === "image/svg+xml" || mimeType === "application/svg+xml"
+}
+
+export const isSvgExternalUrl = (externalUrl: string | null | undefined) => {
+  const extension = getExternalFileExtension(externalUrl)
+  return extension ? SVG_EXTENSIONS.has(extension) : false
 }
 
 export const isImageUpload = (upload: ImageUploadLike) => {
   return isImageMimeType(upload.mimeType) || isImageExternalUrl(upload.externalUrl)
+}
+
+export const isSvgUpload = (upload: ImageUploadLike) => {
+  return isSvgMimeType(upload.mimeType) || isSvgExternalUrl(upload.externalUrl)
 }

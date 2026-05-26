@@ -56,13 +56,16 @@ export const ProjectRecordsFormAndTable = ({
     console.log({ values })
     try {
       // Exclude m2m fields that are transformed by the form schema but need different format for mutation
-      const { uploads, projectRecordTopics, ...restValues } = values
+      const { uploads, projectRecordTopics, subsubsections, acquisitionAreas, ...restValues } =
+        values
       const projectRecord = await createProjectRecordMutation({
         ...restValues,
         date: values.date ? new Date(values.date) : null,
         projectSlug,
         uploads: Array.isArray(uploads) ? uploads : undefined,
         projectRecordTopics: Array.isArray(projectRecordTopics) ? projectRecordTopics : undefined,
+        subsubsections: Array.isArray(subsubsections) ? subsubsections : undefined,
+        acquisitionAreas: Array.isArray(acquisitionAreas) ? acquisitionAreas : undefined,
       })
       refetch()
       setShowSuccess(true)
@@ -99,6 +102,9 @@ export const ProjectRecordsFormAndTable = ({
 
       <ProjectRecordNewModal
         projectSlug={projectSlug}
+        landAcquisitionModuleEnabled={
+          projectRecords[0]?.project?.landAcquisitionModuleEnabled ?? false
+        }
         open={isProjectRecordModalOpen}
         onClose={() => setIsProjectRecordModalOpen(false)}
         onSuccess={async (projectRecordId) => {

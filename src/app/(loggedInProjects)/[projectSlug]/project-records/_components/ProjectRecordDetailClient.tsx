@@ -18,7 +18,6 @@ export type ReprocessedProjectRecord = {
   title?: string
   body?: string
   date: Date
-  subsectionId?: number
   projectRecordTopics?: number[]
 }
 
@@ -77,7 +76,6 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord }: Props) => {
 
   const projectRecordSummaryProps = {
     projectRecord,
-    onUploadDeleted: refreshProjectRecord,
   }
 
   // Scroll to AI form when suggestions are loaded

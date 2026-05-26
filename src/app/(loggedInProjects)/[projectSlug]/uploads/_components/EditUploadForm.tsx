@@ -6,8 +6,7 @@ import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import {
   FormDirtyStateReporter,
-  LabeledSelect,
-  LabeledSelectProps,
+  LabeledCombobox,
   LabeledTextField,
 } from "@/src/core/components/forms"
 import { BackLink } from "@/src/core/components/forms/BackLink"
@@ -19,20 +18,18 @@ import getAcquisitionAreas from "@/src/server/acquisitionAreas/queries/getAcquis
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
 import getProjectRecordsByAcquisitionArea from "@/src/server/projectRecords/queries/getProjectRecordsByAcquisitionArea"
 import getProjectRecordsBySubsubsection from "@/src/server/projectRecords/queries/getProjectRecordsBySubsubsection"
-import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import getSubsubsections from "@/src/server/subsubsections/queries/getSubsubsections"
 import { getFilenameFromS3 } from "@/src/server/uploads/_utils/url"
 import updateUpload from "@/src/server/uploads/mutations/updateUploadWithSubsections"
 import getUploadWithRelations from "@/src/server/uploads/queries/getUploadWithRelations"
 import getUploadsByAcquisitionArea from "@/src/server/uploads/queries/getUploadsByAcquisitionArea"
 import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
-import { UploadSchema } from "@/src/server/uploads/schema"
+import { UploadFormSchema, UploadSchema } from "@/src/server/uploads/schema"
 import { invalidateQuery, useMutation, useQuery } from "@blitzjs/rpc"
 import { PromiseReturnType } from "blitz"
 import { Route } from "next"
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
-import { useFormContext } from "react-hook-form"
+import { useState } from "react"
 import { z } from "zod"
 import { DeleteUploadActionBar } from "./DeleteUploadActionBar"
 import { LuckyCloudActionBar } from "./LuckyCloudActionBar"
@@ -44,126 +41,59 @@ import { UploadPreview } from "./UploadPreview"
 import { UploadVerknuepfungen } from "./UploadVerknuepfungen"
 
 type UploadSubsectionFieldsProps = {
-  projectSlug: string
   landAcquisitionModuleEnabled: boolean
-  subsections: Awaited<ReturnType<typeof getSubsections>>["subsections"]
   subsubsections: Awaited<ReturnType<typeof getSubsubsections>>["subsubsections"]
+  acquisitionAreas: Awaited<ReturnType<typeof getAcquisitionAreas>>
 }
 
 const UploadSubsectionFields = ({
-  projectSlug,
+  acquisitionAreas,
   landAcquisitionModuleEnabled,
-  subsections,
   subsubsections,
 }: UploadSubsectionFieldsProps) => {
-  const { watch, setValue } = useFormContext<z.infer<typeof UploadSchema>>()
-  const subsectionId = watch("subsectionId")
-  const subsubsectionId = watch("subsubsectionId")
-  const acquisitionAreaId = watch("acquisitionAreaId")
-  const [acquisitionAreas = []] = useQuery(
-    getAcquisitionAreas,
-    { projectSlug },
-    { enabled: landAcquisitionModuleEnabled },
-  )
-
-  const selectedSubsectionId = subsectionId ? Number(subsectionId) : null
-  const selectedSubsubsectionId = subsubsectionId ? Number(subsubsectionId) : null
-  const selectedAcquisitionAreaId = acquisitionAreaId ? Number(acquisitionAreaId) : null
-
-  // We use `""` here to signify the "All" case which gets translated to `NULL`
-  const subsectionOptions: LabeledSelectProps["options"] = [["", "Übergreifendes Dokument"]]
-  subsections.forEach((ss) => {
-    subsectionOptions.push([ss.id, `${shortTitle(ss.slug)}`] as [number, string])
-  })
-
-  // Sort by subsection first, then by subsubsection slug, and include subsection in label
-  const subsubsectionOptions: LabeledSelectProps["options"] = subsubsections
+  // Sort by subsection first, then by subsubsection slug (same order as before)
+  const subsubsectionCheckboxItems = [...subsubsections]
     .sort((a, b) => {
       const subsectionCompare = a.subsection.slug.localeCompare(b.subsection.slug)
       if (subsectionCompare !== 0) return subsectionCompare
       return a.slug.localeCompare(b.slug)
     })
-    .map(
-      (subsubsection) =>
-        [
-          subsubsection.id,
-          `${shortTitle(subsubsection.slug)} (${shortTitle(subsubsection.subsection.slug)})`,
-        ] as [number, string],
-    )
-  subsubsectionOptions.unshift(["", "Keine Angabe"])
+    .map((ss) => ({
+      value: String(ss.id),
+      label: `${shortTitle(ss.slug)} (${shortTitle(ss.subsection.slug)})`,
+    }))
 
-  const filteredAcquisitionAreas = acquisitionAreas.filter((acquisitionArea) => {
-    if (selectedSubsubsectionId) {
-      return acquisitionArea.subsubsectionId === selectedSubsubsectionId
-    }
-    if (selectedSubsectionId) {
-      return acquisitionArea.subsubsection.subsectionId === selectedSubsectionId
-    }
-    return true
-  })
-
-  const acquisitionAreaOptions: LabeledSelectProps["options"] = filteredAcquisitionAreas.map(
-    (acquisitionArea) =>
-      [
-        acquisitionArea.id,
-        `${acquisitionArea.id} ${acquisitionArea.parcel.alkisParcelId} (${shortTitle(
-          acquisitionArea.subsubsection.slug,
-        )}/${shortTitle(acquisitionArea.subsubsection.subsection.slug)})`,
-      ] as [number, string],
-  )
-  acquisitionAreaOptions.unshift(["", "Keine Angabe"])
-
-  const handleSubsectionChange = (newSubsectionId: string) => {
-    const nextSubsectionId = newSubsectionId ? Number(newSubsectionId) : null
-    const currentSubsubsectionId = subsubsectionId ? Number(subsubsectionId) : null
-
-    if (currentSubsubsectionId) {
-      const selectedSubsubsection = subsubsections.find((s) => s.id === currentSubsubsectionId)
-      if (selectedSubsubsection && selectedSubsubsection.subsectionId !== nextSubsectionId) {
-        setValue("subsubsectionId", null)
-      }
-    }
-  }
-
-  useEffect(() => {
-    if (!landAcquisitionModuleEnabled || !selectedAcquisitionAreaId) return
-    const stillCompatible = filteredAcquisitionAreas.some(
-      (acquisitionArea) => acquisitionArea.id === selectedAcquisitionAreaId,
-    )
-    if (!stillCompatible) {
-      setValue("acquisitionAreaId", null, { shouldDirty: true })
-    }
-  }, [filteredAcquisitionAreas, landAcquisitionModuleEnabled, selectedAcquisitionAreaId, setValue])
+  const acquisitionAreaCheckboxItems = [...acquisitionAreas]
+    .sort((a, b) => {
+      const subsectionCompare = a.subsubsection.subsection.slug.localeCompare(
+        b.subsubsection.subsection.slug,
+      )
+      if (subsectionCompare !== 0) return subsectionCompare
+      const subsubCompare = a.subsubsection.slug.localeCompare(b.subsubsection.slug)
+      if (subsubCompare !== 0) return subsubCompare
+      return a.id - b.id
+    })
+    .map((acquisitionArea) => ({
+      value: String(acquisitionArea.id),
+      label: `${acquisitionArea.id} - Flurstücknr. ${acquisitionArea.parcel.alkisParcelId} (${shortTitle(acquisitionArea.subsubsection.slug)})`,
+    }))
 
   return (
-    <div
-      className={
-        landAcquisitionModuleEnabled
-          ? "grid grid-cols-1 gap-4 sm:grid-cols-3"
-          : "grid grid-cols-1 gap-4 sm:grid-cols-2"
-      }
-    >
-      <LabeledSelect
-        name="subsectionId"
-        label="Zuordnung zum Planungsabschnitt"
-        options={subsectionOptions}
-        optional
-        onChange={handleSubsectionChange}
-      />
-      <LabeledSelect
-        name="subsubsectionId"
-        label="Zuordnung zum Eintrag"
-        options={subsubsectionOptions}
-        optional
-      />
+    <div className="flex flex-col gap-4">
       {landAcquisitionModuleEnabled && (
-        <LabeledSelect
-          name="acquisitionAreaId"
-          label="Zuordnung zur Verhandlungsfläche"
-          options={acquisitionAreaOptions}
+        <LabeledCombobox
+          scope="acquisitionAreas"
+          label="Zuordnung zu Verhandlungsflächen"
           optional
+          items={acquisitionAreaCheckboxItems}
         />
       )}
+      <LabeledCombobox
+        scope="subsubsections"
+        label="Zuordnung zu Einträgen"
+        optional
+        items={subsubsectionCheckboxItems}
+      />
     </div>
   )
 }
@@ -188,13 +118,12 @@ type Props = {
   onSubmittingChange?: (isSubmitting: boolean) => void
 }
 
-const createUploadFormValues = (upload: UploadWithRelations): z.infer<typeof UploadSchema> => ({
+const createUploadFormValues = (upload: UploadWithRelations) => ({
   title: upload.title,
   externalUrl: upload.externalUrl,
   summary: upload.summary,
-  subsectionId: upload.subsectionId,
-  subsubsectionId: upload.subsubsectionId,
-  acquisitionAreaId: upload.acquisitionAreaId,
+  subsubsections: upload.subsubsections?.map((s) => String(s.id)) ?? [],
+  acquisitionAreas: upload.acquisitionAreas?.map((a) => String(a.id)) ?? [],
   projectRecordEmailId: upload.projectRecordEmailId,
   mimeType: upload.mimeType,
   latitude: upload.latitude,
@@ -222,19 +151,18 @@ export const EditUploadForm = ({
   const router = useRouter()
   const [isGeneratingSummary, setIsGeneratingSummary] = useState(false)
   const projectSlug = useProjectSlug()
-  const [{ subsections }] = useQuery(getSubsections, { projectSlug })
   const [{ subsubsections }] = useQuery(getSubsubsections, { projectSlug })
-
+  const [acquisitionAreasData] = useQuery(getAcquisitionAreas, { projectSlug })
   const [updateUploadMutation] = useMutation(updateUpload)
 
   const initialValues = createUploadFormValues(upload)
   const formKey = getUploadFormKey(upload)
 
-  const handleSubmit = async (values: z.infer<typeof UploadSchema>) => {
+  const handleSubmit = async (values: z.infer<typeof UploadFormSchema>) => {
     onSubmittingChange?.(true)
     try {
       await updateUploadMutation({
-        ...values,
+        ...(values as z.infer<typeof UploadSchema>),
         id: upload.id,
         projectSlug,
       })
@@ -276,7 +204,8 @@ export const EditUploadForm = ({
           key={formKey}
           className="grow"
           submitText="Speichern"
-          schema={UploadSchema}
+          schema={UploadFormSchema}
+          // @ts-expect-error m2m fields use string ids in the form (for checkbox `value`),
           initialValues={initialValues}
           onSubmit={handleSubmit}
           disabled={isGeneratingSummary}
@@ -331,9 +260,8 @@ export const EditUploadForm = ({
             </div>
           </div>
           <UploadSubsectionFields
-            projectSlug={projectSlug}
+            acquisitionAreas={acquisitionAreasData}
             landAcquisitionModuleEnabled={upload.project?.landAcquisitionModuleEnabled ?? false}
-            subsections={subsections}
             subsubsections={subsubsections}
           />
           {upload.id && (
@@ -373,20 +301,18 @@ export const EditUploadForm = ({
         updatedBy={upload.updatedBy ?? undefined}
         updatedAt={upload.updatedAt ?? undefined}
       />
-
+      <h4 className="mt-4 text-sm font-medium">Verknüpfungen:</h4>
       <UploadVerknuepfungen
-        className="mt-4"
         projectSlug={projectSlug}
         landAcquisitionModuleEnabled={upload.project?.landAcquisitionModuleEnabled ?? false}
-        subsection={upload.subsection}
-        subsubsection={upload.Subsubsection}
-        acquisitionArea={upload.acquisitionArea}
+        subsubsections={upload.subsubsections}
+        acquisitionAreas={upload.acquisitionAreas}
         projectRecords={upload.projectRecords}
         projectRecordEmail={upload.projectRecordEmail}
         surveyResponse={upload.surveyResponse}
       />
 
-      <SuperAdminLogData data={{ upload, subsections, returnPath, returnText }} />
+      <SuperAdminLogData data={{ upload, returnPath, returnText }} />
     </>
   )
 }

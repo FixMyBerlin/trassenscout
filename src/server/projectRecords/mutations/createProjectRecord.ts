@@ -7,7 +7,6 @@ import {
 } from "@/src/authorization/extractProjectSlug"
 import { shortTitle } from "@/src/core/components/text"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
-import { validateAcquisitionAreaScope } from "@/src/server/acquisitionAreas/_utils/validateAcquisitionAreaScope"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { m2mFields, M2MFieldsType } from "@/src/server/projectRecords/m2mFields"
 import { ProjectRecordSchema } from "@/src/server/projectRecords/schemas"
@@ -36,20 +35,32 @@ export default resolver.pipe(
       delete data[fieldName]
     })
     const projectId = await getProjectIdBySlug(projectSlug)
-    const currentUserId = ctx.session.userId
-
-    await validateAcquisitionAreaScope({
-      projectSlug,
-      acquisitionAreaId: data.acquisitionAreaId,
-      subsectionId: data.subsectionId,
-      subsubsectionId: data.subsubsectionId,
+    const project = await db.project.findUnique({
+      where: { id: projectId },
+      select: { landAcquisitionModuleEnabled: true },
     })
+    const selectedSubsubsectionIds = connect.subsubsections?.connect?.map((row) => row.id) ?? []
+    const selectedAcquisitionAreaIds = connect.acquisitionAreas?.connect?.map((row) => row.id) ?? []
+    if (!project?.landAcquisitionModuleEnabled) {
+      connect.acquisitionAreas = { connect: [] }
+    }
+    const currentUserId = ctx.session.userId
 
     const record = await db.projectRecord.create({
       // @ts-expect-error The whole `m2mFields` is way to hard to type but apparently working
       data: {
         projectId,
         ...data,
+        subsubsectionId:
+          selectedSubsubsectionIds.length > 0
+            ? selectedSubsubsectionIds[0]!
+            : data.subsubsectionId,
+        acquisitionAreaId:
+          project?.landAcquisitionModuleEnabled && selectedAcquisitionAreaIds.length > 0
+            ? selectedAcquisitionAreaIds[0]!
+            : project?.landAcquisitionModuleEnabled
+              ? data.acquisitionAreaId
+              : null,
         ...connect,
         // Set both author and updatedBy to current user on creation
         // we only have USER type for now

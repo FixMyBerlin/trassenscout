@@ -10,9 +10,8 @@ import { useMutation } from "@blitzjs/rpc"
 import { UploadDropzoneBase } from "./UploadDropzoneBase"
 
 type Props = {
-  subsubsectionId?: number
-  subsectionId?: number
-  acquisitionAreaId?: number
+  subsubsectionIds?: number[]
+  acquisitionAreaIds?: number[]
   projectRecordIds?: number[]
   surveyResponseId?: number
   onUploadComplete?: (uploadIds: number[]) => Promise<void>
@@ -20,9 +19,8 @@ type Props = {
 }
 
 export const UploadDropzone = ({
-  subsubsectionId,
-  subsectionId,
-  acquisitionAreaId,
+  subsubsectionIds,
+  acquisitionAreaIds,
   projectRecordIds,
   surveyResponseId,
   onUploadComplete,
@@ -36,12 +34,10 @@ export const UploadDropzone = ({
       title: file.name,
       externalUrl: getS3Url(file.objectInfo.key),
       projectSlug,
-      acquisitionAreaId: acquisitionAreaId || null,
-      subsectionId: subsectionId || null,
+      acquisitionAreas: acquisitionAreaIds?.length ? acquisitionAreaIds : undefined,
       summary: null,
-      subsubsectionId: subsubsectionId || null,
-      projectRecords:
-        projectRecordIds && projectRecordIds.length > 0 ? projectRecordIds : undefined,
+      subsubsections: subsubsectionIds?.length ? subsubsectionIds : undefined,
+      projectRecords: projectRecordIds?.length ? projectRecordIds : undefined,
       surveyResponseId: surveyResponseId || null,
       mimeType: file.type || null,
       fileSize: file.size || null,

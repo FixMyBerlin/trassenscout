@@ -17,7 +17,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const user = await getCurrentUser(null, ctx)
 
   return (
-    <div className="relative flex h-full flex-col bg-pink-50">
+    <div className="relative flex min-h-screen flex-col bg-pink-50">
       <main className="prose prose-pink prose-hr:border-white mx-auto w-full max-w-4xl py-10">
         <h1 className="text-pink-600">Trassenscout ADMIN</h1>
         <details>

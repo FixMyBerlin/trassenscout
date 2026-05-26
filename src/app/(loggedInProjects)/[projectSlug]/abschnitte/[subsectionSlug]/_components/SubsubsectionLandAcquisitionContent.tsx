@@ -79,9 +79,9 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
     getUploadsWithSubsections,
     {
       projectSlug,
-      where: {
-        acquisitionAreaId: selectedAcquisitionArea?.id ?? undefined,
-      },
+      where: selectedAcquisitionArea
+        ? { acquisitionAreas: { some: { id: selectedAcquisitionArea.id } } }
+        : {},
     },
     {
       refetchOnWindowFocus: false,
@@ -270,6 +270,7 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
 
                 <ProjectRecordNewModal
                   projectSlug={projectSlug}
+                  landAcquisitionModuleEnabled
                   open={isProjectRecordModalOpen}
                   onClose={() => setIsProjectRecordModalOpen(false)}
                   onSuccess={async (projectRecordId) => {
@@ -308,9 +309,7 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
                     <UploadDropzoneContainer className="h-36 rounded-md p-0">
                       <UploadDropzone
                         fillContainer
-                        subsectionId={subsectionId}
-                        subsubsectionId={subsubsectionId}
-                        acquisitionAreaId={selectedAcquisitionArea.id}
+                        acquisitionAreaIds={[selectedAcquisitionArea.id]}
                         onUploadComplete={async () => {
                           await refetchUploads()
                         }}

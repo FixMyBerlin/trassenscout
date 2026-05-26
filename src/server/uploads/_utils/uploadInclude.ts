@@ -1,10 +1,9 @@
 export const uploadWithSubsectionsInclude = {
-  subsection: { select: { id: true, slug: true } },
-  Subsubsection: {
+  subsubsections: {
     select: {
       id: true,
       slug: true,
-      subsection: { select: { slug: true } },
+      subsection: { select: { id: true, slug: true } },
     },
   },
   projectRecords: {
@@ -32,13 +31,13 @@ export const uploadWithSubsectionsInclude = {
       landAcquisitionModuleEnabled: true,
     },
   },
-  acquisitionArea: {
+  acquisitionAreas: {
     select: {
       id: true,
       subsubsection: {
         select: {
           slug: true,
-          subsection: { select: { slug: true } },
+          subsection: { select: { id: true, slug: true } },
         },
       },
       parcel: {

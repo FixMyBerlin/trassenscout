@@ -33,6 +33,9 @@ export default function AdminDashboardPage() {
           <Link href="/admin/email-templates">E-Mail-Templates</Link>
         </li>
         <li>
+          <Link href="/admin/project-record-templates">Vorlagen Protokolleinträge</Link>
+        </li>
+        <li>
           <Link href="/admin/logEntries">LogEntries</Link>
         </li>
       </ul>

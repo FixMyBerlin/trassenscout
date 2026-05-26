@@ -1,26 +1,24 @@
 import { ProjectRecordAssignedToPill } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordAssignedToPill"
 import { ProjectRecordEditingStateIndicator } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordEditingStateIndicator"
 import { ProjectRecordEmailSourceText } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordEmailSource"
-import { createProjectRecordFilterUrl } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/filter/createFilterUrl"
+import { ProjectRecordVerknuepfungen } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordVerknuepfungen"
 import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
+import { createProjectRecordFilterUrl } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/filter/createFilterUrl"
 import { getFullname } from "@/src/app/_components/users/utils/getFullname"
 import { Link, linkStyles } from "@/src/core/components/links"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
-import { subsubsectionLandAcquisitionRoute } from "@/src/core/routes/subsectionRoutes"
-import { uploadEditRouteForProjectRecord } from "@/src/core/routes/uploadRoutes"
 import { useCurrentReturnTo } from "@/src/core/routes/useCurrentPathWithSearch"
+import { uploadEditRouteForProjectRecord } from "@/src/core/routes/uploadRoutes"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
 import { format } from "date-fns"
 import { de } from "date-fns/locale"
-import { Route } from "next"
 import { twJoin } from "tailwind-merge"
 
 type Props = {
   projectRecord: Awaited<ReturnType<typeof getProjectRecord>>
-  onUploadDeleted?: () => void | Promise<void>
 }
 
-export const ProjectRecordSummary = ({ projectRecord, onUploadDeleted }: Props) => {
+export const ProjectRecordSummary = ({ projectRecord }: Props) => {
   const projectSlug = projectRecord.project.slug
   const returnTo = useCurrentReturnTo()
 
@@ -57,52 +55,6 @@ export const ProjectRecordSummary = ({ projectRecord, onUploadDeleted }: Props) 
           {format(new Date(projectRecord.date!), "P", { locale: de })}
         </span>
 
-        <div className="text-gray-500">Abschnitt: </div>
-        {projectRecord.subsection ? (
-          <Link
-            className="col-span-3 uppercase"
-            href={`/${projectSlug}/abschnitte/${projectRecord.subsection.slug}`}
-          >
-            {projectRecord.subsection.slug}
-          </Link>
-        ) : (
-          <span className="col-span-3">Keine Angabe</span>
-        )}
-
-        <div className="text-gray-500">Eintrag: </div>
-        {projectRecord.subsubsection ? (
-          <Link
-            className="col-span-3 uppercase"
-            href={`/${projectSlug}/abschnitte/${projectRecord.subsubsection.subsection.slug}/fuehrung/${projectRecord.subsubsection.slug}`}
-          >
-            {projectRecord.subsubsection.slug}
-          </Link>
-        ) : (
-          <span className="col-span-3">Keine Angabe</span>
-        )}
-
-        {projectRecord.project.landAcquisitionModuleEnabled && (
-          <>
-            <div className="text-gray-500">Verhandlungsfläche: </div>
-            {projectRecord.acquisitionArea ? (
-              <Link
-                className="col-span-3"
-                href={
-                  `${subsubsectionLandAcquisitionRoute(
-                    projectSlug,
-                    projectRecord.acquisitionArea.subsubsection.subsection.slug,
-                    projectRecord.acquisitionArea.subsubsection.slug,
-                  )}?acquisitionAreaId=${projectRecord.acquisitionArea.id}` as Route
-                }
-              >
-                {projectRecord.acquisitionArea.id} (
-                {projectRecord.acquisitionArea.parcel.alkisParcelId})
-              </Link>
-            ) : (
-              <span className="col-span-3">Keine Angabe</span>
-            )}
-          </>
-        )}
       </div>
 
       {projectRecord.body && (
@@ -133,7 +85,7 @@ export const ProjectRecordSummary = ({ projectRecord, onUploadDeleted }: Props) 
       )}
 
       <div>
-        <p className="mb-3 text-gray-500">Tags: </p>
+        <p className="mb-2 text-gray-500">Tags: </p>
         {!!projectRecord.projectRecordTopics.length ? (
           <ul className="list-inside list-none space-y-1">
             {projectRecord.projectRecordTopics.map((topic) => (
@@ -154,9 +106,20 @@ export const ProjectRecordSummary = ({ projectRecord, onUploadDeleted }: Props) 
       </div>
 
       <div>
-        <p className="mr-2 mb-3 text-gray-500">Dokumente ({projectRecord.uploads?.length || 0})</p>
-        {projectRecord.uploads && projectRecord.uploads.length > 0 && (
-          <div className="flex flex-wrap gap-3">
+        <p className="mb-2 text-gray-500">Verknüpfungen:</p>
+        <ProjectRecordVerknuepfungen
+          projectSlug={projectSlug}
+          landAcquisitionModuleEnabled={projectRecord.project.landAcquisitionModuleEnabled}
+          subsubsection={projectRecord.subsubsection}
+          acquisitionArea={projectRecord.acquisitionArea}
+          subsubsections={projectRecord.subsubsections}
+          acquisitionAreas={projectRecord.acquisitionAreas}
+        />
+      </div>
+
+      {!!projectRecord.uploads.length && (
+        <div>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
             {projectRecord.uploads.map((upload) => (
               <UploadPreviewClickable
                 key={upload.id}
@@ -164,15 +127,14 @@ export const ProjectRecordSummary = ({ projectRecord, onUploadDeleted }: Props) 
                 upload={upload}
                 projectSlug={projectSlug}
                 size="grid"
-                onDeleted={onUploadDeleted}
                 editUrl={uploadEditRouteForProjectRecord(projectSlug, upload.id, projectRecord.id, {
                   returnTo,
                 })}
               />
             ))}
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   )
 }

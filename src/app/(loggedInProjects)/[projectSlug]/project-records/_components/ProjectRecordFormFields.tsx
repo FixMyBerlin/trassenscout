@@ -8,19 +8,19 @@ import { getUserSelectOptions } from "@/src/app/_components/users/utils/getUserS
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import {
   LabeledCheckboxGroup,
+  LabeledCombobox,
   LabeledSelect,
   LabeledSwitch,
   LabeledTextareaField,
   LabeledTextField,
 } from "@/src/core/components/forms"
 import { blueButtonStyles } from "@/src/core/components/links"
-import { frenchQuote, shortTitle } from "@/src/core/components/text"
+import { shortTitle } from "@/src/core/components/text"
 import { NumberArraySchema } from "@/src/core/utils/schema-shared"
 import createProjectRecordTopic from "@/src/server/ProjectRecordTopics/mutations/createProjectRecordTopic"
 import getProjectRecordTopicsByProject from "@/src/server/ProjectRecordTopics/queries/getProjectRecordTopicsByProject"
 import getAcquisitionAreas from "@/src/server/acquisitionAreas/queries/getAcquisitionAreas"
 import getProjectUsers from "@/src/server/memberships/queries/getProjectUsers"
-import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import getSubsubsections from "@/src/server/subsubsections/queries/getSubsubsections"
 import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
 import { useMutation, useQuery } from "@blitzjs/rpc"
@@ -30,9 +30,12 @@ import { useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
 
 type Props = {
+  formMode?: "create" | "edit"
+  relationContext?: "project" | "subsubsection" | "acquisitionArea"
   splitView?: boolean
   projectSlug: string
   landAcquisitionModuleEnabled?: boolean
+  disableSuspenseQueries?: boolean
   emailSource?: {
     from: string | null
     subject: string | null
@@ -43,66 +46,70 @@ type Props = {
 }
 
 export const ProjectRecordFormFields = ({
+  formMode = "edit",
+  relationContext = "project",
   projectSlug,
   emailSource,
   splitView,
   landAcquisitionModuleEnabled = false,
+  disableSuspenseQueries = false,
 }: Props) => {
-  const [{ subsections }] = useQuery(getSubsections, { projectSlug })
-  const [{ subsubsections }] = useQuery(getSubsubsections, { projectSlug })
+  const queryOptions = {
+    suspense: !disableSuspenseQueries,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  }
+
+  const [subsubsectionsData] = useQuery(getSubsubsections, { projectSlug }, queryOptions)
   const [acquisitionAreas = []] = useQuery(
     getAcquisitionAreas,
     { projectSlug },
-    { enabled: landAcquisitionModuleEnabled },
+    {
+      enabled: landAcquisitionModuleEnabled,
+      ...queryOptions,
+    },
   )
-  const [users] = useQuery(getProjectUsers, { projectSlug, role: "EDITOR" })
-  const [{ projectRecordTopics }, { refetch: refetchTopics }] = useQuery(
+  const [usersData] = useQuery(
+    getProjectUsers,
+    {
+      projectSlug,
+      role: splitView ? "EDITOR" : undefined,
+    },
+    queryOptions,
+  )
+  const [projectRecordTopicsData, { refetch: refetchTopics }] = useQuery(
     getProjectRecordTopicsByProject,
     { projectSlug },
+    queryOptions,
   )
   const [newTopic, setNewTopic] = useState("")
   const [createProjectRecordTopicMutation] = useMutation(createProjectRecordTopic)
   const { watch, setValue } = useFormContext()
-  const subsectionId = watch("subsectionId")
-  const subsubsectionId = watch("subsubsectionId")
-  const acquisitionAreaId = watch("acquisitionAreaId")
+  const selectedSubsubsectionsValue = watch("subsubsections")
+  const selectedAcquisitionAreasValue = watch("acquisitionAreas")
+  const selectedSubsubsectionIds = NumberArraySchema.parse(selectedSubsubsectionsValue)
+  const selectedAcquisitionAreaIds = NumberArraySchema.parse(selectedAcquisitionAreasValue)
   const uploadsValue = watch("uploads")
   const uploadIds = NumberArraySchema.parse(uploadsValue)
+
+  const subsubsections = subsubsectionsData?.subsubsections ?? []
+  const users = usersData ?? []
+  const projectRecordTopics = projectRecordTopicsData?.projectRecordTopics ?? []
 
   const [{ uploads: selectedUploads = [] } = { uploads: [] }] = useQuery(
     getUploadsWithSubsections,
     { projectSlug, where: { id: { in: uploadIds } } },
     {
       enabled: uploadIds.length > 0,
-      suspense: false,
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
+      ...queryOptions,
     },
   )
-
-  const handleSubsectionChange = (newSubsectionId: string) => {
-    const currentSubsubsectionId = watch("subsubsectionId")
-    if (currentSubsubsectionId) {
-      const selectedSubsubsection = subsubsections.find(
-        (s) => s.id === Number(currentSubsubsectionId),
-      )
-      if (selectedSubsubsection && selectedSubsubsection.subsectionId !== Number(newSubsectionId)) {
-        setValue("subsubsectionId", null)
-      }
-    }
-  }
 
   const topicsOptions = projectRecordTopics.length
     ? projectRecordTopics.map((t) => {
         return { value: String(t.id), label: t.title }
       })
     : []
-
-  const subsectionOptions: [string | number, string][] = subsections.map((subsection) => [
-    subsection.id,
-    shortTitle(subsection.slug),
-  ])
-  subsectionOptions.unshift(["", "Keine Angabe"])
 
   const assignedToOptions = getUserSelectOptions(users)
 
@@ -111,44 +118,32 @@ export const ProjectRecordFormFields = ({
     [ProjectRecordEditingState.COMPLETED, "Abgeschlossen"],
   ]
 
-  const subsubsectionOptions: [string | number, string][] = subsubsections
-    .filter((subsubsection) => (subsectionId ? subsubsection.subsectionId == subsectionId : true))
+  const subsubsectionItems = subsubsections
     .sort((a, b) => a.subsection.slug.localeCompare(b.subsection.slug))
-    .map((subsubsection) => [
-      subsubsection.id,
-      shortTitle(`${subsubsection.slug} (${subsubsection.subsection.slug})`),
-    ])
-  subsubsectionOptions.unshift(["", "Keine Angabe"])
+    .map((subsubsection) => ({
+      value: String(subsubsection.id),
+      label: shortTitle(`${subsubsection.slug} (${subsubsection.subsection.slug})`),
+    }))
 
-  const selectedSubsectionId = subsectionId ? Number(subsectionId) : null
-  const selectedSubsubsectionId = subsubsectionId ? Number(subsubsectionId) : null
-  const selectedAcquisitionAreaId = acquisitionAreaId ? Number(acquisitionAreaId) : null
+  const shouldFilterAcquisitionAreas = formMode === "edit" && relationContext === "subsubsection"
+  const filteredAcquisitionAreas = shouldFilterAcquisitionAreas && selectedSubsubsectionIds.length
+    ? acquisitionAreas.filter(
+        (acquisitionArea) => selectedSubsubsectionIds.includes(acquisitionArea.subsubsectionId),
+      )
+    : acquisitionAreas
 
-  const filteredAcquisitionAreas = acquisitionAreas.filter((acquisitionArea) => {
-    if (selectedSubsubsectionId) return acquisitionArea.subsubsectionId === selectedSubsubsectionId
-    if (selectedSubsectionId) {
-      return acquisitionArea.subsubsection.subsectionId === selectedSubsectionId
-    }
-    return true
-  })
+  const acquisitionAreaItems = filteredAcquisitionAreas.map((acquisitionArea) => ({
+    value: String(acquisitionArea.id),
+    label: `${acquisitionArea.id} ${acquisitionArea.parcel.alkisParcelId} (${shortTitle(
+      acquisitionArea.subsubsection.slug,
+    )}/${shortTitle(acquisitionArea.subsubsection.subsection.slug)})`,
+  }))
 
-  const acquisitionAreaOptions: [string | number, string][] = filteredAcquisitionAreas.map(
-    (acquisitionArea) => [
-      acquisitionArea.id,
-      `${acquisitionArea.id} ${acquisitionArea.parcel.alkisParcelId} (${shortTitle(
-        acquisitionArea.subsubsection.slug,
-      )}/${shortTitle(acquisitionArea.subsubsection.subsection.slug)})`,
-    ],
-  )
-  acquisitionAreaOptions.unshift(["", "Keine Angabe"])
-
-  const selectedSubsection = subsectionId
-    ? subsections.find((s) => s.id === Number(subsectionId))
-    : null
-
-  const subsubsectionLabel = selectedSubsection
-    ? `Einträge für ${frenchQuote(shortTitle(selectedSubsection.slug))}`
-    : "Alle Einträge"
+  const subsubsectionLabel = "Einträge"
+  const showSubsubsectionField = !(formMode === "create" && relationContext === "acquisitionArea")
+  const showAcquisitionAreaField =
+    landAcquisitionModuleEnabled &&
+    !(formMode === "create" && relationContext === "subsubsection")
 
   const handleNewTopicFormSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
@@ -166,14 +161,24 @@ export const ProjectRecordFormFields = ({
   }
 
   useEffect(() => {
-    if (!landAcquisitionModuleEnabled || !selectedAcquisitionAreaId) return
-    const stillCompatible = filteredAcquisitionAreas.some(
-      (acquisitionArea) => acquisitionArea.id === selectedAcquisitionAreaId,
+    if (
+      !landAcquisitionModuleEnabled ||
+      !shouldFilterAcquisitionAreas ||
+      selectedAcquisitionAreaIds.length === 0
     )
-    if (!stillCompatible) {
-      setValue("acquisitionAreaId", null, { shouldDirty: false })
+      return
+    const filteredIds = filteredAcquisitionAreas.map((acquisitionArea) => acquisitionArea.id)
+    const stillCompatibleIds = selectedAcquisitionAreaIds.filter((id) => filteredIds.includes(id))
+    if (stillCompatibleIds.length !== selectedAcquisitionAreaIds.length) {
+      setValue("acquisitionAreas", stillCompatibleIds.map(String), { shouldDirty: false })
     }
-  }, [filteredAcquisitionAreas, landAcquisitionModuleEnabled, selectedAcquisitionAreaId, setValue])
+  }, [
+    filteredAcquisitionAreas,
+    landAcquisitionModuleEnabled,
+    shouldFilterAcquisitionAreas,
+    selectedAcquisitionAreaIds,
+    setValue,
+  ])
 
   return (
     <>
@@ -190,28 +195,22 @@ export const ProjectRecordFormFields = ({
 
           <div
             className={
-              landAcquisitionModuleEnabled ? "grid grid-cols-3 gap-4" : "grid grid-cols-2 gap-4"
+              landAcquisitionModuleEnabled ? "grid grid-cols-2 gap-4" : "grid grid-cols-1 gap-4"
             }
           >
-            <LabeledSelect
-              optional
-              name="subsectionId"
-              options={subsectionOptions}
-              label="Planungsabschnitt"
-              onChange={handleSubsectionChange}
-            />
-
-            <LabeledSelect
-              optional
-              name="subsubsectionId"
-              options={subsubsectionOptions}
-              label={subsubsectionLabel}
-            />
-            {landAcquisitionModuleEnabled && (
-              <LabeledSelect
+            {showSubsubsectionField && (
+              <LabeledCombobox
                 optional
-                name="acquisitionAreaId"
-                options={acquisitionAreaOptions}
+                scope="subsubsections"
+                items={subsubsectionItems}
+                label={subsubsectionLabel}
+              />
+            )}
+            {showAcquisitionAreaField && (
+              <LabeledCombobox
+                optional
+                scope="acquisitionAreas"
+                items={acquisitionAreaItems}
                 label="Zuordnung zur Verhandlungsfläche"
               />
             )}
@@ -247,12 +246,20 @@ export const ProjectRecordFormFields = ({
             </div>
           </div>
           <div className="flex gap-8">
-            <LabeledSelect
-              optional
-              name="assignedToId"
-              options={assignedToOptions}
-              label="Zugewiesen an"
-            />
+            <div className="space-y-1">
+              <LabeledSelect
+                optional
+                name="assignedToId"
+                options={assignedToOptions}
+                label="Zugewiesen an"
+              />
+              {splitView && (
+                <p className="text-sm text-gray-500">
+                  Alle unbestätigten Protokolleinträge können nur Nutzer mit Editierrechten
+                  zugewiesen werden.
+                </p>
+              )}
+            </div>
             <div className="w-48">
               <LabeledSwitch
                 name="editingState"
@@ -313,7 +320,7 @@ export const ProjectRecordFormFields = ({
         </div>
       </div>
 
-      <SuperAdminLogData data={{ subsectionId, uploadsValue, uploadIds }} />
+      <SuperAdminLogData data={{ uploadsValue, uploadIds }} />
     </>
   )
 }

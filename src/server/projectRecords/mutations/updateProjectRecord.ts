@@ -32,6 +32,10 @@ export default resolver.pipe(
   authorizeProjectMember(extractProjectSlug, editorRoles),
   async ({ id, projectSlug, reviewState, ...data }, ctx: Ctx) => {
     const previous = await db.projectRecord.findFirst({ where: { id } })
+    const project = await db.project.findUnique({
+      where: { slug: projectSlug },
+      select: { landAcquisitionModuleEnabled: true },
+    })
     const currentUserId = ctx.session.userId
     const isAdmin = ctx.session.role === UserRoleEnum.ADMIN
 
@@ -64,6 +68,11 @@ export default resolver.pipe(
       connect[fieldName] = { connect: data[fieldName] ? data[fieldName].map((id) => ({ id })) : [] }
       delete data[fieldName]
     })
+    const selectedSubsubsectionIds = connect.subsubsections?.connect?.map((row) => row.id) ?? []
+    const selectedAcquisitionAreaIds = connect.acquisitionAreas?.connect?.map((row) => row.id) ?? []
+    if (!project?.landAcquisitionModuleEnabled) {
+      connect.acquisitionAreas = { connect: [] }
+    }
 
     await db.projectRecord.update({
       where: { id },
@@ -76,6 +85,16 @@ export default resolver.pipe(
       // @ts-expect-error The whole `m2mFields` is way to hard to type but apparently working
       data: {
         ...data,
+        subsubsectionId:
+          selectedSubsubsectionIds.length > 0
+            ? selectedSubsubsectionIds[0]!
+            : data.subsubsectionId,
+        acquisitionAreaId:
+          project?.landAcquisitionModuleEnabled && selectedAcquisitionAreaIds.length > 0
+            ? selectedAcquisitionAreaIds[0]!
+            : project?.landAcquisitionModuleEnabled
+              ? data.acquisitionAreaId
+              : null,
         ...connect,
         updatedById: currentUserId, // always set updatedById on edit
         reviewedAt,
