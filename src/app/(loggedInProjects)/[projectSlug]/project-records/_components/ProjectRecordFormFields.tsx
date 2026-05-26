@@ -126,11 +126,12 @@ export const ProjectRecordFormFields = ({
     }))
 
   const shouldFilterAcquisitionAreas = formMode === "edit" && relationContext === "subsubsection"
-  const filteredAcquisitionAreas = shouldFilterAcquisitionAreas && selectedSubsubsectionIds.length
-    ? acquisitionAreas.filter(
-        (acquisitionArea) => selectedSubsubsectionIds.includes(acquisitionArea.subsubsectionId),
-      )
-    : acquisitionAreas
+  const filteredAcquisitionAreas =
+    shouldFilterAcquisitionAreas && selectedSubsubsectionIds.length
+      ? acquisitionAreas.filter((acquisitionArea) =>
+          selectedSubsubsectionIds.includes(acquisitionArea.subsubsectionId),
+        )
+      : acquisitionAreas
 
   const acquisitionAreaItems = filteredAcquisitionAreas.map((acquisitionArea) => ({
     value: String(acquisitionArea.id),
@@ -142,8 +143,7 @@ export const ProjectRecordFormFields = ({
   const subsubsectionLabel = "Einträge"
   const showSubsubsectionField = !(formMode === "create" && relationContext === "acquisitionArea")
   const showAcquisitionAreaField =
-    landAcquisitionModuleEnabled &&
-    !(formMode === "create" && relationContext === "subsubsection")
+    landAcquisitionModuleEnabled && !(formMode === "create" && relationContext === "subsubsection")
 
   const handleNewTopicFormSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()

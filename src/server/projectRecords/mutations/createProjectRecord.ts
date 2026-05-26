@@ -52,9 +52,7 @@ export default resolver.pipe(
         projectId,
         ...data,
         subsubsectionId:
-          selectedSubsubsectionIds.length > 0
-            ? selectedSubsubsectionIds[0]!
-            : data.subsubsectionId,
+          selectedSubsubsectionIds.length > 0 ? selectedSubsubsectionIds[0]! : data.subsubsectionId,
         acquisitionAreaId:
           project?.landAcquisitionModuleEnabled && selectedAcquisitionAreaIds.length > 0
             ? selectedAcquisitionAreaIds[0]!

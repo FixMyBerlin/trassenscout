@@ -24,7 +24,10 @@ export type RelationPolicyEntry = {
   editRule: RelationEditRule
 }
 
-type RelationPolicyMap = Record<RelationEntity, Partial<Record<RelationContext, RelationPolicyEntry>>>
+type RelationPolicyMap = Record<
+  RelationEntity,
+  Partial<Record<RelationContext, RelationPolicyEntry>>
+>
 
 const noDefaults: RelationCreateDefaults = {
   project: false,
