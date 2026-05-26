@@ -211,7 +211,7 @@ export const ProjectRecordFormFields = ({
                 optional
                 scope="acquisitionAreas"
                 items={acquisitionAreaItems}
-                label="Zuordnung zur Verhandlungsfläche"
+                label="Verhandlungsflächen"
               />
             )}
           </div>
