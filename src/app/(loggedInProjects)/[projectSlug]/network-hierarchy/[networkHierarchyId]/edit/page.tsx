@@ -1,4 +1,6 @@
 import { EditNetworkHierarchyForm } from "@/src/app/(loggedInProjects)/[projectSlug]/network-hierarchy/_components/EditNetworkHierarchyForm"
+import { authorizeProjectMember } from "@/src/app/(loggedInProjects)/_utils/authorizeProjectMember"
+import { editorRoles } from "@/src/authorization/constants"
 import { invoke } from "@/src/blitz-server"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitle } from "@/src/core/components/text"
@@ -22,6 +24,8 @@ export default async function EditNetworkHierarchyPage({
   params: { projectSlug, networkHierarchyId },
   searchParams,
 }: Props) {
+  await authorizeProjectMember(projectSlug, editorRoles)
+
   const networkHierarchy = await invoke(getNetworkHierarchy, {
     projectSlug,
     id: Number(networkHierarchyId),
