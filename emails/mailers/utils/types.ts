@@ -6,11 +6,13 @@ export type MailAddress = {
   Name?: string
 }
 
-export type Mail = Prettify<{
-  From: MailAddress
-  To: MailAddress[]
-  Subject: string
-} & MarkdownMailProps>
+export type Mail = Prettify<
+  {
+    From: MailAddress
+    To: MailAddress[]
+    Subject: string
+  } & MarkdownMailProps
+>
 
 export type MailMessage = Required<Pick<Mail, "From" | "To" | "Subject">> & {
   TextPart: string

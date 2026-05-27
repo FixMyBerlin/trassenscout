@@ -1,5 +1,16 @@
 import { getPrdOrStgDomain } from "@/src/core/components/links/getDomain"
-import { Body, Button, Container, Head, Hr, Html, Img, Markdown, Section, Tailwind } from "@react-email/components"
+import {
+  Body,
+  Button,
+  Container,
+  Head,
+  Hr,
+  Html,
+  Img,
+  Markdown,
+  Section,
+  Tailwind,
+} from "@react-email/components"
 import { footerTextMarkdown } from "./footerTextMarkdown"
 import { signatureTextMarkdown } from "./signatureTextMarkdown"
 
