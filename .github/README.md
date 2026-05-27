@@ -26,8 +26,7 @@
 | `NEXT_PUBLIC_APP_ENV`    | `.env`-variable                  | In `.env` as `vars.ENVIRONMENT`         |
 | `NEXT_PUBLIC_APP_ORIGIN` | `.env`-variable                  | In `.env` as `vars.APP_ORIGIN`          |
 |                          |                                  |                                         |
-| `MAILJET_APIKEY_PUBLIC`  | `secrets.MAILJET_APIKEY_PUBLIC`  |                                         |
-| `MAILJET_APIKEY_PRIVATE` | `secrets.MAILJET_APIKEY_PRIVATE` |                                         |
+| `BREVO_API_KEY`          | `secrets.BREVO_API_KEY`          | API key for transactional mails via Brevo |
 |                          |                                  |                                         |
 | `POSTGRES_USER`          | `secrets.POSTGRES_USER`          |                                         |
 | `POSTGRES_PASSWORD`      | `secrets.POSTGRES_PASSWORD`      |                                         |
