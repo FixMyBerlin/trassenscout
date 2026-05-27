@@ -115,6 +115,7 @@
     "react-intl": "7.1.14",
     "react-map-gl": "8.1.0",
     "react-number-format": "5.4.4",
+    "react-pdf": "10.4.1",
     "react-remark": "2.1.0",
     "recharts": "2.15.4",
     "secure-password": "4.0.0",

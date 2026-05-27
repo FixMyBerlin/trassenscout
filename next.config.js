@@ -8,6 +8,26 @@ const s3UploadHostname = `${s3UploadBucket}.s3.${s3UploadRegion}.amazonaws.com`
  * @type {import('@blitzjs/next').BlitzConfig}
  **/
 module.exports = withBlitz({
+  // pdfjs-dist (react-pdf) breaks with webpack eval-* devtools in dev — see
+  // https://github.com/wojtekmaj/react-pdf/issues/2031
+  // Next.js reverts devtool to eval-source-map; the getter keeps source-map active.
+  webpack: (config, { dev, isServer }) => {
+    if (dev && !isServer) {
+      Object.defineProperty(config, "devtool", {
+        get() {
+          return "source-map"
+        },
+        set() {},
+      })
+    }
+
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      canvas: false,
+    }
+
+    return config
+  },
   // StrictMode: Should be default, but just in case…
   // Docs: https://nextjs.org/docs/app/api-reference/next-config-js/reactStrictMode
   // See also: https://github.com/facebook/react/issues/29130
