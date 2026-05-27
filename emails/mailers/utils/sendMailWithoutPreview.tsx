@@ -3,15 +3,14 @@ import { MarkdownMail } from "@/emails/templats/MarkdownMail"
 import { signatureTextMarkdown } from "@/emails/templats/signatureTextMarkdown"
 import { isDev, isTest } from "@/src/core/utils/isEnv"
 import { guardedCreateSystemLogEntry } from "@/src/server/systemLogEntries/create/guardedCreateSystemLogEntry"
-import { render } from "@react-email/components"
-import Mailjet, { LibraryResponse, SendEmailV3_1 } from "node-mailjet"
-import { addressDevteam } from "./addresses"
+import { render } from "@react-email/render"
+import { BrevoClient } from "@getbrevo/brevo"
 import { formattedEmailAddress } from "./formattedEmailAddress"
-import { Mail, MailjetMessage } from "./types"
+import { getBrevoApiKeyForSending } from "./getBrevoApiKeyForSending"
+import { Mail, MailMessage } from "./types"
 
 /**
  * Send mail without preview in dev/test environments.
- * This function always sends the email via Mailjet, regardless of environment.
  * Use this for emails triggered by API routes to avoid webpack bundling issues with preview-email.
  */
 export const sendMailWithoutPreview = async (message: Mail) => {
@@ -38,7 +37,7 @@ ${footerTextMarkdown}
 
   const htmlPart = await render(<MarkdownMail {...message} />)
 
-  const mailjetMessage: MailjetMessage = {
+  const mailMessage: MailMessage = {
     From: message.From,
     To: message.To,
     Subject: message.Subject,
@@ -48,49 +47,47 @@ ${footerTextMarkdown}
 
   if (isTest || isDev) {
     console.log("📧 Email (dev/test mode - no preview):")
-    console.log("From:", formattedEmailAddress(mailjetMessage.From))
-    console.log("To:", mailjetMessage.To.map((to) => formattedEmailAddress(to)).join(";"))
-    console.log("Subject:", mailjetMessage.Subject)
-    console.log("Text:", mailjetMessage.TextPart)
+    console.log("From:", formattedEmailAddress(mailMessage.From))
+    console.log("To:", mailMessage.To.map((to) => formattedEmailAddress(to)).join(";"))
+    console.log("Subject:", mailMessage.Subject)
+    console.log("Text:", mailMessage.TextPart)
     return
   }
 
   // === Only on Staging, Production ===
+  const brevo = new BrevoClient({ apiKey: getBrevoApiKeyForSending() })
 
-  // Add error reporting to the message
-  const data = {
-    Messages: [
-      {
-        // See https://dev.mailjet.com/email/template-language/sendapi/#templates-error-management
-        TemplateErrorReporting: addressDevteam,
-        // See Callout at https://dev.mailjet.com/email/guides/send-api-v31/
-        // Error `"TemplateLanguage" is not set while "TemplateErrorReporting" or "TemplateErrorDeliver" properties are.`
-        TemplateLanguage: true,
-        ...mailjetMessage,
+  try {
+    const result = await brevo.transactionalEmails.sendTransacEmail({
+      sender: {
+        email: mailMessage.From.Email,
+        name: mailMessage.From.Name,
       },
-    ],
-  }
+      to: mailMessage.To.map((recipient) => ({
+        email: recipient.Email,
+        name: recipient.Name,
+      })),
+      subject: mailMessage.Subject,
+      textContent: mailMessage.TextPart,
+      htmlContent: mailMessage.HTMLPart,
+    })
 
-  // Send message
-  const mailjet = Mailjet.apiConnect(
-    process.env.MAILJET_APIKEY_PUBLIC,
-    process.env.MAILJET_APIKEY_PRIVATE,
-  )
-  const result: LibraryResponse<SendEmailV3_1.Response> = await mailjet
-    .post("send", { version: "v3.1" })
-    .request(data)
-
-  // Log message and message status
-  for (const messageStatus of result.body.Messages) {
     await guardedCreateSystemLogEntry({
       apiKey: process.env.TS_API_KEY,
-      logLevel: messageStatus.Status === "error" ? "ERROR" : "INFO",
-      message: `SEND MAIL: ${mailjetMessage.Subject}`,
-      // @ts-expect-error I think those types are fine…
-      context:
-        messageStatus.Status === "error"
-          ? { CustomID: messageStatus.CustomID, errors: messageStatus.Errors }
-          : { CustomID: messageStatus.CustomID, text: mailjetMessage.TextPart },
+      logLevel: "INFO",
+      message: `SEND MAIL: ${mailMessage.Subject}`,
+      context: { messageId: result.messageId, text: mailMessage.TextPart },
     })
+  } catch (error) {
+    await guardedCreateSystemLogEntry({
+      apiKey: process.env.TS_API_KEY,
+      logLevel: "ERROR",
+      message: `SEND MAIL: ${mailMessage.Subject}`,
+      context: {
+        error: error instanceof Error ? error.message : "unknown error",
+        text: mailMessage.TextPart,
+      },
+    })
+    throw error
   }
 }
