@@ -1,4 +1,4 @@
-import { isPdf } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileType"
+import { isPdfByMimeType } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileType"
 import { isDev } from "@/src/core/utils/isEnv"
 import { getConfiguredS3Client } from "@/src/server/uploads/_utils/client"
 import { S3_BUCKET, S3_MAX_FILE_SIZE_BYTES } from "@/src/server/uploads/_utils/config"
@@ -15,7 +15,7 @@ export const fetchPdfFromS3 = async ({ externalUrl }: { externalUrl: string }) =
   const response = await getObject(s3Client, { bucket: S3_BUCKET, key })
 
   // Additional PDF validation by checking content type
-  if (!isPdf(response.contentType)) {
+  if (!isPdfByMimeType(response.contentType)) {
     throw new Error("File is not a PDF")
   }
 

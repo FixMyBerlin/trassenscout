@@ -3,7 +3,7 @@
 import db from "@/db"
 import { fetchPdfFromS3 } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_actions/summarizeUpload/fetchPdfFromS3"
 import { generatePdfSummaryWithAI } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_actions/summarizeUpload/generatePdfSummaryWithAI"
-import { validatePdfFile } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_actions/summarizeUpload/validatePdfFile"
+import { isPdf } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileType"
 import { authorizeProjectMember } from "@/src/app/(loggedInProjects)/_utils/authorizeProjectMember"
 import { checkProjectAiEnabled } from "@/src/app/api/(apiKey)/process-project-record-email/_utils/checkProjectAiEnabled"
 import { fetchProjectContext } from "@/src/app/api/(apiKey)/process-project-record-email/_utils/fetchProjectContext"
@@ -43,8 +43,7 @@ export const summarizeUpload = async ({
     await checkProjectAiEnabled(upload.project.id)
 
     // Validate PDF file
-    const isPdf = validatePdfFile({ upload })
-    if (!isPdf) {
+    if (!isPdf(upload)) {
       throw new Error("Only PDF files are supported for summarization")
     }
 
