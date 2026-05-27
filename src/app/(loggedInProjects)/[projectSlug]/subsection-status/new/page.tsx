@@ -1,3 +1,5 @@
+import { authorizeProjectMember } from "@/src/app/(loggedInProjects)/_utils/authorizeProjectMember"
+import { editorRoles } from "@/src/authorization/constants"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoNewTitle } from "@/src/core/components/text"
@@ -21,6 +23,8 @@ export default async function NewSubsectionStatusPage({
   params: { projectSlug },
   searchParams,
 }: Props) {
+  await authorizeProjectMember(projectSlug, editorRoles)
+
   const fromParam = searchParams?.from
   const listPath = `/${projectSlug}/subsection-status` as Route
   const appendFrom = fromParam ? `?from=${encodeURIComponent(fromParam)}` : ""
