@@ -1,6 +1,6 @@
 import db from "@/db"
 import { MarkdownMail } from "@/emails/templats/MarkdownMail"
-import { render } from "@react-email/components"
+import { render } from "@react-email/render"
 import { EmailTemplateKey, getEmailTemplateDefinition } from "./registry"
 import {
   EmailTemplateEditableContent,

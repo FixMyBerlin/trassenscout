@@ -15,8 +15,7 @@ namespace NodeJS {
     readonly TS_API_KEY: string
     readonly TS_API_KEY_STAGING: string
     readonly TS_API_KEY_PRODUCTION: string
-    readonly MAILJET_APIKEY_PUBLIC: string
-    readonly MAILJET_APIKEY_PRIVATE: string
+    readonly BREVO_API_KEY: string
     readonly NEXT_PUBLIC_APP_ENV: "development" | "staging" | "production"
     readonly SESSION_SECRET_KEY: string
 
