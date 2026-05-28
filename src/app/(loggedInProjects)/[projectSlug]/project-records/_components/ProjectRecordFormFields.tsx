@@ -26,7 +26,7 @@ import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWi
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { ProjectRecordEditingState } from "@prisma/client"
 import clsx from "clsx"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useFormContext } from "react-hook-form"
 
 type Props = {
@@ -125,15 +125,7 @@ export const ProjectRecordFormFields = ({
       label: shortTitle(`${subsubsection.slug} (${subsubsection.subsection.slug})`),
     }))
 
-  const shouldFilterAcquisitionAreas = formMode === "edit" && relationContext === "subsubsection"
-  const filteredAcquisitionAreas =
-    shouldFilterAcquisitionAreas && selectedSubsubsectionIds.length
-      ? acquisitionAreas.filter((acquisitionArea) =>
-          selectedSubsubsectionIds.includes(acquisitionArea.subsubsectionId),
-        )
-      : acquisitionAreas
-
-  const acquisitionAreaItems = filteredAcquisitionAreas.map((acquisitionArea) => ({
+  const acquisitionAreaItems = acquisitionAreas.map((acquisitionArea) => ({
     value: String(acquisitionArea.id),
     label: `${acquisitionArea.id} ${acquisitionArea.parcel.alkisParcelId} (${shortTitle(
       acquisitionArea.subsubsection.slug,
@@ -159,26 +151,6 @@ export const ProjectRecordFormFields = ({
     }
     setNewTopic("")
   }
-
-  useEffect(() => {
-    if (
-      !landAcquisitionModuleEnabled ||
-      !shouldFilterAcquisitionAreas ||
-      selectedAcquisitionAreaIds.length === 0
-    )
-      return
-    const filteredIds = filteredAcquisitionAreas.map((acquisitionArea) => acquisitionArea.id)
-    const stillCompatibleIds = selectedAcquisitionAreaIds.filter((id) => filteredIds.includes(id))
-    if (stillCompatibleIds.length !== selectedAcquisitionAreaIds.length) {
-      setValue("acquisitionAreas", stillCompatibleIds.map(String), { shouldDirty: false })
-    }
-  }, [
-    filteredAcquisitionAreas,
-    landAcquisitionModuleEnabled,
-    shouldFilterAcquisitionAreas,
-    selectedAcquisitionAreaIds,
-    setValue,
-  ])
 
   return (
     <>
