@@ -25,6 +25,8 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 RUN npx blitz@2.2.4 prisma generate
+# react-pdf worker lives in public/ (gitignored, copied from pdfjs-dist)
+RUN npm run copyPdfWorker
 RUN npx blitz@2.2.4 build
 
 # ---
