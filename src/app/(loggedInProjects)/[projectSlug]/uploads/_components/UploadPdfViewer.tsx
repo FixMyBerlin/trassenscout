@@ -11,11 +11,9 @@ import { Document, Page, pdfjs } from "react-pdf"
 import "react-pdf/dist/Page/AnnotationLayer.css"
 import "react-pdf/dist/Page/TextLayer.css"
 
-// Tell PDF.js where to load its Web Worker from (required; react-pdf’s default path 404s in Next.js) — see react-pdf README “Configure PDF.js worker”.
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-  "pdfjs-dist/build/pdf.worker.min.mjs",
-  import.meta.url,
-).toString()
+// Tell PDF.js where to load its Web Worker from. We serve it as a static asset
+// from /public, copied there by the `copyPdfWorker` script in package.json
+pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs"
 
 const MIN_ZOOM = 0.5
 const MAX_ZOOM = 3

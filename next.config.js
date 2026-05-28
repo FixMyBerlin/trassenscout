@@ -8,10 +8,12 @@ const s3UploadHostname = `${s3UploadBucket}.s3.${s3UploadRegion}.amazonaws.com`
  * @type {import('@blitzjs/next').BlitzConfig}
  **/
 module.exports = withBlitz({
-  // pdfjs-dist (react-pdf) breaks with webpack eval-* devtools in dev — see
-  // https://github.com/wojtekmaj/react-pdf/issues/2031
-  // Next.js reverts devtool to eval-source-map; the getter keeps source-map active.
   webpack: (config, { dev, isServer }) => {
+    // pdfjs-dist (used by react-pdf) breaks under webpack's default dev
+    // `eval-source-map` devtool — modules end up wrapped in `eval()` and the
+    // ESM scope confuses `__webpack_require__.r`, producing
+    // "Object.defineProperty called on non-object". See:
+    // https://github.com/wojtekmaj/react-pdf/issues/2031
     if (dev && !isServer) {
       Object.defineProperty(config, "devtool", {
         get() {
@@ -21,6 +23,8 @@ module.exports = withBlitz({
       })
     }
 
+    // react-pdf / pdfjs-dist optionally imports `canvas` for Node.js rendering;
+    // we only render in the browser, so alias it away to silence the warning.
     config.resolve.alias = {
       ...config.resolve.alias,
       canvas: false,

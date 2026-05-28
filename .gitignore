@@ -66,3 +66,5 @@ db/zod-schema-inspiration/
 /blob-report/
 /playwright/.cache/
 TMP/
+
+/public/pdf.worker.min.mjs
