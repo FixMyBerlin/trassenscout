@@ -11,6 +11,7 @@ import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogD
 import { FormSuccess } from "@/src/core/components/forms/FormSuccess"
 import { SelectListbox } from "@/src/core/components/forms/SelectListbox"
 import { blueButtonStyles, Link, whiteButtonStyles } from "@/src/core/components/links"
+import { shortTitle } from "@/src/core/components/text"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import {
   acquisitionAreaEditRoute,
@@ -142,7 +143,7 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
             placeholder="Verhandlungsfläche auswählen"
             options={acquisitionAreas.map((acquisitionArea) => ({
               value: acquisitionArea.id,
-              label: `Verhandlungsfläche ${acquisitionArea.id}`,
+              label: `${acquisitionArea.id} - Flurstücknr. ${acquisitionArea.parcel.alkisParcelId} (${shortTitle(subsubsectionSlug!)})`,
             }))}
           />
         )}

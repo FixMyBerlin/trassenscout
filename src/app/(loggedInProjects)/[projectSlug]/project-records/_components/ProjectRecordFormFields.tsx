@@ -127,9 +127,9 @@ export const ProjectRecordFormFields = ({
 
   const acquisitionAreaItems = acquisitionAreas.map((acquisitionArea) => ({
     value: String(acquisitionArea.id),
-    label: `${acquisitionArea.id} ${acquisitionArea.parcel.alkisParcelId} (${shortTitle(
+    label: `${acquisitionArea.id} - Flurstücknr. ${acquisitionArea.parcel.alkisParcelId} (${shortTitle(
       acquisitionArea.subsubsection.slug,
-    )}/${shortTitle(acquisitionArea.subsubsection.subsection.slug)})`,
+    )})`,
   }))
 
   const subsubsectionLabel = "Einträge"
