@@ -3,8 +3,6 @@ import { SecurePassword } from "@blitzjs/auth/secure-password"
 import { resolver } from "@blitzjs/rpc"
 import { AuthenticationError } from "blitz"
 import { Login } from "../schema"
-import { createInviteLogEntry } from "../shared/createInviteLogEntry"
-import { notifyEditorsAboutNewMembership } from "../shared/notifyEditorsAboutNewMembership"
 import { selectUserFieldsForSession } from "../shared/selectUserFieldsForSession"
 import { updateInvite } from "../shared/updateInvite"
 
@@ -40,6 +38,11 @@ export default resolver.pipe(resolver.zod(Login), async ({ email, password, invi
   const invite = await updateInvite(inviteToken, email)
   const alreadyMember = user.memberships.some((m) => m.project.id === invite?.projectId)
   if (invite && !alreadyMember) {
+    const [{ createInviteLogEntry }, { notifyEditorsAboutNewMembership }] = await Promise.all([
+      import("../shared/createInviteLogEntry"),
+      import("../shared/notifyEditorsAboutNewMembership"),
+    ])
+
     user = await db.user.update({
       where: { id: user.id },
       data: {
