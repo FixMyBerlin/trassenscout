@@ -1,19 +1,8 @@
 import { authFile } from "@/tests/_fixtures/auth"
+import { authorizationNoise, pageNoise } from "@/tests/_fixtures/console-noise"
 import { expect, test } from "@/tests/_fixtures/test"
-
-export const pageNoise = [
-  "webglcontextcreationerror",
-  "Failed to initialize WebGL",
-  "Failed to fetch RSC payload",
-]
-
-export const authorizationErrorNoise = [
-  "AuthorizationError",
-  "Access forbidden: required project role",
-  "You are not authorized to access this",
-  "The above error occurred in the <NotFoundErrorBoundary> component",
-  "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
-]
+export { pageNoise }
+export const authorizationErrorNoise = authorizationNoise
 
 type SettingsRoutePermissionConfig = {
   suiteName: string
