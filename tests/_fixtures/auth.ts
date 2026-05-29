@@ -8,6 +8,7 @@ export const seedUsers = {
   editor: "all-projects-editor@fixmycity.test",
   noProject: "no-project@fixmycity.test",
 } as const
+export const seedRoles = Object.keys(seedUsers) as Array<keyof typeof seedUsers>
 
 export const seedUserButtons = {
   admin: "admin",
