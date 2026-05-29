@@ -20,23 +20,33 @@ const ensureSurveyFixture = async (): Promise<SurveyFixture> => {
     select: { id: true },
   })
 
-  const survey = await db.survey.upsert({
+  const existingSurvey = await db.survey.findUnique({
     where: { slug: surveySlug },
-    update: {
-      projectId: project.id,
-      title: "E2E Survey Permissions",
-      active: true,
-    },
-    create: {
-      slug: surveySlug,
-      projectId: project.id,
-      title: "E2E Survey Permissions",
-      active: true,
-    },
+    select: { id: true, projectId: true },
   })
 
+  if (existingSurvey && existingSurvey.projectId !== project.id) {
+    throw new Error(
+      `Survey "${surveySlug}" exists on projectId=${existingSurvey.projectId}, expected projectId=${project.id} for ${projectSlug}.`,
+    )
+  }
+
+  const surveyId =
+    existingSurvey?.id ??
+    (
+      await db.survey.create({
+        data: {
+          slug: surveySlug,
+          projectId: project.id,
+          title: "E2E Survey Permissions",
+          active: true,
+        },
+        select: { id: true },
+      })
+    ).id
+
   const surveySession = await db.surveySession.create({
-    data: { surveyId: survey.id },
+    data: { surveyId },
   })
 
   const surveyResponse = await db.surveyResponse.create({
@@ -64,7 +74,7 @@ const ensureSurveyFixture = async (): Promise<SurveyFixture> => {
   })
 
   return {
-    surveyId: survey.id,
+    surveyId,
     surveyResponseId: surveyResponse.id,
     uploadId: upload.id,
   }

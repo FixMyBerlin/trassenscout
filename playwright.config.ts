@@ -11,6 +11,7 @@ dotenv.config({ path: path.resolve(__dirname, ".env.test") })
 const baseURL = process.env.E2E_BASE_URL ?? "http://127.0.0.1:6174"
 const runAllBrowsers = process.env.E2E_ALL_BROWSERS === "1"
 const useManagedWebServer = !process.env.E2E_BASE_URL
+const configuredWorkers = Number(process.env.E2E_WORKERS ?? 3)
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -19,14 +20,14 @@ export default defineConfig({
   testDir: "./tests",
   globalSetup: require.resolve("./playwright.global-setup"),
   globalTeardown: require.resolve("./playwright.global-teardown"),
-  /* Run tests in files in parallel */
-  fullyParallel: true,
+  /* Keep file-level execution stable by default. */
+  fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  /* Keep CI deterministic and local runs bounded. */
+  workers: process.env.CI ? 1 : Number.isFinite(configuredWorkers) ? configuredWorkers : 3,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: "html",
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
