@@ -19,4 +19,11 @@ test.describe("Public and auth smoke", () => {
       await expect(page.getByRole("heading", { name: publicPage.heading, exact: true })).toBeVisible()
     })
   }
+
+  test("legal pages are marked noindex", async ({ page }) => {
+    for (const path of ["/datenschutz", "/kontakt"] as const) {
+      await page.goto(path)
+      await expect(page.locator('meta[name="robots"][content="noindex"]')).toHaveCount(1)
+    }
+  })
 })
