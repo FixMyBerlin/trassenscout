@@ -25,8 +25,20 @@ const authenticateRole = async (
   await expect(passwordField).toBeEnabled({ timeout: 30_000 })
   await expect(submitButton).toBeEnabled({ timeout: 30_000 })
 
-  await emailField.fill(seedUsers[role])
-  await passwordField.fill(seedPassword)
+  let loginFieldsFilled = false
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    await emailField.fill(seedUsers[role])
+    await passwordField.fill(seedPassword)
+    const currentEmail = await emailField.inputValue()
+    const currentPassword = await passwordField.inputValue()
+    if (currentEmail === seedUsers[role] && currentPassword === seedPassword) {
+      loginFieldsFilled = true
+      break
+    }
+    await page.waitForTimeout(150)
+  }
+
+  expect(loginFieldsFilled).toBeTruthy()
   await submitButton.click()
 
   await expect
