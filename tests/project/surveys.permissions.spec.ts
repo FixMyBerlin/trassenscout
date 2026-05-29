@@ -5,6 +5,8 @@ import { expect, test } from "@/tests/_fixtures/test"
 import { expectErrorPage } from "@/tests/_utils/pageAssertions"
 
 const projectSlug = seedProjects.richProject
+const surveySlug = "radnetz-brandenburg" as const
+const radnetzBrandenburgCategoryFieldId = "22"
 
 type SurveyFixture = {
   surveyId: number
@@ -19,14 +21,14 @@ const ensureSurveyFixture = async (): Promise<SurveyFixture> => {
   })
 
   const survey = await db.survey.upsert({
-    where: { slug: "radnetz-brandenburg" },
+    where: { slug: surveySlug },
     update: {
       projectId: project.id,
       title: "E2E Survey Permissions",
       active: true,
     },
     create: {
-      slug: "radnetz-brandenburg",
+      slug: surveySlug,
       projectId: project.id,
       title: "E2E Survey Permissions",
       active: true,
@@ -45,6 +47,7 @@ const ensureSurveyFixture = async (): Promise<SurveyFixture> => {
       state: SurveyResponseStateEnum.SUBMITTED,
       status: "PENDING",
       data: JSON.stringify({
+        [radnetzBrandenburgCategoryFieldId]: 1,
         feedbackText: `E2E response ${Date.now()}`,
       }),
     },
@@ -88,10 +91,73 @@ test.describe("Survey permissions", () => {
     })
   })
 
-  test.fixme(
-    "viewer/editor response-control assertions are blocked by current survey responses UI warning (uncontrolled -> controlled input)",
-    async () => {},
-  )
+  test.describe("survey response controls", () => {
+    const responsesDetailsPath = () =>
+      `/${projectSlug}/surveys/${surveyFixture.surveyId}/responses?responseDetails=${surveyFixture.surveyResponseId}`
+
+    test.describe("viewer users", () => {
+      test.use({ storageState: authFile("viewer") })
+      test.use({ allowedConsoleErrors: pageNoise })
+
+      test("see response controls as read-only", async ({ page }) => {
+        await page.goto(responsesDetailsPath())
+        await expect(page.locator('input[name="responseOperator"]').first()).toBeVisible({
+          timeout: 30_000,
+        })
+
+        await expect(page.locator('input[name="responseOperator"]').first()).toBeDisabled()
+        await expect(page.locator('input[name="responseStatus"]').first()).toBeDisabled()
+        await expect(page.locator('textarea[name="note"]')).toBeDisabled()
+        await expect(page.locator('textarea[name="body"]')).toHaveCount(0)
+        await expect(page.getByRole("button", { name: /speichern/i })).toHaveCount(0)
+      })
+    })
+
+    test.describe("editor users", () => {
+      test.use({ storageState: authFile("editor") })
+      test.use({ allowedConsoleErrors: pageNoise })
+
+      test("can edit response controls", async ({ page }) => {
+        await page.goto(responsesDetailsPath())
+        await expect(page.locator('input[name="responseOperator"]').first()).toBeVisible({
+          timeout: 30_000,
+        })
+
+        await expect(page.locator('input[name="responseOperator"]').first()).toBeEnabled()
+        await expect(page.locator('input[name="responseStatus"]').first()).toBeEnabled()
+        await expect(page.locator('textarea[name="note"]')).toBeEnabled()
+        await expect(page.locator('textarea[name="body"]')).toBeVisible()
+        await expect(page.getByRole("button", { name: /speichern/i })).toBeVisible()
+      })
+    })
+
+    test.describe("admin users", () => {
+      test.use({ storageState: authFile("admin") })
+      test.use({ allowedConsoleErrors: pageNoise })
+
+      test("can edit response controls without explicit membership", async ({ page }) => {
+        await page.goto(responsesDetailsPath())
+        await expect(page.locator('input[name="responseOperator"]').first()).toBeVisible({
+          timeout: 30_000,
+        })
+
+        await expect(page.locator('input[name="responseOperator"]').first()).toBeEnabled()
+        await expect(page.locator('input[name="responseStatus"]').first()).toBeEnabled()
+        await expect(page.locator('textarea[name="note"]')).toBeEnabled()
+        await expect(page.locator('textarea[name="body"]')).toBeVisible()
+      })
+    })
+
+    test.describe("users without project membership", () => {
+      test.use({ storageState: authFile("noProject") })
+      test.use({ allowedConsoleErrors: [...pageNoise, ...authorizationNoise] })
+
+      test("cannot open response details", async ({ page }) => {
+        await page.goto(responsesDetailsPath())
+        await expectErrorPage(page)
+      })
+    })
+  })
 
   test.describe("survey upload edit direct URL", () => {
     const uploadEditPath = () =>
