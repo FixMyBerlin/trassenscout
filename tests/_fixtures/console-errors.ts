@@ -24,7 +24,8 @@ export const test = base.extend<ConsoleErrorFixtures>({
     })
 
     page.on("pageerror", (error) => {
-      const formattedMessage = `[pageerror] ${error.message}`
+      const stack = error.stack ? `\n${error.stack}` : ""
+      const formattedMessage = `[pageerror] ${error.message}${stack}`
       if (isAllowedError(formattedMessage, allowedConsoleErrors)) return
 
       errors.push(formattedMessage)

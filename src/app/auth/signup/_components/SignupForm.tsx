@@ -17,6 +17,9 @@ export const SignupForm = () => {
   const [signupMutation] = useMutation(signup)
 
   const paramInviteToken = useSearchParams()?.get("inviteToken") || null
+  const loginHref = paramInviteToken
+    ? `/auth/login?inviteToken=${encodeURIComponent(paramInviteToken)}`
+    : "/auth/login"
   const [invite] = useQuery(getInvite, { token: paramInviteToken })
 
   const handleSubmit = async (values: z.infer<typeof SignupSchema>) => {
@@ -113,12 +116,7 @@ export const SignupForm = () => {
 
       <div className="mt-4">
         Sie haben bereits einen Account? Zur{" "}
-        <Link
-          href={{
-            pathname: "/auth/login",
-            query: { inviteToken: paramInviteToken },
-          }}
-        >
+        <Link href={loginHref}>
           Anmeldung
         </Link>
         .
