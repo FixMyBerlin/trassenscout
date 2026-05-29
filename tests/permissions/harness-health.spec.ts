@@ -1,4 +1,4 @@
-import { authFile, seedUsers } from "@/tests/_fixtures/auth"
+import { authFile, seedRoles } from "@/tests/_fixtures/auth"
 import { expect, test } from "@/tests/_fixtures/test"
 
 const knownNoise = [
@@ -28,7 +28,7 @@ test.describe("Harness health", () => {
     })
   })
 
-  for (const role of Object.keys(seedUsers) as Array<keyof typeof seedUsers>) {
+  for (const role of seedRoles) {
     test.describe(`${role} storage state`, () => {
       test.use({ storageState: authFile(role) })
       test.use({ allowedConsoleErrors: knownNoise })

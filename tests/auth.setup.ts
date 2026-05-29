@@ -1,14 +1,12 @@
 import { expect, test as setup } from "@playwright/test"
+import type { Browser } from "@playwright/test"
 import fs from "node:fs"
 import path from "node:path"
-import { authFile, seedPassword, seedUsers } from "./_fixtures/auth"
+import { authFile, seedPassword, seedRoles, seedUsers } from "./_fixtures/auth"
 
 const loginPath = "/auth/login"
 
-const authenticateRole = async (
-  browser: Parameters<Parameters<typeof setup>[1]>[0]["browser"],
-  role: keyof typeof seedUsers
-) => {
+const authenticateRole = async (browser: Browser, role: keyof typeof seedUsers) => {
   const storageStatePath = authFile(role)
   fs.mkdirSync(path.dirname(storageStatePath), { recursive: true })
 
@@ -45,7 +43,7 @@ const authenticateRole = async (
     .poll(
       async () => {
         const cookies = await context.cookies()
-        return cookies.some((cookie) => cookie.name === "rsv-builder_sSessionToken")
+        return cookies.some((cookie: { name: string }) => cookie.name === "rsv-builder_sSessionToken")
       },
       { timeout: 30_000 }
     )
@@ -61,7 +59,7 @@ const authenticateRole = async (
   await context.close()
 }
 
-for (const role of Object.keys(seedUsers) as Array<keyof typeof seedUsers>) {
+for (const role of seedRoles) {
   setup(`authenticate ${role}`, async ({ browser }) => {
     setup.setTimeout(60_000)
     await authenticateRole(browser, role)
