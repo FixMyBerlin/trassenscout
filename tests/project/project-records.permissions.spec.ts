@@ -1,6 +1,7 @@
 import { authFile, seedProjects } from "@/tests/_fixtures/auth"
 import { authorizationNoise, pageNoise } from "@/tests/_fixtures/console-noise"
 import { expect, test } from "@/tests/_fixtures/test"
+import { expectErrorPage } from "@/tests/_utils/pageAssertions"
 import type { Page } from "@playwright/test"
 
 const projectSlug = seedProjects.richProject
@@ -59,9 +60,7 @@ test.describe("Project records permissions", () => {
 
       test("cannot open edit URL", async ({ page }) => {
         await page.goto(`/${projectSlug}/project-records/${projectRecordId}/edit`)
-        await expect(page.getByRole("heading", { name: "Ein Fehler ist aufgetreten" })).toBeVisible({
-          timeout: 30_000,
-        })
+        await expectErrorPage(page)
       })
     })
 
@@ -99,9 +98,7 @@ test.describe("Project records permissions", () => {
 
       test("cannot open edit URL", async ({ page }) => {
         await page.goto(`/${projectSlug}/project-records/${projectRecordId}/edit`)
-        await expect(page.getByRole("heading", { name: "Ein Fehler ist aufgetreten" })).toBeVisible({
-          timeout: 30_000,
-        })
+        await expectErrorPage(page)
       })
     })
   })

@@ -1,6 +1,7 @@
 import { authFile } from "@/tests/_fixtures/auth"
 import { authorizationNoise, pageNoise } from "@/tests/_fixtures/console-noise"
 import { expect, test } from "@/tests/_fixtures/test"
+import { expectErrorPage } from "@/tests/_utils/pageAssertions"
 export { pageNoise }
 export const authorizationErrorNoise = authorizationNoise
 
@@ -47,11 +48,7 @@ export const defineSettingsRoutePermissionSuite = ({
       test("cannot open the create form", async ({ page }) => {
         await page.goto(createPath)
 
-        await expect(page.getByRole("heading", { name: "Ein Fehler ist aufgetreten" })).toBeVisible(
-          {
-            timeout: 30_000,
-          },
-        )
+        await expectErrorPage(page)
         await expect(page.getByRole("heading", { name: createHeading })).toBeHidden()
       })
 
@@ -69,11 +66,7 @@ export const defineSettingsRoutePermissionSuite = ({
 
         await page.goto(editPath!)
 
-        await expect(page.getByRole("heading", { name: "Ein Fehler ist aufgetreten" })).toBeVisible(
-          {
-            timeout: 30_000,
-          },
-        )
+        await expectErrorPage(page)
         await expect(page.getByRole("heading", { name: editHeading })).toBeHidden()
       })
     })
@@ -113,11 +106,7 @@ export const defineSettingsRoutePermissionSuite = ({
       test("cannot read the list", async ({ page }) => {
         await page.goto(listPath)
 
-        await expect(page.getByRole("heading", { name: "Ein Fehler ist aufgetreten" })).toBeVisible(
-          {
-            timeout: 30_000,
-          },
-        )
+        await expectErrorPage(page)
         await expect(page.getByRole("heading", { name: listHeading, exact: true })).toBeHidden()
       })
     })

@@ -1,6 +1,7 @@
 import { authFile, seedProjects } from "@/tests/_fixtures/auth"
 import { authorizationNoise, pageNoise } from "@/tests/_fixtures/console-noise"
 import { expect, test } from "@/tests/_fixtures/test"
+import { expectErrorPage } from "@/tests/_utils/pageAssertions"
 
 const projectSlug = seedProjects.richProject
 const qualityLevelsPath = `/${projectSlug}/quality-levels`
@@ -36,10 +37,7 @@ test.describe("Role guards", () => {
 
     test("are rejected from project pages", async ({ page }) => {
       await page.goto(contactsPath)
-
-      await expect(page.getByRole("heading", { name: "Ein Fehler ist aufgetreten" })).toBeVisible({
-        timeout: 30_000,
-      })
+      await expectErrorPage(page)
       await expect(page.getByRole("heading", { name: "Externe Kontakte" })).toBeHidden()
     })
   })

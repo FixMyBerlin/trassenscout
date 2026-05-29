@@ -2,6 +2,7 @@ import db, { SurveyResponseSourceEnum, SurveyResponseStateEnum } from "@/db"
 import { authFile, seedProjects } from "@/tests/_fixtures/auth"
 import { authorizationNoise, pageNoise } from "@/tests/_fixtures/console-noise"
 import { expect, test } from "@/tests/_fixtures/test"
+import { expectErrorPage } from "@/tests/_utils/pageAssertions"
 
 const projectSlug = seedProjects.richProject
 
@@ -82,10 +83,7 @@ test.describe("Survey permissions", () => {
 
       test("cannot open responses", async ({ page }) => {
         await page.goto(`/${projectSlug}/surveys/${surveyFixture.surveyId}/responses`)
-
-        await expect(page.getByRole("heading", { name: "Ein Fehler ist aufgetreten" })).toBeVisible({
-          timeout: 30_000,
-        })
+        await expectErrorPage(page)
       })
     })
   })
@@ -141,9 +139,7 @@ test.describe("Survey permissions", () => {
 
       test("cannot open the upload edit route", async ({ page }) => {
         await page.goto(uploadEditPath())
-        await expect(page.getByRole("heading", { name: "Ein Fehler ist aufgetreten" })).toBeVisible({
-          timeout: 30_000,
-        })
+        await expectErrorPage(page)
       })
     })
   })

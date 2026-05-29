@@ -1,6 +1,7 @@
 import { authFile, seedProjects } from "@/tests/_fixtures/auth"
 import { authorizationNoise, pageNoise } from "@/tests/_fixtures/console-noise"
 import { expect, test } from "@/tests/_fixtures/test"
+import { expectErrorPage } from "@/tests/_utils/pageAssertions"
 
 const projectSlug = seedProjects.richProject
 const projectOverviewPath = `/${projectSlug}`
@@ -77,18 +78,12 @@ test.describe("Project core route permissions", () => {
 
     test("cannot access project overview", async ({ page }) => {
       await page.goto(projectOverviewPath)
-
-      await expect(page.getByRole("heading", { name: "Ein Fehler ist aufgetreten" })).toBeVisible({
-        timeout: 30_000,
-      })
+      await expectErrorPage(page)
     })
 
     test("cannot access uploads", async ({ page }) => {
       await page.goto(uploadsPath)
-
-      await expect(page.getByRole("heading", { name: "Ein Fehler ist aufgetreten" })).toBeVisible({
-        timeout: 30_000,
-      })
+      await expectErrorPage(page)
     })
   })
 
