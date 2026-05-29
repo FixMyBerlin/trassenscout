@@ -19,11 +19,9 @@ export const LoginForm = () => {
   const params = useSearchParams()
   const paramNext = params?.get("next") || null
   const paramInviteToken = params?.get("inviteToken") || null
-  // const currentUser = useCurrentUser()
-  // const [logoutMutation] = useMutation(logout)
-  // const handleLogout = async () => {
-  //   await logoutMutation()
-  // }
+  const signupHref = paramInviteToken
+    ? `/auth/signup?inviteToken=${encodeURIComponent(paramInviteToken)}`
+    : "/auth/signup"
 
   const [loginMutation] = useMutation(login)
   const [invite] = useQuery(getInvite, { token: paramInviteToken })
@@ -114,12 +112,7 @@ export const LoginForm = () => {
 
       <div className="mt-4 text-sm">
         Sie haben noch keinen Account? Zur{" "}
-        <Link
-          href={{
-            pathname: "/auth/signup",
-            query: { inviteToken: paramInviteToken },
-          }}
-        >
+        <Link href={signupHref}>
           Registrierung
         </Link>
         .
