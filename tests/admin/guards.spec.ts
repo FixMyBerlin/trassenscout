@@ -7,7 +7,6 @@ const adminPaths = ["/admin", "/admin/projects", "/admin/memberships", "/admin/s
 const loggedOutRedirectNoise = [
   ...pageNoise,
   "Failed to load resource: the server responded with a status of 404 (Not Found)",
-  "Element type is invalid: expected a string (for built-in components) or a class/function",
 ]
 
 const loggedInRedirectNoise = [

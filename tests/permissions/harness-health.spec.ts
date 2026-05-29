@@ -13,7 +13,6 @@ test.describe("Harness health", () => {
       allowedConsoleErrors: [
         "Failed to fetch RSC payload",
         "Failed to load resource: the server responded with a status of 404 (Not Found)",
-        "Element type is invalid: expected a string (for built-in components) or a class/function",
       ],
     })
 
