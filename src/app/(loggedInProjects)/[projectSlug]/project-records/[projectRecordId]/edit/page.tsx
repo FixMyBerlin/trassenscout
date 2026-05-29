@@ -1,4 +1,6 @@
 import { EditProjectRecordForm } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/EditProjectRecordForm"
+import { authorizeProjectMember } from "@/src/app/(loggedInProjects)/_utils/authorizeProjectMember"
+import { editorRoles } from "@/src/authorization/constants"
 import { invoke } from "@/src/blitz-server"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
@@ -16,6 +18,8 @@ export default async function EditProjectRecordPage({
 }: {
   params: { projectSlug: string; projectRecordId: string }
 }) {
+  await authorizeProjectMember(params.projectSlug, editorRoles)
+
   const projectRecordId = parseInt(params.projectRecordId)
   const projectRecord = await invoke(getProjectRecord, {
     projectSlug: params.projectSlug,
