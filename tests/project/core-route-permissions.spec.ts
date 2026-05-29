@@ -1,23 +1,10 @@
 import { authFile, seedProjects } from "@/tests/_fixtures/auth"
+import { authorizationNoise, pageNoise } from "@/tests/_fixtures/console-noise"
 import { expect, test } from "@/tests/_fixtures/test"
 
 const projectSlug = seedProjects.richProject
 const projectOverviewPath = `/${projectSlug}`
 const uploadsPath = `/${projectSlug}/uploads`
-
-const pageNoise = [
-  "webglcontextcreationerror",
-  "Failed to initialize WebGL",
-  "Failed to fetch RSC payload",
-]
-
-const authorizationNoise = [
-  "AuthorizationError",
-  "Access forbidden: required project role",
-  "You are not authorized to access this",
-  "The above error occurred in the <NotFoundErrorBoundary> component",
-  "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
-]
 
 test.describe("Project core route permissions", () => {
   test.describe("logged-out users", () => {

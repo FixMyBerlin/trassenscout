@@ -1,14 +1,9 @@
 import { authFile, seedProjects } from "@/tests/_fixtures/auth"
+import { pageNoise } from "@/tests/_fixtures/console-noise"
 import { expect, test } from "@/tests/_fixtures/test"
 
 const projectSlug = seedProjects.richProject
 const listPath = `/${projectSlug}/uploads`
-
-const pageNoise = [
-  "webglcontextcreationerror",
-  "Failed to initialize WebGL",
-  "Failed to fetch RSC payload",
-]
 
 test.describe("Uploads read flow", () => {
   test.use({ storageState: authFile("viewer") })

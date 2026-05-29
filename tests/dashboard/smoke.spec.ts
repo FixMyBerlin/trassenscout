@@ -1,11 +1,6 @@
 import { authFile } from "@/tests/_fixtures/auth"
+import { pageNoise } from "@/tests/_fixtures/console-noise"
 import { expect, test } from "@/tests/_fixtures/test"
-
-const pageNoise = [
-  "webglcontextcreationerror",
-  "Failed to initialize WebGL",
-  "Failed to fetch RSC payload",
-]
 
 const dashboardPages = [
   { path: "/dashboard", heading: "Meine Projekte", title: /Meine Projekte/ },
