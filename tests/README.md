@@ -1,32 +1,56 @@
-# About Playwright in Trassenscout
+# Playwright E2E in Trassenscout
 
-- This is still WIP
-- We can only run it in development
-- It would be better, to run it againt a build version `npm run build && npm run start` but that does not work right await because our DB and docker needs to be running as well.
-- We don't have a Github action, yet (see [\_todo](./_todo/)) and we don't have a concept of how to handle the database during CI runs
-- Testing any map components: It was solved with a [CustomEvent](./_utils/customMapLoadedEvent.ts) for now. TODO: for the geo category map (SurveyMapLine) use [MapGrab](https://mapgrab.github.io/docs/getting-started/stage-two/playwright) - [install interface in map component](src/app/beteiligung/_components/form/map/installMapGrab.ts), test: get element by selector and click on layer.
-- Testing map with draggable pin: (e.g. SimpleSurveyMap) MapGrab plus dragging the pin see [frm7](./survey-frm7.spec.ts) TODO: extract logic.
+## Runtime model
 
-## Run tests
+- E2E runs against the dev server (`npm run dev:e2e`) on `127.0.0.1:6174`.
+- Test DB lifecycle is handled by Playwright global hooks:
+  - setup: start `ts-test-db`, run migrations, run seed
+  - teardown: stop/remove `ts-test-db` (unless `E2E_KEEP_DB=1`)
+- Auth uses Playwright project dependencies:
+  - `setup` project logs in real users and writes `tests/.auth/*.json`
+  - browser projects depend on `setup` and reuse `storageState`
 
-- `npx playwright test` – Runs the end-to-end tests for all browsers.
+## Default execution
 
-- `npx playwright test --ui` – Starts the interactive UI mode to run an debug one or all tests in specific browsers.
+- Chromium is default.
+- Firefox/WebKit run only with `E2E_ALL_BROWSERS=1`.
+- Stability defaults:
+  - `fullyParallel: false`
+  - local workers default to `3` (override with `E2E_WORKERS`)
 
-- [VS Code Plugin](https://marketplace.visualstudio.com/items?itemName=ms-playwright.playwright) to run specific tests right inside VS Code
+## Commands
 
-- `npx playwright test --project=chromium` – Runs the tests only on Desktop Chrome.
+- `npm run e2e` — full configured suite
+- `npm run e2e:chromium` — Chromium project only
+- `npm run e2e:ui` — Playwright UI mode
+- `npx playwright test tests/project/surveys.permissions.spec.ts --project=chromium` — run a single spec
 
-- `npx playwright test example` – Runs the tests in a specific file.
+## Useful env switches
 
-## Create and update tests
+- `E2E_ALL_BROWSERS=1` — enable Firefox + WebKit projects
+- `E2E_WORKERS=2` — override local worker count
+- `E2E_KEEP_DB=1` — keep `ts-test-db` running after suite
+- `E2E_BASE_URL=http://127.0.0.1:6174` — connect to an externally managed server (disables Playwright `webServer`)
 
-Use the VS Code plugin to "Record New", "Record at Cursor" or "Pick Locator".
+## Debug checklist
 
-The YouTube Videos on the "Playwright" Channel provide a great intro.
+1. Auth setup failures:
+   - run `npx playwright test tests/auth.setup.ts --project=setup`
+   - verify login labels still match UI (`E-Mail-Adresse`, `Passwort`, `Anmelden`)
+2. DB startup failures:
+   - check `docker ps` for `ts-test-db`
+   - rerun with clean DB: `npm run posttest && npm run e2e:chromium`
+3. Route guard flakiness:
+   - avoid overlapping local E2E runs against the same `ts-test-db`
+   - keep per-spec `allowedConsoleErrors` scoped and minimal
 
-## Docs
+## Notes for map tests
 
-- https://playwright.dev/docs/intro
-- https://nextjs.org/docs/app/building-your-application/testing/playwright#running-your-playwright-tests
-- https://mapgrab.github.io/docs/getting-started/stage-two/playwright
+- Map readiness currently relies on [customMapLoadedEvent.ts](./_utils/customMapLoadedEvent.ts).
+- Drag-pin helpers live in [mapDragPin.ts](./_utils/mapDragPin.ts).
+
+## References
+
+- [Playwright Docs](https://playwright.dev/docs/intro)
+- [Next.js Playwright Guide](https://nextjs.org/docs/app/building-your-application/testing/playwright#running-your-playwright-tests)
+- [MapGrab + Playwright](https://mapgrab.github.io/docs/getting-started/stage-two/playwright)
