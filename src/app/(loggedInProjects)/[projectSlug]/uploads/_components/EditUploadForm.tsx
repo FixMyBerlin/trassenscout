@@ -80,6 +80,12 @@ const UploadSubsectionFields = ({
 
   return (
     <div className="flex flex-col gap-4">
+      <LabeledCombobox
+        scope="subsubsections"
+        label="Zuordnung zu Einträgen"
+        optional
+        items={subsubsectionCheckboxItems}
+      />
       {landAcquisitionModuleEnabled && (
         <LabeledCombobox
           scope="acquisitionAreas"
@@ -88,12 +94,6 @@ const UploadSubsectionFields = ({
           items={acquisitionAreaCheckboxItems}
         />
       )}
-      <LabeledCombobox
-        scope="subsubsections"
-        label="Zuordnung zu Einträgen"
-        optional
-        items={subsubsectionCheckboxItems}
-      />
     </div>
   )
 }

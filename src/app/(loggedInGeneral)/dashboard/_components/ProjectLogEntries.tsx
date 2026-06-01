@@ -92,7 +92,7 @@ export const ProjectLogEntries = async ({ projectId, projectSlug }: Props) => {
                       <summary className="cursor-pointer underline-offset-2 hover:underline">
                         {entry.message}
                       </summary>
-                      <AdminLogEntryChanges projectSlug={projectSlug} context={entry.changes} />
+                      <AdminLogEntryChanges context={entry.changes} />
                     </details>
                   ) : (
                     entry.message

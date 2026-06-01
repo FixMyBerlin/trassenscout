@@ -50,7 +50,6 @@ Do not include any explanations or commentary.
 `
 }
 
-
 // #### SUBSUBSECTIONID
 // ${
 //   subsubsections && subsubsections.length > 0

@@ -116,8 +116,16 @@ export const isSvgUpload = (
   return isSvgUploadCore(upload)
 }
 
-export const isPdf = (mimeType: string | null | undefined) => {
+export const isPdfByMimeType = (mimeType: string | null | undefined) => {
   return mimeType === "application/pdf"
+}
+
+export const isPdf = (upload: Pick<Upload, "mimeType" | "externalUrl">) => {
+  if (upload.mimeType) {
+    return isPdfByMimeType(upload.mimeType)
+  }
+  // tbd fallback
+  return upload.externalUrl?.toLowerCase().endsWith(".pdf") === true
 }
 
 /**

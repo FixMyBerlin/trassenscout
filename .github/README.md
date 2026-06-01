@@ -18,45 +18,44 @@
 
 # List of variables and secrets
 
-| Name                     | Path                             | Notes                                   |
-| ------------------------ | -------------------------------- | --------------------------------------- |
-| `ENVIRONMENT`            | `vars.ENVIRONMENT`               |                                         |
-| `APP_ORIGIN`             | `vars.APP_ORIGIN`                |                                         |
-| `APP_DOMAIN`             | `vars.APP_DOMAIN`                |                                         |
-| `NEXT_PUBLIC_APP_ENV`    | `.env`-variable                  | In `.env` as `vars.ENVIRONMENT`         |
-| `NEXT_PUBLIC_APP_ORIGIN` | `.env`-variable                  | In `.env` as `vars.APP_ORIGIN`          |
-|                          |                                  |                                         |
-| `MAILJET_APIKEY_PUBLIC`  | `secrets.MAILJET_APIKEY_PUBLIC`  |                                         |
-| `MAILJET_APIKEY_PRIVATE` | `secrets.MAILJET_APIKEY_PRIVATE` |                                         |
-|                          |                                  |                                         |
-| `POSTGRES_USER`          | `secrets.POSTGRES_USER`          |                                         |
-| `POSTGRES_PASSWORD`      | `secrets.POSTGRES_PASSWORD`      |                                         |
-| `POSTGRES_DB`            | `vars.POSTGRES_DB`               |                                         |
-| `POSTGRES_HOST`          | `vars.POSTGRES_HOST`             |                                         |
-| `DATABASE_URL`           | `.env`-variable                  | In `.env` as composite value            |
-|                          |                                  |                                         |
-| `SESSION_SECRET_KEY`     | `secrets.SESSION_SECRET_KEY`     | [Required by Blitz][session-secret-key] |
-|                          |                                  |                                         |
-| `ADMIN_EMAIL`            | `vars.ADMIN_EMAIL`               |                                         |
-|                          |                                  |                                         |
-| `S3_UPLOAD_KEY`          | `secrets.S3_UPLOAD_KEY`          |                                         |
-| `S3_UPLOAD_SECRET`       | `secrets.S3_UPLOAD_SECRET`       |                                         |
-| `S3_UPLOAD_ROOTFOLDER`   | `.env`-variable                  | In `.env` as composite value            |
-|                          |                                  |                                         |
-| `TS_API_KEY`             | `secrets.TS_API_KEY`             |                                         |
-|                          |                                  |                                         |
-| `OPENAI_API_KEY`         | `secrets.OPENAI_API_KEY`         |                                         |
-|                          |                                  |                                         |
-| `LANGFUSE_SECRET_KEY`    | `secrets.LANGFUSE_SECRET_KEY`    |                                         |
-| `LANGFUSE_PUBLIC_KEY`    | `secrets.LANGFUSE_PUBLIC_KEY`    |                                         |
-| `LANGFUSE_BASEURL`       | `vars.LANGFUSE_BASEURL`          |                                         |
-|                          |                                  |                                         |
-| `AWS_ACCESS_KEY_ID`      | `secrets.AWS_ACCESS_KEY_ID`      | Repository secret                       |
-| `AWS_SECRET_ACCESS_KEY`  | `secrets.AWS_SECRET_ACCESS_KEY`  | Repository secret                       |
-| `SSH_HOST`               | `secrets.SSH_HOST`               |                                         |
-| `SSH_USERNAME`           | `secrets.SSH_USERNAME`           |                                         |
-| `SSH_PASSWORD`           | `secrets.SSH_PASSWORD`           |                                         |
-|                          |                                  |                                         |
-| `LUCKY_CLOUD_TOKEN`      | `secrets.LUCKY_CLOUD_TOKEN`      | Repository secret                       |
+| Name                     | Path                            | Notes                                     |
+| ------------------------ | ------------------------------- | ----------------------------------------- |
+| `ENVIRONMENT`            | `vars.ENVIRONMENT`              |                                           |
+| `APP_ORIGIN`             | `vars.APP_ORIGIN`               |                                           |
+| `APP_DOMAIN`             | `vars.APP_DOMAIN`               |                                           |
+| `NEXT_PUBLIC_APP_ENV`    | `.env`-variable                 | In `.env` as `vars.ENVIRONMENT`           |
+| `NEXT_PUBLIC_APP_ORIGIN` | `.env`-variable                 | In `.env` as `vars.APP_ORIGIN`            |
+|                          |                                 |                                           |
+| `BREVO_API_KEY`          | `secrets.BREVO_API_KEY`         | API key for transactional mails via Brevo |
+|                          |                                 |                                           |
+| `POSTGRES_USER`          | `secrets.POSTGRES_USER`         |                                           |
+| `POSTGRES_PASSWORD`      | `secrets.POSTGRES_PASSWORD`     |                                           |
+| `POSTGRES_DB`            | `vars.POSTGRES_DB`              |                                           |
+| `POSTGRES_HOST`          | `vars.POSTGRES_HOST`            |                                           |
+| `DATABASE_URL`           | `.env`-variable                 | In `.env` as composite value              |
+|                          |                                 |                                           |
+| `SESSION_SECRET_KEY`     | `secrets.SESSION_SECRET_KEY`    | [Required by Blitz][session-secret-key]   |
+|                          |                                 |                                           |
+| `ADMIN_EMAIL`            | `vars.ADMIN_EMAIL`              |                                           |
+|                          |                                 |                                           |
+| `S3_UPLOAD_KEY`          | `secrets.S3_UPLOAD_KEY`         |                                           |
+| `S3_UPLOAD_SECRET`       | `secrets.S3_UPLOAD_SECRET`      |                                           |
+| `S3_UPLOAD_ROOTFOLDER`   | `.env`-variable                 | In `.env` as composite value              |
+|                          |                                 |                                           |
+| `TS_API_KEY`             | `secrets.TS_API_KEY`            |                                           |
+|                          |                                 |                                           |
+| `OPENAI_API_KEY`         | `secrets.OPENAI_API_KEY`        |                                           |
+|                          |                                 |                                           |
+| `LANGFUSE_SECRET_KEY`    | `secrets.LANGFUSE_SECRET_KEY`   |                                           |
+| `LANGFUSE_PUBLIC_KEY`    | `secrets.LANGFUSE_PUBLIC_KEY`   |                                           |
+| `LANGFUSE_BASEURL`       | `vars.LANGFUSE_BASEURL`         |                                           |
+|                          |                                 |                                           |
+| `AWS_ACCESS_KEY_ID`      | `secrets.AWS_ACCESS_KEY_ID`     | Repository secret                         |
+| `AWS_SECRET_ACCESS_KEY`  | `secrets.AWS_SECRET_ACCESS_KEY` | Repository secret                         |
+| `SSH_HOST`               | `secrets.SSH_HOST`              |                                           |
+| `SSH_USERNAME`           | `secrets.SSH_USERNAME`          |                                           |
+| `SSH_PASSWORD`           | `secrets.SSH_PASSWORD`          |                                           |
+|                          |                                 |                                           |
+| `LUCKY_CLOUD_TOKEN`      | `secrets.LUCKY_CLOUD_TOKEN`     | Repository secret                         |
 
 [session-secret-key]: https://blitzjs.com/docs/auth-setup#production-deployment-requirements

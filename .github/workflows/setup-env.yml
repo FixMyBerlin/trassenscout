@@ -44,8 +44,7 @@ jobs:
             NEXT_PUBLIC_APP_ORIGIN='${{ vars.APP_ORIGIN }}'
             APP_DOMAIN='${{ vars.APP_DOMAIN }}'
 
-            MAILJET_APIKEY_PUBLIC='${{ secrets.MAILJET_APIKEY_PUBLIC }}'
-            MAILJET_APIKEY_PRIVATE='${{ secrets.MAILJET_APIKEY_PRIVATE }}'
+            BREVO_API_KEY='${{ secrets.BREVO_API_KEY }}'
 
             POSTGRES_DB='${{ vars.POSTGRES_DB }}'
             POSTGRES_USER='${{ secrets.POSTGRES_USER }}'

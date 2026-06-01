@@ -1,12 +1,10 @@
-import { invoke } from "@/src/blitz-server"
-import getOperator from "@/src/server/operators/queries/getOperator"
 import { JsonValue } from "@prisma/client/runtime/library"
 import { format } from "date-fns/format"
 import { de } from "date-fns/locale/de"
 import { Diff } from "datum-diff"
 import "server-only"
 
-type Props = { projectSlug: string; context: JsonValue }
+type Props = { context: JsonValue }
 
 // See https://github.com/flitbit/diff/blob/master/Readme.md#differences
 const diffTranslations = {
@@ -16,7 +14,7 @@ const diffTranslations = {
   A: "Verändert",
 }
 
-const dateOrData = async (projectSlug: string, path: string[], content: string) => {
+const dateOrData = (path: string[], content: string) => {
   switch (path.at(0)) {
     case "updatedAt":
       return format(content, "Pp", { locale: de })
@@ -24,21 +22,12 @@ const dateOrData = async (projectSlug: string, path: string[], content: string) 
     case "geometry":
       return "(Koordinaten)"
 
-    case "operatorId":
-      if (!content) return "k.A."
-
-      const operator = await invoke(getOperator, {
-        projectSlug,
-        id: Number(content),
-      })
-      return `${operator.title} (#${operator.id})`
-
     default:
       return content
   }
 }
 
-export const AdminLogEntryChanges = ({ projectSlug, context }: Props) => {
+export const AdminLogEntryChanges = ({ context }: Props) => {
   if (!Array.isArray(context)) return null
 
   return (
@@ -69,10 +58,10 @@ export const AdminLogEntryChanges = ({ projectSlug, context }: Props) => {
                 <code className="text-xs font-semibold">{entry.path.join(" > ")}</code>
               </td>
               <td className="px-1.5 py-1 text-sm text-gray-500">
-                {"lhs" in entry ? dateOrData(projectSlug, entry.path, entry.lhs) : null}
+                {"lhs" in entry ? dateOrData(entry.path, entry.lhs) : null}
               </td>
               <td className="px-1.5 py-1 text-sm text-gray-500">
-                {"rhs" in entry ? dateOrData(projectSlug, entry.path, entry.rhs) : null}
+                {"rhs" in entry ? dateOrData(entry.path, entry.rhs) : null}
               </td>
             </tr>
           )

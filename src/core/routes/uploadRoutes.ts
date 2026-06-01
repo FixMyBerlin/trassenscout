@@ -53,6 +53,10 @@ export const uploadDetailRoute = (projectSlug: string, uploadId: number): Route 
   return `/${projectSlug}/uploads/${uploadId}` as Route
 }
 
+export const uploadViewRoute = (projectSlug: string, uploadId: number): Route => {
+  return `/${projectSlug}/uploads/${uploadId}/view` as Route
+}
+
 export const uploadsListRoute = (projectSlug: string): Route => {
   return `/${projectSlug}/uploads` as Route
 }

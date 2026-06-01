@@ -3,14 +3,16 @@
 import { DeleteUploadButton } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/DeleteUploadButton"
 import { LuckyCloudDocumentLink } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/LuckyCloudDocumentLink"
 import { UploadAuthorAndDates } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadAuthorAndDates"
+import { UploadPdfViewer } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPdfViewer"
 import { UploadPreview } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreview"
 import { UploadVerknuepfungen } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadVerknuepfungen"
+import { isPdf } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileType"
 import { uploadUrl } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/uploadUrl"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { Link, blueButtonStylesForLinkElement } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
-import { appendReturnToToUploadEditRoute } from "@/src/core/routes/uploadRoutes"
+import { appendReturnToToUploadEditRoute, uploadViewRoute } from "@/src/core/routes/uploadRoutes"
 import { useCurrentReturnTo } from "@/src/core/routes/useCurrentPathWithSearch"
 import { formatFileSize } from "@/src/core/utils/formatFileSize"
 import { getFilenameFromS3 } from "@/src/server/uploads/_utils/url"
@@ -35,11 +37,22 @@ export const UploadDetailPanelContent = ({
 }: Props) => {
   const returnTo = useCurrentReturnTo()
   const editHref = editUrl ? appendReturnToToUploadEditRoute(editUrl, returnTo) : undefined
+  const isUploadPdf = isPdf(upload)
 
   return (
     <div className="space-y-6">
-      <div className="flex gap-6">
-        <UploadPreview upload={upload} projectSlug={projectSlug} size="grid" showTitle={false} />
+      <div className={clsx("flex gap-6", isUploadPdf && "flex-col gap-4")}>
+        {isUploadPdf ? (
+          <div className="max-w-[300px]">
+            <UploadPdfViewer
+              fileUrl={uploadUrl(upload, projectSlug)}
+              showZoomControls={false}
+              showRotationControls={false}
+            />
+          </div>
+        ) : (
+          <UploadPreview upload={upload} projectSlug={projectSlug} size="grid" showTitle={false} />
+        )}
         <div className="space-y-5">
           <div>
             <h4 className="text-sm font-medium text-gray-700">
@@ -54,16 +67,23 @@ export const UploadDetailPanelContent = ({
           {upload.collaborationUrl ? (
             <LuckyCloudDocumentLink collaborationUrl={upload.collaborationUrl} />
           ) : (
-            <Link
-              blank
-              href={uploadUrl(upload, projectSlug)}
-              className={clsx(
-                blueButtonStylesForLinkElement,
-                "inline-flex items-center gap-2 whitespace-nowrap",
+            <div className="flex flex-wrap gap-2">
+              {isUploadPdf && (
+                <Link
+                  href={uploadViewRoute(projectSlug, upload.id)}
+                  className={blueButtonStylesForLinkElement}
+                >
+                  In Vollansicht öffnen
+                </Link>
               )}
-            >
-              Datei öffnen
-            </Link>
+              <Link
+                blank
+                href={uploadUrl(upload, projectSlug)}
+                className={blueButtonStylesForLinkElement}
+              >
+                Datei {isUploadPdf && "m Browser "}öffnen
+              </Link>
+            </div>
           )}
         </div>
       </div>

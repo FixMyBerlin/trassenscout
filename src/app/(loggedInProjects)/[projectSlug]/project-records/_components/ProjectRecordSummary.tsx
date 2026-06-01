@@ -2,13 +2,13 @@ import { ProjectRecordAssignedToPill } from "@/src/app/(loggedInProjects)/[proje
 import { ProjectRecordEditingStateIndicator } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordEditingStateIndicator"
 import { ProjectRecordEmailSourceText } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordEmailSource"
 import { ProjectRecordVerknuepfungen } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordVerknuepfungen"
-import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
 import { createProjectRecordFilterUrl } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/filter/createFilterUrl"
+import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
 import { getFullname } from "@/src/app/_components/users/utils/getFullname"
 import { Link, linkStyles } from "@/src/core/components/links"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
-import { useCurrentReturnTo } from "@/src/core/routes/useCurrentPathWithSearch"
 import { uploadEditRouteForProjectRecord } from "@/src/core/routes/uploadRoutes"
+import { useCurrentReturnTo } from "@/src/core/routes/useCurrentPathWithSearch"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
 import { format } from "date-fns"
 import { de } from "date-fns/locale"
@@ -54,7 +54,6 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
         <span className="col-span-3">
           {format(new Date(projectRecord.date!), "P", { locale: de })}
         </span>
-
       </div>
 
       {projectRecord.body && (

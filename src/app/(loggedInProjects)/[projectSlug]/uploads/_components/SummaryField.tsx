@@ -1,7 +1,7 @@
 "use client"
 
 import { summarizeUpload } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_actions/summarizeUpload"
-import { isPdf } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileType"
+import { isPdfByMimeType } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileType"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { LabeledTextareaField } from "@/src/core/components/forms"
 import { blueButtonStyles, Link } from "@/src/core/components/links"
@@ -58,7 +58,7 @@ export const SummaryField = ({
     }
   }
 
-  const showAiButton = isPdf(mimeType) && isAiEnabled
+  const showAiButton = isPdfByMimeType(mimeType) && isAiEnabled
 
   return (
     <div>
@@ -76,7 +76,7 @@ export const SummaryField = ({
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
       />
-      {!isAiEnabled && isPdf(mimeType) && (
+      {!isAiEnabled && isPdfByMimeType(mimeType) && (
         <SuperAdminBox className="mt-4">
           <p className="mb-2 font-semibold">KI-Funktionen sind deaktiviert</p>
           <p className="mb-3 text-sm">

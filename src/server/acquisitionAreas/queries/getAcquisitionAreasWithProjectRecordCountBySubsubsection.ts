@@ -9,11 +9,12 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { z } from "zod"
 
-const GetAcquisitionAreasWithProjectRecordCountBySubsubsectionSchema = ProjectSlugRequiredSchema.merge(
-  z.object({
-    subsubsectionId: z.coerce.number(),
-  }),
-)
+const GetAcquisitionAreasWithProjectRecordCountBySubsubsectionSchema =
+  ProjectSlugRequiredSchema.merge(
+    z.object({
+      subsubsectionId: z.coerce.number(),
+    }),
+  )
 
 export default resolver.pipe(
   resolver.zod(GetAcquisitionAreasWithProjectRecordCountBySubsubsectionSchema),
@@ -55,4 +56,3 @@ export default resolver.pipe(
     }))
   },
 )
-

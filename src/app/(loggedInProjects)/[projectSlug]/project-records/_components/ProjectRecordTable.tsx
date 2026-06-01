@@ -98,7 +98,9 @@ export const ProjectRecordsTable = ({
               {showAcquisitionAreaColumn ? (
                 <col className={projectRecordTableColWidths.acquisitionArea} />
               ) : null}
-              {showRelationsColumn ? <col className={projectRecordTableColWidths.relations} /> : null}
+              {showRelationsColumn ? (
+                <col className={projectRecordTableColWidths.relations} />
+              ) : null}
               <col className={projectRecordTableColWidths.tags} />
               <col className={projectRecordTableColWidths.assignedTo} />
               <col className={projectRecordTableColWidths.documents} />
