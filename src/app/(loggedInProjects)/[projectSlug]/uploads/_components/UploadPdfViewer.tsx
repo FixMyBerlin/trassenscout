@@ -6,6 +6,7 @@ import {
   MagnifyingGlassMinusIcon,
   MagnifyingGlassPlusIcon,
 } from "@heroicons/react/24/outline"
+import { clsx } from "clsx"
 import { useEffect, useRef, useState } from "react"
 import { Document, Page, pdfjs } from "react-pdf"
 import "react-pdf/dist/Page/AnnotationLayer.css"
@@ -23,18 +24,18 @@ type Props = {
   fileUrl: string
   showZoomControls?: boolean
   showRotationControls?: boolean
-  width?: number
   initialPage?: number
   initialZoom?: number
+  fullSize?: boolean
 }
 
 export const UploadPdfViewer = ({
   fileUrl,
   showZoomControls = true,
   showRotationControls = true,
-  width,
   initialPage = 1,
   initialZoom = 100,
+  fullSize: fillViewport = false,
 }: Props) => {
   const [numPages, setNumPages] = useState<number>()
   const [pageNumber, setPageNumber] = useState(initialPage)
@@ -42,24 +43,39 @@ export const UploadPdfViewer = ({
   const [rotation, setRotation] = useState(0)
   const containerRef = useRef<HTMLDivElement>(null)
   const [containerWidth, setContainerWidth] = useState<number>()
+  const [containerHeight, setContainerHeight] = useState<number>()
+  // Intrinsic page aspect ratio (width / height) at rotation 0, from the loaded page.
+  const [pageAspectRatio, setPageAspectRatio] = useState<number>()
 
   useEffect(() => {
-    if (width !== undefined) return
     const el = containerRef.current
     if (!el) return
     const ro = new ResizeObserver(([entry]) => {
-      if (entry) setContainerWidth(entry.contentRect.width)
+      if (!entry) return
+      setContainerWidth(entry.contentRect.width)
+      setContainerHeight(entry.contentRect.height)
     })
     ro.observe(el)
     return () => ro.disconnect()
-  }, [width])
+  }, [])
 
-  const effectiveWidth = width ?? containerWidth
   const effectiveZoom = showZoomControls ? zoom : 1
   const effectiveRotation = showRotationControls ? rotation : 0
 
+  // Base width handed to <Page> before the zoom factor is applied.
+  let baseWidth = containerWidth
+  if (fillViewport && containerWidth && containerHeight && pageAspectRatio) {
+    // Account for 90°/270° rotation swapping the page's width and height.
+    const rotated = effectiveRotation % 180 !== 0
+    const aspect = rotated ? 1 / pageAspectRatio : pageAspectRatio
+    // Width that would make the page exactly as tall as the container.
+    const widthConstrainedByHeight = containerHeight * aspect
+    // Fit within both dimensions so the whole page is visible on initial render.
+    baseWidth = Math.min(containerWidth, widthConstrainedByHeight)
+  }
+
   return (
-    <div className="space-y-2">
+    <div className="h-full space-y-2">
       <nav className="flex flex-wrap items-center gap-2 text-sm">
         <button
           type="button"
@@ -122,7 +138,9 @@ export const UploadPdfViewer = ({
 
       <div
         ref={containerRef}
-        className="flex justify-center overflow-auto rounded border border-gray-200 bg-gray-50"
+        className={clsx(
+          "flex h-full w-full items-center justify-center overflow-auto rounded border border-blue-500 bg-gray-50",
+        )}
       >
         <Document
           file={fileUrl}
@@ -131,12 +149,13 @@ export const UploadPdfViewer = ({
           error={<p className="p-4 text-sm text-red-600">PDF konnte nicht geladen werden.</p>}
           noData={<p className="p-4 text-sm text-gray-500">Keine PDF-Datei.</p>}
         >
-          {effectiveWidth !== undefined && (
+          {baseWidth && (
             <Page
               pageNumber={pageNumber}
-              width={effectiveWidth}
+              width={baseWidth}
               scale={effectiveZoom}
               rotate={effectiveRotation}
+              onLoadSuccess={(page) => setPageAspectRatio(page.originalWidth / page.originalHeight)}
             />
           )}
         </Document>

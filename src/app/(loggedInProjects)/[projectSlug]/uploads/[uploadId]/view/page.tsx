@@ -3,8 +3,6 @@ import { isPdf } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_compo
 import { uploadUrl } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/uploadUrl"
 import { invoke } from "@/src/blitz-server"
 import { BackLink } from "@/src/core/components/forms/BackLink"
-import { blueButtonStylesForLinkElement, Link } from "@/src/core/components/links"
-import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoIndexTitle } from "@/src/core/components/text"
 import { uploadsListRoute } from "@/src/core/routes/uploadRoutes"
 import getUploadWithRelations from "@/src/server/uploads/queries/getUploadWithRelations"
@@ -36,20 +34,11 @@ export default async function ViewUploadPage({ params: { projectSlug, uploadId }
 
   return (
     <>
-      <PageHeader title={upload.title} className="mt-12" />
-
-      <div className="relative right-1/2 left-1/2 -mr-[50vw] -ml-[50vw] w-screen px-4">
-        <UploadPdfViewer fileUrl={uploadUrl(upload, projectSlug)} initialZoom={60} />
-      </div>
-      <div className="mt-6 space-y-4">
-        <BackLink href={uploadsListRoute(projectSlug)} text="Zurück zu den Dokumenten" />
-        <Link
-          blank
-          className={blueButtonStylesForLinkElement}
-          href={uploadUrl(upload, projectSlug)}
-        >
-          Datei im Browser öffnen
-        </Link>
+      <div className="relative right-1/2 left-1/2 -mr-[50vw] -ml-[50vw] h-[85vh] w-screen px-4">
+        <div className="mb-2">
+          <BackLink href={uploadsListRoute(projectSlug)} text="Zurück zu den Dokumenten" />
+        </div>
+        <UploadPdfViewer fileUrl={uploadUrl(upload, projectSlug)} fullSize />
       </div>
     </>
   )
