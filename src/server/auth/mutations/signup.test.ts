@@ -26,6 +26,7 @@ describe("signup mutation", () => {
       phone: "signup_test_phone",
       institution: "signup_test_institution",
       inviteToken: null,
+      privacyPolicyAccepted: true,
     }
     await expect(signup(input, mockCtx)).resolves.not.toThrow()
     expect(previewEmail).toBeCalled()
