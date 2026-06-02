@@ -2,10 +2,35 @@ import { authFile, seedProjects } from "@/tests/_fixtures/auth"
 import { authorizationNoise, pageNoise } from "@/tests/_fixtures/console-noise"
 import { expect, test } from "@/tests/_fixtures/test"
 import { expectErrorPage } from "@/tests/_utils/pageAssertions"
+import db, { ProjectRecordEditingState, ProjectRecordReviewState } from "@/db"
 import type { Page } from "@playwright/test"
 
 const projectSlug = seedProjects.richProject
 const listPath = `/${projectSlug}/project-records`
+
+const ensureProjectRecordPersistenceFixture = async () => {
+  const project = await db.project.findFirstOrThrow({
+    where: { slug: projectSlug },
+    select: { id: true },
+  })
+
+  return db.projectRecord.create({
+    data: {
+      projectId: project.id,
+      title: `E2E Persistenz ${Date.now()}`,
+      body: "Ausgangsnotiz fuer Persistenztest",
+      editingState: ProjectRecordEditingState.PENDING,
+      reviewState: ProjectRecordReviewState.APPROVED,
+      projectRecordAuthorType: "USER",
+      projectRecordUpdatedByType: "USER",
+    },
+    select: {
+      id: true,
+      title: true,
+      body: true,
+    },
+  })
+}
 
 const ensureProjectRecordId = async (page: Page) => {
   await page.goto(listPath)
@@ -42,6 +67,7 @@ test.describe("Project records permissions", () => {
   test.describe.configure({ mode: "serial" })
 
   let projectRecordId: number
+  let persistenceProjectRecordId: number
 
   test.describe("prepare record", () => {
     test.use({ storageState: authFile("editor") })
@@ -50,6 +76,12 @@ test.describe("Project records permissions", () => {
     test("creates or finds a record id for permission checks", async ({ page }) => {
       projectRecordId = await ensureProjectRecordId(page)
       expect(projectRecordId).toBeGreaterThan(0)
+    })
+
+    test("creates a dedicated record for persistence checks", async () => {
+      const projectRecord = await ensureProjectRecordPersistenceFixture()
+      persistenceProjectRecordId = projectRecord.id
+      expect(persistenceProjectRecordId).toBeGreaterThan(0)
     })
   })
 
@@ -75,6 +107,44 @@ test.describe("Project records permissions", () => {
         ).toBeVisible({
           timeout: 30_000,
         })
+      })
+
+      test("persists title and body changes after save and fresh reload", async ({
+        browser,
+        page,
+      }) => {
+        const updatedTitle = `E2E Persistiert ${Date.now()}`
+        const updatedBody = `Persistierte Notiz ${Date.now()}`
+
+        await page.goto(`/${projectSlug}/project-records/${persistenceProjectRecordId}/edit`)
+        await expect(
+          page.getByRole("heading", { name: /Protokolleintrag bearbeiten/, exact: false }),
+        ).toBeVisible({
+          timeout: 30_000,
+        })
+
+        await page.getByLabel("Titel").fill(updatedTitle)
+        await page.getByLabel("Notizen (Markdown)").fill(updatedBody)
+        await page.getByRole("button", { name: "Änderungen speichern", exact: true }).click()
+
+        await expect(page.getByLabel("Titel")).toHaveValue(updatedTitle)
+        await expect(page.getByLabel("Notizen (Markdown)")).toHaveValue(updatedBody)
+        await page.waitForLoadState("networkidle")
+
+        const freshContext = await browser.newContext({ storageState: authFile("editor") })
+        const freshPage = await freshContext.newPage()
+
+        await freshPage.goto(`/${projectSlug}/project-records/${persistenceProjectRecordId}`)
+        await expect(
+          freshPage.getByRole("heading", { name: updatedTitle, exact: true }),
+        ).toBeVisible({
+          timeout: 30_000,
+        })
+        await expect(freshPage.getByText(updatedBody, { exact: true })).toBeVisible({
+          timeout: 30_000,
+        })
+
+        await freshContext.close()
       })
     })
 
