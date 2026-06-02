@@ -44,11 +44,7 @@ export const UploadDetailPanelContent = ({
       <div className={clsx("flex gap-6", isUploadPdf && "flex-col gap-4")}>
         {isUploadPdf ? (
           <div className="max-w-[300px]">
-            <UploadPdfViewer
-              fileUrl={uploadUrl(upload, projectSlug)}
-              showZoomControls={false}
-              showRotationControls={false}
-            />
+            <UploadPdfViewer fileUrl={uploadUrl(upload, projectSlug)} />
           </div>
         ) : (
           <UploadPreview upload={upload} projectSlug={projectSlug} size="grid" showTitle={false} />
