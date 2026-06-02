@@ -4,9 +4,11 @@ import { UploadDetailModal } from "@/src/app/(loggedInProjects)/[projectSlug]/up
 import { UploadPreview } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreview"
 import { UploadSize } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/uploadSizes"
 import { blockUntilModalMounts } from "@/src/core/components/Modal/modalCloseGuard"
+import getUploadWithRelations from "@/src/server/uploads/queries/getUploadWithRelations"
+import { getQueryClient, getQueryKey, invoke } from "@blitzjs/rpc"
 import { Upload } from "@prisma/client"
 import { Route } from "next"
-import { useState } from "react"
+import { useCallback, useState } from "react"
 
 type Props = {
   uploadId: number
@@ -27,6 +29,30 @@ export const UploadPreviewClickable = ({
 }: Props) => {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false)
   const effectiveUploadId = upload?.id ?? uploadId
+  const queryKey = getQueryKey(getUploadWithRelations, { projectSlug, id: effectiveUploadId })
+
+  const primeUploadDetails = useCallback(async () => {
+    const queryClient = getQueryClient()
+
+    if (queryClient.getQueryData(queryKey)) return
+
+    const fullUpload = await invoke(getUploadWithRelations, {
+      projectSlug,
+      id: effectiveUploadId,
+    })
+
+    queryClient.setQueryData(queryKey, fullUpload)
+  }, [effectiveUploadId, projectSlug, queryKey])
+
+  const warmPreview = () => {
+    void primeUploadDetails()
+  }
+
+  const openPreview = () => {
+    warmPreview()
+    blockUntilModalMounts()
+    setIsPreviewOpen(true)
+  }
 
   return (
     <>
@@ -35,10 +61,9 @@ export const UploadPreviewClickable = ({
         projectSlug={projectSlug}
         size={size}
         showTitle={size !== "table"}
-        onClick={() => {
-          blockUntilModalMounts()
-          setIsPreviewOpen(true)
-        }}
+        onPointerEnter={warmPreview}
+        onFocus={warmPreview}
+        onClick={openPreview}
       />
       <UploadDetailModal
         uploadId={effectiveUploadId}

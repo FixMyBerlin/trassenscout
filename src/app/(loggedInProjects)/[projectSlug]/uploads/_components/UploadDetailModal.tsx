@@ -10,6 +10,18 @@ import { useQuery } from "@blitzjs/rpc"
 import { Upload } from "@prisma/client"
 import { Route } from "next"
 
+const UploadDetailModalSkeleton = () => (
+  <div className="space-y-4">
+    <div className="h-5 w-40 animate-pulse rounded bg-gray-200" />
+    <div className="h-40 animate-pulse rounded-lg bg-gray-100" />
+    <div className="space-y-2">
+      <div className="h-4 w-3/4 animate-pulse rounded bg-gray-100" />
+      <div className="h-4 w-1/2 animate-pulse rounded bg-gray-100" />
+      <div className="h-4 w-2/3 animate-pulse rounded bg-gray-100" />
+    </div>
+  </div>
+)
+
 type Props = {
   uploadId: number | null
   projectSlug: string
@@ -36,8 +48,10 @@ export const UploadDetailModal = ({
     {
       enabled: open && uploadId !== null,
       suspense: false,
+      retry: false,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
+      staleTime: Infinity,
     },
   )
 
@@ -48,13 +62,18 @@ export const UploadDetailModal = ({
   const title = upload?.title ?? previewUpload?.title ?? "Dokument wird geladen …"
 
   return (
-    <Modal open={open} handleClose={onClose} className="space-y-4 sm:max-w-2xl">
+    <Modal
+      open={open}
+      handleClose={onClose}
+      className="space-y-4 sm:max-w-2xl"
+      zIndex={30}
+    >
       <HeadingWithAction>
         <H3>{title}</H3>
         <ModalCloseButton onClose={onClose} />
       </HeadingWithAction>
 
-      {upload && (
+      {upload ? (
         <UploadDetailPanelContent
           upload={upload}
           projectSlug={projectSlug}
@@ -71,6 +90,8 @@ export const UploadDetailModal = ({
               : undefined
           }
         />
+      ) : (
+        <UploadDetailModalSkeleton />
       )}
     </Modal>
   )
