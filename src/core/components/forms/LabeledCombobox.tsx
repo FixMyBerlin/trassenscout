@@ -43,8 +43,12 @@ export function LabeledCombobox({
   const [query, setQuery] = useState("")
   const {
     control,
+    getValues,
     formState: { isSubmitting, errors },
   } = useFormContext()
+  const [pinnedSelected, setPinnedSelected] = useState<string[]>(
+    () => (getValues(scope) as string[] | undefined) ?? [],
+  )
 
   const hasError = Boolean(errors[scope])
   const disabledOrSubmitting = Boolean(disabled || isSubmitting || items.length === 0)
@@ -57,10 +61,16 @@ export function LabeledCombobox({
         render={({ field }) => {
           const value = (field.value as string[] | undefined) ?? []
 
+          const pinned = new Set(pinnedSelected)
+          const orderedItems = [...items].sort(
+            (a, b) => Number(pinned.has(b.value)) - Number(pinned.has(a.value)),
+          )
           const filteredItems =
             query === ""
-              ? items
-              : items.filter((i) => String(i.label).toLowerCase().includes(query.toLowerCase()))
+              ? orderedItems
+              : orderedItems.filter((i) =>
+                  String(i.label).toLowerCase().includes(query.toLowerCase()),
+                )
 
           return (
             <>
@@ -103,7 +113,10 @@ export function LabeledCombobox({
                 multiple
                 value={value}
                 onChange={field.onChange}
-                onClose={() => setQuery("")}
+                onClose={() => {
+                  setQuery("")
+                  setPinnedSelected(value)
+                }}
                 disabled={disabledOrSubmitting}
                 invalid={hasError}
               >
