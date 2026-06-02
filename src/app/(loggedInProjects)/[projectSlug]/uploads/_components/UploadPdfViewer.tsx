@@ -17,7 +17,7 @@ import "react-pdf/dist/Page/TextLayer.css"
 pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs"
 
 const MIN_ZOOM = 0.5
-const MAX_ZOOM = 3
+const MAX_ZOOM = 5
 const ZOOM_STEP = 0.1
 
 export type UploadPdfViewerLayout = "normal" | "fullscreen"
