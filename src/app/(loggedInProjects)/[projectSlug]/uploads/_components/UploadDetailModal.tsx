@@ -62,12 +62,7 @@ export const UploadDetailModal = ({
   const title = upload?.title ?? previewUpload?.title ?? "Dokument wird geladen …"
 
   return (
-    <Modal
-      open={open}
-      handleClose={onClose}
-      className="space-y-4 sm:max-w-2xl"
-      zIndex={30}
-    >
+    <Modal open={open} handleClose={onClose} className="space-y-4 sm:max-w-2xl" zIndex={30}>
       <HeadingWithAction>
         <H3>{title}</H3>
         <ModalCloseButton onClose={onClose} />
