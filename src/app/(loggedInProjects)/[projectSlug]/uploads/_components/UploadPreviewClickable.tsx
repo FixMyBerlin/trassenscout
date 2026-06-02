@@ -3,6 +3,7 @@
 import { UploadDetailModal } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDetailModal"
 import { UploadPreview } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreview"
 import { UploadSize } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/uploadSizes"
+import { blockUntilModalMounts } from "@/src/core/components/Modal/modalCloseGuard"
 import { Upload } from "@prisma/client"
 import { Route } from "next"
 import { useState } from "react"
@@ -34,7 +35,10 @@ export const UploadPreviewClickable = ({
         projectSlug={projectSlug}
         size={size}
         showTitle={size !== "table"}
-        onClick={() => setIsPreviewOpen(true)}
+        onClick={() => {
+          blockUntilModalMounts()
+          setIsPreviewOpen(true)
+        }}
       />
       <UploadDetailModal
         uploadId={effectiveUploadId}
