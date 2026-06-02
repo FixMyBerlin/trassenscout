@@ -179,27 +179,31 @@ export const UploadPdfViewer = ({
       <div
         ref={containerRef}
         className={clsx(
-          "flex w-full items-center justify-center overflow-auto bg-gray-50",
+          "w-full overflow-auto bg-gray-50",
           isFullscreen ? "min-h-0 flex-1" : "h-full rounded border border-blue-500",
         )}
       >
-        <Document
-          file={fileUrl}
-          onLoadSuccess={({ numPages }) => setNumPages(numPages)}
-          loading={<p className="p-4 text-sm text-gray-500">PDF wird geladen …</p>}
-          error={<p className="p-4 text-sm text-red-600">PDF konnte nicht geladen werden.</p>}
-          noData={<p className="p-4 text-sm text-gray-500">Keine PDF-Datei.</p>}
-        >
-          {baseWidth && (
-            <Page
-              pageNumber={pageNumber}
-              width={baseWidth}
-              scale={effectiveZoom}
-              rotate={effectiveRotation}
-              onLoadSuccess={(page) => setPageAspectRatio(page.originalWidth / page.originalHeight)}
-            />
-          )}
-        </Document>
+        <div className="flex min-h-full min-w-full items-center justify-center">
+          <Document
+            file={fileUrl}
+            onLoadSuccess={({ numPages }) => setNumPages(numPages)}
+            loading={<p className="p-4 text-sm text-gray-500">PDF wird geladen …</p>}
+            error={<p className="p-4 text-sm text-red-600">PDF konnte nicht geladen werden.</p>}
+            noData={<p className="p-4 text-sm text-gray-500">Keine PDF-Datei.</p>}
+          >
+            {baseWidth && (
+              <Page
+                pageNumber={pageNumber}
+                width={baseWidth}
+                scale={effectiveZoom}
+                rotate={effectiveRotation}
+                onLoadSuccess={(page) =>
+                  setPageAspectRatio(page.originalWidth / page.originalHeight)
+                }
+              />
+            )}
+          </Document>
+        </div>
       </div>
     </div>
   )
