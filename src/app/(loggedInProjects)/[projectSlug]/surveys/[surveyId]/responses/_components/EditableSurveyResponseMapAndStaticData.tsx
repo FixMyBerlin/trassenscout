@@ -64,7 +64,7 @@ type Props = {
   maptilerUrl: string
   defaultViewState: LngLatBoundsLike
   showMap?: boolean
-  refetchResponsesAndTopics: () => void
+  refetchResponsesAndTopics: () => Promise<void>
 }
 
 const EditableSurveyResponseMapAndStaticData = ({
@@ -139,7 +139,7 @@ const EditableSurveyResponseMapAndStaticData = ({
           "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
         )
       }
-      refetchResponsesAndTopics()
+      await refetchResponsesAndTopics()
     }
   }
 

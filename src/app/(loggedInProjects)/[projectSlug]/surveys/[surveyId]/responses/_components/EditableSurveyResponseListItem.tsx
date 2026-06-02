@@ -22,7 +22,7 @@ import updateSurveyResponseComment from "@/src/server/survey-response-comments/m
 import getSurveyResponseTopicsByProject from "@/src/server/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import getFeedbackSurveyResponsesWithSurveyDataAndComments from "@/src/server/survey-responses/queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
 import { useSession } from "@blitzjs/auth"
-import { invalidateQuery, useMutation } from "@blitzjs/rpc"
+import { useMutation } from "@blitzjs/rpc"
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/16/solid"
 import clsx from "clsx"
 import { useEffect } from "react"
@@ -39,7 +39,7 @@ export type EditableSurveyResponseListItemProps = {
     Awaited<ReturnType<typeof getSurveyResponseTopicsByProject>>["surveyResponseTopics"]
   >
   isAccordion?: boolean
-  refetchResponsesAndTopics: () => void
+  refetchResponsesAndTopics: () => Promise<void>
   showMap?: boolean
   mapProps: any
 }
@@ -96,10 +96,6 @@ const EditableSurveyResponseListItem = ({
   const userTextPreview = response.data[text1Id] || response.data[text2Id]
   const commentLabel = labels.comment?.sg || defaultBackendConfig.labels.comment.sg
   const commentHelp = labels.comment?.help || defaultBackendConfig.labels.comment.help
-
-  const invalidateFeedbackSurveyResponses = () => {
-    invalidateQuery(getFeedbackSurveyResponsesWithSurveyDataAndComments)
-  }
 
   return (
     <article data-open={open} className="bg-white">
@@ -166,6 +162,7 @@ const EditableSurveyResponseListItem = ({
             operators={operators}
             topics={topics}
             backendConfig={backendConfig}
+            refetchResponsesAndTopics={refetchResponsesAndTopics}
           />
           <div>
             {(!!response.surveyResponseComments.length || isEditorOrAdmin) && (
@@ -179,23 +176,21 @@ const EditableSurveyResponseListItem = ({
                       comment={comment}
                       commentLabel={commentLabel}
                       mutateComment={{
-                        update: (body) =>
-                          updateSurveyResponseCommentMutation(
-                            {
-                              projectSlug: projectSlug!,
-                              commentId: comment.id,
-                              body,
-                            },
-                            { onSuccess: invalidateFeedbackSurveyResponses },
-                          ),
-                        remove: () =>
-                          deleteSurveyResponseCommentMutation(
-                            {
-                              projectSlug: projectSlug!,
-                              commentId: comment.id,
-                            },
-                            { onSuccess: invalidateFeedbackSurveyResponses },
-                          ),
+                        update: async (body) => {
+                          await updateSurveyResponseCommentMutation({
+                            projectSlug: projectSlug!,
+                            commentId: comment.id,
+                            body,
+                          })
+                          await refetchResponsesAndTopics()
+                        },
+                        remove: async () => {
+                          await deleteSurveyResponseCommentMutation({
+                            projectSlug: projectSlug!,
+                            commentId: comment.id,
+                          })
+                          await refetchResponsesAndTopics()
+                        },
                       }}
                     />
                   </li>
@@ -206,16 +201,14 @@ const EditableSurveyResponseListItem = ({
                   <NewCommentForm
                     commentLabel={commentLabel}
                     commentHelp={commentHelp}
-                    createComment={async (body) =>
-                      createSurveyResponseCommentMutation(
-                        {
-                          projectSlug: projectSlug!,
-                          surveyResponseId: response.id,
-                          body,
-                        },
-                        { onSuccess: invalidateFeedbackSurveyResponses },
-                      )
-                    }
+                    createComment={async (body) => {
+                      await createSurveyResponseCommentMutation({
+                        projectSlug: projectSlug!,
+                        surveyResponseId: response.id,
+                        body,
+                      })
+                      await refetchResponsesAndTopics()
+                    }}
                   />
                 </li>
               </IfUserCanEdit>

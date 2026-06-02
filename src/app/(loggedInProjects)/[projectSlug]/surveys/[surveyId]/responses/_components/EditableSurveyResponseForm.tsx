@@ -9,10 +9,8 @@ import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedS
 import { blueButtonStyles } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import createSurveyResponseTopic from "@/src/server/survey-response-topics/mutations/createSurveyResponseTopic"
-import getSurveyResponseTopicsByProject from "@/src/server/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import updateSurveyResponse from "@/src/server/survey-responses/mutations/updateSurveyResponse"
-import getFeedbackSurveyResponsesWithSurveyDataAndComments from "@/src/server/survey-responses/queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
-import { invalidateQuery, useMutation } from "@blitzjs/rpc"
+import { useMutation } from "@blitzjs/rpc"
 import { Operator } from "@prisma/client"
 import { clsx } from "clsx"
 import { PropsWithoutRef, useState } from "react"
@@ -25,6 +23,7 @@ import { useFilters } from "./useFilters.nuqs"
 type Props = Omit<PropsWithoutRef<JSX.IntrinsicElements["form"]>, "onSubmit"> & {
   backendConfig: TBackendConfig
   showMap?: boolean
+  refetchResponsesAndTopics: () => Promise<void>
 } & Pick<EditableSurveyResponseListItemProps, "response" | "operators" | "topics">
 
 export function EditableSurveyResponseForm({
@@ -33,6 +32,7 @@ export function EditableSurveyResponseForm({
   topics,
   backendConfig,
   showMap,
+  refetchResponsesAndTopics,
 }: Props) {
   const userCanEdit = useUserCan().edit
   const projectSlug = useProjectSlug()
@@ -143,8 +143,7 @@ export function EditableSurveyResponseForm({
         break
     }
 
-    // todo check invalidateQuery
-    invalidateQuery(getFeedbackSurveyResponsesWithSurveyDataAndComments)
+    await refetchResponsesAndTopics()
   }
 
   const handleNoteFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -157,8 +156,7 @@ export function EditableSurveyResponseForm({
     } catch (error: any) {
       console.error(error)
     }
-    // todo check invalidateQuery
-    invalidateQuery(getFeedbackSurveyResponsesWithSurveyDataAndComments)
+    await refetchResponsesAndTopics()
     setHasUnsavedChanges(false)
   }
 
@@ -173,8 +171,7 @@ export function EditableSurveyResponseForm({
         ...surveyResponseUpdateObject,
         surveyResponseTopics: [...responseTopics.map((t) => Number(t)), createdOrFetched.id],
       })
-      // todo check invalidateQuery
-      invalidateQuery(getSurveyResponseTopicsByProject)
+      await refetchResponsesAndTopics()
       setResponseTopics([...responseTopics, String(createdOrFetched.id)])
       if (filter) setFilter({ ...filter, topics: [...filter.topics, String(createdOrFetched.id)] })
     } catch (error: any) {
@@ -194,6 +191,7 @@ export function EditableSurveyResponseForm({
           responseId={response.id}
           responseData={response.data}
           surveySlug={surveySlug}
+          refetchResponsesAndTopics={refetchResponsesAndTopics}
         />
         <div className={clsx("flex gap-6", showMap ? "flex-row" : "flex-col")}>
           <form className="flex flex-col gap-6">

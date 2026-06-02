@@ -139,6 +139,34 @@ test.describe("Survey permissions", () => {
         await expect(page.locator('textarea[name="body"]')).toBeVisible()
         await expect(page.getByRole("button", { name: /speichern/i })).toBeVisible()
       })
+
+      test("persists note changes after save and reload", async ({ browser, page }) => {
+        const note = `E2E note ${Date.now()}`
+
+        await page.goto(responsesDetailsPath())
+
+        const noteField = page.locator('textarea[name="note"]')
+        const saveButton = page.getByRole("button", {
+          name: /rückmeldung an beteiligte speichern/i,
+        })
+
+        await expect(noteField).toBeVisible({ timeout: 30_000 })
+        await noteField.fill(note)
+        await saveButton.click()
+
+        await expect(noteField).toHaveValue(note)
+        await page.waitForLoadState("networkidle")
+
+        const freshContext = await browser.newContext({ storageState: authFile("editor") })
+        const freshPage = await freshContext.newPage()
+
+        await freshPage.goto(responsesDetailsPath())
+        const freshNoteField = freshPage.locator('textarea[name="note"]')
+        await expect(freshNoteField).toBeVisible({ timeout: 30_000 })
+        await expect(freshNoteField).toHaveValue(note)
+
+        await freshContext.close()
+      })
     })
 
     test.describe("admin users", () => {
