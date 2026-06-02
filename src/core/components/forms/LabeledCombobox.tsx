@@ -78,7 +78,7 @@ export function LabeledCombobox({
                 )}
                 {value.length > 0 && (
                   <div className="flex grow items-center justify-between gap-1">
-                    <span className="inline-flex size-4.5 shrink-0 items-center justify-center rounded-full bg-gray-300 p-1 text-xs text-white">
+                    <span className="inline-flex size-4.5 shrink-0 items-center justify-center rounded-full bg-gray-400 p-1 text-xs font-bold text-white">
                       {value.length}
                     </span>
                     <button
