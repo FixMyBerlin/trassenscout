@@ -1,6 +1,4 @@
 import db from "@/db"
-import { userCreatedNotificationToAdmin } from "@/emails/mailers/userCreatedNotificationToAdmin"
-import { userCreatedNotificationToUser } from "@/emails/mailers/userCreatedNotificationToUser"
 import { getFullname } from "@/src/app/_components/users/utils/getFullname"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
 import { resolver } from "@blitzjs/rpc"
@@ -15,6 +13,13 @@ import { updateInvite } from "../shared/updateInvite"
 export default resolver.pipe(
   resolver.zod(SignupSchema),
   async ({ email, firstName, lastName, password, phone, institution, inviteToken }, ctx) => {
+    const [{ userCreatedNotificationToAdmin }, { userCreatedNotificationToUser }] = await Promise.all(
+      [
+        import("@/emails/mailers/userCreatedNotificationToAdmin"),
+        import("@/emails/mailers/userCreatedNotificationToUser"),
+      ],
+    )
+
     // Case: Invite
     let invite = await getInvite(inviteToken, email)
 

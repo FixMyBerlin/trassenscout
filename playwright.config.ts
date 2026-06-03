@@ -94,9 +94,11 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: useManagedWebServer
     ? {
-        command: "npm run dev:e2e",
+        command: "node scripts/e2e/prepareAndStartDev.js",
         url: baseURL,
-        reuseExistingServer: !process.env.CI,
+        // Avoid accidentally reusing a manually started dev server that points at the wrong DB.
+        // Use E2E_BASE_URL when you intentionally want Playwright to hit an existing server.
+        reuseExistingServer: false,
         timeout: 120 * 1000,
         env: {
           ...process.env,

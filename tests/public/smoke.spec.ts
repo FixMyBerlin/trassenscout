@@ -5,7 +5,7 @@ const publicPages = [
   { path: "/datenschutz", heading: "Datenschutzerklärung", title: /Datenschutzerklärung/ },
   { path: "/kontakt", heading: "Kontakt", title: /Kontakt/ },
   { path: "/auth/login", heading: "In Account einloggen", title: /Anmelden/ },
-  { path: "/auth/signup", heading: "Account registrieren", title: /Anmelden/ },
+  { path: "/auth/signup", heading: "Account registrieren", title: /Registrieren/ },
   { path: "/auth/forgot-password", heading: "Passwort vergessen", title: /Passwort vergessen/ },
   { path: "/auth/reset-password", heading: "Neues Passwort vergeben", title: /Passwort vergessen/ },
 ] as const

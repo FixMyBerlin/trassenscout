@@ -146,6 +146,34 @@ test.describe("Project records permissions", () => {
 
         await freshContext.close()
       })
+
+      test("persists comments after create and fresh reload", async ({ browser, page }) => {
+        const comment = `E2E Kommentar ${Date.now()}`
+
+        await page.goto(`/${projectSlug}/project-records/${persistenceProjectRecordId}`)
+        await expect(page.getByRole("heading", { name: /Kommentare/, exact: true })).toBeVisible({
+          timeout: 30_000,
+        })
+
+        const commentField = page.locator('textarea[name="body"]').first()
+        await expect(commentField).toBeVisible({ timeout: 30_000 })
+        await commentField.fill(comment)
+        await page.getByRole("button", { name: "Kommentar hinzufügen", exact: true }).click()
+
+        await expect(page.getByText(comment, { exact: true })).toBeVisible({ timeout: 30_000 })
+        await expect(commentField).toHaveValue("")
+        await page.waitForLoadState("networkidle")
+
+        const freshContext = await browser.newContext({ storageState: authFile("editor") })
+        const freshPage = await freshContext.newPage()
+
+        await freshPage.goto(`/${projectSlug}/project-records/${persistenceProjectRecordId}`)
+        await expect(freshPage.getByText(comment, { exact: true })).toBeVisible({
+          timeout: 30_000,
+        })
+
+        await freshContext.close()
+      })
     })
 
     test.describe("admin users", () => {
