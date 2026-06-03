@@ -4,14 +4,21 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { NavigationGeneralLogo } from "../NavigationLoggedOut/TrassenscoutLogo"
 import { NavigationUser } from "../NavigationUser/NavigationUser"
+import { NavigationUserLoggedOut } from "../NavigationUser/NavigationUserLoggedOut"
 
 type Props = {
   homeLink: Route
   homeLinkText: string
   children?: React.ReactNode
+  userVariant?: "auto" | "loggedOut"
 }
 
-export const NavigationDesktop = ({ homeLink, homeLinkText, children }: Props) => {
+export const NavigationDesktop = ({
+  homeLink,
+  homeLinkText,
+  children,
+  userVariant = "auto",
+}: Props) => {
   const pathname = usePathname()
 
   return (
@@ -33,7 +40,7 @@ export const NavigationDesktop = ({ homeLink, homeLinkText, children }: Props) =
         {children}
       </div>
       <div className="flex items-center">
-        <NavigationUser />
+        {userVariant === "loggedOut" ? <NavigationUserLoggedOut /> : <NavigationUser />}
       </div>
     </div>
   )

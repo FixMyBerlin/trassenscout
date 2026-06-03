@@ -10,15 +10,23 @@ import { ProjectsSwitch } from "../NavigationLoggedIn/ProjectsSwitch"
 import { shouldHighlight, useMenuItems } from "../NavigationLoggedInProject/useMenuItems"
 import { NavigationGeneralLogo } from "../NavigationLoggedOut/TrassenscoutLogo"
 import { NavigationUser } from "../NavigationUser/NavigationUser"
+import { NavigationUserLoggedOut } from "../NavigationUser/NavigationUserLoggedOut"
 
 type Props = {
   homeLink: Route
   homeLinkText: string
   menuItems?: ReturnType<typeof useMenuItems>
   projects?: TGetProjects["projects"]
+  userVariant?: "auto" | "loggedOut"
 }
 
-export const NavigationMobile = ({ homeLink, homeLinkText, menuItems, projects }: Props) => {
+export const NavigationMobile = ({
+  homeLink,
+  homeLinkText,
+  menuItems,
+  projects,
+  userVariant = "auto",
+}: Props) => {
   const pathname = usePathname()
 
   return (
@@ -29,7 +37,7 @@ export const NavigationMobile = ({ homeLink, homeLinkText, menuItems, projects }
             <div className="absolute inset-y-0 right-0 flex items-center space-x-2">
               {projects && <ProjectsSwitch projects={projects} />}
 
-              <NavigationUser />
+              {userVariant === "loggedOut" ? <NavigationUserLoggedOut /> : <NavigationUser />}
 
               {Boolean(menuItems?.length) && (
                 <DisclosureButton className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:ring-2 focus:ring-white focus:outline-hidden focus:ring-inset">
