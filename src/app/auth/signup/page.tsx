@@ -6,7 +6,7 @@ import { SignupForm } from "./_components/SignupForm"
 
 export const metadata: Metadata = {
   robots: "noindex",
-  title: "Anmelden",
+  title: "Registrieren",
 }
 
 export default async function SignupPage() {
