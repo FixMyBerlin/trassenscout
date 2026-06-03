@@ -1,5 +1,4 @@
 import db, { Invite, User } from "@/db"
-import { membershipCreatedNotificationToEditors } from "@/emails/mailers/membershipCreatedNotificationToEditors"
 import { roleTranslation } from "@/src/app/_components/memberships/roleTranslation.const"
 import { getFullname } from "@/src/app/_components/users/utils/getFullname"
 import { shortTitle } from "@/src/core/components/text/titles"
@@ -9,6 +8,10 @@ type Props = { invite: Invite | null; invitee: Pick<User, "firstName" | "lastNam
 
 export const notifyEditorsAboutNewMembership = async ({ invite, invitee }: Props) => {
   if (!invite) return
+
+  const { membershipCreatedNotificationToEditors } = await import(
+    "@/emails/mailers/membershipCreatedNotificationToEditors"
+  )
 
   const projectMemberRoleEditor = await db.membership.findMany({
     where: { projectId: invite.projectId, role: "EDITOR" },
