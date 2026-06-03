@@ -1,3 +1,4 @@
+import { responseConfig as radnetzBrandenburgResponseConfig } from "@/src/app/beteiligung/_radnetz-brandenbrug/response-config"
 import db, { SurveyResponseSourceEnum, SurveyResponseStateEnum } from "@/db"
 import { authFile, seedProjects } from "@/tests/_fixtures/auth"
 import { authorizationNoise, pageNoise } from "@/tests/_fixtures/console-noise"
@@ -6,7 +7,10 @@ import { expectErrorPage } from "@/tests/_utils/pageAssertions"
 
 const projectSlug = seedProjects.richProject
 const surveySlug = "radnetz-brandenburg" as const
-const radnetzBrandenburgCategoryFieldId = "22"
+const surveyCategoryFieldId = String(radnetzBrandenburgResponseConfig.evaluationRefs.category)
+const surveyFeedbackTextFieldId = String(
+  radnetzBrandenburgResponseConfig.evaluationRefs.feedbackText,
+)
 
 type SurveyFixture = {
   surveyId: number
@@ -57,8 +61,8 @@ const ensureSurveyFixture = async (): Promise<SurveyFixture> => {
       state: SurveyResponseStateEnum.SUBMITTED,
       status: "PENDING",
       data: JSON.stringify({
-        [radnetzBrandenburgCategoryFieldId]: 1,
-        feedbackText: `E2E response ${Date.now()}`,
+        [surveyCategoryFieldId]: "1",
+        [surveyFeedbackTextFieldId]: `E2E response ${Date.now()}`,
       }),
     },
   })
