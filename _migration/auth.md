@@ -12,19 +12,19 @@ This document compares **Trassenscout auth today** (Blitz Auth, email/password, 
 
 ## Executive summary
 
-| Area | Trassenscout today | TILDA Geo (reference) | Trassenscout target |
-|------|-------------------|----------------------|---------------------|
-| Library | `@blitzjs/auth` + `secure-password` | `better-auth` + Prisma adapter | **better-auth** (align with TILDA) |
-| Sign-in | Email + password forms | OSM OAuth only (`genericOAuth`) | **Email + password** (product requirement) |
-| Session transport | Blitz cookie (`rsv-builder.*`) | Better Auth cookies (`tilda.*`) | Better Auth cookies (`trassenscout.*` or similar) |
-| User PK | `Int` autoincrement | `String` `@default(cuid())` | **String cuid** (Better Auth + TILDA) |
-| Session payload | `userId`, `role`, **full `memberships[]`** in public data | `userId`, `role` only (customSession plugin) | **userId + role only** — drop memberships from session |
-| Membership auth | Often from session; also fresh DB check in resolvers | Always fresh DB check | **Always fresh DB check** (TILDA pattern) |
-| Route gates | Next.js layout `useAuthenticatedBlitzContext` | TanStack `beforeLoad` + server fns | **beforeLoad** (TILDA pattern) |
-| RPC/API auth | `resolver.authorize`, `withAuth`, `withProjectMembership` | `requireAuth` / `requireAdmin` + headers | **session.server.ts helpers + headers** |
-| Password reset | Blitz `Token` model + custom mailers | N/A (no passwords) | **better-auth `Verification`**; inactive users self-serve reset at login (no bulk email) |
-| Invites | Login/signup + `inviteToken` → create membership | N/A | **Keep** — custom flow on top of Better Auth |
-| Machine auth | `TS_API_KEY` (plain string compare) | `ATLAS_API_KEY` (timing-safe) | **Timing-safe compare** (align with TILDA) |
+| Area              | Trassenscout today                                        | TILDA Geo (reference)                        | Trassenscout target                                                                      |
+| ----------------- | --------------------------------------------------------- | -------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Library           | `@blitzjs/auth` + `secure-password`                       | `better-auth` + Prisma adapter               | **better-auth** (align with TILDA)                                                       |
+| Sign-in           | Email + password forms                                    | OSM OAuth only (`genericOAuth`)              | **Email + password** (product requirement)                                               |
+| Session transport | Blitz cookie (`rsv-builder.*`)                            | Better Auth cookies (`tilda.*`)              | Better Auth cookies (`trassenscout.*` or similar)                                        |
+| User PK           | `Int` autoincrement                                       | `String` `@default(cuid())`                  | **String cuid** (Better Auth + TILDA)                                                    |
+| Session payload   | `userId`, `role`, **full `memberships[]`** in public data | `userId`, `role` only (customSession plugin) | **userId + role only** — drop memberships from session                                   |
+| Membership auth   | Often from session; also fresh DB check in resolvers      | Always fresh DB check                        | **Always fresh DB check** (TILDA pattern)                                                |
+| Route gates       | Next.js layout `useAuthenticatedBlitzContext`             | TanStack `beforeLoad` + server fns           | **beforeLoad** (TILDA pattern)                                                           |
+| RPC/API auth      | `resolver.authorize`, `withAuth`, `withProjectMembership` | `requireAuth` / `requireAdmin` + headers     | **session.server.ts helpers + headers**                                                  |
+| Password reset    | Blitz `Token` model + custom mailers                      | N/A (no passwords)                           | **better-auth `Verification`**; inactive users self-serve reset at login (no bulk email) |
+| Invites           | Login/signup + `inviteToken` → create membership          | N/A                                          | **Keep** — custom flow on top of Better Auth                                             |
+| Machine auth      | `TS_API_KEY` (plain string compare)                       | `ATLAS_API_KEY` (timing-safe)                | **Timing-safe compare** (align with TILDA)                                               |
 
 **Bottom line:** Adopt TILDA’s **Better Auth infrastructure and authorization patterns**, but **not** OSM-only identity. Trassenscout remains an invite-driven, email/password B2B app with **project-scoped VIEWER/EDITOR roles**.
 
@@ -34,16 +34,16 @@ This document compares **Trassenscout auth today** (Blitz Auth, email/password, 
 
 ### Stack and entry points
 
-| File / area | Role |
-|-------------|------|
-| `src/blitz-auth-config.ts` | Cookie prefix `rsv-builder` |
-| `src/blitz-server.ts` | `AuthServerPlugin` + `PrismaStorage`, `simpleRolesIsAuthorized` |
-| `src/blitz-client.ts` | Client auth plugin |
-| `types.ts` | Session `PublicData`: `userId`, `role`, `memberships[]` |
+| File / area                   | Role                                                            |
+| ----------------------------- | --------------------------------------------------------------- |
+| `src/blitz-auth-config.ts`    | Cookie prefix `rsv-builder`                                     |
+| `src/blitz-server.ts`         | `AuthServerPlugin` + `PrismaStorage`, `simpleRolesIsAuthorized` |
+| `src/blitz-client.ts`         | Client auth plugin                                              |
+| `types.ts`                    | Session `PublicData`: `userId`, `role`, `memberships[]`         |
 | `src/server/auth/mutations/*` | login, signup, logout, forgot/reset/change password, updateUser |
-| `src/server/auth/schema.ts` | Zod schemas for auth forms |
-| `src/app/auth/*` | Login, signup, forgot/reset password, logout pages |
-| `db/schema.prisma` | `User`, `Session`, `Token` (Blitz shape) |
+| `src/server/auth/schema.ts`   | Zod schemas for auth forms                                      |
+| `src/app/auth/*`              | Login, signup, forgot/reset password, logout pages              |
+| `db/schema.prisma`            | `User`, `Session`, `Token` (Blitz shape)                        |
 
 ### Session model (Blitz-specific)
 
@@ -111,15 +111,15 @@ Primary doc: [`tilda-geo/docs/TanStack-Start-Auth.md`](../../tilda-geo/docs/TanS
 
 ### Stack
 
-| File | Role |
-|------|------|
-| `src/server/auth/auth.server.ts` | `betterAuth()` — Prisma adapter, OSM `genericOAuth`, `customSession` for `role` |
-| `src/server/auth/session.server.ts` | `getSession`, `getFreshSession`, `getAppSession`, `requireAuth`, `requireAdmin` |
+| File                                           | Role                                                                            |
+| ---------------------------------------------- | ------------------------------------------------------------------------------- |
+| `src/server/auth/auth.server.ts`               | `betterAuth()` — Prisma adapter, OSM `genericOAuth`, `customSession` for `role` |
+| `src/server/auth/session.server.ts`            | `getSession`, `getFreshSession`, `getAppSession`, `requireAuth`, `requireAdmin` |
 | `src/server/auth/auth-route-handler.server.ts` | `forwardAuthAndApplyCookies` — **no** `tanstackStartCookies` (Vite client leak) |
-| `src/components/shared/auth/auth-client.ts` | `createAuthClient` + plugins |
-| `src/routes/api/auth.$.ts` | Catch-all Better Auth handler |
-| `src/routes/api/sign-in.osm.ts` | OAuth entry with safe `callbackURL` |
-| `src/routes/oAuthError.tsx` | User-facing OAuth errors |
+| `src/components/shared/auth/auth-client.ts`    | `createAuthClient` + plugins                                                    |
+| `src/routes/api/auth.$.ts`                     | Catch-all Better Auth handler                                                   |
+| `src/routes/api/sign-in.osm.ts`                | OAuth entry with safe `callbackURL`                                             |
+| `src/routes/oAuthError.tsx`                    | User-facing OAuth errors                                                        |
 
 ### Design choices worth copying
 
@@ -154,34 +154,34 @@ Primary doc: [`tilda-geo/docs/TanStack-Start-Auth.md`](../../tilda-geo/docs/TanS
 
 ### Identity & credentials
 
-| Concern | Trassenscout | TILDA |
-|---------|--------------|-------|
-| Primary IdP | Email (unique login) | OSM user id |
-| Password | Required | None |
-| Email source | User registration | Placeholder `@users.openstreetmap.invalid` |
-| Account linking | N/A | `Account` row, provider `osm` |
-| New user notification | Admin + user emails | `sendNewUserRegistration` on first OSM login |
+| Concern               | Trassenscout         | TILDA                                        |
+| --------------------- | -------------------- | -------------------------------------------- |
+| Primary IdP           | Email (unique login) | OSM user id                                  |
+| Password              | Required             | None                                         |
+| Email source          | User registration    | Placeholder `@users.openstreetmap.invalid`   |
+| Account linking       | N/A                  | `Account` row, provider `osm`                |
+| New user notification | Admin + user emails  | `sendNewUserRegistration` on first OSM login |
 
 ### Session & cookies
 
-| Concern | Trassenscout | TILDA |
-|---------|--------------|-------|
-| Storage | Blitz `Session` + hashed token in DB | Better Auth `Session` + cookie cache |
-| Cookie prefix | `rsv-builder` | `tilda` |
-| Client hook | `useSession()` from `@blitzjs/auth` | `authClient.useSession()` |
-| Extra session fields | `memberships[]` | `role` via `customSession` plugin |
-| Logout | Blitz logout mutation | `authClient.signOut()` |
+| Concern              | Trassenscout                         | TILDA                                |
+| -------------------- | ------------------------------------ | ------------------------------------ |
+| Storage              | Blitz `Session` + hashed token in DB | Better Auth `Session` + cookie cache |
+| Cookie prefix        | `rsv-builder`                        | `tilda`                              |
+| Client hook          | `useSession()` from `@blitzjs/auth`  | `authClient.useSession()`            |
+| Extra session fields | `memberships[]`                      | `role` via `customSession` plugin    |
+| Logout               | Blitz logout mutation                | `authClient.signOut()`               |
 
 ### Authorization model
 
-| Concern | Trassenscout | TILDA |
-|---------|--------------|-------|
-| Resource | `Project` by `projectSlug` | `Region` by `regionSlug` |
-| Public access | Must be logged in for app areas | `RegionStatus.PUBLIC` — anonymous OK |
-| Membership | Required for all projects (via RPC) | Required only for `PRIVATE` regions |
-| Roles | `VIEWER`, `EDITOR` | None (member or not) |
-| Admin bypass | Yes | Yes |
-| Client role display | From session memberships | From `useSession` + server checks |
+| Concern             | Trassenscout                        | TILDA                                |
+| ------------------- | ----------------------------------- | ------------------------------------ |
+| Resource            | `Project` by `projectSlug`          | `Region` by `regionSlug`             |
+| Public access       | Must be logged in for app areas     | `RegionStatus.PUBLIC` — anonymous OK |
+| Membership          | Required for all projects (via RPC) | Required only for `PRIVATE` regions  |
+| Roles               | `VIEWER`, `EDITOR`                  | None (member or not)                 |
+| Admin bypass        | Yes                                 | Yes                                  |
+| Client role display | From session memberships            | From `useSession` + server checks    |
 
 ---
 
@@ -224,7 +224,7 @@ Align with TILDA’s structure; **enable email/password** instead of OSM OAuth:
 ```typescript
 // Conceptual — not final implementation
 betterAuth({
-  database: prismaAdapter(db, { provider: 'postgresql' }),
+  database: prismaAdapter(db, { provider: "postgresql" }),
   baseURL: process.env.VITE_APP_ORIGIN,
   secret: process.env.SESSION_SECRET_KEY,
   emailAndPassword: {
@@ -236,18 +236,18 @@ betterAuth({
   ],
   user: {
     additionalFields: {
-      firstName: { type: 'string', input: true },
-      lastName: { type: 'string', input: true },
-      phone: { type: 'string', input: true, required: false },
-      institution: { type: 'string', input: true, required: false },
-      role: { type: 'string', input: false },
+      firstName: { type: "string", input: true },
+      lastName: { type: "string", input: true },
+      phone: { type: "string", input: true, required: false },
+      institution: { type: "string", input: true, required: false },
+      role: { type: "string", input: false },
     },
   },
   session: {
     cookieCache: { enabled: true, maxAge: 60 * 60 * 24 * 7 },
   },
   advanced: {
-    cookiePrefix: 'trassenscout', // or keep rsv-builder during transition
+    cookiePrefix: "trassenscout", // or keep rsv-builder during transition
   },
 })
 ```
@@ -272,14 +272,14 @@ This matches TILDA’s approach (no membership in cookie) and avoids stale role 
 
 ### Route protection mapping
 
-| Trassenscout today | TanStack Start target | TILDA analogue |
-|--------------------|----------------------|----------------|
-| `(loggedInGeneral)/layout` → login redirect | Parent route `beforeLoad` → `requireAuth` via server fn | — |
-| `(loggedInProjects)/layout` → login redirect | `/projects` or `/_authenticated` layout `beforeLoad` | — |
-| `(admin)/admin/layout` → ADMIN | `routes/admin.tsx` `beforeLoad` → `getIsAdminFn()` | `admin.tsx` |
-| Marketing `/` redirect if logged in | `routes/index.tsx` optional redirect | `index.tsx` + redirect cookie |
-| Per-project access (implicit) | `$projectSlug` `beforeLoad` → `checkProjectAuthorization` | `regionen/$regionSlug` |
-| `/auth/login?next=` | `/auth/login?callbackURL=` | `/api/sign-in/osm?callbackURL=` |
+| Trassenscout today                           | TanStack Start target                                     | TILDA analogue                  |
+| -------------------------------------------- | --------------------------------------------------------- | ------------------------------- |
+| `(loggedInGeneral)/layout` → login redirect  | Parent route `beforeLoad` → `requireAuth` via server fn   | —                               |
+| `(loggedInProjects)/layout` → login redirect | `/projects` or `/_authenticated` layout `beforeLoad`      | —                               |
+| `(admin)/admin/layout` → ADMIN               | `routes/admin.tsx` `beforeLoad` → `getIsAdminFn()`        | `admin.tsx`                     |
+| Marketing `/` redirect if logged in          | `routes/index.tsx` optional redirect                      | `index.tsx` + redirect cookie   |
+| Per-project access (implicit)                | `$projectSlug` `beforeLoad` → `checkProjectAuthorization` | `regionen/$regionSlug`          |
+| `/auth/login?next=`                          | `/auth/login?callbackURL=`                                | `/api/sign-in/osm?callbackURL=` |
 
 **Recommended `$projectSlug` beforeLoad behavior** (Trassenscout-specific, inspired by TILDA regions):
 
@@ -290,15 +290,15 @@ This matches TILDA’s approach (no membership in cookie) and avoids stale role 
 
 ### Authorization helpers mapping
 
-| Trassenscout today | Target |
-|--------------------|--------|
+| Trassenscout today                                     | Target                                                                       |
+| ------------------------------------------------------ | ---------------------------------------------------------------------------- |
 | `authorizeProjectMember(getProjectSlug, roles)` in RPC | `authorizeProjectMemberByProjectSlug(session, slug, roles)` in `*.server.ts` |
-| `authorizeAdmin()` | `requireAdmin(headers)` |
-| `checkProjectMemberRole()` | `checkProjectAuthorization(session, slug, roles)` → boolean |
-| `withAuth` | handler: `requireAuth(request.headers)` |
-| `withAdminAuth` | `guardAdmin(headers)` (copy TILDA `authGuards.server.ts`) |
-| `withProjectMembership` | `guardProjectMembership({ headers, projectSlug, roles })` |
-| `withApiKey` | `compareApiKeyTimingSafe` — rename env to documented name, fix timing leak |
+| `authorizeAdmin()`                                     | `requireAdmin(headers)`                                                      |
+| `checkProjectMemberRole()`                             | `checkProjectAuthorization(session, slug, roles)` → boolean                  |
+| `withAuth`                                             | handler: `requireAuth(request.headers)`                                      |
+| `withAdminAuth`                                        | `guardAdmin(headers)` (copy TILDA `authGuards.server.ts`)                    |
+| `withProjectMembership`                                | `guardProjectMembership({ headers, projectSlug, roles })`                    |
+| `withApiKey`                                           | `compareApiKeyTimingSafe` — rename env to documented name, fix timing leak   |
 
 ### Server fn pattern (replace Blitz RPC auth)
 
@@ -308,7 +308,9 @@ This matches TILDA’s approach (no membership in cookie) and avoids stale role 
 export default resolver.pipe(
   resolver.zod(Schema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
-  async (input, ctx) => { /* uses ctx.session.userId */ }
+  async (input, ctx) => {
+    /* uses ctx.session.userId */
+  },
 )
 ```
 
@@ -323,7 +325,7 @@ export async function updateSubsection(headers: Headers, input: UpdateSubsection
 }
 
 // subsections.functions.ts
-export const updateSubsectionFn = createServerFn({ method: 'POST' })
+export const updateSubsectionFn = createServerFn({ method: "POST" })
   .inputValidator(UpdateSubsectionSchema)
   .handler(async ({ data }) => {
     return updateSubsection(getRequestHeaders(), data)
@@ -340,12 +342,12 @@ See [`db-migration.md`](./db-migration.md) § Auth tables. Summary:
 
 ### Tables
 
-| Blitz / Trassenscout | Better Auth target |
-|----------------------|-------------------|
+| Blitz / Trassenscout              | Better Auth target                                                                                                |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
 | `User` (Int id, `hashedPassword`) | `User` (String id, no `hashedPassword` on User — password on `Account` or built-in field per Better Auth version) |
-| `Session` (Blitz columns) | Better Auth `Session` |
-| `Token` (RESET_PASSWORD) | `Verification` |
-| — | `Account` (provider `credential` for email/password) |
+| `Session` (Blitz columns)         | Better Auth `Session`                                                                                             |
+| `Token` (RESET_PASSWORD)          | `Verification`                                                                                                    |
+| —                                 | `Account` (provider `credential` for email/password)                                                              |
 
 ### User ID migration
 
@@ -362,10 +364,10 @@ Blitz `SecurePassword` (bcrypt) is not stored in Better Auth’s native format. 
 
 #### Cohorts
 
-| Cohort | Rule | At cutover | On first login after cutover |
-|--------|------|------------|------------------------------|
-| **Active** | Any Blitz `Session` with `updatedAt` (or `createdAt` if no `updatedAt` activity) **≥ cutover − 5 months** | Copy Blitz hash into credential `Account`; set `passwordHashMigratedAt = null` | Custom verify (Blitz `SecurePassword`) → on success **rehash** to Better Auth format, update `Account.password`, set `passwordHashMigratedAt = now()` |
-| **Inactive** | No qualifying session in the last **5 months** | Set `User.passwordResetRequired = true`; **do not** copy hash (or store hash but mark unusable) | Sign-in **rejected** with a clear message → redirect to `/auth/forgot-password`. **No proactive email** — user self-serves reset when they return |
+| Cohort       | Rule                                                                                                      | At cutover                                                                                      | On first login after cutover                                                                                                                          |
+| ------------ | --------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Active**   | Any Blitz `Session` with `updatedAt` (or `createdAt` if no `updatedAt` activity) **≥ cutover − 5 months** | Copy Blitz hash into credential `Account`; set `passwordHashMigratedAt = null`                  | Custom verify (Blitz `SecurePassword`) → on success **rehash** to Better Auth format, update `Account.password`, set `passwordHashMigratedAt = now()` |
+| **Inactive** | No qualifying session in the last **5 months**                                                            | Set `User.passwordResetRequired = true`; **do not** copy hash (or store hash but mark unusable) | Sign-in **rejected** with a clear message → redirect to `/auth/forgot-password`. **No proactive email** — user self-serves reset when they return     |
 
 **Activity query (run once at cutover):**
 
@@ -466,24 +468,24 @@ Replace Blitz logout page/mutation with `authClient.signOut()` + redirect (TILDA
 
 ## Environment variables
 
-| Trassenscout today | Target | TILDA reference |
-|------------------|--------|-----------------|
-| `SESSION_SECRET_KEY` (Blitz) | `SESSION_SECRET_KEY` | Same |
-| `NEXT_PUBLIC_APP_ORIGIN` | `VITE_APP_ORIGIN` | Same |
-| `TS_API_KEY` | `TS_API_KEY` (document + timing-safe) | `ATLAS_API_KEY` pattern |
-| — | — | `OSM_CLIENT_ID/SECRET` — **not needed** unless OSM added later |
+| Trassenscout today           | Target                                | TILDA reference                                                |
+| ---------------------------- | ------------------------------------- | -------------------------------------------------------------- |
+| `SESSION_SECRET_KEY` (Blitz) | `SESSION_SECRET_KEY`                  | Same                                                           |
+| `NEXT_PUBLIC_APP_ORIGIN`     | `VITE_APP_ORIGIN`                     | Same                                                           |
+| `TS_API_KEY`                 | `TS_API_KEY` (document + timing-safe) | `ATLAS_API_KEY` pattern                                        |
+| —                            | —                                     | `OSM_CLIENT_ID/SECRET` — **not needed** unless OSM added later |
 
 ---
 
 ## Testing strategy
 
-| Layer | Trassenscout today | Target (align with TILDA) |
-|-------|-------------------|---------------------------|
-| Unit | `signup.test.ts`, `forgotPassword.test.ts`, `resetPassword.test.ts` | Rewrite against Better Auth test utils / mocked `auth` |
-| E2E | Limited auth coverage | Port TILDA patterns from `app/tests/` |
-| Real login E2E | N/A | Seed user + `TEST_USER_EMAIL/PASSWORD` in `.env.test` |
-| Stubbed E2E | N/A | Adapt `tests/fixtures/auth.ts` — stub Better Auth cookies without real email send |
-| Admin E2E | N/A | `createStubbedAdminSession` equivalent for String user ids |
+| Layer          | Trassenscout today                                                  | Target (align with TILDA)                                                         |
+| -------------- | ------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Unit           | `signup.test.ts`, `forgotPassword.test.ts`, `resetPassword.test.ts` | Rewrite against Better Auth test utils / mocked `auth`                            |
+| E2E            | Limited auth coverage                                               | Port TILDA patterns from `app/tests/`                                             |
+| Real login E2E | N/A                                                                 | Seed user + `TEST_USER_EMAIL/PASSWORD` in `.env.test`                             |
+| Stubbed E2E    | N/A                                                                 | Adapt `tests/fixtures/auth.ts` — stub Better Auth cookies without real email send |
+| Admin E2E      | N/A                                                                 | `createStubbedAdminSession` equivalent for String user ids                        |
 
 TILDA docs: [`app/tests/README.md`](../../tilda-geo/app/tests/README.md)
 
@@ -636,16 +638,16 @@ src/authorization/types.ts
 
 ## Quick reference links
 
-| Resource | Path |
-|----------|------|
-| TILDA auth doc | [`tilda-geo/docs/TanStack-Start-Auth.md`](../../tilda-geo/docs/TanStack-Start-Auth.md) |
-| TILDA server boundaries | [`tilda-geo/docs/TanStack-Start-Client-Server-Boundaries.md`](../../tilda-geo/docs/TanStack-Start-Client-Server-Boundaries.md) |
-| TILDA auth server | [`tilda-geo/app/src/server/auth/auth.server.ts`](../../tilda-geo/app/src/server/auth/auth.server.ts) |
-| TILDA session helpers | [`tilda-geo/app/src/server/auth/session.server.ts`](../../tilda-geo/app/src/server/auth/session.server.ts) |
-| Trassenscout login | [`src/server/auth/mutations/login.ts`](../src/server/auth/mutations/login.ts) |
-| Trassenscout project auth | [`src/authorization/authorizeProjectMember.ts`](../src/authorization/authorizeProjectMember.ts) |
-| DB auth migration | [`_migration/db-migration.md`](./db-migration.md) |
+| Resource                  | Path                                                                                                                           |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| TILDA auth doc            | [`tilda-geo/docs/TanStack-Start-Auth.md`](../../tilda-geo/docs/TanStack-Start-Auth.md)                                         |
+| TILDA server boundaries   | [`tilda-geo/docs/TanStack-Start-Client-Server-Boundaries.md`](../../tilda-geo/docs/TanStack-Start-Client-Server-Boundaries.md) |
+| TILDA auth server         | [`tilda-geo/app/src/server/auth/auth.server.ts`](../../tilda-geo/app/src/server/auth/auth.server.ts)                           |
+| TILDA session helpers     | [`tilda-geo/app/src/server/auth/session.server.ts`](../../tilda-geo/app/src/server/auth/session.server.ts)                     |
+| Trassenscout login        | [`src/server/auth/mutations/login.ts`](../src/server/auth/mutations/login.ts)                                                  |
+| Trassenscout project auth | [`src/authorization/authorizeProjectMember.ts`](../src/authorization/authorizeProjectMember.ts)                                |
+| DB auth migration         | [`_migration/db-migration.md`](./db-migration.md)                                                                              |
 
 ---
 
-*Generated from code and docs in Trassenscout and `tilda-geo/app`, 2026-06-04.*
+_Generated from code and docs in Trassenscout and `tilda-geo/app`, 2026-06-04._

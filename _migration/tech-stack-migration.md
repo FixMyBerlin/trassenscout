@@ -11,11 +11,11 @@ This document compares **Trassenscout** (Blitz/Next 14, npm) with **TILDA Geo** 
 
 Trassenscout is a large **Blitz 2** app on **Next.js 14** with **Blitz Auth**, **Blitz RPC**, **Prisma 5**, and **npm**. The target stack follows **TILDA Geo** for app framework, runtime, and **lint/format** (**TanStack Start**, **better-auth**, **Prisma 7**, **Bun**, **oxfmt**, **oxlint**).
 
-| Concern | Trassenscout target | TILDA Geo (`tilda-geo/app`) |
-|---------|---------------------|-----------------------------|
-| **Format** | **oxfmt** (`oxfmt.config.ts`) | oxfmt |
-| **Lint** | **oxlint** (`oxlint.config.mjs`) | oxlint |
-| **ESLint CLI** | **none** | **none** (React Compiler via oxlint `jsPlugins` only) |
+| Concern        | Trassenscout target              | TILDA Geo (`tilda-geo/app`)                           |
+| -------------- | -------------------------------- | ----------------------------------------------------- |
+| **Format**     | **oxfmt** (`oxfmt.config.ts`)    | oxfmt                                                 |
+| **Lint**       | **oxlint** (`oxlint.config.mjs`) | oxlint                                                |
+| **ESLint CLI** | **none**                         | **none** (React Compiler via oxlint `jsPlugins` only) |
 
 The migration is not a dependency swap only—it implies rewrites of routing, data fetching, auth, build/deploy, and most `src/server/**` boundaries.
 
@@ -23,42 +23,42 @@ The migration is not a dependency swap only—it implies rewrites of routing, da
 
 ## Platform & tooling migrations
 
-| From (Trassenscout) | To (TILDA pattern) | Notes |
-|---------------------|-------------------|--------|
-| **Blitz 2** (`blitz`, `@blitzjs/*`) | **TanStack Start** (`@tanstack/react-start`, Vite, Nitro) | Blitz codegen, RPC, and auth conventions go away. |
-| **Next.js 14** App Router | **TanStack Router** + Start file routes | ~200+ RPC call sites; App Router layouts → route tree. |
-| **Webpack** (Next/Blitz) | **Vite** (`vite`, `@vitejs/plugin-react`) | Drop `next.config.js` pdfjs `devtool` hacks; re-validate `react-pdf` under Vite. |
-| **npm** + `package-lock.json` | **Bun** + `bun.lock` | Scripts already use `bun` for some DB/ALKIS tasks; align all scripts and CI/Docker. |
-| **ESLint 8** + `eslint-config-next` + `eslint-config-prettier` | **oxlint** (`oxlint`, `oxlint-tsgolint`, `oxlint.config.mjs`) | No `eslint` package / no `eslint.config.ts`. React Compiler: **`eslint-plugin-react-compiler`** loaded as oxlint **`jsPlugins`** on `**/*.tsx` (see TILDA). Build-time: **`babel-plugin-react-compiler`** in Vite. |
-| **Prettier** + plugins (`organize-imports`, `prisma`, `tailwindcss`) | **oxfmt** (`oxfmt`, `oxfmt.config.ts`) | Formatting only; import sort / Tailwind class sort via oxfmt options (mirror TILDA’s `oxfmt.config.ts` patterns). |
-| **Husky** (repo root) | **Husky** (`prepare`: `cd .. && husky app/.husky`) | Same idea; hook paths may move with monorepo layout. |
-| **`npx taze`** (`updatePackages:*`) | **`bun scripts/updatePackages`** | TILDA has a dedicated update script. |
-| **`npx knip`** | **`knip`** (devDependency, `cleanup-knip`) | Add as devDep; stop ad-hoc `npx`. |
-| **`blitz codegen`** | **TanStack Router plugin** (`@tanstack/router-plugin`, generated `routeTree`) | Route types come from router codegen, not Blitz. |
-| **`@next/env`** in Vitest | **Vite `loadEnv`** | See `tilda-geo/app/vitest.config.ts`. |
-| **`@next/bundle-analyzer`** | Vite / Rolldown analysis (as needed) | No direct Next analyzer. |
-| **Node Docker build** (`npx blitz build`) | **Bun + Vite build** → Nitro `.output` | TILDA `preview` runs Nitro server from `.output`. |
-| **Prisma 5** (`prisma-client-js`, `db/schema.prisma`) | **Prisma 7** (`prisma-client`, `prisma.config.ts`, `prisma/schema.prisma`, `@prisma/adapter-pg`, `pg`) | Multi-schema, ESM client output, Bun runtime—major migration. |
-| **React 18** | **React 19** | Align with TILDA; enable React Compiler via Babel plugin. |
-| **TypeScript 5.9** | **TypeScript 6.x** | TILDA uses `6.0.3`; plan strictness (`strict: false` in TILDA today). |
-| **Zod 3** | **Zod 4** | Breaking changes across server + forms. |
-| **Blitz Auth** + `secure-password` | **better-auth** | Different session model; password/OAuth flows need redesign. |
-| **Blitz RPC** (`useMutation` / `useQuery` from `@blitzjs/rpc`) | **TanStack Query** + **`createServerFn`** (`.functions.ts`) | TILDA: `src/server/**/*.functions.ts`. |
-| **react-hook-form** + `@hookform/*` | **@tanstack/react-form** | TS already depends on `@tanstack/react-form`; forms layer is mostly RHF today. |
-| **Next API routes** / `pages/api/rpc` | Start **server routes** + server functions | Public/export APIs may stay as HTTP routes. |
-| **`next-router-mock`** | TanStack Router test utilities / integration tests | Remove once routing tests are rewritten. |
-| **`react-remark`** | **react-markdown** + **remark-gfm** / **remark-breaks** | TILDA markdown stack. |
-| **`csv-writer`** | **`@json2csv/plainjs`** | TILDA CSV export pattern. |
-| **PostCSS + `autoprefixer`** (dep only) | **PostCSS** with `@tailwindcss/postcss` only | TS lists `autoprefixer` but `postcss.config.js` does not use it—safe to drop. |
-| **Tailwind via Next** | **Tailwind 4** + **`@tailwindcss/vite`** | TILDA wires Tailwind in `vite.config.ts`. |
-| **`imap-listener`** (nested npm + `tsc` + Node) | **Bun** subpackage (or merge into main repo scripts) | Align runtime with monorepo. |
+| From (Trassenscout)                                                  | To (TILDA pattern)                                                                                     | Notes                                                                                                                                                                                                              |
+| -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Blitz 2** (`blitz`, `@blitzjs/*`)                                  | **TanStack Start** (`@tanstack/react-start`, Vite, Nitro)                                              | Blitz codegen, RPC, and auth conventions go away.                                                                                                                                                                  |
+| **Next.js 14** App Router                                            | **TanStack Router** + Start file routes                                                                | ~200+ RPC call sites; App Router layouts → route tree.                                                                                                                                                             |
+| **Webpack** (Next/Blitz)                                             | **Vite** (`vite`, `@vitejs/plugin-react`)                                                              | Drop `next.config.js` pdfjs `devtool` hacks; re-validate `react-pdf` under Vite.                                                                                                                                   |
+| **npm** + `package-lock.json`                                        | **Bun** + `bun.lock`                                                                                   | Scripts already use `bun` for some DB/ALKIS tasks; align all scripts and CI/Docker.                                                                                                                                |
+| **ESLint 8** + `eslint-config-next` + `eslint-config-prettier`       | **oxlint** (`oxlint`, `oxlint-tsgolint`, `oxlint.config.mjs`)                                          | No `eslint` package / no `eslint.config.ts`. React Compiler: **`eslint-plugin-react-compiler`** loaded as oxlint **`jsPlugins`** on `**/*.tsx` (see TILDA). Build-time: **`babel-plugin-react-compiler`** in Vite. |
+| **Prettier** + plugins (`organize-imports`, `prisma`, `tailwindcss`) | **oxfmt** (`oxfmt`, `oxfmt.config.ts`)                                                                 | Formatting only; import sort / Tailwind class sort via oxfmt options (mirror TILDA’s `oxfmt.config.ts` patterns).                                                                                                  |
+| **Husky** (repo root)                                                | **Husky** (`prepare`: `cd .. && husky app/.husky`)                                                     | Same idea; hook paths may move with monorepo layout.                                                                                                                                                               |
+| **`npx taze`** (`updatePackages:*`)                                  | **`bun scripts/updatePackages`**                                                                       | TILDA has a dedicated update script.                                                                                                                                                                               |
+| **`npx knip`**                                                       | **`knip`** (devDependency, `cleanup-knip`)                                                             | Add as devDep; stop ad-hoc `npx`.                                                                                                                                                                                  |
+| **`blitz codegen`**                                                  | **TanStack Router plugin** (`@tanstack/router-plugin`, generated `routeTree`)                          | Route types come from router codegen, not Blitz.                                                                                                                                                                   |
+| **`@next/env`** in Vitest                                            | **Vite `loadEnv`**                                                                                     | See `tilda-geo/app/vitest.config.ts`.                                                                                                                                                                              |
+| **`@next/bundle-analyzer`**                                          | Vite / Rolldown analysis (as needed)                                                                   | No direct Next analyzer.                                                                                                                                                                                           |
+| **Node Docker build** (`npx blitz build`)                            | **Bun + Vite build** → Nitro `.output`                                                                 | TILDA `preview` runs Nitro server from `.output`.                                                                                                                                                                  |
+| **Prisma 5** (`prisma-client-js`, `db/schema.prisma`)                | **Prisma 7** (`prisma-client`, `prisma.config.ts`, `prisma/schema.prisma`, `@prisma/adapter-pg`, `pg`) | Multi-schema, ESM client output, Bun runtime—major migration.                                                                                                                                                      |
+| **React 18**                                                         | **React 19**                                                                                           | Align with TILDA; enable React Compiler via Babel plugin.                                                                                                                                                          |
+| **TypeScript 5.9**                                                   | **TypeScript 6.x**                                                                                     | TILDA uses `6.0.3`; plan strictness (`strict: false` in TILDA today).                                                                                                                                              |
+| **Zod 3**                                                            | **Zod 4**                                                                                              | Breaking changes across server + forms.                                                                                                                                                                            |
+| **Blitz Auth** + `secure-password`                                   | **better-auth**                                                                                        | Different session model; password/OAuth flows need redesign.                                                                                                                                                       |
+| **Blitz RPC** (`useMutation` / `useQuery` from `@blitzjs/rpc`)       | **TanStack Query** + **`createServerFn`** (`.functions.ts`)                                            | TILDA: `src/server/**/*.functions.ts`.                                                                                                                                                                             |
+| **react-hook-form** + `@hookform/*`                                  | **@tanstack/react-form**                                                                               | TS already depends on `@tanstack/react-form`; forms layer is mostly RHF today.                                                                                                                                     |
+| **Next API routes** / `pages/api/rpc`                                | Start **server routes** + server functions                                                             | Public/export APIs may stay as HTTP routes.                                                                                                                                                                        |
+| **`next-router-mock`**                                               | TanStack Router test utilities / integration tests                                                     | Remove once routing tests are rewritten.                                                                                                                                                                           |
+| **`react-remark`**                                                   | **react-markdown** + **remark-gfm** / **remark-breaks**                                                | TILDA markdown stack.                                                                                                                                                                                              |
+| **`csv-writer`**                                                     | **`@json2csv/plainjs`**                                                                                | TILDA CSV export pattern.                                                                                                                                                                                          |
+| **PostCSS + `autoprefixer`** (dep only)                              | **PostCSS** with `@tailwindcss/postcss` only                                                           | TS lists `autoprefixer` but `postcss.config.js` does not use it—safe to drop.                                                                                                                                      |
+| **Tailwind via Next**                                                | **Tailwind 4** + **`@tailwindcss/vite`**                                                               | TILDA wires Tailwind in `vite.config.ts`.                                                                                                                                                                          |
+| **`imap-listener`** (nested npm + `tsc` + Node)                      | **Bun** subpackage (or merge into main repo scripts)                                                   | Align runtime with monorepo.                                                                                                                                                                                       |
 
 ### Lint & format (align with TILDA)
 
-| Tool | Config | Notes |
-|------|--------|--------|
-| **oxfmt** | `oxfmt.config.ts` | Copy style from TILDA; TS-specific `ignorePatterns` / Tailwind stylesheet path |
-| **oxlint** | **`oxlint.config.mjs`** | ESM config via `defineConfig` from `oxlint` |
+| Tool       | Config                  | Notes                                                                          |
+| ---------- | ----------------------- | ------------------------------------------------------------------------------ |
+| **oxfmt**  | `oxfmt.config.ts`       | Copy style from TILDA; TS-specific `ignorePatterns` / Tailwind stylesheet path |
+| **oxlint** | **`oxlint.config.mjs`** | ESM config via `defineConfig` from `oxlint`                                    |
 
 **Required rule (both repos):**
 
@@ -83,18 +83,18 @@ The migration is not a dependency swap only—it implies rewrites of routing, da
 
 ## Application architecture migrations
 
-| Area | Trassenscout | Target (TILDA) |
-|------|--------------|----------------|
-| Entry / dev server | `blitz dev` (port 6173) | `bun run dev` → Vite (5173) + parallel watchers |
-| Server boundary | `src/server/**/mutations`, `queries` + Blitz resolver | `src/server/**/*.functions.ts` with `createServerFn` |
-| Client data | `useMutation`, `useQuery` (Blitz RPC) | `useQuery` / `useMutation` (TanStack Query) |
-| Auth config | `blitz-auth-config.ts`, `blitz-server.ts`, `blitz-client.ts` | `better-auth` server + client plugins |
-| DB path | `db/schema.prisma`, `db/migrations` | `prisma/schema.prisma`, `prisma/migrations` |
-| Path alias | `@/*` → repo root | `@/*` → `./src/*` (and `@/scripts/*` if needed) |
-| Env prefix | `NEXT_PUBLIC_*` | `VITE_*` (and shared root `.env` in TILDA) |
-| Email preview | `NEXT_PUBLIC_APP_ORIGIN` + `email dev` | `VITE_APP_ORIGIN` + `email dev --dir src/emails` |
-| PDF worker | `copyPdfWorker` → `public/` | Revisit under Vite static assets / `public/` |
-| Instrumentation | Next `instrumentation.ts` + `@vercel/otel` | Re-map to Nitro/OTel pattern (TILDA-specific choice) |
+| Area               | Trassenscout                                                 | Target (TILDA)                                       |
+| ------------------ | ------------------------------------------------------------ | ---------------------------------------------------- |
+| Entry / dev server | `blitz dev` (port 6173)                                      | `bun run dev` → Vite (5173) + parallel watchers      |
+| Server boundary    | `src/server/**/mutations`, `queries` + Blitz resolver        | `src/server/**/*.functions.ts` with `createServerFn` |
+| Client data        | `useMutation`, `useQuery` (Blitz RPC)                        | `useQuery` / `useMutation` (TanStack Query)          |
+| Auth config        | `blitz-auth-config.ts`, `blitz-server.ts`, `blitz-client.ts` | `better-auth` server + client plugins                |
+| DB path            | `db/schema.prisma`, `db/migrations`                          | `prisma/schema.prisma`, `prisma/migrations`          |
+| Path alias         | `@/*` → repo root                                            | `@/*` → `./src/*` (and `@/scripts/*` if needed)      |
+| Env prefix         | `NEXT_PUBLIC_*`                                              | `VITE_*` (and shared root `.env` in TILDA)           |
+| Email preview      | `NEXT_PUBLIC_APP_ORIGIN` + `email dev`                       | `VITE_APP_ORIGIN` + `email dev --dir src/emails`     |
+| PDF worker         | `copyPdfWorker` → `public/`                                  | Revisit under Vite static assets / `public/`         |
+| Instrumentation    | Next `instrumentation.ts` + `@vercel/otel`                   | Re-map to Nitro/OTel pattern (TILDA-specific choice) |
 
 ---
 
@@ -215,29 +215,29 @@ These stay through the migration (versions will bump to match TILDA where noted)
 
 No direct TILDA equivalent; do **not** remove just because TILDA lacks them.
 
-| Package | Role |
-|---------|------|
-| `@ai-sdk/openai`, `ai` | AI summaries / extraction |
-| `langfuse`, `langfuse-vercel` | LLM tracing |
-| `@vercel/otel`, OpenTelemetry packages | Observability |
-| `react-pdf`, `pdfjs-dist` (worker copy script) | PDF viewing |
-| `recharts` | Survey/analysis charts |
-| `react-datasheet-grid` | Spreadsheet-style grids |
+| Package                                          | Role                                                          |
+| ------------------------------------------------ | ------------------------------------------------------------- |
+| `@ai-sdk/openai`, `ai`                           | AI summaries / extraction                                     |
+| `langfuse`, `langfuse-vercel`                    | LLM tracing                                                   |
+| `@vercel/otel`, OpenTelemetry packages           | Observability                                                 |
+| `react-pdf`, `pdfjs-dist` (worker copy script)   | PDF viewing                                                   |
+| `recharts`                                       | Survey/analysis charts                                        |
+| `react-datasheet-grid`                           | Spreadsheet-style grids                                       |
 | `@better-upload/client`, `@better-upload/server` | S3 presigned uploads (TILDA uses different upload server fns) |
-| `react-dropzone` | File drop UX |
-| `@iframe-resizer/react` | Embedded iframes |
-| `@socialgouv/matomo-next` | Analytics |
-| `react-number-format` | Formatted numeric inputs |
-| `@radix-ui/react-progress` | Progress UI |
-| `exifr` | Image EXIF |
-| `datum-diff` | Coordinate/datum helpers |
-| `ua-parser-js` | User-agent parsing |
-| `uuid` | IDs (may converge with `cuid` from better-auth over time) |
-| `@mapgrab/map-interface`, `@mapgrab/playwright` | Map E2E helpers |
-| `@fontsource/red-hat-text` | Brand typography |
-| `@iframe-resizer/react` | Embed resizing |
-| `react-intl` messages / catalog | Product copy |
-| `imapflow` (in `imap-listener/`) | Email ingestion service |
+| `react-dropzone`                                 | File drop UX                                                  |
+| `@iframe-resizer/react`                          | Embedded iframes                                              |
+| `@socialgouv/matomo-next`                        | Analytics                                                     |
+| `react-number-format`                            | Formatted numeric inputs                                      |
+| `@radix-ui/react-progress`                       | Progress UI                                                   |
+| `exifr`                                          | Image EXIF                                                    |
+| `datum-diff`                                     | Coordinate/datum helpers                                      |
+| `ua-parser-js`                                   | User-agent parsing                                            |
+| `uuid`                                           | IDs (may converge with `cuid` from better-auth over time)     |
+| `@mapgrab/map-interface`, `@mapgrab/playwright`  | Map E2E helpers                                               |
+| `@fontsource/red-hat-text`                       | Brand typography                                              |
+| `@iframe-resizer/react`                          | Embed resizing                                                |
+| `react-intl` messages / catalog                  | Product copy                                                  |
+| `imapflow` (in `imap-listener/`)                 | Email ingestion service                                       |
 
 Optional convergence later (not required for platform migration):
 
@@ -248,21 +248,21 @@ Optional convergence later (not required for platform migration):
 
 ## DevDependencies to add
 
-| Package | Purpose |
-|---------|---------|
-| **`oxfmt`** | Formatting (import sort, Tailwind sort, `sortPackageJson`, etc.) |
-| **`oxlint`**, **`oxlint-tsgolint`** | Linting (`typeAware: true`); config **`oxlint.config.mjs`** |
-| **`eslint-plugin-react-compiler`** | React Compiler rule via oxlint `jsPlugins` on `**/*.tsx` only (not a separate ESLint run) |
-| `@tanstack/react-start`, `@tanstack/react-router`, `@tanstack/react-query`, plugins | App framework (from TILDA) |
-| `@tanstack/router-plugin`, `@tanstack/devtools-vite` | Router codegen & DX |
-| `vite`, `nitro` | Build & SSR output |
-| `@tailwindcss/vite` | Tailwind in Vite |
-| `better-auth` | Authentication |
-| `@prisma/adapter-pg`, `pg` | Prisma 7 + Postgres |
-| `babel-plugin-react-compiler` | React Compiler at build time (Vite) |
-| `knip` | Dead code |
-| `dotenv` | Script env loading |
-| `bun-types` | Bun typings in app |
+| Package                                                                             | Purpose                                                                                   |
+| ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| **`oxfmt`**                                                                         | Formatting (import sort, Tailwind sort, `sortPackageJson`, etc.)                          |
+| **`oxlint`**, **`oxlint-tsgolint`**                                                 | Linting (`typeAware: true`); config **`oxlint.config.mjs`**                               |
+| **`eslint-plugin-react-compiler`**                                                  | React Compiler rule via oxlint `jsPlugins` on `**/*.tsx` only (not a separate ESLint run) |
+| `@tanstack/react-start`, `@tanstack/react-router`, `@tanstack/react-query`, plugins | App framework (from TILDA)                                                                |
+| `@tanstack/router-plugin`, `@tanstack/devtools-vite`                                | Router codegen & DX                                                                       |
+| `vite`, `nitro`                                                                     | Build & SSR output                                                                        |
+| `@tailwindcss/vite`                                                                 | Tailwind in Vite                                                                          |
+| `better-auth`                                                                       | Authentication                                                                            |
+| `@prisma/adapter-pg`, `pg`                                                          | Prisma 7 + Postgres                                                                       |
+| `babel-plugin-react-compiler`                                                       | React Compiler at build time (Vite)                                                       |
+| `knip`                                                                              | Dead code                                                                                 |
+| `dotenv`                                                                            | Script env loading                                                                        |
+| `bun-types`                                                                         | Bun typings in app                                                                        |
 
 **Explicitly not adding:** `eslint`, `@biomejs/biome`, `@typescript-eslint/*`, `eslint-config-*`.
 
@@ -285,15 +285,15 @@ Optional convergence later (not required for platform migration):
 
 ## Quick reference: script mapping
 
-| Trassenscout | TILDA (target) |
-|--------------|----------------|
-| `npm run dev` | `bun run dev` |
-| `npm run build` | `bun run build` |
-| `npm run check` | `bun run check` (parallel type-check, lint, format, test-run) |
-| `npm run lint` / `format` | `oxlint --fix -c oxlint.config.mjs` / `oxfmt --write` |
-| `npm run migrate` | `bun run migrate` |
-| `blitz prisma studio` | `bun run studio` |
-| `npm run bleach` | `bun run bleach` |
+| Trassenscout              | TILDA (target)                                                |
+| ------------------------- | ------------------------------------------------------------- |
+| `npm run dev`             | `bun run dev`                                                 |
+| `npm run build`           | `bun run build`                                               |
+| `npm run check`           | `bun run check` (parallel type-check, lint, format, test-run) |
+| `npm run lint` / `format` | `oxlint --fix -c oxlint.config.mjs` / `oxfmt --write`         |
+| `npm run migrate`         | `bun run migrate`                                             |
+| `blitz prisma studio`     | `bun run studio`                                              |
+| `npm run bleach`          | `bun run bleach`                                              |
 
 ---
 
@@ -323,4 +323,4 @@ trassenscout/
 
 ---
 
-*Generated from `package.json`, configs, and usage scans in Trassenscout and `tilda-geo/app`.*
+_Generated from `package.json`, configs, and usage scans in Trassenscout and `tilda-geo/app`._
