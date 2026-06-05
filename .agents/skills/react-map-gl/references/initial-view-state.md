@@ -21,7 +21,7 @@ if (!mapParam) return null
 
 const writeMapParam = (event: ViewStateChangeEvent) => {
   const { latitude, longitude, zoom } = event.viewState
-  void setMapParam({ zoom, lat: latitude, lng: longitude }, { history: 'replace' })
+  void setMapParam({ zoom, lat: latitude, lng: longitude }, { history: "replace" })
 }
 
 ;<MapGl
@@ -45,7 +45,7 @@ const writeMapParam = (event: ViewStateChangeEvent) => {
 When geometry exists, fit bounds once at mount:
 
 ```tsx
-let initialViewState: MapProps['initialViewState'] = {
+let initialViewState: MapProps["initialViewState"] = {
   longitude: newNoteMapParam.lng,
   latitude: newNoteMapParam.lat,
   zoom: newNoteMapParam.zoom,

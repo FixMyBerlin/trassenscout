@@ -58,7 +58,7 @@ export const osmNotesLayerId = 'osm-notes-layer'
 
 ```tsx
 // tilda-geo: useInteractiveLayers.ts
-import { osmNotesLayerId } from '../SourcesAndLayers/SourcesLayersOsmNotes'
+import { osmNotesLayerId } from "../SourcesAndLayers/SourcesLayersOsmNotes"
 
 if (showOsmNotesParam) {
   activeCategoryLayerIds.push(osmNotesLayerId)

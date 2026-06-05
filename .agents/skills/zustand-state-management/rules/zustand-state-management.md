@@ -59,15 +59,15 @@ const a = useA()
 const b = useB()
 
 /* ✅ — rare multi-field need */
-import { useShallow } from 'zustand/shallow'
+import { useShallow } from "zustand/shallow"
 const { a, b } = useStore(useShallow((s) => ({ a: s.a, b: s.b })))
 ```
 
 ## Persist
 
 ```typescript
-import { create } from 'zustand'
-import { persist, createJSONStorage } from 'zustand/middleware'
+import { create } from "zustand"
+import { persist, createJSONStorage } from "zustand/middleware"
 ```
 
 SSR/hydration: see official **Setup with Next.js** / **SSR and Hydration** in llms.txt — do not invent one-off patterns.

@@ -52,14 +52,14 @@ Reference implementation: **tilda-geo** `app/playwright.config.ts`.
 Load env **before** `defineConfig` so `webServer` gets `DATABASE_*` etc.:
 
 ```typescript
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
-import dotenv from 'dotenv'
+import path from "node:path"
+import { fileURLToPath } from "node:url"
+import dotenv from "dotenv"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-dotenv.config({ path: path.resolve(__dirname, '../.env') }) // repo
-dotenv.config({ path: path.resolve(__dirname, '.env') }) // app (optional)
-dotenv.config({ path: path.resolve(__dirname, '.env.test') }) // test-only
+dotenv.config({ path: path.resolve(__dirname, "../.env") }) // repo
+dotenv.config({ path: path.resolve(__dirname, ".env") }) // app (optional)
+dotenv.config({ path: path.resolve(__dirname, ".env.test") }) // test-only
 ```
 
 ### Server tiers
@@ -77,28 +77,28 @@ dotenv.config({ path: path.resolve(__dirname, '.env.test') }) // test-only
 ### Minimal config (TILDA-style smoke)
 
 ```typescript
-import { defineConfig, devices } from '@playwright/test'
+import { defineConfig, devices } from "@playwright/test"
 
-const baseURL = 'http://127.0.0.1:5173'
+const baseURL = "http://127.0.0.1:5173"
 
 export default defineConfig({
-  testDir: './tests',
+  testDir: "./tests",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
+  reporter: "html",
   use: {
     baseURL,
-    trace: 'on-first-retry',
+    trace: "on-first-retry",
   },
   webServer: {
-    command: 'bun run dev',
+    command: "bun run dev",
     url: baseURL,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
 })
 ```
 
@@ -134,17 +134,17 @@ Enables test IDs and map signals **only** in E2E — not in production HTML.
 ### App hooks (`playwright.ts`)
 
 ```typescript
-import { createIsomorphicFn } from '@tanstack/react-start'
+import { createIsomorphicFn } from "@tanstack/react-start"
 
 export function playwrightTestId(testId: string) {
-  return import.meta.env.VITE_PLAYWRIGHT_ENABLED === 'true' ? testId : undefined
+  return import.meta.env.VITE_PLAYWRIGHT_ENABLED === "true" ? testId : undefined
 }
 
 export const firePlaywrightMapLoadedEvent = createIsomorphicFn()
   .server(() => {})
   .client(() => {
-    if (import.meta.env.VITE_PLAYWRIGHT_ENABLED !== 'true') return
-    window.dispatchEvent(new CustomEvent('mapLoaded'))
+    if (import.meta.env.VITE_PLAYWRIGHT_ENABLED !== "true") return
+    window.dispatchEvent(new CustomEvent("mapLoaded"))
     window.__mapLoaded = true
   })
 ```

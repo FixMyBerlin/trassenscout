@@ -85,11 +85,11 @@ bun add -d @tailwindcss/vite tailwindcss   # if using Tailwind v4 + Vite
 **`vite.config.ts`** (minimal):
 
 ```ts
-import { defineConfig } from 'vite'
-import { tanstackStart } from '@tanstack/react-start/plugin/vite'
-import viteReact from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
-import { nitro } from 'nitro/vite'
+import { defineConfig } from "vite"
+import { tanstackStart } from "@tanstack/react-start/plugin/vite"
+import viteReact from "@vitejs/plugin-react"
+import tailwindcss from "@tailwindcss/vite"
+import { nitro } from "nitro/vite"
 
 export default defineConfig({
   server: { port: 3000 },
@@ -106,8 +106,8 @@ export default defineConfig({
 **`src/router.tsx`:**
 
 ```tsx
-import { createRouter } from '@tanstack/react-router'
-import { routeTree } from './routeTree.gen'
+import { createRouter } from "@tanstack/react-router"
+import { routeTree } from "./routeTree.gen"
 
 export function getRouter() {
   return createRouter({ routeTree, scrollRestoration: true })
@@ -125,17 +125,17 @@ export function getRouter() {
 **`src/app/layout.tsx` → `src/routes/__root.tsx`**
 
 ```tsx
-import { Outlet, createRootRoute, HeadContent, Scripts } from '@tanstack/react-router'
-import appCss from '../styles/globals.css?url'
+import { Outlet, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router"
+import appCss from "../styles/globals.css?url"
 
 export const Route = createRootRoute({
   head: () => ({
     meta: [
-      { charSet: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'My App' },
+      { charSet: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { title: "My App" },
     ],
-    links: [{ rel: 'stylesheet', href: appCss }],
+    links: [{ rel: "stylesheet", href: appCss }],
   }),
   component: RootLayout,
 })
@@ -158,9 +158,9 @@ function RootLayout() {
 **`page.tsx` → `index.tsx`** (or `$param.tsx` for dynamic segments):
 
 ```tsx
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router"
 
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute("/")({
   component: HomePage,
 })
 
@@ -187,14 +187,14 @@ function HomePage() {
 
 ```tsx
 // server/posts.functions.ts
-import { createServerFn } from '@tanstack/react-start'
+import { createServerFn } from "@tanstack/react-start"
 
-export const getAllPostsFn = createServerFn({ method: 'GET' }).handler(async () => {
+export const getAllPostsFn = createServerFn({ method: "GET" }).handler(async () => {
   return db.post.findMany() // or fs, secrets, etc.
 })
 
 // routes/index.tsx — thin route (FMC: component import from @/components/...)
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute("/")({
   loader: () => getAllPostsFn(),
   component: HomePage,
 })
@@ -255,7 +255,7 @@ See [references/server-functions.md](references/server-functions.md).
 
 ```ts
 // routes/api/upload.image.ts
-export const Route = createFileRoute('/api/upload/image')({
+export const Route = createFileRoute("/api/upload/image")({
   server: {
     handlers: {
       POST: async ({ request }) => {

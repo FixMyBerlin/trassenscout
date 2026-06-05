@@ -11,9 +11,9 @@ Docs: [TanStack Router](https://tanstack.com/router/latest/docs/framework/react/
 Inside a route’s component, use the route’s static API for inference:
 
 ```typescript
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router"
 
-export const Route = createFileRoute('/users/$userId')({
+export const Route = createFileRoute("/users/$userId")({
   component: UserPage,
   validateSearch: userSearchSchema,
   loader: async ({ params }) => {
@@ -33,8 +33,8 @@ function UserPage() {
 When using shared hooks outside the route file:
 
 ```typescript
-import { useParams, useSearch } from '@tanstack/react-router'
-import { Route as userRoute } from '@/routes/users/$userId'
+import { useParams, useSearch } from "@tanstack/react-router"
+import { Route as userRoute } from "@/routes/users/$userId"
 
 const { userId } = useParams({ from: userRoute.id })
 const { tab } = useSearch({ from: userRoute.id })
@@ -50,7 +50,7 @@ const { tab } = useSearch({ from: userRoute.id })
 Register the router for global link/search inference (app `router.tsx`):
 
 ```typescript
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface Register {
     router: typeof router
   }

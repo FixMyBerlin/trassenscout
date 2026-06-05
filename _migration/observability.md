@@ -10,15 +10,15 @@ This document covers **OpenTelemetry bootstrap**, **Langfuse LLM tracing**, and 
 
 ## Executive summary
 
-| Area | Trassenscout today | TILDA (`tilda-geo/app`) | Target for TS (TanStack Start) |
-| --- | --- | --- | --- |
-| Server bootstrap hook | Next [`instrumentation.ts`](../src/instrumentation.ts) (`register()` + `instrumentationHook`) | Nitro plugins under [`src/server/instrumentation/`](../../tilda-geo/app/src/server/instrumentation/) | Nitro plugin folder (TILDA pattern) |
-| OTEL / traces | `@vercel/otel` + `langfuse-vercel` `LangfuseExporter` | **None** (no Langfuse, no OTEL) | `@opentelemetry/sdk-node` + `@langfuse/otel` `LangfuseSpanProcessor` |
-| LLM tracing (app code) | `langfuse` SDK + Vercel AI SDK `experimental_telemetry` | N/A | **Keep pattern**; consolidate clients; env → `VITE_APP_ENV` |
-| Service name | `"ts-ai-email-processor"` (stale copy-paste) | N/A | `"trassenscout"` |
-| Env vars | `LANGFUSE_*`, `NEXT_PUBLIC_APP_ENV` on one client | N/A | `LANGFUSE_*` + `VITE_APP_ENV` ([`env-check.md`](./env-check.md)) |
-| Deploy runtime | `pm2-runtime` + `next start` | `bun .output/server/index.mjs` | Same as TILDA ([`docker.md`](./docker.md)) |
-| Request logging / APM | OTEL only (via Langfuse) | Console logging in places | Optional TanStack middleware later; Langfuse remains primary for AI |
+| Area                   | Trassenscout today                                                                            | TILDA (`tilda-geo/app`)                                                                              | Target for TS (TanStack Start)                                       |
+| ---------------------- | --------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| Server bootstrap hook  | Next [`instrumentation.ts`](../src/instrumentation.ts) (`register()` + `instrumentationHook`) | Nitro plugins under [`src/server/instrumentation/`](../../tilda-geo/app/src/server/instrumentation/) | Nitro plugin folder (TILDA pattern)                                  |
+| OTEL / traces          | `@vercel/otel` + `langfuse-vercel` `LangfuseExporter`                                         | **None** (no Langfuse, no OTEL)                                                                      | `@opentelemetry/sdk-node` + `@langfuse/otel` `LangfuseSpanProcessor` |
+| LLM tracing (app code) | `langfuse` SDK + Vercel AI SDK `experimental_telemetry`                                       | N/A                                                                                                  | **Keep pattern**; consolidate clients; env → `VITE_APP_ENV`          |
+| Service name           | `"ts-ai-email-processor"` (stale copy-paste)                                                  | N/A                                                                                                  | `"trassenscout"`                                                     |
+| Env vars               | `LANGFUSE_*`, `NEXT_PUBLIC_APP_ENV` on one client                                             | N/A                                                                                                  | `LANGFUSE_*` + `VITE_APP_ENV` ([`env-check.md`](./env-check.md))     |
+| Deploy runtime         | `pm2-runtime` + `next start`                                                                  | `bun .output/server/index.mjs`                                                                       | Same as TILDA ([`docker.md`](./docker.md))                           |
+| Request logging / APM  | OTEL only (via Langfuse)                                                                      | Console logging in places                                                                            | Optional TanStack middleware later; Langfuse remains primary for AI  |
 
 **Recommendation:** Drop Vercel-specific packages. Bootstrap OTEL via a **Nitro plugin** registered in `vite.config.ts` (matches TILDA). Keep manual `langfuse.trace()` + `experimental_telemetry` in AI handlers until a later Langfuse SDK v4 migration.
 
@@ -55,20 +55,20 @@ Next.js calls `register()` once when the Node server process starts, **before** 
 
 Two duplicate Langfuse clients with **different** environment sources:
 
-| File | `environment` |
-| --- | --- |
-| [`langfuseClient.ts`](../src/app/api/(apiKey)/process-project-record-email/_utils/langfuseClient.ts) (email API) | `process.env.NEXT_PUBLIC_APP_ENV` |
-| [`langfuseClient.ts`](../src/app/(loggedInProjects)/[projectSlug]/uploads/_actions/summarizeUpload/langfuseClient.ts) (uploads / reprocess) | `process.env.NODE_ENV` |
+| File                                                                                                                                          | `environment`                     |
+| --------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| [`langfuseClient.ts`](<../src/app/api/(apiKey)/process-project-record-email/_utils/langfuseClient.ts>) (email API)                            | `process.env.NEXT_PUBLIC_APP_ENV` |
+| [`langfuseClient.ts`](<../src/app/(loggedInProjects)/[projectSlug]/uploads/_actions/summarizeUpload/langfuseClient.ts>) (uploads / reprocess) | `process.env.NODE_ENV`            |
 
 **Consumers** (all server-side):
 
-| Module | Trace name | AI call | `flushAsync` |
-| --- | --- | --- | --- |
-| [`extractWithAI.ts`](../src/app/api/(apiKey)/process-project-record-email/_utils/extractWithAI.ts) | `process-email-to-project-record` | `generateObject` | via orchestrator |
-| [`processProjectRecordEmailOrchestrator.ts`](../src/app/api/(apiKey)/process-project-record-email/_utils/processProjectRecordEmailOrchestrator.ts) | — | orchestrates | yes |
-| [`generatePdfSummaryWithAI.ts`](../src/app/(loggedInProjects)/[projectSlug]/uploads/_actions/summarizeUpload/generatePdfSummaryWithAI.ts) | `summarize-upload` | `generateText` | yes |
-| [`generateProjectRecordWithAI.ts`](../src/app/(loggedInProjects)/[projectSlug]/project-records/_actions/reprocessProjectRecord/generateProjectRecordWithAI.ts) | reprocess trace | `generateObject` | yes |
-| [`processProjectRecordEmail.ts`](../src/app/(loggedInProjects)/[projectSlug]/project-records/_actions/processProjectRecordEmail.ts) | — | orchestrates | yes |
+| Module                                                                                                                                                           | Trace name                        | AI call          | `flushAsync`     |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- | ---------------- | ---------------- |
+| [`extractWithAI.ts`](<../src/app/api/(apiKey)/process-project-record-email/_utils/extractWithAI.ts>)                                                             | `process-email-to-project-record` | `generateObject` | via orchestrator |
+| [`processProjectRecordEmailOrchestrator.ts`](<../src/app/api/(apiKey)/process-project-record-email/_utils/processProjectRecordEmailOrchestrator.ts>)             | —                                 | orchestrates     | yes              |
+| [`generatePdfSummaryWithAI.ts`](<../src/app/(loggedInProjects)/[projectSlug]/uploads/_actions/summarizeUpload/generatePdfSummaryWithAI.ts>)                      | `summarize-upload`                | `generateText`   | yes              |
+| [`generateProjectRecordWithAI.ts`](<../src/app/(loggedInProjects)/[projectSlug]/project-records/_actions/reprocessProjectRecord/generateProjectRecordWithAI.ts>) | reprocess trace                   | `generateObject` | yes              |
+| [`processProjectRecordEmail.ts`](<../src/app/(loggedInProjects)/[projectSlug]/project-records/_actions/processProjectRecordEmail.ts>)                            | —                                 | orchestrates     | yes              |
 
 Shared telemetry pattern in AI calls:
 
@@ -86,12 +86,12 @@ Manual `langfuse.trace()` creates a parent trace; Vercel AI SDK OTEL spans (scop
 
 From [`package.json`](../package.json):
 
-| Package | Role today |
-| --- | --- |
-| `@vercel/otel` | Next-specific OTEL registration |
-| `langfuse-vercel` | `LangfuseExporter` for `@vercel/otel` (**deprecated**; Langfuse points to `@langfuse/otel`) |
-| `langfuse` | Manual traces + flush |
-| `@opentelemetry/api-logs`, `@opentelemetry/instrumentation`, `@opentelemetry/sdk-logs` | Transitive / partial OTEL stack |
+| Package                                                                                | Role today                                                                                  |
+| -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `@vercel/otel`                                                                         | Next-specific OTEL registration                                                             |
+| `langfuse-vercel`                                                                      | `LangfuseExporter` for `@vercel/otel` (**deprecated**; Langfuse points to `@langfuse/otel`) |
+| `langfuse`                                                                             | Manual traces + flush                                                                       |
+| `@opentelemetry/api-logs`, `@opentelemetry/instrumentation`, `@opentelemetry/sdk-logs` | Transitive / partial OTEL stack                                                             |
 
 Env: `LANGFUSE_SECRET_KEY`, `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_BASEURL` ([`src/env.d.ts`](../src/env.d.ts), deploy workflows).
 
@@ -109,22 +109,22 @@ Env: `LANGFUSE_SECRET_KEY`, `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_BASEURL` ([`src/env
 
 TILDA uses `src/server/instrumentation/` for **server startup side effects**, not observability:
 
-| File | Purpose |
-| --- | --- |
-| [`nitro-env-validation.plugin.server.ts`](../../tilda-geo/app/src/server/instrumentation/nitro-env-validation.plugin.server.ts) | Zod validate `process.env` at startup |
-| [`nitro-sql-registration.plugin.server.ts`](../../tilda-geo/app/src/server/instrumentation/nitro-sql-registration.plugin.server.ts) | Register PostGIS SQL functions before first request |
-| [`nitro-legacy-cookie-sweep.plugin.server.ts`](../../tilda-geo/app/src/server/instrumentation/nitro-legacy-cookie-sweep.plugin.server.ts) | One-time cookie migration |
-| [`registerSQLFunctions.server.ts`](../../tilda-geo/app/src/server/instrumentation/registerSQLFunctions.server.ts) | Shared registration logic |
+| File                                                                                                                                      | Purpose                                             |
+| ----------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| [`nitro-env-validation.plugin.server.ts`](../../tilda-geo/app/src/server/instrumentation/nitro-env-validation.plugin.server.ts)           | Zod validate `process.env` at startup               |
+| [`nitro-sql-registration.plugin.server.ts`](../../tilda-geo/app/src/server/instrumentation/nitro-sql-registration.plugin.server.ts)       | Register PostGIS SQL functions before first request |
+| [`nitro-legacy-cookie-sweep.plugin.server.ts`](../../tilda-geo/app/src/server/instrumentation/nitro-legacy-cookie-sweep.plugin.server.ts) | One-time cookie migration                           |
+| [`registerSQLFunctions.server.ts`](../../tilda-geo/app/src/server/instrumentation/registerSQLFunctions.server.ts)                         | Shared registration logic                           |
 
 Registered in [`vite.config.ts`](../../tilda-geo/app/vite.config.ts):
 
 ```typescript
 nitro({
-  preset: 'bun',
+  preset: "bun",
   plugins: [
-    'src/server/instrumentation/nitro-env-validation.plugin.server.ts',
-    'src/server/instrumentation/nitro-legacy-cookie-sweep.plugin.server.ts',
-    'src/server/instrumentation/nitro-sql-registration.plugin.server.ts',
+    "src/server/instrumentation/nitro-env-validation.plugin.server.ts",
+    "src/server/instrumentation/nitro-legacy-cookie-sweep.plugin.server.ts",
+    "src/server/instrumentation/nitro-sql-registration.plugin.server.ts",
   ],
   // ...
 })
@@ -213,14 +213,14 @@ flowchart TB
 
 ### Design decisions
 
-| Decision | Choice | Rationale |
-| --- | --- | --- |
-| Replace `@vercel/otel` | `@opentelemetry/sdk-node` + `@langfuse/otel` | Langfuse docs: `@vercel/otel` does not support OTEL JS SDK v2 used by current `@langfuse/otel`; `langfuse-vercel` is deprecated |
-| Bootstrap location | Nitro plugin in `src/server/instrumentation/` | Matches TILDA; co-locate with env validation from [`env-check.md`](./env-check.md) |
-| Keep `langfuse` v3 client short-term | Yes | Minimal AI code churn; link traces via `langfuseTraceId` metadata |
-| Consolidate Langfuse clients | Single `src/server/observability/langfuseClient.server.ts` | Fix env inconsistency (`VITE_APP_ENV`) |
-| HTTP/request APM | Defer | Langfuse is the product requirement; TanStack middleware optional Phase 2 |
-| Service name | `trassenscout` | Replace stale `ts-ai-email-processor` |
+| Decision                             | Choice                                                     | Rationale                                                                                                                       |
+| ------------------------------------ | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| Replace `@vercel/otel`               | `@opentelemetry/sdk-node` + `@langfuse/otel`               | Langfuse docs: `@vercel/otel` does not support OTEL JS SDK v2 used by current `@langfuse/otel`; `langfuse-vercel` is deprecated |
+| Bootstrap location                   | Nitro plugin in `src/server/instrumentation/`              | Matches TILDA; co-locate with env validation from [`env-check.md`](./env-check.md)                                              |
+| Keep `langfuse` v3 client short-term | Yes                                                        | Minimal AI code churn; link traces via `langfuseTraceId` metadata                                                               |
+| Consolidate Langfuse clients         | Single `src/server/observability/langfuseClient.server.ts` | Fix env inconsistency (`VITE_APP_ENV`)                                                                                          |
+| HTTP/request APM                     | Defer                                                      | Langfuse is the product requirement; TanStack middleware optional Phase 2                                                       |
+| Service name                         | `trassenscout`                                             | Replace stale `ts-ai-email-processor`                                                                                           |
 
 ---
 
@@ -255,10 +255,10 @@ bun add @langfuse/otel @opentelemetry/sdk-node
  * Replaces Next.js instrumentation.ts + @vercel/otel.
  * @see https://langfuse.com/integrations/frameworks/vercel-ai-sdk
  */
-import { LangfuseSpanProcessor } from '@langfuse/otel'
-import { NodeSDK } from '@opentelemetry/sdk-node'
-import { definePlugin } from 'nitro'
-import { pluginOk } from './utils/pluginLog'
+import { LangfuseSpanProcessor } from "@langfuse/otel"
+import { NodeSDK } from "@opentelemetry/sdk-node"
+import { definePlugin } from "nitro"
+import { pluginOk } from "./utils/pluginLog"
 
 let started = false
 
@@ -267,7 +267,7 @@ export default definePlugin(() => {
   started = true
 
   const sdk = new NodeSDK({
-    serviceName: 'trassenscout',
+    serviceName: "trassenscout",
     spanProcessors: [
       new LangfuseSpanProcessor({
         environment: process.env.VITE_APP_ENV ?? process.env.NODE_ENV,
@@ -276,7 +276,7 @@ export default definePlugin(() => {
   })
 
   sdk.start()
-  pluginOk('[otel]', 'Langfuse OpenTelemetry SDK started')
+  pluginOk("[otel]", "Langfuse OpenTelemetry SDK started")
 })
 ```
 
@@ -284,10 +284,10 @@ export default definePlugin(() => {
 
 ```typescript
 nitro({
-  preset: 'bun',
+  preset: "bun",
   plugins: [
-    'src/server/instrumentation/nitro-env-validation.plugin.server.ts',
-    'src/server/instrumentation/nitro-otel-langfuse.plugin.server.ts',
+    "src/server/instrumentation/nitro-env-validation.plugin.server.ts",
+    "src/server/instrumentation/nitro-otel-langfuse.plugin.server.ts",
   ],
 })
 ```
@@ -301,7 +301,7 @@ nitro({
 **Create** `src/server/observability/langfuseClient.server.ts`:
 
 ```typescript
-import { Langfuse } from 'langfuse'
+import { Langfuse } from "langfuse"
 
 export const langfuse = new Langfuse({
   environment: process.env.VITE_APP_ENV ?? process.env.NODE_ENV,
@@ -324,10 +324,10 @@ export const langfuse = new Langfuse({
 
 When moving API routes and server functions to TanStack Start:
 
-| Today (Next) | Target (TanStack Start) |
-| --- | --- |
+| Today (Next)                                                 | Target (TanStack Start)                                          |
+| ------------------------------------------------------------ | ---------------------------------------------------------------- |
 | `src/app/api/(apiKey)/process-project-record-email/route.ts` | `src/routes/api/process-project-record-email.ts` (or equivalent) |
-| Blitz server actions for upload summarize / reprocess | `createServerFn` in `src/server/...` |
+| Blitz server actions for upload summarize / reprocess        | `createServerFn` in `src/server/...`                             |
 
 No change to the **telemetry contract**:
 
@@ -363,36 +363,36 @@ Document the fallback in the Dockerfile comment; implement only if Phase 1 verif
 
 ### Phase 5 — Optional enhancements (post-parity)
 
-| Enhancement | Mechanism | Priority |
-| --- | --- | --- |
-| HTTP access / latency logs | `createStart({ requestMiddleware: [requestLogger] })` per [TanStack observability guide](https://tanstack.com/start/latest/docs/framework/react/guide/observability) | Low |
-| OTEL HTTP spans | Same middleware + `@opentelemetry/api` tracer | Low |
-| Langfuse SDK v4 + `@langfuse/tracing` | Replace manual `langfuse.trace()` with OTEL-native helpers | Medium (separate task) |
-| Error tracking (Sentry) | `@sentry/tanstackstart-react` Vite plugin | Only if product asks |
-| Auto server-fn tracing | `autotel-tanstack` when TanStack first-class OTEL lands | Watch |
+| Enhancement                           | Mechanism                                                                                                                                                            | Priority               |
+| ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| HTTP access / latency logs            | `createStart({ requestMiddleware: [requestLogger] })` per [TanStack observability guide](https://tanstack.com/start/latest/docs/framework/react/guide/observability) | Low                    |
+| OTEL HTTP spans                       | Same middleware + `@opentelemetry/api` tracer                                                                                                                        | Low                    |
+| Langfuse SDK v4 + `@langfuse/tracing` | Replace manual `langfuse.trace()` with OTEL-native helpers                                                                                                           | Medium (separate task) |
+| Error tracking (Sentry)               | `@sentry/tanstackstart-react` Vite plugin                                                                                                                            | Only if product asks   |
+| Auto server-fn tracing                | `autotel-tanstack` when TanStack first-class OTEL lands                                                                                                              | Watch                  |
 
 ---
 
 ## File mapping
 
-| Trassenscout today | TanStack Start target | Action |
-| --- | --- | --- |
-| `src/instrumentation.ts` | `src/server/instrumentation/nitro-otel-langfuse.plugin.server.ts` | Replace |
-| — | `src/server/instrumentation/utils/pluginLog.ts` | Copy from TILDA |
-| — | `src/server/instrumentation/nitro-env-validation.plugin.server.ts` | See [`env-check.md`](./env-check.md) |
-| `next.config.js` → `instrumentationHook` | `vite.config.ts` → `nitro.plugins` | Replace |
-| `.../langfuseClient.ts` (×2) | `src/server/observability/langfuseClient.server.ts` | Consolidate |
-| AI modules (5 files) | Same logic under `src/server/` or route handlers | Update imports only |
+| Trassenscout today                       | TanStack Start target                                              | Action                               |
+| ---------------------------------------- | ------------------------------------------------------------------ | ------------------------------------ |
+| `src/instrumentation.ts`                 | `src/server/instrumentation/nitro-otel-langfuse.plugin.server.ts`  | Replace                              |
+| —                                        | `src/server/instrumentation/utils/pluginLog.ts`                    | Copy from TILDA                      |
+| —                                        | `src/server/instrumentation/nitro-env-validation.plugin.server.ts` | See [`env-check.md`](./env-check.md) |
+| `next.config.js` → `instrumentationHook` | `vite.config.ts` → `nitro.plugins`                                 | Replace                              |
+| `.../langfuseClient.ts` (×2)             | `src/server/observability/langfuseClient.server.ts`                | Consolidate                          |
+| AI modules (5 files)                     | Same logic under `src/server/` or route handlers                   | Update imports only                  |
 
 ---
 
 ## Package changes
 
-| Remove (after migration) | Add | Keep |
-| --- | --- | --- |
-| `@vercel/otel` | `@langfuse/otel` | `langfuse` |
-| `langfuse-vercel` | `@opentelemetry/sdk-node` | `ai`, `@ai-sdk/openai` |
-| `@opentelemetry/api-logs`, `@opentelemetry/instrumentation`, `@opentelemetry/sdk-logs` (if unused after audit) | — | — |
+| Remove (after migration)                                                                                       | Add                       | Keep                   |
+| -------------------------------------------------------------------------------------------------------------- | ------------------------- | ---------------------- |
+| `@vercel/otel`                                                                                                 | `@langfuse/otel`          | `langfuse`             |
+| `langfuse-vercel`                                                                                              | `@opentelemetry/sdk-node` | `ai`, `@ai-sdk/openai` |
+| `@opentelemetry/api-logs`, `@opentelemetry/instrumentation`, `@opentelemetry/sdk-logs` (if unused after audit) | —                         | —                      |
 
 Run `bun run knip` after changes to catch orphaned OTEL packages.
 
@@ -438,12 +438,12 @@ Follow-up migration:
 
 ## Related migration docs
 
-| Doc | Overlap |
-| --- | --- |
-| [`env-check.md`](./env-check.md) | `LANGFUSE_*` validation; Nitro plugin folder |
-| [`docker.md`](./docker.md) | Bun Nitro runtime; no pm2 |
-| [`tech-stack-migration.md`](./tech-stack-migration.md) | Package inventory row for instrumentation |
-| [`routes.md`](./routes.md) | AI API routes move to `src/routes/api/` |
+| Doc                                                    | Overlap                                      |
+| ------------------------------------------------------ | -------------------------------------------- |
+| [`env-check.md`](./env-check.md)                       | `LANGFUSE_*` validation; Nitro plugin folder |
+| [`docker.md`](./docker.md)                             | Bun Nitro runtime; no pm2                    |
+| [`tech-stack-migration.md`](./tech-stack-migration.md) | Package inventory row for instrumentation    |
+| [`routes.md`](./routes.md)                             | AI API routes move to `src/routes/api/`      |
 
 ---
 

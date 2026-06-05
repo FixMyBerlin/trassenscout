@@ -48,7 +48,7 @@ Most app state is server or URL state. Add a Zustand store only when you need cl
 ## Canonical store shape
 
 ```typescript
-import { create } from 'zustand'
+import { create } from "zustand"
 
 interface MapFiltersStore {
   applied: string[]
@@ -62,7 +62,9 @@ const useMapFiltersStore = create<MapFiltersStore>()((set) => ({
   applied: [],
   actions: {
     addFilter: (filter) =>
-      set((state) => (state.applied.includes(filter) ? state : { applied: [...state.applied, filter] })),
+      set((state) =>
+        state.applied.includes(filter) ? state : { applied: [...state.applied, filter] },
+      ),
     clearFilters: () => set({ applied: [] }),
   },
 }))
@@ -110,9 +112,11 @@ export const useAppliedFilterCount = () => useMapFiltersStore((s) => s.applied.l
 If two primitives are needed together rarely, use `useShallow` — see llms.txt → prevent rerenders with useShallow:
 
 ```typescript
-import { useShallow } from 'zustand/shallow'
+import { useShallow } from "zustand/shallow"
 
-const { applied, count } = useMapFiltersStore(useShallow((s) => ({ applied: s.applied, count: s.applied.length })))
+const { applied, count } = useMapFiltersStore(
+  useShallow((s) => ({ applied: s.applied, count: s.applied.length })),
+)
 ```
 
 Prefer atomic hooks over `useShallow` when practical.
@@ -144,7 +148,7 @@ Avoid the slices pattern unless you have a strong reason — TypeScript gets hea
 export const useFilteredTodos = () => {
   const filters = useAppliedFilters()
   return useQuery({
-    queryKey: ['todos', filters],
+    queryKey: ["todos", filters],
     queryFn: () => getTodos(filters),
   })
 }

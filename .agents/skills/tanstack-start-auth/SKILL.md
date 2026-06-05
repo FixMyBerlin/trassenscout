@@ -47,7 +47,7 @@ Single skill for **library configuration** and **Start-specific wiring** in FMC 
 ```ts
 // beforeLoad (via server fn)
 const session = await getSessionForRouteFn()
-if (!session) throw redirect({ to: '/api/sign-in/osm', search: { callbackURL: location.href } })
+if (!session) throw redirect({ to: "/api/sign-in/osm", search: { callbackURL: location.href } })
 
 // API handler
 const session = await getAppSession(request.headers)

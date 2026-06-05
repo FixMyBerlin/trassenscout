@@ -136,8 +136,8 @@ OAuth-only apps: do not enable global `requireEmailVerification` on sign-in; use
 Prefer subpaths for tree-shaking:
 
 ```ts
-import { twoFactor } from 'better-auth/plugins/two-factor'
-import { genericOAuth } from 'better-auth/plugins/generic-oauth'
+import { twoFactor } from "better-auth/plugins/two-factor"
+import { genericOAuth } from "better-auth/plugins/generic-oauth"
 ```
 
 Some plugins still export from `better-auth/plugins` (e.g. `customSession`) — match your installed version.

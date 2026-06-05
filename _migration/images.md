@@ -14,15 +14,15 @@ Trassenscout uses **`next/image`** in **9 active components** (plus **2 commente
 
 TILDA Geo (already on TanStack Start) uses a thin **`Img`** wrapper (`<img>`), **Vite static imports** for local files, **raw HTTPS URLs** for external logos, and **server-side S3 proxy routes** for dataset delivery — not for UI thumbnails.
 
-| Concern                            | Trassenscout today                              | TILDA pattern                                | Migration action                                 |
-| ---------------------------------- | ----------------------------------------------- | -------------------------------------------- | ------------------------------------------------ |
-| UI component                       | `next/image`                                    | `Img` → native `<img>`                       | Replace 1:1                                      |
-| Local SVG/PNG/JPG                  | Webpack/Next import + `Image`                   | Vite import (URL string) + `Img`             | Same as TILDA                                    |
-| External logos (surveys, partners) | `next/image` + `images.domains`                 | `Img` + raw URL                              | Same as TILDA; delete domains config             |
+| Concern                            | Trassenscout today                              | TILDA pattern                                | Migration action                                                      |
+| ---------------------------------- | ----------------------------------------------- | -------------------------------------------- | --------------------------------------------------------------------- |
+| UI component                       | `next/image`                                    | `Img` → native `<img>`                       | Replace 1:1                                                           |
+| Local SVG/PNG/JPG                  | Webpack/Next import + `Image`                   | Vite import (URL string) + `Img`             | Same as TILDA                                                         |
+| External logos (surveys, partners) | `next/image` + `images.domains`                 | `Img` + raw URL                              | Same as TILDA; delete domains config                                  |
 | Upload thumbnails                  | `next/image` + presigned S3 **or** auth API URL | Not applicable in TILDA (no user uploads UI) | **Auth API proxy** — same-origin URL, S3 behind the scenes; see below |
-| Legacy project logos               | `getProxyImageSrc` → `/assets/` (nginx)         | N/A                                          | **Drop or redesign** — currently disabled        |
-| OG / social images                 | `generateMetadata` + imported PNG `.src`        | `__root.tsx` `head()` (no og:image today)    | Port metadata; optional og:image                 |
-| S3 allowlist                       | `remotePatterns` for bucket hostname            | N/A                                          | **Delete** with `next.config.js`                 |
+| Legacy project logos               | `getProxyImageSrc` → `/assets/` (nginx)         | N/A                                          | **Drop or redesign** — currently disabled                             |
+| OG / social images                 | `generateMetadata` + imported PNG `.src`        | `__root.tsx` `head()` (no og:image today)    | Port metadata; optional og:image                                      |
+| S3 allowlist                       | `remotePatterns` for bucket hostname            | N/A                                          | **Delete** with `next.config.js`                                      |
 
 ---
 
@@ -30,16 +30,16 @@ TILDA Geo (already on TanStack Start) uses a thin **`Img`** wrapper (`<img>`), *
 
 ### 1. `next/image` usages (active)
 
-| File                                                                              | Pattern                                                       | Image source                                                                      |
-| --------------------------------------------------------------------------------- | ------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| `src/app/_components/layouts/navigation/NavigationLoggedOut/TrassenscoutLogo.tsx` | `width` / `height`                                            | Bundled SVG import                                                                |
-| `src/app/auth/_components/layouts/TitleBodyWrapper.tsx`                           | `height` only                                                 | Bundled SVG import                                                                |
-| `src/app/(loggedInGeneral)/dashboard/_components/NoProjectMembershipsYet.tsx`     | `height`                                                      | Bundled SVG import                                                                |
-| `src/app/(marketing)/_components/MarketingPageLinks.tsx`                          | `width` / `height`                                            | Bundled SVG imports (3 icons)                                                     |
-| `src/app/(marketing)/_components/MarketingPagePhotos.tsx`                         | `fill` + `sizes`                                              | Bundled JPG imports (5 photos)                                                    |
-| `src/app/(content)/kontakt/page.tsx`                                              | `width` / `height` (one SVG), implicit (one SVG)              | Bundled SVG imports                                                               |
-| `src/app/beteiligung/_components/layout/SurveyHeader.tsx`                         | `fill` + `sizes` + `priority`                                 | **External URL** from survey config (`logoUrl`)                                   |
-| `src/app/beteiligung/_radnetz-brandenbrug/SurveyBB.tsx`                           | plain `Image` (no dimensions)                                 | Bundled JPG import                                                                |
+| File                                                                              | Pattern                                                       | Image source                                                                            |
+| --------------------------------------------------------------------------------- | ------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `src/app/_components/layouts/navigation/NavigationLoggedOut/TrassenscoutLogo.tsx` | `width` / `height`                                            | Bundled SVG import                                                                      |
+| `src/app/auth/_components/layouts/TitleBodyWrapper.tsx`                           | `height` only                                                 | Bundled SVG import                                                                      |
+| `src/app/(loggedInGeneral)/dashboard/_components/NoProjectMembershipsYet.tsx`     | `height`                                                      | Bundled SVG import                                                                      |
+| `src/app/(marketing)/_components/MarketingPageLinks.tsx`                          | `width` / `height`                                            | Bundled SVG imports (3 icons)                                                           |
+| `src/app/(marketing)/_components/MarketingPagePhotos.tsx`                         | `fill` + `sizes`                                              | Bundled JPG imports (5 photos)                                                          |
+| `src/app/(content)/kontakt/page.tsx`                                              | `width` / `height` (one SVG), implicit (one SVG)              | Bundled SVG imports                                                                     |
+| `src/app/beteiligung/_components/layout/SurveyHeader.tsx`                         | `fill` + `sizes` + `priority`                                 | **External URL** from survey config (`logoUrl`)                                         |
+| `src/app/beteiligung/_radnetz-brandenbrug/SurveyBB.tsx`                           | plain `Image` (no dimensions)                                 | Bundled JPG import                                                                      |
 | `src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadIcon.tsx`     | `width` / `height`, `unoptimized` for SVG, `onError` fallback | **Target:** auth API `/api/{projectSlug}/uploads/{id}/{filename}` (remove presigned S3) |
 
 ### 2. `next/image` usages (commented / disabled)
@@ -220,12 +220,12 @@ Keep **`src/core/uploads/isImageUpload.ts`** unchanged — framework-agnostic, a
 
 TILDA has **no equivalent** (no authenticated document library with image thumbnails). Trassenscout’s **target path** is an **authenticated API route that proxies S3**: to the UI it behaves like any other image URL; behind the scenes the server verifies project membership, loads the object from S3, and returns it with the correct `Content-Type`.
 
-| Piece | Target |
-| ----- | ------ |
-| **Display** | `Img` with `src={uploadUrl(upload, projectSlug)}` — render like any local/bundled image |
-| **API route** | `GET /api/{projectSlug}/uploads/{id}/{filename}` → migrate to `src/routes/api/$projectSlug/uploads/$uploadId/$.ts`; same auth + `getObject` as today |
-| **Server queries** | Remove `withUploadPreviewUrl` / `getPresignedUploadUrl` / `previewImageUrl` (legacy for `next/image` + `remotePatterns`) |
-| **Config** | Delete `remotePatterns`; no S3 hostname allowlist needed |
+| Piece              | Target                                                                                                                                               |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Display**        | `Img` with `src={uploadUrl(upload, projectSlug)}` — render like any local/bundled image                                                              |
+| **API route**      | `GET /api/{projectSlug}/uploads/{id}/{filename}` → migrate to `src/routes/api/$projectSlug/uploads/$uploadId/$.ts`; same auth + `getObject` as today |
+| **Server queries** | Remove `withUploadPreviewUrl` / `getPresignedUploadUrl` / `previewImageUrl` (legacy for `next/image` + `remotePatterns`)                             |
+| **Config**         | Delete `remotePatterns`; no S3 hostname allowlist needed                                                                                             |
 
 The browser requests a same-origin URL; session cookies handle auth on `<img>` load. No presigned URLs, no S3 URLs in the DOM, no `next/image`. Same “proxy through app” idea as TILDA’s `proxyS3Url`, but with **project membership** auth instead of region membership.
 

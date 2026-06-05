@@ -17,19 +17,19 @@ Official docs:
 
 ## Executive summary
 
-|                    | Trassenscout (today)                                      | TILDA (`tilda-geo/app`)                         |
-| ------------------ | --------------------------------------------------------- | ----------------------------------------------- |
-| Tailwind version   | `tailwindcss@4.2.1`                                       | `tailwindcss@4.3.0`                             |
-| Build integration  | **PostCSS only** (`@tailwindcss/postcss`) via Next/Blitz   | **`@tailwindcss/vite`** in `vite.config.ts`     |
-| PostCSS config     | `postcss.config.js`                                       | `postcss.config.cjs` (kept for ancillary tools) |
-| `autoprefixer`     | In `package.json` but **not** in PostCSS config           | **Not installed**                               |
-| Global CSS         | `src/app/_components/layouts/global.css`                  | `src/components/shared/layouts/global.css`      |
-| JS config          | `tailwind.config.js` (typography plugin only)             | **No** `tailwind.config.js` — CSS-first       |
-| Theme              | `@theme { … }` in global.css                              | `@theme inline { … }` in global.css             |
-| Plugins            | `@plugin` in CSS (`forms`, `typography`)                  | Same                                            |
-| Class detection    | `@source "../../.."` (relative from `src/app/…`)          | `@source './src/**/*.{js,jsx,ts,tsx,mdx}'`      |
-| CSS in Start root  | Next `layout.tsx` import                                  | `__root.tsx` `head.links` + `?url` import       |
-| Class sorting      | `prettier-plugin-tailwindcss`                             | `oxfmt` `sortTailwindcss` → global.css path     |
+|                   | Trassenscout (today)                                     | TILDA (`tilda-geo/app`)                         |
+| ----------------- | -------------------------------------------------------- | ----------------------------------------------- |
+| Tailwind version  | `tailwindcss@4.2.1`                                      | `tailwindcss@4.3.0`                             |
+| Build integration | **PostCSS only** (`@tailwindcss/postcss`) via Next/Blitz | **`@tailwindcss/vite`** in `vite.config.ts`     |
+| PostCSS config    | `postcss.config.js`                                      | `postcss.config.cjs` (kept for ancillary tools) |
+| `autoprefixer`    | In `package.json` but **not** in PostCSS config          | **Not installed**                               |
+| Global CSS        | `src/app/_components/layouts/global.css`                 | `src/components/shared/layouts/global.css`      |
+| JS config         | `tailwind.config.js` (typography plugin only)            | **No** `tailwind.config.js` — CSS-first         |
+| Theme             | `@theme { … }` in global.css                             | `@theme inline { … }` in global.css             |
+| Plugins           | `@plugin` in CSS (`forms`, `typography`)                 | Same                                            |
+| Class detection   | `@source "../../.."` (relative from `src/app/…`)         | `@source './src/**/*.{js,jsx,ts,tsx,mdx}'`      |
+| CSS in Start root | Next `layout.tsx` import                                 | `__root.tsx` `head.links` + `?url` import       |
+| Class sorting     | `prettier-plugin-tailwindcss`                            | `oxfmt` `sortTailwindcss` → global.css path     |
 
 Trassenscout is **already on Tailwind v4 CSS syntax** — the remaining work is **wiring it through Vite** (TanStack Start), **relocating global CSS**, and **dropping legacy PostCSS/autoprefixer baggage**.
 
@@ -77,7 +77,7 @@ npx @tailwindcss/upgrade
 From [`tilda-geo/app/vite.config.ts`](../../tilda-geo/app/vite.config.ts):
 
 ```ts
-import tailwindcss from '@tailwindcss/vite'
+import tailwindcss from "@tailwindcss/vite"
 
 export default defineConfig({
   plugins: [
@@ -150,9 +150,9 @@ Also imports route-local CSS (`upload-progress-animations.css`, `stripe-backgrou
 2. **Replace `@source`** with explicit globs covering the Start route tree:
 
    ```css
-   @source '../**/*.{js,jsx,ts,tsx}';
-   @source '../../routes/**/*.{js,jsx,ts,tsx}';
-   @source '../../emails/**/*.{js,jsx,ts,tsx}';
+   @source "../**/*.{js,jsx,ts,tsx}";
+   @source "../../routes/**/*.{js,jsx,ts,tsx}";
+   @source "../../emails/**/*.{js,jsx,ts,tsx}";
    ```
 
    Adjust relative paths from the CSS file location. Prefer **absolute-style** `@source` from project root if Tailwind 4.3 supports `@source "../../../src/**/*"` — test after move.
@@ -197,11 +197,11 @@ After porting, **delete `tailwind.config.js`** unless a tool still requires it.
 TILDA [`__root.tsx`](../../tilda-geo/app/src/routes/__root.tsx):
 
 ```ts
-import appCss from '@/components/shared/layouts/global.css?url'
+import appCss from "@/components/shared/layouts/global.css?url"
 
 export const Route = createRootRouteWithContext()({
   head: () => ({
-    links: [{ rel: 'stylesheet', href: appCss }],
+    links: [{ rel: "stylesheet", href: appCss }],
   }),
   component: LayoutRoot,
 })
@@ -221,16 +221,16 @@ Remove CSS import from Next `src/app/layout.tsx`.
 
 ```js
 module.exports = {
-  plugins: { '@tailwindcss/postcss': {} },
+  plugins: { "@tailwindcss/postcss": {} },
 }
 ```
 
 ### Options
 
-| Approach | When |
-| -------- | ---- |
-| **A. Vite plugin only** | Delete `postcss.config.js`; remove `@tailwindcss/postcss` — simplest for Start |
-| **B. Keep PostCSS** | TILDA keeps `postcss.config.cjs` for `react-email` preview / non-Vite CSS — mirror if `email dev` needs it |
+| Approach                | When                                                                                                       |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------- |
+| **A. Vite plugin only** | Delete `postcss.config.js`; remove `@tailwindcss/postcss` — simplest for Start                             |
+| **B. Keep PostCSS**     | TILDA keeps `postcss.config.cjs` for `react-email` preview / non-Vite CSS — mirror if `email dev` needs it |
 
 If keeping PostCSS for email tooling, **do not** run Tailwind twice (Vite plugin + PostCSS on the same entry). Scope PostCSS to the email pipeline only.
 
@@ -254,16 +254,16 @@ Update from Prettier's `prettier-plugin-tailwindcss` path (`src/app/_components/
 
 ## Dependency alignment
 
-| Package | Trassenscout | TILDA target |
-| ------- | ------------ | ------------ |
-| `tailwindcss` | 4.2.1 | 4.3.0 |
-| `@tailwindcss/vite` | — | 4.3.0 |
-| `@tailwindcss/postcss` | 4.2.1 (dep) | 4.3.0 (dev, optional) |
-| `@tailwindcss/forms` | 0.5.11 | 0.5.11 |
-| `@tailwindcss/typography` | 0.5.19 | 0.5.19 |
-| `tailwind-merge` | 3.5.0 | 3.6.0 |
-| `autoprefixer` | 10.4.27 | **remove** |
-| `postcss` | 8.5.8 | 8.5.x (optional) |
+| Package                   | Trassenscout | TILDA target          |
+| ------------------------- | ------------ | --------------------- |
+| `tailwindcss`             | 4.2.1        | 4.3.0                 |
+| `@tailwindcss/vite`       | —            | 4.3.0                 |
+| `@tailwindcss/postcss`    | 4.2.1 (dep)  | 4.3.0 (dev, optional) |
+| `@tailwindcss/forms`      | 0.5.11       | 0.5.11                |
+| `@tailwindcss/typography` | 0.5.19       | 0.5.19                |
+| `tailwind-merge`          | 3.5.0        | 3.6.0                 |
+| `autoprefixer`            | 10.4.27      | **remove**            |
+| `postcss`                 | 8.5.8        | 8.5.x (optional)      |
 
 ---
 
@@ -271,13 +271,13 @@ Update from Prettier's `prettier-plugin-tailwindcss` path (`src/app/_components/
 
 From the [upgrade guide](https://tailwindcss.com/docs/upgrade-guide) — Trassenscout may already hit these on v4.2; re-verify after Vite integration:
 
-| Area | Change |
-| ---- | ------ |
+| Area                     | Change                                                                      |
+| ------------------------ | --------------------------------------------------------------------------- |
 | **Default border color** | `border` uses `currentColor` — explicit `border-gray-200` etc. where needed |
-| **Ring defaults** | `ring` width/color defaults changed |
-| **Opacity utilities** | `bg-black/50` replaces `bg-opacity-50` |
-| **Renamed utilities** | `flex-grow` → `grow`, `flex-shrink` → `shrink`, etc. |
-| **`@apply` in CSS** | Still supported in `@layer`; verify custom layers after move |
+| **Ring defaults**        | `ring` width/color defaults changed                                         |
+| **Opacity utilities**    | `bg-black/50` replaces `bg-opacity-50`                                      |
+| **Renamed utilities**    | `flex-grow` → `grow`, `flex-shrink` → `shrink`, etc.                        |
+| **`@apply` in CSS**      | Still supported in `@layer`; verify custom layers after move                |
 
 Run visual smoke tests on: admin tables, map UI, forms, prose/markdown areas, upload progress animations.
 
@@ -290,13 +290,13 @@ When `src/app/(loggedInProjects)/…` becomes `src/routes/_loggedInProjects/…`
 Use broad globs:
 
 ```css
-@source '../../../**/*.{js,jsx,ts,tsx}';
+@source "../../../**/*.{js,jsx,ts,tsx}";
 ```
 
 Or mirror TILDA:
 
 ```css
-@source './src/**/*.{js,jsx,ts,tsx,mdx}';
+@source "./src/**/*.{js,jsx,ts,tsx,mdx}";
 ```
 
 (if supported from stylesheet path — verify in dev: intentionally add a new utility class and confirm it appears).
@@ -347,9 +347,9 @@ Or mirror TILDA:
 
 ## Cross-references
 
-| Doc | Overlap |
-| --- | ------- |
+| Doc                          | Overlap                                            |
+| ---------------------------- | -------------------------------------------------- |
 | [`tooling.md`](./tooling.md) | oxfmt Tailwind sort; drop Prettier Tailwind plugin |
-| [`routes.md`](./routes.md) | `__root.tsx` head links |
-| [`favicon.md`](./favicon.md) | favicon links beside stylesheet in `head` |
-| [`images.md`](./images.md) | static assets in `public/` referenced by `@source` |
+| [`routes.md`](./routes.md)   | `__root.tsx` head links                            |
+| [`favicon.md`](./favicon.md) | favicon links beside stylesheet in `head`          |
+| [`images.md`](./images.md)   | static assets in `public/` referenced by `@source` |

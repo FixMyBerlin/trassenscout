@@ -38,7 +38,7 @@ const interactiveLayerIds = useInteractiveLayers()
 One click can return the **same feature more than once** when several stacked layers in `interactiveLayerIds` all hit the same geometry (e.g. fill + outline, base + highlight). Dedupe before updating inspector / URL state:
 
 ```tsx
-import { uniqBy } from 'es-toolkit/compat'
+import { uniqBy } from "es-toolkit/compat"
 
 const handleClick = ({ features, ...event }: MapLayerMouseEvent) => {
   if (!features?.length) {

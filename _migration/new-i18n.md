@@ -17,17 +17,17 @@ Official docs:
 
 ## Executive summary
 
-|                  | Trassenscout (today)                               | TILDA (`tilda-geo/app`)                                |
-| ---------------- | -------------------------------------------------- | ------------------------------------------------------ |
-| Package          | `react-intl@7.1.14`                                | `react-intl@10.1.11`                                   |
-| React            | 18.3.1                                             | 19.2.6 (**required** for react-intl 10)              |
-| Usage surface    | **2 files** (`Form.tsx`, `FormError.tsx`)          | **~6 files** — scoped `IntlProvider` in map inspector |
-| App locale       | Hard-coded `de`                                    | Hard-coded `de`                                        |
-| Message catalogs | `errorMessageTranslations.ts` (server/DB errors)   | `translations.const.ts` per feature (OSM tag labels)   |
-| `injectIntl`     | Not used                                           | Not used                                               |
-| Root provider    | Per-form `IntlProvider` in `Form.tsx`              | Per-feature `IntlProvider` (not global in `__root`)    |
-| Zod errors       | Raw issue text in `FormError`                      | `formatError.ts` — **no** react-intl                   |
-| RSC / server     | N/A (client components)                            | `react-intl/server` available; TILDA does not use yet  |
+|                  | Trassenscout (today)                             | TILDA (`tilda-geo/app`)                               |
+| ---------------- | ------------------------------------------------ | ----------------------------------------------------- |
+| Package          | `react-intl@7.1.14`                              | `react-intl@10.1.11`                                  |
+| React            | 18.3.1                                           | 19.2.6 (**required** for react-intl 10)               |
+| Usage surface    | **2 files** (`Form.tsx`, `FormError.tsx`)        | **~6 files** — scoped `IntlProvider` in map inspector |
+| App locale       | Hard-coded `de`                                  | Hard-coded `de`                                       |
+| Message catalogs | `errorMessageTranslations.ts` (server/DB errors) | `translations.const.ts` per feature (OSM tag labels)  |
+| `injectIntl`     | Not used                                         | Not used                                              |
+| Root provider    | Per-form `IntlProvider` in `Form.tsx`            | Per-feature `IntlProvider` (not global in `__root`)   |
+| Zod errors       | Raw issue text in `FormError`                    | `formatError.ts` — **no** react-intl                  |
+| RSC / server     | N/A (client components)                          | `react-intl/server` available; TILDA does not use yet |
 
 **Good news:** Trassenscout uses react-intl narrowly — mostly for **translating Prisma/server error strings** in forms. The upgrade is small in code volume but **blocked on React 19** and the TanStack Form migration.
 
@@ -35,12 +35,12 @@ Official docs:
 
 ## When to migrate
 
-| Order | Task |
-| ----- | ---- |
-| 1 | React 18 → 19 (see `tech-stack-migration.md`) |
-| 2 | Bump `react-intl` to `10.1.11` (match TILDA) |
-| 3 | Re-test `Form.tsx` / `FormError.tsx` |
-| 4 | During TanStack Form migration, **re-evaluate** whether react-intl is still needed for form errors |
+| Order | Task                                                                                               |
+| ----- | -------------------------------------------------------------------------------------------------- |
+| 1     | React 18 → 19 (see `tech-stack-migration.md`)                                                      |
+| 2     | Bump `react-intl` to `10.1.11` (match TILDA)                                                       |
+| 3     | Re-test `Form.tsx` / `FormError.tsx`                                                               |
+| 4     | During TanStack Form migration, **re-evaluate** whether react-intl is still needed for form errors |
 
 i18n is **not** a large standalone migration in Trassenscout — it rides along with React 19 + forms work.
 
@@ -55,10 +55,10 @@ bun add react-intl@10.1.11
 
 Peer dependencies (react-intl 10):
 
-| Package | Version |
-| ------- | ------- |
-| `react` | 19 |
-| `@types/react` | 19 |
+| Package        | Version |
+| -------------- | ------- |
+| `react`        | 19      |
+| `@types/react` | 19      |
 
 Run `bun run type-check` — expect `@types/react` alignment with React 19.
 
@@ -77,7 +77,7 @@ export default injectIntl(MyComponent)
 // After
 function MyComponent() {
   const intl = useIntl()
-  return <div>{intl.formatMessage({ defaultMessage: 'Hello' })}</div>
+  return <div>{intl.formatMessage({ defaultMessage: "Hello" })}</div>
 }
 ```
 
@@ -96,7 +96,7 @@ Transparent for normal usage. Breaks only if code used `ref` on `IntlProvider` i
 New server entry for RSC-style apps:
 
 ```ts
-import { createIntl, createIntlCache, defineMessage } from 'react-intl/server'
+import { createIntl, createIntlCache, defineMessage } from "react-intl/server"
 ```
 
 TILDA does **not** use this yet. Trassenscout likely does not need it unless formatting messages in route loaders — prefer plain German strings server-side for emails and API errors.
@@ -163,12 +163,12 @@ Messages live in colocated `translations.const.ts` files (large generated maps).
 
 ### Components used
 
-| API | Usage |
-| --- | ----- |
+| API                | Usage                      |
+| ------------------ | -------------------------- |
 | `FormattedMessage` | Tag labels and enum values |
-| `FormattedNumber` | Numeric inspector values |
-| `FormattedDate` | Date attributes |
-| `IntlProvider` | Per-inspector subtree |
+| `FormattedNumber`  | Numeric inspector values   |
+| `FormattedDate`    | Date attributes            |
+| `IntlProvider`     | Per-inspector subtree      |
 
 No root-level provider in `__root.tsx`.
 
@@ -190,13 +190,13 @@ Trassenscout is **German-only** (`locale="de"` everywhere). Full i18n infrastruc
 
 ### Recommended end state
 
-| Concern | Approach |
-| ------- | -------- |
-| Zod / client validation | German strings on schemas + `zodDeLocale` |
-| Server function errors | Return German `message` string from `createServerFn` |
+| Concern                  | Approach                                                                  |
+| ------------------------ | ------------------------------------------------------------------------- |
+| Zod / client validation  | German strings on schemas + `zodDeLocale`                                 |
+| Server function errors   | Return German `message` string from `createServerFn`                      |
 | Prisma unique violations | Keep `errorMessageTranslations` map **or** map to known codes server-side |
-| Form display | TILDA `formatError.ts` + submit `message` banner |
-| react-intl | **Optional** — only if keeping `FormattedMessage` dictionary pattern |
+| Form display             | TILDA `formatError.ts` + submit `message` banner                          |
+| react-intl               | **Optional** — only if keeping `FormattedMessage` dictionary pattern      |
 
 ### Option A — Minimal (recommended)
 
@@ -225,12 +225,12 @@ Only if Trassenscout gains map/inspector-style translated attribute catalogs (un
 
 ## TanStack Start considerations
 
-| Topic | Guidance |
-| ----- | -------- |
-| SSR | `IntlProvider` in client-hydrated components is fine; messages object must be serializable |
-| Loaders | Prefer German strings in loader data; avoid `react-intl` in server-only modules |
-| `react-intl/server` | Use only if formatting in route `loader` without client JS — not needed for current scope |
-| Emails | `@react-email/components` — separate from react-intl; keep German copy inline in templates |
+| Topic               | Guidance                                                                                   |
+| ------------------- | ------------------------------------------------------------------------------------------ |
+| SSR                 | `IntlProvider` in client-hydrated components is fine; messages object must be serializable |
+| Loaders             | Prefer German strings in loader data; avoid `react-intl` in server-only modules            |
+| `react-intl/server` | Use only if formatting in route `loader` without client JS — not needed for current scope  |
+| Emails              | `@react-email/components` — separate from react-intl; keep German copy inline in templates |
 
 ---
 
@@ -239,8 +239,8 @@ Only if Trassenscout gains map/inspector-style translated attribute catalogs (un
 Vitest + Testing Library:
 
 ```tsx
-import { IntlProvider } from 'react-intl'
-import { render } from '@testing-library/react'
+import { IntlProvider } from "react-intl"
+import { render } from "@testing-library/react"
 
 function renderWithIntl(ui: React.ReactElement, messages = {}) {
   return render(
@@ -305,9 +305,9 @@ After removing react-intl (Option A), delete intl test wrappers.
 
 ## Cross-references
 
-| Doc | Overlap |
-| --- | ------- |
-| [`tech-stack-migration.md`](./tech-stack-migration.md) | React 19 peer dep |
-| [`new-zod.md`](./new-zod.md) | Zod German errors via `zod/locales`, not react-intl |
-| [`tooling.md`](./tooling.md) | Bun install, type-check in CI |
-| [`routes.md`](./routes.md) | `og:locale` `de_DE` in `__root.tsx` head (metadata, not intl) |
+| Doc                                                    | Overlap                                                       |
+| ------------------------------------------------------ | ------------------------------------------------------------- |
+| [`tech-stack-migration.md`](./tech-stack-migration.md) | React 19 peer dep                                             |
+| [`new-zod.md`](./new-zod.md)                           | Zod German errors via `zod/locales`, not react-intl           |
+| [`tooling.md`](./tooling.md)                           | Bun install, type-check in CI                                 |
+| [`routes.md`](./routes.md)                             | `og:locale` `de_DE` in `__root.tsx` head (metadata, not intl) |

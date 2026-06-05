@@ -90,7 +90,7 @@ Phases 1–6 are the **critical path** (app must boot and authenticate). Phases 
 
 ## Phase 1 — Tooling (Bun + oxlint + oxfmt)
 
-Spec: [tooling.md](_migration/tooling.md), [package-script-names.md](_migration/package-script-names.md), [_migration/oxlint.config.mjs](_migration/oxlint.config.mjs).
+Spec: [tooling.md](_migration/tooling.md), [package-script-names.md](_migration/package-script-names.md), [\_migration/oxlint.config.mjs](_migration/oxlint.config.mjs).
 
 - Switch npm → Bun (`bun.lock`), add `oxfmt.config.ts` + `oxlint.config.mjs` (required rule `typescript/switch-exhaustiveness-check: error`), remove ESLint + Prettier configs/deps.
 - Rename scripts to the kebab convention (`type-check`, `migrate-create`, …) per `package-script-names.md`.

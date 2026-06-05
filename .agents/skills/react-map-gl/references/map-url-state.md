@@ -21,15 +21,15 @@ Use the same functions on the route, in server redirects, and in tests:
 
 ```tsx
 // mapParam.ts
-import { z } from 'zod'
-import { roundPositionForURL } from './roundNumber'
+import { z } from "zod"
+import { roundPositionForURL } from "./roundNumber"
 
 export type MapParam = { zoom: number; lat: number; lng: number }
 
 const MapParamSchema = z.tuple([range(0, 22), range(-90, 90), range(-180, 180)])
 
 export const parseMapParam = (query: string) => {
-  const parsed = MapParamSchema.safeParse(query.split('/'))
+  const parsed = MapParamSchema.safeParse(query.split("/"))
   if (!parsed.success) return null
   const [zoom, lat, lng] = parsed.data
   return { zoom, lat, lng } satisfies MapParam
@@ -81,19 +81,19 @@ Validate once on the route; read/write typed search in components. See skill `ta
 
 ```tsx
 // routes/regionen/$regionSlug.tsx
-import { createFileRoute } from '@tanstack/react-router'
-import { z } from 'zod'
-import { parseMapParam, serializeMapParam } from '@/utils/mapParam'
-import { mapParamFallback } from '@/utils/mapParamFallback'
+import { createFileRoute } from "@tanstack/react-router"
+import { z } from "zod"
+import { parseMapParam, serializeMapParam } from "@/utils/mapParam"
+import { mapParamFallback } from "@/utils/mapParamFallback"
 
 const regionSearchSchema = z.object({
   map: z
     .string()
     .optional()
-    .transform((s) => parseMapParam(s ?? '') ?? mapParamFallback),
+    .transform((s) => parseMapParam(s ?? "") ?? mapParamFallback),
 })
 
-export const Route = createFileRoute('/regionen/$regionSlug')({
+export const Route = createFileRoute("/regionen/$regionSlug")({
   validateSearch: (search) => regionSearchSchema.parse(search),
   component: RegionPage,
 })
@@ -135,8 +135,8 @@ Use **`replace: true`** on viewport drags; use default push semantics when the u
 Next.js, Pages Router, or existing nuqs trees (tilda wraps `PageRegionSlug` with `NuqsAdapter`). Same parse/serialize util; nuqs owns the query string.
 
 ```tsx
-import { createParser, useQueryState } from 'nuqs'
-import { parseMapParam, serializeMapParam } from './utils/mapParam'
+import { createParser, useQueryState } from "nuqs"
+import { parseMapParam, serializeMapParam } from "./utils/mapParam"
 
 const mapParamParser = createParser({
   parse: (query) => parseMapParam(query),
@@ -144,7 +144,7 @@ const mapParamParser = createParser({
 }).withDefault(mapParamFallback)
 
 export const useMapParam = () => {
-  const [mapParam, setMapParam] = useQueryState('map', mapParamParser)
+  const [mapParam, setMapParam] = useQueryState("map", mapParamParser)
   return { mapParam, setMapParam }
 }
 ```

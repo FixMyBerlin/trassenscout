@@ -17,17 +17,17 @@ Official docs:
 
 ## Executive summary
 
-|                         | Trassenscout (today)                          | TILDA (`tilda-geo/app`)                              |
-| ----------------------- | --------------------------------------------- | ---------------------------------------------------- |
-| Package                 | `zod@^3.25.76`                                | `zod@4.4.3`                                          |
-| Files importing `zod`   | **~231** under `src/`                         | ~150+ under `src/`                                   |
-| Form validation         | `react-hook-form` + `@hookform/resolvers/zod` | `@tanstack/react-form` — schema as validator         |
-| German error messages   | Inline `{ message: "…" }` on schemas          | `z.config(de())` via `src/lib/zodDeLocale.ts`        |
-| Server input validation | Blitz resolver `.parse()` in mutations        | `createServerFn().inputValidator()` + `.parse()`     |
-| Prisma enums            | `z.nativeEnum(PrismaEnum)`                    | `z.enum(PrismaEnum)`                                 |
-| Object composition      | `.merge()` everywhere                         | `.extend()` / `.omit().extend()`                     |
-| URL / email             | `z.string().url()` / `.email()`               | `z.url()` / `z.email()`                              |
-| Flatten field errors    | Manual / `ZodError` issues                    | `z.flattenError(error).fieldErrors`                  |
+|                         | Trassenscout (today)                          | TILDA (`tilda-geo/app`)                             |
+| ----------------------- | --------------------------------------------- | --------------------------------------------------- |
+| Package                 | `zod@^3.25.76`                                | `zod@4.4.3`                                         |
+| Files importing `zod`   | **~231** under `src/`                         | ~150+ under `src/`                                  |
+| Form validation         | `react-hook-form` + `@hookform/resolvers/zod` | `@tanstack/react-form` — schema as validator        |
+| German error messages   | Inline `{ message: "…" }` on schemas          | `z.config(de())` via `src/lib/zodDeLocale.ts`       |
+| Server input validation | Blitz resolver `.parse()` in mutations        | `createServerFn().inputValidator()` + `.parse()`    |
+| Prisma enums            | `z.nativeEnum(PrismaEnum)`                    | `z.enum(PrismaEnum)`                                |
+| Object composition      | `.merge()` everywhere                         | `.extend()` / `.omit().extend()`                    |
+| URL / email             | `z.string().url()` / `.email()`               | `z.url()` / `z.email()`                             |
+| Flatten field errors    | Manual / `ZodError` issues                    | `z.flattenError(error).fieldErrors`                 |
 | Codegen                 | `zod-prisma` (devDep, mostly unused)          | Hand-written `schema.ts` per domain — **keep that** |
 
 Zod 4 is a **wide blast radius** migration: almost every `src/server/**/schema.ts`, API route, form, and nuqs parser touches Zod. Plan it together with the **TanStack Form** migration — TILDA does not use `@hookform/resolvers` at all.
@@ -36,12 +36,12 @@ Zod 4 is a **wide blast radius** migration: almost every `src/server/**/schema.t
 
 ## When to migrate
 
-| Phase | Scope | Notes |
-| ----- | ----- | ----- |
-| **A** | Bump `zod` + add `zodDeLocale` bootstrap | Do after Vite/Start scaffold exists (`router.tsx`, `db.server.ts`, `test/setup.ts`) |
-| **B** | Mechanical API fixes (codemod + grep) | `nativeEnum`, `merge`, `url`, `errorMap`, `invalid_type_error` |
-| **C** | Forms layer | Replace `zodResolver` + RHF `Form.tsx` with TILDA `Form.tsx` (`validators: { onChange, onSubmit: schema }`) |
-| **D** | Server boundary | Blitz mutations → `createServerFn` + `inputValidator` |
+| Phase | Scope                                    | Notes                                                                                                       |
+| ----- | ---------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| **A** | Bump `zod` + add `zodDeLocale` bootstrap | Do after Vite/Start scaffold exists (`router.tsx`, `db.server.ts`, `test/setup.ts`)                         |
+| **B** | Mechanical API fixes (codemod + grep)    | `nativeEnum`, `merge`, `url`, `errorMap`, `invalid_type_error`                                              |
+| **C** | Forms layer                              | Replace `zodResolver` + RHF `Form.tsx` with TILDA `Form.tsx` (`validators: { onChange, onSubmit: schema }`) |
+| **D** | Server boundary                          | Blitz mutations → `createServerFn` + `inputValidator`                                                       |
 
 Phase **A+B** can be a dedicated PR. Phase **C** is the largest user-facing change.
 
@@ -78,19 +78,19 @@ Import once at app entry points so default Zod messages are German:
 
 ```ts
 // src/lib/zodDeLocale.ts  (copy from tilda-geo/app)
-import { config } from 'zod'
-import { de } from 'zod/locales'
+import { config } from "zod"
+import { de } from "zod/locales"
 
 config(de())
 ```
 
 Bootstrap imports (mirror TILDA):
 
-| File | Why |
-| ---- | --- |
-| `src/router.tsx` | Client + SSR router init |
-| `src/server/db.server.ts` | Server-only validation |
-| `test/setup.ts` | Vitest |
+| File                      | Why                      |
+| ------------------------- | ------------------------ |
+| `src/router.tsx`          | Client + SSR router init |
+| `src/server/db.server.ts` | Server-only validation   |
+| `test/setup.ts`           | Vitest                   |
 
 Per-schema `{ message: "Pflichtfeld." }` strings remain valid (higher precedence than locale).
 
@@ -105,7 +105,9 @@ const form = useForm({
     onChange: schema,
     onSubmit: schema,
   },
-  onSubmit: async ({ value }) => { /* … */ },
+  onSubmit: async ({ value }) => {
+    /* … */
+  },
 })
 ```
 
@@ -121,7 +123,7 @@ TILDA [`validation.ts`](../../tilda-geo/app/src/server/utils/validation.ts):
 export function validationErrorState(error: z.ZodError) {
   return {
     success: false,
-    message: 'Bitte korrigieren Sie die Fehler im Formular',
+    message: "Bitte korrigieren Sie die Fehler im Formular",
     errors: z.flattenError(error).fieldErrors,
   }
 }
@@ -140,11 +142,13 @@ Port this to `src/server/utils/validation.ts` during the Start migration.
 TILDA [`regions.functions.ts`](../../tilda-geo/app/src/server/regions/regions.functions.ts):
 
 ```ts
-export const getRegionPageBeforeLoadFn = createServerFn({ method: 'GET' })
+export const getRegionPageBeforeLoadFn = createServerFn({ method: "GET" })
   .inputValidator((data: z.infer<typeof RegionPageBeforeLoadInput>) =>
     RegionPageBeforeLoadInput.parse(data),
   )
-  .handler(async ({ data }) => { /* … */ })
+  .handler(async ({ data }) => {
+    /* … */
+  })
 ```
 
 Replace Blitz `resolver.zod(Schema)` + `ctx.session.$authorize()` patterns with explicit `.parse()` inside server functions.
@@ -182,21 +186,21 @@ z.object({ ...BaseSchema.shape, ...AdditionalSchema.shape })
 
 ## Trassenscout inventory (grep-driven)
 
-| Pattern | Approx. count | Action |
-| ------- | ------------- | ------ |
-| `import { z } from "zod"` | ~231 files | Re-run `tsc` after bump |
-| `z.nativeEnum(` | ~16 | → `z.enum(` |
-| `.merge(` | ~116 | → `.extend()` / shape spread |
-| `z.string().url()` | ~10 | → `z.url()` |
-| `z.string().email()` | few | → `z.email()` |
-| `{ message: "…" }` | widespread | Still works; migrate to `{ error: "…" }` over time |
-| `invalid_type_error` | 1 (`schema-shared.ts`) | → unified `error` callback |
-| `errorMap` | 2 (`subsubsections/schema.ts`, `fieldvalidationEnum.ts`) | → `error` callback |
-| `z.preprocess(` | 2 (`schema-shared.ts`) | Still works; returns `ZodPipe` in v4 |
-| `.passthrough()` | 1 (`useFilters.nuqs.ts`) | Still works; consider `z.looseObject()` for new code |
-| `zodResolver` | 1 (`Form.tsx`) | Remove with TanStack Form migration |
-| `ZodType<any, any>` | ~15 form wrappers | → `z.ZodTypeAny` |
-| `zod-prisma` | devDep only | Remove — keep hand-written schemas |
+| Pattern                   | Approx. count                                            | Action                                               |
+| ------------------------- | -------------------------------------------------------- | ---------------------------------------------------- |
+| `import { z } from "zod"` | ~231 files                                               | Re-run `tsc` after bump                              |
+| `z.nativeEnum(`           | ~16                                                      | → `z.enum(`                                          |
+| `.merge(`                 | ~116                                                     | → `.extend()` / shape spread                         |
+| `z.string().url()`        | ~10                                                      | → `z.url()`                                          |
+| `z.string().email()`      | few                                                      | → `z.email()`                                        |
+| `{ message: "…" }`        | widespread                                               | Still works; migrate to `{ error: "…" }` over time   |
+| `invalid_type_error`      | 1 (`schema-shared.ts`)                                   | → unified `error` callback                           |
+| `errorMap`                | 2 (`subsubsections/schema.ts`, `fieldvalidationEnum.ts`) | → `error` callback                                   |
+| `z.preprocess(`           | 2 (`schema-shared.ts`)                                   | Still works; returns `ZodPipe` in v4                 |
+| `.passthrough()`          | 1 (`useFilters.nuqs.ts`)                                 | Still works; consider `z.looseObject()` for new code |
+| `zodResolver`             | 1 (`Form.tsx`)                                           | Remove with TanStack Form migration                  |
+| `ZodType<any, any>`       | ~15 form wrappers                                        | → `z.ZodTypeAny`                                     |
+| `zod-prisma`              | devDep only                                              | Remove — keep hand-written schemas                   |
 
 ---
 
@@ -212,8 +216,7 @@ z.number({ invalid_type_error: "Pflichtfeld" })
 
 // Zod 4
 z.number({
-  error: (issue) =>
-    issue.code === 'invalid_type' ? 'Pflichtfeld' : undefined,
+  error: (issue) => (issue.code === "invalid_type" ? "Pflichtfeld" : undefined),
 })
 ```
 
@@ -221,7 +224,7 @@ z.number({
 // Zod 3 — src/server/subsubsections/schema.ts
 z.coerce.date({
   errorMap: ({ code }, { defaultError }) => {
-    if (code == 'invalid_date') return { message: 'Das Datum ist nicht richtig formatiert.' }
+    if (code == "invalid_date") return { message: "Das Datum ist nicht richtig formatiert." }
     return { message: defaultError }
   },
 })
@@ -229,9 +232,7 @@ z.coerce.date({
 // Zod 4
 z.coerce.date({
   error: (issue) =>
-    issue.code === 'invalid_date'
-      ? 'Das Datum ist nicht richtig formatiert.'
-      : undefined,
+    issue.code === "invalid_date" ? "Das Datum ist nicht richtig formatiert." : undefined,
 })
 ```
 
@@ -240,11 +241,11 @@ z.coerce.date({
 ### Top-level string formats
 
 ```ts
-z.string().url()   // deprecated
-z.url()            // TILDA pattern
+z.string().url() // deprecated
+z.url() // TILDA pattern
 
-z.string().email({ message: '…' })  // deprecated
-z.email({ error: '…' })             // TILDA pattern
+z.string().email({ message: "…" }) // deprecated
+z.email({ error: "…" }) // TILDA pattern
 ```
 
 ### `z.flattenError` replaces `.flatten()` / `.format()`
@@ -270,7 +271,7 @@ Defaults short-circuit on `undefined` and must match **output** type. If Trassen
 ### Optional fields with inner `.default()`
 
 ```ts
-z.object({ a: z.string().default('tuna').optional() })
+z.object({ a: z.string().default("tuna").optional() })
 schema.parse({}) // Zod 4: { a: 'tuna' } — was {} in Zod 3
 ```
 
@@ -300,12 +301,12 @@ Mostly affects generic utilities; runtime behaviour unchanged.
 
 Copy TILDA form stack:
 
-| Trassenscout | TILDA |
-| ------------ | ----- |
-| `Form.tsx` (RHF) | `src/components/shared/form/Form.tsx` |
-| `LabeledTextField.tsx` etc. | TILDA field components or port to TanStack Form `fieldApi` |
-| `FormError.tsx` + `react-intl` | `formatError.ts` + inline `role="alert"` |
-| `errorMessageTranslations.ts` | Keep as submit-result message map (not Zod) |
+| Trassenscout                   | TILDA                                                      |
+| ------------------------------ | ---------------------------------------------------------- |
+| `Form.tsx` (RHF)               | `src/components/shared/form/Form.tsx`                      |
+| `LabeledTextField.tsx` etc.    | TILDA field components or port to TanStack Form `fieldApi` |
+| `FormError.tsx` + `react-intl` | `formatError.ts` + inline `role="alert"`                   |
+| `errorMessageTranslations.ts`  | Keep as submit-result message map (not Zod)                |
 
 Server/database errors (Prisma unique constraint strings) stay as a **message dictionary** — they are not Zod errors.
 
@@ -313,7 +314,7 @@ Server/database errors (Prisma unique constraint strings) stay as a **message di
 
 ## nuqs + Zod
 
-[`useFilters.nuqs.ts`](../src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_components/useFilters.nuqs.ts) uses `parseAsJson(filterSchema.parse)`.
+[`useFilters.nuqs.ts`](<../src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_components/useFilters.nuqs.ts>) uses `parseAsJson(filterSchema.parse)`.
 
 After Zod 4:
 
@@ -384,10 +385,10 @@ TILDA approach: hand-written `src/server/**/schema.ts` next to Prisma models —
 
 ## Cross-references
 
-| Doc | Overlap |
-| --- | ------- |
-| [`tech-stack-migration.md`](./tech-stack-migration.md) | Zod 4 row; RHF → TanStack Form |
-| [`routes.md`](./routes.md) | `validateSearch` with Zod |
-| [`new-i18n.md`](./new-i18n.md) | Form server errors vs Zod field errors |
-| [`testing.md`](./testing.md) | Vitest setup imports `zodDeLocale` |
-| [`env-check.md`](./env-check.md) | `envSchema.ts` with `z.url()`, `z.enum()` — copy TILDA `envSchema.ts` |
+| Doc                                                    | Overlap                                                               |
+| ------------------------------------------------------ | --------------------------------------------------------------------- |
+| [`tech-stack-migration.md`](./tech-stack-migration.md) | Zod 4 row; RHF → TanStack Form                                        |
+| [`routes.md`](./routes.md)                             | `validateSearch` with Zod                                             |
+| [`new-i18n.md`](./new-i18n.md)                         | Form server errors vs Zod field errors                                |
+| [`testing.md`](./testing.md)                           | Vitest setup imports `zodDeLocale`                                    |
+| [`env-check.md`](./env-check.md)                       | `envSchema.ts` with `z.url()`, `z.enum()` — copy TILDA `envSchema.ts` |

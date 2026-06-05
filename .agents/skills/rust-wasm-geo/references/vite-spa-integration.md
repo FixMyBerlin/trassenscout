@@ -7,15 +7,15 @@ Plain Vite + React SPA (no TanStack Start). Same Bun/Vite 8+ stack as the [tech 
 ## Vite config
 
 ```typescript
-import wasm from 'vite-plugin-wasm'
-import topLevelAwait from 'vite-plugin-top-level-await'
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import wasm from "vite-plugin-wasm"
+import topLevelAwait from "vite-plugin-top-level-await"
+import { defineConfig } from "vite"
+import react from "@vitejs/plugin-react"
 
 export default defineConfig({
   plugins: [react(), wasm(), topLevelAwait()],
   optimizeDeps: {
-    exclude: ['geo-isochrone'], // wasm-pack pkg name — adjust per crate
+    exclude: ["geo-isochrone"], // wasm-pack pkg name — adjust per crate
   },
 })
 ```
@@ -69,12 +69,13 @@ src/
 
 ```typescript
 // useIsochrone.ts
-import { useMutation } from '@tanstack/react-query'
-import { bufferPolygon } from './wasm'
+import { useMutation } from "@tanstack/react-query"
+import { bufferPolygon } from "./wasm"
 
 export function useBufferPolygon() {
   return useMutation({
-    mutationFn: ({ fc, meters }: { fc: GeoJSON.FeatureCollection; meters: number }) => bufferPolygon(fc, meters),
+    mutationFn: ({ fc, meters }: { fc: GeoJSON.FeatureCollection; meters: number }) =>
+      bufferPolygon(fc, meters),
   })
 }
 ```

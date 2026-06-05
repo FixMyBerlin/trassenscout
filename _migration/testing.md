@@ -12,12 +12,12 @@ Related docs: [`tech-stack-migration.md`](./tech-stack-migration.md), [`auth.md`
 
 ## Executive summary
 
-| Layer | Trassenscout today | TILDA (target pattern) | Migration stance |
-| ----- | ------------------ | ---------------------- | ---------------- |
-| **Unit (Vitest)** | 5 server mutation tests, Blitz `db.$reset()`, `@next/env` | 36 tests (server + pure logic + components), Vite `loadEnv`, no DB in CI | Adopt TILDA Vitest config; rewrite DB tests for Prisma 7 / Better Auth |
-| **Component** | Blitz `render()` wrapper + `next-router-mock` | 3 `*.test.tsx` with `@tanstack/react-router` mocks + `jsdom` | Adopt TILDA pattern; drop Blitz test utils |
-| **E2E (Playwright)** | 5 specs, no `webServer`, 3 browsers, MapGrab, survey flows | 9 specs, `webServer`, smoke suite, stubbed auth, console/server checks | Adopt TILDA infra; **keep** TS map/survey E2E assets |
-| **CI** | Vitest in `check`; tests disabled in pre-push; no PR Playwright | Vitest in `ci.yml`; E2E local only | Adopt TILDA PR CI; add Playwright job later (see below) |
+| Layer                | Trassenscout today                                              | TILDA (target pattern)                                                   | Migration stance                                                       |
+| -------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| **Unit (Vitest)**    | 5 server mutation tests, Blitz `db.$reset()`, `@next/env`       | 36 tests (server + pure logic + components), Vite `loadEnv`, no DB in CI | Adopt TILDA Vitest config; rewrite DB tests for Prisma 7 / Better Auth |
+| **Component**        | Blitz `render()` wrapper + `next-router-mock`                   | 3 `*.test.tsx` with `@tanstack/react-router` mocks + `jsdom`             | Adopt TILDA pattern; drop Blitz test utils                             |
+| **E2E (Playwright)** | 5 specs, no `webServer`, 3 browsers, MapGrab, survey flows      | 9 specs, `webServer`, smoke suite, stubbed auth, console/server checks   | Adopt TILDA infra; **keep** TS map/survey E2E assets                   |
+| **CI**               | Vitest in `check`; tests disabled in pre-push; no PR Playwright | Vitest in `ci.yml`; E2E local only                                       | Adopt TILDA PR CI; add Playwright job later (see below)                |
 
 TILDA is the structural reference (Vitest config, scripts, Playwright layout, auth fixtures, smoke tests). Trassenscout has **domain-specific E2E value** (surveys, MapGrab, pin drag) that TILDA does not cover and should be preserved.
 
@@ -27,22 +27,22 @@ TILDA is the structural reference (Vitest config, scripts, Playwright layout, au
 
 ### Trassenscout
 
-| Kind | Count | Location |
-| ---- | ----- | -------- |
-| Unit tests | 5 | `src/server/**/*.test.ts` |
-| Playwright specs | 5 | `tests/**/*.spec.ts` |
-| Blitz test utils | 1 | `tests/blitz/utils.tsx`, `tests/blitz/setup.ts` |
-| E2E helpers | 6 | `tests/_utils/`, `tests/survey/` |
-| Draft CI workflow | 1 | `tests/_todo/playwright.yml` (not active) |
+| Kind              | Count | Location                                        |
+| ----------------- | ----- | ----------------------------------------------- |
+| Unit tests        | 5     | `src/server/**/*.test.ts`                       |
+| Playwright specs  | 5     | `tests/**/*.spec.ts`                            |
+| Blitz test utils  | 1     | `tests/blitz/utils.tsx`, `tests/blitz/setup.ts` |
+| E2E helpers       | 6     | `tests/_utils/`, `tests/survey/`                |
+| Draft CI workflow | 1     | `tests/_todo/playwright.yml` (not active)       |
 
 ### TILDA
 
-| Kind | Count | Location |
-| ---- | ----- | -------- |
-| Unit tests | 33 `.test.ts` + 3 `.test.tsx` | Co-located under `src/`, `scripts/` |
-| Playwright specs | 9 | `tests/**/*.spec.ts` |
-| Fixtures & utils | 8 | `tests/fixtures/`, `tests/utils/` |
-| Playwright app helpers | 1 | `src/components/shared/utils/playwright.ts` |
+| Kind                   | Count                         | Location                                    |
+| ---------------------- | ----------------------------- | ------------------------------------------- |
+| Unit tests             | 33 `.test.ts` + 3 `.test.tsx` | Co-located under `src/`, `scripts/`         |
+| Playwright specs       | 9                             | `tests/**/*.spec.ts`                        |
+| Fixtures & utils       | 8                             | `tests/fixtures/`, `tests/utils/`           |
+| Playwright app helpers | 1                             | `src/components/shared/utils/playwright.ts` |
 
 ---
 
@@ -50,13 +50,13 @@ TILDA is the structural reference (Vitest config, scripts, Playwright layout, au
 
 ### Package scripts
 
-| Script | Trassenscout | TILDA (target) |
-| ------ | ------------ | -------------- |
-| Unit run | `test` → `vitest run --passWithNoTests \|\| :` | `test-run` → `vitest run --passWithNoTests` |
-| Unit watch | `test:watch` (+ docker lifecycle) | `test` → `vitest watch` |
-| Unit UI | `test:ui` | — |
-| E2E | *(none — use `npx playwright test`)* | `test-e2e`, `test-e2e-ui`, `test-e2e-debug` |
-| Quality gate | `check` includes `test` (sequential) | `check` runs `test-run` in parallel |
+| Script       | Trassenscout                                   | TILDA (target)                              |
+| ------------ | ---------------------------------------------- | ------------------------------------------- |
+| Unit run     | `test` → `vitest run --passWithNoTests \|\| :` | `test-run` → `vitest run --passWithNoTests` |
+| Unit watch   | `test:watch` (+ docker lifecycle)              | `test` → `vitest watch`                     |
+| Unit UI      | `test:ui`                                      | —                                           |
+| E2E          | _(none — use `npx playwright test`)_           | `test-e2e`, `test-e2e-ui`, `test-e2e-debug` |
+| Quality gate | `check` includes `test` (sequential)           | `check` runs `test-run` in parallel         |
 
 **Migrate to TILDA script names** (see [`package-script-names.md`](./package-script-names.md)):
 
@@ -72,22 +72,22 @@ TILDA is the structural reference (Vitest config, scripts, Playwright layout, au
 
 ### Dependencies
 
-| Package | Trassenscout | TILDA | Action |
-| ------- | ------------ | ----- | ------ |
-| `vitest` | 3.2.4 | 4.1.7 | Upgrade with migration |
-| `@vitejs/plugin-react` | yes | yes | Keep |
-| `@vitest/ui` | yes | no | Optional; keep if team uses it |
-| `@playwright/test` | 1.58.2 | 1.60.0 | Align version |
-| `@testing-library/react` | 16.3.2 | 16.3.2 | Keep |
-| `@testing-library/jest-dom` | yes | yes | Keep |
-| `@testing-library/dom` | yes | transitive | Drop explicit dep if unused |
-| `@testing-library/react-hooks` | yes | — | **Remove** (deprecated) |
-| `jsdom` | 26.x | 29.x | Upgrade |
-| `@faker-js/faker` | yes | — | **Keep** (E2E data) |
-| `@mapgrab/map-interface` | yes | — | **Keep** (map E2E) |
-| `@mapgrab/playwright` | yes | — | **Keep** (map E2E) |
-| `next-router-mock` | yes | — | **Remove** |
-| `@next/env` (Vitest) | yes | — | **Remove** → Vite `loadEnv` |
+| Package                        | Trassenscout | TILDA      | Action                         |
+| ------------------------------ | ------------ | ---------- | ------------------------------ |
+| `vitest`                       | 3.2.4        | 4.1.7      | Upgrade with migration         |
+| `@vitejs/plugin-react`         | yes          | yes        | Keep                           |
+| `@vitest/ui`                   | yes          | no         | Optional; keep if team uses it |
+| `@playwright/test`             | 1.58.2       | 1.60.0     | Align version                  |
+| `@testing-library/react`       | 16.3.2       | 16.3.2     | Keep                           |
+| `@testing-library/jest-dom`    | yes          | yes        | Keep                           |
+| `@testing-library/dom`         | yes          | transitive | Drop explicit dep if unused    |
+| `@testing-library/react-hooks` | yes          | —          | **Remove** (deprecated)        |
+| `jsdom`                        | 26.x         | 29.x       | Upgrade                        |
+| `@faker-js/faker`              | yes          | —          | **Keep** (E2E data)            |
+| `@mapgrab/map-interface`       | yes          | —          | **Keep** (map E2E)             |
+| `@mapgrab/playwright`          | yes          | —          | **Keep** (map E2E)             |
+| `next-router-mock`             | yes          | —          | **Remove**                     |
+| `@next/env` (Vitest)           | yes          | —          | **Remove** → Vite `loadEnv`    |
 
 ---
 
@@ -107,28 +107,26 @@ TILDA is the structural reference (Vitest config, scripts, Playwright layout, au
 **TILDA** (`vitest.config.ts`) — **adopt this shape**:
 
 ```ts
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
-import react from '@vitejs/plugin-react'
-import { loadEnv } from 'vite'
-import { defineConfig } from 'vitest/config'
+import path from "node:path"
+import { fileURLToPath } from "node:url"
+import react from "@vitejs/plugin-react"
+import { loadEnv } from "vite"
+import { defineConfig } from "vitest/config"
 
-const repoRoot = path.resolve(fileURLToPath(new URL('.', import.meta.url)), '..')
-const env = loadEnv('test', repoRoot, 'VITE_')
+const repoRoot = path.resolve(fileURLToPath(new URL(".", import.meta.url)), "..")
+const env = loadEnv("test", repoRoot, "VITE_")
 
 export default defineConfig({
   plugins: [react()],
   resolve: {
-    alias: [
-      { find: '@', replacement: fileURLToPath(new URL('./src', import.meta.url)) },
-    ],
+    alias: [{ find: "@", replacement: fileURLToPath(new URL("./src", import.meta.url)) }],
   },
   test: {
-    dir: './',
+    dir: "./",
     env,
     globals: true,
-    setupFiles: './test/setup.ts',
-    include: ['**/*.test.ts', '**/*.test.tsx'],
+    setupFiles: "./test/setup.ts",
+    include: ["**/*.test.ts", "**/*.test.tsx"],
     maxWorkers: 1,
   },
 })
@@ -142,13 +140,13 @@ export default defineConfig({
 
 ### Test placement & naming
 
-| Convention | Trassenscout | TILDA (target) |
-| ---------- | ------------ | -------------- |
-| Unit file suffix | `*.test.ts` | `*.test.ts`, `*.test.tsx` |
-| E2E file suffix | `*.spec.ts` | `*.spec.ts` |
-| Co-location | Next to mutations | Next to source (`src/**`) |
-| Vitest `include` | `*.test.ts` | `*.test.ts`, `*.test.tsx` |
-| Vitest `exclude` | implicit (`.spec.ts` not matched) | same |
+| Convention       | Trassenscout                      | TILDA (target)            |
+| ---------------- | --------------------------------- | ------------------------- |
+| Unit file suffix | `*.test.ts`                       | `*.test.ts`, `*.test.tsx` |
+| E2E file suffix  | `*.spec.ts`                       | `*.spec.ts`               |
+| Co-location      | Next to mutations                 | Next to source (`src/**`) |
+| Vitest `include` | `*.test.ts`                       | `*.test.ts`, `*.test.tsx` |
+| Vitest `exclude` | implicit (`.spec.ts` not matched) | same                      |
 
 ### Database-backed unit tests
 
@@ -161,11 +159,11 @@ Trassenscout runs **5 mutation tests** against a real Postgres via Docker:
 
 Tests call `db.$reset()` — provided by Blitz `enhancePrisma`, **not** available after Blitz removal.
 
-| Approach | When to use |
-| -------- | ----------- |
-| **Pure logic tests** (no DB) | Default — TILDA style; runs in CI without Docker |
+| Approach                       | When to use                                                     |
+| ------------------------------ | --------------------------------------------------------------- |
+| **Pure logic tests** (no DB)   | Default — TILDA style; runs in CI without Docker                |
 | **Integration tests** (Prisma) | Local / optional CI job; use `docker compose` or testcontainers |
-| **Mock Prisma** | Auth/email tests during Better Auth migration |
+| **Mock Prisma**                | Auth/email tests during Better Auth migration                   |
 
 **Migration tasks for existing TS unit tests:**
 
@@ -187,7 +185,7 @@ Tests call `db.$reset()` — provided by Blitz `enhancePrisma`, **not** availabl
 
 ```ts
 /** @vitest-environment jsdom */
-vi.mock('@tanstack/react-router', () => ({
+vi.mock("@tanstack/react-router", () => ({
   getRouteApi: () => ({ useLoaderData: vi.fn() }),
 }))
 ```
@@ -216,14 +214,14 @@ Trassenscout has **no component unit tests** today; the Blitz `render()` helper 
 
 ### Config comparison
 
-| Setting | Trassenscout | TILDA (target) | Recommendation |
-| ------- | ------------ | -------------- | -------------- |
-| `baseURL` | `http://127.0.0.1:6173` | `http://127.0.0.1:5173` | Use Vite dev port (`5173`) |
-| `webServer` | commented out | `bun run dev` | **Adopt TILDA** |
-| `projects` | chromium, firefox, webkit | chromium only | Start chromium-only in CI; keep multi-browser optional locally |
-| `retries` | CI: 2 | CI: 2 | Same |
-| `workers` | CI: 1 | CI: 1 | Same |
-| Env loading | `.env.test` only | `../.env` → `.env` → `.env.test` | **Adopt TILDA** layered dotenv |
+| Setting     | Trassenscout              | TILDA (target)                   | Recommendation                                                 |
+| ----------- | ------------------------- | -------------------------------- | -------------------------------------------------------------- |
+| `baseURL`   | `http://127.0.0.1:6173`   | `http://127.0.0.1:5173`          | Use Vite dev port (`5173`)                                     |
+| `webServer` | commented out             | `bun run dev`                    | **Adopt TILDA**                                                |
+| `projects`  | chromium, firefox, webkit | chromium only                    | Start chromium-only in CI; keep multi-browser optional locally |
+| `retries`   | CI: 2                     | CI: 2                            | Same                                                           |
+| `workers`   | CI: 1                     | CI: 1                            | Same                                                           |
+| Env loading | `.env.test` only          | `../.env` → `.env` → `.env.test` | **Adopt TILDA** layered dotenv                                 |
 
 ### Directory layout (target)
 
@@ -260,9 +258,9 @@ TILDA `tests/smoke/public-routes.spec.ts` iterates `PUBLIC_SMOKE_ROUTES` from `t
 
 ```ts
 export const PUBLIC_SMOKE_ROUTES = [
-  '/',
-  '/kontakt',
-  '/datenschutz',
+  "/",
+  "/kontakt",
+  "/datenschutz",
   // … post-migration public routes
 ] as const
 ```
@@ -271,12 +269,12 @@ Use smoke tests as the **first E2E milestone** after TanStack Start scaffold (ch
 
 ### Auth E2E — adopt from TILDA
 
-| Mode | TILDA | Trassenscout | Target for TS |
-| ---- | ----- | ------------ | ------------- |
-| Real login | `auth-setup.spec.ts` + `RUN_OAUTH_E2E=1` + OSM creds | — | Email/password via Better Auth (no OSM at launch — see [`auth.md`](./auth.md)) |
-| Stored session | `tests/.auth/session.json` | — | Adapt cookie names (`trassenscout.session_*`) |
-| Stubbed login | `createStubbedAdminSession` / `createStubbedUserSession` | — | **Adopt** — HMAC-signed Better Auth cookies, DB upsert |
-| Admin role switch | `switchUserToAdmin(userId)` | — | Adapt for TS roles |
+| Mode              | TILDA                                                    | Trassenscout | Target for TS                                                                  |
+| ----------------- | -------------------------------------------------------- | ------------ | ------------------------------------------------------------------------------ |
+| Real login        | `auth-setup.spec.ts` + `RUN_OAUTH_E2E=1` + OSM creds     | —            | Email/password via Better Auth (no OSM at launch — see [`auth.md`](./auth.md)) |
+| Stored session    | `tests/.auth/session.json`                               | —            | Adapt cookie names (`trassenscout.session_*`)                                  |
+| Stubbed login     | `createStubbedAdminSession` / `createStubbedUserSession` | —            | **Adopt** — HMAC-signed Better Auth cookies, DB upsert                         |
+| Admin role switch | `switchUserToAdmin(userId)`                              | —            | Adapt for TS roles                                                             |
 
 Port `tests/fixtures/auth.ts` and `admin.stubbed-auth.spec.ts` almost verbatim; change cookie prefix and user model fields.
 
@@ -301,20 +299,20 @@ Trassenscout uses a raw `playwrightMapLoaded` custom event and dev-only MapGrab 
 
 ### Map E2E — keep from Trassenscout
 
-| Capability | Trassenscout | TILDA | Keep |
-| ---------- | ------------ | ----- | ---- |
-| Map load wait | `playwrightWaitForMapLoadedEvent` | `waitForMapLoad` + canvas fallback | Merge: TILDA wait + TS MapGrab |
-| Layer interaction | `@mapgrab/playwright` merged test/expect | — | **Yes** |
-| MapGrab install | `installMapGrabIfTest` (dev only, not gated) | — | Gate with `VITE_PLAYWRIGHT_ENABLED` |
-| Pin drag | `mapDragPin.ts` | — | **Yes** |
-| Network tile checks | — | `verifyMapNetworkRequests` | Adopt TILDA for region maps; add TS tile patterns for survey maps |
+| Capability          | Trassenscout                                 | TILDA                              | Keep                                                              |
+| ------------------- | -------------------------------------------- | ---------------------------------- | ----------------------------------------------------------------- |
+| Map load wait       | `playwrightWaitForMapLoadedEvent`            | `waitForMapLoad` + canvas fallback | Merge: TILDA wait + TS MapGrab                                    |
+| Layer interaction   | `@mapgrab/playwright` merged test/expect     | —                                  | **Yes**                                                           |
+| MapGrab install     | `installMapGrabIfTest` (dev only, not gated) | —                                  | Gate with `VITE_PLAYWRIGHT_ENABLED`                               |
+| Pin drag            | `mapDragPin.ts`                              | —                                  | **Yes**                                                           |
+| Network tile checks | —                                            | `verifyMapNetworkRequests`         | Adopt TILDA for region maps; add TS tile patterns for survey maps |
 
 **Support merge** (keep TS pattern):
 
 ```ts
 // tests/utils/support.ts
-import { mergeExpects, mergeTests, expect as pwExpect, test as pwTest } from '@playwright/test'
-import { expect as mapGrabExpect, test as mapGrabTest } from '@mapgrab/playwright'
+import { mergeExpects, mergeTests, expect as pwExpect, test as pwTest } from "@playwright/test"
+import { expect as mapGrabExpect, test as mapGrabTest } from "@mapgrab/playwright"
 
 export const test = mergeTests(pwTest, mapGrabTest)
 export const expect = mergeExpects(pwExpect, mapGrabExpect)
@@ -324,13 +322,13 @@ export const expect = mergeExpects(pwExpect, mapGrabExpect)
 
 Trassenscout has **rich survey participation flows** TILDA does not need:
 
-| Spec | Purpose |
-| ---- | ------- |
-| `survey-demos.spec.ts` | Parametrized demo surveys (`rstest-*`) |
-| `survey-bb-part1.spec.ts`, `survey-bb-part1-2.spec.ts` | Brandenburg survey |
-| `survey-frm7-neu.spec.ts` | Full flow + map pin drag |
-| `filloutAndTestPartOne.ts` | Shared step helper |
-| `tests/_utils/faker.ts` | German faker data |
+| Spec                                                   | Purpose                                |
+| ------------------------------------------------------ | -------------------------------------- |
+| `survey-demos.spec.ts`                                 | Parametrized demo surveys (`rstest-*`) |
+| `survey-bb-part1.spec.ts`, `survey-bb-part1-2.spec.ts` | Brandenburg survey                     |
+| `survey-frm7-neu.spec.ts`                              | Full flow + map pin drag               |
+| `filloutAndTestPartOne.ts`                             | Shared step helper                     |
+| `tests/_utils/faker.ts`                                | German faker data                      |
 
 **Keep** these specs and helpers; update URLs when `beteiligung` routes move to TanStack file routes. Extract shared survey steps into `tests/utils/survey.ts` over time.
 
@@ -342,12 +340,12 @@ TS `tests/static-pages.spec.ts` checks title/h1/noindex — fold into `PUBLIC_SM
 
 ## Environment variables
 
-| File | Trassenscout | TILDA | Target |
-| ---- | ------------ | ----- | ------ |
-| Repo `.env` | partial | `VITE_*`, `DATABASE_*`, `SESSION_SECRET_KEY` | Standard |
-| `.env.test` | `DATABASE_URL`, `IS_TEST` | Playwright creds only | Split concerns like TILDA |
-| Vitest | loads via `@next/env` | `loadEnv('test', repoRoot, 'VITE_')` | TILDA |
-| Playwright | `.env.test` | layered: `../.env` → `.env` → `.env.test` | TILDA |
+| File        | Trassenscout              | TILDA                                        | Target                    |
+| ----------- | ------------------------- | -------------------------------------------- | ------------------------- |
+| Repo `.env` | partial                   | `VITE_*`, `DATABASE_*`, `SESSION_SECRET_KEY` | Standard                  |
+| `.env.test` | `DATABASE_URL`, `IS_TEST` | Playwright creds only                        | Split concerns like TILDA |
+| Vitest      | loads via `@next/env`     | `loadEnv('test', repoRoot, 'VITE_')`         | TILDA                     |
+| Playwright  | `.env.test`               | layered: `../.env` → `.env` → `.env.test`    | TILDA                     |
 
 **Target `.env.test` (Playwright only):**
 
@@ -369,12 +367,12 @@ Vitest must **not** depend on `.env.test` secrets (TILDA comment in `app/.env.te
 
 ## CI / quality gates
 
-| Check | Trassenscout | TILDA | Target |
-| ----- | ------------ | ----- | ------ |
-| PR unit tests | via `check` (when run) | `ci.yml` → `bun run test-run` | **Adopt TILDA** |
-| PR Playwright | draft `tests/_todo/playwright.yml` | not in CI | Phase 2: smoke + stubbed-auth only |
-| Pre-push tests | disabled (no DB) | `bun run check` | Enable `test-run` (no DB needed) after unit tests are mostly pure |
-| Vitest env in CI | `DATABASE_URL` from `.env.test` + docker | `VITE_APP_ENV`, `VITE_APP_ORIGIN` | TILDA pattern |
+| Check            | Trassenscout                             | TILDA                             | Target                                                            |
+| ---------------- | ---------------------------------------- | --------------------------------- | ----------------------------------------------------------------- |
+| PR unit tests    | via `check` (when run)                   | `ci.yml` → `bun run test-run`     | **Adopt TILDA**                                                   |
+| PR Playwright    | draft `tests/_todo/playwright.yml`       | not in CI                         | Phase 2: smoke + stubbed-auth only                                |
+| Pre-push tests   | disabled (no DB)                         | `bun run check`                   | Enable `test-run` (no DB needed) after unit tests are mostly pure |
+| Vitest env in CI | `DATABASE_URL` from `.env.test` + docker | `VITE_APP_ENV`, `VITE_APP_ORIGIN` | TILDA pattern                                                     |
 
 **Phase 1 CI** (match TILDA):
 
@@ -438,38 +436,38 @@ Vitest must **not** depend on `.env.test` secrets (TILDA comment in `app/.env.te
 
 ## Decision log
 
-| Topic | Decision | Rationale |
-| ----- | -------- | --------- |
-| Vitest env | TILDA `loadEnv` | No Next dependency; matches Vite app |
-| E2E `webServer` | TILDA | TS manual dev server is friction; README says WIP |
-| E2E browsers | Chromium in CI; 3 browsers optional local | TS runs all 3 — slow; TILDA pragmatic default |
-| MapGrab | **Keep TS** | TILDA has no layer-click E2E; needed for survey maps |
-| `playwrightTestId` | **Adopt TILDA** | Production-safe vs TS dev-only test hooks |
-| `db.$reset()` | **Drop** | Blitz-specific; use truncate or mocks |
-| Blitz `render()` | **Drop** | Use TILDA TanStack router mocks |
-| Survey specs | **Keep** | Core TS product coverage |
-| Smoke route list | **Adopt TILDA** | Best regression net for migration |
-| Stubbed auth | **Adopt TILDA** | Enables admin E2E without email/OAuth |
-| `test \|\| :` | **Remove** | Hides failures |
+| Topic              | Decision                                  | Rationale                                            |
+| ------------------ | ----------------------------------------- | ---------------------------------------------------- |
+| Vitest env         | TILDA `loadEnv`                           | No Next dependency; matches Vite app                 |
+| E2E `webServer`    | TILDA                                     | TS manual dev server is friction; README says WIP    |
+| E2E browsers       | Chromium in CI; 3 browsers optional local | TS runs all 3 — slow; TILDA pragmatic default        |
+| MapGrab            | **Keep TS**                               | TILDA has no layer-click E2E; needed for survey maps |
+| `playwrightTestId` | **Adopt TILDA**                           | Production-safe vs TS dev-only test hooks            |
+| `db.$reset()`      | **Drop**                                  | Blitz-specific; use truncate or mocks                |
+| Blitz `render()`   | **Drop**                                  | Use TILDA TanStack router mocks                      |
+| Survey specs       | **Keep**                                  | Core TS product coverage                             |
+| Smoke route list   | **Adopt TILDA**                           | Best regression net for migration                    |
+| Stubbed auth       | **Adopt TILDA**                           | Enables admin E2E without email/OAuth                |
+| `test \|\| :`      | **Remove**                                | Hides failures                                       |
 
 ---
 
 ## File mapping (Trassenscout → target)
 
-| Current | Target | Action |
-| ------- | ------ | ------ |
-| `vitest.config.ts` | `vitest.config.ts` | Rewrite (TILDA template) |
-| `tests/blitz/setup.ts` | `test/setup.ts` | Move + extend |
-| `tests/blitz/utils.tsx` | — | Delete |
-| `tests/blitz/mocks/*` | `test/mocks/*` or inline | Keep mocks if still used |
-| `playwright.config.ts` | `playwright.config.ts` | Rewrite (TILDA + MapGrab comment) |
-| `tests/_utils/support.ts` | `tests/utils/support.ts` | Keep |
-| `tests/_utils/customMapLoadedEvent.ts` | `src/lib/playwright.ts` | Replace with TILDA isomorphic helper |
-| `tests/_utils/faker.ts` | `tests/utils/faker.ts` | Keep |
-| `tests/_utils/mapDragPin.ts` | `tests/utils/mapDragPin.ts` | Keep |
-| `tests/README.md` | `tests/README.md` | Merge TILDA + TS map docs |
-| `tests/_todo/playwright.yml` | `.github/workflows/e2e.yml` | Activate when DB story is clear |
-| `.env.test` | `.env.test` | Playwright-only secrets |
+| Current                                | Target                      | Action                               |
+| -------------------------------------- | --------------------------- | ------------------------------------ |
+| `vitest.config.ts`                     | `vitest.config.ts`          | Rewrite (TILDA template)             |
+| `tests/blitz/setup.ts`                 | `test/setup.ts`             | Move + extend                        |
+| `tests/blitz/utils.tsx`                | —                           | Delete                               |
+| `tests/blitz/mocks/*`                  | `test/mocks/*` or inline    | Keep mocks if still used             |
+| `playwright.config.ts`                 | `playwright.config.ts`      | Rewrite (TILDA + MapGrab comment)    |
+| `tests/_utils/support.ts`              | `tests/utils/support.ts`    | Keep                                 |
+| `tests/_utils/customMapLoadedEvent.ts` | `src/lib/playwright.ts`     | Replace with TILDA isomorphic helper |
+| `tests/_utils/faker.ts`                | `tests/utils/faker.ts`      | Keep                                 |
+| `tests/_utils/mapDragPin.ts`           | `tests/utils/mapDragPin.ts` | Keep                                 |
+| `tests/README.md`                      | `tests/README.md`           | Merge TILDA + TS map docs            |
+| `tests/_todo/playwright.yml`           | `.github/workflows/e2e.yml` | Activate when DB story is clear      |
+| `.env.test`                            | `.env.test`                 | Playwright-only secrets              |
 
 ---
 

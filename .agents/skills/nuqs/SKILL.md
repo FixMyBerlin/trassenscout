@@ -77,22 +77,22 @@ Upstream detail: [Installation](https://nuqs.dev/docs/installation.md) · [Adapt
 When you must run nuqs hooks alongside the router:
 
 ```tsx
-import { createFileRoute, Link } from '@tanstack/react-router'
-import { createStandardSchemaV1, parseAsIndex, parseAsString, useQueryStates } from 'nuqs'
+import { createFileRoute, Link } from "@tanstack/react-router"
+import { createStandardSchemaV1, parseAsIndex, parseAsString, useQueryStates } from "nuqs"
 
 const searchParams = {
-  searchQuery: parseAsString.withDefault(''),
+  searchQuery: parseAsString.withDefault(""),
   pageIndex: parseAsIndex.withDefault(0),
 }
 
-export const Route = createFileRoute('/search')({
+export const Route = createFileRoute("/search")({
   validateSearch: createStandardSchemaV1(searchParams, { partialOutput: true }),
   component: RouteComponent,
 })
 
 function RouteComponent() {
   const [{ searchQuery, pageIndex }] = useQueryStates(searchParams)
-  return <Link to="/search" search={{ searchQuery: 'foo' }} />
+  return <Link to="/search" search={{ searchQuery: "foo" }} />
 }
 ```
 

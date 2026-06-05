@@ -20,8 +20,8 @@ TanStack Router follows **two execution paths**: UI routes run matching, `valida
 **TanStack Router (Zod):** [Validate search — Quick start](https://tanstack.com/router/latest/docs/how-to/validate-search-params#quick-start) · [Zod (recommended)](https://tanstack.com/router/latest/docs/how-to/validate-search-params#zod-recommended) · [Search params — validating & typing](https://tanstack.com/router/latest/docs/framework/react/guide/search-params#validating-and-typing-search-params) · [Search params in components](https://tanstack.com/router/latest/docs/framework/react/guide/search-params#search-params-in-components) · [Using search params in loaders](https://tanstack.com/router/latest/docs/framework/react/guide/search-params#using-search-params-in-loaders) · [RouteOptions — `params.parse`](https://tanstack.com/router/latest/docs/framework/react/api/router/RouteOptionsType#paramsparse-method) · [RouteOptions — `validateSearch`](https://tanstack.com/router/latest/docs/framework/react/api/router/RouteOptionsType#validatesearch-method) · [Data loading — route loaders](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#route-loaders) · [`loaderDeps` + search](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#using-loaderdeps-to-access-search-params)
 
 ```tsx
-import { createFileRoute } from '@tanstack/react-router'
-import { z } from 'zod'
+import { createFileRoute } from "@tanstack/react-router"
+import { z } from "zod"
 
 // Always use Zod for dynamic path segments (project rule).
 const itemParamsSchema = z.object({
@@ -30,10 +30,10 @@ const itemParamsSchema = z.object({
 
 // Always use Zod for query state (project rule).
 const itemSearchSchema = z.object({
-  tab: z.enum(['overview', 'notes']).default('overview'),
+  tab: z.enum(["overview", "notes"]).default("overview"),
 })
 
-export const Route = createFileRoute('/items/$itemId')({
+export const Route = createFileRoute("/items/$itemId")({
   // `params.parse`: runs when the route matches; Zod `.parse` throws → route error / `errorComponent`.
   params: {
     parse: (raw) => itemParamsSchema.parse(raw),
@@ -83,8 +83,8 @@ function ItemPage() {
 **Router (Zod) for the same file:** [RouteOptions — `params.parse`](https://tanstack.com/router/latest/docs/framework/react/api/router/RouteOptionsType#paramsparse-method) · [RouteOptions — `validateSearch`](https://tanstack.com/router/latest/docs/framework/react/api/router/RouteOptionsType#validatesearch-method) · [Validate search (Zod)](https://tanstack.com/router/latest/docs/how-to/validate-search-params#quick-start)
 
 ```ts
-import { createFileRoute } from '@tanstack/react-router'
-import { z } from 'zod'
+import { createFileRoute } from "@tanstack/react-router"
+import { z } from "zod"
 
 // Same Zod rule as UI routes: path params.
 const exportParamsSchema = z.object({
@@ -93,10 +93,10 @@ const exportParamsSchema = z.object({
 
 // Same Zod rule as UI routes: query string. Export one schema object — reuse everywhere.
 const exportSearchSchema = z.object({
-  format: z.enum(['json', 'csv']).default('json'),
+  format: z.enum(["json", "csv"]).default("json"),
 })
 
-export const Route = createFileRoute('/api/items/$itemId/export')({
+export const Route = createFileRoute("/api/items/$itemId/export")({
   // Same validation mechanism as UI: `params.parse` runs when the route matches.
   // For API routes, if Zod `.parse` throws here, callers get a framework error response
   // (not your custom JSON contract). If you need custom JSON for bad params, validate inside `GET` too.

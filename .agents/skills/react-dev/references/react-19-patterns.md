@@ -52,7 +52,7 @@ function Profile({ userPromise }: { userPromise: Promise<User> }) {
 Replaces `useFormState`. Common in **Next/RSC** form posts; in TanStack Start prefer `createServerFn` + explicit client state or React Query mutations.
 
 ```typescript
-import { useActionState } from 'react'
+import { useActionState } from "react"
 
 const [state, formAction, isPending] = useActionState(serverAction, initialState)
 ```

@@ -17,7 +17,7 @@ Register placeholders **before** the symbol layer renders:
 
 ```tsx
 useMapImages({
-  images: [{ name: 'NO_SIGN_ICON', url: signPlaceholderUrl, width: 20, height: 20 }],
+  images: [{ name: "NO_SIGN_ICON", url: signPlaceholderUrl, width: 20, height: 20 }],
 })
 ```
 
@@ -43,8 +43,8 @@ useEffect(
       if (image) mainMap.addImage(id, image, {})
     }
 
-    mainMap.on('styleimagemissing', handleStyleImageMissing)
-    return () => mainMap.off('styleimagemissing', handleStyleImageMissing)
+    mainMap.on("styleimagemissing", handleStyleImageMissing)
+    return () => mainMap.off("styleimagemissing", handleStyleImageMissing)
   },
   [mainMap, mapLoaded],
 )
@@ -54,9 +54,9 @@ useEffect(
 <Layer
   type="symbol"
   layout={{
-    'icon-image': ['get', 'aggregation'],
-    'icon-allow-overlap': true,
-    'icon-anchor': 'bottom',
+    "icon-image": ["get", "aggregation"],
+    "icon-allow-overlap": true,
+    "icon-anchor": "bottom",
   }}
 />
 ```
@@ -74,12 +74,12 @@ useEffect(
 
     const handleStyleImageMissing = (event: MapStyleImageMissingEvent) => {
       const imageId = event.id
-      if (imageId === 'null') return // conditional "none" fallback can emit "null"
-      console.warn('Missing image', imageId)
+      if (imageId === "null") return // conditional "none" fallback can emit "null"
+      console.warn("Missing image", imageId)
     }
 
-    mainMap.on('styleimagemissing', handleStyleImageMissing)
-    return () => mainMap.off('styleimagemissing', handleStyleImageMissing)
+    mainMap.on("styleimagemissing", handleStyleImageMissing)
+    return () => mainMap.off("styleimagemissing", handleStyleImageMissing)
   },
   [mainMap],
 )
@@ -103,8 +103,8 @@ Skip sentinel ids (`'null'`, empty string) when your style uses conditional fall
 // ✅ useEffect — subscribe after mapLoaded, off() on unmount
 useEffect(() => {
   if (!mainMap || !mapLoaded) return
-  mainMap.on('styleimagemissing', handler)
-  return () => mainMap.off('styleimagemissing', handler)
+  mainMap.on("styleimagemissing", handler)
+  return () => mainMap.off("styleimagemissing", handler)
 }, [mainMap, mapLoaded, handler])
 
 // ❌ map.on('styleimagemissing') in render body (re-subscribes every render)

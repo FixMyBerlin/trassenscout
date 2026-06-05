@@ -58,6 +58,6 @@ Pair with: skill `nuqs` (URL parsers), skill `zustand-state-management` (map UI 
 ## Quick import
 
 ```tsx
-import 'maplibre-gl/dist/maplibre-gl.css'
-import { MapProvider, Map, Source, Layer, useMap } from 'react-map-gl/maplibre'
+import "maplibre-gl/dist/maplibre-gl.css"
+import { MapProvider, Map, Source, Layer, useMap } from "react-map-gl/maplibre"
 ```

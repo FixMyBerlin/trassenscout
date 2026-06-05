@@ -9,7 +9,7 @@ On **hard refresh / first visit**, the loader runs on the server (SSR). On **cli
 ```tsx
 // WRONG — breaks on client nav
 loader: async () => {
-  const posts = await fs.readdir('content/posts')
+  const posts = await fs.readdir("content/posts")
   return { posts }
 }
 
@@ -25,7 +25,7 @@ loader: () => getAllPostsFn()
 ## loaderDeps — when to re-run
 
 ```tsx
-export const Route = createFileRoute('/products')({
+export const Route = createFileRoute("/products")({
   validateSearch: z.object({ q: z.string().optional(), page: z.number().default(1) }),
   loaderDeps: ({ search }) => ({ q: search.q, page: search.page }),
   loader: async ({ deps }) => {
@@ -40,10 +40,10 @@ export const Route = createFileRoute('/products')({
 Runs before loader. Use for redirects and light context — via server functions, not direct DB/session in route files:
 
 ```tsx
-export const Route = createFileRoute('/dashboard')({
+export const Route = createFileRoute("/dashboard")({
   beforeLoad: async () => {
     const session = await getSessionFn()
-    if (!session) throw redirect({ to: '/login' })
+    if (!session) throw redirect({ to: "/login" })
     return { session }
   },
   loader: async ({ context }) => {

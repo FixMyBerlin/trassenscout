@@ -17,7 +17,7 @@ For values derived from props or state, compute during render — do not mirror 
 When computation is genuinely expensive and React Compiler is off (or not helping), memoize:
 
 ```tsx
-import { useMemo } from 'react'
+import { useMemo } from "react"
 
 function TodoList({ todos, filter }) {
   const visibleTodos = useMemo(
@@ -54,7 +54,7 @@ function ProfilePage({ userId }) {
 
 function Profile({ userId }) {
   // All state here resets when userId changes
-  const [comment, setComment] = useState('')
+  const [comment, setComment] = useState("")
   const [likes, setLikes] = useState([])
 }
 ```
@@ -102,13 +102,13 @@ function ProductPage({ product, addToCart }) {
   function handleBuyClick() {
     addToCart(product)
     showNotification(`Added ${product.name}!`)
-    analytics.track('product_added', { id: product.id })
+    analytics.track("product_added", { id: product.id })
   }
 
   function handleCheckoutClick() {
     addToCart(product)
     showNotification(`Added ${product.name}!`)
-    navigateTo('/checkout')
+    navigateTo("/checkout")
   }
 }
 ```
@@ -126,7 +126,7 @@ function handleBuyClick() {
 }
 function handleCheckoutClick() {
   buyProduct()
-  navigateTo('/checkout')
+  navigateTo("/checkout")
 }
 ```
 
@@ -139,14 +139,14 @@ function handleCheckoutClick() {
 For subscribing to external data (browser APIs, third-party stores), prefer `useSyncExternalStore` over a manual Effect + `useState`:
 
 ```tsx
-import { useSyncExternalStore } from 'react'
+import { useSyncExternalStore } from "react"
 
 function subscribe(callback) {
-  window.addEventListener('online', callback)
-  window.addEventListener('offline', callback)
+  window.addEventListener("online", callback)
+  window.addEventListener("offline", callback)
   return () => {
-    window.removeEventListener('online', callback)
-    window.removeEventListener('offline', callback)
+    window.removeEventListener("online", callback)
+    window.removeEventListener("offline", callback)
   }
 }
 
@@ -168,7 +168,7 @@ When two components need synchronized state, lift it to common ancestor:
 ```tsx
 // Instead of syncing via Effects between siblings
 function Parent() {
-  const [value, setValue] = useState('')
+  const [value, setValue] = useState("")
 
   return (
     <>
@@ -203,7 +203,7 @@ function useData(url) {
           setError(null)
         })
         .catch((err) => {
-          if (err.name !== 'AbortError') setError(err)
+          if (err.name !== "AbortError") setError(err)
         })
         .finally(() => {
           setLoading(false)
@@ -236,17 +236,17 @@ function SearchResults({ query }) {
 Use when an Effect’s **setup** should not re-run for every prop change, but the callback must still read **latest** values (timers, listeners, connections).
 
 ```tsx
-import { useEffect, useEffectEvent } from 'react'
+import { useEffect, useEffectEvent } from "react"
 
 function ChatRoom({ roomId, theme }) {
   const onConnected = useEffectEvent(() => {
-    showNotification('Connected!', theme) // theme is latest; does not re-connect
+    showNotification("Connected!", theme) // theme is latest; does not re-connect
   })
 
   useEffect(
     function connectToChatRoom() {
       const connection = createConnection(roomId)
-      connection.on('connected', onConnected)
+      connection.on("connected", onConnected)
       connection.connect()
       return function disconnectFromChatRoom() {
         connection.disconnect()

@@ -14,9 +14,9 @@ All category layers stay mounted; URL/config drives visibility:
   source="regions"
   source-layer="default"
   layout={{
-    visibility: categoryActive && styleActive ? 'visible' : 'none',
+    visibility: categoryActive && styleActive ? "visible" : "none",
   }}
-  paint={{ 'fill-color': '#3b82f6', 'fill-opacity': 0.4 }}
+  paint={{ "fill-color": "#3b82f6", "fill-opacity": 0.4 }}
 />
 ```
 

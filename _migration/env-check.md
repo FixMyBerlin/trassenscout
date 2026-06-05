@@ -13,16 +13,16 @@ This document covers two related concerns TILDA handles well and Trassenscout (T
 
 ## Executive summary
 
-| Area | Trassenscout today | TILDA (`tilda-geo`) | Target for TS |
-| --- | --- | --- | --- |
-| Canonical deploy list | Manual table in [`.github/README.md`](../.github/README.md) | [`.github/env/deploy.manifest.json`](../../tilda-geo/.github/env/deploy.manifest.json) | JSON manifest + generated README table |
-| Deploy `.env` generation | Inline heredoc in [`setup-env.yml`](../.github/workflows/setup-env.yml) | [`generate-deploy-env.ts`](../../tilda-geo/.github/scripts/generate-deploy-env.ts) from manifest | Manifest-driven generator |
-| Drift detection | None in CI | [`verify-env-manifest.ts`](../../tilda-geo/.github/scripts/verify-env-manifest.ts) in CI + deploy | Same script (TS-adapted paths) |
-| Local dev example | [`.env.local.example`](../.env.local.example) | [`.env.example`](../../tilda-geo/.env.example) at repo root | Rename → `.env.example`; sync with manifest |
-| Runtime types | Hand-written [`src/env.d.ts`](../src/env.d.ts) | [`src/env.d.ts`](../../tilda-geo/app/src/env.d.ts) extends Zod-inferred types | Zod schema → `env.d.ts` augmentation |
-| Startup validation | None (fail at first use) | Nitro plugin [`nitro-env-validation.plugin.server.ts`](../../tilda-geo/app/src/server/instrumentation/nitro-env-validation.plugin.server.ts) | Same pattern after TanStack Start |
-| Script-only env | Documented only in `.env.local.example` | `envFullSchema` + `scripts/shared/env.ts` `getValidatedEnv()` | Pick from full schema per script |
-| Client env prefix | `NEXT_PUBLIC_*` | `VITE_*` | `VITE_*` ([`docker.md`](./docker.md)) |
+| Area                     | Trassenscout today                                                      | TILDA (`tilda-geo`)                                                                                                                          | Target for TS                               |
+| ------------------------ | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| Canonical deploy list    | Manual table in [`.github/README.md`](../.github/README.md)             | [`.github/env/deploy.manifest.json`](../../tilda-geo/.github/env/deploy.manifest.json)                                                       | JSON manifest + generated README table      |
+| Deploy `.env` generation | Inline heredoc in [`setup-env.yml`](../.github/workflows/setup-env.yml) | [`generate-deploy-env.ts`](../../tilda-geo/.github/scripts/generate-deploy-env.ts) from manifest                                             | Manifest-driven generator                   |
+| Drift detection          | None in CI                                                              | [`verify-env-manifest.ts`](../../tilda-geo/.github/scripts/verify-env-manifest.ts) in CI + deploy                                            | Same script (TS-adapted paths)              |
+| Local dev example        | [`.env.local.example`](../.env.local.example)                           | [`.env.example`](../../tilda-geo/.env.example) at repo root                                                                                  | Rename → `.env.example`; sync with manifest |
+| Runtime types            | Hand-written [`src/env.d.ts`](../src/env.d.ts)                          | [`src/env.d.ts`](../../tilda-geo/app/src/env.d.ts) extends Zod-inferred types                                                                | Zod schema → `env.d.ts` augmentation        |
+| Startup validation       | None (fail at first use)                                                | Nitro plugin [`nitro-env-validation.plugin.server.ts`](../../tilda-geo/app/src/server/instrumentation/nitro-env-validation.plugin.server.ts) | Same pattern after TanStack Start           |
+| Script-only env          | Documented only in `.env.local.example`                                 | `envFullSchema` + `scripts/shared/env.ts` `getValidatedEnv()`                                                                                | Pick from full schema per script            |
+| Client env prefix        | `NEXT_PUBLIC_*`                                                         | `VITE_*`                                                                                                                                     | `VITE_*` ([`docker.md`](./docker.md))       |
 
 ---
 
@@ -54,14 +54,14 @@ flowchart LR
 
 **Manifest entry shape** (each deploy variable):
 
-| Field | Purpose |
-| --- | --- |
-| `name` | Key written to server `.env` and passed to containers |
-| `sourceEnv` | GitHub Actions step `env:` key (e.g. `SECRET_SESSION_SECRET_KEY` → `secrets.SESSION_SECRET_KEY`) |
-| `githubSource` | Human/docs reference (`vars.FOO`, `secrets.BAR`, `inputs.ENVIRONMENT`) |
-| `required` / `defaultValue` | Used by `generate-deploy-env.ts` |
-| `description` | README table + review context |
-| `sensitive` | Docs only (marks secrets in generated table) |
+| Field                       | Purpose                                                                                          |
+| --------------------------- | ------------------------------------------------------------------------------------------------ |
+| `name`                      | Key written to server `.env` and passed to containers                                            |
+| `sourceEnv`                 | GitHub Actions step `env:` key (e.g. `SECRET_SESSION_SECRET_KEY` → `secrets.SESSION_SECRET_KEY`) |
+| `githubSource`              | Human/docs reference (`vars.FOO`, `secrets.BAR`, `inputs.ENVIRONMENT`)                           |
+| `required` / `defaultValue` | Used by `generate-deploy-env.ts`                                                                 |
+| `description`               | README table + review context                                                                    |
+| `sensitive`                 | Docs only (marks secrets in generated table)                                                     |
 
 **Enforcement** (`verify-env-manifest.ts`):
 
@@ -77,13 +77,13 @@ flowchart LR
 
 ### How Trassenscout does it today
 
-| Artifact | State |
-| --- | --- |
-| [`.github/README.md`](../.github/README.md) | Static markdown table; easy to drift from reality |
-| [`setup-env.yml`](../.github/workflows/setup-env.yml) | 50-line SSH heredoc; duplicates README; no validation |
+| Artifact                                                    | State                                                                                                                                    |
+| ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| [`.github/README.md`](../.github/README.md)                 | Static markdown table; easy to drift from reality                                                                                        |
+| [`setup-env.yml`](../.github/workflows/setup-env.yml)       | 50-line SSH heredoc; duplicates README; no validation                                                                                    |
 | [`docker-compose.server.yml`](../docker-compose.server.yml) | `${ECR_REGISTRY}`, `${NEXT_PUBLIC_APP_ENV}`, `${APP_DOMAIN}`, `${POSTGRES_*}` interpolated; app/imap use `env_file: ".env"` pass-through |
-| [`.env.local.example`](../.env.local.example) | Local-only; reminder to update `env.d.ts` manually |
-| CI | **No** env manifest check ([`tooling.md`](./tooling.md) — no PR CI yet) |
+| [`.env.local.example`](../.env.local.example)               | Local-only; reminder to update `env.d.ts` manually                                                                                       |
+| CI                                                          | **No** env manifest check ([`tooling.md`](./tooling.md) — no PR CI yet)                                                                  |
 
 **Known drift today:**
 
@@ -112,41 +112,41 @@ docker-compose.server.yml         # explicit pass-through env: lines for manifes
 
 Deploy manifest should list **server `.env` keys** consumed by `app` and/or `imap-listener` in production. Align naming with [`db-migration.md`](./db-migration.md) and [`docker.md`](./docker.md).
 
-| Name | GitHub source (today) | Notes |
-| --- | --- | --- |
-| `ENVIRONMENT` | `inputs.ENVIRONMENT` | Deployment target; image tags |
-| `VITE_APP_ENV` | derived from `inputs.ENVIRONMENT` | Replaces `NEXT_PUBLIC_APP_ENV` |
-| `VITE_APP_ORIGIN` | `vars.APP_ORIGIN` | Replaces `NEXT_PUBLIC_APP_ORIGIN` |
-| `APP_DOMAIN` | `vars.APP_DOMAIN` | Traefik labels in compose |
-| `DATABASE_HOST` | `vars.POSTGRES_HOST` | Split DB ([`db-migration.md`](./db-migration.md)); or keep `POSTGRES_HOST` name in manifest |
-| `DATABASE_USER` | `secrets.POSTGRES_USER` | |
-| `DATABASE_PASSWORD` | `secrets.POSTGRES_PASSWORD` | |
-| `DATABASE_NAME` | `vars.POSTGRES_DB` | |
-| `SESSION_SECRET_KEY` | `secrets.SESSION_SECRET_KEY` | |
-| `BREVO_API_KEY` | `secrets.BREVO_API_KEY` | |
-| `ADMIN_EMAIL` | `vars.ADMIN_EMAIL` | |
-| `S3_UPLOAD_KEY` | `secrets.S3_UPLOAD_KEY` | Keep TS names (TILDA uses `S3_KEY` — no need to rename) |
-| `S3_UPLOAD_SECRET` | `secrets.S3_UPLOAD_SECRET` | |
-| `S3_UPLOAD_ROOTFOLDER` | derived `upload-${ENVIRONMENT}` | Today composed in heredoc |
-| `TS_API_KEY` | `secrets.TS_API_KEY` | Shared by app + imap-listener |
-| `OPENAI_API_KEY` | `secrets.OPENAI_API_KEY` | |
-| `LANGFUSE_SECRET_KEY` | `secrets.LANGFUSE_SECRET_KEY` | |
-| `LANGFUSE_PUBLIC_KEY` | `secrets.LANGFUSE_PUBLIC_KEY` | |
-| `LANGFUSE_BASEURL` | `vars.LANGFUSE_BASEURL` | |
-| `LUCKY_CLOUD_TOKEN` | `secrets.LUCKY_CLOUD_TOKEN` | |
-| `ECR_REGISTRY` | `vars.ECR_REGISTRY` | |
-| `IMAP_HOST` | `vars.IMAP_HOST` | imap-listener |
-| `IMAP_PORT` | `vars.IMAP_PORT` | |
-| `IMAP_USER` | `vars.IMAP_USER` | |
-| `IMAP_PASSWORD` | `secrets.IMAP_PASSWORD` | |
-| `IMAP_SECURE` | default `true` | |
-| `IMAP_INBOX_FOLDER` | default `INBOX` | |
-| `IMAP_DONE_FOLDER` | default `INBOX/DONE` | |
-| `IMAP_ERROR_FOLDER` | default `INBOX/ERROR` | |
-| `TS_API_WEBHOOK_URL` | derived `http://app:4000/api/...` | Port from [`docker.md`](./docker.md) |
-| `MAIL_PROCESSING_DELAY` | default `10000` | |
-| `MAX_RETRIES` | default `3` | |
-| `HEALTH_PORT` | default `3100` | |
+| Name                    | GitHub source (today)             | Notes                                                                                       |
+| ----------------------- | --------------------------------- | ------------------------------------------------------------------------------------------- |
+| `ENVIRONMENT`           | `inputs.ENVIRONMENT`              | Deployment target; image tags                                                               |
+| `VITE_APP_ENV`          | derived from `inputs.ENVIRONMENT` | Replaces `NEXT_PUBLIC_APP_ENV`                                                              |
+| `VITE_APP_ORIGIN`       | `vars.APP_ORIGIN`                 | Replaces `NEXT_PUBLIC_APP_ORIGIN`                                                           |
+| `APP_DOMAIN`            | `vars.APP_DOMAIN`                 | Traefik labels in compose                                                                   |
+| `DATABASE_HOST`         | `vars.POSTGRES_HOST`              | Split DB ([`db-migration.md`](./db-migration.md)); or keep `POSTGRES_HOST` name in manifest |
+| `DATABASE_USER`         | `secrets.POSTGRES_USER`           |                                                                                             |
+| `DATABASE_PASSWORD`     | `secrets.POSTGRES_PASSWORD`       |                                                                                             |
+| `DATABASE_NAME`         | `vars.POSTGRES_DB`                |                                                                                             |
+| `SESSION_SECRET_KEY`    | `secrets.SESSION_SECRET_KEY`      |                                                                                             |
+| `BREVO_API_KEY`         | `secrets.BREVO_API_KEY`           |                                                                                             |
+| `ADMIN_EMAIL`           | `vars.ADMIN_EMAIL`                |                                                                                             |
+| `S3_UPLOAD_KEY`         | `secrets.S3_UPLOAD_KEY`           | Keep TS names (TILDA uses `S3_KEY` — no need to rename)                                     |
+| `S3_UPLOAD_SECRET`      | `secrets.S3_UPLOAD_SECRET`        |                                                                                             |
+| `S3_UPLOAD_ROOTFOLDER`  | derived `upload-${ENVIRONMENT}`   | Today composed in heredoc                                                                   |
+| `TS_API_KEY`            | `secrets.TS_API_KEY`              | Shared by app + imap-listener                                                               |
+| `OPENAI_API_KEY`        | `secrets.OPENAI_API_KEY`          |                                                                                             |
+| `LANGFUSE_SECRET_KEY`   | `secrets.LANGFUSE_SECRET_KEY`     |                                                                                             |
+| `LANGFUSE_PUBLIC_KEY`   | `secrets.LANGFUSE_PUBLIC_KEY`     |                                                                                             |
+| `LANGFUSE_BASEURL`      | `vars.LANGFUSE_BASEURL`           |                                                                                             |
+| `LUCKY_CLOUD_TOKEN`     | `secrets.LUCKY_CLOUD_TOKEN`       |                                                                                             |
+| `ECR_REGISTRY`          | `vars.ECR_REGISTRY`               |                                                                                             |
+| `IMAP_HOST`             | `vars.IMAP_HOST`                  | imap-listener                                                                               |
+| `IMAP_PORT`             | `vars.IMAP_PORT`                  |                                                                                             |
+| `IMAP_USER`             | `vars.IMAP_USER`                  |                                                                                             |
+| `IMAP_PASSWORD`         | `secrets.IMAP_PASSWORD`           |                                                                                             |
+| `IMAP_SECURE`           | default `true`                    |                                                                                             |
+| `IMAP_INBOX_FOLDER`     | default `INBOX`                   |                                                                                             |
+| `IMAP_DONE_FOLDER`      | default `INBOX/DONE`              |                                                                                             |
+| `IMAP_ERROR_FOLDER`     | default `INBOX/ERROR`             |                                                                                             |
+| `TS_API_WEBHOOK_URL`    | derived `http://app:4000/api/...` | Port from [`docker.md`](./docker.md)                                                        |
+| `MAIL_PROCESSING_DELAY` | default `10000`                   |                                                                                             |
+| `MAX_RETRIES`           | default `3`                       |                                                                                             |
+| `HEALTH_PORT`           | default `3100`                    |                                                                                             |
 
 **Out of manifest** (local / script-only — stay in `.env.example` comments only):
 
@@ -158,13 +158,13 @@ Deploy manifest should list **server `.env` keys** consumed by `app` and/or `ima
 
 ### Adaptations when porting TILDA scripts
 
-| TILDA assumption | TS change |
-| --- | --- |
-| `docker-compose.yml` at repo root | Point verifier at **`docker-compose.server.yml`** (production compose) |
-| Monorepo `app/` subfolder | Scripts live at repo root; `generate-deploy-env` host validation schemas N/A unless TS adds `APP_URL`-style hosts |
-| `DATABASE_URL` in allowlist | Keep allowlist entry if local compose still uses composite URL |
-| `verify-env-manifest` parses `setup-env` `env:` block | Replace heredoc step with `generate-deploy-env` + explicit `env:` mappings (copy TILDA pattern) |
-| Image tag `${ENVIRONMENT}-latest` | TS today uses `${NEXT_PUBLIC_APP_ENV}-latest` → `${VITE_APP_ENV}-latest` or `${ENVIRONMENT}-latest` (pick one in manifest) |
+| TILDA assumption                                      | TS change                                                                                                                  |
+| ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `docker-compose.yml` at repo root                     | Point verifier at **`docker-compose.server.yml`** (production compose)                                                     |
+| Monorepo `app/` subfolder                             | Scripts live at repo root; `generate-deploy-env` host validation schemas N/A unless TS adds `APP_URL`-style hosts          |
+| `DATABASE_URL` in allowlist                           | Keep allowlist entry if local compose still uses composite URL                                                             |
+| `verify-env-manifest` parses `setup-env` `env:` block | Replace heredoc step with `generate-deploy-env` + explicit `env:` mappings (copy TILDA pattern)                            |
+| Image tag `${ENVIRONMENT}-latest`                     | TS today uses `${NEXT_PUBLIC_APP_ENV}-latest` → `${VITE_APP_ENV}-latest` or `${ENVIRONMENT}-latest` (pick one in manifest) |
 
 ### `docker-compose.server.yml` changes for manifest compliance
 
@@ -189,16 +189,16 @@ Today TS relies on `env_file: ".env"` alone — that works at runtime but **does
 
 ### Issues / risks for TS
 
-| Issue | Severity | Mitigation |
-| --- | --- | --- |
-| **Two services** (app + imap-listener) share one `.env` | Low | Single manifest; both services list keys they need in compose pass-through |
-| **`DATABASE_URL` vs `DATABASE_*` split** | Medium | Coordinate with [`db-migration.md`](./db-migration.md); manifest uses split vars; allow `DATABASE_URL` in verifier allowlist for local `docker-compose.yml` only |
-| **Rename `NEXT_PUBLIC_*` → `VITE_*`** | Medium | One migration PR: manifest, compose, Dockerfile build args, `envSchema`, code ([`docker.md`](./docker.md)) |
-| **S3 naming** (`S3_UPLOAD_*` vs TILDA `S3_*`) | Low | Keep TS names in manifest — no benefit to renaming |
-| **Derived values** (`S3_UPLOAD_ROOTFOLDER`, `TS_API_WEBHOOK_URL`) | Low | `defaultValue` + document derivation; or compute in `generate-deploy-env.ts` |
-| **No PR CI yet** | High | Add `verify-env-manifest` to new `ci.yml` ([`tooling.md`](./tooling.md)) |
-| **imap-listener separate image** | Low | Same `.env` on server; imap-listener Dockerfile does not need manifest keys at build time |
-| **GitHub secret naming** | Low | TS uses `POSTGRES_*` in GitHub; manifest `githubSource` documents actual paths; `sourceEnv` uses prefixed step vars |
+| Issue                                                             | Severity | Mitigation                                                                                                                                                       |
+| ----------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Two services** (app + imap-listener) share one `.env`           | Low      | Single manifest; both services list keys they need in compose pass-through                                                                                       |
+| **`DATABASE_URL` vs `DATABASE_*` split**                          | Medium   | Coordinate with [`db-migration.md`](./db-migration.md); manifest uses split vars; allow `DATABASE_URL` in verifier allowlist for local `docker-compose.yml` only |
+| **Rename `NEXT_PUBLIC_*` → `VITE_*`**                             | Medium   | One migration PR: manifest, compose, Dockerfile build args, `envSchema`, code ([`docker.md`](./docker.md))                                                       |
+| **S3 naming** (`S3_UPLOAD_*` vs TILDA `S3_*`)                     | Low      | Keep TS names in manifest — no benefit to renaming                                                                                                               |
+| **Derived values** (`S3_UPLOAD_ROOTFOLDER`, `TS_API_WEBHOOK_URL`) | Low      | `defaultValue` + document derivation; or compute in `generate-deploy-env.ts`                                                                                     |
+| **No PR CI yet**                                                  | High     | Add `verify-env-manifest` to new `ci.yml` ([`tooling.md`](./tooling.md))                                                                                         |
+| **imap-listener separate image**                                  | Low      | Same `.env` on server; imap-listener Dockerfile does not need manifest keys at build time                                                                        |
+| **GitHub secret naming**                                          | Low      | TS uses `POSTGRES_*` in GitHub; manifest `githubSource` documents actual paths; `sourceEnv` uses prefixed step vars                                              |
 
 ### Migration steps — registry
 
@@ -220,14 +220,14 @@ Today TS relies on `env_file: ".env"` alone — that works at runtime but **does
 
 **Single schema file** — [`app/src/server/envSchema.ts`](../../tilda-geo/app/src/server/envSchema.ts):
 
-| Export | Role |
-| --- | --- |
-| `envViteSchema` | Client + server public flags (`VITE_APP_ENV`, `VITE_APP_ORIGIN`, …) |
-| `envServerSchema` | Server-only secrets and infra |
-| `envScriptOnlySchemaPart` | Mapbox tokens, `API_ROOT_URL`, staging-only API keys — validated in scripts, not at app boot |
-| `envProcessingSchema` | Processing container — documented in full schema, not boot-required |
+| Export                          | Role                                                                                                       |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `envViteSchema`                 | Client + server public flags (`VITE_APP_ENV`, `VITE_APP_ORIGIN`, …)                                        |
+| `envServerSchema`               | Server-only secrets and infra                                                                              |
+| `envScriptOnlySchemaPart`       | Mapbox tokens, `API_ROOT_URL`, staging-only API keys — validated in scripts, not at app boot               |
+| `envProcessingSchema`           | Processing container — documented in full schema, not boot-required                                        |
 | `envAppStartupValidationSchema` | **Discriminated union** on `VITE_APP_ENV` (e.g. `BREVO_API_KEY` optional in dev, required in staging/prod) |
-| `envFullSchema` | Union for types + script `pick()` |
+| `envFullSchema`                 | Union for types + script `pick()`                                                                          |
 
 **Design rules** (from TILDA comments):
 
@@ -238,7 +238,7 @@ Today TS relies on `env_file: ".env"` alone — that works at runtime but **does
 **Nitro plugin** — registered in [`vite.config.ts`](../../tilda-geo/app/vite.config.ts):
 
 ```ts
-'src/server/instrumentation/nitro-env-validation.plugin.server.ts'
+"src/server/instrumentation/nitro-env-validation.plugin.server.ts"
 ```
 
 On boot: `envAppStartupValidationSchema.safeParse(process.env)` → log `z.prettifyError` and **throw** (server does not start).
@@ -264,13 +264,13 @@ Scripts import `envFullSchema.pick({ ... })` for their subset.
 
 ### How Trassenscout does it today
 
-| Piece | State |
-| --- | --- |
-| [`src/env.d.ts`](../src/env.d.ts) | Hand-maintained; comment in `.env.local.example` says “update whenever file changes” |
-| Startup validation | **None** — missing `SESSION_SECRET_KEY` fails deep inside Blitz auth |
-| Partial Zod | [`getBrevoApiKeyForSending.ts`](../emails/mailers/utils/getBrevoApiKeyForSending.ts) — local schema for mail only |
-| `isEnv` helpers | [`src/core/utils/isEnv.ts`](../src/core/utils/isEnv.ts) reads `NEXT_PUBLIC_APP_ENV` |
-| Instrumentation | [`src/instrumentation.ts`](../src/instrumentation.ts) — Langfuse OTEL only, no env check |
+| Piece                             | State                                                                                                             |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| [`src/env.d.ts`](../src/env.d.ts) | Hand-maintained; comment in `.env.local.example` says “update whenever file changes”                              |
+| Startup validation                | **None** — missing `SESSION_SECRET_KEY` fails deep inside Blitz auth                                              |
+| Partial Zod                       | [`getBrevoApiKeyForSending.ts`](../emails/mailers/utils/getBrevoApiKeyForSending.ts) — local schema for mail only |
+| `isEnv` helpers                   | [`src/core/utils/isEnv.ts`](../src/core/utils/isEnv.ts) reads `NEXT_PUBLIC_APP_ENV`                               |
+| Instrumentation                   | [`src/instrumentation.ts`](../src/instrumentation.ts) — Langfuse OTEL only, no env check                          |
 
 ### Target for TS — `src/server/envSchema.ts`
 
@@ -279,15 +279,13 @@ Mirror TILDA structure with TS-specific keys:
 ```ts
 // Sketch — implement after VITE rename and DATABASE_* split
 
-const environmentValues = z.enum(['development', 'staging', 'production'])
+const environmentValues = z.enum(["development", "staging", "production"])
 const requiredString = z.string().min(1)
 
 export const envViteSchema = z.object({
   VITE_APP_ENV: environmentValues,
   VITE_APP_ORIGIN: z.url().optional(), // required in staging/prod
-  VITE_PUBLIC_SURVEY_START_STAGE: z
-    .enum(['part1', 'part2', 'part3', 'end'])
-    .optional(),
+  VITE_PUBLIC_SURVEY_START_STAGE: z.enum(["part1", "part2", "part3", "end"]).optional(),
 })
 
 const envServerSchema = z.object({
@@ -299,7 +297,7 @@ const envServerSchema = z.object({
   ADMIN_EMAIL: z.string().email(),
   S3_UPLOAD_KEY: requiredString,
   S3_UPLOAD_SECRET: requiredString,
-  S3_UPLOAD_ROOTFOLDER: z.enum(['upload-production', 'upload-staging', 'upload-localdev']),
+  S3_UPLOAD_ROOTFOLDER: z.enum(["upload-production", "upload-staging", "upload-localdev"]),
   TS_API_KEY: requiredString,
   OPENAI_API_KEY: requiredString,
   LANGFUSE_SECRET_KEY: requiredString,
@@ -317,14 +315,14 @@ const envScriptOnlySchemaPart = z.object({
   SEED_ONLY_USERS: z.string().optional(),
 })
 
-export const envAppStartupValidationSchema = z.discriminatedUnion('VITE_APP_ENV', [
+export const envAppStartupValidationSchema = z.discriminatedUnion("VITE_APP_ENV", [
   envViteSchema.extend(envServerSchema.shape).extend({
-    VITE_APP_ENV: z.literal('development'),
+    VITE_APP_ENV: z.literal("development"),
     BREVO_API_KEY: z.string().optional(),
     OPENAI_API_KEY: z.string().optional(), // optional if AI features unused locally
   }),
   envViteSchema.extend(envServerSchema.shape).extend({
-    VITE_APP_ENV: z.literal(['staging', 'production']),
+    VITE_APP_ENV: z.literal(["staging", "production"]),
     BREVO_API_KEY: requiredString,
     VITE_APP_ORIGIN: z.url(),
   }),
@@ -354,7 +352,7 @@ Register in TanStack Start / Vite config alongside other `nitro-*.plugin.server.
 Replace hand-written keys with schema inference:
 
 ```ts
-import type { EnvFullSchema, EnvVite } from './server/envSchema'
+import type { EnvFullSchema, EnvVite } from "./server/envSchema"
 
 declare global {
   interface ImportMetaEnv extends EnvVite {}
@@ -370,26 +368,26 @@ export {}
 
 ### Update call sites (incremental)
 
-| Area | Change |
-| --- | --- |
-| `src/core/utils/isEnv.ts` | `import.meta.env.VITE_APP_ENV` (client); server helpers can use validated env or `process.env` after boot |
-| `getBrevoApiKeyForSending.ts` | Replace local schema with `envFullSchema.pick` or rely on startup validation |
-| `db/remote/*.ts` | `getValidatedEnv` with script picks |
-| `scripts/csv-import/utils/env.ts` | `getValidatedEnv` |
-| Blitz-only `BLITZ_DEV_SERVER_ORIGIN` | Remove after TanStack dev server |
-| Debug UI showing `NEXT_PUBLIC_APP_ENV` | Switch to `VITE_APP_ENV` |
+| Area                                   | Change                                                                                                    |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `src/core/utils/isEnv.ts`              | `import.meta.env.VITE_APP_ENV` (client); server helpers can use validated env or `process.env` after boot |
+| `getBrevoApiKeyForSending.ts`          | Replace local schema with `envFullSchema.pick` or rely on startup validation                              |
+| `db/remote/*.ts`                       | `getValidatedEnv` with script picks                                                                       |
+| `scripts/csv-import/utils/env.ts`      | `getValidatedEnv`                                                                                         |
+| Blitz-only `BLITZ_DEV_SERVER_ORIGIN`   | Remove after TanStack dev server                                                                          |
+| Debug UI showing `NEXT_PUBLIC_APP_ENV` | Switch to `VITE_APP_ENV`                                                                                  |
 
 ### Issues / risks for TS
 
-| Issue | Severity | Mitigation |
-| --- | --- | --- |
-| **Bun `process.env` typing** ([Bun #18594](https://github.com/oven-sh/bun/issues/18594)) | Low | TILDA documents guard / `as string` after parse; startup plugin validates once |
-| **Client vs server env** | Medium | `VITE_*` only in `envViteSchema`; never put secrets in Vite schema |
-| **Build-time vs runtime** | Medium | Dockerfile `ARG VITE_APP_*` for client bundle; secrets **only** via runtime `.env` ([`docker.md`](./docker.md)) |
-| **Prisma generate placeholder** | Low | Dummy `DATABASE_*` for build — already planned; must match schema shape |
-| **Test env** | Medium | `.env.test` / Vitest: either load fixture env or use relaxed startup schema in `MODE=test` |
-| **imap-listener** | Medium | Separate Node process — **no Nitro plugin**; add small `config.ts` Zod parse (already partial manual checks) or share schema package |
-| **Partial validation today** | Low | Startup validation is strictly better than ad-hoc; keep `getValidatedEnv` for scripts with extra requirements |
+| Issue                                                                                    | Severity | Mitigation                                                                                                                           |
+| ---------------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| **Bun `process.env` typing** ([Bun #18594](https://github.com/oven-sh/bun/issues/18594)) | Low      | TILDA documents guard / `as string` after parse; startup plugin validates once                                                       |
+| **Client vs server env**                                                                 | Medium   | `VITE_*` only in `envViteSchema`; never put secrets in Vite schema                                                                   |
+| **Build-time vs runtime**                                                                | Medium   | Dockerfile `ARG VITE_APP_*` for client bundle; secrets **only** via runtime `.env` ([`docker.md`](./docker.md))                      |
+| **Prisma generate placeholder**                                                          | Low      | Dummy `DATABASE_*` for build — already planned; must match schema shape                                                              |
+| **Test env**                                                                             | Medium   | `.env.test` / Vitest: either load fixture env or use relaxed startup schema in `MODE=test`                                           |
+| **imap-listener**                                                                        | Medium   | Separate Node process — **no Nitro plugin**; add small `config.ts` Zod parse (already partial manual checks) or share schema package |
+| **Partial validation today**                                                             | Low      | Startup validation is strictly better than ad-hoc; keep `getValidatedEnv` for scripts with extra requirements                        |
 
 ### Migration steps — runtime validation
 
@@ -440,16 +438,16 @@ Steps 1–4 improve deploy safety **before** the framework migration. Steps 5–
 
 ## Quick reference
 
-| Task | Trassenscout today | Target (TILDA pattern) |
-| --- | --- | --- |
-| Deploy variable list | `.github/README.md` (manual) | `.github/env/deploy.manifest.json` |
-| Drift check | none | `verify-env-manifest.ts` in CI + deploy |
-| Server `.env` on deploy | SSH heredoc | `generate-deploy-env.ts` |
-| Local example | `.env.local.example` | `.env.example` (manifest-synced) |
-| TS types | hand `env.d.ts` | Zod-inferred `env.d.ts` |
-| Boot validation | none | Nitro plugin + `envAppStartupValidationSchema` |
-| Script env | ad-hoc / manual guards | `getValidatedEnv(envFullSchema.pick(...))` |
-| Mail env guard | local Zod in one file | discriminated union in shared schema |
+| Task                    | Trassenscout today           | Target (TILDA pattern)                         |
+| ----------------------- | ---------------------------- | ---------------------------------------------- |
+| Deploy variable list    | `.github/README.md` (manual) | `.github/env/deploy.manifest.json`             |
+| Drift check             | none                         | `verify-env-manifest.ts` in CI + deploy        |
+| Server `.env` on deploy | SSH heredoc                  | `generate-deploy-env.ts`                       |
+| Local example           | `.env.local.example`         | `.env.example` (manifest-synced)               |
+| TS types                | hand `env.d.ts`              | Zod-inferred `env.d.ts`                        |
+| Boot validation         | none                         | Nitro plugin + `envAppStartupValidationSchema` |
+| Script env              | ad-hoc / manual guards       | `getValidatedEnv(envFullSchema.pick(...))`     |
+| Mail env guard          | local Zod in one file        | discriminated union in shared schema           |
 
 ---
 

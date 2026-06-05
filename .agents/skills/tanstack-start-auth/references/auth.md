@@ -24,10 +24,10 @@ Route mounting, cookies, session helpers, and protection patterns. For `betterAu
 
 ```ts
 // src/routes/api/auth.$.ts
-import { createFileRoute } from '@tanstack/react-router'
-import { forwardAuthAndApplyCookies } from '@/server/auth/auth-route-handler.server'
+import { createFileRoute } from "@tanstack/react-router"
+import { forwardAuthAndApplyCookies } from "@/server/auth/auth-route-handler.server"
 
-export const Route = createFileRoute('/api/auth/$')({
+export const Route = createFileRoute("/api/auth/$")({
   ssr: true,
   server: {
     handlers: {
@@ -40,13 +40,13 @@ export const Route = createFileRoute('/api/auth/$')({
 
 ```ts
 // auth-route-handler.server.ts — pattern
-import { setCookie } from '@tanstack/react-start/server'
-import { parseSetCookieHeader } from 'better-auth/cookies'
-import { auth } from './auth.server'
+import { setCookie } from "@tanstack/react-start/server"
+import { parseSetCookieHeader } from "better-auth/cookies"
+import { auth } from "./auth.server"
 
 export async function forwardAuthAndApplyCookies(request: Request) {
   const response = await auth.handler(request)
-  const setCookieHeader = response.headers.getSetCookie().join(', ')
+  const setCookieHeader = response.headers.getSetCookie().join(", ")
   if (!setCookieHeader) return response
 
   const parsed = parseSetCookieHeader(setCookieHeader)
@@ -55,7 +55,7 @@ export async function forwardAuthAndApplyCookies(request: Request) {
     setCookie(key, decodeURIComponent(value.value), {
       sameSite: value.samesite,
       secure: value.secure,
-      maxAge: value['max-age'],
+      maxAge: value["max-age"],
       httpOnly: value.httponly,
       domain: value.domain,
       path: value.path,

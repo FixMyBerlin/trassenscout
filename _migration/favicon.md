@@ -10,14 +10,14 @@ Related: [`images.md`](./images.md) (OG/social images in `head()`), [`routes.md`
 
 ## Executive summary
 
-| Concern | Trassenscout today | TILDA (`tilda-geo/app`) | Target |
-| ------- | ------------------ | ----------------------- | ------ |
-| Source of truth | `public/favicon.svg` + duplicate `src/app/icon.svg` / `src/app/favicon.svg` | `public/favicon.svg` only | **Single** `public/favicon.svg` |
-| Raster / ICO / manifest | **Not generated** — SVG only in `public/` | `scripts/generate-favicons` → committed files in `public/` | **Port TILDA script**; commit outputs |
-| Head links | Next.js file conventions + legacy `Layout.tsx` `<Head>` | `__root.tsx` `head()` `links` array | **`__root.tsx` `head()`** (explicit links) |
-| App metadata | `defaultMetadata` + `viewport.themeColor` in root layout | `APP_META` in `meta.const.ts` | **`meta.const.ts`** shared with generator |
-| Per-route icon | Survey `generateMetadata({ icons: { icon: logoUrl } })` | N/A | Route-level `head()` override |
-| PWA manifest | None | `manifest.json` + `manifest.webmanifest` | **Add** (optional but TILDA-aligned) |
+| Concern                 | Trassenscout today                                                          | TILDA (`tilda-geo/app`)                                    | Target                                     |
+| ----------------------- | --------------------------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------ |
+| Source of truth         | `public/favicon.svg` + duplicate `src/app/icon.svg` / `src/app/favicon.svg` | `public/favicon.svg` only                                  | **Single** `public/favicon.svg`            |
+| Raster / ICO / manifest | **Not generated** — SVG only in `public/`                                   | `scripts/generate-favicons` → committed files in `public/` | **Port TILDA script**; commit outputs      |
+| Head links              | Next.js file conventions + legacy `Layout.tsx` `<Head>`                     | `__root.tsx` `head()` `links` array                        | **`__root.tsx` `head()`** (explicit links) |
+| App metadata            | `defaultMetadata` + `viewport.themeColor` in root layout                    | `APP_META` in `meta.const.ts`                              | **`meta.const.ts`** shared with generator  |
+| Per-route icon          | Survey `generateMetadata({ icons: { icon: logoUrl } })`                     | N/A                                                        | Route-level `head()` override              |
+| PWA manifest            | None                                                                        | `manifest.json` + `manifest.webmanifest`                   | **Add** (optional but TILDA-aligned)       |
 
 **Bottom line:** Drop Next.js App Router icon file conventions. Keep one SVG in `public/`, generate raster/ICO/manifest offline (not at build), wire links in `__root.tsx` — same workflow as TILDA.
 
@@ -27,12 +27,12 @@ Related: [`images.md`](./images.md) (OG/social images in `head()`), [`routes.md`
 
 ### Static files
 
-| Path | Role |
-| ---- | ---- |
-| `public/favicon.svg` | Served at `/favicon.svg` — **canonical brand icon** (gold speech-bubble / route motif) |
-| `src/app/icon.svg` | Next.js App Router [file convention](https://nextjs.org/docs/app/api-reference/file-conventions/metadata/app-icons) — auto-injects `<link rel="icon">` (duplicate of `favicon.svg`) |
-| `src/app/favicon.svg` | Same convention, alternate filename — **duplicate** of `public/favicon.svg` |
-| `public/` | **No** `favicon.ico`, PNG sizes, `apple-touch-icon.png`, or `manifest.json` |
+| Path                  | Role                                                                                                                                                                                |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `public/favicon.svg`  | Served at `/favicon.svg` — **canonical brand icon** (gold speech-bubble / route motif)                                                                                              |
+| `src/app/icon.svg`    | Next.js App Router [file convention](https://nextjs.org/docs/app/api-reference/file-conventions/metadata/app-icons) — auto-injects `<link rel="icon">` (duplicate of `favicon.svg`) |
+| `src/app/favicon.svg` | Same convention, alternate filename — **duplicate** of `public/favicon.svg`                                                                                                         |
+| `public/`             | **No** `favicon.ico`, PNG sizes, `apple-touch-icon.png`, or `manifest.json`                                                                                                         |
 
 All three SVG copies are byte-identical today. Only `public/favicon.svg` is required for static serving.
 
@@ -70,12 +70,12 @@ This is **metadata-only** (tab icon), separate from the in-page `SurveyHeader` l
 
 ### What Next.js conventions we lose
 
-| Next.js feature | Trassenscout usage | TanStack Start |
-| --------------- | ------------------ | -------------- |
-| `app/icon.svg` / `app/favicon.svg` | Auto `<link rel="icon">` | **No equivalent** — declare in `head()` |
-| `metadata.icons` | Survey layouts | Route `head()` return value |
-| `viewport.themeColor` export | Root layout | `{ name: 'theme-color', content: … }` in `head().meta` |
-| Implicit `/favicon.ico` | Not present | Serve `public/favicon.ico` after generation |
+| Next.js feature                    | Trassenscout usage       | TanStack Start                                         |
+| ---------------------------------- | ------------------------ | ------------------------------------------------------ |
+| `app/icon.svg` / `app/favicon.svg` | Auto `<link rel="icon">` | **No equivalent** — declare in `head()`                |
+| `metadata.icons`                   | Survey layouts           | Route `head()` return value                            |
+| `viewport.themeColor` export       | Root layout              | `{ name: 'theme-color', content: … }` in `head().meta` |
+| Implicit `/favicon.ico`            | Not present              | Serve `public/favicon.ico` after generation            |
 
 ---
 
@@ -97,12 +97,12 @@ Full operator docs: [`tilda-geo/app/scripts/generate-favicons/README.md`](../../
 
 ### Generator
 
-| Piece | Location |
-| ----- | -------- |
-| Script | `scripts/generate-favicons/process.ts` |
-| npm package | `favicons@7.3.0` (uses `sharp`) |
+| Piece       | Location                                                                             |
+| ----------- | ------------------------------------------------------------------------------------ |
+| Script      | `scripts/generate-favicons/process.ts`                                               |
+| npm package | `favicons@7.3.0` (uses `sharp`)                                                      |
 | Shared meta | `src/meta.const.ts` → `APP_META` (`title`, `shortName`, `description`, `themeColor`) |
-| Knip entry | `knip.jsonc` lists the script (not dead code) |
+| Knip entry  | `knip.jsonc` lists the script (not dead code)                                        |
 
 **Outputs in `public/`:**
 
@@ -146,11 +146,11 @@ Create `src/meta.const.ts` (mirror TILDA) with Trassenscout values from `default
 
 ```ts
 export const APP_META = {
-  title: 'Trassenscout',
-  shortName: 'Trassenscout',
+  title: "Trassenscout",
+  shortName: "Trassenscout",
   description:
-    'Der Trassenscout unterstützt Kommunen und Regionalverbände bei der Erstellung von Machbarkeitsstudien und Vorplanungen für Radschnellverbindungen und anderen liniengebundenen Bauwerken.',
-  themeColor: '#1f2937', // align with current viewport.themeColor in layout.tsx
+    "Der Trassenscout unterstützt Kommunen und Regionalverbände bei der Erstellung von Machbarkeitsstudien und Vorplanungen für Radschnellverbindungen und anderen liniengebundenen Bauwerken.",
+  themeColor: "#1f2937", // align with current viewport.themeColor in layout.tsx
 } as const
 ```
 
@@ -175,14 +175,14 @@ Optional `package.json` script (not in TILDA today, convenient for TS):
 
 Port from TILDA `__root.tsx` (see reference above). Combine with metadata migration from `defaultMetadata.ts`:
 
-| `defaultMetadata` field | TanStack `head()` |
-| ----------------------- | ----------------- |
-| `title` / template | Root `title` + child routes set title via their own `head()` |
-| `description` | `{ name: 'description', … }` |
-| `openGraph.*` / `twitter.*` | `meta` entries (see [`images.md`](./images.md)) |
-| `robots` (non-prod `noindex`) | Conditional `meta` like TILDA's `VITE_APP_ENV` check |
-| `viewport.themeColor` | `{ name: 'theme-color', content: APP_META.themeColor }` |
-| favicon | `links` array (SVG + PNG + apple-touch + manifest) |
+| `defaultMetadata` field       | TanStack `head()`                                            |
+| ----------------------------- | ------------------------------------------------------------ |
+| `title` / template            | Root `title` + child routes set title via their own `head()` |
+| `description`                 | `{ name: 'description', … }`                                 |
+| `openGraph.*` / `twitter.*`   | `meta` entries (see [`images.md`](./images.md))              |
+| `robots` (non-prod `noindex`) | Conditional `meta` like TILDA's `VITE_APP_ENV` check         |
+| `viewport.themeColor`         | `{ name: 'theme-color', content: APP_META.themeColor }`      |
+| favicon                       | `links` array (SVG + PNG + apple-touch + manifest)           |
 
 **Do not** rely on Vite or Nitro to generate icons at build time.
 
@@ -206,13 +206,13 @@ Child `head()` merges with parent; survey routes override the default Trassensco
 
 TanStack Start + Vite serves `public/` at the site root (same as TILDA). After migration, these URLs must keep working:
 
-| URL | Purpose |
-| --- | ------- |
-| `/favicon.svg` | Primary icon; TILDA region external logo |
-| `/favicon.ico` | Legacy browsers / bookmarks |
-| `/favicon-16x16.png`, `/favicon-32x32.png` | Raster fallbacks |
-| `/apple-touch-icon.png` | iOS |
-| `/manifest.json` | PWA / install metadata |
+| URL                                        | Purpose                                  |
+| ------------------------------------------ | ---------------------------------------- |
+| `/favicon.svg`                             | Primary icon; TILDA region external logo |
+| `/favicon.ico`                             | Legacy browsers / bookmarks              |
+| `/favicon-16x16.png`, `/favicon-32x32.png` | Raster fallbacks                         |
+| `/apple-touch-icon.png`                    | iOS                                      |
+| `/manifest.json`                           | PWA / install metadata                   |
 
 ---
 
@@ -220,24 +220,24 @@ TanStack Start + Vite serves `public/` at the site root (same as TILDA). After m
 
 ### Remove (Next.js / legacy)
 
-| File | Reason |
-| ---- | ------ |
-| `src/app/icon.svg` | Next file convention |
-| `src/app/favicon.svg` | Duplicate of `public/favicon.svg` |
-| `Layout.tsx` favicon `<link>` | Replaced by `__root.tsx` |
+| File                                  | Reason                                     |
+| ------------------------------------- | ------------------------------------------ |
+| `src/app/icon.svg`                    | Next file convention                       |
+| `src/app/favicon.svg`                 | Duplicate of `public/favicon.svg`          |
+| `Layout.tsx` favicon `<link>`         | Replaced by `__root.tsx`                   |
 | `defaultMetadata` icon-related fields | N/A today — no `icons` in default metadata |
 
 ### Add / keep
 
-| File | Action |
-| ---- | ------ |
-| `public/favicon.svg` | **Keep** — source of truth |
-| `public/favicon.ico`, `favicon-*.png`, `apple-touch-icon.png`, `android-chrome-*.png` | **Generate** and commit |
-| `public/manifest.json` (+ optional `manifest.webmanifest`) | **Generate** and commit |
-| `src/meta.const.ts` | **Add** |
-| `scripts/generate-favicons/process.ts` | **Port** from TILDA |
-| `scripts/generate-favicons/README.md` | **Port** (update app name / theme color) |
-| `src/routes/__root.tsx` | **Add** favicon `links` + `theme-color` |
+| File                                                                                  | Action                                   |
+| ------------------------------------------------------------------------------------- | ---------------------------------------- |
+| `public/favicon.svg`                                                                  | **Keep** — source of truth               |
+| `public/favicon.ico`, `favicon-*.png`, `apple-touch-icon.png`, `android-chrome-*.png` | **Generate** and commit                  |
+| `public/manifest.json` (+ optional `manifest.webmanifest`)                            | **Generate** and commit                  |
+| `src/meta.const.ts`                                                                   | **Add**                                  |
+| `scripts/generate-favicons/process.ts`                                                | **Port** from TILDA                      |
+| `scripts/generate-favicons/README.md`                                                 | **Port** (update app name / theme color) |
+| `src/routes/__root.tsx`                                                               | **Add** favicon `links` + `theme-color`  |
 
 ---
 
@@ -266,19 +266,19 @@ curl -sI localhost:3000/favicon.svg | head -1
 
 ## Differences from TILDA (intentional)
 
-| Topic | TILDA | Trassenscout |
-| ----- | ----- | ------------ |
-| `themeColor` | `#27272a` (zinc) | `#1f2937` (gray-800) — keep current brand shell |
-| Per-route favicon | None | Survey layouts override with partner logos |
-| `og:image` | Not in root `head()` | Keep from `defaultMetadata` (see [`images.md`](./images.md)) |
-| PWA `display: standalone` | Yes in manifest | Copy generator defaults; Trassenscout is not primarily a PWA — manifest still useful for icons/metadata |
+| Topic                     | TILDA                | Trassenscout                                                                                            |
+| ------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------- |
+| `themeColor`              | `#27272a` (zinc)     | `#1f2937` (gray-800) — keep current brand shell                                                         |
+| Per-route favicon         | None                 | Survey layouts override with partner logos                                                              |
+| `og:image`                | Not in root `head()` | Keep from `defaultMetadata` (see [`images.md`](./images.md))                                            |
+| PWA `display: standalone` | Yes in manifest      | Copy generator defaults; Trassenscout is not primarily a PWA — manifest still useful for icons/metadata |
 
 ---
 
 ## Related migration docs
 
-| Doc | Overlap |
-| --- | ------- |
-| [`images.md`](./images.md) | OG/Twitter images in `head()`; briefly mentions favicons — **this doc is canonical for favicons** |
-| [`routes.md`](./routes.md) | `__root.tsx` and per-layout `head()` |
-| [`tooling.md`](./tooling.md) | Bun script invocation, knip |
+| Doc                          | Overlap                                                                                           |
+| ---------------------------- | ------------------------------------------------------------------------------------------------- |
+| [`images.md`](./images.md)   | OG/Twitter images in `head()`; briefly mentions favicons — **this doc is canonical for favicons** |
+| [`routes.md`](./routes.md)   | `__root.tsx` and per-layout `head()`                                                              |
+| [`tooling.md`](./tooling.md) | Bun script invocation, knip                                                                       |

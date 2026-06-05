@@ -7,20 +7,20 @@ If you **named** the effect honestly and the name sounds like derived state, eve
 ```tsx
 // BAD: Extra state + Effect for derived value
 function Form() {
-  const [firstName, setFirstName] = useState('Taylor')
-  const [lastName, setLastName] = useState('Swift')
-  const [fullName, setFullName] = useState('')
+  const [firstName, setFirstName] = useState("Taylor")
+  const [lastName, setLastName] = useState("Swift")
+  const [fullName, setFullName] = useState("")
 
   useEffect(() => {
-    setFullName(firstName + ' ' + lastName)
+    setFullName(firstName + " " + lastName)
   }, [firstName, lastName])
 }
 
 // GOOD: Calculate during rendering
 function Form() {
-  const [firstName, setFirstName] = useState('Taylor')
-  const [lastName, setLastName] = useState('Swift')
-  const fullName = firstName + ' ' + lastName // Just compute it
+  const [firstName, setFirstName] = useState("Taylor")
+  const [lastName, setLastName] = useState("Swift")
+  const fullName = firstName + " " + lastName // Just compute it
 }
 ```
 
@@ -53,10 +53,10 @@ function TodoList({ todos, filter }) {
 ```tsx
 // BAD: Effect to reset state
 function ProfilePage({ userId }) {
-  const [comment, setComment] = useState('')
+  const [comment, setComment] = useState("")
 
   useEffect(() => {
-    setComment('')
+    setComment("")
   }, [userId])
 }
 
@@ -66,7 +66,7 @@ function ProfilePage({ userId }) {
 }
 
 function Profile({ userId }) {
-  const [comment, setComment] = useState('') // Resets automatically
+  const [comment, setComment] = useState("") // Resets automatically
 }
 ```
 
@@ -137,7 +137,7 @@ function Game() {
   const isGameOver = round > 5 // Derived!
 
   function handlePlaceCard(nextCard) {
-    if (isGameOver) throw Error('Game ended')
+    if (isGameOver) throw Error("Game ended")
 
     setCard(nextCard)
     if (nextCard.gold) {
@@ -146,7 +146,7 @@ function Game() {
       } else {
         setGoldCardCount(0)
         setRound(round + 1)
-        if (round === 5) alert('Good game!')
+        if (round === 5) alert("Good game!")
       }
     }
   }
@@ -270,7 +270,7 @@ function SearchResults({ query }) {
       fetchResults(query, { signal: controller.signal })
         .then((json) => setResults(json))
         .catch((err) => {
-          if (err.name !== 'AbortError') throw err
+          if (err.name !== "AbortError") throw err
         })
 
       return function abortFetchSearchResults() {
@@ -309,7 +309,7 @@ function App() {
 }
 
 // ALSO GOOD: Module-level execution
-if (typeof window !== 'undefined') {
+if (typeof window !== "undefined") {
   checkAuthToken()
   loadDataFromLocalStorage()
 }

@@ -11,12 +11,12 @@ Pair with `tanstack-start-conventions` and `tanstack-start-app-structure`.
 Same as SPA — add to `vite.config.ts`:
 
 ```typescript
-import wasm from 'vite-plugin-wasm'
-import topLevelAwait from 'vite-plugin-top-level-await'
+import wasm from "vite-plugin-wasm"
+import topLevelAwait from "vite-plugin-top-level-await"
 
 export default defineConfig({
   plugins: [, /* start plugin */ wasm(), topLevelAwait()],
-  optimizeDeps: { exclude: ['geo-isochrone'] },
+  optimizeDeps: { exclude: ["geo-isochrone"] },
 })
 ```
 
@@ -70,8 +70,8 @@ Heavy geo compute is **client-side mutation**, not a server loader:
 
 ```typescript
 // useIsochrone.ts
-import { useMutation } from '@tanstack/react-query'
-import { bufferPolygon } from './wasm'
+import { useMutation } from "@tanstack/react-query"
+import { bufferPolygon } from "./wasm"
 
 export function useBufferPolygon() {
   return useMutation({
