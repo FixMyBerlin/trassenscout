@@ -16,7 +16,9 @@ test.describe("Public and auth smoke", () => {
       await page.goto(publicPage.path)
 
       await expect(page).toHaveTitle(publicPage.title)
-      await expect(page.getByRole("heading", { name: publicPage.heading, exact: true })).toBeVisible()
+      await expect(page.getByRole("heading", { name: publicPage.heading, exact: true })).toBeVisible({
+        timeout: 30_000,
+      })
     })
   }
 

@@ -14,6 +14,7 @@ const surveyFeedbackTextFieldId = String(
 
 type SurveyFixture = {
   surveyId: number
+  surveySessionId: number
   surveyResponseId: number
   uploadId: number
 }
@@ -79,6 +80,7 @@ const ensureSurveyFixture = async (): Promise<SurveyFixture> => {
 
   return {
     surveyId,
+    surveySessionId: surveySession.id,
     surveyResponseId: surveyResponse.id,
     uploadId: upload.id,
   }
@@ -91,6 +93,15 @@ test.describe("Survey permissions", () => {
 
   test.beforeAll(async () => {
     surveyFixture = await ensureSurveyFixture()
+  })
+
+  test.afterAll(async () => {
+    // Clean up fixture rows in reverse dependency order so they don't accumulate across runs.
+    // The survey itself is intentionally not deleted — it may have pre-existed.
+    if (!surveyFixture) return
+    await db.upload.delete({ where: { id: surveyFixture.uploadId } }).catch(() => {})
+    await db.surveyResponse.delete({ where: { id: surveyFixture.surveyResponseId } }).catch(() => {})
+    await db.surveySession.delete({ where: { id: surveyFixture.surveySessionId } }).catch(() => {})
   })
 
   test.describe("survey responses route", () => {
@@ -159,7 +170,7 @@ test.describe("Survey permissions", () => {
         await saveButton.click()
 
         await expect(noteField).toHaveValue(note)
-        await page.waitForLoadState("networkidle")
+        await page.waitForResponse((r) => r.url().includes("/api/rpc/") && r.status() === 200, { timeout: 15_000 }).catch(() => {})
 
         const freshContext = await browser.newContext({ storageState: authFile("editor") })
         const freshPage = await freshContext.newPage()
