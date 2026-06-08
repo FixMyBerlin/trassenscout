@@ -5,7 +5,7 @@ async function globalTeardown() {
     return
   }
 
-  execSync("npm run posttest", {
+  execSync("npm run test:db:stop", {
     stdio: "inherit",
     env: process.env,
   })

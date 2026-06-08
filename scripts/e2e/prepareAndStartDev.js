@@ -8,6 +8,7 @@ const run = (command) => {
       DATABASE_URL: process.env.DATABASE_URL,
       IS_TEST: process.env.IS_TEST ?? "true",
       NEXT_PUBLIC_APP_ENV: process.env.NEXT_PUBLIC_APP_ENV ?? "development",
+      NEXT_IGNORE_INCORRECT_LOCKFILE: process.env.NEXT_IGNORE_INCORRECT_LOCKFILE ?? "1",
     },
   })
 }
@@ -35,7 +36,7 @@ const main = async () => {
     throw new Error("DATABASE_URL is required for Playwright web server setup")
   }
 
-  run("npm run pretest")
+  run("npm run test:db:start")
   await waitForPostgres()
   run("npx blitz prisma migrate reset --force --skip-seed")
   run("npx blitz db seed")
@@ -47,6 +48,7 @@ const main = async () => {
       DATABASE_URL: process.env.DATABASE_URL,
       IS_TEST: process.env.IS_TEST ?? "true",
       NEXT_PUBLIC_APP_ENV: process.env.NEXT_PUBLIC_APP_ENV ?? "development",
+      NEXT_IGNORE_INCORRECT_LOCKFILE: process.env.NEXT_IGNORE_INCORRECT_LOCKFILE ?? "1",
     },
   })
 
