@@ -2,9 +2,12 @@ import {
   LayerType,
   SurveyBackgroundSwitcher,
 } from "@/src/app/beteiligung/_components/form/map/BackgroundSwitcher"
-import { installMapGrabIfTest } from "@/src/app/beteiligung/_components/form/map/installMapGrab"
-import { sendPlaywrightMapLoadedEvent } from "@/src/app/beteiligung/_components/form/map/playwrightMapLoadedEvent"
 import { SurveyMapGeoCategoryInfoPanel } from "@/src/app/beteiligung/_components/form/map/MapGeoCategoryInfoPanel"
+import {
+  getSurveyMapStyle,
+  installMapGrabIfTest,
+  notifyPlaywrightMapLoaded,
+} from "@/src/app/beteiligung/_components/form/map/testMode"
 import {
   featureStateTargetForMapSource,
   getInitialViewStateFromGeometryString,
@@ -27,12 +30,6 @@ import Map, {
   NavigationControl,
   useMap,
 } from "react-map-gl/maplibre"
-
-const testMapStyle = {
-  version: 8,
-  sources: {},
-  layers: [],
-} as const
 
 export type GeoCategoryMapProps = {
   description?: string
@@ -108,7 +105,10 @@ export const SurveyGeoCategoryMap = ({
     }
   }, [mainMap, mapLoading])
 
-  if (mainMap) installMapGrabIfTest(mainMap.getMap(), "mainMap")
+  useEffect(() => {
+    if (!mainMap) return
+    installMapGrabIfTest(mainMap.getMap(), "mainMap")
+  }, [mainMap])
 
   const initialViewState =
     // if we have a selected geometry category already, use its bbox
@@ -133,10 +133,6 @@ export const SurveyGeoCategoryMap = ({
   // this allows us to set the initial bounds based on a query parameter (e.g. set in a read only field)
 
   const { maptilerUrl } = getConfigBySurveySlug(surveySlug, "meta")
-  const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
-  const useTestMapStyle = process.env.NEXT_PUBLIC_IS_TEST === "true"
-  const vectorStyle = `${maptilerUrl}?key=${maptilerApiKey}`
-  const satelliteStyle = `${"https://api.maptiler.com/maps/hybrid/style.json"}?key=${maptilerApiKey}`
 
   const handleLayerSwitch = (layer: LayerType) => {
     setSelectedLayer(layer)
@@ -207,7 +203,7 @@ export const SurveyGeoCategoryMap = ({
   }
 
   const handleMapLoad = (_: maplibregl.MapLibreEvent) => {
-    sendPlaywrightMapLoadedEvent()
+    notifyPlaywrightMapLoaded()
     setMapLoading(true)
   }
 
@@ -221,7 +217,7 @@ export const SurveyGeoCategoryMap = ({
         id="mainMap"
         scrollZoom={false}
         initialViewState={initialViewState}
-        mapStyle={useTestMapStyle ? testMapStyle : selectedLayer === "vector" ? vectorStyle : satelliteStyle}
+        mapStyle={getSurveyMapStyle({ selectedLayer, maptilerUrl })}
         onClick={handleMapClick}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
