@@ -79,12 +79,16 @@ export default defineConfig({
       testMatch: /tests\/(survey|public)\/.+\.spec\.ts/,
       use: { ...devices["Pixel 5"] },
     },
-    {
-      name: "mobile-safari",
-      dependencies: ["setup"],
-      testMatch: /tests\/(survey|public)\/.+\.spec\.ts/,
-      use: { ...devices["iPhone 12"] },
-    },
+    ...(runAllBrowsers
+      ? [
+          {
+            name: "mobile-safari",
+            dependencies: ["setup"],
+            testMatch: /tests\/(survey|public)\/.+\.spec\.ts/,
+            use: { ...devices["iPhone 12"] },
+          },
+        ]
+      : []),
 
     /* Test against branded browsers. */
     // {

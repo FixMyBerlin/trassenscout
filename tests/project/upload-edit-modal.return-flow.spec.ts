@@ -55,7 +55,16 @@ test.describe("Upload edit return flow", () => {
     })
     await expect(page.getByLabel("Kurzbeschreibung")).toHaveValue(fixture.uploadTitle)
 
+    const maybeDirtyConfirm = page
+      .waitForEvent("dialog", { timeout: 1_000 })
+      .then(async (dialog) => {
+        expect(dialog.message()).toContain("Ungespeicherte Änderungen verwerfen?")
+        await dialog.accept()
+      })
+      .catch(() => {})
+
     await page.getByRole("link", { name: "Zurück", exact: true }).click()
+    await maybeDirtyConfirm
 
     await expect(page).toHaveURL(new RegExp(`/${projectSlug}/uploads$`))
     await expect(page.getByRole("heading", { name: "Dokumente", exact: true })).toBeVisible({

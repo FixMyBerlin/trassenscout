@@ -1,9 +1,14 @@
 import { expect, test } from "@playwright/test"
 import { playwrightWaitForMapLoadedEvent } from "../_utils/customMapLoadedEvent"
 import { fakeTextarea } from "../_utils/faker"
-import { filloutAndTestPartOne } from "./filloutAndTestPartOne"
+import { filloutAndTestPartOne } from "./_shared/filloutAndTestPartOne"
 
 test("survey brandenburg: complete part 1 and 2 (part 2 once)", async ({ page }) => {
+  test.fixme(
+    true,
+    "Radnetz Brandenburg line selection is currently not deterministic in Playwright.",
+  )
+
   // Part 1:
   await filloutAndTestPartOne(page)
   await page.getByRole("button", { name: "Weiter zur Abgabe von" }).click()

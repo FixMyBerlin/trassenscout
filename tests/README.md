@@ -3,6 +3,7 @@
 ## Runtime model
 
 - E2E runs against the dev server (`npm run dev:e2e`) on `127.0.0.1:6174`.
+- Docker is required locally because the suite provisions `ts-test-db`.
 - Test DB lifecycle is handled by Playwright global hooks:
   - setup: start `ts-test-db`, run migrations, run seed
   - teardown: stop/remove `ts-test-db` (unless `E2E_KEEP_DB=1`)
@@ -13,7 +14,8 @@
 ## Default execution
 
 - Chromium is default.
-- Firefox/WebKit run only with `E2E_ALL_BROWSERS=1`.
+- `mobile-chrome` is included in the default suite for `tests/public` and `tests/survey`.
+- Firefox, WebKit, and `mobile-safari` run only with `E2E_ALL_BROWSERS=1`.
 - Stability defaults:
   - `fullyParallel: false`
   - local workers default to `1` (override with `E2E_WORKERS`)
@@ -51,10 +53,13 @@
 2. DB startup failures:
    - check `docker ps` for `ts-test-db`
    - rerun with clean DB: `npm run posttest && npm run e2e:chromium`
-3. Console noise / migration regressions:
+3. Browser install failures:
+   - run `npx playwright install`
+   - for the opt-in browser matrix, install all three engines before `E2E_ALL_BROWSERS=1`
+4. Console noise / migration regressions:
    - framework/router fetch errors are intentionally not part of the shared allowlist
    - keep per-spec `allowedConsoleErrors` scoped and minimal
-4. Route guard flakiness:
+5. Route guard flakiness:
    - avoid overlapping local E2E runs against the same `ts-test-db`
 
 ## Notes for map tests
