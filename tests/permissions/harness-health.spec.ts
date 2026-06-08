@@ -44,7 +44,8 @@ test.describe("Harness health", () => {
     })
   }
 
-  test.describe("admin storage state", () => {
+  // Separate check: admin can access the /admin panel (complements the /dashboard check above).
+  test.describe("admin panel access", () => {
     test.use({ storageState: authFile("admin") })
     test.use({ allowedConsoleErrors: knownNoise })
 

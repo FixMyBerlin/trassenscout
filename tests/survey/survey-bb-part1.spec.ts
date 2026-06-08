@@ -1,9 +1,16 @@
-import { expect, test } from "@playwright/test"
-import { filloutAndTestPartOne } from "./filloutAndTestPartOne"
+import { surveyNoise } from "@/tests/_fixtures/console-noise"
+import { expect, test } from "@/tests/_fixtures/test"
+import { filloutAndTestPartOne } from "./_shared/filloutAndTestPartOne"
 
-test("survey brandenburg: complete just part 1", async ({ page }) => {
-  await filloutAndTestPartOne(page)
-  await page.getByRole("button", { name: "Beteiligung beenden" }).click()
+test.describe("Survey Brandenburg – part 1 only", () => {
+  test.use({ allowedConsoleErrors: surveyNoise })
 
-  await expect(page.getByRole("heading", { name: "Vielen Dank für Ihre Teilnahme" })).toBeVisible()
+  test("complete just part 1", async ({ page }) => {
+    await filloutAndTestPartOne(page)
+    await page.getByRole("button", { name: "Beteiligung beenden" }).click()
+
+    await expect(
+      page.getByRole("heading", { name: "Vielen Dank für Ihre Teilnahme" }),
+    ).toBeVisible()
+  })
 })

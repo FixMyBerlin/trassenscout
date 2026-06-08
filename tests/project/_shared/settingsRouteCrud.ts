@@ -82,6 +82,21 @@ export const defineSettingsRouteCrudSuite = ({
       await expect(page.locator("tbody tr", { hasText: updatedTitle }).first()).toBeVisible({
         timeout: 30_000,
       })
+
+      // Delete — also acts as self-cleanup so the item doesn't accumulate across runs.
+      const updatedRow = page.locator("tbody tr", { hasText: updatedTitle }).first()
+      page.on("dialog", (dialog) => dialog.accept()) // handle native confirm dialogs if present
+      await updatedRow.getByRole("button", { name: "Löschen", exact: true }).click()
+
+      await expect(page.locator("tbody tr", { hasText: updatedTitle })).toHaveCount(0, {
+        timeout: 15_000,
+      })
+
+      await page.reload()
+      await expect(page.getByRole("heading", { name: listHeading, exact: true })).toBeVisible({
+        timeout: 30_000,
+      })
+      await expect(page.locator("tbody tr", { hasText: updatedTitle })).toHaveCount(0)
     })
   })
 }

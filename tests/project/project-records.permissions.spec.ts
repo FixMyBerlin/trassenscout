@@ -85,6 +85,15 @@ test.describe("Project records permissions", () => {
     })
   })
 
+  test.afterAll(async () => {
+    // Clean up the dedicated persistence fixture row so it doesn't accumulate across runs.
+    if (persistenceProjectRecordId) {
+      await db.projectRecord.delete({ where: { id: persistenceProjectRecordId } }).catch(() => {
+        // Ignore if already deleted (e.g. test suite was aborted mid-run).
+      })
+    }
+  })
+
   test.describe("edit direct URL", () => {
     test.describe("viewer users", () => {
       test.use({ storageState: authFile("viewer") })
@@ -125,11 +134,19 @@ test.describe("Project records permissions", () => {
 
         await page.getByLabel("Titel").fill(updatedTitle)
         await page.getByLabel("Notizen (Markdown)").fill(updatedBody)
-        await page.getByRole("button", { name: "Änderungen speichern", exact: true }).click()
+        await Promise.all([
+          page.waitForResponse(
+            (r) =>
+              r.url().includes("/api/rpc/") &&
+              r.request().method() === "POST" &&
+              r.status() === 200,
+            { timeout: 15_000 },
+          ),
+          page.getByRole("button", { name: "Änderungen speichern", exact: true }).click(),
+        ])
 
         await expect(page.getByLabel("Titel")).toHaveValue(updatedTitle)
         await expect(page.getByLabel("Notizen (Markdown)")).toHaveValue(updatedBody)
-        await page.waitForLoadState("networkidle")
 
         const freshContext = await browser.newContext({ storageState: authFile("editor") })
         const freshPage = await freshContext.newPage()
@@ -162,7 +179,7 @@ test.describe("Project records permissions", () => {
 
         await expect(page.getByText(comment, { exact: true })).toBeVisible({ timeout: 30_000 })
         await expect(commentField).toHaveValue("")
-        await page.waitForLoadState("networkidle")
+        await page.waitForResponse((r) => r.url().includes("/api/rpc/") && r.status() === 200, { timeout: 15_000 }).catch(() => {})
 
         const freshContext = await browser.newContext({ storageState: authFile("editor") })
         const freshPage = await freshContext.newPage()
