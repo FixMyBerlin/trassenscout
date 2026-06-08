@@ -1,11 +1,8 @@
 import { authFile, seedRoles } from "@/tests/_fixtures/auth"
+import { pageNoise } from "@/tests/_fixtures/console-noise"
 import { expect, test } from "@/tests/_fixtures/test"
 
-const knownNoise = [
-  "webglcontextcreationerror",
-  "Failed to initialize WebGL",
-  "Failed to fetch RSC payload",
-]
+const knownNoise = pageNoise
 
 test.describe("Harness health", () => {
   test.describe("logged-out baseline", () => {

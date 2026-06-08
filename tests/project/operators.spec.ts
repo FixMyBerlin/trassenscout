@@ -1,4 +1,5 @@
 import { seedProjects } from "@/tests/_fixtures/auth"
+import { defineSettingsRouteCrudSuite } from "./_shared/settingsRouteCrud"
 import { defineSettingsRoutePermissionSuite } from "./_shared/settingsRoutePermissions"
 
 const projectSlug = seedProjects.richProject
@@ -13,4 +14,17 @@ defineSettingsRoutePermissionSuite({
   createHeading: "Baulastträger hinzufügen",
   editHeading: "Baulastträger bearbeiten",
   createLinkName: "Neuer Baulastträger",
+})
+
+defineSettingsRouteCrudSuite({
+  suiteName: "Operators CRUD persistence",
+  listPath: operatorsPath,
+  listHeading: "Baulastträger",
+  createLinkName: "Neuer Baulastträger",
+  createHeading: "Baulastträger hinzufügen",
+  editHeading: "Baulastträger bearbeiten",
+  slugLabel: "Kürzel",
+  titleLabel: "Titel",
+  createSubmitText: "Erstellen",
+  editSubmitText: "Speichern",
 })

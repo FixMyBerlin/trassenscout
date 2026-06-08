@@ -1,4 +1,5 @@
 import { authFile, seedProjects } from "@/tests/_fixtures/auth"
+import { pageNoise } from "@/tests/_fixtures/console-noise"
 import { expect, test } from "@/tests/_fixtures/test"
 
 const projectSlug = seedProjects.richProject
@@ -19,13 +20,7 @@ const projectPages = [
 test.describe("Project smoke", () => {
   test.describe.configure({ mode: "serial" })
   test.use({ storageState: authFile("viewer") })
-  test.use({
-    allowedConsoleErrors: [
-      "webglcontextcreationerror",
-      "Failed to initialize WebGL",
-      "Failed to fetch RSC payload",
-    ],
-  })
+  test.use({ allowedConsoleErrors: pageNoise })
 
   for (const projectPage of projectPages) {
     test(`renders ${projectPage.path}`, async ({ page }) => {
