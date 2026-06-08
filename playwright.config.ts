@@ -11,7 +11,7 @@ dotenv.config({ path: path.resolve(__dirname, ".env.test") })
 const baseURL = process.env.E2E_BASE_URL ?? "http://127.0.0.1:6174"
 const runAllBrowsers = process.env.E2E_ALL_BROWSERS === "1"
 const useManagedWebServer = !process.env.E2E_BASE_URL
-const configuredWorkers = Number(process.env.E2E_WORKERS ?? 3)
+const configuredWorkers = Number(process.env.E2E_WORKERS ?? 1)
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -27,7 +27,7 @@ export default defineConfig({
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
   /* Keep CI deterministic and local runs bounded. */
-  workers: process.env.CI ? 1 : Number.isFinite(configuredWorkers) ? configuredWorkers : 3,
+  workers: process.env.CI ? 1 : Number.isFinite(configuredWorkers) ? configuredWorkers : 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: "html",
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -70,15 +70,21 @@ export default defineConfig({
         ]
       : []),
 
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
+    /* Mobile viewports — scoped to the public-facing survey and public pages,
+       which are the primary mobile surfaces. Keeping scope narrow avoids
+       multiplying all admin/project tests across mobile. */
+    {
+      name: "mobile-chrome",
+      dependencies: ["setup"],
+      testMatch: /tests\/(survey|public)\/.+\.spec\.ts/,
+      use: { ...devices["Pixel 5"] },
+    },
+    {
+      name: "mobile-safari",
+      dependencies: ["setup"],
+      testMatch: /tests\/(survey|public)\/.+\.spec\.ts/,
+      use: { ...devices["iPhone 12"] },
+    },
 
     /* Test against branded browsers. */
     // {
@@ -104,7 +110,9 @@ export default defineConfig({
           ...process.env,
           DATABASE_URL: process.env.DATABASE_URL,
           IS_TEST: process.env.IS_TEST ?? "true",
+          NEXT_PUBLIC_IS_TEST: process.env.NEXT_PUBLIC_IS_TEST ?? "true",
           NEXT_PUBLIC_APP_ENV: process.env.NEXT_PUBLIC_APP_ENV ?? "development",
+          NEXT_IGNORE_INCORRECT_LOCKFILE: process.env.NEXT_IGNORE_INCORRECT_LOCKFILE ?? "1",
         },
       }
     : undefined,
