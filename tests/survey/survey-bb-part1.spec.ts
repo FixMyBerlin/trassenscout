@@ -7,6 +7,9 @@ test.describe("Survey Brandenburg – part 1 only", () => {
 
   test("complete just part 1", async ({ page }) => {
     await filloutAndTestPartOne(page)
+    await expect(page.getByRole("heading", { name: "Ihre Anmerkungen" })).toBeVisible({
+      timeout: 30_000,
+    })
     await page.getByRole("button", { name: "Beteiligung beenden" }).click()
 
     await expect(

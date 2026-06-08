@@ -2,9 +2,12 @@ import {
   LayerType,
   SurveyBackgroundSwitcher,
 } from "@/src/app/beteiligung/_components/form/map/BackgroundSwitcher"
-import { installMapGrabIfTest } from "@/src/app/beteiligung/_components/form/map/installMapGrab"
-import { sendPlaywrightMapLoadedEvent } from "@/src/app/beteiligung/_components/form/map/playwrightMapLoadedEvent"
 import { SurveyMapGeoCategoryInfoPanel } from "@/src/app/beteiligung/_components/form/map/MapGeoCategoryInfoPanel"
+import {
+  getSurveyMapStyle,
+  installMapGrabIfTest,
+  notifyPlaywrightMapLoaded,
+} from "@/src/app/beteiligung/_components/form/map/testMode"
 import {
   featureStateTargetForMapSource,
   getInitialViewStateFromGeometryString,
@@ -130,7 +133,10 @@ export const SwitchableMap = ({
     }
   }, [mainMap, mapLoading, mapData, isPin])
 
-  if (mainMap) installMapGrabIfTest(mainMap.getMap(), "mainMap")
+  useEffect(() => {
+    if (!mainMap) return
+    installMapGrabIfTest(mainMap.getMap(), "mainMap")
+  }, [mainMap])
 
   const initialLocationPoint = (() => {
     try {
@@ -168,9 +174,6 @@ export const SwitchableMap = ({
   // this allows us to set the initial bounds based on a query parameter (e.g. set in a read only field)
 
   const { maptilerUrl } = getConfigBySurveySlug(surveySlug, "meta")
-  const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
-  const vectorStyle = `${maptilerUrl}?key=${maptilerApiKey}`
-  const satelliteStyle = `${"https://api.maptiler.com/maps/hybrid/style.json"}?key=${maptilerApiKey}`
 
   const handleLayerSwitch = (layer: LayerType) => {
     setSelectedLayer(layer)
@@ -241,7 +244,7 @@ export const SwitchableMap = ({
   }
 
   const handleMapLoad = (_: maplibregl.MapLibreEvent) => {
-    sendPlaywrightMapLoadedEvent()
+    notifyPlaywrightMapLoaded()
     setMapLoading(true)
   }
 
@@ -345,7 +348,7 @@ export const SwitchableMap = ({
         id="mainMap"
         scrollZoom={false}
         initialViewState={initialViewState}
-        mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
+        mapStyle={getSurveyMapStyle({ selectedLayer, maptilerUrl })}
         onClick={handleMapClick}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
