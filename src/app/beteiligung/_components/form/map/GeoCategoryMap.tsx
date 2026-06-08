@@ -3,6 +3,7 @@ import {
   SurveyBackgroundSwitcher,
 } from "@/src/app/beteiligung/_components/form/map/BackgroundSwitcher"
 import { installMapGrabIfTest } from "@/src/app/beteiligung/_components/form/map/installMapGrab"
+import { sendPlaywrightMapLoadedEvent } from "@/src/app/beteiligung/_components/form/map/playwrightMapLoadedEvent"
 import { SurveyMapGeoCategoryInfoPanel } from "@/src/app/beteiligung/_components/form/map/MapGeoCategoryInfoPanel"
 import {
   featureStateTargetForMapSource,
@@ -15,7 +16,6 @@ import { useFieldContext } from "@/src/app/beteiligung/_shared/hooks/form-contex
 import { MapData } from "@/src/app/beteiligung/_shared/types"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
-import { playwrightSendMapLoadedEvent } from "@/tests/_utils/customMapLoadedEvent"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 import { useParams, useSearchParams } from "next/navigation"
@@ -27,6 +27,12 @@ import Map, {
   NavigationControl,
   useMap,
 } from "react-map-gl/maplibre"
+
+const testMapStyle = {
+  version: 8,
+  sources: {},
+  layers: [],
+} as const
 
 export type GeoCategoryMapProps = {
   description?: string
@@ -128,6 +134,7 @@ export const SurveyGeoCategoryMap = ({
 
   const { maptilerUrl } = getConfigBySurveySlug(surveySlug, "meta")
   const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
+  const useTestMapStyle = process.env.NEXT_PUBLIC_IS_TEST === "true"
   const vectorStyle = `${maptilerUrl}?key=${maptilerApiKey}`
   const satelliteStyle = `${"https://api.maptiler.com/maps/hybrid/style.json"}?key=${maptilerApiKey}`
 
@@ -200,7 +207,7 @@ export const SurveyGeoCategoryMap = ({
   }
 
   const handleMapLoad = (_: maplibregl.MapLibreEvent) => {
-    playwrightSendMapLoadedEvent()
+    sendPlaywrightMapLoadedEvent()
     setMapLoading(true)
   }
 
@@ -214,7 +221,7 @@ export const SurveyGeoCategoryMap = ({
         id="mainMap"
         scrollZoom={false}
         initialViewState={initialViewState}
-        mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
+        mapStyle={useTestMapStyle ? testMapStyle : selectedLayer === "vector" ? vectorStyle : satelliteStyle}
         onClick={handleMapClick}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
