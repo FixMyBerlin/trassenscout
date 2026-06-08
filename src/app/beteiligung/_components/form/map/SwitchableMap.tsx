@@ -3,6 +3,7 @@ import {
   SurveyBackgroundSwitcher,
 } from "@/src/app/beteiligung/_components/form/map/BackgroundSwitcher"
 import { installMapGrabIfTest } from "@/src/app/beteiligung/_components/form/map/installMapGrab"
+import { sendPlaywrightMapLoadedEvent } from "@/src/app/beteiligung/_components/form/map/playwrightMapLoadedEvent"
 import { SurveyMapGeoCategoryInfoPanel } from "@/src/app/beteiligung/_components/form/map/MapGeoCategoryInfoPanel"
 import {
   featureStateTargetForMapSource,
@@ -19,7 +20,6 @@ import { useFieldContext } from "@/src/app/beteiligung/_shared/hooks/form-contex
 import { MapData } from "@/src/app/beteiligung/_shared/types"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
-import { playwrightSendMapLoadedEvent } from "@/tests/_utils/customMapLoadedEvent"
 import { Radio, RadioGroup } from "@headlessui/react"
 import clsx from "clsx"
 import type { Point } from "geojson"
@@ -241,7 +241,7 @@ export const SwitchableMap = ({
   }
 
   const handleMapLoad = (_: maplibregl.MapLibreEvent) => {
-    playwrightSendMapLoadedEvent()
+    sendPlaywrightMapLoadedEvent()
     setMapLoading(true)
   }
 
