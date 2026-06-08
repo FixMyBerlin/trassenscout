@@ -16,7 +16,16 @@
 - Firefox/WebKit run only with `E2E_ALL_BROWSERS=1`.
 - Stability defaults:
   - `fullyParallel: false`
-  - local workers default to `3` (override with `E2E_WORKERS`)
+  - local workers default to `1` (override with `E2E_WORKERS`)
+
+## Coverage notes
+
+- Route/access coverage is broad across `public`, `auth`, `dashboard`, `admin`, and `project`.
+- Public survey flows run on desktop Chromium by default and on mobile browser projects.
+- Project canaries now include:
+  - [project-records.deep-link.spec.ts](./project/project-records.deep-link.spec.ts) for authenticated URL-state hydration
+  - [upload-edit-modal.return-flow.spec.ts](./project/upload-edit-modal.return-flow.spec.ts) for upload edit `returnTo` routing
+  - CRUD persistence for operators in addition to quality levels
 
 ## Commands
 
@@ -24,6 +33,8 @@
 - `npm run e2e:chromium` — Chromium project only
 - `npm run e2e:ui` — Playwright UI mode
 - `npx playwright test tests/project/surveys.permissions.spec.ts --project=chromium` — run a single spec
+- `npx playwright test tests/project/project-records.deep-link.spec.ts --project=chromium --headed` — run the deep-link canary in visible Chromium
+- `npx playwright test tests/project/upload-edit-modal.return-flow.spec.ts --project=chromium` — run the upload return-flow canary
 
 ## Useful env switches
 
@@ -40,9 +51,11 @@
 2. DB startup failures:
    - check `docker ps` for `ts-test-db`
    - rerun with clean DB: `npm run posttest && npm run e2e:chromium`
-3. Route guard flakiness:
-   - avoid overlapping local E2E runs against the same `ts-test-db`
+3. Console noise / migration regressions:
+   - framework/router fetch errors are intentionally not part of the shared allowlist
    - keep per-spec `allowedConsoleErrors` scoped and minimal
+4. Route guard flakiness:
+   - avoid overlapping local E2E runs against the same `ts-test-db`
 
 ## Notes for map tests
 
