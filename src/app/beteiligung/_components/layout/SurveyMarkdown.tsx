@@ -38,12 +38,12 @@ const proseClassesSurvey = clsx(
 )
 
 export const SurveyMarkdown = ({ markdown, className }: Props) => {
-  if (!markdown) return null
-
-  const content = useRemarkSync(markdown, {
+  const content = useRemarkSync(markdown ?? "", {
     remarkToRehypeOptions: { allowDangerousHtml: true },
     rehypeReactOptions: { components },
   })
+
+  if (!markdown) return null
 
   return (
     <div className={clsx(proseClasses, proseClassesSurvey, className)}>{content}</div>
