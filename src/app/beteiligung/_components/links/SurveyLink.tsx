@@ -24,7 +24,7 @@ export const SurveyLink = forwardRef<HTMLAnchorElement, SurveyLinkProps>(functio
   const classNames = clsx(classNameOverwrites ?? selectSurveyLinkStyle(button, className))
 
   // external link
-  if (typeof href === "string") {
+  if (typeof href === "string" && !href.startsWith("/")) {
     return (
       <a
         ref={ref}
@@ -41,7 +41,7 @@ export const SurveyLink = forwardRef<HTMLAnchorElement, SurveyLinkProps>(functio
 
   return (
     <NextLink
-      href={href}
+      href={href as Route}
       ref={ref}
       className={classNames}
       {...props}

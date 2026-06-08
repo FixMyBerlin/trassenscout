@@ -21,7 +21,7 @@ export const SurveyButton = ({ color, children, ...props }: Props) => {
   }
 
   return (
-    <button {...props} className={clsx("px-12", colorClass)}>
+    <button type={props.type ?? "button"} {...props} className={clsx("px-12", colorClass)}>
       {children}
     </button>
   )

@@ -1,19 +1,24 @@
-import { SurveyCheckbox } from "@/src/app/beteiligung/_components/form/Checkbox"
-import { SurveyCheckboxGroup } from "@/src/app/beteiligung/_components/form/CheckboxGroup"
-import { SurveyGeoCategoryMapWithLegend } from "@/src/app/beteiligung/_components/form/map/GeoCategoryMapWithLegend"
-import { SurveySimpleMapWithLegend } from "@/src/app/beteiligung/_components/form/map/SimpleMapWithLegend"
-import { SwitchableMapWithLegend } from "@/src/app/beteiligung/_components/form/map/SwitchableMapWithLegend"
-import { SurveyNumberfield } from "@/src/app/beteiligung/_components/form/Numberfield"
-import { SurveyPageTitle } from "@/src/app/beteiligung/_components/form/PageTitle"
-import { SurveyRadiobuttonGroup } from "@/src/app/beteiligung/_components/form/RadiobuttonGroup"
-import { SurveyReadonlyTextfield } from "@/src/app/beteiligung/_components/form/ReadOnlyTextfield"
-import { SurveyResponseIdField } from "@/src/app/beteiligung/_components/form/ResponseIdField"
-import { SurveySelect } from "@/src/app/beteiligung/_components/form/Select"
-import { SurveyTextarea } from "@/src/app/beteiligung/_components/form/Textarea"
-import { SurveyTextfield } from "@/src/app/beteiligung/_components/form/Textfield"
-import { SurveyUploadField } from "@/src/app/beteiligung/_components/form/UploadField"
-import { SurveyVorgangsIdField } from "@/src/app/beteiligung/_components/form/VorgangsIdField"
-import { SurveyMarkdown } from "@/src/app/beteiligung/_components/layout/SurveyMarkdown"
+// These UI components are imported for `ComponentProps<typeof X>` type inference only.
+// Using `import type` keeps them out of the server bundle, preventing SSR crashes caused
+// by map/browser-only dependencies (maplibre-gl, pmtiles, react-map-gl) being evaluated
+// on the server when this types module is imported from server-side config files.
+import type { CustomIntroKey } from "@/src/app/beteiligung/_components/customIntroRegistry"
+import type { SurveyCheckbox } from "@/src/app/beteiligung/_components/form/Checkbox"
+import type { SurveyCheckboxGroup } from "@/src/app/beteiligung/_components/form/CheckboxGroup"
+import type { SurveyGeoCategoryMapWithLegend } from "@/src/app/beteiligung/_components/form/map/GeoCategoryMapWithLegend"
+import type { SurveySimpleMapWithLegend } from "@/src/app/beteiligung/_components/form/map/SimpleMapWithLegend"
+import type { SwitchableMapWithLegend } from "@/src/app/beteiligung/_components/form/map/SwitchableMapWithLegend"
+import type { SurveyNumberfield } from "@/src/app/beteiligung/_components/form/Numberfield"
+import type { SurveyPageTitle } from "@/src/app/beteiligung/_components/form/PageTitle"
+import type { SurveyRadiobuttonGroup } from "@/src/app/beteiligung/_components/form/RadiobuttonGroup"
+import type { SurveyReadonlyTextfield } from "@/src/app/beteiligung/_components/form/ReadOnlyTextfield"
+import type { SurveyResponseIdField } from "@/src/app/beteiligung/_components/form/ResponseIdField"
+import type { SurveySelect } from "@/src/app/beteiligung/_components/form/Select"
+import type { SurveyTextarea } from "@/src/app/beteiligung/_components/form/Textarea"
+import type { SurveyTextfield } from "@/src/app/beteiligung/_components/form/Textfield"
+import type { SurveyUploadField } from "@/src/app/beteiligung/_components/form/UploadField"
+import type { SurveyVorgangsIdField } from "@/src/app/beteiligung/_components/form/VorgangsIdField"
+import type { SurveyMarkdown } from "@/src/app/beteiligung/_components/layout/SurveyMarkdown"
 import { TBackendConfig } from "@/src/app/beteiligung/_shared/backend-types"
 import { fieldValidationEnum } from "@/src/app/beteiligung/_shared/fieldvalidationEnum"
 import { AnyFieldApi } from "@tanstack/react-form"
@@ -295,7 +300,7 @@ export type EndButton = {
 export type TIntro =
   | {
       type: "custom"
-      customComponent: ReactNode
+      customComponentKey: CustomIntroKey
       buttons: IntroButton[]
     }
   | {

@@ -7,7 +7,7 @@ import { SurveyContainer } from "@/src/app/beteiligung/_components/layout/Survey
 import { SurveySpinnerLayover } from "@/src/app/beteiligung/_components/layout/SurveySpinnerLayover"
 import { SurveyPart } from "@/src/app/beteiligung/_components/SurveyPart"
 import { ProgressContext } from "@/src/app/beteiligung/_shared/contexts/contexts"
-import { Stage } from "@/src/app/beteiligung/_shared/types"
+import { FormConfig, Stage } from "@/src/app/beteiligung/_shared/types"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import {
   getConfigBySurveySlug,
@@ -16,10 +16,9 @@ import {
 import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getQuestionIdBySurveySlug"
 import { scrollToTopWithDelay } from "@/src/app/beteiligung/_shared/utils/scrollToTopWithDelay"
 import getOrCreateCreatedSurveyResponsePublic from "@/src/server/survey-responses/mutations/getOrCreateCreatedSurveyResponsePublic"
-import surveyFeedbackEmail from "@/src/server/survey-responses/mutations/surveyPart2Email"
 import updateSurveyResponsePublic from "@/src/server/survey-responses/mutations/updateSurveyResponsePublic"
 import createSurveySession from "@/src/server/survey-sessions/mutations/createSurveySession"
-import { useMutation } from "@blitzjs/rpc"
+import { invoke, useMutation } from "@blitzjs/rpc"
 import { useParams, useSearchParams } from "next/navigation"
 import { useState } from "react"
 
@@ -41,12 +40,18 @@ const getFirstStage = (surveySlug: AllowedSurveySlugs): Stage => {
   return getNextStage(surveySlug, 0)
 }
 
+const getInitialStage = (surveySlug: AllowedSurveySlugs): Stage => {
+  const envStage = process.env.NEXT_PUBLIC_PUBLIC_SURVEY_START_STAGE
+  if (envStage && getConfigBySurveySlug(surveySlug, envStage as keyof FormConfig)) {
+    return envStage
+  }
+  return getFirstStage(surveySlug)
+}
+
 export const SurveyMainPage = ({ surveyId }: Props) => {
   const [isIntro, setIsIntro] = useState(true)
   const surveySlug = useParams()?.surveySlug as AllowedSurveySlugs
-  const [stage, setStage] = useState<Stage>(
-    process.env.NEXT_PUBLIC_PUBLIC_SURVEY_START_STAGE || getFirstStage(surveySlug),
-  )
+  const [stage, setStage] = useState<Stage>(getInitialStage(surveySlug))
   const [isSpinner, setIsSpinner] = useState(false)
   const [surveySessionId, setSurveySessionId] = useState<null | number>(null)
   const [createSurveySessionMutation] = useMutation(createSurveySession)
@@ -54,7 +59,6 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
     getOrCreateCreatedSurveyResponsePublic,
   )
   const [updateSurveyResponsePublicMutation] = useMutation(updateSurveyResponsePublic)
-  const [surveyPart2EmailMutation] = useMutation(surveyFeedbackEmail)
   // to reset form when repeated
   const [formKey, setFormKey] = useState(1)
   const searchParams = useSearchParams()
@@ -164,7 +168,10 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
       const submittedReferenceId =
         typeof submittedData.referenceId === "string" ? submittedData.referenceId : null
       setReferenceIdByPart((prev) => ({ ...prev, 2: submittedReferenceId }))
-      await surveyPart2EmailMutation({
+      const { default: surveyFeedbackEmail } = await import(
+        "@/src/server/survey-responses/mutations/surveyPart2Email"
+      )
+      await invoke(surveyFeedbackEmail, {
         surveySessionId: surveySessionId_,
         data: submittedData,
         surveySlug,

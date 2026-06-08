@@ -1,7 +1,7 @@
 import { SurveyLink } from "@/src/app/beteiligung/_components/links/SurveyLink"
 import { proseClasses } from "@/src/core/components/text"
 import { clsx } from "clsx"
-import { Remark } from "react-remark"
+import { useRemarkSync } from "react-remark"
 
 type Props = {
   markdown?: string | null
@@ -40,14 +40,12 @@ const proseClassesSurvey = clsx(
 export const SurveyMarkdown = ({ markdown, className }: Props) => {
   if (!markdown) return null
 
+  const content = useRemarkSync(markdown, {
+    remarkToRehypeOptions: { allowDangerousHtml: true },
+    rehypeReactOptions: { components },
+  })
+
   return (
-    <div className={clsx(proseClasses, proseClassesSurvey, className)}>
-      <Remark
-        remarkToRehypeOptions={{ allowDangerousHtml: true }}
-        rehypeReactOptions={{ components }}
-      >
-        {markdown}
-      </Remark>
-    </div>
+    <div className={clsx(proseClasses, proseClassesSurvey, className)}>{content}</div>
   )
 }
