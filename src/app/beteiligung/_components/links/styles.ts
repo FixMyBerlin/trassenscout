@@ -1,5 +1,5 @@
 import { clsx } from "clsx"
-import { SurveyLinkProps } from "./SurveyLink"
+import type { SurveyLinkProps } from "./SurveyLink"
 
 // BUTTON:
 const buttonBase =

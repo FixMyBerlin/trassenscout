@@ -1,4 +1,3 @@
-import { IntroPart1 } from "@/src/app/beteiligung/_radnetz-brandenbrug/SurveyBB"
 import { fieldValidationEnum } from "@/src/app/beteiligung/_shared/fieldvalidationEnum"
 import { SurveyPart1and3 } from "@/src/app/beteiligung/_shared/types"
 
@@ -6,7 +5,7 @@ export const part1Config: SurveyPart1and3 = {
   progressBarDefinition: 1,
   intro: {
     type: "custom",
-    customComponent: <IntroPart1 />,
+    customComponentKey: "radnetzBrandenburgPart1",
     buttons: [{ action: "next", label: "Weiter", position: "right" }],
   },
   buttonLabels: { next: "Weiter", back: "Zurück", submit: "Absenden" },
