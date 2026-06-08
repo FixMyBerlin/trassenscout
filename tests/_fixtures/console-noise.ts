@@ -1,7 +1,6 @@
 export const pageNoise = [
   "webglcontextcreationerror",
   "Failed to initialize WebGL",
-  "Failed to fetch RSC payload",
 ]
 
 // Known errors specific to survey (beteiligung) pages.
