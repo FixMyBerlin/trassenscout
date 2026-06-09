@@ -3,12 +3,12 @@
 import { summarizeUpload } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_actions/summarizeUpload"
 import { isPdfByMimeType } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileType"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
-import { LabeledTextareaField } from "@/src/core/components/forms"
+import { useCoreAppFormContext } from "@/src/core/components/forms/hooks/formContext"
+import { useFormValue } from "@/src/core/components/forms/hooks/useFormValue"
 import { blueButtonStyles, Link } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { SparklesIcon } from "@heroicons/react/16/solid"
 import { Dispatch, SetStateAction, useState } from "react"
-import { useFormContext } from "react-hook-form"
 import { twJoin } from "tailwind-merge"
 
 type Props = {
@@ -28,12 +28,12 @@ export const SummaryField = ({
   isAiEnabled,
   initialSummary,
 }: Props) => {
-  const { setValue, watch } = useFormContext()
+  const form = useCoreAppFormContext()
   const projectSlug = useProjectSlug()
   const [isFocused, setIsFocused] = useState(false)
-  const summaryValue = watch("summary")
+  const summaryValue = useFormValue("summary")
 
-  const hasContent = Boolean(summaryValue && summaryValue.trim())
+  const hasContent = Boolean(typeof summaryValue === "string" && summaryValue.trim())
   const hasInitialContent = Boolean(initialSummary && initialSummary.trim())
   const shouldExpand = isFocused || hasContent || hasInitialContent
   const rows = shouldExpand ? 20 : 2
@@ -46,7 +46,7 @@ export const SummaryField = ({
     try {
       const { summary } = await summarizeUpload({ uploadId, projectSlug })
       if (summary) {
-        setValue("summary", summary + disclaimerText, { shouldDirty: true })
+        form.setFieldValue("summary", summary + disclaimerText)
       } else {
         throw new Error("Invalid response data")
       }
@@ -62,20 +62,27 @@ export const SummaryField = ({
 
   return (
     <div>
-      <LabeledTextareaField
-        help={
-          showAiButton
-            ? "PDFs lassen sich mit KI zusammenfassen. Beachten Sie, dass nach Drücken des Buttons eine bereits vorhandene Zusammenfassung im Textfeld überschrieben wird."
-            : undefined
-        }
-        optional
-        rows={rows}
-        name="summary"
-        label="Zusammenfassung"
-        disabled={isGeneratingSummary}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-      />
+      <form.AppField name="summary">
+        {(field) => (
+          <field.TextareaField
+            help={
+              showAiButton
+                ? "PDFs lassen sich mit KI zusammenfassen. Beachten Sie, dass nach Drücken des Buttons eine bereits vorhandene Zusammenfassung im Textfeld überschrieben wird."
+                : undefined
+            }
+            optional
+            rows={rows}
+            label="Zusammenfassung"
+            disabled={isGeneratingSummary}
+            onFocus={() => {
+              setIsFocused(true)
+            }}
+            onMouseLeave={() => {
+              if (!hasContent) setIsFocused(false)
+            }}
+          />
+        )}
+      </form.AppField>
       {!isAiEnabled && isPdfByMimeType(mimeType) && (
         <SuperAdminBox className="mt-4">
           <p className="mb-2 font-semibold">KI-Funktionen sind deaktiviert</p>

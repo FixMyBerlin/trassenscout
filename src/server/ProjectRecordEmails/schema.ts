@@ -21,3 +21,9 @@ export const ProjectRecordEmailFormSchema = z.object({
   text: z.string().min(1, { message: "E-Mail-Inhalt ist ein Pflichtfeld." }),
   projectId: InputNumberOrNullSchema,
 })
+
+/** Empty form state for AppField typing + `form.reset()`. */
+export const projectRecordEmailFormDefaultValues: z.infer<typeof ProjectRecordEmailFormSchema> = {
+  text: "",
+  projectId: null,
+}

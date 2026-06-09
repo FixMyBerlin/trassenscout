@@ -1,3 +1,5 @@
+import { useFormShellState } from "@/src/core/components/forms/hooks/useFormShellState"
+import { useFormValue } from "@/src/core/components/forms/hooks/useFormValue"
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
 import { GERMANY_VIEW_BOUNDS } from "@/src/core/components/Map/germanyViewBounds"
 import { MapFooter } from "@/src/core/components/Map/MapFooter"
@@ -12,8 +14,8 @@ import { mapGeoTypeToEnum } from "@/src/server/shared/utils/mapGeoTypeToEnum"
 import { TGetSubsection } from "@/src/server/subsections/queries/getSubsection"
 import { bbox } from "@turf/turf"
 import { useMemo, useRef } from "react"
-import { useFormContext } from "react-hook-form"
 import type { LngLatBoundsLike } from "react-map-gl/maplibre"
+import { clearImperativeFieldSubmitErrors } from "./utils/clearImperativeFieldSubmitErrors"
 
 type AllowedType = "point" | "line" | "polygon"
 
@@ -46,8 +48,8 @@ export const GeometryDrawingMap = ({
   legendItemsConfig,
   transformGeometry,
 }: Props) => {
-  const { watch, setValue } = useFormContext()
-  const geometry = watch("geometry") as SupportedGeometry | undefined
+  const { form } = useFormShellState()
+  const geometry = useFormValue<SupportedGeometry | undefined>("geometry")
   const geometryForMap = displayedGeometry ?? geometry
   const updateTerraDrawRef = useRef<
     ((geometry: SupportedGeometry | null, ignoreChangeEvents?: boolean) => void) | null
@@ -108,11 +110,13 @@ export const GeometryDrawingMap = ({
     }
 
     if (nextState.geometry && nextState.geometryType) {
-      setValue("geometry", nextState.geometry, { shouldValidate: true })
-      setValue("type", mapGeoTypeToEnum(nextState.geometryType), { shouldValidate: true })
+      form.setFieldValue("geometry", nextState.geometry)
+      form.setFieldValue("type", mapGeoTypeToEnum(nextState.geometryType))
+      clearImperativeFieldSubmitErrors(form, "geometry")
+      clearImperativeFieldSubmitErrors(form, "type")
     } else {
-      setValue("geometry", undefined, { shouldValidate: true })
-      setValue("type", undefined, { shouldValidate: true })
+      form.setFieldValue("geometry", undefined)
+      form.setFieldValue("type", undefined)
     }
   }
 

@@ -1,6 +1,6 @@
 "use client"
 import { MembershipForm } from "@/src/app/(admin)/admin/memberships/new/_components/MembershipForm"
-import { FORM_ERROR } from "@/src/core/components/forms"
+import { FORM_ERROR } from "@/src/core/components/forms/utils/formSubmitResult"
 import createMembership from "@/src/server/memberships/mutations/createMembership"
 import { MembershipSchema } from "@/src/server/memberships/schema"
 import { useMutation } from "@blitzjs/rpc"

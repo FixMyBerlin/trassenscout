@@ -3,13 +3,22 @@
 import { ProjectRecordFormFields } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordFormFields"
 import { getDate } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/splitStartAt"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
-import { Form, FORM_ERROR, FormDirtyStateReporter } from "@/src/core/components/forms"
+import { FormDirtyStateReporter } from "@/src/core/components/forms/FormDirtyStateReporter"
+import { FormShell } from "@/src/core/components/forms/FormShell"
+import { useAppForm } from "@/src/core/components/forms/hooks/useAppForm"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
+import {
+  applyFormSubmitResult,
+  FORM_ERROR,
+} from "@/src/core/components/forms/utils/formSubmitResult"
 import { Modal, ModalCloseButton } from "@/src/core/components/Modal"
 import { H3 } from "@/src/core/components/text"
 import { HeadingWithAction } from "@/src/core/components/text/HeadingWithAction"
 import createProjectRecord from "@/src/server/projectRecords/mutations/createProjectRecord"
-import { NewProjectRecordFormSchema } from "@/src/server/projectRecords/schemas"
+import {
+  newProjectRecordFormDefaultValues,
+  NewProjectRecordFormSchema,
+} from "@/src/server/projectRecords/schemas"
 import getProjectRecordTemplatesByProject from "@/src/server/projectRecordTemplates/queries/getProjectRecordTemplatesByProject"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { ProjectRecordEditingState } from "@prisma/client"
@@ -34,6 +43,56 @@ type ProjectRecordTemplateOption = Awaited<
 
 const pickerOptionButtonClassName =
   "flex w-full cursor-pointer items-center justify-between rounded-md border border-gray-300 px-3 py-2 text-left text-blue-700 hover:bg-blue-50"
+
+type ProjectRecordCreateFormProps = {
+  formKey: string
+  formInitialValues: Record<string, unknown>
+  projectSlug: string
+  createRelationContext: "project" | "subsubsection" | "acquisitionArea"
+  landAcquisitionModuleEnabled: boolean
+  onDirtyChange: (isDirty: boolean) => void
+  onSubmit: (
+    values: z.infer<typeof NewProjectRecordFormSchema>,
+  ) => Promise<void | import("@/src/core/components/forms/utils/formSubmitResult").OnSubmitResult>
+}
+
+function ProjectRecordCreateForm({
+  formKey: _formKey,
+  formInitialValues,
+  projectSlug,
+  createRelationContext,
+  landAcquisitionModuleEnabled,
+  onDirtyChange,
+  onSubmit,
+}: ProjectRecordCreateFormProps) {
+  const [formError, setFormError] = useState<string | null>(null)
+
+  const form = useAppForm({
+    defaultValues: { ...newProjectRecordFormDefaultValues, ...formInitialValues } as never,
+    validators: { onSubmit: NewProjectRecordFormSchema } as never,
+    onSubmit: async ({ value }) => {
+      const result = (await onSubmit(value)) || {}
+      applyFormSubmitResult(form, result, setFormError)
+      if (!result.FORM_ERROR) {
+        form.reset()
+        setFormError(null)
+      }
+    },
+  })
+
+  return (
+    <FormShell form={form} formError={formError} submitText="Protokolleintrag speichern">
+      <FormDirtyStateReporter onDirtyChange={onDirtyChange} />
+      <ProjectRecordFormFields
+        formMode="create"
+        relationContext={createRelationContext}
+        projectSlug={projectSlug}
+        landAcquisitionModuleEnabled={landAcquisitionModuleEnabled}
+        disableSuspenseQueries
+      />
+    </FormShell>
+  )
+}
 
 export const ProjectRecordNewModal = ({
   projectSlug,
@@ -185,31 +244,26 @@ export const ProjectRecordNewModal = ({
           <ModalCloseButton onClose={handleClose} />
         </HeadingWithAction>
 
-        <Form
+        <ProjectRecordCreateForm
           key={[
             "template",
             selectedTemplate?.id || "blank",
             initialValues?.subsubsectionId || "nosubsubsection",
             initialValues?.acquisitionAreaId || "noacquisitionarea",
           ].join("-")}
-          resetOnSubmit
+          formKey={[
+            "template",
+            selectedTemplate?.id || "blank",
+            initialValues?.subsubsectionId || "nosubsubsection",
+            initialValues?.acquisitionAreaId || "noacquisitionarea",
+          ].join("-")}
+          formInitialValues={formInitialValues}
+          projectSlug={projectSlug}
+          createRelationContext={createRelationContext}
+          landAcquisitionModuleEnabled={landAcquisitionModuleEnabled}
+          onDirtyChange={setIsDirty}
           onSubmit={handleSubmit}
-          // Combobox items use string values; pass string IDs so preselection is visible in UI.
-          // Schema coercion handles number conversion on submit.
-          // @ts-expect-error m2m combobox initial values are string ids
-          initialValues={formInitialValues}
-          schema={NewProjectRecordFormSchema}
-          submitText="Protokolleintrag speichern"
-        >
-          <FormDirtyStateReporter onDirtyChange={setIsDirty} />
-          <ProjectRecordFormFields
-            formMode="create"
-            relationContext={createRelationContext}
-            projectSlug={projectSlug}
-            landAcquisitionModuleEnabled={landAcquisitionModuleEnabled}
-            disableSuspenseQueries
-          />
-        </Form>
+        />
       </Modal>
     </IfUserCanEdit>
   )

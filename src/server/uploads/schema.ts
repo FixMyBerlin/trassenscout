@@ -27,6 +27,23 @@ export const UploadSchema = z.object({
   acquisitionAreas: z.union([z.literal(false), z.array(z.coerce.number())]).optional(),
 })
 
+export const uploadFormDefaultValues = {
+  title: "",
+  summary: null as string | null,
+  externalUrl: "",
+  projectRecordEmailId: null as number | null,
+  surveyResponseId: null as number | null,
+  mimeType: null as string | null,
+  fileSize: null as number | null,
+  latitude: null as number | null,
+  longitude: null as number | null,
+  collaborationUrl: null as string | null,
+  collaborationPath: null as string | null,
+  projectRecords: [] as number[],
+  subsubsections: [] as string[],
+  acquisitionAreas: [] as string[],
+}
+
 export const UploadFormSchema = UploadSchema.omit({
   projectRecords: true,
   subsubsections: true,

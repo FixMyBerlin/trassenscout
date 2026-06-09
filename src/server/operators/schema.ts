@@ -9,3 +9,11 @@ export const OperatorSchema = z.object({
 })
 
 type TOperatorSchema = z.infer<typeof OperatorSchema>
+
+/** Empty form state for AppField typing + `form.reset()`. Annotated so all keys stay required for TanStack. */
+export const operatorFormDefaultValues: z.infer<typeof OperatorSchema> = {
+  slug: "",
+  title: "",
+  order: 0,
+  projectId: 0,
+}

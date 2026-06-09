@@ -4,8 +4,8 @@ import { SubsubsectionForm } from "@/src/app/(loggedInProjects)/[projectSlug]/ab
 import { getDate } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/splitStartAt"
 import { BackLink } from "@/src/core/components/forms/BackLink"
 import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
-import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
+import { FORM_ERROR } from "@/src/core/components/forms/utils/formSubmitResult"
 import { shortTitle } from "@/src/core/components/text"
 import {
   subsectionDashboardRoute,

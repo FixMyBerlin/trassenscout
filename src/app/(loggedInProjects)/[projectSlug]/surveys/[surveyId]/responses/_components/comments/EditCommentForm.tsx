@@ -1,9 +1,14 @@
-import { Form, FormDirtyStateReporter, LabeledTextareaField } from "@/src/core/components/forms"
+"use client"
+
+import { FormDirtyStateReporter } from "@/src/core/components/forms/FormDirtyStateReporter"
+import { FormShell } from "@/src/core/components/forms/FormShell"
+import { useAppForm } from "@/src/core/components/forms/hooks/useAppForm"
 import { linkStyles } from "@/src/core/components/links"
 import { Modal, ModalCloseButton } from "@/src/core/components/Modal"
 import { H3 } from "@/src/core/components/text"
 import { HeadingWithAction } from "@/src/core/components/text/HeadingWithAction"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
+import { commentFormDefaultValues } from "@/src/server/survey-response-comments/schemas"
 import getFeedbackSurveyResponsesWithSurveyDataAndComments from "@/src/server/survey-responses/queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
 import { useSession } from "@blitzjs/auth"
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline"
@@ -31,16 +36,19 @@ export const EditCommentForm = ({ comment, commentLabel, mutateComment }: Props)
   const [isDirty, setIsDirty] = useState(false)
   const session = useSession()
 
+  const form = useAppForm({
+    defaultValues: { ...commentFormDefaultValues, body: comment.body },
+    onSubmit: async ({ value }) => {
+      const sanitize = (input: string) => (input ? dompurify.sanitize(input) : input)
+      const body = sanitize(value.body)
+      await mutateComment.update(body)
+      setIsDirty(false)
+      setOpen(false)
+    },
+  })
+
   const handleClose = () => {
     if (isDirty && !window.confirm("Ungespeicherte Änderungen verwerfen?")) return
-    setOpen(false)
-  }
-
-  const handleSubmit = async (values: { body: string }) => {
-    const sanitize = (input: string) => (input ? dompurify.sanitize(input) : input)
-    const body = sanitize(values.body)
-    await mutateComment.update(body)
-    setIsDirty(false)
     setOpen(false)
   }
 
@@ -66,18 +74,27 @@ export const EditCommentForm = ({ comment, commentLabel, mutateComment }: Props)
           <ModalCloseButton onClose={handleClose} />
         </HeadingWithAction>
 
-        <Form onSubmit={handleSubmit} submitText={`${commentLabel} speichern`}>
-          <FormDirtyStateReporter onDirtyChange={setIsDirty} />
-          <LabeledTextareaField
-            name="body"
-            className="min-h-40"
-            label=""
-            data-1p-ignore
-            data-lpignore
-            defaultValue={comment.body}
-            required
-          />
-        </Form>
+        {open && (
+          <FormShell
+            key={comment.id}
+            form={form}
+            formError={null}
+            submitText={`${commentLabel} speichern`}
+          >
+            <FormDirtyStateReporter onDirtyChange={setIsDirty} />
+            <form.AppField name="body">
+              {(field) => (
+                <field.TextareaField
+                  className="min-h-40"
+                  label=""
+                  data-1p-ignore
+                  data-lpignore
+                  required
+                />
+              )}
+            </form.AppField>
+          </FormShell>
+        )}
 
         <button
           type="button"

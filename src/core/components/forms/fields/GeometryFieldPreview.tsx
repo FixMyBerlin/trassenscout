@@ -1,3 +1,6 @@
+"use client"
+
+import { useFieldContext } from "@/src/core/components/forms/hooks/formContext"
 import { Link } from "@/src/core/components/links"
 import { defaultVectorStyleUrl } from "@/src/core/components/Map/mapStyleConfig"
 import { geometryBbox } from "@/src/core/components/Map/utils/bboxHelpers"
@@ -10,7 +13,6 @@ import { CheckBadgeIcon } from "@heroicons/react/24/solid"
 import { GeometryTypeEnum } from "@prisma/client"
 import { featureCollection, point } from "@turf/helpers"
 import { clsx } from "clsx"
-import { useFormContext } from "react-hook-form"
 import Map, {
   Layer,
   LngLatBoundsLike,
@@ -25,15 +27,15 @@ const GEOMETRY_TYPE_LABELS: Record<GeometryTypeEnum, string> = {
   POLYGON: "Polygon-Geometrie",
 }
 
-type Props = {
-  name: string
+type GeometryFieldPreviewProps = {
   hasError: boolean
 }
 
-export const LabeledGeometryFieldPreview = ({ name, hasError }: Props) => {
-  const { watch, getValues } = useFormContext()
-  const geometry = watch(name) as SupportedGeometry | undefined
-  const geometryType = (getValues("type") ?? GeometryTypeEnum.LINE) as GeometryTypeEnum
+export function GeometryFieldPreview({ hasError }: GeometryFieldPreviewProps) {
+  const field = useFieldContext<SupportedGeometry>()
+  const geometry = field.state.value
+  const geometryType = (field.form.getFieldValue("type") ??
+    GeometryTypeEnum.LINE) as GeometryTypeEnum
 
   const schemaResult = validateGeometryByType(geometryType, geometry)
 
@@ -138,7 +140,6 @@ export const LabeledGeometryFieldPreview = ({ name, hasError }: Props) => {
                     }}
                   />
 
-                  {/* Highlight the start of a Geometry so help understand the direction */}
                   {validGeometry.type === "LineString" && validGeometry.coordinates[0] && (
                     <>
                       <Source
@@ -159,7 +160,6 @@ export const LabeledGeometryFieldPreview = ({ name, hasError }: Props) => {
                       />
                     </>
                   )}
-                  {/* For MultiLineString, highlight start of each line */}
                   {validGeometry.type === "MultiLineString" &&
                     validGeometry.coordinates.map((coords, index) => {
                       if (!coords[0]) return null

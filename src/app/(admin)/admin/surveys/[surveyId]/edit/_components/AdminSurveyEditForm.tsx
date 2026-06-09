@@ -1,6 +1,6 @@
 "use client"
-import { FORM_ERROR } from "@/src/core/components/forms"
 import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
+import { FORM_ERROR } from "@/src/core/components/forms/utils/formSubmitResult"
 import deleteSurvey from "@/src/server/surveys/mutations/deleteSurvey"
 import updateSurvey from "@/src/server/surveys/mutations/updateSurvey"
 import getAdminSurvey from "@/src/server/surveys/queries/getAdminSurvey"

@@ -2,35 +2,72 @@
 
 import { getUserSelectOptions } from "@/src/app/_components/users/utils/getUserSelectOptions"
 import { Spinner } from "@/src/core/components/Spinner"
+import { FormShell } from "@/src/core/components/forms/FormShell"
+import { useAppForm } from "@/src/core/components/forms/hooks/useAppForm"
+import { createFormOptions } from "@/src/core/components/forms/utils/createFormOptions"
 import {
-  Form,
-  FormProps,
-  LabeledSelect,
-  LabeledTextField,
-  LabeledTextareaField,
-} from "@/src/core/components/forms"
-import { LabeledTextFieldCalculateLength } from "@/src/core/components/forms/LabeledTextFieldCalculateLength"
-import { createFormOptions } from "@/src/core/components/forms/_utils/createFormOptions"
+  applyFormSubmitResult,
+  type OnSubmitResult,
+} from "@/src/core/components/forms/utils/formSubmitResult"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import getProjectUsers from "@/src/server/memberships/queries/getProjectUsers"
 import getNetworkHierarchysWithCount from "@/src/server/networkHierarchy/queries/getNetworkHierarchysWithCount"
 import getOperatorsWithCount from "@/src/server/operators/queries/getOperatorsWithCount"
 import getSubsectionStatussWithCount from "@/src/server/subsectionStatus/queries/getSubsectionStatussWithCount"
+import { subsectionFormDefaultValues } from "@/src/server/subsections/schema"
 import { useQuery } from "@blitzjs/rpc"
 import { PriorityEnum } from "@prisma/client"
 import { Route } from "next"
-import { Suspense } from "react"
+import { ReactNode, Suspense, useState } from "react"
 import { z } from "zod"
 
 import { LinkWithFormDirtyConfirm } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/[subsubsectionSlug]/_components/LinkWithFormDirtyConfirm"
-import { LabeledRadiobuttonGroupLabelPos } from "@/src/core/components/forms/TrafficLoadGroup"
 import { getPriorityTranslation } from "../_utils/getPriorityTranslation"
 import { SubsectionGeometryInput } from "./SubsectionGeometryInput"
 
-type Props<S extends z.ZodType<any, any>> = FormProps<S>
+export type SubsectionFormProps<S extends z.ZodType<any, any>> = {
+  schema: S
+  initialValues?: Partial<z.infer<S>>
+  onSubmit: (values: z.infer<S>) => Promise<void | OnSubmitResult>
+  submitText: string
+  resetOnSubmit?: boolean
+  className?: string
+  actionBarLeft?: ReactNode
+  actionBarRight?: ReactNode
+  submitDisabled?: boolean
+  submitClassName?: string
+  showFormDebug?: boolean
+}
 
-function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({ ...props }: Props<S>) {
+function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
+  schema,
+  initialValues,
+  onSubmit,
+  submitText,
+  resetOnSubmit,
+  className,
+  actionBarLeft,
+  actionBarRight,
+  submitDisabled,
+  submitClassName,
+  showFormDebug,
+}: SubsectionFormProps<S>) {
   const projectSlug = useProjectSlug()
+  const [formError, setFormError] = useState<string | null>(null)
+
+  const form = useAppForm({
+    defaultValues: { ...subsectionFormDefaultValues, ...initialValues },
+    validators: { onSubmit: schema } as never,
+    onSubmit: async ({ value }) => {
+      const result = (await onSubmit(value)) || {}
+      applyFormSubmitResult(form, result, setFormError)
+      if (resetOnSubmit && !result.FORM_ERROR) {
+        form.reset()
+        setFormError(null)
+      }
+    },
+  })
+
   const [users] = useQuery(
     getProjectUsers,
     { projectSlug, role: "EDITOR" },
@@ -81,53 +118,83 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({ ...props }: Pr
   const subsectionStatusOptions = createFormOptions(subsectionStatuss, "Status", { optional: true })
 
   return (
-    <Form<S> {...props}>
-      <LabeledTextField
-        type="text"
-        name="slug"
-        label="Kürzel"
-        help="Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren."
-      />
+    <FormShell
+      form={form}
+      formError={formError}
+      submitText={submitText}
+      className={className}
+      actionBarLeft={actionBarLeft}
+      actionBarRight={actionBarRight}
+      submitDisabled={submitDisabled}
+      submitClassName={submitClassName}
+      showFormDebug={showFormDebug}
+    >
+      <form.AppField name="slug">
+        {(field) => (
+          <field.TextField
+            type="text"
+            label="Kürzel"
+            help="Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren."
+          />
+        )}
+      </form.AppField>
       <div className="grid grid-cols-2 gap-5">
-        <LabeledTextField type="text" name="start" label="Startpunkt" />
-        <LabeledTextField type="text" name="end" label="Endpunkt" />
+        <form.AppField name="start">
+          {(field) => <field.TextField type="text" label="Startpunkt" />}
+        </form.AppField>
+        <form.AppField name="end">
+          {(field) => <field.TextField type="text" label="Endpunkt" />}
+        </form.AppField>
       </div>
-      <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
+      <form.AppField name="description">
+        {(field) => <field.TextareaField label="Beschreibung (Markdown)" optional />}
+      </form.AppField>
       <SubsectionGeometryInput />
       <details>
         <summary className="mb-2 cursor-pointer">Anzeige-Optionen für Karten-Label</summary>
         <div className="space-y-6">
-          <LabeledRadiobuttonGroupLabelPos />
-          <LabeledTextField
-            type="number"
-            step="1"
-            name="order"
-            label="Reihenfolge Planungsabschnitte"
-            help="Die muss sicherstellen, dass die Geometrien in einer fortlaufenden Linie mit gleicher Linienrichtung dargestellt werden; sie ist auch die Standard-Sortierung."
-          />
+          <form.AppField name="labelPos">
+            {(field) => <field.RadiobuttonGroup label="" classNameItemWrapper="sm:columns-2" />}
+          </form.AppField>
+          <form.AppField name="order">
+            {(field) => (
+              <field.NumberField
+                label="Reihenfolge Planungsabschnitte"
+                help="Die muss sicherstellen, dass die Geometrien in einer fortlaufenden Linie mit gleicher Linienrichtung dargestellt werden; sie ist auch die Standard-Sortierung."
+              />
+            )}
+          </form.AppField>
         </div>
       </details>
-      <LabeledTextFieldCalculateLength name="lengthM" label="Länge" optional />
+      <form.AppField name="lengthM">
+        {(field) => <field.TextFieldCalculateLength label="Länge" optional />}
+      </form.AppField>
       <div className="flex items-end gap-5">
-        <LabeledSelect
-          name="operatorId"
-          label="Baulastträger"
-          optional
-          options={operatorOptions}
-          outerProps={{ className: "grow" }}
-        />
+        <form.AppField name="operatorId">
+          {(field) => (
+            <field.SelectField
+              label="Baulastträger"
+              optional
+              options={operatorOptions}
+              outerProps={{ className: "grow" }}
+            />
+          )}
+        </form.AppField>
         <LinkWithFormDirtyConfirm href={`/${projectSlug}/operators` as Route} className="py-2">
           Baulastträger verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
       <div className="flex items-end gap-5">
-        <LabeledSelect
-          name="subsectionStatusId"
-          label="Status"
-          optional
-          options={subsectionStatusOptions}
-          outerProps={{ className: "grow" }}
-        />
+        <form.AppField name="subsectionStatusId">
+          {(field) => (
+            <field.SelectField
+              label="Status"
+              optional
+              options={subsectionStatusOptions}
+              outerProps={{ className: "grow" }}
+            />
+          )}
+        </form.AppField>
         <LinkWithFormDirtyConfirm
           href={`/${projectSlug}/subsection-status` as Route}
           className="py-2"
@@ -135,28 +202,41 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({ ...props }: Pr
           Status verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
-      <LabeledSelect
-        name="managerId"
-        label="Projektleiter:in"
-        optional
-        options={getUserSelectOptions(users)}
-      />
-      <LabeledTextField
-        type="text"
-        help="Format: Datum im Format JJJJ-MM, beispielsweise '2026-03'; Wert muss in ein Datum umgewandelt werden können."
-        name="estimatedCompletionDateString"
-        label="Jahr und Monat der geplanten Fertigstellung"
-        optional
-      />
-      <LabeledSelect name="priority" label="Priorität" optional options={prioritySelectOptions} />
+      <form.AppField name="managerId">
+        {(field) => (
+          <field.SelectField
+            label="Projektleiter:in"
+            optional
+            options={getUserSelectOptions(users)}
+          />
+        )}
+      </form.AppField>
+      <form.AppField name="estimatedCompletionDateString">
+        {(field) => (
+          <field.TextField
+            type="text"
+            help="Format: Datum im Format JJJJ-MM, beispielsweise '2026-03'; Wert muss in ein Datum umgewandelt werden können."
+            label="Jahr und Monat der geplanten Fertigstellung"
+            optional
+          />
+        )}
+      </form.AppField>
+      <form.AppField name="priority">
+        {(field) => (
+          <field.SelectField label="Priorität" optional options={prioritySelectOptions} />
+        )}
+      </form.AppField>
       <div className="flex items-end gap-5">
-        <LabeledSelect
-          name="networkHierarchyId"
-          label="Netzstufe"
-          optional
-          options={networkOptions}
-          outerProps={{ className: "grow" }}
-        />
+        <form.AppField name="networkHierarchyId">
+          {(field) => (
+            <field.SelectField
+              label="Netzstufe"
+              optional
+              options={networkOptions}
+              outerProps={{ className: "grow" }}
+            />
+          )}
+        </form.AppField>
         <LinkWithFormDirtyConfirm
           href={`/${projectSlug}/network-hierarchy` as Route}
           className="py-2"
@@ -164,11 +244,11 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({ ...props }: Pr
           Netzstufen verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
-    </Form>
+    </FormShell>
   )
 }
 
-export function SubsectionForm<S extends z.ZodType<any, any>>(props: Props<S>) {
+export function SubsectionForm<S extends z.ZodType<any, any>>(props: SubsectionFormProps<S>) {
   return (
     <Suspense fallback={<Spinner />}>
       <SubsectionFormWithQuery {...props} />

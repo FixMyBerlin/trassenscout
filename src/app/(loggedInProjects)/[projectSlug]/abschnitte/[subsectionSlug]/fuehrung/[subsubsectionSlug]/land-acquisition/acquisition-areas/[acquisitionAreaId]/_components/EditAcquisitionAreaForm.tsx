@@ -2,8 +2,8 @@
 
 import { BackLink } from "@/src/core/components/forms/BackLink"
 import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
-import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
+import { FORM_ERROR } from "@/src/core/components/forms/utils/formSubmitResult"
 import { subsubsectionLandAcquisitionRoute } from "@/src/core/routes/subsectionRoutes"
 import deleteAcquisitionArea from "@/src/server/acquisitionAreas/mutations/deleteAcquisitionArea"
 import updateAcquisitionArea from "@/src/server/acquisitionAreas/mutations/updateAcquisitionArea"

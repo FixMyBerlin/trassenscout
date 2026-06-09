@@ -1,5 +1,7 @@
 "use client"
 
+import { useFormShellState } from "@/src/core/components/forms/hooks/useFormShellState"
+import { useFormValue } from "@/src/core/components/forms/hooks/useFormValue"
 import { blueButtonStyles, linkStyles } from "@/src/core/components/links/styles"
 import { BackgroundGeometryLayers } from "@/src/core/components/Map/BackgroundGeometryLayers"
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
@@ -9,13 +11,10 @@ import { geometriesBbox } from "@/src/core/components/Map/utils/bboxHelpers"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import getSubsubsections from "@/src/server/subsubsections/queries/getSubsubsections"
-import { UploadFormSchema } from "@/src/server/uploads/schema"
 import { useQuery } from "@blitzjs/rpc"
 import { XMarkIcon } from "@heroicons/react/16/solid"
-import { useFormContext } from "react-hook-form"
 import { Marker, MarkerDragEvent } from "react-map-gl/maplibre"
 import { twMerge } from "tailwind-merge"
-import { z } from "zod"
 import { UploadPin } from "./UploadPin"
 
 function subsubsectionIdsFromForm(v: unknown): number[] {
@@ -24,10 +23,10 @@ function subsubsectionIdsFromForm(v: unknown): number[] {
 }
 
 export const UploadLocationMap = () => {
-  const { setValue, watch } = useFormContext<z.infer<typeof UploadFormSchema>>()
-  const latitude = watch("latitude")
-  const longitude = watch("longitude")
-  const subsubsectionIds = subsubsectionIdsFromForm(watch("subsubsections"))
+  const { form } = useFormShellState()
+  const latitude = useFormValue("latitude")
+  const longitude = useFormValue("longitude")
+  const subsubsectionIds = subsubsectionIdsFromForm(useFormValue("subsubsections"))
   const projectSlug = useProjectSlug()
 
   const [{ subsections }] = useQuery(getSubsections, { projectSlug })
@@ -61,8 +60,8 @@ export const UploadLocationMap = () => {
     : { bounds: mapBbox, fitBoundsOptions: { padding: 5 } }
 
   const onMarkerDragEnd = (event: MarkerDragEvent) => {
-    setValue("latitude", event.lngLat.lat, { shouldValidate: true })
-    setValue("longitude", event.lngLat.lng, { shouldValidate: true })
+    form.setFieldValue("latitude", event.lngLat.lat)
+    form.setFieldValue("longitude", event.lngLat.lng)
   }
 
   const handlePlacePin = () => {
@@ -71,13 +70,13 @@ export const UploadLocationMap = () => {
       return
     }
     const [minLng, minLat, maxLng, maxLat] = bounds
-    setValue("latitude", (minLat + maxLat) / 2, { shouldValidate: true })
-    setValue("longitude", (minLng + maxLng) / 2, { shouldValidate: true })
+    form.setFieldValue("latitude", (minLat + maxLat) / 2)
+    form.setFieldValue("longitude", (minLng + maxLng) / 2)
   }
 
   const handleDeleteLocation = () => {
-    setValue("latitude", null, { shouldValidate: true })
-    setValue("longitude", null, { shouldValidate: true })
+    form.setFieldValue("latitude", null)
+    form.setFieldValue("longitude", null)
   }
 
   return (

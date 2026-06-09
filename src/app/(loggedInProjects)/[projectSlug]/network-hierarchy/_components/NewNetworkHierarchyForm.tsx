@@ -1,7 +1,7 @@
 "use client"
 
-import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
+import { FORM_ERROR } from "@/src/core/components/forms/utils/formSubmitResult"
 import createNetworkHierarchy from "@/src/server/networkHierarchy/mutations/createNetworkHierarchy"
 import { NetworkHierarchySchema } from "@/src/server/networkHierarchy/schema"
 import { useMutation } from "@blitzjs/rpc"

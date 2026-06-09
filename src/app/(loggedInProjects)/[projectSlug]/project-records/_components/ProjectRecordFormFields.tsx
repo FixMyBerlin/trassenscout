@@ -6,28 +6,21 @@ import { UploadDropzoneContainer } from "@/src/app/(loggedInProjects)/[projectSl
 import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
 import { getUserSelectOptions } from "@/src/app/_components/users/utils/getUserSelectOptions"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
-import {
-  LabeledCheckboxGroup,
-  LabeledCombobox,
-  LabeledSelect,
-  LabeledSwitch,
-  LabeledTextareaField,
-  LabeledTextField,
-} from "@/src/core/components/forms"
+import { useCoreAppFormContext } from "@/src/core/components/forms/hooks/formContext"
+import { useFormValue } from "@/src/core/components/forms/hooks/useFormValue"
 import { blueButtonStyles } from "@/src/core/components/links"
 import { shortTitle } from "@/src/core/components/text"
 import { NumberArraySchema } from "@/src/core/utils/schema-shared"
-import createProjectRecordTopic from "@/src/server/ProjectRecordTopics/mutations/createProjectRecordTopic"
-import getProjectRecordTopicsByProject from "@/src/server/ProjectRecordTopics/queries/getProjectRecordTopicsByProject"
 import getAcquisitionAreas from "@/src/server/acquisitionAreas/queries/getAcquisitionAreas"
 import getProjectUsers from "@/src/server/memberships/queries/getProjectUsers"
+import createProjectRecordTopic from "@/src/server/ProjectRecordTopics/mutations/createProjectRecordTopic"
+import getProjectRecordTopicsByProject from "@/src/server/ProjectRecordTopics/queries/getProjectRecordTopicsByProject"
 import getSubsubsections from "@/src/server/subsubsections/queries/getSubsubsections"
 import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { ProjectRecordEditingState } from "@prisma/client"
 import clsx from "clsx"
 import { useState } from "react"
-import { useFormContext } from "react-hook-form"
 
 type Props = {
   formMode?: "create" | "edit"
@@ -54,6 +47,7 @@ export const ProjectRecordFormFields = ({
   landAcquisitionModuleEnabled = false,
   disableSuspenseQueries = false,
 }: Props) => {
+  const form = useCoreAppFormContext()
   const queryOptions = {
     suspense: !disableSuspenseQueries,
     refetchOnWindowFocus: false,
@@ -84,12 +78,11 @@ export const ProjectRecordFormFields = ({
   )
   const [newTopic, setNewTopic] = useState("")
   const [createProjectRecordTopicMutation] = useMutation(createProjectRecordTopic)
-  const { watch, setValue } = useFormContext()
-  const selectedSubsubsectionsValue = watch("subsubsections")
-  const selectedAcquisitionAreasValue = watch("acquisitionAreas")
+  const selectedSubsubsectionsValue = useFormValue("subsubsections")
+  const selectedAcquisitionAreasValue = useFormValue("acquisitionAreas")
   const selectedSubsubsectionIds = NumberArraySchema.parse(selectedSubsubsectionsValue)
   const selectedAcquisitionAreaIds = NumberArraySchema.parse(selectedAcquisitionAreasValue)
-  const uploadsValue = watch("uploads")
+  const uploadsValue = useFormValue("uploads")
   const uploadIds = NumberArraySchema.parse(uploadsValue)
 
   const subsubsections = subsubsectionsData?.subsubsections ?? []
@@ -112,11 +105,6 @@ export const ProjectRecordFormFields = ({
     : []
 
   const assignedToOptions = getUserSelectOptions(users)
-
-  const editingStateOptions: [string, string][] = [
-    [ProjectRecordEditingState.PENDING, "In Bearbeitung"],
-    [ProjectRecordEditingState.COMPLETED, "Abgeschlossen"],
-  ]
 
   const subsubsectionItems = subsubsections
     .sort((a, b) => a.subsection.slug.localeCompare(b.subsection.slug))
@@ -141,7 +129,7 @@ export const ProjectRecordFormFields = ({
     e.preventDefault()
     if (!newTopic.trim()) return
     try {
-      const createdOrFetched = await createProjectRecordTopicMutation({
+      await createProjectRecordTopicMutation({
         title: newTopic.trim(),
         projectSlug,
       })
@@ -158,10 +146,14 @@ export const ProjectRecordFormFields = ({
         <div className={splitView ? "flex-1 space-y-6" : "space-y-6"}>
           <div className="flex gap-4">
             <div className="w-48">
-              <LabeledTextField type="date" name="date" label="am/bis" placeholder="" />
+              <form.AppField name="date">
+                {(field) => <field.TextField type="date" label="am/bis" placeholder="" />}
+              </form.AppField>
             </div>
             <div className="flex-1">
-              <LabeledTextField name="title" label="Titel" />
+              <form.AppField name="title">
+                {(field) => <field.TextField label="Titel" />}
+              </form.AppField>
             </div>
           </div>
 
@@ -171,43 +163,53 @@ export const ProjectRecordFormFields = ({
             }
           >
             {showSubsubsectionField && (
-              <LabeledCombobox
-                optional
-                scope="subsubsections"
-                items={subsubsectionItems}
-                label={subsubsectionLabel}
-              />
+              <form.AppField name="subsubsections">
+                {(field) => (
+                  <field.Combobox optional items={subsubsectionItems} label={subsubsectionLabel} />
+                )}
+              </form.AppField>
             )}
             {showAcquisitionAreaField && (
-              <LabeledCombobox
-                optional
-                scope="acquisitionAreas"
-                items={acquisitionAreaItems}
-                label="Verhandlungsflächen"
-              />
+              <form.AppField name="acquisitionAreas">
+                {(field) => (
+                  <field.Combobox
+                    optional
+                    items={acquisitionAreaItems}
+                    label="Verhandlungsflächen"
+                  />
+                )}
+              </form.AppField>
             )}
           </div>
-          <LabeledTextareaField name="body" optional label="Notizen (Markdown)" rows={20} />
+          <form.AppField name="body">
+            {(field) => <field.TextareaField optional label="Notizen (Markdown)" rows={20} />}
+          </form.AppField>
           <div className="flex flex-col gap-3">
-            <LabeledCheckboxGroup
-              scope="projectRecordTopics"
-              classNameItemWrapper="grid grid-cols-4 gap-1.5 w-full"
-              items={topicsOptions}
-              label="Tags"
-              optional
-            />
+            <form.AppField name="projectRecordTopics">
+              {(field) => (
+                <field.CheckboxGroup
+                  classNameItemWrapper="grid grid-cols-4 gap-1.5 w-full"
+                  items={topicsOptions}
+                  label="Tags"
+                  optional
+                />
+              )}
+            </form.AppField>
             <div className="flex w-full items-end gap-2">
-              <LabeledTextField
-                onChange={(e) => setNewTopic(e.target.value)}
-                value={newTopic}
-                maxLength={35}
-                name="newTopic"
-                placeholder="Neues Tag"
-                className={
-                  "block w-full grow appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-xs focus:border-blue-500 focus:ring-blue-500 focus:outline-hidden sm:text-sm"
-                }
-                label=""
-              />
+              <div className="grow">
+                <label htmlFor="newTopic" className="sr-only">
+                  Neues Tag
+                </label>
+                <input
+                  id="newTopic"
+                  type="text"
+                  value={newTopic}
+                  onChange={(e) => setNewTopic(e.target.value)}
+                  maxLength={35}
+                  placeholder="Neues Tag"
+                  className="block w-full grow appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-xs focus:border-blue-500 focus:ring-blue-500 focus:outline-hidden sm:text-sm"
+                />
+              </div>
               <button
                 type="button"
                 onClick={handleNewTopicFormSubmit}
@@ -219,12 +221,11 @@ export const ProjectRecordFormFields = ({
           </div>
           <div className="flex gap-8">
             <div className="space-y-1">
-              <LabeledSelect
-                optional
-                name="assignedToId"
-                options={assignedToOptions}
-                label="Zugewiesen an"
-              />
+              <form.AppField name="assignedToId">
+                {(field) => (
+                  <field.SelectField optional options={assignedToOptions} label="Zugewiesen an" />
+                )}
+              </form.AppField>
               {splitView && (
                 <p className="text-sm text-gray-500">
                   Alle unbestätigten Protokolleinträge können nur Nutzer mit Editierrechten
@@ -233,26 +234,26 @@ export const ProjectRecordFormFields = ({
               )}
             </div>
             <div className="w-48">
-              <LabeledSwitch
-                name="editingState"
-                values={{
-                  off: ProjectRecordEditingState.PENDING,
-                  on: ProjectRecordEditingState.COMPLETED,
-                }}
-                label="Status"
-                stateLabels={{
-                  off: "In Bearbeitung",
-                  on: "Abgeschlossen",
-                }}
-                trackClassNames={{
-                  off: "bg-blue-500",
-                  on: "bg-gray-300",
-                }}
-              />
+              <form.AppField name="editingState">
+                {(field) => (
+                  <field.Switch
+                    values={{
+                      off: ProjectRecordEditingState.PENDING,
+                      on: ProjectRecordEditingState.COMPLETED,
+                    }}
+                    label="Status"
+                    stateLabels={{
+                      off: "In Bearbeitung",
+                      on: "Abgeschlossen",
+                    }}
+                    trackClassNames={{
+                      off: "bg-blue-500",
+                      on: "bg-gray-300",
+                    }}
+                  />
+                )}
+              </form.AppField>
             </div>
-            {/* <div className="w-48">
-              <LabeledSelect name="editingState" options={editingStateOptions} label="Status" />
-            </div> */}
           </div>
         </div>
 
@@ -273,7 +274,7 @@ export const ProjectRecordFormFields = ({
                 onDeleted={async () => {
                   const existingUploads = NumberArraySchema.parse(uploadsValue)
                   const newUploads = existingUploads.filter((id) => id !== upload.id)
-                  setValue("uploads", newUploads, { shouldDirty: true })
+                  form.setFieldValue("uploads", newUploads)
                 }}
               />
             )
@@ -282,10 +283,9 @@ export const ProjectRecordFormFields = ({
             <UploadDropzone
               fillContainer
               onUploadComplete={async (newUploadIds) => {
-                // Add new upload IDs to the form, ensuring all are numbers
                 const existingUploads = NumberArraySchema.parse(uploadsValue)
                 const newUploads = [...new Set([...existingUploads, ...newUploadIds])]
-                setValue("uploads", newUploads, { shouldDirty: true })
+                form.setFieldValue("uploads", newUploads)
               }}
             />
           </UploadDropzoneContainer>

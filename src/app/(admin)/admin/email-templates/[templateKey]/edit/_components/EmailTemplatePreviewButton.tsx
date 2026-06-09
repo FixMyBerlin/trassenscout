@@ -1,8 +1,8 @@
 "use client"
 
+import { useCoreAppFormContext } from "@/src/core/components/forms/hooks/formContext"
 import { blueButtonStyles } from "@/src/core/components/links"
 import { EmailTemplateFormValues } from "@/src/server/emailTemplates/schema"
-import { useFormContext } from "react-hook-form"
 
 type Props = {
   onPreview: (values: EmailTemplateFormValues) => Promise<void>
@@ -10,14 +10,14 @@ type Props = {
 }
 
 export const EmailTemplatePreviewButton = ({ onPreview, disabled }: Props) => {
-  const { getValues } = useFormContext<EmailTemplateFormValues>()
+  const form = useCoreAppFormContext<EmailTemplateFormValues>()
 
   return (
     <button
       type="button"
       className={blueButtonStyles}
       disabled={disabled}
-      onClick={() => onPreview(getValues())}
+      onClick={() => onPreview(form.state.values as unknown as EmailTemplateFormValues)}
     >
       Preview aktualisieren
     </button>

@@ -1,6 +1,6 @@
 "use client"
 
-import { FORM_ERROR } from "@/src/core/components/forms"
+import { FORM_ERROR } from "@/src/core/components/forms/utils/formSubmitResult"
 import { blueButtonStyles } from "@/src/core/components/links"
 import deleteEmailTemplate from "@/src/server/emailTemplates/mutations/deleteEmailTemplate"
 import previewEmailTemplate from "@/src/server/emailTemplates/mutations/previewEmailTemplate"

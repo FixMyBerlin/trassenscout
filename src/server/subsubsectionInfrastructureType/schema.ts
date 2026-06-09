@@ -8,3 +8,12 @@ export const SubsubsectionInfrastructureType = z.object({
 })
 
 type TSubsubsectionInfrastructureType = z.infer<typeof SubsubsectionInfrastructureType>
+
+/** Empty form state for AppField typing + `form.reset()`. */
+export const subsubsectionInfrastructureTypeFormDefaultValues: z.infer<
+  typeof SubsubsectionInfrastructureType
+> = {
+  slug: "",
+  title: "",
+  projectId: 0,
+}

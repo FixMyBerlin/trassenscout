@@ -28,16 +28,22 @@ const getPrismaUniqueConstraintErrorMessage = (
   formError: string,
   fieldNames: string[],
 ) => {
-  const result = { [formError]: error }
+  const result: Record<string, string> = {}
+  let hasFieldErrors = false
+
   fieldNames.forEach((fieldName: string) => {
-    // Check what field name is included and adapt return object accordingly
     if (error.meta?.target?.includes(fieldName)) {
-      result[formError] = "Bitte korrigieren Sie Ihre Angaben."
+      hasFieldErrors = true
       result[fieldName] =
-        // check for translation
         errorMessageTranslations[error.toString().replaceAll("\n", "")] ||
         error.toString().replaceAll("\n", "")
     }
   })
-  return result
+
+  if (hasFieldErrors) {
+    // FormError shows FORM_CORRECTION_MESSAGE when field errors exist.
+    return result
+  }
+
+  return { [formError]: error }
 }

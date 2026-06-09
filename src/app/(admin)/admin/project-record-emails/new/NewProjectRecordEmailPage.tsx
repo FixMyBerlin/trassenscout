@@ -1,7 +1,7 @@
 "use client"
 
-import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
+import { FORM_ERROR } from "@/src/core/components/forms/utils/formSubmitResult"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import createProjectRecordEmail from "@/src/server/ProjectRecordEmails/mutations/createProjectRecordEmail"

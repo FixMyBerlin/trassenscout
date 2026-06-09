@@ -22,3 +22,11 @@ export const EmailTemplateByKeySchema = z.object({
 export const UpsertEmailTemplateSchema = EmailTemplateByKeySchema.merge(EmailTemplateFormSchema)
 
 export type EmailTemplateFormValues = z.infer<typeof EmailTemplateFormSchema>
+
+/** Empty form state for AppField typing + `form.reset()`. */
+export const emailTemplateFormDefaultValues: EmailTemplateFormValues = {
+  subject: "",
+  introMarkdown: "",
+  outroMarkdown: "",
+  ctaText: "",
+}

@@ -2,74 +2,100 @@
 
 import { UserSelectOptions } from "@/src/app/_components/users/utils/getUserSelectOptions"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
+import { FormShell } from "@/src/core/components/forms/FormShell"
+import { useAppForm } from "@/src/core/components/forms/hooks/useAppForm"
 import {
-  Form,
-  FormProps,
-  LabeledSelect,
-  LabeledTextareaField,
-  LabeledTextField,
-} from "@/src/core/components/forms"
+  applyFormSubmitResult,
+  type OnSubmitResult,
+} from "@/src/core/components/forms/utils/formSubmitResult"
 import { getBundeslandSelectOptions } from "@/src/server/alkis/alkisStateConfig"
+import { projectFormDefaultValues } from "@/src/server/projects/schema"
+import { ReactNode, useState } from "react"
 import { z } from "zod"
 
-type Props = FormProps<z.ZodType<any, any>> & { users: UserSelectOptions }
+export type ProjectFormProps<S extends z.ZodType<any, any>> = {
+  schema: S
+  initialValues?: Partial<z.infer<S>>
+  onSubmit: (values: z.infer<S>) => Promise<void | OnSubmitResult>
+  submitText: string
+  resetOnSubmit?: boolean
+  className?: string
+  actionBarLeft?: ReactNode
+  actionBarRight?: ReactNode
+  submitDisabled?: boolean
+  submitClassName?: string
+  showFormDebug?: boolean
+  users: UserSelectOptions
+}
 
-export const ProjectForm = ({ users, ...props }: Props) => {
+export const ProjectForm = <S extends z.ZodType<any, any>>({
+  users: _users,
+  schema,
+  initialValues,
+  onSubmit,
+  submitText,
+  resetOnSubmit,
+  className,
+  actionBarLeft,
+  actionBarRight,
+  submitDisabled,
+  submitClassName,
+  showFormDebug,
+}: ProjectFormProps<S>) => {
+  const [formError, setFormError] = useState<string | null>(null)
+
+  const form = useAppForm({
+    defaultValues: { ...projectFormDefaultValues, ...initialValues },
+    validators: { onSubmit: schema } as never,
+    onSubmit: async ({ value }) => {
+      const result = (await onSubmit(value)) || {}
+      applyFormSubmitResult(form, result, setFormError)
+      if (resetOnSubmit && !result.FORM_ERROR) {
+        form.reset()
+        setFormError(null)
+      }
+    },
+  })
+
   return (
-    <Form {...props}>
-      <LabeledTextField
-        type="text"
-        name="slug"
-        label="Kürzel"
-        help="Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren."
-      />
-      <LabeledTextField type="text" name="subTitle" label="Untertitel" optional />
+    <FormShell
+      form={form}
+      formError={formError}
+      submitText={submitText}
+      className={className}
+      actionBarLeft={actionBarLeft}
+      actionBarRight={actionBarRight}
+      submitDisabled={submitDisabled}
+      submitClassName={submitClassName}
+      showFormDebug={showFormDebug}
+    >
+      <form.AppField name="slug">
+        {(field) => (
+          <field.TextField
+            type="text"
+            label="Kürzel"
+            help="Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren."
+          />
+        )}
+      </form.AppField>
+      <form.AppField name="subTitle">
+        {(field) => <field.TextField type="text" label="Untertitel" optional />}
+      </form.AppField>
       <SuperAdminBox>
-        <LabeledSelect
-          name="alkisStateKey"
-          label="Bundesland (ALKIS-Daten)"
-          optional
-          // @ts-expect-error
-          options={getBundeslandSelectOptions()}
-          // help="Steuert die ALKIS-WMS-Hintergrundkarte in den Projektkarten, sofern für das gewählte Bundesland ein Dienst hinterlegt ist."
-        />
+        <form.AppField name="alkisStateKey">
+          {(field) => (
+            <field.SelectField
+              label="Bundesland (ALKIS-Daten)"
+              optional
+              // @ts-expect-error
+              options={getBundeslandSelectOptions()}
+            />
+          )}
+        </form.AppField>
       </SuperAdminBox>
-      {/* UNUSED */}
-      {/* <LabeledTextField
-        optional
-        type="text"
-        name="logoSrc"
-        label="Logo"
-        placeholder="beispiel.png"
-      /> */}
-      {/* <p className="mt-1! text-sm text-gray-500">
-        Das Logo wird von FixMyCity{" "}
-        <Link
-          href="https://s3.console.aws.amazon.com/s3/buckets/trassenscout-public?prefix=assets/&region=eu-central-1"
-          blank
-        >
-          extern in AWS abgelegt
-        </Link>
-        , von NextJS intern optimiert und hier referenziert.
-      </p> */}
-      <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
-      {/* UNUSED */}
-      {/* <LabeledTextareaField
-        optional
-        name="partnerLogoSrcs"
-        label="Partner-Logos (ein Logo pro Zeile)"
-        placeholder="beispiel.png"
-      />
-      <p className="mt-1! text-sm text-gray-500">
-        Die Logos werden von FixMyCity{" "}
-        <Link
-          href="https://s3.console.aws.amazon.com/s3/buckets/trassenscout-public?prefix=assets/&region=eu-central-1"
-          blank
-        >
-          extern in AWS abgelegt
-        </Link>
-        , von NextJS intern optimiert und hier referenziert.
-      </p> */}
-    </Form>
+      <form.AppField name="description">
+        {(field) => <field.TextareaField label="Beschreibung (Markdown)" optional />}
+      </form.AppField>
+    </FormShell>
   )
 }

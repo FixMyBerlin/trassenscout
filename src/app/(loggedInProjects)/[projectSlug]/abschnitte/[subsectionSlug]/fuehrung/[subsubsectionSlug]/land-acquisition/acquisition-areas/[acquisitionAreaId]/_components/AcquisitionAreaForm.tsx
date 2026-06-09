@@ -2,29 +2,40 @@
 
 import { LinkWithFormDirtyConfirm } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/[subsubsectionSlug]/_components/LinkWithFormDirtyConfirm"
 import { AcquisitionAreaGeometryInput } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/[subsubsectionSlug]/land-acquisition/acquisition-areas/[acquisitionAreaId]/_components/AcquisitionAreaGeometryInput"
-import { Form, FormProps, LabeledSelect, LabeledTextareaField } from "@/src/core/components/forms"
-import { createFormOptions } from "@/src/core/components/forms/_utils/createFormOptions"
-import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
-import { InputNumberOrNullSchema } from "@/src/core/utils/schema-shared"
+import { FormShell } from "@/src/core/components/forms/FormShell"
+import { useAppForm } from "@/src/core/components/forms/hooks/useAppForm"
+import { createFormOptions } from "@/src/core/components/forms/utils/createFormOptions"
 import {
-  AcquisitionAreaGeometrySchema,
+  applyFormSubmitResult,
+  type OnSubmitResult,
+} from "@/src/core/components/forms/utils/formSubmitResult"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
+import {
+  acquisitionAreaFormDefaultValues,
+  AcquisitionAreaFormSchema,
   type TAcquisitionAreaGeometrySchema,
 } from "@/src/server/acquisitionAreas/schema"
 import getAcquisitionAreaStatuses from "@/src/server/acquisitionAreaStatuses/queries/getAcquisitionAreaStatuses"
 import { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
 import { useQuery } from "@blitzjs/rpc"
 import { Route } from "next"
+import { ReactNode, useState } from "react"
 import { z } from "zod"
 
-export const AcquisitionAreaFormSchema = z.object({
-  description: z.string().nullish(),
-  bufferRadiusM: InputNumberOrNullSchema,
-  acquisitionAreaStatusId: InputNumberOrNullSchema,
-  geometry: AcquisitionAreaGeometrySchema,
-  type: z.literal("POLYGON").optional(),
-})
+export { AcquisitionAreaFormSchema }
 
-type Props<S extends z.ZodType<any, any>> = FormProps<S> & {
+export type AcquisitionAreaFormProps<S extends z.ZodType<any, any>> = {
+  schema: S
+  initialValues?: Partial<z.infer<S>>
+  onSubmit: (values: z.infer<S>) => Promise<void | OnSubmitResult>
+  submitText: string
+  resetOnSubmit?: boolean
+  className?: string
+  actionBarLeft?: ReactNode
+  actionBarRight?: ReactNode
+  submitDisabled?: boolean
+  submitClassName?: string
+  showFormDebug?: boolean
   parcelGeometry: TAcquisitionAreaGeometrySchema
   subsubsectionGeometry: SupportedGeometry
 }
@@ -32,9 +43,34 @@ type Props<S extends z.ZodType<any, any>> = FormProps<S> & {
 export function AcquisitionAreaForm<S extends z.ZodType<any, any>>({
   parcelGeometry,
   subsubsectionGeometry,
-  ...props
-}: Props<S>) {
+  schema,
+  initialValues,
+  onSubmit,
+  submitText,
+  resetOnSubmit,
+  className,
+  actionBarLeft,
+  actionBarRight,
+  submitDisabled,
+  submitClassName,
+  showFormDebug,
+}: AcquisitionAreaFormProps<S>) {
   const projectSlug = useProjectSlug()
+  const [formError, setFormError] = useState<string | null>(null)
+
+  const form = useAppForm({
+    defaultValues: { ...acquisitionAreaFormDefaultValues, ...initialValues },
+    validators: { onSubmit: schema } as never,
+    onSubmit: async ({ value }) => {
+      const result = (await onSubmit(value)) || {}
+      applyFormSubmitResult(form, result, setFormError)
+      if (resetOnSubmit && !result.FORM_ERROR) {
+        form.reset()
+        setFormError(null)
+      }
+    },
+  })
+
   const [{ acquisitionAreaStatuses }] = useQuery(
     getAcquisitionAreaStatuses,
     { projectSlug },
@@ -49,24 +85,31 @@ export function AcquisitionAreaForm<S extends z.ZodType<any, any>>({
   })
 
   return (
-    <Form<S> {...props}>
-      <LabeledTextareaField name="description" label="Beschreibung" optional />
-      {/* TODO bufferRadius: decide if we want to show and allow editing / interaction form<-->map */}
-      {/* <LabeledTextField
-        name="bufferRadiusM"
-        label="Buffer-Radius (m)"
-        type="number"
-        min={0}
-        optional
-      /> */}
+    <FormShell
+      form={form}
+      formError={formError}
+      submitText={submitText}
+      className={className}
+      actionBarLeft={actionBarLeft}
+      actionBarRight={actionBarRight}
+      submitDisabled={submitDisabled}
+      submitClassName={submitClassName}
+      showFormDebug={showFormDebug}
+    >
+      <form.AppField name="description">
+        {(field) => <field.TextareaField label="Beschreibung" optional />}
+      </form.AppField>
       <div className="flex items-end gap-5">
-        <LabeledSelect
-          name="acquisitionAreaStatusId"
-          label="Status"
-          optional
-          options={acquisitionAreaStatusOptions}
-          outerProps={{ className: "grow" }}
-        />
+        <form.AppField name="acquisitionAreaStatusId">
+          {(field) => (
+            <field.SelectField
+              label="Status"
+              optional
+              options={acquisitionAreaStatusOptions}
+              outerProps={{ className: "grow" }}
+            />
+          )}
+        </form.AppField>
         <LinkWithFormDirtyConfirm
           href={`/${projectSlug}/acquisition-area-status` as Route}
           className="py-2"
@@ -78,6 +121,6 @@ export function AcquisitionAreaForm<S extends z.ZodType<any, any>>({
         parcelGeometry={parcelGeometry}
         subsubsectionGeometry={subsubsectionGeometry}
       />
-    </Form>
+    </FormShell>
   )
 }

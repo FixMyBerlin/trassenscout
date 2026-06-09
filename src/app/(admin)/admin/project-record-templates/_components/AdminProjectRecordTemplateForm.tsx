@@ -1,21 +1,35 @@
 "use client"
 
+import { FormShell } from "@/src/core/components/forms/FormShell"
+import { useCoreAppFormContext } from "@/src/core/components/forms/hooks/formContext"
+import { useAppForm } from "@/src/core/components/forms/hooks/useAppForm"
+import { useFormValue } from "@/src/core/components/forms/hooks/useFormValue"
 import {
-  Form,
-  FormProps,
-  LabeledCheckboxGroup,
-  LabeledTextareaField,
-  LabeledTextField,
-} from "@/src/core/components/forms"
+  applyFormSubmitResult,
+  type OnSubmitResult,
+} from "@/src/core/components/forms/utils/formSubmitResult"
 import getAdminProjectRecordTopics from "@/src/server/projectRecordTemplates/queries/getAdminProjectRecordTopics"
-import { ProjectRecordTemplateFormSchema } from "@/src/server/projectRecordTemplates/schema"
+import {
+  ProjectRecordTemplateFormSchema,
+  ProjectRecordTemplateFormValues,
+  projectRecordTemplateFormDefaultValues,
+} from "@/src/server/projectRecordTemplates/schema"
 import getProjects from "@/src/server/projects/queries/getProjects"
 import { useQuery } from "@blitzjs/rpc"
-import { useEffect, useMemo } from "react"
-import { useFormContext } from "react-hook-form"
-import { z } from "zod"
+import { ReactNode, useEffect, useMemo, useState } from "react"
 
-type Props = FormProps<z.ZodType<any, any>>
+export type AdminProjectRecordTemplateFormProps = {
+  initialValues?: Partial<typeof projectRecordTemplateFormDefaultValues>
+  onSubmit: (values: ProjectRecordTemplateFormValues) => Promise<void | OnSubmitResult>
+  submitText: string
+  resetOnSubmit?: boolean
+  className?: string
+  actionBarLeft?: ReactNode
+  actionBarRight?: ReactNode
+  submitDisabled?: boolean
+  submitClassName?: string
+  showFormDebug?: boolean
+}
 
 const toNumericIds = (value: unknown): number[] => {
   if (!Array.isArray(value)) return []
@@ -25,12 +39,12 @@ const toNumericIds = (value: unknown): number[] => {
 const ProjectAndTopicFields = () => {
   const [projectsResult] = useQuery(getProjects, {})
   const [{ projectRecordTopics }] = useQuery(getAdminProjectRecordTopics, {})
-  const { watch, setValue } = useFormContext()
+  const form = useCoreAppFormContext()
 
   const projects = projectsResult.projects || []
 
-  const selectedProjectIds = toNumericIds(watch("projectIds"))
-  const selectedTopicIds = toNumericIds(watch("projectRecordTopicIds"))
+  const selectedProjectIds = toNumericIds(useFormValue("projectIds"))
+  const selectedTopicIds = toNumericIds(useFormValue("projectRecordTopicIds"))
   const selectedProjectIdSet = useMemo(() => new Set(selectedProjectIds), [selectedProjectIds])
 
   const availableTopicIds = useMemo(
@@ -46,8 +60,8 @@ const ProjectAndTopicFields = () => {
   useEffect(() => {
     const filteredTopicIds = selectedTopicIds.filter((topicId) => availableTopicIds.has(topicId))
     if (filteredTopicIds.length === selectedTopicIds.length) return
-    setValue("projectRecordTopicIds", filteredTopicIds.map(String), { shouldDirty: true })
-  }, [availableTopicIds, selectedTopicIds, setValue])
+    form.setFieldValue("projectRecordTopicIds", filteredTopicIds.map(String))
+  }, [availableTopicIds, form, selectedTopicIds])
 
   const projectItems = projects.map((project) => ({
     value: String(project.id),
@@ -58,13 +72,16 @@ const ProjectAndTopicFields = () => {
 
   return (
     <>
-      <LabeledCheckboxGroup
-        scope="projectIds"
-        label="Aktiv in Projekten"
-        optional
-        classNameItemWrapper="grid grid-cols-4 gap-1.5 w-full"
-        items={projectItems}
-      />
+      <form.AppField name="projectIds">
+        {(field) => (
+          <field.CheckboxGroup
+            label="Aktiv in Projekten"
+            optional
+            classNameItemWrapper="grid grid-cols-4 gap-1.5 w-full"
+            items={projectItems}
+          />
+        )}
+      </form.AppField>
 
       <div className="space-y-4">
         <p className="mb-0 block text-sm font-medium text-gray-700">Tags (optional)</p>
@@ -82,12 +99,15 @@ const ProjectAndTopicFields = () => {
             <div key={project.id} className="rounded-md border border-gray-200 p-3">
               <p className="mb-3 text-sm font-semibold text-gray-700">{project.slug}</p>
               {topicsForProject.length ? (
-                <LabeledCheckboxGroup
-                  scope="projectRecordTopicIds"
-                  classLabelOverwrite="hidden"
-                  classNameItemWrapper="grid grid-cols-4 gap-1.5 w-full"
-                  items={topicsForProject}
-                />
+                <form.AppField name="projectRecordTopicIds">
+                  {(field) => (
+                    <field.CheckboxGroup
+                      classLabelOverwrite="hidden"
+                      classNameItemWrapper="grid grid-cols-4 gap-1.5 w-full"
+                      items={topicsForProject}
+                    />
+                  )}
+                </form.AppField>
               ) : (
                 <p className="text-sm text-gray-500">Keine Tags in diesem Projekt vorhanden.</p>
               )}
@@ -99,14 +119,58 @@ const ProjectAndTopicFields = () => {
   )
 }
 
-export const AdminProjectRecordTemplateForm = (props: Props) => {
+export function AdminProjectRecordTemplateForm({
+  initialValues,
+  onSubmit,
+  submitText,
+  resetOnSubmit,
+  className,
+  actionBarLeft,
+  actionBarRight,
+  submitDisabled,
+  submitClassName,
+  showFormDebug,
+}: AdminProjectRecordTemplateFormProps) {
+  const [formError, setFormError] = useState<string | null>(null)
+
+  const form = useAppForm({
+    defaultValues: { ...projectRecordTemplateFormDefaultValues, ...initialValues },
+    validators: { onSubmit: ProjectRecordTemplateFormSchema } as never,
+    onSubmit: async ({ value }) => {
+      const result = (await onSubmit(value as unknown as ProjectRecordTemplateFormValues)) || {}
+      applyFormSubmitResult(form, result, setFormError)
+      if (resetOnSubmit && !result.FORM_ERROR) {
+        form.reset()
+        setFormError(null)
+      }
+    },
+  })
+
   return (
-    <Form {...props} schema={ProjectRecordTemplateFormSchema}>
-      <LabeledTextField type="text" name="templateTitle" label="Titel der Vorlage" />
-      <LabeledTextField type="text" name="entryTitle" label="Titel im Eintrag" />
-      <LabeledTextareaField name="body" label="Notizen (Markdown)" optional rows={12} />
+    <FormShell
+      form={form}
+      formError={formError}
+      submitText={submitText}
+      className={className}
+      actionBarLeft={actionBarLeft}
+      actionBarRight={actionBarRight}
+      submitDisabled={submitDisabled}
+      submitClassName={submitClassName}
+      showFormDebug={showFormDebug}
+    >
+      <form.AppField name="templateTitle">
+        {(field) => <field.TextField type="text" label="Titel der Vorlage" />}
+      </form.AppField>
+      <form.AppField name="entryTitle">
+        {(field) => <field.TextField type="text" label="Titel im Eintrag" />}
+      </form.AppField>
+      <form.AppField name="body">
+        {(field) => <field.TextareaField label="Notizen (Markdown)" optional rows={12} />}
+      </form.AppField>
       <ProjectAndTopicFields />
-      <LabeledTextareaField name="purpose" label="Verwendungszweck" optional rows={5} />
-    </Form>
+      <form.AppField name="purpose">
+        {(field) => <field.TextareaField label="Verwendungszweck" optional rows={5} />}
+      </form.AppField>
+    </FormShell>
   )
 }

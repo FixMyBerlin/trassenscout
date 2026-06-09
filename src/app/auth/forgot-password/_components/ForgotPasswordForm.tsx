@@ -1,24 +1,35 @@
 "use client"
-import { FORM_ERROR, Form } from "@/src/core/components/forms/Form"
-import { LabeledTextField } from "@/src/core/components/forms/LabeledTextField"
+
+import { FormShell } from "@/src/core/components/forms/FormShell"
+import { useAppForm } from "@/src/core/components/forms/hooks/useAppForm"
+import {
+  applyFormSubmitResult,
+  FORM_ERROR,
+} from "@/src/core/components/forms/utils/formSubmitResult"
 import { frenchQuote } from "@/src/core/components/text/quote"
 import forgotPassword from "@/src/server/auth/mutations/forgotPassword"
-import { ForgotPassword } from "@/src/server/auth/schema"
+import { ForgotPassword, forgotPasswordFormDefaultValues } from "@/src/server/auth/schema"
 import { useMutation } from "@blitzjs/rpc"
+import { useState } from "react"
 
 export const ForgotPasswordForm = () => {
   const [forgotPasswordMutation, { isSuccess }] = useMutation(forgotPassword)
+  const [formError, setFormError] = useState<string | null>(null)
 
-  type HandleSubmit = { email: string }
-  const handleSubmit = async (values: HandleSubmit) => {
-    try {
-      await forgotPasswordMutation(values)
-    } catch (error: any) {
-      return {
-        [FORM_ERROR]: "Sorry, we had an unexpected error. Please try again.",
+  const form = useAppForm({
+    defaultValues: forgotPasswordFormDefaultValues,
+    validators: { onSubmit: ForgotPassword } as never,
+    onSubmit: async ({ value }) => {
+      try {
+        await forgotPasswordMutation(value)
+      } catch {
+        const result = {
+          [FORM_ERROR]: "Sorry, we had an unexpected error. Please try again.",
+        }
+        applyFormSubmitResult(form, result, setFormError)
       }
-    }
-  }
+    },
+  })
 
   if (isSuccess) {
     return (
@@ -30,13 +41,12 @@ export const ForgotPasswordForm = () => {
   }
 
   return (
-    <Form
-      submitText="E-Mail zusenden"
-      schema={ForgotPassword}
-      initialValues={{ email: "" }}
-      onSubmit={handleSubmit}
-    >
-      <LabeledTextField name="email" label="E-Mail-Adresse" placeholder="name@beispiel.de" />
-    </Form>
+    <FormShell form={form} formError={formError} submitText="E-Mail zusenden">
+      <form.AppField name="email">
+        {(field) => (
+          <field.TextField type="text" label="E-Mail-Adresse" placeholder="name@beispiel.de" />
+        )}
+      </form.AppField>
+    </FormShell>
   )
 }

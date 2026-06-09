@@ -2,8 +2,8 @@
 
 import { BackLink } from "@/src/core/components/forms/BackLink"
 import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
-import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
+import { FORM_ERROR } from "@/src/core/components/forms/utils/formSubmitResult"
 import { shortTitle } from "@/src/core/components/text"
 import { projectDashboardRoute } from "@/src/core/routes/projectRoutes"
 import { subsectionDashboardRoute } from "@/src/core/routes/subsectionRoutes"

@@ -32,3 +32,23 @@ export const UpdateProjectRecordTemplateSchema = ProjectRecordTemplateByIdSchema
 export const DeleteProjectRecordTemplateSchema = ProjectRecordTemplateByIdSchema
 
 export type ProjectRecordTemplateFormValues = z.infer<typeof ProjectRecordTemplateFormSchema>
+
+/** Checkbox groups store string ids before schema coercion. */
+type ProjectRecordTemplateFormCheckboxFields = {
+  projectIds: string[]
+  projectRecordTopicIds: string[]
+}
+
+/** Empty form state for AppField typing + `form.reset()`. */
+export const projectRecordTemplateFormDefaultValues: Pick<
+  ProjectRecordTemplateFormValues,
+  "templateTitle" | "entryTitle" | "body" | "purpose"
+> &
+  ProjectRecordTemplateFormCheckboxFields = {
+  templateTitle: "",
+  entryTitle: "",
+  body: "",
+  purpose: "",
+  projectIds: [],
+  projectRecordTopicIds: [],
+}

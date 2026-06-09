@@ -34,6 +34,14 @@ export const UpdateUserSchema = z.object({
 
 export type UpdateUserType = z.infer<typeof UpdateUserSchema>
 
+/** Empty form state for AppField typing + `form.reset()`. */
+export const updateUserFormDefaultValues: UpdateUserType = {
+  firstName: "",
+  lastName: "",
+  institution: null,
+  phone: null,
+}
+
 export const UpdateMembershipRole = z.object({
   membershipId: z.number(),
   role: z.nativeEnum(MembershipRoleEnum),
@@ -45,9 +53,30 @@ export const Login = z.object({
   inviteToken: z.string().nullish(), // Login will create a membership or not…
 })
 
+export const loginFormDefaultValues: z.infer<typeof Login> = {
+  email: "",
+  password: "",
+  inviteToken: null,
+}
+
+export const signupFormDefaultValues: z.infer<typeof SignupSchema> = {
+  email: "",
+  password: "",
+  phone: null,
+  firstName: "",
+  lastName: "",
+  institution: null,
+  inviteToken: null,
+  privacyPolicyAccepted: false,
+}
+
 export const ForgotPassword = z.object({
   email: emailSchema,
 })
+
+export const forgotPasswordFormDefaultValues: z.infer<typeof ForgotPassword> = {
+  email: "",
+}
 
 export const ResetPassword = z
   .object({
@@ -59,6 +88,12 @@ export const ResetPassword = z
     message: "Die Passwörter stimmen nicht überein.",
     path: ["passwordConfirmation"], // set the path of the error
   })
+
+export const resetPasswordFormDefaultValues: z.infer<typeof ResetPassword> = {
+  password: "",
+  passwordConfirmation: "",
+  token: "",
+}
 
 export const ChangePassword = z.object({
   currentPassword: z.string(),

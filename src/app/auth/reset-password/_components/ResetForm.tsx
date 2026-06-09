@@ -1,32 +1,49 @@
 "use client"
-import { FORM_ERROR, Form } from "@/src/core/components/forms/Form"
-import { LabeledTextField } from "@/src/core/components/forms/LabeledTextField"
+
+import { FormShell } from "@/src/core/components/forms/FormShell"
+import { useAppForm } from "@/src/core/components/forms/hooks/useAppForm"
+import {
+  applyFormSubmitResult,
+  FORM_ERROR,
+} from "@/src/core/components/forms/utils/formSubmitResult"
 import { Link } from "@/src/core/components/links"
 import resetPassword from "@/src/server/auth/mutations/resetPassword"
-import { ResetPassword } from "@/src/server/auth/schema"
+import { ResetPassword, resetPasswordFormDefaultValues } from "@/src/server/auth/schema"
 import { useMutation } from "@blitzjs/rpc"
+import { useState } from "react"
 
 type Props = { token: string }
 
 export const ResetForm = ({ token }: Props) => {
   const [resetPasswordMutation, { isSuccess }] = useMutation(resetPassword)
+  const [formError, setFormError] = useState<string | null>(null)
 
-  type HandleSubmit = { password: string; passwordConfirmation: string }
-  const handleSubmit = async (values: HandleSubmit) => {
-    try {
-      await resetPasswordMutation({ ...values, token })
-    } catch (error: any) {
-      if (error.name === "ResetPasswordError") {
-        return {
-          [FORM_ERROR]: error.message,
-        }
-      } else {
-        return {
-          [FORM_ERROR]: "Sorry, we had an unexpected error. Please try again.",
+  const form = useAppForm({
+    defaultValues: { ...resetPasswordFormDefaultValues, token },
+    validators: { onSubmit: ResetPassword } as never,
+    onSubmit: async ({ value }) => {
+      try {
+        await resetPasswordMutation({ ...value, token })
+      } catch (error: unknown) {
+        if (
+          error &&
+          typeof error === "object" &&
+          "name" in error &&
+          error.name === "ResetPasswordError" &&
+          "message" in error &&
+          typeof error.message === "string"
+        ) {
+          applyFormSubmitResult(form, { [FORM_ERROR]: error.message }, setFormError)
+        } else {
+          applyFormSubmitResult(
+            form,
+            { [FORM_ERROR]: "Sorry, we had an unexpected error. Please try again." },
+            setFormError,
+          )
         }
       }
-    }
-  }
+    },
+  })
 
   if (isSuccess) {
     return (
@@ -42,22 +59,13 @@ export const ResetForm = ({ token }: Props) => {
   }
 
   return (
-    <Form
-      submitText="Passwort zurücksetzen"
-      schema={ResetPassword}
-      initialValues={{
-        password: "",
-        passwordConfirmation: "",
-        token,
-      }}
-      onSubmit={handleSubmit}
-    >
-      <LabeledTextField name="password" label="Neues Passwort" type="password" />
-      <LabeledTextField
-        name="passwordConfirmation"
-        label="Neues Passwort bestätigen"
-        type="password"
-      />
-    </Form>
+    <FormShell form={form} formError={formError} submitText="Passwort zurücksetzen">
+      <form.AppField name="password">
+        {(field) => <field.TextField type="password" label="Neues Passwort" />}
+      </form.AppField>
+      <form.AppField name="passwordConfirmation">
+        {(field) => <field.TextField type="password" label="Neues Passwort bestätigen" />}
+      </form.AppField>
+    </FormShell>
   )
 }

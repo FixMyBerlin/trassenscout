@@ -1,7 +1,7 @@
 "use client"
 
-import { FORM_ERROR } from "@/src/core/components/forms"
 import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
+import { FORM_ERROR } from "@/src/core/components/forms/utils/formSubmitResult"
 import deleteSupportDocument from "@/src/server/supportDocuments/mutations/deleteSupportDocument"
 import updateSupportDocument from "@/src/server/supportDocuments/mutations/updateSupportDocument"
 import getSupportDocument from "@/src/server/supportDocuments/queries/getSupportDocument"

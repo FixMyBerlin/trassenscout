@@ -1,17 +1,22 @@
 "use client"
+
 import { DevAdminBox } from "@/src/core/components/AdminBox"
-import { FORM_ERROR, Form } from "@/src/core/components/forms/Form"
-import { HiddenField } from "@/src/core/components/forms/HiddenField"
-import { LabeledTextField } from "@/src/core/components/forms/LabeledTextField"
-import { Link, blueButtonStyles } from "@/src/core/components/links"
+import { FormShell } from "@/src/core/components/forms/FormShell"
+import { useAppForm } from "@/src/core/components/forms/hooks/useAppForm"
+import {
+  applyFormSubmitResult,
+  FORM_ERROR,
+} from "@/src/core/components/forms/utils/formSubmitResult"
+import { blueButtonStyles, Link } from "@/src/core/components/links"
 import login from "@/src/server/auth/mutations/login"
-import { Login } from "@/src/server/auth/schema"
+import { Login, loginFormDefaultValues } from "@/src/server/auth/schema"
 import getInvite from "@/src/server/invites/queries/getInvite"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { AuthenticationError } from "blitz"
 import { clsx } from "clsx"
 import { Route } from "next"
 import { useRouter, useSearchParams } from "next/navigation"
+import { useState } from "react"
 import { z } from "zod"
 
 export const LoginForm = () => {
@@ -19,61 +24,66 @@ export const LoginForm = () => {
   const params = useSearchParams()
   const paramNext = params?.get("next") || null
   const paramInviteToken = params?.get("inviteToken") || null
-  // const currentUser = useCurrentUser()
-  // const [logoutMutation] = useMutation(logout)
-  // const handleLogout = async () => {
-  //   await logoutMutation()
-  // }
 
   const [loginMutation] = useMutation(login)
   const [invite] = useQuery(getInvite, { token: paramInviteToken })
+  const [formError, setFormError] = useState<string | null>(null)
 
-  type HandleSubmit = z.infer<typeof Login>
-  const handleSubmit = async (values: HandleSubmit) => {
+  const submitLogin = async (values: z.infer<typeof Login>) => {
     try {
       await loginMutation(values)
       const next = paramNext ? decodeURIComponent(paramNext) : "/"
       // TS: I don't see a way to validate the nextParam, so we overwrite TS here
       router.push(next as Route<string>)
       router.refresh()
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (error instanceof AuthenticationError) {
         return { [FORM_ERROR]: "Diese Anmeldedaten sind ungültig." }
-      } else {
-        return {
-          [FORM_ERROR]: "Ein unerwarteter Fehler ist aufgetreten. - " + error.toString(),
-        }
+      }
+      return {
+        [FORM_ERROR]: "Ein unerwarteter Fehler ist aufgetreten. - " + String(error),
       }
     }
   }
 
+  const form = useAppForm({
+    defaultValues: {
+      ...loginFormDefaultValues,
+      email: invite?.email || "",
+      inviteToken: invite?.token || null,
+    },
+    validators: { onSubmit: Login } as never,
+    onSubmit: async ({ value }) => {
+      const result = (await submitLogin(value)) || {}
+      applyFormSubmitResult(form, result, setFormError)
+    },
+  })
+
   return (
     <>
-      <Form
-        submitText="Anmelden"
-        schema={Login}
-        initialValues={{
-          email: invite?.email || "",
-          password: "",
-          inviteToken: invite?.token || null,
-        }}
-        onSubmit={handleSubmit}
-      >
-        <HiddenField name="inviteToken" />
-        <LabeledTextField
-          name="email"
-          label={Boolean(invite?.email) ? "E-Mail-Adresse der Einladung" : "E-Mail-Adresse"}
-          placeholder="name@beispiel.de"
-          autoComplete="email"
-          readOnly={Boolean(invite?.email)}
-        />
-        <LabeledTextField
-          name="password"
-          label="Passwort"
-          placeholder="Passwort"
-          type="password"
-          autoComplete="current-password"
-        />
+      <FormShell form={form} formError={formError} submitText="Anmelden">
+        <form.AppField name="inviteToken">{(field) => <field.HiddenField />}</form.AppField>
+        <form.AppField name="email">
+          {(field) => (
+            <field.TextField
+              type="text"
+              label={Boolean(invite?.email) ? "E-Mail-Adresse der Einladung" : "E-Mail-Adresse"}
+              placeholder="name@beispiel.de"
+              autoComplete="email"
+              readOnly={Boolean(invite?.email)}
+            />
+          )}
+        </form.AppField>
+        <form.AppField name="password">
+          {(field) => (
+            <field.TextField
+              type="password"
+              label="Passwort"
+              placeholder="Passwort"
+              autoComplete="current-password"
+            />
+          )}
+        </form.AppField>
         <div className="text-sm">
           Sie haben Ihr <Link href="/auth/forgot-password">Passwort vergessen?</Link>
         </div>
@@ -97,20 +107,23 @@ export const LoginForm = () => {
           ).map(([displayName, email]) => (
             <button
               key={displayName}
+              type="button"
               className={clsx(blueButtonStyles, "m-1")}
-              onClick={async () =>
-                await handleSubmit({
-                  email,
-                  password: "dev-team@fixmycity.de",
-                  inviteToken: null,
-                })
-              }
+              onClick={async () => {
+                const result =
+                  (await submitLogin({
+                    email,
+                    password: "dev-team@fixmycity.de",
+                    inviteToken: null,
+                  })) || {}
+                applyFormSubmitResult(form, result, setFormError)
+              }}
             >
               {displayName}
             </button>
           ))}
         </DevAdminBox>
-      </Form>
+      </FormShell>
 
       <div className="mt-4 text-sm">
         Sie haben noch keinen Account? Zur{" "}

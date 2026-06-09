@@ -1,7 +1,7 @@
 "use client"
 
-import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
+import { FORM_ERROR } from "@/src/core/components/forms/utils/formSubmitResult"
 import createSubsubsectionInfrastructureType from "@/src/server/subsubsectionInfrastructureType/mutations/createSubsubsectionInfrastructureType"
 import { SubsubsectionInfrastructureType } from "@/src/server/subsubsectionInfrastructureType/schema"
 import { useMutation } from "@blitzjs/rpc"

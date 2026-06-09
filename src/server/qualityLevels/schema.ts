@@ -15,3 +15,11 @@ export const QualityLevelSchema = z.object({
 })
 
 type TQualityLevelSchema = z.infer<typeof QualityLevelSchema>
+
+/** Empty form state for AppField typing + `form.reset()`. Annotated so all keys stay required for TanStack. */
+export const qualityLevelFormDefaultValues: z.infer<typeof QualityLevelSchema> = {
+  slug: "",
+  title: "",
+  url: "",
+  projectId: 0,
+}

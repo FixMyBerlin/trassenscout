@@ -24,3 +24,16 @@ export const ProjectLogoScrcsInputSchema = z.object({
 
 export const ProjectFormSchema = ProjectSchema.merge(ProjectLogoScrcsInputSchema)
 export type ProjectFormType = z.infer<typeof ProjectFormSchema>
+
+/** Empty form state for AppField typing + `form.reset()`. */
+export const projectFormDefaultValues: ProjectFormType = {
+  slug: "",
+  subTitle: "",
+  description: "",
+  logoSrc: null,
+  partnerLogoSrcs: null,
+  exportEnabled: false,
+  aiEnabled: false,
+  alkisStateKey: StateKeyEnum.DISABLED,
+  landAcquisitionModuleEnabled: false,
+}

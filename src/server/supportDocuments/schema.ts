@@ -7,3 +7,10 @@ export const SupportDocumentFormSchema = z.object({
 })
 
 export type SupportDocumentFormType = z.infer<typeof SupportDocumentFormSchema>
+
+/** Empty form state for AppField typing + `form.reset()`. */
+export const supportDocumentFormDefaultValues: SupportDocumentFormType = {
+  title: "",
+  description: "",
+  order: 0,
+}

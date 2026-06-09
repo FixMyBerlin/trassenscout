@@ -4,13 +4,15 @@ import { SummaryField } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads
 import { UploadLocationMap } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/map/UploadLocationMap"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
-import {
-  FormDirtyStateReporter,
-  LabeledCombobox,
-  LabeledTextField,
-} from "@/src/core/components/forms"
 import { BackLink } from "@/src/core/components/forms/BackLink"
-import { FORM_ERROR, Form } from "@/src/core/components/forms/Form"
+import { FormDirtyStateReporter } from "@/src/core/components/forms/FormDirtyStateReporter"
+import { FormShell } from "@/src/core/components/forms/FormShell"
+import { useCoreAppFormContext } from "@/src/core/components/forms/hooks/formContext"
+import { useAppForm } from "@/src/core/components/forms/hooks/useAppForm"
+import {
+  applyFormSubmitResult,
+  FORM_ERROR,
+} from "@/src/core/components/forms/utils/formSubmitResult"
 import { shortTitle } from "@/src/core/components/text/titles"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { formatFileSize } from "@/src/core/utils/formatFileSize"
@@ -24,7 +26,11 @@ import updateUpload from "@/src/server/uploads/mutations/updateUploadWithSubsect
 import getUploadWithRelations from "@/src/server/uploads/queries/getUploadWithRelations"
 import getUploadsByAcquisitionArea from "@/src/server/uploads/queries/getUploadsByAcquisitionArea"
 import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
-import { UploadFormSchema, UploadSchema } from "@/src/server/uploads/schema"
+import {
+  uploadFormDefaultValues,
+  UploadFormSchema,
+  UploadSchema,
+} from "@/src/server/uploads/schema"
 import { invalidateQuery, useMutation, useQuery } from "@blitzjs/rpc"
 import { PromiseReturnType } from "blitz"
 import { Route } from "next"
@@ -51,6 +57,7 @@ const UploadSubsectionFields = ({
   landAcquisitionModuleEnabled,
   subsubsections,
 }: UploadSubsectionFieldsProps) => {
+  const form = useCoreAppFormContext()
   // Sort by subsection first, then by subsubsection slug (same order as before)
   const subsubsectionCheckboxItems = [...subsubsections]
     .sort((a, b) => {
@@ -80,19 +87,25 @@ const UploadSubsectionFields = ({
 
   return (
     <div className="flex flex-col gap-4">
-      <LabeledCombobox
-        scope="subsubsections"
-        label="Zuordnung zu Einträgen"
-        optional
-        items={subsubsectionCheckboxItems}
-      />
+      <form.AppField name="subsubsections">
+        {(field) => (
+          <field.Combobox
+            label="Zuordnung zu Einträgen"
+            optional
+            items={subsubsectionCheckboxItems}
+          />
+        )}
+      </form.AppField>
       {landAcquisitionModuleEnabled && (
-        <LabeledCombobox
-          scope="acquisitionAreas"
-          label="Zuordnung zu Verhandlungsflächen"
-          optional
-          items={acquisitionAreaCheckboxItems}
-        />
+        <form.AppField name="acquisitionAreas">
+          {(field) => (
+            <field.Combobox
+              label="Zuordnung zu Verhandlungsflächen"
+              optional
+              items={acquisitionAreaCheckboxItems}
+            />
+          )}
+        </form.AppField>
       )}
     </div>
   )
@@ -139,7 +152,12 @@ const getUploadFormKey = (upload: UploadWithRelations) => {
   return `${upload.id}-${lastUpdatedAt.toISOString()}`
 }
 
-export const EditUploadForm = ({
+type EditUploadFormBodyProps = Props & {
+  subsubsections: Awaited<ReturnType<typeof getSubsubsections>>["subsubsections"]
+  acquisitionAreasData: Awaited<ReturnType<typeof getAcquisitionAreas>>
+}
+
+function EditUploadFormBody({
   upload,
   returnPath,
   returnText,
@@ -147,68 +165,68 @@ export const EditUploadForm = ({
   onSuccess,
   onDirtyChange,
   onSubmittingChange,
-}: Props) => {
+  subsubsections,
+  acquisitionAreasData,
+}: EditUploadFormBodyProps) {
   const router = useRouter()
   const [isGeneratingSummary, setIsGeneratingSummary] = useState(false)
   const projectSlug = useProjectSlug()
-  const [{ subsubsections }] = useQuery(getSubsubsections, { projectSlug })
-  const [acquisitionAreasData] = useQuery(getAcquisitionAreas, { projectSlug })
   const [updateUploadMutation] = useMutation(updateUpload)
-
   const initialValues = createUploadFormValues(upload)
-  const formKey = getUploadFormKey(upload)
+  const [formError, setFormError] = useState<string | null>(null)
 
-  const handleSubmit = async (values: z.infer<typeof UploadFormSchema>) => {
-    onSubmittingChange?.(true)
-    try {
-      await updateUploadMutation({
-        ...(values as z.infer<typeof UploadSchema>),
-        id: upload.id,
-        projectSlug,
-      })
+  const form = useAppForm({
+    defaultValues: { ...uploadFormDefaultValues, ...initialValues },
+    validators: { onSubmit: UploadFormSchema } as never,
+    onSubmit: async ({ value }) => {
+      onSubmittingChange?.(true)
+      try {
+        await updateUploadMutation({
+          ...(value as unknown as z.infer<typeof UploadSchema>),
+          id: upload.id,
+          projectSlug,
+        })
 
-      const nextProjectRecordIds = Array.isArray(values.projectRecords) ? values.projectRecords : []
-      const projectRecordIdsToRefresh = new Set<number>([
-        ...(upload.projectRecords?.map((projectRecord) => projectRecord.id) ?? []),
-        ...nextProjectRecordIds,
-      ])
+        const nextProjectRecordIds = Array.isArray(value.projectRecords) ? value.projectRecords : []
+        const projectRecordIdsToRefresh = new Set<number>([
+          ...(upload.projectRecords?.map((projectRecord) => projectRecord.id) ?? []),
+          ...nextProjectRecordIds,
+        ])
 
-      await Promise.all([
-        invalidateQuery(getUploadWithRelations, { projectSlug, id: upload.id }),
-        invalidateQuery(getUploadsWithSubsections),
-        invalidateQuery(getUploadsByAcquisitionArea),
-        invalidateQuery(getProjectRecordsBySubsubsection),
-        invalidateQuery(getProjectRecordsByAcquisitionArea),
-        ...Array.from(projectRecordIdsToRefresh).map((projectRecordId) =>
-          invalidateQuery(getProjectRecord, { projectSlug, id: projectRecordId }),
-        ),
-      ])
+        await Promise.all([
+          invalidateQuery(getUploadWithRelations, { projectSlug, id: upload.id }),
+          invalidateQuery(getUploadsWithSubsections),
+          invalidateQuery(getUploadsByAcquisitionArea),
+          invalidateQuery(getProjectRecordsBySubsubsection),
+          invalidateQuery(getProjectRecordsByAcquisitionArea),
+          ...Array.from(projectRecordIdsToRefresh).map((projectRecordId) =>
+            invalidateQuery(getProjectRecord, { projectSlug, id: projectRecordId }),
+          ),
+        ])
 
-      if (onSuccess) {
-        await onSuccess()
-      } else {
-        router.push(returnPath)
-        router.refresh()
+        if (onSuccess) {
+          await onSuccess()
+        } else {
+          router.push(returnPath)
+          router.refresh()
+        }
+      } catch (error: any) {
+        onSubmittingChange?.(false)
+        console.error(error)
+        applyFormSubmitResult(form, { [FORM_ERROR]: error }, setFormError)
       }
-    } catch (error: any) {
-      onSubmittingChange?.(false)
-      console.error(error)
-      return { [FORM_ERROR]: error }
-    }
-  }
+    },
+  })
 
   return (
     <>
       <div className="flex flex-col gap-6 sm:gap-10">
-        <Form
-          key={formKey}
+        <FormShell
+          form={form}
+          formError={formError}
           className="grow"
           submitText="Speichern"
-          schema={UploadFormSchema}
-          // @ts-expect-error m2m fields use string ids in the form (for checkbox `value`),
-          initialValues={initialValues}
-          onSubmit={handleSubmit}
-          disabled={isGeneratingSummary}
+          submitDisabled={isGeneratingSummary}
           actionBarRight={
             <>
               <LuckyCloudActionBar upload={upload} projectSlug={projectSlug} />
@@ -255,7 +273,9 @@ export const EditUploadForm = ({
                   <LuckyCloudDocumentLink collaborationUrl={upload.collaborationUrl} />
                 </div>
 
-                <LabeledTextField type="text" name="title" label="Kurzbeschreibung" />
+                <form.AppField name="title">
+                  {(field) => <field.TextField type="text" label="Kurzbeschreibung" />}
+                </form.AppField>
               </div>
             </div>
           </div>
@@ -288,7 +308,7 @@ export const EditUploadForm = ({
           </div>
 
           <LuckyCloudNotice collaborationUrl={upload.collaborationUrl} mimeType={upload.mimeType} />
-        </Form>
+        </FormShell>
       </div>
 
       <SuperAdminLuckyCloud upload={upload} projectSlug={projectSlug} />
@@ -314,5 +334,21 @@ export const EditUploadForm = ({
 
       <SuperAdminLogData data={{ upload, returnPath, returnText }} />
     </>
+  )
+}
+
+export const EditUploadForm = (props: Props) => {
+  const projectSlug = useProjectSlug()
+  const [{ subsubsections }] = useQuery(getSubsubsections, { projectSlug })
+  const [acquisitionAreasData] = useQuery(getAcquisitionAreas, { projectSlug })
+  const formKey = getUploadFormKey(props.upload)
+
+  return (
+    <EditUploadFormBody
+      key={formKey}
+      {...props}
+      subsubsections={subsubsections}
+      acquisitionAreasData={acquisitionAreasData}
+    />
   )
 }

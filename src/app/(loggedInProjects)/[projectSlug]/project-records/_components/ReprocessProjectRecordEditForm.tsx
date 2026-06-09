@@ -4,16 +4,25 @@ import { ReprocessedProjectRecord } from "@/src/app/(loggedInProjects)/[projectS
 import { ProjectRecordFormFields } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordFormFields"
 import { getM2MInitialValues } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/getM2MInitialValues"
 import { getDate } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/splitStartAt"
-import { Form, FORM_ERROR } from "@/src/core/components/forms"
+import { FormShell } from "@/src/core/components/forms/FormShell"
+import { useAppForm } from "@/src/core/components/forms/hooks/useAppForm"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
+import {
+  applyFormSubmitResult,
+  FORM_ERROR,
+} from "@/src/core/components/forms/utils/formSubmitResult"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { m2mFields, M2MFieldsType } from "@/src/server/projectRecords/m2mFields"
 import updateProjectRecord from "@/src/server/projectRecords/mutations/updateProjectRecord"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
-import { ProjectRecordFormSchema } from "@/src/server/projectRecords/schemas"
+import {
+  projectRecordFormDefaultValues,
+  ProjectRecordFormSchema,
+} from "@/src/server/projectRecords/schemas"
 import { useMutation } from "@blitzjs/rpc"
 import { SparklesIcon } from "@heroicons/react/20/solid"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
 import { z } from "zod"
 
 type Props = {
@@ -28,33 +37,10 @@ export const ReprocessProjectRecordEditForm = ({
   onCancel,
 }: Props) => {
   const router = useRouter()
+  const [formError, setFormError] = useState<string | null>(null)
   const [updateProjectRecordMutation] = useMutation(updateProjectRecord)
   const projectSlug = useProjectSlug()
 
-  type HandleSubmit = z.infer<typeof ProjectRecordFormSchema>
-  const handleSubmit = async (values: HandleSubmit) => {
-    try {
-      // Exclude m2m fields that are transformed by the form schema but need different format for mutation
-      const { uploads, projectRecordTopics, subsubsections, acquisitionAreas, ...restValues } =
-        values
-      await updateProjectRecordMutation({
-        ...restValues,
-        id: projectRecord.id,
-        date: values.date === "" ? null : new Date(values.date),
-        projectSlug,
-        uploads: Array.isArray(uploads) ? uploads : undefined,
-        projectRecordTopics: Array.isArray(projectRecordTopics) ? projectRecordTopics : undefined,
-        subsubsections: Array.isArray(subsubsections) ? subsubsections : undefined,
-        acquisitionAreas: Array.isArray(acquisitionAreas) ? acquisitionAreas : undefined,
-      })
-      router.refresh()
-      onCancel() // Close the AI suggestions view
-    } catch (error: any) {
-      return improveErrorMessage(error, FORM_ERROR, ["slug"])
-    }
-  }
-
-  // m2m copied from subsubsection/edit.tsx
   const m2mFieldsInitialValues: Record<M2MFieldsType | string, string[]> = {}
   m2mFields.forEach((fieldName) => {
     m2mFieldsInitialValues[fieldName] = getM2MInitialValues(
@@ -62,17 +48,46 @@ export const ReprocessProjectRecordEditForm = ({
     )
   })
 
-  // Override current projectRecord data with AI suggestions
-  const initialValues = {
-    ...projectRecord,
-    date: projectRecord.date ? getDate(aiSuggestions.date) : "",
-    title: aiSuggestions.title || projectRecord.title,
-    body: aiSuggestions.body || projectRecord.body,
-    ...m2mFieldsInitialValues,
-    ...(aiSuggestions.projectRecordTopics && aiSuggestions.projectRecordTopics.length > 0
-      ? { projectRecordTopics: aiSuggestions.projectRecordTopics.map(String) }
-      : {}),
-  }
+  const form = useAppForm({
+    defaultValues: {
+      ...projectRecordFormDefaultValues,
+      date: projectRecord.date ? getDate(aiSuggestions.date) : "",
+      title: aiSuggestions.title || projectRecord.title,
+      body: aiSuggestions.body || projectRecord.body,
+      subsubsectionId: projectRecord.subsubsectionId,
+      acquisitionAreaId: projectRecord.acquisitionAreaId,
+      assignedToId: projectRecord.assignedToId,
+      editingState: projectRecord.editingState,
+      reviewState: projectRecord.reviewState,
+      reviewNotes: projectRecord.reviewNotes ?? "",
+      ...m2mFieldsInitialValues,
+      ...(aiSuggestions.projectRecordTopics && aiSuggestions.projectRecordTopics.length > 0
+        ? { projectRecordTopics: aiSuggestions.projectRecordTopics.map(String) }
+        : {}),
+    },
+    validators: { onSubmit: ProjectRecordFormSchema } as never,
+    onSubmit: async ({ value }) => {
+      const values = value as unknown as z.infer<typeof ProjectRecordFormSchema>
+      try {
+        const { uploads, projectRecordTopics, subsubsections, acquisitionAreas, ...restValues } =
+          values
+        await updateProjectRecordMutation({
+          ...restValues,
+          id: projectRecord.id,
+          date: values.date === "" ? null : new Date(values.date),
+          projectSlug,
+          uploads: Array.isArray(uploads) ? uploads : undefined,
+          projectRecordTopics: Array.isArray(projectRecordTopics) ? projectRecordTopics : undefined,
+          subsubsections: Array.isArray(subsubsections) ? subsubsections : undefined,
+          acquisitionAreas: Array.isArray(acquisitionAreas) ? acquisitionAreas : undefined,
+        })
+        router.refresh()
+        onCancel()
+      } catch (error: any) {
+        applyFormSubmitResult(form, improveErrorMessage(error, FORM_ERROR, ["slug"]), setFormError)
+      }
+    },
+  })
 
   return (
     <div className="rounded-lg bg-blue-50 p-6">
@@ -98,18 +113,16 @@ export const ReprocessProjectRecordEditForm = ({
         </p>
       </div>
 
-      <Form
+      <FormShell
+        form={form}
+        formError={formError}
         className="grow"
         submitText="Änderungen übernehmen"
-        schema={ProjectRecordFormSchema}
-        // @ts-expect-error some null<>undefined missmatch
-        initialValues={initialValues}
-        onSubmit={handleSubmit}
       >
         <div className="space-y-6">
           <ProjectRecordFormFields projectSlug={projectSlug} />
         </div>
-      </Form>
+      </FormShell>
     </div>
   )
 }

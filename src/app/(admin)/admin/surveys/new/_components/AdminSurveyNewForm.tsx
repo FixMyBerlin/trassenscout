@@ -1,5 +1,5 @@
 "use client"
-import { FORM_ERROR } from "@/src/core/components/forms"
+import { FORM_ERROR } from "@/src/core/components/forms/utils/formSubmitResult"
 import createSurvey from "@/src/server/surveys/mutations/createSurvey"
 import { CreateSurveySchema, CreateSurveyType } from "@/src/server/surveys/schemas"
 import { useMutation } from "@blitzjs/rpc"

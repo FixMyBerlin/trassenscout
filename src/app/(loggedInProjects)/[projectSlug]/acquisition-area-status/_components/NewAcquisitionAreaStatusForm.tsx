@@ -1,7 +1,7 @@
 "use client"
 
-import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
+import { FORM_ERROR } from "@/src/core/components/forms/utils/formSubmitResult"
 import createAcquisitionAreaStatus from "@/src/server/acquisitionAreaStatuses/mutations/createAcquisitionAreaStatus"
 import { useMutation } from "@blitzjs/rpc"
 import { Route } from "next"

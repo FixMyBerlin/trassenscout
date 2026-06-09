@@ -1,10 +1,10 @@
 "use client"
 
-import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
+import { FORM_ERROR } from "@/src/core/components/forms/utils/formSubmitResult"
 import { subsectionDashboardRoute } from "@/src/core/routes/subsectionRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
-import { geometryTypeValidationRefine } from "@/src/server/shared/utils/geometryTypeValidation"
+import { subsectionGeometryTypeValidationRefine } from "@/src/server/shared/utils/geometryTypeValidation"
 import createSubsection from "@/src/server/subsections/mutations/createSubsection"
 import getSubsectionMaxOrder from "@/src/server/subsections/queries/getSubsectionMaxOrder"
 import { SubsectionBaseSchema } from "@/src/server/subsections/schema"
@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation"
 import { z } from "zod"
 import { SubsectionForm } from "../../_components/SubsectionForm"
 
-const NewSubsectionSchema = geometryTypeValidationRefine(
+const NewSubsectionSchema = subsectionGeometryTypeValidationRefine(
   SubsectionBaseSchema.omit({ projectId: true }),
 )
 

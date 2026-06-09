@@ -44,6 +44,20 @@ export const DeleteProjectRecordSchema = ProjectSlugRequiredSchema.merge(
   }),
 )
 
+export const newProjectRecordFormDefaultValues = {
+  date: "",
+  title: "",
+  body: "",
+  subsubsectionId: null as number | null,
+  acquisitionAreaId: null as number | null,
+  assignedToId: null as number | null,
+  editingState: ProjectRecordEditingState.PENDING,
+  projectRecordTopics: [] as string[],
+  uploads: [] as string[],
+  subsubsections: [] as string[],
+  acquisitionAreas: [] as string[],
+}
+
 export const NewProjectRecordFormSchema = ProjectRecordSchema.omit({
   date: true,
   projectRecordTopics: true,
@@ -77,6 +91,22 @@ export const NewProjectRecordFormSchema = ProjectRecordSchema.omit({
       .transform((v) => v || []),
   }),
 )
+
+export const projectRecordFormDefaultValues = {
+  date: "",
+  title: "",
+  body: "",
+  subsubsectionId: null as number | null,
+  acquisitionAreaId: null as number | null,
+  assignedToId: null as number | null,
+  editingState: ProjectRecordEditingState.PENDING,
+  reviewState: ProjectRecordReviewState.NEEDSREVIEW,
+  reviewNotes: "",
+  projectRecordTopics: [] as string[],
+  uploads: [] as string[],
+  subsubsections: [] as string[],
+  acquisitionAreas: [] as string[],
+}
 
 export const ProjectRecordFormSchema = ProjectRecordSchema.omit({
   date: true,

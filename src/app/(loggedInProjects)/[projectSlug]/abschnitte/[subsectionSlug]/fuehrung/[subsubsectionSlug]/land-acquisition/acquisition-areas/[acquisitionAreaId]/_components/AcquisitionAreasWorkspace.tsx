@@ -1,7 +1,8 @@
 "use client"
 
-import { Form } from "@/src/core/components/forms"
-import { LabeledTextField } from "@/src/core/components/forms/LabeledTextField"
+import { FormShell } from "@/src/core/components/forms/FormShell"
+import { useCoreAppFormContext } from "@/src/core/components/forms/hooks/formContext"
+import { useAppForm } from "@/src/core/components/forms/hooks/useAppForm"
 import { blueButtonStyles } from "@/src/core/components/links"
 import { subsubsectionLandAcquisitionRoute } from "@/src/core/routes/subsectionRoutes"
 import createAcquisitionAreasFromSelection from "@/src/server/acquisitionAreas/mutations/createAcquisitionAreasFromSelection"
@@ -12,7 +13,6 @@ import clsx from "clsx"
 import type { Feature, MultiPolygon, Polygon } from "geojson"
 import { useRouter } from "next/navigation"
 import { useEffect, useMemo, useState } from "react"
-import { useFormContext } from "react-hook-form"
 import { MapProvider } from "react-map-gl/maplibre"
 import { AcquisitionAreaMap } from "./AcquisitionAreaMap"
 import { AcquisitionAreasList } from "./AcquisitionAreasList"
@@ -23,32 +23,35 @@ type BufferRadiusForm = {
 }
 
 function BufferRadiusControls({ onApplyRadius }: { onApplyRadius: (radius: number) => void }) {
-  const form = useFormContext<BufferRadiusForm>()
+  const form = useCoreAppFormContext()
 
   const applyBufferRadius = () => {
-    const raw = form.getValues("bufferRadiusInput")
+    const raw = form.getFieldValue("bufferRadiusInput")
     const v = Number.parseFloat(String(raw).replace(",", "."))
     if (!Number.isFinite(v) || v < 0) return
     onApplyRadius(v)
-    form.setValue("bufferRadiusInput", String(v))
+    form.setFieldValue("bufferRadiusInput", String(v))
   }
 
   return (
     <div className="flex flex-col gap-2">
       <div className="min-w-0 flex-1">
-        <LabeledTextField
-          name="bufferRadiusInput"
-          label="1. Schritt: Puffer festlegen (m)"
-          labelProps={{ className: "mb-2 block text-base font-semibold text-gray-900" }}
-          type="number"
-          min={0}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault()
-              applyBufferRadius()
-            }
-          }}
-        />
+        <form.AppField name="bufferRadiusInput">
+          {(field) => (
+            <field.TextField
+              label="1. Schritt: Puffer festlegen (m)"
+              labelProps={{ className: "mb-2 block text-base font-semibold text-gray-900" }}
+              type="number"
+              min={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault()
+                  applyBufferRadius()
+                }
+              }}
+            />
+          )}
+        </form.AppField>
       </div>
       <p className="text-sm text-gray-500">
         Die Geometrie des Eintrags wird um diesen Wert erweitert, um angrenzende Flurstücke zu
@@ -157,6 +160,13 @@ export function AcquisitionAreasWorkspace({
     }
   }
 
+  const form = useAppForm({
+    defaultValues: { bufferRadiusInput: String(bufferRadius) },
+    onSubmit: async () => {
+      await handleCreateAcquisitionAreas()
+    },
+  })
+
   return (
     <div className="flex min-w-0 flex-col gap-4 lg:flex-row lg:items-stretch">
       <div className="min-w-0 lg:flex-4">
@@ -188,11 +198,11 @@ export function AcquisitionAreasWorkspace({
             </p>
           </div>
 
-          <Form
+          <FormShell
+            form={form}
+            formError={null}
             className="mt-4 flex flex-col gap-2 space-y-0"
-            initialValues={{ bufferRadiusInput: String(bufferRadius) }}
             submitText="Ausgewählte Verhandlungsflächen erstellen"
-            onSubmit={handleCreateAcquisitionAreas}
           >
             <BufferRadiusControls onApplyRadius={onApplyRadius} />
             <div className="mt-5 space-y-2 text-gray-500">
@@ -209,7 +219,7 @@ export function AcquisitionAreasWorkspace({
                 Schnittmenge mit den ALKIS-Daten neu und setzt die aktuelle Auswahl zurück.
               </p>
             </div>
-          </Form>
+          </FormShell>
 
           <div className="space-y-2">
             {submitError && <p className="text-sm text-rose-700">{submitError}</p>}

@@ -10,3 +10,11 @@ export const SubsubsectionStatus = z.object({
 })
 
 type TSubsubsectionStatus = z.infer<typeof SubsubsectionStatus>
+
+/** Empty form state for AppField typing + `form.reset()`. */
+export const subsubsectionStatusFormDefaultValues: z.infer<typeof SubsubsectionStatus> = {
+  slug: "",
+  title: "",
+  style: SubsubsectionStatusStyleEnum.REGULAR,
+  projectId: 0,
+}

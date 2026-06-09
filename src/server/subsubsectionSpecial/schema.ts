@@ -8,3 +8,10 @@ export const SubsubsectionSpecial = z.object({
 })
 
 type TSubsubsectionSpecial = z.infer<typeof SubsubsectionSpecial>
+
+/** Empty form state for AppField typing + `form.reset()`. */
+export const subsubsectionSpecialFormDefaultValues: z.infer<typeof SubsubsectionSpecial> = {
+  slug: "",
+  title: "",
+  projectId: 0,
+}

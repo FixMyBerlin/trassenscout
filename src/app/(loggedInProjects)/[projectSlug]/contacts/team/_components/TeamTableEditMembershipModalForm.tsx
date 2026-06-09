@@ -1,18 +1,25 @@
+"use client"
+
 import { roleTranslation } from "@/src/app/_components/memberships/roleTranslation.const"
 import { membershipRoles } from "@/src/authorization/constants"
+import { FormDirtyStateReporter } from "@/src/core/components/forms/FormDirtyStateReporter"
+import { FormShell } from "@/src/core/components/forms/FormShell"
+import { useAppForm } from "@/src/core/components/forms/hooks/useAppForm"
 import {
-  Form,
+  applyFormSubmitResult,
   FORM_ERROR,
-  FormDirtyStateReporter,
-  FormProps,
-  LabeledRadiobuttonGroup,
-} from "@/src/core/components/forms"
+} from "@/src/core/components/forms/utils/formSubmitResult"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import updateMembershipRole from "@/src/server/memberships/mutations/updateMembershipRole"
 import getProjectUsers from "@/src/server/memberships/queries/getProjectUsers"
+import {
+  membershipRoleFormDefaultValues,
+  MembershipRoleFormSchema,
+} from "@/src/server/memberships/schema"
 import { getQueryClient, getQueryKey, useMutation } from "@blitzjs/rpc"
-import { MembershipRoleEnum } from "@prisma/client"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { twMerge } from "tailwind-merge"
 import { z } from "zod"
 
 type Props = {
@@ -21,9 +28,8 @@ type Props = {
   onDirtyChange?: (isDirty: boolean) => void
 }
 
-const submitSchema = z.object({ role: z.nativeEnum(MembershipRoleEnum) })
+type HandleSubmit = z.infer<typeof MembershipRoleFormSchema>
 
-type HandleSubmit = z.infer<typeof submitSchema>
 export const TeamTableEditMembershipModalForm = ({
   editUser,
   closeModal,
@@ -31,65 +37,56 @@ export const TeamTableEditMembershipModalForm = ({
 }: Props) => {
   const projectSlug = useProjectSlug()
   const router = useRouter()
+  const [formError, setFormError] = useState<string | null>(null)
 
   const [updateUserMutation] = useMutation(updateMembershipRole)
-  const handleSubmit = async (values: HandleSubmit) => {
-    try {
-      await updateUserMutation(
-        {
-          projectSlug,
-          membershipId: editUser.currentMembershipId,
-          role: values.role,
-        },
-        {
-          onSuccess: async () => {
-            const queryKey = getQueryKey(getProjectUsers, { projectSlug })
-            void getQueryClient().invalidateQueries(queryKey)
-            router.refresh()
-            closeModal()
-          },
-        },
-      )
-    } catch (error: any) {
-      console.error(error)
-      return { [FORM_ERROR]: error }
-    }
-  }
-  return (
-    <TeamTableEditMembershipModalFormFields
-      submitText="Speichern"
-      schema={submitSchema}
-      initialValues={{ role: editUser.currentMembershipRole }}
-      onSubmit={handleSubmit}
-      editUserRole={editUser.currentMembershipRole}
-      onDirtyChange={onDirtyChange}
-    />
-  )
-}
 
-const TeamTableEditMembershipModalFormFields = <S extends z.ZodType<any, any>>({
-  editUserRole,
-  onDirtyChange,
-  ...props
-}: FormProps<S> & {
-  editUserRole: MembershipRoleEnum
-  onDirtyChange?: (isDirty: boolean) => void
-}) => {
+  const form = useAppForm({
+    defaultValues: {
+      ...membershipRoleFormDefaultValues,
+      role: editUser.currentMembershipRole,
+    },
+    validators: { onSubmit: MembershipRoleFormSchema },
+    onSubmit: async ({ value }) => {
+      try {
+        await updateUserMutation(
+          {
+            projectSlug,
+            membershipId: editUser.currentMembershipId,
+            role: value.role,
+          },
+          {
+            onSuccess: async () => {
+              const queryKey = getQueryKey(getProjectUsers, { projectSlug })
+              void getQueryClient().invalidateQueries(queryKey)
+              router.refresh()
+              closeModal()
+            },
+          },
+        )
+      } catch (error: any) {
+        console.error(error)
+        applyFormSubmitResult(form, { [FORM_ERROR]: error }, setFormError)
+      }
+    },
+  })
+
+  const roleItems = membershipRoles.map((role) => ({
+    value: role,
+    label: roleTranslation[role],
+  }))
+
   return (
-    <Form<S> className="max-w-prose" {...props}>
+    <FormShell
+      form={form}
+      formError={formError}
+      submitText="Speichern"
+      className={twMerge("max-w-prose")}
+    >
       <FormDirtyStateReporter onDirtyChange={onDirtyChange} />
-      <LabeledRadiobuttonGroup
-        scope="role"
-        label="Rechte"
-        items={membershipRoles.map((role) => {
-          return {
-            scope: role,
-            value: role,
-            label: roleTranslation[role],
-            defaultChecked: role === editUserRole,
-          }
-        })}
-      />
-    </Form>
+      <form.AppField name="role">
+        {(field) => <field.RadiobuttonGroup label="Rechte" items={roleItems} />}
+      </form.AppField>
+    </FormShell>
   )
 }

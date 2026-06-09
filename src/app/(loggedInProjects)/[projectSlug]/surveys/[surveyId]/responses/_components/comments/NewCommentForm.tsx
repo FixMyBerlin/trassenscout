@@ -1,8 +1,11 @@
+"use client"
+
+import { FormShell } from "@/src/core/components/forms/FormShell"
+import { useAppForm } from "@/src/core/components/forms/hooks/useAppForm"
 import { blueButtonStyles } from "@/src/core/components/links"
+import { commentFormDefaultValues } from "@/src/server/survey-response-comments/schemas"
 import { clsx } from "clsx"
 import dompurify from "dompurify"
-import { useState } from "react"
-import { LabeledTextarea } from "../form/LabeledTextarea"
 
 type Props = {
   commentLabel: string
@@ -11,32 +14,26 @@ type Props = {
 }
 
 export const NewCommentForm = ({ commentLabel, commentHelp, createComment }: Props) => {
-  const [body, setBody] = useState("")
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const sanitize = (input: string) => (input ? dompurify.sanitize(input) : input)
-    const rawBody = sanitize(String(new FormData(event.currentTarget).get("body") ?? ""))
-    await createComment(rawBody)
-    setBody("")
-  }
-
-  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setBody(e.target.value)
-  }
+  const form = useAppForm({
+    defaultValues: commentFormDefaultValues,
+    onSubmit: async ({ value }) => {
+      const sanitize = (input: string) => (input ? dompurify.sanitize(input) : input)
+      const body = sanitize(value.body)
+      await createComment(body)
+      form.reset()
+    },
+  })
 
   return (
-    <form onSubmit={handleSubmit}>
-      <LabeledTextarea
-        onChange={handleTextareaChange}
-        value={body}
-        required
-        name="body"
-        help={commentHelp}
-      />
-      <button className={clsx(blueButtonStyles, "mt-2 px-3! py-2.5!")} type="submit">
+    <FormShell form={form} formError={null} submitText="" hideSubmitButton className="space-y-2">
+      <form.AppField name="body">
+        {(field) => (
+          <field.TextareaField label="" help={commentHelp} required rows={4} className="h-24" />
+        )}
+      </form.AppField>
+      <button type="submit" className={clsx(blueButtonStyles, "mt-2 px-3! py-2.5!")}>
         {commentLabel} hinzufügen
       </button>
-    </form>
+    </FormShell>
   )
 }

@@ -1,32 +1,95 @@
+"use client"
+
+import { FormShell } from "@/src/core/components/forms/FormShell"
+import { useAppForm } from "@/src/core/components/forms/hooks/useAppForm"
 import {
-  Form,
-  FormProps,
-  LabeledRadiobuttonGroup,
-  LabeledTextField,
-} from "@/src/core/components/forms"
+  applyFormSubmitResult,
+  type OnSubmitResult,
+} from "@/src/core/components/forms/utils/formSubmitResult"
+import {
+  acquisitionAreaStatusFormDefaultValues,
+  AcquisitionAreaStatusFormSchema,
+} from "@/src/server/acquisitionAreaStatuses/schema"
+import { ReactNode, useState } from "react"
 import { z } from "zod"
 import { acquisitionAreaStatusStyleOptions } from "../_utils/acquisitionAreaStatusStyles"
 
-export const AcquisitionAreaStatusFormSchema = z.object({
-  slug: z.string().min(1, { message: "Pflichtfeld." }),
-  title: z.string().min(2, { message: "Pflichtfeld. Mindestens 2 Zeichen." }),
-  style: z.union([z.literal("1"), z.literal("2"), z.literal("3"), z.literal("4")]),
-})
+export { AcquisitionAreaStatusFormSchema }
 
-export function AcquisitionAreaStatusForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
+export type AcquisitionAreaStatusFormProps<S extends z.ZodType<any, any>> = {
+  schema: S
+  initialValues?: Partial<z.infer<S>>
+  onSubmit: (values: z.infer<S>) => Promise<void | OnSubmitResult>
+  submitText: string
+  resetOnSubmit?: boolean
+  className?: string
+  actionBarLeft?: ReactNode
+  actionBarRight?: ReactNode
+  submitDisabled?: boolean
+  submitClassName?: string
+  showFormDebug?: boolean
+}
+
+export function AcquisitionAreaStatusForm<S extends z.ZodType<any, any>>({
+  schema,
+  initialValues,
+  onSubmit,
+  submitText,
+  resetOnSubmit,
+  className,
+  actionBarLeft,
+  actionBarRight,
+  submitDisabled,
+  submitClassName,
+  showFormDebug,
+}: AcquisitionAreaStatusFormProps<S>) {
+  const [formError, setFormError] = useState<string | null>(null)
+
+  const form = useAppForm({
+    defaultValues: { ...acquisitionAreaStatusFormDefaultValues, ...initialValues },
+    validators: { onSubmit: schema } as never,
+    onSubmit: async ({ value }) => {
+      const result = (await onSubmit(value)) || {}
+      applyFormSubmitResult(form, result, setFormError)
+      if (resetOnSubmit && !result.FORM_ERROR) {
+        form.reset()
+        setFormError(null)
+      }
+    },
+  })
+
+  const styleItems = acquisitionAreaStatusStyleOptions.map((option) => ({
+    value: option.value,
+    label: option.label,
+  }))
+
   return (
-    <Form<S> {...props}>
-      <LabeledTextField type="text" name="slug" label="Kürzel" />
-      <LabeledTextField type="text" name="title" label="Titel" />
-      <LabeledRadiobuttonGroup
-        label="Darstellung"
-        scope="style"
-        items={acquisitionAreaStatusStyleOptions.map((option) => ({
-          value: option.value,
-          label: option.label,
-        }))}
-        classNameItemWrapper="flex gap-5 space-y-0! items-center"
-      />
-    </Form>
+    <FormShell
+      form={form}
+      formError={formError}
+      submitText={submitText}
+      className={className}
+      actionBarLeft={actionBarLeft}
+      actionBarRight={actionBarRight}
+      submitDisabled={submitDisabled}
+      submitClassName={submitClassName}
+      showFormDebug={showFormDebug}
+    >
+      <form.AppField name="slug">
+        {(field) => <field.TextField type="text" label="Kürzel" />}
+      </form.AppField>
+      <form.AppField name="title">
+        {(field) => <field.TextField type="text" label="Titel" />}
+      </form.AppField>
+      <form.AppField name="style">
+        {(field) => (
+          <field.RadiobuttonGroup
+            label="Darstellung"
+            items={styleItems}
+            classNameItemWrapper="flex gap-5 space-y-0! items-center"
+          />
+        )}
+      </form.AppField>
+    </FormShell>
   )
 }

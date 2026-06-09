@@ -1,6 +1,7 @@
 import { Prettify } from "@/src/core/types"
 import { InputNumberOrNullSchema, SlugSchema } from "@/src/core/utils/schema-shared"
-import { SupportedGeometrySchema } from "@/src/server/shared/utils/geometrySchemas"
+import type { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
+import { RequiredSupportedGeometrySchema } from "@/src/server/shared/utils/geometrySchemas"
 import { geometryTypeValidationRefine } from "@/src/server/shared/utils/geometryTypeValidation"
 import { GeometryTypeEnum, LabelPositionEnum, LocationEnum } from "@prisma/client"
 import { z } from "zod"
@@ -31,7 +32,7 @@ export const SubsubsectionBaseSchema = z.object({
   subTitle: z.string().nullish(),
   type: z.nativeEnum(GeometryTypeEnum),
   location: z.union([z.nativeEnum(LocationEnum), z.null()]),
-  geometry: SupportedGeometrySchema,
+  geometry: RequiredSupportedGeometrySchema,
   labelPos: z.nativeEnum(LabelPositionEnum),
   lengthM: InputNumberOrNullSchema, // m
   width: InputNumberOrNullSchema, // m
@@ -84,6 +85,62 @@ export type SubsubsectionWithPositionWithSpecialFeatures = Omit<
 > & { specialFeatures: { id: number; title: string }[] }
 
 export type TSubsubsectionSchema = Prettify<z.infer<typeof SubsubsectionSchema>>
+
+/** Form-only overrides for fields that differ from persisted SubsubsectionBaseSchema. */
+type SubsubsectionFormExtraFields = {
+  location: LocationEnum | ""
+  trafficLoadDate: string
+  estimatedCompletionDate: string
+  subsubsectionInfrastructureTypeIds: string[]
+  specialFeatures: string[]
+}
+
+/** Empty form state for AppField typing + `form.reset()`. */
+export const subsubsectionFormDefaultValues: Omit<
+  z.infer<typeof SubsubsectionBaseSchema>,
+  keyof SubsubsectionFormExtraFields
+> &
+  SubsubsectionFormExtraFields = {
+  slug: "",
+  subTitle: null,
+  type: GeometryTypeEnum.LINE,
+  location: "",
+  geometry: undefined as unknown as SupportedGeometry,
+  labelPos: LabelPositionEnum.bottom,
+  lengthM: null,
+  width: null,
+  widthExisting: null,
+  costEstimate: null,
+  description: null,
+  mapillaryKey: null,
+  isExistingInfra: false,
+  qualityLevelId: null,
+  managerId: null,
+  subsectionId: 0,
+  subsubsectionStatusId: null,
+  subsubsectionTaskId: null,
+  subsubsectionInfraId: null,
+  maxSpeed: null,
+  trafficLoad: null,
+  trafficLoadDate: "",
+  planningPeriod: null,
+  constructionPeriod: null,
+  estimatedCompletionDate: "",
+  estimatedConstructionDateString: null,
+  planningCosts: null,
+  deliveryCosts: null,
+  constructionCosts: null,
+  landAcquisitionCosts: null,
+  expensesOfficialOrders: null,
+  expensesTechnicalVerification: null,
+  nonEligibleExpenses: null,
+  revenuesEconomicIncome: null,
+  contributionsThirdParties: null,
+  grantsOtherFunding: null,
+  ownFunds: null,
+  subsubsectionInfrastructureTypeIds: [],
+  specialFeatures: [],
+}
 
 export const SubsubsectionFormSchema = SubsubsectionBaseSchema.extend({
   trafficLoadDate: NullableDateSchemaForm,

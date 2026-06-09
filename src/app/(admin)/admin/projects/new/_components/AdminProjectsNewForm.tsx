@@ -1,7 +1,7 @@
 "use client"
 import { ProjectForm } from "@/src/app/(loggedInProjects)/[projectSlug]/edit/_components/ProjectForm"
-import { FORM_ERROR } from "@/src/core/components/forms"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
+import { FORM_ERROR } from "@/src/core/components/forms/utils/formSubmitResult"
 import createProject from "@/src/server/projects/mutations/createProject"
 import { ProjectFormSchema, ProjectFormType, ProjectType } from "@/src/server/projects/schema"
 import { useCurrentUser } from "@/src/server/users/hooks/useCurrentUser"

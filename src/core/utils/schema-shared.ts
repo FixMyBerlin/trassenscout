@@ -1,8 +1,13 @@
 import { z } from "zod"
 
+const slugRequiredMessage = "Pflichtfeld. Mindestens 1 Zeichen."
+
 export const SlugSchema = z
-  .string()
-  .min(1, { message: "Pflichtfeld. Mindestens 1 Zeichen." })
+  .string({
+    required_error: slugRequiredMessage,
+    invalid_type_error: slugRequiredMessage,
+  })
+  .min(1, { message: slugRequiredMessage })
   .regex(/^[a-z0-9-._]*$/, {
     message: "Pflichtfeld. Erlaubte Zeichen a-z, 0-9, - (Minus), . (Punkt), _ (Unterstrich)",
   })

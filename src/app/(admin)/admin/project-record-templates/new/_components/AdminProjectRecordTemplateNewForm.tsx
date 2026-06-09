@@ -1,6 +1,6 @@
 "use client"
 
-import { FORM_ERROR } from "@/src/core/components/forms"
+import { FORM_ERROR } from "@/src/core/components/forms/utils/formSubmitResult"
 import createProjectRecordTemplate from "@/src/server/projectRecordTemplates/mutations/createProjectRecordTemplate"
 import { ProjectRecordTemplateFormValues } from "@/src/server/projectRecordTemplates/schema"
 import { useMutation } from "@blitzjs/rpc"

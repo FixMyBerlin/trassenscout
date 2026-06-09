@@ -2,8 +2,8 @@
 
 import { ProjectForm } from "@/src/app/(loggedInProjects)/[projectSlug]/edit/_components/ProjectForm"
 import { BackLink } from "@/src/core/components/forms/BackLink"
-import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
+import { FORM_ERROR } from "@/src/core/components/forms/utils/formSubmitResult"
 import { projectDashboardRoute } from "@/src/core/routes/projectRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import getProjectUsers from "@/src/server/memberships/queries/getProjectUsers"

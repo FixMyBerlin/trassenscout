@@ -1,18 +1,14 @@
 "use client"
 
 import { getUserSelectOptions } from "@/src/app/_components/users/utils/getUserSelectOptions"
+import { Spinner } from "@/src/core/components/Spinner"
+import { FormShell } from "@/src/core/components/forms/FormShell"
+import { useAppForm } from "@/src/core/components/forms/hooks/useAppForm"
+import { createFormOptions } from "@/src/core/components/forms/utils/createFormOptions"
 import {
-  Form,
-  FormProps,
-  LabeledCheckbox,
-  LabeledCheckboxGroup,
-  LabeledRadiobuttonGroup,
-  LabeledSelect,
-  LabeledTextareaField,
-  LabeledTextField,
-} from "@/src/core/components/forms"
-import { createFormOptions } from "@/src/core/components/forms/_utils/createFormOptions"
-import { LabeledTextFieldCalculateLength } from "@/src/core/components/forms/LabeledTextFieldCalculateLength"
+  applyFormSubmitResult,
+  type OnSubmitResult,
+} from "@/src/core/components/forms/utils/formSubmitResult"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { subsubsectionLocationLabelMap } from "@/src/core/utils/subsubsectionLocationLabelMap"
 import getProjectUsers from "@/src/server/memberships/queries/getProjectUsers"
@@ -21,16 +17,58 @@ import getSubsubsectionInfrasWithCount from "@/src/server/subsubsectionInfra/que
 import getSubsubsectionInfrastructureTypesWithCount from "@/src/server/subsubsectionInfrastructureType/queries/getSubsubsectionInfrastructureTypesWithCount"
 import getSubsubsectionStatussWithCount from "@/src/server/subsubsectionStatus/queries/getSubsubsectionStatussWithCount"
 import getSubsubsectionTasksWithCount from "@/src/server/subsubsectionTask/queries/getSubsubsectionTasksWithCount"
+import { subsubsectionFormDefaultValues } from "@/src/server/subsubsections/schema"
 import { useQuery } from "@blitzjs/rpc"
 import { Route } from "next"
+import { ReactNode, Suspense, useState } from "react"
 import { z } from "zod"
 import { subsubsectionFieldTranslations } from "../_utils/subsubsectionFieldMappings"
-import { LabeledRadiobuttonGroupLabelPos } from "./LabeledRadiobuttonGroupLabelPos"
 import { LinkWithFormDirtyConfirm } from "./LinkWithFormDirtyConfirm"
 import { SubsubsectionGeometryInput } from "./SubsubsectionGeometryInput"
 
-export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
+export type SubsubsectionFormProps<S extends z.ZodType<any, any>> = {
+  schema: S
+  initialValues?: Partial<z.infer<S>>
+  onSubmit: (values: z.infer<S>) => Promise<void | OnSubmitResult>
+  submitText: string
+  resetOnSubmit?: boolean
+  className?: string
+  actionBarLeft?: ReactNode
+  actionBarRight?: ReactNode
+  submitDisabled?: boolean
+  submitClassName?: string
+  showFormDebug?: boolean
+}
+
+function SubsubsectionFormWithQuery<S extends z.ZodType<any, any>>({
+  schema,
+  initialValues,
+  onSubmit,
+  submitText,
+  resetOnSubmit,
+  className,
+  actionBarLeft,
+  actionBarRight,
+  submitDisabled,
+  submitClassName,
+  showFormDebug,
+}: SubsubsectionFormProps<S>) {
   const projectSlug = useProjectSlug()
+  const [formError, setFormError] = useState<string | null>(null)
+
+  const form = useAppForm({
+    defaultValues: { ...subsubsectionFormDefaultValues, ...initialValues },
+    validators: { onSubmit: schema } as never,
+    onSubmit: async ({ value }) => {
+      const result = (await onSubmit(value)) || {}
+      applyFormSubmitResult(form, result, setFormError)
+      if (resetOnSubmit && !result.FORM_ERROR) {
+        form.reset()
+        setFormError(null)
+      }
+    },
+  })
+
   const [users] = useQuery(
     getProjectUsers,
     { projectSlug, role: "EDITOR" },
@@ -114,26 +152,45 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
   )
 
   return (
-    <Form<S> {...props}>
-      <LabeledTextField
-        type="text"
-        name="slug"
-        label={subsubsectionFieldTranslations.slug}
-        help="Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren."
-      />
-      <LabeledTextareaField
-        name="description"
-        label={`${subsubsectionFieldTranslations.description} (Markdown)`}
-        optional
-      />
+    <FormShell
+      form={form}
+      formError={formError}
+      submitText={submitText}
+      className={className}
+      actionBarLeft={actionBarLeft}
+      actionBarRight={actionBarRight}
+      submitDisabled={submitDisabled}
+      submitClassName={submitClassName}
+      showFormDebug={showFormDebug}
+    >
+      <form.AppField name="slug">
+        {(field) => (
+          <field.TextField
+            type="text"
+            label={subsubsectionFieldTranslations.slug}
+            help="Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren."
+          />
+        )}
+      </form.AppField>
+      <form.AppField name="description">
+        {(field) => (
+          <field.TextareaField
+            label={`${subsubsectionFieldTranslations.description} (Markdown)`}
+            optional
+          />
+        )}
+      </form.AppField>
       <div className="flex items-end gap-5">
-        <LabeledSelect
-          name="subsubsectionTaskId"
-          label={subsubsectionFieldTranslations.subsubsectionTaskId}
-          options={subsubsectionTaskOptions}
-          outerProps={{ className: "grow" }}
-          optional
-        />
+        <form.AppField name="subsubsectionTaskId">
+          {(field) => (
+            <field.SelectField
+              label={subsubsectionFieldTranslations.subsubsectionTaskId}
+              options={subsubsectionTaskOptions}
+              outerProps={{ className: "grow" }}
+              optional
+            />
+          )}
+        </form.AppField>
         <LinkWithFormDirtyConfirm
           href={`/${projectSlug}/subsubsection-task` as Route}
           className="py-2"
@@ -144,53 +201,68 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
       <SubsubsectionGeometryInput />
       <details>
         <summary className="mb-2 cursor-pointer">Anzeige-Optionen für Karten-Label</summary>
-        <LabeledRadiobuttonGroupLabelPos />
+        <form.AppField name="labelPos">
+          {(field) => (
+            <field.RadiobuttonGroup label="" classNameItemWrapper="space-y-6 sm:columns-2 pt-2" />
+          )}
+        </form.AppField>
       </details>
-      <LabeledCheckbox
-        scope="isExistingInfra"
-        value="true"
-        label={subsubsectionFieldTranslations.isExistingInfra}
-      />
-      <LabeledRadiobuttonGroup
-        label={subsubsectionFieldTranslations.location}
-        scope="location"
-        items={[
-          { value: "URBAN", label: subsubsectionLocationLabelMap.URBAN },
-          { value: "RURAL", label: subsubsectionLocationLabelMap.RURAL },
-          { value: "", label: "keine Angabe" },
-        ]}
-        classNameItemWrapper="flex gap-5 space-y-0! items-center"
-      />
-      <LabeledTextFieldCalculateLength
-        name="lengthM"
-        optional
-        label={subsubsectionFieldTranslations.lengthM}
-        help="Dieser Wert kann manuell eingetragen oder aus den vorhandenen Geometrien berechnet werden."
-      />
-      <LabeledTextField
-        inlineLeadingAddon="m"
-        type="number"
-        step="0.01"
-        name="width"
-        label={subsubsectionFieldTranslations.width}
-        optional
-      />
-      <LabeledTextField
-        optional
-        name="costEstimate"
-        type="number"
-        inlineLeadingAddon="€"
-        label={subsubsectionFieldTranslations.costEstimate}
-      />
+      <form.AppField name="isExistingInfra">
+        {(field) => <field.Checkbox label={subsubsectionFieldTranslations.isExistingInfra} />}
+      </form.AppField>
+      <form.AppField name="location">
+        {(field) => (
+          <field.RadiobuttonGroup
+            label={subsubsectionFieldTranslations.location}
+            items={[
+              { value: "URBAN", label: subsubsectionLocationLabelMap.URBAN },
+              { value: "RURAL", label: subsubsectionLocationLabelMap.RURAL },
+              { value: "", label: "keine Angabe" },
+            ]}
+            classNameItemWrapper="flex gap-5 space-y-0! items-center"
+          />
+        )}
+      </form.AppField>
+      <form.AppField name="lengthM">
+        {(field) => (
+          <field.TextFieldCalculateLength
+            optional
+            label={subsubsectionFieldTranslations.lengthM}
+            help="Dieser Wert kann manuell eingetragen oder aus den vorhandenen Geometrien berechnet werden."
+          />
+        )}
+      </form.AppField>
+      <form.AppField name="width">
+        {(field) => (
+          <field.NumberField
+            inlineLeadingAddon="m"
+            step="0.01"
+            label={subsubsectionFieldTranslations.width}
+            optional
+          />
+        )}
+      </form.AppField>
+      <form.AppField name="costEstimate">
+        {(field) => (
+          <field.NumberField
+            inlineLeadingAddon="€"
+            label={subsubsectionFieldTranslations.costEstimate}
+            optional
+          />
+        )}
+      </form.AppField>
       <div className="flex items-end gap-5">
         <div className="grow">
-          <LabeledCheckboxGroup
-            scope="subsubsectionInfrastructureTypeIds"
-            label={subsubsectionFieldTranslations.subsubsectionInfrastructureTypeIds}
-            optional
-            items={subsubsectionInfrastructureTypeCheckboxItems}
-            classNameItemWrapper="grid grid-cols-1 gap-2 md:grid-cols-2"
-          />
+          <form.AppField name="subsubsectionInfrastructureTypeIds">
+            {(field) => (
+              <field.CheckboxGroup
+                label={subsubsectionFieldTranslations.subsubsectionInfrastructureTypeIds}
+                optional
+                items={subsubsectionInfrastructureTypeCheckboxItems}
+                classNameItemWrapper="grid grid-cols-1 gap-2 md:grid-cols-2"
+              />
+            )}
+          </form.AppField>
         </div>
         <LinkWithFormDirtyConfirm
           href={`/${projectSlug}/subsubsection-infrastructure-type` as Route}
@@ -200,24 +272,30 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         </LinkWithFormDirtyConfirm>
       </div>
       <div className="flex items-end gap-5">
-        <LabeledSelect
-          name="qualityLevelId"
-          label={subsubsectionFieldTranslations.qualityLevelId}
-          optional
-          options={qualityLevelOptions}
-          outerProps={{ className: "grow" }}
-        />
+        <form.AppField name="qualityLevelId">
+          {(field) => (
+            <field.SelectField
+              label={subsubsectionFieldTranslations.qualityLevelId}
+              optional
+              options={qualityLevelOptions}
+              outerProps={{ className: "grow" }}
+            />
+          )}
+        </form.AppField>
         <LinkWithFormDirtyConfirm href={`/${projectSlug}/quality-levels` as Route} className="py-2">
           Ausbaustandards verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
       <div className="flex items-end gap-5">
-        <LabeledSelect
-          name="subsubsectionInfraId"
-          label={subsubsectionFieldTranslations.subsubsectionInfraId}
-          options={subsubsectionInfraOptions}
-          outerProps={{ className: "grow" }}
-        />
+        <form.AppField name="subsubsectionInfraId">
+          {(field) => (
+            <field.SelectField
+              label={subsubsectionFieldTranslations.subsubsectionInfraId}
+              options={subsubsectionInfraOptions}
+              outerProps={{ className: "grow" }}
+            />
+          )}
+        </form.AppField>
         <LinkWithFormDirtyConfirm
           href={`/${projectSlug}/subsubsection-infra` as Route}
           className="py-2"
@@ -226,13 +304,16 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         </LinkWithFormDirtyConfirm>
       </div>
       <div className="flex items-end gap-5">
-        <LabeledSelect
-          name="subsubsectionStatusId"
-          label={subsubsectionFieldTranslations.subsubsectionStatusId}
-          optional
-          options={subsubsectionStatusOptions}
-          outerProps={{ className: "grow" }}
-        />
+        <form.AppField name="subsubsectionStatusId">
+          {(field) => (
+            <field.SelectField
+              label={subsubsectionFieldTranslations.subsubsectionStatusId}
+              optional
+              options={subsubsectionStatusOptions}
+              outerProps={{ className: "grow" }}
+            />
+          )}
+        </form.AppField>
         <LinkWithFormDirtyConfirm
           href={`/${projectSlug}/subsubsection-status` as Route}
           className="py-2"
@@ -240,148 +321,196 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           Phase verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
-      <LabeledTextField
-        help="Format: Datum im Format JJJJ, beispielsweise '2026'"
-        name="estimatedConstructionDateString"
-        label={subsubsectionFieldTranslations.estimatedConstructionDateString}
-        optional
-      />
-      <LabeledSelect
-        name="managerId"
-        label={subsubsectionFieldTranslations.managerId}
-        optional
-        options={getUserSelectOptions(users)}
-      />
+      <form.AppField name="estimatedConstructionDateString">
+        {(field) => (
+          <field.TextField
+            help="Format: Datum im Format JJJJ, beispielsweise '2026'"
+            label={subsubsectionFieldTranslations.estimatedConstructionDateString}
+            optional
+          />
+        )}
+      </form.AppField>
+      <form.AppField name="managerId">
+        {(field) => (
+          <field.SelectField
+            label={subsubsectionFieldTranslations.managerId}
+            optional
+            options={getUserSelectOptions(users)}
+          />
+        )}
+      </form.AppField>
       <details>
         <summary className="mb-2 cursor-pointer">Verkehrsbelastung</summary>
-        <LabeledTextField
-          inlineLeadingAddon="kmh"
-          type="number"
-          name="maxSpeed"
-          label={subsubsectionFieldTranslations.maxSpeed}
-          optional
-        />
-
-        <LabeledTextField
-          inlineLeadingAddon="Kfz"
-          type="number"
-          name="trafficLoad"
-          label={subsubsectionFieldTranslations.trafficLoad}
-          optional
-        />
-
-        <LabeledTextField
-          type="date"
-          name="trafficLoadDate"
-          label={subsubsectionFieldTranslations.trafficLoadDate}
-          optional
-        />
+        <form.AppField name="maxSpeed">
+          {(field) => (
+            <field.NumberField
+              inlineLeadingAddon="kmh"
+              label={subsubsectionFieldTranslations.maxSpeed}
+              optional
+            />
+          )}
+        </form.AppField>
+        <form.AppField name="trafficLoad">
+          {(field) => (
+            <field.NumberField
+              inlineLeadingAddon="Kfz"
+              label={subsubsectionFieldTranslations.trafficLoad}
+              optional
+            />
+          )}
+        </form.AppField>
+        <form.AppField name="trafficLoadDate">
+          {(field) => (
+            <field.TextField
+              type="date"
+              label={subsubsectionFieldTranslations.trafficLoadDate}
+              optional
+            />
+          )}
+        </form.AppField>
       </details>
       <details>
         <summary className="mb-2 cursor-pointer">Kostenstruktur</summary>
-        <LabeledTextField
-          inlineLeadingAddon="€"
-          type="number"
-          name="planningCosts"
-          label={subsubsectionFieldTranslations.planningCosts}
-          optional
-        />
-        <LabeledTextField
-          inlineLeadingAddon="€"
-          type="number"
-          name="constructionCosts"
-          label={subsubsectionFieldTranslations.constructionCosts}
-          optional
-        />
-        <LabeledTextField
-          inlineLeadingAddon="€"
-          type="number"
-          name="deliveryCosts"
-          label={subsubsectionFieldTranslations.deliveryCosts}
-          optional
-        />
-        <LabeledTextField
-          inlineLeadingAddon="€"
-          type="number"
-          name="landAcquisitionCosts"
-          label={subsubsectionFieldTranslations.landAcquisitionCosts}
-          optional
-        />
-        <LabeledTextField
-          inlineLeadingAddon="€"
-          type="number"
-          name="expensesOfficialOrders"
-          label={subsubsectionFieldTranslations.expensesOfficialOrders}
-          optional
-        />
-        <LabeledTextField
-          inlineLeadingAddon="€"
-          type="number"
-          name="expensesTechnicalVerification"
-          label={subsubsectionFieldTranslations.expensesTechnicalVerification}
-          optional
-        />
-        <LabeledTextField
-          inlineLeadingAddon="€"
-          type="number"
-          name="nonEligibleExpenses"
-          label={subsubsectionFieldTranslations.nonEligibleExpenses}
-          optional
-        />
-        <LabeledTextField
-          inlineLeadingAddon="€"
-          type="number"
-          name="revenuesEconomicIncome"
-          label={subsubsectionFieldTranslations.revenuesEconomicIncome}
-          optional
-        />
-        <LabeledTextField
-          inlineLeadingAddon="€"
-          type="number"
-          name="contributionsThirdParties"
-          label={subsubsectionFieldTranslations.contributionsThirdParties}
-          optional
-        />
-        <LabeledTextField
-          inlineLeadingAddon="€"
-          type="number"
-          name="grantsOtherFunding"
-          label={subsubsectionFieldTranslations.grantsOtherFunding}
-          optional
-        />
-        <LabeledTextField
-          inlineLeadingAddon="€"
-          type="number"
-          name="ownFunds"
-          label={subsubsectionFieldTranslations.ownFunds}
-          optional
-        />
+        <form.AppField name="planningCosts">
+          {(field) => (
+            <field.NumberField
+              inlineLeadingAddon="€"
+              label={subsubsectionFieldTranslations.planningCosts}
+              optional
+            />
+          )}
+        </form.AppField>
+        <form.AppField name="constructionCosts">
+          {(field) => (
+            <field.NumberField
+              inlineLeadingAddon="€"
+              label={subsubsectionFieldTranslations.constructionCosts}
+              optional
+            />
+          )}
+        </form.AppField>
+        <form.AppField name="deliveryCosts">
+          {(field) => (
+            <field.NumberField
+              inlineLeadingAddon="€"
+              label={subsubsectionFieldTranslations.deliveryCosts}
+              optional
+            />
+          )}
+        </form.AppField>
+        <form.AppField name="landAcquisitionCosts">
+          {(field) => (
+            <field.NumberField
+              inlineLeadingAddon="€"
+              label={subsubsectionFieldTranslations.landAcquisitionCosts}
+              optional
+            />
+          )}
+        </form.AppField>
+        <form.AppField name="expensesOfficialOrders">
+          {(field) => (
+            <field.NumberField
+              inlineLeadingAddon="€"
+              label={subsubsectionFieldTranslations.expensesOfficialOrders}
+              optional
+            />
+          )}
+        </form.AppField>
+        <form.AppField name="expensesTechnicalVerification">
+          {(field) => (
+            <field.NumberField
+              inlineLeadingAddon="€"
+              label={subsubsectionFieldTranslations.expensesTechnicalVerification}
+              optional
+            />
+          )}
+        </form.AppField>
+        <form.AppField name="nonEligibleExpenses">
+          {(field) => (
+            <field.NumberField
+              inlineLeadingAddon="€"
+              label={subsubsectionFieldTranslations.nonEligibleExpenses}
+              optional
+            />
+          )}
+        </form.AppField>
+        <form.AppField name="revenuesEconomicIncome">
+          {(field) => (
+            <field.NumberField
+              inlineLeadingAddon="€"
+              label={subsubsectionFieldTranslations.revenuesEconomicIncome}
+              optional
+            />
+          )}
+        </form.AppField>
+        <form.AppField name="contributionsThirdParties">
+          {(field) => (
+            <field.NumberField
+              inlineLeadingAddon="€"
+              label={subsubsectionFieldTranslations.contributionsThirdParties}
+              optional
+            />
+          )}
+        </form.AppField>
+        <form.AppField name="grantsOtherFunding">
+          {(field) => (
+            <field.NumberField
+              inlineLeadingAddon="€"
+              label={subsubsectionFieldTranslations.grantsOtherFunding}
+              optional
+            />
+          )}
+        </form.AppField>
+        <form.AppField name="ownFunds">
+          {(field) => (
+            <field.NumberField
+              inlineLeadingAddon="€"
+              label={subsubsectionFieldTranslations.ownFunds}
+              optional
+            />
+          )}
+        </form.AppField>
       </details>
       <details>
         <summary className="mb-2 cursor-pointer">Dauer</summary>
-        <LabeledTextField
-          type="number"
-          step={1}
-          name="planningPeriod"
-          label={subsubsectionFieldTranslations.planningPeriod}
-          optional
-          max={100}
-        />
-        <LabeledTextField
-          type="number"
-          step={1}
-          name="constructionPeriod"
-          label={subsubsectionFieldTranslations.constructionPeriod}
-          optional
-          max={100}
-        />
-        <LabeledTextField
-          type="date"
-          name="estimatedCompletionDate"
-          label={subsubsectionFieldTranslations.estimatedCompletionDate}
-          optional
-        />
+        <form.AppField name="planningPeriod">
+          {(field) => (
+            <field.NumberField
+              step={1}
+              max={100}
+              label={subsubsectionFieldTranslations.planningPeriod}
+              optional
+            />
+          )}
+        </form.AppField>
+        <form.AppField name="constructionPeriod">
+          {(field) => (
+            <field.NumberField
+              step={1}
+              max={100}
+              label={subsubsectionFieldTranslations.constructionPeriod}
+              optional
+            />
+          )}
+        </form.AppField>
+        <form.AppField name="estimatedCompletionDate">
+          {(field) => (
+            <field.TextField
+              type="date"
+              label={subsubsectionFieldTranslations.estimatedCompletionDate}
+              optional
+            />
+          )}
+        </form.AppField>
       </details>
-    </Form>
+    </FormShell>
+  )
+}
+
+export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: SubsubsectionFormProps<S>) {
+  return (
+    <Suspense fallback={<Spinner />}>
+      <SubsubsectionFormWithQuery {...props} />
+    </Suspense>
   )
 }

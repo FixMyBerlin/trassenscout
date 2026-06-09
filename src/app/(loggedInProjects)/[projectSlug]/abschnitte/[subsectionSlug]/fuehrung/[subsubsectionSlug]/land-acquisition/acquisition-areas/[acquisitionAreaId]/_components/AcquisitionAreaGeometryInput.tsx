@@ -4,6 +4,7 @@ import type { AcquisitionAreaStatusStyle } from "@/src/app/(loggedInProjects)/[p
 import { acquisitionAreaStatusStyles } from "@/src/app/(loggedInProjects)/[projectSlug]/acquisition-area-status/_utils/acquisitionAreaStatusStyles"
 import { GeometryDrawingMap } from "@/src/core/components/forms/GeometryDrawingMap"
 import { GeometryInputBase } from "@/src/core/components/forms/GeometryInputBase"
+import { useFormValue } from "@/src/core/components/forms/hooks/useFormValue"
 import { BackgroundGeometryLayers } from "@/src/core/components/Map/BackgroundGeometryLayers"
 import { getLandAcquisitionEditLegendConfig } from "@/src/core/components/Map/LandAcquisitionEditMap.legendConfig"
 import {
@@ -21,7 +22,6 @@ import { useQuery } from "@blitzjs/rpc"
 import { feature, featureCollection } from "@turf/helpers"
 import { intersect } from "@turf/turf"
 import { useCallback, useMemo, useRef } from "react"
-import { useFormContext } from "react-hook-form"
 
 type Props = {
   parcelGeometry: TAcquisitionAreaGeometrySchema
@@ -56,9 +56,8 @@ const toAcquisitionAreaStatusStyle = (style: number): AcquisitionAreaStatusStyle
 
 export const AcquisitionAreaGeometryInput = ({ parcelGeometry, subsubsectionGeometry }: Props) => {
   const projectSlug = useProjectSlug()
-  const { watch } = useFormContext()
-  const rawGeometry = watch("geometry")
-  const rawAcquisitionAreaStatusId = watch("acquisitionAreaStatusId")
+  const rawGeometry = useFormValue("geometry")
+  const rawAcquisitionAreaStatusId = useFormValue("acquisitionAreaStatusId")
   const [{ acquisitionAreaStatuses }] = useQuery(
     getAcquisitionAreaStatuses,
     { projectSlug },

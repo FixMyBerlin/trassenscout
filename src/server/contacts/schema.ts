@@ -8,3 +8,22 @@ export const ContactSchema = z.object({
   phone: z.string().nullish(),
   role: z.string().nullish(),
 })
+
+/** Empty form state for AppField typing + `form.reset()`. Annotated so all keys stay required for TanStack. */
+export const contactFormDefaultValues: z.infer<typeof ContactSchema> = {
+  lastName: "",
+  email: "",
+  firstName: null,
+  note: null,
+  phone: null,
+  role: null,
+}
+
+export const ContactTableFormSchema = z.object({
+  selectedContacts: z.array(z.string()),
+})
+
+/** Empty form state for AppField typing + `form.reset()`. */
+export const contactTableFormDefaultValues: z.infer<typeof ContactTableFormSchema> = {
+  selectedContacts: [],
+}

@@ -6,3 +6,10 @@ export const NetworkHierarchySchema = z.object({
   title: z.string().min(2, { message: "Pflichtfeld. Mindestens 2 Zeichen." }),
   projectId: z.coerce.number(),
 })
+
+/** Empty form state for AppField typing + `form.reset()`. */
+export const networkHierarchyFormDefaultValues: z.infer<typeof NetworkHierarchySchema> = {
+  slug: "",
+  title: "",
+  projectId: 0,
+}

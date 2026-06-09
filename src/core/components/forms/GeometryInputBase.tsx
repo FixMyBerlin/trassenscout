@@ -1,9 +1,13 @@
+"use client"
+
+import { FieldErrors } from "@/src/core/components/forms/FieldErrors"
 import { GeoJSONPreviewLink, GeoJSONPreviewPanel } from "@/src/core/components/forms/GeoJSONPreview"
-import { LabeledGeometryField } from "@/src/core/components/forms/LabeledGeometryField"
+import { useCoreAppFormContext } from "@/src/core/components/forms/hooks/formContext"
+import { useFormFieldErrors } from "@/src/core/components/forms/hooks/useFormFieldErrors"
+import { useFormValue } from "@/src/core/components/forms/hooks/useFormValue"
 import { clsx } from "clsx"
 import type { Geometry } from "geojson"
 import { ReactNode, useState } from "react"
-import { useFormContext } from "react-hook-form"
 
 type GeometryInputBaseProps = {
   label: string
@@ -23,8 +27,9 @@ export const GeometryInputBase = ({
   showPreviewLink = true,
   contentContainerClassName,
 }: GeometryInputBaseProps) => {
-  const { watch } = useFormContext()
-  const geometry = watch("geometry") as Geometry
+  const form = useCoreAppFormContext()
+  const geometry = useFormValue<Geometry | undefined>("geometry")
+  const geometryErrors = useFormFieldErrors("geometry")
 
   const [isRawMode, setIsRawMode] = useState(false)
   const [isPreviewOpen, setIsPreviewOpen] = useState(false)
@@ -36,15 +41,19 @@ export const GeometryInputBase = ({
         <label className="block text-sm font-medium text-gray-700">{label}</label>
 
         <div className="rounded-md border border-gray-200 bg-gray-100 p-2">
-          <LabeledGeometryField
-            name="geometry"
-            label="GeoJSON Geometrie (`Point`, `MultiPoint`, `LineString`, `MultiLineString`, `Polygon`, oder `MultiPolygon`)"
-            allowedGeometryTypesFor={allowedGeometryTypesFor}
-            outerProps={{
-              className: "rounded-sm border border-gray-200 bg-white p-3",
-            }}
-          />
+          <form.AppField name="geometry">
+            {(field) => (
+              <field.GeometryField
+                label="GeoJSON Geometrie (`Point`, `MultiPoint`, `LineString`, `MultiLineString`, `Polygon`, oder `MultiPolygon`)"
+                allowedGeometryTypesFor={allowedGeometryTypesFor}
+                outerProps={{
+                  className: "rounded-sm border border-gray-200 bg-white p-3",
+                }}
+              />
+            )}
+          </form.AppField>
         </div>
+        <FieldErrors errors={geometryErrors} />
       </div>
     )
   }
@@ -77,6 +86,7 @@ export const GeometryInputBase = ({
       >
         {children}
       </div>
+      <FieldErrors errors={geometryErrors} />
     </section>
   )
 }

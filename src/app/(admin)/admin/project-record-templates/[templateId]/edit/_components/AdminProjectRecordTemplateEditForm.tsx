@@ -1,6 +1,6 @@
 "use client"
 
-import { FORM_ERROR } from "@/src/core/components/forms"
+import { FORM_ERROR } from "@/src/core/components/forms/utils/formSubmitResult"
 import { blueButtonStyles } from "@/src/core/components/links"
 import deleteProjectRecordTemplate from "@/src/server/projectRecordTemplates/mutations/deleteProjectRecordTemplate"
 import updateProjectRecordTemplate from "@/src/server/projectRecordTemplates/mutations/updateProjectRecordTemplate"

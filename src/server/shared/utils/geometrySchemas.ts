@@ -24,6 +24,11 @@ export const SupportedGeometrySchema = z.union([
   MultiPolygonGeometrySchema,
 ])
 
+export const RequiredSupportedGeometrySchema = z.custom<SupportedGeometry>(
+  (val) => SupportedGeometrySchema.safeParse(val).success,
+  { message: "Pflichtfeld. Bitte eine Geometrie zeichnen oder eingeben." },
+)
+
 /**
  * Shared geometry type - excludes GeometryCollection
  * Supports: Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon

@@ -1,22 +1,24 @@
+"use client"
+
+import { TextField, type TextFieldProps } from "@/src/core/components/forms/fields/TextField"
+import { useFieldContext } from "@/src/core/components/forms/hooks/formContext"
 import type { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
+import { GeometryTypeEnum } from "@prisma/client"
 import { length } from "@turf/turf"
 import { clsx } from "clsx"
-import { useFormContext } from "react-hook-form"
-import { blueButtonStyles } from "../links"
-import { lineStringToGeoJSON } from "../Map/utils/lineStringToGeoJSON"
-import { LabeledTextField, LabeledTextFieldProps } from "./LabeledTextField"
+import { blueButtonStyles } from "../../links"
+import { lineStringToGeoJSON } from "../../Map/utils/lineStringToGeoJSON"
 
-export function LabeledTextFieldCalculateLength({
-  name,
+export function TextFieldCalculateLength({
   readOnly,
   ...rest
-}: LabeledTextFieldProps) {
-  const { watch, setValue, getValues } = useFormContext()
-
-  const geometryType = watch("type") || "LINE"
+}: Omit<TextFieldProps, "type" | "inlineLeadingAddon" | "step">) {
+  const field = useFieldContext<string>()
+  const geometryType =
+    (field.form.getFieldValue("type") as GeometryTypeEnum | undefined) || GeometryTypeEnum.LINE
 
   const calculateLength = () => {
-    const geo = getValues("geometry") as SupportedGeometry | undefined
+    const geo = field.form.getFieldValue("geometry") as SupportedGeometry | undefined
     if (!geo) return
     if (geo.type !== "LineString" && geo.type !== "MultiLineString") return
 
@@ -24,7 +26,7 @@ export function LabeledTextFieldCalculateLength({
     const totalMeters = lineFeatures.reduce((acc, feature) => {
       return acc + length(feature, { units: "meters" })
     }, 0)
-    setValue(name, Math.round(totalMeters))
+    field.handleChange(String(Math.round(totalMeters)))
   }
 
   const helpText = readOnly
@@ -35,11 +37,10 @@ export function LabeledTextFieldCalculateLength({
 
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
-      <LabeledTextField
+      <TextField
         inlineLeadingAddon="m"
         type="number"
         step="1"
-        name={name}
         readOnly={readOnly}
         {...rest}
         help={helpText}

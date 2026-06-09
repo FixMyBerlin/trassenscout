@@ -11,9 +11,15 @@ import { getProjectRecordEditSuccessRoute } from "@/src/app/(loggedInProjects)/[
 import { getDate } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/splitStartAt"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
-import { Form, FORM_ERROR, FormDirtyStateReporter } from "@/src/core/components/forms"
 import { BackLink } from "@/src/core/components/forms/BackLink"
+import { FormDirtyStateReporter } from "@/src/core/components/forms/FormDirtyStateReporter"
+import { FormShell } from "@/src/core/components/forms/FormShell"
+import { useAppForm } from "@/src/core/components/forms/hooks/useAppForm"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
+import {
+  applyFormSubmitResult,
+  FORM_ERROR,
+} from "@/src/core/components/forms/utils/formSubmitResult"
 import { Link } from "@/src/core/components/links"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import { m2mFields, M2MFieldsType } from "@/src/server/projectRecords/m2mFields"
@@ -23,11 +29,15 @@ import getProjectRecords from "@/src/server/projectRecords/queries/getProjectRec
 import getProjectRecordsByAcquisitionArea from "@/src/server/projectRecords/queries/getProjectRecordsByAcquisitionArea"
 import getProjectRecordsBySubsubsection from "@/src/server/projectRecords/queries/getProjectRecordsBySubsubsection"
 import getProjectRecordsNeedsReview from "@/src/server/projectRecords/queries/getProjectRecordsNeedsReview"
-import { ProjectRecordFormSchema } from "@/src/server/projectRecords/schemas"
+import {
+  projectRecordFormDefaultValues,
+  ProjectRecordFormSchema,
+} from "@/src/server/projectRecords/schemas"
 import { invalidateQuery, useMutation, useQuery } from "@blitzjs/rpc"
 import { ProjectRecordReviewState } from "@prisma/client"
 import { Route } from "next"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
 import { z } from "zod"
 
 export const EditProjectRecordForm = ({
@@ -44,6 +54,7 @@ export const EditProjectRecordForm = ({
   onSubmittingChange?: (isSubmitting: boolean) => void
 }) => {
   const router = useRouter()
+  const [formError, setFormError] = useState<string | null>(null)
   const needsReview = initialProjectRecord.reviewState !== ProjectRecordReviewState.APPROVED
   const [updateProjectRecordMutation] = useMutation(updateProjectRecord)
   const projectSlug = initialProjectRecord.project.slug
@@ -62,51 +73,66 @@ export const EditProjectRecordForm = ({
         ? "subsubsection"
         : "project"
 
-  const handleSubmit = async (values: z.infer<typeof ProjectRecordFormSchema>) => {
-    onSubmittingChange?.(true)
-    try {
-      const updated = await updateProjectRecordMutation({
-        ...values,
-        id: projectRecord.id,
-        date: values.date === "" ? null : new Date(values.date),
-        projectSlug,
-        // Normalize m2m fields: convert true to false (empty array)
-        projectRecordTopics:
-          values.projectRecordTopics === true ? false : values.projectRecordTopics,
-        uploads: values.uploads === true ? false : values.uploads,
-        subsubsections: values.subsubsections === true ? false : values.subsubsections,
-        acquisitionAreas: values.acquisitionAreas === true ? false : values.acquisitionAreas,
-        projectRecordEmailId: projectRecord.projectRecordEmailId,
-      })
-      // invalidateQuery(getProjectRecord)
-      invalidateQuery(getProjectRecords)
-      invalidateQuery(getProjectRecordsBySubsubsection)
-      invalidateQuery(getProjectRecordsNeedsReview)
-      invalidateQuery(getProjectRecordsByAcquisitionArea)
-      if (onSuccess) {
-        onSuccess(values.reviewState)
-      } else {
-        router.push(
-          getProjectRecordEditSuccessRoute({
-            projectSlug,
-            projectRecordId: projectRecord.id,
-            initialReviewState: projectRecord.reviewState,
-            nextReviewState: values.reviewState,
-          }),
-        )
-      }
-    } catch (error: any) {
-      onSubmittingChange?.(false)
-      return improveErrorMessage(error, FORM_ERROR, ["slug"])
-    }
-  }
-
   // m2m copied from subsubsection/edit.tsx
   const m2mFieldsInitialValues: Record<M2MFieldsType | string, string[]> = {}
   m2mFields.forEach((fieldName) => {
     m2mFieldsInitialValues[fieldName] = getM2MInitialValues(
       projectRecord[fieldName as keyof typeof projectRecord],
     )
+  })
+
+  const form = useAppForm({
+    defaultValues: {
+      ...projectRecordFormDefaultValues,
+      date: projectRecord.date ? getDate(projectRecord.date) : "",
+      title: projectRecord.title,
+      body: projectRecord.body ?? "",
+      subsubsectionId: projectRecord.subsubsectionId,
+      acquisitionAreaId: projectRecord.acquisitionAreaId,
+      assignedToId: projectRecord.assignedToId,
+      editingState: projectRecord.editingState,
+      reviewState: projectRecord.reviewState,
+      reviewNotes: projectRecord.reviewNotes ?? "",
+      ...m2mFieldsInitialValues,
+    },
+    validators: { onSubmit: ProjectRecordFormSchema } as never,
+    onSubmit: async ({ value }) => {
+      const values = value as unknown as z.infer<typeof ProjectRecordFormSchema>
+      onSubmittingChange?.(true)
+      try {
+        await updateProjectRecordMutation({
+          ...values,
+          id: projectRecord.id,
+          date: values.date === "" ? null : new Date(values.date),
+          projectSlug,
+          projectRecordTopics:
+            values.projectRecordTopics === true ? false : values.projectRecordTopics,
+          uploads: values.uploads === true ? false : values.uploads,
+          subsubsections: values.subsubsections === true ? false : values.subsubsections,
+          acquisitionAreas: values.acquisitionAreas === true ? false : values.acquisitionAreas,
+          projectRecordEmailId: projectRecord.projectRecordEmailId,
+        })
+        invalidateQuery(getProjectRecords)
+        invalidateQuery(getProjectRecordsBySubsubsection)
+        invalidateQuery(getProjectRecordsNeedsReview)
+        invalidateQuery(getProjectRecordsByAcquisitionArea)
+        if (onSuccess) {
+          onSuccess(values.reviewState)
+        } else {
+          router.push(
+            getProjectRecordEditSuccessRoute({
+              projectSlug,
+              projectRecordId: projectRecord.id,
+              initialReviewState: projectRecord.reviewState,
+              nextReviewState: values.reviewState,
+            }),
+          )
+        }
+      } catch (error: any) {
+        onSubmittingChange?.(false)
+        applyFormSubmitResult(form, improveErrorMessage(error, FORM_ERROR, ["slug"]), setFormError)
+      }
+    },
   })
 
   const showPath = projectRecordDetailRoute(projectSlug, projectRecord.id)
@@ -131,16 +157,10 @@ export const EditProjectRecordForm = ({
           wechseln, um Bestätigungsstatus zu ändern und Quellnachricht zu sehen.
         </SuperAdminBox>
       )}
-      <Form
+      <FormShell
+        form={form}
+        formError={formError}
         submitText="Änderungen speichern"
-        schema={ProjectRecordFormSchema}
-        // @ts-expect-error some null<>undefined missmatch
-        initialValues={{
-          ...projectRecord,
-          date: projectRecord.date ? getDate(projectRecord.date) : "",
-          ...m2mFieldsInitialValues,
-        }}
-        onSubmit={handleSubmit}
         actionBarRight={
           <ProjectRecordDeleteActionBar
             projectSlug={projectSlug}
@@ -162,7 +182,7 @@ export const EditProjectRecordForm = ({
         />
 
         {needsReview && <ReviewProjectRecordForm />}
-      </Form>
+      </FormShell>
       <CreateEditReviewHistory projectRecord={projectRecord} />
       <ProjectRecordCommentsSection projectRecord={projectRecord} />
       {!hideBackLink && <BackLink href={showPath} text="Zurück zum Protokolleintrag" />}

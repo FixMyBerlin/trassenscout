@@ -2,8 +2,8 @@
 
 import { SubsubsectionForm } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/[subsubsectionSlug]/_components/SubsubsectionForm"
 import { SubsubsectionSchemaAdminBox } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/[subsubsectionSlug]/_components/SubsubsectionSchemaAdminBox"
-import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
+import { FORM_ERROR } from "@/src/core/components/forms/utils/formSubmitResult"
 import { subsubsectionDashboardRoute } from "@/src/core/routes/subsectionRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
@@ -71,7 +71,7 @@ export const NewSubsubsectionClient = ({ initialSubsection }: Props) => {
   return (
     <>
       <SubsubsectionForm
-        initialValues={{ type: "LINE", labelPos: "bottom", location: "" }}
+        initialValues={{ isExistingInfra: false, type: "LINE", labelPos: "bottom", location: "" }}
         className="mt-10"
         submitText="Erstellen"
         schema={NewSubsubsectionSchema}

@@ -1,7 +1,7 @@
 "use client"
 
-import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
+import { FORM_ERROR } from "@/src/core/components/forms/utils/formSubmitResult"
 import createOperator from "@/src/server/operators/mutations/createOperator"
 import getOperatorMaxOrder from "@/src/server/operators/queries/getOperatorMaxOrder"
 import { OperatorSchema } from "@/src/server/operators/schema"
