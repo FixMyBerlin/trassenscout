@@ -11,8 +11,9 @@ import { useState } from "react"
 import { parseSwitchableMapLocationFieldValue } from "@/src/components/beteiligung/form/map/utils"
 import { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { getQuestionIdBySurveySlug } from "@/src/components/beteiligung/shared/utils/getQuestionIdBySurveySlug"
+import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { Link } from "@/src/components/core/components/links/Link"
-import { blueButtonStyles, linkStyles } from "@/src/components/core/components/links/styles"
+import { linkStyles } from "@/src/components/core/components/links/styles"
 import { Notice } from "@/src/components/core/components/Notice/Notice"
 import { Prettify } from "@/src/components/core/types"
 import { adminLookupRowsQueryOptions } from "@/src/server/adminLookupTables/adminLookupTablesQueryOptions"
@@ -235,7 +236,7 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
           <button
             type="button"
             onClick={handleConvertToMassnahme}
-            className={blueButtonStyles}
+            className={primaryButtonClassName}
             disabled={createSubsubsectionMutation.isPending || !hasCheckedExistingEntry}
           >
             {createSubsubsectionMutation.isPending

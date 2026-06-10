@@ -1,12 +1,12 @@
 import { TrashIcon } from "@heroicons/react/20/solid"
 import { useSuspenseQuery } from "@tanstack/react-query"
+import { secondaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
 import { ButtonWrapper } from "@/src/components/core/components/links/ButtonWrapper"
 import { Link } from "@/src/components/core/components/links/Link"
 import { LinkMail } from "@/src/components/core/components/links/LinkMail"
 import { LinkTel } from "@/src/components/core/components/links/LinkTel"
-import { whiteButtonStyles } from "@/src/components/core/components/links/styles"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { getFullname } from "@/src/components/core/users/getFullname"
@@ -150,7 +150,7 @@ export const ContactTable = ({ contacts, currentUserEmail, projectSlug }: Props)
                 {([selectedCount, isSubmitting]) => (
                   <button
                     disabled={selectedCount === 0 || isSubmitting}
-                    className={whiteButtonStyles}
+                    className={secondaryButtonClassName}
                     type="submit"
                   >
                     {isSubmitting ? "…" : "Mail schreiben"}

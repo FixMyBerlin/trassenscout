@@ -1,6 +1,6 @@
 import { TrashIcon } from "@heroicons/react/24/outline"
 import { useNavigate } from "@tanstack/react-router"
-import { blueButtonStyles } from "@/src/components/core/components/links/styles"
+import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { frenchQuote } from "@/src/components/core/components/text/quote"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 
@@ -54,7 +54,7 @@ export const DeleteActionBar = ({
       <button
         type="button"
         onClick={handleDelete}
-        className={blueButtonStyles}
+        className={primaryButtonClassName}
         title={`${itemTitle} löschen`}
       >
         {variant === "icon" ? <TrashIcon className="size-5" /> : "Löschen"}

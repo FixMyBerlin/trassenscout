@@ -1,11 +1,11 @@
 import { length } from "@turf/turf"
 import { clsx } from "clsx"
+import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import {
   TextField,
   type TextFieldProps,
 } from "@/src/components/core/components/forms/fields/TextField"
 import { useFieldContext } from "@/src/components/core/components/forms/hooks/formContext"
-import { blueButtonStyles } from "@/src/components/core/components/links/styles"
 import { GeometryTypeEnum } from "@/src/prisma/generated/browser"
 import type { SupportedGeometry } from "@/src/shared/geometry/geometrySchemas"
 import { lineStringToGeoJSON } from "../../Map/utils/lineStringToGeoJSON"
@@ -51,7 +51,7 @@ export function TextFieldCalculateLength({
         <button
           type="button"
           onClick={calculateLength}
-          className={clsx(blueButtonStyles, "px-2! py-1!")}
+          className={clsx(primaryButtonClassName, "px-2! py-1!")}
         >
           Länge aus Geometrie ermitteln
         </button>

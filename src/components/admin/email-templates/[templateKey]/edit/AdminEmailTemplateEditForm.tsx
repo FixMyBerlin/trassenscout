@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
+import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { FORM_ERROR } from "@/src/components/core/components/forms/utils/formSubmitResult"
-import { blueButtonStyles } from "@/src/components/core/components/links/styles"
 import {
   deleteEmailTemplateFn,
   previewEmailTemplateFn,
@@ -130,7 +130,7 @@ export const AdminEmailTemplateEditForm = ({ templateKey }: Props) => {
               {template.source === "db" && (
                 <button
                   type="button"
-                  className={blueButtonStyles}
+                  className={primaryButtonClassName}
                   onClick={() => void handleResetToDefaults()}
                 >
                   DB-Override löschen

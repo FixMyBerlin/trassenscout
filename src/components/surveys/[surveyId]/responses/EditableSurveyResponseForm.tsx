@@ -4,7 +4,7 @@ import { clsx } from "clsx"
 import { type JSX, PropsWithoutRef, useState } from "react"
 import { backendConfig as defaultBackendConfig } from "@/src/components/beteiligung/shared/backend-types"
 import { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
-import { blueButtonStyles } from "@/src/components/core/components/links/styles"
+import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { Operator } from "@/src/prisma/generated/browser"
@@ -293,7 +293,7 @@ export function EditableSurveyResponseForm({
               <button
                 type="submit"
                 disabled={!userCanEdit}
-                className={clsx(blueButtonStyles, "px-3! py-2.5!")}
+                className={clsx(primaryButtonClassName, "px-3! py-2.5!")}
               >
                 Hinzufügen
               </button>
@@ -328,7 +328,7 @@ export function EditableSurveyResponseForm({
                 <button
                   type="submit"
                   disabled={!userCanEdit}
-                  className={clsx(blueButtonStyles, "px-3! py-2.5!")}
+                  className={clsx(primaryButtonClassName, "px-3! py-2.5!")}
                 >
                   {labels.note?.sg || defaultBackendConfig.labels.note.sg} speichern
                 </button>

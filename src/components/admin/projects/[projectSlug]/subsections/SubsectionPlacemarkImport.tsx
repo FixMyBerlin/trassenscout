@@ -4,10 +4,11 @@ import clsx from "clsx"
 import { useState } from "react"
 import { z } from "zod"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
+import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { ButtonWrapper } from "@/src/components/core/components/links/ButtonWrapper"
 import { getPrdOrStgDomain } from "@/src/components/core/components/links/getDomain"
 import { Link } from "@/src/components/core/components/links/Link"
-import { blueButtonStyles, selectLinkStyle } from "@/src/components/core/components/links/styles"
+import { selectLinkStyle } from "@/src/components/core/components/links/styles"
 import type { ProjectBySlug } from "@/src/server/projects/types"
 import { updateSubsectionsWithPlacemarkFn } from "@/src/server/subsections/subsections.functions"
 import { subsectionsQueryOptions } from "@/src/server/subsections/subsectionsQueryOptions"
@@ -203,7 +204,7 @@ export const SubsectionPlacemarkImport = ({ project, projectSlug }: Props) => {
             </form>
           )}
           {["FILE_SELECTED"].includes(fileState) && (
-            <button className={blueButtonStyles} onClick={handleUpdateDataClick}>
+            <button className={primaryButtonClassName} onClick={handleUpdateDataClick}>
               Geometrien der Planungsabschnitte ersetzen
             </button>
           )}

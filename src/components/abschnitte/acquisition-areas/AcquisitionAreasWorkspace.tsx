@@ -4,10 +4,10 @@ import clsx from "clsx"
 import type { Feature, MultiPolygon, Polygon } from "geojson"
 import { type KeyboardEvent, useMemo, useState } from "react"
 import { MapProvider } from "react-map-gl/maplibre"
+import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useCoreAppFormContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
-import { blueButtonStyles } from "@/src/components/core/components/links/styles"
 import { createAcquisitionAreasFromSelectionFn } from "@/src/server/acquisitionAreas/acquisitionAreas.functions"
 import type { AlkisWfsParcelFeatureCollection } from "@/src/server/alkis/alkisWfsParcelGeoJsonTypes"
 import type { SubsubsectionWithPosition } from "@/src/server/subsubsections/types"
@@ -53,7 +53,7 @@ function BufferRadiusControls({ onApplyRadius }: { onApplyRadius: (radius: numbe
       <div className="mt-1">
         <button
           type="button"
-          className={clsx(blueButtonStyles, "shrink-0")}
+          className={clsx(primaryButtonClassName, "shrink-0")}
           onClick={applyBufferRadius}
         >
           Puffer übernehmen

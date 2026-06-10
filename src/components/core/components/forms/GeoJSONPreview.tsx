@@ -1,7 +1,8 @@
 import { XMarkIcon } from "@heroicons/react/24/outline"
 import { clsx } from "clsx"
 import type { Geometry } from "geojson"
-import { linkStyles, whiteButtonStyles } from "@/src/components/core/components/links/styles"
+import { secondaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { linkStyles } from "@/src/components/core/components/links/styles"
 
 export const GeoJSONPreviewLink = ({ onOpen }: { onOpen: () => void }) => {
   return (
@@ -28,7 +29,7 @@ export const GeoJSONPreviewPanel = ({
           <button
             type="button"
             onClick={onEdit}
-            className={clsx(whiteButtonStyles, "px-3 py-1.5 text-sm")}
+            className={clsx(secondaryButtonClassName, "px-3 py-1.5 text-sm")}
           >
             Als GeoJSON bearbeiten
           </button>

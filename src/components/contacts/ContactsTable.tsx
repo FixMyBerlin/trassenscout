@@ -10,10 +10,10 @@ import {
   textColumn,
 } from "react-datasheet-grid"
 import { ObjectDump } from "@/src/components/admin/ObjectDump"
+import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { improveErrorMessage } from "@/src/components/core/components/forms/improveErrorMessage"
 import { ButtonWrapper } from "@/src/components/core/components/links/ButtonWrapper"
 import { Link } from "@/src/components/core/components/links/Link"
-import { blueButtonStyles } from "@/src/components/core/components/links/styles"
 import { isProduction } from "@/src/components/core/utils/isEnv"
 import { createContactFn, updateContactFn } from "@/src/server/contacts/contacts.functions"
 import { contactsQueryOptions } from "@/src/server/contacts/contactsQueryOptions"
@@ -150,7 +150,7 @@ export const ContactsTable = () => {
           {!formDirty && isSaved && <span className="text-green-500">Gespeichert</span>}
           <button
             onClick={() => void handleUpdate()}
-            className={blueButtonStyles}
+            className={primaryButtonClassName}
             disabled={!formDirty}
           >
             Speichern

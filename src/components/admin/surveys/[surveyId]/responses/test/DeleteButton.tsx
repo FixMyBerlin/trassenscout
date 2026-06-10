@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 import { clsx } from "clsx"
 import type { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
-import { blueButtonStyles } from "@/src/components/core/components/links/styles"
+import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { deleteTestSurveyResponsesFn } from "@/src/server/survey-responses/surveyResponses.functions"
 
 type DeleteButtonProps = {
@@ -34,7 +34,7 @@ export const DeleteButton = ({ testSurveyResponseIds, surveySlug }: DeleteButton
   return (
     <>
       <hr className="my-5 text-gray-200" />
-      <button type="button" onClick={handleDelete} className={clsx(blueButtonStyles, "ml-2")}>
+      <button type="button" onClick={handleDelete} className={clsx(primaryButtonClassName, "ml-2")}>
         Diese {testSurveyResponseIds.length} Testeinträge und dazugehörige Sessions löschen
       </button>
     </>

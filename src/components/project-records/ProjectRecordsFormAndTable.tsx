@@ -3,8 +3,8 @@ import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { clsx } from "clsx"
 import { useEffect, useRef, useState } from "react"
+import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { FormSuccess } from "@/src/components/core/components/forms/FormSuccess"
-import { blueButtonStyles } from "@/src/components/core/components/links/styles"
 import { FilteredProjectRecords } from "@/src/components/project-records/FilteredProjectRecords"
 import { ProjectRecordNewModal } from "@/src/components/project-records/ProjectRecordNewModal"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
@@ -43,7 +43,7 @@ export const ProjectRecordsFormAndTable = () => {
             ref={createRecordButtonRef}
             type="button"
             onClick={() => setIsProjectRecordModalOpen(true)}
-            className={clsx(blueButtonStyles, "items-center justify-center gap-1")}
+            className={clsx(primaryButtonClassName, "items-center justify-center gap-1")}
           >
             <PlusIcon className="size-3.5" /> Neuer Protokolleintrag
           </button>

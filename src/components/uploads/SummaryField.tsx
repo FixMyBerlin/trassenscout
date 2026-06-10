@@ -3,10 +3,10 @@ import { getRouteApi } from "@tanstack/react-router"
 import { Dispatch, SetStateAction, useState } from "react"
 import { twJoin } from "tailwind-merge"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
+import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { useCoreAppFormContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { useFormValue } from "@/src/components/core/components/forms/hooks/useFormValue"
 import { Link } from "@/src/components/core/components/links/Link"
-import { blueButtonStyles } from "@/src/components/core/components/links/styles"
 import { isPdfByMimeType } from "@/src/components/uploads/utils/getFileType"
 import { summarizeUploadFn } from "@/src/server/uploads/summarizeUpload.functions"
 
@@ -100,7 +100,7 @@ export const SummaryField = ({
           type="button"
           onClick={handleSummarize}
           disabled={isGeneratingSummary}
-          className={twJoin(blueButtonStyles, "mt-2 gap-1")}
+          className={twJoin(primaryButtonClassName, "mt-2 gap-1")}
         >
           <SparklesIcon className="size-3" />
           <p className={isGeneratingSummary ? "animate-pulse" : ""}>

@@ -1,7 +1,7 @@
 import clsx from "clsx"
+import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { useAppFormContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { useFieldDisabled } from "@/src/components/core/components/forms/hooks/useFormHydrated"
-import { blueButtonStyles } from "@/src/components/core/components/links/styles"
 
 type SubmitButtonProps = {
   label: string
@@ -19,7 +19,7 @@ export function SubmitButton({ label, className, disabled }: SubmitButtonProps) 
         <button
           type="submit"
           disabled={isSubmitting || !canSubmit || fieldDisabled}
-          className={clsx(className || blueButtonStyles)}
+          className={clsx(className || primaryButtonClassName)}
         >
           {label}
         </button>

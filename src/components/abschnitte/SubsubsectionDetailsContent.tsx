@@ -5,9 +5,9 @@ import { clsx } from "clsx"
 import { useState } from "react"
 import { SubsubsectionPanel } from "@/src/components/abschnitte/SubsubsectionPanel"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
+import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { FormSuccess } from "@/src/components/core/components/forms/FormSuccess"
 import { Link } from "@/src/components/core/components/links/Link"
-import { blueButtonStyles } from "@/src/components/core/components/links/styles"
 import {
   formattedEuro,
   formattedLength,
@@ -320,7 +320,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
         <IfUserCanEdit>
           <button
             onClick={() => setIsProjectRecordModalOpen(true)}
-            className={clsx(blueButtonStyles, "mt-5 items-center justify-center gap-1")}
+            className={clsx(primaryButtonClassName, "mt-5 items-center justify-center gap-1")}
           >
             <PlusIcon className="size-3.5" /> Neuer Protokolleintrag
           </button>

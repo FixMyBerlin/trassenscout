@@ -1,7 +1,7 @@
 import { clsx } from "clsx"
+import { primaryButtonLinkClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { ButtonWrapper } from "@/src/components/core/components/links/ButtonWrapper"
 import { Link } from "@/src/components/core/components/links/Link"
-import { blueButtonStylesForLinkElement } from "@/src/components/core/components/links/styles"
 import { Markdown } from "@/src/components/core/components/Markdown/Markdown"
 import { useCurrentReturnTo } from "@/src/components/core/routes/useCurrentPathWithSearch"
 import { formatFileSize } from "@/src/components/core/utils/formatFileSize"
@@ -68,7 +68,7 @@ export const UploadDetailPanelContent = ({
                 <Link
                   to="/$projectSlug/uploads/$uploadId/view"
                   params={{ projectSlug, uploadId: String(upload.id) }}
-                  className={blueButtonStylesForLinkElement}
+                  className={primaryButtonLinkClassName}
                 >
                   In Vollansicht öffnen
                 </Link>
@@ -76,7 +76,7 @@ export const UploadDetailPanelContent = ({
               <Link
                 blank
                 href={uploadUrl(upload, projectSlug)}
-                className={blueButtonStylesForLinkElement}
+                className={primaryButtonLinkClassName}
               >
                 Datei {isUploadPdf && "m Browser "}öffnen
               </Link>

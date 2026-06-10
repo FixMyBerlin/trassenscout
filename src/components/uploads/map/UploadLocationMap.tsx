@@ -3,9 +3,10 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { Marker, MarkerDragEvent } from "react-map-gl/maplibre"
 import { twMerge } from "tailwind-merge"
+import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { useFormShellState } from "@/src/components/core/components/forms/hooks/useFormShellState"
 import { useFormValue } from "@/src/components/core/components/forms/hooks/useFormValue"
-import { blueButtonStyles, linkStyles } from "@/src/components/core/components/links/styles"
+import { linkStyles } from "@/src/components/core/components/links/styles"
 import { BackgroundGeometryLayers } from "@/src/components/core/components/Map/BackgroundGeometryLayers"
 import { BaseMap } from "@/src/components/core/components/Map/BaseMap"
 import { UploadMarkers } from "@/src/components/core/components/Map/markers/UploadMarkers"
@@ -124,7 +125,7 @@ export const UploadLocationMap = () => {
             type="button"
             onClick={handlePlacePin}
             className={twMerge(
-              blueButtonStyles,
+              primaryButtonClassName,
               "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
               "shadow-2xl ring-8 ring-white/90",
               "w-auto px-3 py-2 text-xs whitespace-nowrap sm:px-6 sm:py-3.5 sm:text-sm",

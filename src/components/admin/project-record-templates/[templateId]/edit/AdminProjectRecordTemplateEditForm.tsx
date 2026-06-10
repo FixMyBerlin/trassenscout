@@ -1,8 +1,8 @@
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 import { clsx } from "clsx"
+import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { FORM_ERROR } from "@/src/components/core/components/forms/utils/formSubmitResult"
-import { blueButtonStyles } from "@/src/components/core/components/links/styles"
 import {
   deleteProjectRecordTemplateFn,
   updateProjectRecordTemplateFn,
@@ -60,7 +60,7 @@ export const AdminProjectRecordTemplateEditForm = ({ templateId }: Props) => {
       <button
         type="button"
         onClick={handleDelete}
-        className={clsx(blueButtonStyles, "bg-red-700! hover:bg-red-800!")}
+        className={clsx(primaryButtonClassName, "bg-red-700! hover:bg-red-800!")}
       >
         Vorlage löschen
       </button>
