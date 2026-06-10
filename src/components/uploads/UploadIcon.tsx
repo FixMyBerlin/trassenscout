@@ -12,9 +12,11 @@ type Props = {
   upload: Upload | Pick<Upload, "id" | "mimeType" | "title" | "externalUrl">
   projectSlug: string
   size: UploadSize
+  /** Bordered placeholder tile for static grid previews (e.g. modal). */
+  showFrame?: boolean
 }
 
-export const UploadIcon = ({ upload, projectSlug, size }: Props) => {
+export const UploadIcon = ({ upload, projectSlug, size, showFrame = false }: Props) => {
   const [imageError, setImageError] = useState(false)
   const fileType = getFileTypeLabel(upload.mimeType) || "Unbekannt"
   const sizeConfig = UPLOAD_SIZES[size]
@@ -30,7 +32,7 @@ export const UploadIcon = ({ upload, projectSlug, size }: Props) => {
         height={sizeConfig.iconPx}
         className={twJoin(
           sizeConfig.iconSize,
-          "pointer-events-none cursor-default rounded object-contain select-none",
+          "pointer-events-none cursor-default rounded-md object-contain select-none",
         )}
         draggable={false}
         onError={() => setImageError(true)}
@@ -38,12 +40,28 @@ export const UploadIcon = ({ upload, projectSlug, size }: Props) => {
     )
   }
 
-  return (
-    <Tooltip content={fileType}>
-      <FileTypeIcon
-        mimeType={upload.mimeType}
-        className={twJoin(sizeConfig.iconSize, "rounded-lg border border-gray-200 text-gray-500")}
-      />
-    </Tooltip>
+  const icon = (
+    <FileTypeIcon
+      mimeType={upload.mimeType}
+      className={twJoin(
+        size === "table" ? sizeConfig.iconSize : showFrame ? "size-20" : sizeConfig.iconSize,
+        size === "table" ? "text-gray-400" : "text-gray-500",
+      )}
+    />
   )
+
+  const placeholder = showFrame ? (
+    <span
+      className={twJoin(
+        sizeConfig.iconSize,
+        "inline-flex shrink-0 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-500",
+      )}
+    >
+      {icon}
+    </span>
+  ) : (
+    icon
+  )
+
+  return <Tooltip content={fileType}>{placeholder}</Tooltip>
 }
