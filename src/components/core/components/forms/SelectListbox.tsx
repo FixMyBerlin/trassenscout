@@ -5,9 +5,14 @@ import {
   ListboxOptions,
   Transition,
 } from "@headlessui/react"
-import { CheckIcon, ChevronDownIcon } from "@heroicons/react/20/solid"
+import { ChevronDownIcon } from "@heroicons/react/20/solid"
 import { clsx } from "clsx"
 import { Fragment } from "react"
+import {
+  checkmarkListboxOptionClassName,
+  checkmarkListboxOptionsPanelClassName,
+  CheckmarkListboxOptionLabel,
+} from "@/src/components/core/components/forms/checkmarkListboxUi"
 
 type SelectListboxOption<T extends string | number> = {
   value: T
@@ -50,76 +55,18 @@ export function SelectListbox<T extends string | number>({
             leaveTo="opacity-0"
           >
             <div className="absolute z-10 mt-1 w-full">
-              <ListboxOptions
-                static
-                className="max-h-60 overflow-auto rounded-md border border-gray-300 bg-white py-1 text-base shadow-lg focus:outline-hidden sm:text-sm"
-              >
-                <ListboxOption
-                  value={null}
-                  className={({ active }) =>
-                    clsx(
-                      active ? "bg-blue-600 text-white" : "text-gray-900",
-                      "relative cursor-default py-2 pr-9 pl-3 select-none",
-                    )
-                  }
-                >
-                  {({ selected, active }) => (
-                    <>
-                      <span
-                        className={clsx(
-                          selected ? "font-semibold" : "font-normal",
-                          "block truncate",
-                        )}
-                      >
-                        {placeholder}
-                      </span>
-                      {selected ? (
-                        <span
-                          className={clsx(
-                            active ? "text-white" : "text-blue-600",
-                            "absolute inset-y-0 right-0 flex items-center pr-4",
-                          )}
-                        >
-                          <CheckIcon className="size-5" aria-hidden="true" />
-                        </span>
-                      ) : null}
-                    </>
-                  )}
+              <ListboxOptions static className={checkmarkListboxOptionsPanelClassName}>
+                <ListboxOption value={null} className={checkmarkListboxOptionClassName}>
+                  <CheckmarkListboxOptionLabel>{placeholder}</CheckmarkListboxOptionLabel>
                 </ListboxOption>
 
                 {options.map((option) => (
                   <ListboxOption
                     key={option.value}
                     value={option.value}
-                    className={({ active }) =>
-                      clsx(
-                        active ? "bg-blue-600 text-white" : "text-gray-900",
-                        "relative cursor-default py-2 pr-9 pl-3 select-none",
-                      )
-                    }
+                    className={checkmarkListboxOptionClassName}
                   >
-                    {({ selected, active }) => (
-                      <>
-                        <span
-                          className={clsx(
-                            selected ? "font-semibold" : "font-normal",
-                            "block truncate",
-                          )}
-                        >
-                          {option.label}
-                        </span>
-                        {selected ? (
-                          <span
-                            className={clsx(
-                              active ? "text-white" : "text-blue-600",
-                              "absolute inset-y-0 right-0 flex items-center pr-4",
-                            )}
-                          >
-                            <CheckIcon className="size-5" aria-hidden="true" />
-                          </span>
-                        ) : null}
-                      </>
-                    )}
+                    <CheckmarkListboxOptionLabel>{option.label}</CheckmarkListboxOptionLabel>
                   </ListboxOption>
                 ))}
               </ListboxOptions>

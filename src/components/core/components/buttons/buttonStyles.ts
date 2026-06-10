@@ -2,7 +2,7 @@ import { clsx } from "clsx"
 
 /** Compact action button base — Tailwind UI sizing, icon-ready via gap-x-1.5. */
 export const compactButtonBase =
-  "inline-flex w-full items-center justify-center gap-x-1.5 rounded-md text-sm font-semibold shadow-xs no-underline transition-colors sm:w-auto"
+  "inline-flex w-full cursor-pointer items-center justify-center gap-x-1.5 rounded-md text-sm font-semibold shadow-xs no-underline transition-colors sm:w-auto"
 
 const primaryColors =
   "bg-blue-500 text-white hover:bg-blue-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 active:bg-blue-500"
