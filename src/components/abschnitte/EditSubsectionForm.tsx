@@ -52,6 +52,7 @@ export const EditSubsectionForm = ({ subsection, projectSlug }: Props) => {
         submitText="Speichern"
         schema={SubsectionSchema}
         initialValues={subsection}
+        subsectionSlug={subsection.slug}
         onSubmit={handleSubmit}
         actionBarRight={
           <DeleteActionBar
