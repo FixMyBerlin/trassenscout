@@ -119,7 +119,7 @@ export const ProjectRecordFormFields = ({
     e.preventDefault()
     if (!newTopic.trim()) return
     try {
-      await createProjectRecordTopicMutation.mutateAsync({
+      const createdTopic = await createProjectRecordTopicMutation.mutateAsync({
         data: {
           projectSlug,
           table: "projectRecordTopics",
@@ -127,6 +127,14 @@ export const ProjectRecordFormFields = ({
         },
       })
       await queryClient.invalidateQueries({ queryKey: projectRecordTopicsQuery.queryKey })
+
+      const currentTopics = Array.isArray(form.getFieldValue("projectRecordTopics"))
+        ? (form.getFieldValue("projectRecordTopics") as string[]).map(String)
+        : []
+      const newTopicId = String(createdTopic.id)
+      if (!currentTopics.includes(newTopicId)) {
+        form.setFieldValue("projectRecordTopics", [...currentTopics, newTopicId])
+      }
     } catch (error: unknown) {
       console.error(error)
     }
