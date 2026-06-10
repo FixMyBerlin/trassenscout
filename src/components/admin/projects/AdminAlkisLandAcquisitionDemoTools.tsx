@@ -1,7 +1,7 @@
 import { MapIcon } from "@heroicons/react/16/solid"
 import { useMutation } from "@tanstack/react-query"
 import { useState } from "react"
-import { blueButtonStyles } from "@/src/components/core/components/links/styles"
+import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import {
   deleteAlkisLandAcquisitionDemosFn,
   seedAlkisLandAcquisitionDemosFn,
@@ -57,7 +57,7 @@ export const AdminAlkisLandAcquisitionDemoTools = () => {
       <div className="mt-4 flex flex-wrap gap-3">
         <button
           type="button"
-          className={blueButtonStyles}
+          className={primaryButtonClassName}
           disabled={busy}
           onClick={() => void handleSeed()}
         >

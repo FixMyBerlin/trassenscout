@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "@tanstack/react-router"
 import { clsx } from "clsx"
 import { useState } from "react"
-import { whiteButtonStyles } from "@/src/components/core/components/links/styles"
+import { secondaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { Tooltip } from "@/src/components/core/components/Tooltip/Tooltip"
 import { IfUserCanEdit } from "@/src/components/shared/memberships/IfUserCan"
 import {
@@ -89,7 +89,7 @@ export const LuckyCloudActionBar = ({ upload, projectSlug }: Props) => {
               disabled={isCopyingToLuckyCloud || isEndingCollaboration || !canCollaborate}
               className={clsx(
                 "rounded px-4 py-2 text-sm font-medium",
-                whiteButtonStyles,
+                secondaryButtonClassName,
                 "disabled:cursor-not-allowed disabled:opacity-50",
               )}
             >
@@ -103,7 +103,7 @@ export const LuckyCloudActionBar = ({ upload, projectSlug }: Props) => {
             disabled={isCopyingToLuckyCloud || isEndingCollaboration || !canCollaborate}
             className={clsx(
               "rounded px-4 py-2 text-sm font-medium",
-              whiteButtonStyles,
+              secondaryButtonClassName,
               "disabled:cursor-not-allowed disabled:opacity-50",
             )}
           >
@@ -117,7 +117,7 @@ export const LuckyCloudActionBar = ({ upload, projectSlug }: Props) => {
           disabled={isCopyingToLuckyCloud || isEndingCollaboration}
           className={clsx(
             "rounded px-4 py-2 text-sm font-medium",
-            whiteButtonStyles,
+            secondaryButtonClassName,
             "disabled:cursor-not-allowed disabled:opacity-50",
           )}
         >

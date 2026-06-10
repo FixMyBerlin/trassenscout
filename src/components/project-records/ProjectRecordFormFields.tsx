@@ -2,9 +2,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import clsx from "clsx"
 import { useState } from "react"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
+import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { useCoreAppFormContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { useFormValue } from "@/src/components/core/components/forms/hooks/useFormValue"
-import { blueButtonStyles } from "@/src/components/core/components/links/styles"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { NumberArraySchema } from "@/src/components/core/utils/schema-shared"
 import { ProjectRecordEmailSource } from "@/src/components/project-records/ProjectRecordEmailSource"
@@ -206,7 +206,7 @@ export const ProjectRecordFormFields = ({
               <button
                 type="button"
                 onClick={handleNewTopicFormSubmit}
-                className={clsx(blueButtonStyles, "h-3! px-3!")}
+                className={clsx(primaryButtonClassName, "shrink-0 px-3! py-2!")}
               >
                 Hinzufügen
               </button>

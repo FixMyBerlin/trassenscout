@@ -1,6 +1,6 @@
 import { useStore } from "@tanstack/react-form"
+import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { useCoreAppFormContext } from "@/src/components/core/components/forms/hooks/formContext"
-import { blueButtonStyles } from "@/src/components/core/components/links/styles"
 import { EmailTemplateFormValues } from "@/src/shared/emailTemplates/schemas"
 
 type Props = {
@@ -15,7 +15,7 @@ export const EmailTemplatePreviewButton = ({ onPreview, disabled }: Props) => {
   return (
     <button
       type="button"
-      className={blueButtonStyles}
+      className={primaryButtonClassName}
       disabled={disabled}
       onClick={() => onPreview(values)}
     >

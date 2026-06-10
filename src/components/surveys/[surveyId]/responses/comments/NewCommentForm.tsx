@@ -1,9 +1,9 @@
 import { clsx } from "clsx"
 import dompurify from "dompurify"
+import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
 import { useIsHydrated } from "@/src/components/core/components/forms/hooks/useIsHydrated"
-import { blueButtonStyles } from "@/src/components/core/components/links/styles"
 import {
   CommentBodyFormSchema,
   commentBodyFormDefaultValues,
@@ -33,7 +33,7 @@ export const NewCommentForm = ({ commentLabel, commentHelp, createComment }: Pro
       form={form}
       formError={null}
       submitText={`${commentLabel} hinzufügen`}
-      submitClassName={clsx(blueButtonStyles, "mt-2 px-3! py-2.5!")}
+      submitClassName={clsx(primaryButtonClassName, "mt-2 px-3! py-2.5!")}
       submitDisabled={!isHydrated}
       className="space-y-0"
     >

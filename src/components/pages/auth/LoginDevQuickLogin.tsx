@@ -1,7 +1,7 @@
 import { clsx } from "clsx"
 import { useState } from "react"
 import { DevAdminBox } from "@/src/components/core/components/AdminBox/DevAdminBox"
-import { blueButtonStyles } from "@/src/components/core/components/links/styles"
+import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { DEV_LOGIN_USERS } from "./loginDevQuickLogin.const"
 
 type Props = {
@@ -45,7 +45,6 @@ export function LoginDevQuickLogin({ hasInvite, inviteToken, onQuickLogin }: Pro
       {DEV_LOGIN_USERS.map(([displayName, email]) => (
         <button
           key={displayName}
-          className={clsx(blueButtonStyles, "m-1")}
           disabled={pendingEmail !== null}
           type="button"
           onClick={() => void handleQuickLogin(email)}
@@ -53,6 +52,7 @@ export function LoginDevQuickLogin({ hasInvite, inviteToken, onQuickLogin }: Pro
           {pendingEmail === email ? "…" : displayName}
         </button>
       ))}
+            className={clsx(primaryButtonClassName, "px-2 py-1 text-xs")}
     </DevAdminBox>
   )
 }

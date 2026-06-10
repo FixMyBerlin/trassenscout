@@ -1,7 +1,7 @@
 import { SurveyPart1and3 } from "@/src/components/beteiligung/shared/types"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
+import { secondaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { Link } from "@/src/components/core/components/links/Link"
-import { whiteButtonStyles } from "@/src/components/core/components/links/styles"
 import { GroupedSurveyResponseItem } from "@/src/components/surveys/[surveyId]/responses/analysis/GroupedSurveyResponseItem"
 import { extractAndTransformQuestionsFromPages } from "@/src/components/surveys/[surveyId]/responses/format-survey-questions"
 
@@ -69,7 +69,7 @@ export const SurveyChartAndCsvDownloadSection = ({
       <SuperAdminBox>
         {surveyDefinition && (
           <div className="flex flex-col items-start gap-4">
-            <button onClick={handleCopyChartDataButtonClick} className={whiteButtonStyles}>
+            <button onClick={handleCopyChartDataButtonClick} className={secondaryButtonClassName}>
               Ergebnisse Umfrageteil 1 in die Zwischenablage kopieren - formatiert für Diagramme
             </button>
             <Link href={`/api/${projectSlug}/surveys/${surveyId}/part1/questions`} button="white">

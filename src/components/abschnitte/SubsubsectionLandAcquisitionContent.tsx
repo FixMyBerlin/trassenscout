@@ -7,10 +7,13 @@ import { useEffect, useState } from "react"
 import { SubsubsectionPanel } from "@/src/components/abschnitte/SubsubsectionPanel"
 import { useAcquisitionAreaSelection } from "@/src/components/abschnitte/useAcquisitionAreaSelection"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
+import {
+  primaryButtonClassName,
+  secondaryButtonClassName,
+} from "@/src/components/core/components/buttons/buttonStyles"
 import { FormSuccess } from "@/src/components/core/components/forms/FormSuccess"
 import { SelectListbox } from "@/src/components/core/components/forms/SelectListbox"
 import { Link } from "@/src/components/core/components/links/Link"
-import { blueButtonStyles, whiteButtonStyles } from "@/src/components/core/components/links/styles"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { useCurrentReturnTo } from "@/src/components/core/routes/useCurrentPathWithSearch"
@@ -289,7 +292,10 @@ export const SubsubsectionLandAcquisitionContent = ({
                 <IfUserCanEdit>
                   <button
                     onClick={() => setIsProjectRecordModalOpen(true)}
-                    className={clsx(blueButtonStyles, "mt-5 items-center justify-center gap-1")}
+                    className={clsx(
+                      primaryButtonClassName,
+                      "mt-5 items-center justify-center gap-1",
+                    )}
                   >
                     <PlusIcon className="size-3.5" /> Neuer Protokolleintrag
                   </button>
@@ -367,7 +373,7 @@ export const SubsubsectionLandAcquisitionContent = ({
               <IfUserCanEdit>
                 <button
                   type="button"
-                  className={clsx(whiteButtonStyles, "gap-2 ring-inset")}
+                  className={clsx(secondaryButtonClassName, "gap-2 ring-inset")}
                   disabled={deleteAllAcquisitionAreasMutation.isPending}
                   onClick={() => void handleDeleteAllAcquisitionAreas()}
                 >
