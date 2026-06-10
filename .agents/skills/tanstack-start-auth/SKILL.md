@@ -22,7 +22,7 @@ Single skill for **library configuration** and **Start-specific wiring** in FMC 
 
 | Topic                                                     | File                                                                 |
 | --------------------------------------------------------- | -------------------------------------------------------------------- |
-| TanStack routes, cookies, session helpers, TILDA patterns | [references/auth.md](references/auth.md)                             |
+| TanStack routes, cookies, session, endpointAuth (Trassenscout) | skill **`trassenscout-auth`** → `references/auth.md`              |
 | betterAuth options, DB, plugins, sessions, hooks          | [references/better-auth-config.md](references/better-auth-config.md) |
 
 **Live docs:** [better-auth.com/docs](https://better-auth.com/docs) · [llms.txt](https://better-auth.com/llms.txt)
@@ -37,10 +37,11 @@ Single skill for **library configuration** and **Start-specific wiring** in FMC 
 
 1. Session helpers always receive `headers: Headers` from the current request.
 2. Route `beforeLoad` does not call DB/session directly — server functions + `getRequestHeaders()`.
-3. **Do not** add `tanstackStartCookies()` in FMC apps — use `forwardAuthAndApplyCookies` ([auth.md](references/auth.md)).
-4. API routes: auth inside each handler (no route-level `beforeLoad`).
-5. Admin/role checks with cookie cache: `getSession({ query: { disableCookieCache: true } })`.
-6. Compare API secrets with timing-safe equality.
+3. **Do not** add `tanstackStartCookies()` in FMC apps — use `forwardAuthAndApplyCookies` (skill `trassenscout-auth`).
+4. `/api/auth/$` and other handler-only API routes: `ssr: false` ([selective-ssr.md](../tanstack-start-conventions/references/selective-ssr.md)).
+5. API routes: auth inside each handler (no route-level `beforeLoad`).
+6. Admin/role checks with cookie cache: `getSession({ query: { disableCookieCache: true } })`.
+7. Compare API secrets with timing-safe equality.
 
 ## Quick patterns
 

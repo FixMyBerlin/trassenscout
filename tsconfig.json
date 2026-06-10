@@ -1,38 +1,45 @@
 {
+  // TypeScript options manually aligned with https://github.com/total-typescript/tsconfig
+  // Profile: bundler/dom (Vite + DOM app). We do not use "extends" — settings are inlined and
+  // adjusted for TanStack Start (see verbatimModuleSyntax note below).
   "compilerOptions": {
-    "target": "es2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "baseUrl": "./",
+    // --- Base (total-typescript) ---
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "target": "ES2022",
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    // verbatimModuleSyntax intentionally OFF — TanStack Start client/server boundary
+
+    // --- Strictness (total-typescript + extras) ---
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noUncheckedSideEffectImports": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+
+    // --- Bundler / no tsc emit ---
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "noEmit": true,
+
+    // --- DOM ---
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+
+    // --- Trassenscout / TanStack Start ---
     "paths": {
       // We need to specify this explicitly, so that Vitest can pick it up and work
       "@/*": ["./*"]
     },
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "strictNullChecks": true,
-    "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
-    "noUncheckedIndexedAccess": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
+    "types": ["vite/client", "bun-types", "web"],
     "incremental": true,
     "tsBuildInfoFile": ".tsbuildinfo",
-    "noErrorTruncation": true, // https://stackoverflow.com/a/53131824
-    "types": [
-      "bun-types" // We use bun.sh for our scripts
-      // "web" // Once we add bun-types, "lib":["dom"] is not enough, see https://github.com/oven-sh/bun/issues/3030#issuecomment-1712671248
-    ],
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ]
+    "noErrorTruncation": true // https://stackoverflow.com/a/53131824
   },
-  "exclude": ["node_modules", "**/*.e2e.ts", "cypress", "src/core/templates", "imap-listener"],
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "types", ".next/types/**/*.ts"]
+  "include": ["**/*.ts", "**/*.tsx", "**/*.mts"],
+  "exclude": ["node_modules", "**/*.e2e.ts", "imap-listener/**", ".output", "dist"]
 }

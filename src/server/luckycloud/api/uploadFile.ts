@@ -3,7 +3,7 @@ import { buildEndpoint, getDefaultRepoId, luckyCloudApiRequest } from "../_utils
 import { truncateErrorText } from "../_utils/errorTruncation"
 import { getLuckyCloudProjectPath } from "../_utils/folders"
 
-const UploadLinkResponseSchema = z.string().url()
+const UploadLinkResponseSchema = z.url()
 
 export async function uploadFileToLuckyCloud(
   fileBuffer: Buffer,

@@ -1,4 +1,4 @@
-import type { Prisma } from "@/db"
+import type { Prisma } from "@/src/prisma/generated/client"
 import { deleteAcquisitionAreasAndOrphanParcels } from "@/src/server/acquisitionAreas/_utils/deleteAcquisitionAreasAndOrphanParcels"
 
 /**
@@ -8,7 +8,7 @@ import { deleteAcquisitionAreasAndOrphanParcels } from "@/src/server/acquisition
 export async function deleteAlkisLandAcquisitionDemoProject(
   tx: Prisma.TransactionClient,
   projectId: number,
-): Promise<void> {
+) {
   await tx.systemLogEntry.deleteMany({ where: { projectId } })
 
   await tx.surveyResponse.deleteMany({

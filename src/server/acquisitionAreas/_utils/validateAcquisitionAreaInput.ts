@@ -1,5 +1,5 @@
-import db from "@/db"
-import { TAcquisitionAreaSchema } from "@/src/server/acquisitionAreas/schema"
+import db from "@/src/server/db.server"
+import { TAcquisitionAreaSchema } from "@/src/shared/acquisitionAreas/schemas"
 
 type ValidateAcquisitionAreaInput = Pick<
   TAcquisitionAreaSchema,

@@ -1,9 +1,9 @@
-import db from "@/db"
-import { OHV_VORGANGS_ID_PREFIX } from "@/src/app/beteiligung/_ohv-haltestellenfoerderung/config"
+import db from "@/src/server/db.server"
 
+const OHV_VORGANGS_ID_PREFIX = "547010"
 const REFERENCE_ID_PATTERN = new RegExp(`^${OHV_VORGANGS_ID_PREFIX}_(\\d+)$`)
 
-export const parseOhvReferenceIdRunningNumber = (data: string): number | null => {
+const parseOhvReferenceIdRunningNumber = (data: string) => {
   const parsedData = JSON.parse(data) as { referenceId?: unknown }
 
   if (typeof parsedData.referenceId === "string") {

@@ -1,15 +1,13 @@
-import db from "@/db"
-import { AuthenticationError } from "blitz"
+import db from "@/src/server/db.server"
+import { AuthenticationError } from "@/src/shared/auth/errors"
 
 export const getInvite = async (inviteToken: string | undefined | null, email: string) => {
   if (!inviteToken) return null
 
-  // Check if invite is valid and update/invalidate it at the same time
-  const invite = await db.invite.findUniqueOrThrow({
+  const invite = await db.invite.findFirst({
     where: { token: inviteToken, email: email.toLocaleLowerCase(), status: "PENDING" },
   })
 
-  // Explode when someone uses an broken or outdated inviteToken or a non-matching email-address
   if (!invite) throw new AuthenticationError()
 
   return invite

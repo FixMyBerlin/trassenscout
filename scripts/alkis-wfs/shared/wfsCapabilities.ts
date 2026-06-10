@@ -6,12 +6,19 @@ export type ParsedCapabilitiesFeatureType = {
   otherCrs: string[]
 }
 
+function isPrintableReportChar(char: string) {
+  const code = char.codePointAt(0) ?? 0
+  if (code === 0x09 || code === 0x0a || code === 0x0d) return true
+  if (code >= 0x20 && code <= 0x7e) return true
+  return code >= 0xa0
+}
+
 export function sanitizeReportText(s: string, maxLen = 400): string {
-  const noNull = s.replace(/\0/g, "")
+  const noNull = s.split("\0").join("")
   if (/JFIF|^\s*\xff\xd8\xff/i.test(noNull)) {
     return "non-text body (binary image or similar)"
   }
-  const printable = noNull.replace(/[^\x09\x0a\x0d\x20-\x7E\u00A0-\uFFFF]/g, " ")
+  const printable = [...noNull].map((char) => (isPrintableReportChar(char) ? char : " ")).join("")
   const oneLine = printable.replace(/\s+/g, " ").trim()
   return oneLine.length <= maxLen ? oneLine : `${oneLine.slice(0, maxLen)}...`
 }

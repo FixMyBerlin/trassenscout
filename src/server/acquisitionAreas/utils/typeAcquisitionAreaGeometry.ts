@@ -1,5 +1,5 @@
-import { AcquisitionArea } from "@/db"
-import { typeGeometry } from "@/src/server/shared/utils/typeGeometry"
+import { AcquisitionArea } from "@/src/prisma/generated/client"
+import { typeGeometry } from "@/src/shared/geometry/typeGeometry"
 
 export const typeAcquisitionAreaGeometry = <T extends Pick<AcquisitionArea, "geometry">>(
   acquisitionArea: T,

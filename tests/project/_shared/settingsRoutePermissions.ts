@@ -1,7 +1,7 @@
 import { authFile } from "@/tests/_fixtures/auth"
 import { authorizationNoise, pageNoise } from "@/tests/_fixtures/console-noise"
 import { expect, test } from "@/tests/_fixtures/test"
-import { expectErrorPage } from "@/tests/_utils/pageAssertions"
+import { expectAccessDeniedRedirect } from "@/tests/_utils/pageAssertions"
 export { pageNoise }
 export const authorizationErrorNoise = authorizationNoise
 
@@ -35,7 +35,7 @@ export const defineSettingsRoutePermissionSuite = ({
         await expect(page.getByRole("heading", { name: listHeading, exact: true })).toBeVisible({
           timeout: 30_000,
         })
-        await expect(page.getByRole("link", { name: createLinkName })).toBeHidden()
+        await expect(page.getByRole("link", { name: createLinkName }).first()).toBeHidden()
         await expect(page.getByRole("link", { name: "Bearbeiten" }).first()).toBeHidden()
         await expect(page.getByRole("button", { name: "Löschen" }).first()).toBeHidden()
       })
@@ -48,7 +48,7 @@ export const defineSettingsRoutePermissionSuite = ({
       test("cannot open the create form", async ({ page }) => {
         await page.goto(createPath)
 
-        await expectErrorPage(page)
+        await expectAccessDeniedRedirect(page)
         await expect(page.getByRole("heading", { name: createHeading })).toBeHidden()
       })
 
@@ -56,10 +56,9 @@ export const defineSettingsRoutePermissionSuite = ({
         const editorContext = await browser.newContext({ storageState: authFile("editor") })
         const editorPage = await editorContext.newPage()
         await editorPage.goto(listPath)
-        const editPath = await editorPage
-          .getByRole("link", { name: "Bearbeiten" })
-          .first()
-          .getAttribute("href")
+        const editLink = editorPage.getByRole("link", { name: "Bearbeiten", exact: true }).first()
+        const hasEditLink = await editLink.isVisible({ timeout: 5_000 }).catch(() => false)
+        const editPath = hasEditLink ? await editLink.getAttribute("href") : null
         await editorContext.close()
 
         if (!editPath) {
@@ -72,7 +71,7 @@ export const defineSettingsRoutePermissionSuite = ({
 
         await page.goto(editPath)
 
-        await expectErrorPage(page)
+        await expectAccessDeniedRedirect(page)
         await expect(page.getByRole("heading", { name: editHeading })).toBeHidden()
       })
     })
@@ -84,7 +83,7 @@ export const defineSettingsRoutePermissionSuite = ({
       test("can open the create form from the list", async ({ page }) => {
         await page.goto(listPath)
 
-        await page.getByRole("link", { name: createLinkName }).click()
+        await page.getByRole("link", { name: createLinkName }).first().click()
 
         await expect(page).toHaveURL(new RegExp(`${createPath}$`))
         await expect(page.getByRole("heading", { name: createHeading, exact: true })).toBeVisible({
@@ -112,7 +111,7 @@ export const defineSettingsRoutePermissionSuite = ({
       test("cannot read the list", async ({ page }) => {
         await page.goto(listPath)
 
-        await expectErrorPage(page)
+        await expectAccessDeniedRedirect(page)
         await expect(page.getByRole("heading", { name: listHeading, exact: true })).toBeHidden()
       })
     })

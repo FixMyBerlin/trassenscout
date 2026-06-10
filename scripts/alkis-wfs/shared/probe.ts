@@ -1,10 +1,10 @@
+import type { StateKeyEnum } from "@/src/prisma/generated/client"
 import {
   buildWfsGetFeatureUrl,
   convertWfsResponseToGeoJson,
   getWfsOutputFormat,
   injectAlkisParcelIdsIntoGeoJson,
 } from "@/src/server/alkis/utils/alkisWfs"
-import type { StateKeyEnum } from "@prisma/client"
 import {
   DEFAULT_COUNT,
   DEFAULT_TIMEOUT_MS,

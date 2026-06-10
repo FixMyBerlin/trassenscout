@@ -1,25 +1,31 @@
-import { loadEnvConfig } from "@next/env"
+import { fileURLToPath } from "node:url"
 import react from "@vitejs/plugin-react"
+import { loadEnv } from "vite"
 import { defineConfig } from "vitest/config"
 
-const projectDir = process.cwd()
-loadEnvConfig(projectDir)
+const repoRootPath = fileURLToPath(new URL(".", import.meta.url))
+const testEnv = loadEnv("test", repoRootPath, "")
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    alias: [
+      // Keep in sync with `vite.config.ts` so tests resolve the same `@/...` imports.
+      {
+        find: "@",
+        replacement: repoRootPath,
+      },
+    ],
+  },
   test: {
     dir: "./",
+    env: testEnv,
     globals: true,
-    setupFiles: "./tests/blitz/setup.ts",
-    include: ["**/*.test.ts"], // Exclude .spec.ts which are Playwright tests
+    setupFiles: "./tests/setup.ts",
+    include: ["**/*.test.ts", "**/*.test.tsx"],
     coverage: {
       reporter: ["text", "json", "html"],
     },
-    minWorkers: 1,
     maxWorkers: 1,
-    alias: {
-      "@/": new URL("./", import.meta.url).pathname,
-    },
   },
 })

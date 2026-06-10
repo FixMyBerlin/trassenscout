@@ -57,8 +57,8 @@ export async function getMailboxStats() {
     if (client) {
       try {
         await client.logout()
-      } catch (logoutError) {
-        // Ignore logout errors
+      } catch {
+        // Ignore logout errors during cleanup
       }
     }
     throw error

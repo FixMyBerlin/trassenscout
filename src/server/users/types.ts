@@ -1,4 +1,15 @@
-import { PromiseReturnType } from "blitz"
-import getCurrentUser from "./queries/getCurrentUser"
+import type { MembershipRoleEnum, UserRoleEnum } from "@/src/prisma/generated/client"
 
-export type CurrentUser = NonNullable<PromiseReturnType<typeof getCurrentUser>>
+export type CurrentUser = {
+  email: string
+  firstName: string | null
+  id: number
+  institution: string | null
+  lastName: string | null
+  memberships: {
+    project: { slug: string }
+    role: MembershipRoleEnum
+  }[]
+  phone: string | null
+  role: UserRoleEnum
+}

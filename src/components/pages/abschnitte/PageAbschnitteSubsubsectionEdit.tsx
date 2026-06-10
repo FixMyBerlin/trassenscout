@@ -1,0 +1,28 @@
+import { useSuspenseQuery } from "@tanstack/react-query"
+import { getRouteApi } from "@tanstack/react-router"
+import { Suspense } from "react"
+import { EditSubsubsectionForm } from "@/src/components/abschnitte/EditSubsubsectionForm"
+import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
+import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { Spinner } from "@/src/components/core/components/Spinner"
+import { subsubsectionBySlugQueryOptions } from "@/src/server/subsubsections/subsubsectionQueryOptions"
+
+const routeApi = getRouteApi(
+  "/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/edit/",
+)
+
+export function PageAbschnitteSubsubsectionEdit() {
+  const { projectSlug, subsectionSlug, subsubsectionSlug } = routeApi.useParams()
+  const { data: subsubsection } = useSuspenseQuery(
+    subsubsectionBySlugQueryOptions({ projectSlug, subsectionSlug, subsubsectionSlug }),
+  )
+  return (
+    <>
+      <PageHeader title="Eintrag bearbeiten" />
+      <Suspense fallback={<Spinner />}>
+        <EditSubsubsectionForm subsubsection={subsubsection} />
+      </Suspense>
+      <SuperAdminLogData data={subsubsection} />
+    </>
+  )
+}

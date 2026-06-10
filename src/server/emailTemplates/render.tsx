@@ -1,13 +1,10 @@
-import db from "@/db"
-import { MarkdownMail } from "@/emails/templats/MarkdownMail"
 import { render } from "@react-email/render"
-import { EmailTemplateKey, getEmailTemplateDefinition } from "./registry"
+import { MarkdownMail } from "@/emails/templats/MarkdownMail"
+import db from "@/src/server/db.server"
+import { EmailTemplateKey, getEmailTemplateDefinition } from "@/src/shared/emailTemplates/registry"
 import {
   EmailTemplateEditableContent,
-  EmailTemplatePreviewResult,
-  EmailTemplateValidationResult,
   EmailTemplateVariableContext,
-  RenderedEmailTemplate,
   ResolvedEmailTemplate,
 } from "./types"
 
@@ -17,7 +14,7 @@ const HTML_TAG_REGEX = /<[^>]+>/
 const normalizeOptionalString = (value: string | null | undefined) =>
   value == null || value === "" ? undefined : value
 
-const extractVariablesFromString = (value: string | null | undefined): string[] => {
+const extractVariablesFromString = (value: string | null | undefined) => {
   if (!value) return []
 
   const variables = new Set<string>()
@@ -30,7 +27,7 @@ const extractVariablesFromString = (value: string | null | undefined): string[] 
   return Array.from(variables)
 }
 
-export const extractEmailTemplateVariables = (content: EmailTemplateEditableContent): string[] => {
+const extractEmailTemplateVariables = (content: EmailTemplateEditableContent) => {
   return Array.from(
     new Set([
       ...extractVariablesFromString(content.subject),
@@ -41,10 +38,10 @@ export const extractEmailTemplateVariables = (content: EmailTemplateEditableCont
   )
 }
 
-export const validateEmailTemplateContent = (
+const validateEmailTemplateContent = (
   allowedVariables: string[],
   content: EmailTemplateEditableContent,
-): EmailTemplateValidationResult => {
+) => {
   const usedVariables = extractEmailTemplateVariables(content)
   const allowedSet = new Set(allowedVariables)
   const unknownVariables = usedVariables.filter((variable) => !allowedSet.has(variable))
@@ -70,7 +67,7 @@ export const validateEmailTemplateContent = (
 const renderTemplateString = (
   value: string | null | undefined,
   context: EmailTemplateVariableContext,
-): string | undefined => {
+) => {
   if (!value) return undefined
 
   return value.replace(PLACEHOLDER_REGEX, (_, variableName: string) => {
@@ -78,7 +75,7 @@ const renderTemplateString = (
   })
 }
 
-export const renderEmailTemplateContent = (
+const renderEmailTemplateContent = (
   content: EmailTemplateEditableContent,
   context: EmailTemplateVariableContext,
 ) => {
@@ -90,9 +87,7 @@ export const renderEmailTemplateContent = (
   }
 }
 
-export const resolveEmailTemplate = async (
-  key: EmailTemplateKey,
-): Promise<ResolvedEmailTemplate> => {
+export async function resolveEmailTemplate(key: EmailTemplateKey): Promise<ResolvedEmailTemplate> {
   const definition = getEmailTemplateDefinition(key)
 
   const dbTemplate = await db.emailTemplate.findUnique({
@@ -109,7 +104,7 @@ export const resolveEmailTemplate = async (
     return {
       key,
       definition,
-      source: "defaults",
+      source: "defaults" as const,
       subject: definition.defaults.subject,
       introMarkdown: definition.defaults.introMarkdown,
       outroMarkdown: normalizeOptionalString(definition.defaults.outroMarkdown),
@@ -120,7 +115,7 @@ export const resolveEmailTemplate = async (
   return {
     key,
     definition,
-    source: "db",
+    source: "db" as const,
     subject: dbTemplate.subject,
     introMarkdown: dbTemplate.introMarkdown,
     outroMarkdown: normalizeOptionalString(dbTemplate.outroMarkdown),
@@ -131,7 +126,7 @@ export const resolveEmailTemplate = async (
 export const resolveAndRenderEmailTemplate = async (
   key: EmailTemplateKey,
   context: EmailTemplateVariableContext,
-): Promise<RenderedEmailTemplate> => {
+) => {
   const resolvedTemplate = await resolveEmailTemplate(key)
   const validation = validateEmailTemplateContent(
     resolvedTemplate.definition.allowedVariables,
@@ -145,29 +140,34 @@ export const resolveAndRenderEmailTemplate = async (
   }
 }
 
-export const validateAndRenderEmailTemplateContent = (
+const validateAndRenderEmailTemplateContent = (
   key: EmailTemplateKey,
   content: EmailTemplateEditableContent,
   context: EmailTemplateVariableContext,
-): RenderedEmailTemplate => {
+) => {
   const definition = getEmailTemplateDefinition(key)
   const validation = validateEmailTemplateContent(definition.allowedVariables, content)
 
   return {
     key,
     definition,
-    source: "db",
+    source: "db" as const,
     ...content,
     ...validation,
     rendered: renderEmailTemplateContent(content, context),
   }
 }
 
+type BuildEmailTemplatePreviewOptions = {
+  assetBaseUrl?: string
+}
+
 export const buildEmailTemplatePreview = async (
   key: EmailTemplateKey,
   content: EmailTemplateEditableContent,
   context: EmailTemplateVariableContext,
-): Promise<EmailTemplatePreviewResult> => {
+  options: BuildEmailTemplatePreviewOptions = {},
+) => {
   const renderedTemplate = validateAndRenderEmailTemplateContent(key, content, context)
 
   const htmlProps = renderedTemplate.rendered.ctaText
@@ -182,7 +182,7 @@ export const buildEmailTemplatePreview = async (
         outroMarkdown: renderedTemplate.rendered.outroMarkdown,
       }
 
-  const html = await render(<MarkdownMail {...htmlProps} />)
+  const html = await render(<MarkdownMail {...htmlProps} assetBaseUrl={options.assetBaseUrl} />)
 
   return {
     ...renderedTemplate,

@@ -1,9 +1,0 @@
-{
-  "semi": false,
-  "singleQuote": false,
-  "arrowParens": "always",
-  "printWidth": 100,
-  "plugins": ["prettier-plugin-organize-imports", "prettier-plugin-tailwindcss"],
-  "tailwindAttributes": ["positionClasses", "classNameOverwrites"],
-  "tailwindFunctions": ["twMerge", "clsx", "twJoin"]
-}

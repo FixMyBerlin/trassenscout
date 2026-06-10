@@ -1,5 +1,5 @@
-import { Subsubsection } from "@/db"
-import { typeGeometry } from "@/src/server/shared/utils/typeGeometry"
+import { Subsubsection } from "@/src/prisma/generated/client"
+import { typeGeometry } from "@/src/shared/geometry/typeGeometry"
 
 export const typeSubsubsectionGeometry = <T extends Pick<Subsubsection, "geometry" | "type">>(
   subsubsection: T,

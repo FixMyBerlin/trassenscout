@@ -1,13 +1,13 @@
 {
   "recommendations": [
-    "dbaeumer.vscode-eslint",
     "editorconfig.editorconfig",
-    "esbenp.prettier-vscode",
     "mikestead.dotenv",
     "mgmcdermott.vscode-language-babel",
+    "oxc.oxc-vscode",
+    "TypeScriptTeam.native-preview",
     "orta.vscode-jest",
     "prisma.prisma",
     "ms-playwright.playwright"
   ],
-  "unwantedRecommendations": []
+  "unwantedRecommendations": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
 }

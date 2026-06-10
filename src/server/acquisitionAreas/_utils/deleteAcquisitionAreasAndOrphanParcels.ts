@@ -1,4 +1,4 @@
-import type { Prisma } from "@/db"
+import type { Prisma } from "@/src/prisma/generated/client"
 
 /**
  * Deletes acquisition areas matching `where`, then removes each parcel that no longer has acquisition areas.
@@ -7,7 +7,7 @@ import type { Prisma } from "@/db"
 export async function deleteAcquisitionAreasAndOrphanParcels(
   tx: Prisma.TransactionClient,
   where: Prisma.AcquisitionAreaWhereInput,
-): Promise<{ deletedAcquisitionAreas: number }> {
+) {
   const acquisitionAreas = await tx.acquisitionArea.findMany({
     where,
     select: { id: true, parcelId: true },

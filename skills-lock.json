@@ -47,19 +47,19 @@
       "source": "FixMyBerlin/fixmyskills",
       "sourceType": "github",
       "skillPath": "skills/tanstack-start-auth/SKILL.md",
-      "computedHash": "2583237cfcd46e9744c8a0d758cb66a745761dd2df7bd36674ae7d154f7d7350"
+      "computedHash": "5ce23d02251d92ecf30a564f87e9bf241ce3e5d5a92160de669e6ac4a30f7488"
     },
     "tanstack-start-conventions": {
       "source": "FixMyBerlin/fixmyskills",
       "sourceType": "github",
       "skillPath": "skills/tanstack-start-conventions/SKILL.md",
-      "computedHash": "fb90028b57030e960a7b15e0dbdaa979138effd3861a6c25c054651574718839"
+      "computedHash": "66b4323d9c1be97b1e10792240e6902b9dead3635c89edeeb8587dd9fadd32b7"
     },
     "tanstack-start-migration": {
       "source": "FixMyBerlin/fixmyskills",
       "sourceType": "github",
       "skillPath": "skills/tanstack-start-migration/SKILL.md",
-      "computedHash": "463ff7c8dc54c77836ddf30f29279b5941130bde52eea9ba055b33721f7d25e5"
+      "computedHash": "da77e1b9b04ae14416f15c8a214579485213bb4332d14a6ea1ef8861109d630d"
     },
     "zustand-state-management": {
       "source": "FixMyBerlin/fixmyskills",

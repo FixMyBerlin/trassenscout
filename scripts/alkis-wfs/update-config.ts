@@ -1,13 +1,12 @@
 #!/usr/bin/env bun
+import { join } from "node:path"
+import { StateKeyEnum } from "@/src/prisma/generated/client"
 import { alkisStateConfig } from "@/src/server/alkis/alkisStateConfig.data"
 import type {
   AlkisStateConfigEntry,
   AlkisWfsConfig,
   AlkisWmsConfig,
 } from "@/src/server/alkis/alkisStateConfig.types"
-import { StateKeyEnum } from "@prisma/client"
-import { readFileSync, writeFileSync } from "node:fs"
-import { join } from "node:path"
 import { AUDIT_SCHEMA_VERSION } from "./shared/constants"
 
 function renderHeader(generatedAt: string): string {
@@ -190,9 +189,9 @@ function renderEntry(
   return lines.join("\n")
 }
 
-function main() {
+async function main() {
   const auditPath = join(import.meta.dir, "results", "audit-results.json")
-  const raw = readFileSync(auditPath, "utf8")
+  const raw = await Bun.file(auditPath).text()
   const payload = JSON.parse(raw) as AuditPayload
   if (payload.schemaVersion !== AUDIT_SCHEMA_VERSION) {
     throw new Error(
@@ -209,7 +208,7 @@ function main() {
   const generatedAt = new Date().toISOString()
   const out = `${renderHeader(generatedAt)}
 
-import { StateKeyEnum } from "@prisma/client"
+import { StateKeyEnum } from "@/src/prisma/generated/client"
 import type { AlkisStateConfigEntry } from "./alkisStateConfig.types"
 
 export const alkisStateConfig: Record<StateKeyEnum, AlkisStateConfigEntry> = {
@@ -226,8 +225,13 @@ ${renderedEntries}
     "alkis",
     "alkisStateConfig.data.ts",
   )
-  writeFileSync(targetPath, out, "utf8")
+  await Bun.write(targetPath, out)
   process.stderr.write(`Updated ${targetPath}\n`)
 }
 
-main()
+if (import.meta.main) {
+  main().catch((e) => {
+    console.error(e)
+    process.exit(1)
+  })
+}

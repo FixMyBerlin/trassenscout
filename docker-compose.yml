@@ -1,29 +1,142 @@
 services:
-  db:
-    image: postgres:16-alpine
+  app:
+    container_name: app
+    image: ${ECR_REGISTRY}/trassenscout/app:${VITE_APP_ENV}-latest
+    ports:
+      - "4000:4000"
+    restart: unless-stopped
     environment:
-      POSTGRES_PASSWORD: password
+      PORT: 4000
+      FORCE_COLOR: 1
+      VITE_APP_ENV:
+      VITE_APP_ORIGIN:
+      BREVO_API_KEY:
+      # Postgres compose service name on the internal network (not DATABASE_HOST from .env — that is localhost for host-side dev).
+      DATABASE_HOST: db
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      SESSION_SECRET_KEY:
+      ADMIN_EMAIL:
+      S3_UPLOAD_KEY:
+      S3_UPLOAD_SECRET:
+      S3_UPLOAD_ROOTFOLDER:
+      TS_API_KEY:
+      OPENAI_API_KEY:
+      LANGFUSE_SECRET_KEY:
+      LANGFUSE_PUBLIC_KEY:
+      LANGFUSE_BASEURL:
+      LUCKY_CLOUD_TOKEN:
+    # We access `.env` variables directly here
+    labels:
+      traefik.enable: true
+      # Main router for trassenscout.de
+      traefik.http.routers.server.rule: Host(`${APP_DOMAIN}`)
+      traefik.http.routers.server.entrypoints: websecure
+      traefik.http.routers.server.tls.certresolver: letsencrypt
+      traefik.http.routers.server.tls: true
+      traefik.http.services.container.loadbalancer.server.port: 4000
+      # WWW redirect router
+      traefik.http.routers.www-redirect.rule: Host(`www.${APP_DOMAIN}`)
+      traefik.http.routers.www-redirect.entrypoints: websecure
+      traefik.http.routers.www-redirect.tls.certresolver: letsencrypt
+      traefik.http.routers.www-redirect.tls: true
+      traefik.http.routers.www-redirect.middlewares: www-redirect-middleware
+      # WWW redirect middleware
+      traefik.http.middlewares.www-redirect-middleware.redirectregex.regex: ^https://www\.(.*)
+      traefik.http.middlewares.www-redirect-middleware.redirectregex.replacement: https://$${1}
+      traefik.http.middlewares.www-redirect-middleware.redirectregex.permanent: true
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://127.0.0.1:4000/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    logging:
+      driver: journald
+  db:
+    container_name: db
+    image: postgres:16-alpine
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: dbmaster
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
       LANG: en_US.UTF-8
       LC_ALL: en_US.UTF-8
-    ports:
-      - "6001:5432"
+      TZ: Europe/Berlin
     volumes:
-      - ts-data:/var/lib/postgresql/data
-    container_name: ts-db
-    command: ["postgres", "-clog_destination=stderr", "-clog_statement=all"]
-  imap-listener:
-    build:
-      context: ./imap-listener
-      dockerfile: ../docker/imap-listener/Dockerfile
-    container_name: ts-imap-listener
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      # We access `.env` variables directly here
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER} -d dbmaster"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    logging:
+      driver: journald
+  traefik:
+    container_name: traefik
+    image: traefik:v3.6
     restart: unless-stopped
-    env_file: "./imap-listener/.env"
     environment:
       TZ: Europe/Berlin
-      NODE_ENV: development
+    command:
+      - "--log.level=INFO"
+      - "--api.insecure=false"
+      - "--api.dashboard=false"
+      - "--providers.docker=true"
+      # Do not expose containers unless explicitly told so
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.letsencrypt.acme.email=dev-team@fixmycity.de"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
     ports:
-      - "3100:3100"
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./letsencrypt:/letsencrypt"
+    logging:
+      driver: journald
+  imap-listener:
+    container_name: imap-listener
+    image: ${ECR_REGISTRY}/trassenscout/imap-listener:${VITE_APP_ENV}-latest
+    restart: unless-stopped
+    # No env_file — only pass vars this service reads (see imap-listener/src/helpers/config.ts).
+    environment:
+      TZ: Europe/Berlin
+      NODE_ENV: production
+      TS_API_KEY:
+      IMAP_HOST:
+      IMAP_PORT:
+      IMAP_USER:
+      IMAP_PASSWORD:
+    ports:
+      - "3100:3100" # Health check endpoint
     depends_on:
+      - app
       - db
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'node -e "require(''http'').get(''http://localhost:3100/health'', (res) => process.exit(res.statusCode === 200 ? 0 : 1)).on(''error'', () => process.exit(1))"',
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: journald
+
 volumes:
-  ts-data:
+  pgdata:

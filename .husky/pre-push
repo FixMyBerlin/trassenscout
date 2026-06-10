@@ -1,9 +1,10 @@
-# This is `npm run check`
+#!/usr/bin/env sh
+set -e
+
+. "$(dirname -- "$0")/ensure-bun.sh"
+
+# This is `bun run check`
 
 # Use `git push --no-verify` to force-skip them.
 
-npm run type-check
-npm run lint
-npm run format
-
-# npm run test # disabled so we can push without the db running
+bun run check

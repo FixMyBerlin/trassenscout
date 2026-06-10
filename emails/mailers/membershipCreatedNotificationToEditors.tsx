@@ -1,6 +1,5 @@
-import { emailTemplateKeys } from "@/src/server/emailTemplates/registry"
 import { resolveAndRenderEmailTemplate } from "@/src/server/emailTemplates/render"
-import { Route } from "next"
+import { emailTemplateKeys } from "@/src/shared/emailTemplates/registry"
 import { addressNoreply } from "./utils/addresses"
 import { mailUrl } from "./utils/mailUrl"
 import { sendMail } from "./utils/sendMail"
@@ -11,7 +10,7 @@ type Props = {
   projectName: string
   invinteeName: string
   roleName: string
-  teamPath: Route
+  teamPath: string
 }
 
 export async function membershipCreatedNotificationToEditors(props: Props) {

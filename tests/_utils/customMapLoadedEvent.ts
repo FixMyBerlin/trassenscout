@@ -4,8 +4,10 @@
 // We do this by sending this custom event `playwrightMapLoaded` with <Map onLoad>
 // And then listen to this event in our test.
 
-import { PLAYWRIGHT_MAP_LOADED_EVENT } from "@/src/app/beteiligung/_components/form/map/playwrightMapLoadedEvent"
 import { expect, Page } from "@playwright/test"
+
+// Keep in sync with src/components/beteiligung/form/map/playwrightMapLoadedEvent.ts
+const PLAYWRIGHT_MAP_LOADED_EVENT = "playwrightMapLoaded"
 
 export const playwrightWaitForMapLoadedEvent = async (page: Page) => {
   await expect(page.getByLabel("Map")).toBeVisible({ timeout: 60_000 })

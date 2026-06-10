@@ -1,0 +1,93 @@
+import { clsx } from "clsx"
+import type { Geometry } from "geojson"
+import { ReactNode, useState } from "react"
+import { FieldErrors } from "@/src/components/core/components/forms/FieldErrors"
+import {
+  GeoJSONPreviewLink,
+  GeoJSONPreviewPanel,
+} from "@/src/components/core/components/forms/GeoJSONPreview"
+import { useCoreAppFormContext } from "@/src/components/core/components/forms/hooks/formContext"
+import { useFormFieldErrors } from "@/src/components/core/components/forms/hooks/useFormFieldErrors"
+import { useFormValue } from "@/src/components/core/components/forms/hooks/useFormValue"
+
+type GeometryInputBaseProps = {
+  label: string
+  description?: ReactNode
+  children: ReactNode
+  /** Determines which geometry types are allowed. "subsection" allows LineString and Polygon only. "subsubsection" allows all types (Point, LineString, Polygon). */
+  allowedGeometryTypesFor?: "subsection" | "subsubsection"
+  showPreviewLink?: boolean
+  contentContainerClassName?: string
+}
+
+export const GeometryInputBase = ({
+  label,
+  description,
+  children,
+  allowedGeometryTypesFor,
+  showPreviewLink = true,
+  contentContainerClassName,
+}: GeometryInputBaseProps) => {
+  const form = useCoreAppFormContext()
+  const geometry = useFormValue<Geometry | undefined>("geometry")
+  const geometryErrors = useFormFieldErrors("geometry")
+
+  const [isRawMode, setIsRawMode] = useState(false)
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false)
+
+  // Once in raw mode, stay in raw mode (one-way switch)
+  if (isRawMode) {
+    return (
+      <div className="space-y-2">
+        <label className="block text-sm font-medium text-gray-700">{label}</label>
+
+        <div className="rounded-md border border-gray-200 bg-gray-100 p-2">
+          <form.AppField name="geometry">
+            {(field) => (
+              <field.GeometryField
+                label="GeoJSON Geometrie (`Point`, `MultiPoint`, `LineString`, `MultiLineString`, `Polygon`, oder `MultiPolygon`)"
+                allowedGeometryTypesFor={allowedGeometryTypesFor}
+                outerProps={{
+                  className: "rounded-sm border border-gray-200 bg-white p-3",
+                }}
+              />
+            )}
+          </form.AppField>
+        </div>
+        <FieldErrors errors={geometryErrors} />
+      </div>
+    )
+  }
+
+  const previewLink = showPreviewLink ? (
+    <GeoJSONPreviewLink onOpen={() => setIsPreviewOpen(true)} />
+  ) : null
+
+  return (
+    <section className={description || isPreviewOpen ? "space-y-2" : ""}>
+      <div className="mb-1 flex justify-between gap-1">
+        <label className="block text-sm font-medium text-gray-700">{label}</label>
+        {previewLink}
+      </div>
+      {description && <p className="text-sm text-gray-500">{description}</p>}
+
+      {showPreviewLink && isPreviewOpen && (
+        <GeoJSONPreviewPanel
+          geometry={geometry}
+          onEdit={() => setIsRawMode(true)}
+          onClose={() => setIsPreviewOpen(false)}
+        />
+      )}
+
+      <div
+        className={clsx(
+          "rounded-md border border-gray-200 bg-gray-100 p-2",
+          contentContainerClassName,
+        )}
+      >
+        {children}
+      </div>
+      <FieldErrors errors={geometryErrors} />
+    </section>
+  )
+}

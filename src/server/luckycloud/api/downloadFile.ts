@@ -2,7 +2,7 @@ import { z } from "zod"
 import { buildEndpoint, getDefaultRepoId, luckyCloudApiRequest } from "../_utils/client"
 import { truncateErrorText } from "../_utils/errorTruncation"
 
-const FileDownloadUrlSchema = z.string().url()
+const FileDownloadUrlSchema = z.url()
 
 export async function downloadFileFromLuckyCloud(filePath: string) {
   const repoId = await getDefaultRepoId()

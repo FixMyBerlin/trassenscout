@@ -1,0 +1,36 @@
+import { getRouteApi } from "@tanstack/react-router"
+import { z } from "zod"
+import { improveErrorMessage } from "@/src/components/core/components/forms/improveErrorMessage"
+import { FORM_ERROR } from "@/src/components/core/components/forms/utils/formSubmitResult"
+import { useSubsubsectionTaskMutations } from "@/src/components/subsubsection-task/useSubsubsectionTaskActions"
+import { SubsubsectionTask } from "@/src/shared/subsubsectionTask/schemas"
+import { SubsubsectionTaskForm } from "./SubsubsectionTaskForm"
+
+type Props = {
+  projectSlug: string
+}
+
+const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/subsubsection-task/new/")
+
+export const NewSubsubsectionTaskForm = ({ projectSlug }: Props) => {
+  const search = routeApi.useSearch()
+  const { createRow } = useSubsubsectionTaskMutations(projectSlug, search)
+
+  type HandleSubmit = z.infer<ReturnType<typeof SubsubsectionTask.omit<{ projectId: true }>>>
+  const handleSubmit = async (values: HandleSubmit) => {
+    try {
+      await createRow(values)
+    } catch (error: unknown) {
+      return improveErrorMessage(error, FORM_ERROR, ["slug"])
+    }
+  }
+
+  return (
+    <SubsubsectionTaskForm
+      className="mt-10"
+      submitText="Erstellen"
+      schema={SubsubsectionTask.omit({ projectId: true })}
+      onSubmit={handleSubmit}
+    />
+  )
+}
