@@ -5,9 +5,9 @@
 /** WMS background: absent (`url: false`) or URL + layer name together. */
 export type AlkisWmsConfig = { url: false } | { url: string; layerName: string }
 
-export type AlkisWfsDisabled = { url: false }
+type AlkisWfsDisabled = { url: false }
 
-export type AlkisWfsEnabled = {
+type AlkisWfsEnabled = {
   url: string
   parcelPropertyKey: string
   alkisParcelIdPropertyKey: string | null

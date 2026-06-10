@@ -1,0 +1,24 @@
+{
+  "scopes": {
+    "app": [
+      "VITE_APP_ENV",
+      "VITE_APP_ORIGIN",
+      "APP_DOMAIN",
+      "BREVO_API_KEY",
+      "DATABASE_USER",
+      "DATABASE_PASSWORD",
+      "SESSION_SECRET_KEY",
+      "ADMIN_EMAIL",
+      "S3_UPLOAD_KEY",
+      "S3_UPLOAD_SECRET",
+      "S3_UPLOAD_ROOTFOLDER",
+      "TS_API_KEY",
+      "OPENAI_API_KEY",
+      "LANGFUSE_SECRET_KEY",
+      "LANGFUSE_PUBLIC_KEY",
+      "LANGFUSE_BASEURL",
+      "LUCKY_CLOUD_TOKEN"
+    ],
+    "imap-listener": ["TS_API_KEY", "IMAP_HOST", "IMAP_PORT", "IMAP_USER", "IMAP_PASSWORD"]
+  }
+}

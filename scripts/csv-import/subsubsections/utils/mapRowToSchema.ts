@@ -4,9 +4,9 @@ import {
   MultiPolygonGeometrySchema,
   PointGeometrySchema,
   PolygonGeometrySchema,
-} from "@/src/core/utils/geojson-schemas"
-import { FeatureSchema } from "@/src/server/subsections/schema"
-import { SubsubsectionBaseSchema } from "@/src/server/subsubsections/schema"
+} from "@/src/shared/geometry/geojsonSchemas"
+import { FeatureSchema } from "@/src/shared/subsections/schemas"
+import { SubsubsectionBaseSchema } from "@/src/shared/subsubsections/schemas"
 import type { CsvRow } from "../../utils/parseCsv"
 
 /**

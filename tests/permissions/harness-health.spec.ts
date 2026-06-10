@@ -1,6 +1,7 @@
 import { authFile, seedRoles } from "@/tests/_fixtures/auth"
 import { pageNoise } from "@/tests/_fixtures/console-noise"
 import { expect, test } from "@/tests/_fixtures/test"
+import { dashboardUrl, loginUrl } from "@/tests/_utils/pageAssertions"
 
 const knownNoise = pageNoise
 
@@ -16,8 +17,7 @@ test.describe("Harness health", () => {
     test("redirects /dashboard to login", async ({ page }) => {
       await page.goto("/dashboard")
 
-      await page.waitForURL(/\/auth\/login/)
-      await expect(page).toHaveURL(/\/auth\/login/)
+      await expect(page).toHaveURL(loginUrl, { timeout: 30_000 })
       await expect(page.getByRole("heading", { name: "In Account einloggen" })).toBeVisible({
         timeout: 30_000,
       })
@@ -32,7 +32,7 @@ test.describe("Harness health", () => {
       test("can load /dashboard with authenticated session", async ({ page }) => {
         await page.goto("/dashboard")
 
-        await expect(page).toHaveURL(/\/dashboard$/)
+        await expect(page).toHaveURL(dashboardUrl)
         await expect(page.getByRole("button", { name: "User-Menü" })).toBeVisible({
           timeout: 30_000,
         })
@@ -50,7 +50,7 @@ test.describe("Harness health", () => {
       await page.goto("/admin")
 
       await expect(page).toHaveURL(/\/admin$/)
-      await expect(page.getByRole("heading", { name: "Trassenscout ADMIN" })).toBeVisible({
+      await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible({
         timeout: 30_000,
       })
     })

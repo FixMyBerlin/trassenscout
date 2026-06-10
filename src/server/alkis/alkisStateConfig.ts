@@ -2,41 +2,12 @@
  * ALKIS state configuration (types + data + helpers). Narrative docs: `./README.md`.
  */
 
-import { StateKeyEnum } from "@prisma/client"
-
-export type {
-  AlkisStateConfigEntry,
-  AlkisWfsConfig,
-  AlkisWfsDisabled,
-  AlkisWfsEnabled,
-  AlkisWmsConfig,
-} from "./alkisStateConfig.types"
-
+import { StateKeyEnum } from "@/src/prisma/generated/client"
 import { alkisStateConfig } from "./alkisStateConfig.data"
 
 export { alkisStateConfig }
 
-export function isAlkisBackgroundAvailableForProject(
-  alkisStateKey: StateKeyEnum | null | undefined,
-) {
-  if (alkisStateKey == null) return false
-  const entry = alkisStateConfig[alkisStateKey]
-  if (entry.enabled !== true) return false
-  const hasWms = entry.wms.url !== false && Boolean(entry.wms.url && entry.wms.layerName)
-  const hasWfs = entry.wfs.url !== false && Boolean(entry.wfs.url && entry.wfs.parcelPropertyKey)
-  return hasWms || hasWfs
-}
-
-export function isAlkisWfsAvailableForProject(alkisStateKey: StateKeyEnum | null | undefined) {
-  return isAlkisBackgroundAvailableForProject(alkisStateKey)
-}
-
-export function getAlkisAttributionForState(alkisStateKey: StateKeyEnum | null | undefined) {
-  if (alkisStateKey == null) return null
-  return alkisStateConfig[alkisStateKey].attribution
-}
-
-export function getBundeslandSelectOptions() {
+export function getBundeslandSelectOptions(): Array<[StateKeyEnum, string, boolean]> {
   const keys = Object.keys(alkisStateConfig) as StateKeyEnum[]
   const rows = keys.map((key) => {
     const entry = alkisStateConfig[key]
@@ -57,13 +28,9 @@ export function getBundeslandSelectOptions() {
   stateRows.sort((a, b) => a.label.localeCompare(b.label, "de"))
 
   if (!defaultOption) {
-    return [
-      ...stateRows.map((row): [StateKeyEnum, string, boolean] => [
-        row.key,
-        row.label,
-        row.disabled,
-      ]),
-    ]
+    return stateRows.map(
+      (row) => [row.key, row.label, row.disabled] as [StateKeyEnum, string, boolean],
+    )
   }
 
   return [
@@ -72,6 +39,8 @@ export function getBundeslandSelectOptions() {
       string,
       boolean,
     ],
-    ...stateRows.map((row): [StateKeyEnum, string, boolean] => [row.key, row.label, row.disabled]),
+    ...stateRows.map(
+      (row) => [row.key, row.label, row.disabled] as [StateKeyEnum, string, boolean],
+    ),
   ]
 }

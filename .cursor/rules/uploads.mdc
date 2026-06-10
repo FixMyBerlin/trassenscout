@@ -1,5 +1,5 @@
 ---
-globs: **/uploads/**.*,src/server/uploads/_utils/client.ts
+globs: **/uploads/**.*,src/server/uploads/_utils/s3Client.server.ts
 alwaysApply: false
 ---
 

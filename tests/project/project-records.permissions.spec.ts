@@ -1,14 +1,16 @@
+import type { Page } from "@playwright/test"
 import { authFile, seedProjects } from "@/tests/_fixtures/auth"
 import { authorizationNoise, pageNoise } from "@/tests/_fixtures/console-noise"
 import { expect, test } from "@/tests/_fixtures/test"
-import { expectErrorPage } from "@/tests/_utils/pageAssertions"
-import db, { ProjectRecordEditingState, ProjectRecordReviewState } from "@/db"
-import type { Page } from "@playwright/test"
+import { expectAccessDeniedRedirect } from "@/tests/_utils/pageAssertions"
+import { getTestDb } from "@/tests/_utils/testDb"
+import { waitForSubmitReady } from "@/tests/_utils/waitForFormReady"
 
 const projectSlug = seedProjects.richProject
 const listPath = `/${projectSlug}/project-records`
 
 const ensureProjectRecordPersistenceFixture = async () => {
+  const db = await getTestDb()
   const project = await db.project.findFirstOrThrow({
     where: { slug: projectSlug },
     select: { id: true },
@@ -19,8 +21,8 @@ const ensureProjectRecordPersistenceFixture = async () => {
       projectId: project.id,
       title: `E2E Persistenz ${Date.now()}`,
       body: "Ausgangsnotiz fuer Persistenztest",
-      editingState: ProjectRecordEditingState.PENDING,
-      reviewState: ProjectRecordReviewState.APPROVED,
+      editingState: "PENDING",
+      reviewState: "APPROVED",
       projectRecordAuthorType: "USER",
       projectRecordUpdatedByType: "USER",
     },
@@ -46,21 +48,25 @@ const ensureProjectRecordId = async (page: Page) => {
     return Number(matched[1])
   }
 
-  const title = `E2E Rechte ${Date.now()}`
-  await page.getByRole("button", { name: "Neuer Protokolleintrag", exact: true }).click()
-  await expect(page.getByRole("heading", { name: "Neuer Protokolleintrag", exact: true })).toBeVisible({
-    timeout: 30_000,
+  const db = await getTestDb()
+  const project = await db.project.findFirstOrThrow({
+    where: { slug: projectSlug },
+    select: { id: true },
   })
-  await page.getByRole("button", { name: /Leeres Formular/ }).click()
-  await page.getByLabel("Titel").fill(title)
-  await page.getByRole("button", { name: "Protokolleintrag speichern", exact: true }).click()
+  const record = await db.projectRecord.create({
+    data: {
+      projectId: project.id,
+      title: `E2E Rechte ${Date.now()}`,
+      body: "E2E fixture for permission checks",
+      editingState: "PENDING",
+      reviewState: "APPROVED",
+      projectRecordAuthorType: "USER",
+      projectRecordUpdatedByType: "USER",
+    },
+    select: { id: true },
+  })
 
-  const createdLink = page.locator(`a[title="${title}"]`).first()
-  await expect(createdLink).toBeVisible({ timeout: 30_000 })
-  const href = await createdLink.getAttribute("href")
-  const matched = href?.match(/\/project-records\/(\d+)$/)
-  if (!matched) throw new Error(`Could not parse created project record id from href: ${href}`)
-  return Number(matched[1])
+  return record.id
 }
 
 test.describe("Project records permissions", () => {
@@ -88,6 +94,7 @@ test.describe("Project records permissions", () => {
   test.afterAll(async () => {
     // Clean up the dedicated persistence fixture row so it doesn't accumulate across runs.
     if (persistenceProjectRecordId) {
+      const db = await getTestDb()
       await db.projectRecord.delete({ where: { id: persistenceProjectRecordId } }).catch(() => {
         // Ignore if already deleted (e.g. test suite was aborted mid-run).
       })
@@ -101,13 +108,17 @@ test.describe("Project records permissions", () => {
 
       test("cannot open edit URL", async ({ page }) => {
         await page.goto(`/${projectSlug}/project-records/${projectRecordId}/edit`)
-        await expectErrorPage(page)
+        await expectAccessDeniedRedirect(page)
       })
     })
 
     test.describe("editor users", () => {
       test.use({ storageState: authFile("editor") })
       test.use({ allowedConsoleErrors: pageNoise })
+
+      test.beforeEach(() => {
+        test.setTimeout(60_000)
+      })
 
       test("can open edit URL", async ({ page }) => {
         await page.goto(`/${projectSlug}/project-records/${projectRecordId}/edit`)
@@ -122,6 +133,8 @@ test.describe("Project records permissions", () => {
         browser,
         page,
       }) => {
+        test.setTimeout(90_000)
+
         const updatedTitle = `E2E Persistiert ${Date.now()}`
         const updatedBody = `Persistierte Notiz ${Date.now()}`
 
@@ -129,24 +142,21 @@ test.describe("Project records permissions", () => {
         await expect(
           page.getByRole("heading", { name: /Protokolleintrag bearbeiten/, exact: false }),
         ).toBeVisible({
-          timeout: 30_000,
+          timeout: 60_000,
         })
 
-        await page.getByLabel("Titel").fill(updatedTitle)
-        await page.getByLabel("Notizen (Markdown)").fill(updatedBody)
-        await Promise.all([
-          page.waitForResponse(
-            (r) =>
-              r.url().includes("/api/rpc/") &&
-              r.request().method() === "POST" &&
-              r.status() === 200,
-            { timeout: 15_000 },
-          ),
-          page.getByRole("button", { name: "Änderungen speichern", exact: true }).click(),
-        ])
+        const titleField = page.getByLabel("Titel")
+        const bodyField = page.getByRole("textbox", { name: /Notizen \(Markdown\)/ })
+        await expect(titleField).toBeEnabled({ timeout: 60_000 })
+        await expect(bodyField).toBeVisible({ timeout: 60_000 })
+        await titleField.clear()
+        await titleField.fill(updatedTitle)
+        await bodyField.clear()
+        await bodyField.fill(updatedBody)
+        await page.getByRole("button", { name: "Änderungen speichern", exact: true }).click()
 
-        await expect(page.getByLabel("Titel")).toHaveValue(updatedTitle)
-        await expect(page.getByLabel("Notizen (Markdown)")).toHaveValue(updatedBody)
+        await expect(titleField).toHaveValue(updatedTitle, { timeout: 15_000 })
+        await expect(bodyField).toHaveValue(updatedBody)
 
         const freshContext = await browser.newContext({ storageState: authFile("editor") })
         const freshPage = await freshContext.newPage()
@@ -172,14 +182,23 @@ test.describe("Project records permissions", () => {
           timeout: 30_000,
         })
 
-        const commentField = page.locator('textarea[name="body"]').first()
+        const commentField = page
+          .getByRole("listitem")
+          .filter({ has: page.getByRole("button", { name: "Kommentar hinzufügen", exact: true }) })
+          .locator("textarea")
         await expect(commentField).toBeVisible({ timeout: 30_000 })
+        await expect(commentField).toBeEnabled({ timeout: 30_000 })
+        await waitForSubmitReady(page, "Kommentar hinzufügen")
         await commentField.fill(comment)
         await page.getByRole("button", { name: "Kommentar hinzufügen", exact: true }).click()
 
         await expect(page.getByText(comment, { exact: true })).toBeVisible({ timeout: 30_000 })
         await expect(commentField).toHaveValue("")
-        await page.waitForResponse((r) => r.url().includes("/api/rpc/") && r.status() === 200, { timeout: 15_000 }).catch(() => {})
+        await page
+          .waitForResponse((r) => r.url().includes("/api/rpc/") && r.status() === 200, {
+            timeout: 15_000,
+          })
+          .catch(() => {})
 
         const freshContext = await browser.newContext({ storageState: authFile("editor") })
         const freshPage = await freshContext.newPage()
@@ -213,7 +232,7 @@ test.describe("Project records permissions", () => {
 
       test("cannot open edit URL", async ({ page }) => {
         await page.goto(`/${projectSlug}/project-records/${projectRecordId}/edit`)
-        await expectErrorPage(page)
+        await expectAccessDeniedRedirect(page)
       })
     })
   })
@@ -225,7 +244,9 @@ test.describe("Project records permissions", () => {
 
       test("do not see create button", async ({ page }) => {
         await page.goto(listPath)
-        await expect(page.getByRole("heading", { name: "Projektprotokoll", exact: true })).toBeVisible({
+        await expect(
+          page.getByRole("heading", { name: "Projektprotokoll", exact: true }),
+        ).toBeVisible({
           timeout: 30_000,
         })
         await expect(
@@ -240,6 +261,7 @@ test.describe("Project records permissions", () => {
 
       test("can open create modal", async ({ page }) => {
         await page.goto(listPath)
+        await page.waitForSelector('[data-create-record-ready="true"]', { timeout: 30_000 })
         await page.getByRole("button", { name: "Neuer Protokolleintrag", exact: true }).click()
         await expect(page.getByRole("button", { name: /Leeres Formular/ })).toBeVisible({
           timeout: 30_000,

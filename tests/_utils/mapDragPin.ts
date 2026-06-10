@@ -1,5 +1,5 @@
-import { expect } from "@/tests/_utils/support"
 import { Page } from "@playwright/test"
+import { expect } from "@/tests/_utils/support"
 
 export const mapDragPin = async ({
   page,

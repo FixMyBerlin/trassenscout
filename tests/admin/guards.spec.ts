@@ -1,8 +1,15 @@
 import { authFile } from "@/tests/_fixtures/auth"
 import { pageNoise } from "@/tests/_fixtures/console-noise"
 import { expect, test } from "@/tests/_fixtures/test"
+import { dashboardUrl, loginUrl } from "@/tests/_utils/pageAssertions"
 
-const adminPaths = ["/admin", "/admin/projects", "/admin/memberships", "/admin/surveys", "/admin/logEntries"]
+const adminPaths = [
+  "/admin",
+  "/admin/projects",
+  "/admin/memberships",
+  "/admin/surveys",
+  "/admin/logEntries",
+]
 
 const loggedOutRedirectNoise = [
   ...pageNoise,
@@ -21,8 +28,7 @@ test.describe("Admin route guards", () => {
     for (const path of adminPaths) {
       test(`redirects logged-out users from ${path} to login`, async ({ page }) => {
         await page.goto(path)
-        await page.waitForURL("**/auth/login")
-        await expect(page).toHaveURL(/\/auth\/login$/)
+        await expect(page).toHaveURL(loginUrl, { timeout: 30_000 })
       })
     }
   })
@@ -35,8 +41,7 @@ test.describe("Admin route guards", () => {
       for (const path of adminPaths) {
         test(`redirects ${role} users from ${path} to dashboard`, async ({ page }) => {
           await page.goto(path)
-          await page.waitForURL("**/dashboard")
-          await expect(page).toHaveURL(/\/dashboard$/)
+          await expect(page).toHaveURL(dashboardUrl, { timeout: 30_000 })
           await expect(page.getByRole("button", { name: "User-Menü" })).toBeVisible({
             timeout: 30_000,
           })

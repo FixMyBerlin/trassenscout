@@ -35,11 +35,20 @@ Files that export `createServerFn` and are imported by route files or components
 
 **Function names:** All `createServerFn` / `createServerOnlyFn` use the pattern **`functionNameFn`** (e.g. `getRegionPageLoaderFn`, `getUploadsForRegionUserFn`).
 
-### Route folder: files that are not routes
+### Route folder: routes only
 
-The TanStack Router file-based plugin ignores files whose name starts with **`-`** (default `routeFileIgnorePrefix: '-'`), so they are not turned into routes. That allows colocating non-route modules (e.g. query options) next to the route that uses them.
+Keep `routes/` limited to route definitions. TanStack Router supports a **`-`** ignore prefix for colocated non-route files, but we **do not** use it.
 
-We prefer **not** using that prefix: put shared query options and other non-route code in a dedicated folder (e.g. `src/server/<domain>/` for query options used by loaders and components) and import from there. Then nothing in `routes/` needs a leading dash, and it’s obvious what is a route vs a helper.
+Put shared helpers next to their domain under `server/`:
+
+| Kind | Location |
+| ---- | -------- |
+| Query options | `server/<domain>/queries/` or `*QueryOptions.ts` in the domain folder |
+| URL search schemas (shared) | `shared/routing/` or `shared/<domain>/searchSchemas.ts` |
+| Domain Zod (forms + server) | `shared/<domain>/schemas.ts` |
+| Route-only search schema | Inline `const` in the route file |
+
+Routes and components import from `shared/` (not `*.server.ts`). `server/<domain>/searchSchemas.ts` may re-export during migration. Import paths stay short and `routes/` stays obviously route-only.
 
 ---
 
@@ -54,7 +63,7 @@ Route files must always import and call server Fns in `loader`/`beforeLoad`; the
 
 We prefer `beforeLoad` over using a middleware for the use cases described above.
 
-See also: [auth.md](../tanstack-start-auth/references/auth.md) in the `tanstack-start-auth` skill. API route handlers and server modules that need the current user must receive the request’s headers and pass them to session helpers.
+See also: skill **`trassenscout-auth`** → [auth.md](../../trassenscout-auth/references/auth.md) (route protection, `endpointAuth`, cookies). API route handlers and server modules that need the current user must receive the request’s headers and pass them to session helpers.
 
 ## Selective SSR (`ssr` option)
 
@@ -63,7 +72,7 @@ There are two separate concepts:
 - **Route `ssr`:** controls route-level server behavior on first request (rendering and `beforeLoad`/`loader` execution).
 - **`@tanstack/react-router-ssr-query`:** controls React Query cache dehydration/hydration/streaming.
 
-Our default is explicit `ssr: true` unless a route needs a more restrictive mode. For project conventions and current route decisions, see [selective-ssr.md](selective-ssr.md).
+Our default is explicit `ssr: true` on UI routes unless a leaf needs a more restrictive mode. **Handler-only API routes** (`server.handlers`, usually `src/routes/api/**` or flat `api/*.ts` in TILDA) use **`ssr: false`**. See [selective-ssr.md](selective-ssr.md).
 
 ## Router + React Query
 

@@ -1,7 +1,7 @@
 export const LUCKY_CLOUD_ARCHIVE_FOLDER_NAME = "_ARCHIVE" as const
 
 export function getLuckyCloudLibraryName() {
-  const env = process.env.NEXT_PUBLIC_APP_ENV
+  const env = process.env.VITE_APP_ENV
 
   switch (env) {
     case "production":
@@ -9,6 +9,7 @@ export function getLuckyCloudLibraryName() {
     case "staging":
       return "TRASSENSCOUT_STAGING"
     case "development":
+    default:
       return "TRASSENSCOUT_DEVELOPMENT"
   }
 }

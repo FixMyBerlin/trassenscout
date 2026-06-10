@@ -4,6 +4,10 @@ on:
     branches:
       - develop
 
+concurrency:
+  group: deploy-${{ github.ref_name }}
+  cancel-in-progress: true
+
 jobs:
   setup_env:
     uses: ./.github/workflows/setup-env.yml
@@ -17,6 +21,7 @@ jobs:
     secrets: inherit
     with:
       ENVIRONMENT: staging
+      DEPLOY_WORKFLOW_FILE: deploy-app-staging.yml
 
   deploy-imap-listener:
     needs: setup_env
@@ -24,6 +29,7 @@ jobs:
     secrets: inherit
     with:
       ENVIRONMENT: staging
+      DEPLOY_WORKFLOW_FILE: deploy-app-staging.yml
 
   services:
     needs: [deploy-app, deploy-imap-listener]

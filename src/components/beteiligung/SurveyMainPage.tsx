@@ -1,0 +1,310 @@
+import { useMutation } from "@tanstack/react-query"
+import { useSearch } from "@tanstack/react-router"
+import { useState } from "react"
+import { Debug } from "@/src/components/beteiligung/Debug"
+import { SurveyEnd } from "@/src/components/beteiligung/End"
+import { ProgressBar } from "@/src/components/beteiligung/layout/ProgressBar"
+import { SurveyContainer } from "@/src/components/beteiligung/layout/SurveyContainer"
+import { SurveySpinnerLayover } from "@/src/components/beteiligung/layout/SurveySpinnerLayover"
+import { ProgressContext } from "@/src/components/beteiligung/shared/contexts/contexts"
+import { FormConfig, Stage } from "@/src/components/beteiligung/shared/types"
+import { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
+import {
+  getConfigBySurveySlug,
+  getprogressBarDefinitionBySurveySlug,
+} from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
+import { getQuestionIdBySurveySlug } from "@/src/components/beteiligung/shared/utils/getQuestionIdBySurveySlug"
+import { scrollToTopWithDelay } from "@/src/components/beteiligung/shared/utils/scrollToTopWithDelay"
+import { useAllowedSurveySlug } from "@/src/components/beteiligung/shared/utils/useAllowedSurveySlug"
+import { SurveyPart } from "@/src/components/beteiligung/SurveyPart"
+import {
+  getOrCreateCreatedSurveyResponsePublicFn,
+  sendSurveyPart2EmailFn,
+  updateSurveyResponsePublicFn,
+} from "@/src/server/survey-responses/publicSurveyResponses.functions"
+import { createSurveySessionFn } from "@/src/server/survey-sessions/surveySessions.functions"
+
+type Props = {
+  surveyId: number
+}
+
+const getNextStage = (surveySlug: AllowedSurveySlugs, currentStage: number) => {
+  for (let i = currentStage + 1; i <= 3; i++) {
+    // @ts-expect-error
+    const config = getConfigBySurveySlug(surveySlug, `part${i}`)
+    if (config) {
+      return `part${i}` as Stage
+    }
+  }
+  return "end"
+}
+const getFirstStage = (surveySlug: AllowedSurveySlugs) => {
+  return getNextStage(surveySlug, 0)
+}
+
+const getSurveyStartStageEnv = () => import.meta.env.VITE_PUBLIC_SURVEY_START_STAGE
+
+const getInitialStage = (surveySlug: AllowedSurveySlugs) => {
+  const envStage = getSurveyStartStageEnv()
+  if (envStage && getConfigBySurveySlug(surveySlug, envStage as keyof FormConfig)) {
+    return envStage as Stage
+  }
+  return getFirstStage(surveySlug)
+}
+
+export const SurveyMainPage = ({ surveyId }: Props) => {
+  const [isIntro, setIsIntro] = useState(true)
+  const surveySlug = useAllowedSurveySlug()
+  const [stage, setStage] = useState<Stage>(getInitialStage(surveySlug))
+  const [isSpinner, setIsSpinner] = useState(false)
+  const [surveySessionId, setSurveySessionId] = useState<null | number>(null)
+  const createSurveySessionMutation = useMutation({ mutationFn: createSurveySessionFn })
+  const getOrCreateCreatedSurveyResponseMutation = useMutation({
+    mutationFn: getOrCreateCreatedSurveyResponsePublicFn,
+  })
+  const updateSurveyResponsePublicMutation = useMutation({
+    mutationFn: updateSurveyResponsePublicFn,
+  })
+  const sendSurveyPart2EmailMutation = useMutation({ mutationFn: sendSurveyPart2EmailFn })
+  // to reset form when repeated
+  const [formKey, setFormKey] = useState(1)
+  const search = useSearch({ from: "/beteiligung/$surveySlug/" })
+  const allParams = Object.fromEntries(
+    Object.entries(search).filter(([, value]) => value !== undefined),
+  ) as Record<string, string>
+
+  // Track response IDs per part
+  const [responseIdByPart, setResponseIdByPart] = useState<Record<1 | 2 | 3, number | null>>({
+    1: null,
+    2: null,
+    3: null,
+  })
+  const [referenceIdByPart, setReferenceIdByPart] = useState<Record<1 | 2 | 3, string | null>>({
+    1: null,
+    2: null,
+    3: null,
+  })
+
+  const [progress, setProgress] = useState(getprogressBarDefinitionBySurveySlug(surveySlug, stage))
+  const surveyMeta = getConfigBySurveySlug(surveySlug, "meta")
+
+  const getOrCreateSurveySessionId = async () => {
+    if (surveySessionId) {
+      return surveySessionId
+    } else {
+      const { id } = await createSurveySessionMutation.mutateAsync({ data: { surveyId } })
+      setSurveySessionId(id)
+      return id
+    }
+  }
+
+  const backendConfig = getConfigBySurveySlug(surveySlug, "backend")
+  const surveyResponseDefaultStatus = backendConfig.status[0].value
+
+  // Create a (CREATED) response when starting a part
+  const createPendingResponse = async (part: 1 | 2 | 3) => {
+    const surveySessionId_ = await getOrCreateSurveySessionId()
+    const { id, data } = await getOrCreateCreatedSurveyResponseMutation.mutateAsync({
+      data: {
+        surveySessionId: surveySessionId_,
+        surveyPart: part,
+        data: "{}",
+        source: "FORM",
+        status: surveyResponseDefaultStatus,
+      },
+    })
+    const parsedData = JSON.parse(data) as { referenceId?: string }
+    setResponseIdByPart((prev) => ({ ...prev, [part]: id }))
+    setReferenceIdByPart((prev) => ({ ...prev, [part]: parsedData.referenceId ?? null }))
+    return id
+  }
+
+  // Update response to SUBMITTED on submit
+  const updateResponseSubmitted = async ({
+    id,
+    surveySessionId: sessionId,
+    value,
+  }: {
+    id: number
+    surveySessionId: number
+    value: unknown
+  }) => {
+    return await updateSurveyResponsePublicMutation.mutateAsync({
+      data: {
+        id,
+        surveySessionId: sessionId,
+        data: JSON.stringify(value),
+        state: "SUBMITTED",
+      },
+    })
+  }
+
+  // @ts-expect-error todo
+  const handleSurveyPart1Submit = async ({ value, meta }) => {
+    setIsSpinner(true)
+    void (async () => {
+      const surveySessionId_ = await getOrCreateSurveySessionId()
+      await updateResponseSubmitted({
+        id: meta.surveyResponseId,
+        surveySessionId: surveySessionId_,
+        value,
+      })
+    })()
+    const nextStage = getNextStage(surveySlug, 1)
+    setTimeout(() => {
+      setStage(nextStage)
+      setIsSpinner(false)
+      setIsIntro(true)
+      scrollToTopWithDelay()
+      setProgress(getprogressBarDefinitionBySurveySlug(surveySlug, nextStage))
+    }, 900)
+  }
+
+  // @ts-expect-error todo
+  const handleSurveyPart2Submit = async ({ value, meta }) => {
+    setIsSpinner(true)
+    // if the user selected "nein" ("2" in legacy surveys) in the enableLocation-location question, we need to delete the location field from the value object
+    const enableLocationId = getQuestionIdBySurveySlug(surveySlug, "enableLocation")
+    const locationId = getQuestionIdBySurveySlug(surveySlug, "location")
+    if (value[enableLocationId] === "nein" || String(value[enableLocationId]) === "2")
+      delete value[locationId]
+    // tbd null or delete?
+    // delete value.enableLocation
+    void (async () => {
+      const surveySessionId_ = await getOrCreateSurveySessionId()
+      const response = await updateResponseSubmitted({
+        id: meta.surveyResponseId,
+        surveySessionId: surveySessionId_,
+        value,
+      })
+      const submittedData = JSON.parse(response.data) as Record<string, unknown>
+      const submittedReferenceId =
+        typeof submittedData.referenceId === "string" ? submittedData.referenceId : null
+      setReferenceIdByPart((prev) => ({ ...prev, 2: submittedReferenceId }))
+      await sendSurveyPart2EmailMutation.mutateAsync({
+        data: {
+          surveySessionId: surveySessionId_,
+          data: submittedData,
+          surveySlug,
+          searchParams: Object.keys(allParams).length > 0 ? allParams : null,
+        },
+      })
+      // If part2 is repeated, create a new pending (CREATED) response immediately
+      if (meta.again) {
+        await createPendingResponse(2)
+      }
+    })()
+    const nextStage = getNextStage(surveySlug, 2)
+    // depending on meta (coming from submit button) repeat part2 or go to next existing stage
+    const newStage = meta.again ? "part2" : nextStage
+    // if part2 is repeated we need to set intro to false and reset the form
+    const newIntroState = !meta.again
+    setFormKey(formKey + 1)
+    setTimeout(() => {
+      setStage(newStage)
+      setIsSpinner(false)
+      setIsIntro(newIntroState)
+      scrollToTopWithDelay()
+      setProgress(getprogressBarDefinitionBySurveySlug(surveySlug, newStage))
+    }, 900)
+  }
+
+  // @ts-expect-error todo
+  const handleSurveyPart3Submit = async ({ value, meta }) => {
+    setIsSpinner(true)
+    void (async () => {
+      const surveySessionId_ = await getOrCreateSurveySessionId()
+      await updateResponseSubmitted({
+        id: meta.surveyResponseId,
+        surveySessionId: surveySessionId_,
+        value,
+      })
+    })()
+    console.log({ value })
+    setTimeout(() => {
+      setStage("end")
+      setIsSpinner(false)
+      setIsIntro(true)
+      scrollToTopWithDelay()
+      setProgress(getprogressBarDefinitionBySurveySlug(surveySlug, "end"))
+    }, 900)
+  }
+
+  // Handler for when a part starts (called from SurveyPart)
+  const handleStartPart = async (part: 1 | 2 | 3) => {
+    await createPendingResponse(part)
+  }
+
+  let component
+  switch (stage) {
+    case "part1":
+      component = (
+        <SurveyPart
+          isIntro={isIntro}
+          setIsIntro={setIsIntro}
+          setStage={setStage}
+          stage="part1"
+          handleSubmit={handleSurveyPart1Submit}
+          surveyResponseId={responseIdByPart[1]}
+          vorgangsId={referenceIdByPart[1]}
+          surveySessionId={surveySessionId}
+          onStartPart={() => handleStartPart(1)}
+        />
+      )
+      break
+    case "part2":
+      component = (
+        <SurveyPart
+          // reset form when repeated
+          key={formKey + 1}
+          isIntro={isIntro}
+          setIsIntro={setIsIntro}
+          setStage={setStage}
+          stage="part2"
+          handleSubmit={handleSurveyPart2Submit}
+          surveyResponseId={responseIdByPart[2]}
+          vorgangsId={referenceIdByPart[2]}
+          surveySessionId={surveySessionId}
+          onStartPart={() => handleStartPart(2)}
+        />
+      )
+      break
+    case "part3":
+      component = (
+        <SurveyPart
+          isIntro={isIntro}
+          setIsIntro={setIsIntro}
+          setStage={setStage}
+          stage="part3"
+          handleSubmit={handleSurveyPart3Submit}
+          surveyResponseId={responseIdByPart[3]}
+          vorgangsId={referenceIdByPart[3]}
+          surveySessionId={surveySessionId}
+          onStartPart={() => handleStartPart(3)}
+        />
+      )
+      break
+    case "end":
+      component = <SurveyEnd setStage={setStage} />
+      break
+  }
+
+  return (
+    <ProgressContext.Provider value={{ progress, setProgress }}>
+      {!surveyMeta.hideProgressBar && <ProgressBar />}
+      <SurveyContainer>
+        <Debug className="border border-red-500">
+          <code>stage: {stage}</code>
+          <br />
+          <code>progressbar: {progress}</code>
+          <br />
+          <code>surveySessionId: {surveySessionId ?? "null"}</code>
+          <br />
+          <code>responseIdByPart: {JSON.stringify(responseIdByPart, null, 2)}</code>
+        </Debug>
+        <div className={isSpinner ? "blur-sm" : ""}>{component}</div>
+        {isSpinner && <SurveySpinnerLayover />}
+      </SurveyContainer>
+    </ProgressContext.Provider>
+  )
+}

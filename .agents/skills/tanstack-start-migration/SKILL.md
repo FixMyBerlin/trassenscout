@@ -256,6 +256,7 @@ See [references/server-functions.md](references/server-functions.md).
 ```ts
 // routes/api/upload.image.ts
 export const Route = createFileRoute("/api/upload/image")({
+  ssr: false,
   server: {
     handlers: {
       POST: async ({ request }) => {
@@ -266,7 +267,7 @@ export const Route = createFileRoute("/api/upload/image")({
 })
 ```
 
-**App-internal calls:** Prefer server functions over REST. API routes: no `validateSearch`; parse with Zod from `request.url` in `GET`. See `tanstack-start-conventions`.
+**App-internal calls:** Prefer server functions over REST. API routes: no `validateSearch`; parse with Zod from `request.url` in `GET`; **`ssr: false`** on handler-only routes. See `tanstack-start-conventions`.
 
 ---
 

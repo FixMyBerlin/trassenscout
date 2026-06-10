@@ -1,12 +1,10 @@
-import dotenv from "dotenv"
-import path from "path"
-
-dotenv.config({ path: path.resolve(__dirname, ".env.test") })
+import { loadE2eEnvSync } from "./scripts/shared/e2eEnv"
+import { assertE2eServerEnv } from "./tests/_utils/assertE2eServerEnv"
 
 async function globalSetup() {
-  if (!process.env.DATABASE_URL) {
-    throw new Error("DATABASE_URL is required for Playwright global setup")
-  }
+  const env = loadE2eEnvSync()
+  const baseURL = env.VITE_APP_ORIGIN
+  await assertE2eServerEnv(baseURL)
 }
 
 export default globalSetup

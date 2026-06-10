@@ -1,0 +1,14 @@
+import type { FillLayerSpecification, LineLayerSpecification } from "maplibre-gl"
+import { acquisitionAreaColors } from "@/src/components/core/components/Map/colors/acquisitionAreaColors"
+
+export const acquisitionAreaParcelFillPaint: FillLayerSpecification["paint"] = {
+  "fill-color": acquisitionAreaColors.parcelFill,
+  "fill-opacity": 0.1,
+}
+
+export const acquisitionAreaParcelLineDashPaint: LineLayerSpecification["paint"] = {
+  "line-color": acquisitionAreaColors.parcel,
+  "line-opacity": 0.5,
+  "line-width": 1.5,
+  "line-dasharray": [3, 2],
+}

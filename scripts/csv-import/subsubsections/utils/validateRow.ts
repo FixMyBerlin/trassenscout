@@ -1,5 +1,5 @@
-import { ImportSubsubsectionDataSchema } from "@/src/server/subsubsections/importSchema"
 import { z } from "zod"
+import { ImportSubsubsectionDataSchema } from "@/src/server/subsubsections/importSchema"
 
 /**
  * Validates row data against the ImportSubsubsectionDataSchema
@@ -15,7 +15,7 @@ export function validateRow(mappedData: Record<string, any>) {
     return null
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
-      return error.errors.map((e) => {
+      return error.issues.map((e) => {
         // Get the actual value from the path in mappedData
         const fieldPath = e.path
         let actualValue: any = mappedData

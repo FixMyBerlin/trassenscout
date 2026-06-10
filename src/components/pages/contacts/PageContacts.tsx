@@ -1,0 +1,59 @@
+import { useSuspenseQuery } from "@tanstack/react-query"
+import { getRouteApi } from "@tanstack/react-router"
+import { ContactTable } from "@/src/components/contacts/ContactTable"
+import { useContactsTabs } from "@/src/components/contacts/useContactsTabs"
+import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
+import { ButtonWrapper } from "@/src/components/core/components/links/ButtonWrapper"
+import { Link } from "@/src/components/core/components/links/Link"
+import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { TabsApp } from "@/src/components/core/components/Tabs/TabsApp"
+import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
+import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
+import { contactsQueryOptions } from "@/src/server/contacts/contactsQueryOptions"
+import { currentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
+
+const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/contacts/")
+
+export function PageContacts() {
+  const { projectSlug } = routeApi.useParams()
+  const tabs = useContactsTabs()
+  const { data } = useSuspenseQuery(contactsQueryOptions({ projectSlug }))
+  const { data: currentUser } = useSuspenseQuery(currentUserQueryOptions())
+  const contacts = data.contacts
+
+  return (
+    <>
+      <PageHeader
+        title="Externe Kontakte"
+        description="Kontaktdaten, die für das ganze Projektteam wichtig sind."
+      />
+      <TabsApp tabs={tabs} className="mt-7" />
+      {contacts.length === 0 ? (
+        <>
+          <ZeroCase visible={contacts.length} name="Kontakte" />
+          <IfUserCanEdit>
+            <ButtonWrapper className="mt-6 justify-between">
+              <Link button="blue" icon="plus" to={`/${projectSlug}/contacts/new`}>
+                Neuer Kontakt
+              </Link>
+            </ButtonWrapper>
+          </IfUserCanEdit>
+        </>
+      ) : (
+        <>
+          <ContactTable
+            contacts={contacts}
+            currentUserEmail={currentUser?.email}
+            projectSlug={projectSlug}
+          />
+          <IfUserCanEdit>
+            <Link button="blue" icon="plus" className="mt-4" to={`/${projectSlug}/contacts/new`}>
+              Neuer Kontakt
+            </Link>
+          </IfUserCanEdit>
+        </>
+      )}
+      <SuperAdminLogData data={contacts} />
+    </>
+  )
+}

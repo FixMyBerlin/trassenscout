@@ -1,72 +1,43 @@
 # dependencies
 node_modules
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
-.pnp.*
-.npm
-web_modules/
 
-# blitz
-/.blitz/
-/.next/
-*.sqlite
-*.sqlite-journal
-.now
-.blitz**
-blitz-log.log
+# build output
+.output/
+.tanstack/
 
 # misc
 .DS_Store
 
-# local env files
+# env (local secrets; templates and test overrides stay committed)
+.env
 .env.local
 .env.*.local
-.envrc
 
 # Logs
 logs
 *.log
-
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
 
 # Testing
 .coverage
 *.lcov
 .nyc_output
 lib-cov
-
-# Caches
-*.tsbuildinfo
-.eslintcache
-.node_repl_history
-.yarn-integrity
-
-# Serverless directories
-.serverless/
-
-# Stores VSCode versions used for testing VSCode extensions
-.vscode-test
-
-# IDE
-.idea
-
-# local data
-db/remote/data/dump.sql
-db/zod-schema-inspiration/
 /test-results/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
-TMP/
-/public/pdf.worker.min.mjs
 /tests/.auth/
-TMP/
 
+# Caches
+*.tsbuildinfo
+
+# IDE
+.idea
+
+# local scratch
+tmp/
+
+# local data
+scripts/db-pull/data/dump.sql
+prisma/zod-schema-inspiration/
+src/prisma/generated/

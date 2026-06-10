@@ -1,0 +1,47 @@
+# Dev-only overrides merged automatically by Docker Compose locally.
+# Not deployed to servers — production runs docker-compose.yml alone.
+# `traefik` and `app` are gated behind profiles so daily dev starts only db + imap-listener.
+#
+# Optional `COMPOSE_DEV_CONTAINER_PREFIX` (e.g. `migration_`) prefixes container names so multiple
+# repo checkouts / worktrees can use Docker on one machine without clashing with the default `ts-db`.
+# Set in the worktree's `.env` — see _migration/development-worktree.md.
+# Do not use `COMPOSE_PROJECT_NAME` here; Compose derives it from the directory name.
+services:
+  traefik:
+    profiles:
+      - network
+  app:
+    profiles:
+      - frontend
+    # `.env` has DATABASE_HOST=localhost for host-side bun/prisma; the app container reaches Postgres via the compose service name `db`, not localhost.
+    environment:
+      DATABASE_HOST: db
+  db:
+    container_name: ${COMPOSE_DEV_CONTAINER_PREFIX}ts-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: password
+    volumes:
+      - ts-data:/var/lib/postgresql/data
+    command: ["postgres", "-clog_destination=stderr", "-clog_statement=all"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+    logging:
+      driver: json-file
+  imap-listener:
+    container_name: ${COMPOSE_DEV_CONTAINER_PREFIX}ts-imap-listener
+    image: imap-listener:latest
+    build:
+      context: ./imap-listener
+      dockerfile: ../docker/imap-listener/Dockerfile
+    env_file: "./imap-listener/.env"
+    environment:
+      NODE_ENV: development
+    depends_on: !override
+      - db
+    logging:
+      driver: json-file
+
+volumes:
+  ts-data:

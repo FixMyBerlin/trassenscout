@@ -1,0 +1,116 @@
+// Script to pull database dumps from production or staging
+// Usage: bun get-dump.ts [-s] [-h]
+
+import { styleText } from "node:util"
+import { $ } from "bun"
+import { dbPullRemoteEnvSchema, getValidatedEnv } from "@/scripts/shared/env"
+import {
+  checkDatabaseConnection,
+  showSshTunnelInstructions,
+  type RemoteDatabaseTarget,
+} from "./db-helpers"
+import { getProductionDatabaseUrl, getStagingDatabaseUrl } from "./remote-database-url"
+
+const MIN_DUMP_SIZE = 3 * 1024 * 1024 // 3 MB minimum for a valid dump
+
+async function dumpFileSize(path: string): Promise<number> {
+  try {
+    return Bun.file(path).size
+  } catch {
+    return 0
+  }
+}
+
+function printHelp() {
+  console.log("Usage: bun get-dump.ts [-s] [-h]")
+  console.log("  -s: Use staging database instead of production")
+  console.log("  -h: Show this help message")
+  console.log("")
+  console.log("Note: Bun automatically loads .env")
+  console.log("      To use a different env file: bun --env-file=.env.custom get-dump.ts")
+}
+
+export async function main() {
+  const args = process.argv.slice(2)
+  const useStaging = args.includes("-s")
+
+  if (args.includes("-h")) {
+    printHelp()
+    return
+  }
+
+  const env = getValidatedEnv(dbPullRemoteEnvSchema)
+  const remoteTarget: RemoteDatabaseTarget = useStaging ? "staging" : "production"
+  const databaseUrl = useStaging ? getStagingDatabaseUrl(env) : getProductionDatabaseUrl(env)
+
+  console.log(
+    useStaging
+      ? "Getting dump from staging database..."
+      : "Getting dump from production database...",
+  )
+
+  const DIR = import.meta.dir
+  await $`mkdir -p ${DIR}/data`
+
+  console.log(styleText("inverse", "🔍 Checking SSH connection..."))
+  const connected = await checkDatabaseConnection(databaseUrl, remoteTarget)
+  if (!connected) {
+    console.error("")
+    console.error(styleText("red", "❌ Failed to connect to database."))
+    console.error("")
+    process.exit(1)
+  }
+
+  console.log(styleText("inverse", "📥 Pulling database dump..."))
+
+  const dockerDbUrl = databaseUrl.replace("@localhost", "@host.docker.internal")
+  const dumpFile = `${DIR}/data/dump.sql`
+  const tempDumpFile = `${DIR}/data/dump.sql.tmp`
+
+  await $`rm -f ${tempDumpFile}`.quiet()
+
+  try {
+    await $`docker run --rm --entrypoint pg_dump postgres:16-alpine -Fp --no-owner --no-privileges ${dockerDbUrl} | grep -vE 'rdsadmin;|dbmasteruser;' > ${tempDumpFile}`.quiet()
+
+    const size = await dumpFileSize(tempDumpFile)
+    if (size < MIN_DUMP_SIZE) {
+      await $`rm -f ${tempDumpFile}`.quiet()
+      console.error("")
+      console.error(
+        styleText(
+          "red",
+          `❌ Dump file is too small (${(size / 1024 / 1024).toFixed(2)} MB). Expected at least 3 MB.`,
+        ),
+      )
+      console.error(styleText("red", "   pg_dump may have failed silently."))
+      console.error("")
+      throw new Error("Dump file is too small")
+    }
+
+    await $`mv ${tempDumpFile} ${dumpFile}`
+
+    const finalSize = await $`ls -lh ${dumpFile}`.text()
+    console.log(`✅ Dump created: ${finalSize.trim()}`)
+  } catch (error) {
+    await $`rm -f ${tempDumpFile}`.quiet()
+
+    const errorStr = String(error)
+    if (errorStr.includes("Connection refused") || errorStr.includes("connection to server")) {
+      showSshTunnelInstructions(remoteTarget)
+    }
+
+    const existingSize = await dumpFileSize(dumpFile)
+    if (existingSize > 0 && existingSize < MIN_DUMP_SIZE) {
+      await $`rm -f ${dumpFile}`.quiet()
+    }
+
+    throw error
+  }
+}
+
+if (import.meta.main) {
+  main().catch((error) => {
+    console.error(error)
+    process.exit(1)
+  })
+}

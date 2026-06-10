@@ -1,6 +1,8 @@
-import { seedProjects } from "@/tests/_fixtures/auth"
+import { authFile, seedProjects } from "@/tests/_fixtures/auth"
+import { test } from "@/tests/_fixtures/test"
+import { assertFormValidationOnEmptySubmit } from "./_shared/formValidation"
 import { defineSettingsRouteCrudSuite } from "./_shared/settingsRouteCrud"
-import { defineSettingsRoutePermissionSuite } from "./_shared/settingsRoutePermissions"
+import { defineSettingsRoutePermissionSuite, pageNoise } from "./_shared/settingsRoutePermissions"
 
 const projectSlug = seedProjects.richProject
 const operatorsPath = `/${projectSlug}/operators`
@@ -27,4 +29,19 @@ defineSettingsRouteCrudSuite({
   titleLabel: "Titel",
   createSubmitText: "Erstellen",
   editSubmitText: "Speichern",
+})
+
+test.describe("Operators form validation", () => {
+  test.use({ storageState: authFile("editor") })
+  test.use({ allowedConsoleErrors: pageNoise })
+
+  test("shows validation errors on empty submit", async ({ page }) => {
+    await page.goto(newOperatorPath)
+    await assertFormValidationOnEmptySubmit({
+      page,
+      labels: ["Kürzel", "Titel"],
+      submitButtonName: "Erstellen",
+      stayOnUrl: new RegExp(`${newOperatorPath}$`),
+    })
+  })
 })

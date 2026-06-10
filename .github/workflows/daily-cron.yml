@@ -6,6 +6,9 @@ on:
     # Runs day at 5:00 AM
     - cron: "0 5 * * *"
 
+permissions:
+  contents: read
+
 jobs:
   run-daily-tasks-staging:
     runs-on: ubuntu-latest
@@ -16,11 +19,20 @@ jobs:
         # --fail makes the github action fail on error
         # -s (silent) removes the progress bar
         # -S (show error) makes sure errors show even with -s active
-        run: curl --fail -s -S -X GET "https://staging.trassenscout.de/api/cron-invites-cleanup?apiKey=${{ secrets.TS_API_KEY }}"
+        run: |
+          curl --fail -s -S \
+            -H "Authorization: Bearer ${{ secrets.TS_API_KEY }}" \
+            -X GET "https://staging.trassenscout.de/api/cron-invites-cleanup"
       - name: Cleanup logEntries STAGING
-        run: curl --fail -s -S -X GET "https://staging.trassenscout.de/api/cron-logEntries-cleanup?apiKey=${{ secrets.TS_API_KEY }}"
+        run: |
+          curl --fail -s -S \
+            -H "Authorization: Bearer ${{ secrets.TS_API_KEY }}" \
+            -X GET "https://staging.trassenscout.de/api/cron-logEntries-cleanup"
       - name: Cleanup created surveyResponses STAGING
-        run: curl --fail -s -S -X GET "https://staging.trassenscout.de/api/cron-surveyResponses-cleanup?apiKey=${{ secrets.TS_API_KEY }}"
+        run: |
+          curl --fail -s -S \
+            -H "Authorization: Bearer ${{ secrets.TS_API_KEY }}" \
+            -X GET "https://staging.trassenscout.de/api/cron-surveyResponses-cleanup"
 
   run-daily-tasks-production:
     runs-on: ubuntu-latest
@@ -28,8 +40,17 @@ jobs:
       name: production
     steps:
       - name: Cleanup invites PRODUCTION
-        run: curl --fail -s -S -X GET "https://trassenscout.de/api/cron-invites-cleanup?apiKey=${{ secrets.TS_API_KEY }}"
+        run: |
+          curl --fail -s -S \
+            -H "Authorization: Bearer ${{ secrets.TS_API_KEY }}" \
+            -X GET "https://trassenscout.de/api/cron-invites-cleanup"
       - name: Cleanup logEntries PRODUCTION
-        run: curl --fail -s -S -X GET "https://trassenscout.de/api/cron-logEntries-cleanup?apiKey=${{ secrets.TS_API_KEY }}"
+        run: |
+          curl --fail -s -S \
+            -H "Authorization: Bearer ${{ secrets.TS_API_KEY }}" \
+            -X GET "https://trassenscout.de/api/cron-logEntries-cleanup"
       - name: Cleanup created surveyResponses PRODUCTION
-        run: curl --fail -s -S -X GET "https://trassenscout.de/api/cron-surveyResponses-cleanup?apiKey=${{ secrets.TS_API_KEY }}"
+        run: |
+          curl --fail -s -S \
+            -H "Authorization: Bearer ${{ secrets.TS_API_KEY }}" \
+            -X GET "https://trassenscout.de/api/cron-surveyResponses-cleanup"

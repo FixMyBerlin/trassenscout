@@ -1,59 +1,30 @@
-# Stage 1: Install dependencies
-FROM node:24-trixie-slim AS deps
+FROM oven/bun:1
 
 WORKDIR /app
 
-COPY package* ./
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends gdal-bin curl && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN npm install-clean --legacy-peer-deps
+ARG VITE_APP_ORIGIN
+ARG VITE_APP_ENV
 
-# ---
-
-# Stage 2: Build app
-FROM node:24-trixie-slim AS builder
-
-WORKDIR /app
-
-ARG NEXT_PUBLIC_APP_ORIGIN
-ARG NEXT_PUBLIC_APP_ENV
-
-ENV NEXT_TELEMETRY_DISABLED=1
-
-COPY --from=deps /app/node_modules ./node_modules
-
-# see .dockerignore for what is getting copied
-COPY . .
-
-RUN npx blitz@2.2.4 prisma generate
-# react-pdf worker lives in public/ (gitignored, copied from pdfjs-dist)
-RUN npm run copyPdfWorker
-RUN npx blitz@2.2.4 build
-
-# ---
-
-# Stage 3: Laufzeit-Image
-FROM node:24-trixie-slim AS runner
-
-WORKDIR /app
-
-RUN apt-get update && apt-get install -y --no-install-recommends gdal-bin && rm -rf /var/lib/apt/lists/*
-
-RUN npm install --global pm2
-
-COPY --from=builder --chown=node:node /app/node_modules ./node_modules
-COPY --from=builder --chown=node:node /app/.next ./.next
-COPY --from=builder --chown=node:node /app/public ./public
-COPY --from=builder --chown=node:node /app/package.json ./package.json
-COPY --from=builder --chown=node:node /app/next.config.js ./next.config.js
-COPY --from=builder --chown=node:node /app/db ./db
-
-ARG NEXT_PUBLIC_APP_ORIGIN
-ARG NEXT_PUBLIC_APP_ENV
-
-ENV NEXT_TELEMETRY_DISABLED=1
+ENV VITE_APP_ORIGIN=${VITE_APP_ORIGIN}
+ENV VITE_APP_ENV=${VITE_APP_ENV}
 ENV TZ=Europe/Berlin
 
-# Don't use root user for execution, see https://www.docker.com/blog/understanding-the-docker-user-instruction/
-USER 1000:1000
+COPY package.json bun.lock bunfig.toml ./
+RUN bun install --frozen-lockfile --ignore-scripts
 
-CMD npx blitz@2.2.4 prisma migrate deploy && exec pm2-runtime node -- ./node_modules/next/dist/bin/next start -p 3000
+COPY . .
+
+RUN bun run postinstall
+RUN bun run build
+
+RUN chown -R bun:bun /app
+USER bun
+
+EXPOSE 4000
+
+CMD ["/bin/sh", "-c", "bunx prisma migrate deploy && exec bun .output/server/index.mjs"]

@@ -1,0 +1,226 @@
+import { clsx } from "clsx"
+import type { JSX } from "react"
+import { ComponentPropsWithoutRef, PropsWithoutRef, useState } from "react"
+import { z } from "zod"
+import { useFieldContext } from "@/src/components/core/components/forms/hooks/formContext"
+import { useFieldDisabled } from "@/src/components/core/components/forms/hooks/useFormHydrated"
+import { GeometryTypeEnum } from "@/src/prisma/generated/browser"
+import {
+  LineStringGeometrySchema,
+  MultiLineStringGeometrySchema,
+  MultiPolygonGeometrySchema,
+  PolygonGeometrySchema,
+} from "@/src/shared/geometry/geojsonSchemas"
+import { SupportedGeometrySchema } from "@/src/shared/geometry/geometrySchemas"
+import { mapGeoTypeToEnum } from "@/src/shared/geometry/mapGeoTypeToEnum"
+import { clearImperativeFieldSubmitErrors } from "../utils/clearImperativeFieldSubmitErrors"
+import { extractGeometryFromGeoJSON } from "../utils/extractGeometryFromGeoJSON"
+import { GeometryFieldPreview } from "./GeometryFieldPreview"
+
+const SubsectionGeometrySchema = z.union([
+  LineStringGeometrySchema,
+  MultiLineStringGeometrySchema,
+  PolygonGeometrySchema,
+  MultiPolygonGeometrySchema,
+])
+
+export type GeometryFieldProps = {
+  label: string
+  help?: string
+  optional?: boolean
+  disabled?: boolean
+  outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
+  labelProps?: ComponentPropsWithoutRef<"label">
+  /** "subsection" allows LineString and Polygon only. "subsubsection" allows all types. */
+  allowedGeometryTypesFor?: "subsection" | "subsubsection"
+} & Omit<PropsWithoutRef<JSX.IntrinsicElements["textarea"]>, "value" | "onChange" | "onBlur">
+
+export function GeometryField({
+  label,
+  help,
+  outerProps,
+  labelProps,
+  optional,
+  disabled,
+  allowedGeometryTypesFor,
+  className: textareaClassName,
+  ...props
+}: GeometryFieldProps) {
+  const field = useFieldContext<z.infer<typeof SupportedGeometrySchema>>()
+  const fieldDisabled = useFieldDisabled(disabled)
+
+  const geometryType =
+    (field.form.getFieldValue("type") as GeometryTypeEnum | undefined) || GeometryTypeEnum.LINE
+  const value = field.state.value
+  const serializedValue = JSON.stringify(value, undefined, 2)
+  const [valueString, setValueString] = useState(serializedValue)
+  const [prevSerializedValue, setPrevSerializedValue] = useState(serializedValue)
+  if (serializedValue !== prevSerializedValue) {
+    setPrevSerializedValue(serializedValue)
+    setValueString(serializedValue)
+  }
+
+  const [hasJsonParseError, setJsonParseError] = useState(false)
+  const hasError = field.state.meta.errors.length > 0
+
+  const allowedGeometrySchema =
+    allowedGeometryTypesFor === "subsection" ? SubsectionGeometrySchema : SupportedGeometrySchema
+
+  const handlePaste = (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    const pastedText = event.clipboardData.getData("text")
+    if (!pastedText.trim()) return
+
+    try {
+      const extracted = extractGeometryFromGeoJSON(pastedText)
+      if (!extracted) return
+
+      const parseResult = allowedGeometrySchema.safeParse(extracted.geometry)
+
+      if (!parseResult.success) {
+        event.preventDefault()
+        setJsonParseError(true)
+        console.error("ERROR in GeometryField: Invalid geometry schema", parseResult.error)
+        return
+      }
+
+      event.preventDefault()
+      setJsonParseError(false)
+      field.handleChange(parseResult.data)
+      if (parseResult.data.type) {
+        field.form.setFieldValue("type", mapGeoTypeToEnum(parseResult.data.type))
+      }
+      clearImperativeFieldSubmitErrors(field.form, field.name)
+      clearImperativeFieldSubmitErrors(field.form, "type")
+    } catch (error) {
+      setJsonParseError(true)
+      console.error("ERROR in GeometryField: Paste error", error)
+    }
+  }
+
+  const handleTextareaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const textValue = event.target.value
+    setValueString(textValue)
+
+    const trimmedValue = textValue.trim()
+    if (!trimmedValue) {
+      setJsonParseError(false)
+      return
+    }
+
+    try {
+      const parsedJson = JSON.parse(trimmedValue)
+      const parseResult = allowedGeometrySchema.safeParse(parsedJson)
+
+      if (!parseResult.success) {
+        setJsonParseError(true)
+        console.error("ERROR in GeometryField: Invalid geometry schema", parseResult.error)
+        return
+      }
+
+      setJsonParseError(false)
+      field.handleChange(parseResult.data)
+      const geoType = parseResult.data.type
+      if (geoType) {
+        field.form.setFieldValue("type", mapGeoTypeToEnum(geoType))
+      }
+      clearImperativeFieldSubmitErrors(field.form, field.name)
+      clearImperativeFieldSubmitErrors(field.form, "type")
+    } catch (error) {
+      setJsonParseError(true)
+      console.error("ERROR in GeometryField", error, JSON.stringify(event.target.value))
+    }
+  }
+
+  return (
+    <div {...outerProps}>
+      <label
+        {...labelProps}
+        htmlFor={field.name}
+        className="mb-1 block text-sm font-medium text-gray-700"
+      >
+        {label}
+        {optional && <> (optional)</>}
+      </label>
+      <div className="grid grid-cols-2 gap-5">
+        <div className="flex flex-col">
+          <textarea
+            disabled={fieldDisabled}
+            id={field.name}
+            {...props}
+            value={valueString}
+            onChange={handleTextareaChange}
+            onBlur={handleTextareaChange}
+            onPaste={handlePaste}
+            className={clsx(
+              textareaClassName,
+              "block w-full grow rounded-md font-mono text-xs shadow-sm",
+              hasError
+                ? "border-red-800 shadow-red-200 focus:border-red-800 focus:ring-red-800"
+                : "border-gray-300 focus:border-blue-500 focus:ring-blue-500",
+            )}
+          />
+          {Boolean(help) && <p className="mt-2 text-sm text-gray-500">{help}</p>}
+          <p className="mt-2 text-sm text-gray-500">
+            Das richtige Koordinatensystem ist EPSG:4326 / WGS84.
+          </p>
+          <p className="mt-2 text-sm text-gray-500">
+            {geometryType === "POINT" ? (
+              <>
+                Das richtige Format für einen Punkt ist{" "}
+                <code>{JSON.stringify({ type: "Point", coordinates: [9.1943, 48.8932] })}</code>.
+                Unterstützt auch MultiPoint.
+              </>
+            ) : geometryType === "LINE" ? (
+              <>
+                Das richtige Format für eine Linie ist{" "}
+                <code>
+                  {JSON.stringify({
+                    type: "LineString",
+                    coordinates: [
+                      [9.1943, 48.8932],
+                      [9.2043, 48.8933],
+                    ],
+                  })}
+                </code>
+                . Unterstützt auch MultiLineString.
+              </>
+            ) : geometryType === "POLYGON" ? (
+              <>
+                Das richtige Format für ein Polygon ist{" "}
+                <code>
+                  {JSON.stringify({
+                    type: "Polygon",
+                    coordinates: [
+                      [
+                        [9.1943, 48.8932],
+                        [9.2043, 48.8933],
+                        [9.2143, 48.8943],
+                        [9.1943, 48.8932],
+                      ],
+                    ],
+                  })}
+                </code>
+                . Unterstützt auch MultiPolygon.
+              </>
+            ) : (
+              <>Bitte wählen Sie einen Geometrietyp aus.</>
+            )}
+          </p>
+          <p className="mt-2 text-sm text-gray-500">
+            Es kann eine GeoJSON Feature in das Eingabefeld kopiert (strg+v) werden.
+          </p>
+        </div>
+        <div>
+          {hasJsonParseError && (
+            <div role="alert" className="mb-3 rounded bg-red-800 p-3 text-sm text-white">
+              Es ist ein Fehler beim Verarbeiten der Geometrie aufgetreten. Die Änderung wurde daher
+              verworfen. Es könnte sein, dass ein Syntaxfehler vorlag, bspw. durch ein Komma zu
+              viel/wenig.
+            </div>
+          )}
+          <GeometryFieldPreview hasError={hasJsonParseError || hasError} />
+        </div>
+      </div>
+    </div>
+  )
+}

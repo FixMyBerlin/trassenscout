@@ -1,9 +1,8 @@
-import { getConfiguredS3Client } from "@/src/server/uploads/_utils/client"
-import { S3_BUCKET, S3_MAX_FILE_SIZE_BYTES, S3_MAX_FILES } from "@/src/server/uploads/_utils/config"
-import { sanitizeKey } from "@/src/server/uploads/_utils/keys"
-import { uploadSource } from "@/src/server/uploads/_utils/sources"
 import { route, Router } from "@better-upload/server"
-import { v4 as uuidv4 } from "uuid"
+import { sanitizeKey } from "@/src/server/uploads/_utils/keys"
+import { getConfiguredS3Client } from "@/src/server/uploads/_utils/s3Client.server"
+import { uploadSource } from "@/src/server/uploads/_utils/sources"
+import { S3_BUCKET, S3_MAX_FILE_SIZE_BYTES, S3_MAX_FILES } from "@/src/shared/uploads/config"
 
 type CreateUploadRouterOptions = {
   keyPrefix: string
@@ -16,14 +15,14 @@ type CreateUploadRouterOptions = {
  * @param options - Configuration options including keyPrefix (e.g., project slug or "support") and userId
  * @returns A configured Router instance
  */
-export function createUploadRouter(options: CreateUploadRouterOptions): Router {
+export function createUploadRouter(options: CreateUploadRouterOptions) {
   const { keyPrefix, userId, onBeforeUpload } = options
   const s3Client = getConfiguredS3Client()
   const rootFolder = process.env.S3_UPLOAD_ROOTFOLDER
 
-  function generateS3Key(filename: string): string {
+  function generateS3Key(filename: string) {
     const sanitizedFilename = sanitizeKey(filename)
-    return `${rootFolder}/${keyPrefix}/${uuidv4()}/${sanitizedFilename}` as const
+    return `${rootFolder}/${keyPrefix}/${crypto.randomUUID()}/${sanitizedFilename}` as const
   }
 
   return {
@@ -34,7 +33,7 @@ export function createUploadRouter(options: CreateUploadRouterOptions): Router {
         multipleFiles: true,
         maxFileSize: S3_MAX_FILE_SIZE_BYTES,
         maxFiles: S3_MAX_FILES,
-        onBeforeUpload: async ({ req, files, clientMetadata }) => {
+        onBeforeUpload: async ({ req: _req, files, clientMetadata: _clientMetadata }) => {
           if (onBeforeUpload) {
             await onBeforeUpload(files)
           }

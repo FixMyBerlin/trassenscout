@@ -1,4 +1,4 @@
-import db from "@/db"
+import db from "@/src/server/db.server"
 
 export const validateTemplateTopicScope = async ({
   projectIds,

@@ -25,21 +25,21 @@ Stack conventions for TanStack Start apps in this org. Pair with `tanstack-start
 1. [client-server-boundaries.md](references/client-server-boundaries.md) — file suffixes, import protection, `beforeLoad` vs `loader`
 2. [router-and-query.md](references/router-and-query.md) — Query options, loaders, SSR dehydration
 3. [params-search-ui-vs-api.md](references/params-search-ui-vs-api.md) — Zod on UI routes vs API `GET`
-4. [selective-ssr.md](references/selective-ssr.md) — `ssr: true` / `'data-only'` / `false`
+4. [selective-ssr.md](references/selective-ssr.md) — `ssr: true` / `'data-only'` / `false` (handler-only API routes: `false`)
 
-Auth-specific flows: skill `tanstack-start-auth`.
+Auth-specific flows (Trassenscout): skill `trassenscout-auth`. Portable Better Auth config: `tanstack-start-auth`.
 
 ## Non-negotiable rules
 
-| Topic                | Rule                                                                                                          |
-| -------------------- | ------------------------------------------------------------------------------------------------------------- |
-| Server-only modules  | `*.server.ts` — never imported by routes/components; use `createServerOnlyFn` inside                          |
-| Callable from client | `*.functions.ts` with `createServerFn`; name exports `*Fn`                                                    |
-| API route files      | No `server-only` import marker on the route file; server-only logic inside handlers or tree-shaken imports    |
-| Query-backed UI data | Loader primes cache; component uses `useQuery` / `useSuspenseQuery` — not `useLoaderData` alone               |
-| API search params    | Do **not** use `validateSearch` on API routes; `safeParse` in `GET` from `request.url` with explicit 4xx JSON |
-| Validation           | Zod for path params and UI search everywhere                                                                  |
-| SSR                  | Set `ssr` explicitly on every route; default full SSR unless a leaf needs `data-only` or `false`              |
+| Topic                | Rule                                                                                                                           |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Server-only modules  | `*.server.ts` — never imported by routes/components; use `createServerOnlyFn` inside                                           |
+| Callable from client | `*.functions.ts` with `createServerFn`; name exports `*Fn`                                                                     |
+| API route files      | No `server-only` import marker on the route file; server-only logic inside handlers or tree-shaken imports                     |
+| Query-backed UI data | Loader primes cache; component uses `useQuery` / `useSuspenseQuery` — not `useLoaderData` alone                                |
+| API search params    | Do **not** use `validateSearch` on API routes; `safeParse` in `GET` from `request.url` with explicit 4xx JSON                  |
+| Validation           | Zod 4 for path params and UI search; export search schema when reused outside the route; `Route.useSearch()` for types — no manual casts |
+| SSR                  | Set `ssr` explicitly on every route; UI default full SSR (`true`); handler-only API routes: `false`; map-heavy UI: `data-only` |
 
 ## Quick decisions
 
@@ -47,4 +47,4 @@ Auth-specific flows: skill `tanstack-start-auth`.
 
 **Loader vs Query:** Shared, invalidatable, multi-route data → `*QueryOptions` + `ensureQueryData` in loader + `useSuspenseQuery` in UI. One-off admin page data → loader return value + `useLoaderData`.
 
-**`ssr`:** Map/canvas-heavy UI but need server auth/data → `'data-only'`. Fully client-first route → `false` (rare).
+**`ssr`:** Map/canvas-heavy UI but need server auth/data → `'data-only'`. Handler-only API (`server.handlers`) → `false`. Fully client-first UI route → `false` (rare).

@@ -9,7 +9,7 @@ const API_BASE_V2_1 = `${LUCKY_CLOUD_DOMAIN}/api/v2.1` as const
 const API_BASE_API2 = `${LUCKY_CLOUD_DOMAIN}/api2` as const
 
 // Endpoint definitions: full URL templates with placeholders like {repoId}
-export const LuckyCloudEndpoints = {
+const LuckyCloudEndpoints = {
   // "repos" are the top level folders which are called "Libraries" in the API Docs
   // Docs: https://storage.luckycloud.de/published/api-dokumentation/v2.1/libraries.md#user-content-List%20Libraries
   Repos: `${API_BASE_API2}/repos/`,
@@ -39,7 +39,7 @@ export function buildEndpoint(
   endpointKey: LuckyCloudEndpoint,
   replacements: Record<string, string>,
   queryParams?: Record<string, string>,
-): string {
+) {
   let urlString: string = LuckyCloudEndpoints[endpointKey]
 
   for (const [key, value] of Object.entries(replacements)) {
@@ -123,7 +123,7 @@ export async function getDefaultRepoId() {
     const availableLibraries = repos.map((r) => r.name || r.id).join(", ")
     throw new Error(
       `Library "${expectedLibraryName}" not found. Available libraries: ${availableLibraries}. ` +
-        `Please ensure the library name matches the environment (${process.env.NEXT_PUBLIC_APP_ENV}).`,
+        `Please ensure the library name matches the environment (${process.env.VITE_APP_ENV}).`,
     )
   }
 

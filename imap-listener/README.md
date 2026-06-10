@@ -21,8 +21,12 @@ Long-running Node.js Service, der ein IMAP-Postfach überwacht und neue E-Mails 
 
 ## Konfiguration
 
-Die Konfiguration findet in `.env` statt bzw. über GitHub Secrets statt.
-Erstelle dafür aus der `.env.example` eine die `.env` Datei für das lokale Setup.
+**Deploy:** `IMAP_*` and `TS_API_KEY` come from GitHub (see [`.github/env/deploy.manifest.json`](../.github/env/deploy.manifest.json)) and land in the server root `.env` via the deploy workflow.
+
+**Local dev:** copy [`imap-listener/.env.example`](./.env.example) to `imap-listener/.env`. [`docker-compose.override.yml`](../docker-compose.override.yml) loads that file for the `imap-listener` service (`env_file: ./imap-listener/.env`).
+
+Secrets and connection-specific values are validated in [`src/helpers/config.ts`](./src/helpers/config.ts).
+Static defaults (folders, webhook path, delays, health port) live in [`src/helpers/constants.ts`](./src/helpers/constants.ts).
 
 ### Log-Ereignisse
 

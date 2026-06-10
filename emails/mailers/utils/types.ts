@@ -1,5 +1,5 @@
 import { MarkdownMailProps } from "@/emails/templats/MarkdownMail"
-import { Prettify } from "@/src/core/types"
+import { Prettify } from "@/src/components/core/types"
 
 export type MailAddress = {
   Email: string

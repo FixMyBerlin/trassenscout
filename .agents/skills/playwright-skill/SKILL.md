@@ -7,7 +7,7 @@ description: E2E testing and ad-hoc browser automation for TanStack Start apps (
 
 **Read the project’s `tests/README.md` first** — env vars, Docker, and scripts live there.
 
-**Related FMC skills:** `tanstack-start-migration` (post-migration smoke), `tanstack-start-auth` (sessions), `tanstack-start-conventions`.
+**Related FMC skills:** `tanstack-start-migration` (post-migration smoke), `trassenscout-auth` (sessions, E2E stubs), `tanstack-start-conventions`.
 
 ---
 
@@ -162,7 +162,7 @@ After **Next → TanStack Start**, add or run smoke specs:
 3. `expect(page.locator('main').first()).toBeVisible()`
 4. `expectNoConsoleErrors(page)` (see utils)
 
-Route lists live in `tests/fixtures/routes.ts`. Run: `bun run test-e2e -- tests/smoke`.
+Route lists live in `tests/fixtures/routes.ts`. Run: `bun run e2e -- tests/smoke`.
 
 ### Auth
 
@@ -194,8 +194,8 @@ Prefer `getByRole`, `getByLabel`, `getByText`. Use `playwrightTestId('…')` onl
 bun add -d @playwright/test dotenv
 bunx playwright install chromium
 # Start DB/tiles if required (see tests/README.md)
-bun run test-e2e              # all
-bun run test-e2e -- tests/smoke
+bun run e2e                   # chromium project
+bun run e2e -- tests/smoke
 bunx playwright test --ui
 bunx playwright test --debug
 ```

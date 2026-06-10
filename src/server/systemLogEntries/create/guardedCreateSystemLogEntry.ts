@@ -1,5 +1,8 @@
-import db, { SystemLogEntry } from "@/db"
-import { Prettify } from "@/src/core/types"
+import { Prettify } from "@/src/components/core/types"
+import { SystemLogEntry } from "@/src/prisma/generated/client"
+import { compareApiKeyTimingSafe } from "@/src/server/auth/api-key.server"
+import db from "@/src/server/db.server"
+import { AuthorizationError } from "@/src/shared/auth/errors"
 
 type Props = Prettify<
   { apiKey: string } & Partial<Pick<SystemLogEntry, "userId" | "projectId" | "context">> &
@@ -20,8 +23,8 @@ type Props = Prettify<
 */
 
 export const guardedCreateSystemLogEntry = async ({ apiKey, context, ...data }: Props) => {
-  if (apiKey !== process.env.TS_API_KEY) {
-    return Response.json({ statusText: "Unauthorized" }, { status: 401 })
+  if (!compareApiKeyTimingSafe(apiKey, process.env.TS_API_KEY)) {
+    throw new AuthorizationError()
   }
 
   return await db.systemLogEntry.create({ data: { ...data, context: context || undefined } })
