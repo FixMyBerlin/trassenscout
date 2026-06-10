@@ -48,15 +48,22 @@ export const UploadPreview = (props: Props) => {
   if (!upload || isDeletedUploadMarker(upload)) return null
 
   const sizeConfig = UPLOAD_SIZES[size]
+  const isTable = size === "table"
 
   const iconContainer = (
     <span
       className={twJoin(
         sizeConfig.containerHeight,
-        "flex w-full items-center justify-center overflow-hidden rounded-xl",
+        "flex w-full items-center justify-center",
+        isTable ? "rounded-md" : "rounded-xl",
       )}
     >
-      <UploadIcon upload={upload} projectSlug={projectSlug} size={size} />
+      <UploadIcon
+        upload={upload}
+        projectSlug={projectSlug}
+        size={size}
+        showFrame={size === "grid" && !onClick}
+      />
     </span>
   )
 
@@ -82,7 +89,10 @@ export const UploadPreview = (props: Props) => {
         onPointerEnter={onPointerEnter}
         onFocus={onFocus}
         className={twJoin(
-          "relative flex cursor-pointer flex-col items-start justify-center rounded-md bg-white text-xs ring-1 ring-gray-200/30 hover:bg-gray-50 hover:ring-2 hover:ring-gray-300/60 hover:outline-hidden",
+          "relative flex cursor-pointer flex-col items-start justify-center rounded-md bg-white text-xs hover:outline-hidden",
+          isTable
+            ? "border border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+            : "ring-1 ring-gray-200/30 hover:bg-gray-50 hover:ring-2 hover:ring-gray-300/60",
           containerClassName,
         )}
         title={upload.title}
