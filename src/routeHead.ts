@@ -3,6 +3,7 @@ import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils
 import { isProduction } from "@/src/components/core/utils/isEnv"
 import ogImageUrl from "@/src/components/shared/app/layouts/assets/og-image-default.png"
 import { APP_META } from "@/src/meta.const"
+import { getMatomoHeadAssets } from "@/src/shared/analytics/matomoHead"
 
 const ROBOTS_NOINDEX = { name: "robots", content: "noindex" } as const
 
@@ -36,6 +37,7 @@ function rootHead() {
       ...(!isProduction ? [ROBOTS_NOINDEX] : []),
     ],
     links: [...APP_META.faviconLinks],
+    ...getMatomoHeadAssets(),
   }
 }
 

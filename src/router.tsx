@@ -5,6 +5,7 @@ import { RoutePagePending } from "@/src/components/pages/RoutePagePending"
 import { RouteErrorPage } from "@/src/components/shared/errors/RouteErrorPage"
 import { RouteNotFoundPage } from "@/src/components/shared/errors/RouteNotFoundPage"
 import * as TanstackQuery from "@/src/components/shared/providers/tanstack-query/root-provider"
+import { setupMatomoRouterTracking } from "@/src/shared/analytics/matomoPageviews"
 import { routeTree } from "./routeTree.gen"
 
 export function getRouter() {
@@ -26,6 +27,7 @@ export function getRouter() {
   })
 
   setupRouterSsrQueryIntegration({ router, queryClient: rqContext.queryClient })
+  setupMatomoRouterTracking(router)
 
   return router
 }
