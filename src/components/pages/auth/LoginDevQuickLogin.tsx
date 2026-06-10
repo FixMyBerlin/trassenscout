@@ -27,32 +27,28 @@ export function LoginDevQuickLogin({ hasInvite, inviteToken, onQuickLogin }: Pro
   }
 
   return (
-    <DevAdminBox className="text-center">
-      <p className="text-sm">
-        Invitation Token: {inviteToken || "NOT FOUND"}
-        <br />
-        Invite: {hasInvite ? "FOUND" : "NOT FOUND"}
+    <DevAdminBox className="my-4 gap-2 p-3 text-center text-xs">
+      <p className="font-mono leading-tight">
+        Token: {inviteToken || "NOT FOUND"} · Invite: {hasInvite ? "FOUND" : "NOT FOUND"}
       </p>
-      <hr className="my-3 border border-white" />
       {error && (
-        <p
-          className="mb-3 rounded-sm bg-red-50 px-2 py-1 font-mono text-sm text-red-800"
-          role="alert"
-        >
+        <p className="rounded-sm bg-red-50 px-2 py-0.5 font-mono text-red-800" role="alert">
           {error}
         </p>
       )}
-      {DEV_LOGIN_USERS.map(([displayName, email]) => (
-        <button
-          key={displayName}
-          disabled={pendingEmail !== null}
-          type="button"
-          onClick={() => void handleQuickLogin(email)}
-        >
-          {pendingEmail === email ? "…" : displayName}
-        </button>
-      ))}
+      <div className="flex flex-wrap justify-center gap-1">
+        {DEV_LOGIN_USERS.map(([displayName, email]) => (
+          <button
+            key={displayName}
             className={clsx(primaryButtonClassName, "px-2 py-1 text-xs")}
+            disabled={pendingEmail !== null}
+            type="button"
+            onClick={() => void handleQuickLogin(email)}
+          >
+            {pendingEmail === email ? "…" : displayName}
+          </button>
+        ))}
+      </div>
     </DevAdminBox>
   )
 }
