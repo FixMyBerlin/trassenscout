@@ -5,9 +5,15 @@ import {
   Combobox as HeadlessCombobox,
   Transition,
 } from "@headlessui/react"
-import { CheckIcon, ChevronDownIcon, XMarkIcon } from "@heroicons/react/20/solid"
+import { ChevronDownIcon, XMarkIcon } from "@heroicons/react/20/solid"
 import { clsx } from "clsx"
 import { Fragment, type ReactNode, useState } from "react"
+import {
+  checkmarkListboxOptionsPanelClassName,
+  type ListboxOptionUi,
+  listboxOptionClassName,
+  ListboxOptionLabel,
+} from "@/src/components/core/components/forms/checkmarkListboxUi"
 import { FieldErrors } from "@/src/components/core/components/forms/FieldErrors"
 import { useFieldContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { useFieldDisabled } from "@/src/components/core/components/forms/hooks/useFormHydrated"
@@ -27,6 +33,8 @@ export type ComboboxProps = {
   items: ComboboxItem[]
   placeholder?: string
   classLabelOverwrite?: string
+  /** Dropdown option layout. Defaults to left checkmarks. */
+  optionUi?: ListboxOptionUi
 }
 
 export function Combobox({
@@ -37,6 +45,7 @@ export function Combobox({
   items,
   placeholder,
   classLabelOverwrite,
+  optionUi = "checkmark",
 }: ComboboxProps) {
   const field = useFieldContext<string[]>()
   const fieldDisabled = useFieldDisabled(disabled)
@@ -145,24 +154,20 @@ export function Combobox({
               <div className="absolute z-10 mt-1 w-full">
                 <ComboboxOptions
                   static
-                  className="max-h-60 w-full overflow-auto rounded-md border border-gray-300 bg-white py-1 text-base shadow-lg empty:invisible focus:outline-hidden sm:text-sm"
+                  className={clsx(
+                    checkmarkListboxOptionsPanelClassName,
+                    "w-full empty:invisible",
+                    optionUi === "classic" && "border border-gray-300",
+                  )}
                 >
                   {filteredItems.map((item) => (
                     <ComboboxOption
                       key={item.value}
                       value={item.value}
                       disabled={item.disabled}
-                      className="group relative cursor-default py-2 pr-9 pl-3 text-gray-900 select-none data-disabled:opacity-50 data-focus:bg-blue-600 data-focus:text-white"
+                      className={listboxOptionClassName(optionUi, "data-disabled:opacity-50")}
                     >
-                      <span className="block truncate group-data-selected:font-semibold">
-                        {item.label}
-                      </span>
-                      <span className="absolute inset-y-0 right-0 flex items-center pr-4 text-blue-600 group-data-focus:text-white">
-                        <CheckIcon
-                          className="invisible size-5 group-data-selected:visible"
-                          aria-hidden="true"
-                        />
-                      </span>
+                      <ListboxOptionLabel ui={optionUi}>{item.label}</ListboxOptionLabel>
                     </ComboboxOption>
                   ))}
                 </ComboboxOptions>
