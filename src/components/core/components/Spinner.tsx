@@ -16,7 +16,7 @@ export const SpinnerIcon = ({ size = "12", className }: SpinnerIconProps) => {
       aria-hidden="true"
       className={clsx(
         sizeClasses[size],
-        "inline animate-spin fill-blue-500 text-gray-200 dark:text-gray-600",
+        "inline animate-spin fill-blue-500 text-gray-200",
         className,
       )}
       viewBox="0 0 100 101"

@@ -16,7 +16,7 @@ export const MarketingPagePhotos = () => {
         <div
           key={`${image}${imageIndex}`}
           className={clsx(
-            "relative aspect-square w-44 flex-none overflow-hidden rounded-xl bg-gray-100 sm:w-72 sm:rounded-2xl dark:bg-gray-800",
+            "relative aspect-square w-44 flex-none overflow-hidden rounded-xl bg-gray-100 sm:w-72 sm:rounded-2xl",
             rotations[imageIndex % rotations.length],
           )}
         >
