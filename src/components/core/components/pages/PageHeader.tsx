@@ -5,8 +5,6 @@ type Props = {
   /** Text headline — use `heading` for pills, icons, or other custom title UI. */
   title?: string
   heading?: React.ReactNode
-  /** @deprecated Use `heading` instead. */
-  titleIcon?: React.ReactNode
   subtitle?: string | React.ReactNode
   description?: string | React.ReactNode
   action?: React.ReactNode
@@ -24,13 +22,12 @@ export const PageHeader = ({
   breadcrumb,
   title,
   heading,
-  titleIcon,
   subtitle,
   description,
   action,
   className,
 }: Props) => {
-  const headline = heading ?? titleIcon
+  const headline = heading
   const hasHeadline = Boolean(title || headline)
   const hasLeading = Boolean(subtitle || description)
   const hasActions = Boolean(action)

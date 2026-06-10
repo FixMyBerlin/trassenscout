@@ -1,4 +1,5 @@
 import { clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
 
 type Props = {
   label: "Dev" | "Admin"
@@ -10,10 +11,10 @@ type Props = {
 export const AdminBox = ({ label, className, compact = false, children }: Props) => {
   return (
     <div
-      className={clsx(
-        className,
+      className={twMerge(
         "relative flex flex-col rounded-sm border border-purple-300 bg-purple-100",
         compact ? "my-2 gap-2 p-2 text-xs" : "my-10 gap-8 p-5 text-sm",
+        className,
       )}
     >
       <div

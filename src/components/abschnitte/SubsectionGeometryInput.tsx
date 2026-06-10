@@ -1,16 +1,15 @@
 import { useQuery } from "@tanstack/react-query"
-import { getRouteApi } from "@tanstack/react-router"
 import { GeometryDrawingMap } from "@/src/components/core/components/forms/GeometryDrawingMap"
 import { GeometryInputBase } from "@/src/components/core/components/forms/GeometryInputBase"
 import { GeometryDrawingSubsectionContextLayers } from "@/src/components/core/components/Map/TerraDraw/TerraDrawContextLayers"
 import { subsectionsQueryOptions } from "@/src/server/subsections/subsectionsQueryOptions"
 
-const subsectionRouteApi = getRouteApi(
-  "/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/",
-)
+type Props = {
+  projectSlug: string
+  subsectionSlug?: string
+}
 
-export const SubsectionGeometryInput = () => {
-  const { projectSlug, subsectionSlug } = subsectionRouteApi.useParams()
+export const SubsectionGeometryInput = ({ projectSlug, subsectionSlug }: Props) => {
   const { data: subsections = [] } = useQuery(subsectionsQueryOptions({ projectSlug }))
 
   return (
@@ -21,7 +20,7 @@ export const SubsectionGeometryInput = () => {
       <GeometryDrawingMap allowedTypes={["point", "line", "polygon"]}>
         <GeometryDrawingSubsectionContextLayers
           subsections={subsections}
-          selectedSubsectionSlug={subsectionSlug}
+          selectedSubsectionSlug={subsectionSlug ?? ""}
         />
       </GeometryDrawingMap>
     </GeometryInputBase>

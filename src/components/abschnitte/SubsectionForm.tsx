@@ -32,6 +32,7 @@ export type SubsectionFormProps<S extends z.ZodTypeAny> = {
   actionBarRight?: ReactNode
   submitDisabled?: boolean
   submitClassName?: string
+  subsectionSlug?: string
 }
 
 function SubsectionFormWithQuery<S extends z.ZodTypeAny>({
@@ -45,6 +46,7 @@ function SubsectionFormWithQuery<S extends z.ZodTypeAny>({
   actionBarRight,
   submitDisabled,
   submitClassName,
+  subsectionSlug,
 }: SubsectionFormProps<S>) {
   const { projectSlug } = loggedInProjectRouteApi.useParams()
   const [formError, setFormError] = useState<string | null>(null)
@@ -136,7 +138,7 @@ function SubsectionFormWithQuery<S extends z.ZodTypeAny>({
       <form.AppField name="description">
         {(field) => <field.TextareaField label="Beschreibung (Markdown)" optional />}
       </form.AppField>
-      <SubsectionGeometryInput />
+      <SubsectionGeometryInput projectSlug={projectSlug} subsectionSlug={subsectionSlug} />
       <details>
         <summary className="mb-2 cursor-pointer">Anzeige-Optionen für Karten-Label</summary>
         <div className="space-y-6">
