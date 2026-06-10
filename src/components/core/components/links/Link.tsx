@@ -81,14 +81,14 @@ function useLinkPresentation({
   button,
   icon,
 }: Pick<CoreLinkStyleProps, "className" | "classNameOverwrites" | "button" | "icon">) {
-  const classNames = twMerge(classNameOverwrites ?? selectLinkStyle(button, className))
-
   const rawIconElement =
     icon && typeof icon === "string" && icon in linkIcons
       ? linkIcons[icon as keyof typeof linkIcons]
       : icon
         ? (icon as React.ReactNode)
         : null
+
+  const classNames = twMerge(classNameOverwrites ?? selectLinkStyle(button, className))
 
   const iconElement =
     rawIconElement && button && isValidElement<{ className?: string }>(rawIconElement)
@@ -98,6 +98,25 @@ function useLinkPresentation({
       : rawIconElement
 
   return { classNames, iconElement }
+}
+
+function renderLinkContent(
+  iconElement: React.ReactNode | null,
+  children: React.ReactNode,
+  button: CoreLinkStyleProps["button"],
+) {
+  if (!iconElement) return children
+
+  const iconAndText = (
+    <>
+      <span className="inline-block shrink-0 align-middle">{iconElement}</span>
+      {"\u00A0"}
+      {children}
+    </>
+  )
+
+  // Button links are inline-flex with gap — wrap so icon+text stay one unit (nbsp glue).
+  return button ? <span className="inline-flex items-center">{iconAndText}</span> : iconAndText
 }
 
 export function Link(props: LinkProps) {
@@ -121,8 +140,7 @@ export function Link(props: LinkProps) {
         target={blank ? "_blank" : undefined}
         {...anchorProps}
       >
-        {iconElement}
-        {children}
+        {renderLinkContent(iconElement, children, button)}
       </a>
     )
   }
@@ -136,8 +154,7 @@ export function Link(props: LinkProps) {
       target={blank ? "_blank" : undefined}
       {...routerProps}
     >
-      {iconElement}
-      {children}
+      {renderLinkContent(iconElement, children, button)}
     </RouterLink>
   )
 }
