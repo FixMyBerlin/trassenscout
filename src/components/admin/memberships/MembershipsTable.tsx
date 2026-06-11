@@ -1,5 +1,5 @@
 import { useNavigate } from "@tanstack/react-router"
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 import { adminTableClassName } from "@/src/components/admin/adminListClasses"
 import {
   getMembershipAccess,
@@ -55,13 +55,13 @@ export function MembershipsTable({ users, projects }: Props) {
   const navigate = useNavigate()
 
   return (
-    <table className={clsx(adminTableClassName, "table-fixed")}>
+    <table className={twJoin(adminTableClassName, "table-fixed")}>
       <MembershipsTableColGroup projects={projects} />
       <thead className={membershipTableHeadClassName}>
         <tr>
           <th
             scope="col"
-            className={clsx(membershipUserHeaderClassName, membershipTableCellYClassName)}
+            className={twJoin(membershipUserHeaderClassName, membershipTableCellYClassName)}
           >
             User
           </th>
@@ -117,13 +117,13 @@ export function MembershipsEditorRow({
   const isAdmin = user.role === "ADMIN"
 
   return (
-    <table className={clsx(adminTableClassName, "table-fixed")}>
+    <table className={twJoin(adminTableClassName, "table-fixed")}>
       <MembershipsTableColGroup projects={projects} />
       <thead className={membershipTableHeadClassName}>
         <tr>
           <th
             scope="col"
-            className={clsx(membershipUserHeaderClassName, membershipTableCellYClassName)}
+            className={twJoin(membershipUserHeaderClassName, membershipTableCellYClassName)}
           >
             User
           </th>
@@ -141,7 +141,7 @@ export function MembershipsEditorRow({
             return (
               <td
                 key={project.id}
-                className={clsx(
+                className={twJoin(
                   "border-l border-gray-100 px-2 text-center align-middle transition-colors",
                   membershipTableCellYClassName,
                   membershipRegionDisplay(access, isAdmin).backgroundClassName,

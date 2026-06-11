@@ -1,5 +1,5 @@
-import { clsx } from "clsx"
 import dompurify from "dompurify"
+import { twJoin } from "tailwind-merge"
 import { Markdown } from "@/src/components/core/components/Markdown/Markdown"
 import { proseClasses } from "@/src/components/core/components/text/prose"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
@@ -26,7 +26,7 @@ export const CommentField = ({ comment, commentLabel, mutateComment }: Props) =>
     <div className="rounded-lg border border-gray-300 bg-blue-50 p-3 text-gray-700">
       <Markdown
         markdown={typeof window !== "undefined" ? dompurify.sanitize(comment.body) : comment.body}
-        className={clsx(
+        className={twJoin(
           proseClasses,
           "prose-sm prose-a:underline hover:prose-a:text-teal-700 hover:prose-a:decoration-teal-700",
         )}

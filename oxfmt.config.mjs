@@ -18,7 +18,7 @@ export default defineConfig({
   },
   sortTailwindcss: {
     stylesheet: "src/components/shared/layouts/global.css",
-    functions: ["twMerge", "twJoin", "clsx"],
+    functions: ["twMerge", "twJoin"],
   },
   sortPackageJson: true,
   ignorePatterns: [

@@ -4,7 +4,7 @@ import {
   InformationCircleIcon,
   XCircleIcon,
 } from "@heroicons/react/20/solid"
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 
 type TypeTypes = "info" | "error" | "warn" | "success"
 
@@ -67,15 +67,15 @@ export const Notice: React.FC<Props> = ({ type, title, children, actionText, act
   const { icon, wrapperClass, titleClasses, textClasses, actionClasses } = typeConfig[type]
 
   return (
-    <div className={clsx(wrapperClass, "mb-5 rounded-md border border-gray-200 p-4")}>
+    <div className={twJoin(wrapperClass, "mb-5 rounded-md border border-gray-200 p-4")}>
       <div className="flex">
         <div className="shrink-0">{icon}</div>
 
         <div className="ml-3">
-          <h3 className={clsx(titleClasses, "text-sm font-medium")}>{title}</h3>
+          <h3 className={twJoin(titleClasses, "text-sm font-medium")}>{title}</h3>
 
           {children && (
-            <div className={clsx(textClasses, "prose prose-sm mt-2 text-sm")}>{children}</div>
+            <div className={twJoin(textClasses, "prose prose-sm mt-2 text-sm")}>{children}</div>
           )}
 
           {Boolean(action) && (
@@ -83,7 +83,7 @@ export const Notice: React.FC<Props> = ({ type, title, children, actionText, act
               <div className="-mx-2 -my-1.5 flex space-x-3">
                 <button
                   type="button"
-                  className={clsx(
+                  className={twJoin(
                     actionClasses,
                     "rounded-md px-2 py-1.5 text-sm font-medium focus:ring-2 focus:ring-offset-2 focus:outline-hidden",
                   )}

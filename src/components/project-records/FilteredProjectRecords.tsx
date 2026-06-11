@@ -1,6 +1,6 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/16/solid"
 import { XMarkIcon } from "@heroicons/react/20/solid"
-import clsx from "clsx"
+import { twJoin } from "tailwind-merge"
 import { linkStyles } from "@/src/components/core/components/links/styles"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { ProjectRecordsTable } from "@/src/components/project-records/ProjectRecordTable"
@@ -42,7 +42,7 @@ export const FilteredProjectRecords = ({ projectRecords, highlightId }: Props) =
         </form>
         <button
           type="button"
-          className={clsx(linkStyles, "mt-4 flex items-center gap-2")}
+          className={twJoin(linkStyles, "mt-4 flex items-center gap-2")}
           onClick={() => void setFilter({ searchterm: "" })}
         >
           <XMarkIcon className="size-4" />

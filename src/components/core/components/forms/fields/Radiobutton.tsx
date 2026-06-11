@@ -1,6 +1,6 @@
-import { clsx } from "clsx"
 import type { JSX } from "react"
 import { ComponentPropsWithoutRef, PropsWithoutRef } from "react"
+import { twJoin } from "tailwind-merge"
 import { FieldErrors } from "@/src/components/core/components/forms/FieldErrors"
 import { useFieldContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { useFieldDisabled } from "@/src/components/core/components/forms/hooks/useFormHydrated"
@@ -40,7 +40,10 @@ export function Radiobutton({
   return (
     <div
       {...outerProps}
-      className={clsx(outerProps?.className, "flex break-inside-avoid items-center justify-start")}
+      className={twJoin(
+        outerProps?.className,
+        "flex break-inside-avoid items-center justify-start",
+      )}
     >
       <div className="flex h-5 items-center">
         <input
@@ -56,7 +59,7 @@ export function Radiobutton({
             onChange?.(e)
           }}
           onBlur={field.handleBlur}
-          className={clsx(
+          className={twJoin(
             "size-4 cursor-pointer",
             hasError
               ? "border-red-800 text-red-500 shadow-xs shadow-red-200 focus:ring-red-800"
@@ -69,7 +72,7 @@ export function Radiobutton({
       <label
         {...labelProps}
         htmlFor={id}
-        className={clsx(
+        className={twJoin(
           "block pl-3 text-sm font-medium whitespace-nowrap",
           readonly || disabled
             ? "text-gray-400"

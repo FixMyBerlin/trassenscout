@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { featureCollection } from "@turf/helpers"
-import clsx from "clsx"
 import { useMemo, useState } from "react"
+import { twJoin } from "tailwind-merge"
 import { geometryBbox } from "@/src/components/core/components/Map/utils/bboxHelpers"
 import { computeBufferPolygonFeature } from "@/src/components/core/components/Map/utils/computeBufferPolygonFeature"
 import { acquisitionAreasBySubsubsectionQueryOptions } from "@/src/server/acquisitionAreas/acquisitionAreasAbschnitteQueryOptions"
@@ -71,7 +71,7 @@ export function NewAcquisitionAreasForm({ initialSubsubsection }: Props) {
   }, [bufferPolygonFeature, parcels, existingAcquisitionAreas])
 
   const desktopSharedHeightClass = "lg:h-[620px] xl:h-[700px] 2xl:h-[780px]"
-  const mapHeightClass = clsx("h-96 sm:h-[500px]", desktopSharedHeightClass)
+  const mapHeightClass = twJoin("h-96 sm:h-[500px]", desktopSharedHeightClass)
 
   return (
     <AcquisitionAreasWorkspace

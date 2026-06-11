@@ -1,7 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { clsx } from "clsx"
 import { format, formatDistanceToNow } from "date-fns"
 import { de } from "date-fns/locale/de"
+import { twJoin } from "tailwind-merge"
 import { AdminBoxSection } from "@/src/components/core/components/AdminBox/AdminBoxSection"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
@@ -76,7 +76,7 @@ export const ProjectLogEntries = ({ projectId, projectSlug }: Props) => {
                 </td>
                 <td className="px-3 py-4 align-top text-sm text-gray-500">
                   <span
-                    className={clsx(
+                    className={twJoin(
                       "inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset",
                       actionColorClasses[entry.action],
                     )}

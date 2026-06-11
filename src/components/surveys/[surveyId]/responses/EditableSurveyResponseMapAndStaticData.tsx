@@ -3,8 +3,8 @@ import { ArrowsPointingOutIcon } from "@heroicons/react/24/outline"
 import { useMutation } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { center } from "@turf/turf"
-import { clsx } from "clsx"
 import { LngLatBoundsLike, MapProvider } from "react-map-gl/maplibre"
+import { twJoin } from "tailwind-merge"
 import { createGeoJSONFromString } from "@/src/components/beteiligung/form/map/utils"
 import { FieldConfig } from "@/src/components/beteiligung/shared/types"
 import { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
@@ -161,7 +161,7 @@ const EditableSurveyResponseMapAndStaticData = ({
 
   return (
     <>
-      <div className={clsx("grid gap-6 md:gap-4", showMap && "md:grid-cols-2")}>
+      <div className={twJoin("grid gap-6 md:gap-4", showMap ? "md:grid-cols-2" : "")}>
         {tildaUrl && !showMap && (
           <Link target="_blank" href={tildaUrl} className="flex items-center gap-2">
             <ArrowUpRightIcon className="size-3" />
@@ -176,7 +176,7 @@ const EditableSurveyResponseMapAndStaticData = ({
               <span>per {getTranslatedSource(response.source)} eingegangen </span>
               <IfUserCanEdit>
                 <span>| </span>
-                <button onClick={handleDelete} className={clsx(linkStyles, "my-0")}>
+                <button onClick={handleDelete} className={twJoin(linkStyles, "my-0")}>
                   Eintrag löschen
                 </button>
               </IfUserCanEdit>

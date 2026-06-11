@@ -2,7 +2,7 @@ import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react
 import { ArrowTopRightOnSquareIcon, ChevronRightIcon } from "@heroicons/react/20/solid"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { Link, useMatchRoute } from "@tanstack/react-router"
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { useTryRouteParam } from "@/src/components/core/routes/useTryRouteParam"
 import svgLogoTrassenscoutAdmin from "@/src/components/shared/app/layouts/assets/trassenscout-logo-admin-white.svg"
@@ -94,7 +94,7 @@ function AdminNavChildLinks({
             <li key={child.link ? `${child.name}-${child.link.to}` : child.name}>
               <Disclosure as="div" className="w-full" defaultOpen={childActive}>
                 <DisclosureButton
-                  className={clsx(
+                  className={twJoin(
                     navItemLinkClass,
                     childActive && navSectionActiveClass,
                     "text-left",
@@ -152,7 +152,7 @@ function AdminNavItemRow({
     return (
       <Disclosure as="div" className="w-full" defaultOpen={active}>
         <DisclosureButton
-          className={clsx(navItemLinkClass, active && navSectionActiveClass, "text-left")}
+          className={twJoin(navItemLinkClass, active ? navSectionActiveClass : "", "text-left")}
         >
           {Icon && <Icon aria-hidden="true" className={navIconClass} />}
           {item.name}

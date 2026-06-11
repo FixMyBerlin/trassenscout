@@ -1,4 +1,4 @@
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 import {
   membershipUserColumnClassName,
   membershipUserLineClassName,
@@ -34,10 +34,10 @@ export function MembershipUserCell({ user, membershipDetailUserId }: Props) {
 
   const content = (
     <div className="flex w-full min-w-0 flex-col gap-0 leading-tight">
-      <strong className={clsx(membershipUserLineClassName, "text-sm font-semibold")}>
+      <strong className={twJoin(membershipUserLineClassName, "text-sm font-semibold")}>
         {fullName}
       </strong>
-      <span className={clsx(membershipUserLineClassName, "text-xs text-gray-500")}>
+      <span className={twJoin(membershipUserLineClassName, "text-xs text-gray-500")}>
         {secondaryLine}
       </span>
     </div>

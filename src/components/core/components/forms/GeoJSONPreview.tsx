@@ -1,12 +1,12 @@
 import { XMarkIcon } from "@heroicons/react/24/outline"
-import { clsx } from "clsx"
 import type { Geometry } from "geojson"
+import { twJoin } from "tailwind-merge"
 import { secondaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { linkStyles } from "@/src/components/core/components/links/styles"
 
 export const GeoJSONPreviewLink = ({ onOpen }: { onOpen: () => void }) => {
   return (
-    <button type="button" onClick={onOpen} className={clsx("cursor-pointer text-sm", linkStyles)}>
+    <button type="button" onClick={onOpen} className={twJoin("cursor-pointer text-sm", linkStyles)}>
       GeoJSON
     </button>
   )
@@ -29,7 +29,7 @@ export const GeoJSONPreviewPanel = ({
           <button
             type="button"
             onClick={onEdit}
-            className={clsx(secondaryButtonClassName, "px-3 py-1.5 text-sm")}
+            className={twJoin(secondaryButtonClassName, "px-3 py-1.5 text-sm")}
           >
             Als GeoJSON bearbeiten
           </button>

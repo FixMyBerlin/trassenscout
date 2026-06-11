@@ -1,5 +1,5 @@
-import { clsx } from "clsx"
 import { ComponentPropsWithoutRef } from "react"
+import { twJoin } from "tailwind-merge"
 import { FieldErrors } from "@/src/components/core/components/forms/FieldErrors"
 import { useFieldContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { useFieldDisabled } from "@/src/components/core/components/forms/hooks/useFormHydrated"
@@ -45,7 +45,7 @@ export function CheckboxGroup({
           {label} {optional && <> (optional)</>}
         </p>
       )}
-      <div className={clsx(classNameItemWrapper, "flex flex-col gap-3")}>
+      <div className={twJoin(classNameItemWrapper, "flex flex-col gap-3")}>
         {items.map((item) => {
           const id = `${field.name}-${item.value}`
           const checked = values.includes(item.value)

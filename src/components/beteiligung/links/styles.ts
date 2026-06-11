@@ -1,4 +1,4 @@
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 import type { SurveyLinkProps } from "./SurveyLink"
 
 // BUTTON:
@@ -25,14 +25,14 @@ const activeStyleWhiteLinkElement =
 
 // WHITE BUTTON
 // for link elements
-const whiteButtonStylesForLinkElement = clsx(
+const whiteButtonStylesForLinkElement = twJoin(
   buttonBase,
   "bg-white ring-1 ring-gray-400",
   hoverStyleForLinkElement,
   activeStyleWhiteLinkElement,
 )
 // for button elements
-export const surveyWhiteButtonStyles = clsx(
+export const surveyWhiteButtonStyles = twJoin(
   buttonBase,
   "enabled:bg-white enabled:ring-1 enabled:ring-gray-400",
   "disabled:bg-white disabled:text-gray-400 disabled:ring-1 disabled:ring-gray-200",
@@ -42,13 +42,13 @@ export const surveyWhiteButtonStyles = clsx(
 
 // primary color survey BUTTON
 // for link elements
-export const primaryColorButtonStylesForLinkElement = clsx(
+export const primaryColorButtonStylesForLinkElement = twJoin(
   buttonBase,
   "bg-(--survey-primary-color) text-white",
   activeStylePrimaryColorLinkElement,
 )
 // for button elements
-export const surveyPrimaryColorButtonStyles = clsx(
+export const surveyPrimaryColorButtonStyles = twJoin(
   buttonBase,
   "bg-(--survey-primary-color) enabled:text-white",
   "disabled:bg-(--survey-light-color) disabled:text-white",
@@ -58,13 +58,13 @@ export const surveyPrimaryColorButtonStyles = clsx(
 export const selectSurveyLinkStyle = (button: SurveyLinkProps["button"], className?: string) => {
   switch (button) {
     case true:
-      return clsx(primaryColorButtonStylesForLinkElement, className)
+      return twJoin(primaryColorButtonStylesForLinkElement, className)
     case "white":
-      return clsx(whiteButtonStylesForLinkElement, className)
+      return twJoin(whiteButtonStylesForLinkElement, className)
     case "primaryColor":
-      return clsx(primaryColorButtonStylesForLinkElement, className)
+      return twJoin(primaryColorButtonStylesForLinkElement, className)
     case undefined:
     default:
-      return clsx(partcipationLinkStyles, className)
+      return twJoin(partcipationLinkStyles, className)
   }
 }

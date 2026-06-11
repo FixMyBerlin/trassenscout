@@ -1,7 +1,7 @@
 import { RadioGroup, RadioGroupLabel, RadioGroupOption } from "@headlessui/react"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi, useLocation, useNavigate } from "@tanstack/react-router"
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { adminLookupRowsWithCountQueryOptions } from "@/src/server/adminLookupTables/adminLookupTablesQueryOptions"
 
@@ -47,7 +47,7 @@ export const OperatorFilter = () => {
           <RadioGroupOption
             value=""
             className={({ checked }) =>
-              clsx(
+              twJoin(
                 checked ? "bg-blue-900 text-white" : "bg-white ring-1 ring-gray-300",
                 "relative inline-flex items-center rounded-md px-3 py-2 text-sm whitespace-nowrap text-gray-900 ring-0 hover:cursor-pointer hover:ring-gray-600 focus:z-10",
               )
@@ -64,7 +64,7 @@ export const OperatorFilter = () => {
                 key={operator.id}
                 value={operator.slug}
                 className={({ checked }) =>
-                  clsx(
+                  twJoin(
                     checked
                       ? "bg-blue-900 text-white ring-0"
                       : "bg-white text-gray-900 ring-1 ring-gray-300",

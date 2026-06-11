@@ -1,4 +1,4 @@
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 import { Img } from "@/src/components/shared/Img"
 import pngImage1 from "./assets/map-1.jpg"
 import pngImage2 from "./assets/map-2.jpg"
@@ -15,7 +15,7 @@ export const MarketingPagePhotos = () => {
       {images.map((image, imageIndex) => (
         <div
           key={`${image}${imageIndex}`}
-          className={clsx(
+          className={twJoin(
             "relative aspect-square w-44 flex-none overflow-hidden rounded-xl bg-gray-100 sm:w-72 sm:rounded-2xl",
             rotations[imageIndex % rotations.length],
           )}

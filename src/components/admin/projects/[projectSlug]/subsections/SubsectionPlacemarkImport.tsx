@@ -1,7 +1,7 @@
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
-import clsx from "clsx"
 import { useState } from "react"
+import { twJoin } from "tailwind-merge"
 import { z } from "zod"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
 import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
@@ -186,7 +186,7 @@ export const SubsectionPlacemarkImport = ({ project, projectSlug }: Props) => {
             <form>
               <label
                 htmlFor="file-upload"
-                className={clsx(
+                className={twJoin(
                   selectedFile ? selectLinkStyle("white") : selectLinkStyle("blue"),
                   "cursor-pointer",
                 )}

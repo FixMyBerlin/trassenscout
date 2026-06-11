@@ -1,6 +1,6 @@
 import { ChevronRightIcon } from "@heroicons/react/20/solid"
-import { clsx } from "clsx"
 import { Children, cloneElement, isValidElement } from "react"
+import { twJoin } from "tailwind-merge"
 import { Link } from "@/src/components/core/components/links/Link"
 
 type BreadcrumbProps = {
@@ -12,7 +12,7 @@ export const Breadcrumb = ({ children, className }: BreadcrumbProps) => {
   const steps = Children.toArray(children)
 
   return (
-    <nav aria-label="Breadcrumb" className={clsx("flex", className)}>
+    <nav aria-label="Breadcrumb" className={twJoin("flex", className)}>
       <ol role="list" className="flex items-center space-x-4">
         {steps.map((step, index) => {
           if (!isValidElement<BreadcrumbStepProps>(step)) return step

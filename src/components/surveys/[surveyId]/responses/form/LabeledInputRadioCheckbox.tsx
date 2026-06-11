@@ -1,5 +1,5 @@
-import { clsx } from "clsx"
 import { type CSSProperties, type JSX, type PropsWithoutRef } from "react"
+import { twJoin } from "tailwind-merge"
 
 interface LabeledInputRadioCheckboxProps extends PropsWithoutRef<JSX.IntrinsicElements["input"]> {
   classNameLabelOverwrite?: string
@@ -28,7 +28,7 @@ export const LabeledInputRadioCheckbox = ({
         }
       >
         <div
-          className={clsx(
+          className={twJoin(
             classNameItemWrapperOverwrite || "flex h-5 items-center justify-start",
             "cursor-pointer",
           )}
@@ -36,8 +36,8 @@ export const LabeledInputRadioCheckbox = ({
           <input
             type={type}
             {...props}
-            className={clsx(
-              type === "checkbox" && "rounded-xs",
+            className={twJoin(
+              type === "checkbox" ? "rounded-xs" : "",
               "mr-2 size-4 cursor-pointer border-gray-300 leading-none text-blue-500 focus:ring-blue-500",
             )}
           />

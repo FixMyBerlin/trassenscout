@@ -1,4 +1,4 @@
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 import {
   formattedEuro,
   formattedLength,
@@ -17,7 +17,7 @@ export const SubsubsectionTableFooter = ({ subsubsections, compact }: Props) => 
     .filter((level, index, self) => index === self.findIndex((t) => t?.slug === level?.slug))
 
   return (
-    <tfoot className={clsx("bg-gray-50", { hidden: !subsubsections.length || compact })}>
+    <tfoot className={twJoin("bg-gray-50", !subsubsections.length || compact ? "hidden" : "")}>
       <tr>
         <td className="pt-4 pr-3 pb-2 pl-4 text-right text-xs font-medium text-gray-500 uppercase">
           Gesamt:
@@ -25,7 +25,7 @@ export const SubsubsectionTableFooter = ({ subsubsections, compact }: Props) => 
         <td></td>
         <td></td>
         <td
-          className={clsx(
+          className={twJoin(
             compact ? "hidden" : "",
             "pt-4 pr-3 pb-2 pl-4 text-sm font-medium whitespace-nowrap text-gray-900",
           )}
@@ -33,7 +33,7 @@ export const SubsubsectionTableFooter = ({ subsubsections, compact }: Props) => 
           {formattedLength(subsubsections.reduce((acc, sub) => acc + (sub.lengthM || 0), 0))}
         </td>
         <td
-          className={clsx(
+          className={twJoin(
             compact ? "hidden" : "",
             "pt-4 pr-3 pb-2 pl-4 text-sm font-medium whitespace-nowrap text-gray-900",
           )}
@@ -57,7 +57,7 @@ export const SubsubsectionTableFooter = ({ subsubsections, compact }: Props) => 
               Standard {frenchQuote(qualityLevel.title)}:
             </td>
             <td
-              className={clsx(
+              className={twJoin(
                 compact ? "hidden" : "",
                 "py-2 pr-3 pl-4 text-sm font-medium text-gray-900",
               )}
@@ -67,7 +67,7 @@ export const SubsubsectionTableFooter = ({ subsubsections, compact }: Props) => 
               )}
             </td>
             <td
-              className={clsx(
+              className={twJoin(
                 compact ? "hidden" : "",
                 "py-2 pr-3 pl-4 text-sm font-medium text-gray-900",
               )}

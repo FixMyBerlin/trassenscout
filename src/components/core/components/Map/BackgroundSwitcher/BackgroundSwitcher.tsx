@@ -6,8 +6,8 @@ import {
   Transition,
 } from "@headlessui/react"
 import { CheckIcon, ChevronDownIcon } from "@heroicons/react/20/solid"
-import { clsx } from "clsx"
 import { Fragment } from "react"
+import { twJoin } from "tailwind-merge"
 
 export type LayerType = "vector" | "satellite" | "osm_carto"
 
@@ -42,7 +42,7 @@ export const BackgroundSwitcher = ({
   const isBottomPosition = position === "bottom-left" || position === "bottom-right"
 
   return (
-    <div className={clsx(positionClasses[position], className)}>
+    <div className={twJoin(positionClasses[position], className)}>
       <Listbox value={value} onChange={onChange}>
         {({ open }) => (
           <div className="relative mt-1">
@@ -61,7 +61,7 @@ export const BackgroundSwitcher = ({
               leaveTo="opacity-0"
             >
               <ListboxOptions
-                className={clsx(
+                className={twJoin(
                   "absolute z-10 max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-gray-200/5 focus:outline-hidden sm:text-sm",
                   isBottomPosition ? "bottom-full mb-1" : "mt-1",
                 )}
@@ -70,7 +70,7 @@ export const BackgroundSwitcher = ({
                   <ListboxOption
                     key={id}
                     className={({ active }) =>
-                      clsx(
+                      twJoin(
                         active ? "bg-blue-600 text-white" : "text-gray-900",
                         "relative cursor-pointer py-2 pr-9 pl-3 select-none",
                       )
@@ -80,7 +80,7 @@ export const BackgroundSwitcher = ({
                     {({ selected, active }) => (
                       <>
                         <span
-                          className={clsx(
+                          className={twJoin(
                             selected ? "font-semibold" : "font-normal",
                             "block truncate",
                           )}
@@ -90,7 +90,7 @@ export const BackgroundSwitcher = ({
 
                         {selected ? (
                           <span
-                            className={clsx(
+                            className={twJoin(
                               active ? "text-white" : "text-blue-600",
                               "absolute inset-y-0 right-0 flex items-center pr-4",
                             )}

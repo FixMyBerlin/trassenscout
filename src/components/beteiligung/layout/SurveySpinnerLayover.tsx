@@ -1,4 +1,4 @@
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 
 export const SurveySpinnerLayover = () => {
   return (
@@ -7,7 +7,7 @@ export const SurveySpinnerLayover = () => {
         <div role="status" className="flex h-full items-center justify-center">
           <svg
             aria-hidden="true"
-            className={clsx(
+            className={twJoin(
               "h-12 w-12",
               "my-20",
               "inline animate-spin fill-(--survey-primary-color) text-gray-200",

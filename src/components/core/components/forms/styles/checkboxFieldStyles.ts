@@ -1,4 +1,4 @@
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 
 export const checkboxRowClassName = "flex break-inside-avoid items-start"
 
@@ -11,7 +11,7 @@ export function checkboxInputClassName({
   readonly?: boolean
   disabled?: boolean
 }) {
-  return clsx(
+  return twJoin(
     "size-4 cursor-pointer rounded",
     hasError
       ? "border-red-800 text-red-500 shadow-xs shadow-red-200 focus:ring-red-800"
@@ -28,7 +28,7 @@ export function checkboxLabelClassName({
   readonly?: boolean
   disabled?: boolean
 }) {
-  return clsx(
+  return twJoin(
     "block pl-3 text-sm font-medium",
     readonly || disabled ? "text-gray-400" : "cursor-pointer text-gray-700 hover:text-gray-900",
   )

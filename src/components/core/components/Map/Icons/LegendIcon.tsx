@@ -1,4 +1,4 @@
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 import {
   legendIconRegistry,
   type LegendIconId,
@@ -21,7 +21,10 @@ export const LegendIcon = ({ iconId, className }: Props) => {
 
       if (isDashed) {
         return (
-          <span className={clsx("relative w-8", className)} style={{ height: lineContainerHeight }}>
+          <span
+            className={twJoin("relative w-8", className)}
+            style={{ height: lineContainerHeight }}
+          >
             <span
               className="absolute top-1/2 w-8 -translate-y-1/2 rounded"
               style={{
@@ -55,7 +58,7 @@ export const LegendIcon = ({ iconId, className }: Props) => {
       }
 
       return (
-        <span className={clsx("relative w-8", className)} style={{ height: lineContainerHeight }}>
+        <span className={twJoin("relative w-8", className)} style={{ height: lineContainerHeight }}>
           <span
             className="absolute top-1/2 w-8 -translate-y-1/2 rounded-sm border border-gray-500"
             style={{
@@ -71,7 +74,7 @@ export const LegendIcon = ({ iconId, className }: Props) => {
       const borderStyle =
         "borderStyle" in props && props?.borderStyle === "dashed" ? "dashed" : "solid"
       return (
-        <span className={clsx("relative size-[18px] shrink-0", className)}>
+        <span className={twJoin("relative size-[18px] shrink-0", className)}>
           <span
             className="absolute inline-block size-[18px] rounded-full border-2"
             style={{
@@ -92,7 +95,7 @@ export const LegendIcon = ({ iconId, className }: Props) => {
         "borderStyle" in props && props.borderStyle === "dashed" ? "dashed" : "solid"
       const borderWidth = "borderWidth" in props ? (props.borderWidth ?? 2) : 2
       return (
-        <span className={clsx("relative size-[18px] shrink-0", className)}>
+        <span className={twJoin("relative size-[18px] shrink-0", className)}>
           <span
             className="absolute inline-block size-[18px]"
             style={{

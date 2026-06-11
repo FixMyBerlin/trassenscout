@@ -1,4 +1,4 @@
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 import {
   actionButtonBase,
   actionIconButtonClassName,
@@ -26,7 +26,7 @@ export const adminTableExternalLinkClassName =
   "inline-flex items-center gap-1 font-medium text-blue-600 hover:text-blue-800"
 
 /** Compact primary action for admin table rows (smaller than header actions). */
-export const adminTableEditButtonClassName = clsx(
+export const adminTableEditButtonClassName = twJoin(
   actionButtonBase,
   "min-h-8 gap-x-1.5 bg-blue-500 px-2.5 py-1 text-sm/4 leading-tight text-white hover:bg-blue-800 hover:!text-white active:ring-2 active:ring-blue-800",
   "disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500 disabled:shadow-none disabled:ring-1 disabled:ring-gray-200 disabled:hover:bg-gray-100 disabled:hover:!text-gray-500 disabled:active:ring-0 disabled:[&_svg]:text-gray-400",
@@ -36,7 +36,7 @@ export const adminTableEditButtonClassName = clsx(
 export const adminTablePrimaryButtonIconClassName = "-ml-0.5 shrink-0 [&_svg]:size-4"
 
 /** Icon-only destructive action for admin table rows. */
-export const adminTableDeleteButtonClassName = clsx(
+export const adminTableDeleteButtonClassName = twJoin(
   actionButtonBase,
   "size-8 shrink-0 text-gray-600 ring-1 ring-gray-300 hover:bg-red-50 hover:text-red-700 hover:ring-red-200 disabled:cursor-not-allowed disabled:opacity-50",
 )

@@ -1,6 +1,5 @@
 import { ArrowTopRightOnSquareIcon, TrashIcon } from "@heroicons/react/20/solid"
-import { clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { twJoin, twMerge } from "tailwind-merge"
 import { Link, isExternalHref } from "@/src/components/core/components/links/Link"
 import { Tooltip } from "@/src/components/core/components/Tooltip/Tooltip"
 import {
@@ -152,21 +151,21 @@ export const AdminTableFeatureSwitch = ({
         aria-label={label}
         disabled={disabled}
         onClick={onToggle}
-        className={clsx(
+        className={twJoin(
           "relative inline-flex w-11 shrink-0 rounded-full p-0.5 ring-1 ring-gray-900/5 outline-offset-2 transition-colors duration-200 ease-in-out ring-inset focus-visible:outline-2 focus-visible:outline-blue-600",
           enabled ? "bg-blue-600" : "bg-gray-200",
           disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
         )}
       >
         <span
-          className={clsx(
+          className={twJoin(
             "relative size-5 rounded-full bg-white shadow-xs ring-1 ring-gray-900/5 transition-transform duration-200 ease-in-out",
-            enabled && "translate-x-5",
+            enabled ? "translate-x-5" : "",
           )}
         >
           <span
             aria-hidden
-            className={clsx(
+            className={twJoin(
               "absolute inset-0 flex size-full items-center justify-center transition-colors duration-200 ease-in-out [&_svg]:size-3",
               enabled ? "text-blue-600" : "text-gray-400",
             )}

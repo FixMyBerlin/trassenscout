@@ -1,6 +1,6 @@
 import { useStore } from "@tanstack/react-form"
-import { clsx } from "clsx"
 import { Fragment } from "react"
+import { twJoin } from "tailwind-merge"
 import { translateServerError } from "@/src/components/core/components/forms/errorMessageTranslations"
 import { useFormShellState } from "@/src/components/core/components/forms/hooks/useFormShellState"
 import { proseClasses } from "@/src/components/core/components/text/prose"
@@ -64,7 +64,10 @@ export const FormError = ({ formError }: Props) => {
   if (!formError && !hasTanStackErrors) return null
 
   return (
-    <div role="alert" className={clsx(proseClasses, "rounded-sm bg-red-50 px-2 py-1 text-red-800")}>
+    <div
+      role="alert"
+      className={twJoin(proseClasses, "rounded-sm bg-red-50 px-2 py-1 text-red-800")}
+    >
       {hasTanStackErrors ? (
         <p className="text-sm leading-tight">Bitte korrigieren Sie Ihre Angaben.</p>
       ) : formError ? (

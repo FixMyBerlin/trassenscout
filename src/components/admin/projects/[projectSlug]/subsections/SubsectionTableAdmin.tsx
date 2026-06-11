@@ -1,7 +1,7 @@
 import { ClipboardDocumentListIcon } from "@heroicons/react/24/outline"
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 import {
   AdminTableActions,
   AdminTableDeleteButton,
@@ -102,9 +102,9 @@ export const SubsectionTableAdmin = ({ projectSlug }: Props) => {
               return (
                 <tr
                   key={subsection.id}
-                  className={clsx(
+                  className={twJoin(
                     "h-full",
-                    updatedIds?.includes(String(subsection.id)) && "bg-blue-100",
+                    updatedIds?.includes(String(subsection.id)) ? "bg-blue-100" : "",
                   )}
                 >
                   <td className="h-20 w-20 py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6">
@@ -125,7 +125,7 @@ export const SubsectionTableAdmin = ({ projectSlug }: Props) => {
                   </td>
 
                   <td
-                    className={clsx(
+                    className={twJoin(
                       "py-4 pr-3 pl-4 text-sm font-medium group-hover:bg-gray-50",
                       noPreviewForDefaultGeometry
                         ? "text-gray-300 group-hover:text-gray-500"

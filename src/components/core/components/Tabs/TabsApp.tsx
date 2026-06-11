@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "@tanstack/react-router"
-import { clsx } from "clsx"
 import { startTransition } from "react"
+import { twJoin } from "tailwind-merge"
 import { Link } from "@/src/components/core/components/links/Link"
 
 type Tab = {
@@ -20,7 +20,7 @@ export const TabsApp = ({ tabs, className }: Props) => {
   const pathname = location.pathname
 
   return (
-    <nav className={clsx(className, "mb-8")}>
+    <nav className={twJoin(className, "mb-8")}>
       <div className="sm:hidden">
         <label htmlFor="tabs" className="sr-only">
           Unterseiten
@@ -56,7 +56,7 @@ export const TabsApp = ({ tabs, className }: Props) => {
                 key={tab.name}
                 to={tab.to}
                 preload="intent"
-                className={clsx(
+                className={twJoin(
                   current
                     ? "border-b-2 border-gray-900 text-gray-900!"
                     : "border-b border-transparent hover:border-gray-300 hover:text-gray-700",
@@ -68,7 +68,7 @@ export const TabsApp = ({ tabs, className }: Props) => {
                 {typeof tab.count !== "undefined" && (
                   <div>
                     <span
-                      className={clsx(
+                      className={twJoin(
                         current ? "bg-gray-100 text-gray-500" : "bg-gray-200 text-gray-900",
                         "ml-3 hidden rounded-full px-2.5 py-0.5 text-xs font-medium md:inline-block",
                       )}

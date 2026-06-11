@@ -1,4 +1,4 @@
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 import type { MembershipAccess } from "@/src/components/admin/memberships/membershipAccessUtils"
 import {
   membershipRegionCellClassName,
@@ -19,7 +19,7 @@ export function MembershipRegionCell({ access, isAdmin }: Props) {
     <td className={membershipRegionCellClassName(access, isAdmin)}>
       <Tooltip content={label}>
         <span
-          className={clsx(
+          className={twJoin(
             "flex items-center justify-center",
             membershipTableCellYClassName,
             iconClassName,

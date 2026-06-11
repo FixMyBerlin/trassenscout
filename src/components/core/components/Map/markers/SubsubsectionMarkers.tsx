@@ -1,5 +1,5 @@
-import { clsx } from "clsx"
 import { Marker } from "react-map-gl/maplibre"
+import { twJoin } from "tailwind-merge"
 import { SubsubsectionMapIcon } from "../Icons/SubsubsectionIcon"
 import { TitleLabel } from "../Labels/TitleLabel"
 import type { SubsubsectionMapEntity as SubsubsectionWithPosition } from "../mapEntityTypes"
@@ -54,9 +54,9 @@ const SubsubsectionMarker = ({
           icon={
             <SubsubsectionMapIcon
               slug={subsubsection.slug}
-              className={clsx(
+              className={twJoin(
                 "transition-colors",
-                isHighlighted && "border-[#F8C62B] bg-[#F8C62B] text-gray-900",
+                isHighlighted ? "border-[#F8C62B] bg-[#F8C62B] text-gray-900" : "",
               )}
             />
           }

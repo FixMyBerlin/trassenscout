@@ -1,5 +1,5 @@
-import { clsx } from "clsx"
 import { useRemarkSync } from "react-remark"
+import { twJoin } from "tailwind-merge"
 import { SurveyLink } from "@/src/components/beteiligung/links/SurveyLink"
 import { proseClasses } from "@/src/components/core/components/text/prose"
 
@@ -32,7 +32,7 @@ const components = {
   a: MdA,
 }
 
-const proseClassesSurvey = clsx(
+const proseClassesSurvey = twJoin(
   "prose-p:text-base prose-p:text-gray-700",
   "prose-h2:mt-8 prose-h2:mb-4 prose-h2:text-lg prose-h2:font-bold prose-h2:text-gray-900 prose-h2:sm:text-xl prose-ol:text-base prose-ol:sm:text-lg",
 )
@@ -45,5 +45,5 @@ export const SurveyMarkdown = ({ markdown, className }: Props) => {
 
   if (!markdown) return null
 
-  return <div className={clsx(proseClasses, proseClassesSurvey, className)}>{content}</div>
+  return <div className={twJoin(proseClasses, proseClassesSurvey, className)}>{content}</div>
 }

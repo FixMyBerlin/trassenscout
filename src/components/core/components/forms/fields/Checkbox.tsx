@@ -1,6 +1,6 @@
-import { clsx } from "clsx"
 import type { JSX } from "react"
 import { ComponentPropsWithoutRef, PropsWithoutRef } from "react"
+import { twJoin } from "tailwind-merge"
 import { FieldErrors } from "@/src/components/core/components/forms/FieldErrors"
 import { useFieldContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { useFieldDisabled } from "@/src/components/core/components/forms/hooks/useFormHydrated"
@@ -36,7 +36,7 @@ export function Checkbox({
   const hasError = field.state.meta.errors.length > 0
 
   return (
-    <div {...outerProps} className={clsx(outerProps?.className, checkboxRowClassName)}>
+    <div {...outerProps} className={twJoin(outerProps?.className, checkboxRowClassName)}>
       <div className="flex h-5 items-center">
         <input
           aria-describedby={`${field.name}-hint`}

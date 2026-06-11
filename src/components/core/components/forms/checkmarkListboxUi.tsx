@@ -1,6 +1,6 @@
 import { CheckIcon } from "@heroicons/react/20/solid"
-import { clsx } from "clsx"
 import type { ReactNode } from "react"
+import { twJoin } from "tailwind-merge"
 
 /** Dropdown panel for listbox/combobox options with left-aligned checkmarks. */
 export const checkmarkListboxOptionsPanelClassName =
@@ -52,7 +52,7 @@ export function ClassicListboxOptionLabel({ children }: { children: ReactNode })
 export type ListboxOptionUi = "checkmark" | "classic"
 
 export function listboxOptionClassName(ui: ListboxOptionUi, extra?: string) {
-  return clsx(
+  return twJoin(
     ui === "checkmark" ? checkmarkListboxOptionClassName : classicListboxOptionClassName,
     extra,
   )

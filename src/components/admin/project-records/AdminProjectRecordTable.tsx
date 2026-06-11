@@ -1,4 +1,4 @@
-import clsx from "clsx"
+import { twJoin } from "tailwind-merge"
 import { AdminBadge, type AdminBadgeVariant } from "@/src/components/admin/AdminBadge"
 import {
   AdminTableEditLink,
@@ -46,47 +46,50 @@ export const AdminProjectRecordsTable = ({
         <div className="min-w-full divide-y divide-gray-300">
           <div className="bg-gray-50">
             <div className="grid grid-cols-8">
-              <div className={clsx(spaceClasses, headerClasses)}>
+              <div className={twJoin(spaceClasses, headerClasses)}>
                 <span className="sr-only">Status</span>
               </div>
-              <div className={clsx(spaceClasses, headerClasses)}>ID</div>
-              <div className={clsx(spaceClasses, headerClasses)}>Datum Email</div>
-              <div className={clsx(spaceClasses, headerClasses)}>Prozessiert am</div>
-              <div className={clsx(spaceClasses, clsx(headerClasses, "col-span-2"))}>Titel</div>
-              <div className={clsx(spaceClasses, headerClasses)}>Projekt</div>
-              <div className={clsx(spaceClasses, headerClasses)}>Bestätigung</div>
+              <div className={twJoin(spaceClasses, headerClasses)}>ID</div>
+              <div className={twJoin(spaceClasses, headerClasses)}>Datum Email</div>
+              <div className={twJoin(spaceClasses, headerClasses)}>Prozessiert am</div>
+              <div className={twJoin(spaceClasses, twJoin(headerClasses, "col-span-2"))}>Titel</div>
+              <div className={twJoin(spaceClasses, headerClasses)}>Projekt</div>
+              <div className={twJoin(spaceClasses, headerClasses)}>Bestätigung</div>
             </div>
           </div>
           <div className="divide-y divide-gray-200 bg-white">
             {projectRecords.length ? (
               projectRecords.map((projectRecord) => (
                 <div key={projectRecord.id} className="grid grid-cols-8">
-                  <div className={clsx(spaceClasses, "text-sm text-gray-900")}>
+                  <div className={twJoin(spaceClasses, "text-sm text-gray-900")}>
                     <ProjectRecordEditingStateIndicator
                       editingState={projectRecord.editingState}
                       variant="table"
                     />
                   </div>
-                  <div className={clsx(spaceClasses, "text-sm text-gray-900")}>
+                  <div className={twJoin(spaceClasses, "text-sm text-gray-900")}>
                     {projectRecord.id}
                   </div>
-                  <div className={clsx(spaceClasses, "text-sm text-gray-900")}>
+                  <div className={twJoin(spaceClasses, "text-sm text-gray-900")}>
                     <TableDateTime value={projectRecord.date} />
                   </div>
-                  <div className={clsx(spaceClasses, "text-sm text-gray-900")}>
+                  <div className={twJoin(spaceClasses, "text-sm text-gray-900")}>
                     <TableDateTime value={projectRecord.createdAt} />
                   </div>
                   <div
-                    className={clsx(spaceClasses, "col-span-2 text-sm font-semibold text-blue-500")}
+                    className={twJoin(
+                      spaceClasses,
+                      "col-span-2 text-sm font-semibold text-blue-500",
+                    )}
                   >
                     {projectRecord.title}
                   </div>
-                  <div className={clsx(spaceClasses, "text-sm text-gray-900")}>
+                  <div className={twJoin(spaceClasses, "text-sm text-gray-900")}>
                     <AdminTableExternalLink href={`/${projectRecord.project.slug}/project-records`}>
                       {shortTitle(projectRecord.project.slug)}
                     </AdminTableExternalLink>
                   </div>
-                  <div className={clsx(spaceClasses, "text-sm text-gray-900")}>
+                  <div className={twJoin(spaceClasses, "text-sm text-gray-900")}>
                     <div className="flex flex-col gap-1">
                       <ProjectRecordReviewStatePill state={projectRecord.reviewState} />
                       <AdminTableEditLink to={`/admin/project-records/${projectRecord.id}/edit`}>

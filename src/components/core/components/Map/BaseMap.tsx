@@ -1,13 +1,13 @@
-import { clsx } from "clsx"
 import type { FeatureCollection, LineString, Point, Polygon } from "geojson"
-import "maplibre-gl/dist/maplibre-gl.css"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import "maplibre-gl/dist/maplibre-gl.css"
 import MapComponent, {
   MapLayerMouseEvent,
   MapProps,
   NavigationControl,
   ScaleControl,
 } from "react-map-gl/maplibre"
+import { twJoin } from "tailwind-merge"
 import { BackgroundSwitcher, LayerType } from "./BackgroundSwitcher/BackgroundSwitcher"
 import {
   LineEndPointsLayer,
@@ -216,7 +216,7 @@ export const BaseMap = ({
 
   return (
     <div
-      className={clsx(
+      className={twJoin(
         "w-full overflow-clip rounded-t-md drop-shadow-md",
         classHeight ?? "h-96 sm:h-[500px]",
       )}

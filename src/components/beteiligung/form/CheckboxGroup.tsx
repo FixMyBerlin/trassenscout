@@ -1,6 +1,6 @@
 import { Checkbox, Description, Field } from "@headlessui/react"
 import { CheckIcon } from "@heroicons/react/16/solid"
-import clsx from "clsx"
+import { twJoin } from "tailwind-merge"
 import { FieldWithErrorContainer } from "@/src/components/beteiligung/form/ErrorContainer"
 import { FieldError } from "@/src/components/beteiligung/form/FieldErrror"
 import { formClasses } from "@/src/components/beteiligung/form/styles"
@@ -46,7 +46,7 @@ export const SurveyCheckboxGroup = ({ label, description, options, required }: C
             >
               <div className="flex h-full min-h-10 items-center">
                 <span
-                  className={clsx(
+                  className={twJoin(
                     "relative size-4 rounded-sm border border-gray-300 text-(--survey-primary-color) transition-colors group-hover:border-gray-400 focus:ring-0",
                   )}
                 />
@@ -55,7 +55,7 @@ export const SurveyCheckboxGroup = ({ label, description, options, required }: C
               </div>
               {/* we do not use the simple pattern from the headless UI demos as we want the whole item to be clickable incl. label etc; we use p instead of Label from headless UI as Label breaks the hover for some reason */}
               <div className={formClasses.labelItemWrapper}>
-                <p className={clsx(formClasses.fieldItemLabel)}>{option.label}</p>
+                <p className={twJoin(formClasses.fieldItemLabel)}>{option.label}</p>
                 {option.description && (
                   <Description className={formClasses.fieldItemDescription}>
                     {option.description}

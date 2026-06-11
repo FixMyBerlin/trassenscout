@@ -1,8 +1,7 @@
 import { useLocation } from "@tanstack/react-router"
-import { clsx } from "clsx"
 import type { JSX } from "react"
 import { PropsWithoutRef, ReactNode } from "react"
-import { twMerge } from "tailwind-merge"
+import { twJoin, twMerge } from "tailwind-merge"
 import { ActionBar } from "@/src/components/core/components/forms/ActionBar"
 import type { CoreAppFormApi } from "@/src/components/core/components/forms/coreFormTypes"
 import { FormError } from "@/src/components/core/components/forms/FormError"
@@ -47,7 +46,7 @@ export function FormShell<TFormData>({
     <FormHydratedProvider value={isHydrated}>
       <form.AppForm>
         <form
-          className={twMerge(clsx("space-y-6", className))}
+          className={twMerge("space-y-6", className)}
           onSubmit={(event) => {
             event.preventDefault()
             event.stopPropagation()
@@ -61,8 +60,8 @@ export function FormShell<TFormData>({
 
           {(hideSubmitButton ? Boolean(actionBarLeft || actionBarRight) : true) && (
             <ActionBar
-              className={clsx(
-                isAdminRoute && "shadow-sm ring-1 ring-gray-900/5",
+              className={twJoin(
+                isAdminRoute ? "shadow-sm ring-1 ring-gray-900/5" : "",
                 actionBarClassName,
               )}
               left={

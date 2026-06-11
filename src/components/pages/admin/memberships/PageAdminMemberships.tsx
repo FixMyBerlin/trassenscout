@@ -61,7 +61,7 @@ export function PageAdminMemberships() {
           className={twMerge(
             adminTableWrapperClassName,
             "transition-opacity duration-150",
-            isFiltering && "opacity-60",
+            isFiltering ? "opacity-60" : "",
           )}
         >
           {filteredUsers.length > 0 ? (

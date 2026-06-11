@@ -1,6 +1,6 @@
 import { TrashIcon } from "@heroicons/react/24/outline"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 import { linkIcons } from "@/src/components/core/components/links/Link"
 import { linkStyles } from "@/src/components/core/components/links/styles"
 import { frenchQuote } from "@/src/components/core/components/text/quote"
@@ -54,7 +54,7 @@ export const DeleteUploadButton = ({
       <button
         type="button"
         onClick={handleDelete}
-        className={clsx(linkStyles, "cursor-pointer", className)}
+        className={twJoin(linkStyles, "cursor-pointer", className)}
         title="Dokument löschen"
       >
         <TrashIcon className="size-5" />
@@ -64,7 +64,7 @@ export const DeleteUploadButton = ({
       <button
         type="button"
         onClick={handleDelete}
-        className={clsx(
+        className={twJoin(
           "inline-flex cursor-pointer items-center justify-center gap-1",
           linkStyles,
           className,
@@ -77,7 +77,7 @@ export const DeleteUploadButton = ({
       <button
         type="button"
         onClick={handleDelete}
-        className={clsx(
+        className={twJoin(
           "inline-flex cursor-pointer items-center justify-center gap-1",
           linkStyles,
           className,

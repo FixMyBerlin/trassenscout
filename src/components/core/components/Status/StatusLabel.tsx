@@ -1,6 +1,6 @@
 import { CheckIcon, XMarkIcon } from "@heroicons/react/20/solid"
 import { ClockIcon, DocumentTextIcon } from "@heroicons/react/24/outline"
-import clsx from "clsx"
+import { twJoin } from "tailwind-merge"
 
 type Props = {
   icon?: "XMARK" | "CLOCK" | "CHECKMARK" | "DOCUMENT" | undefined
@@ -20,7 +20,7 @@ export const StatusLabel = ({ icon, label, color, className }: Props) => {
   return (
     <div
       style={{ backgroundColor: color }}
-      className={clsx(
+      className={twJoin(
         className,
         "flex shrink-0 items-center gap-4 rounded-full px-5 py-2 whitespace-nowrap",
       )}

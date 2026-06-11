@@ -1,7 +1,7 @@
 import { Menu, MenuButton, MenuItem, MenuItems, Transition } from "@headlessui/react"
 import { ChevronDownIcon } from "@heroicons/react/20/solid"
-import { clsx } from "clsx"
 import { Fragment } from "react"
+import { twJoin } from "tailwind-merge"
 import { Link } from "@/src/components/core/components/links/Link"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { useTryRouteParam } from "@/src/components/core/routes/useTryRouteParam"
@@ -30,7 +30,7 @@ export const ProjectsSwitch = ({ projects }: Props) => {
       {({ open }) => (
         <>
           <MenuButton
-            className={clsx(
+            className={twJoin(
               "flex rounded-md bg-yellow-500 px-3 py-2 text-sm font-medium text-gray-800",
               open ? "bg-yellow-400" : "hover:bg-yellow-400 focus:bg-yellow-400",
               "focus:ring-2 focus:ring-white/30 focus:outline-hidden",
@@ -62,8 +62,8 @@ export const ProjectsSwitch = ({ projects }: Props) => {
                     {({ focus }) => (
                       <Link
                         to="/dashboard"
-                        classNameOverwrites={clsx(
-                          focus && "bg-gray-100",
+                        classNameOverwrites={twJoin(
+                          focus ? "bg-gray-100" : "",
                           "flex items-center rounded-md px-3 py-2 text-sm text-blue-500 hover:text-blue-800",
                         )}
                       >
@@ -80,9 +80,9 @@ export const ProjectsSwitch = ({ projects }: Props) => {
                         {({ focus }) => (
                           <Link
                             to={item.href}
-                            classNameOverwrites={clsx(
-                              current && "bg-gray-200",
-                              focus && "bg-gray-100",
+                            classNameOverwrites={twJoin(
+                              current ? "bg-gray-200" : "",
+                              focus ? "bg-gray-100" : "",
                               "flex items-center justify-between gap-2 rounded-md px-3 py-2 text-sm text-blue-500 hover:text-blue-800",
                             )}
                           >

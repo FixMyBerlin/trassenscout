@@ -1,7 +1,7 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid"
 import { XMarkIcon } from "@heroicons/react/24/outline"
-import { clsx } from "clsx"
 import { type JSX, PropsWithoutRef, useEffect, useState } from "react"
+import { twJoin } from "tailwind-merge"
 import { backendConfig as defaultBackendConfig } from "@/src/components/beteiligung/shared/backend-types"
 import { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
@@ -313,7 +313,7 @@ export function EditableSurveyResponseFilterForm({
         </form>
         <button
           type="button"
-          className={clsx(linkStyles, "mt-4 flex items-center gap-2 px-4 pb-2")}
+          className={twJoin(linkStyles, "mt-4 flex items-center gap-2 px-4 pb-2")}
           onClick={handleFilterReset}
         >
           <XMarkIcon className="size-4" />

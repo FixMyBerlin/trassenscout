@@ -324,7 +324,7 @@ function FileUploadItem({ progress, translations, onDismiss }: FileUploadItemPro
       className={twMerge(
         "flex items-center gap-2 overflow-hidden rounded-lg border border-gray-300 p-3",
         isFailed ? "border-red-500 bg-red-50" : "bg-white",
-        isComplete && !isFailed && "animate-fade-out-collapse",
+        isComplete && !isFailed ? "animate-fade-out-collapse" : "",
       )}
     >
       <span className="size-14 shrink-0 overflow-hidden rounded-md">

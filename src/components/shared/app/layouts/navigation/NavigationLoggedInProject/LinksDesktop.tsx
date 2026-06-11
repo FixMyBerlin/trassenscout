@@ -1,5 +1,5 @@
 import { useLocation } from "@tanstack/react-router"
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 import { Link } from "@/src/components/core/components/links/Link"
 import { shouldHighlight, useMenuItems } from "./useMenuItems"
 
@@ -17,7 +17,7 @@ export const LinksDesktop = ({ menuItems }: Props) => {
           <Link
             key={item.name}
             to={item.href}
-            classNameOverwrites={clsx(
+            classNameOverwrites={twJoin(
               current
                 ? "bg-gray-300 text-gray-900"
                 : "text-gray-50 hover:bg-gray-100 hover:text-gray-900",

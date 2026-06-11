@@ -1,4 +1,4 @@
-import clsx from "clsx"
+import { twJoin } from "tailwind-merge"
 import { linkStyles } from "@/src/components/core/components/links/styles"
 
 export const ProjectRecordTopicsList = ({
@@ -27,7 +27,7 @@ export const ProjectRecordTopicsList = ({
         isInteractive ? (
           <button
             key={topic.id}
-            className={clsx(
+            className={twJoin(
               linkStyles,
               "inline-block cursor-pointer rounded-sm bg-gray-100 px-2 py-1 text-xs",
             )}

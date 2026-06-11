@@ -1,5 +1,5 @@
 import { getRouteApi, useNavigate } from "@tanstack/react-router"
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 import { Link } from "@/src/components/core/components/links/Link"
 import { LegendIcon } from "@/src/components/core/components/Map/Icons/LegendIcon"
 import { SubsectionIcon } from "@/src/components/core/components/Map/Icons/SubsectionIcon"
@@ -32,7 +32,7 @@ export const SubsectionTable = ({ subsections, createButton = true }: Props) => 
         <table className="min-w-full divide-y divide-gray-300">
           <thead className="bg-gray-50">
             <tr>
-              <th scope="col" className={clsx("sm:pl-6", tableHeadClasses)}>
+              <th scope="col" className={twJoin("sm:pl-6", tableHeadClasses)}>
                 Planungsabschnitt
               </th>
               <th scope="col" className={tableHeadClasses}>
@@ -86,7 +86,7 @@ export const SubsectionTable = ({ subsections, createButton = true }: Props) => 
                   )}
                 </td>
                 <td
-                  className={clsx(
+                  className={twJoin(
                     "py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 group-hover:bg-gray-50",
                   )}
                 >

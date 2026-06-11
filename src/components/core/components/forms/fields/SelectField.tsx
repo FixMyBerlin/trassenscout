@@ -1,6 +1,6 @@
-import { clsx } from "clsx"
 import type { JSX } from "react"
 import { ComponentPropsWithoutRef, PropsWithoutRef } from "react"
+import { twJoin } from "tailwind-merge"
 import { FieldErrors } from "@/src/components/core/components/forms/FieldErrors"
 import { useFieldContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { useFieldDisabled } from "@/src/components/core/components/forms/hooks/useFormHydrated"
@@ -53,7 +53,7 @@ export function SelectField({
           onChange?.(e.target.value)
         }}
         onBlur={field.handleBlur}
-        className={clsx(
+        className={twJoin(
           "w-full rounded-md border border-gray-200 bg-white px-3 py-2 shadow-xs focus:outline-hidden sm:text-sm",
           hasError
             ? "border-red-800 shadow-red-200 focus:border-red-800 focus:ring-red-800"

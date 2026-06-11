@@ -1,4 +1,4 @@
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 import { primaryButtonLinkClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { ButtonWrapper } from "@/src/components/core/components/links/ButtonWrapper"
 import { Link } from "@/src/components/core/components/links/Link"
@@ -41,7 +41,7 @@ export const UploadDetailPanelContent = ({
 
   return (
     <div className="space-y-6">
-      <div className={clsx("flex gap-6", isUploadPdf && "flex-col gap-4")}>
+      <div className={twJoin("flex gap-6", isUploadPdf ? "flex-col gap-4" : "")}>
         {isUploadPdf ? (
           <div className="max-w-[250px]">
             <UploadPdfViewer fileUrl={uploadUrl(upload, projectSlug)} />

@@ -1,6 +1,5 @@
-import { clsx } from "clsx"
 import { ReactNode } from "react"
-import { twMerge } from "tailwind-merge"
+import { twJoin, twMerge } from "tailwind-merge"
 
 type Props = {
   className?: string
@@ -17,13 +16,13 @@ export const TableWrapper = ({ className, children, bleed = true }: Props) => {
       )}
     >
       <div
-        className={clsx(
+        className={twJoin(
           "min-w-0 py-2 align-middle",
           bleed ? "inline-block min-w-full md:px-6 lg:px-8" : "w-full",
         )}
       >
         <div
-          className={clsx(
+          className={twJoin(
             "not-prose overflow-hidden shadow-sm md:rounded-lg",
             bleed ? "ring-1 ring-gray-200" : "border border-gray-200",
           )}

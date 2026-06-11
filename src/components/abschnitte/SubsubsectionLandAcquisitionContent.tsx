@@ -2,8 +2,8 @@ import { PlusIcon } from "@heroicons/react/16/solid"
 import { TrashIcon } from "@heroicons/react/24/outline"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
-import clsx from "clsx"
 import { useEffect, useState } from "react"
+import { twJoin } from "tailwind-merge"
 import { SubsubsectionPanel } from "@/src/components/abschnitte/SubsubsectionPanel"
 import { useAcquisitionAreaSelection } from "@/src/components/abschnitte/useAcquisitionAreaSelection"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
@@ -292,7 +292,7 @@ export const SubsubsectionLandAcquisitionContent = ({
                 <IfUserCanEdit>
                   <button
                     onClick={() => setIsProjectRecordModalOpen(true)}
-                    className={clsx(
+                    className={twJoin(
                       primaryButtonClassName,
                       "mt-5 items-center justify-center gap-1",
                     )}
@@ -373,7 +373,7 @@ export const SubsubsectionLandAcquisitionContent = ({
               <IfUserCanEdit>
                 <button
                   type="button"
-                  className={clsx(secondaryButtonClassName, "gap-2 ring-inset")}
+                  className={twJoin(secondaryButtonClassName, "gap-2 ring-inset")}
                   disabled={deleteAllAcquisitionAreasMutation.isPending}
                   onClick={() => void handleDeleteAllAcquisitionAreas()}
                 >

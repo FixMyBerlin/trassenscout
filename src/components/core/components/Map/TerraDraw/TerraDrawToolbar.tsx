@@ -1,7 +1,6 @@
 import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline"
-import { clsx } from "clsx"
 import { LineSquiggle } from "lucide-react"
-import { twMerge } from "tailwind-merge"
+import { twJoin, twMerge } from "tailwind-merge"
 import { GeometryIcon } from "../Icons/GeometryIcon"
 import type { TerraDrawMode } from "./useTerraDrawControl"
 
@@ -80,7 +79,7 @@ const groupWrapperClass =
   "flex overflow-hidden rounded-md border border-gray-300 divide-x divide-gray-300"
 
 const groupButtonClass = (isActive: boolean, isDisabled: boolean) =>
-  clsx(
+  twJoin(
     "flex items-center gap-1.5 px-2 py-2 text-sm font-medium transition-colors",
     isActive
       ? "cursor-default bg-blue-600 text-white"
