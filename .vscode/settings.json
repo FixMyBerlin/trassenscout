@@ -8,6 +8,8 @@
   "oxc.configPath": "oxlint.config.mjs",
   "oxc.typeAware": true,
   "js/ts.experimental.useTsgo": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
   "typescript.native-preview.tsdk": "node_modules/@typescript/native-preview",
   "editor.codeActionsOnSave": {
     "source.fixAll.oxc": "always"
