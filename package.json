@@ -157,6 +157,7 @@
     "@types/preview-email": "3.1.0",
     "@types/react": "19.2.15",
     "@types/react-dom": "19.2.3",
+    "@types/secure-password": "4.0.2",
     "@types/web": "0.0.349",
     "@typescript/native-preview": "7.0.0-dev.20260603.1",
     "@vitejs/plugin-react": "6.0.2",
