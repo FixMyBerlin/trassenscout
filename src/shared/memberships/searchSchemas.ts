@@ -1,8 +1,8 @@
 import { z } from "zod"
 
-export const membershipNewSearchSchema = z.object({
-  userId: z
-    .union([z.string(), z.number()])
-    .optional()
-    .transform((value) => (value === undefined ? undefined : String(value))),
+export const membershipsSearchSchema = z.object({
+  user: z.string().optional(),
+  project: z.string().optional(),
 })
+
+export type MembershipsSearch = z.infer<typeof membershipsSearchSchema>

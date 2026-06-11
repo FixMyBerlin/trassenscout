@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start"
 import { getRequestHeaders } from "@tanstack/react-start/server"
-import { MembershipSchema } from "@/src/shared/memberships/schemas"
+import { MembershipSchema, SaveUserMembershipsSchema } from "@/src/shared/memberships/schemas"
 import {
   DeleteMembershipSchema,
   DeleteProjectMembershipSchema,
@@ -15,6 +15,7 @@ import {
   getProjectUsers,
   updateMembershipRole,
   updateProjectMembershipRole,
+  saveUserMemberships,
 } from "./memberships.server"
 
 export const createMembershipFn = createServerFn({ method: "POST" })
@@ -40,3 +41,7 @@ export const deleteProjectMembershipFn = createServerFn({ method: "POST" })
 export const updateProjectMembershipRoleFn = createServerFn({ method: "POST" })
   .inputValidator(UpdateProjectMembershipRoleSchema)
   .handler(({ data }) => updateProjectMembershipRole(getRequestHeaders(), data))
+
+export const saveUserMembershipsFn = createServerFn({ method: "POST" })
+  .inputValidator(SaveUserMembershipsSchema)
+  .handler(({ data }) => saveUserMemberships(getRequestHeaders(), data))

@@ -63,7 +63,7 @@ import { Route as AdminProjectsNewIndexRouteImport } from './routes/admin/projec
 import { Route as AdminProjectRecordTemplatesNewIndexRouteImport } from './routes/admin/project-record-templates/new/index'
 import { Route as AdminProjectRecordEmailsNewIndexRouteImport } from './routes/admin/project-record-emails/new/index'
 import { Route as AdminProjectRecordEmailsProjectRecordEmailIdIndexRouteImport } from './routes/admin/project-record-emails/$projectRecordEmailId/index'
-import { Route as AdminMembershipsNewIndexRouteImport } from './routes/admin/memberships/new/index'
+import { Route as AdminMembershipsUserIdIndexRouteImport } from './routes/admin/memberships/$userId/index'
 import { Route as LoggedInProjectsProjectSlugUploadsIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/uploads/index'
 import { Route as LoggedInProjectsProjectSlugSurveysIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/surveys/index'
 import { Route as LoggedInProjectsProjectSlugSubsubsectionTaskIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/subsubsection-task/index'
@@ -438,10 +438,10 @@ const AdminProjectRecordEmailsProjectRecordEmailIdIndexRoute =
     path: '/project-record-emails/$projectRecordEmailId/',
     getParentRoute: () => AdminRoute,
   } as any)
-const AdminMembershipsNewIndexRoute =
-  AdminMembershipsNewIndexRouteImport.update({
-    id: '/memberships/new/',
-    path: '/memberships/new/',
+const AdminMembershipsUserIdIndexRoute =
+  AdminMembershipsUserIdIndexRouteImport.update({
+    id: '/memberships/$userId/',
+    path: '/memberships/$userId/',
     getParentRoute: () => AdminRoute,
   } as any)
 const LoggedInProjectsProjectSlugUploadsIndexRoute =
@@ -1046,7 +1046,7 @@ export interface FileRoutesByFullPath {
   '/$projectSlug/subsubsection-task/': typeof LoggedInProjectsProjectSlugSubsubsectionTaskIndexRoute
   '/$projectSlug/surveys/': typeof LoggedInProjectsProjectSlugSurveysIndexRoute
   '/$projectSlug/uploads/': typeof LoggedInProjectsProjectSlugUploadsIndexRoute
-  '/admin/memberships/new/': typeof AdminMembershipsNewIndexRoute
+  '/admin/memberships/$userId/': typeof AdminMembershipsUserIdIndexRoute
   '/admin/project-record-emails/$projectRecordEmailId/': typeof AdminProjectRecordEmailsProjectRecordEmailIdIndexRoute
   '/admin/project-record-emails/new/': typeof AdminProjectRecordEmailsNewIndexRoute
   '/admin/project-record-templates/new/': typeof AdminProjectRecordTemplatesNewIndexRoute
@@ -1176,7 +1176,7 @@ export interface FileRoutesByTo {
   '/$projectSlug/subsubsection-task': typeof LoggedInProjectsProjectSlugSubsubsectionTaskIndexRoute
   '/$projectSlug/surveys': typeof LoggedInProjectsProjectSlugSurveysIndexRoute
   '/$projectSlug/uploads': typeof LoggedInProjectsProjectSlugUploadsIndexRoute
-  '/admin/memberships/new': typeof AdminMembershipsNewIndexRoute
+  '/admin/memberships/$userId': typeof AdminMembershipsUserIdIndexRoute
   '/admin/project-record-emails/$projectRecordEmailId': typeof AdminProjectRecordEmailsProjectRecordEmailIdIndexRoute
   '/admin/project-record-emails/new': typeof AdminProjectRecordEmailsNewIndexRoute
   '/admin/project-record-templates/new': typeof AdminProjectRecordTemplatesNewIndexRoute
@@ -1317,7 +1317,7 @@ export interface FileRoutesById {
   '/_loggedInProjects/$projectSlug/subsubsection-task/': typeof LoggedInProjectsProjectSlugSubsubsectionTaskIndexRoute
   '/_loggedInProjects/$projectSlug/surveys/': typeof LoggedInProjectsProjectSlugSurveysIndexRoute
   '/_loggedInProjects/$projectSlug/uploads/': typeof LoggedInProjectsProjectSlugUploadsIndexRoute
-  '/admin/memberships/new/': typeof AdminMembershipsNewIndexRoute
+  '/admin/memberships/$userId/': typeof AdminMembershipsUserIdIndexRoute
   '/admin/project-record-emails/$projectRecordEmailId/': typeof AdminProjectRecordEmailsProjectRecordEmailIdIndexRoute
   '/admin/project-record-emails/new/': typeof AdminProjectRecordEmailsNewIndexRoute
   '/admin/project-record-templates/new/': typeof AdminProjectRecordTemplatesNewIndexRoute
@@ -1453,7 +1453,7 @@ export interface FileRouteTypes {
     | '/$projectSlug/subsubsection-task/'
     | '/$projectSlug/surveys/'
     | '/$projectSlug/uploads/'
-    | '/admin/memberships/new/'
+    | '/admin/memberships/$userId/'
     | '/admin/project-record-emails/$projectRecordEmailId/'
     | '/admin/project-record-emails/new/'
     | '/admin/project-record-templates/new/'
@@ -1583,7 +1583,7 @@ export interface FileRouteTypes {
     | '/$projectSlug/subsubsection-task'
     | '/$projectSlug/surveys'
     | '/$projectSlug/uploads'
-    | '/admin/memberships/new'
+    | '/admin/memberships/$userId'
     | '/admin/project-record-emails/$projectRecordEmailId'
     | '/admin/project-record-emails/new'
     | '/admin/project-record-templates/new'
@@ -1723,7 +1723,7 @@ export interface FileRouteTypes {
     | '/_loggedInProjects/$projectSlug/subsubsection-task/'
     | '/_loggedInProjects/$projectSlug/surveys/'
     | '/_loggedInProjects/$projectSlug/uploads/'
-    | '/admin/memberships/new/'
+    | '/admin/memberships/$userId/'
     | '/admin/project-record-emails/$projectRecordEmailId/'
     | '/admin/project-record-emails/new/'
     | '/admin/project-record-templates/new/'
@@ -2215,11 +2215,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminProjectRecordEmailsProjectRecordEmailIdIndexRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/memberships/new/': {
-      id: '/admin/memberships/new/'
-      path: '/memberships/new'
-      fullPath: '/admin/memberships/new/'
-      preLoaderRoute: typeof AdminMembershipsNewIndexRouteImport
+    '/admin/memberships/$userId/': {
+      id: '/admin/memberships/$userId/'
+      path: '/memberships/$userId'
+      fullPath: '/admin/memberships/$userId/'
+      preLoaderRoute: typeof AdminMembershipsUserIdIndexRouteImport
       parentRoute: typeof AdminRoute
     }
     '/_loggedInProjects/$projectSlug/uploads/': {
@@ -3133,7 +3133,7 @@ interface AdminRouteChildren {
   AdminProjectsIndexRoute: typeof AdminProjectsIndexRoute
   AdminSupportDocumentsIndexRoute: typeof AdminSupportDocumentsIndexRoute
   AdminSurveysIndexRoute: typeof AdminSurveysIndexRoute
-  AdminMembershipsNewIndexRoute: typeof AdminMembershipsNewIndexRoute
+  AdminMembershipsUserIdIndexRoute: typeof AdminMembershipsUserIdIndexRoute
   AdminProjectRecordEmailsProjectRecordEmailIdIndexRoute: typeof AdminProjectRecordEmailsProjectRecordEmailIdIndexRoute
   AdminProjectRecordEmailsNewIndexRoute: typeof AdminProjectRecordEmailsNewIndexRoute
   AdminProjectRecordTemplatesNewIndexRoute: typeof AdminProjectRecordTemplatesNewIndexRoute
@@ -3163,7 +3163,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminProjectsIndexRoute: AdminProjectsIndexRoute,
   AdminSupportDocumentsIndexRoute: AdminSupportDocumentsIndexRoute,
   AdminSurveysIndexRoute: AdminSurveysIndexRoute,
-  AdminMembershipsNewIndexRoute: AdminMembershipsNewIndexRoute,
+  AdminMembershipsUserIdIndexRoute: AdminMembershipsUserIdIndexRoute,
   AdminProjectRecordEmailsProjectRecordEmailIdIndexRoute:
     AdminProjectRecordEmailsProjectRecordEmailIdIndexRoute,
   AdminProjectRecordEmailsNewIndexRoute: AdminProjectRecordEmailsNewIndexRoute,

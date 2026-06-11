@@ -1,5 +1,6 @@
 import { clsx } from "clsx"
 import { ReactNode } from "react"
+import { twMerge } from "tailwind-merge"
 
 type Props = {
   className?: string
@@ -10,9 +11,9 @@ type Props = {
 export const TableWrapper = ({ className, children, bleed = true }: Props) => {
   return (
     <div
-      className={clsx(
-        className,
+      className={twMerge(
         bleed ? "-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8" : "w-full overflow-x-hidden",
+        className,
       )}
     >
       <div

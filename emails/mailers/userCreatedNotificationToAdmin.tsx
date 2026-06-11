@@ -26,7 +26,7 @@ export async function userCreatedNotificationToAdmin(props: Props) {
   )
   assertValidRenderedTemplate(renderedTemplate)
 
-  const ctaLink = mailUrl(`/admin/memberships/new?userId=${props.userId}`)
+  const ctaLink = mailUrl(`/admin/memberships/${props.userId}`)
 
   const message = buildTemplateMail({
     from: addressNoreply,
