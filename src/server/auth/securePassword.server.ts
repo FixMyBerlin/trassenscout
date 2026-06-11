@@ -1,3 +1,8 @@
+/**
+ * Legacy Blitz.js password hashing (Argon2id via secure-password).
+ * Kept for Better Auth migration so existing hashes keep working; see
+ * https://github.com/FixMyBerlin/private-issues/issues/3385
+ */
 import SecurePasswordLib from "secure-password"
 
 const securePassword = new SecurePasswordLib()
