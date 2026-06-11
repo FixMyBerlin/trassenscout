@@ -3,7 +3,7 @@ import { betterAuth } from "better-auth"
 import { prismaAdapter } from "better-auth/adapters/prisma"
 import { customSession } from "better-auth/plugins/custom-session"
 import { forgotPasswordMailToUser } from "@/emails/mailers/forgotPasswordMailToUser"
-import { UserRoleEnum } from "@/src/prisma/generated/client"
+import { UserRoleEnum } from "@/src/prisma/generated/browser"
 import {
   authAfterHook,
   authBeforeHook,

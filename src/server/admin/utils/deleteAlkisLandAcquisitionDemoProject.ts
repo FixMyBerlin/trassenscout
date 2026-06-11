@@ -1,4 +1,4 @@
-import type { Prisma } from "@/src/prisma/generated/client"
+import type { Prisma } from "@/src/prisma/generated/browser"
 import { deleteAcquisitionAreasAndOrphanParcels } from "@/src/server/acquisitionAreas/_utils/deleteAcquisitionAreasAndOrphanParcels"
 
 /**

@@ -1,5 +1,5 @@
 import { Prettify } from "@/src/components/core/types"
-import { SystemLogEntry } from "@/src/prisma/generated/client"
+import { SystemLogEntry } from "@/src/prisma/generated/browser"
 import { compareApiKeyTimingSafe } from "@/src/server/auth/api-key.server"
 import db from "@/src/server/db.server"
 import { AuthorizationError } from "@/src/shared/auth/errors"

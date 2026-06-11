@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { SurveyResponseSourceEnum } from "@/src/prisma/generated/client"
+import { SurveyResponseSourceEnum } from "@/src/prisma/generated/browser"
 
 export const SurveyResponseSchema = z.object({
   data: z.string(),

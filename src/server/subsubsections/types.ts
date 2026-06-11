@@ -2,7 +2,7 @@ import type {
   QualityLevel,
   Subsubsection,
   SubsubsectionStatusStyleEnum,
-} from "@/src/prisma/generated/client"
+} from "@/src/prisma/generated/browser"
 import type { GeometryWithTypeDiscriminated } from "@/src/shared/geometry/geometrySchemas"
 import type { getSubsubsections } from "./subsubsections.server"
 

@@ -1,4 +1,4 @@
-import { GeometryTypeEnum } from "@/src/prisma/generated/client"
+import { GeometryTypeEnum } from "@/src/prisma/generated/browser"
 import {
   LineLikeGeometrySchema,
   PointLikeGeometrySchema,

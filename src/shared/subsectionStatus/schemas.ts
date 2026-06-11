@@ -1,6 +1,6 @@
 import { z } from "zod"
 import { SlugSchema } from "@/src/components/core/utils/schema-shared"
-import { SubsectionStatusStyleEnum } from "@/src/prisma/generated/client"
+import { SubsectionStatusStyleEnum } from "@/src/prisma/generated/browser"
 
 export const SubsectionStatusSchema = z.object({
   slug: SlugSchema,

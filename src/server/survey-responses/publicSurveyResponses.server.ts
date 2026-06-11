@@ -6,7 +6,7 @@ import {
 } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
 import { getFlatSurveyFormFields } from "@/src/components/surveys/responses/getFlatSurveyFormFields"
-import { SurveyResponseStateEnum } from "@/src/prisma/generated/client"
+import { SurveyResponseStateEnum } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { enforcePublicEndpointRateLimit } from "@/src/server/auth/publicEndpointRateLimit.server"
 import db from "@/src/server/db.server"

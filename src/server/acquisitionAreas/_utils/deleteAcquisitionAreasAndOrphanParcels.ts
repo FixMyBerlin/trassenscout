@@ -1,4 +1,4 @@
-import type { Prisma } from "@/src/prisma/generated/client"
+import type { Prisma } from "@/src/prisma/generated/browser"
 
 /**
  * Deletes acquisition areas matching `where`, then removes each parcel that no longer has acquisition areas.

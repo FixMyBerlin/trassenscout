@@ -2,7 +2,7 @@ import { membershipCreatedNotificationToEditors } from "@/emails/mailers/members
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { getFullname } from "@/src/components/core/users/getFullname"
 import { roleTranslation } from "@/src/components/core/users/roleTranslation.const"
-import { Invite, User } from "@/src/prisma/generated/client"
+import { Invite, User } from "@/src/prisma/generated/browser"
 import db from "@/src/server/db.server"
 
 type Props = { invite: Invite | null; invitee: Pick<User, "firstName" | "lastName" | "email"> }

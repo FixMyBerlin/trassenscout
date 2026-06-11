@@ -1,6 +1,6 @@
 import { generateText, NoObjectGeneratedError, Output } from "ai"
 import { gpt5Mini } from "@/src/components/core/ai/models"
-import type { Upload } from "@/src/prisma/generated/client"
+import type { Upload } from "@/src/prisma/generated/browser"
 import {
   createProjectRecordExtractionSchema,
   type CreateProjectRecordExtractionSchemaParams,

@@ -1,5 +1,5 @@
 import type { z } from "zod"
-import { StateKeyEnum } from "@/src/prisma/generated/client"
+import { StateKeyEnum } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"

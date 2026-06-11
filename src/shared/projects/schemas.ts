@@ -1,6 +1,6 @@
 import { z } from "zod"
 import { SlugSchema } from "@/src/components/core/utils/schema-shared"
-import { StateKeyEnum } from "@/src/prisma/generated/client"
+import { StateKeyEnum } from "@/src/prisma/generated/browser"
 import { ProjectSlugRequiredSchema } from "@/src/shared/authorization/projectSlugSchema"
 
 const ProjectSlugSchema = SlugSchema.max(15, { error: "Pflichtfeld. Maximal 15 Zeichen." })

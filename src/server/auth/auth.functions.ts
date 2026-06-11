@@ -1,7 +1,7 @@
 import { redirect } from "@tanstack/react-router"
 import { createServerFn } from "@tanstack/react-start"
 import { getRequestHeaders } from "@tanstack/react-start/server"
-import { UserRoleEnum } from "@/src/prisma/generated/client"
+import { UserRoleEnum } from "@/src/prisma/generated/browser"
 import { checkProjectAuthorization } from "@/src/server/authorization/checkProjectAuthorization.server"
 import type { LocationLike } from "./authBoundary.types"
 import { getAppSession, getFreshSession } from "./session.server"

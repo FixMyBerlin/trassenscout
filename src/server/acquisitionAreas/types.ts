@@ -1,4 +1,4 @@
-import type { AcquisitionArea } from "@/src/prisma/generated/client"
+import type { AcquisitionArea } from "@/src/prisma/generated/browser"
 import type { GeometryByGeometryType } from "@/src/shared/geometry/geometrySchemas"
 import type { getAcquisitionArea, getAcquisitionAreas } from "./acquisitionAreas.server"
 

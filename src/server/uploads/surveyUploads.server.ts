@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { SurveyResponseStateEnum } from "@/src/prisma/generated/client"
+import { SurveyResponseStateEnum } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import db from "@/src/server/db.server"
 import { generateSecureToken } from "@/src/server/utils/generateSecureToken.server"

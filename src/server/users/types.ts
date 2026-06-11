@@ -1,4 +1,4 @@
-import type { MembershipRoleEnum, UserRoleEnum } from "@/src/prisma/generated/client"
+import type { MembershipRoleEnum, UserRoleEnum } from "@/src/prisma/generated/browser"
 
 export type CurrentUser = {
   email: string

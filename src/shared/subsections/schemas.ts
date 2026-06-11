@@ -1,6 +1,6 @@
 import { z } from "zod"
 import { InputNumberOrNullSchema, SlugSchema } from "@/src/components/core/utils/schema-shared"
-import { GeometryTypeEnum, LabelPositionEnum } from "@/src/prisma/generated/client"
+import { GeometryTypeEnum, LabelPositionEnum } from "@/src/prisma/generated/browser"
 import { SupportedGeoJsonGeometrySchema } from "@/src/shared/geometry/geojsonSchemas"
 import { subsectionGeometryTypeValidationRefine } from "@/src/shared/geometry/geometryTypeValidation"
 

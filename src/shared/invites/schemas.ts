@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { MembershipRoleEnum } from "@/src/prisma/generated/client"
+import { MembershipRoleEnum } from "@/src/prisma/generated/browser"
 
 export const InviteSchema = z.object({
   email: z.email(),

@@ -1,4 +1,4 @@
-import { UserRoleEnum } from "@/src/prisma/generated/client"
+import { UserRoleEnum } from "@/src/prisma/generated/browser"
 import { auth } from "./auth.server"
 
 type Session = typeof auth.$Infer.Session

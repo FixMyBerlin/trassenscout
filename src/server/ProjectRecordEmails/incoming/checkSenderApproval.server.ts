@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { UserRoleEnum } from "@/src/prisma/generated/client"
+import { UserRoleEnum } from "@/src/prisma/generated/browser"
 import db from "@/src/server/db.server"
 
 function extractEmailAddress(emailString: string) {
