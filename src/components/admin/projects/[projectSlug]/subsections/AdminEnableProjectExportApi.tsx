@@ -1,7 +1,6 @@
 import { ArrowDownTrayIcon } from "@heroicons/react/20/solid"
 import { useMutation } from "@tanstack/react-query"
 import { useState } from "react"
-import { adminTableControlsClassName } from "@/src/components/admin/adminListClasses"
 import {
   AdminTableActions,
   AdminTableExternalLink,
@@ -32,7 +31,7 @@ export const AdminEnableProjectExportApi = ({ slug, exportEnabled }: Props) => {
   }
 
   return (
-    <AdminTableActions className={adminTableControlsClassName}>
+    <AdminTableActions className="flex items-center justify-start gap-2">
       <AdminTableFeatureSwitch
         enabled={isExportEnabled}
         onToggle={() => void handleEnableExportClick()}

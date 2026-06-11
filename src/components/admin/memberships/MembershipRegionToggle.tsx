@@ -1,6 +1,5 @@
 import { twMerge } from "tailwind-merge"
 import type { MembershipAccess } from "@/src/components/admin/memberships/membershipAccessUtils"
-import { membershipRegionToggleButtonClassName } from "@/src/components/admin/memberships/membershipRegionClasses"
 import {
   membershipRegionToggleOptions,
   type MembershipRegionToggleOption,
@@ -28,7 +27,7 @@ export function MembershipRegionToggle({ value, onChange, disabled }: Props) {
             aria-pressed={isActive}
             onClick={() => onChange(option.value)}
             className={twMerge(
-              membershipRegionToggleButtonClassName,
+              "relative inline-flex cursor-pointer items-center justify-center bg-white px-1.5 py-1.5 text-xs font-semibold text-gray-900 inset-ring-1 inset-ring-gray-300 hover:bg-gray-50 focus:z-10 disabled:cursor-not-allowed disabled:opacity-50",
               isActive && "bg-blue-600 text-white inset-ring-blue-600 hover:bg-blue-700",
               index === 0 && "rounded-l-md",
               index === membershipRegionToggleOptions.length - 1 && "rounded-r-md",

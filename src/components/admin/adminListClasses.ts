@@ -43,8 +43,5 @@ export const adminTableDeleteButtonClassName = clsx(
 
 export const adminTableActionsClassName = "flex items-center justify-end gap-2"
 
-/** Toggle/control groups in data columns (left-aligned). */
-export const adminTableControlsClassName = "flex items-center justify-start gap-2"
-
 /** Neutral icon control for admin table rows (links and inactive toggles). */
 export const adminTableIconButtonClassName = actionIconButtonClassName

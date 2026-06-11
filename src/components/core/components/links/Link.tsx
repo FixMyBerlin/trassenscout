@@ -10,7 +10,6 @@ import { ArrowTopRightOnSquareIcon, PencilIcon, UserGroupIcon } from "@heroicons
 import { Link as RouterLink, type LinkComponentProps } from "@tanstack/react-router"
 import { cloneElement, isValidElement } from "react"
 import { twMerge } from "tailwind-merge"
-import { compactButtonIconClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { selectLinkStyle } from "./styles"
 
 type CoreLinkStyleProps = {
@@ -93,7 +92,7 @@ function useLinkPresentation({
   const iconElement =
     rawIconElement && button && isValidElement<{ className?: string }>(rawIconElement)
       ? cloneElement(rawIconElement, {
-          className: twMerge(compactButtonIconClassName, rawIconElement.props.className),
+          className: twMerge("-ml-0.5 size-5 shrink-0", rawIconElement.props.className),
         })
       : rawIconElement
 

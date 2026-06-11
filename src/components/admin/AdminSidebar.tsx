@@ -29,17 +29,13 @@ const navSectionActiveClass = "bg-purple-800 text-white"
 const navIconClass =
   "size-5 shrink-0 text-purple-200 group-data-[status=active]:text-white group-hover:text-white"
 
-const externalLinkIconClass = "ml-auto size-3.5 shrink-0 text-purple-300 group-hover:text-white"
-
-const projectSectionHeadingClass = "text-xs/6 font-semibold text-purple-300"
-
-const countBadgeClass =
-  "ml-auto w-9 min-w-max rounded-full bg-purple-600 px-2.5 py-0.5 text-center text-xs/5 font-medium whitespace-nowrap text-white outline-1 -outline-offset-1 outline-purple-500"
-
 function NavCountBadge({ count }: { count: number | undefined }) {
   if (count === undefined) return null
   return (
-    <span aria-hidden="true" className={countBadgeClass}>
+    <span
+      aria-hidden="true"
+      className="ml-auto w-9 min-w-max rounded-full bg-purple-600 px-2.5 py-0.5 text-center text-xs/5 font-medium whitespace-nowrap text-white outline-1 -outline-offset-1 outline-purple-500"
+    >
       {formatAdminNavCount(count)}
     </span>
   )
@@ -67,7 +63,10 @@ function AdminNavLeafLink({
       <span className="truncate">{name}</span>
       {external ? (
         <>
-          <ArrowTopRightOnSquareIcon aria-hidden className={externalLinkIconClass} />
+          <ArrowTopRightOnSquareIcon
+            aria-hidden
+            className="ml-auto size-3.5 shrink-0 text-purple-300 group-hover:text-white"
+          />
           <span className="sr-only"> (neues Fenster)</span>
         </>
       ) : (
@@ -206,7 +205,9 @@ export function AdminSidebar() {
           </li>
           {projectSlug ? (
             <li>
-              <div className={projectSectionHeadingClass}>Projekt: {shortTitle(projectSlug)}</div>
+              <div className="text-xs/6 font-semibold text-purple-300">
+                Projekt: {shortTitle(projectSlug)}
+              </div>
               <ul role="list" className="-mx-2 mt-2 space-y-0.5">
                 <AdminNavChildLinks
                   items={buildAdminProjectNavigation(projectSlug)}

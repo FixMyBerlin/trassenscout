@@ -43,6 +43,3 @@ const pinkColors =
 
 /** Accent action — link element (`<a>`). */
 export const pinkButtonLinkClassName = clsx(compactButtonBase, compactPadding, pinkColors)
-
-/** Icon sizing when rendered inside compact button links. */
-export const compactButtonIconClassName = "-ml-0.5 size-5 shrink-0"
