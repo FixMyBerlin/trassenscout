@@ -282,20 +282,22 @@ export function UploadDropzoneProgress({
         </div>
       )}
 
-      <div className="grid gap-2">
-        {visibleProgresses.map((progress: FileUploadInfo<UploadStatus>) => (
-          <FileUploadItem
-            key={progress.objectInfo.key}
-            progress={progress}
-            translations={translations}
-            onDismiss={
-              progress.status === "failed"
-                ? () => setDismissedFiles((prev) => new Set(prev).add(progress.objectInfo.key))
-                : undefined
-            }
-          />
-        ))}
-      </div>
+      {visibleProgresses.length > 0 && (
+        <div className="mb-4 grid gap-2">
+          {visibleProgresses.map((progress: FileUploadInfo<UploadStatus>) => (
+            <FileUploadItem
+              key={progress.objectInfo.key}
+              progress={progress}
+              translations={translations}
+              onDismiss={
+                progress.status === "failed"
+                  ? () => setDismissedFiles((prev) => new Set(prev).add(progress.objectInfo.key))
+                  : undefined
+              }
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }
@@ -310,13 +312,8 @@ function FileUploadItem({ progress, translations, onDismiss }: FileUploadItemPro
   const fileTypeLabel = getFileTypeLabel(progress.type)
   const isComplete = progress.status === "complete"
   const isFailed = progress.status === "failed"
-  // Extract error message from progress if available and translate it
   const rawErrorMessage =
-    isFailed && "error" in progress && progress.error
-      ? progress.error instanceof Error
-        ? progress.error.message
-        : String(progress.error)
-      : null
+    isFailed && "error" in progress && progress.error ? progress.error.message : null
   const errorMessage = rawErrorMessage ? translateServerError(rawErrorMessage) : null
 
   return (
@@ -334,13 +331,13 @@ function FileUploadItem({ progress, translations, onDismiss }: FileUploadItemPro
       </span>
 
       <div className="grid grow gap-1">
-        <div className="flex items-center gap-0.5">
-          <p className="max-w-40 truncate text-sm font-medium">{progress.name}</p>
-          <span className="text-gray-500">·</span>
-          <p className="text-xs text-gray-500">{formatBytes(progress.size)}</p>
+        <div className="flex min-w-0 items-center gap-0.5">
+          <p className="min-w-0 truncate text-sm font-medium">{progress.name}</p>
+          <span className="shrink-0 text-gray-500">·</span>
+          <p className="shrink-0 text-xs text-gray-500">{formatBytes(progress.size)}</p>
         </div>
 
-        <div className="flex h-4 items-center">
+        <div className={twMerge("flex items-center", !isFailed && "h-4")}>
           {progress.progress < 1 && !isFailed ? (
             <Progress className="h-1.5" value={progress.progress * 100} />
           ) : isFailed ? (

@@ -26,7 +26,7 @@ export const UploadsPageContent = () => {
 
   return (
     <>
-      <div className="mt-8">
+      <div className="mt-8 flex flex-col gap-8">
         <UploadDropzone
           onUploadComplete={async () => {
             await queryClient.invalidateQueries({
@@ -34,9 +34,9 @@ export const UploadsPageContent = () => {
             })
           }}
         />
-      </div>
 
-      <UploadTable withAction withRelations uploads={visibleUploads} />
+        <UploadTable withAction withRelations uploads={visibleUploads} />
+      </div>
 
       <SuperAdminBox>
         <strong>Hinweis:</strong> Uploads, die ausschließlich mit Beteiligungsbeiträgen verknüpft

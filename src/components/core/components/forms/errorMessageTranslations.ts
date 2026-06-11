@@ -59,4 +59,9 @@ const errorMessageTranslations: TranslatedMessages = {
     "Zu viele Dateien. Sie können maximal 10 Dateien gleichzeitig hochladen.",
   "Error: One or more files are too large.":
     "Eine oder mehrere Dateien sind zu groß. Die maximale Dateigröße beträgt 10 MB.",
+  "Failed to upload file to S3.":
+    "Die Datei konnte nicht hochgeladen werden. Bitte versuchen Sie es erneut.",
+  "Upload aborted.": "Der Upload wurde abgebrochen.",
+  "One or more files have an invalid file type.":
+    "Eine oder mehrere Dateien haben einen ungültigen Dateityp.",
 }

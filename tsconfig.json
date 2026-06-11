@@ -35,11 +35,10 @@
       // We need to specify this explicitly, so that Vitest can pick it up and work
       "@/*": ["./*"]
     },
-    "types": ["vite/client", "bun-types", "web"],
     "incremental": true,
     "tsBuildInfoFile": ".tsbuildinfo",
     "noErrorTruncation": true // https://stackoverflow.com/a/53131824
   },
-  "include": ["**/*.ts", "**/*.tsx", "**/*.mts"],
+  "include": ["src/env.d.ts", "**/*.ts", "**/*.tsx", "**/*.mts"],
   "exclude": ["node_modules", "**/*.e2e.ts", "imap-listener/**", ".output", "dist"]
 }

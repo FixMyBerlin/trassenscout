@@ -82,6 +82,7 @@ import { Route as LoggedInProjectsProjectSlugContactsIndexRouteImport } from './
 import { Route as LoggedInProjectsProjectSlugAcquisitionAreaStatusIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/acquisition-area-status/index'
 import { Route as LoggedInGeneralUserEditIndexRouteImport } from './routes/_loggedInGeneral/user/edit/index'
 import { Route as ApiSupportDocumentsUploadIndexRouteImport } from './routes/api/support/documents/upload/index'
+import { Route as ApiProjectSlugUploadsUploadIdIndexRouteImport } from './routes/api/$projectSlug/uploads/$uploadId/index'
 import { Route as ApiProjectSlugSubsectionsExportIndexRouteImport } from './routes/api/$projectSlug/subsections/export/index'
 import { Route as AdminSurveysSurveyIdResponsesIndexRouteImport } from './routes/admin/surveys/$surveyId/responses/index'
 import { Route as AdminSurveysSurveyIdEditIndexRouteImport } from './routes/admin/surveys/$surveyId/edit/index'
@@ -552,6 +553,12 @@ const ApiSupportDocumentsUploadIndexRoute =
   ApiSupportDocumentsUploadIndexRouteImport.update({
     id: '/api/support/documents/upload/',
     path: '/api/support/documents/upload/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiProjectSlugUploadsUploadIdIndexRoute =
+  ApiProjectSlugUploadsUploadIdIndexRouteImport.update({
+    id: '/api/$projectSlug/uploads/$uploadId/',
+    path: '/api/$projectSlug/uploads/$uploadId/',
     getParentRoute: () => rootRouteImport,
   } as any)
 const ApiProjectSlugSubsectionsExportIndexRoute =
@@ -1087,6 +1094,7 @@ export interface FileRoutesByFullPath {
   '/admin/surveys/$surveyId/edit/': typeof AdminSurveysSurveyIdEditIndexRoute
   '/admin/surveys/$surveyId/responses/': typeof AdminSurveysSurveyIdResponsesIndexRoute
   '/api/$projectSlug/subsections/export/': typeof ApiProjectSlugSubsectionsExportIndexRoute
+  '/api/$projectSlug/uploads/$uploadId/': typeof ApiProjectSlugUploadsUploadIdIndexRoute
   '/api/support/documents/upload/': typeof ApiSupportDocumentsUploadIndexRoute
   '/$projectSlug/uploads/$uploadId/view/': typeof LoggedInFullscreenProjectSlugUploadsUploadIdViewIndexRoute
   '/$projectSlug/abschnitte/$subsectionSlug/edit/': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugEditIndexRoute
@@ -1217,6 +1225,7 @@ export interface FileRoutesByTo {
   '/admin/surveys/$surveyId/edit': typeof AdminSurveysSurveyIdEditIndexRoute
   '/admin/surveys/$surveyId/responses': typeof AdminSurveysSurveyIdResponsesIndexRoute
   '/api/$projectSlug/subsections/export': typeof ApiProjectSlugSubsectionsExportIndexRoute
+  '/api/$projectSlug/uploads/$uploadId': typeof ApiProjectSlugUploadsUploadIdIndexRoute
   '/api/support/documents/upload': typeof ApiSupportDocumentsUploadIndexRoute
   '/$projectSlug/uploads/$uploadId/view': typeof LoggedInFullscreenProjectSlugUploadsUploadIdViewIndexRoute
   '/$projectSlug/abschnitte/$subsectionSlug/edit': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugEditIndexRoute
@@ -1358,6 +1367,7 @@ export interface FileRoutesById {
   '/admin/surveys/$surveyId/edit/': typeof AdminSurveysSurveyIdEditIndexRoute
   '/admin/surveys/$surveyId/responses/': typeof AdminSurveysSurveyIdResponsesIndexRoute
   '/api/$projectSlug/subsections/export/': typeof ApiProjectSlugSubsectionsExportIndexRoute
+  '/api/$projectSlug/uploads/$uploadId/': typeof ApiProjectSlugUploadsUploadIdIndexRoute
   '/api/support/documents/upload/': typeof ApiSupportDocumentsUploadIndexRoute
   '/_loggedInFullscreen/$projectSlug/uploads/$uploadId/view/': typeof LoggedInFullscreenProjectSlugUploadsUploadIdViewIndexRoute
   '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/edit/': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugEditIndexRoute
@@ -1494,6 +1504,7 @@ export interface FileRouteTypes {
     | '/admin/surveys/$surveyId/edit/'
     | '/admin/surveys/$surveyId/responses/'
     | '/api/$projectSlug/subsections/export/'
+    | '/api/$projectSlug/uploads/$uploadId/'
     | '/api/support/documents/upload/'
     | '/$projectSlug/uploads/$uploadId/view/'
     | '/$projectSlug/abschnitte/$subsectionSlug/edit/'
@@ -1624,6 +1635,7 @@ export interface FileRouteTypes {
     | '/admin/surveys/$surveyId/edit'
     | '/admin/surveys/$surveyId/responses'
     | '/api/$projectSlug/subsections/export'
+    | '/api/$projectSlug/uploads/$uploadId'
     | '/api/support/documents/upload'
     | '/$projectSlug/uploads/$uploadId/view'
     | '/$projectSlug/abschnitte/$subsectionSlug/edit'
@@ -1764,6 +1776,7 @@ export interface FileRouteTypes {
     | '/admin/surveys/$surveyId/edit/'
     | '/admin/surveys/$surveyId/responses/'
     | '/api/$projectSlug/subsections/export/'
+    | '/api/$projectSlug/uploads/$uploadId/'
     | '/api/support/documents/upload/'
     | '/_loggedInFullscreen/$projectSlug/uploads/$uploadId/view/'
     | '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/edit/'
@@ -1825,6 +1838,7 @@ export interface RootRouteChildren {
   ApiSubsubsectionsImportIndexRoute: typeof ApiSubsubsectionsImportIndexRoute
   ApiSurveyGeojsonSurveySlugIndexRoute: typeof ApiSurveyGeojsonSurveySlugIndexRoute
   ApiProjectSlugSubsectionsExportIndexRoute: typeof ApiProjectSlugSubsectionsExportIndexRoute
+  ApiProjectSlugUploadsUploadIdIndexRoute: typeof ApiProjectSlugUploadsUploadIdIndexRoute
   ApiSupportDocumentsUploadIndexRoute: typeof ApiSupportDocumentsUploadIndexRoute
   ApiProjectSlugUploadsUploadIdSplatIndexRoute: typeof ApiProjectSlugUploadsUploadIdSplatIndexRoute
   ApiSupportDocumentsDocumentIdSplatIndexRoute: typeof ApiSupportDocumentsDocumentIdSplatIndexRoute
@@ -2346,6 +2360,13 @@ declare module '@tanstack/react-router' {
       path: '/api/support/documents/upload'
       fullPath: '/api/support/documents/upload/'
       preLoaderRoute: typeof ApiSupportDocumentsUploadIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/$projectSlug/uploads/$uploadId/': {
+      id: '/api/$projectSlug/uploads/$uploadId/'
+      path: '/api/$projectSlug/uploads/$uploadId'
+      fullPath: '/api/$projectSlug/uploads/$uploadId/'
+      preLoaderRoute: typeof ApiProjectSlugUploadsUploadIdIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/$projectSlug/subsections/export/': {
@@ -3260,6 +3281,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiSurveyGeojsonSurveySlugIndexRoute: ApiSurveyGeojsonSurveySlugIndexRoute,
   ApiProjectSlugSubsectionsExportIndexRoute:
     ApiProjectSlugSubsectionsExportIndexRoute,
+  ApiProjectSlugUploadsUploadIdIndexRoute:
+    ApiProjectSlugUploadsUploadIdIndexRoute,
   ApiSupportDocumentsUploadIndexRoute: ApiSupportDocumentsUploadIndexRoute,
   ApiProjectSlugUploadsUploadIdSplatIndexRoute:
     ApiProjectSlugUploadsUploadIdSplatIndexRoute,

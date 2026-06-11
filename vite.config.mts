@@ -5,33 +5,9 @@ import { devtools } from "@tanstack/devtools-vite"
 import { tanstackStart } from "@tanstack/react-start/plugin/vite"
 import viteReact, { reactCompilerPreset } from "@vitejs/plugin-react"
 import { nitro } from "nitro/vite"
-import { defineConfig, type Plugin } from "vite"
-
-const prismaBrowserEntry = fileURLToPath(
-  new URL("./src/prisma/generated/browser.ts", import.meta.url),
-)
-
-// Shared server Zod schemas import `@/src/prisma/generated/client` for enums.
-// Redirect to the browser entry in client bundles so PrismaClient never ships to the browser.
-function prismaBrowserAlias(): Plugin {
-  const serverEntry = "@/src/prisma/generated/client"
-
-  return {
-    name: "prisma-browser-alias",
-    enforce: "pre",
-    resolveId(source, _importer, options) {
-      if (options?.ssr) return null
-      if (
-        source === serverEntry ||
-        source.endsWith("/prisma/generated/client") ||
-        source.endsWith("/prisma/generated/client.ts")
-      ) {
-        return prismaBrowserEntry
-      }
-      return null
-    },
-  }
-}
+import { defineConfig } from "vite"
+import { forwardApiRequestsPastViteAssetMiddleware } from "./vite/forwardApiRequestsPastViteAssetMiddleware"
+import { prismaBrowserAlias } from "./vite/prismaBrowserAlias"
 
 export default defineConfig({
   server: {
@@ -62,6 +38,7 @@ export default defineConfig({
         },
       },
     }),
+    forwardApiRequestsPastViteAssetMiddleware(),
     prismaBrowserAlias(),
     nitro({
       preset: "bun",
