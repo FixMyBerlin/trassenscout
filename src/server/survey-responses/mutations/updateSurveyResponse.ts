@@ -57,7 +57,7 @@ export default resolver.pipe(
 
     await createLogEntry({
       action: "UPDATE",
-      message: `Beteiligungs-Beitrag geändert`,
+      message: `Eingabe geändert`,
       userId: ctx.session.userId,
       projectSlug,
       previousRecord: previous,

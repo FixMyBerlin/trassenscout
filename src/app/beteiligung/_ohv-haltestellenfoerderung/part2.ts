@@ -337,7 +337,7 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           props: {
             label: "Ko-Finanzierung: Mittelgeber und Programm",
             description:
-              "Bitte geben Sie an, wie der Eigenanteil der Kommune sowie ggf. Beiträge Dritter (z. B. andere Träger oder Förderprogramme) finanziert werden. Voraussetzung ist, dass die Gesamtfinanzierung einschließlich Folgekosten gesichert ist und durch einen Finanzierungsplan nachgewiesen wird.",
+              "Bitte geben Sie an, wie der Eigenanteil der Kommune sowie ggf. Eingaben Dritter (z. B. andere Träger oder Förderprogramme) finanziert werden. Voraussetzung ist, dass die Gesamtfinanzierung einschließlich Folgekosten gesichert ist und durch einen Finanzierungsplan nachgewiesen wird.",
           },
         },
         {

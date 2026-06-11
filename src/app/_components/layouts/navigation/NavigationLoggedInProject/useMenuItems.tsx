@@ -52,7 +52,7 @@ export const useMenuItems = () => {
       ],
     },
     {
-      name: "Beteiligung",
+      name: "Eingaben",
       href: `/${projectSlug}/surveys`,
       alsoHighlightPaths: [`/${projectSlug}/surveys`],
     },

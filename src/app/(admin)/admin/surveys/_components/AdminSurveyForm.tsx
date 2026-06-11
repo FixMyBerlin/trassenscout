@@ -57,7 +57,7 @@ export const AdminSurveyForm = (props: Props) => {
         type="text"
         optional
         name="surveyResultsUrl"
-        label="Externe Url der Beteiligungsergebnisse"
+        label="Externe Url der Eingaben"
         help="Bspw. Google Spreadsheet"
       />
       <LabeledTextField

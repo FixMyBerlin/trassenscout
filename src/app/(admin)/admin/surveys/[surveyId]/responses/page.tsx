@@ -7,7 +7,7 @@ import "server-only"
 import { Breadcrumb } from "../../../_components/Breadcrumb"
 import { HeaderWrapper } from "../../../_components/HeaderWrapper"
 
-export const metadata: Metadata = { title: "Beiträge" }
+export const metadata: Metadata = { title: "Eingaben" }
 
 export default async function AdminSurveyResponsesPage({
   params: { surveyId: surveyIdString },
@@ -26,7 +26,7 @@ export default async function AdminSurveyResponsesPage({
             { href: "/admin", name: "Dashboard" },
             { href: "/admin/surveys", name: "Beteiligungen" },
             { name: "Beteiligung" },
-            { name: `Beiträge für ${survey.title}` },
+            { name: `Eingaben für ${survey.title}` },
           ]}
         />
       </HeaderWrapper>

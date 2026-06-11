@@ -106,7 +106,7 @@ export function SurveyResponsesMap({ projectSlug, surveyId, survey, tabs }: Prop
               <div className="lg:w-[580px]">
                 <H3>
                   Ausgewählte{mapSelectedResponses.length === 1 ? "r" : ""}{" "}
-                  {mapSelectedResponses.length === 1 ? "Beitrag" : "Beiträge"}
+                  {mapSelectedResponses.length === 1 ? "Beitrag" : "Eingaben"}
                 </H3>
                 <div className="mt-2 flex items-center">
                   <SurveyStaticPin surveySlug={survey.slug} small />
@@ -151,7 +151,7 @@ export function SurveyResponsesMap({ projectSlug, surveyId, survey, tabs }: Prop
         </div>
         {responsesWithoutLocation.length > 0 && (
           <div className="mx-auto max-w-7xl px-6 pb-8">
-            <H3>Beiträge ohne Verortung</H3>
+            <H3>Eingaben ohne Verortung</H3>
             <section className="mt-4">
               {responsesWithoutLocation.map((response) => (
                 <div
