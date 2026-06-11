@@ -4,7 +4,7 @@ import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { selectUserFieldsForSession } from "@/src/server/auth/shared/selectUserFieldsForSession"
 import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
 import { ProjectSlugRequiredSchema } from "@/src/shared/authorization/projectSlugSchema"
-import { MembershipSchema } from "@/src/shared/memberships/schemas"
+import { MembershipSchema, SaveUserMembershipsSchema } from "@/src/shared/memberships/schemas"
 import { authorizeProjectMemberByProjectSlug } from "../authorization/authorizeProjectMember.server"
 import db from "../db.server"
 import { membershipUpdateSession } from "./membershipUpdateSession"
@@ -149,4 +149,54 @@ export async function updateProjectMembershipRole(
   })
   await membershipUpdateSession(updated.userId)
   return updated
+}
+
+export async function saveUserMemberships(
+  headers: Headers,
+  input: z.infer<typeof SaveUserMembershipsSchema>,
+) {
+  await endpointAuth.admin(headers)
+
+  const user = await db.user.findUniqueOrThrow({
+    where: { id: input.userId },
+    select: { role: true },
+  })
+
+  if (user.role === "ADMIN") {
+    throw new Error("Admin-Nutzer haben automatisch Zugriff auf alle Projekte.")
+  }
+
+  const existing = await db.membership.findMany({
+    where: { userId: input.userId },
+  })
+  const existingByProjectId = new Map(
+    existing.map((membership) => [membership.projectId, membership]),
+  )
+
+  for (const { projectId, role } of input.projectRoles) {
+    const current = existingByProjectId.get(projectId)
+
+    if (role === null) {
+      if (current) {
+        await db.membership.delete({ where: { id: current.id } })
+      }
+      continue
+    }
+
+    if (!current) {
+      await db.membership.create({
+        data: { userId: input.userId, projectId, role },
+      })
+      continue
+    }
+
+    if (current.role !== role) {
+      await db.membership.update({
+        where: { id: current.id },
+        data: { role },
+      })
+    }
+  }
+
+  await membershipUpdateSession(input.userId)
 }

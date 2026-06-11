@@ -73,30 +73,49 @@ export async function getUsersAdmin(headers: Headers) {
   return { users }
 }
 
+const userWithMembershipsSelect = {
+  id: true,
+  firstName: true,
+  lastName: true,
+  email: true,
+  role: true,
+  memberships: {
+    select: {
+      id: true,
+      role: true,
+      project: {
+        select: {
+          id: true,
+          slug: true,
+        },
+      },
+    },
+  },
+} as const
+
+const userWithMembershipsDetailSelect = {
+  ...userWithMembershipsSelect,
+  phone: true,
+  institution: true,
+  emailVerified: true,
+  createdAt: true,
+} as const
+
 export async function getUsersWithMemberships(headers: Headers) {
   await endpointAuth.admin(headers)
 
   return db.user.findMany({
     orderBy: { id: "asc" },
     take: 100,
-    select: {
-      id: true,
-      firstName: true,
-      lastName: true,
-      email: true,
-      role: true,
-      memberships: {
-        select: {
-          id: true,
-          role: true,
-          project: {
-            select: {
-              id: true,
-              slug: true,
-            },
-          },
-        },
-      },
-    },
+    select: userWithMembershipsSelect,
+  })
+}
+
+export async function getUserWithMemberships(headers: Headers, input: { userId: number }) {
+  await endpointAuth.admin(headers)
+
+  return db.user.findUniqueOrThrow({
+    where: { id: input.userId },
+    select: userWithMembershipsDetailSelect,
   })
 }

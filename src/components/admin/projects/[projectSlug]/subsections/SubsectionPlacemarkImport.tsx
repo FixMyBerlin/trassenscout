@@ -210,7 +210,7 @@ export const SubsectionPlacemarkImport = ({ project, projectSlug }: Props) => {
           )}
         </ButtonWrapper>
 
-        <SuperAdminBox className="prose prose-sm">
+        <SuperAdminBox>
           <p>
             state: <code>{fileState}</code>
           </p>

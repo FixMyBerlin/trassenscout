@@ -1,5 +1,10 @@
 import { queryOptions } from "@tanstack/react-query"
-import { getCurrentUserFn, getUsersAdminFn, getUsersWithMembershipsFn } from "./users.functions"
+import {
+  getCurrentUserFn,
+  getUsersAdminFn,
+  getUsersWithMembershipsFn,
+  getUserWithMembershipsFn,
+} from "./users.functions"
 
 export function currentUserQueryOptions() {
   return queryOptions({
@@ -18,5 +23,12 @@ export function usersWithMembershipsQueryOptions() {
   return queryOptions({
     queryKey: ["users", "withMemberships"],
     queryFn: () => getUsersWithMembershipsFn({ data: {} }),
+  })
+}
+
+export function userWithMembershipsQueryOptions(userId: number) {
+  return queryOptions({
+    queryKey: ["users", "withMemberships", userId],
+    queryFn: () => getUserWithMembershipsFn({ data: { userId } }),
   })
 }

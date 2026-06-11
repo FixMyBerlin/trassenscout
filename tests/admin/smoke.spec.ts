@@ -37,10 +37,6 @@ const adminPages = [
     visibleText: "Nutzer & Rechte",
   },
   {
-    path: "/admin/memberships/new",
-    visibleText: "Rechte",
-  },
-  {
     path: "/admin/surveys",
     visibleText: "radnetz-brandenburg",
   },
@@ -160,13 +156,9 @@ test.describe("Admin writes and validation", () => {
     })
   })
 
-  test("shows validation errors on empty membership create form", async ({ page }) => {
-    await page.goto("/admin/memberships/new")
-    await assertFormValidationOnEmptySubmit({
-      page,
-      submitButtonName: "Erstellen",
-      stayOnUrl: /\/admin\/memberships\/new$/,
-    })
+  test("renders user membership detail page", async ({ page }) => {
+    await page.goto("/admin/memberships/1")
+    await expect(page.getByRole("button", { name: "Speichern" })).toBeVisible({ timeout: 30_000 })
   })
 
   test("shows validation errors on empty survey create form", async ({ page }) => {

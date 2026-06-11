@@ -101,7 +101,7 @@ export async function getProjectsAdmin(headers: Headers) {
   await endpointAuth.admin(headers)
 
   const projects = await db.project.findMany({
-    orderBy: { id: "asc" },
+    orderBy: { slug: "asc" },
     take: 100,
   })
 
