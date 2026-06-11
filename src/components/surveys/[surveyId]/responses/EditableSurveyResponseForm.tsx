@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
-import { clsx } from "clsx"
 import { type JSX, PropsWithoutRef, useState } from "react"
+import { twJoin } from "tailwind-merge"
 import { backendConfig as defaultBackendConfig } from "@/src/components/beteiligung/shared/backend-types"
 import { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
@@ -208,7 +208,7 @@ export function EditableSurveyResponseForm({
           surveySlug={surveySlug}
           refetchResponsesAndTopics={refetchResponsesAndTopics}
         />
-        <div className={clsx("flex gap-6", showMap ? "flex-row" : "flex-col")}>
+        <div className={twJoin("flex gap-6", showMap ? "flex-row" : "flex-col")}>
           <form className="flex flex-col gap-6">
             {/* BLT */}
             <FormElementWrapper
@@ -254,8 +254,8 @@ export function EditableSurveyResponseForm({
             <FormElementWrapper label={labels.topics?.pl || defaultBackendConfig.labels.topics.pl}>
               <div
                 // todo container query?
-                className={clsx(
-                  showMap && "md:grid-cols-3 lg:grid-cols-4",
+                className={twJoin(
+                  showMap ? "md:grid-cols-3 lg:grid-cols-4" : "",
                   "grid grid-cols-2 gap-1.5",
                 )}
               >
@@ -293,7 +293,7 @@ export function EditableSurveyResponseForm({
               <button
                 type="submit"
                 disabled={!userCanEdit}
-                className={clsx(primaryButtonClassName, "px-3! py-2.5!")}
+                className={twJoin(primaryButtonClassName, "px-3! py-2.5!")}
               >
                 Hinzufügen
               </button>
@@ -313,7 +313,7 @@ export function EditableSurveyResponseForm({
                   setHasUnsavedChanges(true)
                   setResponseNote(e.target.value)
                 }}
-                className={clsx(
+                className={twJoin(
                   hasUnsavedChanges &&
                     "border-yellow-500 ring-yellow-500 focus:border-yellow-500 focus:ring-yellow-500",
                 )}
@@ -328,11 +328,11 @@ export function EditableSurveyResponseForm({
                 <button
                   type="submit"
                   disabled={!userCanEdit}
-                  className={clsx(primaryButtonClassName, "px-3! py-2.5!")}
+                  className={twJoin(primaryButtonClassName, "px-3! py-2.5!")}
                 >
                   {labels.note?.sg || defaultBackendConfig.labels.note.sg} speichern
                 </button>
-                <small className={clsx(!hasUnsavedChanges && "opacity-0", "text-yellow-500")}>
+                <small className={twJoin(!hasUnsavedChanges ? "opacity-0" : "", "text-yellow-500")}>
                   ungespeicherte Änderungen
                 </small>
               </div>

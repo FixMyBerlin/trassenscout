@@ -1,6 +1,6 @@
-import { clsx } from "clsx"
 import type { Geometry } from "geojson"
 import { ReactNode, useState } from "react"
+import { twJoin } from "tailwind-merge"
 import { FieldErrors } from "@/src/components/core/components/forms/FieldErrors"
 import {
   GeoJSONPreviewLink,
@@ -80,7 +80,7 @@ export const GeometryInputBase = ({
       )}
 
       <div
-        className={clsx(
+        className={twJoin(
           "rounded-md border border-gray-200 bg-gray-100 p-2",
           contentContainerClassName,
         )}

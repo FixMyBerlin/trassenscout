@@ -1,6 +1,6 @@
-import { clsx } from "clsx"
 import type { JSX } from "react"
 import { ComponentPropsWithoutRef, PropsWithoutRef, useState } from "react"
+import { twJoin } from "tailwind-merge"
 import { z } from "zod"
 import { useFieldContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { useFieldDisabled } from "@/src/components/core/components/forms/hooks/useFormHydrated"
@@ -151,7 +151,7 @@ export function GeometryField({
             onChange={handleTextareaChange}
             onBlur={handleTextareaChange}
             onPaste={handlePaste}
-            className={clsx(
+            className={twJoin(
               textareaClassName,
               "block w-full grow rounded-md font-mono text-xs shadow-sm",
               hasError

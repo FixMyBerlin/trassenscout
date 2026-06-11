@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router"
-import { clsx } from "clsx"
 import { forwardRef } from "react"
+import { twJoin } from "tailwind-merge"
 import { selectSurveyLinkStyle } from "./styles"
 
 export type SurveyLinkProps = {
@@ -16,7 +16,7 @@ export const SurveyLink = forwardRef<HTMLAnchorElement, SurveyLinkProps>(functio
   { href, className, classNameOverwrites, children, blank = false, button, ...props },
   ref,
 ) {
-  const classNames = clsx(classNameOverwrites ?? selectSurveyLinkStyle(button, className))
+  const classNames = twJoin(classNameOverwrites ?? selectSurveyLinkStyle(button, className))
 
   if (href.startsWith("http") || href.startsWith("mailto:") || href.startsWith("tel:")) {
     return (

@@ -1,6 +1,6 @@
-import { clsx } from "clsx"
 import { endOfDay, format, formatDistanceStrict, subDays } from "date-fns"
 import { de } from "date-fns/locale"
+import { twJoin } from "tailwind-merge"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { LinkMail } from "@/src/components/core/components/links/LinkMail"
 import { StatusLabel } from "@/src/components/core/components/Status/StatusLabel"
@@ -56,7 +56,7 @@ export const TeamInvitesTable = ({ invites }: Props) => {
                 <td className="h-20 py-4 pr-3 pl-4 text-sm whitespace-nowrap sm:pl-6">
                   <StatusLabel
                     label={inviteStatusLabels[invite.status]}
-                    className={clsx(inviteStatusClassNames[invite.status], "inline-flex")}
+                    className={twJoin(inviteStatusClassNames[invite.status], "inline-flex")}
                   />
                 </td>
                 <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">

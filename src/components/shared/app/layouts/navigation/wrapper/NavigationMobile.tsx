@@ -1,7 +1,7 @@
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react"
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"
 import { useLocation } from "@tanstack/react-router"
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 import { Link } from "@/src/components/core/components/links/Link"
 import type { ProjectsForCurrentUser } from "@/src/server/projects/types"
 import { ProjectsSwitch } from "../NavigationLoggedIn/ProjectsSwitch"
@@ -71,7 +71,7 @@ export const NavigationMobile = ({
                   <DisclosureButton key={item.name} as="div">
                     <Link
                       to={item.href}
-                      classNameOverwrites={clsx(
+                      classNameOverwrites={twJoin(
                         current
                           ? "bg-gray-900 text-white"
                           : "text-gray-300 hover:bg-gray-700 hover:text-white",

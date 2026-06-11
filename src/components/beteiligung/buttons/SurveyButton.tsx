@@ -1,5 +1,5 @@
-import { clsx } from "clsx"
 import { ReactNode } from "react"
+import { twJoin } from "tailwind-merge"
 import { surveyPrimaryColorButtonStyles, surveyWhiteButtonStyles } from "../links/styles"
 
 type Props = {
@@ -22,7 +22,7 @@ export const SurveyButton = ({ color, children, ...props }: Props) => {
   }
 
   return (
-    <button type={props.type ?? "button"} {...props} className={clsx("px-12", colorClass)}>
+    <button type={props.type ?? "button"} {...props} className={twJoin("px-12", colorClass)}>
       {children}
     </button>
   )

@@ -1,9 +1,9 @@
 import { useMutation } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
-import clsx from "clsx"
 import type { Feature, MultiPolygon, Polygon } from "geojson"
 import { type KeyboardEvent, useMemo, useState } from "react"
 import { MapProvider } from "react-map-gl/maplibre"
+import { twJoin } from "tailwind-merge"
 import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useCoreAppFormContext } from "@/src/components/core/components/forms/hooks/formContext"
@@ -53,7 +53,7 @@ function BufferRadiusControls({ onApplyRadius }: { onApplyRadius: (radius: numbe
       <div className="mt-1">
         <button
           type="button"
-          className={clsx(primaryButtonClassName, "shrink-0")}
+          className={twJoin(primaryButtonClassName, "shrink-0")}
           onClick={applyBufferRadius}
         >
           Puffer übernehmen
@@ -191,7 +191,7 @@ export function AcquisitionAreasWorkspace({
         </MapProvider>
       </div>
       <aside
-        className={clsx(
+        className={twJoin(
           "w-full shrink-0 rounded-md border border-gray-200 bg-white p-6 shadow-xs lg:flex-[3] lg:overflow-y-auto",
           desktopSharedHeightClass,
         )}

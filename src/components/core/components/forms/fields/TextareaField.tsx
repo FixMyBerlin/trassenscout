@@ -1,6 +1,6 @@
-import { clsx } from "clsx"
 import type { JSX } from "react"
 import { ComponentPropsWithoutRef, PropsWithoutRef } from "react"
+import { twJoin } from "tailwind-merge"
 import { FieldErrors } from "@/src/components/core/components/forms/FieldErrors"
 import { useFieldContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { useFieldDisabled } from "@/src/components/core/components/forms/hooks/useFormHydrated"
@@ -45,7 +45,7 @@ export function TextareaField({
         value={String(field.state.value ?? "")}
         onChange={(e) => field.handleChange(e.target.value)}
         onBlur={field.handleBlur}
-        className={clsx(
+        className={twJoin(
           textareaClassName,
           "mt-1 block w-full rounded-md shadow-xs sm:text-sm",
           hasError

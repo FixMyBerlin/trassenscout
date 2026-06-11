@@ -1,6 +1,5 @@
 import { CheckBadgeIcon } from "@heroicons/react/24/solid"
 import { featureCollection, point } from "@turf/helpers"
-import { clsx } from "clsx"
 import Map, {
   Layer,
   LngLatBoundsLike,
@@ -8,6 +7,7 @@ import Map, {
   ScaleControl,
   Source,
 } from "react-map-gl/maplibre"
+import { twJoin } from "tailwind-merge"
 import { useFieldContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { Link } from "@/src/components/core/components/links/Link"
 import { getMapStyle } from "@/src/components/core/components/Map/mapStyleConfig"
@@ -57,7 +57,7 @@ export function GeometryFieldPreview({ hasError }: GeometryFieldPreviewProps) {
 
   return (
     <div
-      className={clsx(
+      className={twJoin(
         "rounded-sm border border-gray-200 p-3 text-gray-700",
         schemaResult.success ? "bg-gray-100" : "border-red-800 bg-red-100",
       )}

@@ -1,6 +1,6 @@
 import { TagIcon } from "@heroicons/react/24/outline"
-import { clsx } from "clsx"
 import { ComponentPropsWithoutRef, ReactNode } from "react"
+import { twJoin } from "tailwind-merge"
 import { FieldErrors } from "@/src/components/core/components/forms/FieldErrors"
 import { useFieldContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { useFieldDisabled } from "@/src/components/core/components/forms/hooks/useFormHydrated"
@@ -110,7 +110,7 @@ export function RadiobuttonGroup({
           {label} {optional && <> (optional)</>}
         </p>
       )}
-      <div className={clsx(classNameItemWrapper || "space-y-3")}>
+      <div className={twJoin(classNameItemWrapper || "space-y-3")}>
         {items.map((item) => {
           const id = `${field.name}-${item.value}`
 
@@ -127,7 +127,7 @@ export function RadiobuttonGroup({
                     onChange?.(item.value)
                   }}
                   onBlur={field.handleBlur}
-                  className={clsx(
+                  className={twJoin(
                     "size-4 cursor-pointer",
                     hasError
                       ? "border-red-800 text-red-500 shadow-xs shadow-red-200 focus:ring-red-800"
@@ -140,7 +140,7 @@ export function RadiobuttonGroup({
               <label
                 {...item.labelProps}
                 htmlFor={id}
-                className={clsx(
+                className={twJoin(
                   "block pl-3 text-sm font-medium whitespace-nowrap",
                   disabled ? "text-gray-400" : "cursor-pointer text-gray-700 hover:text-gray-900",
                 )}

@@ -1,4 +1,4 @@
-import clsx from "clsx"
+import { twJoin } from "tailwind-merge"
 import { getFullname } from "@/src/components/core/users/getFullname"
 import { pillShellWithGapClasses } from "@/src/components/core/utils/pillClassNames"
 import type { ProjectRecord } from "@/src/server/projectRecords/types"
@@ -23,7 +23,7 @@ export const ProjectRecordAssignedToPill = ({
   const displayLabel = variant === "list" ? assignedToPillShortLabel(assignedTo) : fullName
   const filterSearchText = fullName
 
-  const className = clsx(
+  const className = twJoin(
     pillShellWithGapClasses,
     "bg-orange-100 text-xs text-orange-600",
     isInteractive &&

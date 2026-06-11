@@ -1,4 +1,4 @@
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 
 type Props = React.HTMLAttributes<HTMLDivElement> & {
   label: string
@@ -6,7 +6,7 @@ type Props = React.HTMLAttributes<HTMLDivElement> & {
 
 export const SubsectionIcon = ({ label, ...props }: Props) => (
   <div
-    className={clsx(
+    className={twJoin(
       "flex h-9 w-auto flex-none items-center justify-center rounded-lg",
       "border-2 border-gray-900 bg-gray-900 px-1.5",
       "font-sans text-xl leading-none font-semibold text-white",
@@ -19,7 +19,7 @@ export const SubsectionIcon = ({ label, ...props }: Props) => (
 
 export const SubsectionMapIcon = ({ label, ...props }: Props) => (
   <div
-    className={clsx(
+    className={twJoin(
       "flex h-5 w-auto flex-none items-center justify-center rounded-md",
       "border-2 border-gray-900 bg-gray-900 px-1.5",
       "font-sans text-xs leading-none font-semibold text-white",

@@ -1,4 +1,4 @@
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 
 type Props = {
   visible: boolean | number
@@ -27,13 +27,13 @@ export const ZeroCase = ({
 
   return (
     <div
-      className={clsx(
+      className={twJoin(
         "relative my-10 flex items-center justify-center text-xl text-gray-500",
         textBackgroundClassName,
       )}
     >
       <div className="absolute inset-x-0 h-px bg-gray-200" />
-      <p className={clsx("relative inline-block px-4", textBackgroundClassName)}>{content}</p>
+      <p className={twJoin("relative inline-block px-4", textBackgroundClassName)}>{content}</p>
     </div>
   )
 }

@@ -1,5 +1,5 @@
-import { clsx } from "clsx"
 import { Remark } from "react-remark"
+import { twJoin } from "tailwind-merge"
 import { Link } from "../links/Link"
 import { proseClasses } from "../text/prose"
 
@@ -90,7 +90,7 @@ export const Markdown = ({ markdown, className }: Props) => {
     .replace(/\n(?!\n)/g, "  \n")
 
   return (
-    <div className={clsx(proseClasses, className)}>
+    <div className={twJoin(proseClasses, className)}>
       <Remark
         remarkToRehypeOptions={{ allowDangerousHtml: true }}
         rehypeReactOptions={{ components }}

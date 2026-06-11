@@ -1,4 +1,4 @@
-import clsx from "clsx"
+import { twJoin } from "tailwind-merge"
 import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { useAppFormContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { useFieldDisabled } from "@/src/components/core/components/forms/hooks/useFormHydrated"
@@ -19,7 +19,7 @@ export function SubmitButton({ label, className, disabled }: SubmitButtonProps) 
         <button
           type="submit"
           disabled={isSubmitting || !canSubmit || fieldDisabled}
-          className={clsx(className || primaryButtonClassName)}
+          className={twJoin(className || primaryButtonClassName)}
         >
           {label}
         </button>

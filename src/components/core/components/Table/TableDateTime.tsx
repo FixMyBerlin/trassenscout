@@ -1,4 +1,4 @@
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 import {
   formatTableDateTime,
   type TableDateTimeInput,
@@ -22,7 +22,7 @@ export const TableDateTime = ({
   return (
     <time dateTime={content.dateTime} className="block leading-tight tabular-nums">
       <span className="block whitespace-nowrap">{content.date}</span>
-      <span className={clsx(timeClassName, "block whitespace-nowrap")}>{content.time}</span>
+      <span className={twJoin(timeClassName, "block whitespace-nowrap")}>{content.time}</span>
     </time>
   )
 }

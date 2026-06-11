@@ -1,4 +1,4 @@
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 
 /** Flat admin panels — tinted with full border, strong top accent, rounded corners. */
 export const adminBoxSurfaceClassName = {
@@ -15,8 +15,11 @@ const adminBoxLabelBase =
   "absolute inline-flex items-center rounded-full px-1.5 py-px text-[9px]/3 font-semibold uppercase tracking-wide ring-1 ring-inset"
 
 export const adminBoxLabelClassName = {
-  admin: clsx(adminBoxLabelBase, "-top-2 left-3 bg-purple-700 text-white ring-purple-700"),
-  dev: clsx(adminBoxLabelBase, "-top-2 left-3 bg-purple-700 text-white ring-purple-700"),
-  adminCompact: clsx(adminBoxLabelBase, "-top-1.5 left-2 bg-purple-700 text-white ring-purple-700"),
-  devCompact: clsx(adminBoxLabelBase, "-top-1.5 left-2 bg-purple-700 text-white ring-purple-700"),
+  admin: twJoin(adminBoxLabelBase, "-top-2 left-3 bg-purple-700 text-white ring-purple-700"),
+  dev: twJoin(adminBoxLabelBase, "-top-2 left-3 bg-purple-700 text-white ring-purple-700"),
+  adminCompact: twJoin(
+    adminBoxLabelBase,
+    "-top-1.5 left-2 bg-purple-700 text-white ring-purple-700",
+  ),
+  devCompact: twJoin(adminBoxLabelBase, "-top-1.5 left-2 bg-purple-700 text-white ring-purple-700"),
 } as const

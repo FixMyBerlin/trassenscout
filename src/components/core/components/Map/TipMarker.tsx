@@ -1,7 +1,7 @@
-import { clsx } from "clsx"
 import type React from "react"
 import { CSSProperties } from "react"
 import { useMap } from "react-map-gl/maplibre"
+import { twJoin } from "tailwind-merge"
 import { useIsMapHighlighted, useMapHighlightContext } from "./mapHighlightContext"
 import { applyMapHighlight, clearHighlightLevel, highlightStateForSlug } from "./mapHighlightState"
 
@@ -110,16 +110,16 @@ export const TipMarker = ({
 
   return (
     <div
-      className={clsx("cursor-pointer whitespace-nowrap", className)}
+      className={twJoin("cursor-pointer whitespace-nowrap", className)}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       {...props}
     >
       <div
         style={divStyles[anchor]}
-        className={clsx(
+        className={twJoin(
           "absolute rounded-md border border-gray-400 bg-white transition-colors",
-          isHighlighted && "border-[#F8C62B]",
+          isHighlighted ? "border-[#F8C62B]" : "",
         )}
       >
         {children}

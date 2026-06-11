@@ -1,8 +1,8 @@
 import { ChatBubbleBottomCenterTextIcon, DocumentIcon } from "@heroicons/react/24/outline"
 import { getRouteApi } from "@tanstack/react-router"
-import clsx from "clsx"
 import { format } from "date-fns"
 import { de } from "date-fns/locale"
+import { twJoin } from "tailwind-merge"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "@/src/components/core/components/links/Link"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
@@ -107,40 +107,40 @@ export const ProjectRecordsTable = ({
             </colgroup>
             <thead>
               <tr className="border-b border-gray-300 bg-gray-50">
-                <th scope="col" className={clsx(spaceClasses, "sr-only font-medium")}>
+                <th scope="col" className={twJoin(spaceClasses, "sr-only font-medium")}>
                   Status
                 </th>
-                <th scope="col" className={clsx(spaceClasses, "font-medium uppercase")}>
+                <th scope="col" className={twJoin(spaceClasses, "font-medium uppercase")}>
                   Datum
                 </th>
-                <th scope="col" className={clsx(spaceClasses, "font-medium uppercase")}>
+                <th scope="col" className={twJoin(spaceClasses, "font-medium uppercase")}>
                   Titel
                 </th>
                 {showAcquisitionAreaColumn ? (
-                  <th scope="col" className={clsx(spaceClasses, "font-medium uppercase")}>
+                  <th scope="col" className={twJoin(spaceClasses, "font-medium uppercase")}>
                     Verhandlungsfläche
                   </th>
                 ) : showRelationsColumn ? (
                   <th
                     scope="col"
-                    className={clsx(spaceClasses, "hidden font-medium uppercase @xl:table-cell")}
+                    className={twJoin(spaceClasses, "hidden font-medium uppercase @xl:table-cell")}
                   >
                     Verknüpfungen
                   </th>
                 ) : null}
                 <th
                   scope="col"
-                  className={clsx(spaceClasses, "hidden font-medium uppercase @xl:table-cell")}
+                  className={twJoin(spaceClasses, "hidden font-medium uppercase @xl:table-cell")}
                 >
                   Tags
                 </th>
                 <th
                   scope="col"
-                  className={clsx(spaceClasses, "hidden font-medium uppercase @xl:table-cell")}
+                  className={twJoin(spaceClasses, "hidden font-medium uppercase @xl:table-cell")}
                 >
                   Zugewiesen
                 </th>
-                <th scope="col" className={clsx(spaceClasses, "sr-only")}>
+                <th scope="col" className={twJoin(spaceClasses, "sr-only")}>
                   Dokumente
                 </th>
               </tr>
@@ -194,7 +194,7 @@ export const ProjectRecordsTable = ({
                 return (
                   <tr
                     key={projectRecord.id}
-                    className={clsx(
+                    className={twJoin(
                       "border-b border-gray-100",
                       highlightId === projectRecord.id
                         ? "bg-green-50"
@@ -202,18 +202,18 @@ export const ProjectRecordsTable = ({
                             "bg-gray-50/90 text-gray-500",
                     )}
                   >
-                    <td className={clsx(spaceClasses, "align-top")}>
+                    <td className={twJoin(spaceClasses, "align-top")}>
                       <ProjectRecordEditingStateIndicator
                         editingState={projectRecord.editingState}
                         variant="table"
                       />
                     </td>
-                    <td className={clsx(spaceClasses, "align-top")}>
+                    <td className={twJoin(spaceClasses, "align-top")}>
                       {projectRecord.date
                         ? format(new Date(projectRecord.date), "P", { locale: de })
                         : "—"}
                     </td>
-                    <td className={clsx("align-top", spaceClasses)}>
+                    <td className={twJoin("align-top", spaceClasses)}>
                       <Link
                         className="w-full"
                         to="/$projectSlug/project-records/$projectRecordId"
@@ -228,11 +228,11 @@ export const ProjectRecordsTable = ({
                       </Link>
                     </td>
                     {showAcquisitionAreaColumn ? (
-                      <td className={clsx("align-top wrap-break-word", spaceClasses)}>
+                      <td className={twJoin("align-top wrap-break-word", spaceClasses)}>
                         {acquisitionAreaId ?? "—"}
                       </td>
                     ) : showRelationsColumn ? (
-                      <td className={clsx("hidden align-top @xl:table-cell", spaceClasses)}>
+                      <td className={twJoin("hidden align-top @xl:table-cell", spaceClasses)}>
                         <ProjectRecordVerknuepfungen
                           projectSlug={projectSlug}
                           landAcquisitionModuleEnabled={landAcquisitionEnabled}
@@ -243,7 +243,7 @@ export const ProjectRecordsTable = ({
                         />
                       </td>
                     ) : null}
-                    <td className={clsx("hidden align-top @xl:table-cell", spaceClasses)}>
+                    <td className={twJoin("hidden align-top @xl:table-cell", spaceClasses)}>
                       <div className="flex items-center justify-between gap-2">
                         <ProjectRecordTopicsList
                           topics={projectRecordTopics}
@@ -252,7 +252,7 @@ export const ProjectRecordsTable = ({
                         />
                       </div>
                     </td>
-                    <td className={clsx("hidden align-top @xl:table-cell", spaceClasses)}>
+                    <td className={twJoin("hidden align-top @xl:table-cell", spaceClasses)}>
                       <div className="flex items-center justify-start">
                         {assignedTo && (
                           <ProjectRecordAssignedToPill
@@ -265,7 +265,7 @@ export const ProjectRecordsTable = ({
                       </div>
                     </td>
                     <td
-                      className={clsx(
+                      className={twJoin(
                         spaceClasses,
                         "flex items-center justify-end gap-2 tabular-nums @xl:gap-4",
                       )}

@@ -1,8 +1,8 @@
 import { SparklesIcon } from "@heroicons/react/20/solid"
 import { useMutation } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
-import { clsx } from "clsx"
 import { useState } from "react"
+import { twJoin } from "tailwind-merge"
 import {
   adminTableCellClassName,
   adminTableCellRightClassName,
@@ -132,7 +132,7 @@ export const ProjectRecordEmailsTable = ({ projectRecordEmails }: Props) => {
                       </Link>
                       {email.project.aiEnabled === false && (
                         <p
-                          className={clsx(
+                          className={twJoin(
                             adminTableCellSubtextClassName,
                             "font-medium text-amber-700",
                           )}

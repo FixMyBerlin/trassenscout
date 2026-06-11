@@ -1,7 +1,7 @@
 import { SparklesIcon } from "@heroicons/react/20/solid"
 import { getRouteApi } from "@tanstack/react-router"
-import { clsx } from "clsx"
 import { useState } from "react"
+import { twJoin } from "tailwind-merge"
 import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { ReprocessedProjectRecord } from "@/src/components/project-records/ProjectRecordDetailClient"
 import { reprocessProjectRecordFn } from "@/src/server/projectRecords/reprocessProjectRecord.functions"
@@ -48,7 +48,7 @@ export const ReprocessProjectRecordButton = ({ projectRecordId, onAiSuggestions 
             type="button"
             onClick={handleImproveProjectRecord}
             disabled={isProcessing}
-            className={clsx(primaryButtonClassName, "flex gap-1")}
+            className={twJoin(primaryButtonClassName, "flex gap-1")}
           >
             <SparklesIcon className="size-4" />
             {isProcessing ? "Wird verbessert..." : "Protokolleintrag verbessern"}

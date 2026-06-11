@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import clsx from "clsx"
 import { useState } from "react"
+import { twJoin } from "tailwind-merge"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { useCoreAppFormContext } from "@/src/components/core/components/forms/hooks/formContext"
@@ -214,7 +214,7 @@ export const ProjectRecordFormFields = ({
               <button
                 type="button"
                 onClick={handleNewTopicFormSubmit}
-                className={clsx(primaryButtonClassName, "shrink-0 px-3! py-2!")}
+                className={twJoin(primaryButtonClassName, "shrink-0 px-3! py-2!")}
               >
                 Hinzufügen
               </button>

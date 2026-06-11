@@ -1,5 +1,5 @@
 import { getRouteApi } from "@tanstack/react-router"
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 import {
   useAcquisitionAreaStatusMutations,
   useAcquisitionAreaStatusRouteLinks,
@@ -78,7 +78,7 @@ export const AcquisitionAreaStatusesTable = ({ acquisitionAreaStatuses }: Props)
               </td>
               <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">
                 <span
-                  className={clsx(
+                  className={twJoin(
                     "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
                     acquisitionAreaStatusStyleBadgeClasses[
                       status.style as AcquisitionAreaStatusStyle
@@ -105,7 +105,10 @@ export const AcquisitionAreaStatusesTable = ({ acquisitionAreaStatuses }: Props)
                     <button
                       type="button"
                       onClick={() => handleDelete(status.id)}
-                      className={clsx(linkStyles, "inline-flex items-center justify-center gap-1")}
+                      className={twJoin(
+                        linkStyles,
+                        "inline-flex items-center justify-center gap-1",
+                      )}
                     >
                       {linkIcons["delete"]}
                       Löschen

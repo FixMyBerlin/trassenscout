@@ -1,5 +1,5 @@
 import { getRouteApi } from "@tanstack/react-router"
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 import { ButtonWrapper } from "@/src/components/core/components/links/ButtonWrapper"
 import { Link, linkIcons } from "@/src/components/core/components/links/Link"
 import { linkStyles } from "@/src/components/core/components/links/styles"
@@ -99,7 +99,7 @@ export const OperatorsTable = ({ operators, pagination }: Props) => {
                       <button
                         type="button"
                         onClick={() => handleDelete(operator.id)}
-                        className={clsx(
+                        className={twJoin(
                           linkStyles,
                           "inline-flex items-center justify-center gap-1",
                         )}

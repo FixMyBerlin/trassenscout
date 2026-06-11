@@ -1,7 +1,6 @@
-import { clsx } from "clsx"
 import type { JSX } from "react"
 import { ComponentPropsWithoutRef, PropsWithoutRef } from "react"
-import { twMerge } from "tailwind-merge"
+import { twJoin, twMerge } from "tailwind-merge"
 import { FieldErrors } from "@/src/components/core/components/forms/FieldErrors"
 import { useFieldContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { useFieldDisabled } from "@/src/components/core/components/forms/hooks/useFormHydrated"
@@ -64,7 +63,7 @@ export function NumberField({
           onChange={(e) => field.handleChange(e.target.value)}
           onBlur={field.handleBlur}
           onKeyDown={handleKeyDown}
-          className={clsx(
+          className={twJoin(
             inlineLeadingAddon ? "pl-12" : "",
             "block w-full appearance-none rounded-md border border-gray-200 px-3 py-2 placeholder-gray-400 shadow-xs focus:outline-hidden sm:text-sm",
             hasError

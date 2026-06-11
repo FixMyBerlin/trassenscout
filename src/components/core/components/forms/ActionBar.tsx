@@ -1,5 +1,5 @@
-import { clsx } from "clsx"
 import { ReactNode } from "react"
+import { twJoin } from "tailwind-merge"
 
 type Props = {
   left?: ReactNode
@@ -10,7 +10,7 @@ type Props = {
 export const ActionBar = ({ left, right, className }: Props) => {
   return (
     <div
-      className={clsx(
+      className={twJoin(
         "flex items-center justify-between gap-4 rounded-md bg-gray-100 p-4",
         className,
       )}

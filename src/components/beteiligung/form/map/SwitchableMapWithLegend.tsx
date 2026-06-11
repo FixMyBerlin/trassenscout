@@ -1,6 +1,6 @@
-import clsx from "clsx"
 import { ComponentProps } from "react"
 import { MapProvider } from "react-map-gl/maplibre"
+import { twJoin } from "tailwind-merge"
 import { FieldError } from "@/src/components/beteiligung/form/FieldErrror"
 import { SurveyMapLegend } from "@/src/components/beteiligung/form/map/MapLegend"
 import { SwitchableMap } from "@/src/components/beteiligung/form/map/SwitchableMap"
@@ -20,7 +20,7 @@ export const SwitchableMapWithLegend = ({ mapProps, legendProps, label, descript
 
   return (
     <MapProvider>
-      <div className={clsx("mt-8 mb-12 w-full p-2", hasError && "rounded-sm bg-red-50")}>
+      <div className={twJoin("mt-8 mb-12 w-full p-2", hasError ? "rounded-sm bg-red-50" : "")}>
         <p className={formClasses.fieldLabel}>{label}</p>
         {description && (
           <p className={formClasses.fieldDescription} id={`${field.name}-hint`}>

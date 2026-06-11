@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
 import { Link } from "@/src/components/core/components/links/Link"
 import { shortTitle } from "@/src/components/core/components/text/titles"
@@ -33,7 +33,7 @@ const AdminProjectsListContent = () => {
               </strong>
               <span className="inline-flex items-center gap-2">
                 <span
-                  className={clsx(
+                  className={twJoin(
                     pillShellClasses,
                     "border border-purple-200/70 bg-purple-100/60 text-[0.6875rem]",
                     project.subsectionCount === 0 ? "opacity-60" : "",
@@ -42,7 +42,7 @@ const AdminProjectsListContent = () => {
                   {project.subsectionCount} Abschnitte
                 </span>
                 <span
-                  className={clsx(
+                  className={twJoin(
                     pillShellClasses,
                     "border border-purple-200/70 bg-purple-100/60 text-[0.6875rem]",
                     project.subsubsectionCount === 0 ? "opacity-60" : "",

@@ -1,4 +1,4 @@
-import clsx from "clsx"
+import { twJoin } from "tailwind-merge"
 import { FieldConfig, SurveyPart2 } from "@/src/components/beteiligung/shared/types"
 import { Markdown } from "@/src/components/core/components/Markdown/Markdown"
 import { Prettify } from "@/src/components/core/types"
@@ -36,7 +36,7 @@ const EditableSurveyResponseUserText = ({
     return (
       <div>
         {responseText(response.data, userTextIndices[0]) && (
-          <blockquote className={clsx("p-4", "bg-purple-100")}>
+          <blockquote className={twJoin("p-4", "bg-purple-100")}>
             <h4 className="mb-2 font-semibold">
               {fieldLabel(feedbackQuestions.find((q) => q.name === userTextIndices[0]))}
             </h4>
@@ -45,7 +45,7 @@ const EditableSurveyResponseUserText = ({
         )}
         {responseText(response.data, userTextIndices[1]) && (
           <blockquote
-            className={clsx(
+            className={twJoin(
               "mt-4 p-4",
               responseText(response.data, userTextIndices[0]) &&
                 responseText(response.data, userTextIndices[1])

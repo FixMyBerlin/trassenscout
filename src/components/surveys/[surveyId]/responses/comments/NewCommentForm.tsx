@@ -1,5 +1,5 @@
-import { clsx } from "clsx"
 import dompurify from "dompurify"
+import { twJoin } from "tailwind-merge"
 import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
@@ -33,7 +33,7 @@ export const NewCommentForm = ({ commentLabel, commentHelp, createComment }: Pro
       form={form}
       formError={null}
       submitText={`${commentLabel} hinzufügen`}
-      submitClassName={clsx(primaryButtonClassName, "mt-2 px-3! py-2.5!")}
+      submitClassName={twJoin(primaryButtonClassName, "mt-2 px-3! py-2.5!")}
       submitDisabled={!isHydrated}
       className="space-y-0"
     >

@@ -1,8 +1,8 @@
 import { PlusIcon } from "@heroicons/react/16/solid"
 import { useQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
-import { clsx } from "clsx"
 import { useState } from "react"
+import { twJoin } from "tailwind-merge"
 import { SubsubsectionPanel } from "@/src/components/abschnitte/SubsubsectionPanel"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
@@ -320,7 +320,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
         <IfUserCanEdit>
           <button
             onClick={() => setIsProjectRecordModalOpen(true)}
-            className={clsx(primaryButtonClassName, "mt-5 items-center justify-center gap-1")}
+            className={twJoin(primaryButtonClassName, "mt-5 items-center justify-center gap-1")}
           >
             <PlusIcon className="size-3.5" /> Neuer Protokolleintrag
           </button>

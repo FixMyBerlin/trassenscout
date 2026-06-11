@@ -1,4 +1,4 @@
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 import {
   pinkButtonLinkClassName,
   primaryButtonLinkClassName,
@@ -13,12 +13,12 @@ export const selectLinkStyle = (button: LinkProps["button"], className?: string)
   switch (button) {
     case true:
     case "blue":
-      return clsx(primaryButtonLinkClassName, className)
+      return twJoin(primaryButtonLinkClassName, className)
     case "white":
-      return clsx(secondaryButtonLinkClassName, className)
+      return twJoin(secondaryButtonLinkClassName, className)
     case "pink":
-      return clsx(pinkButtonLinkClassName, className)
+      return twJoin(pinkButtonLinkClassName, className)
     case undefined:
-      return clsx(linkStyles, className)
+      return twJoin(linkStyles, className)
   }
 }

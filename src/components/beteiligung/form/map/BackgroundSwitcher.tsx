@@ -6,8 +6,8 @@ import {
   Transition,
 } from "@headlessui/react"
 import { CheckIcon, ChevronDownIcon } from "@heroicons/react/20/solid"
-import { clsx } from "clsx"
 import { Fragment } from "react"
+import { twJoin } from "tailwind-merge"
 import type { ControlPosition } from "@/src/components/core/components/Map/BackgroundSwitcher/BackgroundSwitcher"
 
 export type LayerType = "vector" | "satellite"
@@ -38,7 +38,7 @@ export const SurveyBackgroundSwitcher = ({
   className,
 }: Props) => {
   return (
-    <div className={clsx(positionClasses[position], className)}>
+    <div className={twJoin(positionClasses[position], className)}>
       <Listbox value={value} onChange={onChange}>
         {({ open }) => (
           <div className="relative mt-1">
@@ -61,7 +61,7 @@ export const SurveyBackgroundSwitcher = ({
                   <ListboxOption
                     key={id}
                     className={() =>
-                      clsx(
+                      twJoin(
                         "text-gray-900",
                         "relative cursor-default py-1 pr-9 pl-3 text-sm select-none",
                       )
@@ -71,7 +71,7 @@ export const SurveyBackgroundSwitcher = ({
                     {({ selected }) => (
                       <>
                         <span
-                          className={clsx(
+                          className={twJoin(
                             selected ? "font-semibold" : "font-normal",
                             "block truncate",
                           )}
@@ -81,7 +81,7 @@ export const SurveyBackgroundSwitcher = ({
 
                         {selected ? (
                           <span
-                            className={clsx("absolute inset-y-0 right-0 flex items-center pr-4")}
+                            className={twJoin("absolute inset-y-0 right-0 flex items-center pr-4")}
                           >
                             <CheckIcon className="size-4" aria-hidden="true" />
                           </span>

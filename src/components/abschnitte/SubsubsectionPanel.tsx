@@ -1,4 +1,4 @@
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 
 type Props = {
   title: string
@@ -19,7 +19,7 @@ export const SubsubsectionPanel = ({
 }: Props) => {
   return (
     <section
-      className={clsx(
+      className={twJoin(
         "flex flex-col rounded-lg border border-gray-200 bg-white p-4 shadow-sm",
         className,
       )}
@@ -31,7 +31,7 @@ export const SubsubsectionPanel = ({
         </div>
       )}
 
-      <div className={clsx("pt-6 pr-1", contentClassName)}>{children}</div>
+      <div className={twJoin("pt-6 pr-1", contentClassName)}>{children}</div>
     </section>
   )
 }

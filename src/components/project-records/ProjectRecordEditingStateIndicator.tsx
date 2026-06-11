@@ -1,12 +1,12 @@
 import { CheckCircleIcon } from "@heroicons/react/24/outline"
-import clsx from "clsx"
+import { twJoin } from "tailwind-merge"
 import { pillShellWithGapClasses } from "@/src/components/core/utils/pillClassNames"
 import { ProjectRecordEditingState } from "@/src/prisma/generated/browser"
 
 function PendingEditingIcon({ className }: { className?: string }) {
   return (
     <span
-      className={clsx(
+      className={twJoin(
         "relative m-0.5 inline-flex size-4 shrink-0 items-center justify-center",
         className,
       )}
@@ -49,7 +49,7 @@ export const ProjectRecordEditingStateIndicator = ({ editingState, variant }: Pr
   const isPending = editingState === ProjectRecordEditingState.PENDING
   return (
     <span
-      className={clsx(
+      className={twJoin(
         pillShellWithGapClasses,
         "text-xs",
         isPending ? "bg-blue-50 text-blue-600" : "bg-gray-50 text-gray-400",

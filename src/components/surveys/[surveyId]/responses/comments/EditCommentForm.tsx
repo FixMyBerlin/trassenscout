@@ -1,7 +1,7 @@
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline"
-import { clsx } from "clsx"
 import dompurify from "dompurify"
 import { useState } from "react"
+import { twJoin } from "tailwind-merge"
 import { FormDirtyStateReporter } from "@/src/components/core/components/forms/FormDirtyStateReporter"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
@@ -71,7 +71,7 @@ export const EditCommentForm = ({ comment, commentLabel, mutateComment }: Props)
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className={clsx("flex items-center gap-2 hover:cursor-pointer", linkStyles)}
+        className={twJoin("flex items-center gap-2 hover:cursor-pointer", linkStyles)}
       >
         <PencilIcon className="size-3.5 shrink-0" />
         <p>bearbeiten</p>
@@ -120,13 +120,13 @@ export const EditCommentForm = ({ comment, commentLabel, mutateComment }: Props)
               }
             }
           }}
-          className={clsx(
+          className={twJoin(
             "mt-4 flex w-full items-end justify-end gap-2 hover:cursor-pointer",
             linkStyles,
           )}
         >
           <p>{commentLabel} löschen</p>
-          <TrashIcon className={clsx(linkStyles, "size-6")} />
+          <TrashIcon className={twJoin(linkStyles, "size-6")} />
         </button>
       </Modal>
     </>

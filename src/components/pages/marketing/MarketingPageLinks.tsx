@@ -1,5 +1,5 @@
 import { GlobeAltIcon } from "@heroicons/react/24/outline"
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 import { linkStyles } from "@/src/components/core/components/links/styles"
 import { Img } from "@/src/components/shared/Img"
 import FMCIcon from "./assets/fmc-icon.svg"
@@ -39,7 +39,7 @@ export const MarketingPageLinks = () => {
             </div>
             <div className="flex flex-auto flex-wrap gap-x-2">
               <dt className="sr-only">Netz-Links</dt>
-              <div className={clsx(linkStyles, "my-auto text-sm")}>
+              <div className={twJoin(linkStyles, "my-auto text-sm")}>
                 <a target="_blank" href={item.href} rel="noreferrer">
                   {item.title}
                 </a>

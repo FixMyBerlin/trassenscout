@@ -1,4 +1,4 @@
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 
 const adminBadgeBase =
   "inline-flex items-center rounded-full px-1.5 py-px text-xs/3.5 font-medium ring-1 ring-inset"
@@ -23,5 +23,5 @@ type Props = {
 }
 
 export const AdminBadge = ({ children, variant = "gray", className }: Props) => (
-  <span className={clsx(adminBadgeBase, adminBadgeVariants[variant], className)}>{children}</span>
+  <span className={twJoin(adminBadgeBase, adminBadgeVariants[variant], className)}>{children}</span>
 )

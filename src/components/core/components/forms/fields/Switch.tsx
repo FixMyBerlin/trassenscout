@@ -1,7 +1,7 @@
 import { Switch as HeadlessSwitch } from "@headlessui/react"
-import { clsx } from "clsx"
 import type { JSX } from "react"
 import { ComponentPropsWithoutRef, PropsWithoutRef } from "react"
+import { twJoin } from "tailwind-merge"
 import { FieldErrors } from "@/src/components/core/components/forms/FieldErrors"
 import { useFieldContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { useFieldDisabled } from "@/src/components/core/components/forms/hooks/useFormHydrated"
@@ -74,7 +74,7 @@ export function Switch<T extends boolean | string | number = boolean>(props: Swi
             field.handleChange(next)
             onChangeCallback?.(next)
           }}
-          className={clsx(
+          className={twJoin(
             "relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full shadow-xs transition-colors disabled:cursor-not-allowed disabled:opacity-50",
             hasError
               ? checked
@@ -90,7 +90,7 @@ export function Switch<T extends boolean | string | number = boolean>(props: Swi
           </label>
           <span
             aria-hidden
-            className={clsx(
+            className={twJoin(
               "pointer-events-none inline-block size-4 rounded-full bg-white shadow-sm transition-transform",
               checked ? "translate-x-6" : "translate-x-1",
             )}

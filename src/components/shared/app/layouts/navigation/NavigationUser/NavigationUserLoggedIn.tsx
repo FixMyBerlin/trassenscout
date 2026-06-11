@@ -1,6 +1,6 @@
 import { Menu, MenuButton, MenuItem, MenuItems, Transition } from "@headlessui/react"
-import { clsx } from "clsx"
 import { Fragment } from "react"
+import { twJoin } from "tailwind-merge"
 import { AdminBox } from "@/src/components/core/components/AdminBox/AdminBox"
 import { Link } from "@/src/components/core/components/links/Link"
 import { linkStyles } from "@/src/components/core/components/links/styles"
@@ -19,8 +19,8 @@ type Props = {
 }
 
 const menuItemLinkStyles = (focus: boolean) =>
-  clsx(
-    focus && "bg-gray-100",
+  twJoin(
+    focus ? "bg-gray-100" : "",
     "block rounded-md px-3 py-2 text-sm text-gray-700 no-underline hover:text-blue-500",
   )
 
@@ -33,9 +33,9 @@ export const NavigationUserLoggedIn = ({ user }: Props) => {
       {({ open }) => (
         <>
           <MenuButton
-            className={clsx(
+            className={twJoin(
               "relative flex max-w-xs cursor-pointer items-center rounded-full bg-blue-500 p-1 hover:bg-blue-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/40",
-              open && "bg-blue-400",
+              open ? "bg-blue-400" : "",
             )}
           >
             <span className="absolute -inset-1.5" />
@@ -74,7 +74,7 @@ export const NavigationUserLoggedIn = ({ user }: Props) => {
                       <p className="font-semibold">Rolle: Admin</p>
                       <button
                         onClick={toggleShowMembershipRoleCheckIndicator}
-                        className={clsx(linkStyles, "text-left leading-snug")}
+                        className={twJoin(linkStyles, "text-left leading-snug")}
                       >
                         {showMembershipRoleCheckIndicator ? "AN" : "AUS"}: Hervorheben, wo Element
                         abhängig von der Editor-Rolle angezeigt werden.

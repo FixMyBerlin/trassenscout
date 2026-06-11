@@ -1,6 +1,6 @@
-import { clsx } from "clsx"
 import "maplibre-gl/dist/maplibre-gl.css"
 import { Fragment } from "react"
+import { twJoin } from "tailwind-merge"
 
 type TLegendItem = {
   label: string
@@ -11,7 +11,7 @@ type TLegendItem = {
 type Props = Record<string, Record<string, TLegendItem>>
 
 const LegendItemShape = ({ legendItem }: { legendItem: TLegendItem }) => {
-  return <span className={clsx("w-5", legendItem.color, legendItem.className)} />
+  return <span className={twJoin("w-5", legendItem.color, legendItem.className)} />
 }
 
 export const SurveyMapLegend = (legend: Props) => {

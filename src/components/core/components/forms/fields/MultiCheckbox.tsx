@@ -1,6 +1,6 @@
-import { clsx } from "clsx"
 import type { JSX } from "react"
 import { ComponentPropsWithoutRef, PropsWithoutRef } from "react"
+import { twJoin } from "tailwind-merge"
 import { useFieldContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { useFieldDisabled } from "@/src/components/core/components/forms/hooks/useFormHydrated"
 import {
@@ -46,7 +46,7 @@ export function MultiCheckbox({
   }
 
   return (
-    <div {...outerProps} className={clsx(outerProps?.className, checkboxRowClassName)}>
+    <div {...outerProps} className={twJoin(outerProps?.className, checkboxRowClassName)}>
       <div className="flex h-5 items-center">
         <input
           aria-describedby={`${field.name}-hint`}

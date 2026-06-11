@@ -1,7 +1,7 @@
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from "@headlessui/react"
 import { useSearch } from "@tanstack/react-router"
-import { clsx } from "clsx"
 import { Fragment, useEffect, useState } from "react"
+import { twJoin } from "tailwind-merge"
 import {
   partcipationLinkStyles,
   primaryColorButtonStylesForLinkElement,
@@ -233,18 +233,18 @@ export function IntroPart1() {
       </SurveyP>
       <details>
         <summary
-          className={clsx(
+          className={twJoin(
             partcipationLinkStyles,
             "mt-8 mb-4 cursor-pointer text-lg font-bold text-black! hover:text-[#C73C35]! hover:decoration-[#C73C35]!",
           )}
         >
           Häufige Fragen
         </summary>
-        <ul className={clsx("mb-8 space-y-4")}>
+        <ul className={twJoin("mb-8 space-y-4")}>
           <li>
             <details>
               <summary
-                className={clsx(
+                className={twJoin(
                   partcipationLinkStyles,
                   "hover:!decoration-[#C73C35 cursor-pointer text-black! hover:text-[#C73C35]!",
                 )}
@@ -263,7 +263,7 @@ export function IntroPart1() {
           <li>
             <details>
               <summary
-                className={clsx(
+                className={twJoin(
                   partcipationLinkStyles,
                   "hover:!decoration-[#C73C35 cursor-pointer text-black! hover:text-[#C73C35]!",
                 )}
@@ -281,7 +281,7 @@ export function IntroPart1() {
           <li>
             <details>
               <summary
-                className={clsx(
+                className={twJoin(
                   partcipationLinkStyles,
                   "hover:!decoration-[#C73C35 cursor-pointer text-black! hover:text-[#C73C35]!",
                 )}
@@ -301,7 +301,7 @@ export function IntroPart1() {
           <li>
             <details>
               <summary
-                className={clsx(
+                className={twJoin(
                   partcipationLinkStyles,
                   "hover:!decoration-[#C73C35 cursor-pointer text-black! hover:text-[#C73C35]!",
                 )}
@@ -327,7 +327,7 @@ export function IntroPart1() {
           <li>
             <details>
               <summary
-                className={clsx(
+                className={twJoin(
                   partcipationLinkStyles,
                   "hover:!decoration-[#C73C35 cursor-pointer text-black! hover:text-[#C73C35]!",
                 )}
@@ -343,7 +343,7 @@ export function IntroPart1() {
           <li>
             <details>
               <summary
-                className={clsx(
+                className={twJoin(
                   partcipationLinkStyles,
                   "hover:!decoration-[#C73C35 cursor-pointer text-black! hover:text-[#C73C35]!",
                 )}
@@ -360,7 +360,7 @@ export function IntroPart1() {
           <li>
             <details>
               <summary
-                className={clsx(
+                className={twJoin(
                   partcipationLinkStyles,
                   "hover:!decoration-[#C73C35 cursor-pointer text-black! hover:text-[#C73C35]!",
                 )}
@@ -376,7 +376,7 @@ export function IntroPart1() {
           <li>
             <details>
               <summary
-                className={clsx(
+                className={twJoin(
                   partcipationLinkStyles,
                   "hover:!decoration-[#C73C35 cursor-pointer text-black! hover:text-[#C73C35]!",
                 )}
@@ -390,7 +390,7 @@ export function IntroPart1() {
           <li>
             <details>
               <summary
-                className={clsx(
+                className={twJoin(
                   partcipationLinkStyles,
                   "hover:!decoration-[#C73C35 cursor-pointer text-black! hover:text-[#C73C35]!",
                 )}
@@ -404,7 +404,7 @@ export function IntroPart1() {
           <li>
             <details>
               <summary
-                className={clsx(
+                className={twJoin(
                   partcipationLinkStyles,
                   "hover:!decoration-[#C73C35 cursor-pointer text-black! hover:text-[#C73C35]!",
                 )}

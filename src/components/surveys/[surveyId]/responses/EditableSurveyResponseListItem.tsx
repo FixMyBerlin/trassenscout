@@ -1,8 +1,8 @@
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/16/solid"
 import { useMutation } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
-import clsx from "clsx"
 import { useEffect } from "react"
+import { twJoin } from "tailwind-merge"
 import { backendConfig as defaultBackendConfig } from "@/src/components/beteiligung/shared/backend-types"
 import { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
@@ -104,7 +104,7 @@ const EditableSurveyResponseListItem = ({
   return (
     <article data-open={open} className="bg-white">
       <button
-        className={clsx(
+        className={twJoin(
           "group w-full py-4 pr-4 text-left text-sm text-gray-900 hover:bg-gray-50 focus:outline-hidden focus-visible:ring focus-visible:ring-gray-500/75 sm:pr-6",
           open ? "bg-gray-50" : "border-b border-gray-300",
         )}
@@ -125,9 +125,9 @@ const EditableSurveyResponseListItem = ({
               status={response.status}
             />
             <div
-              className={clsx(
+              className={twJoin(
                 "shrink-0 rounded-full bg-gray-300 px-4 py-2 text-sm",
-                operatorSlugWitFallback !== "k.A." && "uppercase",
+                operatorSlugWitFallback !== "k.A." ? "uppercase" : "",
               )}
             >
               <div>{operatorSlugWitFallback}</div>
@@ -150,9 +150,9 @@ const EditableSurveyResponseListItem = ({
 
       {open && (
         <div
-          className={clsx(
+          className={twJoin(
             "flex flex-col gap-6 overflow-clip p-6",
-            open && "border-b border-gray-300",
+            open ? "border-b border-gray-300" : "",
           )}
         >
           <EditableSurveyResponseMapAndStaticData

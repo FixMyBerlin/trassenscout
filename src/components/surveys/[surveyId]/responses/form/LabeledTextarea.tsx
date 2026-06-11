@@ -1,5 +1,5 @@
-import { clsx } from "clsx"
 import { type JSX, type PropsWithoutRef } from "react"
+import { twJoin } from "tailwind-merge"
 
 interface LabeledTextareaProps extends PropsWithoutRef<JSX.IntrinsicElements["textarea"]> {
   help?: string
@@ -17,7 +17,7 @@ export const LabeledTextarea = ({
     <>
       <textarea
         {...props}
-        className={clsx(
+        className={twJoin(
           classNameOverwrite || className,
           "block h-24 w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-xs focus:border-blue-500 focus:ring-blue-500 focus:outline-hidden sm:text-sm",
         )}

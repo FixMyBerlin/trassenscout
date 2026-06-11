@@ -1,5 +1,5 @@
 import { SparklesIcon } from "@heroicons/react/16/solid"
-import clsx from "clsx"
+import { twJoin } from "tailwind-merge"
 import { getFullname } from "@/src/components/core/users/getFullname"
 import { pillShellClasses } from "@/src/components/core/utils/pillClassNames"
 import { ProjectRecordType } from "@/src/prisma/generated/browser"
@@ -13,7 +13,7 @@ export const ProjectRecordTypePill = ({
   author?: ProjectRecord["author"]
 }) => (
   <span
-    className={clsx(
+    className={twJoin(
       pillShellClasses,
       "border border-gray-200",
       "text-gray-500",

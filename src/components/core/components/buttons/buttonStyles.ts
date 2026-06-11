@@ -1,4 +1,4 @@
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 
 /** Compact action button base — Tailwind UI sizing, icon-ready via gap-x-1.5. */
 export const compactButtonBase =
@@ -19,20 +19,24 @@ const secondaryColorsForButton =
 const compactPadding = "px-2.5 py-1.5"
 
 /** Primary action — link element (`<a>`). */
-export const primaryButtonLinkClassName = clsx(compactButtonBase, compactPadding, primaryColors)
+export const primaryButtonLinkClassName = twJoin(compactButtonBase, compactPadding, primaryColors)
 
 /** Primary action — button element (`<button>`). */
-export const primaryButtonClassName = clsx(
+export const primaryButtonClassName = twJoin(
   compactButtonBase,
   compactPadding,
   primaryColorsForButton,
 )
 
 /** Secondary action — link element (`<a>`). */
-export const secondaryButtonLinkClassName = clsx(compactButtonBase, compactPadding, secondaryColors)
+export const secondaryButtonLinkClassName = twJoin(
+  compactButtonBase,
+  compactPadding,
+  secondaryColors,
+)
 
 /** Secondary action — button element (`<button>`). */
-export const secondaryButtonClassName = clsx(
+export const secondaryButtonClassName = twJoin(
   compactButtonBase,
   compactPadding,
   secondaryColorsForButton,
@@ -42,4 +46,4 @@ const pinkColors =
   "bg-pink-500 text-white hover:bg-pink-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500 active:bg-pink-500"
 
 /** Accent action — link element (`<a>`). */
-export const pinkButtonLinkClassName = clsx(compactButtonBase, compactPadding, pinkColors)
+export const pinkButtonLinkClassName = twJoin(compactButtonBase, compactPadding, pinkColors)

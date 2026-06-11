@@ -1,5 +1,5 @@
 import { getRouteApi } from "@tanstack/react-router"
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { ButtonWrapper } from "@/src/components/core/components/links/ButtonWrapper"
 import { Link, linkIcons } from "@/src/components/core/components/links/Link"
@@ -84,7 +84,7 @@ export const SubsubsectionTasksTable = ({ subsubsectionTasks }: Props) => {
                         <button
                           type="button"
                           onClick={() => handleDelete(Task.id)}
-                          className={clsx(
+                          className={twJoin(
                             linkStyles,
                             "inline-flex items-center justify-center gap-1",
                           )}

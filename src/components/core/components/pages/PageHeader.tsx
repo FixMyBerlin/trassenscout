@@ -1,4 +1,4 @@
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 
 type Props = {
   breadcrumb?: React.ReactNode
@@ -33,18 +33,18 @@ export const PageHeader = ({
   const hasActions = Boolean(action)
 
   return (
-    <header className={clsx("mb-12", className)}>
-      <div className={clsx(hasActions && "lg:flex lg:items-center lg:justify-between")}>
+    <header className={twJoin("mb-12", className)}>
+      <div className={twJoin(hasActions ? "lg:flex lg:items-center lg:justify-between" : "")}>
         <div className="min-w-0 flex-1">
           {breadcrumb}
 
           {headline ? (
-            <div className={clsx("w-fit max-w-full", breadcrumb ? "mt-2" : undefined)}>
+            <div className={twJoin("w-fit max-w-full", breadcrumb ? "mt-2" : undefined)}>
               {headline}
             </div>
           ) : title ? (
             <h1
-              className={clsx(
+              className={twJoin(
                 "text-2xl/7 font-bold text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight",
                 breadcrumb ? "mt-2" : undefined,
               )}
@@ -53,7 +53,7 @@ export const PageHeader = ({
             </h1>
           ) : (
             hasLeading && (
-              <div className={clsx("flex flex-col gap-1", hasHeadline ? "mt-1" : "mt-2")}>
+              <div className={twJoin("flex flex-col gap-1", hasHeadline ? "mt-1" : "mt-2")}>
                 {subtitle
                   ? renderLeadingLine(subtitle)
                   : description

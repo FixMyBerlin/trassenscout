@@ -3,9 +3,9 @@ import {
   MagnifyingGlassMinusIcon,
   MagnifyingGlassPlusIcon,
 } from "@heroicons/react/24/outline"
-import { clsx } from "clsx"
 import { useEffect, useRef, useState } from "react"
 import { Document, Page, pdfjs } from "react-pdf"
+import { twJoin } from "tailwind-merge"
 import { Link } from "@/src/components/core/components/links/Link"
 import { linkStyles } from "@/src/components/core/components/links/styles"
 import { getPdfWorkerSrc } from "@/src/components/core/pdf/getPdfWorkerSrc"
@@ -143,7 +143,7 @@ export const UploadPdfViewer = ({
   const isFullscreen = layout === "fullscreen"
 
   return (
-    <div className={clsx(isFullscreen ? "flex h-full flex-col" : "h-full space-y-2")}>
+    <div className={twJoin(isFullscreen ? "flex h-full flex-col" : "h-full space-y-2")}>
       {isFullscreen ? (
         <div className="flex shrink-0 flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-gray-300 bg-gray-50 px-4 py-3">
           {start}
@@ -155,7 +155,7 @@ export const UploadPdfViewer = ({
 
       <div
         ref={containerRef}
-        className={clsx(
+        className={twJoin(
           "w-full overflow-auto bg-gray-50",
           isFullscreen ? "min-h-0 flex-1" : "h-full rounded border border-blue-500",
         )}

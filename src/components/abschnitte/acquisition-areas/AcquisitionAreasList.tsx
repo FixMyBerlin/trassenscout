@@ -1,4 +1,4 @@
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 import { linkStyles } from "@/src/components/core/components/links/styles"
 import type { PotentialAcquisitionArea } from "./potentialAcquisitionAreaTypes"
 
@@ -40,7 +40,7 @@ export function AcquisitionAreasList({
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
         <button
           type="button"
-          className={clsx(linkStyles, "font-medium hover:cursor-pointer")}
+          className={twJoin(linkStyles, "font-medium hover:cursor-pointer")}
           onClick={() => {
             toggleAll(false)
           }}
@@ -50,7 +50,7 @@ export function AcquisitionAreasList({
         <span className="text-gray-300">|</span>
         <button
           type="button"
-          className={clsx(linkStyles, "font-medium hover:cursor-pointer")}
+          className={twJoin(linkStyles, "font-medium hover:cursor-pointer")}
           onClick={() => {
             toggleAll(true)
           }}
@@ -65,7 +65,7 @@ export function AcquisitionAreasList({
         {potentialAcquisitionAreas.map((area) => (
           <li
             key={area.id}
-            className={clsx("px-3 py-3", area.selected ? "bg-blue-50" : "bg-transparent")}
+            className={twJoin("px-3 py-3", area.selected ? "bg-blue-50" : "bg-transparent")}
           >
             <div className="flex break-inside-avoid items-start">
               <div className="flex h-5 items-center">
@@ -82,7 +82,7 @@ export function AcquisitionAreasList({
               </div>
               <label
                 htmlFor={`acquisition-area-${area.id}`}
-                className={clsx(
+                className={twJoin(
                   "block min-w-0 flex-1 cursor-pointer pl-3 text-base",
                   area.selected ? "text-gray-900" : "text-gray-400",
                 )}
@@ -94,7 +94,7 @@ export function AcquisitionAreasList({
                       {area.alkisParcelId}
                     </span>
                     <p
-                      className={clsx(
+                      className={twJoin(
                         "leading-tight",
                         area.selected ? "text-gray-600" : "text-gray-400",
                       )}

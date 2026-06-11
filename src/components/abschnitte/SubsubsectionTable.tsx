@@ -1,5 +1,5 @@
 import { getRouteApi, useNavigate } from "@tanstack/react-router"
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 import { Link } from "@/src/components/core/components/links/Link"
 import { LegendIcon } from "@/src/components/core/components/Map/Icons/LegendIcon"
 import { SubsubsectionIcon } from "@/src/components/core/components/Map/Icons/SubsubsectionIcon"
@@ -50,7 +50,7 @@ export const SubsubsectionTable = ({ subsubsections, compact }: Props) => {
               </th>
               <th
                 scope="col"
-                className={clsx(
+                className={twJoin(
                   compact ? "hidden" : "",
                   "px-3 py-3.5 text-left text-sm font-semibold text-gray-900",
                 )}
@@ -59,7 +59,7 @@ export const SubsubsectionTable = ({ subsubsections, compact }: Props) => {
               </th>
               <th
                 scope="col"
-                className={clsx(
+                className={twJoin(
                   compact ? "hidden" : "",
                   "px-3 py-3.5 text-left text-sm font-semibold text-gray-900",
                 )}
@@ -68,7 +68,7 @@ export const SubsubsectionTable = ({ subsubsections, compact }: Props) => {
               </th>
               <th
                 scope="col"
-                className={clsx(
+                className={twJoin(
                   compact ? "hidden" : "",
                   "px-3 py-3.5 text-left text-sm font-semibold text-gray-900",
                 )}
@@ -81,7 +81,7 @@ export const SubsubsectionTable = ({ subsubsections, compact }: Props) => {
             {subsubsections.map((subsubsection) => (
               <tr
                 key={subsubsection.id}
-                className={clsx(
+                className={twJoin(
                   subsubsection.slug === subsubsectionSlug
                     ? "bg-gray-100"
                     : "group cursor-pointer hover:bg-gray-50",
@@ -116,7 +116,7 @@ export const SubsubsectionTable = ({ subsubsections, compact }: Props) => {
                   </div>
                 </td>
                 <td
-                  className={clsx(
+                  className={twJoin(
                     compact ? "hidden" : "",
                     "py-4 pr-3 pl-4 text-sm font-medium text-gray-900",
                   )}
@@ -124,7 +124,7 @@ export const SubsubsectionTable = ({ subsubsections, compact }: Props) => {
                   {formattedLength(subsubsection.lengthM)}
                 </td>
                 <td
-                  className={clsx(
+                  className={twJoin(
                     compact ? "hidden" : "",
                     "py-4 pr-3 pl-4 text-sm font-medium text-gray-900",
                   )}
@@ -132,7 +132,7 @@ export const SubsubsectionTable = ({ subsubsections, compact }: Props) => {
                   {formattedEuro(subsubsection.costEstimate)}
                 </td>
                 <td
-                  className={clsx(
+                  className={twJoin(
                     compact ? "hidden" : "",
                     "py-4 pr-3 pl-4 text-sm font-medium text-gray-900",
                   )}

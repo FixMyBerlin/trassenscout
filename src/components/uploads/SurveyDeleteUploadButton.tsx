@@ -1,6 +1,6 @@
 import { TrashIcon } from "@heroicons/react/24/outline"
 import { useMutation } from "@tanstack/react-query"
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 import { linkIcons } from "@/src/components/core/components/links/Link"
 import { linkStyles } from "@/src/components/core/components/links/styles"
 import { frenchQuote } from "@/src/components/core/components/text/quote"
@@ -63,7 +63,7 @@ export const SurveyDeleteUploadButton = ({
       type="button"
       onClick={handleDelete}
       disabled={disabled}
-      className={clsx(
+      className={twJoin(
         linkStyles,
         "cursor-pointer disabled:cursor-not-allowed disabled:opacity-50",
         className,

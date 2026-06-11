@@ -1,4 +1,4 @@
-import { clsx } from "clsx"
+import { twJoin } from "tailwind-merge"
 import { TNewsItem } from "./newsItems.const"
 
 function formatDate(date: string) {
@@ -39,7 +39,7 @@ function ChevronRightIcon(props: any) {
 
 function Card({ as: Component = "div", className, children }: any) {
   return (
-    <Component className={clsx(className, "group relative flex flex-col items-start")}>
+    <Component className={twJoin(className, "group relative flex flex-col items-start")}>
       {children}
     </Component>
   )
@@ -90,10 +90,10 @@ Card.Eyebrow = function CardEyebrow({
 }: any) {
   return (
     <Component
-      className={clsx(
+      className={twJoin(
         className,
         "relative z-10 order-first mb-3 flex items-center text-sm text-gray-400",
-        decorate && "pl-3.5",
+        decorate ? "pl-3.5" : "",
       )}
       {...props}
     >

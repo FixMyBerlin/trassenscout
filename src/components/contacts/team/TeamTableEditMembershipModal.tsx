@@ -1,5 +1,5 @@
-import { clsx } from "clsx"
 import { useState } from "react"
+import { twJoin } from "tailwind-merge"
 import { linkIcons } from "@/src/components/core/components/links/Link"
 import { linkStyles } from "@/src/components/core/components/links/styles"
 import { Modal } from "@/src/components/core/components/Modal"
@@ -20,7 +20,10 @@ export const TeamTableEditMembershipModal = ({ editUser }: Props) => {
 
   return (
     <IfUserCanEdit>
-      <button onClick={() => setOpen(true)} className={clsx("flex items-center gap-1", linkStyles)}>
+      <button
+        onClick={() => setOpen(true)}
+        className={twJoin("flex items-center gap-1", linkStyles)}
+      >
         {linkIcons["edit"]}
         Ändern
       </button>
