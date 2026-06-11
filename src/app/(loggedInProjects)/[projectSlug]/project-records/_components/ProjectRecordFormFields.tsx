@@ -132,7 +132,7 @@ export const ProjectRecordFormFields = ({
     )})`,
   }))
 
-  const subsubsectionLabel = "Einträge"
+  const subsubsectionLabel = "Maßnahmen"
   const showSubsubsectionField = !(formMode === "create" && relationContext === "acquisitionArea")
   const showAcquisitionAreaField =
     landAcquisitionModuleEnabled && !(formMode === "create" && relationContext === "subsubsection")

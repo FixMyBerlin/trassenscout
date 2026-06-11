@@ -30,7 +30,7 @@ export const SubsubsectionStatussTable = ({ subsubsectionStatuss, fromPath }: Pr
   const [deleteSubsubsectionStatusMutation] = useMutation(deleteSubsubsectionStatus)
 
   const handleDelete = async (subsubsectionStatusId: number) => {
-    if (window.confirm(`Den Eintrag mit ID ${subsubsectionStatusId} unwiderruflich löschen?`)) {
+    if (window.confirm(`Die Maßnahme mit ID ${subsubsectionStatusId} unwiderruflich löschen?`)) {
       try {
         await deleteSubsubsectionStatusMutation({ projectSlug, id: subsubsectionStatusId })
         router.push(`/${projectSlug}/subsubsection-status` as Route)
@@ -62,7 +62,7 @@ export const SubsubsectionStatussTable = ({ subsubsectionStatuss, fromPath }: Pr
                 Darstellung
               </th>
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                Anzahl Einträge in dieser Phase
+                Anzahl Maßnahmen in dieser Phase
               </th>
               <th
                 scope="col"
@@ -96,7 +96,7 @@ export const SubsubsectionStatussTable = ({ subsubsectionStatuss, fromPath }: Pr
                   </td>
                   <td className="px-3 py-4 text-sm text-gray-500">
                     {status.subsubsectionCount}{" "}
-                    {status.subsubsectionCount > 1 ? "Einträge" : "Eintrag"}
+                    {status.subsubsectionCount > 1 ? "Maßnahmen" : "Maßnahme "}
                   </td>
                   <td className="py-4 text-sm font-medium whitespace-nowrap sm:pr-6">
                     <IfUserCanEdit>

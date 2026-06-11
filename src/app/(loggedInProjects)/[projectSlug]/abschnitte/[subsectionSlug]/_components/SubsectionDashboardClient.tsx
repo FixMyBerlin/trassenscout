@@ -58,8 +58,8 @@ export const SubsectionDashboardClient = () => {
     <>
       <Breadcrumb />
       {subsubsectionsHasMore && (
-        <Notice title="Einträge" type="warn">
-          Es werden nur {subsubsections.length} von {subsubsectionsCount} Einträge auf der Karte
+        <Notice title="Maßnahmen" type="warn">
+          Es werden nur {subsubsections.length} von {subsubsectionsCount} Maßnahmen auf der Karte
           angezeigt. Bitte kontaktieren Sie den Support.
         </Notice>
       )}

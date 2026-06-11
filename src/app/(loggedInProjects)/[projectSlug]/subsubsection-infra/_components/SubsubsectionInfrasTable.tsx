@@ -30,7 +30,7 @@ export const SubsubsectionInfrasTable = ({ subsubsectionInfras, fromPath }: Prop
   const [deleteSubsubsectionInfraMutation] = useMutation(deleteSubsubsectionInfra)
 
   const handleDelete = async (subsubsectionInfraId: number) => {
-    if (window.confirm(`Den Eintrag mit ID ${subsubsectionInfraId} unwiderruflich löschen?`)) {
+    if (window.confirm(`Die Maßnahme mit ID ${subsubsectionInfraId} unwiderruflich löschen?`)) {
       try {
         await deleteSubsubsectionInfraMutation({ projectSlug, id: subsubsectionInfraId })
         router.push(`/${projectSlug}/subsubsection-infra` as Route)
@@ -59,7 +59,7 @@ export const SubsubsectionInfrasTable = ({ subsubsectionInfras, fromPath }: Prop
                 Titel
               </th>
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                Anzahl Einträge mit dieser Führungsform
+                Anzahl Maßnahmen mit dieser Führungsform
               </th>
               <th
                 scope="col"
@@ -81,7 +81,7 @@ export const SubsubsectionInfrasTable = ({ subsubsectionInfras, fromPath }: Prop
                   </td>
                   <td className="px-3 py-4 text-sm text-gray-500">
                     {Infra.subsubsectionCount}{" "}
-                    {Infra.subsubsectionCount > 1 ? "Einträge" : "Eintrag"}
+                    {Infra.subsubsectionCount > 1 ? "Maßnahmen" : "Maßnahme "}
                   </td>
                   <td className="py-4 text-sm font-medium whitespace-nowrap sm:pr-6">
                     <IfUserCanEdit>

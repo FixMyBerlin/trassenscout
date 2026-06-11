@@ -47,7 +47,7 @@ export const SubsectionTable = ({ subsections, createButton = true }: Props) => 
                 Status
               </th>
               <th scope="col" className={tableHeadClasses}>
-                Einträge
+                Maßnahmen
               </th>
               <th scope="col" className={tableHeadClasses}>
                 Fertigstellung
@@ -115,7 +115,7 @@ export const SubsectionTable = ({ subsections, createButton = true }: Props) => 
             </Link>
             {hasAnySubsubsections && (
               <Link button="white" icon="download" href={`/api/${projectSlug}/subsections/export`}>
-                Alle Einträge herunterladen (CSV)
+                Alle Maßnahmen herunterladen (CSV)
               </Link>
             )}
           </div>

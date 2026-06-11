@@ -25,7 +25,7 @@ const adminPages = [
   {
     path: "/admin/logEntries",
     title: /LogEntries/,
-    visibleText: "Maximal 250 Einträge.",
+    visibleText: "Maximal 250 Maßnahmen.",
   },
 ] as const
 

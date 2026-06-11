@@ -43,10 +43,10 @@ export const SubsubsectionTable = ({ subsubsections, compact }: Props) => {
                 scope="col"
                 className="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-6"
               >
-                Einträge
+                Maßnahmen
               </th>
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                Eintragstyp
+                Maßnahmentyp
               </th>
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                 <span className="sr-only">Geometrietyp</span>
@@ -149,7 +149,7 @@ export const SubsubsectionTable = ({ subsubsections, compact }: Props) => {
         </table>
         {!subsubsections.length && (
           <div className="border-t border-gray-200 px-3 py-5">
-            <ZeroCase visible={subsubsections.length} name="Einträge" />
+            <ZeroCase visible={subsubsections.length} name="Maßnahmen" />
           </div>
         )}
       </TableWrapper>
@@ -161,7 +161,7 @@ export const SubsubsectionTable = ({ subsubsections, compact }: Props) => {
             icon="plus"
             href={subsubsectionNewRoute(projectSlug, subsectionSlug!)}
           >
-            Neuer Eintrag
+            Neue Maßnahme
           </Link>
           {subsubsections.length > 0 && (
             <Link
@@ -169,7 +169,7 @@ export const SubsubsectionTable = ({ subsubsections, compact }: Props) => {
               icon="download"
               href={`/api/${projectSlug}/subsections/${subsectionSlug}/subsubsections/export`}
             >
-              Einträge herunterladen (CSV)
+              Maßnahmen herunterladen (CSV)
             </Link>
           )}
         </IfUserCanEdit>

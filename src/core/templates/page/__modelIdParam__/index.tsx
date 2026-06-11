@@ -21,7 +21,7 @@ export const __ModelName__ = () => {
   const [__modelName__] = useQuery(get__ModelName__, { id: __modelId__ })
 
   const handleDelete = async () => {
-    if (window.confirm(`Den Eintrag mit ID ${__modelName__.id} unwiderruflich löschen?`)) {
+    if (window.confirm(`Die Maßnahme mit ID ${__modelName__.id} unwiderruflich löschen?`)) {
       try {
         await delete__ModelName__Mutation({ id: __modelName__.id })
       } catch (error) {

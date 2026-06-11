@@ -34,7 +34,7 @@ export default async function ShowContactPage({ params: { projectSlug, contactId
           className="mb-10"
           left={
             <Link href={`/${projectSlug}/contacts/${contactId}/edit` as Route} button>
-              Eintrag bearbeiten
+              Maßnahme bearbeiten
             </Link>
           }
           right={

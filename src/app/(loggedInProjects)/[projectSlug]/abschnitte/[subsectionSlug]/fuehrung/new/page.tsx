@@ -11,7 +11,7 @@ export async function generateMetadata({
   params: { projectSlug: string; subsectionSlug: string }
 }) {
   return {
-    title: seoNewTitle("Eintrag"),
+    title: seoNewTitle("Maßnahme "),
     robots: "noindex",
   }
 }
@@ -27,7 +27,7 @@ export default async function NewSubsubsectionPage({
 
   return (
     <>
-      <PageHeader title="Neuen Eintrag hinzufügen" subtitle={subsection.slug} className="mt-12" />
+      <PageHeader title="Neue Maßnahme  hinzufügen" subtitle={subsection.slug} className="mt-12" />
       <NewSubsubsectionClient initialSubsection={subsection} />
     </>
   )

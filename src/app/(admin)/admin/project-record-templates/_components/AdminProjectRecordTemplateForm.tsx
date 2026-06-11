@@ -103,7 +103,7 @@ export const AdminProjectRecordTemplateForm = (props: Props) => {
   return (
     <Form {...props} schema={ProjectRecordTemplateFormSchema}>
       <LabeledTextField type="text" name="templateTitle" label="Titel der Vorlage" />
-      <LabeledTextField type="text" name="entryTitle" label="Titel im Eintrag" />
+      <LabeledTextField type="text" name="entryTitle" label="Titel in der Maßnahme " />
       <LabeledTextareaField name="body" label="Notizen (Markdown)" optional rows={12} />
       <ProjectAndTopicFields />
       <LabeledTextareaField name="purpose" label="Verwendungszweck" optional rows={5} />
