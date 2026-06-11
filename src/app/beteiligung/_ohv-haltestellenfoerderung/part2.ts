@@ -52,8 +52,8 @@ Bitte beachten Sie: Die Maßnahmenmeldung über dieses Formular stellt noch kein
 Voraussetzung für eine Förderung ist die nachvollziehbare Begründung des Bedarfs, eine Einordnung in kommunale oder regionale Planungen sowie die Einhaltung technischer und qualitativer Standards.
 
 Alle Städte, Gemeinden und Ämter des Landkreises Oberhavel sowie öffentlich oder privatrechtlich organisierte Verkehrsunternehmen des ÖPNV, soweit sie gemeinwirtschaftliche Leistungen oder förderfähige Verkehrsleistungen im Landkreises Oberhavel erbringen, können Maßnahmenvorschläge zu Bau-, Ausbau- und Modernisierungsvorhaben folgender Maßnahmenbereiche einreichen:
-- Zentrale Omnibusbahnhöfe (ZOB);
 - Haltestelleneinrichtungen;
+- Zentrale Omnibusbahnhöfe (ZOB);
 - Buswendeschleifen / Bahnhofsvorplätze als Verknüpfungs- und Umsteigeanlagen unterschiedlicher Verkehrsträger (sofern sie nicht bereits im Zusammenhang mit Straßenbaumaßnahmen gefördert werden);
 - Umsteigeparkplätze ausgenommen Parkhäuser (P&R-, B&R-Anlagen);
 - Beschleunigungsmaßnahmen für den ÖPNV,
@@ -144,8 +144,8 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           props: {
             label: "Bitte wählen Sie den Gegenstand der Förderung aus.",
             options: [
-              { key: "zob", label: "Zentrale Omnibusbahnhöfe (ZOB)" },
               { key: "haltestelleneinrichtungen", label: "Haltestelleneinrichtungen" },
+              { key: "zob", label: "Zentrale Omnibusbahnhöfe (ZOB)" },
               {
                 key: "buswendeschleifen",
                 label: "Verknüpfungs- und Umsteigeanlagen",
