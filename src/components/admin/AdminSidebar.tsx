@@ -171,10 +171,26 @@ function AdminNavItemRow({
   if (!item.link) return null
 
   return (
-    <Link className={navItemLinkClass} {...adminNavLinkOptions(item.link)}>
+    <Link
+      className={navItemLinkClass}
+      {...adminNavLinkOptions(item.link)}
+      preload={item.external ? false : undefined}
+      target={item.external ? "_blank" : undefined}
+      rel={item.external ? "noopener noreferrer" : undefined}
+    >
       {Icon && <Icon aria-hidden="true" className={navIconClass} />}
-      {item.name}
-      <NavCountBadge count={count} />
+      <span className="truncate">{item.name}</span>
+      {item.external ? (
+        <>
+          <ArrowTopRightOnSquareIcon
+            aria-hidden
+            className="ml-auto size-3.5 shrink-0 text-purple-300 group-hover:text-white"
+          />
+          <span className="sr-only"> (neues Fenster)</span>
+        </>
+      ) : (
+        <NavCountBadge count={count} />
+      )}
     </Link>
   )
 }
@@ -188,9 +204,9 @@ export function AdminSidebar() {
   return (
     <div className="relative flex w-72 shrink-0 flex-col gap-y-5 overflow-y-auto bg-purple-700 px-6 pb-20">
       <div className="flex h-16 shrink-0 items-center">
-        <Link to="/admin" className="flex items-end">
+        <div className="flex items-end">
           <Img src={svgLogoTrassenscoutAdmin} alt="Trassenscout" height={30} width={84} />
-        </Link>
+        </div>
       </div>
       <nav className="flex flex-1 flex-col pb-6">
         <ul role="list" className="flex flex-1 flex-col gap-y-7">

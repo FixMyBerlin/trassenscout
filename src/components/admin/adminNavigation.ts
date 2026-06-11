@@ -35,6 +35,8 @@ export type AdminNavChild = {
 export type AdminNavItem = {
   name: string
   link?: AdminNavLink
+  /** Opens outside the admin shell in a new tab. */
+  external?: true
   icon?: HeroIcon
   countKey?: AdminNavCountKey
   children?: AdminNavChild[]
@@ -151,7 +153,7 @@ export function buildAdminProjectNavigation(projectSlug: string) {
 
 export function buildAdminNavigation() {
   return [
-    { name: "Dashboard", link: { to: "/admin", activeOptions: { exact: true } }, icon: HomeIcon },
+    { name: "Dashboard", link: { to: "/dashboard" }, icon: HomeIcon, external: true },
     {
       name: "Inbox",
       icon: InboxIcon,
