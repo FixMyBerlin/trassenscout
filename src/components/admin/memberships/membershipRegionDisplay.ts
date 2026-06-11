@@ -5,7 +5,7 @@ import {
   type MembershipAccessLevel,
 } from "@/src/components/admin/memberships/membershipAccessUtils"
 import { roleTranslation } from "@/src/components/core/users/roleTranslation.const"
-import { MembershipRoleEnum } from "@/src/prisma/generated/client"
+import { MembershipRoleEnum } from "@/src/prisma/generated/browser"
 
 type MembershipRegionIcon = typeof XMarkIcon
 

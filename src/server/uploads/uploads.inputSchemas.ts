@@ -1,5 +1,5 @@
 import { z } from "zod"
-import type { Prisma } from "@/src/prisma/generated/client"
+import type { Prisma } from "@/src/prisma/generated/browser"
 import { ProjectSlugRequiredSchema } from "@/src/shared/authorization/projectSlugSchema"
 import { UploadSchema } from "@/src/shared/uploads/schemas"
 

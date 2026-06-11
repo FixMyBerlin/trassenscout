@@ -3,7 +3,7 @@ import {
   ProjectRecordEditingState,
   ProjectRecordReviewState,
   ProjectRecordType,
-} from "@/src/prisma/generated/client"
+} from "@/src/prisma/generated/browser"
 import { extractProjectRecordFromEmail } from "@/src/server/ai/extractProjectRecordFromEmail.server"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import db from "@/src/server/db.server"

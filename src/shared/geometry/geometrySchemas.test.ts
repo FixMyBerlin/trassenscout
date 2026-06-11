@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest"
-import { GeometryTypeEnum } from "@/src/prisma/generated/client"
+import { GeometryTypeEnum } from "@/src/prisma/generated/browser"
 import { SupportedGeoJsonGeometrySchema } from "@/src/shared/geometry/geojsonSchemas"
 import {
   GeometryWithTypeSchema,

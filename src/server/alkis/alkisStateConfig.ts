@@ -2,7 +2,7 @@
  * ALKIS state configuration (types + data + helpers). Narrative docs: `./README.md`.
  */
 
-import { StateKeyEnum } from "@/src/prisma/generated/client"
+import { StateKeyEnum } from "@/src/prisma/generated/browser"
 import { alkisStateConfig } from "./alkisStateConfig.data"
 
 export { alkisStateConfig }

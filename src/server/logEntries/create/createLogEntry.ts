@@ -1,5 +1,5 @@
 import { diff } from "datum-diff"
-import { LogLevelActionEnum } from "@/src/prisma/generated/client"
+import { LogLevelActionEnum } from "@/src/prisma/generated/browser"
 import db from "@/src/server/db.server"
 import { getProjectIdBySlug } from "../../projects/queries/getProjectIdBySlug.server"
 

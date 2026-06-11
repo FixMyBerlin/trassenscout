@@ -1,6 +1,6 @@
 import type { LineString, MultiLineString, MultiPoint, MultiPolygon, Point, Polygon } from "geojson"
 import { z } from "zod"
-import { GeometryTypeEnum } from "@/src/prisma/generated/client"
+import { GeometryTypeEnum } from "@/src/prisma/generated/browser"
 import {
   LineLikeGeometrySchema,
   PointLikeGeometrySchema,

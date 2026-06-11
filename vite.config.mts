@@ -7,7 +7,6 @@ import viteReact, { reactCompilerPreset } from "@vitejs/plugin-react"
 import { nitro } from "nitro/vite"
 import { defineConfig } from "vite"
 import { forwardApiRequestsPastViteAssetMiddleware } from "./vite/forwardApiRequestsPastViteAssetMiddleware"
-import { prismaBrowserAlias } from "./vite/prismaBrowserAlias"
 
 export default defineConfig({
   server: {
@@ -39,7 +38,6 @@ export default defineConfig({
       },
     }),
     forwardApiRequestsPastViteAssetMiddleware(),
-    prismaBrowserAlias(),
     nitro({
       preset: "bun",
       plugins: [

@@ -1,5 +1,5 @@
 import { z } from "zod"
-import type { Prisma } from "@/src/prisma/generated/client"
+import type { Prisma } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"

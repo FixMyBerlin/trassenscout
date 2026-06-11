@@ -1,4 +1,4 @@
-import { ProjectRecordReviewState } from "@/src/prisma/generated/client"
+import { ProjectRecordReviewState } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import db from "@/src/server/db.server"
 import { emailTemplateDefinitions } from "@/src/shared/emailTemplates/registry"

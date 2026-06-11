@@ -1,4 +1,4 @@
-import { MembershipRoleEnum } from "@/src/prisma/generated/client"
+import { MembershipRoleEnum } from "@/src/prisma/generated/browser"
 
 export type MembershipAccess = MembershipRoleEnum | null
 

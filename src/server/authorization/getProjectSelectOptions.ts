@@ -1,4 +1,4 @@
-import type { Project } from "@/src/prisma/generated/client"
+import type { Project } from "@/src/prisma/generated/browser"
 
 export const getProjectSelectOptions = (projects: Pick<Project, "id" | "slug" | "subTitle">[]) => {
   const result: [number | string, string][] = [["", "(Keine Auswahl)"]]

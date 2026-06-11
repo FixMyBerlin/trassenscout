@@ -1,4 +1,4 @@
-import { UserRoleEnum } from "@/src/prisma/generated/client"
+import { UserRoleEnum } from "@/src/prisma/generated/browser"
 import { authorizeProjectMemberByProjectSlug } from "@/src/server/authorization/authorizeProjectMember.server"
 import type { MembershipRole } from "@/src/server/authorization/types"
 import { getProjectIdBySlug } from "@/src/server/projects/queries/getProjectIdBySlug.server"

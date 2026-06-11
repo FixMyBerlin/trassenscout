@@ -1,4 +1,4 @@
-import { UserRoleEnum } from "@/src/prisma/generated/client"
+import { UserRoleEnum } from "@/src/prisma/generated/browser"
 import db from "@/src/server/db.server"
 import { AuthorizationError } from "@/src/shared/auth/errors"
 

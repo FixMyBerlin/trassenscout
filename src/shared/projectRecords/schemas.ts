@@ -4,7 +4,7 @@ import {
   ProjectRecordEditingState,
   ProjectRecordReviewState,
   ProjectRecordType,
-} from "@/src/prisma/generated/client"
+} from "@/src/prisma/generated/browser"
 import { ProjectSlugRequiredSchema } from "@/src/shared/authorization/projectSlugSchema"
 import { NullableDateSchema, NullableDateSchemaForm } from "@/src/shared/subsubsections/schemas"
 

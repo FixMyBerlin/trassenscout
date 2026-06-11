@@ -1,5 +1,5 @@
 import { queryOptions } from "@tanstack/react-query"
-import type { Prisma } from "@/src/prisma/generated/client"
+import type { Prisma } from "@/src/prisma/generated/browser"
 import { getUploadsWithSubsectionsFn } from "./uploads.functions"
 
 export function uploadsWithSubsectionsQueryOptions(input: {

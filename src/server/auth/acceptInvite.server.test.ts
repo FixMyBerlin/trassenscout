@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test, vi } from "vitest"
-import { UserRoleEnum } from "@/src/prisma/generated/client"
+import { UserRoleEnum } from "@/src/prisma/generated/browser"
 import type { AppSession } from "@/src/server/auth/session.server"
 import { AuthenticationError } from "@/src/shared/auth/errors"
 

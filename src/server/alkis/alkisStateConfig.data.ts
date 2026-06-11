@@ -13,7 +13,7 @@
 //
 // Last regen: 2026-04-29T13:44:33.480Z
 
-import { StateKeyEnum } from "@/src/prisma/generated/client"
+import { StateKeyEnum } from "@/src/prisma/generated/browser"
 import { AlkisAttributionLicense, type AlkisStateConfigEntry } from "./alkisStateConfig.types"
 
 export const alkisStateConfig: Record<StateKeyEnum, AlkisStateConfigEntry> = {

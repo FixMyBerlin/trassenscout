@@ -1,6 +1,6 @@
 import { z } from "zod"
 import { allowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
-import { SurveyResponseSourceEnum, SurveyResponseStateEnum } from "@/src/prisma/generated/client"
+import { SurveyResponseSourceEnum, SurveyResponseStateEnum } from "@/src/prisma/generated/browser"
 
 export const GetOrCreateCreatedSurveyResponsePublicSchema = z.object({
   surveySessionId: z.number().int().positive(),

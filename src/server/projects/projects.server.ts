@@ -1,6 +1,6 @@
 import { z } from "zod"
 import { longTitle } from "@/src/components/core/components/text/titles"
-import { UserRoleEnum } from "@/src/prisma/generated/client"
+import { UserRoleEnum } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { authorizeProjectMemberByProjectSlug } from "@/src/server/authorization/authorizeProjectMember.server"
 import { editorRoles } from "@/src/server/authorization/constants"

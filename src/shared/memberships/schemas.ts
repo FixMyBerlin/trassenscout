@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { MembershipRoleEnum } from "@/src/prisma/generated/client"
+import { MembershipRoleEnum } from "@/src/prisma/generated/browser"
 
 export const MembershipSchema = z.object({
   projectId: z.coerce.number(),
