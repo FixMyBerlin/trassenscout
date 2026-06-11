@@ -7,21 +7,12 @@ import { StatusLabel } from "@/src/components/core/components/Status/StatusLabel
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { getFullname } from "@/src/components/core/users/getFullname"
 import { roleTranslation } from "@/src/components/core/users/roleTranslation.const"
-import { InviteStatusEnum } from "@/src/prisma/generated/browser"
+import {
+  inviteStatusClassNames,
+  inviteStatusLabels,
+} from "@/src/components/invites/inviteStatusDisplay"
 import { INVITE_DAYS_TO_DELETION } from "@/src/server/invites/inviteSettings.const"
 import type { InvitesResult } from "@/src/server/invites/types"
-
-const statusColors: Record<InviteStatusEnum, string> = {
-  PENDING: "text-yellow-700 bg-yellow-100",
-  ACCEPTED: "text-green-700 bg-green-100",
-  EXPIRED: "text-indigo-700 bg-indigo-100",
-}
-
-const statusTranslations: Record<InviteStatusEnum, string> = {
-  PENDING: "Ausstehend",
-  ACCEPTED: "Akzeptiert",
-  EXPIRED: "Abgelaufen",
-}
 
 type Props = {
   invites: InvitesResult["invites"]
@@ -64,8 +55,8 @@ export const TeamInvitesTable = ({ invites }: Props) => {
               <tr key={invite.email}>
                 <td className="h-20 py-4 pr-3 pl-4 text-sm whitespace-nowrap sm:pl-6">
                   <StatusLabel
-                    label={statusTranslations[invite.status]}
-                    className={clsx(statusColors[invite.status], "inline-flex")}
+                    label={inviteStatusLabels[invite.status]}
+                    className={clsx(inviteStatusClassNames[invite.status], "inline-flex")}
                   />
                 </td>
                 <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">

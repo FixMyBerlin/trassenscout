@@ -101,6 +101,18 @@ const userWithMembershipsDetailSelect = {
   createdAt: true,
 } as const
 
+const userInviteSelect = {
+  id: true,
+  status: true,
+  role: true,
+  updatedAt: true,
+  project: {
+    select: {
+      slug: true,
+    },
+  },
+} as const
+
 export async function getUsersWithMemberships(headers: Headers) {
   await endpointAuth.admin(headers)
 
@@ -114,8 +126,19 @@ export async function getUsersWithMemberships(headers: Headers) {
 export async function getUserWithMemberships(headers: Headers, input: { userId: number }) {
   await endpointAuth.admin(headers)
 
-  return db.user.findUniqueOrThrow({
+  const user = await db.user.findUniqueOrThrow({
     where: { id: input.userId },
     select: userWithMembershipsDetailSelect,
   })
+
+  const invites = await db.invite.findMany({
+    where: {
+      email: user.email,
+      status: { in: ["PENDING", "ACCEPTED"] },
+    },
+    orderBy: [{ status: "asc" }, { updatedAt: "desc" }],
+    select: userInviteSelect,
+  })
+
+  return { ...user, invites }
 }
