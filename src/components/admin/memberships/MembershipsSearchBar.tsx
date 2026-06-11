@@ -8,9 +8,6 @@ type SearchFieldProps = {
   onChange: (value: string) => void
 }
 
-const searchInputClassName =
-  "block w-full appearance-none rounded-md border border-gray-300 py-1.5 pr-7 pl-8 text-xs placeholder-gray-400 shadow-xs focus:border-blue-500 focus:ring-blue-500 focus:outline-hidden"
-
 function MembershipsSearchField({
   name,
   value,
@@ -32,7 +29,7 @@ function MembershipsSearchField({
         aria-label={ariaLabel}
         placeholder={placeholder}
         onChange={(event) => onChange(event.target.value)}
-        className={searchInputClassName}
+        className="block w-full appearance-none rounded-md border border-gray-300 py-1.5 pr-7 pl-8 text-xs placeholder-gray-400 shadow-xs focus:border-blue-500 focus:ring-blue-500 focus:outline-hidden"
       />
       {value ? (
         <button

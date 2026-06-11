@@ -4,7 +4,6 @@ import { SubsubsectionMapIcon } from "../Icons/SubsubsectionIcon"
 import { TitleLabel } from "../Labels/TitleLabel"
 import type { SubsubsectionMapEntity as SubsubsectionWithPosition } from "../mapEntityTypes"
 import { useIsMapHighlighted } from "../mapHighlightContext"
-import { subsubsectionMapIconHighlightClasses } from "../mapMarkerHighlightStyles"
 import { TipMarker } from "../TipMarker"
 import { getLabelPosition } from "../utils/getLabelPosition"
 
@@ -57,7 +56,7 @@ const SubsubsectionMarker = ({
               slug={subsubsection.slug}
               className={clsx(
                 "transition-colors",
-                isHighlighted && subsubsectionMapIconHighlightClasses,
+                isHighlighted && "border-[#F8C62B] bg-[#F8C62B] text-gray-900",
               )}
             />
           }

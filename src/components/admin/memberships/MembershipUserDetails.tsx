@@ -28,18 +28,16 @@ const userRoleLabels: Record<UserRoleEnum, string> = {
   [UserRoleEnum.USER]: "Nutzer",
 }
 
-const labelCellClassName =
-  "w-40 max-w-40 py-1.5 pr-3 pl-4 text-left align-top text-sm font-medium whitespace-nowrap text-gray-500"
-
-const valueCellClassName = "py-1.5 pr-4 pl-0 text-left align-top text-sm text-gray-900"
-
 function DetailRow({ label, value }: { label: string; value: ReactNode }) {
   return (
     <tr>
-      <th scope="row" className={labelCellClassName}>
+      <th
+        scope="row"
+        className="w-40 max-w-40 py-1.5 pr-3 pl-4 text-left align-top text-sm font-medium whitespace-nowrap text-gray-500"
+      >
         {label}
       </th>
-      <td className={valueCellClassName}>{value}</td>
+      <td className="py-1.5 pr-4 pl-0 text-left align-top text-sm text-gray-900">{value}</td>
     </tr>
   )
 }

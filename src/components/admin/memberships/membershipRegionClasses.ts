@@ -9,9 +9,6 @@ export const membershipRegionHeaderClassName = clsx(
   "h-[130px] max-h-[130px] overflow-hidden border-l border-gray-100 py-2 text-center align-bottom text-xs font-semibold text-gray-700",
 )
 
-export const membershipRegionHeaderLabelClassName =
-  "inline-block max-h-[calc(130px-1rem)] overflow-hidden text-ellipsis whitespace-nowrap [writing-mode:vertical-rl] rotate-180"
-
 export function membershipRegionCellClassName(access: MembershipAccess, isAdmin: boolean) {
   return clsx(
     membershipRegionColumnClassName,
@@ -19,9 +16,6 @@ export function membershipRegionCellClassName(access: MembershipAccess, isAdmin:
     membershipRegionDisplay(access, isAdmin).backgroundClassName,
   )
 }
-
-export const membershipRegionToggleButtonClassName =
-  "relative inline-flex cursor-pointer items-center justify-center bg-white px-1.5 py-1.5 text-xs font-semibold text-gray-900 inset-ring-1 inset-ring-gray-300 hover:bg-gray-50 focus:z-10 disabled:cursor-not-allowed disabled:opacity-50"
 
 export const membershipTableHeadClassName = "border-b border-gray-200 bg-gray-50"
 

@@ -11,15 +11,6 @@ export const adminBoxAccentClassName = {
   dev: "border-t-2 border-t-purple-700",
 } as const
 
-export const adminBoxClassName = "relative flex flex-col rounded-md border text-xs leading-snug"
-
-/** Compact typography for markdown and rich admin content inside boxes. */
-export const adminBoxProseClassName = "prose-xs max-w-none"
-
-export const adminBoxCompactClassName = "my-2 gap-1.5 p-2"
-
-export const adminBoxDefaultClassName = "my-4 gap-2 p-3"
-
 const adminBoxLabelBase =
   "absolute inline-flex items-center rounded-full px-1.5 py-px text-[9px]/3 font-semibold uppercase tracking-wide ring-1 ring-inset"
 

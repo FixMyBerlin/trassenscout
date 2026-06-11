@@ -1,11 +1,7 @@
 import { twMerge } from "tailwind-merge"
 import {
   adminBoxAccentClassName,
-  adminBoxClassName,
-  adminBoxCompactClassName,
-  adminBoxDefaultClassName,
   adminBoxLabelClassName,
-  adminBoxProseClassName,
   adminBoxSurfaceClassName,
 } from "./adminBoxClasses"
 
@@ -31,11 +27,11 @@ export const AdminBox = ({ label, className, compact = false, children }: Props)
   return (
     <div
       className={twMerge(
-        adminBoxClassName,
+        "relative flex flex-col rounded-md border text-xs leading-snug",
         surface,
         accent,
-        adminBoxProseClassName,
-        compact ? adminBoxCompactClassName : adminBoxDefaultClassName,
+        "prose-xs max-w-none",
+        compact ? "my-2 gap-1.5 p-2" : "my-4 gap-2 p-3",
         className,
       )}
     >

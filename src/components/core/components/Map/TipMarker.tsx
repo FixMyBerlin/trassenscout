@@ -4,7 +4,6 @@ import { CSSProperties } from "react"
 import { useMap } from "react-map-gl/maplibre"
 import { useIsMapHighlighted, useMapHighlightContext } from "./mapHighlightContext"
 import { applyMapHighlight, clearHighlightLevel, highlightStateForSlug } from "./mapHighlightState"
-import { mapMarkerLabelHighlightClass } from "./mapMarkerHighlightStyles"
 
 const HIGHLIGHT_STATE_KEYS = {
   project: "highlightProjectSlug",
@@ -120,7 +119,7 @@ export const TipMarker = ({
         style={divStyles[anchor]}
         className={clsx(
           "absolute rounded-md border border-gray-400 bg-white transition-colors",
-          isHighlighted && mapMarkerLabelHighlightClass,
+          isHighlighted && "border-[#F8C62B]",
         )}
       >
         {children}
