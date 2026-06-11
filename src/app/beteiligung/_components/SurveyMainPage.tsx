@@ -168,9 +168,8 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
       const submittedReferenceId =
         typeof submittedData.referenceId === "string" ? submittedData.referenceId : null
       setReferenceIdByPart((prev) => ({ ...prev, 2: submittedReferenceId }))
-      const { default: surveyFeedbackEmail } = await import(
-        "@/src/server/survey-responses/mutations/surveyPart2Email"
-      )
+      const { default: surveyFeedbackEmail } =
+        await import("@/src/server/survey-responses/mutations/surveyPart2Email")
       await invoke(surveyFeedbackEmail, {
         surveySessionId: surveySessionId_,
         data: submittedData,

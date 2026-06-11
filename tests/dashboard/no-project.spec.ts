@@ -16,7 +16,7 @@ test.describe("Dashboard no-project variant", () => {
       timeout: 30_000,
     })
     await expect(
-      page.getByText("Ein Admin wurde unterrichtet. Sobald Sie einer Trasse zugeordnet wurden,")
+      page.getByText("Ein Admin wurde unterrichtet. Sobald Sie einer Trasse zugeordnet wurden,"),
     ).toBeVisible({
       timeout: 30_000,
     })

@@ -27,11 +27,7 @@ const seedMemberships = async () => {
     role: "EDITOR",
   }))
 
-  const memberships = [
-    ...allMembershipsViewer,
-    ...allMembershipsEditor,
-    ...projectMemberships,
-  ]
+  const memberships = [...allMembershipsViewer, ...allMembershipsEditor, ...projectMemberships]
 
   for (const data of memberships) {
     await db.membership.upsert({

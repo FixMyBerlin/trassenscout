@@ -29,7 +29,7 @@ import type {
   LineLayerSpecification,
   SymbolLayerSpecification,
 } from "maplibre-gl"
-import { ComponentProps, ReactNode } from "react"
+import { ComponentProps } from "react"
 
 /** How the resource at `tildaUrl` is exposed for map sources (GeoJSON vs PMTiles). */
 export const MapSourceType = {

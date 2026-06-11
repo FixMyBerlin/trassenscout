@@ -11,7 +11,7 @@ type Props = {
 export const FooterLinkList = ({ title, linkList, className }: Props) => {
   return (
     <div className="space-y-3">
-      <p className="text-sm font-semibold uppercase text-gray-400">{title}</p>
+      <p className="text-sm font-semibold text-gray-400 uppercase">{title}</p>
       <ul className={clsx("space-y-3", className)}>
         {linkList.map((item) => (
           <li key={item.name}>

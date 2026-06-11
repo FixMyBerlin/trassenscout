@@ -16,9 +16,21 @@ export const authLinks: FooterLink<string>[] = [
 ]
 
 export const fixmyCityLinks: FooterLink<string>[] = [
-  { name: "Zum Newsletter anmelden", href: "https://fixmycity.de/kontakt/" as Route<string>, blank: true },
-  { name: "TILDA - Unser Verkehrsplanungs Web-GIS", href: "https://tilda-geo.de" as Route<string>, blank: true },
-  { name: "Weitere Dienstleistungen", href: "https://fixmycity.de/dienstleistungen/" as Route<string>, blank: true },
+  {
+    name: "Zum Newsletter anmelden",
+    href: "https://fixmycity.de/kontakt/" as Route<string>,
+    blank: true,
+  },
+  {
+    name: "TILDA - Unser Verkehrsplanungs Web-GIS",
+    href: "https://tilda-geo.de" as Route<string>,
+    blank: true,
+  },
+  {
+    name: "Weitere Dienstleistungen",
+    href: "https://fixmycity.de/dienstleistungen/" as Route<string>,
+    blank: true,
+  },
 ]
 
 // Legacy export for backwards compatibility

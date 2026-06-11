@@ -9,9 +9,8 @@ type Props = { invite: Invite | null; invitee: Pick<User, "firstName" | "lastNam
 export const notifyEditorsAboutNewMembership = async ({ invite, invitee }: Props) => {
   if (!invite) return
 
-  const { membershipCreatedNotificationToEditors } = await import(
-    "@/emails/mailers/membershipCreatedNotificationToEditors"
-  )
+  const { membershipCreatedNotificationToEditors } =
+    await import("@/emails/mailers/membershipCreatedNotificationToEditors")
 
   const projectMemberRoleEditor = await db.membership.findMany({
     where: { projectId: invite.projectId, role: "EDITOR" },

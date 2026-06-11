@@ -8,7 +8,11 @@ export const FooterGeneral = () => {
       <div className="pt-6">
         <div className="flex flex-row justify-between">
           <FooterLinkList title="FixMyCity" linkList={fixmyCityLinks} className="mr-4 flex-none" />
-          <FooterLinkList title="Rechtliches" linkList={publicLinks} className="mr-4 ml-auto flex-none sm:pr-[12vw]" />
+          <FooterLinkList
+            title="Rechtliches"
+            linkList={publicLinks}
+            className="mr-4 ml-auto flex-none sm:pr-[12vw]"
+          />
         </div>
       </div>
       <FooterBuildByLineAndFeedback />

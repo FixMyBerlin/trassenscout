@@ -2,7 +2,13 @@ import { authFile } from "@/tests/_fixtures/auth"
 import { pageNoise } from "@/tests/_fixtures/console-noise"
 import { expect, test } from "@/tests/_fixtures/test"
 
-const adminPaths = ["/admin", "/admin/projects", "/admin/memberships", "/admin/surveys", "/admin/logEntries"]
+const adminPaths = [
+  "/admin",
+  "/admin/projects",
+  "/admin/memberships",
+  "/admin/surveys",
+  "/admin/logEntries",
+]
 
 const loggedOutRedirectNoise = [
   ...pageNoise,

@@ -19,7 +19,9 @@ test.describe("Logged-in general smoke", () => {
 
       await expect(page).toHaveTitle(dashboardPage.title)
       await expect(page.getByRole("button", { name: "User-Menü" })).toBeVisible({ timeout: 30_000 })
-      await expect(page.getByRole("heading", { name: dashboardPage.heading })).toBeVisible({ timeout: 15_000 })
+      await expect(page.getByRole("heading", { name: dashboardPage.heading })).toBeVisible({
+        timeout: 15_000,
+      })
     })
   }
 })

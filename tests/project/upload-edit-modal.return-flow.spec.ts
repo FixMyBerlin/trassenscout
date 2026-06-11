@@ -50,7 +50,9 @@ test.describe("Upload edit return flow", () => {
     const editPath = uploadEditRoute(projectSlug, fixture.uploadId, { returnTo: uploadsPath })
 
     await page.goto(editPath)
-    await expect(page.getByRole("heading", { name: "Dokument bearbeiten", exact: true })).toBeVisible({
+    await expect(
+      page.getByRole("heading", { name: "Dokument bearbeiten", exact: true }),
+    ).toBeVisible({
       timeout: 30_000,
     })
     await expect(page.getByLabel("Kurzbeschreibung")).toHaveValue(fixture.uploadTitle)
@@ -70,7 +72,9 @@ test.describe("Upload edit return flow", () => {
     await expect(page.getByRole("heading", { name: "Dokumente", exact: true })).toBeVisible({
       timeout: 30_000,
     })
-    await expect(page.getByRole("heading", { name: "Dokument bearbeiten", exact: true })).toHaveCount(0)
+    await expect(
+      page.getByRole("heading", { name: "Dokument bearbeiten", exact: true }),
+    ).toHaveCount(0)
     await expect(page.locator("tbody tr", { hasText: fixture.uploadTitle }).first()).toBeVisible({
       timeout: 30_000,
     })

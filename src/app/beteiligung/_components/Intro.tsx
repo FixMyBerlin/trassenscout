@@ -1,6 +1,6 @@
 import { SurveyButton } from "@/src/app/beteiligung/_components/buttons/SurveyButton"
-import { customIntroRegistry } from "@/src/app/beteiligung/_components/customIntroRegistry"
 import { SurveyButtonGrid } from "@/src/app/beteiligung/_components/buttons/SurveyButtonGrid"
+import { customIntroRegistry } from "@/src/app/beteiligung/_components/customIntroRegistry"
 import { SurveyScreenHeader } from "@/src/app/beteiligung/_components/layout/SurveyScreenHeader"
 import { Start } from "@/src/app/beteiligung/_components/Start"
 import { IntroButton, Stage, TIntro } from "@/src/app/beteiligung/_shared/types"

@@ -1,7 +1,4 @@
-export const pageNoise = [
-  "webglcontextcreationerror",
-  "Failed to initialize WebGL",
-]
+export const pageNoise = ["webglcontextcreationerror", "Failed to initialize WebGL"]
 
 // Known errors specific to survey (beteiligung) pages.
 // "Element type is invalid" is a pre-existing React hydration warning emitted by the
@@ -9,10 +6,7 @@ export const pageNoise = [
 // prevent the survey from rendering or submitting.
 // "Cannot submit: surveyResponseId is null" is expected during multi-feedback flows
 // when the response ID is momentarily reset between successive submissions.
-export const surveyNoise = [
-  ...pageNoise,
-  "Cannot submit: surveyResponseId is null",
-]
+export const surveyNoise = [...pageNoise, "Cannot submit: surveyResponseId is null"]
 
 export const authorizationNoise = [
   "AuthorizationError",

@@ -13,12 +13,11 @@ import { updateInvite } from "../shared/updateInvite"
 export default resolver.pipe(
   resolver.zod(SignupSchema),
   async ({ email, firstName, lastName, password, phone, institution, inviteToken }, ctx) => {
-    const [{ userCreatedNotificationToAdmin }, { userCreatedNotificationToUser }] = await Promise.all(
-      [
+    const [{ userCreatedNotificationToAdmin }, { userCreatedNotificationToUser }] =
+      await Promise.all([
         import("@/emails/mailers/userCreatedNotificationToAdmin"),
         import("@/emails/mailers/userCreatedNotificationToUser"),
-      ],
-    )
+      ])
 
     // Case: Invite
     let invite = await getInvite(inviteToken, email)

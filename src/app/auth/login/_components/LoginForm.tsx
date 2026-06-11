@@ -111,11 +111,7 @@ export const LoginForm = () => {
       </Form>
 
       <div className="mt-4 text-sm">
-        Sie haben noch keinen Account? Zur{" "}
-        <Link href={signupHref}>
-          Registrierung
-        </Link>
-        .
+        Sie haben noch keinen Account? Zur <Link href={signupHref}>Registrierung</Link>.
       </div>
     </>
   )

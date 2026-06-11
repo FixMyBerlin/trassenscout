@@ -34,8 +34,19 @@ export const MarketingPageLinks = () => {
       </h2>
       <ol className="mt-6 space-y-2">
         {onlineList.map((item, itemIndex) => (
-          <li key={itemIndex} className={clsx("flex gap-4", "description" in item ? "items-start pb-2" : "items-center")}>
-            <div className={clsx("relative flex flex-none items-center justify-center grayscale", "description" in item && "mt-1")}>
+          <li
+            key={itemIndex}
+            className={clsx(
+              "flex gap-4",
+              "description" in item ? "items-start pb-2" : "items-center",
+            )}
+          >
+            <div
+              className={clsx(
+                "relative flex flex-none items-center justify-center grayscale",
+                "description" in item && "mt-1",
+              )}
+            >
               <Image src={item.logo} alt="" height={32} width={32} className="rounded-md" />
             </div>
             <div className="flex flex-auto flex-col">
