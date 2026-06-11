@@ -70,7 +70,7 @@ export const NavigationUserLoggedIn = ({ user }: Props) => {
                   )}
 
                   {isAdmin(user) && (
-                    <AdminBox label="Admin" compact className="divide-y divide-purple-300">
+                    <AdminBox label="Admin" compact className="divide-y divide-purple-200/70">
                       <p className="font-semibold">Rolle: Admin</p>
                       <button
                         onClick={toggleShowMembershipRoleCheckIndicator}

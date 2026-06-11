@@ -89,6 +89,36 @@
     text-decoration: inherit;
     font-weight: inherit;
   }
+
+  /** Extra-compact prose for admin/debug panels — smaller than `prose-sm`. */
+  .prose-xs {
+    @apply max-w-none text-xs leading-snug;
+  }
+
+  .prose-xs
+    :where(p, ul, ol, pre, blockquote):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+    @apply my-1;
+  }
+
+  .prose-xs :where(h1, h2, h3, h4):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+    @apply mt-0 mb-1 text-xs leading-snug font-semibold;
+  }
+
+  .prose-xs :where(li):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+    @apply my-0 leading-snug;
+  }
+
+  .prose-xs :where(ul):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+    @apply my-1 list-disc pl-4;
+  }
+
+  .prose-xs :where(ol):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+    @apply my-1 list-decimal pl-4;
+  }
+
+  .prose-xs :where(code):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+    @apply text-[0.6875rem];
+  }
 }
 
 @layer utilities {

@@ -1,5 +1,13 @@
-import { clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
+import {
+  adminBoxAccentClassName,
+  adminBoxClassName,
+  adminBoxCompactClassName,
+  adminBoxDefaultClassName,
+  adminBoxLabelClassName,
+  adminBoxProseClassName,
+  adminBoxSurfaceClassName,
+} from "./adminBoxClasses"
 
 type Props = {
   label: "Dev" | "Admin"
@@ -9,29 +17,29 @@ type Props = {
 }
 
 export const AdminBox = ({ label, className, compact = false, children }: Props) => {
+  const surface = label === "Dev" ? adminBoxSurfaceClassName.dev : adminBoxSurfaceClassName.admin
+  const accent = label === "Dev" ? adminBoxAccentClassName.dev : adminBoxAccentClassName.admin
+  const labelClass =
+    label === "Dev"
+      ? compact
+        ? adminBoxLabelClassName.devCompact
+        : adminBoxLabelClassName.dev
+      : compact
+        ? adminBoxLabelClassName.adminCompact
+        : adminBoxLabelClassName.admin
+
   return (
     <div
       className={twMerge(
-        "relative flex flex-col rounded-sm border border-purple-300 bg-purple-100",
-        compact ? "my-2 gap-2 p-2 text-xs" : "my-10 gap-8 p-5 text-sm",
+        adminBoxClassName,
+        surface,
+        accent,
+        adminBoxProseClassName,
+        compact ? adminBoxCompactClassName : adminBoxDefaultClassName,
         className,
       )}
     >
-      <div
-        className={clsx(
-          "absolute right-1 space-x-1 leading-none uppercase",
-          compact ? "-top-1.5 text-[9px]" : "-top-2 text-[10px]",
-        )}
-      >
-        <span
-          className={clsx(
-            "inline-flex items-center justify-center border border-purple-400 bg-purple-100 text-purple-500",
-            compact ? "rounded-md px-1" : "rounded-xl",
-          )}
-        >
-          {label}
-        </span>
-      </div>
+      <span className={labelClass}>{label}</span>
       {children}
     </div>
   )
