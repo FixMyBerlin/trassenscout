@@ -46,9 +46,3 @@ export const pinkButtonLinkClassName = clsx(compactButtonBase, compactPadding, p
 
 /** Icon sizing when rendered inside compact button links. */
 export const compactButtonIconClassName = "-ml-0.5 size-5 shrink-0"
-
-/** Icon-only admin action — compact pink control for super-admin debug tools. */
-export const adminIconButtonClassName = clsx(
-  compactButtonBase,
-  "size-8 shrink-0 bg-pink-500 p-0 text-white hover:bg-pink-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500 active:bg-pink-500",
-)

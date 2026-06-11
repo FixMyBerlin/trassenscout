@@ -22,7 +22,7 @@ const AdminProjectsListContent = () => {
   } = useSuspenseQuery(adminProjectsWithCountsQueryOptions())
 
   return (
-    <SuperAdminBox className="mx-auto prose prose-sm">
+    <SuperAdminBox className="mx-auto">
       <h2 className="mt-0">Alle Projekte</h2>
       <ul>
         {projects.map((project) => (
@@ -35,8 +35,8 @@ const AdminProjectsListContent = () => {
                 <span
                   className={clsx(
                     pillShellClasses,
-                    "border border-gray-200 bg-gray-50",
-                    project.subsectionCount === 0 ? "text-gray-700/60" : "text-gray-700",
+                    "border border-purple-200/70 bg-purple-100/60 text-[0.6875rem]",
+                    project.subsectionCount === 0 ? "opacity-60" : "",
                   )}
                 >
                   {project.subsectionCount} Abschnitte
@@ -44,8 +44,8 @@ const AdminProjectsListContent = () => {
                 <span
                   className={clsx(
                     pillShellClasses,
-                    "border border-gray-200 bg-gray-50",
-                    project.subsubsectionCount === 0 ? "text-gray-700/60" : "text-gray-700",
+                    "border border-purple-200/70 bg-purple-100/60 text-[0.6875rem]",
+                    project.subsubsectionCount === 0 ? "opacity-60" : "",
                   )}
                 >
                   {project.subsubsectionCount} Teilabschnitte

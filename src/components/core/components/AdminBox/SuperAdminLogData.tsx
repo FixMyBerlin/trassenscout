@@ -15,8 +15,10 @@ export const SuperAdminLogData = ({ data }: Props) => {
   }
 
   return (
-    <AdminBoxIconButton label={adminDebugTooltip} onClick={() => console.log(data)}>
-      <CommandLineIcon className="size-4" aria-hidden />
-    </AdminBoxIconButton>
+    <span className="not-prose inline-flex shrink-0">
+      <AdminBoxIconButton label={adminDebugTooltip} onClick={() => console.log(data)}>
+        <CommandLineIcon className="size-4 shrink-0" aria-hidden />
+      </AdminBoxIconButton>
+    </span>
   )
 }
