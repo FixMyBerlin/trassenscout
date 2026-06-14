@@ -8,6 +8,7 @@ From `app/package.json` (typical):
 
 - `e2e` → `playwright test --project=chromium`
 - `e2e -- --ui` / `e2e -- --debug` → pass Playwright flags after `--`
+- `e2e -- tests/smoke` → run a subset of specs
 
 ## Environment
 

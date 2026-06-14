@@ -10,19 +10,19 @@ disable-model-invocation: true
 
 # TanStack Start app structure
 
-Portable layout conventions for `app/src` (or equivalent) in TanStack Start projects. For stack rules (`.server.ts`, loaders, SSR), use `tanstack-start-conventions`. For auth gates in Trassenscout, use `trassenscout-auth`; for portable Better Auth config, use `tanstack-start-auth`.
+Portable layout conventions for `app/src` (or equivalent) in TanStack Start projects. For stack rules (`.server.ts`, loaders, SSR), use `tanstack-start-conventions`. For auth gates, use `tanstack-start-auth`.
 
 ## Top-level `src` folders
 
 Keep a small set of top-level folders:
 
-| Folder        | Purpose                                                                 |
-| ------------- | ----------------------------------------------------------------------- |
-| `components/` | All React/JSX — route files never define components                     |
-| `routes/`     | Route definitions only (thin: `Route` config + single component import) |
+| Folder        | Purpose                                                                  |
+| ------------- | ------------------------------------------------------------------------ |
+| `components/` | All React/JSX — route files never define components                      |
+| `routes/`     | Route definitions only (thin: `Route` config + single component import)  |
 | `shared/`     | Isomorphic modules — Zod schemas, URL search, pure utils (no DB/secrets) |
-| `server/`     | Server-only `*.server.ts`, `*.functions.ts`, `*QueryOptions.ts`         |
-| `data/`       | Optional static assets (GeoJSON, JSON, etc.)                            |
+| `server/`     | Server-only `*.server.ts`, `*.functions.ts`, `*QueryOptions.ts`          |
+| `data/`       | Optional static assets (GeoJSON, JSON, etc.)                             |
 
 Plus root files such as `router.tsx`. Prefer `shared/` for isomorphic code, `server/` for RPC/DB, or `components/shared/` for React shells — not a vague top-level `lib/`.
 
@@ -34,7 +34,7 @@ Plus root files such as `router.tsx`. Prefer `shared/` for isomorphic code, `ser
 
 ## Components: Layout vs Page
 
-- **Layouts:** `Layout*.tsx` — route shell, providers (e.g. `NuqsAdapter`), outlet for child page.
+- **Layouts:** `Layout*.tsx` — route shell, providers (e.g. `NuqsAdapter`), outlet for child page. Devtools: [devtools.md](../tanstack-start-conventions/references/devtools.md).
 - **Pages:** `Page*.tsx` — actual screen content.
 - **Deliberate asymmetry:** Route segments may use `_segment` for grouping while `components/` uses a readable folder name (e.g. route `_pages` → `components/pages/`).
 
@@ -44,10 +44,10 @@ Under `server/<domain>/`:
 
 - `queries/*.server.ts` — read paths
 - `mutations/*.server.ts` — writes
-- `schemas.ts` — shim re-exporting from `shared/<domain>/schemas.ts` during migration (optional)
+- `*.inputSchemas.ts` — server-only validation extensions (may import from `shared/<domain>/schemas`)
 - `<domain>.functions.ts` — `createServerFn` exports consumed by routes/components
 
-Details: `tanstack-start-conventions` → client-server-boundaries.
+Domain Zod and URL search schemas live in `shared/<domain>/` (or `shared/<topic>/` for cross-cutting helpers). See `tanstack-start-conventions` → client-server-boundaries.
 
 ## URL state (search params)
 
@@ -85,7 +85,6 @@ If using React Email: `src/emails/` with templates; shared pieces in `_templates
 | Topic                                    | Skill                        |
 | ---------------------------------------- | ---------------------------- |
 | Boundaries, loaders, SSR, API validation | `tanstack-start-conventions` |
-| Auth / session (Trassenscout)            | `trassenscout-auth`          |
-| Better Auth library config               | `tanstack-start-auth`        |
+| Auth / session                           | `tanstack-start-auth`        |
 | Zustand                                  | `zustand-state-management`   |
 | Next.js migration                        | `tanstack-start-migration`   |

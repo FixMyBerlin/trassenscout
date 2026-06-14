@@ -22,8 +22,8 @@ Project-specific auth wiring for this repo. The portable **`tanstack-start-auth`
 
 ## References
 
-| Topic | File |
-| ----- | ---- |
+| Topic                                                     | File                                     |
+| --------------------------------------------------------- | ---------------------------------------- |
 | Routes, cookies, session, endpointAuth, protection matrix | [references/auth.md](references/auth.md) |
 
 **Portable Better Auth config** (plugins, adapters, env): skill `tanstack-start-auth` → `references/better-auth-config.md` (when present).

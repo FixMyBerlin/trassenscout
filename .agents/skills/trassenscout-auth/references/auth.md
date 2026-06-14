@@ -8,16 +8,16 @@ For `betterAuth({ ... })` options, plugins, and DB adapters, see portable skill 
 
 ## 1. File layout
 
-| Role                  | Path |
-| --------------------- | ---- |
-| Server config         | `src/server/auth/auth.server.ts` |
+| Role                  | Path                                           |
+| --------------------- | ---------------------------------------------- |
+| Server config         | `src/server/auth/auth.server.ts`               |
 | Cookie forwarder      | `src/server/auth/auth-route-handler.server.ts` |
-| Boundary API          | `src/server/auth/endpointAuth.server.ts` |
-| Session helpers       | `src/server/auth/session.server.ts` |
-| Server fns for routes | `src/server/auth/auth.functions.ts` |
-| Client                | `src/components/shared/auth/auth-client.ts` |
-| Auth API route        | `src/routes/api/auth.$.ts` |
-| Sign-in entry         | `src/routes/api/sign-in.<provider>.ts` |
+| Boundary API          | `src/server/auth/endpointAuth.server.ts`       |
+| Session helpers       | `src/server/auth/session.server.ts`            |
+| Server fns for routes | `src/server/auth/auth.functions.ts`            |
+| Client                | `src/components/shared/auth/auth-client.ts`    |
+| Auth API route        | `src/routes/api/auth.$.ts`                     |
+| Sign-in entry         | `src/routes/api/sign-in.<provider>.ts`         |
 
 ---
 
@@ -122,19 +122,19 @@ Import **only** `endpointAuth` from `src/server/auth/endpointAuth.server` at cal
 
 The **first statement** in each boundary function must be one of:
 
-| Method | Use when |
-| ------ | -------- |
-| `endpointAuth.session(headers)` | Logged-in user required |
-| `endpointAuth.admin(headers)` | Admin role (fresh session) |
-| `endpointAuth.projectRole(headers, slug, roles)` | Project RBAC; returns `{ projectId, session }` |
-| `endpointAuth.projectMember({ headers, projectSlug, roles })` | Project RBAC; returns session |
-| `endpointAuth.apiKey(request)` | Cron / automation endpoints |
-| `endpointAuth.routeSession(location)` | Layout: redirect if logged out |
-| `endpointAuth.routeAdmin(location)` | Layout: admin only |
-| `endpointAuth.routeProject(location, slug)` | Layout: session + membership |
-| `endpointAuth.routeGuest(location?)` | Layout: redirect if logged in |
-| `endpointAuth.public("reason")` | Intentionally open; reason required (string literal) |
-| `endpointAuth.inherited("reason")` | Auth guaranteed by parent layout / callee; reason required |
+| Method                                                        | Use when                                                   |
+| ------------------------------------------------------------- | ---------------------------------------------------------- |
+| `endpointAuth.session(headers)`                               | Logged-in user required                                    |
+| `endpointAuth.admin(headers)`                                 | Admin role (fresh session)                                 |
+| `endpointAuth.projectRole(headers, slug, roles)`              | Project RBAC; returns `{ projectId, session }`             |
+| `endpointAuth.projectMember({ headers, projectSlug, roles })` | Project RBAC; returns session                              |
+| `endpointAuth.apiKey(request)`                                | Cron / automation endpoints                                |
+| `endpointAuth.routeSession(location)`                         | Layout: redirect if logged out                             |
+| `endpointAuth.routeAdmin(location)`                           | Layout: admin only                                         |
+| `endpointAuth.routeProject(location, slug)`                   | Layout: session + membership                               |
+| `endpointAuth.routeGuest(location?)`                          | Layout: redirect if logged in                              |
+| `endpointAuth.public("reason")`                               | Intentionally open; reason required (string literal)       |
+| `endpointAuth.inherited("reason")`                            | Auth guaranteed by parent layout / callee; reason required |
 
 `public` and `inherited` are sync noops — they document intent for review and lint.
 
@@ -142,11 +142,11 @@ The **first statement** in each boundary function must be one of:
 
 ## 6. Typical protection matrix
 
-| Area          | Protection        | Pattern |
-| ------------- | ----------------- | ------- |
-| Public home   | Optional redirect | `beforeLoad` reads post–sign-in cookie; no auth required |
-| Admin layout  | Admin only        | Parent `beforeLoad` + `getFreshSession` / `getIsAdminFn` |
-| Resource page | Public + member   | `beforeLoad` → `isAuthorized` in context |
+| Area          | Protection        | Pattern                                                                             |
+| ------------- | ----------------- | ----------------------------------------------------------------------------------- |
+| Public home   | Optional redirect | `beforeLoad` reads post–sign-in cookie; no auth required                            |
+| Admin layout  | Admin only        | Parent `beforeLoad` + `getFreshSession` / `getIsAdminFn`                            |
+| Resource page | Public + member   | `beforeLoad` → `isAuthorized` in context                                            |
 | API routes    | Per-handler       | `endpointAuth.session` / `projectRole` / `apiKey` / `public`; no route `beforeLoad` |
 
 ---

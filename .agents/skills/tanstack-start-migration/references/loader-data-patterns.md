@@ -37,7 +37,7 @@ export const Route = createFileRoute("/products")({
 
 ## beforeLoad — auth & redirects (FMC default)
 
-Runs before loader. Use for redirects and light context — via server functions, not direct DB/session in route files:
+Runs before loader. Use for redirects and light context — via server functions, not direct DB/session in route files, and not request middleware for route auth:
 
 ```tsx
 export const Route = createFileRoute("/dashboard")({

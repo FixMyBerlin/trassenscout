@@ -27,7 +27,7 @@
 | ----------------------- | ----------------------------------------------------------------------------------- |
 | Shared/refetchable data | `*QueryOptions` in `server/`, `ensureQueryData` in loader, `useSuspenseQuery` in UI |
 | One-off admin page      | Loader return + `useLoaderData()`                                                   |
-| Auth/redirects          | `beforeLoad` via server fn (not middleware by default)                              |
+| Auth/redirects          | `beforeLoad` via route server fn; not middleware in FMC apps                        |
 
 ## Mutations & Server Logic
 
@@ -60,14 +60,14 @@ Catch-all splat: access via `Route.useParams()` → `_splat`.
 
 ## Config & Env
 
-| Next.js                       | TanStack Start                                             |
-| ----------------------------- | ---------------------------------------------------------- |
-| `next.config.js`              | `vite.config.ts` + `tanstackStart()` plugin                |
-| `postcss.config.*` (Tailwind) | `@tailwindcss/vite` plugin (Vite) or PostCSS (Rsbuild)     |
-| `process.env.*`               | `import.meta.env.*`; client: `VITE_*`                      |
-| `public/`                     | `public/` (Vite)                                           |
-| Rewrites / redirects          | Nitro config, or `beforeLoad` redirect                     |
-| `middleware.ts`               | `beforeLoad` (FMC) or `createMiddleware` in `src/start.ts` |
+| Next.js                       | TanStack Start                                                                                               |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `next.config.js`              | `vite.config.ts` + `tanstackStart()` plugin                                                                  |
+| `postcss.config.*` (Tailwind) | `@tailwindcss/vite` plugin (Vite) or PostCSS (Rsbuild)                                                       |
+| `process.env.*`               | `import.meta.env.*`; client: `VITE_*`                                                                        |
+| `public/`                     | `public/` (Vite)                                                                                             |
+| Rewrites / redirects          | Nitro config, or `beforeLoad` redirect                                                                       |
+| `middleware.ts`               | For auth/redirects: layout `beforeLoad` via route server fns (FMC). Do not migrate route auth to middleware. |
 
 ## File Layout (FMC target)
 
@@ -96,3 +96,4 @@ Route params: Next.js `[id]` → Start `$id`; validate with Zod `params` schema 
 4. **`useLoaderData` for Query data** — use `useSuspenseQuery` with same `*QueryOptions`.
 5. **Fat route files** — FMC: route exports config + one component import from `@/components/`.
 6. **Vinxi / `@tanstack/start`** — deprecated; use Vite + `@tanstack/react-start`.
+7. **Moving auth to middleware** — FMC route auth uses layout `beforeLoad`; data/API boundaries use `endpointAuth.*` / guards.

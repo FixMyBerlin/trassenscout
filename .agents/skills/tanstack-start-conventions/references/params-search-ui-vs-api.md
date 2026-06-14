@@ -10,14 +10,14 @@ TanStack Router follows **two execution paths**: UI routes run matching, `valida
 
 **Rule:** Define each route’s search schema **once**. Never duplicate search shapes as hand-written `type` aliases or `as { … }` casts.
 
-**Placement:** Inline `const` in the route file when only that route uses the schema. When the schema is imported elsewhere (route `validateSearch` plus `navigate({ search })`, components, or an API `GET` handler), export it from `shared/<domain>/searchSchemas.ts` (or `shared/routing/` for cross-route helpers). Do **not** colocate non-route files under `routes/` (no `-` prefixed helpers).
+**Placement:** Inline `const` in the route file when only that route uses the schema. When the schema is imported elsewhere (route `validateSearch` plus `navigate({ search })`, components, or an API `GET` handler), export it from `server/<domain>/searchSchemas.ts` (or `server/shared/<name>Search.ts` for cross-route helpers). Do **not** colocate non-route files under `routes/` (no `-` prefixed helpers).
 
-| Piece | Pattern |
-| ----- | ------- |
-| Schema | Inline `const itemSearchSchema = z.object({ … })` in the route file, or `export const …` from `shared/<domain>/searchSchemas.ts` when reused |
-| Route | `validateSearch: itemSearchSchema` — Zod 4 implements Standard Schema; **no** `@tanstack/zod-adapter` / `zodValidator()` |
-| Type | `type ItemSearch = z.infer<typeof itemSearchSchema>` — export only when imported elsewhere |
-| Components | `Route.useSearch()` or `useSearch({ from: Route.id })` — no manual casts |
+| Piece                | Pattern                                                                                                                                                      |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Schema               | Inline `const itemSearchSchema = z.object({ … })` in the route file, or `export const …` from `server/<domain>/searchSchemas.ts` when reused                 |
+| Route                | `validateSearch: itemSearchSchema` — Zod 4 implements Standard Schema; **no** `@tanstack/zod-adapter` / `zodValidator()`                                     |
+| Type                 | `type ItemSearch = z.infer<typeof itemSearchSchema>` — export only when imported elsewhere                                                                   |
+| Components           | `Route.useSearch()` or `useSearch({ from: Route.id })` — no manual casts                                                                                     |
 | Revalidate elsewhere | **Same schema object** (must be exported or imported from a shared module): `itemSearchSchema.safeParse(raw)`; use `z.flattenError()` for user-facing errors |
 
 **URL defaults:** Query strings are always strings at the wire. Use `.default()` so `<Link search={…}>` does not require every key, and `.catch(fallback)` so invalid values recover gracefully (replaces Zod 3 adapter `fallback()`):
