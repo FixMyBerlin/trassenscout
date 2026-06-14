@@ -30,7 +30,7 @@ type Props = Prettify<
   Pick<PromiseReturnType<typeof getUploadsWithSubsections>, "uploads"> & {
     withAction?: boolean
     withRelations: boolean
-    onDelete?: () => Promise<void>
+    onDelete?: (uploadId: number) => Promise<void>
   }
 >
 
@@ -99,7 +99,7 @@ const UploadTableRow = ({
   projectSlug: string
   withAction: boolean
   withRelations: boolean
-  onDelete?: () => Promise<void>
+  onDelete?: (uploadId: number) => Promise<void>
 }) => {
   const hasLocation = upload.latitude !== null && upload.longitude !== null
   const navigationGuard = useModalNavigationGuard()
@@ -108,6 +108,11 @@ const UploadTableRow = ({
   const handleEditClick = () => {
     navigationGuard.beginNavigationToModal({ holdUntilNextModalMount: true })
   }
+  const handleDelete = onDelete
+    ? async () => {
+        await onDelete(upload.id)
+      }
+    : undefined
   return (
     <tr>
       <td className="py-2 pr-3 pl-4 text-sm sm:pl-6">
@@ -119,7 +124,7 @@ const UploadTableRow = ({
               projectSlug={projectSlug}
               size="table"
               editUrl={editUrl}
-              onDeleted={onDelete}
+              onDeleted={handleDelete}
             />
           </div>
           <span
@@ -188,12 +193,12 @@ const UploadTableRow = ({
               <Link icon="edit" href={editUrl} prefetch scroll={false} onClick={handleEditClick}>
                 Bearbeiten
               </Link>
-              {onDelete && (
+              {handleDelete && (
                 <DeleteUploadButton
                   projectSlug={projectSlug}
                   uploadId={upload.id}
                   uploadTitle={upload.title}
-                  onDeleted={onDelete}
+                  onDeleted={handleDelete}
                 />
               )}
             </IfUserCanEdit>

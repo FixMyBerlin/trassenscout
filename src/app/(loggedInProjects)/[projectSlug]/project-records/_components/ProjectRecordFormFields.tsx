@@ -2,8 +2,7 @@
 
 import { ProjectRecordEmailSource } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordEmailSource"
 import { UploadDropzone } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzone"
-import { UploadDropzoneContainer } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzoneContainer"
-import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
+import { UploadTable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadTable"
 import { getUserSelectOptions } from "@/src/app/_components/users/utils/getUserSelectOptions"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import {
@@ -85,10 +84,6 @@ export const ProjectRecordFormFields = ({
   const [newTopic, setNewTopic] = useState("")
   const [createProjectRecordTopicMutation] = useMutation(createProjectRecordTopic)
   const { watch, setValue } = useFormContext()
-  const selectedSubsubsectionsValue = watch("subsubsections")
-  const selectedAcquisitionAreasValue = watch("acquisitionAreas")
-  const selectedSubsubsectionIds = NumberArraySchema.parse(selectedSubsubsectionsValue)
-  const selectedAcquisitionAreaIds = NumberArraySchema.parse(selectedAcquisitionAreasValue)
   const uploadsValue = watch("uploads")
   const uploadIds = NumberArraySchema.parse(uploadsValue)
 
@@ -260,35 +255,23 @@ export const ProjectRecordFormFields = ({
 
       <div className="flex flex-col gap-2">
         <label className="text-sm font-medium text-gray-700">Dokumente (optional)</label>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          {selectedUploads.map((upload) => {
-            return (
-              <UploadPreviewClickable
-                key={upload.id}
-                uploadId={upload.id}
-                upload={upload}
-                projectSlug={projectSlug}
-                size="grid"
-                onDeleted={async () => {
-                  const existingUploads = NumberArraySchema.parse(uploadsValue)
-                  const newUploads = existingUploads.filter((id) => id !== upload.id)
-                  setValue("uploads", newUploads, { shouldDirty: true })
-                }}
-              />
-            )
-          })}
-          <UploadDropzoneContainer className="col-span-2 h-40 border border-gray-300 p-2">
-            <UploadDropzone
-              fillContainer
-              onUploadComplete={async (newUploadIds) => {
-                // Add new upload IDs to the form, ensuring all are numbers
-                const existingUploads = NumberArraySchema.parse(uploadsValue)
-                const newUploads = [...new Set([...existingUploads, ...newUploadIds])]
-                setValue("uploads", newUploads, { shouldDirty: true })
-              }}
-            />
-          </UploadDropzoneContainer>
-        </div>
+        <UploadTable
+          withAction={false}
+          withRelations={false}
+          uploads={selectedUploads}
+          onDelete={async (uploadId) => {
+            const existingUploads = NumberArraySchema.parse(uploadsValue)
+            const newUploads = existingUploads.filter((id) => id !== uploadId)
+            setValue("uploads", newUploads, { shouldDirty: true })
+          }}
+        />
+        <UploadDropzone
+          onUploadComplete={async (newUploadIds) => {
+            const existingUploads = NumberArraySchema.parse(uploadsValue)
+            const newUploads = [...new Set([...existingUploads, ...newUploadIds])]
+            setValue("uploads", newUploads, { shouldDirty: true })
+          }}
+        />
       </div>
 
       <SuperAdminLogData data={{ uploadsValue, uploadIds }} />

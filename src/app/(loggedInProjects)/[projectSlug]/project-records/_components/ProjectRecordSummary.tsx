@@ -3,12 +3,9 @@ import { ProjectRecordEditingStateIndicator } from "@/src/app/(loggedInProjects)
 import { ProjectRecordEmailSourceText } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordEmailSource"
 import { ProjectRecordVerknuepfungen } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordVerknuepfungen"
 import { createProjectRecordFilterUrl } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/filter/createFilterUrl"
-import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
 import { getFullname } from "@/src/app/_components/users/utils/getFullname"
 import { Link, linkStyles } from "@/src/core/components/links"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
-import { uploadEditRouteForProjectRecord } from "@/src/core/routes/uploadRoutes"
-import { useCurrentReturnTo } from "@/src/core/routes/useCurrentPathWithSearch"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
 import { format } from "date-fns"
 import { de } from "date-fns/locale"
@@ -20,7 +17,6 @@ type Props = {
 
 export const ProjectRecordSummary = ({ projectRecord }: Props) => {
   const projectSlug = projectRecord.project.slug
-  const returnTo = useCurrentReturnTo()
 
   return (
     <div className="my-6 space-y-6 font-medium">
@@ -115,25 +111,9 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
           acquisitionAreas={projectRecord.acquisitionAreas}
         />
       </div>
-
-      {!!projectRecord.uploads.length && (
-        <div>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-            {projectRecord.uploads.map((upload) => (
-              <UploadPreviewClickable
-                key={upload.id}
-                uploadId={upload.id}
-                upload={upload}
-                projectSlug={projectSlug}
-                size="grid"
-                editUrl={uploadEditRouteForProjectRecord(projectSlug, upload.id, projectRecord.id, {
-                  returnTo,
-                })}
-              />
-            ))}
-          </div>
-        </div>
-      )}
+      <div>
+        <p className="mb-2 text-gray-500">Dokumente:</p>
+      </div>
     </div>
   )
 }
