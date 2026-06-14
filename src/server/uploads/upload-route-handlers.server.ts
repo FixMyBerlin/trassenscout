@@ -1,4 +1,4 @@
-import { handleRequest, route, type Router } from "@better-upload/server"
+import { handleRequest, RejectUpload, route, type Router } from "@better-upload/server"
 import { z } from "zod"
 import { isSupportedMimeType } from "@/src/components/core/uploads/getFileType"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
@@ -19,7 +19,7 @@ const SurveyUploadParamsSchema = z.object({
 function assertSupportedUploadMimeTypes(files: { type: string }[]) {
   for (const file of files) {
     if (!isSupportedMimeType(file.type)) {
-      throw new Error(
+      throw new RejectUpload(
         `Dateityp nicht erlaubt: ${file.type || "unbekannt"}. Erlaubt sind Bilder, PDF und Office-Dokumente.`,
       )
     }
@@ -50,7 +50,7 @@ async function verifySurveyResponseSession(surveyResponseId: number, surveySessi
   })
 
   if (!surveyResponse) {
-    throw new Error("Survey response not found or does not belong to the provided session")
+    throw new RejectUpload("Survey response not found or does not belong to the provided session")
   }
 
   return {
@@ -75,7 +75,7 @@ function createSurveyUploadRouter() {
           })
 
           if (!params.success) {
-            throw new Error("Missing or invalid surveyResponseId or surveySessionId")
+            throw new RejectUpload("Missing or invalid surveyResponseId or surveySessionId")
           }
 
           const { projectSlug } = await verifySurveyResponseSession(
