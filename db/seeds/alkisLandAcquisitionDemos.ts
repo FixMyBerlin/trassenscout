@@ -57,6 +57,7 @@ export function alkisLandAcquisitionDemoProjects(): Omit<
     aiEnabled: false,
     landAcquisitionModuleEnabled: true,
     showLogEntries: false,
+    evaluationsEnabled: false,
     alkisStateKey: d.alkisStateKey,
   }))
 }
