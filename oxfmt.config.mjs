@@ -22,7 +22,6 @@ export default defineConfig({
   },
   sortPackageJson: true,
   ignorePatterns: [
-    ".agents/skills/**",
     ".cursor/**",
     ".output/**",
     "playwright-report/**",
