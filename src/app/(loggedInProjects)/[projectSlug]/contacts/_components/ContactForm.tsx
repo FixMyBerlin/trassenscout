@@ -13,7 +13,7 @@ export function ContactForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
       <LabeledTextField type="text" name="lastName" label="Nachname" placeholder="" />
       <LabeledTextField type="text" name="email" label="E-Mail-Adresse" placeholder="" />
       <LabeledTextField type="text" name="phone" label="Telefonnummer" optional placeholder="" />
-      <LabeledTextareaField name="note" label="Notizen (Markdown)" optional placeholder="" />
+      <LabeledTextareaField name="note" label="Notizen" optional placeholder="" />
       <LabeledTextField type="text" name="role" label="Position" optional placeholder="" />
     </Form>
   )
