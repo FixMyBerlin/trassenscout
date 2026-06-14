@@ -7,13 +7,13 @@ description: Migrate Next.js apps to TanStack Start. Covers Vite/Nitro setup, is
 
 # Next.js → TanStack Start Migration
 
-Focus: **mental model shift**, **data handling**, and **routing**. TanStack Start = TanStack Router + Vite (+ optional Nitro for deployment). No App Router RSC model.
+Focus: **mental model shift**, **data handling**, and **routing**. TanStack Start = TanStack Router + Vite (+ Nitro for FMC deployment). No Next.js async server components in route files. Optional experimental RSC: `tanstack-start-conventions` → [server-components.md](../tanstack-start-conventions/references/server-components.md).
 
 After the mechanical migration, apply FMC stack skills: `tanstack-start-app-structure`, `tanstack-start-conventions`, `tanstack-start-auth`.
 
 ## Critical mental model (read first)
 
-> TanStack Start is **isomorphic by default**. Components and loaders run on **both** server and client unless you isolate server-only logic in `createServerFn`. This is the **opposite** of Next.js Server Components (server-only by default).
+> TanStack Start is **isomorphic by default**. Components and loaders run on **both** server and client unless you isolate server-only logic in `createServerFn`. This is the **opposite** of Next.js Server Components (server-only by default). Experimental RSC exists but is opt-in — see [server-components.md](../tanstack-start-conventions/references/server-components.md).
 
 | Next.js habit                          | TanStack Start reality                                     |
 | -------------------------------------- | ---------------------------------------------------------- |
@@ -33,21 +33,21 @@ After the mechanical migration, apply FMC stack skills: `tanstack-start-app-stru
 
 ## Quick Mapping
 
-| Next.js                            | TanStack Start                                                     |
-| ---------------------------------- | ------------------------------------------------------------------ |
-| `app/page.tsx` / `pages/index.tsx` | `src/routes/index.tsx`                                             |
-| `app/layout.tsx`                   | `src/routes/__root.tsx`                                            |
-| `app/posts/[slug]/page.tsx`        | `src/routes/posts/$slug.tsx`                                       |
-| `app/posts/[...slug]/page.tsx`     | `src/routes/posts/$.tsx`                                           |
-| `app/api/foo/route.ts`             | `src/routes/api/foo.ts` (`server.handlers`)                        |
-| `getServerSideProps`               | Route `loader` (+ server fn for server-only I/O)                   |
-| Server Actions (`'use server'`)    | `createServerFn` in `*.functions.ts`                               |
-| `next/link` `href`                 | `<Link to="..." params={...} />`                                   |
-| `next/navigation`                  | `@tanstack/react-router` hooks                                     |
-| `metadata` export                  | Route `head` property                                              |
-| `middleware.ts`                    | `beforeLoad` (FMC default) or `createMiddleware` in `src/start.ts` |
-| `next.config.*`                    | `vite.config.ts`                                                   |
-| `process.env`                      | `import.meta.env` (client: `VITE_*`)                               |
+| Next.js                            | TanStack Start                                                                                               |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `app/page.tsx` / `pages/index.tsx` | `src/routes/index.tsx`                                                                                       |
+| `app/layout.tsx`                   | `src/routes/__root.tsx`                                                                                      |
+| `app/posts/[slug]/page.tsx`        | `src/routes/posts/$slug.tsx`                                                                                 |
+| `app/posts/[...slug]/page.tsx`     | `src/routes/posts/$.tsx`                                                                                     |
+| `app/api/foo/route.ts`             | `src/routes/api/foo.ts` (`server.handlers`)                                                                  |
+| `getServerSideProps`               | Route `loader` (+ server fn for server-only I/O)                                                             |
+| Server Actions (`'use server'`)    | `createServerFn` in `*.functions.ts`                                                                         |
+| `next/link` `href`                 | `<Link to="..." params={...} />`                                                                             |
+| `next/navigation`                  | `@tanstack/react-router` hooks                                                                               |
+| `metadata` export                  | Route `head` property                                                                                        |
+| `middleware.ts`                    | For auth/redirects: layout `beforeLoad` via route server fns (FMC). Do not migrate route auth to middleware. |
+| `next.config.*`                    | `vite.config.ts`                                                                                             |
+| `process.env`                      | `import.meta.env` (client: `VITE_*`)                                                                         |
 
 See [references/nextjs-to-start-mapping.md](references/nextjs-to-start-mapping.md) for edge cases.
 
@@ -271,10 +271,11 @@ export const Route = createFileRoute("/api/upload/image")({
 
 ---
 
-## 6. Auth & Middleware
+## 6. Auth
 
-- **FMC default:** Auth redirects in route `beforeLoad` via server functions (not direct session/DB in route files). Skill: `tanstack-start-auth`.
-- **Global middleware:** `createMiddleware` in `src/start.ts` for cross-cutting concerns (CSRF, logging). Route-level middleware also available on server functions.
+- **FMC route auth:** Auth redirects live in layout `beforeLoad` via route server functions (not direct session/DB in route files). Skill: `tanstack-start-auth`.
+- **Do not use middleware for route auth:** FMC page auth UX belongs in layout `beforeLoad`. Middleware may exist for unrelated cross-cutting concerns, but it is not the auth-route replacement.
+- **Data/API boundary:** Private reads/writes use `endpointAuth.*` / guards inside server handlers or `*.server.ts`; Trassenscout enforces this with a custom ESLint pattern documented in `tanstack-start-auth`.
 
 Provider SDKs (Clerk, WorkOS) work at React level; server integration may need Start-specific adapters.
 

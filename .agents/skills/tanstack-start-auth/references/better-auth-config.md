@@ -1,6 +1,6 @@
 # Better Auth configuration
 
-Library reference for `betterAuth()` / `createAuthClient()`. For Trassenscout mounting, cookies, and route protection, see skill **`trassenscout-auth`** → `references/auth.md`.
+Library reference for `betterAuth()` / `createAuthClient()`. For TanStack Start mounting, cookies, and route protection, see [auth.md](auth.md).
 
 **Latest API:** [better-auth.com/docs](https://better-auth.com/docs) and [llms.txt](https://better-auth.com/llms.txt).
 
@@ -11,7 +11,7 @@ Library reference for `betterAuth()` / `createAuthClient()`. For Trassenscout mo
 1. Install: `bun add better-auth` (FMC apps often pin e.g. `1.6.x` — match the app `package.json`)
 2. Set env vars (see below)
 3. Create server auth module (`auth.server.ts`) with database + config
-4. Mount handler in your framework (TanStack Start: skill `trassenscout-auth`)
+4. Mount handler in your framework (TanStack Start: [auth.md](auth.md))
 5. Run `bunx @better-auth/cli@latest migrate` or `generate` for Prisma/Drizzle
 6. Verify: `GET /api/auth/ok` → `{ "status": "ok" }`
 
@@ -154,7 +154,7 @@ Some plugins still export from `better-auth/plugins` (e.g. `customSession`) — 
 
 Methods: `signUp.email()`, `signIn.email()`, `signIn.social()`, `signOut()`, `useSession()`, `getSession()`, `revokeSession()`, `revokeSessions()`.
 
-Prefer client SDK for browser sign-in; server `auth.api.*` when you control headers/cookies (see skill `trassenscout-auth`).
+Prefer client SDK for browser sign-in; server `auth.api.*` when you control headers/cookies (see [auth.md](auth.md)).
 
 ---
 
@@ -175,7 +175,7 @@ Prefer client SDK for browser sign-in; server `auth.api.*` when you control head
 3. `secondaryStorage` → sessions not in DB by default
 4. Cookie cache does not include custom session fields — re-fetched on read
 5. Change-email sends to current address first, then new address
-6. Official TanStack plugin `tanstackStartCookies()` can leak server code into the client bundle — Trassenscout uses manual cookie forwarding (skill `trassenscout-auth`)
+6. Official TanStack plugin `tanstackStartCookies()` can leak server code into the client bundle — FMC uses manual cookie forwarding ([auth.md](auth.md))
 
 ---
 

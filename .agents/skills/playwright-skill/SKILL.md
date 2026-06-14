@@ -7,7 +7,7 @@ description: E2E testing and ad-hoc browser automation for TanStack Start apps (
 
 **Read the project’s `tests/README.md` first** — env vars, Docker, and scripts live there.
 
-**Related FMC skills:** `tanstack-start-migration` (post-migration smoke), `trassenscout-auth` (sessions, E2E stubs), `tanstack-start-conventions`.
+**Related FMC skills:** `tanstack-start-migration` (post-migration smoke), `tanstack-start-auth` (sessions), `tanstack-start-conventions`.
 
 ---
 
@@ -190,14 +190,24 @@ Prefer `getByRole`, `getByLabel`, `getByText`. Use `playwrightTestId('…')` onl
 
 ## Project E2E workflow
 
+**`package.json` script** (TILDA convention):
+
+```json
+"e2e": "playwright test --project=chromium"
+```
+
+- `bun run e2e` → chromium project (default local/CI run)
+- `bun run e2e -- --ui` / `bun run e2e -- --debug` → pass Playwright flags after `--`
+- `bun run e2e -- tests/smoke` → subset of specs
+
 ```bash
 bun add -d @playwright/test dotenv
 bunx playwright install chromium
 # Start DB/tiles if required (see tests/README.md)
-bun run e2e                   # chromium project
+bun run e2e
 bun run e2e -- tests/smoke
-bunx playwright test --ui
-bunx playwright test --debug
+bun run e2e -- --ui
+bun run e2e -- --debug
 ```
 
 Write tests in `tests/**/*.spec.ts` with TypeScript. Use web-first assertions (`expect(locator).toBeVisible()`).
