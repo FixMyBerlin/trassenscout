@@ -54,14 +54,22 @@ const errorMessageTranslations: TranslatedMessages = {
   "Bad Gateway":
     "Der Server ist vorübergehend nicht erreichbar. Bitte speichern Sie Ihre Änderungen und versuchen Sie es in Kürze erneut.",
   // UPLOAD ERRORS
-  // NOTE: Some translation are from src/app/api/(auth)/[projectSlug]/upload/route.ts
-  "Error: Too many files.":
-    "Zu viele Dateien. Sie können maximal 10 Dateien gleichzeitig hochladen.",
-  "Error: One or more files are too large.":
-    "Eine oder mehrere Dateien sind zu groß. Die maximale Dateigröße beträgt 10 MB.",
+  // Keys match @better-upload/client `error.message` (onError) and per-file
+  // `progress.error.message` verbatim — no "Error: " prefix. Keep the size/count
+  // copy in sync with S3_MAX_FILES / S3_MAX_FILE_SIZE_BYTES in shared/uploads/config.ts.
+  "Too many files.": "Zu viele Dateien. Sie können maximal 10 Dateien gleichzeitig hochladen.",
+  "One or more files are too large.":
+    "Eine oder mehrere Dateien sind zu groß. Die maximale Dateigröße beträgt 50 MB.",
+  "One or more files exceed the S3 limit of 5GB. Use multipart upload for larger files.":
+    "Eine oder mehrere Dateien überschreiten das Limit von 5 GB.",
+  "One or more files have an invalid file type.":
+    "Eine oder mehrere Dateien haben einen ungültigen Dateityp.",
   "Failed to upload file to S3.":
     "Die Datei konnte nicht hochgeladen werden. Bitte versuchen Sie es erneut.",
   "Upload aborted.": "Der Upload wurde abgebrochen.",
-  "One or more files have an invalid file type.":
-    "Eine oder mehrere Dateien haben einen ungültigen Dateityp.",
+  // Survey (Beteiligung) session rejections — now surfaced to public users via RejectUpload
+  "Survey response not found or does not belong to the provided session":
+    "Die Sitzung ist ungültig oder abgelaufen. Bitte laden Sie die Seite neu und versuchen Sie es erneut.",
+  "Missing or invalid surveyResponseId or surveySessionId":
+    "Die Sitzung ist ungültig oder abgelaufen. Bitte laden Sie die Seite neu und versuchen Sie es erneut.",
 }
