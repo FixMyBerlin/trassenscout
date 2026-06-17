@@ -149,7 +149,7 @@ export const SubsubsectionTable = ({ subsubsections, compact }: Props) => {
         </table>
         {!subsubsections.length && (
           <div className="border-t border-gray-200 px-3 py-5">
-            <ZeroCase visible={subsubsections.length} name="Maßnahmen" />
+            <ZeroCase visible={subsubsections.length} name="Maßnahmen" verb="angelegt" />
           </div>
         )}
       </TableWrapper>
