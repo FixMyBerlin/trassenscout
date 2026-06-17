@@ -28,7 +28,11 @@ type ReturnType = {
 
 export const useMenuItems = () => {
   const projectSlug = useTryProjectSlug()
-  const [project] = useQuery(getProject, { projectSlug: projectSlug ?? "" }, { enabled: !!projectSlug })
+  const [project] = useQuery(
+    getProject,
+    { projectSlug: projectSlug ?? "" },
+    { enabled: !!projectSlug },
+  )
   if (!projectSlug) return []
 
   const items: ReturnType[] = [
