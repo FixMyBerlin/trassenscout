@@ -39,7 +39,7 @@
     "check": "bun run --parallel migrate-check-test type-check lint-check format-check test",
     "check-full": "bun run --sequential check e2e",
     "type-check": "tsgo --noEmit",
-    "lint": "oxlint --fix --deny-warnings -c oxlint.config.mjs",
+    "lint": "oxlint --fix --fix-dangerously --deny-warnings -c oxlint.config.mjs",
     "lint-check": "oxlint --deny-warnings -c oxlint.config.mjs",
     "format": "oxfmt --config oxfmt.config.mjs --write .",
     "format-check": "oxfmt --config oxfmt.config.mjs --check .",

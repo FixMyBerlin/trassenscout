@@ -5,14 +5,16 @@
   "oxc.path.oxfmt": "node_modules/.bin/oxfmt",
   "oxc.path.oxlint": "node_modules/.bin/oxlint",
   "oxc.fmt.configPath": "oxfmt.config.mjs",
-  "oxc.configPath": "oxlint.config.mjs",
+  "oxc.lint.configPath": "oxlint.config.mjs",
+  "oxc.fixKind": "dangerous_fix_or_suggestion",
   "oxc.typeAware": true,
   "js/ts.experimental.useTsgo": true,
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "typescript.native-preview.tsdk": "node_modules/@typescript/native-preview",
   "editor.codeActionsOnSave": {
-    "source.fixAll.oxc": "always"
+    "source.fixAll.oxc": "always",
+    "source.fixAllDangerous.oxc": "always"
   },
   "[typescript]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
