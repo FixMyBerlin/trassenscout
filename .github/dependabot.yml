@@ -1,0 +1,152 @@
+version: 2
+updates:
+  - package-ecosystem: bun
+    directories:
+      - /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "07:00"
+      timezone: Europe/Berlin
+    cooldown:
+      default-days: 5
+    open-pull-requests-limit: 1
+    exclude-paths:
+      - .cursor/**
+      - .agents/**
+    commit-message:
+      prefix: chore
+      include: scope
+    ignore:
+      - dependency-name: nitro
+        update-types:
+          - version-update:semver-major
+          - version-update:semver-minor
+          - version-update:semver-patch
+    groups:
+      security-dev-tools:
+        applies-to: security-updates
+        patterns:
+          - "oxlint*"
+          - "oxfmt*"
+          - "vitest*"
+          - "@playwright/*"
+          - "@testing-library/*"
+          - "knip*"
+          - "husky*"
+          - "@types/*"
+          - "typescript"
+          - "eslint*"
+
+      shared-monorepo-tools:
+        applies-to: version-updates
+        group-by: dependency-name
+        patterns:
+          - "oxlint*"
+          - "oxfmt*"
+          - "@types/bun"
+
+      app-dev-minor-patch:
+        applies-to: version-updates
+        patterns:
+          - "@aws-sdk/*"
+          - "@clack/*"
+          - "@faker-js/faker"
+          - "@heroicons/*"
+          - "@playwright/*"
+          - "@react-email/*"
+          - "@testing-library/*"
+          - "@total-typescript/*"
+          - "@vitejs/*"
+          - "babel-plugin-*"
+          - "eslint-*"
+          - "favicons"
+          - "husky"
+          - "jsdom"
+          - "knip"
+          - "oxfmt"
+          - "oxlint*"
+          - "papaparse"
+          - "preview-email"
+          - "react-email"
+          - "sharp"
+          - "vitest"
+          - "vite"
+          - "@types/*"
+          - "typescript"
+          - "dotenv"
+        update-types:
+          - minor
+          - patch
+
+      app-framework-minor-patch:
+        applies-to: version-updates
+        patterns:
+          - "@tanstack/*"
+          - "@tailwindcss/*"
+          - "tailwindcss"
+          - "@turf/*"
+          - "@prisma/*"
+          - "prisma"
+          - "react"
+          - "react-dom"
+          - "@types/react*"
+          - "maplibre-gl"
+          - "react-map-gl"
+          - "better-auth"
+          - "zod"
+        update-types:
+          - minor
+          - patch
+
+      app-prod-misc-patch:
+        applies-to: version-updates
+        update-types:
+          - patch
+        patterns:
+          - "*"
+        exclude-patterns:
+          - "@tanstack/*"
+          - "@tailwindcss/*"
+          - "@turf/*"
+          - "@prisma/*"
+          - "prisma"
+          - "react"
+          - "react-dom"
+          - "maplibre-gl"
+          - "better-auth"
+          - "zod"
+          - "nitro*"
+          - "@maptiler/*"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "07:00"
+      timezone: Europe/Berlin
+    cooldown:
+      default-days: 5
+    open-pull-requests-limit: 1
+    groups:
+      actions-minor-patch:
+        update-types:
+          - minor
+          - patch
+        patterns:
+          - "*"
+
+  - package-ecosystem: docker
+    directories:
+      - /docker/app
+      - /docker/imap-listener
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 1
+    groups:
+      docker-bases:
+        patterns:
+          - "debian*"
+          - "oven/bun*"
+          - "node*"
