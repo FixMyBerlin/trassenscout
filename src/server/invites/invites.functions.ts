@@ -3,9 +3,9 @@ import { getRequestHeaders } from "@tanstack/react-start/server"
 import { CreateInviteSchema, GetInvitesSchema } from "./invites.inputSchemas"
 import { createInvite, getInvites } from "./invites.server"
 export const getInvitesFn = createServerFn({ method: "GET" })
-  .inputValidator(GetInvitesSchema)
+  .validator(GetInvitesSchema)
   .handler(({ data }) => getInvites(getRequestHeaders(), data))
 
 export const createInviteFn = createServerFn({ method: "POST" })
-  .inputValidator(CreateInviteSchema)
+  .validator(CreateInviteSchema)
   .handler(({ data }) => createInvite(getRequestHeaders(), data))

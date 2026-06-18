@@ -22,41 +22,41 @@ import {
   updateAcquisitionArea,
 } from "./acquisitionAreas.server"
 export const getAcquisitionAreasFn = createServerFn({ method: "GET" })
-  .inputValidator(GetAcquisitionAreasSchema)
+  .validator(GetAcquisitionAreasSchema)
   .handler(({ data }) => getAcquisitionAreas(getRequestHeaders(), data))
 
 export const getAcquisitionAreaFn = createServerFn({ method: "GET" })
-  .inputValidator(GetAcquisitionAreaSchema)
+  .validator(GetAcquisitionAreaSchema)
   .handler(({ data }) => getAcquisitionArea(getRequestHeaders(), data))
 
 const _createAcquisitionAreaFn = createServerFn({ method: "POST" })
-  .inputValidator(CreateAcquisitionAreaSchema)
+  .validator(CreateAcquisitionAreaSchema)
   .handler(({ data }) => createAcquisitionArea(getRequestHeaders(), data))
 
 export const createAcquisitionAreasFromSelectionFn = createServerFn({ method: "POST" })
-  .inputValidator(CreateAcquisitionAreasFromSelectionSchema)
+  .validator(CreateAcquisitionAreasFromSelectionSchema)
   .handler(({ data }) => createAcquisitionAreasFromSelection(getRequestHeaders(), data))
 
 export const updateAcquisitionAreaFn = createServerFn({ method: "POST" })
-  .inputValidator(UpdateAcquisitionAreaSchema)
+  .validator(UpdateAcquisitionAreaSchema)
   .handler(({ data }) => updateAcquisitionArea(getRequestHeaders(), data))
 
 export const deleteAcquisitionAreaFn = createServerFn({ method: "POST" })
-  .inputValidator(DeleteAcquisitionAreaSchema)
+  .validator(DeleteAcquisitionAreaSchema)
   .handler(({ data }) => deleteAcquisitionArea(getRequestHeaders(), data))
 
 export const getAcquisitionAreasBySubsubsectionFn = createServerFn({ method: "GET" })
-  .inputValidator(GetAcquisitionAreasBySubsubsectionSchema)
+  .validator(GetAcquisitionAreasBySubsubsectionSchema)
   .handler(({ data }) => getAcquisitionAreasBySubsubsection(getRequestHeaders(), data))
 
 export const getAcquisitionAreasWithProjectRecordCountBySubsubsectionFn = createServerFn({
   method: "GET",
 })
-  .inputValidator(GetAcquisitionAreasBySubsubsectionSchema)
+  .validator(GetAcquisitionAreasBySubsubsectionSchema)
   .handler(({ data }) =>
     getAcquisitionAreasWithProjectRecordCountBySubsubsection(getRequestHeaders(), data),
   )
 
 export const deleteAllAcquisitionAreasForSubsubsectionFn = createServerFn({ method: "POST" })
-  .inputValidator(DeleteAllAcquisitionAreasForSubsubsectionSchema)
+  .validator(DeleteAllAcquisitionAreasForSubsubsectionSchema)
   .handler(({ data }) => deleteAllAcquisitionAreasForSubsubsection(getRequestHeaders(), data))

@@ -37,33 +37,33 @@ export const getAdminProjectsWithCountsFn = createServerFn({ method: "GET" }).ha
 )
 
 export const getProjectBySlugFn = createServerFn({ method: "GET" })
-  .inputValidator(GetProjectBySlugSchema)
+  .validator(GetProjectBySlugSchema)
   .handler(({ data }) => getProjectBySlug(getRequestHeaders(), data))
 
 export const updateProjectFn = createServerFn({ method: "POST" })
-  .inputValidator(UpdateProjectSchema)
+  .validator(UpdateProjectSchema)
   .handler(({ data }) => updateProject(getRequestHeaders(), data))
 
 export const getProjectsAdminFn = createServerFn({ method: "GET" })
-  .inputValidator(GetProjectsAdminSchema)
+  .validator(GetProjectsAdminSchema)
   .handler(() => getProjectsAdmin(getRequestHeaders()))
 
 export const createProjectFn = createServerFn({ method: "POST" })
-  .inputValidator(CreateProjectSchema)
+  .validator(CreateProjectSchema)
   .handler(({ data }) => createProject(getRequestHeaders(), data))
 
 export const updateProjectShowLogEntriesFn = createServerFn({ method: "POST" })
-  .inputValidator(UpdateProjectShowLogEntriesSchema)
+  .validator(UpdateProjectShowLogEntriesSchema)
   .handler(({ data }) => updateProjectShowLogEntries(getRequestHeaders(), data))
 
 export const updateProjectAiEnabledFn = createServerFn({ method: "POST" })
-  .inputValidator(UpdateProjectAiEnabledSchema)
+  .validator(UpdateProjectAiEnabledSchema)
   .handler(({ data }) => updateProjectAiEnabled(getRequestHeaders(), data))
 
 export const updateProjectLandAcquisitionModuleEnabledFn = createServerFn({ method: "POST" })
-  .inputValidator(UpdateProjectLandAcquisitionModuleEnabledSchema)
+  .validator(UpdateProjectLandAcquisitionModuleEnabledSchema)
   .handler(({ data }) => updateProjectLandAcquisitionModuleEnabled(getRequestHeaders(), data))
 
 export const updateProjectExportApiFn = createServerFn({ method: "POST" })
-  .inputValidator(UpdateProjectExportApiSchema)
+  .validator(UpdateProjectExportApiSchema)
   .handler(({ data }) => updateProjectExportApi(getRequestHeaders(), data))

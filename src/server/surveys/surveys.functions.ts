@@ -25,41 +25,41 @@ import {
   updateSurvey,
 } from "./surveys.server"
 export const getSurveysFn = createServerFn({ method: "GET" })
-  .inputValidator(GetSurveysSchema)
+  .validator(GetSurveysSchema)
   .handler(({ data }) => getSurveys(getRequestHeaders(), data))
 
 export const getSurveyFn = createServerFn({ method: "GET" })
-  .inputValidator(GetSurveySchema)
+  .validator(GetSurveySchema)
   .handler(({ data }) => getSurvey(getRequestHeaders(), data))
 
 const _createSurveyFn = createServerFn({ method: "POST" })
-  .inputValidator(CreateSurveyBySlugSchema)
+  .validator(CreateSurveyBySlugSchema)
   .handler(({ data }) => createSurvey(getRequestHeaders(), data))
 
 const _updateSurveyFn = createServerFn({ method: "POST" })
-  .inputValidator(UpdateSurveyBySlugSchema)
+  .validator(UpdateSurveyBySlugSchema)
   .handler(({ data }) => updateSurvey(getRequestHeaders(), data))
 
 const _deleteSurveyFn = createServerFn({ method: "POST" })
-  .inputValidator(DeleteSurveySchema)
+  .validator(DeleteSurveySchema)
   .handler(({ data }) => deleteSurvey(getRequestHeaders(), data))
 
 export const getAdminSurveysFn = createServerFn({ method: "GET" })
-  .inputValidator(GetAdminSurveysSchema)
+  .validator(GetAdminSurveysSchema)
   .handler(() => getAdminSurveys(getRequestHeaders()))
 
 export const getAdminSurveyFn = createServerFn({ method: "GET" })
-  .inputValidator(GetAdminSurveySchema)
+  .validator(GetAdminSurveySchema)
   .handler(({ data }) => getAdminSurvey(getRequestHeaders(), data))
 
 export const createAdminSurveyFn = createServerFn({ method: "POST" })
-  .inputValidator(CreateAdminSurveySchema)
+  .validator(CreateAdminSurveySchema)
   .handler(({ data }) => createAdminSurvey(getRequestHeaders(), data))
 
 export const updateAdminSurveyFn = createServerFn({ method: "POST" })
-  .inputValidator(UpdateAdminSurveySchema)
+  .validator(UpdateAdminSurveySchema)
   .handler(({ data }) => updateAdminSurvey(getRequestHeaders(), data))
 
 export const deleteAdminSurveyFn = createServerFn({ method: "POST" })
-  .inputValidator(DeleteAdminSurveySchema)
+  .validator(DeleteAdminSurveySchema)
   .handler(({ data }) => deleteAdminSurvey(getRequestHeaders(), data))

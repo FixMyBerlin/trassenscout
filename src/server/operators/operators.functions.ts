@@ -10,9 +10,9 @@ const GetOperatorMaxOrderSchema = z.object({
 })
 
 export const getOperatorsPaginatedFn = createServerFn({ method: "GET" })
-  .inputValidator(GetOperatorsPaginatedSchema)
+  .validator(GetOperatorsPaginatedSchema)
   .handler(({ data }) => getOperatorsPaginated(getRequestHeaders(), data))
 
 export const getOperatorMaxOrderFn = createServerFn({ method: "GET" })
-  .inputValidator(GetOperatorMaxOrderSchema)
+  .validator(GetOperatorMaxOrderSchema)
   .handler(({ data }) => getOperatorMaxOrder(getRequestHeaders(), data.projectSlug))

@@ -11,13 +11,13 @@ import {
   updateSurveyResponsePublic,
 } from "./publicSurveyResponses.server"
 export const getOrCreateCreatedSurveyResponsePublicFn = createServerFn({ method: "POST" })
-  .inputValidator(GetOrCreateCreatedSurveyResponsePublicSchema)
+  .validator(GetOrCreateCreatedSurveyResponsePublicSchema)
   .handler(({ data }) => getOrCreateCreatedSurveyResponsePublic(getRequestHeaders(), data))
 
 export const updateSurveyResponsePublicFn = createServerFn({ method: "POST" })
-  .inputValidator(UpdateSurveyResponsePublicSchema)
+  .validator(UpdateSurveyResponsePublicSchema)
   .handler(({ data }) => updateSurveyResponsePublic(getRequestHeaders(), data))
 
 export const sendSurveyPart2EmailFn = createServerFn({ method: "POST" })
-  .inputValidator(SurveyPart2EmailSchema)
+  .validator(SurveyPart2EmailSchema)
   .handler(({ data }) => sendSurveyPart2Email(getRequestHeaders(), data))

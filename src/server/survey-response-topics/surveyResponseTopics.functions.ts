@@ -9,9 +9,9 @@ import {
   getSurveyResponseTopicsByProject,
 } from "./surveyResponseTopics.server"
 export const getSurveyResponseTopicsByProjectFn = createServerFn({ method: "GET" })
-  .inputValidator(GetSurveyResponseTopicsSchema)
+  .validator(GetSurveyResponseTopicsSchema)
   .handler(({ data }) => getSurveyResponseTopicsByProject(getRequestHeaders(), data))
 
 export const createSurveyResponseTopicFn = createServerFn({ method: "POST" })
-  .inputValidator(CreateSurveyResponseTopicSchema)
+  .validator(CreateSurveyResponseTopicSchema)
   .handler(({ data }) => createSurveyResponseTopic(getRequestHeaders(), data))

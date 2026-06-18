@@ -19,29 +19,29 @@ import {
 } from "./memberships.server"
 
 export const createMembershipFn = createServerFn({ method: "POST" })
-  .inputValidator(MembershipSchema)
+  .validator(MembershipSchema)
   .handler(({ data }) => createMembership(getRequestHeaders(), data))
 
 const _updateMembershipRoleFn = createServerFn({ method: "POST" })
-  .inputValidator(UpdateMembershipRoleSchema)
+  .validator(UpdateMembershipRoleSchema)
   .handler(({ data }) => updateMembershipRole(getRequestHeaders(), data))
 
 const _deleteMembershipFn = createServerFn({ method: "POST" })
-  .inputValidator(DeleteMembershipSchema)
+  .validator(DeleteMembershipSchema)
   .handler(({ data }) => deleteMembership(getRequestHeaders(), data))
 
 export const getProjectUsersFn = createServerFn({ method: "GET" })
-  .inputValidator(GetProjectUsersSchema)
+  .validator(GetProjectUsersSchema)
   .handler(({ data }) => getProjectUsers(getRequestHeaders(), data))
 
 export const deleteProjectMembershipFn = createServerFn({ method: "POST" })
-  .inputValidator(DeleteProjectMembershipSchema)
+  .validator(DeleteProjectMembershipSchema)
   .handler(({ data }) => deleteProjectMembership(getRequestHeaders(), data))
 
 export const updateProjectMembershipRoleFn = createServerFn({ method: "POST" })
-  .inputValidator(UpdateProjectMembershipRoleSchema)
+  .validator(UpdateProjectMembershipRoleSchema)
   .handler(({ data }) => updateProjectMembershipRole(getRequestHeaders(), data))
 
 export const saveUserMembershipsFn = createServerFn({ method: "POST" })
-  .inputValidator(SaveUserMembershipsSchema)
+  .validator(SaveUserMembershipsSchema)
   .handler(({ data }) => saveUserMemberships(getRequestHeaders(), data))

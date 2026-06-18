@@ -16,25 +16,25 @@ import {
   updateLookupRow,
 } from "./adminLookupTables.server"
 export const getLookupRowsFn = createServerFn({ method: "GET" })
-  .inputValidator(GetLookupRowsSchema)
+  .validator(GetLookupRowsSchema)
   .handler(({ data }) => getLookupRows(getRequestHeaders(), data))
 
 export const getLookupRowsWithCountFn = createServerFn({ method: "GET" })
-  .inputValidator(GetLookupRowsSchema)
+  .validator(GetLookupRowsSchema)
   .handler(({ data }) => getLookupRowsWithCount(getRequestHeaders(), data))
 
 export const getLookupRowFn = createServerFn({ method: "GET" })
-  .inputValidator(GetLookupRowSchema)
+  .validator(GetLookupRowSchema)
   .handler(({ data }) => getLookupRow(getRequestHeaders(), data))
 
 export const createLookupRowFn = createServerFn({ method: "POST" })
-  .inputValidator(CreateLookupRowSchema)
+  .validator(CreateLookupRowSchema)
   .handler(({ data }) => createLookupRow(getRequestHeaders(), data))
 
 export const updateLookupRowFn = createServerFn({ method: "POST" })
-  .inputValidator(UpdateLookupRowSchema)
+  .validator(UpdateLookupRowSchema)
   .handler(({ data }) => updateLookupRow(getRequestHeaders(), data))
 
 export const deleteLookupRowFn = createServerFn({ method: "POST" })
-  .inputValidator(DeleteLookupRowSchema)
+  .validator(DeleteLookupRowSchema)
   .handler(({ data }) => deleteLookupRow(getRequestHeaders(), data))

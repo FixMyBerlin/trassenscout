@@ -8,7 +8,7 @@ const AcceptInviteSchema = z.object({
 })
 
 export const acceptInviteFn = createServerFn({ method: "POST" })
-  .inputValidator(AcceptInviteSchema)
+  .validator(AcceptInviteSchema)
   .handler(async ({ data }) => {
     const session = await endpointAuth.session(getRequestHeaders())
     return acceptInviteForSession(data.inviteToken, session)

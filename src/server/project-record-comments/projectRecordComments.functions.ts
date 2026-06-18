@@ -13,17 +13,17 @@ import {
   updateProjectRecordComment,
 } from "./projectRecordComments.server"
 const _getProjectRecordCommentsFn = createServerFn({ method: "GET" })
-  .inputValidator(GetProjectRecordCommentsSchema)
+  .validator(GetProjectRecordCommentsSchema)
   .handler(({ data }) => getProjectRecordComments(getRequestHeaders(), data))
 
 export const createProjectRecordCommentFn = createServerFn({ method: "POST" })
-  .inputValidator(CreateProjectRecordCommentBySlugSchema)
+  .validator(CreateProjectRecordCommentBySlugSchema)
   .handler(({ data }) => createProjectRecordComment(getRequestHeaders(), data))
 
 export const updateProjectRecordCommentFn = createServerFn({ method: "POST" })
-  .inputValidator(UpdateProjectRecordCommentSchema)
+  .validator(UpdateProjectRecordCommentSchema)
   .handler(({ data }) => updateProjectRecordComment(getRequestHeaders(), data))
 
 export const deleteProjectRecordCommentFn = createServerFn({ method: "POST" })
-  .inputValidator(DeleteProjectRecordCommentSchema)
+  .validator(DeleteProjectRecordCommentSchema)
   .handler(({ data }) => deleteProjectRecordComment(getRequestHeaders(), data))

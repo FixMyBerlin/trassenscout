@@ -13,21 +13,21 @@ import {
   upsertEmailTemplate,
 } from "./emailTemplates.server"
 export const getEmailTemplatesFn = createServerFn({ method: "GET" })
-  .inputValidator(GetEmailTemplatesSchema)
+  .validator(GetEmailTemplatesSchema)
   .handler(() => getEmailTemplates(getRequestHeaders()))
 
 export const getEmailTemplateFn = createServerFn({ method: "GET" })
-  .inputValidator(EmailTemplateByKeySchema)
+  .validator(EmailTemplateByKeySchema)
   .handler(({ data }) => getEmailTemplate(getRequestHeaders(), data))
 
 export const upsertEmailTemplateFn = createServerFn({ method: "POST" })
-  .inputValidator(UpsertEmailTemplateSchema)
+  .validator(UpsertEmailTemplateSchema)
   .handler(({ data }) => upsertEmailTemplate(getRequestHeaders(), data))
 
 export const deleteEmailTemplateFn = createServerFn({ method: "POST" })
-  .inputValidator(DeleteEmailTemplateSchema)
+  .validator(DeleteEmailTemplateSchema)
   .handler(({ data }) => deleteEmailTemplate(getRequestHeaders(), data))
 
 export const previewEmailTemplateFn = createServerFn({ method: "POST" })
-  .inputValidator(UpsertEmailTemplateSchema)
+  .validator(UpsertEmailTemplateSchema)
   .handler(({ data }) => previewEmailTemplate(getRequestHeaders(), data))

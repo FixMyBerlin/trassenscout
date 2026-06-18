@@ -12,13 +12,13 @@ import {
 } from "./surveyResponseComments.server"
 
 export const createSurveyResponseCommentFn = createServerFn({ method: "POST" })
-  .inputValidator(CreateSurveyResponseCommentBySlugSchema)
+  .validator(CreateSurveyResponseCommentBySlugSchema)
   .handler(({ data }) => createSurveyResponseComment(getRequestHeaders(), data))
 
 export const updateSurveyResponseCommentFn = createServerFn({ method: "POST" })
-  .inputValidator(UpdateSurveyResponseCommentSchema)
+  .validator(UpdateSurveyResponseCommentSchema)
   .handler(({ data }) => updateSurveyResponseComment(getRequestHeaders(), data))
 
 export const deleteSurveyResponseCommentFn = createServerFn({ method: "POST" })
-  .inputValidator(DeleteSurveyResponseCommentSchema)
+  .validator(DeleteSurveyResponseCommentSchema)
   .handler(({ data }) => deleteSurveyResponseComment(getRequestHeaders(), data))

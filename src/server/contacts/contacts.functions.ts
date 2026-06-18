@@ -10,21 +10,21 @@ import {
 import { createContact, deleteContact, updateContact } from "./mutations/contacts.server"
 import { getContact, getContacts } from "./queries/contacts.server"
 export const getContactsFn = createServerFn({ method: "GET" })
-  .inputValidator(GetContactsSchema)
+  .validator(GetContactsSchema)
   .handler(({ data }) => getContacts(getRequestHeaders(), data))
 
 export const getContactFn = createServerFn({ method: "GET" })
-  .inputValidator(GetContactSchema)
+  .validator(GetContactSchema)
   .handler(({ data }) => getContact(getRequestHeaders(), data))
 
 export const createContactFn = createServerFn({ method: "POST" })
-  .inputValidator(CreateContactSchema)
+  .validator(CreateContactSchema)
   .handler(({ data }) => createContact(getRequestHeaders(), data))
 
 export const updateContactFn = createServerFn({ method: "POST" })
-  .inputValidator(UpdateContactSchema)
+  .validator(UpdateContactSchema)
   .handler(({ data }) => updateContact(getRequestHeaders(), data))
 
 export const deleteContactFn = createServerFn({ method: "POST" })
-  .inputValidator(DeleteContactSchema)
+  .validator(DeleteContactSchema)
   .handler(({ data }) => deleteContact(getRequestHeaders(), data))
