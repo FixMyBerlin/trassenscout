@@ -32,6 +32,12 @@ Local development uses a gitignored `.env` file (see [`.env.example`](.env.examp
 - Server-only code lives in `src/server`.
 - Authentication is handled by Better Auth.
 
+### Supported browsers
+
+Market-share queries in [`package.json`](./package.json) `browserslist`; wired to [`vite.config.mts`](./vite.config.mts) (client build) and [`oxlint.config.mjs`](./oxlint.config.mjs) (client API lint).
+
+**How it works:** [browser-target skill](https://github.com/FixMyBerlin/fixmyskills/blob/main/skills/tech-stack/references/browser-target.md)
+
 ## Getting Started
 
 1. Setup `.env`:<br />

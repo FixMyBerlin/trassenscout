@@ -4,11 +4,20 @@ import tailwindcss from "@tailwindcss/vite"
 import { devtools } from "@tanstack/devtools-vite"
 import { tanstackStart } from "@tanstack/react-start/plugin/vite"
 import viteReact, { reactCompilerPreset } from "@vitejs/plugin-react"
+import browserslistToEsbuild from "browserslist-to-esbuild"
 import { nitro } from "nitro/vite"
 import { defineConfig } from "vite"
 import { forwardApiRequestsPastViteAssetMiddleware } from "./vite/forwardApiRequestsPastViteAssetMiddleware"
 
 export default defineConfig({
+  environments: {
+    client: {
+      build: {
+        target: browserslistToEsbuild(),
+        sourcemap: true,
+      },
+    },
+  },
   server: {
     host: "127.0.0.1",
     port: 4000,

@@ -119,5 +119,13 @@ export default defineConfig({
         "react-compiler-js/react-compiler": "error",
       },
     },
+    {
+      files: ["src/components/**", "src/routes/**"],
+      excludeFiles: ["**/*.server.ts", "**/*.functions.ts", "src/routes/api/**"],
+      jsPlugins: [{ name: "compat", specifier: "eslint-plugin-compat" }],
+      rules: {
+        "compat/compat": "error",
+      },
+    },
   ],
 })
