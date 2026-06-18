@@ -17,25 +17,25 @@ import {
   updateSubsubsection,
 } from "./subsubsections.server"
 export const getSubsubsectionsFn = createServerFn({ method: "GET" })
-  .inputValidator(GetSubsubsectionsSchema)
+  .validator(GetSubsubsectionsSchema)
   .handler(({ data }) => getSubsubsections(getRequestHeaders(), data))
 
 const _getSubsubsectionFn = createServerFn({ method: "GET" })
-  .inputValidator(GetSubsubsectionSchema)
+  .validator(GetSubsubsectionSchema)
   .handler(({ data }) => getSubsubsection(getRequestHeaders(), data))
 
 export const getSubsubsectionBySlugFn = createServerFn({ method: "GET" })
-  .inputValidator(GetSubsubsectionBySlugSchema)
+  .validator(GetSubsubsectionBySlugSchema)
   .handler(({ data }) => getSubsubsectionBySlug(getRequestHeaders(), data))
 
 export const createSubsubsectionFn = createServerFn({ method: "POST" })
-  .inputValidator(CreateSubsubsectionSchema)
+  .validator(CreateSubsubsectionSchema)
   .handler(({ data }) => createSubsubsection(getRequestHeaders(), data))
 
 export const updateSubsubsectionFn = createServerFn({ method: "POST" })
-  .inputValidator(UpdateSubsubsectionSchema)
+  .validator(UpdateSubsubsectionSchema)
   .handler(({ data }) => updateSubsubsection(getRequestHeaders(), data))
 
 export const deleteSubsubsectionFn = createServerFn({ method: "POST" })
-  .inputValidator(DeleteSubsubsectionSchema)
+  .validator(DeleteSubsubsectionSchema)
   .handler(({ data }) => deleteSubsubsection(getRequestHeaders(), data))

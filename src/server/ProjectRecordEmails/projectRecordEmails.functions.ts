@@ -19,25 +19,25 @@ import {
   updateProjectRecordEmail,
 } from "./projectRecordEmails.server"
 export const getProjectRecordEmailsFn = createServerFn({ method: "GET" })
-  .inputValidator(GetProjectRecordEmailsSchema)
+  .validator(GetProjectRecordEmailsSchema)
   .handler(({ data }) => getProjectRecordEmails(getRequestHeaders(), data))
 
 export const getProjectRecordEmailFn = createServerFn({ method: "GET" })
-  .inputValidator(GetProjectRecordEmailSchema)
+  .validator(GetProjectRecordEmailSchema)
   .handler(({ data }) => getProjectRecordEmail(getRequestHeaders(), data))
 
 export const createProjectRecordEmailFn = createServerFn({ method: "POST" })
-  .inputValidator(CreateProjectRecordEmailSchema)
+  .validator(CreateProjectRecordEmailSchema)
   .handler(({ data }) => createProjectRecordEmail(getRequestHeaders(), data))
 
 export const updateProjectRecordEmailFn = createServerFn({ method: "POST" })
-  .inputValidator(UpdateProjectRecordEmailSchema)
+  .validator(UpdateProjectRecordEmailSchema)
   .handler(({ data }) => updateProjectRecordEmail(getRequestHeaders(), data))
 
 export const deleteProjectRecordEmailFn = createServerFn({ method: "POST" })
-  .inputValidator(DeleteProjectRecordEmailSchema)
+  .validator(DeleteProjectRecordEmailSchema)
   .handler(({ data }) => deleteProjectRecordEmail(getRequestHeaders(), data))
 
 export const processProjectRecordEmailFn = createServerFn({ method: "POST" })
-  .inputValidator(ProcessProjectRecordEmailSchema)
+  .validator(ProcessProjectRecordEmailSchema)
   .handler(({ data }) => processProjectRecordEmail(getRequestHeaders(), data))

@@ -22,37 +22,37 @@ import {
   updateSubsectionsWithPlacemark,
 } from "./subsections.server"
 export const getSubsectionsFn = createServerFn({ method: "GET" })
-  .inputValidator(GetSubsectionsSchema)
+  .validator(GetSubsectionsSchema)
   .handler(({ data }) => getSubsections(getRequestHeaders(), data))
 
 const _getSubsectionFn = createServerFn({ method: "GET" })
-  .inputValidator(GetSubsectionSchema)
+  .validator(GetSubsectionSchema)
   .handler(({ data }) => getSubsection(getRequestHeaders(), data))
 
 export const getSubsectionBySlugFn = createServerFn({ method: "GET" })
-  .inputValidator(GetSubsectionBySlugSchema)
+  .validator(GetSubsectionBySlugSchema)
   .handler(({ data }) => getSubsectionBySlug(getRequestHeaders(), data))
 
 export const getSubsectionMaxOrderFn = createServerFn({ method: "GET" })
-  .inputValidator(GetSubsectionsSchema)
+  .validator(GetSubsectionsSchema)
   .handler(({ data }) => getSubsectionMaxOrder(getRequestHeaders(), data))
 
 export const createSubsectionFn = createServerFn({ method: "POST" })
-  .inputValidator(CreateSubsectionSchema)
+  .validator(CreateSubsectionSchema)
   .handler(({ data }) => createSubsection(getRequestHeaders(), data))
 
 export const updateSubsectionFn = createServerFn({ method: "POST" })
-  .inputValidator(UpdateSubsectionSchema)
+  .validator(UpdateSubsectionSchema)
   .handler(({ data }) => updateSubsection(getRequestHeaders(), data))
 
 export const deleteSubsectionFn = createServerFn({ method: "POST" })
-  .inputValidator(DeleteSubsectionSchema)
+  .validator(DeleteSubsectionSchema)
   .handler(({ data }) => deleteSubsection(getRequestHeaders(), data))
 
 export const createSubsectionsFn = createServerFn({ method: "POST" })
-  .inputValidator(CreateSubsectionsSchema)
+  .validator(CreateSubsectionsSchema)
   .handler(({ data }) => createSubsections(getRequestHeaders(), data))
 
 export const updateSubsectionsWithPlacemarkFn = createServerFn({ method: "POST" })
-  .inputValidator(UpdateSubsectionsWithPlacemarkSchema)
+  .validator(UpdateSubsectionsWithPlacemarkSchema)
   .handler(({ data }) => updateSubsectionsWithPlacemark(getRequestHeaders(), data))

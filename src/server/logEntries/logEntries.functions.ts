@@ -7,5 +7,5 @@ export const getGeneralLogEntriesFn = createServerFn({ method: "GET" }).handler(
 )
 
 export const getProjectLogEntriesFn = createServerFn({ method: "GET" })
-  .inputValidator(GetProjectLogEntriesSchema)
+  .validator(GetProjectLogEntriesSchema)
   .handler(({ data }) => getProjectLogEntries(getRequestHeaders(), data))

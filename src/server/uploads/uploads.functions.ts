@@ -32,53 +32,53 @@ import {
   updateUpload,
 } from "./uploads.server"
 export const getUploadsFn = createServerFn({ method: "GET" })
-  .inputValidator(GetUploadsSchema)
+  .validator(GetUploadsSchema)
   .handler(({ data }) => getUploads(getRequestHeaders(), data))
 
 export const getUploadsWithSubsectionsFn = createServerFn({ method: "GET" })
-  .inputValidator(GetUploadsWithSubsectionsSchema)
+  .validator(GetUploadsWithSubsectionsSchema)
   .handler(({ data }) => getUploadsWithSubsections(getRequestHeaders(), data))
 
 export const getSurveyResponseUploadsSplitFn = createServerFn({ method: "GET" })
-  .inputValidator(GetSurveyResponseUploadsSplitSchema)
+  .validator(GetSurveyResponseUploadsSplitSchema)
   .handler(({ data }) => getSurveyResponseUploadsSplit(getRequestHeaders(), data))
 
 export const getUploadFn = createServerFn({ method: "GET" })
-  .inputValidator(GetUploadSchema)
+  .validator(GetUploadSchema)
   .handler(({ data }) => getUpload(getRequestHeaders(), data))
 
 export const createUploadFn = createServerFn({ method: "POST" })
-  .inputValidator(CreateUploadSchema)
+  .validator(CreateUploadSchema)
   .handler(({ data }) => createUpload(getRequestHeaders(), data))
 
 export const updateUploadFn = createServerFn({ method: "POST" })
-  .inputValidator(UpdateUploadSchema)
+  .validator(UpdateUploadSchema)
   .handler(({ data }) => updateUpload(getRequestHeaders(), data))
 
 export const deleteUploadFn = createServerFn({ method: "POST" })
-  .inputValidator(DeleteUploadSchema)
+  .validator(DeleteUploadSchema)
   .handler(({ data }) => deleteUpload(getRequestHeaders(), data))
 
 export const getGeolocatedUploadsFn = createServerFn({ method: "GET" })
-  .inputValidator(GetGeolocatedUploadsSchema)
+  .validator(GetGeolocatedUploadsSchema)
   .handler(({ data }) => getGeolocatedUploads(getRequestHeaders(), data))
 
 export const copyToLuckyCloudFn = createServerFn({ method: "POST" })
-  .inputValidator(CopyToLuckyCloudSchema)
+  .validator(CopyToLuckyCloudSchema)
   .handler(({ data }) => copyToLuckyCloud(getRequestHeaders(), data))
 
 export const endCollaborationFn = createServerFn({ method: "POST" })
-  .inputValidator(EndCollaborationSchema)
+  .validator(EndCollaborationSchema)
   .handler(({ data }) => endCollaboration(getRequestHeaders(), data))
 
 export const createSurveyUploadPublicFn = createServerFn({ method: "POST" })
-  .inputValidator(CreateSurveyUploadPublicSchema)
+  .validator(CreateSurveyUploadPublicSchema)
   .handler(({ data }) => createSurveyUploadPublic(data))
 
 export const getUploadsMetaPublicFn = createServerFn({ method: "GET" })
-  .inputValidator(GetUploadsMetaPublicSchema)
+  .validator(GetUploadsMetaPublicSchema)
   .handler(({ data }) => getUploadsMetaPublic(data))
 
 export const deleteSurveyUploadPublicFn = createServerFn({ method: "POST" })
-  .inputValidator(DeleteSurveyUploadPublicSchema)
+  .validator(DeleteSurveyUploadPublicSchema)
   .handler(({ data }) => deleteSurveyUploadPublic(data))

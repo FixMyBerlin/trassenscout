@@ -3,5 +3,5 @@ import { getRequestHeaders } from "@tanstack/react-start/server"
 import { summarizeUpload } from "@/src/server/uploads/summarizeUpload.server"
 import { SummarizeUploadSchema } from "./summarizeUpload.inputSchemas"
 export const summarizeUploadFn = createServerFn({ method: "POST" })
-  .inputValidator(SummarizeUploadSchema)
+  .validator(SummarizeUploadSchema)
   .handler(({ data }) => summarizeUpload(getRequestHeaders(), data))

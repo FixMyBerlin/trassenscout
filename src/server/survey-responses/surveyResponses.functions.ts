@@ -29,53 +29,53 @@ import {
   updateSurveyResponse,
 } from "./surveyResponses.server"
 export const getSurveyResponsesFn = createServerFn({ method: "GET" })
-  .inputValidator(GetSurveyResponsesSchema)
+  .validator(GetSurveyResponsesSchema)
   .handler(({ data }) => getSurveyResponses(getRequestHeaders(), data))
 
 const _getSurveyResponseFn = createServerFn({ method: "GET" })
-  .inputValidator(GetSurveyResponseSchema)
+  .validator(GetSurveyResponseSchema)
   .handler(({ data }) => getSurveyResponse(getRequestHeaders(), data))
 
 export const getFeedbackSurveyResponsesWithSurveyDataAndCommentsFn = createServerFn({
   method: "GET",
 })
-  .inputValidator(GetFeedbackSurveyResponsesSchema)
+  .validator(GetFeedbackSurveyResponsesSchema)
   .handler(({ data }) =>
     getFeedbackSurveyResponsesWithSurveyDataAndComments(getRequestHeaders(), data),
   )
 
 export const getGroupedSurveyResponsesFn = createServerFn({ method: "GET" })
-  .inputValidator(GetGroupedSurveyResponsesSchema)
+  .validator(GetGroupedSurveyResponsesSchema)
   .handler(({ data }) => getGroupedSurveyResponses(getRequestHeaders(), data))
 
 export const getLinkedSurveyResponseForSubsubsectionFn = createServerFn({ method: "GET" })
-  .inputValidator(GetLinkedSurveyResponseForSubsubsectionSchema)
+  .validator(GetLinkedSurveyResponseForSubsubsectionSchema)
   .handler(({ data }) => getLinkedSurveyResponseForSubsubsection(getRequestHeaders(), data))
 
 const _createSurveyResponseFn = createServerFn({ method: "POST" })
-  .inputValidator(CreateSurveyResponseBySlugSchema)
+  .validator(CreateSurveyResponseBySlugSchema)
   .handler(({ data }) => createSurveyResponse(getRequestHeaders(), data))
 
 const _updateSurveyResponseFn = createServerFn({ method: "POST" })
-  .inputValidator(UpdateSurveyResponseBySlugSchema)
+  .validator(UpdateSurveyResponseBySlugSchema)
   .handler(({ data }) => updateSurveyResponse(getRequestHeaders(), data))
 
 export const patchSurveyResponseFn = createServerFn({ method: "POST" })
-  .inputValidator(PatchSurveyResponseSchema)
+  .validator(PatchSurveyResponseSchema)
   .handler(({ data }) => patchSurveyResponse(getRequestHeaders(), data))
 
 export const deleteSurveyResponseFn = createServerFn({ method: "POST" })
-  .inputValidator(DeleteSurveyResponseBySlugSchema)
+  .validator(DeleteSurveyResponseBySlugSchema)
   .handler(({ data }) => deleteSurveyResponse(getRequestHeaders(), data))
 
 export const getCreatedSurveyResponsesFn = createServerFn({ method: "GET" })
-  .inputValidator(GetCreatedSurveyResponsesSchema)
+  .validator(GetCreatedSurveyResponsesSchema)
   .handler(({ data }) => getCreatedSurveyResponses(getRequestHeaders(), data))
 
 export const getTestSurveyResponsesFn = createServerFn({ method: "GET" })
-  .inputValidator(GetTestSurveyResponsesSchema)
+  .validator(GetTestSurveyResponsesSchema)
   .handler(({ data }) => getTestSurveyResponses(getRequestHeaders(), data))
 
 export const deleteTestSurveyResponsesFn = createServerFn({ method: "POST" })
-  .inputValidator(DeleteTestSurveyResponsesSchema)
+  .validator(DeleteTestSurveyResponsesSchema)
   .handler(({ data }) => deleteTestSurveyResponses(getRequestHeaders(), data))

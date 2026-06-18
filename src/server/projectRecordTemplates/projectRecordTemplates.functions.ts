@@ -21,29 +21,29 @@ import {
   updateProjectRecordTemplate,
 } from "./projectRecordTemplates.server"
 export const getProjectRecordTemplatesFn = createServerFn({ method: "GET" })
-  .inputValidator(GetProjectRecordTemplatesSchema)
+  .validator(GetProjectRecordTemplatesSchema)
   .handler(() => getProjectRecordTemplates(getRequestHeaders()))
 
 export const getProjectRecordTemplatesByProjectFn = createServerFn({ method: "GET" })
-  .inputValidator(ProjectRecordTemplatesByProjectSchema)
+  .validator(ProjectRecordTemplatesByProjectSchema)
   .handler(({ data }) => getProjectRecordTemplatesByProject(getRequestHeaders(), data))
 
 export const getProjectRecordTemplateFn = createServerFn({ method: "GET" })
-  .inputValidator(ProjectRecordTemplateByIdSchema)
+  .validator(ProjectRecordTemplateByIdSchema)
   .handler(({ data }) => getProjectRecordTemplate(getRequestHeaders(), data))
 
 export const createProjectRecordTemplateFn = createServerFn({ method: "POST" })
-  .inputValidator(CreateProjectRecordTemplateSchema)
+  .validator(CreateProjectRecordTemplateSchema)
   .handler(({ data }) => createProjectRecordTemplate(getRequestHeaders(), data))
 
 export const updateProjectRecordTemplateFn = createServerFn({ method: "POST" })
-  .inputValidator(UpdateProjectRecordTemplateSchema)
+  .validator(UpdateProjectRecordTemplateSchema)
   .handler(({ data }) => updateProjectRecordTemplate(getRequestHeaders(), data))
 
 export const deleteProjectRecordTemplateFn = createServerFn({ method: "POST" })
-  .inputValidator(DeleteProjectRecordTemplateSchema)
+  .validator(DeleteProjectRecordTemplateSchema)
   .handler(({ data }) => deleteProjectRecordTemplate(getRequestHeaders(), data))
 
 export const getProjectRecordTopicsAdminFn = createServerFn({ method: "GET" })
-  .inputValidator(GetProjectRecordTopicsAdminSchema)
+  .validator(GetProjectRecordTopicsAdminSchema)
   .handler(() => getProjectRecordTopicsAdmin(getRequestHeaders()))

@@ -4,5 +4,5 @@ import { GetSystemLogEntriesSchema } from "@/src/shared/systemLogEntries/searchS
 import { getSystemLogEntries } from "./systemLogEntries.server"
 
 export const getSystemLogEntriesFn = createServerFn({ method: "GET" })
-  .inputValidator(GetSystemLogEntriesSchema)
+  .validator(GetSystemLogEntriesSchema)
   .handler(({ data }) => getSystemLogEntries(getRequestHeaders(), data))

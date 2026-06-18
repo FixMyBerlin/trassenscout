@@ -6,5 +6,5 @@ const GetPublicInviteSchema = z.object({
 })
 
 export const getPublicInviteByTokenFn = createServerFn({ method: "GET" })
-  .inputValidator(GetPublicInviteSchema)
+  .validator(GetPublicInviteSchema)
   .handler(({ data }) => getPublicInviteByToken(data.token))

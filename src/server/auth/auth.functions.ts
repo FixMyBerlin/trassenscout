@@ -12,7 +12,7 @@ export const getSessionForRouteFn = createServerFn({ method: "GET" }).handler(()
 
 /** Layout `beforeLoad` — redirect logged-in users away from guest routes (`/auth`, `_marketing`). */
 export const routeGuestFn = createServerFn({ method: "GET" })
-  .inputValidator((location?: LocationLike) => location)
+  .validator((location?: LocationLike) => location)
   .handler(async ({ data: location }) => {
     if (location?.pathname === "/auth/logout") return
 
@@ -24,7 +24,7 @@ export const routeGuestFn = createServerFn({ method: "GET" })
 
 /** Layout `beforeLoad` — require session; redirect to login when logged out. */
 export const routeSessionFn = createServerFn({ method: "GET" })
-  .inputValidator((location: LocationLike) => location)
+  .validator((location: LocationLike) => location)
   .handler(async ({ data: location }) => {
     const session = await getAppSession(getRequestHeaders())
     if (!session) {
@@ -38,7 +38,7 @@ export const routeSessionFn = createServerFn({ method: "GET" })
 
 /** Layout `beforeLoad` — admin-only layout. */
 export const routeAdminFn = createServerFn({ method: "GET" })
-  .inputValidator((location: LocationLike) => location)
+  .validator((location: LocationLike) => location)
   .handler(async ({ data: location }) => {
     const session = await getFreshSession(getRequestHeaders())
     if (session?.role === UserRoleEnum.ADMIN) {
@@ -59,7 +59,7 @@ export const routeAdminFn = createServerFn({ method: "GET" })
 
 /** Layout `beforeLoad` — session plus project membership. */
 export const routeProjectFn = createServerFn({ method: "GET" })
-  .inputValidator((input: { location: LocationLike; projectSlug: string }) => input)
+  .validator((input: { location: LocationLike; projectSlug: string }) => input)
   .handler(async ({ data: { location, projectSlug } }) => {
     const session = await getAppSession(getRequestHeaders())
     if (!session) {

@@ -15,21 +15,21 @@ import {
   updateSupportDocument,
 } from "./supportDocuments.server"
 export const getSupportDocumentsFn = createServerFn({ method: "GET" })
-  .inputValidator(GetSupportDocumentsSchema)
+  .validator(GetSupportDocumentsSchema)
   .handler(() => getSupportDocuments(getRequestHeaders()))
 
 export const getSupportDocumentFn = createServerFn({ method: "GET" })
-  .inputValidator(GetSupportDocumentSchema)
+  .validator(GetSupportDocumentSchema)
   .handler(({ data }) => getSupportDocument(getRequestHeaders(), data))
 
 export const createSupportDocumentFn = createServerFn({ method: "POST" })
-  .inputValidator(CreateSupportDocumentSchema)
+  .validator(CreateSupportDocumentSchema)
   .handler(({ data }) => createSupportDocument(getRequestHeaders(), data))
 
 export const updateSupportDocumentFn = createServerFn({ method: "POST" })
-  .inputValidator(UpdateSupportDocumentSchema)
+  .validator(UpdateSupportDocumentSchema)
   .handler(({ data }) => updateSupportDocument(getRequestHeaders(), data))
 
 export const deleteSupportDocumentFn = createServerFn({ method: "POST" })
-  .inputValidator(DeleteSupportDocumentSchema)
+  .validator(DeleteSupportDocumentSchema)
   .handler(({ data }) => deleteSupportDocument(getRequestHeaders(), data))

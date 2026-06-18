@@ -18,17 +18,17 @@ export const getCurrentUserFn = createServerFn({ method: "GET" }).handler(() =>
 )
 
 export const getUsersAdminFn = createServerFn({ method: "GET" })
-  .inputValidator(GetUsersAdminSchema)
+  .validator(GetUsersAdminSchema)
   .handler(() => getUsersAdmin(getRequestHeaders()))
 
 export const getUsersWithMembershipsFn = createServerFn({ method: "GET" })
-  .inputValidator(GetUsersWithMembershipsSchema)
+  .validator(GetUsersWithMembershipsSchema)
   .handler(() => getUsersWithMemberships(getRequestHeaders()))
 
 export const getUserWithMembershipsFn = createServerFn({ method: "GET" })
-  .inputValidator(GetUserWithMembershipsSchema)
+  .validator(GetUserWithMembershipsSchema)
   .handler(({ data }) => getUserWithMemberships(getRequestHeaders(), data))
 
 export const updateCurrentUserFn = createServerFn({ method: "POST" })
-  .inputValidator(UpdateUserSchema)
+  .validator(UpdateUserSchema)
   .handler(({ data }) => updateCurrentUser(getRequestHeaders(), data))

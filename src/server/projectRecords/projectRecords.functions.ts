@@ -31,49 +31,49 @@ export const getAllProjectRecordsAdminFn = createServerFn({ method: "GET" }).han
 )
 
 export const getProjectRecordAdminFn = createServerFn({ method: "GET" })
-  .inputValidator(GetProjectRecordAdminSchema)
+  .validator(GetProjectRecordAdminSchema)
   .handler(({ data }) => getProjectRecordAdmin(getRequestHeaders(), data))
 
 export const getProjectRecordsFn = createServerFn({ method: "GET" })
-  .inputValidator(GetProjectRecordsSchema)
+  .validator(GetProjectRecordsSchema)
   .handler(({ data }) => getProjectRecords(getRequestHeaders(), data))
 
 export const getProjectRecordFn = createServerFn({ method: "GET" })
-  .inputValidator(GetProjectRecordSchema)
+  .validator(GetProjectRecordSchema)
   .handler(({ data }) => getProjectRecord(getRequestHeaders(), data))
 
 export const createProjectRecordFn = createServerFn({ method: "POST" })
-  .inputValidator(CreateProjectRecordBySlugSchema)
+  .validator(CreateProjectRecordBySlugSchema)
   .handler(({ data }) => createProjectRecord(getRequestHeaders(), data))
 
 export const updateProjectRecordFn = createServerFn({ method: "POST" })
-  .inputValidator(UpdateProjectRecordBySlugSchema)
+  .validator(UpdateProjectRecordBySlugSchema)
   .handler(({ data }) => updateProjectRecord(getRequestHeaders(), data))
 
 export const deleteProjectRecordFn = createServerFn({ method: "POST" })
-  .inputValidator(DeleteProjectRecordBySlugSchema)
+  .validator(DeleteProjectRecordBySlugSchema)
   .handler(({ data }) => deleteProjectRecord(getRequestHeaders(), data))
 
 export const getProjectRecordsNeedsReviewFn = createServerFn({ method: "GET" })
-  .inputValidator(GetProjectRecordsSchema)
+  .validator(GetProjectRecordsSchema)
   .handler(({ data }) => getProjectRecordsNeedsReview(getRequestHeaders(), data))
 
 export const getProjectRecordsTabCountsFn = createServerFn({ method: "GET" })
-  .inputValidator(GetProjectRecordsSchema)
+  .validator(GetProjectRecordsSchema)
   .handler(({ data }) => getProjectRecordsTabCounts(getRequestHeaders(), data))
 
 export const getProjectRecordDeleteInfoFn = createServerFn({ method: "GET" })
-  .inputValidator(GetProjectRecordSchema)
+  .validator(GetProjectRecordSchema)
   .handler(({ data }) => getProjectRecordDeleteInfo(getRequestHeaders(), data))
 
 export const deleteProjectRecordWithUploadsDecisionFn = createServerFn({ method: "POST" })
-  .inputValidator(DeleteProjectRecordWithUploadsDecisionSchema)
+  .validator(DeleteProjectRecordWithUploadsDecisionSchema)
   .handler(({ data }) => deleteProjectRecordWithUploadsDecision(getRequestHeaders(), data))
 
 export const getProjectRecordsBySubsubsectionFn = createServerFn({ method: "GET" })
-  .inputValidator(GetProjectRecordsBySubsubsectionSchema)
+  .validator(GetProjectRecordsBySubsubsectionSchema)
   .handler(({ data }) => getProjectRecordsBySubsubsection(getRequestHeaders(), data))
 
 export const getProjectRecordsByAcquisitionAreaFn = createServerFn({ method: "GET" })
-  .inputValidator(GetProjectRecordsByAcquisitionAreaSchema)
+  .validator(GetProjectRecordsByAcquisitionAreaSchema)
   .handler(({ data }) => getProjectRecordsByAcquisitionArea(getRequestHeaders(), data))
