@@ -75,6 +75,7 @@ export const UploadDetailModal = ({
           editUrl={editUrl}
           onEditClick={() => {
             navigationGuard.beginNavigationToModal({ holdUntilNextModalMount: true })
+            onClose()
           }}
           onDeleted={
             onDeleted

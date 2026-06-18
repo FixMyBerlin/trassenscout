@@ -48,10 +48,13 @@ export const UploadPreviewClickable = ({
     void primeUploadDetails()
   }
 
-  const openPreview = () => {
-    warmPreview()
-    blockUntilModalMounts()
-    setIsPreviewOpen(true)
+  const openPreview = async () => {
+    try {
+      await primeUploadDetails()
+    } finally {
+      blockUntilModalMounts()
+      setIsPreviewOpen(true)
+    }
   }
 
   return (
