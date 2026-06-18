@@ -1,6 +1,5 @@
 "use client"
 
-import { pillShellWithGapClasses } from "@/src/core/utils/pillClassNames"
 import { CheckCircleIcon } from "@heroicons/react/24/outline"
 import { ProjectRecordEditingState } from "@prisma/client"
 import clsx from "clsx"
@@ -8,15 +7,9 @@ import clsx from "clsx"
 function PendingEditingIcon({ className }: { className?: string }) {
   return (
     <span
-      className={clsx(
-        "relative m-0.5 inline-flex size-4 shrink-0 items-center justify-center",
-        className,
-      )}
+      className={clsx("inline-flex size-2.5 shrink-0 rounded-full bg-current", className)}
       aria-hidden
-    >
-      <span className="absolute inset-0 rounded-full border-2 border-current" />
-      <span className="size-1 rounded-full bg-current" />
-    </span>
+    />
   )
 }
 
@@ -52,16 +45,10 @@ export const ProjectRecordEditingStateIndicator = ({ editingState, variant }: Pr
   return (
     <span
       className={clsx(
-        pillShellWithGapClasses,
-        "text-xs",
-        isPending ? "bg-blue-50 text-blue-600" : "bg-gray-50 text-gray-400",
+        "inline-flex items-center text-sm font-normal",
+        isPending ? "text-gray-600" : "text-gray-500",
       )}
     >
-      {isPending ? (
-        <PendingEditingIcon />
-      ) : (
-        <CheckCircleIcon className="size-4 shrink-0 text-gray-400" />
-      )}
       <span>{LABEL[editingState]}</span>
     </span>
   )

@@ -35,6 +35,8 @@ type Props = {
     parcel: { alkisParcelId: string }
   }[]
   className?: string
+  variant?: "default" | "valuesOnly"
+  relationType?: "all" | "subsubsections" | "acquisitionAreas"
 }
 
 export const ProjectRecordVerknuepfungen = ({
@@ -45,17 +47,68 @@ export const ProjectRecordVerknuepfungen = ({
   subsubsections = [],
   acquisitionAreas = [],
   className,
+  variant = "default",
+  relationType = "all",
 }: Props) => {
   const effectiveSubsubsections =
     subsubsections.length > 0 ? subsubsections : subsubsection ? [subsubsection] : []
   const effectiveAcquisitionAreas =
     acquisitionAreas.length > 0 ? acquisitionAreas : acquisitionArea ? [acquisitionArea] : []
 
-  const hasSubsubsection = effectiveSubsubsections.length > 0
-  const hasAcquisitionArea = effectiveAcquisitionAreas.length > 0 && !!landAcquisitionModuleEnabled
+  const hasSubsubsection =
+    (relationType === "all" || relationType === "subsubsections") &&
+    effectiveSubsubsections.length > 0
+  const hasAcquisitionArea =
+    (relationType === "all" || relationType === "acquisitionAreas") &&
+    effectiveAcquisitionAreas.length > 0 &&
+    !!landAcquisitionModuleEnabled
 
   if (!hasSubsubsection && !hasAcquisitionArea) {
+    if (variant === "valuesOnly") return null
     return <p className={className}>Keine Verknüpfungen vorhanden.</p>
+  }
+
+  if (variant === "valuesOnly") {
+    return (
+      <div className={className}>
+        {hasSubsubsection && (
+          <div className="flex flex-col gap-1">
+            {effectiveSubsubsections.map((subsubsection) => (
+              <span key={`${subsubsection.subsection.slug}-${subsubsection.slug}`}>
+                <Link
+                  href={subsubsectionDashboardRoute(
+                    projectSlug,
+                    subsubsection.subsection.slug,
+                    subsubsection.slug,
+                  )}
+                >
+                  {subsubsection.slug}
+                </Link>
+              </span>
+            ))}
+          </div>
+        )}
+        {hasAcquisitionArea && (
+          <div className="flex flex-col gap-1">
+            {effectiveAcquisitionAreas.map((area) => (
+              <span key={area.id}>
+                <Link
+                  href={
+                    `${subsubsectionLandAcquisitionRoute(
+                      projectSlug,
+                      area.subsubsection.subsection.slug,
+                      area.subsubsection.slug,
+                    )}?acquisitionAreaId=${area.id}` as Route
+                  }
+                >
+                  {area.id} ({area.parcel.alkisParcelId})
+                </Link>
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    )
   }
 
   return (

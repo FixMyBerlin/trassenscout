@@ -18,47 +18,52 @@ type Props = {
 export const ProjectRecordSummary = ({ projectRecord }: Props) => {
   const projectSlug = projectRecord.project.slug
 
+  const metadataItemClassName = "flex flex-wrap items-center gap-3 text-sm text-gray-600"
+  const metadataLabelClassName = "text-sm font-medium text-gray-700"
+  const sectionClassName =
+    "grid gap-2 sm:grid-cols-[minmax(170px,_190px)_1fr] sm:items-start sm:gap-x-1 sm:gap-y-4"
+  const sectionLabelClassName = metadataLabelClassName
+  const sectionValueClassName = "text-sm text-gray-700"
+
   return (
-    <div className="my-6 space-y-6 font-medium">
-      <div className="grid max-w-3xl grid-cols-4 gap-3">
-        <span className="text-gray-500">Status: </span>
-        <span className="col-span-3">
+    <div className="my-6 space-y-6">
+      <div className="flex flex-wrap items-center gap-x-10 gap-y-3">
+        <div className={metadataItemClassName}>
+          <span className={metadataLabelClassName}>Am/bis:</span>
+          <span className="text-gray-600">
+            {format(new Date(projectRecord.date!), "P", { locale: de })}
+          </span>
+        </div>
+        {projectRecord.assignedTo && (
+          <div className={metadataItemClassName}>
+            <span className={metadataLabelClassName}>Zugewiesen:</span>
+            <Link
+              classNameOverwrites="inline-flex rounded-md text-inherit no-underline hover:opacity-90 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-orange-500/40"
+              href={createProjectRecordFilterUrl(projectSlug, {
+                searchterm: getFullname(projectRecord.assignedTo)!.trim(),
+              })}
+            >
+              <ProjectRecordAssignedToPill assignedTo={projectRecord.assignedTo} variant="detail" />
+            </Link>
+          </div>
+        )}
+        <div className={metadataItemClassName}>
+          <span className={metadataLabelClassName}>Status:</span>
           <ProjectRecordEditingStateIndicator
             editingState={projectRecord.editingState}
             variant="detail"
           />
-        </span>
-        {projectRecord.assignedTo && (
-          <>
-            <span className="text-gray-500">Zugewiesen: </span>
-            <span className="col-span-3">
-              <Link
-                classNameOverwrites="inline-flex rounded-md text-inherit no-underline hover:opacity-90 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-orange-500/40"
-                href={createProjectRecordFilterUrl(projectSlug, {
-                  searchterm: getFullname(projectRecord.assignedTo)!.trim(),
-                })}
-              >
-                <ProjectRecordAssignedToPill
-                  assignedTo={projectRecord.assignedTo}
-                  variant="detail"
-                />
-              </Link>
-            </span>
-          </>
-        )}
-        <span className="text-gray-500">am/bis: </span>
-        <span className="col-span-3">
-          {format(new Date(projectRecord.date!), "P", { locale: de })}
-        </span>
+        </div>
       </div>
 
       {projectRecord.body && (
-        <div className="max-w-3xl rounded-md bg-blue-50 p-4">
+        <section className="rounded-md bg-blue-50 p-4">
+          <h2 className="mb-4 text-sm font-semibold text-gray-800">Zusammenfassung</h2>
           <Markdown
-            className="prose-p:text-base prose-ol:leading-tight prose-ul:list-disc prose-ul:leading-tight"
+            className="prose prose-sm prose-p:my-2 prose-p:text-sm prose-ul:my-2 prose-ul:list-disc prose-ul:pl-4 prose-ul:leading-tight prose-ol:my-2 prose-ol:pl-4 prose-ol:leading-tight max-w-none text-gray-700"
             markdown={projectRecord.body}
           />
-        </div>
+        </section>
       )}
 
       {projectRecord.projectRecordEmail && (
@@ -79,12 +84,53 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
         </div>
       )}
 
-      <div>
-        <p className="mb-2 text-gray-500">Tags: </p>
+      <div className={sectionClassName}>
+        <p className={sectionLabelClassName}>Eintrag:</p>
+        {projectRecord.subsubsections.length > 0 || projectRecord.subsubsection ? (
+          <ProjectRecordVerknuepfungen
+            projectSlug={projectSlug}
+            landAcquisitionModuleEnabled={projectRecord.project.landAcquisitionModuleEnabled}
+            subsubsection={projectRecord.subsubsection}
+            subsubsections={projectRecord.subsubsections}
+            variant="valuesOnly"
+            relationType="subsubsections"
+            className={sectionValueClassName}
+          />
+        ) : (
+          <span className="text-sm text-gray-500">Kein Eintrag zugeordnet</span>
+        )}
+      </div>
+
+      {(projectRecord.acquisitionAreas.length > 0 || projectRecord.acquisitionArea) &&
+        projectRecord.project.landAcquisitionModuleEnabled && (
+          <div className={sectionClassName}>
+            <p className={sectionLabelClassName}>
+              {(projectRecord.acquisitionAreas.length > 0
+                ? projectRecord.acquisitionAreas.length
+                : projectRecord.acquisitionArea
+                  ? 1
+                  : 0) === 1
+                ? "Verhandlungsfläche:"
+                : "Verhandlungsflächen:"}
+            </p>
+            <ProjectRecordVerknuepfungen
+              projectSlug={projectSlug}
+              landAcquisitionModuleEnabled={projectRecord.project.landAcquisitionModuleEnabled}
+              acquisitionArea={projectRecord.acquisitionArea}
+              acquisitionAreas={projectRecord.acquisitionAreas}
+              variant="valuesOnly"
+              relationType="acquisitionAreas"
+              className={sectionValueClassName}
+            />
+          </div>
+        )}
+
+      <div className={sectionClassName}>
+        <p className={sectionLabelClassName}>Tags:</p>
         {!!projectRecord.projectRecordTopics.length ? (
-          <ul className="list-inside list-none space-y-1">
+          <div className={`flex flex-wrap gap-x-3 gap-y-1 ${sectionValueClassName}`}>
             {projectRecord.projectRecordTopics.map((topic) => (
-              <li className="whitespace-nowrap text-gray-700" key={topic.id}>
+              <span className="whitespace-nowrap" key={topic.id}>
                 <Link
                   href={createProjectRecordFilterUrl(projectSlug, {
                     searchterm: topic.title,
@@ -92,27 +138,12 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
                 >
                   #{topic.title}
                 </Link>
-              </li>
+              </span>
             ))}
-          </ul>
+          </div>
         ) : (
-          <span>Keine Tags zugeordnet</span>
+          <span className="text-sm text-gray-500">Keine Tags zugeordnet</span>
         )}
-      </div>
-
-      <div>
-        <p className="mb-2 text-gray-500">Verknüpfungen:</p>
-        <ProjectRecordVerknuepfungen
-          projectSlug={projectSlug}
-          landAcquisitionModuleEnabled={projectRecord.project.landAcquisitionModuleEnabled}
-          subsubsection={projectRecord.subsubsection}
-          acquisitionArea={projectRecord.acquisitionArea}
-          subsubsections={projectRecord.subsubsections}
-          acquisitionAreas={projectRecord.acquisitionAreas}
-        />
-      </div>
-      <div>
-        <p className="mb-2 text-gray-500">Dokumente:</p>
       </div>
     </div>
   )
