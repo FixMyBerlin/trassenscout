@@ -52,6 +52,7 @@ Domain Zod and URL search schemas live in `shared/<domain>/` (or `shared/<topic>
 ## URL state (search params)
 
 - **Default:** route `validateSearch` (Zod) + `Route.useSearch()` — see `tanstack-start-conventions` (`params-search-ui-vs-api.md`).
+- **Router `router.tsx`:** required pretty-JSON `parseSearch` / `stringifySearch` + `trailingSlash: 'never'` — `tanstack-start-conventions` → `router-search-serialization.md`.
 - **nuqs only** for shared/third-party components that already use `useQueryState`; then `NuqsAdapter` from `nuqs/adapters/tanstack-router` on the smallest layout subtree that needs it (experimental; prefer router search for app-owned state).
 - **Search schema placement** (keep `routes/` for route files only — no `-` prefixed colocated helpers):
   - **Route-only:** inline `const …SearchSchema = z.object({ … })` in the route file.

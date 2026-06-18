@@ -6,13 +6,13 @@ Server functions run on the server and are called from the client like async fun
 
 **Isomorphic behavior:** On the server, the handler runs directly. On the client (e.g. loader during soft nav), the call becomes a typed RPC request.
 
-**Definition:** Use `.inputValidator()` (not `.validator()`); the client receives a function that expects `{ data: T }`.
+**Definition:** Use `.validator()`; the client receives a function that expects `{ data: T }`.
 
 ```tsx
 import { createServerFn } from "@tanstack/react-start"
 
 export const updateNameFn = createServerFn({ method: "POST" })
-  .inputValidator((data: { name: string }) => {
+  .validator((data: { name: string }) => {
     if (typeof data.name !== "string" || data.name.length < 2) throw new Error("Invalid name")
     return data
   })
@@ -31,7 +31,7 @@ await updateNameFn({ data: { name: "Jane" } })
 ```
 
 - **method:** `'POST'` for mutations; `'GET'` (or omit) for idempotent reads.
-- **inputValidator:** Validate before handler; handler receives `{ data }`.
+- **validator:** Validate before handler; handler receives `{ data }`.
 - **handler:** Async; DB, external APIs, fs. Return serializable value.
 
 ## FMC file conventions
@@ -60,7 +60,7 @@ import { z } from "zod"
 const schema = z.object({ name: z.string().min(2), email: z.string().email() })
 
 export const submitFormFn = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => schema.parse(data))
+  .validator(schema)
   .handler(async ({ data }) => {
     // data: { name: string; email: string }
   })
@@ -94,7 +94,7 @@ Pass a single object via validator:
 
 ```tsx
 export const updateItemFn = createServerFn({ method: 'POST' })
-  .inputValidator((input: { id: string; name: string }) => input)
+  .validator((input: { id: string; name: string }) => input)
   .handler(async ({ data }) => { ... });
 ```
 

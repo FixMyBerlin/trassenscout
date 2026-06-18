@@ -5,7 +5,7 @@
       "source": "FixMyBerlin/fixmyskills",
       "sourceType": "github",
       "skillPath": "skills/nuqs/SKILL.md",
-      "computedHash": "ab2bcdc0d0570c3961abbb59643592ee1d1df3cca4f2c077d70cf83d188e7821"
+      "computedHash": "d2b6b8c55bcc8cafc0f5b40f93fb5f24a5fbd0f3e1235968e319de0b5e4309d5"
     },
     "playwright-skill": {
       "source": "FixMyBerlin/fixmyskills",
@@ -17,13 +17,13 @@
       "source": "FixMyBerlin/fixmyskills",
       "sourceType": "github",
       "skillPath": "skills/react-dev/SKILL.md",
-      "computedHash": "afdec95dec986249adb3242210f1c868310c0876038d70a13caaa34d73f21b57"
+      "computedHash": "5d3bdbe13a5987eb188426ed58c01688cec9512da81b790b2026bf814b6539d1"
     },
     "react-map-gl": {
       "source": "FixMyBerlin/fixmyskills",
       "sourceType": "github",
       "skillPath": "skills/react-map-gl/SKILL.md",
-      "computedHash": "1e1aa4a1924141abda14454fdfd8b782a0f82a11b24fd2c55c3a4213c102168d"
+      "computedHash": "8d1b751caf279ec64b90504b64689a3f7e45230617114b0dc9429900c141a63b"
     },
     "react-useeffect": {
       "source": "FixMyBerlin/fixmyskills",
@@ -41,7 +41,7 @@
       "source": "FixMyBerlin/fixmyskills",
       "sourceType": "github",
       "skillPath": "skills/tanstack-start-app-structure/SKILL.md",
-      "computedHash": "5303b4ad0a9e7f6e1eac1be54899350f08cc2271e7e012598ee1488a93c4ac53"
+      "computedHash": "5fcea8f5a89ac12be58e4d8b53f833422810951efb402bcef3dc054c7b49875d"
     },
     "tanstack-start-auth": {
       "source": "FixMyBerlin/fixmyskills",
@@ -53,13 +53,25 @@
       "source": "FixMyBerlin/fixmyskills",
       "sourceType": "github",
       "skillPath": "skills/tanstack-start-conventions/SKILL.md",
-      "computedHash": "3e71f9cc4a3625c48607e156301a12d8f4267268c6c9e5481540d43853a03c5c"
+      "computedHash": "a7f0618a842e17bab0a65014cc45b2f7bc08fca5e43b134040e929e495d3ffa5"
     },
     "tanstack-start-migration": {
       "source": "FixMyBerlin/fixmyskills",
       "sourceType": "github",
       "skillPath": "skills/tanstack-start-migration/SKILL.md",
-      "computedHash": "ee7b5ac909316f82d4ca6191d83f52a7777bdb3c67dc86a96fed127d3c1d5c8a"
+      "computedHash": "4c94f602d1348b19bb96421ff89605dd4f537b0b3c814e2ff029d30c88a2c8d8"
+    },
+    "tech-stack": {
+      "source": "FixMyBerlin/fixmyskills",
+      "sourceType": "github",
+      "skillPath": "skills/tech-stack/SKILL.md",
+      "computedHash": "0aae011dddd37c95261d21845209331909d5e59baef8d8a231aa14b19627e39a"
+    },
+    "touch-ipad-review": {
+      "source": "FixMyBerlin/fixmyskills",
+      "sourceType": "github",
+      "skillPath": "skills/touch-ipad-review/SKILL.md",
+      "computedHash": "89d1764e780ae3e1d1a261ce3cbff8399a959b1b93d38e98359e37a5231ab005"
     },
     "zustand-state-management": {
       "source": "FixMyBerlin/fixmyskills",

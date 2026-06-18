@@ -1,6 +1,6 @@
 # TanStack Router + Query
 
-How we combine route loaders with React Query. Setup lives in `router.tsx` (`queryClient` in router context, `setupRouterSsrQueryIntegration`).
+How we combine route loaders with React Query. Setup lives in `router.tsx` (`queryClient` in router context, `setupRouterSsrQueryIntegration`, and **required** pretty-JSON `parseSearch` / `stringifySearch` — see [router-search-serialization.md](router-search-serialization.md)).
 
 **Further reading:** [TkDodo — TanStack Router and Query](https://tkdodo.eu/blog/tan-stack-router-and-query), [Router Query integration](https://tanstack.com/router/latest/docs/integrations/query), [Start SSR boundaries](client-server-boundaries.md) (server/client, `ssr` vs dehydration).
 
@@ -28,6 +28,8 @@ Pattern: route loader calls `ensureQueryData` with shared options; page or hooks
 ## Router defaults
 
 - Same `queryClient` in router `context` and `QueryClientProvider` (root layout).
+- **`parseSearch` / `stringifySearch`** — pretty-JSON wrapper for readable share URLs ([router-search-serialization.md](router-search-serialization.md)).
+- **`trailingSlash: 'never'`** — pair with root `beforeLoad` trailing-slash redirect.
 - Set **`defaultPreloadStaleTime: 0`** on the router when using Query so only one cache layer controls staleness ([TkDodo](https://tkdodo.eu/blog/tan-stack-router-and-query)).
 - **`defaultPreload: 'intent'`** — loaders (and prefetches) can run before navigation.
 
