@@ -234,7 +234,7 @@ See `tanstack-start-conventions` → router-and-query.md and [loader-data-patter
 import { createServerFn } from '@tanstack/react-start'
 
 export const updateProfileFn = createServerFn({ method: 'POST' })
-  .inputValidator((data: { name: string }) => data)
+  .validator((data: { name: string }) => data)
   .handler(async ({ data }) => {
     await db.user.update({ ... })
     return { ok: true }
@@ -302,7 +302,7 @@ Remove all `"use server"` and `"use client"` directives.
 - [ ] Pages → file routes; `[param]` → `$param`
 - [ ] `src/router.tsx` + generated `routeTree.gen.ts`
 - [ ] All server-only I/O wrapped in `createServerFn` / `createServerOnlyFn`
-- [ ] Server Actions → `*.functions.ts` with `inputValidator`
+- [ ] Server Actions → `*.functions.ts` with `validator`
 - [ ] API routes → `routes/api/*.ts` with `server.handlers` (or server fns)
 - [ ] Query-backed UI: `ensureQueryData` in loader + `useSuspenseQuery` in component
 - [ ] Thin route files; UI in `components/` (`tanstack-start-app-structure`)
