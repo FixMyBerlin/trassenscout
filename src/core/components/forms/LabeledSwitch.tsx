@@ -34,6 +34,7 @@ export interface LabeledSwitchProps<T extends boolean | string | number = boolea
    */
   trackClassNames?: { off: string; on: string }
   onChange?: (value: T) => void
+  contentClassName?: string
 }
 
 const defaultTrackClassNames = {
@@ -56,6 +57,7 @@ export function LabeledSwitch<T extends boolean | string | number = boolean>(
     stateLabels,
     trackClassNames,
     onChange: onChangeCallback,
+    contentClassName,
   } = props
 
   const resolvedOff = values ? values.off : false
@@ -93,7 +95,7 @@ export function LabeledSwitch<T extends boolean | string | number = boolean>(
           const activeStateLabel = stateLabels ? (checked ? stateLabels.on : stateLabels.off) : null
 
           return (
-            <div className="flex items-center gap-3">
+            <div className={clsx("flex items-center gap-3", contentClassName)}>
               <Switch
                 ref={field.ref}
                 id={name}

@@ -108,11 +108,6 @@ export const ProjectRecordFormFields = ({
 
   const assignedToOptions = getUserSelectOptions(users)
 
-  const editingStateOptions: [string, string][] = [
-    [ProjectRecordEditingState.PENDING, "In Bearbeitung"],
-    [ProjectRecordEditingState.COMPLETED, "Abgeschlossen"],
-  ]
-
   const subsubsectionItems = subsubsections
     .sort((a, b) => a.subsection.slug.localeCompare(b.subsection.slug))
     .map((subsubsection) => ({
@@ -130,6 +125,44 @@ export const ProjectRecordFormFields = ({
   const showSubsubsectionField = !(formMode === "create" && relationContext === "acquisitionArea")
   const showAcquisitionAreaField =
     landAcquisitionModuleEnabled && !(formMode === "create" && relationContext === "subsubsection")
+  const isCreateMode = formMode === "create"
+
+  const dateLabel = isCreateMode ? "am/bis *" : "am/bis"
+  const titleLabel = isCreateMode ? "Titel *" : "Titel"
+  const subsubsectionLabel = "Verknüpfungen mit Eintrag"
+  const acquisitionAreaLabel = "Verknüpfungen mit Verhandlungsflächen"
+  const assignmentAndStatusFields = (
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className="min-w-0 space-y-1">
+        <LabeledSelect name="assignedToId" options={assignedToOptions} label="Zuweisen an" />
+        {splitView && (
+          <p className="text-sm text-gray-500">
+            Alle unbestätigten Protokolleinträge können nur Nutzer mit Editierrechten zugewiesen
+            werden.
+          </p>
+        )}
+      </div>
+      <div className="min-w-0 self-start">
+        <LabeledSwitch
+          name="editingState"
+          values={{
+            off: ProjectRecordEditingState.PENDING,
+            on: ProjectRecordEditingState.COMPLETED,
+          }}
+          label="Status"
+          contentClassName="pt-2"
+          stateLabels={{
+            off: "In Bearbeitung",
+            on: "Abgeschlossen",
+          }}
+          trackClassNames={{
+            off: "bg-blue-500",
+            on: "bg-gray-300",
+          }}
+        />
+      </div>
+    </div>
+  )
 
   const handleNewTopicFormSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
@@ -150,12 +183,14 @@ export const ProjectRecordFormFields = ({
     <>
       <div className={splitView ? "flex gap-6" : ""}>
         <div className={splitView ? "flex-1 space-y-6" : "space-y-6"}>
+          {isCreateMode && assignmentAndStatusFields}
+
           <div className="flex gap-4">
             <div className="w-48">
-              <LabeledTextField type="date" name="date" label="am/bis" placeholder="" />
+              <LabeledTextField type="date" name="date" label={dateLabel} placeholder="" />
             </div>
             <div className="flex-1">
-              <LabeledTextField name="title" label="Titel" />
+              <LabeledTextField name="title" label={titleLabel} />
             </div>
           </div>
 
@@ -166,29 +201,28 @@ export const ProjectRecordFormFields = ({
           >
             {showSubsubsectionField && (
               <LabeledCombobox
-                optional
                 scope="subsubsections"
                 items={subsubsectionItems}
-                label="Verknüpfung mit Maßnahmen"
+                label={subsubsectionLabel}
+                placeholder="Eintrag suchen"
               />
             )}
             {showAcquisitionAreaField && (
               <LabeledCombobox
-                optional
                 scope="acquisitionAreas"
                 items={acquisitionAreaItems}
-                label="Verknüpfung mit Verhandlungsflächen"
+                label={acquisitionAreaLabel}
+                placeholder="Verhandlungsfläche suchen"
               />
             )}
           </div>
-          <LabeledTextareaField name="body" optional label="Notizen" rows={20} />
+          <LabeledTextareaField name="body" label="Notizen" rows={20} />
           <div className="flex flex-col gap-3">
             <LabeledCheckboxGroup
               scope="projectRecordTopics"
               classNameItemWrapper="grid grid-cols-4 gap-1.5 w-full"
               items={topicsOptions}
               label="Tags"
-              optional
             />
             <div className="flex w-full items-end gap-2">
               <LabeledTextField
@@ -211,50 +245,14 @@ export const ProjectRecordFormFields = ({
               </button>
             </div>
           </div>
-          <div className="flex gap-8">
-            <div className="space-y-1">
-              <LabeledSelect
-                optional
-                name="assignedToId"
-                options={assignedToOptions}
-                label="Zugewiesen an"
-              />
-              {splitView && (
-                <p className="text-sm text-gray-500">
-                  Alle unbestätigten Protokolleinträge können nur Nutzer mit Editierrechten
-                  zugewiesen werden.
-                </p>
-              )}
-            </div>
-            <div className="w-48">
-              <LabeledSwitch
-                name="editingState"
-                values={{
-                  off: ProjectRecordEditingState.PENDING,
-                  on: ProjectRecordEditingState.COMPLETED,
-                }}
-                label="Status"
-                stateLabels={{
-                  off: "In Bearbeitung",
-                  on: "Abgeschlossen",
-                }}
-                trackClassNames={{
-                  off: "bg-blue-500",
-                  on: "bg-gray-300",
-                }}
-              />
-            </div>
-            {/* <div className="w-48">
-              <LabeledSelect name="editingState" options={editingStateOptions} label="Status" />
-            </div> */}
-          </div>
+          {!isCreateMode && assignmentAndStatusFields}
         </div>
 
         {emailSource && splitView && <ProjectRecordEmailSource email={emailSource} />}
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="text-sm font-medium text-gray-700">Dokumente (optional)</label>
+        <label className="text-sm font-medium text-gray-700">Dokumente</label>
         <UploadTable
           withAction={false}
           withRelations={false}
