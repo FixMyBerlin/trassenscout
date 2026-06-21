@@ -68,7 +68,6 @@ export const SummaryField = ({
             ? "PDFs lassen sich mit KI zusammenfassen. Beachten Sie, dass nach Drücken des Buttons eine bereits vorhandene Zusammenfassung im Textfeld überschrieben wird."
             : undefined
         }
-        optional
         rows={rows}
         name="summary"
         label="Zusammenfassung"
