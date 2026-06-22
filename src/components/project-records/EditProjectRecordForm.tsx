@@ -30,6 +30,7 @@ import {
   projectRecordQueryOptions,
   projectRecordsNeedsReviewQueryOptions,
   projectRecordsQueryOptions,
+  projectRecordsTabCountsQueryOptions,
 } from "@/src/server/projectRecords/projectRecordsQueryOptions"
 import type { ProjectRecord } from "@/src/server/projectRecords/types"
 import {
@@ -117,6 +118,9 @@ export const EditProjectRecordForm = ({
           }),
           queryClient.invalidateQueries({
             queryKey: projectRecordsNeedsReviewQueryOptions({ projectSlug }).queryKey,
+          }),
+          queryClient.invalidateQueries({
+            queryKey: projectRecordsTabCountsQueryOptions({ projectSlug }).queryKey,
           }),
         ])
         if (onSuccess) {

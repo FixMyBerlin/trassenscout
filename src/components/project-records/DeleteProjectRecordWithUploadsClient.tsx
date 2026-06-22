@@ -13,6 +13,7 @@ import { deleteProjectRecordWithUploadsDecisionFn } from "@/src/server/projectRe
 import {
   projectRecordsNeedsReviewQueryOptions,
   projectRecordsQueryOptions,
+  projectRecordsTabCountsQueryOptions,
 } from "@/src/server/projectRecords/projectRecordsQueryOptions"
 import type { ProjectRecordDeleteInfo } from "@/src/server/projectRecords/types"
 
@@ -82,6 +83,9 @@ export const DeleteProjectRecordWithUploadsClient = ({ deleteInfo, projectSlug }
         }),
         queryClient.invalidateQueries({
           queryKey: projectRecordsNeedsReviewQueryOptions({ projectSlug }).queryKey,
+        }),
+        queryClient.invalidateQueries({
+          queryKey: projectRecordsTabCountsQueryOptions({ projectSlug }).queryKey,
         }),
       ])
       navigate({ to: returnPath })
