@@ -1,5 +1,5 @@
 "use client"
-import { blueButtonStyles } from "@/src/core/components/links"
+import { blueButtonStyles, Link } from "@/src/core/components/links"
 import updateProjectExportApi from "@/src/server/projects/mutations/updateProjectExportApi"
 import { useMutation } from "@blitzjs/rpc"
 import { useState } from "react"
@@ -25,10 +25,19 @@ export const AdminEnableProjectExportApi = ({ slug, exportEnabled }: Props) => {
   }
 
   return (
-    <div className="my-3">
+    <div className="my-3 flex flex-wrap items-center gap-3">
       <button className={blueButtonStyles} onClick={handleEnableExportClick}>
         Export {isExportEnabled ? "ausschalten" : "einschalten"}
       </button>
+      <Link
+        href={`/api/projects/${slug}.json`}
+        blank
+        icon="action"
+        title={isExportEnabled ? "Export-JSON öffnen" : "Export-API deaktiviert"}
+        className={!isExportEnabled ? "line-through" : undefined}
+      >
+        <span className="sr-only">Export-JSON öffnen</span>
+      </Link>
     </div>
   )
 }

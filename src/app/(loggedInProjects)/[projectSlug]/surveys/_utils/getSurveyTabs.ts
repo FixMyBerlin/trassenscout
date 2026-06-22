@@ -18,13 +18,13 @@ export async function getSurveyTabs(projectSlug: string, surveyId: number) {
 
   return [
     {
-      name: "Beiträge",
+      name: "Eingaben",
       href: surveyResponsesHref(projectSlug, surveyId) as Route,
     },
     ...(surveyResponse
       ? [
           {
-            name: "Beiträge (Karte)",
+            name: "Eingaben (Karte)",
             href: surveyResponsesMapHref(projectSlug, surveyId) as Route,
           },
         ]

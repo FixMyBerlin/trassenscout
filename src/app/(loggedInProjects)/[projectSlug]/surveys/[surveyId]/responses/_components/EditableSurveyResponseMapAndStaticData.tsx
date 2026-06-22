@@ -64,7 +64,7 @@ type Props = {
   maptilerUrl: string
   defaultViewState: LngLatBoundsLike
   showMap?: boolean
-  refetchResponsesAndTopics: () => void
+  refetchResponsesAndTopics: () => Promise<void>
 }
 
 const EditableSurveyResponseMapAndStaticData = ({
@@ -130,7 +130,7 @@ const EditableSurveyResponseMapAndStaticData = ({
   const handleDelete = async () => {
     if (
       response.source !== "FORM" &&
-      window.confirm(`Den Eintrag mit ID ${response.id} unwiderruflich löschen?`)
+      window.confirm(`Die Maßnahme mit ID ${response.id} unwiderruflich löschen?`)
     ) {
       try {
         await deleteCalendarEntryMutation({ id: response.id })
@@ -139,7 +139,7 @@ const EditableSurveyResponseMapAndStaticData = ({
           "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
         )
       }
-      refetchResponsesAndTopics()
+      await refetchResponsesAndTopics()
     }
   }
 
@@ -178,7 +178,7 @@ const EditableSurveyResponseMapAndStaticData = ({
               <IfUserCanEdit>
                 <span>| </span>
                 <button onClick={handleDelete} className={clsx(linkStyles, "my-0")}>
-                  Eintrag löschen
+                  Maßnahme löschen
                 </button>
               </IfUserCanEdit>
             </span>

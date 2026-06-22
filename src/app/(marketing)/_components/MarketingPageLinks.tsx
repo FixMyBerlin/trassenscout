@@ -9,17 +9,18 @@ import RSVIcon from "./assets/rsv-icon.svg"
 export const MarketingPageLinks = () => {
   const onlineList = [
     {
-      title: "RSV.info",
+      title: "Radschnellverbindungen.info",
       href: "https://radschnellverbindungen.info ",
       logo: RSVIcon,
+      description: "Alle Radschnellverbindungen in Deutschland mit Planungsständen",
     },
     {
-      title: "Weitere Angebote",
+      title: "FixMyCity Homepage",
       href: "https://www.fixmycity.de/",
       logo: FMCIcon,
     },
     {
-      title: "Auf LinkedIn",
+      title: "FixMyCity auf LinkedIn",
       href: "https://www.linkedin.com/company/fixmycity/",
       logo: LinkedInIcon,
     },
@@ -33,17 +34,31 @@ export const MarketingPageLinks = () => {
       </h2>
       <ol className="mt-6 space-y-2">
         {onlineList.map((item, itemIndex) => (
-          <li key={itemIndex} className="flex gap-4">
-            <div className="relative mt-1 flex flex-none items-center justify-center grayscale">
+          <li
+            key={itemIndex}
+            className={clsx(
+              "flex gap-4",
+              "description" in item ? "items-start pb-2" : "items-center",
+            )}
+          >
+            <div
+              className={clsx(
+                "relative flex flex-none items-center justify-center grayscale",
+                "description" in item && "mt-1",
+              )}
+            >
               <Image src={item.logo} alt="" height={32} width={32} className="rounded-md" />
             </div>
-            <div className="flex flex-auto flex-wrap gap-x-2">
+            <div className="flex flex-auto flex-col">
               <dt className="sr-only">Netz-Links</dt>
-              <div className={clsx(linkStyles, "my-auto text-sm")}>
+              <div className={clsx(linkStyles, "text-sm")}>
                 <a target="_blank" href={item.href} rel="noreferrer">
                   {item.title}
                 </a>
               </div>
+              {"description" in item && (
+                <dd className="text-xs text-gray-400">{item.description}</dd>
+              )}
             </div>
           </li>
         ))}

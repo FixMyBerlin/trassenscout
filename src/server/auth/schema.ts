@@ -20,6 +20,9 @@ export const SignupSchema = z.object({
   lastName: z.string().min(2, { message: "Pflichtfeld. Mindestens 2 Zeichen." }),
   institution: z.string().nullable(),
   inviteToken: z.string().nullable(), // Signup will create a membership or not…
+  privacyPolicyAccepted: z.boolean().refine((value) => value === true, {
+    message: "Bitte bestätigen Sie die Datenschutzerklärung.",
+  }),
 })
 
 export const UpdateUserSchema = z.object({

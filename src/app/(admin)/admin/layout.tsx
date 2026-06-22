@@ -1,6 +1,8 @@
+import { UserRoleEnum } from "@/db"
 import { getBlitzContext, useAuthenticatedBlitzContext } from "@/src/blitz-server"
 import getCurrentUser from "@/src/server/users/queries/getCurrentUser"
 import { Metadata } from "next"
+import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
   robots: "noindex",
@@ -12,9 +14,11 @@ export const metadata: Metadata = {
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   // eslint-disable-next-line react-hooks/rules-of-hooks -- useAuthenticatedBlitzContext is not a hook despite the "use" prefix
-  await useAuthenticatedBlitzContext({ role: ["ADMIN"], redirectTo: "/auth/login" })
+  await useAuthenticatedBlitzContext({ redirectTo: "/auth/login" })
   const ctx = await getBlitzContext()
   const user = await getCurrentUser(null, ctx)
+
+  if (user?.role !== UserRoleEnum.ADMIN) redirect("/dashboard")
 
   return (
     <div className="relative flex min-h-screen flex-col bg-pink-50">

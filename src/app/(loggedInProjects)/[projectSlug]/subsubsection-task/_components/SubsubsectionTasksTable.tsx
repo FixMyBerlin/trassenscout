@@ -29,7 +29,7 @@ export const SubsubsectionTasksTable = ({ subsubsectionTasks, fromPath }: Props)
   const [deleteSubsubsectionTaskMutation] = useMutation(deleteSubsubsectionTask)
 
   const handleDelete = async (subsubsectionTaskId: number) => {
-    if (window.confirm(`Den Eintrag mit ID ${subsubsectionTaskId} unwiderruflich löschen?`)) {
+    if (window.confirm(`Die Maßnahme mit ID ${subsubsectionTaskId} unwiderruflich löschen?`)) {
       try {
         await deleteSubsubsectionTaskMutation({ projectSlug, id: subsubsectionTaskId })
         router.push(`/${projectSlug}/subsubsection-task` as Route)
@@ -58,8 +58,8 @@ export const SubsubsectionTasksTable = ({ subsubsectionTasks, fromPath }: Props)
                 Titel
               </th>
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                Anzahl Einträge mit <br />
-                diesem Eintragstyp
+                Anzahl Maßnahmen mit <br />
+                diesem Maßnahmentyp
               </th>
               <th
                 scope="col"
@@ -80,7 +80,8 @@ export const SubsubsectionTasksTable = ({ subsubsectionTasks, fromPath }: Props)
                     <strong className="font-semibold">{Task.title}</strong>
                   </td>
                   <td className="px-3 py-4 text-sm text-gray-500">
-                    {Task.subsubsectionCount} {Task.subsubsectionCount > 1 ? "Einträge" : "Eintrag"}
+                    {Task.subsubsectionCount}{" "}
+                    {Task.subsubsectionCount > 1 ? "Maßnahmen" : "Maßnahme "}
                   </td>
                   <td className="py-4 text-sm font-medium whitespace-nowrap sm:pr-6">
                     <IfUserCanEdit>
@@ -121,7 +122,7 @@ export const SubsubsectionTasksTable = ({ subsubsectionTasks, fromPath }: Props)
           className="mt-4"
           href={`/${projectSlug}/subsubsection-task/new${appendFrom}` as Route}
         >
-          Neuer Eintragstyp
+          Neuer Maßnahmentyp
         </Link>
       </IfUserCanEdit>
       <SuperAdminLogData data={{ subsubsectionTasks }} />

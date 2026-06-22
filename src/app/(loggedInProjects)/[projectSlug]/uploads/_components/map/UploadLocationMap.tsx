@@ -46,7 +46,7 @@ export const UploadLocationMap = () => {
     ? subsubsections
     : subsubsections.filter((ss) => subsectionSlugsOfSelection.has(ss.subsection.slug))
 
-  // Determine color schema based on whether any Eintrag is selected
+  // Determine color schema based on whether any Maßnahme  is selected
   const colorSchema =
     subsubsectionIds.length > 0 ? ("subsubsection" as const) : ("subsection" as const)
 

@@ -52,8 +52,8 @@ Bitte beachten Sie: Die Maßnahmenmeldung über dieses Formular stellt noch kein
 Voraussetzung für eine Förderung ist die nachvollziehbare Begründung des Bedarfs, eine Einordnung in kommunale oder regionale Planungen sowie die Einhaltung technischer und qualitativer Standards.
 
 Alle Städte, Gemeinden und Ämter des Landkreises Oberhavel sowie öffentlich oder privatrechtlich organisierte Verkehrsunternehmen des ÖPNV, soweit sie gemeinwirtschaftliche Leistungen oder förderfähige Verkehrsleistungen im Landkreises Oberhavel erbringen, können Maßnahmenvorschläge zu Bau-, Ausbau- und Modernisierungsvorhaben folgender Maßnahmenbereiche einreichen:
-- Zentrale Omnibusbahnhöfe (ZOB);
 - Haltestelleneinrichtungen;
+- Zentrale Omnibusbahnhöfe (ZOB);
 - Buswendeschleifen / Bahnhofsvorplätze als Verknüpfungs- und Umsteigeanlagen unterschiedlicher Verkehrsträger (sofern sie nicht bereits im Zusammenhang mit Straßenbaumaßnahmen gefördert werden);
 - Umsteigeparkplätze ausgenommen Parkhäuser (P&R-, B&R-Anlagen);
 - Beschleunigungsmaßnahmen für den ÖPNV,
@@ -105,13 +105,13 @@ Die Maßnahmenmeldung wird nicht zwischengespeichert, d.h. bei Verlassen der Sei
 
 Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://trassenscout.de/datenschutz) zu. Die Daten werden gemäß DSGVO verarbeitet und nur für die Durchführung dieses digitalen Förderverfahrens gespeichert.`,
     buttons: [
-      { action: "next", label: "Maßnahme anmelden", position: "right", color: "primaryColor" },
+      { action: "next", label: "Meldung erstellen", position: "right", color: "primaryColor" },
     ],
   },
   buttonLabels: {
     next: "Weiter",
     back: "Zurück",
-    submit: "Maßnahme absenden",
+    submit: "Meldung abschicken",
   },
   pages: [
     {
@@ -144,8 +144,8 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           props: {
             label: "Bitte wählen Sie den Gegenstand der Förderung aus.",
             options: [
-              { key: "zob", label: "Zentrale Omnibusbahnhöfe (ZOB)" },
               { key: "haltestelleneinrichtungen", label: "Haltestelleneinrichtungen" },
+              { key: "zob", label: "Zentrale Omnibusbahnhöfe (ZOB)" },
               {
                 key: "buswendeschleifen",
                 label: "Verknüpfungs- und Umsteigeanlagen",
@@ -203,7 +203,6 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
               },
               additionalData: [
                 { dataKey: "hsName", propertyName: "stop_name", label: "Name der Haltestelle" },
-                { dataKey: "routeIds", propertyName: "route_ids", label: "IDs der Routen" },
               ],
               geoCategoryIdDefinition: { dataKey: "geometryCategoryId", propertyName: "stop_id" },
               infoPanelText:
@@ -217,7 +216,7 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
                 hs: {
                   label: "Auswählbare Bushaltestellen",
                   color: "bg-[#f5824d]",
-                  className: "h-2! w-2! rounded-full shrink-0",
+                  className: "size-2! rounded-full",
                 },
                 bordersLandkreis: {
                   label: "Landkreisgrenzen",
@@ -251,7 +250,7 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           props: { label: "Name der ausgewählten Haltestelle" },
         },
         {
-          name: "hsName",
+          name: "routeIds",
           componentType: "form",
           component: "hidden",
           props: { label: "IDs der Routen" },
@@ -337,7 +336,7 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           props: {
             label: "Ko-Finanzierung: Mittelgeber und Programm",
             description:
-              "Bitte geben Sie an, wie der Eigenanteil der Kommune sowie ggf. Beiträge Dritter (z. B. andere Träger oder Förderprogramme) finanziert werden. Voraussetzung ist, dass die Gesamtfinanzierung einschließlich Folgekosten gesichert ist und durch einen Finanzierungsplan nachgewiesen wird.",
+              "Bitte geben Sie an, wie der Eigenanteil der Kommune sowie ggf. Eingaben Dritter (z. B. andere Träger oder Förderprogramme) finanziert werden. Voraussetzung ist, dass die Gesamtfinanzierung einschließlich Folgekosten gesichert ist und durch einen Finanzierungsplan nachgewiesen wird.",
           },
         },
         {

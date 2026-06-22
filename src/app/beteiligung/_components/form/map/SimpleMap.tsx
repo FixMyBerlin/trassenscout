@@ -6,13 +6,17 @@ import {
 } from "@/src/app/beteiligung/_components/form/map/BackgroundSwitcher"
 import { SurveyMapOutOfViewPanel } from "@/src/app/beteiligung/_components/form/map/MapOutOfViewPanel"
 import SurveyPin from "@/src/app/beteiligung/_components/form/map/Pin"
-import { installMapGrabIfTest } from "@/src/app/beteiligung/_components/form/map/installMapGrab"
+import {
+  getSurveyMapStyle,
+  installMapGrabIfTest,
+  notifyPlaywrightMapLoaded,
+} from "@/src/app/beteiligung/_components/form/map/testMode"
 import { useFieldContext } from "@/src/app/beteiligung/_shared/hooks/form-context"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import "maplibre-gl/dist/maplibre-gl.css"
 import { useParams } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Map, { Marker, MarkerDragEvent, NavigationControl, useMap } from "react-map-gl/maplibre"
 
 type Props = {
@@ -34,12 +38,12 @@ export const SurveySimpleMap = ({ config }: Props) => {
   const [isPinInView, setIsPinInView] = useState(true)
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
 
-  if (mainMap) installMapGrabIfTest(mainMap.getMap(), "mainMap")
+  useEffect(() => {
+    if (!mainMap) return
+    installMapGrabIfTest(mainMap.getMap(), "mainMap")
+  }, [mainMap])
 
   const { maptilerUrl } = getConfigBySurveySlug(surveySlug, "meta")
-  const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
-  const vectorStyle = `${maptilerUrl}?key=${maptilerApiKey}`
-  const satelliteStyle = `${"https://api.maptiler.com/maps/hybrid/style.json"}?key=${maptilerApiKey}`
 
   const handleLayerSwitch = (layer: LayerType) => {
     setSelectedLayer(layer)
@@ -87,7 +91,8 @@ export const SurveySimpleMap = ({ config }: Props) => {
           id="mainMap"
           onMove={handleMapMove}
           onZoom={handleMapZoom}
-          mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
+          onLoad={notifyPlaywrightMapLoaded}
+          mapStyle={getSurveyMapStyle({ selectedLayer, maptilerUrl })}
           scrollZoom={false}
           initialViewState={{ ...mapBounds, fitBoundsOptions: { padding: 100 } }}
           maxZoom={13}

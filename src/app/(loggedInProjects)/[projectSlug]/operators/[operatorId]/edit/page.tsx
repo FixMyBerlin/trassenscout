@@ -1,4 +1,6 @@
 import { EditOperatorForm } from "@/src/app/(loggedInProjects)/[projectSlug]/operators/_components/EditOperatorForm"
+import { authorizeProjectMember } from "@/src/app/(loggedInProjects)/_utils/authorizeProjectMember"
+import { editorRoles } from "@/src/authorization/constants"
 import { invoke } from "@/src/blitz-server"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitle } from "@/src/core/components/text"
@@ -22,6 +24,8 @@ export default async function EditOperatorPage({
   params: { projectSlug, operatorId },
   searchParams,
 }: Props) {
+  await authorizeProjectMember(projectSlug, editorRoles)
+
   const operator = await invoke(getOperator, {
     projectSlug,
     id: Number(operatorId),

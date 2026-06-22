@@ -28,7 +28,7 @@ export const NetworkHierarchysTable = ({ networkHierarchys, fromPath }: Props) =
   const [deleteNetworkHierarchyMutation] = useMutation(deleteNetworkHierarchy)
 
   const handleDelete = async (networkHierarchyId: number) => {
-    if (window.confirm(`Den Eintrag mit ID ${networkHierarchyId} unwiderruflich löschen?`)) {
+    if (window.confirm(`Die Maßnahme mit ID ${networkHierarchyId} unwiderruflich löschen?`)) {
       try {
         await deleteNetworkHierarchyMutation({ projectSlug, id: networkHierarchyId })
         router.push(`/${projectSlug}/network-hierarchy` as Route)

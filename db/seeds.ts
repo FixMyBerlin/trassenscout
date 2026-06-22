@@ -1,5 +1,7 @@
 import seedContacts from "./seeds/contacts"
+import seedEvaluationsPage from "./seeds/evaluationsPage"
 import seedMemberships from "./seeds/memberships"
+import seedNetworkHierarchies from "./seeds/networkHierarchies"
 import seedOperators from "./seeds/operators"
 import seedProjects from "./seeds/projects"
 import seedQualityLevels from "./seeds/qualityLevels"
@@ -24,6 +26,7 @@ const seed = async () => {
 
   if (seedAll) {
     await seedProjects()
+    await seedEvaluationsPage()
   }
 
   await seedUsers()
@@ -32,6 +35,7 @@ const seed = async () => {
   if (seedAll) {
     await seedOperators()
     await seedQualityLevels()
+    await seedNetworkHierarchies()
     await seedSubsectionStatus()
     await seedSubsections()
     await seedContacts()

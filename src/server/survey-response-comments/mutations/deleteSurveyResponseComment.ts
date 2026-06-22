@@ -33,7 +33,7 @@ export default resolver.pipe(
 
     await createLogEntry({
       action: "DELETE",
-      message: `Beteiligungs-Beitrags-Kommentar gelöscht`,
+      message: `Eingabes-Kommentar gelöscht`,
       userId: ctx.session.userId,
       projectSlug,
     })

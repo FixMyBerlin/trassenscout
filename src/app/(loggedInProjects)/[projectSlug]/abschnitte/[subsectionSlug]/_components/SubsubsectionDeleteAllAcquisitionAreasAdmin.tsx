@@ -29,7 +29,7 @@ export const SubsubsectionDeleteAllAcquisitionAreasAdmin = ({
     setFeedback(null)
     if (
       !window.confirm(
-        "Alle Verhandlungsflächen dieses Eintrags unwiderruflich löschen? Verknüpfte Projektdokumentation kann entfallen.",
+        "Alle Verhandlungsflächen dieser Maßnahme unwiderruflich löschen? Verknüpfte Projektdokumentation kann entfallen.",
       )
     ) {
       return
@@ -55,7 +55,7 @@ export const SubsubsectionDeleteAllAcquisitionAreasAdmin = ({
   return (
     <SuperAdminBox className="my-6">
       <p className="mt-1 text-xs text-gray-700">
-        Entfernt alle Grunderwerbs-Flächen und ggf. leere ALKIS-Parcels für Eintrag-ID{" "}
+        Entfernt alle Grunderwerbs-Flächen und ggf. leere ALKIS-Parcels für Maßnahme -ID{" "}
         {subsubsectionId}. Projektdokumentation, die nur über eine Verhandlungsfläche verknüpft war,
         kann entfallen.
       </p>
@@ -65,7 +65,7 @@ export const SubsubsectionDeleteAllAcquisitionAreasAdmin = ({
         disabled={isLoading}
         onClick={() => void handleClick()}
       >
-        {isLoading ? "Wird gelöscht…" : "Alle Verhandlungsflächen dieses Eintrags löschen"}
+        {isLoading ? "Wird gelöscht…" : "Alle Verhandlungsflächen dieser Maßnahme löschen"}
       </button>
       {feedback ? <p className="mt-3 text-xs text-gray-800">{feedback}</p> : null}
     </SuperAdminBox>

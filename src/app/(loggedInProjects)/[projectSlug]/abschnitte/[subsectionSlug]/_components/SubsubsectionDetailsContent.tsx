@@ -3,8 +3,7 @@
 import { ProjectRecordNewModal } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordNewModal"
 import { ProjectRecordsTable } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordTable"
 import { UploadDropzone } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzone"
-import { UploadDropzoneContainer } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzoneContainer"
-import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
+import { UploadTable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadTable"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { getFullname } from "@/src/app/_components/users/utils/getFullname"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
@@ -24,8 +23,6 @@ import {
   subsubsectionEditRoute,
   subsubsectionLandAcquisitionRoute,
 } from "@/src/core/routes/subsectionRoutes"
-import { uploadEditRoute } from "@/src/core/routes/uploadRoutes"
-import { useCurrentReturnTo } from "@/src/core/routes/useCurrentPathWithSearch"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
 import { subsubsectionLocationLabelMap } from "@/src/core/utils/subsubsectionLocationLabelMap"
@@ -50,7 +47,6 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
   const subsectionSlug = useSlug("subsectionSlug")
   const subsubsectionSlug = useSlug("subsubsectionSlug")
   const projectSlug = useProjectSlug()
-  const returnTo = useCurrentReturnTo()
   const [isProjectRecordModalOpen, setIsProjectRecordModalOpen] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
   const [createdProjectRecordId, setCreatedProjectRecordId] = useState<null | number>(null)
@@ -107,7 +103,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
 
   return (
     <SubsubsectionPanel
-      title="Allgemeines"
+      title=""
       action={
         <IfUserCanEdit>
           <Link
@@ -150,7 +146,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
                 {subsubsection.SubsubsectionTask?.title && (
                   <tr>
                     <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
-                      Eintragstyp
+                      Maßnahmentyp
                     </th>
                     <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
                       {subsubsection.SubsubsectionTask.title}
@@ -366,42 +362,34 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
         <H2 className="text-lg font-semibold text-gray-700 sm:text-lg">Dokumente</H2>
         {linkedSurveyResponse && (
           <div className="rounded-md border border-gray-200 bg-gray-50 p-4 text-sm text-gray-700">
-            <p>Dieser Eintrag wurde aus folgendem Beitrag erstellt:</p>
+            <p>Diese Maßnahme wurde aus folgender Eingabe erstellt:</p>
             <p className="mt-1">
               <Link
                 href={`/${projectSlug}/surveys/${linkedSurveyResponse.surveyId}/responses?responseDetails=${linkedSurveyResponse.surveyResponseId}`}
               >
-                Beitrag mit der ID {linkedSurveyResponse.surveyResponseId} - Formular{" "}
+                Eingabe mit der ID {linkedSurveyResponse.surveyResponseId} - Formular{" "}
                 {linkedSurveyResponse.surveySlug}
               </Link>
             </p>
           </div>
         )}
-        {!uploads.length && <ZeroCase small visible name="Dokumente" />}
-        <div className="grid grid-cols-2 gap-3">
-          {uploads.map((upload) => (
-            <UploadPreviewClickable
-              key={upload.id}
-              uploadId={upload.id}
-              upload={upload}
-              projectSlug={projectSlug}
-              size="grid"
-              editUrl={uploadEditRoute(projectSlug, upload.id, { returnTo })}
-              onDeleted={async () => {
+
+        <div className="flex flex-col gap-2">
+          <UploadTable
+            withAction={false}
+            withRelations={false}
+            uploads={uploads}
+            onDelete={async () => {
+              await refetchUploads()
+            }}
+          />
+          <IfUserCanEdit>
+            <UploadDropzone
+              subsubsectionIds={[subsubsection.id]}
+              onUploadComplete={async () => {
                 await refetchUploads()
               }}
             />
-          ))}
-          <IfUserCanEdit>
-            <UploadDropzoneContainer className="h-36 rounded-md p-0">
-              <UploadDropzone
-                fillContainer
-                subsubsectionIds={[subsubsection.id]}
-                onUploadComplete={async () => {
-                  await refetchUploads()
-                }}
-              />
-            </UploadDropzoneContainer>
           </IfUserCanEdit>
         </div>
       </section>

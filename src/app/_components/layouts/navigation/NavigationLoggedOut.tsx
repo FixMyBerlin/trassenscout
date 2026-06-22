@@ -5,8 +5,8 @@ import { NavigationWrapper } from "./wrapper/NavigationWrapper"
 export const NavigationLoggedOut = () => {
   return (
     <NavigationWrapper>
-      <NavigationMobile homeLink="/" homeLinkText="Startseite" />
-      <NavigationDesktop homeLink="/" homeLinkText="Startseite" />
+      <NavigationMobile homeLink="/" homeLinkText="Startseite" userVariant="loggedOut" />
+      <NavigationDesktop homeLink="/" homeLinkText="Startseite" userVariant="loggedOut" />
     </NavigationWrapper>
   )
 }

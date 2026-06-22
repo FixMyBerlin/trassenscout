@@ -41,7 +41,7 @@ export const createProjectRecordExtractionSchema = ({
     //         .enum(subsubsections.map((s) => s.id.toString()) as [string, ...string[]])
     //         .nullable()
     //         .describe(
-    //           `The subsubsection ('Eintrag') ID this ${isReprocessing ? "record entry" : "email"} relates to, if applicable. Available subsubsections: ${subsubsections
+    //           `The subsubsection ('Maßnahme ') ID this ${isReprocessing ? "record entry" : "email"} relates to, if applicable. Available subsubsections: ${subsubsections
     //             .map((s) => `${s.id} (${s.slug} - part of subsection ${s.subsection.slug})`)
     //             .join(", ")}. Return null if no clear subsubsection is identified.`,
     //         )

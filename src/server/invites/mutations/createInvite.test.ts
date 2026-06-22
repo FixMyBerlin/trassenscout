@@ -48,6 +48,7 @@ describe("createInvite mutation", () => {
         phone: "signup_test_phone",
         institution: "signup_test_institution",
         inviteToken: null,
+        privacyPolicyAccepted: true,
       },
       mockCtx,
     )

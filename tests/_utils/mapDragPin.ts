@@ -11,7 +11,7 @@ export const mapDragPin = async ({
   pinElement: any
 }) => {
   await expect(mapElement).toBeInViewport()
-  await expect(pinElement).toBeVisible()
+  await expect(pinElement).toBeVisible({ timeout: 15_000 })
 
   // without this click the dragging does not work
   await mapElement.click({})
@@ -33,7 +33,16 @@ export const mapDragPin = async ({
   await page.mouse.move(targetX, targetY, { steps: 5 })
   await page.mouse.up()
 
-  await page.waitForTimeout(500)
+  // Poll until the pin's position actually changes instead of sleeping a fixed amount.
+  await expect
+    .poll(
+      async () => {
+        const box = await pinElement.boundingBox()
+        return box ? Math.round(box.x) : null
+      },
+      { timeout: 2_000 },
+    )
+    .not.toBe(Math.round(startX))
 
   const newPinPosition = await pinElement.boundingBox()
   if (!newPinPosition) {

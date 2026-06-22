@@ -2,6 +2,7 @@
 
 import { ProjectRecordFormFields } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordFormFields"
 import { getDate } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/splitStartAt"
+import { useUserCan } from "@/src/app/_components/memberships/hooks/useUserCan"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { Form, FORM_ERROR, FormDirtyStateReporter } from "@/src/core/components/forms"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
@@ -44,10 +45,12 @@ export const ProjectRecordNewModal = ({
   initialValues,
 }: Props) => {
   const [createProjectRecordMutation] = useMutation(createProjectRecord)
+  const userCanEdit = useUserCan().edit
   const [templates = []] = useQuery(
     getProjectRecordTemplatesByProject,
     { projectSlug },
     {
+      enabled: userCanEdit,
       suspense: false,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,

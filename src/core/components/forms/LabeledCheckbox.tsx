@@ -31,7 +31,7 @@ export const LabeledCheckbox = forwardRef<HTMLInputElement, LabeledCheckboxProps
       formState: { isSubmitting, errors },
     } = useFormContext()
 
-    const hasError = Boolean(errors[value])
+    const hasError = Boolean(errors[scope])
     const key = [scope, value].join("-")
 
     return (
@@ -63,7 +63,7 @@ export const LabeledCheckbox = forwardRef<HTMLInputElement, LabeledCheckboxProps
           {...labelProps}
           htmlFor={key}
           className={clsx(
-            "block pl-3 text-sm font-medium whitespace-nowrap",
+            "block pl-3 text-sm font-medium",
             readonly || disabled
               ? "text-gray-400"
               : "cursor-pointer text-gray-700 hover:text-gray-900",
@@ -78,7 +78,7 @@ export const LabeledCheckbox = forwardRef<HTMLInputElement, LabeledCheckboxProps
               </p>
             )}
             errors={errors}
-            name={value}
+            name={scope}
           />
         </label>
       </div>

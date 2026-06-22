@@ -2,7 +2,7 @@ import { Metadata } from "next"
 import { SubsubsectionDashboardClient } from "../../_components/SubsubsectionDashboardClient"
 
 export const metadata: Metadata = {
-  title: "Eintrag",
+  title: "Maßnahme ",
   robots: "noindex",
 }
 

@@ -1,6 +1,7 @@
 import { linkStyles } from "@/src/core/components/links"
 import {
   Combobox,
+  ComboboxButton,
   ComboboxInput,
   ComboboxOption,
   ComboboxOptions,
@@ -43,8 +44,12 @@ export function LabeledCombobox({
   const [query, setQuery] = useState("")
   const {
     control,
+    getValues,
     formState: { isSubmitting, errors },
   } = useFormContext()
+  const [pinnedSelected, setPinnedSelected] = useState<string[]>(
+    () => (getValues(scope) as string[] | undefined) ?? [],
+  )
 
   const hasError = Boolean(errors[scope])
   const disabledOrSubmitting = Boolean(disabled || isSubmitting || items.length === 0)
@@ -56,11 +61,16 @@ export function LabeledCombobox({
         control={control}
         render={({ field }) => {
           const value = (field.value as string[] | undefined) ?? []
-
+          const pinned = new Set(pinnedSelected)
+          const orderedItems = [...items].sort(
+            (a, b) => Number(pinned.has(b.value)) - Number(pinned.has(a.value)),
+          )
           const filteredItems =
             query === ""
-              ? items
-              : items.filter((i) => String(i.label).toLowerCase().includes(query.toLowerCase()))
+              ? orderedItems
+              : orderedItems.filter((i) =>
+                  String(i.label).toLowerCase().includes(query.toLowerCase()),
+                )
 
           return (
             <>
@@ -78,7 +88,7 @@ export function LabeledCombobox({
                 )}
                 {value.length > 0 && (
                   <div className="flex grow items-center justify-between gap-1">
-                    <span className="inline-flex size-4.5 shrink-0 items-center justify-center rounded-full bg-gray-300 p-1 text-xs text-white">
+                    <span className="inline-flex size-4.5 shrink-0 items-center justify-center rounded-full bg-gray-400 p-1 text-xs font-bold text-white">
                       {value.length}
                     </span>
                     <button
@@ -103,7 +113,10 @@ export function LabeledCombobox({
                 multiple
                 value={value}
                 onChange={field.onChange}
-                onClose={() => setQuery("")}
+                onClose={() => {
+                  setQuery("")
+                  setPinnedSelected(value)
+                }}
                 disabled={disabledOrSubmitting}
                 invalid={hasError}
               >
@@ -131,10 +144,9 @@ export function LabeledCombobox({
                       )}
                       disabled={disabledOrSubmitting}
                     />
-                    <ChevronDownIcon
-                      className="pointer-events-none absolute inset-y-0 right-3 my-auto size-5 text-gray-400"
-                      aria-hidden="true"
-                    />
+                    <ComboboxButton className="absolute inset-y-0 right-3 my-auto flex cursor-pointer items-center text-gray-400 disabled:cursor-not-allowed">
+                      <ChevronDownIcon className="size-5" aria-hidden="true" />
+                    </ComboboxButton>
 
                     <Transition
                       show={open}

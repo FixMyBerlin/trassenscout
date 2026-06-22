@@ -1,6 +1,6 @@
 "use client"
 import { DevAdminBox } from "@/src/core/components/AdminBox/DevAdminBox"
-import { FORM_ERROR, Form } from "@/src/core/components/forms/Form"
+import { FORM_ERROR, Form, LabeledCheckbox } from "@/src/core/components/forms"
 import { HiddenField } from "@/src/core/components/forms/HiddenField"
 import { LabeledTextField } from "@/src/core/components/forms/LabeledTextField"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
@@ -10,24 +10,19 @@ import { SignupSchema } from "@/src/server/auth/schema"
 import getInvite from "@/src/server/invites/queries/getInvite"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter, useSearchParams } from "next/navigation"
+import { z } from "zod"
 
 export const SignupForm = () => {
   const router = useRouter()
   const [signupMutation] = useMutation(signup)
 
   const paramInviteToken = useSearchParams()?.get("inviteToken") || null
+  const loginHref = paramInviteToken
+    ? `/auth/login?inviteToken=${encodeURIComponent(paramInviteToken)}`
+    : "/auth/login"
   const [invite] = useQuery(getInvite, { token: paramInviteToken })
 
-  type HandleSubmit = {
-    email: string
-    firstName: string
-    lastName: string
-    institution: string | null
-    phone: string | null
-    password: string
-    inviteToken: string | null
-  }
-  const handleSubmit = async (values: HandleSubmit) => {
+  const handleSubmit = async (values: z.infer<typeof SignupSchema>) => {
     try {
       await signupMutation(values)
       router.push("/")
@@ -46,6 +41,7 @@ export const SignupForm = () => {
           email: invite?.email || "",
           password: "",
           inviteToken: invite?.token || null,
+          privacyPolicyAccepted: false,
         }}
         onSubmit={handleSubmit}
       >
@@ -91,6 +87,23 @@ export const SignupForm = () => {
           type="password"
           autoComplete="current-password"
         />
+        {/* @ts-expect-error the defaults work fine; but the helper should be updated at some point */}
+        <LabeledCheckbox
+          scope="privacyPolicyAccepted"
+          label={
+            <>
+              Ich habe die{" "}
+              <Link href="/datenschutz" blank>
+                Datenschutzerklärung
+              </Link>{" "}
+              gelesen und akzeptiere sie.
+            </>
+          }
+          labelProps={{
+            className:
+              "block cursor-pointer pl-3 text-sm font-medium whitespace-normal text-gray-700 hover:text-gray-900",
+          }}
+        />
       </Form>
 
       <DevAdminBox className="text-center">
@@ -102,16 +115,7 @@ export const SignupForm = () => {
       </DevAdminBox>
 
       <div className="mt-4">
-        Sie haben bereits einen Account? Zur{" "}
-        <Link
-          href={{
-            pathname: "/auth/login",
-            query: { inviteToken: paramInviteToken },
-          }}
-        >
-          Anmeldung
-        </Link>
-        .
+        Sie haben bereits einen Account? Zur <Link href={loginHref}>Anmeldung</Link>.
       </div>
     </>
   )

@@ -5,6 +5,7 @@ import "maplibre-gl/dist/maplibre-gl.css"
 import * as pmtiles from "pmtiles"
 import { useEffect, useMemo, useState } from "react"
 import MapComponent, {
+  AttributionControl,
   MapLayerMouseEvent,
   MapProps,
   NavigationControl,
@@ -220,7 +221,9 @@ export const BaseMap = ({
               : []),
           ]}
           hash={hash || false}
+          attributionControl={false}
         >
+          <AttributionControl compact={true} position="bottom-right" />
           <NavigationControl showCompass={false} />
           {showScaleControl && <ScaleControl />}
           {staticOverlay && <StaticOverlay config={staticOverlay} />}

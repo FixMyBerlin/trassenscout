@@ -103,7 +103,7 @@ export function SurveyResponses({ projectSlug, surveyId, survey, tabs }: Props) 
       <PageHeader title={survey.title} className="mt-12" description={<SurveyTabs tabs={tabs} />} />
 
       <div className="mt-12 space-y-4">
-        <H2>Beiträge</H2>
+        <H2>Eingaben</H2>
         <div className="mb-6">
           <Link
             className="mb-12 flex gap-1"
@@ -121,14 +121,14 @@ export function SurveyResponses({ projectSlug, surveyId, survey, tabs }: Props) 
           topicsDefinition={topics}
         />
 
-        <ZeroCase visible={filteredResponses.length} name={"Beiträge"} />
+        <ZeroCase visible={filteredResponses.length} name={"Eingaben"} />
         <p className="mt-4 text-sm text-gray-500">
-          {filteredResponses.length} {filteredResponses.length === 1 ? "Beitrag" : "Beiträge"}
+          {filteredResponses.length} {filteredResponses.length === 1 ? "Eingabe" : "Eingaben"}
         </p>
         {filteredResponses.length !== 0 && (
           <div className="mt-2 flex items-center">
             <SurveyStaticPin surveySlug={survey.slug} small />
-            <small className="pl-4 text-[#7c3aed]">= Beitrag mit Verortung</small>
+            <small className="pl-4 text-[#7c3aed]">= Eingabe mit Verortung</small>
           </div>
         )}
         <section>

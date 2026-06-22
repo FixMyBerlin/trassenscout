@@ -24,10 +24,12 @@ type Props = {
   size: UploadSize
   showTitle: boolean
   onClick?: () => void
+  onPointerEnter?: () => void
+  onFocus?: () => void
 } & ({ uploadId: number; upload?: never } | { upload: UploadPreviewData; uploadId?: never })
 
 export const UploadPreview = (props: Props) => {
-  const { projectSlug, size, showTitle, onClick } = props
+  const { projectSlug, size, showTitle, onClick, onPointerEnter, onFocus } = props
 
   const uploadFromProps = "upload" in props ? props.upload : undefined
   const uploadId = "uploadId" in props ? props.uploadId : uploadFromProps?.id
@@ -81,13 +83,16 @@ export const UploadPreview = (props: Props) => {
       </div>
     ) : null
 
-  const containerClassName = size === "grid" ? "max-w-[112px]" : ""
+  const containerClassName =
+    size === "grid" ? "max-w-[112px]" : size === "detail" ? "max-w-[176px]" : ""
 
   if (onClick) {
     return (
       <button
         type="button"
         onClick={onClick}
+        onPointerEnter={onPointerEnter}
+        onFocus={onFocus}
         className={twJoin(
           "relative flex cursor-pointer flex-col items-start justify-center rounded-md bg-white text-xs ring-1 ring-gray-200/30 hover:bg-gray-50 hover:ring-2 hover:ring-gray-300/60 hover:outline-hidden",
           containerClassName,

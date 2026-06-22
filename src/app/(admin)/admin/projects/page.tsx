@@ -8,6 +8,7 @@ import "server-only"
 import { AdminEnableProjectExportApi } from "./[projectSlug]/subsections/_components/AdminEnableProjectExportApi"
 import { AdminAlkisLandAcquisitionDemoTools } from "./_components/AdminAlkisLandAcquisitionDemoTools"
 import { AdminEnableProjectAi } from "./_components/AdminEnableProjectAi"
+import { AdminEnableProjectEvaluations } from "./_components/AdminEnableProjectEvaluations"
 import { AdminEnableProjectLandAcquisition } from "./_components/AdminEnableProjectLandAcquisition"
 import { AdminEnableProjectShowLogEntries } from "./_components/AdminEnableProjectShowLogEntries"
 
@@ -47,6 +48,10 @@ export default async function AdminProjectsPage() {
               <AdminEnableProjectShowLogEntries
                 slug={project.slug}
                 showLogEntries={project.showLogEntries}
+              />
+              <AdminEnableProjectEvaluations
+                slug={project.slug}
+                evaluationsEnabled={project.evaluationsEnabled}
               />
               <pre>{JSON.stringify(project, undefined, 2)}</pre>
             </li>

@@ -1,5 +1,4 @@
 import db from "@/db"
-import { forgotPasswordMailToUser } from "@/emails/mailers/forgotPasswordMailToUser"
 import { generateToken, hash256 } from "@blitzjs/auth"
 import { resolver } from "@blitzjs/rpc"
 import { ForgotPassword } from "../schema"
@@ -18,6 +17,8 @@ export default resolver.pipe(resolver.zod(ForgotPassword), async ({ email }) => 
 
   // 3. If user with this email was found
   if (user) {
+    const { forgotPasswordMailToUser } = await import("@/emails/mailers/forgotPasswordMailToUser")
+
     // 4. Delete any existing password reset tokens
     await db.token.deleteMany({ where: { type: "RESET_PASSWORD", userId: user.id } })
     // 5. Save this new token in the database.

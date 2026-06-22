@@ -41,12 +41,19 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
 }: FormProps<S>) {
   const defaultFilters = useDefaultFilterValues(surveySlug)
   const { filter, setFilter } = useFilters()
+  const effectiveFilter = filter ?? defaultFilters
   const [searchterm, setSearchterm] = useState("")
 
-  // todo: how to set the default values for the form?
+  // Ensure URL state is initialized once, while keeping inputs controlled on first render.
   useEffect(() => {
-    setFilter(filter || defaultFilters)
-  }, [])
+    if (!filter) {
+      void setFilter(defaultFilters)
+    }
+  }, [defaultFilters, filter, setFilter])
+
+  useEffect(() => {
+    setSearchterm(effectiveFilter.searchterm)
+  }, [effectiveFilter.searchterm])
 
   // backend configurations: status
   const backendConfig = getConfigBySurveySlug(surveySlug, "backend")
@@ -103,20 +110,18 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
   const handleInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = event.target
     if (type === "checkbox") {
-      // @ts-expect-error todo
-      await setFilter((prevValues) => ({
-        ...prevValues,
-        [name]: checked
-          ? // @ts-expect-error todo
-            [...prevValues[name], value]
-          : // @ts-expect-error todo
-            prevValues[name].filter((item) => item !== value),
-      }))
+      await setFilter((prevValues) => {
+        const current = prevValues ?? defaultFilters
+        const currentList = (current as Record<string, string[]>)[name] ?? []
+        return {
+          ...current,
+          [name]: checked ? [...currentList, value] : currentList.filter((item) => item !== value),
+        }
+      })
     }
     if (type === "radio") {
-      // @ts-expect-error todo
-      setFilter((prevValues) => ({
-        ...prevValues,
+      await setFilter((prevValues) => ({
+        ...(prevValues ?? defaultFilters),
         [name]: value,
       }))
     }
@@ -124,9 +129,8 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
 
   const handleSelectChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = event.target
-    // @ts-expect-error todo
     await setFilter((prevValues) => ({
-      ...prevValues,
+      ...(prevValues ?? defaultFilters),
       [name]: value,
     }))
   }
@@ -138,18 +142,16 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
 
   const handleSearchtermInputBlur = async (event: any) => {
     const { name, value } = event.target
-    // @ts-expect-error todo
     await setFilter((prevValues) => ({
-      ...prevValues,
+      ...(prevValues ?? defaultFilters),
       [name]: value,
     }))
   }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    // @ts-expect-error todo
     await setFilter((prevValues) => ({
-      ...prevValues,
+      ...(prevValues ?? defaultFilters),
       searchterm,
     }))
     console.log("handleSubmit", event)
@@ -177,7 +179,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                     type="checkbox"
                     name="status"
                     key={item.value}
-                    checked={filter?.status.includes(item.value)}
+                    checked={effectiveFilter.status.includes(item.value)}
                     onChange={handleInputChange}
                     label={item.label}
                     value={item.value}
@@ -197,7 +199,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                         key={item.value}
                         name="hasnotes"
                         onChange={handleInputChange}
-                        checked={filter?.hasnotes === item.value}
+                        checked={effectiveFilter.hasnotes === item.value}
                       />
                     ))}
                   </FormElementWrapper>
@@ -213,12 +215,12 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                       key={item.value}
                       name="haslocation"
                       onChange={handleInputChange}
-                      checked={filter?.haslocation === item.value}
+                      checked={effectiveFilter.haslocation === item.value}
                     />
                   ))}
                 </FormElementWrapper>
               </div>
-              {additionalFilters && Boolean(additionalFilters?.length) && filter && (
+              {additionalFilters && Boolean(additionalFilters?.length) && (
                 <ul className="flex shrink flex-col gap-6">
                   {additionalFilters.map((addFilter) => (
                     <li key={addFilter.id}>
@@ -226,8 +228,11 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                         <select
                           onChange={handleSelectChange}
                           name={addFilter.value}
-                          // @ts-ignore todo
-                          value={filter[addFilter.value]}
+                          value={String(
+                            (effectiveFilter as Record<string, string | undefined>)[
+                              addFilter.value
+                            ] ?? "ALL",
+                          )}
                           className={
                             "w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-xs focus:border-blue-500 focus:ring-blue-500 focus:outline-hidden sm:text-sm"
                           }
@@ -256,7 +261,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                     key={item.value}
                     name="categories"
                     onChange={handleInputChange}
-                    checked={filter?.categories.includes(item.value)}
+                    checked={effectiveFilter.categories.includes(item.value)}
                   />
                 ))}
               </FormElementWrapper>
@@ -271,7 +276,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                     key={item.value}
                     name="operator"
                     onChange={handleInputChange}
-                    checked={filter?.operator === item.value}
+                    checked={effectiveFilter.operator === item.value}
                   />
                 ))}
               </FormElementWrapper>
@@ -286,7 +291,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                       type="checkbox"
                       name="topics"
                       key={item.value}
-                      checked={filter?.topics.includes(item.value)}
+                      checked={effectiveFilter.topics.includes(item.value)}
                       onChange={handleInputChange}
                       label={item.label}
                       value={item.value}
@@ -304,7 +309,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                   value={searchterm}
                   onBlur={handleSearchtermInputBlur}
                   name="searchterm"
-                  placeholder="Beiträge nach Suchwort filtern"
+                  placeholder="Eingaben nach Suchwort filtern"
                   className={
                     "block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-xs focus:border-blue-500 focus:ring-blue-500 focus:outline-hidden sm:text-sm"
                   }

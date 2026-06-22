@@ -48,9 +48,9 @@ export function SurveyAnalysis({ projectSlug, surveyId, survey, tabs }: Props) {
       firstRow: {
         "Interesse an Updates": survey.interestedParticipants || "k. A.",
         Teilnehmende: surveySessions.length,
-        "Inhaltliche Beiträge": surveyResponsesFeedbackPart.length,
-        "Inhaltliche Beiträge mit Ortsangabe": surveyResponsesFeedbackPartWithLocation.length,
-        "Inhaltliche Beiträge ohne Ortsangabe":
+        "Inhaltliche Eingaben": surveyResponsesFeedbackPart.length,
+        "Inhaltliche Eingaben mit Ortsangabe": surveyResponsesFeedbackPartWithLocation.length,
+        "Inhaltliche Eingaben ohne Ortsangabe":
           surveyResponsesFeedbackPart.length - surveyResponsesFeedbackPartWithLocation.length,
       },
     },

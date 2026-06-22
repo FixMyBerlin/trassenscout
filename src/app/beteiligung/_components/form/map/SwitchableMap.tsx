@@ -2,8 +2,12 @@ import {
   LayerType,
   SurveyBackgroundSwitcher,
 } from "@/src/app/beteiligung/_components/form/map/BackgroundSwitcher"
-import { installMapGrabIfTest } from "@/src/app/beteiligung/_components/form/map/installMapGrab"
 import { SurveyMapGeoCategoryInfoPanel } from "@/src/app/beteiligung/_components/form/map/MapGeoCategoryInfoPanel"
+import {
+  getSurveyMapStyle,
+  installMapGrabIfTest,
+  notifyPlaywrightMapLoaded,
+} from "@/src/app/beteiligung/_components/form/map/testMode"
 import {
   featureStateTargetForMapSource,
   getInitialViewStateFromGeometryString,
@@ -19,7 +23,6 @@ import { useFieldContext } from "@/src/app/beteiligung/_shared/hooks/form-contex
 import { MapData } from "@/src/app/beteiligung/_shared/types"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
-import { playwrightSendMapLoadedEvent } from "@/tests/_utils/customMapLoadedEvent"
 import { Radio, RadioGroup } from "@headlessui/react"
 import clsx from "clsx"
 import type { Point } from "geojson"
@@ -130,7 +133,10 @@ export const SwitchableMap = ({
     }
   }, [mainMap, mapLoading, mapData, isPin])
 
-  if (mainMap) installMapGrabIfTest(mainMap.getMap(), "mainMap")
+  useEffect(() => {
+    if (!mainMap) return
+    installMapGrabIfTest(mainMap.getMap(), "mainMap")
+  }, [mainMap])
 
   const initialLocationPoint = (() => {
     try {
@@ -168,9 +174,6 @@ export const SwitchableMap = ({
   // this allows us to set the initial bounds based on a query parameter (e.g. set in a read only field)
 
   const { maptilerUrl } = getConfigBySurveySlug(surveySlug, "meta")
-  const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
-  const vectorStyle = `${maptilerUrl}?key=${maptilerApiKey}`
-  const satelliteStyle = `${"https://api.maptiler.com/maps/hybrid/style.json"}?key=${maptilerApiKey}`
 
   const handleLayerSwitch = (layer: LayerType) => {
     setSelectedLayer(layer)
@@ -241,7 +244,7 @@ export const SwitchableMap = ({
   }
 
   const handleMapLoad = (_: maplibregl.MapLibreEvent) => {
-    playwrightSendMapLoadedEvent()
+    notifyPlaywrightMapLoaded()
     setMapLoading(true)
   }
 
@@ -308,7 +311,7 @@ export const SwitchableMap = ({
   }
 
   return (
-    <div className="relative mt-4 h-[500px]" aria-describedby={field.name + " Hint"}>
+    <div className="mt-4" aria-describedby={field.name + " Hint"}>
       <p className={formClasses.fieldLabel}>
         Bezieht sich Ihre Anmeldung auf eine Haltestelle im Bestand?
       </p>
@@ -341,52 +344,54 @@ export const SwitchableMap = ({
           </Radio>
         ))}
       </RadioGroup>
-      <Map
-        id="mainMap"
-        scrollZoom={false}
-        initialViewState={initialViewState}
-        mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
-        onClick={handleMapClick}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        // Set map state for <MapData>:
-        onLoad={(event) => handleMapLoad(event)}
-        // todo make configurable
-        maxZoom={16}
-        minZoom={7}
-        cursor={cursorStyle}
-        interactiveLayerIds={!isPin ? allInteractiveLayerIds : []}
-        onIdle={() => setMapLoading(false)}
-      >
-        <NavigationControl showCompass={false} />
-        <AllSources mapData={mapData} />
-        <AllLayers layers={[...generateLayers(mapData)]} />
-        {!isPin && (
-          <SurveyMapGeoCategoryInfoPanel
-            description={description}
-            infoPanelText={infoPanelText}
-            additionalData={additionalData}
-            geoCategoryIdDefinition={geoCategoryIdDefinition}
+      <div className="relative mt-4 h-[500px]">
+        <Map
+          id="mainMap"
+          scrollZoom={false}
+          initialViewState={initialViewState}
+          mapStyle={getSurveyMapStyle({ selectedLayer, maptilerUrl })}
+          onClick={handleMapClick}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+          // Set map state for <MapData>:
+          onLoad={(event) => handleMapLoad(event)}
+          // todo make configurable
+          maxZoom={16}
+          minZoom={7}
+          cursor={cursorStyle}
+          interactiveLayerIds={!isPin ? allInteractiveLayerIds : []}
+          onIdle={() => setMapLoading(false)}
+        >
+          <NavigationControl showCompass={false} />
+          <AllSources mapData={mapData} />
+          <AllLayers layers={[...generateLayers(mapData)]} />
+          {!isPin && (
+            <SurveyMapGeoCategoryInfoPanel
+              description={description}
+              infoPanelText={infoPanelText}
+              additionalData={additionalData}
+              geoCategoryIdDefinition={geoCategoryIdDefinition}
+            />
+          )}
+          <SurveyBackgroundSwitcher
+            position="top-left"
+            value={selectedLayer}
+            onChange={handleLayerSwitch}
           />
-        )}
-        <SurveyBackgroundSwitcher
-          position="top-left"
-          value={selectedLayer}
-          onChange={handleLayerSwitch}
-        />
-        {markerPosition && isPin && (
-          <Marker
-            longitude={markerPosition.lng}
-            latitude={markerPosition.lat}
-            anchor="bottom"
-            draggable
-            onDrag={onMarkerDrag}
-            onDragEnd={onMarkerDragEnd}
-          >
-            <SurveyPin />
-          </Marker>
-        )}
-      </Map>
+          {markerPosition && isPin && (
+            <Marker
+              longitude={markerPosition.lng}
+              latitude={markerPosition.lat}
+              anchor="bottom"
+              draggable
+              onDrag={onMarkerDrag}
+              onDragEnd={onMarkerDragEnd}
+            >
+              <SurveyPin />
+            </Marker>
+          )}
+        </Map>
+      </div>
     </div>
   )
 }

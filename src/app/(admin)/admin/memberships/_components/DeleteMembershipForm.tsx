@@ -19,7 +19,7 @@ export const DeleteMembershipForm = ({ membership }: Props) => {
   const handleDelete = async (membership: Props["membership"]) => {
     if (
       window.confirm(
-        `Den Eintrag mit ID ${membership.id} auf Projekt ${shortTitle(
+        `Die Maßnahme mit ID ${membership.id} auf Projekt ${shortTitle(
           membership.project.slug,
         )} unwiderruflich löschen?`,
       )

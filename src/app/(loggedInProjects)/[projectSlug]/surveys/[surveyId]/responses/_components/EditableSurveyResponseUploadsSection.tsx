@@ -9,9 +9,8 @@ import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedS
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getQuestionIdBySurveySlug"
 import { surveyResponseUploadEditRoute } from "@/src/core/routes/uploadRoutes"
-import getFeedbackSurveyResponsesWithSurveyDataAndComments from "@/src/server/survey-responses/queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
 import getSurveyResponseUploadsSplit from "@/src/server/uploads/queries/getSurveyResponseUploadsSplit"
-import { invalidateQuery, useQuery } from "@blitzjs/rpc"
+import { useQuery } from "@blitzjs/rpc"
 
 type Props = {
   projectSlug: string
@@ -19,6 +18,7 @@ type Props = {
   responseId: number
   responseData: Record<string, any>
   surveySlug: AllowedSurveySlugs
+  refetchResponsesAndTopics: () => Promise<void>
 }
 
 export const EditableSurveyResponseUploadsSection = ({
@@ -27,6 +27,7 @@ export const EditableSurveyResponseUploadsSection = ({
   responseId,
   responseData,
   surveySlug,
+  refetchResponsesAndTopics,
 }: Props) => {
   // Upload description (stored in response.data)
   const part2Config = getConfigBySurveySlug(surveySlug, "part2")
@@ -64,8 +65,7 @@ export const EditableSurveyResponseUploadsSection = ({
   const handleUploadComplete = async () => {
     // Uploads are already linked during creation, just refetch to update the UI
     await refetchUploads()
-    // Invalidate main query to update parent component
-    invalidateQuery(getFeedbackSurveyResponsesWithSurveyDataAndComments)
+    await refetchResponsesAndTopics()
   }
 
   return (

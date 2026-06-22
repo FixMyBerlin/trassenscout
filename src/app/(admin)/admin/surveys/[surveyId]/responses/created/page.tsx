@@ -28,7 +28,7 @@ export default async function AdminSurveyCreatedResponsesPage({
           ]}
         />
       </HeaderWrapper>
-      <H2>Nicht-abgeschickte Beteiligungsantworten</H2>
+      <H2>Nicht-abgeschickte Eingaben</H2>
       <p className="mb-4 italic">Dies sind alle Einträge, deren Status CREATED ist.</p>
       {!createdResponses.length
         ? "keine CREATED SurveyResponses gefunden"

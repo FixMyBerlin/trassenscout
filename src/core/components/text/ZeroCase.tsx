@@ -3,13 +3,14 @@ type Props = {
   name?: string
   small?: boolean
   text?: string
+  verb?: string
 }
 
-export const ZeroCase = ({ visible, name, small, text }: Props) => {
+export const ZeroCase = ({ visible, name, small, text, verb = "eingetragen" }: Props) => {
   if (typeof visible === "number" && !!visible) return null
   if (typeof visible !== "number" && !visible) return null
 
-  const content = text ?? `Es wurden noch ${name ? `keine ${name}` : "nichts"} eingetragen.`
+  const content = text ?? `Es wurden noch ${name ? `keine ${name}` : "nichts"} ${verb}.`
 
   if (small) {
     return <p className="my-4 text-base text-gray-500">{content}</p>

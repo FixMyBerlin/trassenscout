@@ -25,7 +25,7 @@ export default resolver.pipe(
 
     await createLogEntry({
       action: "CREATE",
-      message: `Beteiligungs-Beitrag kommentiert`,
+      message: `Eingabe kommentiert`,
       userId: ctx.session.userId,
       projectSlug,
       surveyResponseId: surveyResponseId,

@@ -28,6 +28,7 @@ type Props = {
   projectRecordEmail: { createdAt: Date } | null
   surveyResponse: { id: number; surveySession: { survey: { id: number; slug: string } } } | null
   className?: string
+  variant?: "default" | "aligned"
 }
 
 export const UploadVerknuepfungen = ({
@@ -39,6 +40,7 @@ export const UploadVerknuepfungen = ({
   projectRecordEmail,
   surveyResponse,
   className,
+  variant = "default",
 }: Props) => {
   const hasSubsubsection = subsubsections?.length > 0
   const hasProjectRecords = projectRecords != null && projectRecords.length > 0
@@ -64,6 +66,90 @@ export const UploadVerknuepfungen = ({
       })
     : []
 
+  if (variant === "aligned") {
+    const sectionClassName =
+      "grid gap-2 sm:grid-cols-[minmax(170px,_190px)_1fr] sm:items-start sm:gap-x-1 sm:gap-y-4"
+    const sectionLabelClassName = "text-sm font-medium text-gray-700"
+    const sectionValueClassName = "text-sm text-gray-700"
+
+    if (!hasRelations) {
+      return <p className="text-sm text-gray-500">Keine Verknüpfung</p>
+    }
+
+    return (
+      <section className={className}>
+        {hasSubsubsection && (
+          <div className={sectionClassName}>
+            <p className={sectionLabelClassName}>Eintrag:</p>
+            <div className={`space-y-1 ${sectionValueClassName}`}>
+              {subsubsections.map((subsub) => (
+                <Link
+                  key={`${subsub.subsection.slug}-${subsub.slug}`}
+                  href={subsubsectionDashboardRoute(
+                    projectSlug,
+                    subsub.subsection.slug,
+                    subsub.slug,
+                  )}
+                  className="block w-fit"
+                >
+                  {shortTitle(subsub.slug)}
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {hasAcquisitionAreas && (
+          <div className={sectionClassName}>
+            <p className={sectionLabelClassName}>
+              {sortedAcquisitionAreas.length === 1 ? "Verhandlungsfläche:" : "Verhandlungsflächen:"}
+            </p>
+            <div className={`space-y-1 ${sectionValueClassName}`}>
+              {sortedAcquisitionAreas.map((area) => (
+                <Link
+                  key={area.id}
+                  href={
+                    `${subsubsectionLandAcquisitionRoute(
+                      projectSlug,
+                      area.subsubsection.subsection.slug,
+                      area.subsubsection.slug,
+                    )}?acquisitionAreaId=${area.id}` as Route
+                  }
+                  className="block w-fit"
+                >
+                  {area.id} ({area.parcel.alkisParcelId})
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {hasSurveyResponse && (
+          <div className={sectionClassName}>
+            <p className={sectionLabelClassName}>Beteiligung:</p>
+            <div className={sectionValueClassName}>
+              <Link
+                href={`/${projectSlug}/surveys/${surveyResponse.surveySession.survey.id}/responses?responseDetails=${surveyResponse.id}`}
+              >
+                Eingabe mit der ID {surveyResponse.id} - Formular{" "}
+                {surveyResponse.surveySession.survey.slug}
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {hasProjectRecordEmail && (
+          <div className={sectionClassName}>
+            <p className={sectionLabelClassName}>E-Mail-Anhang:</p>
+            <span className={sectionValueClassName}>
+              {formatBerlinTime(projectRecordEmail!.createdAt, "dd.MM.yyyy, HH:mm")}
+            </span>
+          </div>
+        )}
+      </section>
+    )
+  }
+
   return (
     <section className={className}>
       {hasRelations ? (
@@ -71,7 +157,7 @@ export const UploadVerknuepfungen = ({
           {hasSubsubsection &&
             (subsubsections.length === 1 ? (
               <li key={`${subsubsections[0]!.subsection.slug}-${subsubsections[0]!.slug}`}>
-                <strong className="font-medium">Eintrag: </strong>
+                <strong className="font-medium">Maßnahme : </strong>
                 <Link
                   href={subsubsectionDashboardRoute(
                     projectSlug,
@@ -84,7 +170,7 @@ export const UploadVerknuepfungen = ({
               </li>
             ) : (
               <li className="flex flex-wrap items-baseline gap-x-2">
-                <strong className="font-medium">Einträge: </strong>
+                <strong className="font-medium">Maßnahmen: </strong>
                 <ul className="mt-0.5 flex list-none flex-wrap gap-x-2 pl-0">
                   {subsubsections.map((subsub) => (
                     <li key={`${subsub.subsection.slug}-${subsub.slug}`}>
@@ -178,7 +264,7 @@ export const UploadVerknuepfungen = ({
               <Link
                 href={`/${projectSlug}/surveys/${surveyResponse.surveySession.survey.id}/responses?responseDetails=${surveyResponse.id}`}
               >
-                Beitrag mit der ID {surveyResponse.id} - Formular{" "}
+                Eingabe mit der ID {surveyResponse.id} - Formular{" "}
                 {surveyResponse.surveySession.survey.slug}
               </Link>
             </li>

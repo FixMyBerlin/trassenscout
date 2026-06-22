@@ -27,7 +27,7 @@ export const SubsubsectionSpecialsTable = ({ subsubsectionSpecials }: Props) => 
   const [deleteSubsubsectionSpecialMutation] = useMutation(deleteSubsubsectionSpecial)
 
   const handleDelete = async (subsubsectionSpecialId: number) => {
-    if (window.confirm(`Den Eintrag mit ID ${subsubsectionSpecialId} unwiderruflich löschen?`)) {
+    if (window.confirm(`Die Maßnahme mit ID ${subsubsectionSpecialId} unwiderruflich löschen?`)) {
       try {
         await deleteSubsubsectionSpecialMutation({ projectSlug, id: subsubsectionSpecialId })
         router.push(`/${projectSlug}/subsubsection-special` as Route)
@@ -56,7 +56,7 @@ export const SubsubsectionSpecialsTable = ({ subsubsectionSpecials }: Props) => 
                 Titel
               </th>
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                Anzahl Einträge mit dieser Besonderheit
+                Anzahl Maßnahmen mit dieser Besonderheit
               </th>
               <th
                 scope="col"
@@ -78,7 +78,7 @@ export const SubsubsectionSpecialsTable = ({ subsubsectionSpecials }: Props) => 
                   </td>
                   <td className="px-3 py-4 text-sm text-gray-500">
                     {special.subsubsectionCount}{" "}
-                    {special.subsubsectionCount > 1 ? "Einträge" : "Eintrag"}
+                    {special.subsubsectionCount > 1 ? "Maßnahmen" : "Maßnahme "}
                   </td>
                   <td className="py-4 text-sm font-medium whitespace-nowrap sm:pr-6">
                     <IfUserCanEdit>

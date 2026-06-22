@@ -1,4 +1,3 @@
-import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { linkStyles } from "@/src/core/components/links/styles"
 import { showMapLegendActions, showMapLegendState } from "@/src/core/store/showMapLegend.zustand"
 import { MapLegend, type LegendItemConfig } from "./MapLegend"
@@ -24,11 +23,6 @@ export const MapFooter = ({ legendItemsConfig }: MapFooterProps) => {
         >
           {buttonLabel}
         </button>
-        <div>
-          <IfUserCanEdit>
-            Schnellzugriff zum Bearbeiten über option+click (Mac) / alt+click (Windows)
-          </IfUserCanEdit>
-        </div>
       </div>
     </>
   )
