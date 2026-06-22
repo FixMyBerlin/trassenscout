@@ -203,7 +203,6 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
               },
               additionalData: [
                 { dataKey: "hsName", propertyName: "stop_name", label: "Name der Haltestelle" },
-                { dataKey: "routeIds", propertyName: "route_ids", label: "IDs der Routen" },
               ],
               geoCategoryIdDefinition: { dataKey: "geometryCategoryId", propertyName: "stop_id" },
               infoPanelText:
