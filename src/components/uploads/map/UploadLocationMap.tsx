@@ -23,7 +23,7 @@ function subsubsectionIdsFromForm(v: unknown) {
   return v.map((x) => Number(x)).filter((n) => !Number.isNaN(n))
 }
 
-export const UploadLocationMap = () => {
+export const UploadLocationMap = ({ excludeUploadId }: { excludeUploadId?: number }) => {
   const { form } = useFormShellState()
   const latitude = useFormValue("latitude")
   const longitude = useFormValue("longitude")
@@ -106,7 +106,11 @@ export const UploadLocationMap = () => {
             }
             colorSchema={colorSchema}
           />
-          <UploadMarkers projectSlug={projectSlug} interactive={false} />
+          <UploadMarkers
+            projectSlug={projectSlug}
+            interactive={false}
+            excludeUploadId={excludeUploadId}
+          />
           {hasPosition && (
             <Marker
               longitude={longitude}

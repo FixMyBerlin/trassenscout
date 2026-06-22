@@ -3,6 +3,7 @@ import { useCallback, useState } from "react"
 import { Upload } from "@/src/prisma/generated/browser"
 import { uploadQueryOptions } from "@/src/server/uploads/uploadQueryOptions"
 import { getUploadFn } from "@/src/server/uploads/uploads.functions"
+import { useProjectUploadModal } from "./ProjectUploadModalHost"
 import { UploadDetailModal } from "./UploadDetailModal"
 import { UploadPreview } from "./UploadPreview"
 import type { UploadEditLink } from "./uploadTypes"
@@ -26,6 +27,7 @@ export const UploadPreviewClickable = ({
   editLink,
 }: Props) => {
   const queryClient = useQueryClient()
+  const projectUploadModal = useProjectUploadModal()
   const [isPreviewOpen, setIsPreviewOpen] = useState(false)
   const effectiveUploadId = upload?.id ?? uploadId
   const uploadOptions = uploadQueryOptions({ projectSlug, id: effectiveUploadId })
@@ -42,6 +44,15 @@ export const UploadPreviewClickable = ({
   }
 
   const openPreview = () => {
+    if (projectUploadModal && (!editLink || editLink.to === "/$projectSlug/uploads/$uploadId/edit")) {
+      projectUploadModal.openUploadDetail({
+        uploadId: effectiveUploadId,
+        previewUpload: upload,
+      })
+      warmPreview()
+      return
+    }
+
     setIsPreviewOpen(true)
     warmPreview()
   }

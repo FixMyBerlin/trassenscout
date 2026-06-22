@@ -2,7 +2,6 @@ import { MapPinIcon, UserGroupIcon } from "@heroicons/react/24/outline"
 import { getRouteApi } from "@tanstack/react-router"
 import { ButtonWrapper } from "@/src/components/core/components/links/ButtonWrapper"
 import { Link } from "@/src/components/core/components/links/Link"
-import { useModalNavigationGuard } from "@/src/components/core/components/Modal/useModalNavigationGuard"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { Tooltip } from "@/src/components/core/components/Tooltip/Tooltip"
@@ -12,6 +11,7 @@ import { getFullname } from "@/src/components/core/users/getFullname"
 import { formatBerlinTime } from "@/src/components/core/utils/formatBerlinTime"
 import { IfUserCanEdit } from "@/src/components/shared/memberships/IfUserCan"
 import { DeleteUploadButton } from "@/src/components/uploads/DeleteUploadButton"
+import { useProjectUploadModal } from "@/src/components/uploads/ProjectUploadModalHost"
 import { UploadPreviewClickable } from "@/src/components/uploads/UploadPreviewClickable"
 import { UploadVerknuepfungen } from "@/src/components/uploads/UploadVerknuepfungen"
 import { uploadUrl } from "@/src/components/uploads/utils/uploadUrl"
@@ -94,15 +94,18 @@ const UploadTableRow = ({
   onDelete?: () => Promise<void>
 }) => {
   const hasLocation = upload.latitude !== null && upload.longitude !== null
-  const navigationGuard = useModalNavigationGuard()
+  const projectUploadModal = useProjectUploadModal()
   const returnTo = useCurrentReturnTo()
   const editLink: UploadEditLink = {
     to: "/$projectSlug/uploads/$uploadId/edit",
     params: { projectSlug, uploadId: String(upload.id) },
     search: returnTo ? { returnTo } : undefined,
   }
-  const handleEditClick = () => {
-    navigationGuard.beginNavigationToModal({ holdUntilNextModalMount: true })
+  const handleEditClick: React.MouseEventHandler<HTMLAnchorElement> = (event) => {
+    if (!projectUploadModal) return
+
+    event.preventDefault()
+    projectUploadModal.openUploadEdit({ uploadId: upload.id })
   }
   return (
     <tr>

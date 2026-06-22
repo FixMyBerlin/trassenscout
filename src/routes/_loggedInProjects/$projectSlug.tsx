@@ -6,6 +6,7 @@ import { privateLayoutHead } from "@/src/routeHead"
 import { getSessionForRouteFn, routeProjectFn } from "@/src/server/auth/auth.functions"
 import { projectsForCurrentUserQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 import { currentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
+import { projectUploadModalSearchSchema } from "@/src/shared/uploads/searchSchemas"
 function isProjectEditorRoute(pathname: string) {
   return /\/new\/?$/.test(pathname) || /\/edit\/?$/.test(pathname)
 }
@@ -14,6 +15,7 @@ export const Route = createFileRoute("/_loggedInProjects/$projectSlug")({
   ssr: true,
   head: () => privateLayoutHead(),
   notFoundComponent: RouteScopedNotFoundPage,
+  validateSearch: projectUploadModalSearchSchema,
   beforeLoad: async ({ params, location }) => {
     const authorization = await routeProjectFn({
       data: { location, projectSlug: params.projectSlug },

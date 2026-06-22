@@ -112,6 +112,7 @@ type Props = {
   returnPath: string
   returnText: string
   showDelete?: boolean
+  hideBackLink?: boolean
   onSuccess?: () => void | Promise<void>
   onDirtyChange?: (isDirty: boolean) => void
   onSubmittingChange?: (isSubmitting: boolean) => void
@@ -143,6 +144,7 @@ export const EditUploadForm = ({
   returnPath,
   returnText,
   showDelete = true,
+  hideBackLink = false,
   onSuccess,
   onDirtyChange,
   onSubmittingChange,
@@ -299,7 +301,7 @@ export const EditUploadForm = ({
               der Karte verorten. <br />
               Sobald ein Standort gesetzt ist, erscheint das Dokument auf der Karte.
             </p>
-            <UploadLocationMap />
+            <UploadLocationMap excludeUploadId={upload.id} />
           </div>
 
           <LuckyCloudNotice collaborationUrl={upload.collaborationUrl} mimeType={upload.mimeType} />
@@ -307,7 +309,7 @@ export const EditUploadForm = ({
       </div>
 
       <SuperAdminLuckyCloud upload={upload} projectSlug={projectSlug} />
-      <BackLink to={returnPath} text={returnText} />
+      {!hideBackLink && <BackLink to={returnPath} text={returnText} />}
 
       <UploadAuthorAndDates
         className="mt-4"
