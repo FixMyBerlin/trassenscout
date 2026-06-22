@@ -8,7 +8,10 @@ import { FormSuccess } from "@/src/components/core/components/forms/FormSuccess"
 import { FilteredProjectRecords } from "@/src/components/project-records/FilteredProjectRecords"
 import { ProjectRecordNewModal } from "@/src/components/project-records/ProjectRecordNewModal"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
-import { projectRecordsQueryOptions } from "@/src/server/projectRecords/projectRecordsQueryOptions"
+import {
+  projectRecordsQueryOptions,
+  projectRecordsTabCountsQueryOptions,
+} from "@/src/server/projectRecords/projectRecordsQueryOptions"
 
 const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
 
@@ -64,9 +67,14 @@ export const ProjectRecordsFormAndTable = () => {
             setShowSuccess(false)
             setCreatedProjectRecordId(null)
           }, 3000)
-          await queryClient.invalidateQueries({
-            queryKey: projectRecordsQueryOptions({ projectSlug }).queryKey,
-          })
+          await Promise.all([
+            queryClient.invalidateQueries({
+              queryKey: projectRecordsQueryOptions({ projectSlug }).queryKey,
+            }),
+            queryClient.invalidateQueries({
+              queryKey: projectRecordsTabCountsQueryOptions({ projectSlug }).queryKey,
+            }),
+          ])
         }}
       />
       <div className="absolute top-0 right-0">

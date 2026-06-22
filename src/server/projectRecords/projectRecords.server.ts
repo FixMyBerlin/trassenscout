@@ -52,6 +52,20 @@ function normalizeDate(date: string | Date | null | undefined) {
   return date instanceof Date ? date : new Date(date)
 }
 
+function projectRecordOverviewWhere(projectId: number, aiEnabled: boolean) {
+  const where = {
+    projectId,
+    reviewState: ProjectRecordReviewState.APPROVED,
+  }
+
+  if (aiEnabled) return where
+
+  return {
+    ...where,
+    projectRecordAuthorType: { not: ProjectRecordType.SYSTEM },
+  }
+}
+
 async function validateProjectRecordRelations(projectSlug: string, input: ProjectRecordInput) {
   const topicIds = idsFromFormValue(input.projectRecordTopics)
   const uploadIds = idsFromFormValue(input.uploads)
@@ -284,10 +298,17 @@ export async function getProjectRecords(
 ) {
   await endpointAuth.projectRole(headers, input.projectSlug, viewerRoles)
 
+  const project = await db.project.findUnique({
+    where: { slug: input.projectSlug },
+    select: { id: true, aiEnabled: true },
+  })
+
+  if (!project) return []
+
   return db.projectRecord.findMany({
     include: projectRecordInclude,
     orderBy: { date: "desc" },
-    where: { project: { slug: input.projectSlug } },
+    where: projectRecordOverviewWhere(project.id, project.aiEnabled),
   })
 }
 
@@ -393,18 +414,8 @@ export async function getProjectRecordsTabCounts(
     return { approvedCount: 0, needsReviewCount: 0, aiEnabled: false }
   }
 
-  const approvedWhereBase = {
-    projectId: project.id,
-    reviewState: ProjectRecordReviewState.APPROVED,
-  }
-
   const approvedCount = await db.projectRecord.count({
-    where: project.aiEnabled
-      ? approvedWhereBase
-      : {
-          ...approvedWhereBase,
-          projectRecordAuthorType: { not: ProjectRecordType.SYSTEM },
-        },
+    where: projectRecordOverviewWhere(project.id, project.aiEnabled),
   })
 
   const needsReviewCount = await db.projectRecord.count({
