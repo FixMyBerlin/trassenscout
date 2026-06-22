@@ -59,7 +59,7 @@ export const SurveyResponseFieldValue = ({
 
     case "SurveySimpleMapWithLegend":
     case "SurveyGeoCategoryMapWithLegend":
-    case "SwitchableMapWithLegend":
+    case "SwitchableMap":
       return (
         <pre className="overflow-x-auto rounded-sm bg-gray-100 p-2 text-sm text-black">
           {JSON.stringify(value, null, 2)}
