@@ -1,6 +1,5 @@
 import { PhotoIcon } from "@heroicons/react/20/solid"
 import { useQuery } from "@tanstack/react-query"
-import { getRouteApi } from "@tanstack/react-router"
 import { useState } from "react"
 import { Marker } from "react-map-gl/maplibre"
 import { twMerge } from "tailwind-merge"
@@ -8,15 +7,13 @@ import { UploadDetailModal } from "@/src/components/uploads/UploadDetailModal"
 import { geolocatedUploadsQueryOptions } from "@/src/server/uploads/geolocatedUploadsQueryOptions"
 import { UploadMarkerIcon } from "../UploadMarkerIcon"
 
-const uploadEditRouteApi = getRouteApi("/_loggedInProjects/$projectSlug/uploads/$uploadId/edit/")
-
 type Props = {
   projectSlug: string
   interactive: boolean
+  excludeUploadId?: number
 }
 
-export const UploadMarkers = ({ projectSlug, interactive }: Props) => {
-  const excludeUploadId = Number(uploadEditRouteApi.useParams().uploadId)
+export const UploadMarkers = ({ projectSlug, interactive, excludeUploadId }: Props) => {
   const [isVisible, setIsVisible] = useState(false)
   const [selectedUploadId, setSelectedUploadId] = useState<number | null>(null)
 

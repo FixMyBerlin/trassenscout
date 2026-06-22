@@ -1,4 +1,5 @@
 import { twJoin } from "tailwind-merge"
+import type { MouseEventHandler } from "react"
 import { primaryButtonLinkClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { ButtonWrapper } from "@/src/components/core/components/links/ButtonWrapper"
 import { Link } from "@/src/components/core/components/links/Link"
@@ -22,7 +23,7 @@ type Props = {
   projectSlug: string
   onDeleted?: () => void | Promise<void>
   editLink?: UploadEditLink
-  onEditClick?: () => void
+  onEditClick?: MouseEventHandler<HTMLAnchorElement>
 }
 
 export const UploadDetailPanelContent = ({
