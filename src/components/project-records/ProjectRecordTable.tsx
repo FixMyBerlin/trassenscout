@@ -13,9 +13,9 @@ import type {
   ProjectRecordsList,
   ProjectRecordsNeedsReviewList,
 } from "@/src/server/projectRecords/types"
-import { useProjectRecordModal } from "./ProjectRecordModalHost"
 import { ProjectRecordAssignedToPill } from "./ProjectRecordAssignedToPill"
 import { ProjectRecordEditingStateIndicator } from "./ProjectRecordEditingStateIndicator"
+import { useProjectRecordModal } from "./ProjectRecordModalHost"
 import { ProjectRecordTopicsList } from "./ProjectRecordTopicsList"
 import { ProjectRecordVerknuepfungen } from "./ProjectRecordVerknuepfungen"
 

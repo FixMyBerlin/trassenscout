@@ -24,9 +24,10 @@ type Props = {
       uploads: { id: number; title: string }[]
     } | null
   }
+  onUploadDeleted?: () => void | Promise<void>
 }
 
-export const ProjectRecordSummary = ({ projectRecord }: Props) => {
+export const ProjectRecordSummary = ({ projectRecord, onUploadDeleted }: Props) => {
   const projectSlug = projectRecord.project.slug
   const returnTo = useCurrentReturnTo()
 
@@ -142,7 +143,11 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
                 uploadId={upload.id}
                 projectSlug={projectSlug}
                 size="grid"
+                onDeleted={onUploadDeleted}
                 editLink={buildUploadEditLink(upload.id)}
+                disableHostedModal
+                localModalZIndex={40}
+                closeOnEditSuccess
               />
             ))}
           </div>

@@ -1,9 +1,9 @@
 import { Outlet } from "@tanstack/react-router"
+import { ProjectRecordModalHostProvider } from "@/src/components/project-records/ProjectRecordModalHost"
 import { FooterMinimal } from "@/src/components/shared/app/layouts/footer/FooterMinimal"
 import { FooterProject } from "@/src/components/shared/app/layouts/footer/FooterProject"
 import { NavigationLoggedInDashboard } from "@/src/components/shared/app/layouts/navigation/NavigationLoggedInDashboard"
 import { NavigationLoggedInProject } from "@/src/components/shared/app/layouts/navigation/NavigationLoggedInProject"
-import { ProjectRecordModalHostProvider } from "@/src/components/project-records/ProjectRecordModalHost"
 import { ProjectUploadModalHostProvider } from "@/src/components/uploads/ProjectUploadModalHost"
 
 function LoggedInMainShell({

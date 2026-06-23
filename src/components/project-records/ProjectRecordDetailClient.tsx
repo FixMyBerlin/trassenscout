@@ -76,6 +76,7 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord }: Props) => {
 
   const projectRecordSummaryProps = {
     projectRecord,
+    onUploadDeleted: refreshProjectRecord,
   }
 
   useEffect(() => {
