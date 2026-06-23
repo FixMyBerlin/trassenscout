@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import "react-datasheet-grid/dist/style.css"
 import {
   Column,
@@ -48,21 +48,11 @@ export const ContactsTable = () => {
   const { projectSlug } = loggedInProjectRouteApi.useParams()
   const queryClient = useQueryClient()
   const [formDirty, setFormDirty] = useState(false)
-  const [performUpdate, setPerformUpdate] = useState(false)
   const [isSaved, setIsSaved] = useState(false)
 
-  const { data: contactsResult, dataUpdatedAt } = useSuspenseQuery(
-    contactsQueryOptions({ projectSlug }),
-  )
+  const { data: contactsResult } = useSuspenseQuery(contactsQueryOptions({ projectSlug }))
   const [data, setData] = useState<Row[]>(() => prepareData(contactsResult))
   const [errors, setErrors] = useState<[string, string][]>([])
-
-  useEffect(() => {
-    if (performUpdate) {
-      setData(prepareData(contactsResult))
-      setPerformUpdate(false)
-    }
-  }, [performUpdate, dataUpdatedAt, contactsResult])
 
   const createContactMutation = useMutation({ mutationFn: createContactFn })
   const updateContactMutation = useMutation({ mutationFn: updateContactFn })
@@ -117,10 +107,11 @@ export const ContactsTable = () => {
       if (!isProduction) {
         console.log("INFO", "update and create both where successfull, so refetching the data now")
       }
-      setPerformUpdate(true)
+      await queryClient.invalidateQueries({ queryKey: ["contacts", { projectSlug }] })
+      const refreshed = await queryClient.fetchQuery(contactsQueryOptions({ projectSlug }))
+      setData(prepareData(refreshed))
       setFormDirty(false)
       setIsSaved(true)
-      await queryClient.invalidateQueries({ queryKey: ["contacts", { projectSlug }] })
     }
   }
 

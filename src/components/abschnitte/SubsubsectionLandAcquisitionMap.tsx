@@ -57,6 +57,21 @@ const defaultQueryOptions = {
   refetchOnReconnect: false,
 } as const
 
+const toAcquisitionAreaFeatureCollection = (areas: AcquisitionAreaWithTypedGeometry[]) =>
+  featureCollection(
+    areas.flatMap((acquisitionArea) =>
+      polygonToGeoJSON(acquisitionArea.geometry as TAcquisitionAreaGeometrySchema, {
+        acquisitionAreaId: acquisitionArea.id,
+        statusStyle: acquisitionArea.acquisitionAreaStatus?.style ?? 1,
+      }).map((item, index) =>
+        feature(item.geometry, {
+          ...item.properties,
+          featureId: `acquisition-area-${acquisitionArea.id}-${index}`,
+        }),
+      ),
+    ),
+  )
+
 export const SubsubsectionLandAcquisitionMap = ({ subsubsection, activeTab }: Props) => {
   const { projectSlug } = loggedInProjectRouteApi.useParams()
   const alkisAttribution = useAlkisAttribution()
@@ -100,21 +115,6 @@ export const SubsubsectionLandAcquisitionMap = ({ subsubsection, activeTab }: Pr
     () => acquisitionAreas.filter((acquisitionArea) => acquisitionArea.id !== acquisitionAreaId),
     [acquisitionAreaId, acquisitionAreas],
   )
-
-  const toAcquisitionAreaFeatureCollection = (areas: AcquisitionAreaWithTypedGeometry[]) =>
-    featureCollection(
-      areas.flatMap((acquisitionArea) =>
-        polygonToGeoJSON(acquisitionArea.geometry as TAcquisitionAreaGeometrySchema, {
-          acquisitionAreaId: acquisitionArea.id,
-          statusStyle: acquisitionArea.acquisitionAreaStatus?.style ?? 1,
-        }).map((item, index) =>
-          feature(item.geometry, {
-            ...item.properties,
-            featureId: `acquisition-area-${acquisitionArea.id}-${index}`,
-          }),
-        ),
-      ),
-    )
 
   const selectedAcquisitionAreasFc = useMemo(
     () => toAcquisitionAreaFeatureCollection(selectedAcquisitionAreas),
