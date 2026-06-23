@@ -16,6 +16,9 @@ type Props = {
   size: UploadSize
   onDeleted?: () => void | Promise<void>
   editLink?: UploadEditLink
+  disableHostedModal?: boolean
+  localModalZIndex?: number
+  closeOnEditSuccess?: boolean
 }
 
 export const UploadPreviewClickable = ({
@@ -25,6 +28,9 @@ export const UploadPreviewClickable = ({
   size,
   onDeleted,
   editLink,
+  disableHostedModal = false,
+  localModalZIndex,
+  closeOnEditSuccess = false,
 }: Props) => {
   const queryClient = useQueryClient()
   const projectUploadModal = useProjectUploadModal()
@@ -44,7 +50,11 @@ export const UploadPreviewClickable = ({
   }
 
   const openPreview = () => {
-    if (projectUploadModal && (!editLink || editLink.to === "/$projectSlug/uploads/$uploadId/edit")) {
+    if (
+      !disableHostedModal &&
+      projectUploadModal &&
+      (!editLink || editLink.to === "/$projectSlug/uploads/$uploadId/edit")
+    ) {
       projectUploadModal.openUploadDetail({
         uploadId: effectiveUploadId,
         previewUpload: upload,
@@ -77,12 +87,14 @@ export const UploadPreviewClickable = ({
         onDeleted={
           onDeleted
             ? async () => {
-                await onDeleted()
                 setIsPreviewOpen(false)
+                await onDeleted()
               }
             : undefined
         }
         editLink={editLink}
+        zIndex={localModalZIndex}
+        closeOnEditSuccess={closeOnEditSuccess}
       />
     </>
   )

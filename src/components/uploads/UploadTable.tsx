@@ -101,12 +101,6 @@ const UploadTableRow = ({
     params: { projectSlug, uploadId: String(upload.id) },
     search: returnTo ? { returnTo } : undefined,
   }
-  const handleEditClick: React.MouseEventHandler<HTMLAnchorElement> = (event) => {
-    if (!projectUploadModal) return
-
-    event.preventDefault()
-    projectUploadModal.openUploadEdit({ uploadId: upload.id })
-  }
   return (
     <tr>
       <td className="py-2 pr-3 pl-4 text-sm sm:pl-6">
@@ -186,12 +180,15 @@ const UploadTableRow = ({
             <IfUserCanEdit>
               <Link
                 icon="edit"
-                to={editLink.to}
-                params={editLink.params}
-                search={editLink.search}
+                to={
+                  projectUploadModal
+                    ? projectUploadModal.getUploadEditHref({ uploadId: upload.id })
+                    : editLink.to
+                }
+                params={projectUploadModal ? undefined : editLink.params}
+                search={projectUploadModal ? undefined : editLink.search}
                 preload="intent"
                 resetScroll={false}
-                onClick={handleEditClick}
               >
                 Bearbeiten
               </Link>

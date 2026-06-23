@@ -17,6 +17,7 @@ import { shortTitle } from "@/src/components/core/components/text/titles"
 import { formatFileSize } from "@/src/components/core/utils/formatFileSize"
 import { acquisitionAreasQueryOptions } from "@/src/server/acquisitionAreas/acquisitionAreasQueryOptions"
 import type { AcquisitionAreasList } from "@/src/server/acquisitionAreas/types"
+import { projectRecordQueryOptions } from "@/src/server/projectRecords/projectRecordsQueryOptions"
 import { subsubsectionsQueryOptions } from "@/src/server/subsubsections/subsubsectionsQueryOptions"
 import type { SubsubsectionsList } from "@/src/server/subsubsections/types"
 import { uploadQueryOptions } from "@/src/server/uploads/uploadQueryOptions"
@@ -192,7 +193,10 @@ export const EditUploadForm = ({
           }),
           ...Array.from(projectRecordIdsToRefresh).map((projectRecordId) =>
             queryClient.invalidateQueries({
-              queryKey: ["projectRecord", projectSlug, projectRecordId],
+              queryKey: projectRecordQueryOptions({
+                projectSlug,
+                id: projectRecordId,
+              }).queryKey,
             }),
           ),
         ])

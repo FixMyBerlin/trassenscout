@@ -1,5 +1,5 @@
-import { twJoin } from "tailwind-merge"
 import type { MouseEventHandler } from "react"
+import { twJoin } from "tailwind-merge"
 import { primaryButtonLinkClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { ButtonWrapper } from "@/src/components/core/components/links/ButtonWrapper"
 import { Link } from "@/src/components/core/components/links/Link"
@@ -23,6 +23,7 @@ type Props = {
   projectSlug: string
   onDeleted?: () => void | Promise<void>
   editLink?: UploadEditLink
+  editHref?: string
   onEditClick?: MouseEventHandler<HTMLAnchorElement>
 }
 
@@ -31,6 +32,7 @@ export const UploadDetailPanelContent = ({
   projectSlug,
   onDeleted,
   editLink,
+  editHref,
   onEditClick,
 }: Props) => {
   const returnTo = useCurrentReturnTo()
@@ -132,9 +134,9 @@ export const UploadDetailPanelContent = ({
             {editLink && (
               <Link
                 button="blue"
-                to={editLink.to}
-                params={editLink.params}
-                search={editSearch}
+                to={editHref ?? editLink.to}
+                params={editHref ? undefined : editLink.params}
+                search={editHref ? undefined : editSearch}
                 preload={false}
                 replace
                 resetScroll={false}
