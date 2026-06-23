@@ -1,17 +1,17 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { getRouteApi, useLocation, useRouter, useSearch } from "@tanstack/react-router"
 import { createContext, useContext, useEffect, useState } from "react"
+import { Link } from "@/src/components/core/components/links/Link"
 import { Modal, ModalCloseButton } from "@/src/components/core/components/Modal"
 import { Notice } from "@/src/components/core/components/Notice/Notice"
 import { Spinner } from "@/src/components/core/components/Spinner"
-import { Link } from "@/src/components/core/components/links/Link"
 import { H3 } from "@/src/components/core/components/text/Headings"
 import { HeadingWithAction } from "@/src/components/core/components/text/HeadingWithAction"
 import { EditProjectRecordForm } from "@/src/components/project-records/EditProjectRecordForm"
 import { ProjectRecordDetailClient } from "@/src/components/project-records/ProjectRecordDetailClient"
 import { getProjectRecordEditSuccessNavigateOptions } from "@/src/components/project-records/utils/getProjectRecordEditSuccessRoute"
-import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
+import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { projectRecordQueryOptions } from "@/src/server/projectRecords/projectRecordsQueryOptions"
 import { clearProjectRecordModalSearch } from "@/src/shared/projectRecords/searchSchemas"
 import { clearProjectUploadModalSearch } from "@/src/shared/uploads/searchSchemas"
@@ -52,9 +52,9 @@ function ProjectRecordModalHostInner({ children }: { children: React.ReactNode }
   )
   const modalProjectRecordId = modalSearch.modalProjectRecordId
   const modalProjectRecordView = modalSearch.modalProjectRecordView
-  const [previewProjectRecord, setPreviewProjectRecord] = useState<PreviewProjectRecord | undefined>(
-    undefined,
-  )
+  const [previewProjectRecord, setPreviewProjectRecord] = useState<
+    PreviewProjectRecord | undefined
+  >(undefined)
   const [isDirty, setIsDirty] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -143,8 +143,7 @@ function ProjectRecordModalHostInner({ children }: { children: React.ReactNode }
     void updateModalState({
       projectRecordId: input.projectRecordId,
       view: "edit",
-      replace:
-        modalProjectRecordId === input.projectRecordId && modalProjectRecordView === "edit",
+      replace: modalProjectRecordId === input.projectRecordId && modalProjectRecordView === "edit",
     })
   }
 

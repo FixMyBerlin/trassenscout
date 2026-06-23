@@ -1,7 +1,7 @@
 import { Link } from "@/src/components/core/components/links/Link"
 import { shortTitle } from "@/src/components/core/components/text/titles"
-import { useProjectRecordModal } from "@/src/components/project-records/ProjectRecordModalHost"
 import { formatBerlinTime } from "@/src/components/core/utils/formatBerlinTime"
+import { useProjectRecordModal } from "@/src/components/project-records/ProjectRecordModalHost"
 
 type AcquisitionAreaLink = {
   id: number
