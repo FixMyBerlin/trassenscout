@@ -1,17 +1,17 @@
-import { Modal, ModalCloseButton } from "@/src/components/core/components/Modal"
-import { Spinner } from "@/src/components/core/components/Spinner"
-import { H3 } from "@/src/components/core/components/text/Headings"
-import { HeadingWithAction } from "@/src/components/core/components/text/HeadingWithAction"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { getRouteApi, useLocation, useRouter, useSearch } from "@tanstack/react-router"
-import { createContext, Suspense, useContext, useState } from "react"
+import { createContext, useContext, useState } from "react"
+import { Modal, ModalCloseButton } from "@/src/components/core/components/Modal"
+import { Notice } from "@/src/components/core/components/Notice/Notice"
+import { H3 } from "@/src/components/core/components/text/Headings"
+import { HeadingWithAction } from "@/src/components/core/components/text/HeadingWithAction"
+import type { Upload } from "@/src/prisma/generated/browser"
 import { acquisitionAreasQueryOptions } from "@/src/server/acquisitionAreas/acquisitionAreasQueryOptions"
 import { subsubsectionsQueryOptions } from "@/src/server/subsubsections/subsubsectionsQueryOptions"
 import { uploadQueryOptions } from "@/src/server/uploads/uploadQueryOptions"
-import type { Upload } from "@/src/prisma/generated/browser"
+import { clearProjectRecordModalSearch } from "@/src/shared/projectRecords/searchSchemas"
 import { clearProjectUploadModalSearch } from "@/src/shared/uploads/searchSchemas"
-import { EditUploadForm } from "./EditUploadForm"
-import { UploadDetailPanelContent } from "./UploadDetailPanelContent"
+import { UploadModalContent } from "./UploadModalContent"
 import { isDeletedUploadMarker } from "./uploadTypes"
 
 const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
@@ -21,62 +21,10 @@ type PreviewUpload = Pick<Upload, "id" | "title" | "mimeType" | "externalUrl" | 
 type ProjectUploadModalContextValue = {
   openUploadDetail: (input: { uploadId: number; previewUpload?: PreviewUpload }) => void
   openUploadEdit: (input: { uploadId: number }) => void
+  getUploadEditHref: (input: { uploadId: number }) => string
 }
 
 const ProjectUploadModalContext = createContext<ProjectUploadModalContextValue | null>(null)
-
-function UploadEditModalContent({
-  uploadId,
-  returnPath,
-  onClose,
-  onSuccess,
-  setIsDirty,
-  setIsSubmitting,
-}: {
-  uploadId: number
-  returnPath: string
-  onClose: () => void
-  onSuccess: () => void
-  setIsDirty: (dirty: boolean) => void
-  setIsSubmitting: (submitting: boolean) => void
-}) {
-  const { projectSlug } = loggedInProjectRouteApi.useParams()
-  const { data: upload } = useQuery(uploadQueryOptions({ projectSlug, id: uploadId }))
-
-  if (!upload || isDeletedUploadMarker(upload)) {
-    return (
-      <div className="space-y-4">
-        <p className="text-sm text-gray-600">
-          Dieses Dokument ist nicht mehr verfügbar oder wird noch geladen.
-        </p>
-        <button
-          type="button"
-          onClick={onClose}
-          className="text-sm text-blue-600 hover:text-blue-800"
-        >
-          Schließen
-        </button>
-      </div>
-    )
-  }
-
-  return (
-    <EditUploadForm
-      upload={upload}
-      returnPath={returnPath}
-      returnText="Zurück"
-      onSuccess={async () => {
-        setIsDirty(false)
-        setIsSubmitting(false)
-        onSuccess()
-      }}
-      onDirtyChange={setIsDirty}
-      onSubmittingChange={setIsSubmitting}
-      showDelete={false}
-      hideBackLink
-    />
-  )
-}
 
 function ProjectUploadModalHostInner({ children }: { children: React.ReactNode }) {
   const navigate = loggedInProjectRouteApi.useNavigate()
@@ -90,11 +38,30 @@ function ProjectUploadModalHostInner({ children }: { children: React.ReactNode }
     shouldThrow: false,
   })
   const currentSearch = activeSearch ?? {}
+  const backgroundSearch = clearProjectRecordModalSearch(
+    clearProjectUploadModalSearch(currentSearch),
+  )
   const modalUploadId = modalSearch.modalUploadId
   const modalUploadView = modalSearch.modalUploadView
   const [previewUpload, setPreviewUpload] = useState<PreviewUpload | undefined>(undefined)
   const [isDirty, setIsDirty] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const buildUploadModalHref = ({
+    uploadId,
+    view,
+  }: {
+    uploadId: number
+    view: "detail" | "edit"
+  }) =>
+    router.buildLocation({
+      to: location.pathname,
+      search: {
+        ...backgroundSearch,
+        modalUploadId: uploadId,
+        modalUploadView: view,
+      },
+    }).href
 
   const updateModalState = async ({
     replace = false,
@@ -110,11 +77,11 @@ function ProjectUploadModalHostInner({ children }: { children: React.ReactNode }
       search:
         uploadId && view
           ? {
-              ...currentSearch,
+              ...backgroundSearch,
               modalUploadId: uploadId,
               modalUploadView: view,
             }
-          : clearProjectUploadModalSearch(currentSearch),
+          : backgroundSearch,
       replace,
       resetScroll: false,
     })
@@ -133,7 +100,7 @@ function ProjectUploadModalHostInner({ children }: { children: React.ReactNode }
 
   const backgroundHref = router.buildLocation({
     to: location.pathname,
-    search: clearProjectUploadModalSearch(currentSearch),
+    search: backgroundSearch,
   }).href
 
   const openUploadDetail = (input: { uploadId: number; previewUpload?: PreviewUpload }) => {
@@ -166,20 +133,26 @@ function ProjectUploadModalHostInner({ children }: { children: React.ReactNode }
   const contextValue: ProjectUploadModalContextValue = {
     openUploadDetail,
     openUploadEdit,
+    getUploadEditHref: ({ uploadId }) => buildUploadModalHref({ uploadId, view: "edit" }),
   }
 
-  const { data: upload } = useQuery({
+  const uploadQuery = useQuery({
     ...uploadQueryOptions({ projectSlug, id: modalUploadId ?? 0 }),
     enabled: modalUploadId !== undefined,
   })
+  const upload = uploadQuery.data
 
   const isOpen = modalUploadId !== undefined && modalUploadView !== undefined
   const isEditView = modalUploadView === "edit"
+  const hasUploadError = Boolean(uploadQuery.error)
+  const isUploadUnavailable = !uploadQuery.isPending && !upload
   const modalTitle = isEditView
     ? "Dokument bearbeiten"
-    : upload && !isDeletedUploadMarker(upload)
-      ? upload.title
-      : previewUpload?.title ?? "Dokument wird geladen …"
+    : hasUploadError || isUploadUnavailable
+      ? "Dokument"
+      : upload && !isDeletedUploadMarker(upload)
+        ? upload.title
+        : (previewUpload?.title ?? "Dokument wird geladen …")
 
   return (
     <ProjectUploadModalContext.Provider value={contextValue}>
@@ -198,38 +171,47 @@ function ProjectUploadModalHostInner({ children }: { children: React.ReactNode }
               <ModalCloseButton onClose={closeModal} />
             </HeadingWithAction>
 
-            {isEditView && modalUploadId !== undefined ? (
-              <Suspense fallback={<Spinner />}>
-                <UploadEditModalContent
-                  uploadId={modalUploadId}
-                  returnPath={backgroundHref}
-                  onClose={closeModal}
-                  onSuccess={() => openUploadDetail({ uploadId: modalUploadId })}
-                  setIsDirty={setIsDirty}
-                  setIsSubmitting={setIsSubmitting}
-                />
-              </Suspense>
-            ) : upload && isDeletedUploadMarker(upload) ? (
-              <p className="text-sm text-gray-600">Dieses Dokument wurde gelöscht.</p>
-            ) : upload ? (
-              <UploadDetailPanelContent
+            {hasUploadError ? (
+              <Notice type="error" title="Das Dokument konnte nicht geladen werden.">
+                <p>Bitte versuchen Sie es erneut oder schließen Sie dieses Fenster.</p>
+              </Notice>
+            ) : isUploadUnavailable ? (
+              <Notice type="warn" title="Dieses Dokument ist nicht mehr verfügbar.">
+                <p>Es wurde möglicherweise gelöscht oder ist für Sie nicht mehr zugänglich.</p>
+              </Notice>
+            ) : (
+              <UploadModalContent
                 upload={upload}
                 projectSlug={projectSlug}
-                editLink={{
-                  to: "/$projectSlug/uploads/$uploadId/edit",
-                  params: { projectSlug, uploadId: String(upload.id) },
-                  search: { returnTo: backgroundHref },
-                }}
-                onEditClick={(event) => {
-                  event.preventDefault()
-                  openUploadEdit({ uploadId: upload.id })
-                }}
+                isEditView={isEditView}
+                returnPath={backgroundHref}
+                editLink={
+                  upload && !isDeletedUploadMarker(upload)
+                    ? {
+                        to: "/$projectSlug/uploads/$uploadId/edit",
+                        params: { projectSlug, uploadId: String(upload.id) },
+                        search: { returnTo: backgroundHref },
+                      }
+                    : undefined
+                }
+                editHref={
+                  upload && !isDeletedUploadMarker(upload)
+                    ? buildUploadModalHref({
+                        uploadId: upload.id,
+                        view: "edit",
+                      })
+                    : undefined
+                }
+                onClose={closeModal}
                 onDeleted={async () => {
                   closeModal()
                 }}
+                onEditSuccess={async () => {
+                  openUploadDetail({ uploadId: modalUploadId })
+                }}
+                onDirtyChange={setIsDirty}
+                onSubmittingChange={setIsSubmitting}
               />
-            ) : (
-              <Spinner />
             )}
           </Modal>
         ) : null}

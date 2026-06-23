@@ -1,25 +1,12 @@
 import { useQuery } from "@tanstack/react-query"
+import { useEffect, useState } from "react"
 import { Modal, ModalCloseButton } from "@/src/components/core/components/Modal"
-import { useModalNavigationGuard } from "@/src/components/core/components/Modal/useModalNavigationGuard"
+import { Notice } from "@/src/components/core/components/Notice/Notice"
 import { H3 } from "@/src/components/core/components/text/Headings"
 import { HeadingWithAction } from "@/src/components/core/components/text/HeadingWithAction"
 import { Upload } from "@/src/prisma/generated/browser"
 import { uploadQueryOptions } from "@/src/server/uploads/uploadQueryOptions"
-import { UploadDetailPanelContent } from "./UploadDetailPanelContent"
-import { isDeletedUploadMarker } from "./uploadTypes"
-
-const UploadDetailModalSkeleton = () => (
-  <div className="space-y-4">
-    <div className="h-5 w-40 animate-pulse rounded bg-gray-200" />
-    <div className="h-40 animate-pulse rounded-lg bg-gray-100" />
-    <div className="space-y-2">
-      <div className="h-4 w-3/4 animate-pulse rounded bg-gray-100" />
-      <div className="h-4 w-1/2 animate-pulse rounded bg-gray-100" />
-      <div className="h-4 w-2/3 animate-pulse rounded bg-gray-100" />
-    </div>
-  </div>
-)
-
+import { UploadModalContent } from "./UploadModalContent"
 import type { UploadEditLink } from "./uploadTypes"
 
 type Props = {
@@ -30,6 +17,8 @@ type Props = {
   onDeleted?: () => void | Promise<void>
   editLink?: UploadEditLink
   previewUpload?: Pick<Upload, "id" | "title" | "mimeType" | "externalUrl" | "collaborationUrl">
+  zIndex?: number
+  closeOnEditSuccess?: boolean
 }
 
 export const UploadDetailModal = ({
@@ -40,55 +29,116 @@ export const UploadDetailModal = ({
   onDeleted,
   editLink,
   previewUpload,
+  zIndex = 30,
+  closeOnEditSuccess = false,
 }: Props) => {
-  const navigationGuard = useModalNavigationGuard()
-  const { data: upload } = useQuery({
+  const uploadQuery = useQuery({
     ...uploadQueryOptions({ projectSlug, id: uploadId! }),
     enabled: open && uploadId !== null,
   })
+  const upload = uploadQuery.data
+  const [view, setView] = useState<"detail" | "edit">("detail")
+  const [isDirty, setIsDirty] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  useEffect(() => {
+    if (!open) {
+      setView("detail")
+      setIsDirty(false)
+      setIsSubmitting(false)
+    }
+  }, [open])
+
+  useEffect(() => {
+    setView("detail")
+    setIsDirty(false)
+    setIsSubmitting(false)
+  }, [uploadId])
 
   if (!open || uploadId === null) return null
 
-  const title = upload?.title ?? previewUpload?.title ?? "Dokument wird geladen …"
+  const isEditView = view === "edit"
+  const hasUploadError = Boolean(uploadQuery.error)
+  const isUploadUnavailable = !uploadQuery.isPending && !upload
+  const title = isEditView
+    ? "Dokument bearbeiten"
+    : hasUploadError || isUploadUnavailable
+      ? "Dokument"
+      : (upload?.title ?? previewUpload?.title ?? "Dokument wird geladen …")
 
-  if (upload && isDeletedUploadMarker(upload)) {
-    return (
-      <Modal open={open} handleClose={onClose} className="space-y-4 sm:max-w-2xl" zIndex={30}>
-        <HeadingWithAction>
-          <H3>Dokument nicht verfügbar</H3>
-          <ModalCloseButton onClose={onClose} />
-        </HeadingWithAction>
-        <p className="text-sm text-gray-600">Dieses Dokument wurde gelöscht.</p>
-      </Modal>
-    )
+  const canEditInLocalModal = editLink?.to === "/$projectSlug/uploads/$uploadId/edit"
+
+  const handleClose = () => {
+    if (isEditView && isSubmitting) return
+    if (isEditView && isDirty && !window.confirm("Ungespeicherte Änderungen verwerfen?")) return
+
+    if (isEditView) {
+      setIsDirty(false)
+      setIsSubmitting(false)
+      setView("detail")
+      return
+    }
+
+    onClose()
   }
 
   return (
-    <Modal open={open} handleClose={onClose} className="space-y-4 sm:max-w-2xl" zIndex={30}>
+    <Modal
+      open={open}
+      handleClose={handleClose}
+      align={isEditView ? "right" : "center"}
+      className={isEditView ? "space-y-4" : "space-y-4 sm:max-w-2xl"}
+      zIndex={zIndex}
+    >
       <HeadingWithAction>
         <H3>{title}</H3>
-        <ModalCloseButton onClose={onClose} />
+        <ModalCloseButton onClose={handleClose} />
       </HeadingWithAction>
 
-      {upload ? (
-        <UploadDetailPanelContent
+      {hasUploadError ? (
+        <Notice type="error" title="Das Dokument konnte nicht geladen werden.">
+          <p>Bitte versuchen Sie es erneut oder schließen Sie dieses Fenster.</p>
+        </Notice>
+      ) : isUploadUnavailable ? (
+        <Notice type="warn" title="Dieses Dokument ist nicht mehr verfügbar.">
+          <p>Es wurde möglicherweise gelöscht oder ist für Sie nicht mehr zugänglich.</p>
+        </Notice>
+      ) : (
+        <UploadModalContent
           upload={upload}
           projectSlug={projectSlug}
+          isEditView={isEditView}
+          returnPath={editLink?.search?.returnTo ?? `/${projectSlug}/uploads`}
           editLink={editLink}
-          onEditClick={() => {
-            navigationGuard.beginNavigationToModal({ holdUntilNextModalMount: true })
-          }}
+          onClose={onClose}
           onDeleted={
             onDeleted
               ? async () => {
-                  await onDeleted()
                   onClose()
+                  await onDeleted()
                 }
               : undefined
           }
+          onEditClick={(event) => {
+            if (!canEditInLocalModal) return
+
+            event.preventDefault()
+            setIsDirty(false)
+            setIsSubmitting(false)
+            setView("edit")
+          }}
+          onEditSuccess={async () => {
+            if (closeOnEditSuccess) {
+              onClose()
+              return
+            }
+
+            setView("detail")
+          }}
+          onDirtyChange={setIsDirty}
+          onSubmittingChange={setIsSubmitting}
+          deletedState="close"
         />
-      ) : (
-        <UploadDetailModalSkeleton />
       )}
     </Modal>
   )
