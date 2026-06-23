@@ -65,6 +65,39 @@ export const projectRecordsSearchSchema = z.object({
 
 export type ProjectRecordsSearch = z.infer<typeof projectRecordsSearchSchema>
 
+export const projectRecordModalViewSchema = z.enum(["detail", "edit"])
+
+export const projectRecordModalSearchSchema = z
+  .object({
+    modalProjectRecordId: z.coerce.number().int().positive().optional(),
+    modalProjectRecordView: projectRecordModalViewSchema.optional(),
+  })
+  .transform((search) => {
+    if (search.modalProjectRecordId && search.modalProjectRecordView) {
+      return search
+    }
+
+    return {
+      modalProjectRecordId: undefined,
+      modalProjectRecordView: undefined,
+    }
+  })
+
+export type ProjectRecordModalSearch = z.infer<typeof projectRecordModalSearchSchema>
+
+export function clearProjectRecordModalSearch<
+  TSearch extends {
+    modalProjectRecordId?: number | undefined
+    modalProjectRecordView?: "detail" | "edit" | undefined
+  },
+>(search: TSearch) {
+  return {
+    ...search,
+    modalProjectRecordId: undefined,
+    modalProjectRecordView: undefined,
+  }
+}
+
 export function projectRecordsSearchToRaw(
   search: Pick<ProjectRecordsSearch, "filter" | "initialValues">,
 ) {

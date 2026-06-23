@@ -6,7 +6,6 @@ import { twJoin } from "tailwind-merge"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "@/src/components/core/components/links/Link"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
-import { useProjectRecordFilters } from "@/src/components/project-records/utils/useProjectRecordFilters"
 import { ProjectRecordEditingState } from "@/src/prisma/generated/browser"
 import type {
   ProjectRecordsByAcquisitionArea,
@@ -14,6 +13,7 @@ import type {
   ProjectRecordsList,
   ProjectRecordsNeedsReviewList,
 } from "@/src/server/projectRecords/types"
+import { useProjectRecordModal } from "./ProjectRecordModalHost"
 import { ProjectRecordAssignedToPill } from "./ProjectRecordAssignedToPill"
 import { ProjectRecordEditingStateIndicator } from "./ProjectRecordEditingStateIndicator"
 import { ProjectRecordTopicsList } from "./ProjectRecordTopicsList"
@@ -49,6 +49,8 @@ export const ProjectRecordsTable = ({
   bleed = true,
   showAcquisitionAreaColumn = false,
   showRelationsColumn = false,
+  onTopicClick,
+  onAssigneeClick,
 }: {
   projectRecords:
     | ProjectRecordsList
@@ -60,20 +62,14 @@ export const ProjectRecordsTable = ({
   bleed?: boolean
   showAcquisitionAreaColumn?: boolean
   showRelationsColumn?: boolean
+  onTopicClick?: (topic: string) => void
+  onAssigneeClick?: (assigneeSearchText: string) => void
 }) => {
   const { projectSlug } = loggedInProjectRouteApi.useParams()
-  const { filter, setFilter } = useProjectRecordFilters()
+  const projectRecordModal = useProjectRecordModal()
 
   if (!projectRecords.length) return null
   const spaceClasses = "px-3 py-2"
-
-  const handleTopicClick = (topic: string) => {
-    if (topic) setFilter({ ...filter, searchterm: topic })
-  }
-
-  const handleAssigneeClick = (assigneeSearchText: string) => {
-    if (assigneeSearchText) setFilter({ ...filter, searchterm: assigneeSearchText })
-  }
 
   return (
     <>
@@ -216,11 +212,21 @@ export const ProjectRecordsTable = ({
                     <td className={twJoin("align-top", spaceClasses)}>
                       <Link
                         className="w-full"
-                        to="/$projectSlug/project-records/$projectRecordId"
-                        params={{
-                          projectSlug,
-                          projectRecordId: String(projectRecord.id),
-                        }}
+                        to={
+                          projectRecordModal
+                            ? projectRecordModal.getProjectRecordDetailHref({
+                                projectRecordId: projectRecord.id,
+                              })
+                            : "/$projectSlug/project-records/$projectRecordId"
+                        }
+                        params={
+                          projectRecordModal
+                            ? undefined
+                            : {
+                                projectSlug,
+                                projectRecordId: String(projectRecord.id),
+                              }
+                        }
                         resetScroll={false}
                         title={projectRecord.title}
                       >
@@ -248,7 +254,7 @@ export const ProjectRecordsTable = ({
                         <ProjectRecordTopicsList
                           topics={projectRecordTopics}
                           isInteractive={isTopicFilter}
-                          onTopicClick={handleTopicClick}
+                          onTopicClick={onTopicClick}
                         />
                       </div>
                     </td>
@@ -259,7 +265,7 @@ export const ProjectRecordsTable = ({
                             assignedTo={assignedTo}
                             variant="list"
                             isInteractive={isTopicFilter}
-                            onAssigneeClick={handleAssigneeClick}
+                            onAssigneeClick={onAssigneeClick}
                           />
                         )}
                       </div>

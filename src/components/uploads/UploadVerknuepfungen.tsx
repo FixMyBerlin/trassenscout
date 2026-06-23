@@ -1,5 +1,6 @@
 import { Link } from "@/src/components/core/components/links/Link"
 import { shortTitle } from "@/src/components/core/components/text/titles"
+import { useProjectRecordModal } from "@/src/components/project-records/ProjectRecordModalHost"
 import { formatBerlinTime } from "@/src/components/core/utils/formatBerlinTime"
 
 type AcquisitionAreaLink = {
@@ -37,6 +38,7 @@ export const UploadVerknuepfungen = ({
   const hasAcquisitionAreas = landAcquisitionModuleEnabled && acquisitionAreas.length > 0
   const hasProjectRecordEmail = projectRecordEmail !== null
   const hasSurveyResponse = surveyResponse !== null
+  const projectRecordModal = useProjectRecordModal()
   const hasRelations =
     hasSubsubsection ||
     hasAcquisitionAreas ||
@@ -141,11 +143,21 @@ export const UploadVerknuepfungen = ({
                 <>
                   <strong className="font-medium">Protokolleintrag: </strong>
                   <Link
-                    to="/$projectSlug/project-records/$projectRecordId"
-                    params={{
-                      projectSlug,
-                      projectRecordId: String(projectRecords![0]!.id),
-                    }}
+                    to={
+                      projectRecordModal
+                        ? projectRecordModal.getProjectRecordDetailHref({
+                            projectRecordId: projectRecords![0]!.id,
+                          })
+                        : "/$projectSlug/project-records/$projectRecordId"
+                    }
+                    params={
+                      projectRecordModal
+                        ? undefined
+                        : {
+                            projectSlug,
+                            projectRecordId: String(projectRecords![0]!.id),
+                          }
+                    }
                     resetScroll={false}
                   >
                     {projectRecords![0]!.title}
@@ -158,11 +170,21 @@ export const UploadVerknuepfungen = ({
                     {projectRecords!.map((record) => (
                       <li key={record.id}>
                         <Link
-                          to="/$projectSlug/project-records/$projectRecordId"
-                          params={{
-                            projectSlug,
-                            projectRecordId: String(record.id),
-                          }}
+                          to={
+                            projectRecordModal
+                              ? projectRecordModal.getProjectRecordDetailHref({
+                                  projectRecordId: record.id,
+                                })
+                              : "/$projectSlug/project-records/$projectRecordId"
+                          }
+                          params={
+                            projectRecordModal
+                              ? undefined
+                              : {
+                                  projectSlug,
+                                  projectRecordId: String(record.id),
+                                }
+                          }
                           resetScroll={false}
                         >
                           {record.title}

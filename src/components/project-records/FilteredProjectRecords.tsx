@@ -16,6 +16,12 @@ type Props = {
 export const FilteredProjectRecords = ({ projectRecords, highlightId }: Props) => {
   const { filter, setFilter } = useProjectRecordFilters()
   const filteredProjectRecords = useFilteredProjectRecords(projectRecords)
+  const handleTopicClick = (topic: string) => {
+    if (topic) void setFilter({ ...filter, searchterm: topic })
+  }
+  const handleAssigneeClick = (assigneeSearchText: string) => {
+    if (assigneeSearchText) void setFilter({ ...filter, searchterm: assigneeSearchText })
+  }
 
   return (
     <>
@@ -57,6 +63,8 @@ export const FilteredProjectRecords = ({ projectRecords, highlightId }: Props) =
           projectRecords={filteredProjectRecords}
           highlightId={highlightId}
           showRelationsColumn
+          onTopicClick={handleTopicClick}
+          onAssigneeClick={handleAssigneeClick}
         />
       )}
     </>
