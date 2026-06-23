@@ -3,6 +3,7 @@ import { FooterMinimal } from "@/src/components/shared/app/layouts/footer/Footer
 import { FooterProject } from "@/src/components/shared/app/layouts/footer/FooterProject"
 import { NavigationLoggedInDashboard } from "@/src/components/shared/app/layouts/navigation/NavigationLoggedInDashboard"
 import { NavigationLoggedInProject } from "@/src/components/shared/app/layouts/navigation/NavigationLoggedInProject"
+import { ProjectRecordModalHostProvider } from "@/src/components/project-records/ProjectRecordModalHost"
 import { ProjectUploadModalHostProvider } from "@/src/components/uploads/ProjectUploadModalHost"
 
 function LoggedInMainShell({
@@ -37,7 +38,9 @@ export function LayoutLoggedInProject() {
   return (
     <LoggedInMainShell navigation={<NavigationLoggedInProject />} footer={<FooterProject />}>
       <ProjectUploadModalHostProvider>
-        <Outlet />
+        <ProjectRecordModalHostProvider>
+          <Outlet />
+        </ProjectRecordModalHostProvider>
       </ProjectUploadModalHostProvider>
     </LoggedInMainShell>
   )
