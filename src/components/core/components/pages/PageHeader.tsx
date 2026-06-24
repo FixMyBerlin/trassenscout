@@ -12,11 +12,7 @@ type Props = {
 }
 
 const renderLeadingLine = (content: string | React.ReactNode) =>
-  typeof content === "string" ? (
-    <p className="text-sm text-gray-500">{content}</p>
-  ) : (
-    <div className="text-sm text-gray-500">{content}</div>
-  )
+  typeof content === "string" ? <p className="text-sm text-gray-500">{content}</p> : content
 
 export const PageHeader = ({
   breadcrumb,
@@ -28,7 +24,6 @@ export const PageHeader = ({
   className,
 }: Props) => {
   const headline = heading
-  const hasHeadline = Boolean(title || headline)
   const hasLeading = Boolean(subtitle || description)
   const hasActions = Boolean(action)
 
@@ -51,16 +46,18 @@ export const PageHeader = ({
             >
               {title}
             </h1>
-          ) : (
-            hasLeading && (
-              <div className={twJoin("flex flex-col gap-1", hasHeadline ? "mt-1" : "mt-2")}>
-                {subtitle
-                  ? renderLeadingLine(subtitle)
-                  : description
-                    ? renderLeadingLine(description)
-                    : null}
-              </div>
-            )
+          ) : null}
+
+          {hasLeading && (
+            <div
+              className={twJoin(
+                "flex flex-col gap-1",
+                title || headline ? "mt-3" : breadcrumb ? "mt-2" : undefined,
+              )}
+            >
+              {subtitle ? renderLeadingLine(subtitle) : null}
+              {description ? renderLeadingLine(description) : null}
+            </div>
           )}
         </div>
 

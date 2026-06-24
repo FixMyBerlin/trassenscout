@@ -28,13 +28,13 @@ export async function getSurveyTabs(headers: Headers, input: z.infer<typeof GetS
 
   return [
     {
-      name: "Beiträge",
+      name: "Eingaben",
       to: `/${input.projectSlug}/surveys/${input.surveyId}/responses`,
     },
     ...(hasMapResponses
       ? [
           {
-            name: "Beiträge (Karte)",
+            name: "Eingaben (Karte)",
             to: `/${input.projectSlug}/surveys/${input.surveyId}/responses/map`,
           },
         ]
