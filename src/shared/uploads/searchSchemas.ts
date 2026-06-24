@@ -6,7 +6,7 @@ export const uploadEditSearchSchema = z.object({
     .string()
     .optional()
     .transform((value) => sanitizeInternalReturnPath(value)),
-  returnProjectRecordId: z.string().optional(),
+  returnProjectRecordId: z.coerce.string().optional(),
 })
 
 export const projectUploadModalViewSchema = z.enum(["detail", "edit"])
