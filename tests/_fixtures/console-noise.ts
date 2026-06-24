@@ -52,6 +52,4 @@ export const uploadPageNoise = [
   "Failed to load resource: the server responded with a status of 404 (Not Found)",
   // react-pdf / MapLibre AJAX wrapper when the placeholder PDF URL is unreachable.
   "AJAXError: Failed to fetch",
-  // react-pdf worker/API version mismatch in headless Chromium under parallel load.
-  "does not match the Worker version",
 ]
