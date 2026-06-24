@@ -6,6 +6,7 @@ import { RouteErrorPage } from "@/src/components/shared/errors/RouteErrorPage"
 import { RouteNotFoundPage } from "@/src/components/shared/errors/RouteNotFoundPage"
 import * as TanstackQuery from "@/src/components/shared/providers/tanstack-query/root-provider"
 import { setupMatomoRouterTracking } from "@/src/shared/analytics/matomoPageviews"
+import { routerSearch } from "@/src/shared/routing/routerSearch"
 import { routeTree } from "./routeTree.gen"
 
 export function getRouter() {
@@ -14,6 +15,8 @@ export function getRouter() {
   const router = createRouter({
     routeTree,
     trailingSlash: "never",
+    parseSearch: routerSearch.parse,
+    stringifySearch: routerSearch.stringify,
     context: {
       ...rqContext,
     },
