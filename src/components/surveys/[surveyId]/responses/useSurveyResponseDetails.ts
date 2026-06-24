@@ -1,24 +1,14 @@
-import { getRouteApi } from "@tanstack/react-router"
-import { preserveScrollNavigateOptions } from "@/src/components/core/routes/preserveScrollNavigateOptions"
-import { surveyResponsesSearchToRaw } from "@/src/shared/survey-responses/searchSchemas"
-
-const surveyResponsesRouteApi = getRouteApi(
-  "/_loggedInProjects/$projectSlug/surveys/$surveyId/responses/",
-)
+import { useSurveyResponsesSearchState } from "./useSurveyResponsesSearchState"
 
 export function useSurveyResponseDetails() {
-  const search = surveyResponsesRouteApi.useSearch()
-  const navigate = surveyResponsesRouteApi.useNavigate()
+  const { search, navigateWithSearch } = useSurveyResponsesSearchState()
 
-  const responseDetails = search.responseDetails ? Number.parseInt(search.responseDetails, 10) : 0
+  const responseDetails = search.responseDetails ?? 0
 
   const setResponseDetails = async (id: number | null) => {
-    await navigate({
-      search: (previous) => ({
-        ...surveyResponsesSearchToRaw(previous),
-        responseDetails: id ? String(id) : undefined,
-      }),
-      ...preserveScrollNavigateOptions,
+    await navigateWithSearch({
+      ...search,
+      responseDetails: id ?? undefined,
     })
   }
 

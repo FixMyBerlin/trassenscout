@@ -1,15 +1,5 @@
-import { getRouteApi } from "@tanstack/react-router"
-import { preserveScrollNavigateOptions } from "@/src/components/core/routes/preserveScrollNavigateOptions"
-import {
-  serializeSurveyResponseFilterParam,
-  surveyResponsesSearchToRaw,
-  type SurveyResponseFilter,
-  type SurveyResponsesSearch,
-} from "@/src/shared/survey-responses/searchSchemas"
-
-const surveyResponsesRouteApi = getRouteApi(
-  "/_loggedInProjects/$projectSlug/surveys/$surveyId/responses/",
-)
+import type { SurveyResponseFilter } from "@/src/shared/survey-responses/searchSchemas"
+import { useSurveyResponsesSearchState } from "./useSurveyResponsesSearchState"
 
 type FilterUpdater =
   | SurveyResponseFilter
@@ -17,20 +7,15 @@ type FilterUpdater =
   | ((previous: SurveyResponseFilter | undefined) => SurveyResponseFilter | undefined)
 
 export function useSurveyResponseFilters() {
-  const search = surveyResponsesRouteApi.useSearch()
-  const navigate = surveyResponsesRouteApi.useNavigate()
+  const { search, navigateWithSearch } = useSurveyResponsesSearchState()
   const filter = search.filter
 
   const setFilter = async (updater: FilterUpdater) => {
-    await navigate({
-      search: (previous: SurveyResponsesSearch) => {
-        const next = typeof updater === "function" ? updater(previous.filter) : updater
-        return {
-          ...surveyResponsesSearchToRaw(previous),
-          filter: serializeSurveyResponseFilterParam(next),
-        }
-      },
-      ...preserveScrollNavigateOptions,
+    const next = typeof updater === "function" ? updater(search.filter) : updater
+
+    await navigateWithSearch({
+      ...search,
+      filter: next,
     })
   }
 

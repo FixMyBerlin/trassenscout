@@ -1,6 +1,5 @@
 import { ArrowDownTrayIcon } from "@heroicons/react/24/outline"
 import { useQuery } from "@tanstack/react-query"
-import { getRouteApi } from "@tanstack/react-router"
 import { useEffect, useRef } from "react"
 import { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
@@ -14,6 +13,7 @@ import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { EditableSurveyResponseFilterForm } from "@/src/components/surveys/[surveyId]/responses/EditableSurveyResponseFilterForm"
 import EditableSurveyResponseListItem from "@/src/components/surveys/[surveyId]/responses/EditableSurveyResponseListItem"
 import { useFilteredResponses } from "@/src/components/surveys/[surveyId]/responses/useFilteredResponses"
+import { useSurveyResponseDetails } from "@/src/components/surveys/[surveyId]/responses/useSurveyResponseDetails"
 import { SurveyTabs } from "@/src/components/surveys/SurveyTabs"
 import {
   adminLookupRowsWithCountQueryOptions,
@@ -35,8 +35,6 @@ type Props = {
   survey: Survey
   tabs: Array<{ name: string; to: string }>
 }
-
-const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/surveys/$surveyId/responses/")
 
 export function SurveyResponses({ projectSlug, surveyId: _surveyId, survey, tabs }: Props) {
   const { data: feedbackData, refetch: refetchResponses } = useQuery(
@@ -61,8 +59,7 @@ export function SurveyResponses({ projectSlug, surveyId: _surveyId, survey, tabs
   const topics = (topicsData?.surveyResponseTopics ??
     []) as SurveyResponseTopicsResult["surveyResponseTopics"]
 
-  const { responseDetails: responseDetailsParam } = routeApi.useSearch()
-  const paramsSurveyResponseId = responseDetailsParam ? parseInt(responseDetailsParam) : undefined
+  const { responseDetails: paramsSurveyResponseId } = useSurveyResponseDetails()
   const accordionRefs = useRef<Array<HTMLDivElement | null>>([])
 
   useEffect(() => {
