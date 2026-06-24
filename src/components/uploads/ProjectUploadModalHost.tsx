@@ -58,7 +58,7 @@ function ProjectUploadModalHostInner({ children }: { children: React.ReactNode }
       to: location.pathname,
       search: {
         ...backgroundSearch,
-        modalUploadId: uploadId,
+        modalUploadId: String(uploadId),
         modalUploadView: view,
       },
     }).href

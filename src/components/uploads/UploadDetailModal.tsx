@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Modal, ModalCloseButton } from "@/src/components/core/components/Modal"
 import { Notice } from "@/src/components/core/components/Notice/Notice"
 import { H3 } from "@/src/components/core/components/text/Headings"
@@ -32,30 +32,45 @@ export const UploadDetailModal = ({
   zIndex = 30,
   closeOnEditSuccess = false,
 }: Props) => {
+  if (!open || uploadId === null) return null
+
+  return (
+    <UploadDetailModalInner
+      key={uploadId}
+      uploadId={uploadId}
+      projectSlug={projectSlug}
+      onClose={onClose}
+      onDeleted={onDeleted}
+      editLink={editLink}
+      previewUpload={previewUpload}
+      zIndex={zIndex}
+      closeOnEditSuccess={closeOnEditSuccess}
+    />
+  )
+}
+
+type InnerProps = Omit<Props, "open" | "uploadId"> & {
+  uploadId: number
+}
+
+function UploadDetailModalInner({
+  uploadId,
+  projectSlug,
+  onClose,
+  onDeleted,
+  editLink,
+  previewUpload,
+  zIndex,
+  closeOnEditSuccess,
+}: InnerProps) {
   const uploadQuery = useQuery({
-    ...uploadQueryOptions({ projectSlug, id: uploadId! }),
-    enabled: open && uploadId !== null,
+    ...uploadQueryOptions({ projectSlug, id: uploadId }),
+    enabled: true,
   })
   const upload = uploadQuery.data
   const [view, setView] = useState<"detail" | "edit">("detail")
   const [isDirty, setIsDirty] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
-
-  useEffect(() => {
-    if (!open) {
-      setView("detail")
-      setIsDirty(false)
-      setIsSubmitting(false)
-    }
-  }, [open])
-
-  useEffect(() => {
-    setView("detail")
-    setIsDirty(false)
-    setIsSubmitting(false)
-  }, [uploadId])
-
-  if (!open || uploadId === null) return null
 
   const isEditView = view === "edit"
   const hasUploadError = Boolean(uploadQuery.error)
@@ -84,7 +99,7 @@ export const UploadDetailModal = ({
 
   return (
     <Modal
-      open={open}
+      open
       handleClose={handleClose}
       align={isEditView ? "right" : "center"}
       className={isEditView ? "space-y-4" : "space-y-4 sm:max-w-2xl"}

@@ -3,11 +3,6 @@ import { Fragment } from "react"
 import { twJoin } from "tailwind-merge"
 import { AdminBox } from "@/src/components/core/components/AdminBox/AdminBox"
 import { Link } from "@/src/components/core/components/links/Link"
-import { linkStyles } from "@/src/components/core/components/links/styles"
-import {
-  showMembershipRoleCheckIndicatorCountActions,
-  showMembershipRoleCheckIndicatorState,
-} from "@/src/components/core/store/show-membership-role-check-indicator-store"
 import { getFullname } from "@/src/components/core/users/getFullname"
 import { isDev, isProduction, isStaging } from "@/src/components/core/utils/isEnv"
 import { getInitials } from "@/src/components/shared/app/users/utils/getInitials"
@@ -25,9 +20,6 @@ const menuItemLinkStyles = (focus: boolean) =>
   )
 
 export const NavigationUserLoggedIn = ({ user }: Props) => {
-  const showMembershipRoleCheckIndicator = showMembershipRoleCheckIndicatorState()
-  const { toggleShowMembershipRoleCheckIndicator } = showMembershipRoleCheckIndicatorCountActions()
-
   return (
     <Menu as="div" className="relative">
       {({ open }) => (
@@ -72,13 +64,6 @@ export const NavigationUserLoggedIn = ({ user }: Props) => {
                   {isAdmin(user) && (
                     <AdminBox label="Admin" compact className="divide-y divide-purple-200/70">
                       <p className="font-semibold">Rolle: Admin</p>
-                      <button
-                        onClick={toggleShowMembershipRoleCheckIndicator}
-                        className={twJoin(linkStyles, "text-left leading-snug")}
-                      >
-                        {showMembershipRoleCheckIndicator ? "AN" : "AUS"}: Hervorheben, wo Element
-                        abhängig von der Editor-Rolle angezeigt werden.
-                      </button>
                       <pre className="overflow-x-auto text-[10px] leading-tight whitespace-pre-wrap">
                         {`Env: ${JSON.stringify({ isProduction, isStaging, isDev })}
 VITE_APP_ENV: ${JSON.stringify(import.meta.env.VITE_APP_ENV)}
