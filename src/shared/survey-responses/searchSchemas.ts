@@ -94,6 +94,25 @@ function parseSelectedResponsesParam(value: unknown) {
   return singleId !== undefined ? [singleId] : undefined
 }
 
+function normalizeSelectedResponsesRouteParam(value: unknown) {
+  if (value === undefined) return undefined
+
+  if (Array.isArray(value)) {
+    const ids = value
+      .map((part) => toPositiveInteger(part))
+      .filter((id): id is number => id !== undefined)
+
+    return ids.length > 0 ? ids.join(",") : undefined
+  }
+
+  if (typeof value === "string") {
+    return value || undefined
+  }
+
+  const singleId = toPositiveInteger(value)
+  return singleId !== undefined ? String(singleId) : undefined
+}
+
 export const surveyResponsesSearchSchema = z.object({
   responseDetails: z.preprocess(
     (value) => parseResponseDetailsParam(value),
@@ -104,12 +123,28 @@ export const surveyResponsesSearchSchema = z.object({
     surveyResponseFilterSchema.optional(),
   ),
   selectedResponses: z.preprocess(
-    (value) => parseSelectedResponsesParam(value),
-    z.array(z.number().int().positive()).optional(),
+    (value) => normalizeSelectedResponsesRouteParam(value),
+    z.coerce.string().optional(),
   ),
 })
 
-export type SurveyResponsesSearch = z.infer<typeof surveyResponsesSearchSchema>
+export type SurveyResponsesRouteSearch = z.infer<typeof surveyResponsesSearchSchema>
+
+export type SurveyResponsesSearch = {
+  responseDetails?: SurveyResponsesRouteSearch["responseDetails"]
+  filter?: SurveyResponsesRouteSearch["filter"]
+  selectedResponses?: number[]
+}
+
+export function parseSurveyResponsesSearch(
+  search: SurveyResponsesRouteSearch,
+): SurveyResponsesSearch {
+  return {
+    responseDetails: search.responseDetails,
+    filter: search.filter,
+    selectedResponses: parseSelectedResponsesParam(search.selectedResponses),
+  }
+}
 
 export function surveyResponsesSearchToRaw(
   search: Pick<SurveyResponsesSearch, "responseDetails" | "filter" | "selectedResponses">,

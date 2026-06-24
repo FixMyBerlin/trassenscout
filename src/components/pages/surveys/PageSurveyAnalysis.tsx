@@ -6,7 +6,7 @@ import { SurveyAnalysis } from "@/src/components/surveys/[surveyId]/responses/an
 import { surveyQueryOptions } from "@/src/server/surveys/surveysQueryOptions"
 import { surveyTabsQueryOptions } from "@/src/server/surveys/surveyTabsQueryOptions"
 
-const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/surveys/$surveyId/")
+const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/surveys/$surveyId/analysis/")
 
 function PageSurveyAnalysisContent() {
   const { projectSlug, surveyId } = routeApi.useParams()
