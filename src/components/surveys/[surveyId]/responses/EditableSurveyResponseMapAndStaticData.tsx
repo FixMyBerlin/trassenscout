@@ -18,6 +18,7 @@ import { getFlatSurveyFormFields } from "@/src/components/surveys/[surveyId]/res
 import { getSurveyCategoryOptions } from "@/src/components/surveys/[surveyId]/responses/getSurveyCategoryOptions"
 import { deleteSurveyResponseFn } from "@/src/server/survey-responses/surveyResponses.functions"
 import type { FeedbackSurveyResponse } from "@/src/server/survey-responses/surveyResponsesQueryOptions"
+import { surveyResponsesSearchToRaw } from "@/src/shared/survey-responses/searchSchemas"
 import EditableSurveyResponseAdditionalFilterFields from "./EditableSurveyResponseAdditionalFilterFields"
 import {
   EditableSurveyResponseFormMap,
@@ -227,7 +228,12 @@ const EditableSurveyResponseMapAndStaticData = ({
             </MapProvider>
             <div className="flex flex-col items-start pt-4">
               <Link
-                to={`/${projectSlug}/surveys/${surveyId}/responses/map?responseDetails=${response.id}&selectedResponses=${response.id}`}
+                to="/$projectSlug/surveys/$surveyId/responses/map"
+                params={{ projectSlug, surveyId: String(surveyId) }}
+                search={surveyResponsesSearchToRaw({
+                  responseDetails: response.id,
+                  selectedResponses: [response.id],
+                })}
                 className="flex items-center gap-2"
               >
                 <ArrowsPointingOutIcon className="size-4" />

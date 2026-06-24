@@ -51,8 +51,8 @@ export const SurveyResponseOverviewMap = ({
   const { projectSlug } = loggedInProjectRouteApi.useParams()
   const staticOverlay = getStaticOverlayForProject(projectSlug ?? "")
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
-  const { responseDetails, setResponseDetails } = useSurveyResponseDetails()
-  const { mapSelection, setMapSelection } = useSurveyResponseMapSelection(
+  const { responseDetails } = useSurveyResponseDetails()
+  const { mapSelection, setMapSelectionAndDetails } = useSurveyResponseMapSelection(
     surveyResponses?.length ? [surveyResponses[0]?.id] : [],
   )
   const [cursorStyle, setCursorStyle] = useState("grab")
@@ -450,11 +450,9 @@ export const SurveyResponseOverviewMap = ({
 
   const handleMapClick = (event: MapLayerMouseEvent) => {
     const selectedResponses = event.features
-    //  for some reason the mapSelection had duplicated entries
-    if (selectedResponses?.length)
-      setMapSelection(Array.from(new Set(selectedResponses.map((r) => Number(r.id)))))
-    // show details of the first selected response IF there is only one selected
-    if (selectedResponses?.length === 1) setResponseDetails(Number(selectedResponses[0]!.id))
+    if (!selectedResponses?.length) return
+
+    void setMapSelectionAndDetails(selectedResponses.map((response) => Number(response.id)))
   }
 
   const handleMouseMove = ({ features }: MapLayerMouseEvent) => {
