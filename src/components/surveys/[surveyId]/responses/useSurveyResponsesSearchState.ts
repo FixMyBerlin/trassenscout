@@ -1,17 +1,18 @@
-import { useLocation, useNavigate } from "@tanstack/react-router"
+import { getRouteApi, useLocation, useNavigate } from "@tanstack/react-router"
 import { preserveScrollNavigateOptions } from "@/src/components/core/routes/preserveScrollNavigateOptions"
-import { useTryRouteSearch } from "@/src/components/core/routes/useTryRouteSearch"
 import {
-  surveyResponsesSearchSchema,
   surveyResponsesSearchToRaw,
   type SurveyResponsesSearch,
 } from "@/src/shared/survey-responses/searchSchemas"
 
+const surveyResponsesRouteApi = getRouteApi(
+  "/_loggedInProjects/$projectSlug/surveys/$surveyId/responses",
+)
+
 export function useSurveyResponsesSearchState() {
   const location = useLocation()
   const navigate = useNavigate()
-  const routeSearch = useTryRouteSearch()
-  const search = surveyResponsesSearchSchema.parse(routeSearch ?? {})
+  const search = surveyResponsesRouteApi.useSearch()
 
   const navigateWithSearch = async (nextSearch: SurveyResponsesSearch) => {
     await navigate({

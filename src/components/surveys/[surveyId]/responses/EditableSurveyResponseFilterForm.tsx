@@ -1,6 +1,6 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid"
 import { XMarkIcon } from "@heroicons/react/24/outline"
-import { type JSX, PropsWithoutRef, useEffect, useState } from "react"
+import { type JSX, PropsWithoutRef, useState } from "react"
 import { twJoin } from "tailwind-merge"
 import { backendConfig as defaultBackendConfig } from "@/src/components/beteiligung/shared/backend-types"
 import { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
@@ -34,16 +34,10 @@ export function EditableSurveyResponseFilterForm({
 }: FormProps) {
   const defaultFilters = useDefaultFilterValues(surveySlug)
   const { filter, setFilter } = useFilters()
+
   const effectiveFilter = filter ?? defaultFilters
   const [searchtermDraft, setSearchtermDraft] = useState<string | null>(null)
   const searchterm = searchtermDraft ?? effectiveFilter.searchterm
-
-  // Ensure URL state is initialized once, while keeping inputs controlled on first render.
-  useEffect(() => {
-    if (!filter) {
-      void setFilter(defaultFilters)
-    }
-  }, [defaultFilters, filter, setFilter])
 
   // backend configurations: status
   const backendConfig = getConfigBySurveySlug(surveySlug, "backend")
