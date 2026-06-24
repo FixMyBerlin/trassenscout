@@ -1,6 +1,7 @@
 import { getRouteApi, useLocation, useNavigate } from "@tanstack/react-router"
 import { preserveScrollNavigateOptions } from "@/src/components/core/routes/preserveScrollNavigateOptions"
 import {
+  parseSurveyResponsesSearch,
   surveyResponsesSearchToRaw,
   type SurveyResponsesSearch,
 } from "@/src/shared/survey-responses/searchSchemas"
@@ -12,7 +13,8 @@ const surveyResponsesRouteApi = getRouteApi(
 export function useSurveyResponsesSearchState() {
   const location = useLocation()
   const navigate = useNavigate()
-  const search = surveyResponsesRouteApi.useSearch()
+  const routeSearch = surveyResponsesRouteApi.useSearch()
+  const search = parseSurveyResponsesSearch(routeSearch)
 
   const navigateWithSearch = async (nextSearch: SurveyResponsesSearch) => {
     await navigate({

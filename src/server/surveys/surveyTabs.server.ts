@@ -41,7 +41,7 @@ export async function getSurveyTabs(headers: Headers, input: z.infer<typeof GetS
       : []),
     {
       name: "Auswertung",
-      to: `/${input.projectSlug}/surveys/${input.surveyId}`,
+      to: `/${input.projectSlug}/surveys/${input.surveyId}/analysis`,
     },
   ]
 }

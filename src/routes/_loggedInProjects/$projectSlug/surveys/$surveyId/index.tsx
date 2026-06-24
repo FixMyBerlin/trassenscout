@@ -1,23 +1,17 @@
-import { createFileRoute } from "@tanstack/react-router"
-import { PageSurveyAnalysis } from "@/src/components/pages/surveys/PageSurveyAnalysis"
+import { createFileRoute, redirect } from "@tanstack/react-router"
 import { absoluteTitleHead } from "@/src/routeHead"
-import { surveyQueryOptions } from "@/src/server/surveys/surveysQueryOptions"
-import { surveyTabsQueryOptions } from "@/src/server/surveys/surveyTabsQueryOptions"
+import { endpointAuth } from "@/src/server/auth/endpointAuthBoundary"
 
 export const Route = createFileRoute("/_loggedInProjects/$projectSlug/surveys/$surveyId/")({
   head: () => absoluteTitleHead("Beteiligung"),
   ssr: true,
-  loader: async ({ context, params }) => {
-    const surveyId = Number(params.surveyId)
-    const [survey] = await Promise.all([
-      context.queryClient.ensureQueryData(
-        surveyQueryOptions({ projectSlug: params.projectSlug, id: surveyId }),
-      ),
-      context.queryClient.ensureQueryData(
-        surveyTabsQueryOptions({ projectSlug: params.projectSlug, surveyId }),
-      ),
-    ])
-    return { survey }
+  beforeLoad: ({ params }) => {
+    endpointAuth.inherited("auth enforced by _loggedInProjects layout")
+
+    throw redirect({
+      to: "/$projectSlug/surveys/$surveyId/responses",
+      params,
+      replace: true,
+    })
   },
-  component: PageSurveyAnalysis,
 })
