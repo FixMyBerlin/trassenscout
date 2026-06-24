@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import { preserveScrollNavigateOptions } from "@/src/components/core/routes/preserveScrollNavigateOptions"
 
 const landAcquisitionRouteApi = getRouteApi(
-  "/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/",
+  "/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard/land-acquisition/",
 )
 
 export function useAcquisitionAreaSelection() {
