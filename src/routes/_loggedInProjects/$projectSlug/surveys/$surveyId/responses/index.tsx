@@ -4,14 +4,12 @@ import { absoluteTitleHead } from "@/src/routeHead"
 import { surveyResponsesQueryOptions } from "@/src/server/survey-responses/surveyResponsesQueryOptions"
 import { surveyQueryOptions } from "@/src/server/surveys/surveysQueryOptions"
 import { surveyTabsQueryOptions } from "@/src/server/surveys/surveyTabsQueryOptions"
-import { surveyResponsesSearchSchema } from "@/src/shared/survey-responses/searchSchemas"
 
 export const Route = createFileRoute(
   "/_loggedInProjects/$projectSlug/surveys/$surveyId/responses/",
 )({
   head: () => absoluteTitleHead("Beteiligung"),
   ssr: true,
-  validateSearch: surveyResponsesSearchSchema,
   loader: async ({ context, params }) => {
     const surveyId = Number(params.surveyId)
     const [survey] = await Promise.all([
