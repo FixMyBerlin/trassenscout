@@ -85,12 +85,9 @@ export const projectRecordModalSearchSchema = z
 
 export type ProjectRecordModalSearch = z.infer<typeof projectRecordModalSearchSchema>
 
-export function clearProjectRecordModalSearch<
-  TSearch extends {
-    modalProjectRecordId?: number | undefined
-    modalProjectRecordView?: "detail" | "edit" | undefined
-  },
->(search: TSearch) {
+export function clearProjectRecordModalSearch<TSearch extends Record<string, unknown>>(
+  search: TSearch,
+) {
   return {
     ...search,
     modalProjectRecordId: undefined,

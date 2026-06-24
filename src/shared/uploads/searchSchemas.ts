@@ -29,12 +29,9 @@ export const projectUploadModalSearchSchema = z
 
 export type ProjectUploadModalSearch = z.infer<typeof projectUploadModalSearchSchema>
 
-export function clearProjectUploadModalSearch<
-  TSearch extends {
-    modalUploadId?: number | undefined
-    modalUploadView?: "detail" | "edit" | undefined
-  },
->(search: TSearch) {
+export function clearProjectUploadModalSearch<TSearch extends Record<string, unknown>>(
+  search: TSearch,
+) {
   return {
     ...search,
     modalUploadId: undefined,

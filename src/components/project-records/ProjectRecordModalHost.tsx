@@ -69,7 +69,7 @@ function ProjectRecordModalHostInner({ children }: { children: React.ReactNode }
       to: location.pathname,
       search: {
         ...backgroundSearch,
-        modalProjectRecordId: projectRecordId,
+        modalProjectRecordId: String(projectRecordId),
         modalProjectRecordView: view,
       },
     }).href
@@ -100,7 +100,12 @@ function ProjectRecordModalHostInner({ children }: { children: React.ReactNode }
 
   useEffect(() => {
     if (modalProjectRecordView === "edit" && !userCanEdit) {
-      void updateModalState({ replace: true })
+      void navigate({
+        to: location.pathname,
+        search: backgroundSearch,
+        replace: true,
+        resetScroll: false,
+      })
     }
   }, [backgroundSearch, location.pathname, modalProjectRecordView, navigate, userCanEdit])
 
