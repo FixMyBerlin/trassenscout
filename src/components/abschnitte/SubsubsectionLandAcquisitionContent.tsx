@@ -70,10 +70,15 @@ export const SubsubsectionLandAcquisitionContent = ({
   )
 
   const { data: projectRecords = [], refetch: refetchProjectRecords } = useQuery({
-    ...projectRecordsByAcquisitionAreaQueryOptions({
-      projectSlug,
-      acquisitionAreaId: selectedAcquisitionArea!.id,
-    }),
+    ...(selectedAcquisitionArea
+      ? projectRecordsByAcquisitionAreaQueryOptions({
+          projectSlug,
+          acquisitionAreaId: selectedAcquisitionArea.id,
+        })
+      : {
+          queryKey: ["projectRecordsByAcquisitionArea", "disabled"] as const,
+          queryFn: () => Promise.resolve([]),
+        }),
     enabled: Boolean(selectedAcquisitionArea),
   })
 
