@@ -31,8 +31,8 @@ import type { SubsubsectionWithPosition } from "@/src/server/subsubsections/type
 import { linkedSurveyResponseForSubsubsectionQueryOptions } from "@/src/server/survey-responses/surveyResponsesQueryOptions"
 import { uploadsWithSubsectionsQueryOptions } from "@/src/server/uploads/uploadsWithSubsectionsQueryOptions"
 
-const subsubsectionRouteApi = getRouteApi(
-  "/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/",
+const layoutRouteApi = getRouteApi(
+  "/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard",
 )
 
 type Props = {
@@ -42,7 +42,7 @@ type Props = {
 }
 
 export const SubsubsectionDetailsContent = ({ subsubsection, className, header }: Props) => {
-  const { projectSlug, subsectionSlug, subsubsectionSlug } = subsubsectionRouteApi.useParams()
+  const { projectSlug, subsectionSlug, subsubsectionSlug } = layoutRouteApi.useParams()
   const returnTo = useCurrentReturnTo()
   const [isProjectRecordModalOpen, setIsProjectRecordModalOpen] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)

@@ -32,8 +32,8 @@ import {
 import { subsubsectionBySlugQueryOptions } from "@/src/server/subsubsections/subsubsectionQueryOptions"
 import { uploadsWithSubsectionsQueryOptions } from "@/src/server/uploads/uploadsWithSubsectionsQueryOptions"
 
-const subsubsectionRouteApi = getRouteApi(
-  "/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/",
+const layoutRouteApi = getRouteApi(
+  "/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard",
 )
 
 type Props = {
@@ -45,7 +45,7 @@ export const SubsubsectionLandAcquisitionContent = ({
   subsubsectionId,
   subsectionId: _subsectionId,
 }: Props) => {
-  const { projectSlug, subsectionSlug, subsubsectionSlug } = subsubsectionRouteApi.useParams()
+  const { projectSlug, subsectionSlug, subsubsectionSlug } = layoutRouteApi.useParams()
   const queryClient = useQueryClient()
   const returnTo = useCurrentReturnTo()
   const { acquisitionAreaId, setAcquisitionAreaId } = useAcquisitionAreaSelection()

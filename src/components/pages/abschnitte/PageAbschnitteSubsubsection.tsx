@@ -1,18 +1,48 @@
+import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
-import { SubsubsectionDashboardPage } from "./_components/SubsubsectionDashboardPage"
+import { SubsubsectionDetailsContent } from "@/src/components/abschnitte/SubsubsectionDetailsContent"
+import { SubsubsectionMapWithProvider } from "@/src/components/core/components/Map/SubsubsectionMapWithProvider"
+import { subsectionBySlugQueryOptions } from "@/src/server/subsections/subsectionQueryOptions"
+import { subsectionsQueryOptions } from "@/src/server/subsections/subsectionsQueryOptions"
+import { subsubsectionBySlugQueryOptions } from "@/src/server/subsubsections/subsubsectionQueryOptions"
+import { subsubsectionsQueryOptions } from "@/src/server/subsubsections/subsubsectionsQueryOptions"
+import { MapPageSuspense } from "./_components/MapPageSuspense"
 
-const routeApi = getRouteApi(
-  "/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/",
+const layoutRouteApi = getRouteApi(
+  "/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard",
 )
 
 export function PageAbschnitteSubsubsection() {
-  const { subsection, subsubsection, subsections } = routeApi.useLoaderData()
+  const { projectSlug, subsectionSlug, subsubsectionSlug } = layoutRouteApi.useParams()
+  const { data: subsection } = useSuspenseQuery(
+    subsectionBySlugQueryOptions({ projectSlug, subsectionSlug }),
+  )
+  const { data: subsections } = useSuspenseQuery(subsectionsQueryOptions({ projectSlug }))
+  const { data: subsubsection } = useSuspenseQuery(
+    subsubsectionBySlugQueryOptions({ projectSlug, subsectionSlug, subsubsectionSlug }),
+  )
+  const { data: subsubsections } = useSuspenseQuery(
+    subsubsectionsQueryOptions({ projectSlug, subsectionId: subsection.id }),
+  )
+
   return (
-    <SubsubsectionDashboardPage
-      activeTab="general"
-      subsection={subsection}
-      subsubsection={subsubsection}
-      subsections={subsections}
-    />
+    <MapPageSuspense>
+      <div className="relative flex w-full items-start gap-6">
+        <div className="min-w-0 flex-1">
+          <SubsubsectionMapWithProvider
+            key={`map-subsubsection-${subsubsectionSlug}`}
+            projectSlug={projectSlug}
+            subsectionSlug={subsectionSlug}
+            subsections={subsections}
+            selectedSubsection={subsection}
+            subsubsections={subsubsections}
+            selectedSubsubsectionSlug={subsubsectionSlug}
+          />
+        </div>
+        <div className="min-w-0 flex-1">
+          <SubsubsectionDetailsContent subsubsection={subsubsection} />
+        </div>
+      </div>
+    </MapPageSuspense>
   )
 }

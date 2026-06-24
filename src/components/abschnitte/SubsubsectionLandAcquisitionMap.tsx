@@ -5,7 +5,6 @@ import type { MultiPolygon, Polygon } from "geojson"
 import type { ExpressionSpecification, MapLayerMouseEvent } from "maplibre-gl"
 import { useMemo } from "react"
 import { Layer, Source } from "react-map-gl/maplibre"
-import type { SubsubsectionTabKey } from "@/src/components/abschnitte/SubsubsectionDashboardClient"
 import { useAcquisitionAreaSelection } from "@/src/components/abschnitte/useAcquisitionAreaSelection"
 import { lookupTableRows } from "@/src/components/abschnitte/utils/lookupTableRows"
 import { acquisitionAreaStatusStyles } from "@/src/components/acquisition-area-status/acquisitionAreaStatusStyles"
@@ -18,7 +17,6 @@ import { subsubsectionColors } from "@/src/components/core/components/Map/colors
 import { getLandAcquisitionLegendConfig } from "@/src/components/core/components/Map/LandAcquisitionMap.legendConfig"
 import { MapFooter } from "@/src/components/core/components/Map/MapFooter"
 import { getStaticOverlayForProject } from "@/src/components/core/components/Map/staticOverlay/getStaticOverlayForProject"
-import { subsectionLegendConfig } from "@/src/components/core/components/Map/SubsectionSubsubsectionMap.legendConfig"
 import {
   alkisAttributionToHtml,
   useAlkisAttribution,
@@ -49,7 +47,6 @@ const acquisitionAreaColorExpression: ExpressionSpecification = [
 
 type Props = {
   subsubsection: SubsubsectionWithPosition
-  activeTab: SubsubsectionTabKey
 }
 
 const defaultQueryOptions = {
@@ -72,23 +69,20 @@ const toAcquisitionAreaFeatureCollection = (areas: AcquisitionAreaWithTypedGeome
     ),
   )
 
-export const SubsubsectionLandAcquisitionMap = ({ subsubsection, activeTab }: Props) => {
+export const SubsubsectionLandAcquisitionMap = ({ subsubsection }: Props) => {
   const { projectSlug } = loggedInProjectRouteApi.useParams()
   const alkisAttribution = useAlkisAttribution()
   const { acquisitionAreaId, setAcquisitionAreaId } = useAcquisitionAreaSelection()
-  const isLandAcquisition = activeTab === "land-acquisition"
 
   const { data: acquisitionAreas = [] } = useQuery({
     ...acquisitionAreasBySubsubsectionQueryOptions({
       projectSlug,
       subsubsectionId: subsubsection.id,
     }),
-    enabled: isLandAcquisition,
     ...defaultQueryOptions,
   })
   const { data: acquisitionAreaStatusesResult } = useQuery({
     ...adminLookupRowsWithCountQueryOptions({ projectSlug, table: "acquisitionAreaStatuses" }),
-    enabled: isLandAcquisition,
     ...defaultQueryOptions,
   })
 
@@ -149,13 +143,11 @@ export const SubsubsectionLandAcquisitionMap = ({ subsubsection, activeTab }: Pr
 
   const mapBbox = useMemo(() => {
     const geometries: SupportedGeometry[] = [subsubsection.geometry as SupportedGeometry]
-    if (isLandAcquisition) {
-      acquisitionAreas.forEach((acquisitionArea) => {
-        geometries.push(acquisitionArea.geometry as SupportedGeometry)
-      })
-    }
+    acquisitionAreas.forEach((acquisitionArea) => {
+      geometries.push(acquisitionArea.geometry as SupportedGeometry)
+    })
     return geometriesBbox(geometries)
-  }, [acquisitionAreas, isLandAcquisition, subsubsection.geometry])
+  }, [acquisitionAreas, subsubsection.geometry])
 
   const landAcquisitionLegendConfig = useMemo(
     () =>
@@ -169,8 +161,6 @@ export const SubsubsectionLandAcquisitionMap = ({ subsubsection, activeTab }: Pr
   )
 
   const handleClickMap = (event: MapLayerMouseEvent) => {
-    if (!isLandAcquisition) return
-
     const clickedFeature = event.features?.at(0)
     const clickedAcquisitionAreaId = Number(clickedFeature?.properties?.acquisitionAreaId)
     if (Number.isFinite(clickedAcquisitionAreaId)) {
@@ -196,16 +186,12 @@ export const SubsubsectionLandAcquisitionMap = ({ subsubsection, activeTab }: Pr
           fitBoundsOptions: { padding: 60, maxZoom: 16 },
         }}
         onClick={handleClickMap}
-        interactiveLayerIds={
-          isLandAcquisition
-            ? [
-                "acquisition-area-click-target-unselected",
-                "acquisition-area-click-target-selected",
-                "acquisition-area-parcels-fill",
-                "acquisition-area-parcels-outline",
-              ]
-            : undefined
-        }
+        interactiveLayerIds={[
+          "acquisition-area-click-target-unselected",
+          "acquisition-area-click-target-selected",
+          "acquisition-area-parcels-fill",
+          "acquisition-area-parcels-outline",
+        ]}
         lines={subsubsectionLines?.features.length ? subsubsectionLines : undefined}
         polygons={subsubsectionPolygons?.features.length ? subsubsectionPolygons : undefined}
         points={subsubsectionPoints?.features.length ? subsubsectionPoints : undefined}
@@ -213,89 +199,79 @@ export const SubsubsectionLandAcquisitionMap = ({ subsubsection, activeTab }: Pr
           subsubsectionLineEndPoints?.features.length ? subsubsectionLineEndPoints : undefined
         }
         selectableLayerIdSuffix="_subsubsection_detail"
-        interactiveUnifiedFeatures={!isLandAcquisition}
+        interactiveUnifiedFeatures={false}
         colorSchema="subsubsection"
         staticOverlay={getStaticOverlayForProject(projectSlug)}
       >
-        {isLandAcquisition && (
-          <>
-            <Source
-              id="acquisition-area-parcels"
-              type="geojson"
-              data={parcelFeatureCollection}
-              attribution={alkisAttributionToHtml(alkisAttribution)}
-            >
-              <Layer
-                id="acquisition-area-parcels-fill"
-                type="fill"
-                paint={acquisitionAreaParcelFillPaint}
-              />
-              <Layer
-                id="acquisition-area-parcels-outline"
-                type="line"
-                paint={acquisitionAreaParcelLineDashPaint}
-              />
-            </Source>
+        <Source
+          id="acquisition-area-parcels"
+          type="geojson"
+          data={parcelFeatureCollection}
+          attribution={alkisAttributionToHtml(alkisAttribution)}
+        >
+          <Layer
+            id="acquisition-area-parcels-fill"
+            type="fill"
+            paint={acquisitionAreaParcelFillPaint}
+          />
+          <Layer
+            id="acquisition-area-parcels-outline"
+            type="line"
+            paint={acquisitionAreaParcelLineDashPaint}
+          />
+        </Source>
 
-            <Source
-              id="acquisition-area-unselected"
-              type="geojson"
-              data={unselectedAcquisitionAreasFc}
-            >
-              <Layer
-                id="acquisition-area-fill-unselected"
-                type="fill"
-                paint={{
-                  "fill-color": acquisitionAreaColorExpression,
-                  "fill-opacity": 0.32,
-                }}
-              />
-              <Layer
-                id="acquisition-area-line-unselected"
-                type="line"
-                paint={{
-                  "line-color": acquisitionAreaColorExpression,
-                  "line-width": 2,
-                  "line-opacity": 0.9,
-                }}
-              />
-              <Layer
-                id="acquisition-area-click-target-unselected"
-                type="fill"
-                paint={{ "fill-opacity": 0 }}
-              />
-            </Source>
+        <Source id="acquisition-area-unselected" type="geojson" data={unselectedAcquisitionAreasFc}>
+          <Layer
+            id="acquisition-area-fill-unselected"
+            type="fill"
+            paint={{
+              "fill-color": acquisitionAreaColorExpression,
+              "fill-opacity": 0.32,
+            }}
+          />
+          <Layer
+            id="acquisition-area-line-unselected"
+            type="line"
+            paint={{
+              "line-color": acquisitionAreaColorExpression,
+              "line-width": 2,
+              "line-opacity": 0.9,
+            }}
+          />
+          <Layer
+            id="acquisition-area-click-target-unselected"
+            type="fill"
+            paint={{ "fill-opacity": 0 }}
+          />
+        </Source>
 
-            <Source id="acquisition-area-selected" type="geojson" data={selectedAcquisitionAreasFc}>
-              <Layer
-                id="acquisition-area-fill-selected"
-                type="fill"
-                paint={{
-                  "fill-color": subsubsectionColors.polygon.selected,
-                  "fill-opacity": 0.38,
-                }}
-              />
-              <Layer
-                id="acquisition-area-line-selected"
-                type="line"
-                paint={{
-                  "line-color": subsubsectionColors.polygon.selected,
-                  "line-width": 3,
-                  "line-opacity": 1,
-                }}
-              />
-              <Layer
-                id="acquisition-area-click-target-selected"
-                type="fill"
-                paint={{ "fill-opacity": 0 }}
-              />
-            </Source>
-          </>
-        )}
+        <Source id="acquisition-area-selected" type="geojson" data={selectedAcquisitionAreasFc}>
+          <Layer
+            id="acquisition-area-fill-selected"
+            type="fill"
+            paint={{
+              "fill-color": subsubsectionColors.polygon.selected,
+              "fill-opacity": 0.38,
+            }}
+          />
+          <Layer
+            id="acquisition-area-line-selected"
+            type="line"
+            paint={{
+              "line-color": subsubsectionColors.polygon.selected,
+              "line-width": 3,
+              "line-opacity": 1,
+            }}
+          />
+          <Layer
+            id="acquisition-area-click-target-selected"
+            type="fill"
+            paint={{ "fill-opacity": 0 }}
+          />
+        </Source>
       </BaseMap>
-      <MapFooter
-        legendItemsConfig={isLandAcquisition ? landAcquisitionLegendConfig : subsectionLegendConfig}
-      />
+      <MapFooter legendItemsConfig={landAcquisitionLegendConfig} />
     </>
   )
 }

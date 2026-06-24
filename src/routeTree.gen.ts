@@ -142,9 +142,10 @@ import { Route as ApiProjectSlugSurveysSurveyIdPart1AnswersIndexRouteImport } fr
 import { Route as ApiProjectSlugSubsectionsSubsectionSlugSubsubsectionsExportIndexRouteImport } from './routes/api/$projectSlug/subsections/$subsectionSlug/subsubsections/export/index'
 import { Route as LoggedInProjectsProjectSlugSurveysSurveyIdResponsesMapIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/surveys/$surveyId/responses/map/index'
 import { Route as LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungNewIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new/index'
-import { Route as LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/index'
-import { Route as LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugLandAcquisitionIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/index'
+import { Route as LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardRouteRouteImport } from './routes/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard/route'
 import { Route as LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugEditIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/edit/index'
+import { Route as LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard/index'
+import { Route as LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardLandAcquisitionIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard/land-acquisition/index'
 import { Route as LoggedInProjectsProjectSlugSurveysSurveyIdResponsesSurveyResponseIdUploadsUploadIdEditIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/surveys/$surveyId/responses/$surveyResponseId/uploads/$uploadId/edit/index'
 import { Route as LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugLandAcquisitionAcquisitionAreasNewIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/acquisition-areas/new/index'
 import { Route as LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugLandAcquisitionAcquisitionAreasAcquisitionAreaIdEditIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/acquisition-areas/$acquisitionAreaId/edit/index'
@@ -949,19 +950,11 @@ const LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungNewIndexRoute =
       getParentRoute: () => LoggedInProjectsProjectSlugRoute,
     } as any,
   )
-const LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugIndexRoute =
-  LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugIndexRouteImport.update(
+const LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardRouteRoute =
+  LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardRouteRouteImport.update(
     {
-      id: '/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/',
-      path: '/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/',
-      getParentRoute: () => LoggedInProjectsProjectSlugRoute,
-    } as any,
-  )
-const LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugLandAcquisitionIndexRoute =
-  LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugLandAcquisitionIndexRouteImport.update(
-    {
-      id: '/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/',
-      path: '/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/',
+      id: '/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard',
+      path: '/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug',
       getParentRoute: () => LoggedInProjectsProjectSlugRoute,
     } as any,
   )
@@ -971,6 +964,24 @@ const LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSl
       id: '/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/edit/',
       path: '/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/edit/',
       getParentRoute: () => LoggedInProjectsProjectSlugRoute,
+    } as any,
+  )
+const LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardIndexRoute =
+  LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardIndexRouteImport.update(
+    {
+      id: '/',
+      path: '/',
+      getParentRoute: () =>
+        LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardRouteRoute,
+    } as any,
+  )
+const LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardLandAcquisitionIndexRoute =
+  LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardLandAcquisitionIndexRouteImport.update(
+    {
+      id: '/land-acquisition/',
+      path: '/land-acquisition/',
+      getParentRoute: () =>
+        LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardRouteRoute,
     } as any,
   )
 const LoggedInProjectsProjectSlugSurveysSurveyIdResponsesSurveyResponseIdUploadsUploadIdEditIndexRoute =
@@ -1119,7 +1130,7 @@ export interface FileRoutesByFullPath {
   '/admin/surveys/$surveyId/responses/test/': typeof AdminSurveysSurveyIdResponsesTestIndexRoute
   '/api/$projectSlug/uploads/$uploadId/$/': typeof ApiProjectSlugUploadsUploadIdSplatIndexRoute
   '/api/support/documents/$documentId/$/': typeof ApiSupportDocumentsDocumentIdSplatIndexRoute
-  '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugIndexRoute
+  '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardRouteRouteWithChildren
   '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new/': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungNewIndexRoute
   '/$projectSlug/surveys/$surveyId/responses/map/': typeof LoggedInProjectsProjectSlugSurveysSurveyIdResponsesMapIndexRoute
   '/api/$projectSlug/subsections/$subsectionSlug/subsubsections/export/': typeof ApiProjectSlugSubsectionsSubsectionSlugSubsubsectionsExportIndexRoute
@@ -1127,8 +1138,9 @@ export interface FileRoutesByFullPath {
   '/api/$projectSlug/surveys/$surveyId/part1/questions/': typeof ApiProjectSlugSurveysSurveyIdPart1QuestionsIndexRoute
   '/api/$projectSlug/surveys/$surveyId/part1/results/': typeof ApiProjectSlugSurveysSurveyIdPart1ResultsIndexRoute
   '/api/$projectSlug/surveys/$surveyId/part2/results/': typeof ApiProjectSlugSurveysSurveyIdPart2ResultsIndexRoute
+  '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardIndexRoute
   '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/edit/': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugEditIndexRoute
-  '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugLandAcquisitionIndexRoute
+  '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardLandAcquisitionIndexRoute
   '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/acquisition-areas/new/': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugLandAcquisitionAcquisitionAreasNewIndexRoute
   '/$projectSlug/surveys/$surveyId/responses/$surveyResponseId/uploads/$uploadId/edit/': typeof LoggedInProjectsProjectSlugSurveysSurveyIdResponsesSurveyResponseIdUploadsUploadIdEditIndexRoute
   '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/acquisition-areas/$acquisitionAreaId/edit/': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugLandAcquisitionAcquisitionAreasAcquisitionAreaIdEditIndexRoute
@@ -1250,7 +1262,6 @@ export interface FileRoutesByTo {
   '/admin/surveys/$surveyId/responses/test': typeof AdminSurveysSurveyIdResponsesTestIndexRoute
   '/api/$projectSlug/uploads/$uploadId/$': typeof ApiProjectSlugUploadsUploadIdSplatIndexRoute
   '/api/support/documents/$documentId/$': typeof ApiSupportDocumentsDocumentIdSplatIndexRoute
-  '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugIndexRoute
   '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungNewIndexRoute
   '/$projectSlug/surveys/$surveyId/responses/map': typeof LoggedInProjectsProjectSlugSurveysSurveyIdResponsesMapIndexRoute
   '/api/$projectSlug/subsections/$subsectionSlug/subsubsections/export': typeof ApiProjectSlugSubsectionsSubsectionSlugSubsubsectionsExportIndexRoute
@@ -1258,8 +1269,9 @@ export interface FileRoutesByTo {
   '/api/$projectSlug/surveys/$surveyId/part1/questions': typeof ApiProjectSlugSurveysSurveyIdPart1QuestionsIndexRoute
   '/api/$projectSlug/surveys/$surveyId/part1/results': typeof ApiProjectSlugSurveysSurveyIdPart1ResultsIndexRoute
   '/api/$projectSlug/surveys/$surveyId/part2/results': typeof ApiProjectSlugSurveysSurveyIdPart2ResultsIndexRoute
+  '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardIndexRoute
   '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/edit': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugEditIndexRoute
-  '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugLandAcquisitionIndexRoute
+  '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardLandAcquisitionIndexRoute
   '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/acquisition-areas/new': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugLandAcquisitionAcquisitionAreasNewIndexRoute
   '/$projectSlug/surveys/$surveyId/responses/$surveyResponseId/uploads/$uploadId/edit': typeof LoggedInProjectsProjectSlugSurveysSurveyIdResponsesSurveyResponseIdUploadsUploadIdEditIndexRoute
   '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/acquisition-areas/$acquisitionAreaId/edit': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugLandAcquisitionAcquisitionAreasAcquisitionAreaIdEditIndexRoute
@@ -1392,7 +1404,7 @@ export interface FileRoutesById {
   '/admin/surveys/$surveyId/responses/test/': typeof AdminSurveysSurveyIdResponsesTestIndexRoute
   '/api/$projectSlug/uploads/$uploadId/$/': typeof ApiProjectSlugUploadsUploadIdSplatIndexRoute
   '/api/support/documents/$documentId/$/': typeof ApiSupportDocumentsDocumentIdSplatIndexRoute
-  '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugIndexRoute
+  '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardRouteRouteWithChildren
   '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new/': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungNewIndexRoute
   '/_loggedInProjects/$projectSlug/surveys/$surveyId/responses/map/': typeof LoggedInProjectsProjectSlugSurveysSurveyIdResponsesMapIndexRoute
   '/api/$projectSlug/subsections/$subsectionSlug/subsubsections/export/': typeof ApiProjectSlugSubsectionsSubsectionSlugSubsubsectionsExportIndexRoute
@@ -1400,8 +1412,9 @@ export interface FileRoutesById {
   '/api/$projectSlug/surveys/$surveyId/part1/questions/': typeof ApiProjectSlugSurveysSurveyIdPart1QuestionsIndexRoute
   '/api/$projectSlug/surveys/$surveyId/part1/results/': typeof ApiProjectSlugSurveysSurveyIdPart1ResultsIndexRoute
   '/api/$projectSlug/surveys/$surveyId/part2/results/': typeof ApiProjectSlugSurveysSurveyIdPart2ResultsIndexRoute
+  '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard/': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardIndexRoute
   '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/edit/': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugEditIndexRoute
-  '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugLandAcquisitionIndexRoute
+  '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard/land-acquisition/': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardLandAcquisitionIndexRoute
   '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/acquisition-areas/new/': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugLandAcquisitionAcquisitionAreasNewIndexRoute
   '/_loggedInProjects/$projectSlug/surveys/$surveyId/responses/$surveyResponseId/uploads/$uploadId/edit/': typeof LoggedInProjectsProjectSlugSurveysSurveyIdResponsesSurveyResponseIdUploadsUploadIdEditIndexRoute
   '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/acquisition-areas/$acquisitionAreaId/edit/': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugLandAcquisitionAcquisitionAreasAcquisitionAreaIdEditIndexRoute
@@ -1529,7 +1542,7 @@ export interface FileRouteTypes {
     | '/admin/surveys/$surveyId/responses/test/'
     | '/api/$projectSlug/uploads/$uploadId/$/'
     | '/api/support/documents/$documentId/$/'
-    | '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/'
+    | '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug'
     | '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new/'
     | '/$projectSlug/surveys/$surveyId/responses/map/'
     | '/api/$projectSlug/subsections/$subsectionSlug/subsubsections/export/'
@@ -1537,6 +1550,7 @@ export interface FileRouteTypes {
     | '/api/$projectSlug/surveys/$surveyId/part1/questions/'
     | '/api/$projectSlug/surveys/$surveyId/part1/results/'
     | '/api/$projectSlug/surveys/$surveyId/part2/results/'
+    | '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/'
     | '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/edit/'
     | '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/'
     | '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/acquisition-areas/new/'
@@ -1660,7 +1674,6 @@ export interface FileRouteTypes {
     | '/admin/surveys/$surveyId/responses/test'
     | '/api/$projectSlug/uploads/$uploadId/$'
     | '/api/support/documents/$documentId/$'
-    | '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug'
     | '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new'
     | '/$projectSlug/surveys/$surveyId/responses/map'
     | '/api/$projectSlug/subsections/$subsectionSlug/subsubsections/export'
@@ -1668,6 +1681,7 @@ export interface FileRouteTypes {
     | '/api/$projectSlug/surveys/$surveyId/part1/questions'
     | '/api/$projectSlug/surveys/$surveyId/part1/results'
     | '/api/$projectSlug/surveys/$surveyId/part2/results'
+    | '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug'
     | '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/edit'
     | '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition'
     | '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/acquisition-areas/new'
@@ -1801,7 +1815,7 @@ export interface FileRouteTypes {
     | '/admin/surveys/$surveyId/responses/test/'
     | '/api/$projectSlug/uploads/$uploadId/$/'
     | '/api/support/documents/$documentId/$/'
-    | '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/'
+    | '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard'
     | '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new/'
     | '/_loggedInProjects/$projectSlug/surveys/$surveyId/responses/map/'
     | '/api/$projectSlug/subsections/$subsectionSlug/subsubsections/export/'
@@ -1809,8 +1823,9 @@ export interface FileRouteTypes {
     | '/api/$projectSlug/surveys/$surveyId/part1/questions/'
     | '/api/$projectSlug/surveys/$surveyId/part1/results/'
     | '/api/$projectSlug/surveys/$surveyId/part2/results/'
+    | '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard/'
     | '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/edit/'
-    | '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/'
+    | '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard/land-acquisition/'
     | '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/acquisition-areas/new/'
     | '/_loggedInProjects/$projectSlug/surveys/$surveyId/responses/$surveyResponseId/uploads/$uploadId/edit/'
     | '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/acquisition-areas/$acquisitionAreaId/edit/'
@@ -2782,18 +2797,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungNewIndexRouteImport
       parentRoute: typeof LoggedInProjectsProjectSlugRoute
     }
-    '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/': {
-      id: '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/'
+    '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard': {
+      id: '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard'
       path: '/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug'
-      fullPath: '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/'
-      preLoaderRoute: typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugIndexRouteImport
-      parentRoute: typeof LoggedInProjectsProjectSlugRoute
-    }
-    '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/': {
-      id: '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/'
-      path: '/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition'
-      fullPath: '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/'
-      preLoaderRoute: typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugLandAcquisitionIndexRouteImport
+      fullPath: '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug'
+      preLoaderRoute: typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardRouteRouteImport
       parentRoute: typeof LoggedInProjectsProjectSlugRoute
     }
     '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/edit/': {
@@ -2802,6 +2810,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/edit/'
       preLoaderRoute: typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugEditIndexRouteImport
       parentRoute: typeof LoggedInProjectsProjectSlugRoute
+    }
+    '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard/': {
+      id: '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard/'
+      path: '/'
+      fullPath: '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/'
+      preLoaderRoute: typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardIndexRouteImport
+      parentRoute: typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardRouteRoute
+    }
+    '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard/land-acquisition/': {
+      id: '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard/land-acquisition/'
+      path: '/land-acquisition'
+      fullPath: '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/'
+      preLoaderRoute: typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardLandAcquisitionIndexRouteImport
+      parentRoute: typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardRouteRoute
     }
     '/_loggedInProjects/$projectSlug/surveys/$surveyId/responses/$surveyResponseId/uploads/$uploadId/edit/': {
       id: '/_loggedInProjects/$projectSlug/surveys/$surveyId/responses/$surveyResponseId/uploads/$uploadId/edit/'
@@ -2914,6 +2936,24 @@ const LoggedInProjectsProjectSlugProjectRecordsRouteRouteWithChildren =
     LoggedInProjectsProjectSlugProjectRecordsRouteRouteChildren,
   )
 
+interface LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardRouteRouteChildren {
+  LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardIndexRoute: typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardIndexRoute
+  LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardLandAcquisitionIndexRoute: typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardLandAcquisitionIndexRoute
+}
+
+const LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardRouteRouteChildren: LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardRouteRouteChildren =
+  {
+    LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardIndexRoute:
+      LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardIndexRoute,
+    LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardLandAcquisitionIndexRoute:
+      LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardLandAcquisitionIndexRoute,
+  }
+
+const LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardRouteRouteWithChildren =
+  LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardRouteRoute._addFileChildren(
+    LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardRouteRouteChildren,
+  )
+
 interface LoggedInProjectsProjectSlugRouteChildren {
   LoggedInProjectsProjectSlugProjectRecordsRouteRoute: typeof LoggedInProjectsProjectSlugProjectRecordsRouteRouteWithChildren
   LoggedInProjectsProjectSlugIndexRoute: typeof LoggedInProjectsProjectSlugIndexRoute
@@ -2964,11 +3004,10 @@ interface LoggedInProjectsProjectSlugRouteChildren {
   LoggedInProjectsProjectSlugSubsubsectionTaskSubsubsectionTaskIdEditIndexRoute: typeof LoggedInProjectsProjectSlugSubsubsectionTaskSubsubsectionTaskIdEditIndexRoute
   LoggedInProjectsProjectSlugSurveysSurveyIdResponsesIndexRoute: typeof LoggedInProjectsProjectSlugSurveysSurveyIdResponsesIndexRoute
   LoggedInProjectsProjectSlugUploadsUploadIdEditIndexRoute: typeof LoggedInProjectsProjectSlugUploadsUploadIdEditIndexRoute
-  LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugIndexRoute: typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugIndexRoute
+  LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardRouteRoute: typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardRouteRouteWithChildren
   LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungNewIndexRoute: typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungNewIndexRoute
   LoggedInProjectsProjectSlugSurveysSurveyIdResponsesMapIndexRoute: typeof LoggedInProjectsProjectSlugSurveysSurveyIdResponsesMapIndexRoute
   LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugEditIndexRoute: typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugEditIndexRoute
-  LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugLandAcquisitionIndexRoute: typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugLandAcquisitionIndexRoute
   LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugLandAcquisitionAcquisitionAreasNewIndexRoute: typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugLandAcquisitionAcquisitionAreasNewIndexRoute
   LoggedInProjectsProjectSlugSurveysSurveyIdResponsesSurveyResponseIdUploadsUploadIdEditIndexRoute: typeof LoggedInProjectsProjectSlugSurveysSurveyIdResponsesSurveyResponseIdUploadsUploadIdEditIndexRoute
   LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugLandAcquisitionAcquisitionAreasAcquisitionAreaIdEditIndexRoute: typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugLandAcquisitionAcquisitionAreasAcquisitionAreaIdEditIndexRoute
@@ -3074,16 +3113,14 @@ const LoggedInProjectsProjectSlugRouteChildren: LoggedInProjectsProjectSlugRoute
       LoggedInProjectsProjectSlugSurveysSurveyIdResponsesIndexRoute,
     LoggedInProjectsProjectSlugUploadsUploadIdEditIndexRoute:
       LoggedInProjectsProjectSlugUploadsUploadIdEditIndexRoute,
-    LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugIndexRoute:
-      LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugIndexRoute,
+    LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardRouteRoute:
+      LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardRouteRouteWithChildren,
     LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungNewIndexRoute:
       LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungNewIndexRoute,
     LoggedInProjectsProjectSlugSurveysSurveyIdResponsesMapIndexRoute:
       LoggedInProjectsProjectSlugSurveysSurveyIdResponsesMapIndexRoute,
     LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugEditIndexRoute:
       LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugEditIndexRoute,
-    LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugLandAcquisitionIndexRoute:
-      LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugLandAcquisitionIndexRoute,
     LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugLandAcquisitionAcquisitionAreasNewIndexRoute:
       LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugLandAcquisitionAcquisitionAreasNewIndexRoute,
     LoggedInProjectsProjectSlugSurveysSurveyIdResponsesSurveyResponseIdUploadsUploadIdEditIndexRoute:
