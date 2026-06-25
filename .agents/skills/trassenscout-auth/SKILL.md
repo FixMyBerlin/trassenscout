@@ -31,7 +31,6 @@ Project-specific auth wiring for this repo. The portable **`tanstack-start-auth`
 ## Related skills
 
 - `tanstack-start-conventions` — `.server.ts` / `.functions.ts`, boundaries, SSR
-- `tanstack-start-app-structure` — `src/server/auth/` layout
 - `playwright-skill` — E2E stubbed auth
 
 ## Non-negotiable rules
