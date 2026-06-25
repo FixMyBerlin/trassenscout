@@ -38,7 +38,7 @@
     "alkis-update-config": "bun scripts/alkis-wfs/update-config.ts",
     "check": "bun run --parallel migrate-check-test type-check lint-check format-check test",
     "check-full": "bun run --sequential check e2e",
-    "type-check": "tsgo --noEmit",
+    "type-check": "tsc --noEmit",
     "lint": "oxlint --fix --fix-dangerously --deny-warnings -c oxlint.config.mjs",
     "lint-check": "oxlint --deny-warnings -c oxlint.config.mjs",
     "format": "oxfmt --config oxfmt.config.mjs --write .",
@@ -160,7 +160,6 @@
     "@types/react-dom": "19.2.3",
     "@types/secure-password": "4.0.2",
     "@types/web": "0.0.349",
-    "@typescript/native-preview": "7.0.0-dev.20260603.1",
     "@vitejs/plugin-react": "6.0.2",
     "babel-plugin-react-compiler": "1.0.0",
     "browserslist": "^4.24.0",
@@ -178,8 +177,12 @@
     "oxlint-tsgolint": "0.23.0",
     "preview-email": "3.1.3",
     "prisma": "7.8.0",
-    "typescript": "npm:@typescript/typescript6@^6.0.0",
+    "typescript": "7.0.1-rc",
     "vitest": "4.1.8"
+  },
+  "optionalDependencies": {
+    "@typescript/typescript-darwin-arm64": "7.0.1-rc",
+    "@typescript/typescript-linux-x64": "7.0.1-rc"
   },
   "browserslist": [
     "> 1%",
