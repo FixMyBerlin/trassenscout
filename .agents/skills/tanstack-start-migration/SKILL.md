@@ -9,7 +9,7 @@ description: Migrate Next.js apps to TanStack Start. Covers Vite/Nitro setup, is
 
 Focus: **mental model shift**, **data handling**, and **routing**. TanStack Start = TanStack Router + Vite (+ Nitro for FMC deployment). No Next.js async server components in route files. Optional experimental RSC: `tanstack-start-conventions` → [server-components.md](../tanstack-start-conventions/references/server-components.md).
 
-After the mechanical migration, apply FMC stack skills: `tanstack-start-app-structure`, `tanstack-start-conventions`, `tanstack-start-auth`.
+After the mechanical migration, apply FMC stack skills: `tanstack-start-conventions`, `tanstack-start-auth`.
 
 ## Critical mental model (read first)
 
@@ -116,7 +116,7 @@ export function getRouter() {
 
 **Package names:** Use `@tanstack/react-start` (not deprecated `@tanstack/start`). Do **not** use Vinxi — Start is a Vite plugin since v1.121.
 
-**FMC layout:** Use default `routesDirectory: 'routes'` under `src/` — not Next.js-style `app/`. See `tanstack-start-app-structure`.
+**FMC layout:** Use default `routesDirectory: 'routes'` under `src/` — not Next.js-style `app/`. See `tanstack-start-conventions`.
 
 ---
 
@@ -305,7 +305,7 @@ Remove all `"use server"` and `"use client"` directives.
 - [ ] Server Actions → `*.functions.ts` with `validator`
 - [ ] API routes → `routes/api/*.ts` with `server.handlers` (or server fns)
 - [ ] Query-backed UI: `ensureQueryData` in loader + `useSuspenseQuery` in component
-- [ ] Thin route files; UI in `components/` (`tanstack-start-app-structure`)
+- [ ] Thin route files; UI in `components/` (`tanstack-start-conventions`)
 - [ ] Explicit `ssr` on routes (`tanstack-start-conventions`)
 - [ ] `process.env` → `import.meta.env`; no `next/*` imports remain
 - [ ] Auth via `beforeLoad` + server fns (`tanstack-start-auth`)
@@ -322,6 +322,6 @@ Remove all `"use server"` and `"use client"` directives.
 | Loaders, loaderDeps, Query   | [loader-data-patterns.md](references/loader-data-patterns.md)       |
 | createServerFn, validation   | [server-functions.md](references/server-functions.md)               |
 
-**FMC stack (post-migration):** `tanstack-start-app-structure`, `tanstack-start-conventions`, `tanstack-start-auth`, `playwright-skill` (E2E smoke and patterns). URL state: router `validateSearch` first; skill `nuqs` only for shared libs or legacy patterns.
+**FMC stack (post-migration):** `tanstack-start-conventions`, `tanstack-start-auth`, `playwright-skill` (E2E smoke and patterns). URL state: router `validateSearch` first; skill `nuqs` only for shared libs or legacy patterns.
 
 **External:** [Official migration guide](https://tanstack.com/start/latest/docs/framework/react/migrate-from-next-js), [execution model](https://tanstack.com/start/latest/docs/framework/react/guide/execution-model).
