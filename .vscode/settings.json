@@ -11,7 +11,7 @@
   "js/ts.experimental.useTsgo": true,
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
-  "typescript.native-preview.tsdk": "node_modules/@typescript/native-preview",
+  "typescript.native-preview.tsdk": "node_modules/typescript",
   "editor.codeActionsOnSave": {
     "source.fixAll.oxc": "always",
     "source.fixAllDangerous.oxc": "always"
