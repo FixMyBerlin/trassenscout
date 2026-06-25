@@ -30,21 +30,19 @@ Load [references/llm-resources.md](references/llm-resources.md) **only for the a
 
 Prefer installed skill names when present; otherwise fetch from git.
 
-| Area                                      | Skill                          | GitHub                                                                                                                         |
-| ----------------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
-| Rust/WASM geo                             | `rust-wasm-geo`                | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/rust-wasm-geo>                                                    |
-| Maps (react-map-gl)                       | `react-map-gl`                 | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/react-map-gl>                                                     |
-| React TS patterns                         | `react-dev`                    | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/react-dev>                                                        |
-| useEffect discipline                      | `react-useeffect`              | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/react-useeffect>                                                  |
-| TanStack Start (boundaries, SSR, loaders) | `tanstack-start-conventions`   | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/tanstack-start-conventions>                                       |
-| Router search params (UI routes)          | —                              | <https://github.com/FixMyBerlin/fixmyskills/blob/main/skills/tanstack-start-conventions/references/params-search-ui-vs-api.md> |
-| Router + Query loaders                    | —                              | <https://github.com/FixMyBerlin/fixmyskills/blob/main/skills/tanstack-start-conventions/references/router-and-query.md>        |
-| Devtools debug panel                      | —                              | <https://github.com/FixMyBerlin/fixmyskills/blob/main/skills/tanstack-start-conventions/references/devtools.md>                |
-| App folder layout                         | `tanstack-start-app-structure` | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/tanstack-start-app-structure>                                     |
-| URL state (Next.js / shared libs)         | `nuqs`                         | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/nuqs>                                                             |
-| Client global state                       | `zustand-state-management`     | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/zustand-state-management>                                         |
-| E2E / Playwright                          | `playwright-skill`             | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/playwright-skill>                                                 |
-| Next → Start migration                    | `tanstack-start-migration`     | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/tanstack-start-migration>                                         |
+| Area                                     | Skill                        | GitHub                                                                                                                         |
+| ---------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Rust/WASM geo                            | `rust-wasm-geo`              | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/rust-wasm-geo>                                                    |
+| Maps (react-map-gl)                      | `react-map-gl`               | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/react-map-gl>                                                     |
+| React TS patterns, useEffect discipline  | `react-dev`                  | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/react-dev>                                                        |
+| TanStack Start (layout, boundaries, SSR) | `tanstack-start-conventions` | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/tanstack-start-conventions>                                       |
+| Router search params (UI routes)         | —                            | <https://github.com/FixMyBerlin/fixmyskills/blob/main/skills/tanstack-start-conventions/references/params-search-ui-vs-api.md> |
+| Router + Query loaders                   | —                            | <https://github.com/FixMyBerlin/fixmyskills/blob/main/skills/tanstack-start-conventions/references/router-and-query.md>        |
+| Devtools debug panel                     | —                            | <https://github.com/FixMyBerlin/fixmyskills/blob/main/skills/tanstack-start-conventions/references/devtools.md>                |
+| URL state (Next.js / shared libs)        | `nuqs`                       | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/nuqs>                                                             |
+| Client global state                      | `zustand-state-management`   | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/zustand-state-management>                                         |
+| E2E / Playwright                         | `playwright-skill`           | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/playwright-skill>                                                 |
+| Next → Start migration                   | `tanstack-start-migration`   | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/tanstack-start-migration>                                         |
 
 ## Runtime and build
 
@@ -55,6 +53,7 @@ Prefer installed skill names when present; otherwise fetch from git.
   - class sorting, import sorting, `package.json` sorting
   - `printWidth` 100, semicolons `asNeeded`, single quotes
   - `'typescript/switch-exhaustiveness-check': 'error'`
+  - React Compiler: native oxlint rule `'react/react-compiler': 'error'` on `**/*.tsx` (not `eslint-plugin-react-compiler`)
   - Templates: [examples/oxfmt.config.mjs](examples/oxfmt.config.mjs), [examples/oxlint.config.mjs](examples/oxlint.config.mjs)
   - Setup and per-project tuning: [references/oxc-config.md](references/oxc-config.md)
 - **Client browser target:** `browserslist` in `package.json` drives Vite client `build.target` and `eslint-plugin-compat` in oxlint — [references/browser-target.md](references/browser-target.md)
@@ -62,7 +61,21 @@ Prefer installed skill names when present; otherwise fetch from git.
 ## React and TypeScript
 
 - **UI:** React 19
-- **TypeScript:** latest **Go** implementation (`@typescript/native-preview` / `tsgo`) — not legacy `tsc`. Typecheck with `tsgo --noEmit`.
+- **TypeScript:** Go-native **7.x** (`typescript@7.0.1-rc`, binary `tsc`). Typecheck with `tsc --noEmit`.
+- **Bun + TS 7:** add `typescript` and `@typescript/typescript-*` platform packages to `minimumReleaseAgeExcludes` while on RC. Bun may not hoist optional platform binaries — list `@typescript/typescript-darwin-arm64` and `@typescript/typescript-linux-x64` under `optionalDependencies` (extend for other CI/dev platforms as needed).
+- **Cursor / VS Code:** commit `.vscode/settings.json` in each TypeScript app so the editor uses the workspace `typescript` package and the Go-native language service:
+
+```json
+{
+  "js/ts.experimental.useTsgo": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.native-preview.tsdk": "node_modules/typescript"
+}
+```
+
+After `bun install`, accept **Use Workspace Version** if prompted. Do not add `typescript` to repos that have no TS source (e.g. this skills monorepo).
+
 - **React Compiler:** on by default — see skill `react-dev` for memoization and typing conventions
 - **GeoJSON:** `@types/geojson` for all GeoJSON payloads
 - **Dates / times:** `@date-fns/tz`
@@ -86,7 +99,7 @@ Copy and adapt on scaffold. Adjust `paths` to project layout (`./src/*` vs `./*`
 **Typecheck:**
 
 ```bash
-tsgo --noEmit -p tsconfig.app.json && tsgo --noEmit -p tsconfig.scripts.json
+tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.scripts.json
 ```
 
 Single-config repos (e.g. one root `tsconfig.json` covering app + scripts) are acceptable; greenfield TanStack Start apps should prefer split configs.
@@ -95,11 +108,7 @@ Optional root `tsconfig.json` with `"references"` to both child configs.
 
 **ES2025:** `target` and `lib` stay in sync. `lib` adds typings only; new ES2025 **runtime** APIs in client bundles are not auto-polyfilled — use deliberately on the client; fine on server/Bun/scripts. Which browsers get that client bundle: [references/browser-target.md](references/browser-target.md).
 
-Component typing, Compiler, and oxlint React rules: skill `react-dev`.
-
-## useEffect
-
-Load skill `react-useeffect` for when to skip Effect, naming, and alternatives. Map camera, clicks, and layers: skill `react-map-gl` (not `useEffect` + `map.on()`).
+Component typing, Compiler, oxlint React rules, and useEffect discipline: skill `react-dev`. Map camera, clicks, and layers: skill `react-map-gl` (not `useEffect` + `map.on()`).
 
 ## Data and state
 
@@ -143,6 +152,11 @@ Turf vs WASM, crates, Vite wiring: skill `rust-wasm-geo`.
 - Weekly Monday 07:00 Europe/Berlin; **one open PR at a time** per ecosystem (`open-pull-requests-limit: 1`).
 - Template: [examples/dependabot.yml.template](examples/dependabot.yml.template)
 - Grouping, monorepo tuning, and ignores: [references/dependabot.md](references/dependabot.md)
+- **Reviewing and merging PRs:** skill `review-dependabot` (changelog triage, risk tiers, rebase merge)
+
+## CI (GitHub Actions)
+
+- PR dependency review: permissive `allow-licenses` (not deprecated `deny-licenses`) — template: [examples/ci.yml.template](examples/ci.yml.template)
 
 ## Tests and quality
 
