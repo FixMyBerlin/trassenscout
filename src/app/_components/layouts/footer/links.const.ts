@@ -22,6 +22,11 @@ export const fixmyCityLinks: FooterLink<string>[] = [
     blank: true,
   },
   {
+    name: "Demo Termin vereinbaren",
+    href: "https://fixmycity.de/termin-vereinbaren/" as Route<string>,
+    blank: true,
+  },
+  {
     name: "TILDA - Unser Verkehrsplanungs Web-GIS",
     href: "https://tilda-geo.de" as Route<string>,
     blank: true,
