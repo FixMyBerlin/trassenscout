@@ -1,6 +1,7 @@
 import { z } from "zod"
 import { ProjectRecordReviewState, ProjectRecordType } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
+import { checkProjectAuthorization } from "@/src/server/authorization/checkProjectAuthorization.server"
 import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
@@ -52,9 +53,8 @@ function normalizeDate(date: string | Date | null | undefined) {
   return date instanceof Date ? date : new Date(date)
 }
 
-function projectRecordOverviewWhere(projectId: number, aiEnabled: boolean) {
+function projectRecordOverviewVisibilityWhere(aiEnabled: boolean) {
   const where = {
-    projectId,
     reviewState: ProjectRecordReviewState.APPROVED,
   }
 
@@ -63,6 +63,22 @@ function projectRecordOverviewWhere(projectId: number, aiEnabled: boolean) {
   return {
     ...where,
     projectRecordAuthorType: { not: ProjectRecordType.SYSTEM },
+  }
+}
+
+function projectRecordOverviewWhere(projectId: number, aiEnabled: boolean) {
+  return {
+    projectId,
+    ...projectRecordOverviewVisibilityWhere(aiEnabled),
+  }
+}
+
+function projectRecordDetailVisibilityWhere(aiEnabled: boolean, canEdit: boolean) {
+  return {
+    OR: [
+      projectRecordOverviewVisibilityWhere(aiEnabled),
+      ...(canEdit && aiEnabled ? [{ reviewState: ProjectRecordReviewState.NEEDSREVIEW }] : []),
+    ],
   }
 }
 
@@ -316,11 +332,37 @@ export async function getProjectRecord(
   headers: Headers,
   input: z.infer<typeof GetProjectRecordSchema>,
 ) {
-  await endpointAuth.projectRole(headers, input.projectSlug, viewerRoles)
+  const { projectId, session } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    viewerRoles,
+  )
+
+  const authorization = await checkProjectAuthorization(session, input.projectSlug)
+  if (!authorization.authorized) {
+    throw new NotFoundError()
+  }
+
+  const canEdit =
+    authorization.membershipRole === null ||
+    editorRoles.includes(authorization.membershipRole)
+
+  const project = await db.project.findUnique({
+    where: { id: projectId },
+    select: { aiEnabled: true },
+  })
+
+  if (!project) {
+    throw new NotFoundError()
+  }
 
   return db.projectRecord.findFirstOrThrow({
     include: projectRecordInclude,
-    where: projectRecordInProjectWhere(input.projectSlug, input.id),
+    where: {
+      id: input.id,
+      projectId,
+      ...projectRecordDetailVisibilityWhere(project.aiEnabled, canEdit),
+    },
   })
 }
 
