@@ -20,13 +20,13 @@ import { useEffect, useState } from "react"
 import Map, { Marker, MarkerDragEvent, NavigationControl, useMap } from "react-map-gl/maplibre"
 
 type Props = {
+  description?: string
   config: {
     bounds: [number, number, number, number]
   }
-  // field: ReturnType<typeof useFieldContext>
 }
 
-export const SurveySimpleMap = ({ config }: Props) => {
+export const SurveySimpleMap = ({ config, description }: Props) => {
   const mapBounds: { bounds: [number, number, number, number] } = {
     bounds: config.bounds,
   }
@@ -86,7 +86,7 @@ export const SurveySimpleMap = ({ config }: Props) => {
 
   return (
     <>
-      <div className="mt-4 h-[500px]" aria-describedby={field.name + " Hint"}>
+      <div className="mt-4 h-[500px]" aria-describedby={description ? `${field.name}-hint` : undefined}>
         <Map
           id="mainMap"
           onMove={handleMapMove}
