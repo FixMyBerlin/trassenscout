@@ -418,7 +418,8 @@ const SwitchableMapContent = ({
       {mode === "none" && (
         <p className={clsx(formClasses.fieldDescription, "mt-4")}>
           Sie haben sich entschieden, eine Maßnahme ohne Verortung auf der Karte zu melden.
-          Beschreiben Sie bitte im Textfeld "Maßnahmenbeschreibung und Zielsetzung", wo die bauliche
+          Beschreiben Sie bitte im Textfeld &quot;Maßnahmenbeschreibung und Zielsetzung&quot;, wo die
+          bauliche
           Maßnahme geplant ist.
         </p>
       )}
