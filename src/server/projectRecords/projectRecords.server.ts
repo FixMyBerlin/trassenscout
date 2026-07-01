@@ -345,7 +345,8 @@ export async function getProjectRecord(
 
   const canEdit =
     authorization.membershipRole === null ||
-    editorRoles.includes(authorization.membershipRole)
+    (authorization.membershipRole !== undefined &&
+      editorRoles.includes(authorization.membershipRole))
 
   const project = await db.project.findUnique({
     where: { id: projectId },
@@ -356,12 +357,14 @@ export async function getProjectRecord(
     throw new NotFoundError()
   }
 
+  const aiEnabled = project.aiEnabled ?? false
+
   return db.projectRecord.findFirstOrThrow({
     include: projectRecordInclude,
     where: {
       id: input.id,
       projectId,
-      ...projectRecordDetailVisibilityWhere(project.aiEnabled, canEdit),
+      ...projectRecordDetailVisibilityWhere(aiEnabled, canEdit),
     },
   })
 }

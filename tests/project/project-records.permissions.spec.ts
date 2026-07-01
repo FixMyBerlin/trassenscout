@@ -8,6 +8,12 @@ import { waitForSubmitReady } from "@/tests/_utils/waitForFormReady"
 
 const projectSlug = seedProjects.richProject
 const listPath = `/${projectSlug}/project-records`
+const hiddenAdminReviewConsoleNoise = [
+  ...pageNoise,
+  ...authorizationNoise,
+  "NotFoundError",
+  "Not Found",
+]
 
 const ensureProjectRecordPersistenceFixture = async () => {
   const db = await getTestDb()
@@ -30,6 +36,29 @@ const ensureProjectRecordPersistenceFixture = async () => {
       id: true,
       title: true,
       body: true,
+    },
+  })
+}
+
+const ensureNeedsAdminReviewProjectRecordFixture = async () => {
+  const db = await getTestDb()
+  const project = await db.project.findFirstOrThrow({
+    where: { slug: projectSlug },
+    select: { id: true },
+  })
+
+  return db.projectRecord.create({
+    data: {
+      projectId: project.id,
+      title: `E2E Needs Admin Review ${Date.now()}`,
+      body: "Hidden admin review record",
+      editingState: "PENDING",
+      reviewState: "NEEDSADMINREVIEW",
+      projectRecordAuthorType: "SYSTEM",
+    },
+    select: {
+      id: true,
+      title: true,
     },
   })
 }
@@ -74,6 +103,8 @@ test.describe("Project records permissions", () => {
 
   let projectRecordId: number
   let persistenceProjectRecordId: number
+  let needsAdminReviewProjectRecordId: number
+  let needsAdminReviewProjectRecordTitle: string
 
   test.describe("prepare record", () => {
     test.use({ storageState: authFile("editor") })
@@ -89,6 +120,13 @@ test.describe("Project records permissions", () => {
       persistenceProjectRecordId = projectRecord.id
       expect(persistenceProjectRecordId).toBeGreaterThan(0)
     })
+
+    test("creates a hidden NEEDSADMINREVIEW record for visibility checks", async () => {
+      const projectRecord = await ensureNeedsAdminReviewProjectRecordFixture()
+      needsAdminReviewProjectRecordId = projectRecord.id
+      needsAdminReviewProjectRecordTitle = projectRecord.title
+      expect(needsAdminReviewProjectRecordId).toBeGreaterThan(0)
+    })
   })
 
   test.afterAll(async () => {
@@ -98,6 +136,15 @@ test.describe("Project records permissions", () => {
       await db.projectRecord.delete({ where: { id: persistenceProjectRecordId } }).catch(() => {
         // Ignore if already deleted (e.g. test suite was aborted mid-run).
       })
+    }
+
+    if (needsAdminReviewProjectRecordId) {
+      const db = await getTestDb()
+      await db.projectRecord
+        .delete({ where: { id: needsAdminReviewProjectRecordId } })
+        .catch(() => {
+          // Ignore if already deleted (e.g. test suite was aborted mid-run).
+        })
     }
   })
 
@@ -209,6 +256,36 @@ test.describe("Project records permissions", () => {
         })
 
         await freshContext.close()
+      })
+    })
+
+    test.describe("hidden admin-review records", () => {
+      test.use({ storageState: authFile("editor") })
+      test.use({ allowedConsoleErrors: hiddenAdminReviewConsoleNoise })
+
+      test("stay hidden from lists and direct detail URLs", async ({ page }) => {
+        await page.goto(listPath)
+        await expect(
+          page.getByRole("heading", { name: "Projektprotokoll", exact: true }),
+        ).toBeVisible({
+          timeout: 30_000,
+        })
+        await expect(
+          page.getByText(needsAdminReviewProjectRecordTitle, { exact: true }),
+        ).toHaveCount(0)
+
+        await page.goto(`/${projectSlug}/project-records/needreview`)
+        await expect(
+          page.getByRole("heading", { name: "Projektprotokoll", exact: true }),
+        ).toBeVisible({ timeout: 30_000 })
+        await expect(
+          page.getByText(needsAdminReviewProjectRecordTitle, { exact: true }),
+        ).toHaveCount(0)
+
+        await page.goto(`/${projectSlug}/project-records/${needsAdminReviewProjectRecordId}`)
+        await expect(
+          page.getByRole("heading", { name: "Ein Fehler ist aufgetreten", exact: true }),
+        ).toBeVisible({ timeout: 30_000 })
       })
     })
 
