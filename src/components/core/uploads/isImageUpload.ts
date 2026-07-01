@@ -3,8 +3,8 @@ type ImageUploadLike = {
   externalUrl?: string | null
 }
 
-const IMAGE_EXTENSIONS = new Set([
-  "svg",
+/** Raster image extensions allowed for upload (SVG excluded — see getFileType). */
+export const IMAGE_EXTENSIONS = new Set([
   "png",
   "jpg",
   "jpeg",

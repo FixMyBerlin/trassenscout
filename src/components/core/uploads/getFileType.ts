@@ -1,4 +1,4 @@
-import { isImageMimeType } from "@/src/components/core/uploads/isImageUpload"
+import { IMAGE_EXTENSIONS, isImageMimeType } from "@/src/components/core/uploads/isImageUpload"
 import { Upload } from "@/src/prisma/generated/browser"
 
 const MIME_TO_EXTENSIONS_MAP = {
@@ -19,8 +19,31 @@ const MIME_TO_EXTENSIONS_MAP = {
   "application/dxf": [".dxp"],
 } as const
 
+const ALLOWED_UPLOAD_EXTENSIONS = new Set([
+  ...IMAGE_EXTENSIONS,
+  ...Object.values(MIME_TO_EXTENSIONS_MAP)
+    .flat()
+    .filter((extension) => extension.startsWith("."))
+    .map((extension) => extension.slice(1)),
+])
+
+const getFilenameExtension = (filename: string) => {
+  const extension = filename.split(".").pop()?.toLowerCase()
+  return extension && extension !== filename.toLowerCase() ? extension : null
+}
+
+export const isSupportedUploadFilename = (filename: string) => {
+  const extension = getFilenameExtension(filename)
+  if (!extension) return false
+  return ALLOWED_UPLOAD_EXTENSIONS.has(extension)
+}
+
 export const isSupportedMimeType = (mimeType: string | null | undefined) => {
   if (!mimeType) return false
+  // Reject SVG: it is an XML document that can embed <script>, so if opened
+  // directly via the upload serve proxy (same app origin) it executes as
+  // stored XSS. Raster images cannot do this.
+  if (mimeType === "image/svg+xml") return false
   if (isImage(mimeType)) return true
   return mimeType in MIME_TO_EXTENSIONS_MAP
 }

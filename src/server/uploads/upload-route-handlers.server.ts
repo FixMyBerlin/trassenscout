@@ -1,6 +1,9 @@
 import { handleRequest, RejectUpload, route, type Router } from "@better-upload/server"
 import { z } from "zod"
-import { isSupportedMimeType } from "@/src/components/core/uploads/getFileType"
+import {
+  isSupportedMimeType,
+  isSupportedUploadFilename,
+} from "@/src/components/core/uploads/getFileType"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { editorRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
@@ -16,11 +19,17 @@ const SurveyUploadParamsSchema = z.object({
   surveySessionId: z.coerce.number().int().positive(),
 })
 
-function assertSupportedUploadMimeTypes(files: { type: string }[]) {
+function assertSupportedUploadMimeTypes(files: { name: string; type: string }[]) {
   for (const file of files) {
     if (!isSupportedMimeType(file.type)) {
       throw new RejectUpload(
         `Dateityp nicht erlaubt: ${file.type || "unbekannt"}. Erlaubt sind Bilder, PDF und Office-Dokumente.`,
+      )
+    }
+
+    if (!isSupportedUploadFilename(file.name)) {
+      throw new RejectUpload(
+        "Dateiendung nicht erlaubt. Erlaubt sind Bilder, PDF und Office-Dokumente.",
       )
     }
   }
@@ -153,6 +162,9 @@ export async function handleSupportDocumentUploadRoute(request: Request) {
     const router = createUploadRouter({
       keyPrefix: "support",
       userId: Number(session.userId),
+      onBeforeUpload: async (files) => {
+        assertSupportedUploadMimeTypes(files)
+      },
     })
 
     return handleRequest(request, router)
