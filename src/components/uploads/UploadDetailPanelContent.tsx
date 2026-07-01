@@ -1,6 +1,5 @@
 import type { MouseEventHandler } from "react"
 import { twJoin } from "tailwind-merge"
-import { primaryButtonLinkClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { ButtonWrapper } from "@/src/components/core/components/links/ButtonWrapper"
 import { Link } from "@/src/components/core/components/links/Link"
 import { Markdown } from "@/src/components/core/components/Markdown/Markdown"
@@ -69,19 +68,15 @@ export const UploadDetailPanelContent = ({
             <div className="flex flex-wrap gap-2">
               {isUploadPdf && (
                 <Link
+                  button
                   to="/$projectSlug/uploads/$uploadId/view"
                   params={{ projectSlug, uploadId: String(upload.id) }}
-                  className={primaryButtonLinkClassName}
                 >
                   In Vollansicht öffnen
                 </Link>
               )}
-              <Link
-                blank
-                href={uploadUrl(upload, projectSlug)}
-                className={primaryButtonLinkClassName}
-              >
-                Datei {isUploadPdf && "m Browser "}öffnen
+              <Link blank button href={uploadUrl(upload, projectSlug)}>
+                Datei {isUploadPdf && "im Browser "}öffnen
               </Link>
             </div>
           )}
