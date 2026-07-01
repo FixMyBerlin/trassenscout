@@ -1,8 +1,9 @@
 import { DocumentTextIcon } from "@heroicons/react/20/solid"
-import { useMutation } from "@tanstack/react-query"
-import { useState } from "react"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { AdminTableFeatureSwitch } from "@/src/components/admin/AdminTableActions"
 import { updateProjectShowLogEntriesFn } from "@/src/server/projects/projects.functions"
+import { adminProjectsWithCountsQueryOptions } from "@/src/server/projects/projectsQueryOptions"
+import { updateAdminProjectInCache } from "./adminProjectsQueryCache"
 
 type Props = {
   slug: string
@@ -10,12 +11,19 @@ type Props = {
 }
 
 export const AdminEnableProjectShowLogEntries = ({ slug, showLogEntries }: Props) => {
-  const [isShowLogEntries, setIsShowLogEntries] = useState(showLogEntries)
+  const queryClient = useQueryClient()
   const updateProjectMutation = useMutation({ mutationFn: updateProjectShowLogEntriesFn })
 
   const handleClick = async () => {
-    const newState = !isShowLogEntries
-    setIsShowLogEntries(newState)
+    const newState = !showLogEntries
+    await queryClient.cancelQueries({
+      queryKey: adminProjectsWithCountsQueryOptions().queryKey,
+    })
+    updateAdminProjectInCache(queryClient, slug, (project) => ({
+      ...project,
+      showLogEntries: newState,
+    }))
+
     try {
       await updateProjectMutation.mutateAsync({
         data: {
@@ -23,19 +31,25 @@ export const AdminEnableProjectShowLogEntries = ({ slug, showLogEntries }: Props
           projectSlug: slug,
         },
       })
+      await queryClient.invalidateQueries({
+        queryKey: adminProjectsWithCountsQueryOptions().queryKey,
+      })
     } catch (error: unknown) {
       console.error("Error updating project showLogEntries: ", error)
-      setIsShowLogEntries(!newState)
+      updateAdminProjectInCache(queryClient, slug, (project) => ({
+        ...project,
+        showLogEntries,
+      }))
     }
   }
 
   return (
     <AdminTableFeatureSwitch
-      enabled={isShowLogEntries}
+      enabled={showLogEntries}
       onToggle={() => void handleClick()}
       disabled={updateProjectMutation.isPending}
       label={
-        isShowLogEntries
+        showLogEntries
           ? "Log-Einträge für Editoren ausschalten"
           : "Log-Einträge für Editoren einschalten"
       }

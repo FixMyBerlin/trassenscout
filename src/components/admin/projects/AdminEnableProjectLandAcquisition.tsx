@@ -1,8 +1,9 @@
 import { MapIcon } from "@heroicons/react/20/solid"
-import { useMutation } from "@tanstack/react-query"
-import { useState } from "react"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { AdminTableFeatureSwitch } from "@/src/components/admin/AdminTableActions"
 import { updateProjectLandAcquisitionModuleEnabledFn } from "@/src/server/projects/projects.functions"
+import { adminProjectsWithCountsQueryOptions } from "@/src/server/projects/projectsQueryOptions"
+import { updateAdminProjectInCache } from "./adminProjectsQueryCache"
 
 type Props = {
   slug: string
@@ -13,16 +14,21 @@ export const AdminEnableProjectLandAcquisition = ({
   slug,
   landAcquisitionModuleEnabled,
 }: Props) => {
-  const [isLandAcquisitionModuleEnabled, setIsLandAcquisitionModuleEnabled] = useState(
-    landAcquisitionModuleEnabled,
-  )
+  const queryClient = useQueryClient()
   const updateProjectMutation = useMutation({
     mutationFn: updateProjectLandAcquisitionModuleEnabledFn,
   })
 
   const handleClick = async () => {
-    const newState = !isLandAcquisitionModuleEnabled
-    setIsLandAcquisitionModuleEnabled(newState)
+    const newState = !landAcquisitionModuleEnabled
+    await queryClient.cancelQueries({
+      queryKey: adminProjectsWithCountsQueryOptions().queryKey,
+    })
+    updateAdminProjectInCache(queryClient, slug, (project) => ({
+      ...project,
+      landAcquisitionModuleEnabled: newState,
+    }))
+
     try {
       await updateProjectMutation.mutateAsync({
         data: {
@@ -30,19 +36,25 @@ export const AdminEnableProjectLandAcquisition = ({
           projectSlug: slug,
         },
       })
+      await queryClient.invalidateQueries({
+        queryKey: adminProjectsWithCountsQueryOptions().queryKey,
+      })
     } catch (error: unknown) {
       console.error("Error updating project landAcquisitionModuleEnabled: ", error)
-      setIsLandAcquisitionModuleEnabled(!newState)
+      updateAdminProjectInCache(queryClient, slug, (project) => ({
+        ...project,
+        landAcquisitionModuleEnabled,
+      }))
     }
   }
 
   return (
     <AdminTableFeatureSwitch
-      enabled={isLandAcquisitionModuleEnabled}
+      enabled={landAcquisitionModuleEnabled}
       onToggle={() => void handleClick()}
       disabled={updateProjectMutation.isPending}
       label={
-        isLandAcquisitionModuleEnabled
+        landAcquisitionModuleEnabled
           ? "Grunderwerb-Modul ausschalten"
           : "Grunderwerb-Modul einschalten"
       }
