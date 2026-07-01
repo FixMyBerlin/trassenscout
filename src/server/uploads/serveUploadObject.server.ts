@@ -5,6 +5,7 @@ import { viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
 import { getProjectIdBySlug } from "@/src/server/projects/queries/getProjectIdBySlug.server"
 import { S3_BUCKET } from "@/src/shared/uploads/config"
+import { getUploadServeHeaders } from "@/src/shared/uploads/serveHeaders"
 import { getS3KeyFromUrl } from "@/src/shared/uploads/url"
 import { getConfiguredS3Client } from "./_utils/s3Client.server"
 
@@ -55,6 +56,7 @@ export async function serveProjectUploadObject(
       "Content-Length": String(object.contentLength),
       ETag: object.eTag,
       "Cache-Control": "no-cache",
+      ...getUploadServeHeaders(object.contentType),
     },
   })
 }
