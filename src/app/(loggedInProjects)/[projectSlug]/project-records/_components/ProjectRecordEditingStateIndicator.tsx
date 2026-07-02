@@ -7,14 +7,9 @@ import clsx from "clsx"
 function PendingEditingIcon({ className }: { className?: string }) {
   return (
     <span
-      className={clsx(
-        "ml-0.5 inline-flex size-4 shrink-0 items-center justify-center rounded-full border border-current",
-        className,
-      )}
+      className={clsx("inline-flex size-2.5 shrink-0 rounded-full bg-current", className)}
       aria-hidden
-    >
-      <span className="size-1 rounded-full bg-current" />
-    </span>
+    />
   )
 }
 
