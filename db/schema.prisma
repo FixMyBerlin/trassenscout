@@ -65,7 +65,6 @@ model User {
   supportDocumentsCreated  SupportDocument[]       @relation("SupportDocumentCreatedBy")
   projectRecordComments    ProjectRecordComment[]
   emailTemplatesUpdated    EmailTemplate[]         @relation("EmailTemplateUpdatedBy")
-  evaluationsPagesUpdated EvaluationsPage[]       @relation("EvaluationsPageUpdatedBy")
 }
 
 enum UserRoleEnum {
@@ -152,7 +151,6 @@ model Project {
   aiEnabled                        Boolean                           @default(false)
   landAcquisitionModuleEnabled     Boolean                           @default(false)
   showLogEntries                   Boolean                           @default(false) // When true, non-admins see this project's log entries ("Änderungen in …") on the "Meine Projekte" dashboard. Admins always see all projects.
-  evaluationsEnabled               Boolean                           @default(false)
   alkisStateKey                    StateKeyEnum                      @default(DISABLED)
   //
   surveyResponseTopics             SurveyResponseTopic[]
@@ -727,15 +725,6 @@ model EmailTemplate {
   //
   updatedBy     User?    @relation("EmailTemplateUpdatedBy", fields: [updatedById], references: [id])
   updatedById   Int?
-}
-
-model EvaluationsPage {
-  id          Int      @id @default(1)
-  title       String
-  markdown    String
-  updatedAt   DateTime @updatedAt
-  updatedBy   User?    @relation("EvaluationsPageUpdatedBy", fields: [updatedById], references: [id])
-  updatedById Int?
 }
 
 model SystemLogEntry {

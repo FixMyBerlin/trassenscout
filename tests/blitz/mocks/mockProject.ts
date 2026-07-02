@@ -15,6 +15,5 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
   aiEnabled: false,
   landAcquisitionModuleEnabled: false,
   showLogEntries: false,
-  evaluationsEnabled: false,
   alkisStateKey: StateKeyEnum.DISABLED,
 }

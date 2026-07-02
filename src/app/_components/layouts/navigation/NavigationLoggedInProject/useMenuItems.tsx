@@ -1,7 +1,3 @@
-"use client"
-
-import getProject from "@/src/server/projects/queries/getProject"
-import { useQuery } from "@blitzjs/rpc"
 import { useTryProjectSlug } from "../../../../../core/routes/useProjectSlug"
 
 function countSubstringOccurrences(str: string, substring: string) {
@@ -28,7 +24,6 @@ type ReturnType = {
 
 export const useMenuItems = () => {
   const projectSlug = useTryProjectSlug()
-  const [project] = useQuery(getProject, { projectSlug: projectSlug ?? "" }, { enabled: !!projectSlug })
   if (!projectSlug) return []
 
   const items: ReturnType[] = [
@@ -61,15 +56,6 @@ export const useMenuItems = () => {
       href: `/${projectSlug}/surveys`,
       alsoHighlightPaths: [`/${projectSlug}/surveys`],
     },
-    ...(project?.evaluationsEnabled
-      ? [
-          {
-            name: "Auswertungen",
-            href: `/${projectSlug}/evaluations`,
-            alsoHighlightPaths: [`/${projectSlug}/evaluations/`],
-          },
-        ]
-      : []),
   ]
   return items
 }
