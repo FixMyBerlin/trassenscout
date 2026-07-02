@@ -82,14 +82,14 @@ const UploadSubsectionFields = ({
     <div className="flex flex-col gap-4">
       <LabeledCombobox
         scope="subsubsections"
-        label="Verknüpfung mit Maßnahmen"
+        label="Zuordnung zu Maßnahmen"
         optional
         items={subsubsectionCheckboxItems}
       />
       {landAcquisitionModuleEnabled && (
         <LabeledCombobox
           scope="acquisitionAreas"
-          label="Verknüpfungen mit Verhandlungsflächen"
+          label="Zuordnung zu Verhandlungsflächen"
           optional
           items={acquisitionAreaCheckboxItems}
         />
