@@ -87,7 +87,7 @@ const UploadSubsectionFields = ({
       <form.AppField name="subsubsections">
         {(field) => (
           <field.Combobox
-            label="Zuordnung zu Maßnahmen"
+            label="Verknüpfung mit Maßnahmen"
             optional
             items={subsubsectionCheckboxItems}
           />
@@ -97,7 +97,7 @@ const UploadSubsectionFields = ({
         <form.AppField name="acquisitionAreas">
           {(field) => (
             <field.Combobox
-              label="Zuordnung zu Verhandlungsflächen"
+              label="Verknüpfungen mit Verhandlungsflächen"
               optional
               items={acquisitionAreaCheckboxItems}
             />
