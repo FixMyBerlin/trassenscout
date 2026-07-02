@@ -7,12 +7,10 @@ import { ReprocessProjectRecordButton } from "@/src/app/(loggedInProjects)/[proj
 import { ReprocessProjectRecordEditForm } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ReprocessProjectRecordEditForm"
 import { UploadDropzone } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzone"
 import { UploadDropzoneContainer } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzoneContainer"
-import { UploadTable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadTable"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
-import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
 import { useQuery } from "@blitzjs/rpc"
 import { useEffect, useState } from "react"
 
@@ -37,9 +35,7 @@ const ProjectRecordQuickUpload = ({
   return (
     <IfUserCanEdit>
       <div className="mt-4">
-        <label className="sr-only mb-2 block text-sm font-medium text-gray-700">
-          Dokumente ergänzen
-        </label>
+        <label className="mb-2 block text-sm font-medium text-gray-700">Dokumente ergänzen</label>
         <UploadDropzoneContainer className="h-36 rounded-md p-0">
           <UploadDropzone
             fillContainer
@@ -67,30 +63,6 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord }: Props) => {
     // Keep this non-blocking so upload UX stays smooth in modal/detail routes.
     void refetch()
   }
-
-  const uploadIds = projectRecord.uploads.map((upload) => upload.id)
-  const [{ uploads: projectRecordUploads = [] } = { uploads: [] }] = useQuery(
-    getUploadsWithSubsections,
-    { projectSlug, where: { id: { in: uploadIds } } },
-    { enabled: uploadIds.length > 0 },
-  )
-
-  const projectRecordUploadsSection = (
-    <>
-      <UploadTable
-        withAction={false}
-        withRelations={false}
-        uploads={projectRecordUploads}
-        onDelete={async () => {
-          refreshProjectRecord()
-        }}
-      />
-      <ProjectRecordQuickUpload
-        projectRecordId={projectRecord.id}
-        onUploaded={refreshProjectRecord}
-      />
-    </>
-  )
 
   const [aiSuggestions, setAiSuggestions] = useState<ReprocessedProjectRecord | null>(null)
 
@@ -125,7 +97,10 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord }: Props) => {
             <div>
               <h2 className="mb-4 text-lg font-medium">Aktueller Protokolleintrag</h2>
               <ProjectRecordSummary {...projectRecordSummaryProps} />
-              {projectRecordUploadsSection}
+              <ProjectRecordQuickUpload
+                projectRecordId={projectRecord.id}
+                onUploaded={refreshProjectRecord}
+              />
             </div>
 
             <div>
@@ -152,7 +127,10 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord }: Props) => {
           </SuperAdminBox>
 
           <ProjectRecordSummary {...projectRecordSummaryProps} />
-          {projectRecordUploadsSection}
+          <ProjectRecordQuickUpload
+            projectRecordId={projectRecord.id}
+            onUploaded={refreshProjectRecord}
+          />
           <CreateEditReviewHistory projectRecord={projectRecord} />
         </>
       )}

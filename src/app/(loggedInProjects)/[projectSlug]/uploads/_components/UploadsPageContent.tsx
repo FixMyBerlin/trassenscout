@@ -33,14 +33,15 @@ export const UploadsPageContent = () => {
 
   return (
     <>
-      <div className="mt-8 space-y-8">
-        <UploadTable withAction withRelations={true} uploads={uploads} />
+      <div className="mt-8">
         <UploadDropzone
           onUploadComplete={async (uploadIds) => {
             await refetchUploads()
           }}
         />
       </div>
+
+      <UploadTable withAction withRelations={true} uploads={uploads} />
 
       <SuperAdminBox>
         <strong>Hinweis:</strong> Uploads, die ausschließlich mit Eingaben verknüpft sind, werden in
