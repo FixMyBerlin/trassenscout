@@ -107,7 +107,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
 
   return (
     <SubsubsectionPanel
-      title=""
+      title="Allgemeines"
       action={
         <IfUserCanEdit>
           <Link
