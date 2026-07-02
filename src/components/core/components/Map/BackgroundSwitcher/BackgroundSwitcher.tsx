@@ -16,7 +16,7 @@ export type ControlPosition = "top-left" | "top-right" | "bottom-left" | "bottom
 const labels: { [index: string]: string } = {
   vector: "Kartenlayer einblenden",
   satellite: "Satellitenlayer einblenden",
-  osm_carto: "OSM-Karte einblenden",
+  osm_carto: "OSM-Layer einblenden",
 }
 
 const positionClasses: Record<ControlPosition, string> = {
