@@ -3,9 +3,7 @@
 import { DeleteUploadButton } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/DeleteUploadButton"
 import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
 import { UploadVerknuepfungen } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadVerknuepfungen"
-import { isPdf } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileType"
 import { uploadUrl } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/uploadUrl"
-import { getFilenameFromS3 } from "@/src/server/uploads/_utils/url"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { getFullname } from "@/src/app/_components/users/utils/getFullname"
 import { Link } from "@/src/core/components/links"
@@ -14,7 +12,7 @@ import { useModalNavigationGuard } from "@/src/core/components/Modal/useModalNav
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import { Tooltip } from "@/src/core/components/Tooltip/Tooltip"
-import { uploadEditRoute, uploadViewRoute } from "@/src/core/routes/uploadRoutes"
+import { uploadEditRoute } from "@/src/core/routes/uploadRoutes"
 import { useCurrentReturnTo } from "@/src/core/routes/useCurrentPathWithSearch"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { Prettify } from "@/src/core/types"
@@ -52,7 +50,7 @@ export const UploadTable = ({ uploads, withAction = true, withRelations, onDelet
               scope="col"
               className="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-6"
             >
-              Dateiname
+              Titel
             </th>
             <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
               <span className="sr-only">Standort</span>
@@ -115,11 +113,6 @@ const UploadTableRow = ({
         await onDelete(upload.id)
       }
     : undefined
-  const filename = getFilenameFromS3(upload.externalUrl)
-  const isUploadPdf = isPdf(upload)
-  const filenameLinkUrl = isUploadPdf
-    ? uploadViewRoute(projectSlug, upload.id)
-    : (upload.collaborationUrl ?? uploadUrl(upload, projectSlug))
   return (
     <tr>
       <td className="py-2 pr-3 pl-4 text-sm sm:pl-6">
@@ -134,9 +127,12 @@ const UploadTableRow = ({
               onDeleted={handleDelete}
             />
           </div>
-          <Link blank={!isUploadPdf} href={filenameLinkUrl} className="min-w-0 break-all text-sm">
-            {filename || "-"}
-          </Link>
+          <span
+            className="max-w-xs min-w-0 truncate text-sm text-gray-900"
+            title={upload.title || undefined}
+          >
+            {upload.title || "-"}
+          </span>
         </div>
       </td>
       <td className="px-1.5 py-2 text-sm">
