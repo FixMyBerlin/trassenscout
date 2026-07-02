@@ -4,6 +4,7 @@ import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import db from "@/src/server/db.server"
 import { getConfiguredS3Client } from "@/src/server/uploads/_utils/s3Client.server"
 import { S3_BUCKET } from "@/src/shared/uploads/config"
+import { getUploadServeHeaders } from "@/src/shared/uploads/serveHeaders"
 import { getS3KeyFromUrl } from "@/src/shared/uploads/url"
 
 const ParamsSchema = z.object({
@@ -51,6 +52,7 @@ export async function serveSupportDocumentObject(headers: Headers, params: { doc
       "Content-Length": String(object.contentLength),
       ETag: object.eTag,
       "Cache-Control": "no-cache",
+      ...getUploadServeHeaders(object.contentType),
     },
   })
 }

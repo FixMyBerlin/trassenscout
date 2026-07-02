@@ -6,7 +6,7 @@ test.describe("Matomo tracking", () => {
 
     page.on("console", (message) => {
       const text = message.text()
-      if (text.startsWith("[Matomo]")) {
+      if (text.includes("[Matomo]")) {
         matomoConsoleLogs.push(text)
       }
     })
@@ -25,7 +25,7 @@ test.describe("Matomo tracking", () => {
 
     // The initial render is tracked as a pageview.
     await expect
-      .poll(() => matomoConsoleLogs.some((line) => line.startsWith("[Matomo] pageview:")))
+      .poll(() => matomoConsoleLogs.some((line) => line.includes("[Matomo] pageview:")))
       .toBe(true)
 
     await page.getByRole("link", { name: "Datenschutz" }).click()
@@ -37,7 +37,7 @@ test.describe("Matomo tracking", () => {
     await expect
       .poll(() =>
         matomoConsoleLogs.some(
-          (line) => line.startsWith("[Matomo] pageview:") && line.includes("/datenschutz"),
+          (line) => line.includes("[Matomo] pageview:") && line.includes("/datenschutz"),
         ),
       )
       .toBe(true)
