@@ -3,7 +3,7 @@ import { SurveyCheckbox } from "@/src/components/beteiligung/form/Checkbox"
 import { SurveyCheckboxGroup } from "@/src/components/beteiligung/form/CheckboxGroup"
 import { SurveyGeoCategoryMapWithLegend } from "@/src/components/beteiligung/form/map/GeoCategoryMapWithLegend"
 import { SurveySimpleMapWithLegend } from "@/src/components/beteiligung/form/map/SimpleMapWithLegend"
-import { SwitchableMapWithLegend } from "@/src/components/beteiligung/form/map/SwitchableMapWithLegend"
+import { SwitchableMap } from "@/src/components/beteiligung/form/map/SwitchableMap"
 import { SurveyNumberfield } from "@/src/components/beteiligung/form/Numberfield"
 import { SurveyPageTitle } from "@/src/components/beteiligung/form/PageTitle"
 import { SurveyRadiobuttonGroup } from "@/src/components/beteiligung/form/RadiobuttonGroup"
@@ -32,7 +32,7 @@ export const { useAppForm } = createFormHook({
     SurveySelect,
     SurveySimpleMapWithLegend,
     SurveyGeoCategoryMapWithLegend,
-    SwitchableMapWithLegend,
+    SwitchableMap,
     SurveyMarkdown,
     SurveyPageTitle,
     SurveyUploadField,

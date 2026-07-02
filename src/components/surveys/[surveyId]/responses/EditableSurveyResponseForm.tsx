@@ -65,14 +65,18 @@ export function EditableSurveyResponseForm({
       })
     : []
 
+  // Base the patch payload on the local (already-edited) state, not on the `response`
+  // prop. The prop only refreshes after refetchResponsesAndTopics() settles, so reading
+  // from it would resend stale values and clobber a prior edit that has not been
+  // refetched yet. Each handler still overrides its own field explicitly.
+  // We specify what we want to store explicitly so that `data` and such is excluded.
   const surveyResponseUpdateObject = {
     projectSlug,
     id: response.id,
     source: response.source,
-    // We specify what we want to store explicity so that `data` and such is exclued
-    status: response.status,
-    note: response.note,
-    operatorId: response.operatorId,
+    status: responseStatus,
+    note: responseNote,
+    operatorId: responseOperator?.id ? responseOperator.id : null,
   }
 
   const handleStatusOperatorTopicsInputChange = async (
@@ -138,10 +142,6 @@ export function EditableSurveyResponseForm({
               ...surveyResponseUpdateObject,
               surveyResponseTopics: updatedTopics.map((item) => Number(item)),
             },
-          })
-          console.log("update Object patchSurveyResponseMutation", {
-            ...surveyResponseUpdateObject,
-            surveyResponseTopics: updatedTopics.map((item) => Number(item)),
           })
         } catch (error: any) {
           console.error(error)

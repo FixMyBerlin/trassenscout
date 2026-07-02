@@ -27,7 +27,7 @@ export const SurveySimpleMapWithLegend = ({ mapProps, legendProps, label, descri
             {description}
           </p>
         )}
-        <SurveySimpleMap {...mapProps} />
+        <SurveySimpleMap description={description} {...mapProps} />
         <SurveyMapLegend {...legendProps} />
         <FieldError field={field} />
       </div>

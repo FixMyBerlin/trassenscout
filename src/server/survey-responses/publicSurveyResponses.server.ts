@@ -209,13 +209,14 @@ export async function sendSurveyPart2Email(
     where: { surveySessionId, surveyPart: 1 },
     select: { data: true },
   })
-  if (!surveyPart1) {
-    return publicSurveyEmailFailure
-  }
 
-  const parsedSurveyPart1 = JSON.parse(surveyPart1.data) as Record<string, unknown>
-  const userEmail =
-    typeof parsedSurveyPart1.email === "string" ? parsedSurveyPart1.email.trim() : ""
+  // Surveys collect the email either in part 1 or in the part 2 form data (e.g. OHV),
+  // so fall back to the submitted part 2 data when part 1 has no email.
+  const parsedSurveyPart1 = surveyPart1
+    ? (JSON.parse(surveyPart1.data) as Record<string, unknown>)
+    : {}
+  const emailCandidate = parsedSurveyPart1.email ?? (data as Record<string, unknown>).email
+  const userEmail = typeof emailCandidate === "string" ? emailCandidate.trim() : ""
   if (!userEmail) {
     return publicSurveyEmailFailure
   }

@@ -215,7 +215,10 @@ export const SurveyGeoCategoryMap = ({
   })
 
   return (
-    <div className="relative mt-4 h-[500px]" aria-describedby={field.name + " Hint"}>
+    <div
+      className="relative mt-4 h-[500px]"
+      aria-describedby={description ? `${field.name}-hint` : undefined}
+    >
       <Map
         id="mainMap"
         scrollZoom={false}

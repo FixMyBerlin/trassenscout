@@ -96,6 +96,7 @@ export async function getSurveyResponses(
     },
     orderBy: { id: "desc" },
     where: {
+      state: SurveyResponseStateEnum.SUBMITTED,
       surveySession: {
         survey: {
           project: { slug: input.projectSlug },
