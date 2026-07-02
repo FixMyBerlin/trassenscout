@@ -114,7 +114,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
   )
 
   return (
-    <SubsubsectionPanel title="Allgemeines" className={className} header={header}>
+    <SubsubsectionPanel title="" className={className} header={header}>
       {hasGeneralInfoRows ? (
         <div className="overflow-x-auto rounded-md border border-gray-200">
           <div className="inline-block min-w-full align-middle">
