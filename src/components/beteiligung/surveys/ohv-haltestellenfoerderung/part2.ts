@@ -105,13 +105,13 @@ Die Maßnahmenmeldung wird nicht zwischengespeichert, d.h. bei Verlassen der Sei
 
 Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://trassenscout.de/datenschutz) zu. Die Daten werden gemäß DSGVO verarbeitet und nur für die Durchführung dieses digitalen Förderverfahrens gespeichert.`,
     buttons: [
-      { action: "next", label: "Maßnahme anmelden", position: "right", color: "primaryColor" },
+      { action: "next", label: "Meldung erstellen", position: "right", color: "primaryColor" },
     ],
   },
   buttonLabels: {
     next: "Weiter",
     back: "Zurück",
-    submit: "Maßnahme absenden",
+    submit: "Meldung abschicken",
   },
   pages: [
     {
