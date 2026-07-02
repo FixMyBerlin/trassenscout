@@ -5,7 +5,6 @@ import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAd
 import { ProjectRecordCommentsSection } from "@/src/components/project-records/ProjectRecordCommentsSection"
 import { CreateEditReviewHistory } from "@/src/components/project-records/ProjectRecordCreateEditReviewHistory"
 import { ProjectRecordSummary } from "@/src/components/project-records/ProjectRecordSummary"
-import { ReprocessProjectRecordButton } from "@/src/components/project-records/ReprocessProjectRecordButton"
 import { ReprocessProjectRecordEditForm } from "@/src/components/project-records/ReprocessProjectRecordEditForm"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { UploadDropzone } from "@/src/components/uploads/UploadDropzone"
@@ -97,10 +96,6 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord }: Props) => {
 
   const [aiSuggestions, setAiSuggestions] = useState<ReprocessedProjectRecord | null>(null)
 
-  const handleAiSuggestions = (suggestions: ReprocessedProjectRecord) => {
-    setAiSuggestions(suggestions)
-  }
-
   const handleCancelAiSuggestions = () => {
     setAiSuggestions(null)
   }
@@ -142,15 +137,6 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord }: Props) => {
         </SuperAdminBox>
       ) : (
         <>
-          <SuperAdminBox>
-            <IfUserCanEdit>
-              <ReprocessProjectRecordButton
-                projectRecordId={projectRecord.id}
-                onAiSuggestions={handleAiSuggestions}
-              />
-            </IfUserCanEdit>
-          </SuperAdminBox>
-
           <ProjectRecordSummary {...projectRecordSummaryProps} />
           {projectRecordUploadsSection}
           <CreateEditReviewHistory projectRecord={projectRecord} />
