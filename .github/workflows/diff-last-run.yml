@@ -36,18 +36,20 @@ jobs:
       CHANGES: ${{ steps.final_changes.outputs.CHANGES }}
       env_fingerprint_cache_key: ${{ steps.env_hash.outputs.cache_key }}
     steps:
+      - name: Checkout current version
+        uses: actions/checkout@v6
+
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
 
       - name: Get last run commit SHA
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           bun .github/scripts/get-last-success-sha.ts \
             --repository "${{ github.repository }}" \
             --branch "${{ github.head_ref || github.ref_name }}" \
             --workflow-file "${{ inputs.DEPLOY_WORKFLOW_FILE }}"
-
-      - name: Checkout current version
-        uses: actions/checkout@v6
 
       - name: Checkout last build
         if: ${{ env.LAST_RUN_SHA != '' }}
