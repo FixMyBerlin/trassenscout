@@ -12,6 +12,7 @@ import {
   CreateProjectSchema,
   GetProjectBySlugSchema,
   UpdateProjectAiEnabledSchema,
+  UpdateProjectEvaluationsEnabledSchema,
   UpdateProjectExportApiSchema,
   UpdateProjectLandAcquisitionModuleEnabledSchema,
   UpdateProjectShowLogEntriesSchema,
@@ -22,6 +23,7 @@ const projectSelect = {
   aiEnabled: true,
   alkisStateKey: true,
   description: true,
+  evaluationsEnabled: true,
   exportEnabled: true,
   landAcquisitionModuleEnabled: true,
   logoSrc: true,
@@ -183,6 +185,19 @@ export async function updateProjectLandAcquisitionModuleEnabled(
   return db.project.update({
     where: { slug: projectSlug },
     data: { landAcquisitionModuleEnabled },
+  })
+}
+
+export async function updateProjectEvaluationsEnabled(
+  headers: Headers,
+  input: z.infer<typeof UpdateProjectEvaluationsEnabledSchema>,
+) {
+  await endpointAuth.admin(headers)
+  const { projectSlug, evaluationsEnabled } = input
+
+  return db.project.update({
+    where: { slug: projectSlug },
+    data: { evaluationsEnabled },
   })
 }
 

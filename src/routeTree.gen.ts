@@ -50,6 +50,7 @@ import { Route as LoggedInGeneralSupportIndexRouteImport } from './routes/_logge
 import { Route as LoggedInGeneralDashboardIndexRouteImport } from './routes/_loggedInGeneral/dashboard/index'
 import { Route as LoggedInGeneralAccessDeniedIndexRouteImport } from './routes/_loggedInGeneral/access-denied/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth.$'
+import { Route as AdminEvaluationsEditRouteImport } from './routes/admin/evaluations/edit'
 import { Route as AdminProjectsProjectSlugRouteRouteImport } from './routes/admin/projects/$projectSlug/route'
 import { Route as LoggedInProjectsProjectSlugProjectRecordsRouteRouteImport } from './routes/_loggedInProjects/$projectSlug/project-records/route'
 import { Route as ApiSurveyGeojsonSurveySlugIndexRouteImport } from './routes/api/survey-geojson/$surveySlug/index'
@@ -77,6 +78,7 @@ import { Route as LoggedInProjectsProjectSlugProjectRecordsIndexRouteImport } fr
 import { Route as LoggedInProjectsProjectSlugOperatorsIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/operators/index'
 import { Route as LoggedInProjectsProjectSlugNetworkHierarchyIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/network-hierarchy/index'
 import { Route as LoggedInProjectsProjectSlugInvitesIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/invites/index'
+import { Route as LoggedInProjectsProjectSlugEvaluationsIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/evaluations/index'
 import { Route as LoggedInProjectsProjectSlugEditIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/edit/index'
 import { Route as LoggedInProjectsProjectSlugContactsIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/contacts/index'
 import { Route as LoggedInProjectsProjectSlugAcquisitionAreaStatusIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/acquisition-area-status/index'
@@ -368,6 +370,11 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminEvaluationsEditRoute = AdminEvaluationsEditRouteImport.update({
+  id: '/evaluations/edit',
+  path: '/evaluations/edit',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminProjectsProjectSlugRouteRoute =
   AdminProjectsProjectSlugRouteRouteImport.update({
     id: '/projects/$projectSlug',
@@ -526,6 +533,12 @@ const LoggedInProjectsProjectSlugInvitesIndexRoute =
   LoggedInProjectsProjectSlugInvitesIndexRouteImport.update({
     id: '/invites/',
     path: '/invites/',
+    getParentRoute: () => LoggedInProjectsProjectSlugRoute,
+  } as any)
+const LoggedInProjectsProjectSlugEvaluationsIndexRoute =
+  LoggedInProjectsProjectSlugEvaluationsIndexRouteImport.update({
+    id: '/evaluations/',
+    path: '/evaluations/',
     getParentRoute: () => LoggedInProjectsProjectSlugRoute,
   } as any)
 const LoggedInProjectsProjectSlugEditIndexRoute =
@@ -1044,6 +1057,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/$projectSlug/project-records': typeof LoggedInProjectsProjectSlugProjectRecordsRouteRouteWithChildren
   '/admin/projects/$projectSlug': typeof AdminProjectsProjectSlugRouteRouteWithChildren
+  '/admin/evaluations/edit': typeof AdminEvaluationsEditRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/access-denied/': typeof LoggedInGeneralAccessDeniedIndexRoute
   '/dashboard/': typeof LoggedInGeneralDashboardIndexRoute
@@ -1068,6 +1082,7 @@ export interface FileRoutesByFullPath {
   '/$projectSlug/acquisition-area-status/': typeof LoggedInProjectsProjectSlugAcquisitionAreaStatusIndexRoute
   '/$projectSlug/contacts/': typeof LoggedInProjectsProjectSlugContactsIndexRoute
   '/$projectSlug/edit/': typeof LoggedInProjectsProjectSlugEditIndexRoute
+  '/$projectSlug/evaluations/': typeof LoggedInProjectsProjectSlugEvaluationsIndexRoute
   '/$projectSlug/invites/': typeof LoggedInProjectsProjectSlugInvitesIndexRoute
   '/$projectSlug/network-hierarchy/': typeof LoggedInProjectsProjectSlugNetworkHierarchyIndexRoute
   '/$projectSlug/operators/': typeof LoggedInProjectsProjectSlugOperatorsIndexRoute
@@ -1179,6 +1194,7 @@ export interface FileRoutesByTo {
   '/auth/signup': typeof AuthSignupRoute
   '/admin': typeof AdminIndexRoute
   '/admin/projects/$projectSlug': typeof AdminProjectsProjectSlugRouteRouteWithChildren
+  '/admin/evaluations/edit': typeof AdminEvaluationsEditRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/access-denied': typeof LoggedInGeneralAccessDeniedIndexRoute
   '/dashboard': typeof LoggedInGeneralDashboardIndexRoute
@@ -1202,6 +1218,7 @@ export interface FileRoutesByTo {
   '/$projectSlug/acquisition-area-status': typeof LoggedInProjectsProjectSlugAcquisitionAreaStatusIndexRoute
   '/$projectSlug/contacts': typeof LoggedInProjectsProjectSlugContactsIndexRoute
   '/$projectSlug/edit': typeof LoggedInProjectsProjectSlugEditIndexRoute
+  '/$projectSlug/evaluations': typeof LoggedInProjectsProjectSlugEvaluationsIndexRoute
   '/$projectSlug/invites': typeof LoggedInProjectsProjectSlugInvitesIndexRoute
   '/$projectSlug/network-hierarchy': typeof LoggedInProjectsProjectSlugNetworkHierarchyIndexRoute
   '/$projectSlug/operators': typeof LoggedInProjectsProjectSlugOperatorsIndexRoute
@@ -1321,6 +1338,7 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/_loggedInProjects/$projectSlug/project-records': typeof LoggedInProjectsProjectSlugProjectRecordsRouteRouteWithChildren
   '/admin/projects/$projectSlug': typeof AdminProjectsProjectSlugRouteRouteWithChildren
+  '/admin/evaluations/edit': typeof AdminEvaluationsEditRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/_loggedInGeneral/access-denied/': typeof LoggedInGeneralAccessDeniedIndexRoute
   '/_loggedInGeneral/dashboard/': typeof LoggedInGeneralDashboardIndexRoute
@@ -1345,6 +1363,7 @@ export interface FileRoutesById {
   '/_loggedInProjects/$projectSlug/acquisition-area-status/': typeof LoggedInProjectsProjectSlugAcquisitionAreaStatusIndexRoute
   '/_loggedInProjects/$projectSlug/contacts/': typeof LoggedInProjectsProjectSlugContactsIndexRoute
   '/_loggedInProjects/$projectSlug/edit/': typeof LoggedInProjectsProjectSlugEditIndexRoute
+  '/_loggedInProjects/$projectSlug/evaluations/': typeof LoggedInProjectsProjectSlugEvaluationsIndexRoute
   '/_loggedInProjects/$projectSlug/invites/': typeof LoggedInProjectsProjectSlugInvitesIndexRoute
   '/_loggedInProjects/$projectSlug/network-hierarchy/': typeof LoggedInProjectsProjectSlugNetworkHierarchyIndexRoute
   '/_loggedInProjects/$projectSlug/operators/': typeof LoggedInProjectsProjectSlugOperatorsIndexRoute
@@ -1461,6 +1480,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/$projectSlug/project-records'
     | '/admin/projects/$projectSlug'
+    | '/admin/evaluations/edit'
     | '/api/auth/$'
     | '/access-denied/'
     | '/dashboard/'
@@ -1485,6 +1505,7 @@ export interface FileRouteTypes {
     | '/$projectSlug/acquisition-area-status/'
     | '/$projectSlug/contacts/'
     | '/$projectSlug/edit/'
+    | '/$projectSlug/evaluations/'
     | '/$projectSlug/invites/'
     | '/$projectSlug/network-hierarchy/'
     | '/$projectSlug/operators/'
@@ -1596,6 +1617,7 @@ export interface FileRouteTypes {
     | '/auth/signup'
     | '/admin'
     | '/admin/projects/$projectSlug'
+    | '/admin/evaluations/edit'
     | '/api/auth/$'
     | '/access-denied'
     | '/dashboard'
@@ -1619,6 +1641,7 @@ export interface FileRouteTypes {
     | '/$projectSlug/acquisition-area-status'
     | '/$projectSlug/contacts'
     | '/$projectSlug/edit'
+    | '/$projectSlug/evaluations'
     | '/$projectSlug/invites'
     | '/$projectSlug/network-hierarchy'
     | '/$projectSlug/operators'
@@ -1737,6 +1760,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/_loggedInProjects/$projectSlug/project-records'
     | '/admin/projects/$projectSlug'
+    | '/admin/evaluations/edit'
     | '/api/auth/$'
     | '/_loggedInGeneral/access-denied/'
     | '/_loggedInGeneral/dashboard/'
@@ -1761,6 +1785,7 @@ export interface FileRouteTypes {
     | '/_loggedInProjects/$projectSlug/acquisition-area-status/'
     | '/_loggedInProjects/$projectSlug/contacts/'
     | '/_loggedInProjects/$projectSlug/edit/'
+    | '/_loggedInProjects/$projectSlug/evaluations/'
     | '/_loggedInProjects/$projectSlug/invites/'
     | '/_loggedInProjects/$projectSlug/network-hierarchy/'
     | '/_loggedInProjects/$projectSlug/operators/'
@@ -2180,6 +2205,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/evaluations/edit': {
+      id: '/admin/evaluations/edit'
+      path: '/evaluations/edit'
+      fullPath: '/admin/evaluations/edit'
+      preLoaderRoute: typeof AdminEvaluationsEditRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/projects/$projectSlug': {
       id: '/admin/projects/$projectSlug'
       path: '/projects/$projectSlug'
@@ -2367,6 +2399,13 @@ declare module '@tanstack/react-router' {
       path: '/invites'
       fullPath: '/$projectSlug/invites/'
       preLoaderRoute: typeof LoggedInProjectsProjectSlugInvitesIndexRouteImport
+      parentRoute: typeof LoggedInProjectsProjectSlugRoute
+    }
+    '/_loggedInProjects/$projectSlug/evaluations/': {
+      id: '/_loggedInProjects/$projectSlug/evaluations/'
+      path: '/evaluations'
+      fullPath: '/$projectSlug/evaluations/'
+      preLoaderRoute: typeof LoggedInProjectsProjectSlugEvaluationsIndexRouteImport
       parentRoute: typeof LoggedInProjectsProjectSlugRoute
     }
     '/_loggedInProjects/$projectSlug/edit/': {
@@ -3022,6 +3061,7 @@ interface LoggedInProjectsProjectSlugRouteChildren {
   LoggedInProjectsProjectSlugAcquisitionAreaStatusIndexRoute: typeof LoggedInProjectsProjectSlugAcquisitionAreaStatusIndexRoute
   LoggedInProjectsProjectSlugContactsIndexRoute: typeof LoggedInProjectsProjectSlugContactsIndexRoute
   LoggedInProjectsProjectSlugEditIndexRoute: typeof LoggedInProjectsProjectSlugEditIndexRoute
+  LoggedInProjectsProjectSlugEvaluationsIndexRoute: typeof LoggedInProjectsProjectSlugEvaluationsIndexRoute
   LoggedInProjectsProjectSlugInvitesIndexRoute: typeof LoggedInProjectsProjectSlugInvitesIndexRoute
   LoggedInProjectsProjectSlugNetworkHierarchyIndexRoute: typeof LoggedInProjectsProjectSlugNetworkHierarchyIndexRoute
   LoggedInProjectsProjectSlugOperatorsIndexRoute: typeof LoggedInProjectsProjectSlugOperatorsIndexRoute
@@ -3086,6 +3126,8 @@ const LoggedInProjectsProjectSlugRouteChildren: LoggedInProjectsProjectSlugRoute
       LoggedInProjectsProjectSlugContactsIndexRoute,
     LoggedInProjectsProjectSlugEditIndexRoute:
       LoggedInProjectsProjectSlugEditIndexRoute,
+    LoggedInProjectsProjectSlugEvaluationsIndexRoute:
+      LoggedInProjectsProjectSlugEvaluationsIndexRoute,
     LoggedInProjectsProjectSlugInvitesIndexRoute:
       LoggedInProjectsProjectSlugInvitesIndexRoute,
     LoggedInProjectsProjectSlugNetworkHierarchyIndexRoute:
@@ -3241,6 +3283,7 @@ const AdminProjectsProjectSlugRouteRouteWithChildren =
 interface AdminRouteChildren {
   AdminIndexRoute: typeof AdminIndexRoute
   AdminProjectsProjectSlugRouteRoute: typeof AdminProjectsProjectSlugRouteRouteWithChildren
+  AdminEvaluationsEditRoute: typeof AdminEvaluationsEditRoute
   AdminEmailTemplatesIndexRoute: typeof AdminEmailTemplatesIndexRoute
   AdminLogEntriesIndexRoute: typeof AdminLogEntriesIndexRoute
   AdminMembershipsIndexRoute: typeof AdminMembershipsIndexRoute
@@ -3271,6 +3314,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminIndexRoute: AdminIndexRoute,
   AdminProjectsProjectSlugRouteRoute:
     AdminProjectsProjectSlugRouteRouteWithChildren,
+  AdminEvaluationsEditRoute: AdminEvaluationsEditRoute,
   AdminEmailTemplatesIndexRoute: AdminEmailTemplatesIndexRoute,
   AdminLogEntriesIndexRoute: AdminLogEntriesIndexRoute,
   AdminMembershipsIndexRoute: AdminMembershipsIndexRoute,

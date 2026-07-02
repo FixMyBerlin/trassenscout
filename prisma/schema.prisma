@@ -15,9 +15,9 @@ generator client {
 // --------------------------------------
 
 model User {
-  id             Int          @id @default(autoincrement())
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  id                     Int          @id @default(autoincrement())
+  createdAt              DateTime     @default(now())
+  updatedAt              DateTime     @updatedAt
   //
   email                  String       @unique
   emailVerified          Boolean      @default(false)
@@ -55,6 +55,7 @@ model User {
   supportDocumentsCreated  SupportDocument[]       @relation("SupportDocumentCreatedBy")
   projectRecordComments    ProjectRecordComment[]
   emailTemplatesUpdated    EmailTemplate[]         @relation("EmailTemplateUpdatedBy")
+  evaluationsPagesUpdated  EvaluationsPage[]       @relation("EvaluationsPageUpdatedBy")
 }
 
 enum UserRoleEnum {
@@ -192,6 +193,7 @@ model Project {
   aiEnabled                        Boolean                           @default(false)
   landAcquisitionModuleEnabled     Boolean                           @default(false)
   showLogEntries                   Boolean                           @default(false) // When true, non-admins see this project's log entries ("Änderungen in …") on the "Meine Projekte" dashboard. Admins always see all projects.
+  evaluationsEnabled               Boolean                           @default(false)
   alkisStateKey                    StateKeyEnum                      @default(DISABLED)
   //
   surveyResponseTopics             SurveyResponseTopic[]
@@ -421,7 +423,7 @@ model Subsubsection {
   //
   uploads                          Upload[]
   projectRecords                   ProjectRecord[]
-  projectRecordRelations           ProjectRecord[]                 @relation("ProjectRecordSubsubsections")
+  projectRecordRelations           ProjectRecord[]                   @relation("ProjectRecordSubsubsections")
   acquisitionAreas                 AcquisitionArea[]
   //
   SubsubsectionStatus              SubsubsectionStatus?              @relation(fields: [subsubsectionStatusId], references: [id])
@@ -482,7 +484,7 @@ model AcquisitionArea {
   acquisitionAreaStatusId Int?
   uploads                 Upload[]
   projectRecords          ProjectRecord[]
-  projectRecordRelations  ProjectRecord[] @relation("ProjectRecordAcquisitionAreas")
+  projectRecordRelations  ProjectRecord[]        @relation("ProjectRecordAcquisitionAreas")
 }
 
 enum GeometryTypeEnum {
@@ -768,6 +770,15 @@ model EmailTemplate {
   updatedById   Int?
 }
 
+model EvaluationsPage {
+  id          Int      @id @default(1)
+  title       String
+  markdown    String
+  updatedAt   DateTime @updatedAt
+  updatedBy   User?    @relation("EvaluationsPageUpdatedBy", fields: [updatedById], references: [id])
+  updatedById Int?
+}
+
 model SystemLogEntry {
   id        Int                @id @default(autoincrement())
   createdAt DateTime           @default(now())
@@ -932,26 +943,26 @@ enum ProjectRecordReviewState {
 }
 
 model ProjectRecordTopic {
-  id             Int             @id @default(autoincrement())
-  title          String
+  id                     Int                     @id @default(autoincrement())
+  title                  String
   //
-  project        Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId      Int
-  projectRecords ProjectRecord[]
+  project                Project                 @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId              Int
+  projectRecords         ProjectRecord[]
   projectRecordTemplates ProjectRecordTemplate[]
 
   @@unique([title, projectId])
 }
 
 model ProjectRecordTemplate {
-  id                Int                @id @default(autoincrement())
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @updatedAt
-  templateTitle     String
-  entryTitle        String
-  body              String?
-  purpose           String?
-  projects          Project[]
+  id                  Int                  @id @default(autoincrement())
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  templateTitle       String
+  entryTitle          String
+  body                String?
+  purpose             String?
+  projects            Project[]
   projectRecordTopics ProjectRecordTopic[]
 }
 

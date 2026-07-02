@@ -1,4 +1,6 @@
+import { useQuery } from "@tanstack/react-query"
 import { useTryRouteParam } from "@/src/components/core/routes/useTryRouteParam"
+import { projectBySlugQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 
 function countSubstringOccurrences(str: string, substring: string) {
   if (substring === "") return 0
@@ -23,6 +25,11 @@ type ReturnType = {
 
 export const useMenuItems = () => {
   const projectSlug = useTryRouteParam("projectSlug")
+  const { data: project } = useQuery({
+    ...projectBySlugQueryOptions(projectSlug ?? ""),
+    enabled: !!projectSlug,
+  })
+
   if (!projectSlug) return []
 
   const items: ReturnType[] = [
@@ -56,5 +63,13 @@ export const useMenuItems = () => {
       alsoHighlightPaths: [`/${projectSlug}/surveys`],
     },
   ]
+
+  if (project?.evaluationsEnabled) {
+    items.push({
+      name: "Auswertungen",
+      href: `/${projectSlug}/evaluations`,
+    })
+  }
+
   return items
 }

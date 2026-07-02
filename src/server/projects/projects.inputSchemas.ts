@@ -19,6 +19,10 @@ export const UpdateProjectLandAcquisitionModuleEnabledSchema = z.object({
   landAcquisitionModuleEnabled: z.coerce.boolean(),
   projectSlug: z.string(),
 })
+export const UpdateProjectEvaluationsEnabledSchema = z.object({
+  evaluationsEnabled: z.coerce.boolean(),
+  projectSlug: z.string(),
+})
 export const UpdateProjectExportApiSchema = z.object({
   exportEnabled: z.coerce.boolean(),
   projectSlug: z.string(),

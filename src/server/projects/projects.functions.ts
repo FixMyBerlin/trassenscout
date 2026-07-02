@@ -6,6 +6,7 @@ import {
   GetProjectBySlugSchema,
   GetProjectsAdminSchema,
   UpdateProjectAiEnabledSchema,
+  UpdateProjectEvaluationsEnabledSchema,
   UpdateProjectExportApiSchema,
   UpdateProjectLandAcquisitionModuleEnabledSchema,
   UpdateProjectShowLogEntriesSchema,
@@ -18,6 +19,7 @@ import {
   getProjectsForCurrentUser,
   updateProject,
   updateProjectAiEnabled,
+  updateProjectEvaluationsEnabled,
   updateProjectExportApi,
   updateProjectLandAcquisitionModuleEnabled,
   updateProjectShowLogEntries,
@@ -63,6 +65,10 @@ export const updateProjectAiEnabledFn = createServerFn({ method: "POST" })
 export const updateProjectLandAcquisitionModuleEnabledFn = createServerFn({ method: "POST" })
   .validator(UpdateProjectLandAcquisitionModuleEnabledSchema)
   .handler(({ data }) => updateProjectLandAcquisitionModuleEnabled(getRequestHeaders(), data))
+
+export const updateProjectEvaluationsEnabledFn = createServerFn({ method: "POST" })
+  .validator(UpdateProjectEvaluationsEnabledSchema)
+  .handler(({ data }) => updateProjectEvaluationsEnabled(getRequestHeaders(), data))
 
 export const updateProjectExportApiFn = createServerFn({ method: "POST" })
   .validator(UpdateProjectExportApiSchema)

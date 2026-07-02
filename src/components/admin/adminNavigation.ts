@@ -193,6 +193,10 @@ export function buildAdminNavigation() {
           countKey: "emailTemplates",
         },
         {
+          name: "Auswertungen-Seite",
+          link: { to: "/admin/evaluations/edit" },
+        },
+        {
           name: "Support-Dokumente",
           link: { to: "/admin/support-documents" },
           countKey: "supportDocuments",

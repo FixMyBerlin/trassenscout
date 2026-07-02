@@ -10,6 +10,7 @@ import {
 } from "@/src/components/admin/AdminTableActions"
 import { AdminEnableProjectExportApi } from "@/src/components/admin/projects/[projectSlug]/subsections/AdminEnableProjectExportApi"
 import { AdminEnableProjectAi } from "@/src/components/admin/projects/AdminEnableProjectAi"
+import { AdminEnableProjectEvaluations } from "@/src/components/admin/projects/AdminEnableProjectEvaluations"
 import { AdminEnableProjectLandAcquisition } from "@/src/components/admin/projects/AdminEnableProjectLandAcquisition"
 import { AdminEnableProjectShowLogEntries } from "@/src/components/admin/projects/AdminEnableProjectShowLogEntries"
 import { shortTitle } from "@/src/components/core/components/text/titles"
@@ -39,6 +40,7 @@ export const AdminProjectsTable = ({ projects }: Props) => {
             <th className={adminTableHeaderClassName}>KI</th>
             <th className={adminTableHeaderClassName}>Grunderwerb</th>
             <th className={adminTableHeaderClassName}>Log-Einträge</th>
+            <th className={adminTableHeaderClassName}>Auswertungen</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200">
@@ -81,6 +83,12 @@ export const AdminProjectsTable = ({ projects }: Props) => {
                 <AdminEnableProjectShowLogEntries
                   slug={project.slug}
                   showLogEntries={project.showLogEntries}
+                />
+              </td>
+              <td className={adminTableCellClassName}>
+                <AdminEnableProjectEvaluations
+                  slug={project.slug}
+                  evaluationsEnabled={project.evaluationsEnabled}
                 />
               </td>
             </tr>
