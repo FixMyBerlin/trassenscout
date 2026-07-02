@@ -5,6 +5,7 @@ import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlu
 import { UploadVerknuepfungen } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadVerknuepfungen"
 import { isPdf } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileType"
 import { uploadUrl } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/uploadUrl"
+import { getFilenameFromS3 } from "@/src/server/uploads/_utils/url"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { getFullname } from "@/src/app/_components/users/utils/getFullname"
 import { Link } from "@/src/core/components/links"
@@ -18,7 +19,6 @@ import { useCurrentReturnTo } from "@/src/core/routes/useCurrentPathWithSearch"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { Prettify } from "@/src/core/types"
 import { formatBerlinTime } from "@/src/core/utils/formatBerlinTime"
-import { getFilenameFromS3 } from "@/src/server/uploads/_utils/url"
 import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
 import { MapPinIcon, UserGroupIcon } from "@heroicons/react/24/outline"
 import { PromiseReturnType } from "blitz"
@@ -134,7 +134,7 @@ const UploadTableRow = ({
               onDeleted={handleDelete}
             />
           </div>
-          <Link blank={!isUploadPdf} href={filenameLinkUrl} className="min-w-0 text-sm break-all">
+          <Link blank={!isUploadPdf} href={filenameLinkUrl} className="min-w-0 break-all text-sm">
             {filename || "-"}
           </Link>
         </div>
