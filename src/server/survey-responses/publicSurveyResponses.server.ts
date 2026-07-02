@@ -210,13 +210,24 @@ export async function sendSurveyPart2Email(
     select: { data: true },
   })
 
-  // Surveys collect the email either in part 1 or in the part 2 form data (e.g. OHV),
-  // so fall back to the submitted part 2 data when part 1 has no email.
-  const parsedSurveyPart1 = surveyPart1
-    ? (JSON.parse(surveyPart1.data) as Record<string, unknown>)
-    : {}
-  const emailCandidate = parsedSurveyPart1.email ?? (data as Record<string, unknown>).email
-  const userEmail = typeof emailCandidate === "string" ? emailCandidate.trim() : ""
+  // Read the participant email only from persisted survey responses — never from the
+  // request payload, which is attacker-controllable. Surveys collect the email either in
+  // part 1 or, for some surveys (e.g. OHV), in the submitted part 2 response.
+  const emailFromResponse = (response: { data: string } | null): string | undefined => {
+    if (!response) return undefined
+    const parsed = JSON.parse(response.data) as Record<string, unknown>
+    return typeof parsed.email === "string" ? parsed.email : undefined
+  }
+
+  let emailCandidate = emailFromResponse(surveyPart1)
+  if (!emailCandidate) {
+    const surveyPart2 = await db.surveyResponse.findFirst({
+      where: { surveySessionId, surveyPart: 2, state: SurveyResponseStateEnum.SUBMITTED },
+      select: { data: true },
+    })
+    emailCandidate = emailFromResponse(surveyPart2)
+  }
+  const userEmail = emailCandidate?.trim() ?? ""
   if (!userEmail) {
     return publicSurveyEmailFailure
   }
