@@ -1,4 +1,5 @@
 import {
+  ComboboxButton,
   ComboboxInput,
   ComboboxOption,
   ComboboxOptions,
@@ -139,10 +140,9 @@ export function Combobox({
               )}
               disabled={disabledOrEmpty}
             />
-            <ChevronDownIcon
-              className="pointer-events-none absolute inset-y-0 right-3 my-auto size-5 text-gray-400"
-              aria-hidden="true"
-            />
+            <ComboboxButton className="absolute inset-y-0 right-3 my-auto flex cursor-pointer items-center text-gray-400 disabled:cursor-not-allowed">
+              <ChevronDownIcon className="size-5" aria-hidden="true" />
+            </ComboboxButton>
 
             <Transition
               show={open}
