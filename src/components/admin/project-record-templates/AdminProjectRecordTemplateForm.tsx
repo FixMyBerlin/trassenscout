@@ -170,7 +170,7 @@ export function AdminProjectRecordTemplateForm({
         {(field) => <field.TextField type="text" label="Titel in der Maßnahme " />}
       </form.AppField>
       <form.AppField name="body">
-        {(field) => <field.TextareaField label="Notizen (Markdown)" optional rows={12} />}
+        {(field) => <field.TextareaField label="Notizen" optional rows={12} />}
       </form.AppField>
       <ProjectAndTopicFields />
       <form.AppField name="purpose">

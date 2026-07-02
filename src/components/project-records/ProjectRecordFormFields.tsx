@@ -183,7 +183,7 @@ export const ProjectRecordFormFields = ({
             )}
           </div>
           <form.AppField name="body">
-            {(field) => <field.TextareaField optional label="Notizen (Markdown)" rows={20} />}
+            {(field) => <field.TextareaField optional label="Notizen" rows={20} />}
           </form.AppField>
           <div className="flex flex-col gap-3">
             <form.AppField name="projectRecordTopics">

@@ -73,7 +73,7 @@ export function ContactForm<S extends z.ZodType>({
         {(field) => <field.TextField type="text" label="Telefonnummer" optional placeholder="" />}
       </form.AppField>
       <form.AppField name="note">
-        {(field) => <field.TextareaField label="Notizen (Markdown)" optional placeholder="" />}
+        {(field) => <field.TextareaField label="Notizen" optional placeholder="" />}
       </form.AppField>
       <form.AppField name="role">
         {(field) => <field.TextField type="text" label="Position" optional placeholder="" />}

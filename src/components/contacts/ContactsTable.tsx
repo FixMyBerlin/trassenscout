@@ -66,7 +66,7 @@ export const ContactsTable = () => {
     { ...keyColumn<Row, "lastName">("lastName", textColumn), title: "Nachname (Pflicht)" },
     { ...keyColumn<Row, "email">("email", textColumn), title: "E-Mail-Adresse (Pflicht)" },
     { ...keyColumn<Row, "phone">("phone", textColumn), title: "Telefonnummer" },
-    { ...keyColumn<Row, "note">("note", textColumn), title: "Notizen (Markdown)" },
+    { ...keyColumn<Row, "note">("note", textColumn), title: "Notizen" },
     { ...keyColumn<Row, "role">("role", textColumn), title: "Position" },
   ]
 
