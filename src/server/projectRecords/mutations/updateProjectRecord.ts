@@ -102,8 +102,9 @@ export default resolver.pipe(
     const newAssigneeId = record.assignedToId
     const previousAssigneeId = previous?.assignedToId ?? null
     const isNewAssignment = newAssigneeId !== null && newAssigneeId !== previousAssigneeId
+    const isSelfAssignment = newAssigneeId === currentUserId
 
-    if (isNewAssignment) {
+    if (isNewAssignment && !isSelfAssignment) {
       const [assignee, actor, project] = await Promise.all([
         db.user.findUnique({
           where: { id: newAssigneeId },
