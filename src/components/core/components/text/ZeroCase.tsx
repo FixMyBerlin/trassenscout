@@ -5,6 +5,7 @@ type Props = {
   name?: string
   small?: boolean
   text?: string
+  verb?: string
   /** Background behind the label where it crosses the divider line. */
   textBackgroundClassName?: string
 }
@@ -14,12 +15,13 @@ export const ZeroCase = ({
   name,
   small,
   text,
+  verb = "eingetragen",
   textBackgroundClassName = "bg-inherit",
 }: Props) => {
   if (typeof visible === "number" && !!visible) return null
   if (typeof visible !== "number" && !visible) return null
 
-  const content = text ?? `Es wurden noch ${name ? `keine ${name}` : "nichts"} eingetragen.`
+  const content = text ?? `Es wurden noch ${name ? `keine ${name}` : "nichts"} ${verb}.`
 
   if (small) {
     return <p className="my-4 text-base text-gray-500">{content}</p>

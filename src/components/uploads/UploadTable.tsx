@@ -32,7 +32,7 @@ export const UploadTable = ({ uploads, withAction = true, withRelations, onDelet
   const { projectSlug } = loggedInProjectRouteApi.useParams()
 
   if (!uploads.length) {
-    return <ZeroCase visible={uploads.length} name="Dokumente" />
+    return <ZeroCase small visible={uploads.length} name="Dokumente" verb="hochgeladen" />
   }
 
   return (
