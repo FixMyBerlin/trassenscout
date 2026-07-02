@@ -40,7 +40,7 @@ export const UploadTable = ({ uploads, withAction = true, withRelations, onDelet
   const projectSlug = useProjectSlug()
 
   if (!uploads.length) {
-    return <ZeroCase small visible={uploads.length} name="Dokumente" verb="hochgeladen" />
+    return <ZeroCase visible={uploads.length} name="Dokumente" />
   }
 
   return (

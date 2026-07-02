@@ -69,7 +69,7 @@ export const SupportPageClient = () => {
             })}
         </ul>
       ) : (
-        <ZeroCase small visible={documents.length} name="Dokumente" verb="hochgeladen" />
+        <ZeroCase visible={documents.length} name="Dokumente" />
       )}
 
       <SuperAdminBox>
