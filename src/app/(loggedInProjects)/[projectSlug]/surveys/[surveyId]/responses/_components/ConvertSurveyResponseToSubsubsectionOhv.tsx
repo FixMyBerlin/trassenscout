@@ -205,7 +205,7 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
       {/* <FormSuccess message="Maßnahme erfolgreich erstellt" show={isSuccess} /> */}
       {existingSubsubsectionSlug && (
         <Notice type="warn" title="Verknüpfung zur Maßnahmenplanung">
-          <p>Aus dieser Eingabe wurde ein Maßnahmeneintrag erstellt.</p>
+          <p>Aus diesem Beitrag wurde ein Maßnahmeneintrag erstellt.</p>
           <p className="mt-2">
             Verknüpfung sichtbar:{" "}
             <Link
