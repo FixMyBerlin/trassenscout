@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { forwardAuthAndApplyCookies } from "@/src/server/auth/auth-route-handler.server"
+import { auth } from "@/src/server/auth/auth.server"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 
 export const Route = createFileRoute("/api/auth/$")({
@@ -8,11 +8,11 @@ export const Route = createFileRoute("/api/auth/$")({
     handlers: {
       GET: ({ request }) => {
         endpointAuth.public("Better Auth session handler")
-        return forwardAuthAndApplyCookies(request)
+        return auth.handler(request)
       },
       POST: ({ request }) => {
         endpointAuth.public("Better Auth session handler")
-        return forwardAuthAndApplyCookies(request)
+        return auth.handler(request)
       },
     },
   },

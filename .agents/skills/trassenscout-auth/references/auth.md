@@ -8,67 +8,58 @@ For `betterAuth({ ... })` options, plugins, and DB adapters, see portable skill 
 
 ## 1. File layout
 
-| Role                  | Path                                           |
-| --------------------- | ---------------------------------------------- |
-| Server config         | `src/server/auth/auth.server.ts`               |
-| Cookie forwarder      | `src/server/auth/auth-route-handler.server.ts` |
-| Boundary API          | `src/server/auth/endpointAuth.server.ts`       |
-| Session helpers       | `src/server/auth/session.server.ts`            |
-| Server fns for routes | `src/server/auth/auth.functions.ts`            |
-| Client                | `src/components/shared/auth/auth-client.ts`    |
-| Auth API route        | `src/routes/api/auth.$.ts`                     |
-| Sign-in entry         | `src/routes/api/sign-in.<provider>.ts`         |
+| Role                  | Path                                        |
+| --------------------- | ------------------------------------------- |
+| Server config         | `src/server/auth/auth.server.ts`            |
+| Boundary API          | `src/server/auth/endpointAuth.server.ts`    |
+| Session helpers       | `src/server/auth/session.server.ts`         |
+| Server fns for routes | `src/server/auth/auth.functions.ts`         |
+| Client                | `src/components/shared/auth/auth-client.ts` |
+| Auth API route        | `src/routes/api/auth.$.ts`                  |
+| Sign-in entry         | `src/routes/api/sign-in.<provider>.ts`      |
 
 ---
 
 ## 2. Mount handler and cookies
 
-**Do not use `tanstackStartCookies()`** — it can pull `@tanstack/react-start/server` into the client bundle (Vite leak). Forward cookies manually in the auth API route.
+Use Better Auth's official **`tanstackStartCookies()`** plugin — it must be the **last** entry in the `plugins` array (Better Auth warns via `warnIfCookiePluginNotLast`). The route just mounts `auth.handler`.
+
+```ts
+// src/server/auth/auth.server.ts
+import { tanstackStartCookies } from "better-auth/tanstack-start"
+
+export const auth = betterAuth({
+  ...options,
+  plugins: [customSessionWithRole(options), tanstackStartCookies()], // cookies plugin LAST
+})
+```
 
 ```ts
 // src/routes/api/auth.$.ts
 import { createFileRoute } from "@tanstack/react-router"
-import { forwardAuthAndApplyCookies } from "@/src/server/auth/auth-route-handler.server"
+import { auth } from "@/src/server/auth/auth.server"
+import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 
 export const Route = createFileRoute("/api/auth/$")({
   ssr: false,
   server: {
     handlers: {
-      GET: ({ request }) => forwardAuthAndApplyCookies(request),
-      POST: ({ request }) => forwardAuthAndApplyCookies(request),
+      GET: ({ request }) => {
+        endpointAuth.public("Better Auth session handler")
+        return auth.handler(request)
+      },
+      POST: ({ request }) => {
+        endpointAuth.public("Better Auth session handler")
+        return auth.handler(request)
+      },
     },
   },
 })
 ```
 
-```ts
-// auth-route-handler.server.ts — pattern
-import { setCookie } from "@tanstack/react-start/server"
-import { parseSetCookieHeader } from "better-auth/cookies"
-import { auth } from "./auth.server"
+**Why the plugin:** at `better-auth@1.6.15` it loads `@tanstack/react-start/server` via a **dynamic** `await import(...)`, so no client-bundle leak — verified in [#3381](https://github.com/…/issues/3381) (bundle byte-identical with/without plugin, auth E2E green). It also applies cookies when `auth.api.*` runs in server functions, which the old route-only forwarder did not.
 
-export async function forwardAuthAndApplyCookies(request: Request) {
-  const response = await auth.handler(request)
-  const setCookieHeader = response.headers.getSetCookie().join(", ")
-  if (!setCookieHeader) return response
-
-  const parsed = parseSetCookieHeader(setCookieHeader)
-  parsed.forEach((value, key) => {
-    if (!key) return
-    setCookie(key, decodeURIComponent(value.value), {
-      sameSite: value.samesite,
-      secure: value.secure,
-      maxAge: value["max-age"],
-      httpOnly: value.httponly,
-      domain: value.domain,
-      path: value.path,
-    })
-  })
-  return response
-}
-```
-
-Official docs may recommend `tanstackStartCookies()` as the last plugin — **Trassenscout overrides that** for bundle safety.
+> Historical: TILDA used a manual forwarder to dodge an older **static-import** leak; not reproducible on current versions, so it was removed.
 
 ---
 
