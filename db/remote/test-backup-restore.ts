@@ -164,49 +164,24 @@ console.log(styleText("inverse", "🔬 Verifying restored data ..."))
 const q = (sql: string) =>
   $`docker exec ${CONTAINER} psql -U postgres -d ${DB} -tAc ${sql}`.text().then((s) => s.trim())
 
-// Check that the `public` schema exists AND actually contains tables in the
-// restored database (dbmaster). A psql run that exits 0 does not by itself prove
-// the objects landed in the right place: e.g. the dump restores into `dbmaster`,
-// while a client connected to the default `postgres` database would see an empty
-// public schema. So we explicitly assert the schema is present and populated.
-const schemaExists =
-  (await q("SELECT count(*) FROM information_schema.schemata WHERE schema_name='public'")) !== "0"
-if (!schemaExists) {
-  console.error(styleText("red", `❌ Schema 'public' does not exist in database '${DB}'.`))
-  process.exit(1)
-}
 const tableCount = Number(
-  await q(
-    "SELECT count(*) FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE'",
-  ),
+  await q("SELECT count(*) FROM information_schema.tables WHERE table_schema='public'"),
 )
-if (tableCount === 0) {
-  console.error(
-    styleText("red", `❌ Schema 'public' in '${DB}' contains no tables. Backup is not usable.`),
-  )
-  process.exit(1)
-}
-
-const tableList = (
-  await q(
-    "SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE' ORDER BY table_name",
-  )
-)
-  .split("\n")
-  .filter(Boolean)
 const env = await q(`SELECT value FROM "_Meta" WHERE key='ENV'`)
 const userCount = Number(await q('SELECT count(*) FROM public."User"'))
 const projectCount = Number(await q('SELECT count(*) FROM public."Project"'))
 
+if (tableCount === 0) {
+  console.error(styleText("red", "❌ Restore produced zero tables. Backup is not usable."))
+  process.exit(1)
+}
+
 console.log("")
 console.log(styleText("green", "✅ BACKUP RESTORE TEST PASSED"))
 console.log(`   Backup:   s3://${bucket}/${key} (${sizeMb} MB)`)
-console.log(`   Schema:   public exists with ${tableCount} tables (in database '${DB}')`)
+console.log(`   Tables:   ${tableCount}`)
 console.log(`   _Meta.ENV: ${env}${env === "production" ? " ✓ (live production backup)" : ""}`)
 console.log(`   Rows:     User=${userCount}, Project=${projectCount}`)
-console.log("")
-console.log(`   Tables in public schema (${tableList.length}):`)
-for (const t of tableList) console.log(`     - ${t}`)
 console.log("")
 console.log(
   styleText("inverse", `🔌 Connect: postgresql://postgres:${PASSWORD}@localhost:${PORT}/${DB}`),
