@@ -150,7 +150,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
                 {subsubsection.SubsubsectionTask?.title && (
                   <tr>
                     <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
-                      Maßnahmentyp
+                      Eintragstyp
                     </th>
                     <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
                       {subsubsection.SubsubsectionTask.title}
@@ -366,7 +366,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
         <H2 className="text-lg font-semibold text-gray-700 sm:text-lg">Dokumente</H2>
         {linkedSurveyResponse && (
           <div className="rounded-md border border-gray-200 bg-gray-50 p-4 text-sm text-gray-700">
-            <p>Diese Maßnahme wurde aus folgendem Beitrag erstellt:</p>
+            <p>Dieser Eintrag wurde aus folgendem Beitrag erstellt:</p>
             <p className="mt-1">
               <Link
                 href={`/${projectSlug}/surveys/${linkedSurveyResponse.surveyId}/responses?responseDetails=${linkedSurveyResponse.surveyResponseId}`}

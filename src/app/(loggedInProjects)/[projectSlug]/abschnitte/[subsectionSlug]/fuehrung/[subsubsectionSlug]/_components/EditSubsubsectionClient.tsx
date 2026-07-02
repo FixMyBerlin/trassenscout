@@ -116,7 +116,7 @@ export const EditSubsubsectionClient = ({ initialSubsubsection }: Props) => {
         }
       />
 
-      <BackLink href={showPath} text="Zurück zur Maßnahme " />
+      <BackLink href={showPath} text="Zurück zum Eintrag" />
     </>
   )
 }

@@ -6,7 +6,7 @@ import "server-only"
 import { NewSubsubsectionTaskForm } from "../_components/NewSubsubsectionTaskForm"
 
 export const metadata: Metadata = {
-  title: seoNewTitle("Maßnahmentyp"),
+  title: seoNewTitle("Eintragstyp"),
   robots: {
     index: false,
   },
@@ -27,7 +27,7 @@ export default async function NewSubsubsectionTaskPage({
 
   return (
     <>
-      <PageHeader title="Neuer Maßnahmentyp" className="mt-12" />
+      <PageHeader title="Neuer Eintragstyp" className="mt-12" />
       <NewSubsubsectionTaskForm projectSlug={projectSlug} fromParam={fromParam} />
       <hr className="my-5 text-gray-200" />
       <Link href={`${listPath}${appendFrom}` as Route}>Zurück zur Übersicht</Link>

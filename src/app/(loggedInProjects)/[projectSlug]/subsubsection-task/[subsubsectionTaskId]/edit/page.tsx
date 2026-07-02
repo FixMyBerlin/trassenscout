@@ -7,7 +7,7 @@ import { Metadata } from "next"
 import "server-only"
 
 export const metadata: Metadata = {
-  title: seoEditTitle("Maßnahmentyp"),
+  title: seoEditTitle("Eintragstyp"),
   robots: {
     index: false,
   },
@@ -31,7 +31,7 @@ export default async function EditSubsubsectionTaskPage({
 
   return (
     <>
-      <PageHeader title="Maßnahmentyp bearbeiten" className="mt-12" />
+      <PageHeader title="Eintragstyp bearbeiten" className="mt-12" />
       <EditSubsubsectionTaskForm
         subsubsectionTask={subsubsectionTask}
         projectSlug={projectSlug}

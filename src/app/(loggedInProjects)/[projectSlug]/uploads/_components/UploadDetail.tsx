@@ -32,7 +32,7 @@ export const UploadDetail = ({ upload }: Props) => {
 
   const [deleteUploadMutation] = useMutation(deleteUpload)
   const handleDelete = async () => {
-    if (window.confirm(`Die Maßnahme mit ID ${upload.id} unwiderruflich löschen?`)) {
+    if (window.confirm(`Den Eintrag mit ID ${upload.id} unwiderruflich löschen?`)) {
       try {
         await deleteUploadMutation({ projectSlug, id: upload.id })
         router.push(uploadsListRoute(projectSlug))

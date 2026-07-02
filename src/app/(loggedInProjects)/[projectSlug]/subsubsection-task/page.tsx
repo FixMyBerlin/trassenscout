@@ -8,7 +8,7 @@ import "server-only"
 import { SubsubsectionTasksTable } from "./_components/SubsubsectionTasksTable"
 
 export const metadata: Metadata = {
-  title: "Maßnahmentypen",
+  title: "Eintragstypen",
   robots: {
     index: false,
   },
@@ -32,7 +32,7 @@ export default async function SubsubsectionTasksPage({
 
   return (
     <>
-      <PageHeader title="Maßnahmentypen" className="mt-12" />
+      <PageHeader title="Eintragstypen" className="mt-12" />
       <SubsubsectionTasksTable subsubsectionTasks={subsubsectionTasks} fromPath={fromParam} />
       <IfUserCanEdit>
         <ConditionalBackLink fromPath={fromParam} />

@@ -82,7 +82,7 @@ const UploadSubsectionFields = ({
     <div className="flex flex-col gap-4">
       <LabeledCombobox
         scope="subsubsections"
-        label="Zuordnung zu Maßnahmen"
+        label="Zuordnung zu Einträgen"
         optional
         items={subsubsectionCheckboxItems}
       />
@@ -280,7 +280,7 @@ export const EditUploadForm = ({
               Standort (optional)
             </label>
             <p className="mb-2 text-sm text-gray-500">
-              Dokumente und Bilder lassen sich unabhängig von Planungsabschnitten oder Maßnahmen auf
+              Dokumente und Bilder lassen sich unabhängig von Planungsabschnitten oder Einträgen auf
               der Karte verorten. <br />
               Sobald ein Standort gesetzt ist, erscheint das Dokument auf der Karte.
             </p>

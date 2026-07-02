@@ -34,7 +34,7 @@ function getExportColumns(projectSlug: string) {
       value: (s: SubsubsectionExportRow) => s.SubsubsectionStatus?.title || "",
     },
     eintragstyp: {
-      title: "Maßnahmentyp",
+      title: "Eintragstyp",
       value: (s: SubsubsectionExportRow) => s.SubsubsectionTask?.title || "",
     },
     ausbaustandard: {

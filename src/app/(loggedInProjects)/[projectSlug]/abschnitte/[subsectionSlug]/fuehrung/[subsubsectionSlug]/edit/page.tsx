@@ -37,7 +37,7 @@ export default async function EditSubsubsectionPage({
 
   return (
     <>
-      <PageHeader title="Maßnahme  bearbeiten" className="mt-12" />
+      <PageHeader title="Eintrag bearbeiten" className="mt-12" />
       <EditSubsubsectionClient initialSubsubsection={subsubsection} />
       <SuperAdminLogData data={subsubsection} />
     </>

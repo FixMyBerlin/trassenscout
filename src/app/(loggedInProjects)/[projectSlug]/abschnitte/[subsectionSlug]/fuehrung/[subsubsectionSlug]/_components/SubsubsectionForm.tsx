@@ -138,7 +138,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           href={`/${projectSlug}/subsubsection-task` as Route}
           className="py-2"
         >
-          Maßnahmentypen verwalten…
+          Eintragstypen verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
       <SubsubsectionGeometryInput />

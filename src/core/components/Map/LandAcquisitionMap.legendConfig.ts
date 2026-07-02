@@ -14,7 +14,7 @@ const baseLegendConfig: LegendItemConfig[] = [
     iconIds: ["acquisitionParcelPolygon"],
   },
   {
-    text: "Maßnahme ",
+    text: "Eintrag",
     iconIds: ["subsubsectionLine", "subsubsectionPolygon"],
   },
 ]

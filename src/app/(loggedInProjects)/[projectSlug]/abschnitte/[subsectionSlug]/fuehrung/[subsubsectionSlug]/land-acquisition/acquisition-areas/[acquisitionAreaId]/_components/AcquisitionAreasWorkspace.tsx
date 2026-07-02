@@ -51,7 +51,7 @@ function BufferRadiusControls({ onApplyRadius }: { onApplyRadius: (radius: numbe
         />
       </div>
       <p className="text-sm text-gray-500">
-        Die Geometrie der Maßnahme wird um diesen Wert erweitert, um angrenzende Flurstücke zu
+        Die Geometrie des Eintrags wird um diesen Wert erweitert, um angrenzende Flurstücke zu
         identifizieren und zu potenziellen Verhandlungsflächen zu verschneiden.
       </p>
       <div className="mt-1">

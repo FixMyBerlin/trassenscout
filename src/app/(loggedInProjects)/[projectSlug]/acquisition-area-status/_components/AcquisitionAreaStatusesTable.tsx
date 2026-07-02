@@ -34,7 +34,7 @@ export const AcquisitionAreaStatusesTable = ({ acquisitionAreaStatuses, fromPath
   const [deleteAcquisitionAreaStatusMutation] = useMutation(deleteAcquisitionAreaStatus)
 
   const handleDelete = async (acquisitionAreaStatusId: number) => {
-    if (window.confirm(`Die Maßnahme mit ID ${acquisitionAreaStatusId} unwiderruflich löschen?`)) {
+    if (window.confirm(`Den Eintrag mit ID ${acquisitionAreaStatusId} unwiderruflich löschen?`)) {
       try {
         await deleteAcquisitionAreaStatusMutation({ projectSlug, id: acquisitionAreaStatusId })
         router.push(`/${projectSlug}/acquisition-area-status` as Route)

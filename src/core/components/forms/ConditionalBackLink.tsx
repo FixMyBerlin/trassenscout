@@ -16,7 +16,7 @@ const getBackLinkText = (fromPath: string): string => {
     return "Zurück zum Formular der Verhandlungsfläche"
   }
   if (fromPath.includes("/fuehrung")) {
-    return "Zurück zum Formular der Maßnahme"
+    return "Zurück zum Formular des Eintrags"
   }
   if (fromPath.includes("/abschnitte/")) {
     return "Zurück zum Formular des Planungsabschnitts"

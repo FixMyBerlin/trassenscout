@@ -19,7 +19,7 @@ export const getLandAcquisitionEditLegendConfig = (acquisitionAreaStatusStyle?: 
       iconIds: ["acquisitionParcelPolygonEdit"],
     },
     {
-      text: "Maßnahme ",
+      text: "Eintrag",
       iconIds: ["subsubsectionLine", "subsubsectionPolygon"],
     },
     {

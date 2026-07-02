@@ -32,7 +32,7 @@ export const OperatorsTable = ({ operators, hasMore, page, fromPath }: Props) =>
   const [deleteOperatorMutation] = useMutation(deleteOperator)
 
   const handleDelete = async (operatorId: number) => {
-    if (window.confirm(`Die Maßnahme mit ID ${operatorId} unwiderruflich löschen?`)) {
+    if (window.confirm(`Den Eintrag mit ID ${operatorId} unwiderruflich löschen?`)) {
       try {
         await deleteOperatorMutation({ projectSlug, id: operatorId })
         const currentPage = searchParams?.get("page") || "0"

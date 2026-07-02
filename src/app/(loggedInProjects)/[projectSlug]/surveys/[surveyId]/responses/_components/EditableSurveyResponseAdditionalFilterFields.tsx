@@ -93,7 +93,7 @@ const EditableSurveyResponseAdditionalFilterFields = ({
                       {item.label}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-500">
-                      (kein Umfrage-Teil zu dieser Maßnahme )
+                      (kein Umfrage-Teil zu diesem Eintrag)
                     </td>
                   </tr>
                 )

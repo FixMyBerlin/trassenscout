@@ -90,7 +90,7 @@ export const DeleteProjectRecordWithUploadsClient = ({ deleteInfo, projectSlug }
       for (const subsubsection of upload.displayData.subsubsections) {
         reasons.push(
           <span key={`subsubsection-${subsubsection.id}`}>
-            Maßnahme :{" "}
+            Eintrag:{" "}
             <Link
               href={subsubsectionDashboardRoute(
                 projectSlug,

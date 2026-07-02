@@ -29,7 +29,7 @@ export const SubsectionTableAdmin = ({ subsections }: Props) => {
 
   const [deleteSubsectionMutation] = useMutation(deleteSubsection)
   const handleDeleteSubsection = async (subsectionId: number) => {
-    if (window.confirm(`Die Maßnahme mit ID ${subsectionId} unwiderruflich löschen?`)) {
+    if (window.confirm(`Den Eintrag mit ID ${subsectionId} unwiderruflich löschen?`)) {
       try {
         await deleteSubsectionMutation({ projectSlug, id: subsectionId })
       } catch (error) {

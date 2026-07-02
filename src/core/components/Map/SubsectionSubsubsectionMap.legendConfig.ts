@@ -10,11 +10,11 @@ export const subsectionLegendConfig: LegendItemConfig[] = [
     iconIds: ["subsectionHullPolygonUnselected"],
   },
   {
-    text: "Maßnahme ",
+    text: "Eintrag",
     iconIds: ["subsubsectionLine", "subsubsectionPoint", "subsubsectionPolygon"],
   },
   {
-    text: "Maßnahme  mit besonderem Status",
+    text: "Eintrag mit besonderem Status",
     iconIds: ["subsubsectionLineGreen", "subsubsectionPointGreen", "subsubsectionPolygonGreen"],
   },
 ]

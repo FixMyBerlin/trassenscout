@@ -36,7 +36,7 @@ export default async function NewAcquisitionAreasPage({
 
   return (
     <>
-      <PageHeader title="Verhandlungsflächen der Maßnahme erstellen" className="mt-12" />
+      <PageHeader title="Verhandlungsflächen des Eintrags erstellen" className="mt-12" />
       <NewAcquisitionAreasClient initialSubsubsection={subsubsection} />
     </>
   )

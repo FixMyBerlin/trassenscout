@@ -37,7 +37,7 @@ export const SubsubsectionInfrastructureTypesTable = ({
   const handleDelete = async (subsubsectionInfrastructureTypeId: number) => {
     if (
       window.confirm(
-        `Die Maßnahme mit ID ${subsubsectionInfrastructureTypeId} unwiderruflich löschen?`,
+        `Den Eintrag mit ID ${subsubsectionInfrastructureTypeId} unwiderruflich löschen?`,
       )
     ) {
       try {

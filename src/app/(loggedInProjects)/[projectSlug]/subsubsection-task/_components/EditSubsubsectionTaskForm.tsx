@@ -67,7 +67,7 @@ export const EditSubsubsectionTaskForm = ({ subsubsectionTask, projectSlug, from
         }
       />
 
-      <BackLink href={returnPath} text="Zurück zu den Maßnahmentypen" />
+      <BackLink href={returnPath} text="Zurück zu den Eintragstypen" />
 
       <SuperAdminLogData data={{ subsubsectionTask }} />
     </>

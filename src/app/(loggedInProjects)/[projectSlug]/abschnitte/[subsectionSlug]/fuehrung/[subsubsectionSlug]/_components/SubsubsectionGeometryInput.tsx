@@ -25,7 +25,7 @@ export const SubsubsectionGeometryInput = () => {
   })
 
   return (
-    <GeometryInputBase label="Geometrie der Maßnahme">
+    <GeometryInputBase label="Geometrie des Eintrags">
       <GeometryDrawingMap allowedTypes={["point", "line", "polygon"]} subsection={subsection}>
         <GeometryDrawingSubsubsectionContextLayers
           subsections={subsections}

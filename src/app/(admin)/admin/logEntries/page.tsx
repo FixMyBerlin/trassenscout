@@ -25,7 +25,7 @@ export default async function AdminLogEntriesPage() {
         />
       </HeaderWrapper>
 
-      <p>Maximal 250 Maßnahmen.</p>
+      <p>Maximal 250 Einträge.</p>
       <TableWrapper>
         <table className="min-w-full divide-y divide-gray-300">
           <thead className="bg-gray-50">

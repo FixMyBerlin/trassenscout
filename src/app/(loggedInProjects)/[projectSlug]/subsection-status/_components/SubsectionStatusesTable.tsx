@@ -32,7 +32,7 @@ export const SubsectionStatusesTable = ({ subsectionStatuss, projectSlug, fromPa
   const appendFrom = fromPath ? `?from=${encodeURIComponent(fromPath)}` : ""
 
   const handleDelete = async (subsectionStatusId: number) => {
-    if (window.confirm(`Die Maßnahme mit ID ${subsectionStatusId} unwiderruflich löschen?`)) {
+    if (window.confirm(`Den Eintrag mit ID ${subsectionStatusId} unwiderruflich löschen?`)) {
       try {
         await deleteSubsectionStatusMutation({ projectSlug, id: subsectionStatusId })
         router.push(`/${projectSlug}/subsection-status` as Route)
