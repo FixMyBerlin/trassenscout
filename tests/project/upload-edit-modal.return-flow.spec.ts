@@ -56,7 +56,7 @@ test.describe("Upload edit return flow", () => {
     ).toBeVisible({
       timeout: 30_000,
     })
-    await expect(page.getByLabel("Kurzbeschreibung")).toHaveValue(fixture.uploadTitle)
+    await expect(page.getByLabel("Anzeigename")).toHaveValue(fixture.uploadTitle)
 
     const maybeDirtyConfirm = page
       .waitForEvent("dialog", { timeout: 1_000 })
