@@ -13,8 +13,10 @@ export async function isPasswordResetRequired(email: string) {
 }
 
 export async function clearPasswordResetRequired(userId: number) {
+  // The reset stored a fresh hash in `account.password`, so the legacy
+  // `hashedPassword` copy is obsolete and must not linger.
   await db.user.update({
     where: { id: userId },
-    data: { passwordResetRequired: false },
+    data: { passwordResetRequired: false, hashedPassword: null },
   })
 }

@@ -42,7 +42,7 @@ describe("authPasswordReset.server", () => {
 
     expect(mockDb.user.update).toHaveBeenCalledWith({
       where: { id: 42 },
-      data: { passwordResetRequired: false },
+      data: { passwordResetRequired: false, hashedPassword: null },
     })
   })
 })

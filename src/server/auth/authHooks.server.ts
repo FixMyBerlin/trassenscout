@@ -6,7 +6,7 @@ import {
   passwordResetRequiredMessage,
 } from "./authPasswordReset.const"
 import { clearPasswordResetRequired, isPasswordResetRequired } from "./authPasswordReset.server"
-import { SecurePassword } from "./securePassword.server"
+import { hashPassword, isLegacyHashFormat, verifyPassword } from "./passwordHashing.server"
 
 const credentialProviderId = "credential"
 
@@ -25,6 +25,35 @@ export const authBeforeHook = createAuthMiddleware(async (ctx) => {
   }
 })
 
+/**
+ * Rewrites a legacy (base64-encoded) hash as a plain PHC string and clears the
+ * obsolete `User.hashedPassword` copy. Runs after a successful sign-in, the
+ * only time the plaintext password is available.
+ */
+export async function rehashLegacyPassword(userId: number, password: string) {
+  const account = await db.account.findFirst({
+    where: { userId, providerId: credentialProviderId },
+    select: { id: true, password: true },
+  })
+  if (!account?.password) return
+  if (!isLegacyHashFormat(account.password)) return
+
+  const isValid = await verifyPassword(account.password, password)
+  if (!isValid) return
+
+  const newHash = await hashPassword(password)
+  await db.$transaction([
+    db.account.update({
+      where: { id: account.id },
+      data: { password: newHash },
+    }),
+    db.user.update({
+      where: { id: userId },
+      data: { passwordHashMigratedAt: new Date(), hashedPassword: null },
+    }),
+  ])
+}
+
 export const authAfterHook = createAuthMiddleware(async (ctx) => {
   if (ctx.path !== "/sign-in/email") return
 
@@ -38,26 +67,7 @@ export const authAfterHook = createAuthMiddleware(async (ctx) => {
   const userId = Number(newSession.user.id)
   if (!Number.isInteger(userId)) return
 
-  const account = await db.account.findFirst({
-    where: { userId, providerId: credentialProviderId },
-    select: { id: true, password: true },
-  })
-  if (!account?.password) return
-
-  const verifyResult = await SecurePassword.verify(account.password, password)
-  if (verifyResult !== SecurePassword.VALID_NEEDS_REHASH) return
-
-  const newHash = await SecurePassword.hash(password)
-  await db.$transaction([
-    db.account.update({
-      where: { id: account.id },
-      data: { password: newHash },
-    }),
-    db.user.update({
-      where: { id: userId },
-      data: { passwordHashMigratedAt: new Date() },
-    }),
-  ])
+  await rehashLegacyPassword(userId, password)
 })
 
 export async function handlePasswordResetCompleted(userId: number) {

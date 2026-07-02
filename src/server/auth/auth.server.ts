@@ -10,7 +10,7 @@ import {
   authBeforeHook,
   handlePasswordResetCompleted,
 } from "@/src/server/auth/authHooks.server"
-import { SecurePassword } from "@/src/server/auth/securePassword.server"
+import { hashPassword, verifyPassword } from "@/src/server/auth/passwordHashing.server"
 import db from "@/src/server/db.server"
 
 function getTrustedOrigins() {
@@ -55,11 +55,8 @@ const options = {
     minPasswordLength: 10,
     maxPasswordLength: 100,
     password: {
-      hash: (password) => SecurePassword.hash(password.trim()),
-      verify: async ({ hash, password }) => {
-        const result = await SecurePassword.verify(hash, password.trim())
-        return result === SecurePassword.VALID || result === SecurePassword.VALID_NEEDS_REHASH
-      },
+      hash: (password) => hashPassword(password.trim()),
+      verify: ({ hash, password }) => verifyPassword(hash, password.trim()),
     },
     sendResetPassword: async ({ user, token }) => {
       await (await forgotPasswordMailToUser({ to: user.email, token })).send()
