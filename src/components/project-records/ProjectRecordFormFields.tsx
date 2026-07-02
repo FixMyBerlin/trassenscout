@@ -110,7 +110,6 @@ export const ProjectRecordFormFields = ({
     )})`,
   }))
 
-  const subsubsectionLabel = "Maßnahmen"
   const showSubsubsectionField = !(formMode === "create" && relationContext === "acquisitionArea")
   const showAcquisitionAreaField =
     landAcquisitionModuleEnabled && !(formMode === "create" && relationContext === "subsubsection")
@@ -166,7 +165,11 @@ export const ProjectRecordFormFields = ({
             {showSubsubsectionField && (
               <form.AppField name="subsubsections">
                 {(field) => (
-                  <field.Combobox optional items={subsubsectionItems} label={subsubsectionLabel} />
+                  <field.Combobox
+                    optional
+                    items={subsubsectionItems}
+                    label="Verknüpfung mit Maßnahmen"
+                  />
                 )}
               </form.AppField>
             )}
@@ -176,7 +179,7 @@ export const ProjectRecordFormFields = ({
                   <field.Combobox
                     optional
                     items={acquisitionAreaItems}
-                    label="Verhandlungsflächen"
+                    label="Verknüpfung mit Verhandlungsflächen"
                   />
                 )}
               </form.AppField>
