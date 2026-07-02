@@ -590,7 +590,7 @@ export async function deleteProjectRecordWithUploadsDecision(
   const { session } = await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
 
   const projectRecord = await db.projectRecord.findFirst({
-    where: { id: input.id },
+    where: projectRecordInProjectWhere(input.projectSlug, input.id),
     include: {
       uploads: {
         select: {
