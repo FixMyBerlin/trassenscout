@@ -28,8 +28,6 @@ export interface FormProps<S extends z.ZodType<any, any>> extends Omit<
   actionBarLeft?: ReactNode
   /** Action bar content to display on the right side of the action bar */
   actionBarRight?: ReactNode
-  /** Hide the built-in submit button (e.g. when providing a custom one via actionBarLeft) */
-  hideSubmitButton?: boolean
 }
 
 interface OnSubmitResult {
@@ -51,7 +49,6 @@ export function Form<S extends z.ZodType<any, any>>({
   disabled,
   actionBarLeft,
   actionBarRight,
-  hideSubmitButton = false,
   ...props
 }: FormProps<S>) {
   const ctx = useForm<z.infer<S>>({
@@ -103,9 +100,7 @@ export function Form<S extends z.ZodType<any, any>>({
           <ActionBar
             left={
               <>
-                {!hideSubmitButton && (
-                  <SubmitButton className={submitClassName}>{submitText}</SubmitButton>
-                )}
+                <SubmitButton className={submitClassName}>{submitText}</SubmitButton>
                 {actionBarLeft}
               </>
             }

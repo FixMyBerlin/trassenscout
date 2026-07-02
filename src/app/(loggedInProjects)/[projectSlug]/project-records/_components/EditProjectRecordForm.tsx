@@ -13,7 +13,6 @@ import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Form, FORM_ERROR, FormDirtyStateReporter } from "@/src/core/components/forms"
 import { BackLink } from "@/src/core/components/forms/BackLink"
-import { SubmitButton } from "@/src/core/components/forms/SubmitButton"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { Link } from "@/src/core/components/links"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
@@ -29,25 +28,7 @@ import { invalidateQuery, useMutation, useQuery } from "@blitzjs/rpc"
 import { ProjectRecordReviewState } from "@prisma/client"
 import { Route } from "next"
 import { useRouter } from "next/navigation"
-import { useFormContext } from "react-hook-form"
 import { z } from "zod"
-
-const ProjectRecordSubmitButton = () => {
-  const {
-    watch,
-    formState: { dirtyFields },
-  } = useFormContext()
-  const assignedToId = watch("assignedToId")
-  const reassignedToPerson =
-    Boolean(dirtyFields.assignedToId) && assignedToId != null && assignedToId !== ""
-  return (
-    <SubmitButton>
-      {reassignedToPerson
-        ? "Eintrag speichern und Benachrichtigung senden"
-        : "Änderungen speichern"}
-    </SubmitButton>
-  )
-}
 
 export const EditProjectRecordForm = ({
   initialProjectRecord,
@@ -129,7 +110,10 @@ export const EditProjectRecordForm = ({
   })
 
   const showPath = projectRecordDetailRoute(projectSlug, projectRecord.id)
-  const indexPath = `/${projectSlug}/project-records` as Route
+  const indexPath =
+    projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
+      ? (`/${projectSlug}/project-records/needreview` as Route)
+      : (`/${projectSlug}/project-records` as Route)
 
   return (
     <>
@@ -148,6 +132,7 @@ export const EditProjectRecordForm = ({
         </SuperAdminBox>
       )}
       <Form
+        submitText="Änderungen speichern"
         schema={ProjectRecordFormSchema}
         // @ts-expect-error some null<>undefined missmatch
         initialValues={{
@@ -156,9 +141,6 @@ export const EditProjectRecordForm = ({
           ...m2mFieldsInitialValues,
         }}
         onSubmit={handleSubmit}
-        submitText="Änderungen speichern"
-        hideSubmitButton
-        actionBarLeft={<ProjectRecordSubmitButton />}
         actionBarRight={
           <ProjectRecordDeleteActionBar
             projectSlug={projectSlug}
