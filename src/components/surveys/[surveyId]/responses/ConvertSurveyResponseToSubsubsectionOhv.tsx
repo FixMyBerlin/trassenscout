@@ -5,6 +5,7 @@
  * configuration and needs refinement for other surveys in the future.
  */
 
+import { LinkIcon } from "@heroicons/react/24/outline"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { point } from "@turf/helpers"
 import { useState } from "react"
@@ -14,7 +15,6 @@ import { getQuestionIdBySurveySlug } from "@/src/components/beteiligung/shared/u
 import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { Link } from "@/src/components/core/components/links/Link"
 import { linkStyles } from "@/src/components/core/components/links/styles"
-import { Notice } from "@/src/components/core/components/Notice/Notice"
 import { Prettify } from "@/src/components/core/types"
 import { adminLookupRowsQueryOptions } from "@/src/server/adminLookupTables/adminLookupTablesQueryOptions"
 import { getSubsectionBySlugFn } from "@/src/server/subsections/subsections.functions"
@@ -208,10 +208,17 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
   return (
     <div className="mt-4 space-y-2">
       {existingSubsubsectionSlug && (
-        <Notice type="warn" title="Verknüpfung zur Maßnahmenplanung">
-          <p>Aus dieser Eingabe wurde ein Maßnahmeneintrag erstellt.</p>
-          <p className="mt-2">
-            Verknüpfung sichtbar:{" "}
+        <div className="rounded-lg border border-blue-200 bg-blue-50 px-6 py-5">
+          <div className="mb-3 flex items-center gap-3">
+            <LinkIcon className="size-5 shrink-0 text-blue-700" aria-hidden="true" />
+            <h4 className="font-semibold">Verknüpfte Maßnahme</h4>
+          </div>
+
+          <p className="text-sm text-gray-700">
+            Aus dieser Eingabe wurde ein Eintrag in der Maßnahmenplanung erstellt.
+          </p>
+
+          <p className="mt-4">
             <Link
               to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug"
               params={{
@@ -221,10 +228,10 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
               }}
               className={linkStyles}
             >
-              Zur Maßnahme
+              Geplante Maßnahme öffnen
             </Link>
           </p>
-        </Notice>
+        </div>
       )}
       {(convertError || lookupError) && (
         <div className="rounded-sm bg-red-50 p-4 text-red-800">
