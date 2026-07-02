@@ -9,6 +9,11 @@ export const UPLOAD_SIZES = {
     iconPx: 128,
     containerHeight: "h-32",
   },
+  detail: {
+    iconSize: "size-44" as const,
+    iconPx: 176,
+    containerHeight: "h-44",
+  },
 } as const
 
 export type UploadSize = keyof typeof UPLOAD_SIZES

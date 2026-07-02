@@ -11,6 +11,7 @@ import { LuckyCloudDocumentLink } from "@/src/components/uploads/LuckyCloudDocum
 import { UploadAuthorAndDates } from "@/src/components/uploads/UploadAuthorAndDates"
 import { UploadPdfViewer } from "@/src/components/uploads/UploadPdfViewer"
 import { UploadPreview } from "@/src/components/uploads/UploadPreview"
+import { UploadProjectRecordLinks } from "@/src/components/uploads/UploadProjectRecordLinks"
 import { UploadVerknuepfungen } from "@/src/components/uploads/UploadVerknuepfungen"
 import { isPdf } from "@/src/components/uploads/utils/getFileType"
 import { uploadUrl } from "@/src/components/uploads/utils/uploadUrl"
@@ -40,6 +41,7 @@ export const UploadDetailPanelContent = ({
       ? { ...editLink.search, returnTo }
       : editLink?.search
   const isUploadPdf = isPdf(upload)
+  const linkedProjectRecords = upload.projectRecords ?? []
 
   return (
     <div className="space-y-6">
@@ -84,11 +86,10 @@ export const UploadDetailPanelContent = ({
       </div>
 
       <div className="space-y-3 text-sm">
-        <UploadAuthorAndDates
-          createdBy={upload.createdBy}
-          createdAt={upload.createdAt}
-          updatedBy={upload.updatedBy ?? undefined}
-          updatedAt={upload.updatedAt ?? undefined}
+        <UploadProjectRecordLinks
+          projectSlug={projectSlug}
+          projectRecords={linkedProjectRecords}
+          className="border-t border-gray-200 pt-3"
         />
 
         {upload.summary && (
@@ -100,18 +101,17 @@ export const UploadDetailPanelContent = ({
           </div>
         )}
 
-        <div className="border-t border-gray-200 pt-3">
-          <h4 className="text-sm font-medium">Verknüpfungen:</h4>
-          <UploadVerknuepfungen
-            projectSlug={projectSlug}
-            landAcquisitionModuleEnabled={upload.project?.landAcquisitionModuleEnabled ?? false}
-            subsubsections={upload.subsubsections}
-            acquisitionAreas={upload.acquisitionAreas}
-            projectRecords={upload.projectRecords}
-            projectRecordEmail={upload.projectRecordEmail}
-            surveyResponse={upload.surveyResponse}
-          />
-        </div>
+        <UploadVerknuepfungen
+          projectSlug={projectSlug}
+          landAcquisitionModuleEnabled={upload.project?.landAcquisitionModuleEnabled ?? false}
+          subsubsections={upload.subsubsections}
+          acquisitionAreas={upload.acquisitionAreas}
+          projectRecords={null}
+          projectRecordEmail={upload.projectRecordEmail}
+          surveyResponse={upload.surveyResponse}
+          variant="aligned"
+          className="border-t border-gray-200 pt-3"
+        />
 
         {upload.latitude && upload.longitude && (
           <div className="border-t border-gray-200 pt-3">
@@ -152,6 +152,15 @@ export const UploadDetailPanelContent = ({
           </ButtonWrapper>
         </IfUserCanEdit>
       )}
+
+      <UploadAuthorAndDates
+        className="border-t border-gray-200 pt-4"
+        createdBy={upload.createdBy}
+        createdAt={upload.createdAt}
+        updatedBy={upload.updatedBy ?? undefined}
+        updatedAt={upload.updatedAt ?? undefined}
+        variant="aligned"
+      />
     </div>
   )
 }

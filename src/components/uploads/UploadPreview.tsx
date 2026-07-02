@@ -78,7 +78,8 @@ export const UploadPreview = (props: Props) => {
       </div>
     ) : null
 
-  const containerClassName = size === "grid" ? "max-w-[112px]" : ""
+  const containerClassName =
+    size === "grid" ? "max-w-[112px]" : size === "detail" ? "max-w-[176px]" : ""
 
   if (onClick) {
     return (

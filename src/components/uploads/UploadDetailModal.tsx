@@ -135,7 +135,10 @@ function UploadDetailModalInner({
               : undefined
           }
           onEditClick={(event) => {
-            if (!canEditInLocalModal) return
+            if (!canEditInLocalModal) {
+              onClose()
+              return
+            }
 
             event.preventDefault()
             setIsDirty(false)

@@ -49,22 +49,28 @@ export const UploadPreviewClickable = ({
     void primeUploadDetails()
   }
 
-  const openPreview = () => {
+  const openPreview = async () => {
     if (
       !disableHostedModal &&
       projectUploadModal &&
       (!editLink || editLink.to === "/$projectSlug/uploads/$uploadId/edit")
     ) {
-      projectUploadModal.openUploadDetail({
-        uploadId: effectiveUploadId,
-        previewUpload: upload,
-      })
-      warmPreview()
+      try {
+        await primeUploadDetails()
+      } finally {
+        projectUploadModal.openUploadDetail({
+          uploadId: effectiveUploadId,
+          previewUpload: upload,
+        })
+      }
       return
     }
 
-    setIsPreviewOpen(true)
-    warmPreview()
+    try {
+      await primeUploadDetails()
+    } finally {
+      setIsPreviewOpen(true)
+    }
   }
 
   return (

@@ -38,8 +38,8 @@ import { SummaryField } from "./SummaryField"
 import { SuperAdminLuckyCloud } from "./SuperAdminLuckyCloud"
 import { UploadAuthorAndDates } from "./UploadAuthorAndDates"
 import { UploadPreview } from "./UploadPreview"
+import { UploadProjectRecordLinks } from "./UploadProjectRecordLinks"
 import type { UploadWithRelations } from "./uploadTypes"
-import { UploadVerknuepfungen } from "./UploadVerknuepfungen"
 
 const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
 
@@ -88,7 +88,7 @@ const UploadSubsectionFields = ({
         {(field) => (
           <field.Combobox
             label="Verknüpfung mit Maßnahmen"
-            optional
+            placeholder="Maßnahme suchen"
             items={subsubsectionCheckboxItems}
           />
         )}
@@ -98,7 +98,7 @@ const UploadSubsectionFields = ({
           {(field) => (
             <field.Combobox
               label="Verknüpfungen mit Verhandlungsflächen"
-              optional
+              placeholder="Verhandlungsfläche suchen"
               items={acquisitionAreaCheckboxItems}
             />
           )}
@@ -163,6 +163,7 @@ export const EditUploadForm = ({
 
   const initialValues = createUploadFormValues(upload)
   const formKey = getUploadFormKey(upload)
+  const linkedProjectRecords = upload.projectRecords ?? []
 
   const form = useAppForm({
     defaultValues: { ...uploadFormDefaultValues, ...initialValues },
@@ -253,13 +254,15 @@ export const EditUploadForm = ({
         >
           <FormDirtyStateReporter onDirtyChange={onDirtyChange} />
           <div className="flex justify-center sm:block">
-            <div className="flex flex-col gap-10 sm:flex-row">
-              <UploadPreview
-                uploadId={upload.id}
-                projectSlug={projectSlug}
-                size="grid"
-                showTitle={false}
-              />
+            <div className="flex flex-col gap-8 sm:flex-row sm:items-start">
+              <div className="shrink-0">
+                <UploadPreview
+                  uploadId={upload.id}
+                  projectSlug={projectSlug}
+                  size="detail"
+                  showTitle={false}
+                />
+              </div>
               <div className="grow space-y-5">
                 <div className="flex items-center justify-between">
                   <div>
@@ -274,12 +277,36 @@ export const EditUploadForm = ({
                   <LuckyCloudDocumentLink collaborationUrl={upload.collaborationUrl} />
                 </div>
 
-                <form.AppField name="title">
-                  {(field) => <field.TextField type="text" label="Kurzbeschreibung" />}
-                </form.AppField>
+                <div className="space-y-2">
+                  <div className="space-y-1">
+                    <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+                      Anzeigename
+                    </label>
+                    <p className="text-sm text-gray-500">
+                      Wenn der ursprüngliche Dateiname kryptisch oder zu lang ist, können Sie hier
+                      eine verständliche Bezeichnung eingeben. Dieser Name wird dann anstelle des
+                      Dateinamens in der Listenansicht und der Vorschau angezeigt.
+                    </p>
+                  </div>
+                  <form.AppField name="title">
+                    {(field) => (
+                      <field.TextField
+                        type="text"
+                        label=""
+                        labelProps={{ className: "sr-only mb-0" }}
+                        placeholder="Anzeigenamen eingeben"
+                      />
+                    )}
+                  </form.AppField>
+                </div>
               </div>
             </div>
           </div>
+          <UploadProjectRecordLinks
+            projectSlug={projectSlug}
+            projectRecords={linkedProjectRecords}
+            className="space-y-1"
+          />
           <UploadSubsectionFields
             acquisitionAreas={acquisitionAreasData}
             landAcquisitionModuleEnabled={upload.project?.landAcquisitionModuleEnabled ?? false}
@@ -297,9 +324,7 @@ export const EditUploadForm = ({
           )}
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Standort (optional)
-            </label>
+            <label className="mb-1 block text-sm font-medium text-gray-700">Standort</label>
             <p className="mb-2 text-sm text-gray-500">
               Dokumente und Bilder lassen sich unabhängig von Planungsabschnitten oder Maßnahmen auf
               der Karte verorten. <br />
@@ -321,16 +346,7 @@ export const EditUploadForm = ({
         createdAt={upload.createdAt}
         updatedBy={upload.updatedBy ?? undefined}
         updatedAt={upload.updatedAt ?? undefined}
-      />
-      <h4 className="mt-4 text-sm font-medium">Verknüpfungen:</h4>
-      <UploadVerknuepfungen
-        projectSlug={projectSlug}
-        landAcquisitionModuleEnabled={upload.project?.landAcquisitionModuleEnabled ?? false}
-        subsubsections={upload.subsubsections}
-        acquisitionAreas={upload.acquisitionAreas}
-        projectRecords={upload.projectRecords}
-        projectRecordEmail={upload.projectRecordEmail}
-        surveyResponse={upload.surveyResponse}
+        variant="aligned"
       />
 
       <SuperAdminLogData data={{ upload, returnPath, returnText }} />

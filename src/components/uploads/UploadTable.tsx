@@ -14,7 +14,9 @@ import { DeleteUploadButton } from "@/src/components/uploads/DeleteUploadButton"
 import { useProjectUploadModal } from "@/src/components/uploads/ProjectUploadModalHost"
 import { UploadPreviewClickable } from "@/src/components/uploads/UploadPreviewClickable"
 import { UploadVerknuepfungen } from "@/src/components/uploads/UploadVerknuepfungen"
+import { isPdf } from "@/src/components/uploads/utils/getFileType"
 import { uploadUrl } from "@/src/components/uploads/utils/uploadUrl"
+import { getFilenameFromS3 } from "@/src/shared/uploads/url"
 import type { UploadEditLink, UploadWithRelations } from "./uploadTypes"
 
 const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
@@ -23,7 +25,7 @@ type Props = Prettify<{
   uploads: UploadWithRelations[]
   withAction?: boolean
   withRelations: boolean
-  onDelete?: () => Promise<void>
+  onDelete?: (uploadId: number) => Promise<void>
 }>
 
 export const UploadTable = ({ uploads, withAction = true, withRelations, onDelete }: Props) => {
@@ -42,7 +44,7 @@ export const UploadTable = ({ uploads, withAction = true, withRelations, onDelet
               scope="col"
               className="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-6"
             >
-              Titel
+              Dateiname
             </th>
             <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
               <span className="sr-only">Standort</span>
@@ -91,7 +93,7 @@ const UploadTableRow = ({
   projectSlug: string
   withAction: boolean
   withRelations: boolean
-  onDelete?: () => Promise<void>
+  onDelete?: (uploadId: number) => Promise<void>
 }) => {
   const hasLocation = upload.latitude !== null && upload.longitude !== null
   const projectUploadModal = useProjectUploadModal()
@@ -101,6 +103,13 @@ const UploadTableRow = ({
     params: { projectSlug, uploadId: String(upload.id) },
     search: returnTo ? { returnTo } : undefined,
   }
+  const handleDelete = onDelete
+    ? async () => {
+        await onDelete(upload.id)
+      }
+    : undefined
+  const filename = getFilenameFromS3(upload.externalUrl)
+  const isUploadPdf = isPdf(upload)
   return (
     <tr>
       <td className="py-2 pr-3 pl-4 text-sm sm:pl-6">
@@ -112,15 +121,26 @@ const UploadTableRow = ({
               projectSlug={projectSlug}
               size="table"
               editLink={editLink}
-              onDeleted={onDelete}
+              onDeleted={handleDelete}
             />
           </div>
-          <span
-            className="max-w-xs min-w-0 truncate text-sm text-gray-900"
-            title={upload.title || undefined}
-          >
-            {upload.title || "-"}
-          </span>
+          {isUploadPdf ? (
+            <Link
+              to="/$projectSlug/uploads/$uploadId/view"
+              params={{ projectSlug, uploadId: String(upload.id) }}
+              className="min-w-0 text-sm break-all"
+            >
+              {filename || "-"}
+            </Link>
+          ) : (
+            <Link
+              blank
+              href={upload.collaborationUrl ?? uploadUrl(upload, projectSlug)}
+              className="min-w-0 text-sm break-all"
+            >
+              {filename || "-"}
+            </Link>
+          )}
         </div>
       </td>
       <td className="px-1.5 py-2 text-sm">
@@ -192,12 +212,12 @@ const UploadTableRow = ({
               >
                 Bearbeiten
               </Link>
-              {onDelete && (
+              {handleDelete && (
                 <DeleteUploadButton
                   projectSlug={projectSlug}
                   uploadId={upload.id}
                   uploadTitle={upload.title}
-                  onDeleted={onDelete}
+                  onDeleted={handleDelete}
                 />
               )}
             </IfUserCanEdit>

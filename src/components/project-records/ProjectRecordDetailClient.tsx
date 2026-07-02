@@ -10,8 +10,10 @@ import { ReprocessProjectRecordEditForm } from "@/src/components/project-records
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { UploadDropzone } from "@/src/components/uploads/UploadDropzone"
 import { UploadDropzoneContainer } from "@/src/components/uploads/UploadDropzoneContainer"
+import { UploadTable } from "@/src/components/uploads/UploadTable"
 import { projectRecordQueryOptions } from "@/src/server/projectRecords/projectRecordsQueryOptions"
 import type { ProjectRecord } from "@/src/server/projectRecords/types"
+import { uploadsWithSubsectionsQueryOptions } from "@/src/server/uploads/uploadsWithSubsectionsQueryOptions"
 
 const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
 
@@ -36,7 +38,9 @@ const ProjectRecordQuickUpload = ({
   return (
     <IfUserCanEdit>
       <div className="mt-4">
-        <label className="mb-2 block text-sm font-medium text-gray-700">Dokumente ergänzen</label>
+        <label className="sr-only mb-2 block text-sm font-medium text-gray-700">
+          Dokumente ergänzen
+        </label>
         <UploadDropzoneContainer className="h-36 rounded-md p-0">
           <UploadDropzone
             fillContainer
@@ -64,6 +68,33 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord }: Props) => {
     })
   }
 
+  const uploadIds = projectRecord.uploads.map((upload) => upload.id)
+  const { data: uploadsData } = useQuery({
+    ...uploadsWithSubsectionsQueryOptions({
+      projectSlug,
+      where: { id: { in: uploadIds } },
+    }),
+    enabled: uploadIds.length > 0,
+  })
+  const projectRecordUploads = uploadsData?.uploads ?? []
+
+  const projectRecordUploadsSection = (
+    <>
+      <UploadTable
+        withAction={false}
+        withRelations={false}
+        uploads={projectRecordUploads}
+        onDelete={async () => {
+          refreshProjectRecord()
+        }}
+      />
+      <ProjectRecordQuickUpload
+        projectRecordId={projectRecord.id}
+        onUploaded={refreshProjectRecord}
+      />
+    </>
+  )
+
   const [aiSuggestions, setAiSuggestions] = useState<ReprocessedProjectRecord | null>(null)
 
   const handleAiSuggestions = (suggestions: ReprocessedProjectRecord) => {
@@ -76,7 +107,6 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord }: Props) => {
 
   const projectRecordSummaryProps = {
     projectRecord,
-    onUploadDeleted: refreshProjectRecord,
   }
 
   useEffect(() => {
@@ -96,10 +126,7 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord }: Props) => {
             <div>
               <h2 className="mb-4 text-lg font-medium">Aktueller Protokolleintrag</h2>
               <ProjectRecordSummary {...projectRecordSummaryProps} />
-              <ProjectRecordQuickUpload
-                projectRecordId={projectRecord.id}
-                onUploaded={refreshProjectRecord}
-              />
+              {projectRecordUploadsSection}
             </div>
 
             <div>
@@ -125,10 +152,7 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord }: Props) => {
           </SuperAdminBox>
 
           <ProjectRecordSummary {...projectRecordSummaryProps} />
-          <ProjectRecordQuickUpload
-            projectRecordId={projectRecord.id}
-            onUploaded={refreshProjectRecord}
-          />
+          {projectRecordUploadsSection}
           <CreateEditReviewHistory projectRecord={projectRecord} />
         </>
       )}

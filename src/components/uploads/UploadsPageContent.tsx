@@ -26,7 +26,8 @@ export const UploadsPageContent = () => {
 
   return (
     <>
-      <div className="mt-8 flex flex-col gap-8">
+      <div className="mt-8 space-y-8">
+        <UploadTable withAction withRelations uploads={visibleUploads} />
         <UploadDropzone
           onUploadComplete={async () => {
             await queryClient.invalidateQueries({
@@ -34,8 +35,6 @@ export const UploadsPageContent = () => {
             })
           }}
         />
-
-        <UploadTable withAction withRelations uploads={visibleUploads} />
       </div>
 
       <SuperAdminBox>

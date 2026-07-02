@@ -16,13 +16,11 @@ import { SelectListbox } from "@/src/components/core/components/forms/SelectList
 import { Link } from "@/src/components/core/components/links/Link"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
-import { useCurrentReturnTo } from "@/src/components/core/routes/useCurrentPathWithSearch"
 import { ProjectRecordNewModal } from "@/src/components/project-records/ProjectRecordNewModal"
 import { ProjectRecordsTable } from "@/src/components/project-records/ProjectRecordTable"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { UploadDropzone } from "@/src/components/uploads/UploadDropzone"
-import { UploadDropzoneContainer } from "@/src/components/uploads/UploadDropzoneContainer"
-import { UploadPreviewClickable } from "@/src/components/uploads/UploadPreviewClickable"
+import { UploadTable } from "@/src/components/uploads/UploadTable"
 import { deleteAllAcquisitionAreasForSubsubsectionFn } from "@/src/server/acquisitionAreas/acquisitionAreas.functions"
 import { acquisitionAreasBySubsubsectionQueryOptions } from "@/src/server/acquisitionAreas/acquisitionAreasAbschnitteQueryOptions"
 import {
@@ -47,7 +45,6 @@ export const SubsubsectionLandAcquisitionContent = ({
 }: Props) => {
   const { projectSlug, subsectionSlug, subsubsectionSlug } = layoutRouteApi.useParams()
   const queryClient = useQueryClient()
-  const returnTo = useCurrentReturnTo()
   const { acquisitionAreaId, setAcquisitionAreaId } = useAcquisitionAreaSelection()
   const [isProjectRecordModalOpen, setIsProjectRecordModalOpen] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
@@ -111,12 +108,6 @@ export const SubsubsectionLandAcquisitionContent = ({
     subsectionSlug: subsectionSlug!,
     subsubsectionSlug: subsubsectionSlug!,
   }
-
-  const buildUploadEditLink = (uploadId: number) => ({
-    to: "/$projectSlug/uploads/$uploadId/edit" as const,
-    params: { projectSlug, uploadId: String(uploadId) },
-    search: returnTo ? { returnTo } : undefined,
-  })
 
   const handleDeleteAllAcquisitionAreas = async () => {
     if (
@@ -328,31 +319,22 @@ export const SubsubsectionLandAcquisitionContent = ({
 
               <section className="mt-10 space-y-3">
                 <h2 className="text-lg font-semibold text-gray-700 sm:text-lg">Dokumente</h2>
-                {!uploads.length && <ZeroCase small visible name="Dokumente" />}
-                <div className="grid grid-cols-2 gap-3">
-                  {uploads.map((upload) => (
-                    <UploadPreviewClickable
-                      key={upload.id}
-                      uploadId={upload.id}
-                      upload={upload}
-                      projectSlug={projectSlug}
-                      size="grid"
-                      editLink={buildUploadEditLink(upload.id)}
-                      onDeleted={async () => {
+                <div className="flex flex-col gap-2">
+                  <UploadTable
+                    withAction={false}
+                    withRelations={false}
+                    uploads={uploads}
+                    onDelete={async () => {
+                      await refetchUploads()
+                    }}
+                  />
+                  <IfUserCanEdit>
+                    <UploadDropzone
+                      acquisitionAreaIds={[selectedAcquisitionArea.id]}
+                      onUploadComplete={async () => {
                         await refetchUploads()
                       }}
                     />
-                  ))}
-                  <IfUserCanEdit>
-                    <UploadDropzoneContainer className="h-36 rounded-md p-0">
-                      <UploadDropzone
-                        fillContainer
-                        acquisitionAreaIds={[selectedAcquisitionArea.id]}
-                        onUploadComplete={async () => {
-                          await refetchUploads()
-                        }}
-                      />
-                    </UploadDropzoneContainer>
                   </IfUserCanEdit>
                 </div>
               </section>

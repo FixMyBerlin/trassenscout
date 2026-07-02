@@ -21,6 +21,7 @@ type Props = {
   projectRecordEmail: { createdAt: Date } | null
   surveyResponse: { id: number; surveySession: { survey: { id: number; slug: string } } } | null
   className?: string
+  variant?: "default" | "aligned"
 }
 
 export const UploadVerknuepfungen = ({
@@ -32,6 +33,7 @@ export const UploadVerknuepfungen = ({
   projectRecordEmail,
   surveyResponse,
   className,
+  variant = "default",
 }: Props) => {
   const hasSubsubsection = subsubsections?.length > 0
   const hasProjectRecords = projectRecords != null && projectRecords.length > 0
@@ -57,6 +59,93 @@ export const UploadVerknuepfungen = ({
         return a.id - b.id
       })
     : []
+
+  if (variant === "aligned") {
+    const sectionClassName =
+      "grid gap-2 sm:grid-cols-[minmax(170px,_190px)_1fr] sm:items-start sm:gap-x-1 sm:gap-y-4"
+    const sectionLabelClassName = "text-sm font-medium text-gray-700"
+    const sectionValueClassName = "text-sm text-gray-700"
+
+    if (!hasRelations) {
+      return <p className="text-sm text-gray-500">Keine Verknüpfung</p>
+    }
+
+    return (
+      <section className={className}>
+        {hasSubsubsection && (
+          <div className={sectionClassName}>
+            <p className={sectionLabelClassName}>
+              {subsubsections.length === 1 ? "Maßnahme:" : "Maßnahmen:"}
+            </p>
+            <div className={`space-y-1 ${sectionValueClassName}`}>
+              {subsubsections.map((subsub) => (
+                <Link
+                  key={`${subsub.subsection.slug}-${subsub.slug}`}
+                  to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug"
+                  params={{
+                    projectSlug,
+                    subsectionSlug: subsub.subsection.slug,
+                    subsubsectionSlug: subsub.slug,
+                  }}
+                  className="block w-fit"
+                >
+                  {shortTitle(subsub.slug)}
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {hasAcquisitionAreas && (
+          <div className={sectionClassName}>
+            <p className={sectionLabelClassName}>
+              {sortedAcquisitionAreas.length === 1 ? "Verhandlungsfläche:" : "Verhandlungsflächen:"}
+            </p>
+            <div className={`space-y-1 ${sectionValueClassName}`}>
+              {sortedAcquisitionAreas.map((area) => (
+                <Link
+                  key={area.id}
+                  to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition"
+                  params={{
+                    projectSlug,
+                    subsectionSlug: area.subsubsection.subsection.slug,
+                    subsubsectionSlug: area.subsubsection.slug,
+                  }}
+                  search={{ acquisitionAreaId: String(area.id) }}
+                  className="block w-fit"
+                >
+                  {area.id} ({area.parcel.alkisParcelId})
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {hasSurveyResponse && (
+          <div className={sectionClassName}>
+            <p className={sectionLabelClassName}>Beteiligung:</p>
+            <div className={sectionValueClassName}>
+              <Link
+                to={`/${projectSlug}/surveys/${surveyResponse.surveySession.survey.id}/responses?responseDetails=${surveyResponse.id}`}
+              >
+                Beitrag mit der ID {surveyResponse.id} - Formular{" "}
+                {surveyResponse.surveySession.survey.slug}
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {hasProjectRecordEmail && (
+          <div className={sectionClassName}>
+            <p className={sectionLabelClassName}>E-Mail-Anhang:</p>
+            <span className={sectionValueClassName}>
+              {formatBerlinTime(projectRecordEmail!.createdAt, "dd.MM.yyyy, HH:mm")}
+            </span>
+          </div>
+        )}
+      </section>
+    )
+  }
 
   return (
     <section className={className}>

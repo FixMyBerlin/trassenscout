@@ -4,14 +4,12 @@ import { twJoin } from "tailwind-merge"
 import { Link } from "@/src/components/core/components/links/Link"
 import { linkStyles } from "@/src/components/core/components/links/styles"
 import { Markdown } from "@/src/components/core/components/Markdown/Markdown"
-import { useCurrentReturnTo } from "@/src/components/core/routes/useCurrentPathWithSearch"
 import { getFullname } from "@/src/components/core/users/getFullname"
 import { ProjectRecordAssignedToPill } from "@/src/components/project-records/ProjectRecordAssignedToPill"
 import { ProjectRecordEditingStateIndicator } from "@/src/components/project-records/ProjectRecordEditingStateIndicator"
 import { ProjectRecordEmailSourceText } from "@/src/components/project-records/ProjectRecordEmailSource"
 import { ProjectRecordVerknuepfungen } from "@/src/components/project-records/ProjectRecordVerknuepfungen"
 import { createProjectRecordFilterUrl } from "@/src/components/project-records/utils/filter/createFilterUrl"
-import { UploadPreviewClickable } from "@/src/components/uploads/UploadPreviewClickable"
 import type { ProjectRecord } from "@/src/server/projectRecords/types"
 
 type Props = {
@@ -24,21 +22,10 @@ type Props = {
       uploads: { id: number; title: string }[]
     } | null
   }
-  onUploadDeleted?: () => void | Promise<void>
 }
 
-export const ProjectRecordSummary = ({ projectRecord, onUploadDeleted }: Props) => {
+export const ProjectRecordSummary = ({ projectRecord }: Props) => {
   const projectSlug = projectRecord.project.slug
-  const returnTo = useCurrentReturnTo()
-
-  const buildUploadEditLink = (uploadId: number) => ({
-    to: "/$projectSlug/uploads/$uploadId/edit" as const,
-    params: { projectSlug, uploadId: String(uploadId) },
-    search: {
-      returnProjectRecordId: String(projectRecord.id),
-      ...(returnTo ? { returnTo } : {}),
-    },
-  })
 
   return (
     <div className="my-6 space-y-6 font-medium">
@@ -133,26 +120,9 @@ export const ProjectRecordSummary = ({ projectRecord, onUploadDeleted }: Props) 
           acquisitionAreas={projectRecord.acquisitionAreas}
         />
       </div>
-
-      {!!projectRecord.uploads.length && (
-        <div>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-            {projectRecord.uploads.map((upload) => (
-              <UploadPreviewClickable
-                key={upload.id}
-                uploadId={upload.id}
-                projectSlug={projectSlug}
-                size="grid"
-                onDeleted={onUploadDeleted}
-                editLink={buildUploadEditLink(upload.id)}
-                disableHostedModal
-                localModalZIndex={40}
-                closeOnEditSuccess
-              />
-            ))}
-          </div>
-        </div>
-      )}
+      <div>
+        <p className="mb-2 text-gray-500">Dokumente:</p>
+      </div>
     </div>
   )
 }
