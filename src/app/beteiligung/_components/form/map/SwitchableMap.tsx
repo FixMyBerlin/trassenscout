@@ -311,7 +311,7 @@ export const SwitchableMap = ({
   }
 
   return (
-    <div className="mt-4" aria-describedby={field.name + " Hint"}>
+    <div className="relative mt-4 h-[500px]" aria-describedby={field.name + " Hint"}>
       <p className={formClasses.fieldLabel}>
         Bezieht sich Ihre Anmeldung auf eine Haltestelle im Bestand?
       </p>
@@ -344,54 +344,52 @@ export const SwitchableMap = ({
           </Radio>
         ))}
       </RadioGroup>
-      <div className="relative mt-4 h-[500px]">
-        <Map
-          id="mainMap"
-          scrollZoom={false}
-          initialViewState={initialViewState}
-          mapStyle={getSurveyMapStyle({ selectedLayer, maptilerUrl })}
-          onClick={handleMapClick}
-          onMouseMove={handleMouseMove}
-          onMouseLeave={handleMouseLeave}
-          // Set map state for <MapData>:
-          onLoad={(event) => handleMapLoad(event)}
-          // todo make configurable
-          maxZoom={16}
-          minZoom={7}
-          cursor={cursorStyle}
-          interactiveLayerIds={!isPin ? allInteractiveLayerIds : []}
-          onIdle={() => setMapLoading(false)}
-        >
-          <NavigationControl showCompass={false} />
-          <AllSources mapData={mapData} />
-          <AllLayers layers={[...generateLayers(mapData)]} />
-          {!isPin && (
-            <SurveyMapGeoCategoryInfoPanel
-              description={description}
-              infoPanelText={infoPanelText}
-              additionalData={additionalData}
-              geoCategoryIdDefinition={geoCategoryIdDefinition}
-            />
-          )}
-          <SurveyBackgroundSwitcher
-            position="top-left"
-            value={selectedLayer}
-            onChange={handleLayerSwitch}
+      <Map
+        id="mainMap"
+        scrollZoom={false}
+        initialViewState={initialViewState}
+        mapStyle={getSurveyMapStyle({ selectedLayer, maptilerUrl })}
+        onClick={handleMapClick}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        // Set map state for <MapData>:
+        onLoad={(event) => handleMapLoad(event)}
+        // todo make configurable
+        maxZoom={16}
+        minZoom={7}
+        cursor={cursorStyle}
+        interactiveLayerIds={!isPin ? allInteractiveLayerIds : []}
+        onIdle={() => setMapLoading(false)}
+      >
+        <NavigationControl showCompass={false} />
+        <AllSources mapData={mapData} />
+        <AllLayers layers={[...generateLayers(mapData)]} />
+        {!isPin && (
+          <SurveyMapGeoCategoryInfoPanel
+            description={description}
+            infoPanelText={infoPanelText}
+            additionalData={additionalData}
+            geoCategoryIdDefinition={geoCategoryIdDefinition}
           />
-          {markerPosition && isPin && (
-            <Marker
-              longitude={markerPosition.lng}
-              latitude={markerPosition.lat}
-              anchor="bottom"
-              draggable
-              onDrag={onMarkerDrag}
-              onDragEnd={onMarkerDragEnd}
-            >
-              <SurveyPin />
-            </Marker>
-          )}
-        </Map>
-      </div>
+        )}
+        <SurveyBackgroundSwitcher
+          position="top-left"
+          value={selectedLayer}
+          onChange={handleLayerSwitch}
+        />
+        {markerPosition && isPin && (
+          <Marker
+            longitude={markerPosition.lng}
+            latitude={markerPosition.lat}
+            anchor="bottom"
+            draggable
+            onDrag={onMarkerDrag}
+            onDragEnd={onMarkerDragEnd}
+          >
+            <SurveyPin />
+          </Marker>
+        )}
+      </Map>
     </div>
   )
 }

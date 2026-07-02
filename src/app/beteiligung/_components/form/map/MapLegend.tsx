@@ -11,9 +11,7 @@ export type TLegendItem = {
 type Props = Record<string, Record<string, TLegendItem>>
 
 const LegendItemShape = ({ legendItem }: { legendItem: TLegendItem }) => {
-  return (
-    <span className={clsx("inline-block w-5 shrink-0", legendItem.color, legendItem.className)} />
-  )
+  return <span className={clsx("w-5", legendItem.color, legendItem.className)} />
 }
 
 export const SurveyMapLegend = (legend: Props) => {
@@ -22,7 +20,7 @@ export const SurveyMapLegend = (legend: Props) => {
       {Object.entries(legend!).map(([key, value]) => (
         <Fragment key={key}>
           <p>{key}</p>
-          <div className="grid grid-cols-1 gap-y-1 sm:grid-cols-2">
+          <div className="grid-flow-row grid-cols-2 space-y-1 sm:grid md:grid-cols-2">
             {Object.entries(value!).map(([key, value]) => (
               <div key={key} className="flex items-center gap-2">
                 <div className="flex h-6 flex-col justify-center">
