@@ -102,17 +102,18 @@ export const UploadDetailPanelContent = ({
           </div>
         )}
 
-        <UploadVerknuepfungen
-          projectSlug={projectSlug}
-          landAcquisitionModuleEnabled={upload.project?.landAcquisitionModuleEnabled ?? false}
-          subsubsections={upload.subsubsections}
-          acquisitionAreas={upload.acquisitionAreas}
-          projectRecords={null}
-          projectRecordEmail={upload.projectRecordEmail}
-          surveyResponse={upload.surveyResponse}
-          variant="aligned"
-          className="border-t border-gray-200 pt-3"
-        />
+        <div className="border-t border-gray-200 pt-3">
+          <h4 className="text-sm font-medium">Verknüpfungen:</h4>
+          <UploadVerknuepfungen
+            projectSlug={projectSlug}
+            landAcquisitionModuleEnabled={upload.project?.landAcquisitionModuleEnabled ?? false}
+            subsubsections={upload.subsubsections}
+            acquisitionAreas={upload.acquisitionAreas}
+            projectRecords={null}
+            projectRecordEmail={upload.projectRecordEmail}
+            surveyResponse={upload.surveyResponse}
+          />
+        </div>
 
         {upload.latitude && upload.longitude && (
           <div className="border-t border-gray-200 pt-3">
