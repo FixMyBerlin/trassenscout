@@ -1,5 +1,5 @@
-import db, { SurveyResponseSourceEnum, SurveyResponseStateEnum } from "@/db"
 import { responseConfig as radnetzBrandenburgResponseConfig } from "@/src/app/beteiligung/_radnetz-brandenbrug/response-config"
+import db, { SurveyResponseSourceEnum, SurveyResponseStateEnum } from "@/db"
 import { authFile, seedProjects } from "@/tests/_fixtures/auth"
 import { authorizationNoise, pageNoise } from "@/tests/_fixtures/console-noise"
 import { expect, test } from "@/tests/_fixtures/test"
@@ -100,9 +100,7 @@ test.describe("Survey permissions", () => {
     // The survey itself is intentionally not deleted — it may have pre-existed.
     if (!surveyFixture) return
     await db.upload.delete({ where: { id: surveyFixture.uploadId } }).catch(() => {})
-    await db.surveyResponse
-      .delete({ where: { id: surveyFixture.surveyResponseId } })
-      .catch(() => {})
+    await db.surveyResponse.delete({ where: { id: surveyFixture.surveyResponseId } }).catch(() => {})
     await db.surveySession.delete({ where: { id: surveyFixture.surveySessionId } }).catch(() => {})
   })
 
@@ -172,11 +170,7 @@ test.describe("Survey permissions", () => {
         await saveButton.click()
 
         await expect(noteField).toHaveValue(note)
-        await page
-          .waitForResponse((r) => r.url().includes("/api/rpc/") && r.status() === 200, {
-            timeout: 15_000,
-          })
-          .catch(() => {})
+        await page.waitForResponse((r) => r.url().includes("/api/rpc/") && r.status() === 200, { timeout: 15_000 }).catch(() => {})
 
         const freshContext = await browser.newContext({ storageState: authFile("editor") })
         const freshPage = await freshContext.newPage()
@@ -228,9 +222,7 @@ test.describe("Survey permissions", () => {
 
       test("can open the upload edit route", async ({ page }) => {
         await page.goto(uploadEditPath())
-        await expect(
-          page.getByRole("heading", { name: "Dokument bearbeiten", exact: true }),
-        ).toBeVisible({
+        await expect(page.getByRole("heading", { name: "Dokument bearbeiten", exact: true })).toBeVisible({
           timeout: 30_000,
         })
       })
@@ -242,9 +234,7 @@ test.describe("Survey permissions", () => {
 
       test("can open the upload edit route", async ({ page }) => {
         await page.goto(uploadEditPath())
-        await expect(
-          page.getByRole("heading", { name: "Dokument bearbeiten", exact: true }),
-        ).toBeVisible({
+        await expect(page.getByRole("heading", { name: "Dokument bearbeiten", exact: true })).toBeVisible({
           timeout: 30_000,
         })
       })
@@ -256,9 +246,7 @@ test.describe("Survey permissions", () => {
 
       test("can open the upload edit route without explicit membership", async ({ page }) => {
         await page.goto(uploadEditPath())
-        await expect(
-          page.getByRole("heading", { name: "Dokument bearbeiten", exact: true }),
-        ).toBeVisible({
+        await expect(page.getByRole("heading", { name: "Dokument bearbeiten", exact: true })).toBeVisible({
           timeout: 30_000,
         })
       })

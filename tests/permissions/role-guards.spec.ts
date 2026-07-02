@@ -49,11 +49,11 @@ test.describe("Role guards", () => {
     test("can access projects without explicit membership", async ({ page }) => {
       await page.goto(qualityLevelsPath)
 
-      await expect(page.getByRole("heading", { name: "Ausbaustandards", exact: true })).toBeVisible(
-        {
-          timeout: 30_000,
-        },
-      )
+      await expect(
+        page.getByRole("heading", { name: "Ausbaustandards", exact: true })
+      ).toBeVisible({
+        timeout: 30_000,
+      })
     })
   })
 
@@ -64,13 +64,13 @@ test.describe("Role guards", () => {
     test("do not see project edit UI", async ({ page }) => {
       await page.goto(qualityLevelsPath)
 
-      await expect(page.getByRole("heading", { name: "Ausbaustandards", exact: true })).toBeVisible(
-        {
-          timeout: 30_000,
-        },
-      )
       await expect(
-        page.getByRole("link", { name: "Neuer Ausbaustandard", exact: true }),
+        page.getByRole("heading", { name: "Ausbaustandards", exact: true })
+      ).toBeVisible({
+        timeout: 30_000,
+      })
+      await expect(
+        page.getByRole("link", { name: "Neuer Ausbaustandard", exact: true })
       ).toBeHidden()
     })
   })
@@ -82,13 +82,13 @@ test.describe("Role guards", () => {
     test("see project edit UI", async ({ page }) => {
       await page.goto(qualityLevelsPath)
 
-      await expect(page.getByRole("heading", { name: "Ausbaustandards", exact: true })).toBeVisible(
-        {
-          timeout: 30_000,
-        },
-      )
       await expect(
-        page.getByRole("link", { name: "Neuer Ausbaustandard", exact: true }),
+        page.getByRole("heading", { name: "Ausbaustandards", exact: true })
+      ).toBeVisible({
+        timeout: 30_000,
+      })
+      await expect(
+        page.getByRole("link", { name: "Neuer Ausbaustandard", exact: true })
       ).toBeVisible()
     })
   })

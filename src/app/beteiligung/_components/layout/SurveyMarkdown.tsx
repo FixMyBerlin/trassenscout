@@ -45,5 +45,7 @@ export const SurveyMarkdown = ({ markdown, className }: Props) => {
 
   if (!markdown) return null
 
-  return <div className={clsx(proseClasses, proseClassesSurvey, className)}>{content}</div>
+  return (
+    <div className={clsx(proseClasses, proseClassesSurvey, className)}>{content}</div>
+  )
 }

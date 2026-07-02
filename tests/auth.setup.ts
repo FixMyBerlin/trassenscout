@@ -1,5 +1,5 @@
-import type { Browser } from "@playwright/test"
 import { expect, test as setup } from "@playwright/test"
+import type { Browser } from "@playwright/test"
 import fs from "node:fs"
 import path from "node:path"
 import { authFile, seedPassword, seedRoles, seedUsers } from "./_fixtures/auth"
@@ -43,11 +43,9 @@ const authenticateRole = async (browser: Browser, role: keyof typeof seedUsers) 
     .poll(
       async () => {
         const cookies = await context.cookies()
-        return cookies.some(
-          (cookie: { name: string }) => cookie.name === "rsv-builder_sSessionToken",
-        )
+        return cookies.some((cookie: { name: string }) => cookie.name === "rsv-builder_sSessionToken")
       },
-      { timeout: 30_000 },
+      { timeout: 30_000 }
     )
     .toBeTruthy()
 

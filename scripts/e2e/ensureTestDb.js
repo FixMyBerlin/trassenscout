@@ -24,14 +24,7 @@ const inspectRunningState = () => {
 }
 
 const containerExists = () => {
-  const result = run([
-    "ps",
-    "-a",
-    "--filter",
-    `name=^/${CONTAINER_NAME}$`,
-    "--format",
-    "{{.Names}}",
-  ])
+  const result = run(["ps", "-a", "--filter", `name=^/${CONTAINER_NAME}$`, "--format", "{{.Names}}"])
   if (result.status !== 0) {
     fail("Failed to check existing Docker containers for E2E test DB", result.stderr)
   }
@@ -59,16 +52,7 @@ const ensureRunning = () => {
   }
 
   const result = run(
-    [
-      "run",
-      "-d",
-      "-e",
-      "POSTGRES_PASSWORD=password",
-      "-p",
-      "6002:5432",
-      "--name=ts-test-db",
-      "postgres:16-alpine",
-    ],
+    ["run", "-d", "-e", "POSTGRES_PASSWORD=password", "-p", "6002:5432", "--name=ts-test-db", "postgres:16-alpine"],
     { stdio: "inherit" },
   )
 

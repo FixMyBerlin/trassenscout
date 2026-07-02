@@ -6,7 +6,7 @@ type ConsoleErrorFixtures = {
 
 const isAllowedError = (message: string, allowedErrors: Array<string | RegExp>) =>
   allowedErrors.some((allowedError) =>
-    typeof allowedError === "string" ? message.includes(allowedError) : allowedError.test(message),
+    typeof allowedError === "string" ? message.includes(allowedError) : allowedError.test(message)
   )
 
 export const test = base.extend<ConsoleErrorFixtures>({

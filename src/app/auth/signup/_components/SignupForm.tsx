@@ -115,7 +115,11 @@ export const SignupForm = () => {
       </DevAdminBox>
 
       <div className="mt-4">
-        Sie haben bereits einen Account? Zur <Link href={loginHref}>Anmeldung</Link>.
+        Sie haben bereits einen Account? Zur{" "}
+        <Link href={loginHref}>
+          Anmeldung
+        </Link>
+        .
       </div>
     </>
   )

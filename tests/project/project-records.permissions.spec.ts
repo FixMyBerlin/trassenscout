@@ -1,8 +1,8 @@
-import db, { ProjectRecordEditingState, ProjectRecordReviewState } from "@/db"
 import { authFile, seedProjects } from "@/tests/_fixtures/auth"
 import { authorizationNoise, pageNoise } from "@/tests/_fixtures/console-noise"
 import { expect, test } from "@/tests/_fixtures/test"
 import { expectErrorPage } from "@/tests/_utils/pageAssertions"
+import db, { ProjectRecordEditingState, ProjectRecordReviewState } from "@/db"
 import type { Page } from "@playwright/test"
 
 const projectSlug = seedProjects.richProject
@@ -48,9 +48,7 @@ const ensureProjectRecordId = async (page: Page) => {
 
   const title = `E2E Rechte ${Date.now()}`
   await page.getByRole("button", { name: "Neuer Protokolleintrag", exact: true }).click()
-  await expect(
-    page.getByRole("heading", { name: "Neuer Protokolleintrag", exact: true }),
-  ).toBeVisible({
+  await expect(page.getByRole("heading", { name: "Neuer Protokolleintrag", exact: true })).toBeVisible({
     timeout: 30_000,
   })
   await page.getByRole("button", { name: /Leeres Formular/ }).click()
@@ -181,11 +179,7 @@ test.describe("Project records permissions", () => {
 
         await expect(page.getByText(comment, { exact: true })).toBeVisible({ timeout: 30_000 })
         await expect(commentField).toHaveValue("")
-        await page
-          .waitForResponse((r) => r.url().includes("/api/rpc/") && r.status() === 200, {
-            timeout: 15_000,
-          })
-          .catch(() => {})
+        await page.waitForResponse((r) => r.url().includes("/api/rpc/") && r.status() === 200, { timeout: 15_000 }).catch(() => {})
 
         const freshContext = await browser.newContext({ storageState: authFile("editor") })
         const freshPage = await freshContext.newPage()
@@ -231,9 +225,7 @@ test.describe("Project records permissions", () => {
 
       test("do not see create button", async ({ page }) => {
         await page.goto(listPath)
-        await expect(
-          page.getByRole("heading", { name: "Projektprotokoll", exact: true }),
-        ).toBeVisible({
+        await expect(page.getByRole("heading", { name: "Projektprotokoll", exact: true })).toBeVisible({
           timeout: 30_000,
         })
         await expect(

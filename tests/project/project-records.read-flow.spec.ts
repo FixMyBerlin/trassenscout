@@ -19,9 +19,10 @@ test.describe("Project records read flow", () => {
     const firstRecordLink = page.locator("tbody tr td a").first()
 
     await expect
-      .poll(async () => (await page.locator("tbody tr td a").count()) + (await zeroCase.count()), {
-        timeout: 30_000,
-      })
+      .poll(
+        async () => (await page.locator("tbody tr td a").count()) + (await zeroCase.count()),
+        { timeout: 30_000 },
+      )
       .toBeGreaterThan(0)
 
     if ((await page.locator("tbody tr td a").count()) === 0) {

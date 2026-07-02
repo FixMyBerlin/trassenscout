@@ -115,7 +115,9 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
         const currentList = (current as Record<string, string[]>)[name] ?? []
         return {
           ...current,
-          [name]: checked ? [...currentList, value] : currentList.filter((item) => item !== value),
+        [name]: checked
+            ? [...currentList, value]
+            : currentList.filter((item) => item !== value),
         }
       })
     }
@@ -288,13 +290,13 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                 <div className="grid grid-cols-2 gap-1.5 md:grid-cols-3 lg:grid-cols-4">
                   {topicsOptions.map((item) => (
                     <LabeledInputRadioCheckbox
-                      type="checkbox"
-                      name="topics"
-                      key={item.value}
-                      checked={effectiveFilter.topics.includes(item.value)}
-                      onChange={handleInputChange}
-                      label={item.label}
-                      value={item.value}
+                    type="checkbox"
+                    name="topics"
+                    key={item.value}
+                    checked={effectiveFilter.topics.includes(item.value)}
+                    onChange={handleInputChange}
+                    label={item.label}
+                    value={item.value}
                     />
                   ))}
                 </div>
