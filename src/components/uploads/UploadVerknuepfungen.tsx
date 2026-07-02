@@ -202,7 +202,7 @@ export const UploadVerknuepfungen = ({
               <Link
                 to={`/${projectSlug}/surveys/${surveyResponse.surveySession.survey.id}/responses?responseDetails=${surveyResponse.id}`}
               >
-                Beitrag mit der ID {surveyResponse.id} - Formular{" "}
+                Eingabe mit der ID {surveyResponse.id} - Formular{" "}
                 {surveyResponse.surveySession.survey.slug}
               </Link>
             </li>

@@ -109,11 +109,11 @@ export function SurveyResponsesMap({ projectSlug, survey, tabs }: Props) {
               <div className="lg:w-[580px]">
                 <H3>
                   Ausgewählte{mapSelectedResponses.length === 1 ? "r" : ""}{" "}
-                  {mapSelectedResponses.length === 1 ? "Beitrag" : "Eingaben"}
+                  {mapSelectedResponses.length === 1 ? "Eingabe" : "Eingaben"}
                 </H3>
                 <div className="mt-2 flex items-center">
                   <SurveyStaticPin surveySlug={surveySlug} small />
-                  <small className="pl-4 text-[#7c3aed]">= Beitrag mit Verortung</small>
+                  <small className="pl-4 text-[#7c3aed]">= Eingabe mit Verortung</small>
                 </div>
               </div>
             </div>

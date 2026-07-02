@@ -350,12 +350,12 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
         <H2 className="text-lg font-semibold text-gray-700 sm:text-lg">Dokumente</H2>
         {linkedSurveyResponse && (
           <div className="rounded-md border border-gray-200 bg-gray-50 p-4 text-sm text-gray-700">
-            <p>Diese Maßnahme wurde aus folgendem Beitrag erstellt:</p>
+            <p>Diese Maßnahme wurde aus folgender Eingabe erstellt:</p>
             <p className="mt-1">
               <Link
                 to={`/${projectSlug}/surveys/${linkedSurveyResponse.surveyId}/responses?responseDetails=${linkedSurveyResponse.surveyResponseId}`}
               >
-                Beitrag mit der ID {linkedSurveyResponse.surveyResponseId} - Formular{" "}
+                Eingabe mit der ID {linkedSurveyResponse.surveyResponseId} - Formular{" "}
                 {linkedSurveyResponse.surveySlug}
               </Link>
             </p>

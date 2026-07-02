@@ -60,7 +60,7 @@ const EditableSurveyResponseUserText = ({
           </blockquote>
         )}
         <div className="mt-2 text-sm text-gray-500">
-          Beitrag vom: {response.surveySession.createdAt.toLocaleDateString()} um{" "}
+          Eingabe vom: {response.surveySession.createdAt.toLocaleDateString()} um{" "}
           {response.surveySession.createdAt.toLocaleTimeString("de-DE")}
         </div>
       </div>
@@ -75,7 +75,7 @@ const EditableSurveyResponseUserText = ({
           <div key={userTextIndex} className="bg-purple-100 p-4">
             <Markdown markdown={text} />
             <div className="mt-2 text-sm text-gray-500">
-              Beitrag vom: {response.surveySession.createdAt.toLocaleDateString()} um{" "}
+              Eingabe vom: {response.surveySession.createdAt.toLocaleDateString()} um{" "}
               {response.surveySession.createdAt.toLocaleTimeString("de-DE")}
             </div>
           </div>

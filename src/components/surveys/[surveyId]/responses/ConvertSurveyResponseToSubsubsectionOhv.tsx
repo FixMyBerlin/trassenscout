@@ -209,7 +209,7 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
     <div className="mt-4 space-y-2">
       {existingSubsubsectionSlug && (
         <Notice type="warn" title="Verknüpfung zur Maßnahmenplanung">
-          <p>Aus diesem Beitrag wurde ein Maßnahmeneintrag erstellt.</p>
+          <p>Aus dieser Eingabe wurde ein Maßnahmeneintrag erstellt.</p>
           <p className="mt-2">
             Verknüpfung sichtbar:{" "}
             <Link

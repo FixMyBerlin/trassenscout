@@ -120,12 +120,12 @@ export function SurveyResponses({ projectSlug, surveyId: _surveyId, survey, tabs
 
         <ZeroCase visible={filteredResponses.length} name={"Eingaben"} />
         <p className="mt-4 text-sm text-gray-500">
-          {filteredResponses.length} {filteredResponses.length === 1 ? "Beitrag" : "Eingaben"}
+          {filteredResponses.length} {filteredResponses.length === 1 ? "Eingabe" : "Eingaben"}
         </p>
         {filteredResponses.length !== 0 && (
           <div className="mt-2 flex items-center">
             <SurveyStaticPin surveySlug={surveySlug} small />
-            <small className="pl-4 text-[#7c3aed]">= Beitrag mit Verortung</small>
+            <small className="pl-4 text-[#7c3aed]">= Eingabe mit Verortung</small>
           </div>
         )}
         <section>
