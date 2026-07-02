@@ -35,7 +35,7 @@ export default async function EditSurveyResponseUploadPage({
   const returnPath: Route = surveyResponsesHref(projectSlug, Number(surveyId), {
     responseDetails: Number(surveyResponseId),
   })
-  const returnText = "Zurück zu den Eingabenn"
+  const returnText = "Zurück zu den Beiträgen"
 
   return (
     <>

@@ -16,7 +16,11 @@ export const DeleteButton = ({ testSurveyResponseIds, surveySlug }: DeleteButton
   const [deleteTestSurveyMutation] = useMutation(deleteTestSurveyResponses)
   const router = useRouter()
   const handleDelete = async () => {
-    if (window.confirm(`Diese ${testSurveyResponseIds.length} Eingaben unwiderruflich löschen?`)) {
+    if (
+      window.confirm(
+        `Diese ${testSurveyResponseIds.length} Beteiligungsbeiträge unwiderruflich löschen?`,
+      )
+    ) {
       try {
         await deleteTestSurveyMutation({ slug: surveySlug, deleteIds: testSurveyResponseIds })
       } catch (error) {

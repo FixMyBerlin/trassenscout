@@ -44,9 +44,9 @@ export const UploadsPageContent = () => {
       <UploadTable withAction withRelations={true} uploads={uploads} />
 
       <SuperAdminBox>
-        <strong>Hinweis:</strong> Uploads, die ausschließlich mit Eingaben verknüpft sind, werden in
-        dieser Übersicht nicht angezeigt. Diese Uploads sind nur über den jeweiligen Eingabe
-        zugänglich.
+        <strong>Hinweis:</strong> Uploads, die ausschließlich mit Beteiligungsbeiträgen verknüpft
+        sind, werden in dieser Übersicht nicht angezeigt. Diese Uploads sind nur über den jeweiligen
+        Beteiligungsbeitrag zugänglich.
       </SuperAdminBox>
     </>
   )

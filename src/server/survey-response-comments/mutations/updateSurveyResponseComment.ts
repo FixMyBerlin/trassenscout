@@ -39,7 +39,7 @@ export default resolver.pipe(
 
     await createLogEntry({
       action: "UPDATE",
-      message: `Eingabe-Kommentar geändert`,
+      message: `Beteiligungs-Beitrag-Kommentar geändert`,
       userId: ctx.session.userId,
       projectSlug,
       previousRecord: previous,

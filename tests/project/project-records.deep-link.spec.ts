@@ -61,7 +61,7 @@ test.describe("Project records deep link", () => {
       timeout: 30_000,
     })
 
-    const filterInput = page.getByPlaceholder("Eingaben nach Suchwort filtern")
+    const filterInput = page.getByPlaceholder("Beiträge nach Suchwort filtern")
     await expect(filterInput).toHaveValue(fixture.searchterm)
     await expect(page.getByRole("link", { name: fixture.title, exact: true })).toBeVisible({
       timeout: 30_000,

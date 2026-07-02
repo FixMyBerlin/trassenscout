@@ -180,7 +180,7 @@ export const newsItems = [
         <p>
           Im Rahmen der Machbarkeitsstudie zum geplanten Radschnellweg FRM7 im Rhein-Main-Gebiet
           konnten Bürgerinnen und Bürger vom 13. Mai bis 3. Juni 2024 ihre Hinweise und Ideen online
-          einreichen. Insgesamt haben sich 854 Personen beteiligt. Die Eingaben lieferten wichtige
+          einreichen. Insgesamt haben sich 854 Personen beteiligt. Die Beiträge lieferten wichtige
           Hinweise auf bevorzugte Routenführungen, Lücken im Netz, gewünschte Verbindungen und
           konkrete Problemstellen vor Ort. Die Auswertung der Beteiligung fließt nun in die weitere
           Planung ein.
