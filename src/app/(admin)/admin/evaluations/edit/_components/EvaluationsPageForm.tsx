@@ -1,9 +1,4 @@
-import {
-  Form,
-  FormProps,
-  LabeledTextareaField,
-  LabeledTextField,
-} from "@/src/core/components/forms"
+import { Form, FormProps, LabeledTextareaField, LabeledTextField } from "@/src/core/components/forms"
 import { z } from "zod"
 
 type Props = FormProps<z.ZodType<any, any>>
