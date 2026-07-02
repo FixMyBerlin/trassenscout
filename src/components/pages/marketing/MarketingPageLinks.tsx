@@ -36,7 +36,10 @@ export const MarketingPageLinks = () => {
         {onlineList.map((item, itemIndex) => (
           <li
             key={itemIndex}
-            className={twJoin("flex gap-4", "description" in item ? "items-start pb-2" : "items-center")}
+            className={twJoin(
+              "flex gap-4",
+              "description" in item ? "items-start pb-2" : "items-center",
+            )}
           >
             <div
               className={twJoin(

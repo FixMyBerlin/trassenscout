@@ -14,12 +14,18 @@ export const authLinks: FooterLink[] = [
 ]
 
 export const fixmyCityLinks: FooterLink[] = [
-  { name: "Zum Newsletter anmelden", href: "https://fixmycity.de/kontakt/", blank: true },
+  { name: "Über den Trassenscout", href: "https://fixmycity.de/trassenscout/", blank: true },
+  { name: "Trassenscout in der Praxis", href: "https://fixmycity.de/referenzen/", blank: true },
   {
-    name: "Demo Termin vereinbaren",
+    name: "TILDA - Offenes Verplanungs-Web-GIS",
+    href: "https://tilda-geo.de",
+    blank: true,
+  },
+  { name: "Dienstleistungen", href: "https://fixmycity.de/dienstleistungen/", blank: true },
+  {
+    name: "Demo-Termin vereinbaren",
     href: "https://fixmycity.de/termin-vereinbaren/",
     blank: true,
   },
-  { name: "TILDA - Unser Verkehrsplanungs Web-GIS", href: "https://tilda-geo.de", blank: true },
-  { name: "Weitere Dienstleistungen", href: "https://fixmycity.de/dienstleistungen/", blank: true },
+  { name: "Newsletter abonnieren", href: "https://fixmycity.de/kontakt/", blank: true },
 ]
