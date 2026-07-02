@@ -1,4 +1,6 @@
 import { z } from "zod"
+import { projectRecordAssignedNotificationToUser } from "@/emails/mailers/projectRecordAssignedNotificationToUser"
+import { shortTitle } from "@/src/components/core/components/text/titles"
 import { ProjectRecordReviewState, ProjectRecordType } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { checkProjectAuthorization } from "@/src/server/authorization/checkProjectAuthorization.server"
@@ -187,6 +189,52 @@ function updateProjectRecordData(input: UpdateProjectRecordInput, userId: number
     subsubsections: setIds(idsFromFormValue(subsubsections)),
     uploads: setIds(idsFromFormValue(uploads)),
   }
+}
+
+function projectRecordDetailPath(projectSlug: string, recordId: number) {
+  return `/${projectSlug}/project-records/${recordId}`
+}
+
+async function sendProjectRecordAssignmentNotification({
+  assigneeId,
+  actorUserId,
+  recordTitle,
+  projectSlug,
+  recordId,
+}: {
+  assigneeId: number
+  actorUserId: number
+  recordTitle: string
+  projectSlug: string
+  recordId: number
+}) {
+  const [assignee, actor] = await Promise.all([
+    db.user.findUnique({
+      where: { id: assigneeId },
+      select: { email: true, firstName: true, lastName: true },
+    }),
+    db.user.findUnique({
+      where: { id: actorUserId },
+      select: { firstName: true, lastName: true },
+    }),
+  ])
+
+  if (!assignee || !actor) return
+
+  const assigneeName =
+    [assignee.firstName, assignee.lastName].filter(Boolean).join(" ") || assignee.email
+  const actorName = [actor.firstName, actor.lastName].filter(Boolean).join(" ") || "Unbekannt"
+
+  await (
+    await projectRecordAssignedNotificationToUser({
+      assigneeEmail: assignee.email,
+      assigneeName,
+      actorName,
+      recordTitle,
+      projectName: shortTitle(projectSlug),
+      recordPath: projectRecordDetailPath(projectSlug, recordId),
+    })
+  ).send()
 }
 
 export async function getAllProjectRecordsAdmin(headers: Headers) {
@@ -380,11 +428,24 @@ export async function createProjectRecord(
   )
   const { projectSlug, ...data } = input
   await validateProjectRecordRelations(projectSlug, data)
+  const userId = Number(session.userId)
 
-  return db.projectRecord.create({
-    data: createProjectRecordData(data, projectId, Number(session.userId)),
+  const record = await db.projectRecord.create({
+    data: createProjectRecordData(data, projectId, userId),
     include: projectRecordInclude,
   })
+
+  if (record.assignedToId !== null) {
+    await sendProjectRecordAssignmentNotification({
+      assigneeId: record.assignedToId,
+      actorUserId: userId,
+      recordTitle: record.title,
+      projectSlug,
+      recordId: record.id,
+    })
+  }
+
+  return record
 }
 
 export async function updateProjectRecord(
@@ -394,16 +455,33 @@ export async function updateProjectRecord(
   const { session } = await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
   const { id, projectSlug, ...data } = input
   await validateProjectRecordRelations(projectSlug, data)
+  const userId = Number(session.userId)
   const previous = await db.projectRecord.findFirstOrThrow({
     where: projectRecordInProjectWhere(projectSlug, id),
-    select: { id: true },
+    select: { id: true, assignedToId: true },
   })
 
-  return db.projectRecord.update({
+  const record = await db.projectRecord.update({
     where: { id: previous.id },
-    data: updateProjectRecordData(data, Number(session.userId)),
+    data: updateProjectRecordData(data, userId),
     include: projectRecordInclude,
   })
+
+  const newAssigneeId = record.assignedToId
+  const previousAssigneeId = previous.assignedToId ?? null
+  const isNewAssignment = newAssigneeId !== null && newAssigneeId !== previousAssigneeId
+
+  if (isNewAssignment) {
+    await sendProjectRecordAssignmentNotification({
+      assigneeId: newAssigneeId,
+      actorUserId: userId,
+      recordTitle: record.title,
+      projectSlug,
+      recordId: record.id,
+    })
+  }
+
+  return record
 }
 
 export async function deleteProjectRecord(
