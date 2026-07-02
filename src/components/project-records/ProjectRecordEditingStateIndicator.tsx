@@ -1,18 +1,16 @@
 import { CheckCircleIcon } from "@heroicons/react/24/outline"
 import { twJoin } from "tailwind-merge"
-import { pillShellWithGapClasses } from "@/src/components/core/utils/pillClassNames"
 import { ProjectRecordEditingState } from "@/src/prisma/generated/browser"
 
 function PendingEditingIcon({ className }: { className?: string }) {
   return (
     <span
       className={twJoin(
-        "relative m-0.5 inline-flex size-4 shrink-0 items-center justify-center",
+        "ml-0.5 inline-flex size-4 shrink-0 items-center justify-center rounded-full border border-current",
         className,
       )}
       aria-hidden
     >
-      <span className="absolute inset-0 rounded-full border-2 border-current" />
       <span className="size-1 rounded-full bg-current" />
     </span>
   )
@@ -50,16 +48,10 @@ export const ProjectRecordEditingStateIndicator = ({ editingState, variant }: Pr
   return (
     <span
       className={twJoin(
-        pillShellWithGapClasses,
-        "text-xs",
-        isPending ? "bg-blue-50 text-blue-600" : "bg-gray-50 text-gray-400",
+        "inline-flex items-center text-sm font-normal",
+        isPending ? "text-gray-600" : "text-gray-500",
       )}
     >
-      {isPending ? (
-        <PendingEditingIcon />
-      ) : (
-        <CheckCircleIcon className="size-4 shrink-0 text-gray-400" />
-      )}
       <span>{LABEL[editingState]}</span>
     </span>
   )
