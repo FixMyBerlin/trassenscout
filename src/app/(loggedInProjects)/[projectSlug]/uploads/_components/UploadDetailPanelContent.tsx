@@ -19,7 +19,6 @@ import { getFilenameFromS3 } from "@/src/server/uploads/_utils/url"
 import getUploadWithRelations from "@/src/server/uploads/queries/getUploadWithRelations"
 import { clsx } from "clsx"
 import { Route } from "next"
-import { UploadProjectRecordLinks } from "./UploadProjectRecordLinks"
 
 type Props = {
   upload: Awaited<ReturnType<typeof getUploadWithRelations>>
@@ -39,7 +38,6 @@ export const UploadDetailPanelContent = ({
   const returnTo = useCurrentReturnTo()
   const editHref = editUrl ? appendReturnToToUploadEditRoute(editUrl, returnTo) : undefined
   const isUploadPdf = isPdf(upload)
-  const linkedProjectRecords = upload.projectRecords ?? []
 
   return (
     <div className="space-y-6">
@@ -87,10 +85,11 @@ export const UploadDetailPanelContent = ({
       </div>
 
       <div className="space-y-3 text-sm">
-        <UploadProjectRecordLinks
-          projectSlug={projectSlug}
-          projectRecords={linkedProjectRecords}
-          className="border-t border-gray-200 pt-3"
+        <UploadAuthorAndDates
+          createdBy={upload.createdBy}
+          createdAt={upload.createdAt}
+          updatedBy={upload.updatedBy ?? undefined}
+          updatedAt={upload.updatedAt ?? undefined}
         />
 
         {upload.summary && (
@@ -109,7 +108,7 @@ export const UploadDetailPanelContent = ({
             landAcquisitionModuleEnabled={upload.project?.landAcquisitionModuleEnabled ?? false}
             subsubsections={upload.subsubsections}
             acquisitionAreas={upload.acquisitionAreas}
-            projectRecords={null}
+            projectRecords={upload.projectRecords}
             projectRecordEmail={upload.projectRecordEmail}
             surveyResponse={upload.surveyResponse}
           />
@@ -152,15 +151,6 @@ export const UploadDetailPanelContent = ({
           </ButtonWrapper>
         </IfUserCanEdit>
       )}
-
-      <UploadAuthorAndDates
-        className="border-t border-gray-200 pt-4"
-        createdBy={upload.createdBy}
-        createdAt={upload.createdAt}
-        updatedBy={upload.updatedBy ?? undefined}
-        updatedAt={upload.updatedAt ?? undefined}
-        variant="aligned"
-      />
     </div>
   )
 }
