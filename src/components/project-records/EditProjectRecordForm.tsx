@@ -7,6 +7,7 @@ import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/Sup
 import { BackLink } from "@/src/components/core/components/forms/BackLink"
 import { FormDirtyStateReporter } from "@/src/components/core/components/forms/FormDirtyStateReporter"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
+import { useCoreAppFormContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
 import { improveErrorMessage } from "@/src/components/core/components/forms/improveErrorMessage"
 import {
@@ -37,6 +38,34 @@ import {
   projectRecordFormDefaultValues,
   ProjectRecordFormSchema,
 } from "@/src/shared/projectRecords/schemas"
+
+const ProjectRecordSubmitButton = () => {
+  const form = useCoreAppFormContext()
+
+  return (
+    <form.Subscribe
+      selector={(state) => ({
+        assignedToId: state.values.assignedToId,
+        isAssignedToDirty: state.fieldMeta.assignedToId?.isDirty,
+      })}
+    >
+      {({ assignedToId, isAssignedToDirty }) => {
+        const reassignedToPerson =
+          Boolean(isAssignedToDirty) && assignedToId != null && assignedToId !== ""
+
+        return (
+          <form.SubmitButton
+            label={
+              reassignedToPerson
+                ? "Eintrag speichern und Benachrichtigung senden"
+                : "Änderungen speichern"
+            }
+          />
+        )
+      }}
+    </form.Subscribe>
+  )
+}
 
 export const EditProjectRecordForm = ({
   projectRecord: initialProjectRecord,
@@ -147,10 +176,7 @@ export const EditProjectRecordForm = ({
     params: { projectSlug, projectRecordId: String(projectRecord.id) },
   }).href
   const indexPath = router.buildLocation({
-    to:
-      projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
-        ? "/$projectSlug/project-records/needreview"
-        : "/$projectSlug/project-records",
+    to: "/$projectSlug/project-records",
     params: { projectSlug },
   }).href
 
@@ -175,6 +201,8 @@ export const EditProjectRecordForm = ({
         form={form}
         formError={formError}
         submitText="Änderungen speichern"
+        hideSubmitButton
+        actionBarLeft={<ProjectRecordSubmitButton />}
         actionBarRight={
           <ProjectRecordDeleteActionBar
             projectSlug={projectSlug}
