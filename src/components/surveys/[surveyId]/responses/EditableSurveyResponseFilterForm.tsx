@@ -293,7 +293,7 @@ export function EditableSurveyResponseFilterForm({
                   value={searchterm}
                   onBlur={handleSearchtermInputBlur}
                   name="searchterm"
-                  placeholder="Beiträge nach Suchwort filtern"
+                  placeholder="Eingaben nach Suchwort filtern"
                   className={
                     "block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-xs focus:border-blue-500 focus:ring-blue-500 focus:outline-hidden sm:text-sm"
                   }

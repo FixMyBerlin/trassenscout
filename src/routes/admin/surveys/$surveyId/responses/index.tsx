@@ -5,7 +5,7 @@ import { surveyResponsesQueryOptions } from "@/src/server/survey-responses/surve
 import { adminSurveyQueryOptions } from "@/src/server/surveys/surveysQueryOptions"
 
 export const Route = createFileRoute("/admin/surveys/$surveyId/responses/")({
-  head: () => adminTitleHead("Beiträge"),
+  head: () => adminTitleHead("Eingaben"),
   ssr: true,
   loader: async ({ context, params }) => {
     const surveyId = Number(params.surveyId)

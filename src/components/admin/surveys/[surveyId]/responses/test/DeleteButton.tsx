@@ -15,11 +15,7 @@ export const DeleteButton = ({ testSurveyResponseIds, surveySlug }: DeleteButton
   const navigate = useNavigate()
 
   const handleDelete = async () => {
-    if (
-      window.confirm(
-        `Diese ${testSurveyResponseIds.length} Beteiligungsbeiträge unwiderruflich löschen?`,
-      )
-    ) {
+    if (window.confirm(`Diese ${testSurveyResponseIds.length} Eingaben unwiderruflich löschen?`)) {
       try {
         await deleteTestSurveyMutation.mutateAsync({
           data: { slug: surveySlug, deleteIds: testSurveyResponseIds },

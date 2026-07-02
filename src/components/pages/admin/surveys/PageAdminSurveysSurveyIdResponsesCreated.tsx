@@ -21,7 +21,7 @@ export function PageAdminSurveysSurveyIdResponsesCreated() {
           title: `Beteiligung ${surveyId}`,
           href: `/admin/surveys/${surveyId}/edit`,
         }}
-        title="Nicht-abgeschickte Antworten"
+        title="Nicht-abgeschickte Eingaben"
       />
       <p className="mb-4 italic">Dies sind alle Einträge, deren Status CREATED ist.</p>
       {!createdResponses.length

@@ -22,7 +22,7 @@ export function PageSurveyResponseUploadEdit() {
       <EditUploadForm
         upload={upload}
         returnPath={returnPath}
-        returnText="Zurück zu den Beiträgen"
+        returnText="Zurück zu den Eingaben"
         showDelete={false}
       />
     </>

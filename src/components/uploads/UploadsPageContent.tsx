@@ -39,9 +39,9 @@ export const UploadsPageContent = () => {
       </div>
 
       <SuperAdminBox>
-        <strong>Hinweis:</strong> Uploads, die ausschließlich mit Beteiligungsbeiträgen verknüpft
-        sind, werden in dieser Übersicht nicht angezeigt. Diese Uploads sind nur über den jeweiligen
-        Beteiligungsbeitrag zugänglich.
+        <strong>Hinweis:</strong> Uploads, die ausschließlich mit Eingaben verknüpft sind, werden in
+        dieser Übersicht nicht angezeigt. Diese Uploads sind nur über den jeweiligen Eingabe
+        zugänglich.
       </SuperAdminBox>
     </>
   )

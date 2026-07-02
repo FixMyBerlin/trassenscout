@@ -20,7 +20,7 @@ export function PageAdminSurveysSurveyIdResponses() {
           title: `Beteiligung ${surveyId}`,
           href: `/admin/surveys/${surveyId}/edit`,
         }}
-        title={`Beiträge: ${survey.title}`}
+        title={`Eingaben: ${survey.title}`}
       />
       <article className="bg-white p-5">
         <Suspense fallback={<Spinner page />}>

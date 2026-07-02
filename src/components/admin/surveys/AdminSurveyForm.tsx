@@ -117,7 +117,7 @@ export function AdminSurveyForm<S extends z.ZodType>({
           <field.TextField
             type="text"
             optional
-            label="Externe Url der Beteiligungsergebnisse"
+            label="Externe Url der Eingaben"
             help="Bspw. Google Spreadsheet"
           />
         )}

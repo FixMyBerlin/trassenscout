@@ -38,9 +38,9 @@ export const NoSurveysInfoBox = () => {
         <div className="flex min-w-0 flex-col gap-6">
           <SurveyP className="my-0!">
             <strong>Was bietet Ihnen dieser Bereich?</strong> Er liefert eine kompakte Übersicht der
-            Eckdaten sowie aller Beteiligungsbeiträge. Selbst bei großen Verfahren können Sie
-            Hinweise effizient kategorisieren, filtern und systematisch dokumentieren. So behalten
-            Sie stets den Überblick und beschleunigen Ihre Planungsprozesse.
+            Eckdaten sowie aller Eingaben. Selbst bei großen Verfahren können Sie Hinweise effizient
+            kategorisieren, filtern und systematisch dokumentieren. So behalten Sie stets den
+            Überblick und beschleunigen Ihre Planungsprozesse.
           </SurveyP>
 
           <SurveyP className="my-0!">
