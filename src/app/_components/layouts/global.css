@@ -87,10 +87,6 @@
   }
 }
 
-.maplibregl-ctrl-attrib.maplibregl-compact {
-  @apply bg-white/20! leading-tight;
-}
-
 @layer components {
 }
 
