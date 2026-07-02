@@ -187,7 +187,7 @@ export const ProjectRecordFormFields = ({
               />
             )}
           </div>
-          <LabeledTextareaField name="body" optional label="Notizen" rows={20} />
+          <LabeledTextareaField name="body" optional label="Notizen (Markdown)" rows={20} />
           <div className="flex flex-col gap-3">
             <LabeledCheckboxGroup
               scope="projectRecordTopics"

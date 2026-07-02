@@ -98,7 +98,7 @@ export const ContactsTable = () => {
     },
     {
       ...keyColumn<Row, "note">("note", textColumn),
-      title: "Notizen",
+      title: "Notizen (Markdown)",
     },
     {
       ...keyColumn<Row, "role">("role", textColumn),

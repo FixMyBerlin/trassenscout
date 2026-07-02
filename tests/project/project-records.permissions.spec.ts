@@ -135,7 +135,7 @@ test.describe("Project records permissions", () => {
         })
 
         await page.getByLabel("Titel").fill(updatedTitle)
-        await page.getByLabel("Notizen").fill(updatedBody)
+        await page.getByLabel("Notizen (Markdown)").fill(updatedBody)
         await Promise.all([
           page.waitForResponse(
             (r) =>
@@ -148,7 +148,7 @@ test.describe("Project records permissions", () => {
         ])
 
         await expect(page.getByLabel("Titel")).toHaveValue(updatedTitle)
-        await expect(page.getByLabel("Notizen")).toHaveValue(updatedBody)
+        await expect(page.getByLabel("Notizen (Markdown)")).toHaveValue(updatedBody)
 
         const freshContext = await browser.newContext({ storageState: authFile("editor") })
         const freshPage = await freshContext.newPage()
