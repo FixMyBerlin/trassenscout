@@ -18,7 +18,7 @@ export function PageAbschnitteSubsubsectionEdit() {
   )
   return (
     <>
-      <PageHeader title="Eintrag bearbeiten" />
+      <PageHeader title="Maßnahme  bearbeiten" />
       <Suspense fallback={<Spinner />}>
         <EditSubsubsectionForm subsubsection={subsubsection} />
       </Suspense>

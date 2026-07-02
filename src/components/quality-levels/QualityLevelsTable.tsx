@@ -51,7 +51,7 @@ export const QualityLevelsTable = ({ qualityLevels }: Props) => {
                 Titel (mit externem Link, wenn vorhanden)
               </th>
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                Anzahl der Einträge
+                Anzahl der Maßnahmen
               </th>
               <th
                 scope="col"
@@ -82,7 +82,7 @@ export const QualityLevelsTable = ({ qualityLevels }: Props) => {
                     )}
                   </td>
                   <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">
-                    {qualityLevel.subsubsectionCount} Einträge
+                    {qualityLevel.subsubsectionCount} Maßnahmen
                   </td>
                   <td className="py-4 text-sm font-medium whitespace-nowrap sm:pr-6">
                     <IfUserCanEdit>

@@ -16,7 +16,7 @@ export function PageAbschnitteAcquisitionAreaNew() {
   )
   return (
     <>
-      <PageHeader title="Verhandlungsflächen des Eintrags erstellen" />
+      <PageHeader title="Verhandlungsflächen der Maßnahme erstellen" />
       <MapPageSuspense>
         <NewAcquisitionAreasForm initialSubsubsection={subsubsection} />
       </MapPageSuspense>

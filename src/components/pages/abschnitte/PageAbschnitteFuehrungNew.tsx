@@ -12,7 +12,7 @@ export function PageAbschnitteFuehrungNew() {
   const { subsection } = routeApi.useLoaderData()
   return (
     <>
-      <PageHeader title="Neuen Eintrag hinzufügen" subtitle={subsection.slug} />
+      <PageHeader title="Neue Maßnahme  hinzufügen" subtitle={subsection.slug} />
       <Suspense fallback={<Spinner />}>
         <NewSubsubsectionForm subsection={subsection} />
       </Suspense>

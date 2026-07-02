@@ -5,7 +5,7 @@ import { adminLookupRowsWithCountQueryOptions } from "@/src/server/adminLookupTa
 import { fromBackLinkSearchSchema } from "@/src/shared/routing/fromBackLinkSearch"
 
 export const Route = createFileRoute("/_loggedInProjects/$projectSlug/subsubsection-task/")({
-  head: () => privateTitleHead("Eintragstypen"),
+  head: () => privateTitleHead("Maßnahmentypen"),
   ssr: true,
   validateSearch: fromBackLinkSearchSchema,
   loader: ({ context, params }) =>

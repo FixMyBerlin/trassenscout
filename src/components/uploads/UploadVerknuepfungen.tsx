@@ -65,7 +65,7 @@ export const UploadVerknuepfungen = ({
           {hasSubsubsection &&
             (subsubsections.length === 1 ? (
               <li key={`${subsubsections[0]!.subsection.slug}-${subsubsections[0]!.slug}`}>
-                <strong className="font-medium">Eintrag: </strong>
+                <strong className="font-medium">Maßnahme : </strong>
                 <Link
                   to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug"
                   params={{
@@ -79,7 +79,7 @@ export const UploadVerknuepfungen = ({
               </li>
             ) : (
               <li className="flex flex-wrap items-baseline gap-x-2">
-                <strong className="font-medium">Einträge: </strong>
+                <strong className="font-medium">Maßnahmen: </strong>
                 <ul className="mt-0.5 flex list-none flex-wrap gap-x-2 pl-0">
                   {subsubsections.map((subsub) => (
                     <li key={`${subsub.subsection.slug}-${subsub.slug}`}>

@@ -185,7 +185,7 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
           )}
         </form.AppField>
         <LinkWithFormDirtyConfirm to={`/${projectSlug}/subsubsection-task`} className="py-2">
-          Eintragstypen verwalten…
+          Maßnahmentypen verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
       <SubsubsectionGeometryInput

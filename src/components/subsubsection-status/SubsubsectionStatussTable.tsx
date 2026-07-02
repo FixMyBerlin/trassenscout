@@ -53,7 +53,7 @@ export const SubsubsectionStatussTable = ({ subsubsectionStatuss }: Props) => {
                 Darstellung
               </th>
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                Anzahl Einträge in dieser Phase
+                Anzahl Maßnahmen in dieser Phase
               </th>
               <th
                 scope="col"
@@ -87,7 +87,7 @@ export const SubsubsectionStatussTable = ({ subsubsectionStatuss }: Props) => {
                   </td>
                   <td className="px-3 py-4 text-sm text-gray-500">
                     {status.subsubsectionCount}{" "}
-                    {status.subsubsectionCount > 1 ? "Einträge" : "Eintrag"}
+                    {status.subsubsectionCount > 1 ? "Maßnahmen" : "Maßnahme "}
                   </td>
                   <td className="py-4 text-sm font-medium whitespace-nowrap sm:pr-6">
                     <IfUserCanEdit>

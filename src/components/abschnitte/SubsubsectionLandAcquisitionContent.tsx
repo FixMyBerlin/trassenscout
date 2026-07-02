@@ -121,7 +121,7 @@ export const SubsubsectionLandAcquisitionContent = ({
   const handleDeleteAllAcquisitionAreas = async () => {
     if (
       !window.confirm(
-        "Alle Verhandlungsflächen dieses Eintrags unwiderruflich löschen? Verknüpfte Projektdokumentation kann entfallen.",
+        "Alle Verhandlungsflächen dieser Maßnahme unwiderruflich löschen? Verknüpfte Projektdokumentation kann entfallen.",
       )
     ) {
       return
@@ -187,7 +187,7 @@ export const SubsubsectionLandAcquisitionContent = ({
             <>
               <p className="max-w-xl text-base text-gray-500">
                 Es wurden noch keine Verhandlungsflächen angelegt. Legen Sie neue
-                Verhandlungsflächen für diesen Eintrag an.
+                Verhandlungsflächen für diese Maßnahme an.
               </p>
               <IfUserCanEdit>
                 <div className="pt-2">
@@ -385,7 +385,7 @@ export const SubsubsectionLandAcquisitionContent = ({
                   <TrashIcon className="size-5" />
                   {deleteAllAcquisitionAreasMutation.isPending
                     ? "Wird gelöscht…"
-                    : "Alle Verhandlungsflächen dieses Eintrags löschen"}
+                    : "Alle Verhandlungsflächen dieser Maßnahme löschen"}
                 </button>
               </IfUserCanEdit>
             </>

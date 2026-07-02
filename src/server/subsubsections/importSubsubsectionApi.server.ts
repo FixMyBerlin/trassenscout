@@ -213,7 +213,7 @@ export async function importSubsubsectionFromApi(request: Request) {
 
       await createLogEntry({
         action: "UPDATE",
-        message: `Eintrag ${shortTitle(result.slug)} wurde über CSV-Import aktualisiert`,
+        message: `Maßnahme  ${shortTitle(result.slug)} wurde über CSV-Import aktualisiert`,
         userId,
         projectId: project.id,
         subsectionId: subsection.id,
@@ -230,7 +230,7 @@ export async function importSubsubsectionFromApi(request: Request) {
 
       await createLogEntry({
         action: "CREATE",
-        message: `Neuer Eintrag ${shortTitle(result.slug)} per CSV-Import`,
+        message: `Neue Maßnahme  ${shortTitle(result.slug)} per CSV-Import`,
         userId,
         projectId: project.id,
         subsectionId: subsection.id,

@@ -5,7 +5,7 @@ import { absoluteTitleHead } from "@/src/routeHead"
 import { fromBackLinkSearchSchema } from "@/src/shared/routing/fromBackLinkSearch"
 
 export const Route = createFileRoute("/_loggedInProjects/$projectSlug/subsubsection-task/new/")({
-  head: () => absoluteTitleHead(seoNewTitle("Eintragstyp")),
+  head: () => absoluteTitleHead(seoNewTitle("Maßnahmentyp")),
   ssr: true,
   validateSearch: fromBackLinkSearchSchema,
   component: PageSubsubsectionTaskNew,

@@ -8,7 +8,7 @@ import { fromBackLinkSearchSchema } from "@/src/shared/routing/fromBackLinkSearc
 export const Route = createFileRoute(
   "/_loggedInProjects/$projectSlug/subsubsection-task/$subsubsectionTaskId/edit/",
 )({
-  head: () => absoluteTitleHead(seoEditTitle("Eintragstyp")),
+  head: () => absoluteTitleHead(seoEditTitle("Maßnahmentyp")),
   ssr: true,
   validateSearch: fromBackLinkSearchSchema,
   loader: ({ context, params }) =>

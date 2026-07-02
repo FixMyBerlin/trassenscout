@@ -51,8 +51,8 @@ export const SubsubsectionTasksTable = ({ subsubsectionTasks }: Props) => {
                 Titel
               </th>
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                Anzahl Einträge mit <br />
-                diesem Eintragstyp
+                Anzahl Maßnahmen mit <br />
+                diesem Maßnahmentyp
               </th>
               <th
                 scope="col"
@@ -73,7 +73,8 @@ export const SubsubsectionTasksTable = ({ subsubsectionTasks }: Props) => {
                     <strong className="font-semibold">{Task.title}</strong>
                   </td>
                   <td className="px-3 py-4 text-sm text-gray-500">
-                    {Task.subsubsectionCount} {Task.subsubsectionCount > 1 ? "Einträge" : "Eintrag"}
+                    {Task.subsubsectionCount}{" "}
+                    {Task.subsubsectionCount > 1 ? "Maßnahmen" : "Maßnahme "}
                   </td>
                   <td className="py-4 text-sm font-medium whitespace-nowrap sm:pr-6">
                     <IfUserCanEdit>

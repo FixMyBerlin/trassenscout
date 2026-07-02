@@ -7,7 +7,7 @@ import { subsectionBySlugQueryOptions } from "@/src/server/subsections/subsectio
 export const Route = createFileRoute(
   "/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new/",
 )({
-  head: () => absoluteTitleHead(seoNewTitle("Eintrag")),
+  head: () => absoluteTitleHead(seoNewTitle("Maßnahme ")),
   ssr: true,
   loader: async ({ context, params }) => {
     const subsection = await context.queryClient.ensureQueryData(

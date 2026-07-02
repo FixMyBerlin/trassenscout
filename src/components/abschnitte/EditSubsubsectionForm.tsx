@@ -112,7 +112,7 @@ export const EditSubsubsectionForm = ({ subsubsection }: Props) => {
       <BackLink
         to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug"
         params={{ projectSlug, subsectionSlug, subsubsectionSlug }}
-        text="Zurück zum Eintrag"
+        text="Zurück zur Maßnahme "
       />
     </>
   )
