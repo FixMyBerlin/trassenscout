@@ -10,6 +10,13 @@ export const dbPullRemoteEnvSchema = z.object({
 
 export type DbPullRemoteEnv = z.infer<typeof dbPullRemoteEnvSchema>
 
+export const scwBackupEnvSchema = z.object({
+  SCW_ACCESS_KEY: z.string().min(1),
+  SCW_SECRET_KEY: z.string().min(1),
+})
+
+export type ScwBackupEnv = z.infer<typeof scwBackupEnvSchema>
+
 export function parseValidatedEnv<T>(schema: ZodType<T>, env: Record<string, unknown>): T {
   const parsed = schema.safeParse(env)
 

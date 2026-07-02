@@ -34,6 +34,7 @@
     "db-get-dump-staging": "bun scripts/db-pull/get-dump.ts -s",
     "db-restore-local": "bun run predev && bun scripts/db-pull/restore-local.ts",
     "db-restore-staging": "bun scripts/db-pull/restore-staging.ts",
+    "db-restore-test": "bun scripts/db-pull/restore-test.ts",
     "alkis-audit": "bun scripts/alkis-wfs/audit.ts",
     "alkis-update-config": "bun scripts/alkis-wfs/update-config.ts",
     "check": "bun run --parallel migrate-check-test type-check lint-check format-check test",
