@@ -229,7 +229,7 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
                 hs: {
                   label: "Auswählbare Bushaltestellen",
                   color: "bg-[#f5824d]",
-                  className: "h-2! w-2! rounded-full shrink-0",
+                  className: "size-2! rounded-full",
                 },
                 bordersLandkreis: {
                   label: "Landkreisgrenzen",
