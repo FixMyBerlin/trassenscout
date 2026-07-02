@@ -7,7 +7,7 @@ import type { SurveyCheckbox } from "@/src/app/beteiligung/_components/form/Chec
 import type { SurveyCheckboxGroup } from "@/src/app/beteiligung/_components/form/CheckboxGroup"
 import type { SurveyGeoCategoryMapWithLegend } from "@/src/app/beteiligung/_components/form/map/GeoCategoryMapWithLegend"
 import type { SurveySimpleMapWithLegend } from "@/src/app/beteiligung/_components/form/map/SimpleMapWithLegend"
-import type { SwitchableMap } from "@/src/app/beteiligung/_components/form/map/SwitchableMap"
+import type { SwitchableMapWithLegend } from "@/src/app/beteiligung/_components/form/map/SwitchableMapWithLegend"
 import type { SurveyNumberfield } from "@/src/app/beteiligung/_components/form/Numberfield"
 import type { SurveyPageTitle } from "@/src/app/beteiligung/_components/form/PageTitle"
 import type { SurveyRadiobuttonGroup } from "@/src/app/beteiligung/_components/form/RadiobuttonGroup"
@@ -168,14 +168,14 @@ export type FieldConfig =
         props: Omit<ComponentProps<typeof SurveyGeoCategoryMapWithLegend>, "required">
       })
   | ({
-      component: "SwitchableMap"
+      component: "SwitchableMapWithLegend"
       componentType: "form"
       validation:
         | (typeof fieldValidationEnum)["conditionalRequiredLatLng"]
         | (typeof fieldValidationEnum)["requiredLatLng"]
       defaultValue: object | null
     } & FormFieldBase & {
-        props: Omit<ComponentProps<typeof SwitchableMap>, "required">
+        props: Omit<ComponentProps<typeof SwitchableMapWithLegend>, "required">
       })
   | ({
       component: "SurveyCheckbox"

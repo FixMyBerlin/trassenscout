@@ -187,21 +187,9 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
         {
           name: "location",
           componentType: "form",
-          component: "SwitchableMap",
-          // the location is required UNLESS the user picks the "Maßnahme ohne Karte abschicken" option
-          // we therefore allow null at the zod level (conditionalRequiredLatLng) and enforce the
-          // requiredness in the custom validator below, which reads the `locationMode` set by the map component
-          validation: fieldValidationEnum["conditionalRequiredLatLng"],
+          component: "SwitchableMapWithLegend",
+          validation: fieldValidationEnum["requiredLatLng"],
           defaultValue: null,
-          validators: {
-            onSubmit: ({ fieldApi }: { fieldApi: AnyFieldApi }) => {
-              if (fieldApi.form.getFieldValue("locationMode") === "none") return undefined
-              if (fieldApi.state.value == null) {
-                return "Bitte wählen Sie einen Ort auf der Karte."
-              }
-              return undefined
-            },
-          },
           props: {
             label: "Maßnahmenverortung",
             description:
@@ -219,7 +207,6 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
               geoCategoryIdDefinition: { dataKey: "geometryCategoryId", propertyName: "stop_id" },
               infoPanelText:
                 "Wählen Sie eine Bushaltestelle aus, zu welcher Sie eine Maßnahme melden möchten.",
-              allowNoMapOption: true,
               config: {
                 bounds: [12.824965, 52.586742, 13.520948, 53.251088], // Bounding box for Oberhavel to be validated
               },

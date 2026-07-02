@@ -281,7 +281,7 @@ export const GET = withProjectMembership(viewerRoles, async ({ params }) => {
                   break
                 // todo
                 // case "SurveyGeoCategoryMapWithLegend":
-                // case "SwitchableMap":
+                // case "SwitchableMapWithLegend":
                 default:
                   // @ts-expect-error data is of type unknown and index type
                   row[questionId] = data[questionId] || ""
