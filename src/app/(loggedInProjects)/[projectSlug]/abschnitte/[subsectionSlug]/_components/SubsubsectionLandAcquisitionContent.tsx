@@ -4,7 +4,8 @@ import { useAcquisitionAreaSelection } from "@/src/app/(loggedInProjects)/[proje
 import { ProjectRecordNewModal } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordNewModal"
 import { ProjectRecordsTable } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordTable"
 import { UploadDropzone } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzone"
-import { UploadTable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadTable"
+import { UploadDropzoneContainer } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzoneContainer"
+import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { FormSuccess } from "@/src/core/components/forms/FormSuccess"
@@ -16,6 +17,8 @@ import {
   acquisitionAreaEditRoute,
   acquisitionAreaNewRoute,
 } from "@/src/core/routes/subsectionRoutes"
+import { uploadEditRoute } from "@/src/core/routes/uploadRoutes"
+import { useCurrentReturnTo } from "@/src/core/routes/useCurrentPathWithSearch"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
 import deleteAllAcquisitionAreasForSubsubsection from "@/src/server/acquisitionAreas/mutations/deleteAllAcquisitionAreasForSubsubsection"
@@ -38,6 +41,7 @@ type Props = {
 
 export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectionId }: Props) => {
   const projectSlug = useProjectSlug()
+  const returnTo = useCurrentReturnTo()
   const subsectionSlug = useSlug("subsectionSlug")
   const subsubsectionSlug = useSlug("subsubsectionSlug")
   const { acquisitionAreaId, setAcquisitionAreaId } = useAcquisitionAreaSelection()
@@ -287,22 +291,31 @@ export const SubsubsectionLandAcquisitionContent = ({ subsubsectionId, subsectio
 
               <section className="mt-10 space-y-3">
                 <h2 className="text-lg font-semibold text-gray-700 sm:text-lg">Dokumente</h2>
-                <div className="flex flex-col gap-2">
-                  <UploadTable
-                    withAction={false}
-                    withRelations={false}
-                    uploads={uploads}
-                    onDelete={async () => {
-                      await refetchUploads()
-                    }}
-                  />
-                  <IfUserCanEdit>
-                    <UploadDropzone
-                      acquisitionAreaIds={[selectedAcquisitionArea.id]}
-                      onUploadComplete={async () => {
+                {!uploads.length && <ZeroCase small visible name="Dokumente" />}
+                <div className="grid grid-cols-2 gap-3">
+                  {uploads.map((upload) => (
+                    <UploadPreviewClickable
+                      key={upload.id}
+                      uploadId={upload.id}
+                      upload={upload}
+                      projectSlug={projectSlug}
+                      size="grid"
+                      editUrl={uploadEditRoute(projectSlug, upload.id, { returnTo })}
+                      onDeleted={async () => {
                         await refetchUploads()
                       }}
                     />
+                  ))}
+                  <IfUserCanEdit>
+                    <UploadDropzoneContainer className="h-36 rounded-md p-0">
+                      <UploadDropzone
+                        fillContainer
+                        acquisitionAreaIds={[selectedAcquisitionArea.id]}
+                        onUploadComplete={async () => {
+                          await refetchUploads()
+                        }}
+                      />
+                    </UploadDropzoneContainer>
                   </IfUserCanEdit>
                 </div>
               </section>
