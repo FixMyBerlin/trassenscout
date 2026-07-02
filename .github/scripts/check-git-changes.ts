@@ -20,9 +20,10 @@ function main() {
   }
 
   const paths = locations.split(/\s+/).filter(Boolean)
+  // --quiet suppresses the diff output (which can exceed spawnSync's buffer) and implies --exit-code
   const result = spawnSync(
     "git",
-    ["diff", "--exit-code", lastRunSha, currentSha, "--", ...paths, ".github/workflows/"],
+    ["diff", "--quiet", lastRunSha, currentSha, "--", ...paths, ".github/workflows/"],
     { encoding: "utf8" },
   )
 
