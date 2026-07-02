@@ -17,33 +17,23 @@ export const authLinks: FooterLink<string>[] = [
 
 export const fixmyCityLinks: FooterLink<string>[] = [
   {
-    name: "Über den Trassenscout",
-    href: "https://fixmycity.de/trassenscout/" as Route<string>,
+    name: "Zum Newsletter anmelden",
+    href: "https://fixmycity.de/kontakt/" as Route<string>,
     blank: true,
   },
   {
-    name: "Trassenscout in der Praxis",
-    href: "https://fixmycity.de/referenzen/" as Route<string>,
-    blank: true,
-  },
-  {
-    name: "TILDA - Offenes Verplanungs-Web-GIS",
-    href: "https://tilda-geo.de" as Route<string>,
-    blank: true,
-  },
-  {
-    name: "Dienstleistungen",
-    href: "https://fixmycity.de/dienstleistungen/" as Route<string>,
-    blank: true,
-  },
-  {
-    name: "Demo-Termin vereinbaren",
+    name: "Demo Termin vereinbaren",
     href: "https://fixmycity.de/termin-vereinbaren/" as Route<string>,
     blank: true,
   },
   {
-    name: "Newsletter abonnieren",
-    href: "https://fixmycity.de/kontakt/" as Route<string>,
+    name: "TILDA - Unser Verkehrsplanungs Web-GIS",
+    href: "https://tilda-geo.de" as Route<string>,
+    blank: true,
+  },
+  {
+    name: "Weitere Dienstleistungen",
+    href: "https://fixmycity.de/dienstleistungen/" as Route<string>,
     blank: true,
   },
 ]
