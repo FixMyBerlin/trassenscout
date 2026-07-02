@@ -1,7 +1,6 @@
 import { linkStyles } from "@/src/core/components/links"
 import {
   Combobox,
-  ComboboxButton,
   ComboboxInput,
   ComboboxOption,
   ComboboxOptions,
@@ -61,6 +60,7 @@ export function LabeledCombobox({
         control={control}
         render={({ field }) => {
           const value = (field.value as string[] | undefined) ?? []
+
           const pinned = new Set(pinnedSelected)
           const orderedItems = [...items].sort(
             (a, b) => Number(pinned.has(b.value)) - Number(pinned.has(a.value)),
@@ -144,9 +144,10 @@ export function LabeledCombobox({
                       )}
                       disabled={disabledOrSubmitting}
                     />
-                    <ComboboxButton className="absolute inset-y-0 right-3 my-auto flex cursor-pointer items-center text-gray-400 disabled:cursor-not-allowed">
-                      <ChevronDownIcon className="size-5" aria-hidden="true" />
-                    </ComboboxButton>
+                    <ChevronDownIcon
+                      className="pointer-events-none absolute inset-y-0 right-3 my-auto size-5 text-gray-400"
+                      aria-hidden="true"
+                    />
 
                     <Transition
                       show={open}
