@@ -20,35 +20,52 @@ Route mounting, cookies, session helpers, and protection patterns. For `betterAu
 
 ## 2. Mount handler and cookies
 
-Use Better Auth's official **`tanstackStartCookies()`** plugin as the **last** entry in `plugins` (Better Auth warns via `warnIfCookiePluginNotLast`). The route just mounts `auth.handler`.
-
-```ts
-// auth.server.ts
-import { tanstackStartCookies } from "better-auth/tanstack-start"
-
-export const auth = betterAuth({
-  ...options,
-  plugins: [, /* app plugins */ tanstackStartCookies()], // cookies plugin LAST
-})
-```
+**Do not use `tanstackStartCookies()` in FMC TanStack Start apps** — it can pull `@tanstack/react-start/server` into the client bundle (Vite leak). Forward cookies manually in the auth API route.
 
 ```ts
 // src/routes/api/auth.$.ts
 import { createFileRoute } from "@tanstack/react-router"
-import { auth } from "@/server/auth/auth.server"
+import { forwardAuthAndApplyCookies } from "@/server/auth/auth-route-handler.server"
 
 export const Route = createFileRoute("/api/auth/$")({
   ssr: false,
   server: {
     handlers: {
-      GET: ({ request }) => auth.handler(request),
-      POST: ({ request }) => auth.handler(request),
+      GET: ({ request }) => forwardAuthAndApplyCookies(request),
+      POST: ({ request }) => forwardAuthAndApplyCookies(request),
     },
   },
 })
 ```
 
-> **Version caveat.** On `1.6.x` the plugin loads `@tanstack/react-start/server` via a **dynamic** `await import(...)`, so it stays server-only (older versions static-imported it → client leak). Re-verify after any `better-auth` change: build, then grep client chunks (`.output/public/assets/*.js`) for `react-start/server`/Prisma/server markers. If a leak returns, forward cookies manually in a `*.server.ts` handler.
+```ts
+// auth-route-handler.server.ts — pattern
+import { setCookie } from "@tanstack/react-start/server"
+import { parseSetCookieHeader } from "better-auth/cookies"
+import { auth } from "./auth.server"
+
+export async function forwardAuthAndApplyCookies(request: Request) {
+  const response = await auth.handler(request)
+  const setCookieHeader = response.headers.getSetCookie().join(", ")
+  if (!setCookieHeader) return response
+
+  const parsed = parseSetCookieHeader(setCookieHeader)
+  parsed.forEach((value, key) => {
+    if (!key) return
+    setCookie(key, decodeURIComponent(value.value), {
+      sameSite: value.samesite,
+      secure: value.secure,
+      maxAge: value["max-age"],
+      httpOnly: value.httponly,
+      domain: value.domain,
+      path: value.path,
+    })
+  })
+  return response
+}
+```
+
+Official docs may recommend `tanstackStartCookies()` as the last plugin — **FMC convention overrides that** for bundle safety.
 
 ---
 
