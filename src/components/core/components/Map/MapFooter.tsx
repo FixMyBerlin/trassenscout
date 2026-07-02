@@ -26,7 +26,6 @@ export const MapFooter = ({ legendItemsConfig }: MapFooterProps) => {
         >
           {buttonLabel}
         </button>
-        <div>Schnellzugriff zum Bearbeiten über option+click (Mac) / alt+click (Windows)</div>
       </div>
     </>
   )
