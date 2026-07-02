@@ -183,7 +183,7 @@ export const ProjectRecordFormFields = ({
     <>
       <div className={splitView ? "flex gap-6" : ""}>
         <div className={splitView ? "flex-1 space-y-6" : "space-y-6"}>
-          {assignmentAndStatusFields}
+          {isCreateMode && assignmentAndStatusFields}
 
           <div className="flex gap-4">
             <div className="w-48">
@@ -245,6 +245,7 @@ export const ProjectRecordFormFields = ({
               </button>
             </div>
           </div>
+          {!isCreateMode && assignmentAndStatusFields}
         </div>
 
         {emailSource && splitView && <ProjectRecordEmailSource email={emailSource} />}
