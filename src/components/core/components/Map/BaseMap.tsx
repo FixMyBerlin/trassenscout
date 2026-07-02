@@ -2,6 +2,7 @@ import type { FeatureCollection, LineString, Point, Polygon } from "geojson"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import "maplibre-gl/dist/maplibre-gl.css"
 import MapComponent, {
+  AttributionControl,
   MapLayerMouseEvent,
   MapProps,
   NavigationControl,
@@ -249,7 +250,9 @@ export const BaseMap = ({
                 : []),
             ]}
             hash={hash || false}
+            attributionControl={false}
           >
+            <AttributionControl compact={true} position="bottom-right" />
             <NavigationControl showCompass={false} />
             {showScaleControl && <ScaleControl />}
             {staticOverlay && <StaticOverlay config={staticOverlay} />}
