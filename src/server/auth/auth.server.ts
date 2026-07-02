@@ -2,6 +2,7 @@ import type { BetterAuthOptions } from "better-auth"
 import { betterAuth } from "better-auth"
 import { prismaAdapter } from "better-auth/adapters/prisma"
 import { customSession } from "better-auth/plugins/custom-session"
+import { tanstackStartCookies } from "better-auth/tanstack-start"
 import { forgotPasswordMailToUser } from "@/emails/mailers/forgotPasswordMailToUser"
 import { UserRoleEnum } from "@/src/prisma/generated/browser"
 import {
@@ -154,5 +155,5 @@ const options = {
 
 export const auth = betterAuth({
   ...options,
-  plugins: [customSessionWithRole(options)],
+  plugins: [customSessionWithRole(options), tanstackStartCookies()],
 })

@@ -1,8 +1,8 @@
 ---
 name: trassenscout-auth
 description: >-
-  Trassenscout-specific Better Auth on TanStack Start: manual cookie forwarding,
-  endpointAuth boundary API, OSM OAuth sign-in, route protection, and API keys.
+  Trassenscout-specific Better Auth on TanStack Start: official tanstackStartCookies
+  plugin, endpointAuth boundary API, OSM OAuth sign-in, route protection, and API keys.
   Use for auth routes, session helpers, secured routes/APIs, and ESLint
   endpointAuth rules. Pair with portable skill tanstack-start-auth for library
   config (betterAuth plugins, adapters).
