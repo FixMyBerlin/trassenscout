@@ -10,6 +10,7 @@
 import { parseSwitchableMapLocationFieldValue } from "@/src/app/beteiligung/_components/form/map/utils"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getQuestionIdBySurveySlug"
+import { Notice } from "@/src/core/components/Notice/Notice"
 import { blueButtonStyles, linkStyles } from "@/src/core/components/links/styles"
 import { subsubsectionDashboardRoute } from "@/src/core/routes/subsectionRoutes"
 import { Prettify } from "@/src/core/types"
@@ -19,7 +20,6 @@ import createSubsubsection from "@/src/server/subsubsections/mutations/createSub
 import getSubsubsection from "@/src/server/subsubsections/queries/getSubsubsection"
 import getFeedbackSurveyResponsesWithSurveyDataAndComments from "@/src/server/survey-responses/queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
 import { invalidateQuery, invoke, useMutation } from "@blitzjs/rpc"
-import { LinkIcon } from "@heroicons/react/24/outline"
 import { point } from "@turf/helpers"
 import { NotFoundError } from "blitz"
 import Link from "next/link"
@@ -204,17 +204,10 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
     <div className="mt-4 space-y-2">
       {/* <FormSuccess message="Maßnahme erfolgreich erstellt" show={isSuccess} /> */}
       {existingSubsubsectionSlug && (
-        <div className="rounded-lg border border-blue-200 bg-blue-50 px-6 py-5">
-          <div className="mb-3 flex items-center gap-3">
-            <LinkIcon className="size-5 shrink-0 text-blue-700" aria-hidden="true" />
-            <h4 className="font-semibold">Verknüpfte Maßnahme</h4>
-          </div>
-
-          <p className="text-sm text-gray-700">
-            Aus dieser Eingabe wurde ein Eintrag in der Maßnahmenplanung erstellt.
-          </p>
-
-          <p className="mt-4">
+        <Notice type="warn" title="Verknüpfung zur Maßnahmenplanung">
+          <p>Aus dieser Eingabe wurde ein Maßnahmeneintrag erstellt.</p>
+          <p className="mt-2">
+            Verknüpfung sichtbar:{" "}
             <Link
               href={subsubsectionDashboardRoute(
                 projectSlug,
@@ -223,10 +216,10 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
               )}
               className={linkStyles}
             >
-              Geplante Maßnahme öffnen
+              Zur Maßnahme
             </Link>
           </p>
-        </div>
+        </Notice>
       )}
       {convertError && (
         <div className="rounded-sm bg-red-50 p-4 text-red-800">
