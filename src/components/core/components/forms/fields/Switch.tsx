@@ -18,6 +18,7 @@ export type SwitchProps<T extends boolean | string | number = boolean> = {
   trackClassNames?: { off: string; on: string }
   disabled?: boolean
   onChange?: (value: T) => void
+  contentClassName?: string
 }
 
 const defaultTrackClassNames = {
@@ -38,6 +39,7 @@ export function Switch<T extends boolean | string | number = boolean>(props: Swi
     trackClassNames,
     disabled,
     onChange: onChangeCallback,
+    contentClassName,
   } = props
 
   const field = useFieldContext<T>()
@@ -63,7 +65,7 @@ export function Switch<T extends boolean | string | number = boolean>(props: Swi
         {optional && <> (optional)</>}
       </label>
 
-      <div className="flex items-center gap-3">
+      <div className={twJoin("flex items-center gap-3", contentClassName)}>
         <HeadlessSwitch
           id={field.name}
           checked={checked}
