@@ -162,7 +162,6 @@ export function EditableSurveyResponseForm({
 
   const handleNewTopicFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (!newTopic.trim()) return
     try {
       const createdOrFetched = await createSurveyResponseTopicMutation({
         title: newTopic.trim(),
