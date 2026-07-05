@@ -1,5 +1,5 @@
 import type { Page } from "@playwright/test"
-import { authFile, seedProjects, seedUsers } from "@/tests/_fixtures/auth"
+import { authFile, seedProjects } from "@/tests/_fixtures/auth"
 import { pageNoise } from "@/tests/_fixtures/console-noise"
 import { expect, test } from "@/tests/_fixtures/test"
 import { getTestDb } from "@/tests/_utils/testDb"
@@ -53,6 +53,16 @@ test.describe("Admin memberships", () => {
   test.use({ storageState: authFile("admin") })
   test.use({ allowedConsoleErrors: pageNoise })
 
+  const targetEmail = `e2e-membership-target-${Date.now()}@fixmycity.test`
+  let targetUserId: number | undefined
+
+  test.afterAll(async () => {
+    if (!targetUserId) return
+    const db = await getTestDb()
+    await db.membership.deleteMany({ where: { userId: targetUserId } }).catch(() => {})
+    await db.user.delete({ where: { id: targetUserId } }).catch(() => {})
+  })
+
   test("renders project columns on memberships list", async ({ page }) => {
     const response = await page.goto(membershipsListPath)
     expect(response?.ok()).toBeTruthy()
@@ -70,22 +80,20 @@ test.describe("Admin memberships", () => {
     test.setTimeout(60_000)
 
     const db = await getTestDb()
-    const noProjectUser = await db.user.findFirstOrThrow({
-      where: { email: seedUsers.noProject },
+    const targetUser = await db.user.create({
+      data: {
+        email: targetEmail,
+        firstName: "E2E",
+        lastName: "Membership-Target",
+      },
       select: { id: true },
     })
-
-    await db.membership.deleteMany({
-      where: {
-        userId: noProjectUser.id,
-        project: { slug: seedProjects.richProject },
-      },
-    })
+    targetUserId = targetUser.id
 
     await page.goto(membershipsListPath)
-    await page.getByRole("link", { name: seedUsers.noProject }).click()
+    await page.getByRole("link", { name: targetEmail }).click()
 
-    await expect(page).toHaveURL(new RegExp(`/admin/memberships/${noProjectUser.id}$`), {
+    await expect(page).toHaveURL(new RegExp(`/admin/memberships/${targetUser.id}$`), {
       timeout: 30_000,
     })
 
@@ -98,13 +106,13 @@ test.describe("Admin memberships", () => {
 
     const membership = await db.membership.findFirst({
       where: {
-        userId: noProjectUser.id,
+        userId: targetUser.id,
         project: { slug: seedProjects.richProject },
       },
     })
     expect(membership?.role).toBe("VIEWER")
 
-    await page.getByRole("link", { name: seedUsers.noProject }).click()
+    await page.getByRole("link", { name: targetEmail }).click()
 
     await clickMembershipToggleInColumn(page, projectHeader, "Kein Zugriff")
     await page.getByRole("button", { name: "Speichern" }).click()
@@ -113,7 +121,7 @@ test.describe("Admin memberships", () => {
 
     const deletedMembership = await db.membership.findFirst({
       where: {
-        userId: noProjectUser.id,
+        userId: targetUser.id,
         project: { slug: seedProjects.richProject },
       },
     })

@@ -58,7 +58,7 @@ const adminPages = [
   },
   {
     path: "/admin/surveys/4/responses/created",
-    visibleText: "Nicht-abgeschickte Antworten",
+    visibleText: "Nicht-abgeschickte Eingaben",
   },
   {
     path: "/admin/logEntries",

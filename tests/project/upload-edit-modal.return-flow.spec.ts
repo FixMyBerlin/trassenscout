@@ -9,6 +9,7 @@ const uploadsPath = `/${projectSlug}/uploads`
 type UploadModalFixture = {
   uploadId: number
   uploadTitle: string
+  fileName: string
 }
 
 test.describe("Upload edit return flow", () => {
@@ -25,11 +26,12 @@ test.describe("Upload edit return flow", () => {
     })
 
     const uploadTitle = `E2E Upload ${Date.now()}`
+    const fileName = `e2e-upload-${Date.now()}.pdf`
     const upload = await db.upload.create({
       data: {
         projectId: project.id,
         title: uploadTitle,
-        externalUrl: "https://example.com/e2e-upload.pdf",
+        externalUrl: `https://example.com/${fileName}`,
         mimeType: "application/pdf",
       },
       select: { id: true },
@@ -38,6 +40,7 @@ test.describe("Upload edit return flow", () => {
     fixture = {
       uploadId: upload.id,
       uploadTitle,
+      fileName,
     }
   })
 
@@ -76,7 +79,7 @@ test.describe("Upload edit return flow", () => {
     await expect(
       page.getByRole("heading", { name: "Dokument bearbeiten", exact: true }),
     ).toHaveCount(0)
-    await expect(page.locator("tbody tr", { hasText: fixture.uploadTitle }).first()).toBeVisible({
+    await expect(page.locator("tbody tr", { hasText: fixture.fileName }).first()).toBeVisible({
       timeout: 30_000,
     })
   })

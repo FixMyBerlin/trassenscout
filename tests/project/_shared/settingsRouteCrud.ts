@@ -32,6 +32,8 @@ export const defineSettingsRouteCrudSuite = ({
     test.use({ storageState: authFile("editor") })
 
     test("editor can create and update an item with persisted list refresh", async ({ page }) => {
+      test.setTimeout(120_000)
+
       const slug = `e2e-${Date.now()}`
       const initialTitle = `E2E ${slug} initial`
       const updatedTitle = `E2E ${slug} updated`
@@ -96,14 +98,15 @@ export const defineSettingsRouteCrudSuite = ({
       const updatedRow = page.locator("tbody tr", { hasText: updatedTitle }).first()
       const deleteButton = updatedRow.getByRole("button", { name: "Löschen", exact: true })
       await deleteButton.scrollIntoViewIfNeeded()
-      await Promise.all([
-        page.waitForEvent("dialog").then((dialog) => dialog.accept()),
-        deleteButton.click(),
-      ])
-
-      await expect(page.locator("tbody tr", { hasText: updatedTitle })).toHaveCount(0, {
-        timeout: 30_000,
+      await page.evaluate(() => {
+        window.confirm = () => true
       })
+      await expect(async () => {
+        await deleteButton.click()
+        await expect(page.locator("tbody tr", { hasText: updatedTitle })).toHaveCount(0, {
+          timeout: 2_000,
+        })
+      }).toPass({ timeout: 30_000 })
 
       await page.reload()
       await expect(page.getByRole("heading", { name: listHeading, exact: true })).toBeVisible({

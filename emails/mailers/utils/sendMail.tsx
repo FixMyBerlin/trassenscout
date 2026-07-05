@@ -43,13 +43,17 @@ ${footerTextMarkdown}
 
   if (isTest || isDev) {
     const previewEmail = (await import("preview-email")).default
-    await previewEmail({
-      from: formattedEmailAddress(mailMessage.From),
-      to: mailMessage.To.map((to) => formattedEmailAddress(to)).join(";"),
-      subject: mailMessage.Subject,
-      text: mailMessage.TextPart,
-      html: mailMessage.HTMLPart,
-    })
+    const isE2e = process.env.VITE_IS_TEST === "true"
+    await previewEmail(
+      {
+        from: formattedEmailAddress(mailMessage.From),
+        to: mailMessage.To.map((to) => formattedEmailAddress(to)).join(";"),
+        subject: mailMessage.Subject,
+        text: mailMessage.TextPart,
+        html: mailMessage.HTMLPart,
+      },
+      { open: isE2e ? false : { wait: false }, openSimulator: false },
+    )
     return
   }
 

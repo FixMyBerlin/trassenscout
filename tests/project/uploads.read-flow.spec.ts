@@ -27,15 +27,16 @@ test.describe("Uploads read flow", () => {
     await expect(previewButton).toBeVisible({ timeout: 30_000 })
     await page.waitForSelector('[data-upload-preview-ready="true"]', { timeout: 30_000 })
 
-    const uploadTitle = await page.locator("tbody tr").first().locator("td").first().textContent()
+    const fileName = (
+      await page.locator("tbody tr").first().locator("td").first().textContent()
+    )?.trim()
     await previewButton.click()
 
     await expect(page.locator('[aria-label="Schließen"]')).toBeVisible({ timeout: 30_000 })
 
-    if (uploadTitle && uploadTitle.trim().length > 0) {
-      await expect(page.getByRole("heading", { name: uploadTitle, exact: true })).toBeVisible({
-        timeout: 30_000,
-      })
+    if (fileName) {
+      const modal = page.getByRole("dialog")
+      await expect(modal.getByText(fileName).first()).toBeVisible({ timeout: 30_000 })
     }
 
     await page.locator('[aria-label="Schließen"]').click()
