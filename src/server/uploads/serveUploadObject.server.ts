@@ -14,6 +14,21 @@ const ParamsSchema = z.object({
   uploadId: z.coerce.number().int().positive(),
 })
 
+const TEST_FIXTURE_JPEG_BASE64 =
+  "/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/2wBDAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAARCAABAAEDASIAAhEBAxEB/8QAFAABAAAAAAAAAAAAAAAAAAAACv/EABQQAQAAAAAAAAAAAAAAAAAAAAD/xAAUAQEAAAAAAAAAAAAAAAAAAAAA/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8AfwD/2Q=="
+
+function serveTestFixtureImage() {
+  const body = Buffer.from(TEST_FIXTURE_JPEG_BASE64, "base64")
+  return new Response(body, {
+    headers: {
+      "Content-Type": "image/jpeg",
+      "Content-Length": String(body.byteLength),
+      "Cache-Control": "no-cache",
+      ...getUploadServeHeaders("image/jpeg"),
+    },
+  })
+}
+
 export async function serveProjectUploadObject(
   headers: Headers,
   params: { projectSlug: string; uploadId: string },
@@ -40,6 +55,10 @@ export async function serveProjectUploadObject(
 
   if (!upload) {
     return new Response("Not Found", { status: 404 })
+  }
+
+  if (process.env.VITE_IS_TEST === "true") {
+    return serveTestFixtureImage()
   }
 
   const key = getS3KeyFromUrl(upload.externalUrl)
