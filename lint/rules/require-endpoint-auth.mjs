@@ -39,7 +39,7 @@ export const requireEndpointAuth = {
     },
     messages: {
       missing:
-        "First statement must call endpointAuth.<method>() or endpointAuth.public('reason') / endpointAuth.inherited('reason'). See @.agents/skills/trassenscout-auth/references/auth.md",
+        "First statement must call endpointAuth.<method>() or endpointAuth.public('reason') / endpointAuth.inherited('reason'). See @.cursor/skills/trassenscout-auth/references/auth.md",
       reasonRequired: "endpointAuth.{{method}}() requires a non-empty string literal reason",
     },
     schema: [],

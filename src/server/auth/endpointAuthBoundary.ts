@@ -10,7 +10,7 @@
  * import `@/src/server/auth/endpointAuth.server` in API handlers and server exports.
  *
  * @see endpointAuth.server.ts — full API; spreads these markers via `...endpointAuthBoundary`
- * @see .agents/skills/trassenscout-auth/references/auth.md
+ * @see .cursor/skills/trassenscout-auth/references/auth.md
  */
 
 export const endpointAuth = {
