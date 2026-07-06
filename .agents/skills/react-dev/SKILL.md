@@ -41,12 +41,14 @@ Docs: [React Compiler](https://react.dev/learn/react-compiler.md) · [eslint-plu
 
 ## Related skills
 
-| Topic                            | Skill                        |
-| -------------------------------- | ---------------------------- |
-| Routes, layout, loaders, SSR     | `tanstack-start-conventions` |
-| Next → Start, `createServerFn`   | `tanstack-start-migration`   |
-| Client stores                    | `zustand-state-management`   |
-| URL state (prefer router search) | `nuqs`                       |
+| Topic                                   | Skill                                             |
+| --------------------------------------- | ------------------------------------------------- |
+| Effects, naming, when not to use Effect | `react-dev`                                       |
+| Routes, loaders, `validateSearch`, SSR  | `tanstack-start-conventions`                      |
+| Folder layout, thin routes              | `tanstack-start-conventions` → `app-structure.md` |
+| Next → Start, `createServerFn`          | `tanstack-start-migration`                        |
+| Client stores                           | `zustand-state-management`                        |
+| URL state (prefer router search)        | `tanstack-start-conventions`                      |
 
 ## Component props
 

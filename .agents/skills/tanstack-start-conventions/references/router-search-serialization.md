@@ -162,6 +162,59 @@ See `react-map-gl` → `map-url-state.md`.
 
 ---
 
+## Writing search params — history, defaults, throttle (nuqs → router parity)
+
+`navigate({ search })` does **not** include nuqs `useQueryState` defaults. Decide these per setter:
+
+- **History mode:** TanStack defaults to **push** (`replace: false` — [NavigateOptions](https://tanstack.com/router/latest/docs/framework/react/api/router/NavigateOptionsType)). Pass **`replace: true`** for toggles, filters, and viewport updates. Use push only for real navigation.
+- **Clear on default:** set the key to **`undefined`** or add **`stripSearchParams`** with defaults ([search middlewares](https://tanstack.com/router/latest/docs/framework/react/guide/search-params#transforming-search-with-search-middlewares)). Zod defaults only affect reading.
+- **Throttle high-frequency writes:** map pans/drags need `@tanstack/react-pacer`; see `react-map-gl` → `map-url-state.md`.
+
+Use one route-local `updateSearch` wrapper so setters compose from fresh `prev` state ([functional search updater](https://tanstack.com/router/latest/docs/framework/react/guide/search-params#usenavigate-navigate-search)) and `undefined` deletes keys:
+
+```ts
+import { getRouteApi, useNavigate } from "@tanstack/react-router"
+import type { RegionSearch } from "@/shared/regionen/regionSearchSchemas"
+
+const regionRouteApi = getRouteApi("/regionen/$regionSlug")
+
+type NavigateOptions = {
+  replace?: boolean
+}
+
+export const useRegionSearchNavigation = () => {
+  const search = regionRouteApi.useSearch()
+  const navigate = useNavigate({ from: "/regionen/$regionSlug" })
+
+  const updateSearch = (
+    partial: Partial<RegionSearch> | ((prev: RegionSearch) => Partial<RegionSearch>),
+    options?: NavigateOptions,
+  ) => {
+    void navigate({
+      search: (prev) => {
+        const updates = typeof partial === "function" ? partial(prev) : partial
+        const next: Record<string, unknown> = { ...prev }
+
+        for (const [key, value] of Object.entries(updates)) {
+          if (value === undefined) {
+            delete next[key]
+          } else {
+            next[key] = value
+          }
+        }
+
+        return next as RegionSearch
+      },
+      replace: options?.replace,
+    })
+  }
+
+  return { search, updateSearch, navigate }
+}
+```
+
+---
+
 ## Rules (non-negotiable)
 
 1. **`router.tsx` always** exports `parseSearch` / `stringifySearch` — at minimum the Layer 1 pretty-JSON wrapper.

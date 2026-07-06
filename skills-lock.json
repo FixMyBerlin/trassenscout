@@ -5,7 +5,7 @@
       "source": "FixMyBerlin/fixmyskills",
       "sourceType": "github",
       "skillPath": "skills/finish-work/SKILL.md",
-      "computedHash": "abc9725151a80e8c2e854f1f30f7a90a5ee2c264ed2d165cc3f05ede3be9eca3"
+      "computedHash": "a58aaf4d46abeb1498b6d6abe3262f5881288f87f13c3e235b0701c8c2dc26f7"
     },
     "nuqs": {
       "source": "FixMyBerlin/fixmyskills",
@@ -17,25 +17,25 @@
       "source": "FixMyBerlin/fixmyskills",
       "sourceType": "github",
       "skillPath": "skills/playwright-skill/SKILL.md",
-      "computedHash": "cbbf917caf7f9a4dfae428850cd1a11d4079eea7e998b3f481059cdf6488f52b"
+      "computedHash": "82dca8d03cc94bbd594838dbfecbf5ea69710a8923cde8fd326a9836077618f9"
     },
     "react-dev": {
       "source": "FixMyBerlin/fixmyskills",
       "sourceType": "github",
       "skillPath": "skills/react-dev/SKILL.md",
-      "computedHash": "e87957bc8783afe17e6ed19df5c3a22bb50de8c6fed681b4907cd4b21b98f109"
+      "computedHash": "ed6a83384a44b6c430b696b58841cecc492c8463001ceab490cc4b9878d10c8f"
     },
     "react-map-gl": {
       "source": "FixMyBerlin/fixmyskills",
       "sourceType": "github",
       "skillPath": "skills/react-map-gl/SKILL.md",
-      "computedHash": "d00708bcfba6b173bad6b5e6fa081f9d133d575af444a61be8e2e15488b79493"
+      "computedHash": "5b7b0e880a78aab0fbab36494e6601d4c9fef67cecf1c0109753fe9bb367504b"
     },
     "review-dependabot": {
       "source": "FixMyBerlin/fixmyskills",
       "sourceType": "github",
       "skillPath": "skills/review-dependabot/SKILL.md",
-      "computedHash": "fd04be5189e29ae0ad54c3f09016335ad6c9ef147c865e04a028a53818feee3e"
+      "computedHash": "24075b958c648c11c62bfa70b3632a92bb196c316eb4a3ca57c104f6be67a285"
     },
     "rust-wasm-geo": {
       "source": "FixMyBerlin/fixmyskills",
@@ -47,19 +47,19 @@
       "source": "FixMyBerlin/fixmyskills",
       "sourceType": "github",
       "skillPath": "skills/tanstack-better-upload/SKILL.md",
-      "computedHash": "e1e2b311d479a9dd8589d326a91418e195f9de463ed4c479f8af7d127ffcbb4a"
+      "computedHash": "c52411e534f61b8282b57ddd5adbe4ac59047a6316c489b46621fda3e7601509"
     },
     "tanstack-start-auth": {
       "source": "FixMyBerlin/fixmyskills",
       "sourceType": "github",
       "skillPath": "skills/tanstack-start-auth/SKILL.md",
-      "computedHash": "3df08f1c99ca3f08c9c6da3c6624f53c2d8ad5a4576f82088eab5b16490c0f66"
+      "computedHash": "51de9a0aa199a31299243075d4f16ffd82f9b2e766f56758b04c8b1bb854caf5"
     },
     "tanstack-start-conventions": {
       "source": "FixMyBerlin/fixmyskills",
       "sourceType": "github",
       "skillPath": "skills/tanstack-start-conventions/SKILL.md",
-      "computedHash": "d32b262affe8a2c4e0a1d6c41f2daa66a4a1ff375e4a68937ca02e64f571d93e"
+      "computedHash": "14a05666d7d4190b468b9b1dd87759aeda0e0b35154ee5ea39e3c129f471e2e6"
     },
     "tanstack-start-migration": {
       "source": "FixMyBerlin/fixmyskills",
@@ -71,7 +71,7 @@
       "source": "FixMyBerlin/fixmyskills",
       "sourceType": "github",
       "skillPath": "skills/tech-stack/SKILL.md",
-      "computedHash": "1d5ed0f8e89c58b40a7255342e1d5a186ff4cc1138a4ea1427196c2c4ab2a9a1"
+      "computedHash": "6db1ba19d1403f44a1bf16cf3e8b94a24a56178c6224cf8198633f1e86eb2d6a"
     },
     "touch-ipad-review": {
       "source": "FixMyBerlin/fixmyskills",

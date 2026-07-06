@@ -4,6 +4,8 @@
 
 Template: [examples/mcp.json.template](../examples/mcp.json.template)
 
+Browser exploration: [agent-browser-mcp.md](agent-browser-mcp.md)
+
 ## Setup (user only)
 
 **`~/.cursor/mcp.json` only.** Never add Postgres MCP to `.cursor/mcp.json` in a repo — credentials must not be committed.
