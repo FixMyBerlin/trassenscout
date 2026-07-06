@@ -1,5 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { featureCollection, lineString } from "@turf/helpers"
+import { featureCollection } from "@turf/helpers"
+import type { Feature } from "geojson"
+import { lineStringToGeoJSON } from "@/src/components/core/components/Map/utils/lineStringToGeoJSON"
+import { polygonToGeoJSON } from "@/src/components/core/components/Map/utils/polygonToGeoJSON"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import db from "@/src/server/db.server"
 import { typeSubsectionGeometry } from "@/src/server/subsections/utils/typeSubsectionGeometry"
@@ -55,23 +58,29 @@ export const Route = createFileRoute("/api/projects/$slug/")({
             },
           })
 
-          // TODO: Handle other geometry types
-          const projectFeatures = featureCollection(
-            subsections
-              .map((subsection) => {
-                const { geometry } = typeSubsectionGeometry(subsection)
-                if (geometry.type !== "LineString") return null
+          // Public GeoJSON export: one Feature per geometry part.
+          // LINE → LineString feature(s); MultiLineString → one LineString feature per part.
+          // POLYGON → Polygon feature(s); MultiPolygon → one Polygon feature per part.
+          // Export properties are duplicated on every feature from the same subsection.
+          const features = subsections.flatMap<Feature>((subsection) => {
+            const typedSubsection = typeSubsectionGeometry(subsection)
+            const properties = {
+              subsectionSlug: subsection.slug,
+              projectSlug,
+              operator: subsection.operator?.title,
+              estimatedCompletionDateString: subsection.estimatedCompletionDateString,
+              status: subsection.SubsectionStatus?.title,
+            }
 
-                return lineString(geometry.coordinates, {
-                  subsectionSlug: subsection.slug,
-                  projectSlug,
-                  operator: subsection.operator?.title,
-                  estimatedCompletionDateString: subsection.estimatedCompletionDateString,
-                  status: subsection.SubsectionStatus?.title,
-                })
-              })
-              .filter((feature) => feature !== null),
-          )
+            switch (typedSubsection.type) {
+              case "LINE":
+                return lineStringToGeoJSON(typedSubsection.geometry, properties)
+              case "POLYGON":
+                return polygonToGeoJSON(typedSubsection.geometry, properties)
+            }
+          })
+
+          const projectFeatures = featureCollection(features)
 
           return new Response(JSON.stringify(projectFeatures), {
             headers: corsHeaders,

@@ -42,7 +42,31 @@ test.describe("Project export API", () => {
     })
     createdSubsectionIds.push(lineSubsection.id)
 
-    // Non-LineString subsection: must be filtered out of the export.
+    // MultiLineString subsection: exported as one LineString feature per part.
+    const multiLineSubsection = await db.subsection.create({
+      data: {
+        projectId: project.id,
+        slug: "s3-multi-line",
+        type: "LINE",
+        geometry: {
+          type: "MultiLineString",
+          coordinates: [
+            [
+              [13.42, 52.5],
+              [13.43, 52.51],
+            ],
+            [
+              [13.44, 52.52],
+              [13.45, 52.53],
+            ],
+          ],
+        },
+      },
+      select: { id: true },
+    })
+    createdSubsectionIds.push(multiLineSubsection.id)
+
+    // Polygon subsection: included in the export alongside LineString subsections.
     const polygonSubsection = await db.subsection.create({
       data: {
         projectId: project.id,
@@ -97,7 +121,7 @@ test.describe("Project export API", () => {
     const payload = (await response.json()) as {
       type: string
       features: Array<{
-        geometry: { type: string; coordinates: number[][] }
+        geometry: { type: string; coordinates: number[][] | number[][][] }
         properties: {
           subsectionSlug: string
           projectSlug: string
@@ -109,11 +133,27 @@ test.describe("Project export API", () => {
     }
 
     expect(payload.type).toBe("FeatureCollection")
-    // Only the LineString subsection is exported; the POLYGON one is filtered out.
-    expect(payload.features).toHaveLength(1)
-    expect(payload.features.every((feature) => feature.geometry.type === "LineString")).toBe(true)
-    expect(payload.features[0]?.properties.subsectionSlug).toBe("s1")
-    expect(payload.features[0]?.properties.projectSlug).toBe(projectSlug)
+    // LineString (1) + MultiLineString parts (2) + Polygon (1)
+    expect(payload.features).toHaveLength(4)
+
+    const lineFeature = payload.features.find(
+      (feature) =>
+        feature.geometry.type === "LineString" && feature.properties.subsectionSlug === "s1",
+    )
+    const multiLineFeatures = payload.features.filter(
+      (feature) =>
+        feature.geometry.type === "LineString" &&
+        feature.properties.subsectionSlug === "s3-multi-line",
+    )
+    const polygonFeature = payload.features.find((feature) => feature.geometry.type === "Polygon")
+
+    expect(lineFeature?.properties.projectSlug).toBe(projectSlug)
+    expect(multiLineFeatures).toHaveLength(2)
+    expect(
+      multiLineFeatures.every((feature) => feature.properties.projectSlug === projectSlug),
+    ).toBe(true)
+    expect(polygonFeature?.properties.subsectionSlug).toBe("s2-polygon")
+    expect(polygonFeature?.properties.projectSlug).toBe(projectSlug)
   })
 
   test("returns 404 when the project does not exist", async ({ request }) => {
