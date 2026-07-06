@@ -4,6 +4,7 @@ import { twJoin } from "tailwind-merge"
 const placementClasses = {
   top: "bottom-full left-1/2 -translate-x-1/2 -translate-y-0.5 mb-0.5",
   bottom: "top-full left-1/2 -translate-x-1/2 translate-y-0.5 mt-0.5",
+  "bottom-end": "top-full right-0 translate-y-0.5 mt-0.5",
   left: "right-full top-1/2 -translate-y-1/2 -translate-x-0.5 mr-0.5",
   right: "left-full top-1/2 -translate-y-1/2 translate-x-0.5 ml-0.5",
 } as const
@@ -27,10 +28,11 @@ export const Tooltip = ({ content, placement = "top", children }: Props) => {
   return (
     <span className="relative inline-flex">
       {trigger}
+      {/* `hidden` (not `opacity-0`) so idle tooltips don't widen scroll containers like the admin table wrapper */}
       <span
         role="tooltip"
         className={twJoin(
-          "pointer-events-none absolute z-50 w-max max-w-[200px] rounded bg-gray-800 px-2 py-1 text-xs text-gray-100 opacity-0 transition-opacity duration-150 peer-hover:opacity-100 peer-focus-visible:opacity-100",
+          "pointer-events-none absolute z-50 hidden w-max max-w-[200px] rounded bg-gray-800 px-2 py-1 text-xs text-gray-100 opacity-100 transition-opacity transition-discrete duration-150 peer-hover:block peer-focus-visible:block starting:opacity-0",
           placementClasses[placement],
         )}
       >

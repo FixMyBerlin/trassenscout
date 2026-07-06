@@ -7,23 +7,19 @@ export const GetProjectBySlugSchema = z.object({
 
 export const GetProjectsAdminSchema = z.object({})
 export const CreateProjectSchema = ProjectSchema
-export const UpdateProjectShowLogEntriesSchema = z.object({
-  showLogEntries: z.coerce.boolean(),
-  projectSlug: z.string(),
-})
-export const UpdateProjectAiEnabledSchema = z.object({
-  aiEnabled: z.coerce.boolean(),
-  projectSlug: z.string(),
-})
-export const UpdateProjectLandAcquisitionModuleEnabledSchema = z.object({
-  landAcquisitionModuleEnabled: z.coerce.boolean(),
-  projectSlug: z.string(),
-})
-export const UpdateProjectEvaluationsEnabledSchema = z.object({
-  evaluationsEnabled: z.coerce.boolean(),
-  projectSlug: z.string(),
-})
-export const UpdateProjectExportApiSchema = z.object({
-  exportEnabled: z.coerce.boolean(),
-  projectSlug: z.string(),
+
+const projectFeatureFlagKeys = [
+  "exportEnabled",
+  "aiEnabled",
+  "landAcquisitionModuleEnabled",
+  "showLogEntries",
+  "evaluationsEnabled",
+] as const
+
+export type ProjectFeatureFlagKey = (typeof projectFeatureFlagKeys)[number]
+
+export const UpdateProjectsFeatureFlagSchema = z.object({
+  projectSlugs: z.array(z.string()).min(1),
+  key: z.enum(projectFeatureFlagKeys),
+  enabled: z.coerce.boolean(),
 })

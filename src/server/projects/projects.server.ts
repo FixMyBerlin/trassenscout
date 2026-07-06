@@ -11,11 +11,7 @@ import { UpdateProjectSchema } from "@/src/shared/projects/schemas"
 import {
   CreateProjectSchema,
   GetProjectBySlugSchema,
-  UpdateProjectAiEnabledSchema,
-  UpdateProjectEvaluationsEnabledSchema,
-  UpdateProjectExportApiSchema,
-  UpdateProjectLandAcquisitionModuleEnabledSchema,
-  UpdateProjectShowLogEntriesSchema,
+  UpdateProjectsFeatureFlagSchema,
 } from "./projects.inputSchemas"
 
 const projectSelect = {
@@ -149,67 +145,15 @@ export async function createProject(headers: Headers, input: z.infer<typeof Crea
   })
 }
 
-export async function updateProjectShowLogEntries(
+export async function updateProjectsFeatureFlag(
   headers: Headers,
-  input: z.infer<typeof UpdateProjectShowLogEntriesSchema>,
+  input: z.infer<typeof UpdateProjectsFeatureFlagSchema>,
 ) {
   await endpointAuth.admin(headers)
-  const { projectSlug, showLogEntries } = input
+  const { projectSlugs, key, enabled } = input
 
-  return db.project.update({
-    where: { slug: projectSlug },
-    data: { showLogEntries },
-  })
-}
-
-export async function updateProjectAiEnabled(
-  headers: Headers,
-  input: z.infer<typeof UpdateProjectAiEnabledSchema>,
-) {
-  await endpointAuth.admin(headers)
-  const { projectSlug, aiEnabled } = input
-
-  return db.project.update({
-    where: { slug: projectSlug },
-    data: { aiEnabled },
-  })
-}
-
-export async function updateProjectLandAcquisitionModuleEnabled(
-  headers: Headers,
-  input: z.infer<typeof UpdateProjectLandAcquisitionModuleEnabledSchema>,
-) {
-  await endpointAuth.admin(headers)
-  const { projectSlug, landAcquisitionModuleEnabled } = input
-
-  return db.project.update({
-    where: { slug: projectSlug },
-    data: { landAcquisitionModuleEnabled },
-  })
-}
-
-export async function updateProjectEvaluationsEnabled(
-  headers: Headers,
-  input: z.infer<typeof UpdateProjectEvaluationsEnabledSchema>,
-) {
-  await endpointAuth.admin(headers)
-  const { projectSlug, evaluationsEnabled } = input
-
-  return db.project.update({
-    where: { slug: projectSlug },
-    data: { evaluationsEnabled },
-  })
-}
-
-export async function updateProjectExportApi(
-  headers: Headers,
-  input: z.infer<typeof UpdateProjectExportApiSchema>,
-) {
-  await endpointAuth.admin(headers)
-  const { projectSlug, exportEnabled } = input
-
-  return db.project.update({
-    where: { slug: projectSlug },
-    data: { exportEnabled },
+  return db.project.updateMany({
+    where: { slug: { in: projectSlugs } },
+    data: { [key]: enabled },
   })
 }

@@ -5,11 +5,7 @@ import {
   CreateProjectSchema,
   GetProjectBySlugSchema,
   GetProjectsAdminSchema,
-  UpdateProjectAiEnabledSchema,
-  UpdateProjectEvaluationsEnabledSchema,
-  UpdateProjectExportApiSchema,
-  UpdateProjectLandAcquisitionModuleEnabledSchema,
-  UpdateProjectShowLogEntriesSchema,
+  UpdateProjectsFeatureFlagSchema,
 } from "./projects.inputSchemas"
 import {
   createProject,
@@ -18,11 +14,7 @@ import {
   getProjectsAdmin,
   getProjectsForCurrentUser,
   updateProject,
-  updateProjectAiEnabled,
-  updateProjectEvaluationsEnabled,
-  updateProjectExportApi,
-  updateProjectLandAcquisitionModuleEnabled,
-  updateProjectShowLogEntries,
+  updateProjectsFeatureFlag,
 } from "./projects.server"
 import { getProjectsWithGeometryWithMembershipRole } from "./queries/getProjectsWithGeometryWithMembershipRole.server"
 
@@ -54,22 +46,6 @@ export const createProjectFn = createServerFn({ method: "POST" })
   .validator(CreateProjectSchema)
   .handler(({ data }) => createProject(getRequestHeaders(), data))
 
-export const updateProjectShowLogEntriesFn = createServerFn({ method: "POST" })
-  .validator(UpdateProjectShowLogEntriesSchema)
-  .handler(({ data }) => updateProjectShowLogEntries(getRequestHeaders(), data))
-
-export const updateProjectAiEnabledFn = createServerFn({ method: "POST" })
-  .validator(UpdateProjectAiEnabledSchema)
-  .handler(({ data }) => updateProjectAiEnabled(getRequestHeaders(), data))
-
-export const updateProjectLandAcquisitionModuleEnabledFn = createServerFn({ method: "POST" })
-  .validator(UpdateProjectLandAcquisitionModuleEnabledSchema)
-  .handler(({ data }) => updateProjectLandAcquisitionModuleEnabled(getRequestHeaders(), data))
-
-export const updateProjectEvaluationsEnabledFn = createServerFn({ method: "POST" })
-  .validator(UpdateProjectEvaluationsEnabledSchema)
-  .handler(({ data }) => updateProjectEvaluationsEnabled(getRequestHeaders(), data))
-
-export const updateProjectExportApiFn = createServerFn({ method: "POST" })
-  .validator(UpdateProjectExportApiSchema)
-  .handler(({ data }) => updateProjectExportApi(getRequestHeaders(), data))
+export const updateProjectsFeatureFlagFn = createServerFn({ method: "POST" })
+  .validator(UpdateProjectsFeatureFlagSchema)
+  .handler(({ data }) => updateProjectsFeatureFlag(getRequestHeaders(), data))

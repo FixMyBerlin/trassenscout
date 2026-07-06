@@ -127,53 +127,42 @@ export const AdminTableDeleteButton = ({
   </button>
 )
 
-type AdminTableFeatureSwitchProps = {
-  enabled: boolean
-  onToggle: () => void
+type AdminTableFeatureCheckboxProps = {
+  checked: boolean
+  onChange: () => void
   label: string
-  icon: React.ReactNode
   disabled?: boolean
+  indeterminate?: boolean
+  tooltipPlacement?: React.ComponentProps<typeof Tooltip>["placement"]
 }
 
-export const AdminTableFeatureSwitch = ({
-  enabled,
-  onToggle,
+export const AdminTableFeatureCheckbox = ({
+  checked,
+  onChange,
   label,
-  icon,
   disabled,
-}: AdminTableFeatureSwitchProps) => (
-  <Tooltip content={label}>
-    <span className="inline-flex">
-      <button
-        type="button"
-        role="switch"
-        aria-checked={enabled}
-        aria-label={label}
-        disabled={disabled}
-        onClick={onToggle}
-        className={twJoin(
-          "relative inline-flex w-11 shrink-0 rounded-full p-0.5 ring-1 ring-gray-900/5 outline-offset-2 transition-colors duration-200 ease-in-out ring-inset focus-visible:outline-2 focus-visible:outline-blue-600",
-          enabled ? "bg-blue-600" : "bg-gray-200",
-          disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
-        )}
-      >
-        <span
+  indeterminate,
+  tooltipPlacement,
+}: AdminTableFeatureCheckboxProps) => {
+  return (
+    <Tooltip content={label} placement={tooltipPlacement}>
+      <span className="inline-flex">
+        <input
+          // `indeterminate` is only settable via the DOM; the callback ref re-runs every render
+          ref={(input) => {
+            if (input) input.indeterminate = Boolean(indeterminate) && !checked
+          }}
+          type="checkbox"
+          checked={checked}
+          aria-label={label}
+          disabled={disabled}
+          onChange={onChange}
           className={twJoin(
-            "relative size-5 rounded-full bg-white shadow-xs ring-1 ring-gray-900/5 transition-transform duration-200 ease-in-out",
-            enabled ? "translate-x-5" : "",
+            "size-4 shrink-0 rounded border-gray-300 accent-blue-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600",
+            disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
           )}
-        >
-          <span
-            aria-hidden
-            className={twJoin(
-              "absolute inset-0 flex size-full items-center justify-center transition-colors duration-200 ease-in-out [&_svg]:size-3",
-              enabled ? "text-blue-600" : "text-gray-400",
-            )}
-          >
-            {icon}
-          </span>
-        </span>
-      </button>
-    </span>
-  </Tooltip>
-)
+        />
+      </span>
+    </Tooltip>
+  )
+}
