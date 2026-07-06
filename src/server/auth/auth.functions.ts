@@ -3,8 +3,18 @@ import { createServerFn } from "@tanstack/react-start"
 import { getRequestHeaders } from "@tanstack/react-start/server"
 import { UserRoleEnum } from "@/src/prisma/generated/browser"
 import { checkProjectAuthorization } from "@/src/server/authorization/checkProjectAuthorization.server"
+import { acceptInviteForSession } from "./acceptInvite.server"
 import type { LocationLike } from "./authBoundary.types"
 import { getAppSession, getFreshSession } from "./session.server"
+
+function getInviteTokenFromHref(href: string | undefined) {
+  if (!href) return undefined
+  try {
+    return new URL(href, "http://relative").searchParams.get("inviteToken") ?? undefined
+  } catch {
+    return undefined
+  }
+}
 
 export const getSessionForRouteFn = createServerFn({ method: "GET" }).handler(() =>
   getAppSession(getRequestHeaders()),
@@ -18,6 +28,15 @@ export const routeGuestFn = createServerFn({ method: "GET" })
 
     const session = await getAppSession(getRequestHeaders())
     if (session) {
+      // A logged-in user following an invite mail link would otherwise lose the
+      // token to this redirect and the invite would silently never be accepted.
+      const inviteToken = getInviteTokenFromHref(location?.href)
+      if (inviteToken) {
+        const result = await acceptInviteForSession(inviteToken, session).catch(() => null)
+        if (result?.accepted && result.projectSlug) {
+          throw redirect({ href: `/${result.projectSlug}` })
+        }
+      }
       throw redirect({ to: "/dashboard" })
     }
   })
