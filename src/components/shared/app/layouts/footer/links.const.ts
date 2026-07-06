@@ -15,7 +15,11 @@ export const authLinks: FooterLink[] = [
 
 export const fixmyCityLinks: FooterLink[] = [
   { name: "Über den Trassenscout", href: "https://fixmycity.de/trassenscout/", blank: true },
-  { name: "Trassenscout in der Praxis", href: "https://fixmycity.de/referenzen/", blank: true },
+  {
+    name: "Trassenscout in der Praxis",
+    href: "https://fixmycity.de/referenzen-trassenscout/",
+    blank: true,
+  },
   {
     name: "TILDA - Offenes Verplanungs-Web-GIS",
     href: "https://tilda-geo.de",
