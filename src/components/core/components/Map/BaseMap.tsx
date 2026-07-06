@@ -1,4 +1,5 @@
 import type { FeatureCollection, LineString, Point, Polygon } from "geojson"
+import type { MapLibreEvent } from "maplibre-gl"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import "maplibre-gl/dist/maplibre-gl.css"
 import MapComponent, {
@@ -9,6 +10,10 @@ import MapComponent, {
   ScaleControl,
 } from "react-map-gl/maplibre"
 import { twJoin } from "tailwind-merge"
+import {
+  exposeMainMapForDebugging,
+  firePlaywrightMapLoadedEvent,
+} from "@/src/components/shared/utils/playwright"
 import { BackgroundSwitcher, LayerType } from "./BackgroundSwitcher/BackgroundSwitcher"
 import {
   LineEndPointsLayer,
@@ -215,6 +220,12 @@ export const BaseMap = ({
     if (onClick) onClick(event)
   }
 
+  function handleLoadInternal(event: MapLibreEvent) {
+    exposeMainMapForDebugging(event.target)
+    firePlaywrightMapLoadedEvent()
+    onLoad?.(event)
+  }
+
   return (
     <div
       className={twJoin(
@@ -238,7 +249,7 @@ export const BaseMap = ({
             onClick={handleClickInternal}
             onContextMenu={onContextMenu}
             onZoomEnd={onZoomEnd}
-            onLoad={onLoad}
+            onLoad={handleLoadInternal}
             onIdle={onIdle}
             interactiveLayerIds={[
               ...(interactiveLayerIds ?? []),

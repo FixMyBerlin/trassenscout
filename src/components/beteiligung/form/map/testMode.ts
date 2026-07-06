@@ -1,13 +1,16 @@
 import type { Map as MapLibreMap } from "maplibre-gl"
 import { LayerType } from "@/src/components/beteiligung/form/map/BackgroundSwitcher"
-import { sendPlaywrightMapLoadedEvent } from "@/src/components/beteiligung/form/map/playwrightMapLoadedEvent"
-import { isMapTestMode, TEST_MAP_STYLE } from "@/src/components/core/components/Map/mapStyleConfig"
+import {
+  isPlaywrightEnabled,
+  TEST_MAP_STYLE,
+} from "@/src/components/core/components/Map/mapStyleConfig"
 import { isDev } from "@/src/components/core/utils/isEnv"
+import { firePlaywrightMapLoadedEvent } from "@/src/components/shared/utils/playwright"
 
 const MAPTILER_API_KEY = "ECOoUBmpqklzSCASXxcu"
 const installedMaps = new WeakSet<MapLibreMap>()
 
-const isSurveyMapTestMode = isMapTestMode
+const isSurveyMapTestMode = isPlaywrightEnabled
 
 export const getSurveyMapStyle = ({
   selectedLayer,
@@ -41,5 +44,5 @@ export const installMapGrabIfTest = (map: MapLibreMap, mapId: string) => {
 }
 
 export const notifyPlaywrightMapLoaded = () => {
-  sendPlaywrightMapLoadedEvent()
+  firePlaywrightMapLoadedEvent()
 }

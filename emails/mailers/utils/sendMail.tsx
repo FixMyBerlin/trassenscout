@@ -4,6 +4,7 @@ import { footerTextMarkdown } from "@/emails/templats/footerTextMarkdown"
 import { MarkdownMail } from "@/emails/templats/MarkdownMail"
 import { signatureTextMarkdown } from "@/emails/templats/signatureTextMarkdown"
 import { isDev, isTest } from "@/src/components/core/utils/isEnv"
+import { isPlaywrightE2eEnv } from "@/src/server/playwrightE2e.server"
 import { guardedCreateSystemLogEntry } from "@/src/server/systemLogEntries/create/guardedCreateSystemLogEntry"
 import { formattedEmailAddress } from "./formattedEmailAddress"
 import { getBrevoApiKeyForSending } from "./getBrevoApiKeyForSending"
@@ -43,7 +44,7 @@ ${footerTextMarkdown}
 
   if (isTest || isDev) {
     const previewEmail = (await import("preview-email")).default
-    const isE2e = process.env.VITE_IS_TEST === "true"
+    const isE2e = isPlaywrightE2eEnv()
     await previewEmail(
       {
         from: formattedEmailAddress(mailMessage.From),

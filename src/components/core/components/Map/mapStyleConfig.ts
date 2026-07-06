@@ -1,16 +1,17 @@
 import type { StyleSpecification } from "maplibre-gl"
+import { isPlaywrightEnabled } from "@/src/components/shared/utils/playwright"
 import type { LayerType } from "./BackgroundSwitcher/BackgroundSwitcher"
 
 const MAPTILER_API_KEY = "ECOoUBmpqklzSCASXxcu"
 
-/** Empty MapLibre style used in E2E (VITE_IS_TEST) to avoid external tile requests. */
+/** Empty MapLibre style used in Playwright E2E to avoid external tile requests. */
 export const TEST_MAP_STYLE: StyleSpecification = {
   version: 8,
   sources: {},
   layers: [],
 }
 
-export const isMapTestMode = () => import.meta.env.VITE_IS_TEST === "true"
+export { isPlaywrightEnabled }
 
 /** Default vector style URL (project/subsection maps). */
 const defaultVectorStyleUrl = `https://api.maptiler.com/maps/a4824657-3edd-4fbd-925e-1af40ab06e9c/style.json?key=${MAPTILER_API_KEY}`
@@ -47,7 +48,7 @@ const osmCartoStyle: StyleSpecification = {
  * the default vector style is used.
  */
 export function getMapStyle(layer: LayerType, vectorStyleUrl?: string) {
-  if (isMapTestMode()) return TEST_MAP_STYLE
+  if (isPlaywrightEnabled()) return TEST_MAP_STYLE
 
   switch (layer) {
     case "vector":

@@ -7,7 +7,7 @@ const requiredString = z.string().min(1)
 export const envViteSchema = z.object({
   VITE_APP_ENV: environmentValues,
   VITE_APP_ORIGIN: z.url().optional(),
-  VITE_IS_TEST: z.enum(["true", "false"]).optional(),
+  VITE_PLAYWRIGHT_ENABLED: z.enum(["true", "false"]).optional(),
   VITE_PUBLIC_SURVEY_START_STAGE: surveyStageValues.optional(),
 })
 

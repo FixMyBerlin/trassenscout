@@ -1,3 +1,4 @@
+import type { Map as MaplibreMap } from "maplibre-gl"
 import type { EnvFullSchema, EnvVite } from "./server/envSchema"
 
 /// <reference types="vite/client" />
@@ -11,6 +12,12 @@ declare global {
 
   interface ImportMeta {
     readonly env: ImportMetaEnv
+  }
+
+  interface Window {
+    __mainMap?: MaplibreMap
+    __mapLoaded?: boolean
+    __PLAYWRIGHT_ENABLED?: boolean
   }
 
   namespace NodeJS {

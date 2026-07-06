@@ -4,7 +4,10 @@ const probeTimeoutMs = 3_000
 
 const wrongServerMessage = (baseURL: string) =>
   [
-    styleText("red", `E2E aborted: ${baseURL} is already running without VITE_IS_TEST=true`),
+    styleText(
+      "red",
+      `E2E aborted: ${baseURL} is already running without VITE_PLAYWRIGHT_ENABLED=true`,
+    ),
     styleText("dim", '(likely "bun run dev")'),
     "",
     styleText("yellow", "Stop that server, then re-run e2e:"),
@@ -30,8 +33,8 @@ export async function assertE2eServerEnv(baseURL: string) {
     return
   }
 
-  const body = (await response.json()) as { isTest?: boolean }
-  if (body.isTest === true) {
+  const body = (await response.json()) as { playwrightEnabled?: boolean }
+  if (body.playwrightEnabled === true) {
     return
   }
 

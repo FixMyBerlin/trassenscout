@@ -5,6 +5,9 @@ import type { StaticOverlayConfig } from "@/src/components/core/components/Map/s
 type Props = { config: StaticOverlayConfig }
 
 export const StaticOverlay = ({ config }: Props) => {
+  // PMTiles and remote GeoJSON overlays hit tilda-geo.de; skip sources and layers in E2E.
+  if (import.meta.env.VITE_PLAYWRIGHT_ENABLED === "true") return null
+
   return (
     <>
       <AllSources mapData={config} />

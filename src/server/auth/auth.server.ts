@@ -12,6 +12,7 @@ import {
 } from "@/src/server/auth/authHooks.server"
 import { hashPassword, verifyPassword } from "@/src/server/auth/passwordHashing.server"
 import db from "@/src/server/db.server"
+import { isPlaywrightE2eEnv } from "@/src/server/playwrightE2e.server"
 
 function getTrustedOrigins() {
   const origin = process.env.VITE_APP_ORIGIN
@@ -119,7 +120,7 @@ const options = {
   },
   trustedOrigins: getTrustedOrigins(),
   rateLimit: {
-    enabled: process.env.VITE_IS_TEST !== "true",
+    enabled: !isPlaywrightE2eEnv(),
     window: 60,
     max: 10,
     storage: "memory",

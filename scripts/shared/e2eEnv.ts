@@ -8,19 +8,19 @@ import { parseValidatedEnv } from "./env"
 const testEnvPath = path.resolve(process.cwd(), ".env.test")
 
 export const e2eEnvSchema = envAppStartupValidationSchema.safeExtend({
-  VITE_IS_TEST: z.literal("true"),
+  VITE_PLAYWRIGHT_ENABLED: z.literal("true"),
   VITE_APP_ORIGIN: z.url(),
 })
 
 export type E2eEnv = z.infer<typeof e2eEnvSchema>
 
 export const testSetupEnvSchema = envViteSchema
-  .pick({ VITE_APP_ENV: true, VITE_IS_TEST: true })
+  .pick({ VITE_APP_ENV: true, VITE_PLAYWRIGHT_ENABLED: true })
   .extend({
     DATABASE_HOST: z.string().min(1),
     DATABASE_USER: z.string().min(1),
     DATABASE_PASSWORD: z.string().min(1),
-    VITE_IS_TEST: z.literal("true"),
+    VITE_PLAYWRIGHT_ENABLED: z.literal("true"),
   })
 
 export function loadMergedTestEnvSync(): NodeJS.ProcessEnv {

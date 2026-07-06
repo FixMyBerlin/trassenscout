@@ -2,7 +2,7 @@
  * Substrings matched against formatted console/page errors in tests/_fixtures/console-errors.ts.
  * Keep entries specific — broad patterns (e.g. hostnames) hide real regressions.
  *
- * MapTiler / PMTiles: not listed here. E2E runs with VITE_IS_TEST=true, which uses an empty
+ * MapTiler / PMTiles: not listed here. E2E runs with VITE_PLAYWRIGHT_ENABLED=true, which uses an empty
  * MapLibre style (mapStyleConfig) and skips remote overlay sources (AllSources).
  */
 

@@ -20,11 +20,11 @@ Integration tests use the same local Postgres container as dev (`scripts/test/do
 
 Parallel worker count is tuned in [`playwright.config.ts`](../playwright.config.ts) (`localWorkers` / `ciWorkers` constants — edit there if the dev server flakes under load).
 
-Playwright’s `webServer` runs [`prepareAndStartDev.ts`](./prepareAndStartDev.ts). Auth setup signs in via [`_utils/signInViaApi.ts`](./_utils/signInViaApi.ts). Config: [`playwright.config.ts`](../playwright.config.ts).
+Playwright’s `webServer` runs [`prepareAndStartDev.ts`](./prepareAndStartDev.ts) with [`.env.test`](../.env.test) (`VITE_PLAYWRIGHT_ENABLED=true`). Auth setup signs in via [`_utils/signInViaApi.ts`](./_utils/signInViaApi.ts). Config: [`playwright.config.ts`](../playwright.config.ts).
 
 ### Map testing
 
-- Custom map loaded event: [`_utils/customMapLoadedEvent.ts`](./_utils/customMapLoadedEvent.ts)
+- Map helpers: [`utils/maps.ts`](./utils/maps.ts)
 - MapGrab for layer clicks: [MapGrab Playwright docs](https://mapgrab.github.io/docs/getting-started/stage-two/playwright)
 - Draggable pin example: [`survey/survey-frm7-neu.spec.ts`](./survey/survey-frm7-neu.spec.ts)
 

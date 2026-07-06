@@ -3,6 +3,7 @@ import { z } from "zod"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
+import { isPlaywrightE2eEnv } from "@/src/server/playwrightE2e.server"
 import { getProjectIdBySlug } from "@/src/server/projects/queries/getProjectIdBySlug.server"
 import { S3_BUCKET } from "@/src/shared/uploads/config"
 import { getUploadServeHeaders } from "@/src/shared/uploads/serveHeaders"
@@ -57,7 +58,7 @@ export async function serveProjectUploadObject(
     return new Response("Not Found", { status: 404 })
   }
 
-  if (process.env.VITE_IS_TEST === "true") {
+  if (isPlaywrightE2eEnv()) {
     return serveTestFixtureImage()
   }
 
