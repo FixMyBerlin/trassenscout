@@ -14,12 +14,12 @@ This makes missing auth visible in review and machine-checkable by Oxlint.
 
 ## Trassenscout reference
 
-Trassenscout implements this as local ESLint-compatible rules loaded by **Oxlint custom plugins** (`jsPlugins`) in [`oxlint.config.mjs`](https://github.com/FixMyBerlin/trassenscout/blob/tanstack-start-migration/oxlint.config.mjs):
+Trassenscout implements this as local ESLint-compatible rules loaded by **Oxlint custom plugins** (`jsPlugins`) in [`oxlint.config.mjs`](https://github.com/FixMyBerlin/trassenscout/blob/develop/oxlint.config.mjs):
 
-- [`require-endpoint-auth`](https://github.com/FixMyBerlin/trassenscout/blob/tanstack-start-migration/lint/plugins/require-endpoint-auth.mjs): checks `src/routes/api/**/*.ts`, route `beforeLoad`, and `src/server/**/*.server.ts`
-- [`no-auth-boundary-import`](https://github.com/FixMyBerlin/trassenscout/blob/tanstack-start-migration/lint/plugins/no-auth-boundary-import.mjs): blocks direct imports from low-level auth/session helpers outside `src/server/auth/`
+- [`require-endpoint-auth`](https://github.com/FixMyBerlin/trassenscout/blob/develop/lint/plugins/require-endpoint-auth.mjs): checks `src/routes/api/**/*.ts`, route `beforeLoad`, and `src/server/**/*.server.ts`
+- [`no-auth-boundary-import`](https://github.com/FixMyBerlin/trassenscout/blob/develop/lint/plugins/no-auth-boundary-import.mjs): blocks direct imports from low-level auth/session helpers outside `src/server/auth/`
 
-The shared AST helper for detecting `endpointAuth.*` and allowed route auth functions is [`lint/utils/endpoint-auth-ast.mjs`](https://github.com/FixMyBerlin/trassenscout/blob/tanstack-start-migration/lint/utils/endpoint-auth-ast.mjs).
+The shared AST helper for detecting `endpointAuth.*` and allowed route auth functions is [`lint/utils/endpoint-auth-ast.mjs`](https://github.com/FixMyBerlin/trassenscout/blob/develop/lint/utils/endpoint-auth-ast.mjs).
 
 The public API is `src/server/auth/endpointAuth.server.ts`. Boundary functions start with calls like:
 

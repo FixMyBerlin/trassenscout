@@ -16,7 +16,7 @@ export default {
     "src/server/instrumentation/**/*.ts",
   ],
   ignoreDependencies: ["estree"],
-  ignore: ["imap-listener/**", ".agents/**", "_migration/**"],
+  ignore: ["imap-listener/**", ".agents/**"],
   ignoreIssues: {
     "src/server/**/*.ts": ["duplicates"],
   },

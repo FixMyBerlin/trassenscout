@@ -2,9 +2,8 @@
 # Not deployed to servers — production runs docker-compose.yml alone.
 # `traefik` and `app` are gated behind profiles so daily dev starts only db + imap-listener.
 #
-# Optional `COMPOSE_DEV_CONTAINER_PREFIX` (e.g. `migration_`) prefixes container names so multiple
-# repo checkouts / worktrees can use Docker on one machine without clashing with the default `ts-db`.
-# Set in the worktree's `.env` — see _migration/development-worktree.md.
+# Optional `COMPOSE_DEV_CONTAINER_PREFIX` prefixes container names so multiple repo clones
+# can use Docker on one machine without clashing with the default `ts-db`. Set in `.env`.
 # Do not use `COMPOSE_PROJECT_NAME` here; Compose derives it from the directory name.
 services:
   traefik:
