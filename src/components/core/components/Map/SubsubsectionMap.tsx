@@ -1,5 +1,5 @@
 import { useNavigate } from "@tanstack/react-router"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo } from "react"
 import { MapLayerMouseEvent, useMap } from "react-map-gl/maplibre"
 import { BaseMap } from "./BaseMap"
 import { getLineEndPointsLayerId } from "./layers/LineEndPointsLayer"
@@ -8,6 +8,7 @@ import {
   SubsectionHullsLayer,
 } from "./layers/SubsectionHullsLayer"
 import { getUnifiedLayerId } from "./layers/UnifiedFeaturesLayer"
+import { useMapLoaded } from "./map-loaded-store"
 import type { SubsectionMapEntity as TGetSubsection } from "./mapEntityTypes"
 import type { SubsubsectionMapEntity as SubsubsectionWithPosition } from "./mapEntityTypes"
 import { MapFooter } from "./MapFooter"
@@ -18,6 +19,8 @@ import { geometriesBbox } from "./utils/bboxHelpers"
 import { getSubsectionFeatures } from "./utils/getSubsectionFeatures"
 import { getSubsubsectionFeatures } from "./utils/getSubsubsectionFeatures"
 import { mergeFeatureCollections } from "./utils/mergeFeatureCollections"
+
+const MAP_ID = "mainMap"
 
 type Props = {
   projectSlug: string
@@ -38,7 +41,7 @@ export const SubsubsectionMap = ({
 }: Props) => {
   const navigate = useNavigate()
   const { mainMap } = useMap()
-  const [mapLoaded, setMapLoaded] = useState(false)
+  const mapLoaded = useMapLoaded(MAP_ID)
 
   const filteredSubsubsections = subsubsections.filter(
     (subsub) => subsub.subsectionId === selectedSubsection.id,
@@ -213,13 +216,12 @@ export const SubsubsectionMap = ({
   return (
     <>
       <BaseMap
-        id="mainMap"
+        id={MAP_ID}
         initialViewState={{
           bounds: mapBbox,
           fitBoundsOptions: { padding: 60, maxZoom: 16 },
         }}
         onClick={handleClickMap}
-        onLoad={() => setMapLoaded(true)}
         interactiveLayerIds={[getSubsectionHullOtherFillLayerId("_subsubsection")]}
         lines={subsubsectionLines?.features.length ? subsubsectionLines : undefined}
         polygons={subsubsectionPolygons?.features.length ? subsubsectionPolygons : undefined}

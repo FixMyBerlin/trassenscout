@@ -26,6 +26,7 @@ import {
   getUnifiedLayerId,
   type UnifiedFeatureProperties,
 } from "./layers/UnifiedFeaturesLayer"
+import { useMapLoadedActions } from "./map-loaded-store"
 import { MapHighlightContext } from "./mapHighlightContext"
 import { applyMapHighlight, CLEAR_MAP_HIGHLIGHT, type MapHighlightState } from "./mapHighlightState"
 import { getMapStyle } from "./mapStyleConfig"
@@ -47,6 +48,7 @@ export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
       | "onZoomEnd"
       | "onLoad"
       | "onIdle"
+      | "onRemove"
       | "hash"
       | "reuseMaps"
       | "scrollZoom"
@@ -78,6 +80,7 @@ export const BaseMap = ({
   onZoomEnd,
   onLoad,
   onIdle,
+  onRemove,
   interactiveLayerIds,
   hash,
   reuseMaps = true,
@@ -95,6 +98,7 @@ export const BaseMap = ({
   colorSchema,
   restrictHighlightToLevel,
 }: BaseMapProps) => {
+  const { markMapLoaded, resetMapLoaded } = useMapLoadedActions()
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
   const handleLayerSwitch = (layer: LayerType) => {
     setSelectedLayer(layer)
@@ -223,7 +227,13 @@ export const BaseMap = ({
   function handleLoadInternal(event: MapLibreEvent) {
     exposeMainMapForDebugging(event.target)
     firePlaywrightMapLoadedEvent()
+    markMapLoaded(mapId)
     onLoad?.(event)
+  }
+
+  function handleRemoveInternal(event: MapLibreEvent) {
+    resetMapLoaded(mapId)
+    onRemove?.(event)
   }
 
   return (
@@ -251,6 +261,7 @@ export const BaseMap = ({
             onZoomEnd={onZoomEnd}
             onLoad={handleLoadInternal}
             onIdle={onIdle}
+            onRemove={handleRemoveInternal}
             interactiveLayerIds={[
               ...(interactiveLayerIds ?? []),
               ...(unifiedFeatures && interactiveUnifiedFeatures
