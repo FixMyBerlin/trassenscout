@@ -17,8 +17,9 @@ services:
       DATABASE_HOST: db
   db:
     container_name: ${COMPOSE_DEV_CONTAINER_PREFIX}ts-db
-    ports:
-      - "5432:5432"
+    # Host 5435 avoids TILDA on 5432 — keep in sync with LOCAL_DEV_DATABASE_PORT in database-url.server.ts.
+    ports: !override
+      - "5435:5432"
     environment:
       POSTGRES_PASSWORD: password
     volumes:

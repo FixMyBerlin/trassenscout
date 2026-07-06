@@ -5,6 +5,7 @@ const databaseEnv = {
   DATABASE_HOST: "db",
   DATABASE_USER: "postgres",
   DATABASE_PASSWORD: "password",
+  VITE_APP_ENV: "production",
 }
 
 function setDatabaseEnv(overrides: Partial<typeof databaseEnv> = {}) {
@@ -29,9 +30,24 @@ describe("getDatabaseUrl", () => {
     expect(() => getDatabaseUrl()).toThrow("DATABASE_HOST")
   })
 
-  test("builds a postgresql URL on port 5432", () => {
+  test("builds a postgresql URL on port 5432 for deploy host", () => {
     setDatabaseEnv()
     expect(getDatabaseUrl()).toBe("postgresql://postgres:password@db:5432/dbmaster")
+  })
+
+  test("builds a postgresql URL on port 5432 for compose db in development", () => {
+    setDatabaseEnv({ VITE_APP_ENV: "development" })
+    expect(getDatabaseUrl()).toBe("postgresql://postgres:password@db:5432/dbmaster")
+  })
+
+  test("builds a postgresql URL on port 5435 for host-side development", () => {
+    setDatabaseEnv({ DATABASE_HOST: "localhost", VITE_APP_ENV: "development" })
+    expect(getDatabaseUrl()).toBe("postgresql://postgres:password@localhost:5435/dbmaster")
+  })
+
+  test("builds a postgresql URL on port 5432 for localhost outside development", () => {
+    setDatabaseEnv({ DATABASE_HOST: "localhost", VITE_APP_ENV: "staging" })
+    expect(getDatabaseUrl()).toBe("postgresql://postgres:password@localhost:5432/dbmaster")
   })
 
   test("percent-encodes URL-unsafe password characters", () => {

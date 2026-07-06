@@ -6,14 +6,14 @@ import { findContainerPublishingHostPort } from "./dockerHostPort"
 import { logErr, logOk, logSkip } from "./predevLog"
 
 const label = "check_docker"
-const dbHostPort = 5432
+const dbHostPort = 5435
 const containerName = getDevDbContainerName()
 const repoRoot = process.cwd()
 
 function showPortConflictTip(blocker: string) {
   note(
     `Port ${dbHostPort} is already published by Docker container \`${blocker}\`.\n\nTrassenscout needs this port for \`${containerName}\` (Postgres).\n\nFree it up, then run \`bun run dev\` again:\n\n  docker stop ${blocker}`,
-    "Port 5432 in use",
+    `Port ${dbHostPort} in use`,
   )
 }
 

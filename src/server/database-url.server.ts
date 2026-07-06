@@ -1,5 +1,13 @@
 const DATABASE_NAME = "dbmaster"
-const DATABASE_PORT = "5432"
+const DEPLOY_DATABASE_PORT = "5432"
+const LOCAL_DEV_DATABASE_PORT = "5435"
+
+function resolveDatabasePort(host: string) {
+  // Compose service `db` always listens on 5432 inside the network (incl. dev `frontend` profile).
+  if (host === "db") return DEPLOY_DATABASE_PORT
+  if (process.env.VITE_APP_ENV === "development") return LOCAL_DEV_DATABASE_PORT
+  return DEPLOY_DATABASE_PORT
+}
 
 function getDatabaseConfig() {
   const host = process.env.DATABASE_HOST
@@ -12,7 +20,9 @@ function getDatabaseConfig() {
     )
   }
 
-  return { host, user, password, name: DATABASE_NAME, port: DATABASE_PORT }
+  const port = resolveDatabasePort(host)
+
+  return { host, user, password, name: DATABASE_NAME, port }
 }
 
 let passwordUrlEncodingWarned = false
