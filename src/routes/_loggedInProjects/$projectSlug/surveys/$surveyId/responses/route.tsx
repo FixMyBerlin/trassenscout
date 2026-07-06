@@ -3,6 +3,7 @@ import { surveyResponsesSearchSchema } from "@/src/shared/survey-responses/searc
 
 export const Route = createFileRoute("/_loggedInProjects/$projectSlug/surveys/$surveyId/responses")(
   {
+    ssr: true,
     validateSearch: surveyResponsesSearchSchema,
     component: Outlet,
   },
