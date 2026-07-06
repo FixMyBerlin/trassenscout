@@ -22,5 +22,3 @@ export const createPageSearchSchema = (opts?: PageSearchSchemaOptions) => {
       .default(defaultPageSize),
   })
 }
-
-export type PageSearch = z.infer<ReturnType<typeof createPageSearchSchema>>

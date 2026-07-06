@@ -36,7 +36,7 @@ function buildEditLink(
   }
 }
 
-export function buildAcquisitionAreaStatusListNavigateOptions(
+function buildAcquisitionAreaStatusListNavigateOptions(
   projectSlug: string,
   search: AcquisitionAreaStatusListSearch = {},
 ) {

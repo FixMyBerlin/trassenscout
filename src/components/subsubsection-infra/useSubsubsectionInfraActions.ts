@@ -32,7 +32,7 @@ function buildEditLink(projectSlug: string, id: number, search: SubsubsectionInf
   }
 }
 
-export function buildSubsubsectionInfraListNavigateOptions(
+function buildSubsubsectionInfraListNavigateOptions(
   projectSlug: string,
   search: SubsubsectionInfraListSearch = {},
 ) {

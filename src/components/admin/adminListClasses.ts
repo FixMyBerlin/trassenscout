@@ -1,8 +1,5 @@
 import { twJoin } from "tailwind-merge"
-import {
-  actionButtonBase,
-  actionIconButtonClassName,
-} from "@/src/components/core/components/buttons/actionButtonClasses"
+import { actionButtonBase } from "@/src/components/core/components/buttons/actionButtonClasses"
 
 export const adminTableWrapperClassName =
   "not-prose overflow-x-auto rounded-md border border-gray-200 bg-white"
@@ -42,6 +39,3 @@ export const adminTableDeleteButtonClassName = twJoin(
 )
 
 export const adminTableActionsClassName = "flex items-center justify-end gap-2"
-
-/** Neutral icon control for admin table rows (links and inactive toggles). */
-export const adminTableIconButtonClassName = actionIconButtonClassName

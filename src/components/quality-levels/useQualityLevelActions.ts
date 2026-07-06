@@ -32,7 +32,7 @@ function buildEditLink(projectSlug: string, id: number, search: QualityLevelList
   }
 }
 
-export function buildQualityLevelListNavigateOptions(
+function buildQualityLevelListNavigateOptions(
   projectSlug: string,
   search: QualityLevelListSearch = {},
 ) {

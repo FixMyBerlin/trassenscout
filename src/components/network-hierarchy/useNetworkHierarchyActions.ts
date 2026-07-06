@@ -32,7 +32,7 @@ function buildEditLink(projectSlug: string, id: number, search: NetworkHierarchy
   }
 }
 
-export function buildNetworkHierarchyListNavigateOptions(
+function buildNetworkHierarchyListNavigateOptions(
   projectSlug: string,
   search: NetworkHierarchyListSearch = {},
 ) {

@@ -1,11 +1,8 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
-import { useEffect, useState } from "react"
-import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
 import { ProjectRecordCommentsSection } from "@/src/components/project-records/ProjectRecordCommentsSection"
 import { CreateEditReviewHistory } from "@/src/components/project-records/ProjectRecordCreateEditReviewHistory"
 import { ProjectRecordSummary } from "@/src/components/project-records/ProjectRecordSummary"
-import { ReprocessProjectRecordEditForm } from "@/src/components/project-records/ReprocessProjectRecordEditForm"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { UploadDropzone } from "@/src/components/uploads/UploadDropzone"
 import { UploadDropzoneContainer } from "@/src/components/uploads/UploadDropzoneContainer"
@@ -15,13 +12,6 @@ import type { ProjectRecord } from "@/src/server/projectRecords/types"
 import { uploadsWithSubsectionsQueryOptions } from "@/src/server/uploads/uploadsWithSubsectionsQueryOptions"
 
 const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
-
-export type ReprocessedProjectRecord = {
-  title?: string
-  body?: string
-  date: Date
-  projectRecordTopics?: number[]
-}
 
 type Props = {
   initialProjectRecord: ProjectRecord
@@ -94,54 +84,11 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord }: Props) => {
     </>
   )
 
-  const [aiSuggestions, setAiSuggestions] = useState<ReprocessedProjectRecord | null>(null)
-
-  const handleCancelAiSuggestions = () => {
-    setAiSuggestions(null)
-  }
-
-  const projectRecordSummaryProps = {
-    projectRecord,
-  }
-
-  useEffect(() => {
-    if (aiSuggestions) {
-      const element = document.getElementById("ai-suggestions-form")
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth", block: "start" })
-      }
-    }
-  }, [aiSuggestions])
-
   return (
     <>
-      {aiSuggestions ? (
-        <SuperAdminBox>
-          <div id="ai-suggestions-form" className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <div>
-              <h2 className="mb-4 text-lg font-medium">Aktueller Protokolleintrag</h2>
-              <ProjectRecordSummary {...projectRecordSummaryProps} />
-              {projectRecordUploadsSection}
-            </div>
-
-            <div>
-              <IfUserCanEdit>
-                <ReprocessProjectRecordEditForm
-                  projectRecord={projectRecord}
-                  aiSuggestions={aiSuggestions}
-                  onCancel={handleCancelAiSuggestions}
-                />
-              </IfUserCanEdit>
-            </div>
-          </div>
-        </SuperAdminBox>
-      ) : (
-        <>
-          <ProjectRecordSummary {...projectRecordSummaryProps} />
-          {projectRecordUploadsSection}
-          <CreateEditReviewHistory projectRecord={projectRecord} />
-        </>
-      )}
+      <ProjectRecordSummary projectRecord={projectRecord} />
+      {projectRecordUploadsSection}
+      <CreateEditReviewHistory projectRecord={projectRecord} />
       <ProjectRecordCommentsSection projectRecord={projectRecord} />
     </>
   )

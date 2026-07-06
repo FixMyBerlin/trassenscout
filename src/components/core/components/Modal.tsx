@@ -2,10 +2,7 @@ import { Dialog, DialogPanel, Portal, TransitionChild } from "@headlessui/react"
 import { XMarkIcon } from "@heroicons/react/24/outline"
 import { createContext, Fragment, useCallback, useContext, useEffect, useRef } from "react"
 import { twMerge } from "tailwind-merge"
-import {
-  consumePendingMountRelease,
-  isModalCloseBlocked,
-} from "@/src/components/core/components/Modal/modalCloseGuard"
+import { isModalCloseBlocked } from "@/src/components/core/components/Modal/modalCloseGuard"
 
 type Props = {
   children?: React.ReactNode
@@ -110,15 +107,6 @@ export const Modal = ({
   const initialFocusRef = useRef<HTMLElement | null>(null)
   const registerInitialFocus = useCallback((element: HTMLElement | null) => {
     initialFocusRef.current = element
-  }, [])
-
-  // If we are being mounted as the result of a modal-to-modal navigation
-  // (e.g. edit → detail), release the pending close block now that Headless
-  // UI's own useDocumentEvent listeners are live. The resulting
-  // SETTLE_AFTER_BLOCK_RELEASE_MS settle window protects against the spurious
-  // Dialog.onClose events Headless UI fires during rapid route transitions.
-  useEffect(function releasePendingModalCloseBlockAfterMount() {
-    consumePendingMountRelease()?.()
   }, [])
 
   useEffect(

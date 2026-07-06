@@ -18,7 +18,7 @@ import {
   saveUserMemberships,
 } from "./memberships.server"
 
-export const createMembershipFn = createServerFn({ method: "POST" })
+const _createMembershipFn = createServerFn({ method: "POST" })
   .validator(MembershipSchema)
   .handler(({ data }) => createMembership(getRequestHeaders(), data))
 

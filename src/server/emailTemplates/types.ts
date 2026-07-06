@@ -20,7 +20,7 @@ export type ResolvedEmailTemplate = Prettify<
   }
 >
 
-export type EmailTemplateValidationResult = {
+type EmailTemplateValidationResult = {
   allowedVariables: string[]
   usedVariables: string[]
   unknownVariables: string[]

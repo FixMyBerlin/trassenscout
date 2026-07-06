@@ -21,7 +21,6 @@ export const AllowedSurveySlugsSchema = z.looseObject({ slug: z.enum(allowedSurv
 export const beteiligungSurveySlugParamsSchema = z.object({
   surveySlug: z.enum(allowedSurveySlugs),
 })
-export type BeteiligungSurveySlugParams = z.infer<typeof beteiligungSurveySlugParamsSchema>
 
 const surveyLegacySlugs = ["rs8", "frm7", "radnetz-brandenburg"] as const
 export type SurveyLegacySlugs = (typeof surveyLegacySlugs)[number]

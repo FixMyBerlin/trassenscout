@@ -34,11 +34,11 @@ export function CheckmarkListboxOptionLabel({ children }: { children: ReactNode 
 }
 
 /** Legacy option row with right-aligned checkmark. */
-export const classicListboxOptionClassName =
+const classicListboxOptionClassName =
   "group relative cursor-pointer py-2 pr-9 pl-3 text-gray-900 select-none data-disabled:cursor-not-allowed data-focus:bg-blue-600 data-focus:text-white"
 
 /** Label + right checkmark children for {@link classicListboxOptionClassName} options. */
-export function ClassicListboxOptionLabel({ children }: { children: ReactNode }) {
+function ClassicListboxOptionLabel({ children }: { children: ReactNode }) {
   return (
     <>
       <span className="block truncate group-data-selected:font-semibold">{children}</span>

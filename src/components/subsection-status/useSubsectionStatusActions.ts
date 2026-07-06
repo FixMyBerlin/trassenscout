@@ -32,7 +32,7 @@ function buildEditLink(projectSlug: string, id: number, search: SubsectionStatus
   }
 }
 
-export function buildSubsectionStatusListNavigateOptions(
+function buildSubsectionStatusListNavigateOptions(
   projectSlug: string,
   search: SubsectionStatusListSearch = {},
 ) {

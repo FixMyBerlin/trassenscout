@@ -39,7 +39,7 @@
     "db-restore-test": "bun scripts/db-pull/restore-test.ts",
     "alkis-audit": "bun scripts/alkis-wfs/audit.ts",
     "alkis-update-config": "bun scripts/alkis-wfs/update-config.ts",
-    "check": "bun run --parallel migrate-check-test type-check lint-check format-check test",
+    "check": "bun run --parallel migrate-check-test type-check lint-check format-check test knip",
     "check-full": "bun run --sequential check e2e",
     "type-check": "tsc --noEmit",
     "lint": "oxlint --fix --fix-dangerously --deny-warnings -c oxlint.config.mjs",

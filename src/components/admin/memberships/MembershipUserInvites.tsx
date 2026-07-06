@@ -13,7 +13,7 @@ import {
 } from "@/src/components/invites/inviteStatusDisplay"
 import type { InviteStatusEnum, MembershipRoleEnum } from "@/src/prisma/generated/browser"
 
-export type MembershipUserInvite = {
+type MembershipUserInvite = {
   id: number
   status: InviteStatusEnum
   role: MembershipRoleEnum

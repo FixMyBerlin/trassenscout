@@ -54,7 +54,7 @@ function pointFromPointGeometry(geometry: Point) {
   return { lng, lat }
 }
 
-export type SwitchableMapContentProps = {
+type SwitchableMapContentProps = {
   description?: string
   mapData: MapData
   // defines the additional data that we want to read from the geometries
@@ -89,7 +89,7 @@ export type SwitchableMapProps = {
   legendProps: ComponentProps<typeof SurveyMapLegend>
 }
 
-export type SwitchableMapLocationMode = "existing" | "pin" | "none"
+type SwitchableMapLocationMode = "existing" | "pin" | "none"
 
 type LocationMode = SwitchableMapLocationMode
 

@@ -36,7 +36,7 @@ function buildEditLink(
   }
 }
 
-export function buildSubsubsectionStatusListNavigateOptions(
+function buildSubsubsectionStatusListNavigateOptions(
   projectSlug: string,
   search: SubsubsectionStatusListSearch = {},
 ) {

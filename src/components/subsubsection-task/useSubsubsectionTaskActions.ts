@@ -32,7 +32,7 @@ function buildEditLink(projectSlug: string, id: number, search: SubsubsectionTas
   }
 }
 
-export function buildSubsubsectionTaskListNavigateOptions(
+function buildSubsubsectionTaskListNavigateOptions(
   projectSlug: string,
   search: SubsubsectionTaskListSearch = {},
 ) {

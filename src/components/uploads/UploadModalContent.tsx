@@ -9,7 +9,7 @@ import {
   type UploadWithRelations,
 } from "./uploadTypes"
 
-export const UploadDetailModalSkeleton = () => (
+const UploadDetailModalSkeleton = () => (
   <div className="space-y-4">
     <div className="h-5 w-40 animate-pulse rounded bg-gray-200" />
     <div className="h-40 animate-pulse rounded-lg bg-gray-100" />

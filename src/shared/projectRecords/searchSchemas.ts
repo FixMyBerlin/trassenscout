@@ -10,8 +10,6 @@ const projectRecordInitialFormValuesSchema = z.object({
   subsubsectionId: z.number().optional(),
 })
 
-export type ProjectRecordInitialFormValues = z.infer<typeof projectRecordInitialFormValuesSchema>
-
 function parseProjectRecordFilterParam(value: string | undefined) {
   if (!value) return undefined
   try {
@@ -21,11 +19,6 @@ function parseProjectRecordFilterParam(value: string | undefined) {
   }
 }
 
-export function serializeProjectRecordFilterParam(filter: ProjectRecordFilter | undefined) {
-  if (!filter) return undefined
-  return JSON.stringify(filter)
-}
-
 function parseProjectRecordInitialFormValuesParam(value: string | undefined) {
   if (!value) return undefined
   try {
@@ -33,13 +26,6 @@ function parseProjectRecordInitialFormValuesParam(value: string | undefined) {
   } catch {
     return undefined
   }
-}
-
-function serializeProjectRecordInitialFormValuesParam(
-  values: ProjectRecordInitialFormValues | null | undefined,
-) {
-  if (!values) return undefined
-  return JSON.stringify(values)
 }
 
 const jsonSearchParam = <T extends z.ZodTypeAny>(
@@ -83,8 +69,6 @@ export const projectRecordModalSearchSchema = z
     }
   })
 
-export type ProjectRecordModalSearch = z.infer<typeof projectRecordModalSearchSchema>
-
 export function clearProjectRecordModalSearch<TSearch extends Record<string, unknown>>(
   search: TSearch,
 ) {
@@ -92,16 +76,5 @@ export function clearProjectRecordModalSearch<TSearch extends Record<string, unk
     ...search,
     modalProjectRecordId: undefined,
     modalProjectRecordView: undefined,
-  }
-}
-
-export function projectRecordsSearchToRaw(
-  search: Pick<ProjectRecordsSearch, "filter" | "initialValues">,
-) {
-  return {
-    filter: search.filter ? serializeProjectRecordFilterParam(search.filter) : undefined,
-    initialValues: search.initialValues
-      ? serializeProjectRecordInitialFormValuesParam(search.initialValues)
-      : undefined,
   }
 }

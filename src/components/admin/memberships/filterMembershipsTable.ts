@@ -17,7 +17,7 @@ type UserLike = {
   }[]
 }
 
-export function normalizeMembershipsSearchQuery(query: string) {
+function normalizeMembershipsSearchQuery(query: string) {
   return query.trim().toLowerCase()
 }
 

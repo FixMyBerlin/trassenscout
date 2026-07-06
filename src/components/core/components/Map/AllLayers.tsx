@@ -2,7 +2,7 @@ import { Layer } from "react-map-gl/maplibre"
 import type { MapData, StaticMapLayer } from "./mapDataTypes"
 import { MapSourceType } from "./mapDataTypes"
 
-export type GeneratedMapLayer = {
+type GeneratedMapLayer = {
   layerKey: string
   sourceId: string
   tildaUrl: string

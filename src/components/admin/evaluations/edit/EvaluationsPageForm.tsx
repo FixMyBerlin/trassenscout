@@ -7,9 +7,6 @@ import {
   type OnSubmitResult,
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { EVALUATIONS_PAGE_DEFAULTS } from "@/src/server/evaluationsPage/defaults"
-import { UpsertEvaluationsPageSchema } from "@/src/server/evaluationsPage/evaluationsPage.inputSchemas"
-
-export type EvaluationsPageFormValues = z.infer<typeof UpsertEvaluationsPageSchema>
 
 export type EvaluationsPageFormProps<S extends z.ZodType> = {
   schema: S

@@ -39,7 +39,7 @@ function buildEditLink(
   }
 }
 
-export function buildSubsubsectionInfrastructureTypeListNavigateOptions(
+function buildSubsubsectionInfrastructureTypeListNavigateOptions(
   projectSlug: string,
   search: SubsubsectionInfrastructureTypeListSearch = {},
 ) {

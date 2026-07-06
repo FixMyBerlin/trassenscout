@@ -36,7 +36,7 @@ function buildEditLink(
   }
 }
 
-export function buildSubsubsectionSpecialListNavigateOptions(
+function buildSubsubsectionSpecialListNavigateOptions(
   projectSlug: string,
   search: SubsubsectionSpecialListSearch = {},
 ) {

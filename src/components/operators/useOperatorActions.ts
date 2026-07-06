@@ -46,10 +46,7 @@ function buildEditLink(projectSlug: string, id: number, search: OperatorListSear
   }
 }
 
-export function buildOperatorListNavigateOptions(
-  projectSlug: string,
-  search: OperatorListSearch = {},
-) {
+function buildOperatorListNavigateOptions(projectSlug: string, search: OperatorListSearch = {}) {
   return { ...buildListLink(projectSlug, search), replace: true as const }
 }
 

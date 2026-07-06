@@ -2,8 +2,6 @@ import { bbox, lineString, multiLineString, point, polygon } from "@turf/turf"
 import type { MapData } from "@/src/components/beteiligung/shared/types"
 import { MapSourceType } from "@/src/components/beteiligung/shared/types"
 
-export type GeometryType = "point" | "lineString" | "multiLineString" | "polygon" | "unknown"
-
 /** `location` value for SwitchableMap (GeoJSON Point → `{ lng, lat }`). */
 export type SwitchableMapLocationPoint = { lng: number; lat: number }
 

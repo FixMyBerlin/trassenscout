@@ -10,7 +10,6 @@ export default {
     "tests/**/*.ts",
     "emails/**/*.ts",
     "emails/**/*.tsx",
-    "prisma/seed.ts",
     "prisma/seeds/**/*.ts",
     "lint/lint.test.mjs",
     "src/server/instrumentation/**/*.ts",
@@ -19,9 +18,10 @@ export default {
   ignore: ["imap-listener/**", ".agents/**"],
   ignoreIssues: {
     "src/server/**/*.ts": ["duplicates"],
+    "src/shared/**/*.ts": ["duplicates"],
   },
   paths: {
     "@/*": ["./*"],
   },
-  ignoreBinaries: ["code", "gh", "pg_isready", "rg"],
+  ignoreBinaries: ["code", "gh", "pg_isready", "rg", "which", "psql"],
 }

@@ -2,8 +2,6 @@ import { UserRoleEnum } from "@/src/prisma/generated/browser"
 import type { AppSession } from "@/src/server/auth/session.server"
 import db from "@/src/server/db.server"
 
-type MembershipRole = "VIEWER" | "EDITOR"
-
 function getNumericUserId(userId: number | string) {
   const numericUserId = typeof userId === "number" ? userId : Number(userId)
   if (!Number.isInteger(numericUserId)) {
@@ -11,10 +9,6 @@ function getNumericUserId(userId: number | string) {
   }
   return numericUserId
 }
-
-export type ProjectAuthorizationResult =
-  | { authorized: true; membershipRole: MembershipRole | null }
-  | { authorized: false }
 
 export async function checkProjectAuthorization(session: AppSession, projectSlug: string) {
   if (session.role === UserRoleEnum.ADMIN) {
