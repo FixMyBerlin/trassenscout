@@ -1,6 +1,6 @@
 import { ChevronRightIcon, UserGroupIcon } from "@heroicons/react/20/solid"
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { getRouteApi, redirect, useNavigate } from "@tanstack/react-router"
+import { getRouteApi, useNavigate } from "@tanstack/react-router"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
 import { NoSurveysInfoBox } from "@/src/components/surveys/NoSurveysInfoBox"
 import { surveysQueryOptions } from "@/src/server/surveys/surveysQueryOptions"
@@ -28,13 +28,6 @@ export function PageSurveys() {
         <NoSurveysInfoBox />
       </>
     )
-  }
-
-  if (surveys.length === 1) {
-    throw redirect({
-      to: "/$projectSlug/surveys/$surveyId/responses",
-      params: { projectSlug, surveyId: String(surveys[0]!.id) },
-    })
   }
 
   return (
