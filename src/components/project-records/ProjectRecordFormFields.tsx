@@ -5,7 +5,7 @@ import { useFormValue } from "@/src/components/core/components/forms/hooks/useFo
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { NumberArraySchema } from "@/src/components/core/utils/schema-shared"
 import { ProjectRecordEmailSource } from "@/src/components/project-records/ProjectRecordEmailSource"
-import { getUserSelectOptions } from "@/src/components/shared/app/users/utils/getUserSelectOptions"
+import { getUserComboboxItems } from "@/src/components/shared/app/users/utils/getUserSelectOptions"
 import { TagsFormSection } from "@/src/components/tags/TagsFormSection"
 import { UploadDropzone } from "@/src/components/uploads/UploadDropzone"
 import { UploadTable } from "@/src/components/uploads/UploadTable"
@@ -72,7 +72,7 @@ export const ProjectRecordFormFields = ({
   })
   const selectedUploads = allUploads.filter((upload) => uploadIds.includes(upload.id))
 
-  const assignedToOptions = getUserSelectOptions(users)
+  const assignedToItems = getUserComboboxItems(users)
 
   const subsubsectionItems = subsubsections
     .sort((a, b) => a.subsection.slug.localeCompare(b.subsection.slug))
@@ -101,7 +101,13 @@ export const ProjectRecordFormFields = ({
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <div className="min-w-0 space-y-1">
         <form.AppField name="assignedToId">
-          {(field) => <field.SelectField options={assignedToOptions} label="Zuweisen an" />}
+          {(field) => (
+            <field.ComboboxSingle
+              items={assignedToItems}
+              label="Zuweisen an"
+              placeholder="Nutzer suchen"
+            />
+          )}
         </form.AppField>
         {splitView && (
           <p className="text-sm text-gray-500">
