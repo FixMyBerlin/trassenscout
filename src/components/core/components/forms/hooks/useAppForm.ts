@@ -2,6 +2,7 @@ import { createFormHook } from "@tanstack/react-form"
 import { Checkbox } from "@/src/components/core/components/forms/fields/Checkbox"
 import { CheckboxGroup } from "@/src/components/core/components/forms/fields/CheckboxGroup"
 import { Combobox } from "@/src/components/core/components/forms/fields/Combobox"
+import { ComboboxSingle } from "@/src/components/core/components/forms/fields/ComboboxSingle"
 import { GeometryField } from "@/src/components/core/components/forms/fields/GeometryField"
 import { GeometryFieldPreview } from "@/src/components/core/components/forms/fields/GeometryFieldPreview"
 import { HiddenField } from "@/src/components/core/components/forms/fields/HiddenField"
@@ -31,6 +32,7 @@ export const { useAppForm } = createFormHook({
     RadiobuttonGroup,
     Switch,
     Combobox,
+    ComboboxSingle,
     MultiCheckbox,
     HiddenField,
     TextFieldCalculateLength,

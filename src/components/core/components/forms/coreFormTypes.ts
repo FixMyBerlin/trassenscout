@@ -2,6 +2,7 @@ import type { AppFieldExtendedReactFormApi } from "@tanstack/react-form"
 import type { Checkbox } from "@/src/components/core/components/forms/fields/Checkbox"
 import type { CheckboxGroup } from "@/src/components/core/components/forms/fields/CheckboxGroup"
 import type { Combobox } from "@/src/components/core/components/forms/fields/Combobox"
+import type { ComboboxSingle } from "@/src/components/core/components/forms/fields/ComboboxSingle"
 import type { GeometryField } from "@/src/components/core/components/forms/fields/GeometryField"
 import type { GeometryFieldPreview } from "@/src/components/core/components/forms/fields/GeometryFieldPreview"
 import type { HiddenField } from "@/src/components/core/components/forms/fields/HiddenField"
@@ -27,6 +28,7 @@ type CoreFieldComponents = {
   RadiobuttonGroup: typeof RadiobuttonGroup
   Switch: typeof Switch
   Combobox: typeof Combobox
+  ComboboxSingle: typeof ComboboxSingle
   MultiCheckbox: typeof MultiCheckbox
   HiddenField: typeof HiddenField
   TextFieldCalculateLength: typeof TextFieldCalculateLength
