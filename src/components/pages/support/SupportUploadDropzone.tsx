@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query"
 import { UploadDropzoneBase } from "@/src/components/uploads/UploadDropzoneBase"
 import { getAcceptAttribute } from "@/src/components/uploads/utils/getFileType"
 import { createSupportDocumentFn } from "@/src/server/supportDocuments/supportDocuments.functions"
-import { S3_MAX_FILE_SIZE_BYTES, S3_MAX_FILES } from "@/src/shared/uploads/config"
+import { S3_MAX_FILE_SIZE_BYTES, S3_MAX_FILES_PROJECT } from "@/src/shared/uploads/config"
 import { getS3Url } from "@/src/shared/uploads/url"
 
 type Props = {
@@ -34,7 +34,7 @@ export const SupportUploadDropzone = ({ onUploadComplete }: Props) => {
       accept={getAcceptAttribute()}
       description={{
         fileTypes: `Bilder, PDF, Office-Dokumente bis ${S3_MAX_FILE_SIZE_BYTES / (1024 * 1024)} MB`,
-        maxFiles: S3_MAX_FILES,
+        maxFiles: S3_MAX_FILES_PROJECT,
       }}
     />
   )

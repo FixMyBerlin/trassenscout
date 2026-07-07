@@ -55,9 +55,11 @@ const errorMessageTranslations: TranslatedMessages = {
     "Der Server ist vorübergehend nicht erreichbar. Bitte speichern Sie Ihre Änderungen und versuchen Sie es in Kürze erneut.",
   // UPLOAD ERRORS
   // Keys match @better-upload/client `error.message` (onError) and per-file
-  // `progress.error.message` verbatim — no "Error: " prefix. Keep the size/count
-  // copy in sync with S3_MAX_FILES / S3_MAX_FILE_SIZE_BYTES in shared/uploads/config.ts.
-  "Too many files.": "Zu viele Dateien. Sie können maximal 10 Dateien gleichzeitig hochladen.",
+  // `progress.error.message` verbatim — no "Error: " prefix. Keep the size copy in
+  // sync with S3_MAX_FILE_SIZE_BYTES in shared/uploads/config.ts. The file-count limit
+  // differs per route (S3_MAX_FILES_PROJECT / S3_MAX_FILES_SURVEY), so the copy stays generic.
+  "Too many files.":
+    "Zu viele Dateien. Bitte reduzieren Sie die Anzahl der Dateien und versuchen Sie es erneut.",
   "One or more files are too large.":
     "Eine oder mehrere Dateien sind zu groß. Die maximale Dateigröße beträgt 50 MB.",
   "One or more files exceed the S3 limit of 5GB. Use multipart upload for larger files.":

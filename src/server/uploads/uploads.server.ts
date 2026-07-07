@@ -1,6 +1,7 @@
 import type { z } from "zod"
 import { AllowedSurveySlugsSchema } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { getQuestionIdBySurveySlug } from "@/src/components/beteiligung/shared/utils/getQuestionIdBySurveySlug"
+import { isImageMimeType } from "@/src/components/core/uploads/isImageUpload"
 import { NumberArraySchema } from "@/src/components/core/utils/schema-shared"
 import type { Prisma } from "@/src/prisma/generated/browser"
 import { ProjectRecordReviewState } from "@/src/prisma/generated/browser"
@@ -10,9 +11,13 @@ import db from "@/src/server/db.server"
 import { connectIds, idsFromFormValue, setIds } from "@/src/shared/prisma/connectIds"
 import { UploadSchema } from "@/src/shared/uploads/schemas"
 import { deleteUploadFileAndDbRecord } from "./_utils/deleteUploadFileAndDbRecord"
+import { extractExifFromS3 } from "./_utils/extractExifFromS3.server"
+import { findCollidingFilenames } from "./_utils/filenameCollisions"
+import { matchSlugFromFilename } from "./_utils/matchSlugFromFilename"
 import { uploadWithSubsectionsInclude } from "./_utils/uploadInclude"
 import type { GetSurveyResponseUploadsSplitInput } from "./uploads.inputSchemas"
 import {
+  CheckUploadFilenameCollisionsSchema,
   CreateUploadSchema,
   DeleteUploadSchema,
   GetUploadSchema,
@@ -194,13 +199,44 @@ export async function createUpload(headers: Headers, input: z.infer<typeof Creat
     input.projectSlug,
     editorRoles,
   )
-  const { projectSlug, ...data } = input
+  const { projectSlug, assignSubsubsectionFromFilename, ...data } = input
   await validateUploadRelations(projectSlug, data)
+
+  if (assignSubsubsectionFromFilename && idsFromFormValue(data.subsubsections).length === 0) {
+    // `title` still holds the original filename at creation time (the dropzone sets
+    // `title: file.name`); the externalUrl filename is sanitizeKey-mangled.
+    const matchedId = await matchSubsubsectionIdFromFilename(projectSlug, data.title)
+    if (matchedId) data.subsubsections = [matchedId]
+  }
+
+  if (isImageMimeType(data.mimeType) && data.latitude == null && data.longitude == null) {
+    const exif = await extractExifFromS3(data.externalUrl)
+    if (exif) {
+      data.latitude = exif.latitude
+      data.longitude = exif.longitude
+    }
+  }
 
   return db.upload.create({
     data: createUploadData(data, projectId, Number(session.userId)),
     include: uploadWithSubsectionsInclude,
   })
+}
+
+async function matchSubsubsectionIdFromFilename(projectSlug: string, filename: string) {
+  const subsubsections = await db.subsubsection.findMany({
+    where: { subsection: { project: { slug: projectSlug } } },
+    select: { id: true, slug: true, subsection: { select: { slug: true } } },
+  })
+  const match = matchSlugFromFilename(
+    filename,
+    subsubsections.map((s) => ({
+      subsubsectionId: s.id,
+      subsectionSlug: s.subsection.slug,
+      subsubsectionSlug: s.slug,
+    })),
+  )
+  return match.kind === "matched" ? match.pair.subsubsectionId : null
 }
 
 export async function updateUpload(headers: Headers, input: z.infer<typeof UpdateUploadSchema>) {
@@ -221,6 +257,19 @@ export async function updateUpload(headers: Headers, input: z.infer<typeof Updat
     data: updateUploadData(data, projectId, Number(session.userId)),
     include: uploadWithSubsectionsInclude,
   })
+}
+
+export async function checkUploadFilenameCollisions(
+  headers: Headers,
+  input: z.infer<typeof CheckUploadFilenameCollisionsSchema>,
+) {
+  await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
+  const existing = await db.upload.findMany({
+    where: { project: { slug: input.projectSlug } },
+    select: { externalUrl: true, title: true },
+  })
+
+  return { collidingFilenames: findCollidingFilenames(input.filenames, existing) }
 }
 
 export async function deleteUpload(headers: Headers, input: z.infer<typeof DeleteUploadSchema>) {

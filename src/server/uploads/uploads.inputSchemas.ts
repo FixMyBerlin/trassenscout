@@ -1,6 +1,7 @@
 import { z } from "zod"
 import type { Prisma } from "@/src/prisma/generated/browser"
 import { ProjectSlugRequiredSchema } from "@/src/shared/authorization/projectSlugSchema"
+import { S3_MAX_FILES_PROJECT } from "@/src/shared/uploads/config"
 import { UploadSchema } from "@/src/shared/uploads/schemas"
 
 export const GetUploadsSchema = ProjectSlugRequiredSchema
@@ -11,7 +12,11 @@ export const GetUploadsWithSubsectionsSchema = ProjectSlugRequiredSchema.extend(
   take: z.number().int().optional(),
 })
 export const GetUploadSchema = ProjectSlugRequiredSchema.extend({ id: z.number() })
-export const CreateUploadSchema = ProjectSlugRequiredSchema.and(UploadSchema)
+export const CreateUploadSchema = ProjectSlugRequiredSchema.extend({
+  // When true and no subsubsections are passed, the server tries to assign a Maßnahme
+  // by matching the filename (title) against `<subsectionSlug>_<subsubsectionSlug>_…`.
+  assignSubsubsectionFromFilename: z.boolean().optional(),
+}).and(UploadSchema)
 export const UpdateUploadSchema = GetUploadSchema.and(UploadSchema)
 export const DeleteUploadSchema = GetUploadSchema
 export const GetSurveyResponseUploadsSplitSchema = ProjectSlugRequiredSchema.extend({
@@ -19,6 +24,10 @@ export const GetSurveyResponseUploadsSplitSchema = ProjectSlugRequiredSchema.ext
 })
 
 export const GetGeolocatedUploadsSchema = ProjectSlugRequiredSchema
+
+export const CheckUploadFilenameCollisionsSchema = ProjectSlugRequiredSchema.extend({
+  filenames: z.array(z.string().min(1)).min(1).max(S3_MAX_FILES_PROJECT),
+})
 
 const UploadIdSchema = ProjectSlugRequiredSchema.extend({ id: z.number() })
 export const CopyToLuckyCloudSchema = UploadIdSchema

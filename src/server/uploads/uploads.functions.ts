@@ -8,6 +8,7 @@ import {
   getUploadsMetaPublic,
 } from "./surveyUploads.server"
 import {
+  CheckUploadFilenameCollisionsSchema,
   CopyToLuckyCloudSchema,
   CreateSurveyUploadPublicSchema,
   CreateUploadSchema,
@@ -23,6 +24,7 @@ import {
   UpdateUploadSchema,
 } from "./uploads.inputSchemas"
 import {
+  checkUploadFilenameCollisions,
   createUpload,
   deleteUpload,
   getSurveyResponseUploadsSplit,
@@ -58,6 +60,10 @@ export const updateUploadFn = createServerFn({ method: "POST" })
 export const deleteUploadFn = createServerFn({ method: "POST" })
   .validator(DeleteUploadSchema)
   .handler(({ data }) => deleteUpload(getRequestHeaders(), data))
+
+export const checkUploadFilenameCollisionsFn = createServerFn({ method: "GET" })
+  .validator(CheckUploadFilenameCollisionsSchema)
+  .handler(({ data }) => checkUploadFilenameCollisions(getRequestHeaders(), data))
 
 export const getGeolocatedUploadsFn = createServerFn({ method: "GET" })
   .validator(GetGeolocatedUploadsSchema)

@@ -8,7 +8,7 @@ import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { editorRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
 import { authErrorToResponse } from "@/src/shared/auth/errors"
-import { S3_BUCKET, S3_MAX_FILE_SIZE_BYTES, S3_MAX_FILES } from "@/src/shared/uploads/config"
+import { S3_BUCKET, S3_MAX_FILE_SIZE_BYTES, S3_MAX_FILES_SURVEY } from "@/src/shared/uploads/config"
 import { createUploadRouter } from "./_utils/createUploadRouter"
 import { generateS3Key } from "./_utils/keys"
 import { getConfiguredS3Client } from "./_utils/s3Client.server"
@@ -75,7 +75,7 @@ function createSurveyUploadRouter() {
       upload: route({
         multipleFiles: true,
         maxFileSize: S3_MAX_FILE_SIZE_BYTES,
-        maxFiles: S3_MAX_FILES,
+        maxFiles: S3_MAX_FILES_SURVEY,
         onBeforeUpload: async ({ files, clientMetadata }) => {
           const metadata = (clientMetadata ?? {}) as Record<string, unknown>
           const params = SurveyUploadParamsSchema.safeParse({

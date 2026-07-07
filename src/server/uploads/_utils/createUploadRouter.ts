@@ -2,7 +2,11 @@ import { route, Router } from "@better-upload/server"
 import { sanitizeKey } from "@/src/server/uploads/_utils/keys"
 import { getConfiguredS3Client } from "@/src/server/uploads/_utils/s3Client.server"
 import { uploadSource } from "@/src/server/uploads/_utils/sources"
-import { S3_BUCKET, S3_MAX_FILE_SIZE_BYTES, S3_MAX_FILES } from "@/src/shared/uploads/config"
+import {
+  S3_BUCKET,
+  S3_MAX_FILE_SIZE_BYTES,
+  S3_MAX_FILES_PROJECT,
+} from "@/src/shared/uploads/config"
 
 type CreateUploadRouterOptions = {
   keyPrefix: string
@@ -32,7 +36,7 @@ export function createUploadRouter(options: CreateUploadRouterOptions) {
       upload: route({
         multipleFiles: true,
         maxFileSize: S3_MAX_FILE_SIZE_BYTES,
-        maxFiles: S3_MAX_FILES,
+        maxFiles: S3_MAX_FILES_PROJECT,
         onBeforeUpload: async ({ req: _req, files, clientMetadata: _clientMetadata }) => {
           if (onBeforeUpload) {
             await onBeforeUpload(files)
