@@ -1,5 +1,5 @@
 import type { StyleSpecification } from "maplibre-gl"
-import { isPlaywrightEnabled } from "@/src/components/shared/utils/playwright"
+import { isPlaywright } from "@/src/components/core/utils/isEnv"
 import type { LayerType } from "./BackgroundSwitcher/BackgroundSwitcher"
 
 const MAPTILER_API_KEY = "ECOoUBmpqklzSCASXxcu"
@@ -10,8 +10,6 @@ export const TEST_MAP_STYLE: StyleSpecification = {
   sources: {},
   layers: [],
 }
-
-export { isPlaywrightEnabled }
 
 /** Default vector style URL (project/subsection maps). */
 const defaultVectorStyleUrl = `https://api.maptiler.com/maps/a4824657-3edd-4fbd-925e-1af40ab06e9c/style.json?key=${MAPTILER_API_KEY}`
@@ -48,7 +46,7 @@ const osmCartoStyle: StyleSpecification = {
  * the default vector style is used.
  */
 export function getMapStyle(layer: LayerType, vectorStyleUrl?: string) {
-  if (isPlaywrightEnabled()) return TEST_MAP_STYLE
+  if (isPlaywright) return TEST_MAP_STYLE
 
   switch (layer) {
     case "vector":

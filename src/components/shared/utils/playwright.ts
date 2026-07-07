@@ -1,15 +1,13 @@
 import { createIsomorphicFn } from "@tanstack/react-start"
 import type { Map as MaplibreMap } from "maplibre-gl"
+import { isPlaywright } from "@/src/components/core/utils/isEnv"
 
 /** Legacy survey maps listen for this event name in E2E. */
 const PLAYWRIGHT_MAP_LOADED_EVENT = "playwrightMapLoaded"
 
 const MAP_LOADED_EVENT = "mapLoaded"
 
-export const isPlaywrightEnabled = () =>
-  import.meta.env.VITE_PLAYWRIGHT_ENABLED === "true" || window.__PLAYWRIGHT_ENABLED === true
-
-const isPlaywrightClientMode = () => isPlaywrightEnabled()
+const isPlaywrightClientMode = () => isPlaywright || window.__PLAYWRIGHT_ENABLED === true
 
 export const exposeMainMapForDebugging = createIsomorphicFn()
   .server((_map?: MaplibreMap) => {})

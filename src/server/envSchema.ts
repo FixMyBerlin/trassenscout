@@ -4,10 +4,15 @@ const environmentValues = z.enum(["development", "staging", "production"])
 const surveyStageValues = z.enum(["part1", "part2", "part3", "end"])
 const requiredString = z.string().min(1)
 
+const viteBooleanFlag = z.enum(["true", "false"])
+
+const vitePlaywrightEnabledSchema = viteBooleanFlag.optional()
+export const vitePlaywrightEnabledE2eSchema = z.literal("true")
+
 export const envViteSchema = z.object({
   VITE_APP_ENV: environmentValues,
   VITE_APP_ORIGIN: z.url().optional(),
-  VITE_PLAYWRIGHT_ENABLED: z.enum(["true", "false"]).optional(),
+  VITE_PLAYWRIGHT_ENABLED: vitePlaywrightEnabledSchema,
   VITE_PUBLIC_SURVEY_START_STAGE: surveyStageValues.optional(),
 })
 

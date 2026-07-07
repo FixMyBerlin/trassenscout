@@ -1,16 +1,11 @@
 import type { Map as MapLibreMap } from "maplibre-gl"
 import { LayerType } from "@/src/components/beteiligung/form/map/BackgroundSwitcher"
-import {
-  isPlaywrightEnabled,
-  TEST_MAP_STYLE,
-} from "@/src/components/core/components/Map/mapStyleConfig"
-import { isDev } from "@/src/components/core/utils/isEnv"
+import { TEST_MAP_STYLE } from "@/src/components/core/components/Map/mapStyleConfig"
+import { isDev, isPlaywright } from "@/src/components/core/utils/isEnv"
 import { firePlaywrightMapLoadedEvent } from "@/src/components/shared/utils/playwright"
 
 const MAPTILER_API_KEY = "ECOoUBmpqklzSCASXxcu"
 const installedMaps = new WeakSet<MapLibreMap>()
-
-const isSurveyMapTestMode = isPlaywrightEnabled
 
 export const getSurveyMapStyle = ({
   selectedLayer,
@@ -19,7 +14,7 @@ export const getSurveyMapStyle = ({
   selectedLayer: LayerType
   maptilerUrl: string
 }) => {
-  if (isSurveyMapTestMode()) return TEST_MAP_STYLE
+  if (isPlaywright) return TEST_MAP_STYLE
 
   const vectorStyle = `${maptilerUrl}?key=${MAPTILER_API_KEY}`
   const satelliteStyle = `${"https://api.maptiler.com/maps/hybrid/style.json"}?key=${MAPTILER_API_KEY}`
@@ -28,7 +23,7 @@ export const getSurveyMapStyle = ({
 }
 
 export const installMapGrabIfTest = (map: MapLibreMap, mapId: string) => {
-  const isE2E = isSurveyMapTestMode()
+  const isE2E = isPlaywright
   if (!(isDev || isE2E)) return
   if (installedMaps.has(map)) return
 

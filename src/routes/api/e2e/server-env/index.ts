@@ -6,8 +6,8 @@
  * Setup aborts in that case. Returns 404 outside development.
  */
 import { createFileRoute } from "@tanstack/react-router"
+import { isPlaywright } from "@/src/components/core/utils/isEnv"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
-import { isPlaywrightE2eEnv } from "@/src/server/playwrightE2e.server"
 
 export const Route = createFileRoute("/api/e2e/server-env/")({
   ssr: false,
@@ -21,7 +21,7 @@ export const Route = createFileRoute("/api/e2e/server-env/")({
         }
 
         return Response.json({
-          playwrightEnabled: isPlaywrightE2eEnv(),
+          playwrightEnabled: isPlaywright,
         })
       },
     },

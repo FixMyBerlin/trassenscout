@@ -2,13 +2,17 @@ import { readFileSync } from "node:fs"
 import path from "node:path"
 import { parse } from "dotenv"
 import { z } from "zod"
-import { envAppStartupValidationSchema, envViteSchema } from "@/src/server/envSchema"
+import {
+  envAppStartupValidationSchema,
+  envViteSchema,
+  vitePlaywrightEnabledE2eSchema,
+} from "@/src/server/envSchema"
 import { parseValidatedEnv } from "./env"
 
 const testEnvPath = path.resolve(process.cwd(), ".env.test")
 
 export const e2eEnvSchema = envAppStartupValidationSchema.safeExtend({
-  VITE_PLAYWRIGHT_ENABLED: z.literal("true"),
+  VITE_PLAYWRIGHT_ENABLED: vitePlaywrightEnabledE2eSchema,
   VITE_APP_ORIGIN: z.url(),
 })
 
@@ -20,7 +24,7 @@ export const testSetupEnvSchema = envViteSchema
     DATABASE_HOST: z.string().min(1),
     DATABASE_USER: z.string().min(1),
     DATABASE_PASSWORD: z.string().min(1),
-    VITE_PLAYWRIGHT_ENABLED: z.literal("true"),
+    VITE_PLAYWRIGHT_ENABLED: vitePlaywrightEnabledE2eSchema,
   })
 
 export function loadMergedTestEnvSync(): NodeJS.ProcessEnv {

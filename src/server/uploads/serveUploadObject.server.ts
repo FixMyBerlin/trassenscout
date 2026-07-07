@@ -1,9 +1,9 @@
 import { getObject } from "@better-upload/server/helpers"
 import { z } from "zod"
+import { isPlaywright } from "@/src/components/core/utils/isEnv"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
-import { isPlaywrightE2eEnv } from "@/src/server/playwrightE2e.server"
 import { getProjectIdBySlug } from "@/src/server/projects/queries/getProjectIdBySlug.server"
 import { S3_BUCKET } from "@/src/shared/uploads/config"
 import { getUploadServeHeaders } from "@/src/shared/uploads/serveHeaders"
@@ -58,7 +58,7 @@ export async function serveProjectUploadObject(
     return new Response("Not Found", { status: 404 })
   }
 
-  if (isPlaywrightE2eEnv()) {
+  if (isPlaywright) {
     return serveTestFixtureImage()
   }
 

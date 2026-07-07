@@ -4,6 +4,7 @@ import { prismaAdapter } from "better-auth/adapters/prisma"
 import { customSession } from "better-auth/plugins/custom-session"
 import { tanstackStartCookies } from "better-auth/tanstack-start"
 import { forgotPasswordMailToUser } from "@/emails/mailers/forgotPasswordMailToUser"
+import { isPlaywright } from "@/src/components/core/utils/isEnv"
 import { UserRoleEnum } from "@/src/prisma/generated/browser"
 import {
   authAfterHook,
@@ -12,7 +13,6 @@ import {
 } from "@/src/server/auth/authHooks.server"
 import { hashPassword, verifyPassword } from "@/src/server/auth/passwordHashing.server"
 import db from "@/src/server/db.server"
-import { isPlaywrightE2eEnv } from "@/src/server/playwrightE2e.server"
 
 function getTrustedOrigins() {
   const origin = process.env.VITE_APP_ORIGIN
@@ -120,7 +120,7 @@ const options = {
   },
   trustedOrigins: getTrustedOrigins(),
   rateLimit: {
-    enabled: !isPlaywrightE2eEnv(),
+    enabled: !isPlaywright,
     window: 60,
     max: 10,
     storage: "memory",
