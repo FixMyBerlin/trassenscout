@@ -12,18 +12,36 @@ import {
   DeleteContactSchema,
   UpdateContactSchema,
 } from "@/src/shared/contacts/schemas"
+import { connectIds, idsFromFormValue, setIds } from "@/src/shared/prisma/connectIds"
 import { contactInProjectWhere } from "../contactScope"
+
+async function validateContactTags(projectSlug: string, tagIds: number[]) {
+  if (!tagIds.length) return
+
+  const tags = await db.tag.findMany({
+    where: { id: { in: tagIds }, project: { slug: projectSlug } },
+    select: { id: true },
+  })
+
+  if (tags.length !== tagIds.length) {
+    throw new Error("Invalid tag")
+  }
+}
 
 export async function createContact(headers: Headers, input: z.infer<typeof CreateContactSchema>) {
   const session = await endpointAuth.session(headers)
   await authorizeProjectMemberByProjectSlug(session, input.projectSlug, editorRoles)
 
-  const { projectSlug, ...data } = input
+  const { projectSlug, tags, ...data } = input
+  const tagIds = idsFromFormValue(tags)
+  await validateContactTags(projectSlug, tagIds)
+
   const projectId = await getProjectIdBySlug(projectSlug)
   const record = await db.contact.create({
     data: {
       projectId,
       ...data,
+      tags: connectIds(tagIds),
     },
   })
 
@@ -42,7 +60,10 @@ export async function updateContact(headers: Headers, input: z.infer<typeof Upda
   const session = await endpointAuth.session(headers)
   await authorizeProjectMemberByProjectSlug(session, input.projectSlug, editorRoles)
 
-  const { id, projectSlug, ...data } = input
+  const { id, projectSlug, tags, ...data } = input
+  const tagIds = idsFromFormValue(tags)
+  await validateContactTags(projectSlug, tagIds)
+
   const scopedWhere = contactInProjectWhere(projectSlug, id)
   const previous = await db.contact.findFirst({ where: scopedWhere })
   if (!previous) {
@@ -50,7 +71,10 @@ export async function updateContact(headers: Headers, input: z.infer<typeof Upda
   }
   const record = await db.contact.update({
     where: { id: previous.id },
-    data,
+    data: {
+      ...data,
+      tags: setIds(tagIds),
+    },
   })
 
   await createLogEntry({

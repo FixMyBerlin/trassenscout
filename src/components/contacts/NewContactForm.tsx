@@ -17,9 +17,14 @@ export const NewContactForm = ({ projectSlug }: Props) => {
 
   type HandleSubmit = z.infer<typeof ContactSchema>
   const handleSubmit = async (values: HandleSubmit) => {
+    const tags = values.tags as string[] | boolean | false | undefined
     try {
       const contact = await createContactMutation.mutateAsync({
-        data: { ...values, projectSlug },
+        data: {
+          ...values,
+          tags: tags === true ? false : tags,
+          projectSlug,
+        },
       })
       void navigate({ to: `/${projectSlug}/contacts/${contact.id}` })
     } catch (error: unknown) {
@@ -27,5 +32,12 @@ export const NewContactForm = ({ projectSlug }: Props) => {
     }
   }
 
-  return <ContactForm submitText="Erstellen" schema={ContactSchema} onSubmit={handleSubmit} />
+  return (
+    <ContactForm
+      submitText="Erstellen"
+      schema={ContactSchema}
+      projectSlug={projectSlug}
+      onSubmit={handleSubmit}
+    />
+  )
 }

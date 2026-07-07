@@ -86,11 +86,11 @@ export const ContactsTable = () => {
       try {
         if (!id || id === NEW_ID_VALUE) {
           await createContactMutation.mutateAsync({
-            data: { ...value, lastName, email, projectSlug },
+            data: { ...value, lastName, email, projectSlug, tags: [] },
           })
         } else {
           await updateContactMutation.mutateAsync({
-            data: { ...value, lastName, email, projectSlug, id: Number(id) },
+            data: { ...value, lastName, email, projectSlug, id: Number(id), tags: [] },
           })
         }
         refetchData = true

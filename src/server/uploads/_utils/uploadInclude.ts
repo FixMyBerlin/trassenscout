@@ -66,4 +66,5 @@ export const uploadWithSubsectionsInclude = {
       },
     },
   },
+  tags: true,
 } as const

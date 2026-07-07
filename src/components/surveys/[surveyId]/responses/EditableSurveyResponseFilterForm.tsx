@@ -8,8 +8,8 @@ import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils
 import { linkStyles } from "@/src/components/core/components/links/styles"
 import { Prettify } from "@/src/components/core/types"
 import type { OperatorWithSubsectionCount } from "@/src/server/adminLookupTables/adminLookupTablesQueryOptions"
-import type { SurveyResponseTopicsResult } from "@/src/server/survey-response-topics/surveyResponseTopicsQueryOptions"
 import type { FeedbackSurveyResponsesResult } from "@/src/server/survey-responses/surveyResponsesQueryOptions"
+import type { SurveyResponseTagsResult } from "@/src/server/surveyResponseTags/surveyResponseTagsQueryOptions"
 import { DebugFilterForm } from "./DebugFilterForm"
 import { LabeledInputRadioCheckbox } from "./form/LabeledInputRadioCheckbox"
 import { FormElementWrapper } from "./form/LabeledInputRadioCheckboxWrapper"
@@ -23,7 +23,7 @@ type FormProps = Omit<PropsWithoutRef<JSX.IntrinsicElements["form"]>, "onSubmit"
     FeedbackSurveyResponsesResult["additionalFilterQuestionsWithResponseOptions"]
   >
   operators: OperatorWithSubsectionCount[]
-  topicsDefinition: Prettify<SurveyResponseTopicsResult["surveyResponseTopics"]>
+  topicsDefinition: Prettify<SurveyResponseTagsResult["surveyResponseTags"]>
 }
 
 export function EditableSurveyResponseFilterForm({
@@ -64,7 +64,10 @@ export function EditableSurveyResponseFilterForm({
   const topicsOptions = topicsDefinition.length
     ? [
         ...topicsDefinition.map((t) => {
-          return { value: String(t.id), label: t.title }
+          return {
+            value: String(t.id),
+            label: t.archivedAt ? `${t.title} (archiviert)` : t.title,
+          }
         }),
         { value: "0", label: `Ohne ${labels.topics?.sg || "Tag"}` },
       ]

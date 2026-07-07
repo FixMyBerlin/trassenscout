@@ -5,6 +5,7 @@ import { viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
 import { paginate } from "@/src/server/utils/paginate.server"
 import { GetContactSchema, type GetContactsInput } from "@/src/shared/contacts/schemas"
+import { contactInclude } from "../contactInclude"
 import { contactInProjectWhere } from "../contactScope"
 
 export async function getContacts(headers: Headers, input: GetContactsInput) {
@@ -24,7 +25,8 @@ export async function getContacts(headers: Headers, input: GetContactsInput) {
     skip,
     take,
     count: () => db.contact.count({ where: safeWhere }),
-    query: (paginateArgs) => db.contact.findMany({ ...paginateArgs, where: safeWhere, orderBy }),
+    query: (paginateArgs) =>
+      db.contact.findMany({ ...paginateArgs, where: safeWhere, orderBy, include: contactInclude }),
   })
 
   return {
@@ -41,5 +43,6 @@ export async function getContact(headers: Headers, input: z.infer<typeof GetCont
 
   return db.contact.findFirstOrThrow({
     where: contactInProjectWhere(input.projectSlug, input.id),
+    include: contactInclude,
   })
 }

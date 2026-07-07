@@ -9,7 +9,7 @@ import { SurveyResponseStateEnum } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
-import { getSurveyResponseTopicsByProject } from "@/src/server/survey-response-topics/surveyResponseTopics.server"
+import { getSurveyResponseTagsByProject } from "@/src/server/surveyResponseTags/surveyResponseTags.server"
 import { coordinatesToWkt } from "./coordinatesToWkt.server"
 import { getSurveyForExport } from "./getSurveyForExport.server"
 import { sendCsvResponse } from "./sendCsvResponse.server"
@@ -37,20 +37,20 @@ export async function exportPart2ResultsCsv(
   const geometryCategoryId = hasGeometryCategory ? geometryCategoryIdRaw : undefined
   const surveyQuestions = getFlatSurveyFormFields(surveyDefinition)
 
-  const [surveySessions, { surveyResponseTopics: topics }, operators] = await Promise.all([
+  const [surveySessions, { surveyResponseTags: topics }, operators] = await Promise.all([
     db.surveySession.findMany({
       where: { surveyId: survey.id },
       include: {
         responses: {
           where: { state: SurveyResponseStateEnum.SUBMITTED },
           include: {
-            surveyResponseTopics: true,
+            surveyResponseTags: true,
             surveyResponseComments: { include: { author: true } },
           },
         },
       },
     }),
-    getSurveyResponseTopicsByProject(headers, { projectSlug }),
+    getSurveyResponseTagsByProject(headers, { projectSlug }),
     db.operator.findMany({
       where: { project: { slug: projectSlug } },
     }),
@@ -126,7 +126,7 @@ export async function exportPart2ResultsCsv(
           status,
           operatorId,
           note,
-          surveyResponseTopics,
+          surveyResponseTags,
           surveyResponseComments,
         }) => {
           const data = JSON.parse(rawData) as Record<string, unknown>
@@ -230,7 +230,7 @@ export async function exportPart2ResultsCsv(
               : ""
           }
 
-          surveyResponseTopics.forEach((t) => {
+          surveyResponseTags.forEach((t) => {
             row[`topic_${t.id}`] = "X"
           })
 

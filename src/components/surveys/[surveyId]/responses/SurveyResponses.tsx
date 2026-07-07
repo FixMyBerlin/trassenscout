@@ -20,13 +20,13 @@ import {
   type OperatorWithSubsectionCount,
 } from "@/src/server/adminLookupTables/adminLookupTablesQueryOptions"
 import {
-  surveyResponseTopicsQueryOptions,
-  type SurveyResponseTopicsResult,
-} from "@/src/server/survey-response-topics/surveyResponseTopicsQueryOptions"
-import {
   feedbackSurveyResponsesQueryOptions,
   type FeedbackSurveyResponse,
 } from "@/src/server/survey-responses/surveyResponsesQueryOptions"
+import {
+  surveyResponseTagsQueryOptions,
+  type SurveyResponseTagsResult,
+} from "@/src/server/surveyResponseTags/surveyResponseTagsQueryOptions"
 import type { Survey } from "@/src/server/surveys/types"
 
 type Props = {
@@ -53,11 +53,12 @@ export function SurveyResponses({ projectSlug, surveyId: _surveyId, survey, tabs
     adminLookupRowsWithCountQueryOptions({ projectSlug, table: "operators" }),
   )
   const operators = (operatorsData?.rows ?? []) as OperatorWithSubsectionCount[]
-  const { data: topicsData, refetch: refetchTopics } = useQuery(
-    surveyResponseTopicsQueryOptions({ projectSlug }),
-  )
-  const topics = (topicsData?.surveyResponseTopics ??
-    []) as SurveyResponseTopicsResult["surveyResponseTopics"]
+  const { data: topicsData, refetch: refetchTopics } = useQuery({
+    ...surveyResponseTagsQueryOptions({ projectSlug, includeArchived: true }),
+    refetchOnReconnect: false,
+  })
+  const topics = (topicsData?.surveyResponseTags ??
+    []) as SurveyResponseTagsResult["surveyResponseTags"]
 
   const { responseDetails: paramsSurveyResponseId } = useSurveyResponseDetails()
   const accordionRefs = useRef<Array<HTMLDivElement | null>>([])

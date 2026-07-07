@@ -31,6 +31,7 @@ async function validateUploadRelations(projectSlug: string, input: UploadInput) 
   const projectRecordIds = idsFromFormValue(input.projectRecords)
   const subsubsectionIds = idsFromFormValue(input.subsubsections)
   const acquisitionAreaIds = idsFromFormValue(input.acquisitionAreas)
+  const tagIds = idsFromFormValue(input.tags)
 
   await Promise.all([
     input.projectRecordEmailId
@@ -83,11 +84,21 @@ async function validateUploadRelations(projectSlug: string, input: UploadInput) 
               throw new Error("Invalid acquisition area")
           })
       : undefined,
+    tagIds.length
+      ? db.tag
+          .findMany({
+            where: { id: { in: tagIds }, project: { slug: projectSlug } },
+            select: { id: true },
+          })
+          .then((records) => {
+            if (records.length !== tagIds.length) throw new Error("Invalid tag")
+          })
+      : undefined,
   ])
 }
 
 function createUploadData(input: UploadInput, projectId: number, userId: number) {
-  const { acquisitionAreas, projectRecords, subsubsections, ...data } = input
+  const { acquisitionAreas, projectRecords, subsubsections, tags, ...data } = input
 
   return {
     ...data,
@@ -97,11 +108,12 @@ function createUploadData(input: UploadInput, projectId: number, userId: number)
     acquisitionAreas: connectIds(idsFromFormValue(acquisitionAreas)),
     projectRecords: connectIds(idsFromFormValue(projectRecords)),
     subsubsections: connectIds(idsFromFormValue(subsubsections)),
+    tags: connectIds(idsFromFormValue(tags)),
   }
 }
 
 function updateUploadData(input: UploadInput, projectId: number, userId: number) {
-  const { acquisitionAreas, projectRecords, subsubsections, ...data } = input
+  const { acquisitionAreas, projectRecords, subsubsections, tags, ...data } = input
 
   return {
     ...data,
@@ -110,6 +122,7 @@ function updateUploadData(input: UploadInput, projectId: number, userId: number)
     acquisitionAreas: setIds(idsFromFormValue(acquisitionAreas)),
     projectRecords: setIds(idsFromFormValue(projectRecords)),
     subsubsections: setIds(idsFromFormValue(subsubsections)),
+    tags: setIds(idsFromFormValue(tags)),
   }
 }
 

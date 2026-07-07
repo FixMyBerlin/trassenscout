@@ -16,7 +16,7 @@ import type {
 import { ProjectRecordAssignedToPill } from "./ProjectRecordAssignedToPill"
 import { ProjectRecordEditingStateIndicator } from "./ProjectRecordEditingStateIndicator"
 import { useProjectRecordModal } from "./ProjectRecordModalHost"
-import { ProjectRecordTopicsList } from "./ProjectRecordTopicsList"
+import { ProjectRecordTagsList } from "./ProjectRecordTagsList"
 import { ProjectRecordVerknuepfungen } from "./ProjectRecordVerknuepfungen"
 
 const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
@@ -147,8 +147,7 @@ export const ProjectRecordsTable = ({
                   "acquisitionArea" in projectRecord && projectRecord.acquisitionArea
                     ? projectRecord.acquisitionArea.id
                     : projectRecord.acquisitionAreaId
-                const projectRecordTopics =
-                  "projectRecordTopics" in projectRecord ? projectRecord.projectRecordTopics : []
+                const projectRecordTags = "tags" in projectRecord ? projectRecord.tags : []
                 const assignedTo = "assignedTo" in projectRecord ? projectRecord.assignedTo : null
                 const uploadCount =
                   "uploadCount" in projectRecord
@@ -251,10 +250,10 @@ export const ProjectRecordsTable = ({
                     ) : null}
                     <td className={twJoin("hidden align-top @xl:table-cell", spaceClasses)}>
                       <div className="flex items-center justify-between gap-2">
-                        <ProjectRecordTopicsList
-                          topics={projectRecordTopics}
+                        <ProjectRecordTagsList
+                          tags={projectRecordTags}
                           isInteractive={isTopicFilter}
-                          onTopicClick={onTopicClick}
+                          onTagClick={onTopicClick}
                         />
                       </div>
                     </td>

@@ -186,7 +186,7 @@ export async function processProjectRecordEmail(
           : ProjectRecordReviewState.NEEDSADMINREVIEW,
       projectRecordEmailId: projectRecordEmail.id,
       reviewNotes: reviewNotes.join(" ") || null,
-      projectRecordTopics: {
+      tags: {
         connect: (finalResult.topics ?? []).map((id) => ({ id: Number(id) })),
       },
       uploads: { connect: uploadIds.map((id) => ({ id })) },

@@ -7,10 +7,12 @@ import {
   applyFormSubmitResult,
   type OnSubmitResult,
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
+import { TagsFormSection } from "@/src/components/tags/TagsFormSection"
 import { contactFormDefaultValues } from "@/src/shared/contacts/schemas"
 
 export type ContactFormProps<S extends z.ZodType> = {
   schema: S
+  projectSlug: string
   initialValues?: Partial<z.infer<S>>
   onSubmit: (values: z.infer<S>) => Promise<void | OnSubmitResult>
   submitText: string
@@ -24,6 +26,7 @@ export type ContactFormProps<S extends z.ZodType> = {
 
 export function ContactForm<S extends z.ZodType>({
   schema,
+  projectSlug,
   initialValues,
   onSubmit,
   submitText,
@@ -78,6 +81,7 @@ export function ContactForm<S extends z.ZodType>({
       <form.AppField name="role">
         {(field) => <field.TextField type="text" label="Position" optional placeholder="" />}
       </form.AppField>
+      <TagsFormSection projectSlug={projectSlug} showManageLink />
     </FormShell>
   )
 }

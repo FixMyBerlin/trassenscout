@@ -11,7 +11,7 @@ type ExtractProjectRecordFromEmailParams = {
   body: string
   subject?: string | null
   from?: string | null
-  projectContext: Pick<CreateProjectRecordExtractionSchemaParams, "projectRecordTopics">
+  projectContext: Pick<CreateProjectRecordExtractionSchemaParams, "tags">
   userId: string
 }
 
@@ -27,10 +27,10 @@ export async function extractProjectRecordFromEmail({
     userId,
     fn: async () => {
       const finalExtractionSchema = createProjectRecordExtractionSchema({
-        projectRecordTopics: projectContext.projectRecordTopics,
+        tags: projectContext.tags,
       })
       const fieldInstructions = createFieldInstructions({
-        projectRecordTopics: projectContext.projectRecordTopics,
+        tags: projectContext.tags,
         isReprocessing: false,
         hasUploads: false,
         subject,

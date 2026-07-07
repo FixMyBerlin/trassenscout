@@ -85,7 +85,7 @@ function projectRecordDetailVisibilityWhere(aiEnabled: boolean, canEdit: boolean
 }
 
 async function validateProjectRecordRelations(projectSlug: string, input: ProjectRecordInput) {
-  const topicIds = idsFromFormValue(input.projectRecordTopics)
+  const tagIds = idsFromFormValue(input.tags)
   const uploadIds = idsFromFormValue(input.uploads)
   const subsubsectionIds = idsFromFormValue(input.subsubsections)
   const acquisitionAreaIds = idsFromFormValue(input.acquisitionAreas)
@@ -106,14 +106,14 @@ async function validateProjectRecordRelations(projectSlug: string, input: Projec
           select: { id: true },
         })
       : undefined,
-    topicIds.length
-      ? db.projectRecordTopic
+    tagIds.length
+      ? db.tag
           .findMany({
-            where: { id: { in: topicIds }, project: { slug: projectSlug } },
+            where: { id: { in: tagIds }, project: { slug: projectSlug } },
             select: { id: true },
           })
           .then((records) => {
-            if (records.length !== topicIds.length) throw new Error("Invalid project record topic")
+            if (records.length !== tagIds.length) throw new Error("Invalid tag")
           })
       : undefined,
     uploadIds.length
@@ -158,7 +158,7 @@ function createProjectRecordData(
   projectId: number,
   userId: number,
 ) {
-  const { acquisitionAreas, projectRecordTopics, subsubsections, uploads, ...data } = input
+  const { acquisitionAreas, tags, subsubsections, uploads, ...data } = input
 
   return {
     ...data,
@@ -170,14 +170,14 @@ function createProjectRecordData(
     userId,
     updatedById: userId,
     acquisitionAreas: connectIds(idsFromFormValue(acquisitionAreas)),
-    projectRecordTopics: connectIds(idsFromFormValue(projectRecordTopics)),
+    tags: connectIds(idsFromFormValue(tags)),
     subsubsections: connectIds(idsFromFormValue(subsubsections)),
     uploads: connectIds(idsFromFormValue(uploads)),
   }
 }
 
 function updateProjectRecordData(input: UpdateProjectRecordInput, userId: number) {
-  const { acquisitionAreas, projectRecordTopics, subsubsections, uploads, ...data } = input
+  const { acquisitionAreas, tags, subsubsections, uploads, ...data } = input
 
   return {
     ...data,
@@ -185,7 +185,7 @@ function updateProjectRecordData(input: UpdateProjectRecordInput, userId: number
     projectRecordUpdatedByType: ProjectRecordType.USER,
     updatedById: userId,
     acquisitionAreas: setIds(idsFromFormValue(acquisitionAreas)),
-    projectRecordTopics: setIds(idsFromFormValue(projectRecordTopics)),
+    tags: setIds(idsFromFormValue(tags)),
     subsubsections: setIds(idsFromFormValue(subsubsections)),
     uploads: setIds(idsFromFormValue(uploads)),
   }
@@ -244,7 +244,7 @@ export async function getAllProjectRecordsAdmin(headers: Headers) {
     orderBy: { createdAt: "desc" },
     include: {
       project: { select: { id: true, slug: true } },
-      projectRecordTopics: true,
+      tags: true,
       author: { select: { id: true, firstName: true, lastName: true } },
       updatedBy: { select: { id: true, firstName: true, lastName: true } },
     },
@@ -283,7 +283,7 @@ export async function getProjectRecordAdmin(
           aiEnabled: true,
         },
       },
-      projectRecordTopics: true,
+      tags: true,
       subsubsection: {
         include: {
           subsection: {
@@ -508,7 +508,7 @@ export async function getProjectRecordsNeedsReview(
     },
     orderBy: { date: "desc" },
     include: {
-      projectRecordTopics: true,
+      tags: true,
       acquisitionArea: { select: { id: true } },
       _count: { select: { projectRecordComments: true, uploads: true } },
       assignedTo: { select: { id: true, firstName: true, lastName: true } },
@@ -733,7 +733,7 @@ export async function deleteProjectRecordWithUploadsDecision(
 
 const projectRecordListInclude = {
   project: { select: { landAcquisitionModuleEnabled: true } },
-  projectRecordTopics: true,
+  tags: true,
   subsubsection: {
     include: { subsection: { select: { slug: true } } },
   },

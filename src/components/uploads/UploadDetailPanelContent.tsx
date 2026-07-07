@@ -109,6 +109,7 @@ export const UploadDetailPanelContent = ({
           projectRecords={null}
           projectRecordEmail={upload.projectRecordEmail}
           surveyResponse={upload.surveyResponse}
+          tags={upload.tags ?? []}
           variant="aligned"
           className="border-t border-gray-200 pt-3"
         />

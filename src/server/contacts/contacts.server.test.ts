@@ -52,6 +52,7 @@ describe("contacts.server project scoping", () => {
 
     expect(mockDb.contact.findFirstOrThrow).toHaveBeenCalledWith({
       where: contactInProjectWhere("alpha", 5),
+      include: { tags: true },
     })
   })
 
@@ -65,6 +66,7 @@ describe("contacts.server project scoping", () => {
         id: 9,
         lastName: "Muster",
         email: "test@example.com",
+        tags: [],
       }),
     ).rejects.toBeInstanceOf(AuthorizationError)
   })

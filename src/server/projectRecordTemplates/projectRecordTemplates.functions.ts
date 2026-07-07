@@ -9,7 +9,7 @@ import {
 } from "@/src/shared/projectRecordTemplates/schemas"
 import {
   GetProjectRecordTemplatesSchema,
-  GetProjectRecordTopicsAdminSchema,
+  GetTagsAdminSchema,
 } from "./projectRecordTemplates.inputSchemas"
 import {
   createProjectRecordTemplate,
@@ -17,7 +17,7 @@ import {
   getProjectRecordTemplate,
   getProjectRecordTemplates,
   getProjectRecordTemplatesByProject,
-  getProjectRecordTopicsAdmin,
+  getTagsAdmin,
   updateProjectRecordTemplate,
 } from "./projectRecordTemplates.server"
 export const getProjectRecordTemplatesFn = createServerFn({ method: "GET" })
@@ -44,6 +44,6 @@ export const deleteProjectRecordTemplateFn = createServerFn({ method: "POST" })
   .validator(DeleteProjectRecordTemplateSchema)
   .handler(({ data }) => deleteProjectRecordTemplate(getRequestHeaders(), data))
 
-export const getProjectRecordTopicsAdminFn = createServerFn({ method: "GET" })
-  .validator(GetProjectRecordTopicsAdminSchema)
-  .handler(() => getProjectRecordTopicsAdmin(getRequestHeaders()))
+export const getTagsAdminFn = createServerFn({ method: "GET" })
+  .validator(GetTagsAdminSchema)
+  .handler(() => getTagsAdmin(getRequestHeaders()))

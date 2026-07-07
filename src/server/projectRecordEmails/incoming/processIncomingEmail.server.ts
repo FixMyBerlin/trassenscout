@@ -138,7 +138,7 @@ export async function processIncomingProjectRecordEmail({
     const combinedResult = {
       ...finalResult,
       projectId,
-      projectRecordTopics:
+      tags:
         finalResult.topics && Array.isArray(finalResult.topics)
           ? finalResult.topics.map((id) => parseInt(id, 10))
           : [],
@@ -158,8 +158,8 @@ export async function processIncomingProjectRecordEmail({
             : ProjectRecordReviewState.NEEDSADMINREVIEW,
         projectRecordEmailId: projectRecordEmail.id,
         reviewNotes: reviewNote || null,
-        projectRecordTopics: {
-          connect: combinedResult.projectRecordTopics.map((id) => ({ id })),
+        tags: {
+          connect: combinedResult.tags.map((id) => ({ id })),
         },
         uploads: {
           connect: uploadIds.map((id) => ({ id })),

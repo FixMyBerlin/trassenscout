@@ -10,7 +10,7 @@ import {
   applyFormSubmitResult,
   type OnSubmitResult,
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
-import { projectRecordTopicsAdminQueryOptions } from "@/src/server/projectRecordTemplates/projectRecordTemplatesQueryOptions"
+import { tagsAdminQueryOptions } from "@/src/server/projectRecordTemplates/projectRecordTemplatesQueryOptions"
 import { projectsAdminQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 import {
   projectRecordTemplateFormDefaultValues,
@@ -38,35 +38,31 @@ const toNumericIds = (value: unknown) => {
   return value.map((entry) => Number(entry)).filter((entry) => Number.isInteger(entry) && entry > 0)
 }
 
-const ProjectAndTopicFields = () => {
+const ProjectAndTagFields = () => {
   const form = useCoreAppFormContext()
   const { data: projectsResult } = useSuspenseQuery(projectsAdminQueryOptions())
-  const { data: topicsResult } = useSuspenseQuery(projectRecordTopicsAdminQueryOptions())
+  const { data: tagsResult } = useSuspenseQuery(tagsAdminQueryOptions())
 
   const projects = projectsResult.projects || []
-  const projectRecordTopics = topicsResult.projectRecordTopics
+  const tags = tagsResult.tags
 
   const selectedProjectIds = toNumericIds(useFormValue<string[]>("projectIds"))
-  const selectedTopicIds = toNumericIds(useFormValue<string[]>("projectRecordTopicIds"))
+  const selectedTagIds = toNumericIds(useFormValue<string[]>("tagIds"))
   const selectedProjectIdSet = useMemo(() => new Set(selectedProjectIds), [selectedProjectIds])
 
-  const availableTopicIds = useMemo(
+  const availableTagIds = useMemo(
     () =>
-      new Set(
-        projectRecordTopics
-          .filter((topic) => selectedProjectIdSet.has(topic.projectId))
-          .map((topic) => topic.id),
-      ),
-    [projectRecordTopics, selectedProjectIdSet],
+      new Set(tags.filter((tag) => selectedProjectIdSet.has(tag.projectId)).map((tag) => tag.id)),
+    [tags, selectedProjectIdSet],
   )
 
   useEffect(
-    function filterTopicIdsWhenProjectsChange() {
-      const filteredTopicIds = selectedTopicIds.filter((topicId) => availableTopicIds.has(topicId))
-      if (filteredTopicIds.length === selectedTopicIds.length) return
-      form.setFieldValue("projectRecordTopicIds", filteredTopicIds.map(String))
+    function filterTagIdsWhenProjectsChange() {
+      const filteredTagIds = selectedTagIds.filter((tagId) => availableTagIds.has(tagId))
+      if (filteredTagIds.length === selectedTagIds.length) return
+      form.setFieldValue("tagIds", filteredTagIds.map(String))
     },
-    [availableTopicIds, form, selectedTopicIds],
+    [availableTagIds, form, selectedTagIds],
   )
 
   const projectItems = projects.map((project) => ({
@@ -97,20 +93,20 @@ const ProjectAndTopicFields = () => {
           </p>
         )}
         {selectedProjects.map((project) => {
-          const topicsForProject = projectRecordTopics
-            .filter((topic) => topic.projectId === project.id)
-            .map((topic) => ({ value: String(topic.id), label: topic.title }))
+          const tagsForProject = tags
+            .filter((tag) => tag.projectId === project.id)
+            .map((tag) => ({ value: String(tag.id), label: tag.title }))
 
           return (
             <div key={project.id} className="rounded-md border border-gray-200 p-3">
               <p className="mb-3 text-sm font-semibold text-gray-700">{project.slug}</p>
-              {topicsForProject.length ? (
-                <form.AppField name="projectRecordTopicIds">
+              {tagsForProject.length ? (
+                <form.AppField name="tagIds">
                   {(field) => (
                     <field.CheckboxGroup
                       classLabelOverwrite="hidden"
                       classNameItemWrapper="grid grid-cols-4 gap-1.5 w-full"
-                      items={topicsForProject}
+                      items={tagsForProject}
                     />
                   )}
                 </form.AppField>
@@ -172,7 +168,7 @@ export function AdminProjectRecordTemplateForm({
       <form.AppField name="body">
         {(field) => <field.TextareaField label="Notizen" optional rows={12} />}
       </form.AppField>
-      <ProjectAndTopicFields />
+      <ProjectAndTagFields />
       <form.AppField name="purpose">
         {(field) => <field.TextareaField label="Verwendungszweck" optional rows={5} />}
       </form.AppField>

@@ -131,15 +131,14 @@ export const ProjectRecordNewModal = ({
   type HandleSubmit = z.infer<typeof NewProjectRecordFormSchema>
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      const { uploads, projectRecordTopics, subsubsections, acquisitionAreas, ...restValues } =
-        values
+      const { uploads, tags, subsubsections, acquisitionAreas, ...restValues } = values
       const projectRecord = await createProjectRecordMutation.mutateAsync({
         data: {
           ...restValues,
           date: values.date,
           projectSlug,
           uploads,
-          projectRecordTopics,
+          tags,
           subsubsections,
           acquisitionAreas,
         },
@@ -165,7 +164,7 @@ export const ProjectRecordNewModal = ({
     ...(selectedTemplate && {
       title: selectedTemplate.entryTitle,
       body: selectedTemplate.body || "",
-      projectRecordTopics: selectedTemplate.projectRecordTopics.map((topic) => String(topic.id)),
+      tags: selectedTemplate.tags.map((tag) => String(tag.id)),
     }),
   }
 

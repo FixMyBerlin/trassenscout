@@ -10,7 +10,7 @@ import {
   ProjectRecordTemplatesByProjectSchema,
   UpdateProjectRecordTemplateSchema,
 } from "@/src/shared/projectRecordTemplates/schemas"
-import { validateTemplateTopicScope } from "./_utils/validateTemplateTopicScope"
+import { validateTemplateTagScope } from "./_utils/validateTemplateTagScope"
 
 export type ProjectRecordTemplatesByProjectInput = z.infer<
   typeof ProjectRecordTemplatesByProjectSchema
@@ -18,20 +18,20 @@ export type ProjectRecordTemplatesByProjectInput = z.infer<
 
 const projectRecordTemplateInclude = {
   projects: { select: { id: true, slug: true, subTitle: true } },
-  projectRecordTopics: true,
+  tags: true,
 } as const
 
 function templateData(
   input: z.infer<typeof ProjectRecordTemplateFormSchema>,
   setRelations = false,
 ) {
-  const { projectIds, projectRecordTopicIds, ...data } = input
+  const { projectIds, tagIds, ...data } = input
   const relationVerb = setRelations ? "set" : "connect"
 
   return {
     ...data,
     projects: { [relationVerb]: projectIds.map((id) => ({ id })) },
-    projectRecordTopics: { [relationVerb]: projectRecordTopicIds.map((id) => ({ id })) },
+    tags: { [relationVerb]: tagIds.map((id) => ({ id })) },
   }
 }
 
@@ -73,7 +73,7 @@ export async function createProjectRecordTemplate(
   input: z.infer<typeof CreateProjectRecordTemplateSchema>,
 ) {
   await endpointAuth.admin(headers)
-  await validateTemplateTopicScope(input)
+  await validateTemplateTagScope(input)
 
   return db.projectRecordTemplate.create({
     data: templateData(input),
@@ -87,7 +87,7 @@ export async function updateProjectRecordTemplate(
 ) {
   await endpointAuth.admin(headers)
   const { id, ...data } = input
-  await validateTemplateTopicScope(data)
+  await validateTemplateTagScope(data)
 
   return db.projectRecordTemplate.update({
     where: { id },
@@ -108,10 +108,10 @@ export async function deleteProjectRecordTemplate(
   })
 }
 
-export async function getProjectRecordTopicsAdmin(headers: Headers) {
+export async function getTagsAdmin(headers: Headers) {
   await endpointAuth.admin(headers)
 
-  const projectRecordTopics = await db.projectRecordTopic.findMany({
+  const tags = await db.tag.findMany({
     select: {
       id: true,
       title: true,
@@ -125,5 +125,5 @@ export async function getProjectRecordTopicsAdmin(headers: Headers) {
     orderBy: [{ projectId: "asc" }, { title: "asc" }],
   })
 
-  return { projectRecordTopics }
+  return { tags }
 }

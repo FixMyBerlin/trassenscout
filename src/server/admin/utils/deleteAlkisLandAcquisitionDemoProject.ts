@@ -22,7 +22,7 @@ export async function deleteAlkisLandAcquisitionDemoProject(
     where: { survey: { projectId } },
   })
   await tx.survey.deleteMany({ where: { projectId } })
-  await tx.surveyResponseTopic.deleteMany({ where: { projectId } })
+  await tx.surveyResponseTag.deleteMany({ where: { projectId } })
 
   await tx.invite.deleteMany({ where: { projectId } })
   await tx.contact.deleteMany({ where: { projectId } })

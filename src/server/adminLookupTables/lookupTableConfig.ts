@@ -1,5 +1,6 @@
 import type { z } from "zod"
 import db from "@/src/server/db.server"
+import { getTagUsageCount } from "@/src/server/tags/tagUsageCount"
 import type { LookupTableSchema } from "./adminLookupTables.inputSchemas"
 
 export type LookupTable = z.infer<typeof LookupTableSchema>
@@ -48,14 +49,11 @@ export const lookupTableConfig: Record<LookupTable, LookupTableConfig> = {
       })
     },
   },
-  projectRecordTopics: {
-    rowsKey: "projectRecordTopics",
+  tags: {
+    rowsKey: "tags",
     orderBy: { title: "asc" },
-    countField: "projectRecordCount",
-    countForRow: (projectSlug, rowId) =>
-      db.projectRecord.count({
-        where: { projectRecordTopicId: rowId, project: { slug: projectSlug } },
-      }),
+    countField: "usageCount",
+    countForRow: (projectSlug, rowId) => getTagUsageCount(projectSlug, rowId),
   },
   qualityLevels: {
     rowsKey: "qualityLevels",
@@ -138,14 +136,14 @@ export const lookupTableConfig: Record<LookupTable, LookupTableConfig> = {
         },
       }),
   },
-  surveyResponseTopics: {
-    rowsKey: "surveyResponseTopics",
+  surveyResponseTags: {
+    rowsKey: "surveyResponseTags",
     orderBy: { title: "asc" },
     countField: "surveyResponseCount",
     countForRow: (projectSlug, rowId) =>
       db.surveyResponse.count({
         where: {
-          surveyResponseTopics: { some: { id: rowId } },
+          surveyResponseTags: { some: { id: rowId } },
           surveySession: { survey: { project: { slug: projectSlug } } },
         },
       }),

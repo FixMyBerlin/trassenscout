@@ -37,7 +37,7 @@ function surveyResponseInProjectWhere(projectSlug: string, id: number) {
 }
 
 async function validateSurveyResponseRelations(projectSlug: string, input: SurveyResponseInput) {
-  const topicIds = idsFromFormValue(input.surveyResponseTopics)
+  const topicIds = idsFromFormValue(input.surveyResponseTags)
 
   await Promise.all([
     db.surveySession.findFirstOrThrow({
@@ -51,7 +51,7 @@ async function validateSurveyResponseRelations(projectSlug: string, input: Surve
         })
       : undefined,
     topicIds.length
-      ? db.surveyResponseTopic
+      ? db.surveyResponseTag
           .findMany({
             where: { id: { in: topicIds }, project: { slug: projectSlug } },
             select: { id: true },
@@ -64,20 +64,20 @@ async function validateSurveyResponseRelations(projectSlug: string, input: Surve
 }
 
 function surveyResponseData(input: SurveyResponseInput) {
-  const { surveyResponseTopics, ...data } = input
+  const { surveyResponseTags, ...data } = input
 
   return {
     ...data,
-    surveyResponseTopics: connectIds(idsFromFormValue(surveyResponseTopics)),
+    surveyResponseTags: connectIds(idsFromFormValue(surveyResponseTags)),
   }
 }
 
 function surveyResponseUpdateData(input: SurveyResponseInput) {
-  const { surveyResponseTopics, ...data } = input
+  const { surveyResponseTags, ...data } = input
 
   return {
     ...data,
-    surveyResponseTopics: setIds(idsFromFormValue(surveyResponseTopics)),
+    surveyResponseTags: setIds(idsFromFormValue(surveyResponseTags)),
   }
 }
 
@@ -91,7 +91,7 @@ export async function getSurveyResponses(
     include: {
       operator: true,
       surveyResponseComments: { include: { author: true }, orderBy: { id: "asc" } },
-      surveyResponseTopics: true,
+      surveyResponseTags: true,
       uploads: true,
     },
     orderBy: { id: "desc" },
@@ -117,7 +117,7 @@ export async function getSurveyResponse(
     include: {
       operator: true,
       surveyResponseComments: { include: { author: true }, orderBy: { id: "asc" } },
-      surveyResponseTopics: true,
+      surveyResponseTags: true,
       uploads: true,
     },
     where: surveyResponseInProjectWhere(input.projectSlug, input.id),
@@ -226,7 +226,7 @@ export async function getFeedbackSurveyResponsesWithSurveyDataAndComments(
     orderBy: { id: "desc" },
     include: {
       operator: { select: { id: true, title: true, slug: true } },
-      surveyResponseTopics: true,
+      surveyResponseTags: true,
       surveySession: { include: { survey: { select: { slug: true, id: true } } } },
       surveyResponseComments: {
         select: {
@@ -303,7 +303,7 @@ export async function getFeedbackSurveyResponsesWithSurveyDataAndComments(
   const parsedAndSorted = rawSurveyResponsePart2WithPart1AndPart3Responses
     .map((response) => {
       const data = JSON.parse(response.data) as SurveyResponseJsonData
-      const surveyResponseTopics = response.surveyResponseTopics.map((topic) => topic.id)
+      const surveyResponseTags = response.surveyResponseTags.map((topic) => topic.id)
       const surveyPart1ResponseData = response.surveyPart1ResponseData
         ? (JSON.parse(response.surveyPart1ResponseData) as SurveyResponseJsonData)
         : null
@@ -313,7 +313,7 @@ export async function getFeedbackSurveyResponsesWithSurveyDataAndComments(
       return {
         ...response,
         data,
-        surveyResponseTopics,
+        surveyResponseTags,
         surveyPart1ResponseData,
         surveyPart3ResponseData,
       }

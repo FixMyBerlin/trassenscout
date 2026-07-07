@@ -1,12 +1,12 @@
 import { z } from "zod"
 
 export type CreateProjectRecordExtractionSchemaParams = {
-  projectRecordTopics: Array<{ id: number; title: string }>
+  tags: Array<{ id: number; title: string }>
   isReprocessing?: boolean
 }
 
 export const createProjectRecordExtractionSchema = ({
-  projectRecordTopics,
+  tags,
   isReprocessing,
 }: CreateProjectRecordExtractionSchemaParams) => {
   return z.object({
@@ -36,13 +36,13 @@ export const createProjectRecordExtractionSchema = ({
 
     topics: z
       .array(
-        projectRecordTopics.length > 0
-          ? z.enum(projectRecordTopics.map((t) => t.id.toString()) as [string, ...string[]])
+        tags.length > 0
+          ? z.enum(tags.map((t) => t.id.toString()) as [string, ...string[]])
           : z.string(),
       )
       .describe(
-        projectRecordTopics.length > 0
-          ? `Array of topic IDs ('Tags') this ${isReprocessing ? "record entry" : "email"} relates to. Available topics: ${projectRecordTopics
+        tags.length > 0
+          ? `Array of topic IDs ('Tags') this ${isReprocessing ? "record entry" : "email"} relates to. Available topics: ${tags
               .map((t) => `${t.id} (${t.title})`)
               .join(
                 ", ",

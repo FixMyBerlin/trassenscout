@@ -12,7 +12,7 @@ import seedSubsubsectionInfra from "./seeds/subsubsectionInfra"
 import seedSubsubsectionSpecial from "./seeds/subsubsectionSpecial"
 import seedSubsubsectionStatus from "./seeds/subsubsectionStatus"
 import seedSubsubsectionTask from "./seeds/subsubsectionTask"
-import seedSurveyResponseTopics from "./seeds/surveyresponsetopics"
+import seedSurveyResponseTags from "./seeds/surveyresponseTags"
 import seedSurveys from "./seeds/surveys"
 import seedUploads from "./seeds/uploads"
 import seedUsers from "./seeds/users"
@@ -39,7 +39,7 @@ const seed = async () => {
     await seedContacts()
     await seedUploads()
     await seedSurveys()
-    await seedSurveyResponseTopics()
+    await seedSurveyResponseTags()
     await seedSubsubsectionStatus()
     await seedSubsubsectionTask()
     await seedSubsubsectionInfra()

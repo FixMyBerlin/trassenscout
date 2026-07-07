@@ -99,6 +99,11 @@ export function buildAdminProjectNavigation(projectSlug: string) {
       external: true,
     },
     {
+      name: "Tags",
+      link: projectNavLink("/$projectSlug/tags", projectSlug),
+      external: true,
+    },
+    {
       name: "Ausbaustandard",
       link: projectNavLink("/$projectSlug/quality-levels", projectSlug),
       external: true,

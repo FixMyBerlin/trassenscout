@@ -1,12 +1,12 @@
 type CreateFieldInstructionsParams = {
-  projectRecordTopics: Array<{ id: number; title: string }>
+  tags: Array<{ id: number; title: string }>
   isReprocessing?: boolean
   hasUploads: boolean
   subject?: string | null
 }
 
 export const createFieldInstructions = ({
-  projectRecordTopics,
+  tags,
   isReprocessing,
   hasUploads,
   subject,
@@ -33,10 +33,10 @@ ${hasUploads ? `- Integrate relevant information from the document summaries pro
 
 #### TOPICS
 ${
-  projectRecordTopics.length > 0
+  tags.length > 0
     ? `Select all relevant topic IDs from the list below based on the ${isReprocessing ? "record" : "email"}'s content${subject ? `, subject` : ""}, themes, or keywords. ${hasUploads ? `The related document summaries must be considered as well.` : ""}
 Available topics:
-${projectRecordTopics.map((t) => `${t.id} (${t.title})`).join(", ")}
+${tags.map((t) => `${t.id} (${t.title})`).join(", ")}
 
 If no topic clearly applies, return an empty array.`
     : "No topics are defined for this project; return an empty array."

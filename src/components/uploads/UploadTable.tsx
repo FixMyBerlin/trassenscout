@@ -9,6 +9,7 @@ import { useCurrentReturnTo } from "@/src/components/core/routes/useCurrentPathW
 import { Prettify } from "@/src/components/core/types"
 import { getFullname } from "@/src/components/core/users/getFullname"
 import { formatBerlinTime } from "@/src/components/core/utils/formatBerlinTime"
+import { ProjectRecordTagsList } from "@/src/components/project-records/ProjectRecordTagsList"
 import { IfUserCanEdit } from "@/src/components/shared/memberships/IfUserCan"
 import { DeleteUploadButton } from "@/src/components/uploads/DeleteUploadButton"
 import { useProjectUploadModal } from "@/src/components/uploads/ProjectUploadModalHost"
@@ -51,6 +52,9 @@ export const UploadTable = ({ uploads, withAction = true, withRelations, onDelet
             </th>
             <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
               Hochgeladen
+            </th>
+            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+              Tags
             </th>
             {withRelations && (
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
@@ -164,6 +168,9 @@ const UploadTableRow = ({
             {getFullname(upload.createdBy)}
           </span>
         )}
+      </td>
+      <td className="px-3 py-2 text-sm text-gray-500">
+        <ProjectRecordTagsList tags={"tags" in upload ? upload.tags : []} />
       </td>
       {withRelations && (
         <td className="px-3 py-2 text-sm text-gray-500">

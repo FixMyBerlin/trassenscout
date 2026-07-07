@@ -20,8 +20,8 @@ import {
   deleteSurveyResponseCommentFn,
   updateSurveyResponseCommentFn,
 } from "@/src/server/survey-response-comments/surveyResponseComments.functions"
-import type { SurveyResponseTopicsResult } from "@/src/server/survey-response-topics/surveyResponseTopicsQueryOptions"
 import type { FeedbackSurveyResponse } from "@/src/server/survey-responses/surveyResponsesQueryOptions"
+import type { SurveyResponseTagsResult } from "@/src/server/surveyResponseTags/surveyResponseTagsQueryOptions"
 import { CommentField } from "./comments/CommentField"
 import { NewCommentForm } from "./comments/NewCommentForm"
 import { ConvertSurveyResponseToSubsubsectionOhv } from "./ConvertSurveyResponseToSubsubsectionOhv"
@@ -35,7 +35,7 @@ const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
 export type EditableSurveyResponseListItemProps = {
   response: Prettify<FeedbackSurveyResponse>
   operators: OperatorWithSubsectionCount[]
-  topics: Prettify<SurveyResponseTopicsResult["surveyResponseTopics"]>
+  topics: Prettify<SurveyResponseTagsResult["surveyResponseTags"]>
   isAccordion?: boolean
   refetchResponsesAndTopics: () => Promise<void>
   showMap?: boolean

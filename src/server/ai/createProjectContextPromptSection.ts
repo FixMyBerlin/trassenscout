@@ -4,7 +4,7 @@ export type CreateProjectContextPromptSectionParams = {
   projectContext: {
     subsections: { id: number; slug: string; description: string | null }[] | null
     subsubsections: { id: number; slug: string; subsection: { id: number; slug: string } }[] | null
-    projectRecordTopics: { id: number; title: string }[]
+    tags: { id: number; title: string }[]
   }
 }
 
@@ -15,7 +15,7 @@ export const createProjectContextPromptSection = ({
     return ""
   }
 
-  const { subsections, subsubsections, projectRecordTopics } = projectContext
+  const { subsections, subsubsections, tags } = projectContext
 
   return `
 
@@ -33,9 +33,9 @@ When summarizing this document, pay special attention to the following:
 
 ### PREDEFINED TOPICS
 ${
-  projectRecordTopics.length > 0
+  tags.length > 0
     ? `This project has the following predefined topics for reference:
-${projectRecordTopics.map((t) => `- ${t.title}`).join("\n")}
+${tags.map((t) => `- ${t.title}`).join("\n")}
 
 If the document relates to any of these topics, mention them explicitly in the summary. However, also identify and include other relevant topics not in this list.`
     : "No predefined topics for this project. Identify and include the most relevant topics from the document content."

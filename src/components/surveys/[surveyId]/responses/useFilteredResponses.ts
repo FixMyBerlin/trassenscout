@@ -43,14 +43,14 @@ export const useFilteredResponses = (
       if (operator === "0") return response.operatorId === null
       if (typeof operator === "string") return response.operatorId === Number(operator)
     })
-    // Handle `topics` which is the `surveyResponseTopics: number[]` as 'string[]'
+    // Handle `topics` which is the `surveyResponseTags: number[]` as 'string[]'
     .filter((response) => {
       if (topics.includes("0"))
         return (
-          topics.map(Number).some((topic) => response.surveyResponseTopics.includes(topic)) ||
-          response.surveyResponseTopics.length === 0
+          topics.map(Number).some((topic) => response.surveyResponseTags.includes(topic)) ||
+          response.surveyResponseTags.length === 0
         )
-      return topics.map(Number).some((topic) => response.surveyResponseTopics.includes(topic))
+      return topics.map(Number).some((topic) => response.surveyResponseTags.includes(topic))
     })
     // Handle `hasnotes`
     .filter((response) => {

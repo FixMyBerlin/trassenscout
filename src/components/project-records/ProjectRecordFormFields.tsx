@@ -1,20 +1,16 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { useState } from "react"
-import { twJoin } from "tailwind-merge"
+import { useQuery } from "@tanstack/react-query"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
-import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { useCoreAppFormContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { useFormValue } from "@/src/components/core/components/forms/hooks/useFormValue"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { NumberArraySchema } from "@/src/components/core/utils/schema-shared"
 import { ProjectRecordEmailSource } from "@/src/components/project-records/ProjectRecordEmailSource"
 import { getUserSelectOptions } from "@/src/components/shared/app/users/utils/getUserSelectOptions"
+import { TagsFormSection } from "@/src/components/tags/TagsFormSection"
 import { UploadDropzone } from "@/src/components/uploads/UploadDropzone"
 import { UploadTable } from "@/src/components/uploads/UploadTable"
 import { ProjectRecordEditingState } from "@/src/prisma/generated/browser"
 import { acquisitionAreasQueryOptions } from "@/src/server/acquisitionAreas/acquisitionAreasQueryOptions"
-import { createLookupRowFn } from "@/src/server/adminLookupTables/adminLookupTables.functions"
-import { adminLookupRowsQueryOptions } from "@/src/server/adminLookupTables/adminLookupTablesQueryOptions"
 import { projectUsersQueryOptions } from "@/src/server/memberships/projectUsersQueryOptions"
 import { subsubsectionsQueryOptions } from "@/src/server/subsubsections/subsubsectionsQueryOptions"
 import { uploadsQueryOptions } from "@/src/server/uploads/uploadsQueryOptions"
@@ -45,7 +41,6 @@ export const ProjectRecordFormFields = ({
   disableSuspenseQueries: _disableSuspenseQueries = false,
 }: Props) => {
   const form = useCoreAppFormContext()
-  const queryClient = useQueryClient()
   const queryBehavior = {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
@@ -67,16 +62,6 @@ export const ProjectRecordFormFields = ({
     }),
     ...queryBehavior,
   })
-  const projectRecordTopicsQuery = adminLookupRowsQueryOptions({
-    projectSlug,
-    table: "projectRecordTopics",
-  })
-  const { data: projectRecordTopics = [] } = useQuery({
-    ...projectRecordTopicsQuery,
-    ...queryBehavior,
-  })
-  const [newTopic, setNewTopic] = useState("")
-  const createProjectRecordTopicMutation = useMutation({ mutationFn: createLookupRowFn })
   const uploadsValue = useFormValue("uploads")
   const uploadIds = NumberArraySchema.parse(uploadsValue)
 
@@ -86,12 +71,6 @@ export const ProjectRecordFormFields = ({
     ...queryBehavior,
   })
   const selectedUploads = allUploads.filter((upload) => uploadIds.includes(upload.id))
-
-  const topicsOptions = projectRecordTopics.length
-    ? projectRecordTopics.map((t) => {
-        return { value: String(t.id), label: t.title }
-      })
-    : []
 
   const assignedToOptions = getUserSelectOptions(users)
 
@@ -156,32 +135,6 @@ export const ProjectRecordFormFields = ({
     </div>
   )
 
-  const handleNewTopicFormSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
-    if (!newTopic.trim()) return
-    try {
-      const createdTopic = await createProjectRecordTopicMutation.mutateAsync({
-        data: {
-          projectSlug,
-          table: "projectRecordTopics",
-          data: { title: newTopic.trim() },
-        },
-      })
-      await queryClient.invalidateQueries({ queryKey: projectRecordTopicsQuery.queryKey })
-
-      const currentTopics = Array.isArray(form.getFieldValue("projectRecordTopics"))
-        ? (form.getFieldValue("projectRecordTopics") as string[]).map(String)
-        : []
-      const newTopicId = String(createdTopic.id)
-      if (!currentTopics.includes(newTopicId)) {
-        form.setFieldValue("projectRecordTopics", [...currentTopics, newTopicId])
-      }
-    } catch (error: unknown) {
-      console.error(error)
-    }
-    setNewTopic("")
-  }
-
   return (
     <>
       <div className={splitView ? "flex gap-6" : ""}>
@@ -232,40 +185,7 @@ export const ProjectRecordFormFields = ({
           <form.AppField name="body">
             {(field) => <field.TextareaField label="Notizen" rows={20} />}
           </form.AppField>
-          <div className="flex flex-col gap-3">
-            <form.AppField name="projectRecordTopics">
-              {(field) => (
-                <field.CheckboxGroup
-                  classNameItemWrapper="grid grid-cols-4 gap-1.5 w-full"
-                  items={topicsOptions}
-                  label="Tags"
-                />
-              )}
-            </form.AppField>
-            <div className="flex w-full items-end gap-2">
-              <div className="grow">
-                <label htmlFor="newTopic" className="sr-only">
-                  Neues Tag
-                </label>
-                <input
-                  id="newTopic"
-                  type="text"
-                  value={newTopic}
-                  onChange={(e) => setNewTopic(e.target.value)}
-                  maxLength={35}
-                  placeholder="Neues Tag"
-                  className="block w-full grow appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-xs focus:border-blue-500 focus:ring-blue-500 focus:outline-hidden sm:text-sm"
-                />
-              </div>
-              <button
-                type="button"
-                onClick={handleNewTopicFormSubmit}
-                className={twJoin(primaryButtonClassName, "shrink-0 px-3! py-2!")}
-              >
-                Hinzufügen
-              </button>
-            </div>
-          </div>
+          <TagsFormSection projectSlug={projectSlug} showManageLink />
         </div>
 
         {emailSource && splitView && <ProjectRecordEmailSource email={emailSource} />}

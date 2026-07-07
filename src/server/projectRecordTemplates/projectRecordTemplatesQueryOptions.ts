@@ -3,7 +3,7 @@ import {
   getProjectRecordTemplateFn,
   getProjectRecordTemplatesByProjectFn,
   getProjectRecordTemplatesFn,
-  getProjectRecordTopicsAdminFn,
+  getTagsAdminFn,
 } from "./projectRecordTemplates.functions"
 import type { ProjectRecordTemplatesByProjectInput } from "./projectRecordTemplates.server"
 
@@ -30,9 +30,9 @@ export function projectRecordTemplateQueryOptions(id: number) {
   })
 }
 
-export function projectRecordTopicsAdminQueryOptions() {
+export function tagsAdminQueryOptions() {
   return queryOptions({
-    queryKey: ["projectRecordTopics", "admin"],
-    queryFn: () => getProjectRecordTopicsAdminFn({ data: {} }),
+    queryKey: ["tags", "admin"],
+    queryFn: () => getTagsAdminFn({ data: {} }),
   })
 }

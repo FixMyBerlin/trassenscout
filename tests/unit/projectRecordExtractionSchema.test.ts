@@ -4,7 +4,7 @@ import { createProjectRecordExtractionSchema } from "@/src/server/ai/projectReco
 describe("createProjectRecordExtractionSchema", () => {
   it("accepts valid topic ids from a dynamic enum", () => {
     const schema = createProjectRecordExtractionSchema({
-      projectRecordTopics: [
+      tags: [
         { id: 1, title: "Planung" },
         { id: 2, title: "Umwelt" },
       ],
@@ -22,7 +22,7 @@ describe("createProjectRecordExtractionSchema", () => {
 
   it("rejects topic ids outside the dynamic enum", () => {
     const schema = createProjectRecordExtractionSchema({
-      projectRecordTopics: [{ id: 1, title: "Planung" }],
+      tags: [{ id: 1, title: "Planung" }],
     })
 
     const result = schema.safeParse({
@@ -37,7 +37,7 @@ describe("createProjectRecordExtractionSchema", () => {
 
   it("allows any string topic ids when no project topics exist", () => {
     const schema = createProjectRecordExtractionSchema({
-      projectRecordTopics: [],
+      tags: [],
     })
 
     const result = schema.safeParse({

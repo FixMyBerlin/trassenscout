@@ -9,9 +9,7 @@ import { ProjectSlugRequiredSchema } from "@/src/shared/authorization/projectSlu
 import { NullableDateSchema, NullableDateSchemaForm } from "@/src/shared/subsubsections/schemas"
 
 const m2mFormFields = {
-  projectRecordTopics: z
-    .union([z.undefined(), z.boolean(), z.array(z.coerce.number())])
-    .transform((v) => v || []),
+  tags: z.union([z.undefined(), z.boolean(), z.array(z.coerce.number())]).transform((v) => v || []),
   uploads: z
     .union([z.undefined(), z.boolean(), z.array(z.coerce.number())])
     .transform((v) => v || []),
@@ -41,7 +39,7 @@ const ProjectRecordSchema = z.object({
   reviewedById: InputNumberOrNullSchema,
   reviewNotes: z.string().nullish(),
   editingState: z.enum(ProjectRecordEditingState),
-  projectRecordTopics: z.union([z.literal(false), z.array(z.coerce.number())]).optional(),
+  tags: z.union([z.literal(false), z.array(z.coerce.number())]).optional(),
   uploads: z.union([z.literal(false), z.array(z.coerce.number())]).optional(),
   subsubsections: z.union([z.literal(false), z.array(z.coerce.number())]).optional(),
   acquisitionAreas: z.union([z.literal(false), z.array(z.coerce.number())]).optional(),
@@ -61,7 +59,7 @@ export const projectRecordFormDefaultValues = {
   editingState: ProjectRecordEditingState.PENDING,
   reviewState: ProjectRecordReviewState.NEEDSREVIEW,
   reviewNotes: "",
-  projectRecordTopics: [] as string[],
+  tags: [] as string[],
   uploads: [] as string[],
   subsubsections: [] as string[],
   acquisitionAreas: [] as string[],
@@ -75,7 +73,7 @@ export const newProjectRecordFormDefaultValues = {
   acquisitionAreaId: null as number | null,
   assignedToId: null as number | null,
   editingState: ProjectRecordEditingState.PENDING,
-  projectRecordTopics: [] as string[],
+  tags: [] as string[],
   uploads: [] as string[],
   subsubsections: [] as string[],
   acquisitionAreas: [] as string[],
@@ -83,7 +81,7 @@ export const newProjectRecordFormDefaultValues = {
 
 export const NewProjectRecordFormSchema = ProjectRecordSchema.omit({
   date: true,
-  projectRecordTopics: true,
+  tags: true,
   uploads: true,
   userId: true,
   projectRecordAuthorType: true,
@@ -102,7 +100,7 @@ export const NewProjectRecordFormSchema = ProjectRecordSchema.omit({
 
 export const ProjectRecordFormSchema = ProjectRecordSchema.omit({
   date: true,
-  projectRecordTopics: true,
+  tags: true,
   uploads: true,
   userId: true,
   projectRecordAuthorType: true,

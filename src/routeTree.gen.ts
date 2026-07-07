@@ -66,7 +66,9 @@ import { Route as AdminProjectRecordEmailsNewIndexRouteImport } from './routes/a
 import { Route as AdminProjectRecordEmailsProjectRecordEmailIdIndexRouteImport } from './routes/admin/project-record-emails/$projectRecordEmailId/index'
 import { Route as AdminMembershipsUserIdIndexRouteImport } from './routes/admin/memberships/$userId/index'
 import { Route as LoggedInProjectsProjectSlugUploadsIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/uploads/index'
+import { Route as LoggedInProjectsProjectSlugTagsIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/tags/index'
 import { Route as LoggedInProjectsProjectSlugSurveysIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/surveys/index'
+import { Route as LoggedInProjectsProjectSlugSurveyResponseTagsIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/survey-response-tags/index'
 import { Route as LoggedInProjectsProjectSlugSubsubsectionTaskIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/subsubsection-task/index'
 import { Route as LoggedInProjectsProjectSlugSubsubsectionStatusIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/subsubsection-status/index'
 import { Route as LoggedInProjectsProjectSlugSubsubsectionSpecialIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/subsubsection-special/index'
@@ -94,7 +96,9 @@ import { Route as AdminProjectRecordsProjectRecordIdEditIndexRouteImport } from 
 import { Route as AdminProjectRecordTemplatesTemplateIdEditIndexRouteImport } from './routes/admin/project-record-templates/$templateId/edit/index'
 import { Route as AdminProjectRecordEmailsProjectRecordEmailIdEditIndexRouteImport } from './routes/admin/project-record-emails/$projectRecordEmailId/edit/index'
 import { Route as AdminEmailTemplatesTemplateKeyEditIndexRouteImport } from './routes/admin/email-templates/$templateKey/edit/index'
+import { Route as LoggedInProjectsProjectSlugTagsNewIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/tags/new/index'
 import { Route as LoggedInProjectsProjectSlugSurveysSurveyIdIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/surveys/$surveyId/index'
+import { Route as LoggedInProjectsProjectSlugSurveyResponseTagsNewIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/survey-response-tags/new/index'
 import { Route as LoggedInProjectsProjectSlugSubsubsectionTaskNewIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/subsubsection-task/new/index'
 import { Route as LoggedInProjectsProjectSlugSubsubsectionStatusNewIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/subsubsection-status/new/index'
 import { Route as LoggedInProjectsProjectSlugSubsubsectionSpecialNewIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/subsubsection-special/new/index'
@@ -122,8 +126,10 @@ import { Route as AdminSurveysSurveyIdResponsesCreatedIndexRouteImport } from '.
 import { Route as AdminProjectsProjectSlugSubsectionsMultipleNewIndexRouteImport } from './routes/admin/projects/$projectSlug/subsections/multiple-new/index'
 import { Route as AdminProjectsProjectSlugSubsectionsEditIndexRouteImport } from './routes/admin/projects/$projectSlug/subsections/edit/index'
 import { Route as LoggedInProjectsProjectSlugUploadsUploadIdEditIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/uploads/$uploadId/edit/index'
+import { Route as LoggedInProjectsProjectSlugTagsTagIdEditIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/tags/$tagId/edit/index'
 import { Route as LoggedInProjectsProjectSlugSurveysSurveyIdResponsesIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/surveys/$surveyId/responses/index'
 import { Route as LoggedInProjectsProjectSlugSurveysSurveyIdAnalysisIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/surveys/$surveyId/analysis/index'
+import { Route as LoggedInProjectsProjectSlugSurveyResponseTagsTagIdEditIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/survey-response-tags/$tagId/edit/index'
 import { Route as LoggedInProjectsProjectSlugSubsubsectionTaskSubsubsectionTaskIdEditIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/subsubsection-task/$subsubsectionTaskId/edit/index'
 import { Route as LoggedInProjectsProjectSlugSubsubsectionStatusSubsubsectionStatusIdEditIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/subsubsection-status/$subsubsectionStatusId/edit/index'
 import { Route as LoggedInProjectsProjectSlugSubsubsectionSpecialSubsubsectionSpecialIdEditIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/subsubsection-special/$subsubsectionSpecialId/edit/index'
@@ -461,10 +467,22 @@ const LoggedInProjectsProjectSlugUploadsIndexRoute =
     path: '/uploads/',
     getParentRoute: () => LoggedInProjectsProjectSlugRoute,
   } as any)
+const LoggedInProjectsProjectSlugTagsIndexRoute =
+  LoggedInProjectsProjectSlugTagsIndexRouteImport.update({
+    id: '/tags/',
+    path: '/tags/',
+    getParentRoute: () => LoggedInProjectsProjectSlugRoute,
+  } as any)
 const LoggedInProjectsProjectSlugSurveysIndexRoute =
   LoggedInProjectsProjectSlugSurveysIndexRouteImport.update({
     id: '/surveys/',
     path: '/surveys/',
+    getParentRoute: () => LoggedInProjectsProjectSlugRoute,
+  } as any)
+const LoggedInProjectsProjectSlugSurveyResponseTagsIndexRoute =
+  LoggedInProjectsProjectSlugSurveyResponseTagsIndexRouteImport.update({
+    id: '/survey-response-tags/',
+    path: '/survey-response-tags/',
     getParentRoute: () => LoggedInProjectsProjectSlugRoute,
   } as any)
 const LoggedInProjectsProjectSlugSubsubsectionTaskIndexRoute =
@@ -631,10 +649,22 @@ const AdminEmailTemplatesTemplateKeyEditIndexRoute =
     path: '/email-templates/$templateKey/edit/',
     getParentRoute: () => AdminRoute,
   } as any)
+const LoggedInProjectsProjectSlugTagsNewIndexRoute =
+  LoggedInProjectsProjectSlugTagsNewIndexRouteImport.update({
+    id: '/tags/new/',
+    path: '/tags/new/',
+    getParentRoute: () => LoggedInProjectsProjectSlugRoute,
+  } as any)
 const LoggedInProjectsProjectSlugSurveysSurveyIdIndexRoute =
   LoggedInProjectsProjectSlugSurveysSurveyIdIndexRouteImport.update({
     id: '/surveys/$surveyId/',
     path: '/surveys/$surveyId/',
+    getParentRoute: () => LoggedInProjectsProjectSlugRoute,
+  } as any)
+const LoggedInProjectsProjectSlugSurveyResponseTagsNewIndexRoute =
+  LoggedInProjectsProjectSlugSurveyResponseTagsNewIndexRouteImport.update({
+    id: '/survey-response-tags/new/',
+    path: '/survey-response-tags/new/',
     getParentRoute: () => LoggedInProjectsProjectSlugRoute,
   } as any)
 const LoggedInProjectsProjectSlugSubsubsectionTaskNewIndexRoute =
@@ -803,6 +833,12 @@ const LoggedInProjectsProjectSlugUploadsUploadIdEditIndexRoute =
     path: '/uploads/$uploadId/edit/',
     getParentRoute: () => LoggedInProjectsProjectSlugRoute,
   } as any)
+const LoggedInProjectsProjectSlugTagsTagIdEditIndexRoute =
+  LoggedInProjectsProjectSlugTagsTagIdEditIndexRouteImport.update({
+    id: '/tags/$tagId/edit/',
+    path: '/tags/$tagId/edit/',
+    getParentRoute: () => LoggedInProjectsProjectSlugRoute,
+  } as any)
 const LoggedInProjectsProjectSlugSurveysSurveyIdResponsesIndexRoute =
   LoggedInProjectsProjectSlugSurveysSurveyIdResponsesIndexRouteImport.update({
     id: '/',
@@ -816,6 +852,14 @@ const LoggedInProjectsProjectSlugSurveysSurveyIdAnalysisIndexRoute =
     path: '/surveys/$surveyId/analysis/',
     getParentRoute: () => LoggedInProjectsProjectSlugRoute,
   } as any)
+const LoggedInProjectsProjectSlugSurveyResponseTagsTagIdEditIndexRoute =
+  LoggedInProjectsProjectSlugSurveyResponseTagsTagIdEditIndexRouteImport.update(
+    {
+      id: '/survey-response-tags/$tagId/edit/',
+      path: '/survey-response-tags/$tagId/edit/',
+      getParentRoute: () => LoggedInProjectsProjectSlugRoute,
+    } as any,
+  )
 const LoggedInProjectsProjectSlugSubsubsectionTaskSubsubsectionTaskIdEditIndexRoute =
   LoggedInProjectsProjectSlugSubsubsectionTaskSubsubsectionTaskIdEditIndexRouteImport.update(
     {
@@ -1094,7 +1138,9 @@ export interface FileRoutesByFullPath {
   '/$projectSlug/subsubsection-special/': typeof LoggedInProjectsProjectSlugSubsubsectionSpecialIndexRoute
   '/$projectSlug/subsubsection-status/': typeof LoggedInProjectsProjectSlugSubsubsectionStatusIndexRoute
   '/$projectSlug/subsubsection-task/': typeof LoggedInProjectsProjectSlugSubsubsectionTaskIndexRoute
+  '/$projectSlug/survey-response-tags/': typeof LoggedInProjectsProjectSlugSurveyResponseTagsIndexRoute
   '/$projectSlug/surveys/': typeof LoggedInProjectsProjectSlugSurveysIndexRoute
+  '/$projectSlug/tags/': typeof LoggedInProjectsProjectSlugTagsIndexRoute
   '/$projectSlug/uploads/': typeof LoggedInProjectsProjectSlugUploadsIndexRoute
   '/admin/memberships/$userId/': typeof AdminMembershipsUserIdIndexRoute
   '/admin/project-record-emails/$projectRecordEmailId/': typeof AdminProjectRecordEmailsProjectRecordEmailIdIndexRoute
@@ -1128,7 +1174,9 @@ export interface FileRoutesByFullPath {
   '/$projectSlug/subsubsection-special/new/': typeof LoggedInProjectsProjectSlugSubsubsectionSpecialNewIndexRoute
   '/$projectSlug/subsubsection-status/new/': typeof LoggedInProjectsProjectSlugSubsubsectionStatusNewIndexRoute
   '/$projectSlug/subsubsection-task/new/': typeof LoggedInProjectsProjectSlugSubsubsectionTaskNewIndexRoute
+  '/$projectSlug/survey-response-tags/new/': typeof LoggedInProjectsProjectSlugSurveyResponseTagsNewIndexRoute
   '/$projectSlug/surveys/$surveyId/': typeof LoggedInProjectsProjectSlugSurveysSurveyIdIndexRoute
+  '/$projectSlug/tags/new/': typeof LoggedInProjectsProjectSlugTagsNewIndexRoute
   '/admin/email-templates/$templateKey/edit/': typeof AdminEmailTemplatesTemplateKeyEditIndexRoute
   '/admin/project-record-emails/$projectRecordEmailId/edit/': typeof AdminProjectRecordEmailsProjectRecordEmailIdEditIndexRoute
   '/admin/project-record-templates/$templateId/edit/': typeof AdminProjectRecordTemplatesTemplateIdEditIndexRoute
@@ -1155,8 +1203,10 @@ export interface FileRoutesByFullPath {
   '/$projectSlug/subsubsection-special/$subsubsectionSpecialId/edit/': typeof LoggedInProjectsProjectSlugSubsubsectionSpecialSubsubsectionSpecialIdEditIndexRoute
   '/$projectSlug/subsubsection-status/$subsubsectionStatusId/edit/': typeof LoggedInProjectsProjectSlugSubsubsectionStatusSubsubsectionStatusIdEditIndexRoute
   '/$projectSlug/subsubsection-task/$subsubsectionTaskId/edit/': typeof LoggedInProjectsProjectSlugSubsubsectionTaskSubsubsectionTaskIdEditIndexRoute
+  '/$projectSlug/survey-response-tags/$tagId/edit/': typeof LoggedInProjectsProjectSlugSurveyResponseTagsTagIdEditIndexRoute
   '/$projectSlug/surveys/$surveyId/analysis/': typeof LoggedInProjectsProjectSlugSurveysSurveyIdAnalysisIndexRoute
   '/$projectSlug/surveys/$surveyId/responses/': typeof LoggedInProjectsProjectSlugSurveysSurveyIdResponsesIndexRoute
+  '/$projectSlug/tags/$tagId/edit/': typeof LoggedInProjectsProjectSlugTagsTagIdEditIndexRoute
   '/$projectSlug/uploads/$uploadId/edit/': typeof LoggedInProjectsProjectSlugUploadsUploadIdEditIndexRoute
   '/admin/projects/$projectSlug/subsections/edit/': typeof AdminProjectsProjectSlugSubsectionsEditIndexRoute
   '/admin/projects/$projectSlug/subsections/multiple-new/': typeof AdminProjectsProjectSlugSubsectionsMultipleNewIndexRoute
@@ -1230,7 +1280,9 @@ export interface FileRoutesByTo {
   '/$projectSlug/subsubsection-special': typeof LoggedInProjectsProjectSlugSubsubsectionSpecialIndexRoute
   '/$projectSlug/subsubsection-status': typeof LoggedInProjectsProjectSlugSubsubsectionStatusIndexRoute
   '/$projectSlug/subsubsection-task': typeof LoggedInProjectsProjectSlugSubsubsectionTaskIndexRoute
+  '/$projectSlug/survey-response-tags': typeof LoggedInProjectsProjectSlugSurveyResponseTagsIndexRoute
   '/$projectSlug/surveys': typeof LoggedInProjectsProjectSlugSurveysIndexRoute
+  '/$projectSlug/tags': typeof LoggedInProjectsProjectSlugTagsIndexRoute
   '/$projectSlug/uploads': typeof LoggedInProjectsProjectSlugUploadsIndexRoute
   '/admin/memberships/$userId': typeof AdminMembershipsUserIdIndexRoute
   '/admin/project-record-emails/$projectRecordEmailId': typeof AdminProjectRecordEmailsProjectRecordEmailIdIndexRoute
@@ -1263,7 +1315,9 @@ export interface FileRoutesByTo {
   '/$projectSlug/subsubsection-special/new': typeof LoggedInProjectsProjectSlugSubsubsectionSpecialNewIndexRoute
   '/$projectSlug/subsubsection-status/new': typeof LoggedInProjectsProjectSlugSubsubsectionStatusNewIndexRoute
   '/$projectSlug/subsubsection-task/new': typeof LoggedInProjectsProjectSlugSubsubsectionTaskNewIndexRoute
+  '/$projectSlug/survey-response-tags/new': typeof LoggedInProjectsProjectSlugSurveyResponseTagsNewIndexRoute
   '/$projectSlug/surveys/$surveyId': typeof LoggedInProjectsProjectSlugSurveysSurveyIdIndexRoute
+  '/$projectSlug/tags/new': typeof LoggedInProjectsProjectSlugTagsNewIndexRoute
   '/admin/email-templates/$templateKey/edit': typeof AdminEmailTemplatesTemplateKeyEditIndexRoute
   '/admin/project-record-emails/$projectRecordEmailId/edit': typeof AdminProjectRecordEmailsProjectRecordEmailIdEditIndexRoute
   '/admin/project-record-templates/$templateId/edit': typeof AdminProjectRecordTemplatesTemplateIdEditIndexRoute
@@ -1290,8 +1344,10 @@ export interface FileRoutesByTo {
   '/$projectSlug/subsubsection-special/$subsubsectionSpecialId/edit': typeof LoggedInProjectsProjectSlugSubsubsectionSpecialSubsubsectionSpecialIdEditIndexRoute
   '/$projectSlug/subsubsection-status/$subsubsectionStatusId/edit': typeof LoggedInProjectsProjectSlugSubsubsectionStatusSubsubsectionStatusIdEditIndexRoute
   '/$projectSlug/subsubsection-task/$subsubsectionTaskId/edit': typeof LoggedInProjectsProjectSlugSubsubsectionTaskSubsubsectionTaskIdEditIndexRoute
+  '/$projectSlug/survey-response-tags/$tagId/edit': typeof LoggedInProjectsProjectSlugSurveyResponseTagsTagIdEditIndexRoute
   '/$projectSlug/surveys/$surveyId/analysis': typeof LoggedInProjectsProjectSlugSurveysSurveyIdAnalysisIndexRoute
   '/$projectSlug/surveys/$surveyId/responses': typeof LoggedInProjectsProjectSlugSurveysSurveyIdResponsesIndexRoute
+  '/$projectSlug/tags/$tagId/edit': typeof LoggedInProjectsProjectSlugTagsTagIdEditIndexRoute
   '/$projectSlug/uploads/$uploadId/edit': typeof LoggedInProjectsProjectSlugUploadsUploadIdEditIndexRoute
   '/admin/projects/$projectSlug/subsections/edit': typeof AdminProjectsProjectSlugSubsectionsEditIndexRoute
   '/admin/projects/$projectSlug/subsections/multiple-new': typeof AdminProjectsProjectSlugSubsectionsMultipleNewIndexRoute
@@ -1375,7 +1431,9 @@ export interface FileRoutesById {
   '/_loggedInProjects/$projectSlug/subsubsection-special/': typeof LoggedInProjectsProjectSlugSubsubsectionSpecialIndexRoute
   '/_loggedInProjects/$projectSlug/subsubsection-status/': typeof LoggedInProjectsProjectSlugSubsubsectionStatusIndexRoute
   '/_loggedInProjects/$projectSlug/subsubsection-task/': typeof LoggedInProjectsProjectSlugSubsubsectionTaskIndexRoute
+  '/_loggedInProjects/$projectSlug/survey-response-tags/': typeof LoggedInProjectsProjectSlugSurveyResponseTagsIndexRoute
   '/_loggedInProjects/$projectSlug/surveys/': typeof LoggedInProjectsProjectSlugSurveysIndexRoute
+  '/_loggedInProjects/$projectSlug/tags/': typeof LoggedInProjectsProjectSlugTagsIndexRoute
   '/_loggedInProjects/$projectSlug/uploads/': typeof LoggedInProjectsProjectSlugUploadsIndexRoute
   '/admin/memberships/$userId/': typeof AdminMembershipsUserIdIndexRoute
   '/admin/project-record-emails/$projectRecordEmailId/': typeof AdminProjectRecordEmailsProjectRecordEmailIdIndexRoute
@@ -1409,7 +1467,9 @@ export interface FileRoutesById {
   '/_loggedInProjects/$projectSlug/subsubsection-special/new/': typeof LoggedInProjectsProjectSlugSubsubsectionSpecialNewIndexRoute
   '/_loggedInProjects/$projectSlug/subsubsection-status/new/': typeof LoggedInProjectsProjectSlugSubsubsectionStatusNewIndexRoute
   '/_loggedInProjects/$projectSlug/subsubsection-task/new/': typeof LoggedInProjectsProjectSlugSubsubsectionTaskNewIndexRoute
+  '/_loggedInProjects/$projectSlug/survey-response-tags/new/': typeof LoggedInProjectsProjectSlugSurveyResponseTagsNewIndexRoute
   '/_loggedInProjects/$projectSlug/surveys/$surveyId/': typeof LoggedInProjectsProjectSlugSurveysSurveyIdIndexRoute
+  '/_loggedInProjects/$projectSlug/tags/new/': typeof LoggedInProjectsProjectSlugTagsNewIndexRoute
   '/admin/email-templates/$templateKey/edit/': typeof AdminEmailTemplatesTemplateKeyEditIndexRoute
   '/admin/project-record-emails/$projectRecordEmailId/edit/': typeof AdminProjectRecordEmailsProjectRecordEmailIdEditIndexRoute
   '/admin/project-record-templates/$templateId/edit/': typeof AdminProjectRecordTemplatesTemplateIdEditIndexRoute
@@ -1436,8 +1496,10 @@ export interface FileRoutesById {
   '/_loggedInProjects/$projectSlug/subsubsection-special/$subsubsectionSpecialId/edit/': typeof LoggedInProjectsProjectSlugSubsubsectionSpecialSubsubsectionSpecialIdEditIndexRoute
   '/_loggedInProjects/$projectSlug/subsubsection-status/$subsubsectionStatusId/edit/': typeof LoggedInProjectsProjectSlugSubsubsectionStatusSubsubsectionStatusIdEditIndexRoute
   '/_loggedInProjects/$projectSlug/subsubsection-task/$subsubsectionTaskId/edit/': typeof LoggedInProjectsProjectSlugSubsubsectionTaskSubsubsectionTaskIdEditIndexRoute
+  '/_loggedInProjects/$projectSlug/survey-response-tags/$tagId/edit/': typeof LoggedInProjectsProjectSlugSurveyResponseTagsTagIdEditIndexRoute
   '/_loggedInProjects/$projectSlug/surveys/$surveyId/analysis/': typeof LoggedInProjectsProjectSlugSurveysSurveyIdAnalysisIndexRoute
   '/_loggedInProjects/$projectSlug/surveys/$surveyId/responses/': typeof LoggedInProjectsProjectSlugSurveysSurveyIdResponsesIndexRoute
+  '/_loggedInProjects/$projectSlug/tags/$tagId/edit/': typeof LoggedInProjectsProjectSlugTagsTagIdEditIndexRoute
   '/_loggedInProjects/$projectSlug/uploads/$uploadId/edit/': typeof LoggedInProjectsProjectSlugUploadsUploadIdEditIndexRoute
   '/admin/projects/$projectSlug/subsections/edit/': typeof AdminProjectsProjectSlugSubsectionsEditIndexRoute
   '/admin/projects/$projectSlug/subsections/multiple-new/': typeof AdminProjectsProjectSlugSubsectionsMultipleNewIndexRoute
@@ -1517,7 +1579,9 @@ export interface FileRouteTypes {
     | '/$projectSlug/subsubsection-special/'
     | '/$projectSlug/subsubsection-status/'
     | '/$projectSlug/subsubsection-task/'
+    | '/$projectSlug/survey-response-tags/'
     | '/$projectSlug/surveys/'
+    | '/$projectSlug/tags/'
     | '/$projectSlug/uploads/'
     | '/admin/memberships/$userId/'
     | '/admin/project-record-emails/$projectRecordEmailId/'
@@ -1551,7 +1615,9 @@ export interface FileRouteTypes {
     | '/$projectSlug/subsubsection-special/new/'
     | '/$projectSlug/subsubsection-status/new/'
     | '/$projectSlug/subsubsection-task/new/'
+    | '/$projectSlug/survey-response-tags/new/'
     | '/$projectSlug/surveys/$surveyId/'
+    | '/$projectSlug/tags/new/'
     | '/admin/email-templates/$templateKey/edit/'
     | '/admin/project-record-emails/$projectRecordEmailId/edit/'
     | '/admin/project-record-templates/$templateId/edit/'
@@ -1578,8 +1644,10 @@ export interface FileRouteTypes {
     | '/$projectSlug/subsubsection-special/$subsubsectionSpecialId/edit/'
     | '/$projectSlug/subsubsection-status/$subsubsectionStatusId/edit/'
     | '/$projectSlug/subsubsection-task/$subsubsectionTaskId/edit/'
+    | '/$projectSlug/survey-response-tags/$tagId/edit/'
     | '/$projectSlug/surveys/$surveyId/analysis/'
     | '/$projectSlug/surveys/$surveyId/responses/'
+    | '/$projectSlug/tags/$tagId/edit/'
     | '/$projectSlug/uploads/$uploadId/edit/'
     | '/admin/projects/$projectSlug/subsections/edit/'
     | '/admin/projects/$projectSlug/subsections/multiple-new/'
@@ -1653,7 +1721,9 @@ export interface FileRouteTypes {
     | '/$projectSlug/subsubsection-special'
     | '/$projectSlug/subsubsection-status'
     | '/$projectSlug/subsubsection-task'
+    | '/$projectSlug/survey-response-tags'
     | '/$projectSlug/surveys'
+    | '/$projectSlug/tags'
     | '/$projectSlug/uploads'
     | '/admin/memberships/$userId'
     | '/admin/project-record-emails/$projectRecordEmailId'
@@ -1686,7 +1756,9 @@ export interface FileRouteTypes {
     | '/$projectSlug/subsubsection-special/new'
     | '/$projectSlug/subsubsection-status/new'
     | '/$projectSlug/subsubsection-task/new'
+    | '/$projectSlug/survey-response-tags/new'
     | '/$projectSlug/surveys/$surveyId'
+    | '/$projectSlug/tags/new'
     | '/admin/email-templates/$templateKey/edit'
     | '/admin/project-record-emails/$projectRecordEmailId/edit'
     | '/admin/project-record-templates/$templateId/edit'
@@ -1713,8 +1785,10 @@ export interface FileRouteTypes {
     | '/$projectSlug/subsubsection-special/$subsubsectionSpecialId/edit'
     | '/$projectSlug/subsubsection-status/$subsubsectionStatusId/edit'
     | '/$projectSlug/subsubsection-task/$subsubsectionTaskId/edit'
+    | '/$projectSlug/survey-response-tags/$tagId/edit'
     | '/$projectSlug/surveys/$surveyId/analysis'
     | '/$projectSlug/surveys/$surveyId/responses'
+    | '/$projectSlug/tags/$tagId/edit'
     | '/$projectSlug/uploads/$uploadId/edit'
     | '/admin/projects/$projectSlug/subsections/edit'
     | '/admin/projects/$projectSlug/subsections/multiple-new'
@@ -1797,7 +1871,9 @@ export interface FileRouteTypes {
     | '/_loggedInProjects/$projectSlug/subsubsection-special/'
     | '/_loggedInProjects/$projectSlug/subsubsection-status/'
     | '/_loggedInProjects/$projectSlug/subsubsection-task/'
+    | '/_loggedInProjects/$projectSlug/survey-response-tags/'
     | '/_loggedInProjects/$projectSlug/surveys/'
+    | '/_loggedInProjects/$projectSlug/tags/'
     | '/_loggedInProjects/$projectSlug/uploads/'
     | '/admin/memberships/$userId/'
     | '/admin/project-record-emails/$projectRecordEmailId/'
@@ -1831,7 +1907,9 @@ export interface FileRouteTypes {
     | '/_loggedInProjects/$projectSlug/subsubsection-special/new/'
     | '/_loggedInProjects/$projectSlug/subsubsection-status/new/'
     | '/_loggedInProjects/$projectSlug/subsubsection-task/new/'
+    | '/_loggedInProjects/$projectSlug/survey-response-tags/new/'
     | '/_loggedInProjects/$projectSlug/surveys/$surveyId/'
+    | '/_loggedInProjects/$projectSlug/tags/new/'
     | '/admin/email-templates/$templateKey/edit/'
     | '/admin/project-record-emails/$projectRecordEmailId/edit/'
     | '/admin/project-record-templates/$templateId/edit/'
@@ -1858,8 +1936,10 @@ export interface FileRouteTypes {
     | '/_loggedInProjects/$projectSlug/subsubsection-special/$subsubsectionSpecialId/edit/'
     | '/_loggedInProjects/$projectSlug/subsubsection-status/$subsubsectionStatusId/edit/'
     | '/_loggedInProjects/$projectSlug/subsubsection-task/$subsubsectionTaskId/edit/'
+    | '/_loggedInProjects/$projectSlug/survey-response-tags/$tagId/edit/'
     | '/_loggedInProjects/$projectSlug/surveys/$surveyId/analysis/'
     | '/_loggedInProjects/$projectSlug/surveys/$surveyId/responses/'
+    | '/_loggedInProjects/$projectSlug/tags/$tagId/edit/'
     | '/_loggedInProjects/$projectSlug/uploads/$uploadId/edit/'
     | '/admin/projects/$projectSlug/subsections/edit/'
     | '/admin/projects/$projectSlug/subsections/multiple-new/'
@@ -2317,11 +2397,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoggedInProjectsProjectSlugUploadsIndexRouteImport
       parentRoute: typeof LoggedInProjectsProjectSlugRoute
     }
+    '/_loggedInProjects/$projectSlug/tags/': {
+      id: '/_loggedInProjects/$projectSlug/tags/'
+      path: '/tags'
+      fullPath: '/$projectSlug/tags/'
+      preLoaderRoute: typeof LoggedInProjectsProjectSlugTagsIndexRouteImport
+      parentRoute: typeof LoggedInProjectsProjectSlugRoute
+    }
     '/_loggedInProjects/$projectSlug/surveys/': {
       id: '/_loggedInProjects/$projectSlug/surveys/'
       path: '/surveys'
       fullPath: '/$projectSlug/surveys/'
       preLoaderRoute: typeof LoggedInProjectsProjectSlugSurveysIndexRouteImport
+      parentRoute: typeof LoggedInProjectsProjectSlugRoute
+    }
+    '/_loggedInProjects/$projectSlug/survey-response-tags/': {
+      id: '/_loggedInProjects/$projectSlug/survey-response-tags/'
+      path: '/survey-response-tags'
+      fullPath: '/$projectSlug/survey-response-tags/'
+      preLoaderRoute: typeof LoggedInProjectsProjectSlugSurveyResponseTagsIndexRouteImport
       parentRoute: typeof LoggedInProjectsProjectSlugRoute
     }
     '/_loggedInProjects/$projectSlug/subsubsection-task/': {
@@ -2513,11 +2607,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminEmailTemplatesTemplateKeyEditIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/_loggedInProjects/$projectSlug/tags/new/': {
+      id: '/_loggedInProjects/$projectSlug/tags/new/'
+      path: '/tags/new'
+      fullPath: '/$projectSlug/tags/new/'
+      preLoaderRoute: typeof LoggedInProjectsProjectSlugTagsNewIndexRouteImport
+      parentRoute: typeof LoggedInProjectsProjectSlugRoute
+    }
     '/_loggedInProjects/$projectSlug/surveys/$surveyId/': {
       id: '/_loggedInProjects/$projectSlug/surveys/$surveyId/'
       path: '/surveys/$surveyId'
       fullPath: '/$projectSlug/surveys/$surveyId/'
       preLoaderRoute: typeof LoggedInProjectsProjectSlugSurveysSurveyIdIndexRouteImport
+      parentRoute: typeof LoggedInProjectsProjectSlugRoute
+    }
+    '/_loggedInProjects/$projectSlug/survey-response-tags/new/': {
+      id: '/_loggedInProjects/$projectSlug/survey-response-tags/new/'
+      path: '/survey-response-tags/new'
+      fullPath: '/$projectSlug/survey-response-tags/new/'
+      preLoaderRoute: typeof LoggedInProjectsProjectSlugSurveyResponseTagsNewIndexRouteImport
       parentRoute: typeof LoggedInProjectsProjectSlugRoute
     }
     '/_loggedInProjects/$projectSlug/subsubsection-task/new/': {
@@ -2709,6 +2817,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoggedInProjectsProjectSlugUploadsUploadIdEditIndexRouteImport
       parentRoute: typeof LoggedInProjectsProjectSlugRoute
     }
+    '/_loggedInProjects/$projectSlug/tags/$tagId/edit/': {
+      id: '/_loggedInProjects/$projectSlug/tags/$tagId/edit/'
+      path: '/tags/$tagId/edit'
+      fullPath: '/$projectSlug/tags/$tagId/edit/'
+      preLoaderRoute: typeof LoggedInProjectsProjectSlugTagsTagIdEditIndexRouteImport
+      parentRoute: typeof LoggedInProjectsProjectSlugRoute
+    }
     '/_loggedInProjects/$projectSlug/surveys/$surveyId/responses/': {
       id: '/_loggedInProjects/$projectSlug/surveys/$surveyId/responses/'
       path: '/'
@@ -2721,6 +2836,13 @@ declare module '@tanstack/react-router' {
       path: '/surveys/$surveyId/analysis'
       fullPath: '/$projectSlug/surveys/$surveyId/analysis/'
       preLoaderRoute: typeof LoggedInProjectsProjectSlugSurveysSurveyIdAnalysisIndexRouteImport
+      parentRoute: typeof LoggedInProjectsProjectSlugRoute
+    }
+    '/_loggedInProjects/$projectSlug/survey-response-tags/$tagId/edit/': {
+      id: '/_loggedInProjects/$projectSlug/survey-response-tags/$tagId/edit/'
+      path: '/survey-response-tags/$tagId/edit'
+      fullPath: '/$projectSlug/survey-response-tags/$tagId/edit/'
+      preLoaderRoute: typeof LoggedInProjectsProjectSlugSurveyResponseTagsTagIdEditIndexRouteImport
       parentRoute: typeof LoggedInProjectsProjectSlugRoute
     }
     '/_loggedInProjects/$projectSlug/subsubsection-task/$subsubsectionTaskId/edit/': {
@@ -3072,7 +3194,9 @@ interface LoggedInProjectsProjectSlugRouteChildren {
   LoggedInProjectsProjectSlugSubsubsectionSpecialIndexRoute: typeof LoggedInProjectsProjectSlugSubsubsectionSpecialIndexRoute
   LoggedInProjectsProjectSlugSubsubsectionStatusIndexRoute: typeof LoggedInProjectsProjectSlugSubsubsectionStatusIndexRoute
   LoggedInProjectsProjectSlugSubsubsectionTaskIndexRoute: typeof LoggedInProjectsProjectSlugSubsubsectionTaskIndexRoute
+  LoggedInProjectsProjectSlugSurveyResponseTagsIndexRoute: typeof LoggedInProjectsProjectSlugSurveyResponseTagsIndexRoute
   LoggedInProjectsProjectSlugSurveysIndexRoute: typeof LoggedInProjectsProjectSlugSurveysIndexRoute
+  LoggedInProjectsProjectSlugTagsIndexRoute: typeof LoggedInProjectsProjectSlugTagsIndexRoute
   LoggedInProjectsProjectSlugUploadsIndexRoute: typeof LoggedInProjectsProjectSlugUploadsIndexRoute
   LoggedInProjectsProjectSlugSurveysSurveyIdResponsesRouteRoute: typeof LoggedInProjectsProjectSlugSurveysSurveyIdResponsesRouteRouteWithChildren
   LoggedInProjectsProjectSlugAbschnitteSubsectionSlugIndexRoute: typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugIndexRoute
@@ -3092,7 +3216,9 @@ interface LoggedInProjectsProjectSlugRouteChildren {
   LoggedInProjectsProjectSlugSubsubsectionSpecialNewIndexRoute: typeof LoggedInProjectsProjectSlugSubsubsectionSpecialNewIndexRoute
   LoggedInProjectsProjectSlugSubsubsectionStatusNewIndexRoute: typeof LoggedInProjectsProjectSlugSubsubsectionStatusNewIndexRoute
   LoggedInProjectsProjectSlugSubsubsectionTaskNewIndexRoute: typeof LoggedInProjectsProjectSlugSubsubsectionTaskNewIndexRoute
+  LoggedInProjectsProjectSlugSurveyResponseTagsNewIndexRoute: typeof LoggedInProjectsProjectSlugSurveyResponseTagsNewIndexRoute
   LoggedInProjectsProjectSlugSurveysSurveyIdIndexRoute: typeof LoggedInProjectsProjectSlugSurveysSurveyIdIndexRoute
+  LoggedInProjectsProjectSlugTagsNewIndexRoute: typeof LoggedInProjectsProjectSlugTagsNewIndexRoute
   LoggedInProjectsProjectSlugAbschnitteSubsectionSlugEditIndexRoute: typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugEditIndexRoute
   LoggedInProjectsProjectSlugAcquisitionAreaStatusAcquisitionAreaStatusIdEditIndexRoute: typeof LoggedInProjectsProjectSlugAcquisitionAreaStatusAcquisitionAreaStatusIdEditIndexRoute
   LoggedInProjectsProjectSlugContactsContactIdEditIndexRoute: typeof LoggedInProjectsProjectSlugContactsContactIdEditIndexRoute
@@ -3105,7 +3231,9 @@ interface LoggedInProjectsProjectSlugRouteChildren {
   LoggedInProjectsProjectSlugSubsubsectionSpecialSubsubsectionSpecialIdEditIndexRoute: typeof LoggedInProjectsProjectSlugSubsubsectionSpecialSubsubsectionSpecialIdEditIndexRoute
   LoggedInProjectsProjectSlugSubsubsectionStatusSubsubsectionStatusIdEditIndexRoute: typeof LoggedInProjectsProjectSlugSubsubsectionStatusSubsubsectionStatusIdEditIndexRoute
   LoggedInProjectsProjectSlugSubsubsectionTaskSubsubsectionTaskIdEditIndexRoute: typeof LoggedInProjectsProjectSlugSubsubsectionTaskSubsubsectionTaskIdEditIndexRoute
+  LoggedInProjectsProjectSlugSurveyResponseTagsTagIdEditIndexRoute: typeof LoggedInProjectsProjectSlugSurveyResponseTagsTagIdEditIndexRoute
   LoggedInProjectsProjectSlugSurveysSurveyIdAnalysisIndexRoute: typeof LoggedInProjectsProjectSlugSurveysSurveyIdAnalysisIndexRoute
+  LoggedInProjectsProjectSlugTagsTagIdEditIndexRoute: typeof LoggedInProjectsProjectSlugTagsTagIdEditIndexRoute
   LoggedInProjectsProjectSlugUploadsUploadIdEditIndexRoute: typeof LoggedInProjectsProjectSlugUploadsUploadIdEditIndexRoute
   LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardRouteRoute: typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardRouteRouteWithChildren
   LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungNewIndexRoute: typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungNewIndexRoute
@@ -3148,8 +3276,12 @@ const LoggedInProjectsProjectSlugRouteChildren: LoggedInProjectsProjectSlugRoute
       LoggedInProjectsProjectSlugSubsubsectionStatusIndexRoute,
     LoggedInProjectsProjectSlugSubsubsectionTaskIndexRoute:
       LoggedInProjectsProjectSlugSubsubsectionTaskIndexRoute,
+    LoggedInProjectsProjectSlugSurveyResponseTagsIndexRoute:
+      LoggedInProjectsProjectSlugSurveyResponseTagsIndexRoute,
     LoggedInProjectsProjectSlugSurveysIndexRoute:
       LoggedInProjectsProjectSlugSurveysIndexRoute,
+    LoggedInProjectsProjectSlugTagsIndexRoute:
+      LoggedInProjectsProjectSlugTagsIndexRoute,
     LoggedInProjectsProjectSlugUploadsIndexRoute:
       LoggedInProjectsProjectSlugUploadsIndexRoute,
     LoggedInProjectsProjectSlugSurveysSurveyIdResponsesRouteRoute:
@@ -3188,8 +3320,12 @@ const LoggedInProjectsProjectSlugRouteChildren: LoggedInProjectsProjectSlugRoute
       LoggedInProjectsProjectSlugSubsubsectionStatusNewIndexRoute,
     LoggedInProjectsProjectSlugSubsubsectionTaskNewIndexRoute:
       LoggedInProjectsProjectSlugSubsubsectionTaskNewIndexRoute,
+    LoggedInProjectsProjectSlugSurveyResponseTagsNewIndexRoute:
+      LoggedInProjectsProjectSlugSurveyResponseTagsNewIndexRoute,
     LoggedInProjectsProjectSlugSurveysSurveyIdIndexRoute:
       LoggedInProjectsProjectSlugSurveysSurveyIdIndexRoute,
+    LoggedInProjectsProjectSlugTagsNewIndexRoute:
+      LoggedInProjectsProjectSlugTagsNewIndexRoute,
     LoggedInProjectsProjectSlugAbschnitteSubsectionSlugEditIndexRoute:
       LoggedInProjectsProjectSlugAbschnitteSubsectionSlugEditIndexRoute,
     LoggedInProjectsProjectSlugAcquisitionAreaStatusAcquisitionAreaStatusIdEditIndexRoute:
@@ -3214,8 +3350,12 @@ const LoggedInProjectsProjectSlugRouteChildren: LoggedInProjectsProjectSlugRoute
       LoggedInProjectsProjectSlugSubsubsectionStatusSubsubsectionStatusIdEditIndexRoute,
     LoggedInProjectsProjectSlugSubsubsectionTaskSubsubsectionTaskIdEditIndexRoute:
       LoggedInProjectsProjectSlugSubsubsectionTaskSubsubsectionTaskIdEditIndexRoute,
+    LoggedInProjectsProjectSlugSurveyResponseTagsTagIdEditIndexRoute:
+      LoggedInProjectsProjectSlugSurveyResponseTagsTagIdEditIndexRoute,
     LoggedInProjectsProjectSlugSurveysSurveyIdAnalysisIndexRoute:
       LoggedInProjectsProjectSlugSurveysSurveyIdAnalysisIndexRoute,
+    LoggedInProjectsProjectSlugTagsTagIdEditIndexRoute:
+      LoggedInProjectsProjectSlugTagsTagIdEditIndexRoute,
     LoggedInProjectsProjectSlugUploadsUploadIdEditIndexRoute:
       LoggedInProjectsProjectSlugUploadsUploadIdEditIndexRoute,
     LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardRouteRoute:

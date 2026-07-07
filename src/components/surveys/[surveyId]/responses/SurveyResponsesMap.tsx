@@ -16,11 +16,11 @@ import {
   adminLookupRowsWithCountQueryOptions,
   type OperatorWithSubsectionCount,
 } from "@/src/server/adminLookupTables/adminLookupTablesQueryOptions"
-import {
-  surveyResponseTopicsQueryOptions,
-  type SurveyResponseTopicsResult,
-} from "@/src/server/survey-response-topics/surveyResponseTopicsQueryOptions"
 import { feedbackSurveyResponsesQueryOptions } from "@/src/server/survey-responses/surveyResponsesQueryOptions"
+import {
+  surveyResponseTagsQueryOptions,
+  type SurveyResponseTagsResult,
+} from "@/src/server/surveyResponseTags/surveyResponseTagsQueryOptions"
 import type { Survey } from "@/src/server/surveys/types"
 
 type Props = {
@@ -55,10 +55,10 @@ export function SurveyResponsesMap({ projectSlug, survey, tabs }: Props) {
   )
   const operators = (operatorsData?.rows ?? []) as OperatorWithSubsectionCount[]
   const { data: topicsData, refetch: refetchTopics } = useQuery(
-    surveyResponseTopicsQueryOptions({ projectSlug }),
+    surveyResponseTagsQueryOptions({ projectSlug }),
   )
-  const topics = (topicsData?.surveyResponseTopics ??
-    []) as SurveyResponseTopicsResult["surveyResponseTopics"]
+  const topics = (topicsData?.surveyResponseTags ??
+    []) as SurveyResponseTagsResult["surveyResponseTags"]
 
   const refetchResponsesAndTopics = async () => {
     await refetchTopics()

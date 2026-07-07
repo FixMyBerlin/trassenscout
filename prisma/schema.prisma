@@ -196,7 +196,7 @@ model Project {
   evaluationsEnabled               Boolean                           @default(false)
   alkisStateKey                    StateKeyEnum                      @default(DISABLED)
   //
-  surveyResponseTopics             SurveyResponseTopic[]
+  surveyResponseTags               SurveyResponseTag[]
   subsections                      Subsection[]
   subsectionStatuses               SubsectionStatus[]
   contacts                         Contact[]
@@ -215,7 +215,7 @@ model Project {
   LogEntry                         LogEntry[]
   SystemLogEntry                   SystemLogEntry[]
   projectRecords                   ProjectRecord[]
-  projectRecordTopics              ProjectRecordTopic[]
+  tags                             Tag[]
   projectRecordTemplates           ProjectRecordTemplate[]
   ProjectRecordEmail               ProjectRecordEmail[]
   acquisitionAreaStatuses          AcquisitionAreaStatus[]
@@ -277,6 +277,7 @@ model Contact {
 
   project   Project    @relation(fields: [projectId], references: [id])
   projectId Int
+  tags      Tag[]      @relation("TagToContact")
   LogEntry  LogEntry[]
 
   @@unique([projectId, email])
@@ -647,6 +648,7 @@ model Upload {
   supportDocument      SupportDocument?    @relation(fields: [supportDocumentId], references: [id])
   supportDocumentId    Int?                @unique
   projectRecords       ProjectRecord[]
+  tags                 Tag[]               @relation("TagToUpload")
   LogEntry             LogEntry[]
   publicDeleteToken    String? // Set only for uploads created via the unauthenticated public survey flow.
   //
@@ -713,7 +715,7 @@ model SurveyResponse {
   operatorId             Int?
   operator               Operator?                @relation(fields: [operatorId], references: [id])
   //
-  surveyResponseTopics   SurveyResponseTopic[]
+  surveyResponseTags     SurveyResponseTag[]      @relation("SurveyResponseToSurveyResponseTag")
   surveyResponseComments SurveyResponseComment[]
   LogEntry               LogEntry[]
   uploads                Upload[]
@@ -730,15 +732,19 @@ enum SurveyResponseStateEnum {
   SUBMITTED
 }
 
-model SurveyResponseTopic {
+model SurveyResponseTag {
   id              Int              @id @default(autoincrement())
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
   title           String
+  archivedAt      DateTime?
   //
   project         Project          @relation(fields: [projectId], references: [id])
   projectId       Int
-  surveyResponses SurveyResponse[]
+  surveyResponses SurveyResponse[] @relation("SurveyResponseToSurveyResponseTag")
 
   @@unique([title, projectId])
+  @@index([projectId])
 }
 
 model SurveyResponseComment {
@@ -899,7 +905,7 @@ model ProjectRecord {
   projectRecordEmail         ProjectRecordEmail?       @relation(fields: [projectRecordEmailId], references: [id], onDelete: SetNull)
   projectRecordEmailId       Int?
   //
-  projectRecordTopics        ProjectRecordTopic[]
+  tags                       Tag[]                     @relation("TagToProjectRecord")
   LogEntry                   LogEntry[]
   uploads                    Upload[]
   //
@@ -942,28 +948,34 @@ enum ProjectRecordReviewState {
   APPROVED // User-created project records that are automatically approved (no review needed)
 }
 
-model ProjectRecordTopic {
+model Tag {
   id                     Int                     @id @default(autoincrement())
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
   title                  String
+  archivedAt             DateTime?
   //
   project                Project                 @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId              Int
-  projectRecords         ProjectRecord[]
-  projectRecordTemplates ProjectRecordTemplate[]
+  projectRecords         ProjectRecord[]         @relation("TagToProjectRecord")
+  projectRecordTemplates ProjectRecordTemplate[] @relation("TagToProjectRecordTemplate")
+  uploads                Upload[]                @relation("TagToUpload")
+  contacts               Contact[]               @relation("TagToContact")
 
   @@unique([title, projectId])
+  @@index([projectId])
 }
 
 model ProjectRecordTemplate {
-  id                  Int                  @id @default(autoincrement())
-  createdAt           DateTime             @default(now())
-  updatedAt           DateTime             @updatedAt
-  templateTitle       String
-  entryTitle          String
-  body                String?
-  purpose             String?
-  projects            Project[]
-  projectRecordTopics ProjectRecordTopic[]
+  id            Int       @id @default(autoincrement())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  templateTitle String
+  entryTitle    String
+  body          String?
+  purpose       String?
+  projects      Project[]
+  tags          Tag[]     @relation("TagToProjectRecordTemplate")
 }
 
 model Meta {

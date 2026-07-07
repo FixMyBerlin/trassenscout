@@ -73,8 +73,7 @@ export const AdminEditProjectRecordForm = ({ projectRecordId }: Props) => {
             id: projectRecord.id,
             date: values.date === "" ? "" : values.date,
             projectSlug,
-            projectRecordTopics:
-              values.projectRecordTopics === true ? false : values.projectRecordTopics,
+            tags: values.tags === true ? false : values.tags,
             uploads: values.uploads === true ? false : values.uploads,
             subsubsections: values.subsubsections === true ? false : values.subsubsections,
             acquisitionAreas: values.acquisitionAreas === true ? false : values.acquisitionAreas,

@@ -15,6 +15,8 @@ import {
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { formatFileSize } from "@/src/components/core/utils/formatFileSize"
+import { getM2MInitialValues } from "@/src/components/project-records/utils/getM2MInitialValues"
+import { TagsFormSection } from "@/src/components/tags/TagsFormSection"
 import { acquisitionAreasQueryOptions } from "@/src/server/acquisitionAreas/acquisitionAreasQueryOptions"
 import type { AcquisitionAreasList } from "@/src/server/acquisitionAreas/types"
 import { projectRecordQueryOptions } from "@/src/server/projectRecords/projectRecordsQueryOptions"
@@ -125,6 +127,7 @@ const createUploadFormValues = (upload: UploadWithRelations) => ({
   summary: upload.summary,
   subsubsections: upload.subsubsections?.map((s) => String(s.id)) ?? [],
   acquisitionAreas: upload.acquisitionAreas?.map((a) => String(a.id)) ?? [],
+  tags: getM2MInitialValues(upload.tags),
   projectRecordEmailId: upload.projectRecordEmailId,
   mimeType: upload.mimeType,
   latitude: upload.latitude,
@@ -176,6 +179,7 @@ export const EditUploadForm = ({
             ...(value as unknown as z.infer<typeof UploadSchema>),
             id: upload.id,
             projectSlug,
+            tags: (value.tags as string[] | boolean) === true ? false : value.tags,
           },
         })
 
@@ -312,6 +316,7 @@ export const EditUploadForm = ({
             landAcquisitionModuleEnabled={upload.project?.landAcquisitionModuleEnabled ?? false}
             subsubsections={subsubsectionsData}
           />
+          <TagsFormSection projectSlug={projectSlug} showManageLink />
           {upload.id && (
             <SummaryField
               uploadId={upload.id}

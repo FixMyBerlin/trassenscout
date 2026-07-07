@@ -19,6 +19,7 @@ const m2mFormFields = {
   acquisitionAreas: z
     .union([z.undefined(), z.boolean(), z.array(z.coerce.number())])
     .transform((v) => v || []),
+  tags: z.union([z.undefined(), z.boolean(), z.array(z.coerce.number())]).transform((v) => v || []),
 }
 
 export const UploadSchema = z.object({
@@ -36,6 +37,7 @@ export const UploadSchema = z.object({
   projectRecords: z.union([z.literal(false), z.array(z.coerce.number())]).optional(),
   subsubsections: z.union([z.literal(false), z.array(z.coerce.number())]).optional(),
   acquisitionAreas: z.union([z.literal(false), z.array(z.coerce.number())]).optional(),
+  tags: z.union([z.literal(false), z.array(z.coerce.number())]).optional(),
 })
 
 export const uploadFormDefaultValues = {
@@ -53,10 +55,12 @@ export const uploadFormDefaultValues = {
   projectRecords: [] as number[],
   subsubsections: [] as string[],
   acquisitionAreas: [] as string[],
+  tags: [] as string[],
 }
 
 export const UploadFormSchema = UploadSchema.omit({
   projectRecords: true,
   subsubsections: true,
   acquisitionAreas: true,
+  tags: true,
 }).extend(m2mFormFields)

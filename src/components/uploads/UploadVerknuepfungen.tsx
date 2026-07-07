@@ -2,6 +2,7 @@ import { Link } from "@/src/components/core/components/links/Link"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { formatBerlinTime } from "@/src/components/core/utils/formatBerlinTime"
 import { useProjectRecordModal } from "@/src/components/project-records/ProjectRecordModalHost"
+import { ProjectRecordTagsList } from "@/src/components/project-records/ProjectRecordTagsList"
 
 type AcquisitionAreaLink = {
   id: number
@@ -20,6 +21,7 @@ type Props = {
   projectRecords: { id: number; title: string; date: Date | null }[] | null
   projectRecordEmail: { createdAt: Date } | null
   surveyResponse: { id: number; surveySession: { survey: { id: number; slug: string } } } | null
+  tags?: { id: number; title: string }[]
   className?: string
   variant?: "default" | "aligned"
 }
@@ -32,6 +34,7 @@ export const UploadVerknuepfungen = ({
   projectRecords,
   projectRecordEmail,
   surveyResponse,
+  tags = [],
   className,
   variant = "default",
 }: Props) => {
@@ -40,13 +43,15 @@ export const UploadVerknuepfungen = ({
   const hasAcquisitionAreas = landAcquisitionModuleEnabled && acquisitionAreas.length > 0
   const hasProjectRecordEmail = projectRecordEmail !== null
   const hasSurveyResponse = surveyResponse !== null
+  const hasTags = tags.length > 0
   const projectRecordModal = useProjectRecordModal()
   const hasRelations =
     hasSubsubsection ||
     hasAcquisitionAreas ||
     hasProjectRecords ||
     hasProjectRecordEmail ||
-    hasSurveyResponse
+    hasSurveyResponse ||
+    hasTags
 
   const sortedAcquisitionAreas = hasAcquisitionAreas
     ? [...acquisitionAreas].sort((a, b) => {
@@ -141,6 +146,15 @@ export const UploadVerknuepfungen = ({
             <span className={sectionValueClassName}>
               {formatBerlinTime(projectRecordEmail!.createdAt, "dd.MM.yyyy, HH:mm")}
             </span>
+          </div>
+        )}
+
+        {hasTags && (
+          <div className={sectionClassName}>
+            <p className={sectionLabelClassName}>{tags.length === 1 ? "Tag:" : "Tags:"}</p>
+            <div className={sectionValueClassName}>
+              <ProjectRecordTagsList tags={tags} />
+            </div>
           </div>
         )}
       </section>
@@ -300,6 +314,12 @@ export const UploadVerknuepfungen = ({
             <li>
               <strong className="font-medium">E-Mail-Anhang: </strong>
               {formatBerlinTime(projectRecordEmail!.createdAt, "dd.MM.yyyy, HH:mm")}
+            </li>
+          )}
+          {hasTags && (
+            <li className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+              <strong className="font-medium">{tags.length === 1 ? "Tag: " : "Tags: "}</strong>
+              <ProjectRecordTagsList tags={tags} />
             </li>
           )}
         </ul>

@@ -4,12 +4,15 @@ import { type JSX, PropsWithoutRef, useState } from "react"
 import { twJoin } from "tailwind-merge"
 import { backendConfig as defaultBackendConfig } from "@/src/components/beteiligung/shared/backend-types"
 import { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
+import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
 import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { Link } from "@/src/components/core/components/links/Link"
 import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
+import { buildTagCheckboxItems } from "@/src/components/tags/buildTagCheckboxItems"
 import { Operator } from "@/src/prisma/generated/browser"
-import { createSurveyResponseTopicFn } from "@/src/server/survey-response-topics/surveyResponseTopics.functions"
 import { patchSurveyResponseFn } from "@/src/server/survey-responses/surveyResponses.functions"
+import { createSurveyResponseTagFn } from "@/src/server/surveyResponseTags/surveyResponseTags.functions"
 import type { EditableSurveyResponseListItemProps } from "./EditableSurveyResponseListItem"
 import { EditableSurveyResponseUploadsSection } from "./EditableSurveyResponseUploadsSection"
 import { LabeledInputRadioCheckbox } from "./form/LabeledInputRadioCheckbox"
@@ -38,8 +41,8 @@ export function EditableSurveyResponseForm({
 
   const { filter, setFilter } = useFilters()
 
-  const createSurveyResponseTopicMutation = useMutation({
-    mutationFn: createSurveyResponseTopicFn,
+  const createSurveyResponseTagMutation = useMutation({
+    mutationFn: createSurveyResponseTagFn,
   })
   const patchSurveyResponseMutation = useMutation({ mutationFn: patchSurveyResponseFn })
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
@@ -49,7 +52,7 @@ export function EditableSurveyResponseForm({
   )
   const [responseStatus, setResponseStatus] = useState(response.status)
   const [responseNote, setResponseNote] = useState(response.note)
-  const [responseTopics, setResponseTopics] = useState(response.surveyResponseTopics.map(String))
+  const [responseTopics, setResponseTopics] = useState(response.surveyResponseTags.map(String))
   const [newTopic, setNewTopic] = useState("")
   const surveySlug = response.surveySession.survey.slug as AllowedSurveySlugs
 
@@ -59,11 +62,7 @@ export function EditableSurveyResponseForm({
   const operatorsOptions = operators.map((operator: Operator) => {
     return { value: String(operator.id), label: operator.title }
   })
-  const topicsOptions = topics.length
-    ? topics.map((t) => {
-        return { value: String(t.id), label: t.title }
-      })
-    : []
+  const topicsOptions = buildTagCheckboxItems(topics, responseTopics)
 
   // Base the patch payload on the local (already-edited) state, not on the `response`
   // prop. The prop only refreshes after refetchResponsesAndTopics() settles, so reading
@@ -131,7 +130,7 @@ export function EditableSurveyResponseForm({
           console.error(error)
         }
         break
-      case "surveyResponseTopics":
+      case "surveyResponseTags":
         const updatedTopics = checked
           ? [...responseTopics, value]
           : responseTopics.filter((item: string) => item !== value)
@@ -140,7 +139,7 @@ export function EditableSurveyResponseForm({
           await patchSurveyResponseMutation.mutateAsync({
             data: {
               ...surveyResponseUpdateObject,
-              surveyResponseTopics: updatedTopics.map((item) => Number(item)),
+              surveyResponseTags: updatedTopics.map((item) => Number(item)),
             },
           })
         } catch (error: any) {
@@ -175,7 +174,7 @@ export function EditableSurveyResponseForm({
     e.preventDefault()
     if (!newTopic.trim()) return
     try {
-      const createdOrFetched = await createSurveyResponseTopicMutation.mutateAsync({
+      const createdOrFetched = await createSurveyResponseTagMutation.mutateAsync({
         data: {
           title: newTopic.trim(),
           projectSlug,
@@ -184,7 +183,7 @@ export function EditableSurveyResponseForm({
       await patchSurveyResponseMutation.mutateAsync({
         data: {
           ...surveyResponseUpdateObject,
-          surveyResponseTopics: [...responseTopics.map((t) => Number(t)), createdOrFetched.id],
+          surveyResponseTags: [...responseTopics.map((t) => Number(t)), createdOrFetched.id],
         },
       })
       await refetchResponsesAndTopics()
@@ -251,30 +250,44 @@ export function EditableSurveyResponseForm({
         </div>
         {/* TAGS */}
         <div className="flex flex-col items-start gap-4">
-          <form className="">
-            <FormElementWrapper label={labels.topics?.pl || defaultBackendConfig.labels.topics.pl}>
-              <div
-                // todo container query?
-                className={twJoin(
-                  showMap ? "md:grid-cols-3 lg:grid-cols-4" : "",
-                  "grid grid-cols-2 gap-1.5",
-                )}
+          <div className="flex w-full items-end gap-5">
+            <form className="grow">
+              <FormElementWrapper
+                label={labels.topics?.pl || defaultBackendConfig.labels.topics.pl}
               >
-                {topicsOptions.map((item) => (
-                  <LabeledInputRadioCheckbox
-                    type="checkbox"
-                    name="surveyResponseTopics"
-                    key={item.value}
-                    checked={responseTopics.includes(item.value)}
-                    onChange={handleStatusOperatorTopicsInputChange}
-                    value={item.value}
-                    label={item.label}
-                    disabled={!userCanEdit}
-                  />
-                ))}
-              </div>
-            </FormElementWrapper>
-          </form>
+                <div
+                  // todo container query?
+                  className={twJoin(
+                    showMap ? "md:grid-cols-3 lg:grid-cols-4" : "",
+                    "grid grid-cols-2 gap-1.5",
+                  )}
+                >
+                  {topicsOptions.map((item) => (
+                    <LabeledInputRadioCheckbox
+                      type="checkbox"
+                      name="surveyResponseTags"
+                      key={item.value}
+                      checked={responseTopics.includes(item.value)}
+                      onChange={handleStatusOperatorTopicsInputChange}
+                      value={item.value}
+                      label={item.label}
+                      disabled={!userCanEdit}
+                    />
+                  ))}
+                </div>
+              </FormElementWrapper>
+            </form>
+            <SuperAdminBox className="shrink-0">
+              <Link
+                to="/$projectSlug/survey-response-tags"
+                params={{ projectSlug }}
+                className="py-2"
+                blank
+              >
+                Tags verwalten…
+              </Link>
+            </SuperAdminBox>
+          </div>
           <IfUserCanEdit>
             <form onSubmit={handleNewTopicFormSubmit} className="min-w-[300px] space-y-2">
               <input

@@ -5,7 +5,7 @@ const lookupTableValues = [
   "acquisitionAreaStatuses",
   "networkHierarchies",
   "operators",
-  "projectRecordTopics",
+  "tags",
   "qualityLevels",
   "subsectionStatuses",
   "subsubsectionInfras",
@@ -13,7 +13,7 @@ const lookupTableValues = [
   "subsubsectionSpecials",
   "subsubsectionStatuses",
   "subsubsectionTasks",
-  "surveyResponseTopics",
+  "surveyResponseTags",
 ] as const
 
 export const LookupTableSchema = z.enum(lookupTableValues)

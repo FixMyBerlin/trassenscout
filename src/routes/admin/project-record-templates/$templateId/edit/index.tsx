@@ -3,7 +3,7 @@ import { PageAdminProjectRecordTemplatesTemplateIdEdit } from "@/src/components/
 import { adminTitleHead } from "@/src/routeHead"
 import {
   projectRecordTemplateQueryOptions,
-  projectRecordTopicsAdminQueryOptions,
+  tagsAdminQueryOptions,
 } from "@/src/server/projectRecordTemplates/projectRecordTemplatesQueryOptions"
 import { projectsAdminQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 
@@ -16,7 +16,7 @@ export const Route = createFileRoute("/admin/project-record-templates/$templateI
         projectRecordTemplateQueryOptions(Number(params.templateId)),
       ),
       context.queryClient.ensureQueryData(projectsAdminQueryOptions()),
-      context.queryClient.ensureQueryData(projectRecordTopicsAdminQueryOptions()),
+      context.queryClient.ensureQueryData(tagsAdminQueryOptions()),
     ]),
   component: PageAdminProjectRecordTemplatesTemplateIdEdit,
 })

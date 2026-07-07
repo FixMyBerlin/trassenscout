@@ -2,20 +2,21 @@ import { useLocation } from "@tanstack/react-router"
 import { useFormDirty } from "@/src/components/core/components/forms/hooks/useFormDirty"
 import { Link } from "@/src/components/core/components/links/Link"
 
-type Props = { to: string; className?: string; children: React.ReactNode }
+type Props = { to: string; className?: string; blank?: boolean; children: React.ReactNode }
 
 /**
  * A link that warns users about unsaved form changes before navigating.
  * Passes `from=<currentPath>` as route search for back navigation support.
  */
-export const LinkWithFormDirtyConfirm = ({ to, className, children }: Props) => {
+export const LinkWithFormDirtyConfirm = ({ to, className, blank, children }: Props) => {
   const isDirty = useFormDirty()
   const pathname = useLocation().pathname
 
   return (
     <Link
       to={to}
-      search={pathname ? { from: pathname } : undefined}
+      blank={blank}
+      search={!blank && pathname ? { from: pathname } : undefined}
       className={className}
       onClick={(event) => {
         if (isDirty) {

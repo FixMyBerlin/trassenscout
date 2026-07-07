@@ -36,14 +36,14 @@ const seedAdmin = async () => {
     db.project.findFirstOrThrow({ where: { slug: "rs23" } }),
   ])
 
-  const projectRecordTopics = await Promise.all([
-    db.projectRecordTopic.create({
+  const tags = await Promise.all([
+    db.tag.create({
       data: { title: "Terminplanung", projectId: project.id },
     }),
-    db.projectRecordTopic.create({
+    db.tag.create({
       data: { title: "Bürgerbeteiligung", projectId: project.id },
     }),
-    db.projectRecordTopic.create({
+    db.tag.create({
       data: { title: "Technische Planung", projectId: project.id },
     }),
   ])
@@ -139,7 +139,7 @@ const seedAdmin = async () => {
         body: template.body,
         purpose: template.purpose,
         projects: { connect: [{ id: project.id }] },
-        projectRecordTopics: { connect: [{ id: projectRecordTopics[template.topicIndex]!.id }] },
+        tags: { connect: [{ id: tags[template.topicIndex]!.id }] },
       },
     })
   }
@@ -263,8 +263,8 @@ const seedAdmin = async () => {
         projectRecordAuthorType: ProjectRecordType.SYSTEM,
         userId: adminUser.id,
         projectRecordEmailId: record.projectRecordEmailId,
-        projectRecordTopics: {
-          connect: [{ id: projectRecordTopics[record.topicIndex]!.id }],
+        tags: {
+          connect: [{ id: tags[record.topicIndex]!.id }],
         },
       },
     })

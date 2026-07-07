@@ -25,18 +25,18 @@ export async function fetchProjectContext({ projectId }: { projectId: number }) 
   })
   console.log(`Found ${subsubsections.length} subsubsections for project ${projectId}`)
 
-  const projectRecordTopics = await db.projectRecordTopic.findMany({
-    where: { projectId },
+  const tags = await db.tag.findMany({
+    where: { projectId, archivedAt: null },
     select: {
       id: true,
       title: true,
     },
   })
-  console.log(`Found ${projectRecordTopics.length} projectRecord topics for project ${projectId}`)
+  console.log(`Found ${tags.length} tags for project ${projectId}`)
 
   return {
     subsections,
     subsubsections,
-    projectRecordTopics,
+    tags,
   }
 }

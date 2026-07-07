@@ -9,13 +9,13 @@ export const SurveyResponseSchema = z.object({
   surveyPart: z.coerce.number(),
   note: z.string().nullish(),
   operatorId: z.coerce.number().nullish(),
-  surveyResponseTopics: z.union([z.literal(false), z.array(z.coerce.number())]).optional(),
+  surveyResponseTags: z.union([z.literal(false), z.array(z.coerce.number())]).optional(),
 })
 
 export const SurveyResponseFormSchema = SurveyResponseSchema.omit({
-  surveyResponseTopics: true,
+  surveyResponseTags: true,
 }).extend({
-  surveyResponseTopics: z
+  surveyResponseTags: z
     .union([z.undefined(), z.boolean(), z.array(z.coerce.number())])
     .transform((v) => v || []),
 })

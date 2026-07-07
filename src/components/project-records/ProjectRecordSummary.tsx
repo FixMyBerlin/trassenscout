@@ -136,16 +136,16 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
 
       <div className={sectionClassName}>
         <p className={sectionLabelClassName}>Tags:</p>
-        {projectRecord.projectRecordTopics.length ? (
+        {projectRecord.tags.length ? (
           <div className={`flex flex-wrap gap-x-3 gap-y-1 ${sectionValueClassName}`}>
-            {projectRecord.projectRecordTopics.map((topic) => (
-              <span className="whitespace-nowrap" key={topic.id}>
+            {projectRecord.tags.map((tag) => (
+              <span className="whitespace-nowrap" key={tag.id}>
                 <Link
                   to={createProjectRecordFilterUrl(projectSlug, {
-                    searchterm: topic.title,
+                    searchterm: tag.title,
                   })}
                 >
-                  #{topic.title}
+                  #{tag.title}
                 </Link>
               </span>
             ))}

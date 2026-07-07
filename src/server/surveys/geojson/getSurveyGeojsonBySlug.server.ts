@@ -64,7 +64,7 @@ export async function getSurveyGeojsonBySlug({
               surveyPart: true,
               surveySessionId: true,
               status: true,
-              surveyResponseTopics: { select: { title: true } },
+              surveyResponseTags: { select: { title: true } },
               note: true,
             },
           },
@@ -115,7 +115,7 @@ export async function getSurveyGeojsonBySlug({
             text: rawData[25] as string,
             note: response.note,
             status: response.status,
-            topics: response.surveyResponseTopics.map((t) => t.title),
+            topics: response.surveyResponseTags.map((t) => t.title),
           } satisfies SurveyResponseRow
         })
         .filter(Boolean)

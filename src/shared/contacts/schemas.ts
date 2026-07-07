@@ -1,6 +1,10 @@
 import { z } from "zod"
 import { ProjectSlugRequiredSchema } from "@/src/shared/authorization/projectSlugSchema"
 
+const m2mFormFields = {
+  tags: z.union([z.undefined(), z.boolean(), z.array(z.coerce.number())]).transform((v) => v || []),
+}
+
 export const ContactSchema = z.object({
   lastName: z.string().min(2, { error: "Pflichtfeld. Mindestens 2 Zeichen." }),
   firstName: z.string().nullish(),
@@ -8,6 +12,7 @@ export const ContactSchema = z.object({
   note: z.string().nullish(),
   phone: z.string().nullish(),
   role: z.string().nullish(),
+  tags: z.union([z.literal(false), z.array(z.coerce.number())]).optional(),
 })
 
 export const contactFormDefaultValues: z.infer<typeof ContactSchema> = {
@@ -17,6 +22,7 @@ export const contactFormDefaultValues: z.infer<typeof ContactSchema> = {
   note: null,
   phone: null,
   role: null,
+  tags: [],
 }
 
 export const ContactTableFormSchema = z.object({
@@ -31,11 +37,15 @@ export const GetContactSchema = ProjectSlugRequiredSchema.extend({
   id: z.number(),
 })
 
-export const CreateContactSchema = ProjectSlugRequiredSchema.extend(ContactSchema.shape)
+export const CreateContactSchema = ProjectSlugRequiredSchema.extend({
+  ...ContactSchema.omit({ tags: true }).shape,
+  ...m2mFormFields,
+})
 
 export const UpdateContactSchema = ProjectSlugRequiredSchema.extend({
-  ...ContactSchema.shape,
+  ...ContactSchema.omit({ tags: true }).shape,
   id: z.number(),
+  ...m2mFormFields,
 })
 
 export const DeleteContactSchema = ProjectSlugRequiredSchema.extend({ id: z.number() })

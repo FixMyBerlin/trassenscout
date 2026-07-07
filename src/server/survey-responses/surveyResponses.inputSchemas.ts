@@ -20,9 +20,7 @@ export const PatchSurveyResponseSchema = GetSurveyResponseSchema.extend(
   SurveyResponseSchema.omit({ data: true, surveySessionId: true, surveyPart: true }).partial()
     .shape,
 ).extend({
-  surveyResponseTopics: z
-    .union([z.undefined(), z.boolean(), z.array(z.coerce.number())])
-    .optional(),
+  surveyResponseTags: z.union([z.undefined(), z.boolean(), z.array(z.coerce.number())]).optional(),
 })
 export const GetCreatedSurveyResponsesSchema = AllowedSurveySlugsSchema
 export const GetTestSurveyResponsesSchema = AllowedSurveySlugsSchema

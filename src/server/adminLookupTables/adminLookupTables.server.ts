@@ -2,8 +2,10 @@ import { z } from "zod"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
-import { ProjectRecordTopicSchema } from "@/src/server/projectRecordTopics/schemas"
-import { SurveyResponseTopicSchema } from "@/src/server/survey-response-topics/schemas"
+import { SurveyResponseTagSchema } from "@/src/server/surveyResponseTags/schemas"
+import { deleteSurveyResponseTag } from "@/src/server/surveyResponseTags/surveyResponseTags.server"
+import { TagSchema } from "@/src/server/tags/schemas"
+import { deleteTag } from "@/src/server/tags/tags.server"
 import { AcquisitionAreaStatus } from "@/src/shared/acquisitionAreaStatuses/schemas"
 import { NetworkHierarchySchema } from "@/src/shared/networkHierarchy/schemas"
 import { OperatorSchema } from "@/src/shared/operators/schemas"
@@ -34,8 +36,8 @@ function parseLookupData(table: LookupTable, data: unknown) {
       return NetworkHierarchySchema.omit({ projectId: true }).parse(data)
     case "operators":
       return OperatorSchema.omit({ projectId: true }).parse(data)
-    case "projectRecordTopics":
-      return ProjectRecordTopicSchema.omit({ projectId: true }).parse(data)
+    case "tags":
+      return TagSchema.omit({ projectId: true }).parse(data)
     case "qualityLevels":
       return QualityLevelSchema.omit({ projectId: true }).parse(data)
     case "subsectionStatuses":
@@ -50,8 +52,8 @@ function parseLookupData(table: LookupTable, data: unknown) {
       return SubsubsectionStatusSchema.omit({ projectId: true }).parse(data)
     case "subsubsectionTasks":
       return SubsubsectionTask.omit({ projectId: true }).parse(data)
-    case "surveyResponseTopics":
-      return SurveyResponseTopicSchema.omit({ projectId: true }).parse(data)
+    case "surveyResponseTags":
+      return SurveyResponseTagSchema.omit({ projectId: true }).parse(data)
   }
 }
 
@@ -103,8 +105,11 @@ export async function getLookupRows(headers: Headers, input: z.infer<typeof GetL
       return db.networkHierarchy.findMany({ orderBy: { slug: "asc" }, where })
     case "operators":
       return db.operator.findMany({ orderBy: { order: "asc" }, where })
-    case "projectRecordTopics":
-      return db.projectRecordTopic.findMany({ orderBy: { title: "asc" }, where })
+    case "tags":
+      return db.tag.findMany({
+        orderBy: { title: "asc" },
+        where: { ...where, archivedAt: null },
+      })
     case "qualityLevels":
       return db.qualityLevel.findMany({ orderBy: { slug: "asc" }, where })
     case "subsectionStatuses":
@@ -119,8 +124,11 @@ export async function getLookupRows(headers: Headers, input: z.infer<typeof GetL
       return db.subsubsectionStatus.findMany({ orderBy: { slug: "asc" }, where })
     case "subsubsectionTasks":
       return db.subsubsectionTask.findMany({ orderBy: { slug: "asc" }, where })
-    case "surveyResponseTopics":
-      return db.surveyResponseTopic.findMany({ orderBy: { title: "asc" }, where })
+    case "surveyResponseTags":
+      return db.surveyResponseTag.findMany({
+        orderBy: { title: "asc" },
+        where: { ...where, archivedAt: null },
+      })
   }
 }
 
@@ -135,8 +143,8 @@ export async function getLookupRow(headers: Headers, input: z.infer<typeof GetLo
       return db.networkHierarchy.findFirstOrThrow({ where })
     case "operators":
       return db.operator.findFirstOrThrow({ where })
-    case "projectRecordTopics":
-      return db.projectRecordTopic.findFirstOrThrow({ where })
+    case "tags":
+      return db.tag.findFirstOrThrow({ where })
     case "qualityLevels":
       return db.qualityLevel.findFirstOrThrow({ where })
     case "subsectionStatuses":
@@ -151,8 +159,8 @@ export async function getLookupRow(headers: Headers, input: z.infer<typeof GetLo
       return db.subsubsectionStatus.findFirstOrThrow({ where })
     case "subsubsectionTasks":
       return db.subsubsectionTask.findFirstOrThrow({ where })
-    case "surveyResponseTopics":
-      return db.surveyResponseTopic.findFirstOrThrow({ where })
+    case "surveyResponseTags":
+      return db.surveyResponseTag.findFirstOrThrow({ where })
   }
 }
 
@@ -170,8 +178,17 @@ export async function createLookupRow(
       return db.networkHierarchy.create({ data: data as any })
     case "operators":
       return db.operator.create({ data: data as any })
-    case "projectRecordTopics":
-      return db.projectRecordTopic.create({ data: data as any })
+    case "tags":
+      return db.tag.upsert({
+        where: {
+          title_projectId: {
+            title: (data as { title: string }).title,
+            projectId,
+          },
+        },
+        update: {},
+        create: data as { title: string; projectId: number },
+      })
     case "qualityLevels":
       return db.qualityLevel.create({ data: data as any })
     case "subsectionStatuses":
@@ -186,8 +203,17 @@ export async function createLookupRow(
       return db.subsubsectionStatus.create({ data: data as any })
     case "subsubsectionTasks":
       return db.subsubsectionTask.create({ data: data as any })
-    case "surveyResponseTopics":
-      return db.surveyResponseTopic.create({ data: data as any })
+    case "surveyResponseTags":
+      return db.surveyResponseTag.upsert({
+        where: {
+          title_projectId: {
+            title: (data as { title: string }).title,
+            projectId,
+          },
+        },
+        update: {},
+        create: data as { title: string; projectId: number },
+      })
   }
 }
 
@@ -206,8 +232,8 @@ export async function updateLookupRow(
       return db.networkHierarchy.updateMany({ where, data: data as any })
     case "operators":
       return db.operator.updateMany({ where, data: data as any })
-    case "projectRecordTopics":
-      return db.projectRecordTopic.updateMany({ where, data: data as any })
+    case "tags":
+      return db.tag.updateMany({ where, data: data as any })
     case "qualityLevels":
       return db.qualityLevel.updateMany({ where, data: data as any })
     case "subsectionStatuses":
@@ -222,8 +248,8 @@ export async function updateLookupRow(
       return db.subsubsectionStatus.updateMany({ where, data: data as any })
     case "subsubsectionTasks":
       return db.subsubsectionTask.updateMany({ where, data: data as any })
-    case "surveyResponseTopics":
-      return db.surveyResponseTopic.updateMany({ where, data: data as any })
+    case "surveyResponseTags":
+      return db.surveyResponseTag.updateMany({ where, data: data as any })
   }
 }
 
@@ -241,8 +267,8 @@ export async function deleteLookupRow(
       return db.networkHierarchy.deleteMany({ where })
     case "operators":
       return db.operator.deleteMany({ where })
-    case "projectRecordTopics":
-      return db.projectRecordTopic.deleteMany({ where })
+    case "tags":
+      return deleteTag(headers, { projectSlug: input.projectSlug, id: input.id })
     case "qualityLevels":
       return db.qualityLevel.deleteMany({ where })
     case "subsectionStatuses":
@@ -257,7 +283,10 @@ export async function deleteLookupRow(
       return db.subsubsectionStatus.deleteMany({ where })
     case "subsubsectionTasks":
       return db.subsubsectionTask.deleteMany({ where })
-    case "surveyResponseTopics":
-      return db.surveyResponseTopic.deleteMany({ where })
+    case "surveyResponseTags":
+      return deleteSurveyResponseTag(headers, {
+        projectSlug: input.projectSlug,
+        id: input.id,
+      })
   }
 }
