@@ -18,9 +18,10 @@ type Props = {
     update: (body: string) => void
     remove: () => void
   }
+  editModalZIndex?: number
 }
 
-export const CommentField = ({ comment, commentLabel, mutateComment }: Props) => {
+export const CommentField = ({ comment, commentLabel, mutateComment, editModalZIndex }: Props) => {
   const { author } = comment
   return (
     <div className="rounded-lg border border-gray-300 bg-blue-50 p-3 text-gray-700">
@@ -47,6 +48,7 @@ export const CommentField = ({ comment, commentLabel, mutateComment }: Props) =>
             comment={comment}
             commentLabel={commentLabel}
             mutateComment={mutateComment}
+            zIndex={editModalZIndex}
           />
         </IfUserCanEdit>
       </div>
