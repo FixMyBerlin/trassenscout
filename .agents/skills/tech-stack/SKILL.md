@@ -45,6 +45,7 @@ Prefer installed skill names when present; otherwise fetch from git.
 | URL state (TanStack Router apps)          | `tanstack-start-conventions` | `params-search-ui-vs-api.md`                                                                                                   |
 | URL state (Next.js / legacy)              | `nuqs`                       | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/nuqs>                                                             |
 | Client global state                       | `zustand-state-management`   | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/zustand-state-management>                                         |
+| Prisma schema naming, migrations          | `prisma`                     | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/prisma>                                                           |
 | E2E / Playwright                          | `playwright-skill`           | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/playwright-skill>                                                 |
 | Next → Start migration                    | `tanstack-start-migration`   | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/tanstack-start-migration>                                         |
 
@@ -123,6 +124,7 @@ Component typing, Compiler, oxlint React rules, and useEffect discipline: skill 
 | High-frequency URL updates          | `@tanstack/react-pacer` — see <https://tanstack.com/pacer/latest>                              |
 | Global client state                 | Zustand (tkdodo patterns) — skill `zustand-state-management`                                   |
 | Local UI state                      | `useState`                                                                                     |
+| Prisma schema / migrations          | skill `prisma` — naming, relation fields, migrate workflows                                    |
 
 Loader + Query integration: [router-and-query.md](https://github.com/FixMyBerlin/fixmyskills/blob/main/skills/tanstack-start-conventions/references/router-and-query.md).
 
