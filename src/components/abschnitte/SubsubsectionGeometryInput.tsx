@@ -26,9 +26,11 @@ export const SubsubsectionGeometryInput = ({
   })
   const { data: subsections = [] } = useQuery(subsectionsQueryOptions({ projectSlug }))
   const { data: subsubsections = [] } = useQuery({
+    // No non-null assertion: the options object is built on every render, also
+    // while the subsection query above is still loading (`enabled` guards the fetch)
     ...subsubsectionsQueryOptions({
       projectSlug,
-      subsectionId: subsection!.id,
+      subsectionId: subsection?.id,
     }),
     enabled: Boolean(subsection?.id),
   })
