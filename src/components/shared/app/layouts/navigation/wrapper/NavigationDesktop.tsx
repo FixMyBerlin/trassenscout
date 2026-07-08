@@ -3,12 +3,14 @@ import { Link } from "@/src/components/core/components/links/Link"
 import { NavigationGeneralLogo } from "../NavigationLoggedOut/TrassenscoutLogo"
 import { NavigationUser } from "../NavigationUser/NavigationUser"
 import { NavigationUserLoggedOut } from "../NavigationUser/NavigationUserLoggedOut"
+import { NavigationUserPublic } from "../NavigationUser/NavigationUserPublic"
+import type { NavigationUserVariant } from "../types"
 
 type Props = {
   homeLink: string
   homeLinkText: string
   children?: React.ReactNode
-  userVariant?: "auto" | "loggedOut"
+  userVariant?: NavigationUserVariant
 }
 
 export const NavigationDesktop = ({
@@ -38,7 +40,13 @@ export const NavigationDesktop = ({
         {children}
       </div>
       <div className="flex items-center">
-        {userVariant === "loggedOut" ? <NavigationUserLoggedOut /> : <NavigationUser />}
+        {userVariant === "loggedOut" ? (
+          <NavigationUserLoggedOut />
+        ) : userVariant === "public" ? (
+          <NavigationUserPublic />
+        ) : (
+          <NavigationUser />
+        )}
       </div>
     </div>
   )

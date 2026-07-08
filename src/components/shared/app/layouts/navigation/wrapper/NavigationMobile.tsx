@@ -9,13 +9,15 @@ import { shouldHighlight, useMenuItems } from "../NavigationLoggedInProject/useM
 import { NavigationGeneralLogo } from "../NavigationLoggedOut/TrassenscoutLogo"
 import { NavigationUser } from "../NavigationUser/NavigationUser"
 import { NavigationUserLoggedOut } from "../NavigationUser/NavigationUserLoggedOut"
+import { NavigationUserPublic } from "../NavigationUser/NavigationUserPublic"
+import type { NavigationUserVariant } from "../types"
 
 type Props = {
   homeLink: string
   homeLinkText: string
   menuItems?: ReturnType<typeof useMenuItems>
   projects?: ProjectsForCurrentUser
-  userVariant?: "auto" | "loggedOut"
+  userVariant?: NavigationUserVariant
 }
 
 export const NavigationMobile = ({
@@ -35,7 +37,13 @@ export const NavigationMobile = ({
             <div className="absolute inset-y-0 right-0 flex items-center space-x-2">
               {projects && <ProjectsSwitch projects={projects} />}
 
-              {userVariant === "loggedOut" ? <NavigationUserLoggedOut /> : <NavigationUser />}
+              {userVariant === "loggedOut" ? (
+                <NavigationUserLoggedOut />
+              ) : userVariant === "public" ? (
+                <NavigationUserPublic />
+              ) : (
+                <NavigationUser />
+              )}
 
               {Boolean(menuItems?.length) && (
                 <DisclosureButton className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:ring-2 focus:ring-white focus:outline-hidden focus:ring-inset">

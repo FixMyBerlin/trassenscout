@@ -1,4 +1,5 @@
 import { queryOptions } from "@tanstack/react-query"
+import { getOptionalCurrentUserFn } from "./publicCurrentUser.functions"
 import {
   getCurrentUserFn,
   getUsersAdminFn,
@@ -10,6 +11,13 @@ export function currentUserQueryOptions() {
   return queryOptions({
     queryKey: ["currentUser"],
     queryFn: () => getCurrentUserFn(),
+  })
+}
+
+export function optionalCurrentUserQueryOptions() {
+  return queryOptions({
+    queryKey: ["currentUser", "optional"],
+    queryFn: () => getOptionalCurrentUserFn(),
   })
 }
 export function usersAdminQueryOptions() {

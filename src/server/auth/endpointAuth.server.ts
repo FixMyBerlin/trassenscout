@@ -18,6 +18,7 @@ type ProjectMemberOpts = {
  * The first statement in each boundary function must call exactly one of these methods.
  */
 export const endpointAuth = {
+  optionalSession: (headers: Headers) => getAppSession(headers),
   /** Require a logged-in user. Use in `*.server.ts` and API handlers; throws `AuthorizationError`. */
   session: async (headers: Headers) => {
     const session = await getAppSession(headers)
