@@ -18,6 +18,7 @@ import { shortTitle } from "@/src/components/core/components/text/titles"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { ProjectRecordNewModal } from "@/src/components/project-records/ProjectRecordNewModal"
 import { ProjectRecordsTable } from "@/src/components/project-records/ProjectRecordTable"
+import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { UploadDropzone } from "@/src/components/uploads/UploadDropzone"
 import { UploadTable } from "@/src/components/uploads/UploadTable"
@@ -46,6 +47,7 @@ export const SubsubsectionLandAcquisitionContent = ({
   const { projectSlug, subsectionSlug, subsubsectionSlug } = layoutRouteApi.useParams()
   const queryClient = useQueryClient()
   const { acquisitionAreaId, setAcquisitionAreaId } = useAcquisitionAreaSelection()
+  const userCanEdit = useUserCan().edit
   const [isProjectRecordModalOpen, setIsProjectRecordModalOpen] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
   const [createdProjectRecordId, setCreatedProjectRecordId] = useState<null | number>(null)
@@ -177,8 +179,9 @@ export const SubsubsectionLandAcquisitionContent = ({
           {!acquisitionAreas.length ? (
             <>
               <p className="max-w-xl text-base text-gray-500">
-                Es wurden noch keine Verhandlungsflächen angelegt. Legen Sie neue
-                Verhandlungsflächen für diese Maßnahme an.
+                {userCanEdit
+                  ? "Es wurden noch keine Verhandlungsflächen angelegt. Legen Sie neue Verhandlungsflächen für diese Maßnahme an."
+                  : "Es wurden noch keine Verhandlungsflächen angelegt."}
               </p>
               <IfUserCanEdit>
                 <div className="pt-2">
