@@ -50,7 +50,12 @@ export async function getProjectRecordTemplatesByProject(
 ) {
   await endpointAuth.projectRole(headers, input.projectSlug, viewerRoles)
   return db.projectRecordTemplate.findMany({
-    include: projectRecordTemplateInclude,
+    include: {
+      ...projectRecordTemplateInclude,
+      tags: {
+        where: { project: { slug: input.projectSlug } },
+      },
+    },
     orderBy: { templateTitle: "asc" },
     where: { projects: { some: { slug: input.projectSlug } } },
   })
