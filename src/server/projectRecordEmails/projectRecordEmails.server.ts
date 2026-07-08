@@ -32,6 +32,18 @@ const projectRecordEmailInclude = {
   uploads: { select: { id: true, title: true } },
 } as const
 
+// List select omits `text`/`textBody`: the raw email source can be
+// megabytes per row, which stalls the SSR loader on /admin/project-record-emails
+const projectRecordEmailListSelect = {
+  id: true,
+  createdAt: true,
+  date: true,
+  from: true,
+  subject: true,
+  projectId: true,
+  ...projectRecordEmailInclude,
+} as const
+
 export async function getProjectRecordEmails(
   headers: Headers,
   input: z.infer<typeof GetProjectRecordEmailsSchema>,
@@ -39,7 +51,7 @@ export async function getProjectRecordEmails(
   await endpointAuth.admin(headers)
 
   return db.projectRecordEmail.findMany({
-    include: projectRecordEmailInclude,
+    select: projectRecordEmailListSelect,
     orderBy: { date: "desc" },
     where: input.projectId ? { projectId: input.projectId } : undefined,
   })
