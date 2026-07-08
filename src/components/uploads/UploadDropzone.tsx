@@ -1,13 +1,10 @@
 import type { FileUploadInfo } from "@better-upload/client"
 import { useMutation } from "@tanstack/react-query"
-import { getRouteApi } from "@tanstack/react-router"
 import { getAcceptAttribute } from "@/src/components/uploads/utils/getFileType"
 import { createUploadFn } from "@/src/server/uploads/uploads.functions"
 import { S3_MAX_FILE_SIZE_BYTES, S3_MAX_FILES_PROJECT } from "@/src/shared/uploads/config"
 import { getS3Url } from "@/src/shared/uploads/url"
 import { UploadDropzoneBase } from "./UploadDropzoneBase"
-
-const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
 
 type CreatedUpload = Awaited<ReturnType<typeof createUploadFn>>
 
@@ -16,6 +13,9 @@ export type UploadFileRecordResult =
   | { file: FileUploadInfo<"complete">; ok: false; error: unknown }
 
 type Props = {
+  // Passed as a prop (not read from the route) so the dropzone also works outside
+  // `/_loggedInProjects/$projectSlug`, e.g. on admin routes
+  projectSlug: string
   subsubsectionIds?: number[]
   acquisitionAreaIds?: number[]
   projectRecordIds?: number[]
@@ -30,6 +30,7 @@ type Props = {
 }
 
 export const UploadDropzone = ({
+  projectSlug,
   subsubsectionIds,
   acquisitionAreaIds,
   projectRecordIds,
@@ -41,7 +42,6 @@ export const UploadDropzone = ({
   onUploadFail,
   fillContainer,
 }: Props) => {
-  const { projectSlug } = loggedInProjectRouteApi.useParams()
   const createUploadMutation = useMutation({
     mutationFn: createUploadFn,
   })

@@ -200,6 +200,7 @@ export const ProjectRecordFormFields = ({
       <div className="flex flex-col gap-2">
         <label className="text-sm font-medium text-gray-700">Dokumente</label>
         <UploadTable
+          projectSlug={projectSlug}
           withAction={false}
           withRelations={false}
           uploads={selectedUploads}
@@ -210,6 +211,7 @@ export const ProjectRecordFormFields = ({
           }}
         />
         <UploadDropzone
+          projectSlug={projectSlug}
           onUploadComplete={async (newUploadIds: number[]) => {
             const existingUploads = NumberArraySchema.parse(uploadsValue)
             const newUploads = [...new Set([...existingUploads, ...newUploadIds])]

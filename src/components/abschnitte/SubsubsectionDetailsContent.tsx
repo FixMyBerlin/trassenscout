@@ -354,6 +354,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
         )}
         <div className="flex flex-col gap-2">
           <UploadTable
+            projectSlug={projectSlug}
             withAction={false}
             withRelations={false}
             uploads={uploads}
@@ -363,6 +364,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
           />
           <IfUserCanEdit>
             <UploadDropzone
+              projectSlug={projectSlug}
               subsubsectionIds={[subsubsection.id]}
               onUploadComplete={async () => {
                 await refetchUploads()

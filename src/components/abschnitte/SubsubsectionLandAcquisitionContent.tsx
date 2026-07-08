@@ -321,6 +321,7 @@ export const SubsubsectionLandAcquisitionContent = ({
                 <h2 className="text-lg font-semibold text-gray-700 sm:text-lg">Dokumente</h2>
                 <div className="flex flex-col gap-2">
                   <UploadTable
+                    projectSlug={projectSlug}
                     withAction={false}
                     withRelations={false}
                     uploads={uploads}
@@ -330,6 +331,7 @@ export const SubsubsectionLandAcquisitionContent = ({
                   />
                   <IfUserCanEdit>
                     <UploadDropzone
+                      projectSlug={projectSlug}
                       acquisitionAreaIds={[selectedAcquisitionArea.id]}
                       onUploadComplete={async () => {
                         await refetchUploads()

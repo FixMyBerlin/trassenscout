@@ -125,6 +125,7 @@ export const EditableSurveyResponseUploadsSection = ({
       <IfUserCanEdit>
         <UploadDropzoneContainer className="h-40 max-w-md border border-gray-300 p-2">
           <UploadDropzone
+            projectSlug={projectSlug}
             fillContainer
             surveyResponseId={responseId}
             onUploadComplete={handleUploadComplete}

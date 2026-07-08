@@ -34,7 +34,7 @@ export const UploadsPageContent = () => {
     <>
       {/* flex gap instead of space-y: TableWrapper's -my-2 overrides space-y margins (zero-specificity :where() in Tailwind v4) */}
       <div className="mt-8 flex flex-col gap-8">
-        <UploadTable withAction withRelations uploads={visibleUploads} />
+        <UploadTable projectSlug={projectSlug} withAction withRelations uploads={visibleUploads} />
 
         {protocol.hasProtocol && (
           <UploadProtocolReport
@@ -62,6 +62,7 @@ export const UploadsPageContent = () => {
           </label>
 
           <UploadDropzone
+            projectSlug={projectSlug}
             assignSubsubsectionFromFilename={assignBySlug}
             onBatchStart={(files) => protocol.startBatch(files, { assignBySlug })}
             onFileRecordResult={protocol.recordResult}

@@ -1,5 +1,4 @@
 import { MapPinIcon, UserGroupIcon } from "@heroicons/react/24/outline"
-import { getRouteApi } from "@tanstack/react-router"
 import { ButtonWrapper } from "@/src/components/core/components/links/ButtonWrapper"
 import { Link } from "@/src/components/core/components/links/Link"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
@@ -20,18 +19,23 @@ import { uploadUrl } from "@/src/components/uploads/utils/uploadUrl"
 import { getFilenameFromS3 } from "@/src/shared/uploads/url"
 import type { UploadEditLink, UploadWithRelations } from "./uploadTypes"
 
-const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
-
 type Props = Prettify<{
+  // Passed as a prop (not read from the route) so the table also works outside
+  // `/_loggedInProjects/$projectSlug`, e.g. on admin routes
+  projectSlug: string
   uploads: UploadWithRelations[]
   withAction?: boolean
   withRelations: boolean
   onDelete?: (uploadId: number) => Promise<void>
 }>
 
-export const UploadTable = ({ uploads, withAction = true, withRelations, onDelete }: Props) => {
-  const { projectSlug } = loggedInProjectRouteApi.useParams()
-
+export const UploadTable = ({
+  projectSlug,
+  uploads,
+  withAction = true,
+  withRelations,
+  onDelete,
+}: Props) => {
   if (!uploads.length) {
     return <ZeroCase small visible={uploads.length} name="Dokumente" verb="hochgeladen" />
   }

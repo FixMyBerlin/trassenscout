@@ -18,9 +18,11 @@ type Props = {
 }
 
 const ProjectRecordQuickUpload = ({
+  projectSlug,
   projectRecordId,
   onUploaded,
 }: {
+  projectSlug: string
   projectRecordId: number
   onUploaded: () => void
 }) => {
@@ -32,6 +34,7 @@ const ProjectRecordQuickUpload = ({
         </label>
         <UploadDropzoneContainer className="h-36 rounded-md p-0">
           <UploadDropzone
+            projectSlug={projectSlug}
             fillContainer
             projectRecordIds={[projectRecordId]}
             onUploadComplete={async () => {
@@ -70,6 +73,7 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord }: Props) => {
   const projectRecordUploadsSection = (
     <>
       <UploadTable
+        projectSlug={projectSlug}
         withAction={false}
         withRelations={false}
         uploads={projectRecordUploads}
@@ -78,6 +82,7 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord }: Props) => {
         }}
       />
       <ProjectRecordQuickUpload
+        projectSlug={projectSlug}
         projectRecordId={projectRecord.id}
         onUploaded={refreshProjectRecord}
       />
