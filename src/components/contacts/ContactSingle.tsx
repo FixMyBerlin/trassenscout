@@ -3,7 +3,8 @@ import { LinkTel } from "@/src/components/core/components/links/LinkTel"
 import { Markdown } from "@/src/components/core/components/Markdown/Markdown"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { getFullname } from "@/src/components/core/users/getFullname"
-import { Contact } from "@/src/prisma/generated/browser"
+import { ProjectRecordTagsList } from "@/src/components/project-records/ProjectRecordTagsList"
+import type { Contact } from "@/src/server/contacts/types"
 
 type Props = {
   contact: Contact
@@ -30,6 +31,9 @@ export const ContactSingle: React.FC<Props> = ({ contact }) => {
             <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
               E-Mail
             </th>
+            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+              Tags
+            </th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200 bg-white">
@@ -45,6 +49,9 @@ export const ContactSingle: React.FC<Props> = ({ contact }) => {
             </td>
             <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">
               <LinkMail subject="Abstimmung zum RS 8">{contact.email}</LinkMail>
+            </td>
+            <td className="px-3 py-4 text-sm text-gray-500">
+              <ProjectRecordTagsList tags={contact.tags ?? []} />
             </td>
           </tr>
         </tbody>
