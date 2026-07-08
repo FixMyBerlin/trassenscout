@@ -95,7 +95,7 @@ export const lookupTableConfig: Record<LookupTable, LookupTableConfig> = {
     countForRow: (projectSlug, rowId) =>
       db.subsubsection.count({
         where: {
-          subsubsectionInfrastructureTypeId: rowId,
+          SubsubsectionInfrastructureTypes: { some: { id: rowId } },
           subsection: { project: { slug: projectSlug } },
         },
       }),
