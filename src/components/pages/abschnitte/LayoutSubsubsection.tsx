@@ -5,7 +5,6 @@ import { SubsubsectionDeleteAllAcquisitionAreasAdmin } from "@/src/components/ab
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "@/src/components/core/components/links/Link"
 import { SubsubsectionIcon } from "@/src/components/core/components/Map/Icons/SubsubsectionIcon"
-import { Markdown } from "@/src/components/core/components/Markdown/Markdown"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
 import { TabsApp } from "@/src/components/core/components/Tabs/TabsApp"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
@@ -65,9 +64,6 @@ export function LayoutSubsubsection() {
               bearbeiten
             </Link>
           </IfUserCanEdit>
-        }
-        description={
-          subsubsection.description ? <Markdown markdown={subsubsection.description} /> : undefined
         }
       />
       {tabs.length > 1 && <TabsApp tabs={tabs} className="mt-8 max-w-md" />}
