@@ -288,6 +288,47 @@ export async function deleteUpload(headers: Headers, input: z.infer<typeof Delet
   return { success: true }
 }
 
+export async function deleteUploadIfOrphan(
+  headers: Headers,
+  input: z.infer<typeof DeleteUploadSchema>,
+) {
+  await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
+  const upload = await db.upload.findFirstOrThrow({
+    where: uploadInProjectWhere(input.projectSlug, input.id),
+    select: {
+      id: true,
+      collaborationPath: true,
+      collaborationUrl: true,
+      externalUrl: true,
+      projectRecordEmailId: true,
+      surveyResponseId: true,
+      _count: {
+        select: {
+          projectRecords: true,
+          subsubsections: true,
+          acquisitionAreas: true,
+          tags: true,
+        },
+      },
+    },
+  })
+
+  const hasRelations =
+    upload._count.projectRecords > 0 ||
+    upload._count.subsubsections > 0 ||
+    upload._count.acquisitionAreas > 0 ||
+    upload._count.tags > 0 ||
+    upload.projectRecordEmailId != null ||
+    upload.surveyResponseId != null
+
+  if (hasRelations) {
+    return { deleted: false }
+  }
+
+  await deleteUploadFileAndDbRecord(upload)
+  return { deleted: true }
+}
+
 export async function getSurveyResponseUploadsSplit(
   headers: Headers,
   input: GetSurveyResponseUploadsSplitInput,

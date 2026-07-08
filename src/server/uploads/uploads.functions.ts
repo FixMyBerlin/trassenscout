@@ -27,6 +27,7 @@ import {
   checkUploadFilenameCollisions,
   createUpload,
   deleteUpload,
+  deleteUploadIfOrphan,
   getSurveyResponseUploadsSplit,
   getUpload,
   getUploads,
@@ -60,6 +61,10 @@ export const updateUploadFn = createServerFn({ method: "POST" })
 export const deleteUploadFn = createServerFn({ method: "POST" })
   .validator(DeleteUploadSchema)
   .handler(({ data }) => deleteUpload(getRequestHeaders(), data))
+
+export const deleteOrphanUploadFn = createServerFn({ method: "POST" })
+  .validator(DeleteUploadSchema)
+  .handler(({ data }) => deleteUploadIfOrphan(getRequestHeaders(), data))
 
 export const checkUploadFilenameCollisionsFn = createServerFn({ method: "GET" })
   .validator(CheckUploadFilenameCollisionsSchema)

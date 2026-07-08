@@ -4,6 +4,7 @@ import { useCoreAppFormContext } from "@/src/components/core/components/forms/ho
 import { useFormValue } from "@/src/components/core/components/forms/hooks/useFormValue"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { NumberArraySchema } from "@/src/components/core/utils/schema-shared"
+import { useSessionUploadCleanup } from "@/src/components/project-records/hooks/useSessionUploadCleanup"
 import { ProjectRecordEmailSource } from "@/src/components/project-records/ProjectRecordEmailSource"
 import { getUserComboboxItems } from "@/src/components/shared/app/users/utils/getUserSelectOptions"
 import { TagsFormSection } from "@/src/components/tags/TagsFormSection"
@@ -62,6 +63,7 @@ export const ProjectRecordFormFields = ({
     }),
     ...queryBehavior,
   })
+  const { trackSessionUploads } = useSessionUploadCleanup({ projectSlug })
   const uploadsValue = useFormValue("uploads")
   const uploadIds = NumberArraySchema.parse(uploadsValue)
 
@@ -213,6 +215,7 @@ export const ProjectRecordFormFields = ({
         <UploadDropzone
           projectSlug={projectSlug}
           onUploadComplete={async (newUploadIds: number[]) => {
+            trackSessionUploads(newUploadIds)
             const existingUploads = NumberArraySchema.parse(uploadsValue)
             const newUploads = [...new Set([...existingUploads, ...newUploadIds])]
             form.setFieldValue("uploads", newUploads)
