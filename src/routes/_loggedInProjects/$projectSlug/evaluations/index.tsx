@@ -19,7 +19,9 @@ export const Route = createFileRoute("/_loggedInProjects/$projectSlug/evaluation
       })
     }
 
-    await context.queryClient.ensureQueryData(evaluationsPageQueryOptions())
+    await context.queryClient.ensureQueryData(
+      evaluationsPageQueryOptions({ projectSlug: params.projectSlug }),
+    )
   },
   component: PageEvaluations,
 })

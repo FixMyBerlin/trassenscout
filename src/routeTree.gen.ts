@@ -44,13 +44,13 @@ import { Route as AdminProjectRecordTemplatesIndexRouteImport } from './routes/a
 import { Route as AdminProjectRecordEmailsIndexRouteImport } from './routes/admin/project-record-emails/index'
 import { Route as AdminMembershipsIndexRouteImport } from './routes/admin/memberships/index'
 import { Route as AdminLogEntriesIndexRouteImport } from './routes/admin/logEntries/index'
+import { Route as AdminEvaluationsIndexRouteImport } from './routes/admin/evaluations/index'
 import { Route as AdminEmailTemplatesIndexRouteImport } from './routes/admin/email-templates/index'
 import { Route as LoggedInProjectsProjectSlugIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/index'
 import { Route as LoggedInGeneralSupportIndexRouteImport } from './routes/_loggedInGeneral/support/index'
 import { Route as LoggedInGeneralDashboardIndexRouteImport } from './routes/_loggedInGeneral/dashboard/index'
 import { Route as LoggedInGeneralAccessDeniedIndexRouteImport } from './routes/_loggedInGeneral/access-denied/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth.$'
-import { Route as AdminEvaluationsEditRouteImport } from './routes/admin/evaluations/edit'
 import { Route as AdminProjectsProjectSlugRouteRouteImport } from './routes/admin/projects/$projectSlug/route'
 import { Route as LoggedInProjectsProjectSlugProjectRecordsRouteRouteImport } from './routes/_loggedInProjects/$projectSlug/project-records/route'
 import { Route as ApiSurveyGeojsonSurveySlugIndexRouteImport } from './routes/api/survey-geojson/$surveySlug/index'
@@ -85,6 +85,7 @@ import { Route as LoggedInProjectsProjectSlugEditIndexRouteImport } from './rout
 import { Route as LoggedInProjectsProjectSlugContactsIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/contacts/index'
 import { Route as LoggedInProjectsProjectSlugAcquisitionAreaStatusIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/acquisition-area-status/index'
 import { Route as LoggedInGeneralUserEditIndexRouteImport } from './routes/_loggedInGeneral/user/edit/index'
+import { Route as AdminEvaluationsProjectSlugEditRouteImport } from './routes/admin/evaluations/$projectSlug/edit'
 import { Route as ApiSupportDocumentsUploadIndexRouteImport } from './routes/api/support/documents/upload/index'
 import { Route as ApiProjectSlugUploadsUploadIdIndexRouteImport } from './routes/api/$projectSlug/uploads/$uploadId/index'
 import { Route as ApiProjectSlugSubsectionsExportIndexRouteImport } from './routes/api/$projectSlug/subsections/export/index'
@@ -341,6 +342,11 @@ const AdminLogEntriesIndexRoute = AdminLogEntriesIndexRouteImport.update({
   path: '/logEntries/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminEvaluationsIndexRoute = AdminEvaluationsIndexRouteImport.update({
+  id: '/evaluations/',
+  path: '/evaluations/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminEmailTemplatesIndexRoute =
   AdminEmailTemplatesIndexRouteImport.update({
     id: '/email-templates/',
@@ -375,11 +381,6 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
-} as any)
-const AdminEvaluationsEditRoute = AdminEvaluationsEditRouteImport.update({
-  id: '/evaluations/edit',
-  path: '/evaluations/edit',
-  getParentRoute: () => AdminRoute,
 } as any)
 const AdminProjectsProjectSlugRouteRoute =
   AdminProjectsProjectSlugRouteRouteImport.update({
@@ -582,6 +583,12 @@ const LoggedInGeneralUserEditIndexRoute =
     id: '/user/edit/',
     path: '/user/edit/',
     getParentRoute: () => LoggedInGeneralRoute,
+  } as any)
+const AdminEvaluationsProjectSlugEditRoute =
+  AdminEvaluationsProjectSlugEditRouteImport.update({
+    id: '/evaluations/$projectSlug/edit',
+    path: '/evaluations/$projectSlug/edit',
+    getParentRoute: () => AdminRoute,
   } as any)
 const ApiSupportDocumentsUploadIndexRoute =
   ApiSupportDocumentsUploadIndexRouteImport.update({
@@ -1101,13 +1108,13 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/$projectSlug/project-records': typeof LoggedInProjectsProjectSlugProjectRecordsRouteRouteWithChildren
   '/admin/projects/$projectSlug': typeof AdminProjectsProjectSlugRouteRouteWithChildren
-  '/admin/evaluations/edit': typeof AdminEvaluationsEditRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/access-denied/': typeof LoggedInGeneralAccessDeniedIndexRoute
   '/dashboard/': typeof LoggedInGeneralDashboardIndexRoute
   '/support/': typeof LoggedInGeneralSupportIndexRoute
   '/$projectSlug/': typeof LoggedInProjectsProjectSlugIndexRoute
   '/admin/email-templates/': typeof AdminEmailTemplatesIndexRoute
+  '/admin/evaluations/': typeof AdminEvaluationsIndexRoute
   '/admin/logEntries/': typeof AdminLogEntriesIndexRoute
   '/admin/memberships/': typeof AdminMembershipsIndexRoute
   '/admin/project-record-emails/': typeof AdminProjectRecordEmailsIndexRoute
@@ -1122,6 +1129,7 @@ export interface FileRoutesByFullPath {
   '/api/process-project-record-email/': typeof ApiProcessProjectRecordEmailIndexRoute
   '/api/survey-upload/': typeof ApiSurveyUploadIndexRoute
   '/beteiligung/$surveySlug/': typeof BeteiligungSurveySlugIndexRoute
+  '/admin/evaluations/$projectSlug/edit': typeof AdminEvaluationsProjectSlugEditRoute
   '/user/edit/': typeof LoggedInGeneralUserEditIndexRoute
   '/$projectSlug/acquisition-area-status/': typeof LoggedInProjectsProjectSlugAcquisitionAreaStatusIndexRoute
   '/$projectSlug/contacts/': typeof LoggedInProjectsProjectSlugContactsIndexRoute
@@ -1244,12 +1252,12 @@ export interface FileRoutesByTo {
   '/auth/signup': typeof AuthSignupRoute
   '/admin': typeof AdminIndexRoute
   '/admin/projects/$projectSlug': typeof AdminProjectsProjectSlugRouteRouteWithChildren
-  '/admin/evaluations/edit': typeof AdminEvaluationsEditRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/access-denied': typeof LoggedInGeneralAccessDeniedIndexRoute
   '/dashboard': typeof LoggedInGeneralDashboardIndexRoute
   '/support': typeof LoggedInGeneralSupportIndexRoute
   '/admin/email-templates': typeof AdminEmailTemplatesIndexRoute
+  '/admin/evaluations': typeof AdminEvaluationsIndexRoute
   '/admin/logEntries': typeof AdminLogEntriesIndexRoute
   '/admin/memberships': typeof AdminMembershipsIndexRoute
   '/admin/project-record-emails': typeof AdminProjectRecordEmailsIndexRoute
@@ -1264,6 +1272,7 @@ export interface FileRoutesByTo {
   '/api/process-project-record-email': typeof ApiProcessProjectRecordEmailIndexRoute
   '/api/survey-upload': typeof ApiSurveyUploadIndexRoute
   '/beteiligung/$surveySlug': typeof BeteiligungSurveySlugIndexRoute
+  '/admin/evaluations/$projectSlug/edit': typeof AdminEvaluationsProjectSlugEditRoute
   '/user/edit': typeof LoggedInGeneralUserEditIndexRoute
   '/$projectSlug/acquisition-area-status': typeof LoggedInProjectsProjectSlugAcquisitionAreaStatusIndexRoute
   '/$projectSlug/contacts': typeof LoggedInProjectsProjectSlugContactsIndexRoute
@@ -1394,13 +1403,13 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/_loggedInProjects/$projectSlug/project-records': typeof LoggedInProjectsProjectSlugProjectRecordsRouteRouteWithChildren
   '/admin/projects/$projectSlug': typeof AdminProjectsProjectSlugRouteRouteWithChildren
-  '/admin/evaluations/edit': typeof AdminEvaluationsEditRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/_loggedInGeneral/access-denied/': typeof LoggedInGeneralAccessDeniedIndexRoute
   '/_loggedInGeneral/dashboard/': typeof LoggedInGeneralDashboardIndexRoute
   '/_loggedInGeneral/support/': typeof LoggedInGeneralSupportIndexRoute
   '/_loggedInProjects/$projectSlug/': typeof LoggedInProjectsProjectSlugIndexRoute
   '/admin/email-templates/': typeof AdminEmailTemplatesIndexRoute
+  '/admin/evaluations/': typeof AdminEvaluationsIndexRoute
   '/admin/logEntries/': typeof AdminLogEntriesIndexRoute
   '/admin/memberships/': typeof AdminMembershipsIndexRoute
   '/admin/project-record-emails/': typeof AdminProjectRecordEmailsIndexRoute
@@ -1415,6 +1424,7 @@ export interface FileRoutesById {
   '/api/process-project-record-email/': typeof ApiProcessProjectRecordEmailIndexRoute
   '/api/survey-upload/': typeof ApiSurveyUploadIndexRoute
   '/beteiligung/$surveySlug/': typeof BeteiligungSurveySlugIndexRoute
+  '/admin/evaluations/$projectSlug/edit': typeof AdminEvaluationsProjectSlugEditRoute
   '/_loggedInGeneral/user/edit/': typeof LoggedInGeneralUserEditIndexRoute
   '/_loggedInProjects/$projectSlug/acquisition-area-status/': typeof LoggedInProjectsProjectSlugAcquisitionAreaStatusIndexRoute
   '/_loggedInProjects/$projectSlug/contacts/': typeof LoggedInProjectsProjectSlugContactsIndexRoute
@@ -1542,13 +1552,13 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/$projectSlug/project-records'
     | '/admin/projects/$projectSlug'
-    | '/admin/evaluations/edit'
     | '/api/auth/$'
     | '/access-denied/'
     | '/dashboard/'
     | '/support/'
     | '/$projectSlug/'
     | '/admin/email-templates/'
+    | '/admin/evaluations/'
     | '/admin/logEntries/'
     | '/admin/memberships/'
     | '/admin/project-record-emails/'
@@ -1563,6 +1573,7 @@ export interface FileRouteTypes {
     | '/api/process-project-record-email/'
     | '/api/survey-upload/'
     | '/beteiligung/$surveySlug/'
+    | '/admin/evaluations/$projectSlug/edit'
     | '/user/edit/'
     | '/$projectSlug/acquisition-area-status/'
     | '/$projectSlug/contacts/'
@@ -1685,12 +1696,12 @@ export interface FileRouteTypes {
     | '/auth/signup'
     | '/admin'
     | '/admin/projects/$projectSlug'
-    | '/admin/evaluations/edit'
     | '/api/auth/$'
     | '/access-denied'
     | '/dashboard'
     | '/support'
     | '/admin/email-templates'
+    | '/admin/evaluations'
     | '/admin/logEntries'
     | '/admin/memberships'
     | '/admin/project-record-emails'
@@ -1705,6 +1716,7 @@ export interface FileRouteTypes {
     | '/api/process-project-record-email'
     | '/api/survey-upload'
     | '/beteiligung/$surveySlug'
+    | '/admin/evaluations/$projectSlug/edit'
     | '/user/edit'
     | '/$projectSlug/acquisition-area-status'
     | '/$projectSlug/contacts'
@@ -1834,13 +1846,13 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/_loggedInProjects/$projectSlug/project-records'
     | '/admin/projects/$projectSlug'
-    | '/admin/evaluations/edit'
     | '/api/auth/$'
     | '/_loggedInGeneral/access-denied/'
     | '/_loggedInGeneral/dashboard/'
     | '/_loggedInGeneral/support/'
     | '/_loggedInProjects/$projectSlug/'
     | '/admin/email-templates/'
+    | '/admin/evaluations/'
     | '/admin/logEntries/'
     | '/admin/memberships/'
     | '/admin/project-record-emails/'
@@ -1855,6 +1867,7 @@ export interface FileRouteTypes {
     | '/api/process-project-record-email/'
     | '/api/survey-upload/'
     | '/beteiligung/$surveySlug/'
+    | '/admin/evaluations/$projectSlug/edit'
     | '/_loggedInGeneral/user/edit/'
     | '/_loggedInProjects/$projectSlug/acquisition-area-status/'
     | '/_loggedInProjects/$projectSlug/contacts/'
@@ -2243,6 +2256,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLogEntriesIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/evaluations/': {
+      id: '/admin/evaluations/'
+      path: '/evaluations'
+      fullPath: '/admin/evaluations/'
+      preLoaderRoute: typeof AdminEvaluationsIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/email-templates/': {
       id: '/admin/email-templates/'
       path: '/email-templates'
@@ -2284,13 +2304,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/auth/$'
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/admin/evaluations/edit': {
-      id: '/admin/evaluations/edit'
-      path: '/evaluations/edit'
-      fullPath: '/admin/evaluations/edit'
-      preLoaderRoute: typeof AdminEvaluationsEditRouteImport
-      parentRoute: typeof AdminRoute
     }
     '/admin/projects/$projectSlug': {
       id: '/admin/projects/$projectSlug'
@@ -2529,6 +2542,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/user/edit/'
       preLoaderRoute: typeof LoggedInGeneralUserEditIndexRouteImport
       parentRoute: typeof LoggedInGeneralRoute
+    }
+    '/admin/evaluations/$projectSlug/edit': {
+      id: '/admin/evaluations/$projectSlug/edit'
+      path: '/evaluations/$projectSlug/edit'
+      fullPath: '/admin/evaluations/$projectSlug/edit'
+      preLoaderRoute: typeof AdminEvaluationsProjectSlugEditRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/api/support/documents/upload/': {
       id: '/api/support/documents/upload/'
@@ -3423,8 +3443,8 @@ const AdminProjectsProjectSlugRouteRouteWithChildren =
 interface AdminRouteChildren {
   AdminIndexRoute: typeof AdminIndexRoute
   AdminProjectsProjectSlugRouteRoute: typeof AdminProjectsProjectSlugRouteRouteWithChildren
-  AdminEvaluationsEditRoute: typeof AdminEvaluationsEditRoute
   AdminEmailTemplatesIndexRoute: typeof AdminEmailTemplatesIndexRoute
+  AdminEvaluationsIndexRoute: typeof AdminEvaluationsIndexRoute
   AdminLogEntriesIndexRoute: typeof AdminLogEntriesIndexRoute
   AdminMembershipsIndexRoute: typeof AdminMembershipsIndexRoute
   AdminProjectRecordEmailsIndexRoute: typeof AdminProjectRecordEmailsIndexRoute
@@ -3433,6 +3453,7 @@ interface AdminRouteChildren {
   AdminProjectsIndexRoute: typeof AdminProjectsIndexRoute
   AdminSupportDocumentsIndexRoute: typeof AdminSupportDocumentsIndexRoute
   AdminSurveysIndexRoute: typeof AdminSurveysIndexRoute
+  AdminEvaluationsProjectSlugEditRoute: typeof AdminEvaluationsProjectSlugEditRoute
   AdminMembershipsUserIdIndexRoute: typeof AdminMembershipsUserIdIndexRoute
   AdminProjectRecordEmailsProjectRecordEmailIdIndexRoute: typeof AdminProjectRecordEmailsProjectRecordEmailIdIndexRoute
   AdminProjectRecordEmailsNewIndexRoute: typeof AdminProjectRecordEmailsNewIndexRoute
@@ -3454,8 +3475,8 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminIndexRoute: AdminIndexRoute,
   AdminProjectsProjectSlugRouteRoute:
     AdminProjectsProjectSlugRouteRouteWithChildren,
-  AdminEvaluationsEditRoute: AdminEvaluationsEditRoute,
   AdminEmailTemplatesIndexRoute: AdminEmailTemplatesIndexRoute,
+  AdminEvaluationsIndexRoute: AdminEvaluationsIndexRoute,
   AdminLogEntriesIndexRoute: AdminLogEntriesIndexRoute,
   AdminMembershipsIndexRoute: AdminMembershipsIndexRoute,
   AdminProjectRecordEmailsIndexRoute: AdminProjectRecordEmailsIndexRoute,
@@ -3464,6 +3485,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminProjectsIndexRoute: AdminProjectsIndexRoute,
   AdminSupportDocumentsIndexRoute: AdminSupportDocumentsIndexRoute,
   AdminSurveysIndexRoute: AdminSurveysIndexRoute,
+  AdminEvaluationsProjectSlugEditRoute: AdminEvaluationsProjectSlugEditRoute,
   AdminMembershipsUserIdIndexRoute: AdminMembershipsUserIdIndexRoute,
   AdminProjectRecordEmailsProjectRecordEmailIdIndexRoute:
     AdminProjectRecordEmailsProjectRecordEmailIdIndexRoute,

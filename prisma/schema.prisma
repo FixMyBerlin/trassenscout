@@ -219,6 +219,7 @@ model Project {
   projectRecordTemplates           ProjectRecordTemplate[]
   ProjectRecordEmail               ProjectRecordEmail[]
   acquisitionAreaStatuses          AcquisitionAreaStatus[]
+  evaluationsPage                  EvaluationsPage?
 }
 
 enum StateKeyEnum {
@@ -777,10 +778,13 @@ model EmailTemplate {
 }
 
 model EvaluationsPage {
-  id          Int      @id @default(1)
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   title       String
   markdown    String
-  updatedAt   DateTime @updatedAt
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId   Int      @unique
   updatedBy   User?    @relation("EvaluationsPageUpdatedBy", fields: [updatedById], references: [id])
   updatedById Int?
 }

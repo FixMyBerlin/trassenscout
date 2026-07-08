@@ -1,6 +1,5 @@
 import seedAdmin from "./seeds/admin"
 import seedContacts from "./seeds/contacts"
-import seedEvaluationsPage from "./seeds/evaluationsPage"
 import seedMemberships from "./seeds/memberships"
 import seedNetworkHierarchies from "./seeds/networkHierarchies"
 import seedOperators from "./seeds/operators"
@@ -24,7 +23,6 @@ const seed = async () => {
 
   if (seedAll) {
     await seedProjects()
-    await seedEvaluationsPage()
   }
 
   await seedUsers()

@@ -199,7 +199,7 @@ export function buildAdminNavigation() {
         },
         {
           name: "Auswertungen-Seite",
-          link: { to: "/admin/evaluations/edit" },
+          link: { to: "/admin/evaluations" },
         },
         {
           name: "Support-Dokumente",

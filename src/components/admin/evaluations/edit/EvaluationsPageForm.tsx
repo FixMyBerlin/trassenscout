@@ -6,8 +6,6 @@ import {
   applyFormSubmitResult,
   type OnSubmitResult,
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
-import { EVALUATIONS_PAGE_DEFAULTS } from "@/src/server/evaluationsPage/defaults"
-
 export type EvaluationsPageFormProps<S extends z.ZodType> = {
   schema: S
   initialValues?: Partial<z.infer<S>>
@@ -36,7 +34,7 @@ export function EvaluationsPageForm<S extends z.ZodType>({
   const [formError, setFormError] = useState<string | null>(null)
 
   const form = useAppForm({
-    defaultValues: { ...EVALUATIONS_PAGE_DEFAULTS, ...initialValues },
+    defaultValues: { title: "", markdown: "", ...initialValues },
     validators: { onSubmit: schema } as never,
     onSubmit: async ({ value }) => {
       const result = (await onSubmit(value as z.infer<S>)) || {}
