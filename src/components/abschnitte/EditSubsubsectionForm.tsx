@@ -4,6 +4,7 @@ import { z } from "zod"
 import { SubsubsectionForm } from "@/src/components/abschnitte/SubsubsectionForm"
 import { BackLink } from "@/src/components/core/components/forms/BackLink"
 import { DeleteActionBar } from "@/src/components/core/components/forms/DeleteActionBar"
+import { parseUniqueConstraintError } from "@/src/components/core/components/forms/errorMessageTranslations"
 import { improveErrorMessage } from "@/src/components/core/components/forms/improveErrorMessage"
 import { FORM_ERROR } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { shortTitle } from "@/src/components/core/components/text/titles"
@@ -65,11 +66,25 @@ export const EditSubsubsectionForm = ({ subsubsection }: Props) => {
             values.estimatedCompletionDate === "" ? null : new Date(values.estimatedCompletionDate),
         } as Parameters<typeof updateSubsubsectionMutation.mutateAsync>[0]["data"],
       })
+      // The Maßnahme may have been moved to another Planungsabschnitt (admin feature)
       void navigate({
         to: "/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug",
-        params: { projectSlug, subsectionSlug, subsubsectionSlug: updated.slug },
+        params: {
+          projectSlug,
+          subsectionSlug: updated.subsection.slug,
+          subsubsectionSlug: updated.slug,
+        },
       })
     } catch (error: unknown) {
+      const isMove = Number(values.subsectionId) !== subsubsection.subsectionId
+      const uniqueConstraint = parseUniqueConstraintError(
+        error instanceof Error ? error.message : String(error),
+      )
+      if (isMove && uniqueConstraint?.fields.includes("subsectionId")) {
+        return {
+          subsectionId: `Der gewählte Planungsabschnitt enthält bereits eine Maßnahme mit dem Kürzel „${values.slug}“. Bitte wählen Sie einen anderen Planungsabschnitt oder ändern Sie zuerst das Kürzel dieser Maßnahme.`,
+        }
+      }
       return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }
   }
@@ -96,6 +111,7 @@ export const EditSubsubsectionForm = ({ subsubsection }: Props) => {
         onSubmit={handleSubmit}
         subsectionSlug={subsectionSlug}
         selectedSubsubsectionSlug={subsubsectionSlug}
+        enableSubsectionReassign
         actionBarRight={
           <DeleteActionBar
             itemTitle={shortTitle(subsubsection.slug)}

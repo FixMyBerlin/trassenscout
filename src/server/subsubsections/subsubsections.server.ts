@@ -208,12 +208,17 @@ export async function updateSubsubsection(
   await validateSubsubsectionRelations(projectSlug, data)
   const previous = await db.subsubsection.findFirstOrThrow({
     where: subsubsectionInProjectWhere(projectSlug, id),
-    select: { id: true },
+    select: { id: true, subsectionId: true },
   })
+
+  if (data.subsectionId !== previous.subsectionId) {
+    await endpointAuth.admin(headers)
+  }
 
   return db.subsubsection.update({
     where: { id: previous.id },
     data: subsubsectionUpdateData(data),
+    include: { subsection: { select: { slug: true } } },
   })
 }
 

@@ -5,50 +5,69 @@ export function translateServerError(raw: string) {
   return errorMessageTranslations[key] ?? raw
 }
 
-const errorMessageTranslations: TranslatedMessages = {
-  // INVITATION
-  "PrismaClientKnownRequestError: Invalid `prisma.invite.create()` invocation:Unique constraint failed on the fields: (`email`,`projectId`)":
-    "Diese E-Mail-Adresse ist bereits eingeladen.",
-  // SIGNUP
-  "PrismaClientKnownRequestError: Invalid `prisma.user.create()` invocation:Unique constraint failed on the fields: (`email`,`projectId`)":
-    "Diese E-Mail-Adresse ist bereits registriert.",
-  // CONTACT
-  "PrismaClientKnownRequestError: Invalid `prisma.contact.create()` invocation:Unique constraint failed on the fields: (`projectId`,`email`)":
-    "Diese E-Mail-Adresse ist bereits vergeben. Eine E-Mail-Adresse darf nur einem Kontakt zugewiesen werden.",
-  "PrismaClientKnownRequestError: Invalid `prisma.contact.update()` invocation:Unique constraint failed on the fields: (`projectId`,`email`)":
-    "Diese E-Mail-Adresse ist bereits vergeben. Eine E-Mail-Adresse darf nur einem Kontakt zugewiesen werden.",
-  // PROJECT
-  "PrismaClientKnownRequestError: Invalid `prisma.project.create()` invocation:Unique constraint failed on the fields: (`slug`)":
+export type UniqueConstraintErrorInfo = {
+  model: string
+  operation: string
+  fields: string[]
+}
+
+export function parseUniqueConstraintError(raw: string): UniqueConstraintErrorInfo | null {
+  const invocation = raw.match(/Invalid `\w+\.(\w+)\.(\w+)\(\)` invocation/)
+  const fields = raw.match(/Unique constraint failed on the fields: \(([^)]*)\)/)
+  if (!invocation || !fields) return null
+  return {
+    model: invocation[1]!,
+    operation: invocation[2]!,
+    fields: fields[1]!.split(",").map((field) => field.trim().replace(/[`"]/g, "")),
+  }
+}
+
+const emailTakenContact =
+  "Diese E-Mail-Adresse ist bereits vergeben. Eine E-Mail-Adresse darf nur einem Kontakt zugewiesen werden."
+const orderTakenSubsection =
+  "Der Wert für 'Reihenfolge' wird bereits von einer anderen Teilstrecke verwendet. Bitte wählen Sie einen anderen Wert; er kann auch viel höher sein wie beispielweise 50."
+const slugTakenProject =
+  "Dieses URL-Segment ist bereits vergeben. Ein URL-Segment darf nur einmalig pro Trasse zugewiesen werden."
+// "Kürzel" matches the slug field label in the Maßnahmen form (subsubsectionFieldTranslations.slug)
+const slugTakenSubsection =
+  "Dieses Kürzel ist bereits vergeben. Ein Kürzel darf nur einmalig pro Planungsabschnitt zugewiesen werden."
+const slugTakenOperator =
+  "Dieses URL-Segment ist bereits für eine anderen Baulastträger vergeben. Ein URL-Segment darf nur einmalig zugewiesen werden."
+const slugTakenQualityLevel =
+  "Dieses URL-Segment ist bereits für einen anderen Ausbaustandard vergeben. Ein URL-Segment darf nur einmalig zugewiesen werden."
+const slugTakenStatus =
+  "Dieses URL-Segment ist bereits für einen anderen Status vergeben. Ein URL-Segment darf nur einmalig zugewiesen werden."
+
+/** Keyed by `model.operation:constraintFields` as parsed by `parseUniqueConstraintError`. */
+const uniqueConstraintTranslations: TranslatedMessages = {
+  "invite.create:email,projectId": "Diese E-Mail-Adresse ist bereits eingeladen.",
+  "user.create:email,projectId": "Diese E-Mail-Adresse ist bereits registriert.",
+  "contact.create:projectId,email": emailTakenContact,
+  "contact.update:projectId,email": emailTakenContact,
+  "project.create:slug":
     "Dieses URL-Segment ist bereits für eine andere Trasse vergeben. Ein URL-Segment darf nur einmalig zugewiesen werden.",
-  // SUBSECTION
-  "PrismaClientKnownRequestError: Invalid `prisma.subsection.update()` invocation:Unique constraint failed on the fields: (`projectId`,`order`)":
-    "Der Wert für 'Reihenfolge' wird bereits von einer anderen Teilstrecke verwendet. Bitte wählen Sie einen anderen Wert; er kann auch viel höher sein wie beispielweise 50.",
-  "PrismaClientKnownRequestError: Invalid `prisma.subsection.create()` invocation:Unique constraint failed on the fields: (`projectId`,`order`)":
-    "Der Wert für 'Reihenfolge' wird bereits von einer anderen Teilstrecke verwendet. Bitte wählen Sie einen anderen Wert; er kann auch viel höher sein wie beispielweise 50.",
-  "PrismaClientKnownRequestError: Invalid `prisma.subsection.create()` invocation:Unique constraint failed on the fields: (`projectId`,`slug`)":
-    "Dieses URL-Segment ist bereits vergeben. Ein URL-Segment darf nur einmalig pro Trasse zugewiesen werden.",
-  "PrismaClientKnownRequestError: Invalid `prisma.subsection.update()` invocation:Unique constraint failed on the fields: (`projectId`,`slug`)":
-    "Dieses URL-Segment ist bereits vergeben. Ein URL-Segment darf nur einmalig pro Trasse zugewiesen werden.",
-  // SUBSUBSECTION
-  "PrismaClientKnownRequestError: Invalid `prisma.subsubsection.create()` invocation:Unique constraint failed on the fields: (`subsectionId`,`slug`)":
-    "Dieses URL-Segment ist bereits vergeben. Ein URL-Segment darf nur einmalig pro Planungsabschnitt zugewiesen werden.",
-  "PrismaClientKnownRequestError: Invalid `prisma.subsubsection.update()` invocation:Unique constraint failed on the fields: (`subsectionId`,`slug`)":
-    "Dieses URL-Segment ist bereits vergeben. Ein URL-Segment darf nur einmalig pro Planungsabschnitt zugewiesen werden.",
-  // OPERATOR
-  "PrismaClientKnownRequestError: Invalid `prisma.operator.create()` invocation:Unique constraint failed on the fields: (`projectId`,`slug`)":
-    "Dieses URL-Segment ist bereits für eine anderen Baulastträger vergeben. Ein URL-Segment darf nur einmalig zugewiesen werden.",
-  "PrismaClientKnownRequestError: Invalid `prisma.operator.update()` invocation:Unique constraint failed on the fields: (`projectId`,`slug`)":
-    "Dieses URL-Segment ist bereits für eine anderen Baulastträger vergeben. Ein URL-Segment darf nur einmalig zugewiesen werden.",
-  // QULAITYLEVEL
-  "PrismaClientKnownRequestError: Invalid `prisma.qualityLevel.create()` invocation:Unique constraint failed on the fields: (`projectId`,`slug`)":
-    "Dieses URL-Segment ist bereits für einen anderen Ausbaustandard vergeben. Ein URL-Segment darf nur einmalig zugewiesen werden.",
-  "PrismaClientKnownRequestError: Invalid `prisma.qualityLevel.update()` invocation:Unique constraint failed on the fields: (`projectId`,`slug`)":
-    "Dieses URL-Segment ist bereits für einen anderen Ausbaustandard vergeben. Ein URL-Segment darf nur einmalig zugewiesen werden.",
-  //SUBSUBSECTIONSTATUS
-  "PrismaClientKnownRequestError: Invalid `prisma.subsubsectionStatus.create()` invocation:Unique constraint failed on the fields: (`projectId`,`slug`)":
-    "Dieses URL-Segment ist bereits für einen anderen Status vergeben. Ein URL-Segment darf nur einmalig zugewiesen werden.",
-  "PrismaClientKnownRequestError: Invalid `prisma.subsubsectionStatus.update()` invocation:Unique constraint failed on the fields: (`projectId`,`slug`)":
-    "Dieses URL-Segment ist bereits für einen anderen Status vergeben. Ein URL-Segment darf nur einmalig zugewiesen werden.",
+  "subsection.create:projectId,order": orderTakenSubsection,
+  "subsection.update:projectId,order": orderTakenSubsection,
+  "subsection.create:projectId,slug": slugTakenProject,
+  "subsection.update:projectId,slug": slugTakenProject,
+  "subsubsection.create:subsectionId,slug": slugTakenSubsection,
+  "subsubsection.update:subsectionId,slug": slugTakenSubsection,
+  "operator.create:projectId,slug": slugTakenOperator,
+  "operator.update:projectId,slug": slugTakenOperator,
+  "qualityLevel.create:projectId,slug": slugTakenQualityLevel,
+  "qualityLevel.update:projectId,slug": slugTakenQualityLevel,
+  "subsubsectionStatus.create:projectId,slug": slugTakenStatus,
+  "subsubsectionStatus.update:projectId,slug": slugTakenStatus,
+}
+
+export function translateUniqueConstraintError(info: UniqueConstraintErrorInfo) {
+  return (
+    uniqueConstraintTranslations[`${info.model}.${info.operation}:${info.fields.join(",")}`] ??
+    "Dieser Wert ist bereits vergeben und darf nur einmal verwendet werden."
+  )
+}
+
+const errorMessageTranslations: TranslatedMessages = {
   // NETWORK / SERVER ERRORS (e.g. 502 Bad Gateway from staging)
   Error: "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
   "Bad Gateway":

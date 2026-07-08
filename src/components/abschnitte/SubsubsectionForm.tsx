@@ -1,4 +1,4 @@
-import { useSuspenseQuery } from "@tanstack/react-query"
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { ReactNode, Suspense, useState } from "react"
 import { z } from "zod"
@@ -6,18 +6,24 @@ import { LinkWithFormDirtyConfirm } from "@/src/components/abschnitte/LinkWithFo
 import { SubsubsectionGeometryInput } from "@/src/components/abschnitte/SubsubsectionGeometryInput"
 import { lookupTableRows } from "@/src/components/abschnitte/utils/lookupTableRows"
 import { subsubsectionFieldTranslations } from "@/src/components/abschnitte/utils/subsubsectionFieldMappings"
+import { AdminBox } from "@/src/components/core/components/AdminBox/AdminBox"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
+import { clearImperativeFieldSubmitErrors } from "@/src/components/core/components/forms/utils/clearImperativeFieldSubmitErrors"
 import { createFormOptions } from "@/src/components/core/components/forms/utils/createFormOptions"
 import {
   applyFormSubmitResult,
   type OnSubmitResult,
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { Spinner } from "@/src/components/core/components/Spinner"
+import { shortTitle } from "@/src/components/core/components/text/titles"
 import { subsubsectionLocationLabelMap } from "@/src/components/core/utils/subsubsectionLocationLabelMap"
 import { getUserSelectOptions } from "@/src/components/shared/app/users/utils/getUserSelectOptions"
+import { isAdmin } from "@/src/components/shared/app/users/utils/isAdmin"
 import { adminLookupRowsWithCountQueryOptions } from "@/src/server/adminLookupTables/adminLookupTablesQueryOptions"
 import { projectUsersQueryOptions } from "@/src/server/memberships/projectUsersQueryOptions"
+import { subsectionsQueryOptions } from "@/src/server/subsections/subsectionsQueryOptions"
+import { currentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
 import { subsubsectionFormDefaultValues } from "@/src/shared/subsubsections/schemas"
 
 const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
@@ -35,6 +41,8 @@ export type SubsubsectionFormProps<S extends z.ZodTypeAny> = {
   submitClassName?: string
   subsectionSlug: string
   selectedSubsubsectionSlug?: string
+  /** Admin-only: show a Planungsabschnitt combobox to move the Maßnahme to another PA (edit form only). */
+  enableSubsectionReassign?: boolean
 }
 
 function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
@@ -50,6 +58,7 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
   submitClassName,
   subsectionSlug,
   selectedSubsubsectionSlug,
+  enableSubsectionReassign,
 }: SubsubsectionFormProps<S>) {
   const { projectSlug } = loggedInProjectRouteApi.useParams()
   const [formError, setFormError] = useState<string | null>(null)
@@ -66,6 +75,20 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
       }
     },
   })
+
+  const { data: user } = useQuery(currentUserQueryOptions())
+  const showSubsectionReassign = Boolean(enableSubsectionReassign) && isAdmin(user ?? null)
+  const { data: subsections } = useQuery({
+    ...subsectionsQueryOptions({ projectSlug }),
+    enabled: showSubsectionReassign,
+  })
+  const currentSubsectionId = (initialValues as { subsectionId?: number } | undefined)?.subsectionId
+  const subsectionOptions: [number | string, string][] = (subsections ?? []).map((subsection) => [
+    subsection.id,
+    subsection.id === currentSubsectionId
+      ? `${shortTitle(subsection.slug)} (aktuell zugeordnet)`
+      : shortTitle(subsection.slug),
+  ])
 
   const { data: users } = useSuspenseQuery(
     projectUsersQueryOptions({ projectSlug, role: "EDITOR" }),
@@ -156,7 +179,12 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
       submitDisabled={submitDisabled}
       submitClassName={submitClassName}
     >
-      <form.AppField name="slug">
+      <form.AppField
+        name="slug"
+        listeners={{
+          onChange: () => clearImperativeFieldSubmitErrors(form, "subsectionId"),
+        }}
+      >
         {(field) => (
           <field.TextField
             type="text"
@@ -165,6 +193,24 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
           />
         )}
       </form.AppField>
+      {showSubsectionReassign && subsections && (
+        <AdminBox label="Admin">
+          <form.AppField
+            name="subsectionId"
+            listeners={{
+              onChange: () => clearImperativeFieldSubmitErrors(form, "slug"),
+            }}
+          >
+            {(field) => (
+              <field.SelectField
+                label="Planungsabschnitt"
+                options={subsectionOptions}
+                help="Hier können Sie die Maßnahme in einen anderen Planungsabschnitt dieses Projekts verschieben. Die vorherige Zuordnung wird beim Speichern automatisch überschrieben."
+              />
+            )}
+          </form.AppField>
+        </AdminBox>
+      )}
       <form.AppField name="description">
         {(field) => (
           <field.TextareaField
