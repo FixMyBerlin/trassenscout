@@ -1,7 +1,8 @@
 import { getRouteApi, useNavigate } from "@tanstack/react-router"
-import { useMemo } from "react"
-import { MapLayerMouseEvent } from "react-map-gl/maplibre"
+import { useEffect, useEffectEvent, useMemo } from "react"
+import { MapLayerMouseEvent, useMap } from "react-map-gl/maplibre"
 import { BaseMap } from "./BaseMap"
+import { useMapLoaded } from "./map-loaded-store"
 import type { SubsectionMapEntities as TSubsections } from "./mapEntityTypes"
 import { MapFooter } from "./MapFooter"
 import { SubsectionMarkers } from "./markers/SubsectionMarkers"
@@ -19,8 +20,29 @@ type Props = {
 export const ProjectMap = ({ subsections }: Props) => {
   const navigate = useNavigate()
   const { projectSlug } = loggedInProjectRouteApi.useParams()
+  const { mainMap } = useMap()
+  const mapLoaded = useMapLoaded("mainMap")
 
-  const boundingBox = geometriesBbox(subsections.map((ss) => ss.geometry))
+  // bundingBox only changes when subsections change / subsections array is created
+  const boundingBox = useMemo(
+    () => geometriesBbox(subsections.map((ss) => ss.geometry)),
+    [subsections],
+  )
+  // stable string key so the effect below reacts to the bbox's values, not the array's identity
+  // (tanstack query recreates `subsections`, and therefore `boundingBox`, on every window-focus refetch)
+  const boundingBoxKey = boundingBox.join(",")
+
+  const fitMapToBoundingBox = useEffectEvent(function fitMapToBoundingBox() {
+    if (!mainMap || !mapLoaded) return
+    mainMap.fitBounds(boundingBox, { padding: 60 })
+  })
+
+  useEffect(
+    function fitMapToSelectedSubsections() {
+      fitMapToBoundingBox()
+    },
+    [mapLoaded, boundingBoxKey],
+  )
 
   type HandleSelectProps = { subsectionSlug: string; edit: boolean }
   const handleSelect = ({ subsectionSlug, edit }: HandleSelectProps) => {
