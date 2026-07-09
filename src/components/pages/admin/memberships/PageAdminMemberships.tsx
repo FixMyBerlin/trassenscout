@@ -60,7 +60,7 @@ export function PageAdminMemberships() {
         <div
           className={twMerge(
             adminTableWrapperClassName,
-            "transition-opacity duration-150",
+            "max-h-[calc(100vh-13rem)] overflow-y-auto transition-opacity duration-150",
             isFiltering ? "opacity-60" : "",
           )}
         >
