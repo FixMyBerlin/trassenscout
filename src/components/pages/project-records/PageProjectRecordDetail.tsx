@@ -8,6 +8,7 @@ import { ProjectRecordDeleteActionBar } from "@/src/components/project-records/P
 import { ProjectRecordDetailClient } from "@/src/components/project-records/ProjectRecordDetailClient"
 import { ProjectRecordNeedsReviewBanner } from "@/src/components/project-records/ProjectRecordNeedsReviewBanner"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
+import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { ProjectRecordReviewState } from "@/src/prisma/generated/browser"
 import { projectRecordQueryOptions } from "@/src/server/projectRecords/projectRecordsQueryOptions"
 
@@ -19,6 +20,7 @@ export function PageProjectRecordDetail() {
   const { projectRecordId } = routeApi.useParams()
   const { projectSlug } = loggedInProjectRouteApi.useParams()
   const router = useRouter()
+  const canEdit = useUserCan().edit
   const id = Number(projectRecordId)
   const { data: projectRecord } = useSuspenseQuery(projectRecordQueryOptions({ projectSlug, id }))
 
@@ -52,18 +54,20 @@ export function PageProjectRecordDetail() {
         <ProjectRecordNeedsReviewBanner withAction projectSlug={projectSlug} projectRecordId={id} />
       )}
       <ProjectRecordDetailClient initialProjectRecord={projectRecord} />
-      <ActionBar
-        className="mt-6"
-        right={
-          <ProjectRecordDeleteActionBar
-            projectSlug={projectSlug}
-            projectRecordId={projectRecord.id}
-            projectRecordTitle={projectRecord.title}
-            returnPath={returnPath}
-            uploadsCount={projectRecord.uploads.length}
-          />
-        }
-      />
+      {canEdit && (
+        <ActionBar
+          className="mt-6"
+          right={
+            <ProjectRecordDeleteActionBar
+              projectSlug={projectSlug}
+              projectRecordId={projectRecord.id}
+              projectRecordTitle={projectRecord.title}
+              returnPath={returnPath}
+              uploadsCount={projectRecord.uploads.length}
+            />
+          }
+        />
+      )}
       <BackLink
         to={returnPath}
         text={

@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { getRouteApi, Outlet, useRouteContext } from "@tanstack/react-router"
+import { getRouteApi, Outlet, useMatchRoute, useRouteContext } from "@tanstack/react-router"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
 import { TabsApp } from "@/src/components/core/components/Tabs/TabsApp"
 import { editorRoles } from "@/src/server/authorization/constants"
@@ -11,6 +11,11 @@ export function LayoutProjectRecords() {
   const { projectSlug } = loggedInProjectRouteApi.useParams()
   const { membershipRole } = useRouteContext({ from: "/_loggedInProjects/$projectSlug" })
   const { data: tabCounts } = useSuspenseQuery(projectRecordsTabCountsQueryOptions({ projectSlug }))
+
+  const matchRoute = useMatchRoute()
+  const isListView =
+    Boolean(matchRoute({ to: "/$projectSlug/project-records", params: { projectSlug } })) ||
+    Boolean(matchRoute({ to: "/$projectSlug/project-records/needreview", params: { projectSlug } }))
 
   const canEdit =
     membershipRole === null || (membershipRole && editorRoles.includes(membershipRole))
@@ -32,8 +37,12 @@ export function LayoutProjectRecords() {
 
   return (
     <>
-      <PageHeader title="Projektprotokoll" />
-      <TabsApp tabs={tabs} className="mt-7" />
+      {isListView && (
+        <>
+          <PageHeader title="Projektprotokoll" />
+          <TabsApp tabs={tabs} className="mt-7" />
+        </>
+      )}
       <Outlet />
     </>
   )
