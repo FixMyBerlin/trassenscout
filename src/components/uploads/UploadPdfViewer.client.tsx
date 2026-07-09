@@ -56,6 +56,14 @@ export const UploadPdfViewer = ({
   const effectiveZoom = zoom ? zoomLevel : 1
   const effectiveRotation = rotation ? pageRotation : 0
 
+  // Add `?download` robustly so it survives a fileUrl that already has a query
+  // string (the generic prop may carry one), rather than concatenating "?download".
+  const downloadUrl = (() => {
+    const url = new URL(fileUrl, window.location.origin)
+    url.searchParams.set("download", "")
+    return `${url.pathname}${url.search}${url.hash}`
+  })()
+
   // Base width handed to <Page> before the zoom factor is applied.
   let baseWidth = containerWidth
   if (fit && containerWidth && containerHeight && pageAspectRatio) {
@@ -132,7 +140,7 @@ export const UploadPdfViewer = ({
         <>
           <span className="mx-2 text-gray-300">|</span>
 
-          <Link blank icon="download" href={fileUrl}>
+          <Link icon="download" href={downloadUrl}>
             <span className="sr-only">Download</span>
           </Link>
         </>

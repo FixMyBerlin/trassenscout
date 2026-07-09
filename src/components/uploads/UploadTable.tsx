@@ -15,7 +15,7 @@ import { useProjectUploadModal } from "@/src/components/uploads/ProjectUploadMod
 import { UploadPreviewClickable } from "@/src/components/uploads/UploadPreviewClickable"
 import { UploadVerknuepfungen } from "@/src/components/uploads/UploadVerknuepfungen"
 import { isPdf } from "@/src/components/uploads/utils/getFileType"
-import { uploadUrl } from "@/src/components/uploads/utils/uploadUrl"
+import { uploadDownloadUrl, uploadUrl } from "@/src/components/uploads/utils/uploadUrl"
 import { getFilenameFromS3 } from "@/src/shared/uploads/url"
 import type { UploadEditLink, UploadWithRelations } from "./uploadTypes"
 
@@ -203,7 +203,7 @@ const UploadTableRow = ({
             </Link>
           )}
           {!upload.collaborationUrl && (
-            <Link blank icon="download" href={uploadUrl(upload, projectSlug)}>
+            <Link icon="download" href={uploadDownloadUrl(upload, projectSlug)}>
               Download
             </Link>
           )}
