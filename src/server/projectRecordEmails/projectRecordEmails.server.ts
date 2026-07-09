@@ -52,7 +52,7 @@ export async function getProjectRecordEmails(
 
   return db.projectRecordEmail.findMany({
     select: projectRecordEmailListSelect,
-    orderBy: { date: "desc" },
+    orderBy: { createdAt: "desc" },
     where: input.projectId ? { projectId: input.projectId } : undefined,
   })
 }
