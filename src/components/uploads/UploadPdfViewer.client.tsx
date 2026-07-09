@@ -160,8 +160,9 @@ export const UploadPdfViewer = ({
           isFullscreen ? "min-h-0 flex-1" : "h-full rounded border border-blue-500",
         )}
       >
-        <div className="flex min-h-full min-w-full items-center justify-center">
+        <div className="grid min-h-full min-w-full">
           <Document
+            className="m-auto"
             file={fileUrl}
             onLoadSuccess={({ numPages }) => setNumPages(numPages)}
             loading={<p className="p-4 text-sm text-gray-500">PDF wird geladen …</p>}
