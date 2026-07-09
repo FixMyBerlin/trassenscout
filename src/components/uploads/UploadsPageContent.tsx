@@ -34,17 +34,20 @@ export const UploadsPageContent = () => {
     <>
       {/* flex gap instead of space-y: TableWrapper's -my-2 overrides space-y margins (zero-specificity :where() in Tailwind v4) */}
       <div className="mt-8 flex flex-col gap-8">
-        <UploadTable projectSlug={projectSlug} withAction withRelations uploads={visibleUploads} />
-
-        {protocol.hasProtocol && (
-          <UploadProtocolReport
-            entries={protocol.entries}
-            finished={protocol.finished}
-            onDismiss={protocol.reset}
-          />
-        )}
-
         <div className="space-y-3">
+          <UploadDropzone
+            projectSlug={projectSlug}
+            assignSubsubsectionFromFilename={assignBySlug}
+            onBatchStart={(files) => protocol.startBatch(files, { assignBySlug })}
+            onFileRecordResult={protocol.recordResult}
+            onUploadFail={protocol.recordUploadFails}
+            onUploadComplete={async () => {
+              await queryClient.invalidateQueries({
+                queryKey: uploadsQueryOptions({ projectSlug }).queryKey,
+              })
+            }}
+          />
+
           <label className="flex cursor-pointer items-start gap-2 text-sm">
             <input
               type="checkbox"
@@ -60,20 +63,17 @@ export const UploadsPageContent = () => {
               </span>
             </span>
           </label>
-
-          <UploadDropzone
-            projectSlug={projectSlug}
-            assignSubsubsectionFromFilename={assignBySlug}
-            onBatchStart={(files) => protocol.startBatch(files, { assignBySlug })}
-            onFileRecordResult={protocol.recordResult}
-            onUploadFail={protocol.recordUploadFails}
-            onUploadComplete={async () => {
-              await queryClient.invalidateQueries({
-                queryKey: uploadsQueryOptions({ projectSlug }).queryKey,
-              })
-            }}
-          />
         </div>
+
+        {protocol.hasProtocol && (
+          <UploadProtocolReport
+            entries={protocol.entries}
+            finished={protocol.finished}
+            onDismiss={protocol.reset}
+          />
+        )}
+
+        <UploadTable projectSlug={projectSlug} withAction withRelations uploads={visibleUploads} />
       </div>
 
       <SuperAdminBox>
