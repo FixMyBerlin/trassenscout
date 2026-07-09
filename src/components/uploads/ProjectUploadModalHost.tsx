@@ -164,7 +164,6 @@ function ProjectUploadModalHostInner({ children }: { children: React.ReactNode }
             handleClose={closeModal}
             align={isEditView ? "right" : "center"}
             className={isEditView ? "space-y-4" : "space-y-4 sm:max-w-2xl"}
-            zIndex={30}
           >
             <HeadingWithAction>
               <H3>{modalTitle}</H3>

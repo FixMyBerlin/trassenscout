@@ -1,6 +1,7 @@
 import { MapPinIcon, UserGroupIcon } from "@heroicons/react/24/outline"
 import { ButtonWrapper } from "@/src/components/core/components/links/ButtonWrapper"
 import { Link } from "@/src/components/core/components/links/Link"
+import { useIsInsideModal } from "@/src/components/core/components/Modal"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { Tooltip } from "@/src/components/core/components/Tooltip/Tooltip"
@@ -105,6 +106,11 @@ const UploadTableRow = ({
 }) => {
   const hasLocation = upload.latitude !== null && upload.longitude !== null
   const projectUploadModal = useProjectUploadModal()
+  const insideModal = useIsInsideModal()
+  // When the table is nested in another modal we keep the whole upload flow
+  // (preview *and* edit) local so the surrounding modal stays open; otherwise the
+  // hosted edit link would navigate and collapse it.
+  const useHostedUploadModal = Boolean(projectUploadModal) && !insideModal
   const returnTo = useCurrentReturnTo()
   const editLink: UploadEditLink = {
     to: "/$projectSlug/uploads/$uploadId/edit",
@@ -212,12 +218,12 @@ const UploadTableRow = ({
               <Link
                 icon="edit"
                 to={
-                  projectUploadModal
+                  useHostedUploadModal && projectUploadModal
                     ? projectUploadModal.getUploadEditHref({ uploadId: upload.id })
                     : editLink.to
                 }
-                params={projectUploadModal ? undefined : editLink.params}
-                search={projectUploadModal ? undefined : editLink.search}
+                params={useHostedUploadModal ? undefined : editLink.params}
+                search={useHostedUploadModal ? undefined : editLink.search}
                 preload="intent"
                 resetScroll={false}
               >

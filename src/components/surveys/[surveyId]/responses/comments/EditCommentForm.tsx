@@ -30,10 +30,9 @@ type Props = {
     update: (body: string) => void
     remove: () => void
   }
-  zIndex?: number
 }
 
-export const EditCommentForm = ({ comment, commentLabel, mutateComment, zIndex }: Props) => {
+export const EditCommentForm = ({ comment, commentLabel, mutateComment }: Props) => {
   const [open, setOpen] = useState(false)
   const [isDirty, setIsDirty] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
@@ -78,7 +77,7 @@ export const EditCommentForm = ({ comment, commentLabel, mutateComment, zIndex }
         <p>bearbeiten</p>
       </button>
 
-      <Modal open={open} handleClose={handleClose} zIndex={zIndex}>
+      <Modal open={open} handleClose={handleClose}>
         <HeadingWithAction className="mb-2">
           <H3>{commentLabel} bearbeiten</H3>
           <ModalCloseButton onClose={handleClose} />

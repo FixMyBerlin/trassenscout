@@ -183,7 +183,7 @@ function ProjectRecordModalHostInner({ children }: { children: React.ReactNode }
       <>
         {children}
         {isOpen ? (
-          <Modal open handleClose={closeModal} align="right" className="space-y-4" zIndex={30}>
+          <Modal open handleClose={closeModal} align="right" className="space-y-4">
             <HeadingWithAction>
               <H3>{modalTitle}</H3>
               <div className="flex items-center gap-4">

@@ -62,7 +62,6 @@ export const ProjectRecordCommentsSection = ({ projectRecord }: Props) => {
               <CommentField
                 comment={comment}
                 commentLabel="Kommentar"
-                editModalZIndex={40}
                 mutateComment={{
                   update: async (body) => {
                     await updateProjectRecordCommentMutation.mutateAsync({

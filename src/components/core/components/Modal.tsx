@@ -10,8 +10,26 @@ type Props = {
   handleClose: () => void
   className?: string
   align?: "center" | "right"
-  zIndex?: number
 }
+
+const BASE_MODAL_Z_INDEX = 20
+const MODAL_Z_INDEX_STEP = 10
+
+// Nesting depth of the current React subtree: 0 = not inside any modal, 1 = a
+// top-level modal, 2 = a modal opened from inside a top-level modal, … React
+// context propagates through portals (by React tree, not DOM), so a modal
+// rendered into document.body still inherits its opener's depth.
+const ModalDepthContext = createContext(0)
+
+/** Depth of the nearest enclosing modal (0 when not inside one). */
+const useModalDepth = () => useContext(ModalDepthContext)
+
+/**
+ * True when the calling component is rendered inside a <Modal>. Trigger
+ * components use this to open a self-contained (local) modal that stacks on top,
+ * instead of a URL-hosted modal that would navigate and collapse the parent.
+ */
+export const useIsInsideModal = () => useModalDepth() > 0
 
 const ModalInitialFocusContext = createContext<((element: HTMLElement | null) => void) | null>(null)
 let activeScrollLocks = 0
@@ -95,15 +113,10 @@ export const ModalCloseButton = ({ onClose }: { onClose: () => void }) => {
   )
 }
 
-export const Modal = ({
-  children,
-  open,
-  handleClose,
-  className,
-  align = "center",
-  zIndex = 20,
-}: Props) => {
+export const Modal = ({ children, open, handleClose, className, align = "center" }: Props) => {
   const isRightAligned = align === "right"
+  const depth = useModalDepth() + 1
+  const zIndex = BASE_MODAL_Z_INDEX + depth * MODAL_Z_INDEX_STEP
   const initialFocusRef = useRef<HTMLElement | null>(null)
   const registerInitialFocus = useCallback((element: HTMLElement | null) => {
     initialFocusRef.current = element
@@ -122,81 +135,83 @@ export const Modal = ({
   )
 
   return (
-    <Portal>
-      <Dialog
-        open={open}
-        autoFocus={false}
-        initialFocus={initialFocusRef}
-        as="div"
-        className="relative"
-        style={{ zIndex }}
-        onClose={() => {
-          if (isModalCloseBlocked()) return
-          handleClose()
-        }}
-      >
-        <ModalInitialFocusContext.Provider value={registerInitialFocus}>
-          <TransitionChild
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-gray-500/75 transition-opacity" />
-          </TransitionChild>
-
-          <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-            <div
-              className={twMerge(
-                "flex min-h-full text-center",
-                isRightAligned
-                  ? "items-stretch justify-end p-0"
-                  : "items-end justify-center p-4 sm:items-center sm:p-0",
-              )}
+    <ModalDepthContext.Provider value={depth}>
+      <Portal>
+        <Dialog
+          open={open}
+          autoFocus={false}
+          initialFocus={initialFocusRef}
+          as="div"
+          className="relative"
+          style={{ zIndex }}
+          onClose={() => {
+            if (isModalCloseBlocked()) return
+            handleClose()
+          }}
+        >
+          <ModalInitialFocusContext.Provider value={registerInitialFocus}>
+            <TransitionChild
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
             >
-              <TransitionChild
-                as={Fragment}
-                enter={isRightAligned ? "ease-out duration-250" : "ease-out duration-300"}
-                enterFrom={
+              <div className="fixed inset-0 bg-gray-500/75 transition-opacity" />
+            </TransitionChild>
+
+            <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+              <div
+                className={twMerge(
+                  "flex min-h-full text-center",
                   isRightAligned
-                    ? "opacity-0 translate-x-8 sm:translate-x-12"
-                    : "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                }
-                enterTo={
-                  isRightAligned
-                    ? "opacity-100 translate-x-0"
-                    : "opacity-100 translate-y-0 sm:scale-100"
-                }
-                leave={isRightAligned ? "ease-in duration-200" : "ease-in duration-200"}
-                leaveFrom={
-                  isRightAligned
-                    ? "opacity-100 translate-x-0"
-                    : "opacity-100 translate-y-0 sm:scale-100"
-                }
-                leaveTo={
-                  isRightAligned
-                    ? "opacity-0 translate-x-8 sm:translate-x-12"
-                    : "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                }
+                    ? "items-stretch justify-end p-0"
+                    : "items-end justify-center p-4 sm:items-center sm:p-0",
+                )}
               >
-                <DialogPanel
-                  className={twMerge(
+                <TransitionChild
+                  as={Fragment}
+                  enter={isRightAligned ? "ease-out duration-250" : "ease-out duration-300"}
+                  enterFrom={
                     isRightAligned
-                      ? "relative ml-auto h-dvh w-full max-w-none overflow-y-auto bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:w-[clamp(960px,80vw,1280px)] sm:max-w-[calc(100vw-2rem)] sm:p-6"
-                      : "relative overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6",
-                    className,
-                  )}
+                      ? "opacity-0 translate-x-8 sm:translate-x-12"
+                      : "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                  }
+                  enterTo={
+                    isRightAligned
+                      ? "opacity-100 translate-x-0"
+                      : "opacity-100 translate-y-0 sm:scale-100"
+                  }
+                  leave={isRightAligned ? "ease-in duration-200" : "ease-in duration-200"}
+                  leaveFrom={
+                    isRightAligned
+                      ? "opacity-100 translate-x-0"
+                      : "opacity-100 translate-y-0 sm:scale-100"
+                  }
+                  leaveTo={
+                    isRightAligned
+                      ? "opacity-0 translate-x-8 sm:translate-x-12"
+                      : "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                  }
                 >
-                  {children}
-                </DialogPanel>
-              </TransitionChild>
+                  <DialogPanel
+                    className={twMerge(
+                      isRightAligned
+                        ? "relative ml-auto h-dvh w-full max-w-none overflow-y-auto bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:w-[clamp(960px,80vw,1280px)] sm:max-w-[calc(100vw-2rem)] sm:p-6"
+                        : "relative overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6",
+                      className,
+                    )}
+                  >
+                    {children}
+                  </DialogPanel>
+                </TransitionChild>
+              </div>
             </div>
-          </div>
-        </ModalInitialFocusContext.Provider>
-      </Dialog>
-    </Portal>
+          </ModalInitialFocusContext.Provider>
+        </Dialog>
+      </Portal>
+    </ModalDepthContext.Provider>
   )
 }

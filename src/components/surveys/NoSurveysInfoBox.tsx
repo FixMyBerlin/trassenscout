@@ -31,8 +31,8 @@ export const NoSurveysInfoBox = () => {
                 <Link blank href="https://fixmycity.de/radnetzentwicklung-land-brandenburg/">
                   Landesweites Radnetz (Brandenburg)
                 </Link>
-                : Online-Beteiligung von über 200 Ämtern und Trägern öffentlicher Belange (TÖB). Über
-                1.200 fachspezifische Rückmeldungen wurden digital erfasst und direkt in die
+                : Online-Beteiligung von über 200 Ämtern und Trägern öffentlicher Belange (TÖB).
+                Über 1.200 fachspezifische Rückmeldungen wurden digital erfasst und direkt in die
                 Netzentwicklung eingearbeitet.
               </li>
             </ul>

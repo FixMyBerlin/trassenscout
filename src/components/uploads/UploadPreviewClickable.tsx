@@ -1,5 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query"
 import { useCallback, useState } from "react"
+import { useIsInsideModal } from "@/src/components/core/components/Modal"
 import { Upload } from "@/src/prisma/generated/browser"
 import { uploadQueryOptions } from "@/src/server/uploads/uploadQueryOptions"
 import { getUploadFn } from "@/src/server/uploads/uploads.functions"
@@ -16,8 +17,6 @@ type Props = {
   size: UploadSize
   onDeleted?: () => void | Promise<void>
   editLink?: UploadEditLink
-  disableHostedModal?: boolean
-  localModalZIndex?: number
   closeOnEditSuccess?: boolean
 }
 
@@ -28,12 +27,13 @@ export const UploadPreviewClickable = ({
   size,
   onDeleted,
   editLink,
-  disableHostedModal = false,
-  localModalZIndex,
   closeOnEditSuccess = false,
 }: Props) => {
   const queryClient = useQueryClient()
   const projectUploadModal = useProjectUploadModal()
+  // Inside another modal, the URL-hosted upload modal would navigate and collapse
+  // the parent, so keep the whole flow in a local modal that stacks on top.
+  const insideModal = useIsInsideModal()
   const [isPreviewOpen, setIsPreviewOpen] = useState(false)
   const effectiveUploadId = upload?.id ?? uploadId
   const uploadOptions = uploadQueryOptions({ projectSlug, id: effectiveUploadId })
@@ -51,7 +51,7 @@ export const UploadPreviewClickable = ({
 
   const openPreview = async () => {
     if (
-      !disableHostedModal &&
+      !insideModal &&
       projectUploadModal &&
       (!editLink || editLink.to === "/$projectSlug/uploads/$uploadId/edit")
     ) {
@@ -99,7 +99,6 @@ export const UploadPreviewClickable = ({
             : undefined
         }
         editLink={editLink}
-        zIndex={localModalZIndex}
         closeOnEditSuccess={closeOnEditSuccess}
       />
     </>

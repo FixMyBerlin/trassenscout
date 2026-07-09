@@ -17,7 +17,6 @@ type Props = {
   onDeleted?: () => void | Promise<void>
   editLink?: UploadEditLink
   previewUpload?: Pick<Upload, "id" | "title" | "mimeType" | "externalUrl" | "collaborationUrl">
-  zIndex?: number
   closeOnEditSuccess?: boolean
 }
 
@@ -29,7 +28,6 @@ export const UploadDetailModal = ({
   onDeleted,
   editLink,
   previewUpload,
-  zIndex = 30,
   closeOnEditSuccess = false,
 }: Props) => {
   if (!open || uploadId === null) return null
@@ -43,7 +41,6 @@ export const UploadDetailModal = ({
       onDeleted={onDeleted}
       editLink={editLink}
       previewUpload={previewUpload}
-      zIndex={zIndex}
       closeOnEditSuccess={closeOnEditSuccess}
     />
   )
@@ -60,7 +57,6 @@ function UploadDetailModalInner({
   onDeleted,
   editLink,
   previewUpload,
-  zIndex,
   closeOnEditSuccess,
 }: InnerProps) {
   const uploadQuery = useQuery({
@@ -103,7 +99,6 @@ function UploadDetailModalInner({
       handleClose={handleClose}
       align={isEditView ? "right" : "center"}
       className={isEditView ? "space-y-4" : "space-y-4 sm:max-w-2xl"}
-      zIndex={zIndex}
     >
       <HeadingWithAction>
         <H3>{title}</H3>
