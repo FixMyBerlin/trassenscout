@@ -240,7 +240,7 @@ async function sendProjectRecordAssignmentNotification({
 export async function getAllProjectRecordsAdmin(headers: Headers) {
   await endpointAuth.admin(headers)
 
-  const projectRecords = await db.projectRecord.findMany({
+  return db.projectRecord.findMany({
     orderBy: { createdAt: "desc" },
     include: {
       project: { select: { id: true, slug: true } },
@@ -249,22 +249,6 @@ export async function getAllProjectRecordsAdmin(headers: Headers) {
       updatedBy: { select: { id: true, firstName: true, lastName: true } },
     },
   })
-
-  const stateOrder = {
-    [ProjectRecordReviewState.NEEDSADMINREVIEW]: 0,
-    [ProjectRecordReviewState.NEEDSREVIEW]: 1,
-    [ProjectRecordReviewState.REJECTED]: 2,
-    [ProjectRecordReviewState.APPROVED]: 3,
-  }
-
-  projectRecords.sort((a, b) => {
-    if (stateOrder[a.reviewState] !== stateOrder[b.reviewState]) {
-      return stateOrder[a.reviewState] - stateOrder[b.reviewState]
-    }
-    return a.createdAt < b.createdAt ? 1 : -1
-  })
-
-  return projectRecords
 }
 
 export async function getProjectRecordAdmin(
