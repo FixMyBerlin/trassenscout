@@ -7,7 +7,7 @@ export const NoSurveysInfoBox = () => {
       <div className="grid grid-cols-1 gap-x-8 gap-y-6 md:grid-cols-2 md:gap-y-8">
         <div className="flex min-w-0 flex-col gap-6">
           <SurveyP className="my-0!">
-            Der Bereich „Beteiligung“ füllt sich automatisch, sobald Sie ein digitales Verfahren
+            Der Bereich „Eingabe“ füllt sich automatisch, sobald Sie ein digitales Verfahren
             anlegen, aktivieren oder ein abgeschlossenes Projekt archivieren. Das Tool ist
             hochflexibel und wird individuell an Ihre speziellen Bedürfnisse angepasst.
           </SurveyP>
@@ -16,8 +16,10 @@ export const NoSurveysInfoBox = () => {
             <SurveyP className="my-0! mb-4">Erfolgreiche Einsatzbeispiele aus der Praxis:</SurveyP>
             <ul className="list-disc space-y-2 pl-6 text-base text-gray-700">
               <li>
-                <span className="underline">Bürgerbeteiligung zu Radschnellverbindungen 8:</span>{" "}
-                Gezielte Abfrage von Meinungen, Hinweise und Anregungen.
+                <Link blank href="https://fixmycity.de/rs8/">
+                  Bürgerbeteiligung zu Radschnellverbindungen 8
+                </Link>
+                : Gezielte Abfrage von Meinungen, Hinweise und Anregungen.
               </li>
               {/* <li>
                 <span className="underline">
@@ -26,8 +28,10 @@ export const NoSurveysInfoBox = () => {
                 ÖPNV-Infrastrukturmaßnahmen nach Landesrichtlinie.
               </li> */}
               <li>
-                <span className="underline">Landesweites Radnetz (Brandenburg):</span>{" "}
-                Online-Beteiligung von über 200 Ämtern und Trägern öffentlicher Belange (TÖB). Über
+                <Link blank href="https://fixmycity.de/radnetzentwicklung-land-brandenburg/">
+                  Landesweites Radnetz (Brandenburg)
+                </Link>
+                : Online-Beteiligung von über 200 Ämtern und Trägern öffentlicher Belange (TÖB). Über
                 1.200 fachspezifische Rückmeldungen wurden digital erfasst und direkt in die
                 Netzentwicklung eingearbeitet.
               </li>
