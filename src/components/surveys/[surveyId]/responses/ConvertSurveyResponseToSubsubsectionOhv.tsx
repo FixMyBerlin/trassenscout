@@ -75,15 +75,12 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
         })
       } catch (error) {
         if (isNotFoundError(error)) return null
-        throw error
+        console.error("Failed to check for existing subsubsection:", error)
+        return null
       }
     },
   })
 
-  const lookupError =
-    existingSubsubsectionLookup.error != null
-      ? "Verknüpfte Maßnahme konnte nicht geprüft werden."
-      : null
   const existingSubsubsectionSlug =
     convertedSubsubsectionSlug ?? existingSubsubsectionLookup.data?.slug ?? null
   const hasCheckedExistingEntry = existingSubsubsectionLookup.isFetched
@@ -233,9 +230,9 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
           </p>
         </div>
       )}
-      {(convertError || lookupError) && (
+      {convertError && (
         <div className="rounded-sm bg-red-50 p-4 text-red-800">
-          <p className="text-sm">{convertError ?? lookupError}</p>
+          <p className="text-sm">{convertError}</p>
         </div>
       )}
       {!existingSubsubsectionSlug && (
