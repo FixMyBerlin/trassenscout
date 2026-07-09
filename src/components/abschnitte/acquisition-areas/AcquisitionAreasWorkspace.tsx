@@ -5,6 +5,7 @@ import { type KeyboardEvent, useMemo, useState } from "react"
 import { MapProvider } from "react-map-gl/maplibre"
 import { twJoin } from "tailwind-merge"
 import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { TextField } from "@/src/components/core/components/forms/fields/TextField"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useCoreAppFormContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
@@ -15,6 +16,8 @@ import { AcquisitionAreaMap } from "./AcquisitionAreaMap"
 import { AcquisitionAreasList } from "./AcquisitionAreasList"
 import type { PotentialAcquisitionArea } from "./potentialAcquisitionAreaTypes"
 
+const MAX_BUFFER_RADIUS_M = 150
+
 function BufferRadiusControls({ onApplyRadius }: { onApplyRadius: (radius: number) => void }) {
   const form = useCoreAppFormContext()
 
@@ -22,20 +25,22 @@ function BufferRadiusControls({ onApplyRadius }: { onApplyRadius: (radius: numbe
     const raw = form.getFieldValue("bufferRadiusInput")
     const v = Number.parseFloat(String(raw).replace(",", "."))
     if (!Number.isFinite(v) || v < 0) return
-    onApplyRadius(v)
-    form.setFieldValue("bufferRadiusInput", String(v))
+    const clamped = Math.min(MAX_BUFFER_RADIUS_M, v)
+    onApplyRadius(clamped)
+    form.setFieldValue("bufferRadiusInput", String(clamped))
   }
 
   return (
     <div className="flex flex-col gap-2">
       <div className="min-w-0 flex-1">
         <form.AppField name="bufferRadiusInput">
-          {(field) => (
-            <field.TextField
+          {() => (
+            <TextField
               label="1. Schritt: Puffer festlegen (m)"
-              labelProps={{ className: "mb-2 block text-base font-semibold text-gray-900" }}
+              help={`Die Geometrie der Maßnahme wird um diesen Wert erweitert, um angrenzende Flurstücke zu identifizieren und zu potenziellen Verhandlungsflächen zu verschneiden. Maximal ${MAX_BUFFER_RADIUS_M} m`}
               type="number"
               min={0}
+              max={MAX_BUFFER_RADIUS_M}
               onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
                 if (e.key === "Enter") {
                   e.preventDefault()
@@ -46,10 +51,7 @@ function BufferRadiusControls({ onApplyRadius }: { onApplyRadius: (radius: numbe
           )}
         </form.AppField>
       </div>
-      <p className="text-sm text-gray-500">
-        Die Geometrie der Maßnahme wird um diesen Wert erweitert, um angrenzende Flurstücke zu
-        identifizieren und zu potenziellen Verhandlungsflächen zu verschneiden.
-      </p>
+
       <div className="mt-1">
         <button
           type="button"
