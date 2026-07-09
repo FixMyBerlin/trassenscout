@@ -105,4 +105,14 @@ export const projectRecordInclude = {
     },
     orderBy: { id: "asc" },
   },
+  projectRecordEmail: {
+    select: {
+      id: true,
+      textBody: true,
+      from: true,
+      date: true,
+      subject: true,
+      uploads: { select: { id: true, title: true } },
+    },
+  },
 } as const

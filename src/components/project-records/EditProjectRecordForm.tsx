@@ -193,7 +193,7 @@ export const EditProjectRecordForm = ({
           >
             Admin-Ansicht
           </Link>{" "}
-          wechseln, um Bestätigungsstatus zu ändern und Quellnachricht zu sehen.
+          wechseln, um Bestätigungsstatus zu ändern.
         </SuperAdminBox>
       )}
       <FormShell
@@ -218,6 +218,7 @@ export const EditProjectRecordForm = ({
           relationContext={editRelationContext}
           projectSlug={projectSlug}
           splitView={needsReview}
+          emailSource={projectRecord.projectRecordEmail ?? undefined}
           landAcquisitionModuleEnabled={projectRecord.project.landAcquisitionModuleEnabled}
         />
 
