@@ -1,5 +1,5 @@
 import { useNavigate } from "@tanstack/react-router"
-import { useEffect, useMemo } from "react"
+import { useEffect, useEffectEvent, useMemo } from "react"
 import { MapLayerMouseEvent, useMap } from "react-map-gl/maplibre"
 import { BaseMap } from "./BaseMap"
 import { getLineEndPointsLayerId } from "./layers/LineEndPointsLayer"
@@ -86,27 +86,6 @@ export const SubsubsectionMap = ({
     // Handle subsubsection click
     if (subsectionSlug && subsubsectionSlug) {
       handleSelect({ subsectionSlug, subsubsectionSlug, edit: event.originalEvent?.altKey })
-
-      // Fly to bounds of clicked subsubsection
-      const map = event.target
-      if (map) {
-        const clickedSubsubsection = filteredSubsubsections.find(
-          (subsub) => subsub.slug === subsubsectionSlug,
-        )
-        if (clickedSubsubsection) {
-          const bboxResult = geometriesBbox([
-            selectedSubsection.geometry,
-            clickedSubsubsection.geometry,
-          ])
-
-          // Fly to new bounds
-          map.fitBounds(bboxResult, {
-            padding: 60,
-            duration: 1000,
-            linear: false, // Use easeInOut animation
-          })
-        }
-      }
     }
   }
 
@@ -117,6 +96,19 @@ export const SubsubsectionMap = ({
   const mapBbox = selectedSubsubsection
     ? geometriesBbox([selectedSubsubsection.geometry])
     : geometriesBbox([selectedSubsection.geometry, ...filteredGeometries])
+
+  const flyToSelectedSubsubsection = useEffectEvent(function flyToSelectedSubsubsection() {
+    if (!mainMap || !mapLoaded) return
+    mainMap.fitBounds(mapBbox, { padding: 60, duration: 1000, linear: false })
+  })
+
+  // pan/zoom whenever the selected subsubsection changes (map click, marker click, or route navigation)
+  useEffect(
+    function panMapToSelectedSubsubsection() {
+      flyToSelectedSubsubsection()
+    },
+    [mapLoaded, selectedSubsubsectionSlug],
+  )
 
   const { lines: subsectionLines, polygons: subsectionPolygons } = useMemo(
     () =>
