@@ -28,6 +28,7 @@ import { ConvertSurveyResponseToSubsubsectionOhv } from "./ConvertSurveyResponse
 import { EditableSurveyResponseForm } from "./EditableSurveyResponseForm"
 import EditableSurveyResponseMapAndStaticData from "./EditableSurveyResponseMapAndStaticData"
 import { EditableSurveyResponseStatusLabel } from "./EditableSurveyResponseStatusLabel"
+import { SurveyResponseAdminDeleteBox } from "./SurveyResponseAdminDeleteBox"
 import { useSurveyResponseDetails as useResponseDetails } from "./useSurveyResponseDetails"
 
 const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
@@ -156,7 +157,6 @@ const EditableSurveyResponseListItem = ({
           )}
         >
           <EditableSurveyResponseMapAndStaticData
-            refetchResponsesAndTopics={refetchResponsesAndTopics}
             response={response}
             showMap={showMap}
             maptilerUrl={metaDefinition.maptilerUrl}
@@ -232,6 +232,13 @@ const EditableSurveyResponseListItem = ({
             projectSlug={projectSlug}
             surveySlug={surveySlug}
           />
+          {projectSlug && (
+            <SurveyResponseAdminDeleteBox
+              response={response}
+              projectSlug={projectSlug}
+              refetchResponsesAndTopics={refetchResponsesAndTopics}
+            />
+          )}
         </div>
       )}
     </article>

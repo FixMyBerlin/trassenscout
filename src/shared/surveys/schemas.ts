@@ -18,7 +18,18 @@ export const CreateSurveySchema = z.object({
 
 export type CreateSurveyType = z.infer<typeof CreateSurveySchema>
 
-export const createSurveyFormDefaultValues = {
+export type CreateSurveyFormValues = {
+  projectId: number | ""
+  slug: string
+  title: string
+  active: boolean
+  interestedParticipants: number | null
+  startDate: Date | string | null
+  endDate: Date | string | null
+  surveyResultsUrl: string | null
+}
+
+export const createSurveyFormDefaultValues: CreateSurveyFormValues = {
   projectId: "",
   slug: "",
   title: "",

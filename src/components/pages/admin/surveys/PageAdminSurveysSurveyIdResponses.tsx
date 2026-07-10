@@ -3,6 +3,7 @@ import { getRouteApi } from "@tanstack/react-router"
 import { Suspense } from "react"
 import { AdminPageHeader } from "@/src/components/admin/AdminPageHeader"
 import { AdminSurveyResponsesNew } from "@/src/components/admin/surveys/SurveyResponsesNew"
+import type { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { Spinner } from "@/src/components/core/components/Spinner"
 import { adminSurveyQueryOptions } from "@/src/server/surveys/surveysQueryOptions"
 
@@ -27,7 +28,7 @@ export function PageAdminSurveysSurveyIdResponses() {
           <AdminSurveyResponsesNew
             projectSlug={survey.project.slug}
             surveyId={surveyId}
-            survey={survey}
+            survey={{ slug: survey.slug as AllowedSurveySlugs }}
           />
         </Suspense>
       </article>

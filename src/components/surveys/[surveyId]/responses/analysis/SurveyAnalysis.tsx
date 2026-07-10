@@ -25,8 +25,8 @@ export function SurveyAnalysis({ projectSlug, surveyId: _surveyId, survey, tabs 
     groupedSurveyResponsesQueryOptions({ projectSlug, surveyId: survey.id }),
   )
   const groupedSurveyResponsesFirstPart = data?.groupedSurveyResponsesFirstPart ?? {}
-  const surveySessions = data?.surveySessions ?? []
   const surveyResponsesFeedbackPart = data?.surveyResponsesFeedbackPart ?? []
+  const participantCount = data?.count ?? 0
 
   const surveySlug = survey.slug as AllowedSurveySlugs
 
@@ -46,7 +46,7 @@ export function SurveyAnalysis({ projectSlug, surveyId: _surveyId, survey, tabs 
     {
       firstRow: {
         "Interesse an Updates": survey.interestedParticipants || "k. A.",
-        Teilnehmende: surveySessions.length,
+        Teilnehmende: participantCount,
         "Inhaltliche Eingaben": surveyResponsesFeedbackPart.length,
         "Inhaltliche Eingaben mit Ortsangabe": surveyResponsesFeedbackPartWithLocation.length,
         "Inhaltliche Eingaben ohne Ortsangabe":

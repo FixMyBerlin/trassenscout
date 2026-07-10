@@ -8,6 +8,7 @@ import { SurveyResponseStateEnum } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
+import { deleteUploadFileAndDbRecord } from "@/src/server/uploads/_utils/deleteUploadFileAndDbRecord"
 import { connectIds, idsFromFormValue, setIds } from "@/src/shared/prisma/connectIds"
 import { m2mFields, type M2MFieldsType } from "./m2mFields"
 import { SurveyResponseFormSchema } from "./schemas"
@@ -34,6 +35,136 @@ type SurveyResponseInput = z.infer<typeof SurveyResponseFormSchema>
 
 function surveyResponseInProjectWhere(projectSlug: string, id: number) {
   return { id, surveySession: { survey: { project: { slug: projectSlug } } } }
+}
+
+function parseSurveyResponseData(data: string): SurveyResponseJsonData | null {
+  try {
+    return JSON.parse(data) as SurveyResponseJsonData
+  } catch {
+    return null
+  }
+}
+
+async function findLinkedSubsubsectionForSurveyResponse(responseId: number) {
+  const uploadLink = await db.upload.findFirst({
+    where: {
+      surveyResponseId: responseId,
+      subsubsections: { some: {} },
+    },
+    select: {
+      subsubsections: {
+        select: { id: true, slug: true },
+        take: 1,
+      },
+    },
+  })
+  const uploadLinkedSubsubsection = uploadLink?.subsubsections.at(0)
+  if (uploadLinkedSubsubsection) return uploadLinkedSubsubsection
+
+  const response = await db.surveyResponse.findFirst({
+    where: { id: responseId },
+    select: {
+      data: true,
+      surveySession: {
+        select: {
+          survey: {
+            select: {
+              project: { select: { slug: true } },
+            },
+          },
+        },
+      },
+    },
+  })
+  if (!response) return null
+
+  const parsedData = parseSurveyResponseData(response.data)
+  if (!parsedData) return null
+
+  const referenceId =
+    typeof parsedData.referenceId === "string" ? parsedData.referenceId.toLowerCase() : null
+  const subsectionSlug =
+    parsedData.commune != null ? String(parsedData.commune).toLowerCase() : null
+  if (!referenceId || !subsectionSlug) return null
+
+  return db.subsubsection.findFirst({
+    where: {
+      slug: referenceId,
+      subsection: {
+        slug: subsectionSlug,
+        project: { slug: response.surveySession.survey.project.slug },
+      },
+    },
+    select: { id: true, slug: true },
+  })
+}
+
+async function assertResponsesHaveNoLinkedSubsubsection(responseIds: number[]) {
+  for (const responseId of responseIds) {
+    const linkedSubsubsection = await findLinkedSubsubsectionForSurveyResponse(responseId)
+    if (!linkedSubsubsection) continue
+
+    throw new Error(
+      `Eintrag ${responseId} kann nicht gelöscht werden, weil er mit der Maßnahme „${linkedSubsubsection.slug}" (ID ${linkedSubsubsection.id}) verknüpft ist.`,
+    )
+  }
+}
+
+/**
+ * Delete the given survey responses together with the relations that become orphaned
+ * as a result:
+ * - `SurveySession`s left without any linked `SurveyResponse`.
+ * - `Upload`s whose only meaningful link was one of the deleted responses (their S3 /
+ *   Luckycloud file and DB record are removed). Uploads still attached to something else
+ *   (subsubsection, acquisition area, project record, tag, project-record email) are kept
+ *   and their `surveyResponseId` is simply nulled by Prisma's default `SetNull`.
+ *
+ * Response/session removal runs in a single transaction; upload file deletion is external
+ * I/O and is therefore performed after the transaction commits (best-effort cleanup).
+ * Callers are responsible for authorization and for scoping `responseIds` to what the
+ * caller may delete.
+ */
+async function deleteResponsesWithOrphanedRelations(responseIds: number[]) {
+  if (responseIds.length === 0) return
+
+  await assertResponsesHaveNoLinkedSubsubsection(responseIds)
+
+  // Capture uploads that will be orphaned before the responses (and their FK links) are gone.
+  const orphanedUploads = await db.upload.findMany({
+    where: {
+      surveyResponseId: { in: responseIds },
+      projectRecordEmailId: null,
+      projectRecords: { none: {} },
+      subsubsections: { none: {} },
+      acquisitionAreas: { none: {} },
+      tags: { none: {} },
+    },
+    select: { id: true, externalUrl: true, collaborationUrl: true, collaborationPath: true },
+  })
+
+  await db.$transaction(async (tx) => {
+    const responses = await tx.surveyResponse.findMany({
+      where: { id: { in: responseIds } },
+      select: { surveySessionId: true },
+    })
+    const sessionIds = [...new Set(responses.map((response) => response.surveySessionId))]
+
+    await tx.surveyResponse.deleteMany({ where: { id: { in: responseIds } } })
+
+    if (sessionIds.length) {
+      await tx.surveySession.deleteMany({
+        where: { id: { in: sessionIds }, responses: { none: {} } },
+      })
+    }
+  })
+
+  for (const upload of orphanedUploads) {
+    try {
+      await deleteUploadFileAndDbRecord(upload)
+    } catch (error) {
+      console.warn(`Failed to delete orphaned upload ${upload.id}:`, error)
+    }
+  }
 }
 
 async function validateSurveyResponseRelations(projectSlug: string, input: SurveyResponseInput) {
@@ -155,15 +286,18 @@ export async function updateSurveyResponse(
   })
 }
 
-export async function deleteSurveyResponse(
+export async function deleteSurveyResponseAsAdmin(
   headers: Headers,
   input: z.infer<typeof DeleteSurveyResponseBySlugSchema>,
 ) {
-  await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
+  await endpointAuth.admin(headers)
 
-  return db.surveyResponse.deleteMany({
+  const response = await db.surveyResponse.findFirstOrThrow({
     where: surveyResponseInProjectWhere(input.projectSlug, input.id),
+    select: { id: true },
   })
+
+  return deleteResponsesWithOrphanedRelations([response.id])
 }
 
 export async function patchSurveyResponse(
@@ -437,7 +571,9 @@ export async function getGroupedSurveyResponses(
     surveyResponsesFeedbackPart,
     surveySessions,
     hasMore: false as const,
-    count: surveySessions.length,
+    count: surveySessions.filter((session) =>
+      session.responses.some((response) => response.state === SurveyResponseStateEnum.SUBMITTED),
+    ).length,
   }
 }
 
@@ -504,12 +640,8 @@ export async function deleteTestSurveyResponses(
   input: z.infer<typeof DeleteTestSurveyResponsesSchema>,
 ) {
   await endpointAuth.admin(headers)
-  const { deleteIds } = input
 
-  await db.surveyResponse.deleteMany({ where: { id: { in: deleteIds } } })
-  await db.surveySession.deleteMany({
-    where: { responses: { some: { id: { in: deleteIds } } } },
-  })
+  await deleteResponsesWithOrphanedRelations(input.deleteIds)
 }
 
 export type GetLinkedSurveyResponseForSubsubsectionInput = z.infer<

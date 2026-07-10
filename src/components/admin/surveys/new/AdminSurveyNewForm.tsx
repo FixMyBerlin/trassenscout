@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 import { FORM_ERROR } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { createAdminSurveyFn } from "@/src/server/surveys/surveys.functions"
-import { CreateSurveySchema, type CreateSurveyType } from "@/src/shared/surveys/schemas"
+import { type CreateSurveyType } from "@/src/shared/surveys/schemas"
 import { AdminSurveyForm } from "../AdminSurveyForm"
 
 export const AdminSurveyNewForm = () => {
@@ -26,7 +26,5 @@ export const AdminSurveyNewForm = () => {
     }
   }
 
-  return (
-    <AdminSurveyForm submitText="Erstellen" schema={CreateSurveySchema} onSubmit={handleSubmit} />
-  )
+  return <AdminSurveyForm submitText="Erstellen" onSubmit={handleSubmit} />
 }

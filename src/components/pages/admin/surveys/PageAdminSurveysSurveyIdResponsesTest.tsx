@@ -2,6 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { AdminPageHeader } from "@/src/components/admin/AdminPageHeader"
 import { DeleteButton } from "@/src/components/admin/surveys/[surveyId]/responses/test/DeleteButton"
+import type { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { testSurveyResponsesQueryOptions } from "@/src/server/survey-responses/surveyResponsesQueryOptions"
 import { adminSurveyQueryOptions } from "@/src/server/surveys/surveysQueryOptions"
 
@@ -12,7 +13,7 @@ export function PageAdminSurveysSurveyIdResponsesTest() {
   const surveyId = Number(surveyIdString)
   const { data: survey } = useSuspenseQuery(adminSurveyQueryOptions(surveyId))
   const { data: testSurveyResponses } = useSuspenseQuery(
-    testSurveyResponsesQueryOptions({ slug: survey.slug }),
+    testSurveyResponsesQueryOptions({ slug: survey.slug as AllowedSurveySlugs }),
   )
 
   return (
@@ -36,7 +37,7 @@ export function PageAdminSurveysSurveyIdResponsesTest() {
           ))}
       {!!testSurveyResponses.length && (
         <DeleteButton
-          surveySlug={survey.slug}
+          surveySlug={survey.slug as AllowedSurveySlugs}
           testSurveyResponseIds={testSurveyResponses.map((response) => response.id)}
         />
       )}

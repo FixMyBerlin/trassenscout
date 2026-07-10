@@ -1,7 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { useLocation } from "@tanstack/react-router"
 import { ReactNode, useState } from "react"
-import { z } from "zod"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
@@ -10,12 +9,16 @@ import {
   type OnSubmitResult,
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { projectsAdminQueryOptions } from "@/src/server/projects/projectsQueryOptions"
-import { createSurveyFormDefaultValues } from "@/src/shared/surveys/schemas"
+import {
+  CreateSurveySchema,
+  createSurveyFormDefaultValues,
+  type CreateSurveyFormValues,
+  type CreateSurveyType,
+} from "@/src/shared/surveys/schemas"
 
-export type AdminSurveyFormProps<S extends z.ZodType> = {
-  schema: S
-  initialValues?: Partial<z.infer<S>>
-  onSubmit: (values: z.infer<S>) => Promise<void | OnSubmitResult>
+export type AdminSurveyFormProps = {
+  initialValues?: Partial<CreateSurveyFormValues>
+  onSubmit: (values: CreateSurveyType) => Promise<void | OnSubmitResult>
   submitText: string
   resetOnSubmit?: boolean
   className?: string
@@ -25,8 +28,7 @@ export type AdminSurveyFormProps<S extends z.ZodType> = {
   submitClassName?: string
 }
 
-export function AdminSurveyForm<S extends z.ZodType>({
-  schema,
+export function AdminSurveyForm({
   initialValues,
   onSubmit,
   submitText,
@@ -36,7 +38,7 @@ export function AdminSurveyForm<S extends z.ZodType>({
   actionBarRight,
   submitDisabled,
   submitClassName,
-}: AdminSurveyFormProps<S>) {
+}: AdminSurveyFormProps) {
   const [formError, setFormError] = useState<string | null>(null)
   const { data: projectsResult } = useSuspenseQuery(projectsAdminQueryOptions())
   const projectOptions: [number | string, string][] = [
@@ -51,9 +53,9 @@ export function AdminSurveyForm<S extends z.ZodType>({
 
   const form = useAppForm({
     defaultValues: { ...createSurveyFormDefaultValues, ...initialValues },
-    validators: { onSubmit: schema } as never,
+    validators: { onSubmit: CreateSurveySchema } as never,
     onSubmit: async ({ value }) => {
-      const result = (await onSubmit(value as z.infer<S>)) || {}
+      const result = (await onSubmit(value as CreateSurveyType)) || {}
       applyFormSubmitResult(form, result, setFormError)
       if (resetOnSubmit && !result.FORM_ERROR) {
         form.reset()

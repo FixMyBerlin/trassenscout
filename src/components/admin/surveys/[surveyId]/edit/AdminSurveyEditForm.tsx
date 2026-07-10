@@ -4,7 +4,7 @@ import { DeleteActionBar } from "@/src/components/core/components/forms/DeleteAc
 import { FORM_ERROR } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { deleteAdminSurveyFn, updateAdminSurveyFn } from "@/src/server/surveys/surveys.functions"
 import { adminSurveyQueryOptions } from "@/src/server/surveys/surveysQueryOptions"
-import { CreateSurveySchema, type CreateSurveyType } from "@/src/shared/surveys/schemas"
+import { type CreateSurveyType } from "@/src/shared/surveys/schemas"
 import { AdminSurveyForm } from "../../AdminSurveyForm"
 
 type Props = {
@@ -38,7 +38,6 @@ export const AdminSurveyEditForm = ({ surveyId }: Props) => {
   return (
     <AdminSurveyForm
       submitText="Aktualisieren"
-      schema={CreateSurveySchema}
       initialValues={survey}
       onSubmit={handleSubmit}
       actionBarRight={

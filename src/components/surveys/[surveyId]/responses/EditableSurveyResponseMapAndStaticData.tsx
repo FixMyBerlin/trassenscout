@@ -1,6 +1,5 @@
 import { ArrowUpRightIcon, EnvelopeIcon } from "@heroicons/react/20/solid"
 import { ArrowsPointingOutIcon } from "@heroicons/react/24/outline"
-import { useMutation } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { center } from "@turf/turf"
 import { LngLatBoundsLike, MapProvider } from "react-map-gl/maplibre"
@@ -11,12 +10,9 @@ import { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/al
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
 import { getQuestionIdBySurveySlug } from "@/src/components/beteiligung/shared/utils/getQuestionIdBySurveySlug"
 import { Link } from "@/src/components/core/components/links/Link"
-import { linkStyles } from "@/src/components/core/components/links/styles"
 import { Prettify } from "@/src/components/core/types"
-import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { getFlatSurveyFormFields } from "@/src/components/surveys/[surveyId]/responses/getFlatSurveyFormFields"
 import { getSurveyCategoryOptions } from "@/src/components/surveys/[surveyId]/responses/getSurveyCategoryOptions"
-import { deleteSurveyResponseFn } from "@/src/server/survey-responses/surveyResponses.functions"
 import type { FeedbackSurveyResponse } from "@/src/server/survey-responses/surveyResponsesQueryOptions"
 import { surveyResponsesSearchToRaw } from "@/src/shared/survey-responses/searchSchemas"
 import EditableSurveyResponseAdditionalFilterFields from "./EditableSurveyResponseAdditionalFilterFields"
@@ -60,20 +56,13 @@ type Props = {
   maptilerUrl: string
   defaultViewState: LngLatBoundsLike
   showMap?: boolean
-  refetchResponsesAndTopics: () => Promise<void>
 }
 
-const EditableSurveyResponseMapAndStaticData = ({
-  response,
-  showMap,
-  categoryLabel,
-  refetchResponsesAndTopics,
-}: Props) => {
+const EditableSurveyResponseMapAndStaticData = ({ response, showMap, categoryLabel }: Props) => {
   const { projectSlug } = loggedInProjectRouteApi.useParams()
   const surveyId = response.surveySession.survey.id
   const surveyIdString = String(surveyId)
   const surveySlug = response.surveySession.survey.slug as AllowedSurveySlugs
-  const deleteSurveyResponseMutation = useMutation({ mutationFn: deleteSurveyResponseFn })
 
   const feedbackDefinition = getConfigBySurveySlug(surveySlug, "part2")
   const backendConfig = getConfigBySurveySlug(surveySlug, "backend")
@@ -121,24 +110,6 @@ const EditableSurveyResponseMapAndStaticData = ({
     }
   }
 
-  const handleDelete = async () => {
-    if (
-      response.source !== "FORM" &&
-      window.confirm(`Den Eintrag mit ID ${response.id} unwiderruflich löschen?`)
-    ) {
-      try {
-        await deleteSurveyResponseMutation.mutateAsync({
-          data: { projectSlug, id: response.id },
-        })
-      } catch {
-        alert(
-          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
-        )
-      }
-      await refetchResponsesAndTopics()
-    }
-  }
-
   const locationPin = response.data[locationId] as { lat: number; lng: number } | undefined
   const geometryCategoryValue = geometryCategoryId
     ? (response.data[geometryCategoryId] as string | undefined)
@@ -174,13 +145,7 @@ const EditableSurveyResponseMapAndStaticData = ({
           {response.source !== "FORM" && (
             <span className="flex flex-row items-center gap-2">
               <EnvelopeIcon className="size-4" />
-              <span>per {getTranslatedSource(response.source)} eingegangen </span>
-              <IfUserCanEdit>
-                <span>| </span>
-                <button onClick={handleDelete} className={twJoin(linkStyles, "my-0")}>
-                  Eintrag löschen
-                </button>
-              </IfUserCanEdit>
+              <span>per {getTranslatedSource(response.source)} eingegangen</span>
             </span>
           )}
           {/* TEXT */}

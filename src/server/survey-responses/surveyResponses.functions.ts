@@ -16,7 +16,7 @@ import {
 } from "./surveyResponses.inputSchemas"
 import {
   createSurveyResponse,
-  deleteSurveyResponse,
+  deleteSurveyResponseAsAdmin,
   deleteTestSurveyResponses,
   getCreatedSurveyResponses,
   getFeedbackSurveyResponsesWithSurveyDataAndComments,
@@ -64,9 +64,9 @@ export const patchSurveyResponseFn = createServerFn({ method: "POST" })
   .validator(PatchSurveyResponseSchema)
   .handler(({ data }) => patchSurveyResponse(getRequestHeaders(), data))
 
-export const deleteSurveyResponseFn = createServerFn({ method: "POST" })
+export const deleteSurveyResponseAsAdminFn = createServerFn({ method: "POST" })
   .validator(DeleteSurveyResponseBySlugSchema)
-  .handler(({ data }) => deleteSurveyResponse(getRequestHeaders(), data))
+  .handler(({ data }) => deleteSurveyResponseAsAdmin(getRequestHeaders(), data))
 
 export const getCreatedSurveyResponsesFn = createServerFn({ method: "GET" })
   .validator(GetCreatedSurveyResponsesSchema)
