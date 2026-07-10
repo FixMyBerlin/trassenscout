@@ -96,18 +96,22 @@ export const SubsubsectionMap = ({
   const mapBbox = selectedSubsubsection
     ? geometriesBbox([selectedSubsubsection.geometry])
     : geometriesBbox([selectedSubsection.geometry, ...filteredGeometries])
+  // stable string key so the effect reacts to the bbox's values, not identity
+  // (tanstack query recreates the geometry arrays on every window-focus refetch)
+  const mapBboxKey = mapBbox.join(",")
 
   const flyToSelectedSubsubsection = useEffectEvent(function flyToSelectedSubsubsection() {
     if (!mainMap || !mapLoaded) return
     mainMap.fitBounds(mapBbox, { padding: 60, duration: 1000, linear: false })
   })
 
-  // pan/zoom whenever the selected subsubsection changes (map click, marker click, or route navigation)
+  // pan/zoom whenever the target bounds change (subsection change, subsubsection
+  // change, map click, marker click, or route navigation)
   useEffect(
     function panMapToSelectedSubsubsection() {
       flyToSelectedSubsubsection()
     },
-    [mapLoaded, selectedSubsubsectionSlug],
+    [mapLoaded, mapBboxKey],
   )
 
   const { lines: subsectionLines, polygons: subsectionPolygons } = useMemo(
