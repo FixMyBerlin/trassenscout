@@ -2,7 +2,7 @@ import { z } from "zod"
 import { SlugSchema } from "@/src/components/core/utils/schema-shared"
 
 export const CreateSurveySchema = z.object({
-  projectId: z.coerce.number(),
+  projectId: z.coerce.number().int().positive({ error: "Bitte Projekt auswählen." }),
   slug: SlugSchema,
   title: z.string().min(3, { error: "Pflichtfeld. Mindestens 3 Zeichen." }),
   active: z.coerce.boolean(),
@@ -18,8 +18,8 @@ export const CreateSurveySchema = z.object({
 
 export type CreateSurveyType = z.infer<typeof CreateSurveySchema>
 
-export const createSurveyFormDefaultValues: CreateSurveyType = {
-  projectId: 0,
+export const createSurveyFormDefaultValues = {
+  projectId: "",
   slug: "",
   title: "",
   active: true,

@@ -39,9 +39,12 @@ export function AdminSurveyForm<S extends z.ZodType>({
 }: AdminSurveyFormProps<S>) {
   const [formError, setFormError] = useState<string | null>(null)
   const { data: projectsResult } = useSuspenseQuery(projectsAdminQueryOptions())
-  const projectOptions: [number | string, string][] = projectsResult.projects.map((project) => {
-    return [String(project.id), `${project.slug}`] satisfies [string, string]
-  })
+  const projectOptions: [number | string, string][] = [
+    ["", "Bitte Projekt auswählen"],
+    ...projectsResult.projects.map((project) => {
+      return [String(project.id), `${project.slug}`] satisfies [string, string]
+    }),
+  ]
 
   const pathname = useLocation().pathname
   const editForm = pathname?.endsWith("edit")
