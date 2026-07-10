@@ -21,6 +21,11 @@ export function PageAdminSurveys() {
           </CoreLink>
         }
       />
+      <p className="mb-6 text-gray-600">
+        Hier verwalten Sie alle Beteiligungen (Umfragen) projektübergreifend: Sie können neue
+        Beteiligungen anlegen, bestehende bearbeiten sowie deren Antworten, Testeinträge und
+        nicht-abgeschickte Einträge einsehen.
+      </p>
       <ul className="list-none space-y-8 pl-0">
         {surveys.map((survey) => (
           <li key={survey.id}>
