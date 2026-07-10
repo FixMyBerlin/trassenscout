@@ -1,8 +1,5 @@
 import { z } from "zod"
-import {
-  allowedSurveySlugs,
-  type AllowedSurveySlugs,
-} from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
+import type { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
@@ -89,8 +86,6 @@ export async function deleteSurvey(headers: Headers, input: z.infer<typeof Delet
   })
 }
 
-const AdminSurveySlugSchema = z.looseObject({ slug: z.enum(allowedSurveySlugs) })
-
 export async function getAdminSurveys(headers: Headers) {
   await endpointAuth.admin(headers)
 
@@ -106,7 +101,7 @@ export async function getAdminSurvey(
 ) {
   await endpointAuth.admin(headers)
 
-  const survey = await db.survey.findFirstOrThrow({
+  return db.survey.findFirstOrThrow({
     where: { id: input.id },
     include: {
       project: {
@@ -116,9 +111,6 @@ export async function getAdminSurvey(
       },
     },
   })
-  const validatedSurvey = AdminSurveySlugSchema.parse(survey)
-
-  return { ...survey, slug: validatedSurvey.slug }
 }
 
 export async function createAdminSurvey(
