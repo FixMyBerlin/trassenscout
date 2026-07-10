@@ -1,4 +1,5 @@
 import {
+  ClipboardDocumentListIcon,
   Cog6ToothIcon,
   FolderIcon,
   HomeIcon,
@@ -186,6 +187,12 @@ export function buildAdminNavigation() {
       link: { to: "/admin/memberships" },
       icon: UsersIcon,
       countKey: "users",
+    },
+    {
+      name: "Beteiligungen",
+      link: { to: "/admin/surveys" },
+      icon: ClipboardDocumentListIcon,
+      countKey: "surveys",
     },
     {
       name: "System",
