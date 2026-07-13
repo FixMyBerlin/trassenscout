@@ -1,17 +1,8 @@
 import type React from "react"
 import { CSSProperties } from "react"
-import { useMap } from "react-map-gl/maplibre"
 import { twJoin } from "tailwind-merge"
-import { useIsMapHighlighted, useMapHighlightContext } from "./mapHighlightContext"
-import { applyMapHighlight, clearHighlightLevel, highlightStateForSlug } from "./mapHighlightState"
-
-const HIGHLIGHT_STATE_KEYS = {
-  project: "highlightProjectSlug",
-  subsection: "highlightSubsectionSlug",
-  subsubsection: "highlightSubsubsectionSlug",
-} as const
-
-type HighlightLevel = keyof typeof HIGHLIGHT_STATE_KEYS
+import type { MapHighlightLevel } from "./mapHighlightState"
+import { useMarkerHighlight } from "./useMarkerHighlight"
 
 type Props = React.HTMLAttributes<HTMLDivElement> & {
   anchor:
@@ -24,7 +15,10 @@ type Props = React.HTMLAttributes<HTMLDivElement> & {
     | "topRight"
     | "right"
   slug: string
-  highlightLevel: HighlightLevel
+  highlightLevel: MapHighlightLevel
+  syncHighlightOnHover?: boolean
+  highlighted?: boolean
+  pillClassName?: string
 }
 
 const createSvg = (style: CSSProperties, rotation: number, path: React.JSX.Element) => {
@@ -78,33 +72,27 @@ export const TipMarker = ({
   children,
   slug,
   highlightLevel,
+  syncHighlightOnHover = true,
+  highlighted,
+  pillClassName,
   onMouseEnter: propsOnMouseEnter,
   onMouseLeave: propsOnMouseLeave,
   ...props
 }: Props) => {
-  const { mainMap } = useMap()
-  const highlightContext = useMapHighlightContext()
-  const isHighlighted = useIsMapHighlighted(highlightLevel, slug)
+  const {
+    isHighlighted: isContextHighlighted,
+    handleMouseEnter: highlightMouseEnter,
+    handleMouseLeave: highlightMouseLeave,
+  } = useMarkerHighlight(highlightLevel, slug)
+  const isHighlighted = highlighted ?? isContextHighlighted
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
-    const map = mainMap?.getMap()
-    const next = highlightStateForSlug(highlightLevel, String(slug))
-    if (highlightContext) {
-      highlightContext.syncHighlight(map, next)
-    } else {
-      applyMapHighlight(map, next)
-    }
+    if (syncHighlightOnHover) highlightMouseEnter()
     propsOnMouseEnter?.(e)
   }
 
   const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
-    const map = mainMap?.getMap()
-    if (highlightContext) {
-      const next = clearHighlightLevel(highlightContext.highlight, highlightLevel)
-      highlightContext.syncHighlight(map, next)
-    } else {
-      map?.setGlobalStateProperty(HIGHLIGHT_STATE_KEYS[highlightLevel], null)
-    }
+    if (syncHighlightOnHover) highlightMouseLeave()
     propsOnMouseLeave?.(e)
   }
 
@@ -119,7 +107,8 @@ export const TipMarker = ({
         style={divStyles[anchor]}
         className={twJoin(
           "absolute rounded-md border border-gray-400 bg-white transition-colors",
-          isHighlighted ? "border-[#F8C62B]" : "",
+          isHighlighted ? "border-yellow-400" : "",
+          pillClassName,
         )}
       >
         {children}
