@@ -1,7 +1,7 @@
 import { authFile, seedProjects } from "@/tests/_fixtures/auth"
-import { authorizationNoise, pageNoise } from "@/tests/_fixtures/console-noise"
+import { authorizationNoise, pageNoise, uploadPageNoise } from "@/tests/_fixtures/console-noise"
 import { expect, test } from "@/tests/_fixtures/test"
-import { expectErrorPage } from "@/tests/_utils/pageAssertions"
+import { expectAccessDeniedRedirect, loginUrl } from "@/tests/_utils/pageAssertions"
 
 const projectSlug = seedProjects.richProject
 const projectOverviewPath = `/${projectSlug}`
@@ -19,21 +19,19 @@ test.describe("Project core route permissions", () => {
     test("are redirected from project overview to login", async ({ page }) => {
       await page.goto(projectOverviewPath)
 
-      await page.waitForURL(/\/auth\/login/)
-      await expect(page).toHaveURL(/\/auth\/login/)
+      await expect(page).toHaveURL(loginUrl, { timeout: 30_000 })
     })
 
     test("are redirected from uploads to login", async ({ page }) => {
       await page.goto(uploadsPath)
 
-      await page.waitForURL(/\/auth\/login/)
-      await expect(page).toHaveURL(/\/auth\/login/)
+      await expect(page).toHaveURL(loginUrl, { timeout: 30_000 })
     })
   })
 
   test.describe("viewer project members", () => {
     test.use({ storageState: authFile("viewer") })
-    test.use({ allowedConsoleErrors: pageNoise })
+    test.use({ allowedConsoleErrors: uploadPageNoise })
 
     test("can access project overview", async ({ page }) => {
       await page.goto(projectOverviewPath)
@@ -57,7 +55,7 @@ test.describe("Project core route permissions", () => {
 
   test.describe("editor project members", () => {
     test.use({ storageState: authFile("editor") })
-    test.use({ allowedConsoleErrors: pageNoise })
+    test.use({ allowedConsoleErrors: uploadPageNoise })
 
     test("see upload editing UI on uploads page", async ({ page }) => {
       await page.goto(uploadsPath)
@@ -77,18 +75,18 @@ test.describe("Project core route permissions", () => {
 
     test("cannot access project overview", async ({ page }) => {
       await page.goto(projectOverviewPath)
-      await expectErrorPage(page)
+      await expectAccessDeniedRedirect(page)
     })
 
     test("cannot access uploads", async ({ page }) => {
       await page.goto(uploadsPath)
-      await expectErrorPage(page)
+      await expectAccessDeniedRedirect(page)
     })
   })
 
   test.describe("admin users", () => {
     test.use({ storageState: authFile("admin") })
-    test.use({ allowedConsoleErrors: pageNoise })
+    test.use({ allowedConsoleErrors: uploadPageNoise })
 
     test("can access uploads without explicit project membership", async ({ page }) => {
       await page.goto(uploadsPath)

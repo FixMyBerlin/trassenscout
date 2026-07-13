@@ -1,0 +1,169 @@
+{
+  "variables": [
+    {
+      "name": "VITE_APP_ENV",
+      "sourceEnv": "INPUT_ENVIRONMENT",
+      "required": true,
+      "githubSource": "inputs.ENVIRONMENT",
+      "description": "Deployment target (staging|production)."
+    },
+    {
+      "name": "VITE_APP_ORIGIN",
+      "sourceEnv": "VAR_APP_ORIGIN",
+      "required": true,
+      "githubSource": "vars.APP_ORIGIN",
+      "description": "Public app origin for Better Auth and client links."
+    },
+    {
+      "name": "APP_DOMAIN",
+      "sourceEnv": "VAR_APP_DOMAIN",
+      "required": true,
+      "githubSource": "vars.APP_DOMAIN",
+      "description": "Traefik host rule for the app container."
+    },
+    {
+      "name": "BREVO_API_KEY",
+      "sourceEnv": "SECRET_BREVO_API_KEY",
+      "required": false,
+      "sensitive": true,
+      "githubSource": "secrets.BREVO_API_KEY",
+      "description": "Brevo transactional email API key."
+    },
+    {
+      "name": "DATABASE_USER",
+      "sourceEnv": "SECRET_DATABASE_USER",
+      "required": true,
+      "sensitive": true,
+      "githubSource": "secrets.DATABASE_USER",
+      "description": "PostgreSQL username."
+    },
+    {
+      "name": "DATABASE_PASSWORD",
+      "sourceEnv": "SECRET_DATABASE_PASSWORD",
+      "required": true,
+      "sensitive": true,
+      "githubSource": "secrets.DATABASE_PASSWORD",
+      "description": "PostgreSQL password."
+    },
+    {
+      "name": "SESSION_SECRET_KEY",
+      "sourceEnv": "SECRET_SESSION_SECRET_KEY",
+      "required": true,
+      "sensitive": true,
+      "githubSource": "secrets.SESSION_SECRET_KEY",
+      "description": "Better Auth session encryption secret."
+    },
+    {
+      "name": "ADMIN_EMAIL",
+      "sourceEnv": "VAR_ADMIN_EMAIL",
+      "required": true,
+      "githubSource": "vars.ADMIN_EMAIL",
+      "description": "Admin notification recipient."
+    },
+    {
+      "name": "S3_UPLOAD_KEY",
+      "sourceEnv": "SECRET_S3_UPLOAD_KEY",
+      "required": true,
+      "sensitive": true,
+      "githubSource": "secrets.S3_UPLOAD_KEY",
+      "description": "S3-compatible upload access key."
+    },
+    {
+      "name": "S3_UPLOAD_SECRET",
+      "sourceEnv": "SECRET_S3_UPLOAD_SECRET",
+      "required": true,
+      "sensitive": true,
+      "githubSource": "secrets.S3_UPLOAD_SECRET",
+      "description": "S3-compatible upload secret key."
+    },
+    {
+      "name": "S3_UPLOAD_ROOTFOLDER",
+      "sourceEnv": "GENERATED_S3_UPLOAD_ROOTFOLDER",
+      "required": true,
+      "githubSource": "upload-{ENVIRONMENT}",
+      "description": "S3 key prefix for uploads."
+    },
+    {
+      "name": "TS_API_KEY",
+      "sourceEnv": "SECRET_TS_API_KEY",
+      "required": true,
+      "sensitive": true,
+      "githubSource": "secrets.TS_API_KEY",
+      "description": "API key for cron, CSV import, and webhook routes."
+    },
+    {
+      "name": "OPENAI_API_KEY",
+      "sourceEnv": "SECRET_OPENAI_API_KEY",
+      "required": false,
+      "sensitive": true,
+      "githubSource": "secrets.OPENAI_API_KEY",
+      "description": "OpenAI key for project-record email extraction."
+    },
+    {
+      "name": "LANGFUSE_SECRET_KEY",
+      "sourceEnv": "SECRET_LANGFUSE_SECRET_KEY",
+      "required": false,
+      "sensitive": true,
+      "githubSource": "secrets.LANGFUSE_SECRET_KEY",
+      "description": "Langfuse secret key for LLM tracing."
+    },
+    {
+      "name": "LANGFUSE_PUBLIC_KEY",
+      "sourceEnv": "SECRET_LANGFUSE_PUBLIC_KEY",
+      "required": false,
+      "githubSource": "secrets.LANGFUSE_PUBLIC_KEY",
+      "description": "Langfuse public key."
+    },
+    {
+      "name": "LANGFUSE_BASEURL",
+      "sourceEnv": "VAR_LANGFUSE_BASEURL",
+      "required": false,
+      "githubSource": "vars.LANGFUSE_BASEURL",
+      "description": "Langfuse API base URL."
+    },
+    {
+      "name": "LUCKY_CLOUD_TOKEN",
+      "sourceEnv": "SECRET_LUCKY_CLOUD_TOKEN",
+      "required": false,
+      "sensitive": true,
+      "githubSource": "secrets.LUCKY_CLOUD_TOKEN",
+      "description": "Lucky Cloud collaboration token."
+    },
+    {
+      "name": "ECR_REGISTRY",
+      "sourceEnv": "VAR_ECR_REGISTRY",
+      "required": true,
+      "githubSource": "vars.ECR_REGISTRY",
+      "description": "AWS ECR registry for app and imap-listener images."
+    },
+    {
+      "name": "IMAP_HOST",
+      "sourceEnv": "VAR_IMAP_HOST",
+      "required": true,
+      "githubSource": "vars.IMAP_HOST",
+      "description": "IMAP server hostname."
+    },
+    {
+      "name": "IMAP_PORT",
+      "sourceEnv": "VAR_IMAP_PORT",
+      "required": true,
+      "githubSource": "vars.IMAP_PORT",
+      "description": "IMAP server port."
+    },
+    {
+      "name": "IMAP_USER",
+      "sourceEnv": "VAR_IMAP_USER",
+      "required": true,
+      "githubSource": "vars.IMAP_USER",
+      "description": "IMAP mailbox username."
+    },
+    {
+      "name": "IMAP_PASSWORD",
+      "sourceEnv": "SECRET_IMAP_PASSWORD",
+      "required": true,
+      "sensitive": true,
+      "githubSource": "secrets.IMAP_PASSWORD",
+      "description": "IMAP mailbox password."
+    }
+  ]
+}

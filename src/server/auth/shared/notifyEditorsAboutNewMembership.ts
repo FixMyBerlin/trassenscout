@@ -1,16 +1,14 @@
-import db, { Invite, User } from "@/db"
-import { roleTranslation } from "@/src/app/_components/memberships/roleTranslation.const"
-import { getFullname } from "@/src/app/_components/users/utils/getFullname"
-import { shortTitle } from "@/src/core/components/text/titles"
-import { Route } from "next"
+import { membershipCreatedNotificationToEditors } from "@/emails/mailers/membershipCreatedNotificationToEditors"
+import { shortTitle } from "@/src/components/core/components/text/titles"
+import { getFullname } from "@/src/components/core/users/getFullname"
+import { roleTranslation } from "@/src/components/core/users/roleTranslation.const"
+import { Invite, User } from "@/src/prisma/generated/browser"
+import db from "@/src/server/db.server"
 
 type Props = { invite: Invite | null; invitee: Pick<User, "firstName" | "lastName" | "email"> }
 
 export const notifyEditorsAboutNewMembership = async ({ invite, invitee }: Props) => {
   if (!invite) return
-
-  const { membershipCreatedNotificationToEditors } =
-    await import("@/emails/mailers/membershipCreatedNotificationToEditors")
 
   const projectMemberRoleEditor = await db.membership.findMany({
     where: { projectId: invite.projectId, role: "EDITOR" },
@@ -27,7 +25,7 @@ export const notifyEditorsAboutNewMembership = async ({ invite, invitee }: Props
         projectName: shortTitle(membership.project.slug),
         invinteeName: getFullname(invitee)!,
         roleName: roleTranslation[invite.role],
-        teamPath: `/${membership.project.slug}/contacts/team` as Route,
+        teamPath: `/${membership.project.slug}/contacts/team`,
       })
     ).send()
   }

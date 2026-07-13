@@ -1,10 +1,10 @@
+import { BrevoClient } from "@getbrevo/brevo"
+import { render } from "@react-email/render"
 import { footerTextMarkdown } from "@/emails/templats/footerTextMarkdown"
 import { MarkdownMail } from "@/emails/templats/MarkdownMail"
 import { signatureTextMarkdown } from "@/emails/templats/signatureTextMarkdown"
-import { isDev, isTest } from "@/src/core/utils/isEnv"
+import { isDev, isPlaywright, isTest } from "@/src/components/core/utils/isEnv"
 import { guardedCreateSystemLogEntry } from "@/src/server/systemLogEntries/create/guardedCreateSystemLogEntry"
-import { BrevoClient } from "@getbrevo/brevo"
-import { render } from "@react-email/render"
 import { formattedEmailAddress } from "./formattedEmailAddress"
 import { getBrevoApiKeyForSending } from "./getBrevoApiKeyForSending"
 import { Mail, MailMessage } from "./types"
@@ -43,13 +43,17 @@ ${footerTextMarkdown}
 
   if (isTest || isDev) {
     const previewEmail = (await import("preview-email")).default
-    await previewEmail({
-      from: formattedEmailAddress(mailMessage.From),
-      to: mailMessage.To.map((to) => formattedEmailAddress(to)).join(";"),
-      subject: mailMessage.Subject,
-      text: mailMessage.TextPart,
-      html: mailMessage.HTMLPart,
-    })
+    const isE2e = isPlaywright
+    await previewEmail(
+      {
+        from: formattedEmailAddress(mailMessage.From),
+        to: mailMessage.To.map((to) => formattedEmailAddress(to)).join(";"),
+        subject: mailMessage.Subject,
+        text: mailMessage.TextPart,
+        html: mailMessage.HTMLPart,
+      },
+      { open: isE2e ? false : { wait: false }, openSimulator: false },
+    )
     return
   }
 

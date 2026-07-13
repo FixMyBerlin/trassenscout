@@ -1,7 +1,5 @@
 .husky
-.next
-integrations
-test
+.output
 .env
 .editorconfig
 imap-listener

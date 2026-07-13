@@ -1,8 +1,6 @@
 # TanStack Router — TypeScript only
 
-**Routing behavior** (loaders, React Query, `ssr`, `validateSearch`, API routes) → skill `tanstack-start-conventions`.
-
-**File routes & layout** → skill `tanstack-start-app-structure`.
+**Routing behavior and layout** (loaders, React Query, `ssr`, `validateSearch`, thin routes, API routes) → skill `tanstack-start-conventions`.
 
 Docs: [TanStack Router](https://tanstack.com/router/latest/docs/framework/react/overview) · [llms.txt](https://tanstack.com/llms.txt)
 
@@ -43,7 +41,8 @@ const { tab } = useSearch({ from: userRoute.id })
 ## Search params
 
 - UI routes: Zod `validateSearch` on the route — see `tanstack-start-conventions` / `params-search-ui-vs-api.md`
-- **nuqs:** only when a shared component already requires it — skill `nuqs`
+- **Router `router.tsx`:** required `parseSearch` / `stringifySearch` (pretty JSON + per-param encodings) — `tanstack-start-conventions` / `router-search-serialization.md`
+- **URL search:** route `validateSearch` (Zod) — skill `tanstack-start-conventions` → `params-search-ui-vs-api.md`
 
 ## Router type registration
 

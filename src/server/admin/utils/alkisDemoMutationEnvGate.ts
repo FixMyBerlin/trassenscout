@@ -1,8 +1,8 @@
 /**
  * ALKIS demo seed/teardown: erlaubt nur Staging und lokale Entwicklung, nicht Produktion.
  */
-export function assertAlkisDemoMutationAllowed(): void {
-  const appEnv = process.env.NEXT_PUBLIC_APP_ENV
+export function assertAlkisDemoMutationAllowed() {
+  const appEnv = process.env.VITE_APP_ENV
   if (appEnv === "production") {
     throw new Error(
       "ALKIS-Demo-Mutationen sind in Produktion nicht erlaubt (nur Staging oder Entwicklung).",
@@ -12,6 +12,6 @@ export function assertAlkisDemoMutationAllowed(): void {
     return
   }
   throw new Error(
-    "ALKIS-Demo-Mutationen sind nur mit NEXT_PUBLIC_APP_ENV=staging oder development erlaubt.",
+    "ALKIS-Demo-Mutationen sind nur mit VITE_APP_ENV=staging oder development erlaubt.",
   )
 }

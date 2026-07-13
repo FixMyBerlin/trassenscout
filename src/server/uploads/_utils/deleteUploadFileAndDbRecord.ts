@@ -1,11 +1,11 @@
-import db from "@/db"
+import { deleteObject } from "@better-upload/server/helpers"
+import db from "@/src/server/db.server"
 import { deleteFileFromLuckyCloud } from "@/src/server/luckycloud/api/deleteFile"
 import { deleteShares } from "@/src/server/luckycloud/api/deleteShares"
-import { getConfiguredS3Client } from "@/src/server/uploads/_utils/client"
-import { S3_BUCKET } from "@/src/server/uploads/_utils/config"
-import { getS3KeyFromUrl } from "@/src/server/uploads/_utils/url"
-import { deleteObject } from "@better-upload/server/helpers"
-import { NotFoundError } from "blitz"
+import { getConfiguredS3Client } from "@/src/server/uploads/_utils/s3Client.server"
+import { NotFoundError } from "@/src/shared/auth/errors"
+import { S3_BUCKET } from "@/src/shared/uploads/config"
+import { getS3KeyFromUrl } from "@/src/shared/uploads/url"
 
 type UploadForDeletion = {
   id: number
@@ -22,7 +22,7 @@ type UploadForDeletion = {
  * @throws NotFoundError if the file doesn't belong to the current environment's root folder
  * @throws Error if file deletion fails (fail-fast behavior)
  */
-export async function deleteUploadFileAndDbRecord(upload: UploadForDeletion): Promise<void> {
+export async function deleteUploadFileAndDbRecord(upload: UploadForDeletion) {
   const key = getS3KeyFromUrl(upload.externalUrl)
   const rootFolder = process.env.S3_UPLOAD_ROOTFOLDER
 

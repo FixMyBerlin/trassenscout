@@ -1,5 +1,5 @@
-import { SubsubsectionBaseSchema } from "@/src/server/subsubsections/schema"
 import { z } from "zod"
+import { SubsubsectionBaseSchema } from "@/src/shared/subsubsections/schemas"
 
 // Shared schema for import data - used by both CSV script validation and API route
 export const ImportSubsubsectionDataSchema = SubsubsectionBaseSchema.omit({ subsectionId: true })

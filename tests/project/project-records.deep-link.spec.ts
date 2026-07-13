@@ -1,8 +1,8 @@
-import db, { ProjectRecordEditingState, ProjectRecordReviewState } from "@/db"
-import { createProjectRecordFilterUrl } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/filter/createFilterUrl"
+import { createProjectRecordFilterUrl } from "@/src/components/project-records/utils/filter/createFilterUrl"
 import { authFile, seedProjects } from "@/tests/_fixtures/auth"
 import { pageNoise } from "@/tests/_fixtures/console-noise"
 import { expect, test } from "@/tests/_fixtures/test"
+import { getTestDb } from "@/tests/_utils/testDb"
 
 const projectSlug = seedProjects.richProject
 
@@ -19,6 +19,7 @@ test.describe("Project records deep link", () => {
   let fixture: ProjectRecordDeepLinkFixture
 
   test.beforeAll(async () => {
+    const db = await getTestDb()
     const project = await db.project.findFirstOrThrow({
       where: { slug: projectSlug },
       select: { id: true },
@@ -31,8 +32,8 @@ test.describe("Project records deep link", () => {
         projectId: project.id,
         title,
         body: `Deep-link body ${searchterm}`,
-        editingState: ProjectRecordEditingState.PENDING,
-        reviewState: ProjectRecordReviewState.APPROVED,
+        editingState: "PENDING",
+        reviewState: "APPROVED",
         projectRecordAuthorType: "USER",
         projectRecordUpdatedByType: "USER",
       },
@@ -48,6 +49,7 @@ test.describe("Project records deep link", () => {
 
   test.afterAll(async () => {
     if (!fixture) return
+    const db = await getTestDb()
     await db.projectRecord.delete({ where: { id: fixture.id } }).catch(() => {})
   })
 
@@ -61,7 +63,7 @@ test.describe("Project records deep link", () => {
       timeout: 30_000,
     })
 
-    const filterInput = page.getByPlaceholder("Eingaben nach Suchwort filtern")
+    const filterInput = page.getByPlaceholder("Beiträge nach Suchwort filtern")
     await expect(filterInput).toHaveValue(fixture.searchterm)
     await expect(page.getByRole("link", { name: fixture.title, exact: true })).toBeVisible({
       timeout: 30_000,

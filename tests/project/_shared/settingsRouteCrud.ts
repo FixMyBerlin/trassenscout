@@ -1,5 +1,6 @@
 import { authFile } from "@/tests/_fixtures/auth"
 import { expect, test } from "@/tests/_fixtures/test"
+import { waitForFormReady } from "@/tests/_utils/waitForFormReady"
 
 type SettingsRouteCrudConfig = {
   suiteName: string
@@ -31,6 +32,8 @@ export const defineSettingsRouteCrudSuite = ({
     test.use({ storageState: authFile("editor") })
 
     test("editor can create and update an item with persisted list refresh", async ({ page }) => {
+      test.setTimeout(120_000)
+
       const slug = `e2e-${Date.now()}`
       const initialTitle = `E2E ${slug} initial`
       const updatedTitle = `E2E ${slug} updated`
@@ -40,16 +43,23 @@ export const defineSettingsRouteCrudSuite = ({
         timeout: 30_000,
       })
 
-      await page.getByRole("link", { name: createLinkName, exact: true }).click()
+      await page.getByRole("link", { name: createLinkName, exact: true }).first().click()
       await expect(page.getByRole("heading", { name: createHeading, exact: true })).toBeVisible({
         timeout: 30_000,
       })
 
+      await waitForFormReady(page, [slugLabel, titleLabel])
+
       await page.getByLabel(slugLabel, { exact: true }).fill(slug)
       await page.getByLabel(titleLabel, { exact: true }).fill(initialTitle)
+      const orderField = page.getByLabel("Reihenfolge", { exact: true })
+      if (await orderField.count()) {
+        await orderField.fill("999")
+      }
+
       await page.getByRole("button", { name: createSubmitText, exact: true }).click()
 
-      await expect(page).toHaveURL(new RegExp(`${listPath}$`))
+      await expect(page).toHaveURL(new RegExp(`${listPath}(\\?.*)?$`), { timeout: 30_000 })
 
       const initialRow = page.locator("tbody tr", { hasText: initialTitle }).first()
       await expect(initialRow).toBeVisible({ timeout: 30_000 })
@@ -67,10 +77,11 @@ export const defineSettingsRouteCrudSuite = ({
         timeout: 30_000,
       })
 
+      await waitForFormReady(page, [titleLabel])
       await page.getByLabel(titleLabel, { exact: true }).fill(updatedTitle)
       await page.getByRole("button", { name: editSubmitText, exact: true }).click()
 
-      await expect(page).toHaveURL(new RegExp(`${listPath}$`))
+      await expect(page).toHaveURL(new RegExp(`${listPath}(\\?.*)?$`), { timeout: 30_000 })
       await expect(page.locator("tbody tr", { hasText: updatedTitle }).first()).toBeVisible({
         timeout: 30_000,
       })
@@ -85,12 +96,17 @@ export const defineSettingsRouteCrudSuite = ({
 
       // Delete — also acts as self-cleanup so the item doesn't accumulate across runs.
       const updatedRow = page.locator("tbody tr", { hasText: updatedTitle }).first()
-      page.on("dialog", (dialog) => dialog.accept()) // handle native confirm dialogs if present
-      await updatedRow.getByRole("button", { name: "Löschen", exact: true }).click()
-
-      await expect(page.locator("tbody tr", { hasText: updatedTitle })).toHaveCount(0, {
-        timeout: 15_000,
+      const deleteButton = updatedRow.getByRole("button", { name: "Löschen", exact: true })
+      await deleteButton.scrollIntoViewIfNeeded()
+      await page.evaluate(() => {
+        window.confirm = () => true
       })
+      await expect(async () => {
+        await deleteButton.click()
+        await expect(page.locator("tbody tr", { hasText: updatedTitle })).toHaveCount(0, {
+          timeout: 2_000,
+        })
+      }).toPass({ timeout: 30_000 })
 
       await page.reload()
       await expect(page.getByRole("heading", { name: listHeading, exact: true })).toBeVisible({

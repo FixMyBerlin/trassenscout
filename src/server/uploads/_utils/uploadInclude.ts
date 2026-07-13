@@ -17,6 +17,7 @@ export const uploadWithSubsectionsInclude = {
     select: {
       id: true,
       createdAt: true,
+      subject: true,
     },
   },
   createdBy: {
@@ -26,9 +27,27 @@ export const uploadWithSubsectionsInclude = {
       lastName: true,
     },
   },
+  updatedBy: {
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+    },
+  },
   project: {
     select: {
+      aiEnabled: true,
+      slug: true,
       landAcquisitionModuleEnabled: true,
+    },
+  },
+  surveyResponse: {
+    include: {
+      surveySession: {
+        include: {
+          survey: { select: { id: true, slug: true } },
+        },
+      },
     },
   },
   acquisitionAreas: {
@@ -47,4 +66,5 @@ export const uploadWithSubsectionsInclude = {
       },
     },
   },
+  tags: true,
 } as const

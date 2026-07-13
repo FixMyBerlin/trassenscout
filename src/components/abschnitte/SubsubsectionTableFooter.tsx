@@ -1,0 +1,86 @@
+import { twJoin } from "tailwind-merge"
+import {
+  formattedEuro,
+  formattedLength,
+} from "@/src/components/core/components/text/formattedProperties"
+import { frenchQuote } from "@/src/components/core/components/text/quote"
+import type { SubsubsectionWithPosition } from "@/src/server/subsubsections/types"
+
+type Props = {
+  subsubsections: SubsubsectionWithPosition[]
+  compact: boolean
+}
+
+export const SubsubsectionTableFooter = ({ subsubsections, compact }: Props) => {
+  const uniqueQualityLevels = subsubsections
+    .map((sub) => sub.qualityLevel)
+    .filter((level, index, self) => index === self.findIndex((t) => t?.slug === level?.slug))
+
+  return (
+    <tfoot className={twJoin("bg-gray-50", !subsubsections.length || compact ? "hidden" : "")}>
+      <tr>
+        <td className="pt-4 pr-3 pb-2 pl-4 text-right text-xs font-medium text-gray-500 uppercase">
+          Gesamt:
+        </td>
+        <td></td>
+        <td></td>
+        <td
+          className={twJoin(
+            compact ? "hidden" : "",
+            "pt-4 pr-3 pb-2 pl-4 text-sm font-medium whitespace-nowrap text-gray-900",
+          )}
+        >
+          {formattedLength(subsubsections.reduce((acc, sub) => acc + (sub.lengthM || 0), 0))}
+        </td>
+        <td
+          className={twJoin(
+            compact ? "hidden" : "",
+            "pt-4 pr-3 pb-2 pl-4 text-sm font-medium whitespace-nowrap text-gray-900",
+          )}
+        >
+          {formattedEuro(subsubsections.reduce((acc, sub) => acc + (sub.costEstimate || 0), 0))}
+        </td>
+        <td></td>
+      </tr>
+
+      {uniqueQualityLevels.map((qualityLevel) => {
+        if (!qualityLevel) return null
+        const subsubsectionForQualityLevel = subsubsections.filter(
+          (sub) => sub.qualityLevel?.slug === qualityLevel.slug,
+        )
+        return (
+          <tr key={qualityLevel.slug}>
+            <td
+              colSpan={2}
+              className="py-2 pr-3 pl-4 text-right text-xs font-medium text-gray-500 uppercase"
+            >
+              Standard {frenchQuote(qualityLevel.title)}:
+            </td>
+            <td
+              className={twJoin(
+                compact ? "hidden" : "",
+                "py-2 pr-3 pl-4 text-sm font-medium text-gray-900",
+              )}
+            >
+              {formattedLength(
+                subsubsectionForQualityLevel.reduce((acc, sub) => acc + (sub.lengthM || 0), 0),
+              )}
+            </td>
+            <td
+              className={twJoin(
+                compact ? "hidden" : "",
+                "py-2 pr-3 pl-4 text-sm font-medium text-gray-900",
+              )}
+            >
+              {formattedEuro(
+                subsubsectionForQualityLevel.reduce((acc, sub) => acc + (sub.costEstimate || 0), 0),
+              )}
+            </td>
+            <td></td>
+            <td></td>
+          </tr>
+        )
+      })}
+    </tfoot>
+  )
+}

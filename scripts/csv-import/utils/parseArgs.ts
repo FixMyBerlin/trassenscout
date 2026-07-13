@@ -55,7 +55,7 @@ export async function loadConfig(configName: string, scriptRootDir: string): Pro
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       console.error(`❌ Config validation failed for ${configPath}:`)
-      error.errors.forEach((err) => {
+      error.issues.forEach((err) => {
         const path = err.path.join(".")
         console.error(`  - ${path}: ${err.message}`)
       })

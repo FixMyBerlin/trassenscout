@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test"
-import { playwrightWaitForMapLoadedEvent } from "../_utils/customMapLoadedEvent"
 import { fakeTextarea } from "../_utils/faker"
+import { waitForMapLoad } from "../utils/maps"
 import { filloutAndTestPartOne } from "./_shared/filloutAndTestPartOne"
 
 test("survey brandenburg: complete part 1 and 2 (part 2 once)", async ({ page }) => {
@@ -14,7 +14,7 @@ test("survey brandenburg: complete part 1 and 2 (part 2 once)", async ({ page })
   await page.getByRole("button", { name: "Weiter zur Abgabe von" }).click()
 
   // Part 2 – Page 1:
-  await playwrightWaitForMapLoadedEvent(page)
+  await waitForMapLoad(page)
 
   await expect(page.getByLabel("Map")).toBeInViewport()
   await page.getByLabel("Map").click({

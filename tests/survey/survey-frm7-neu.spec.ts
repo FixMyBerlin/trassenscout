@@ -1,10 +1,9 @@
 // 100% happy path with one feedback without location
 
+import { Page } from "@playwright/test"
 import { fakeTextarea } from "@/tests/_utils/faker"
 import { mapDragPin } from "@/tests/_utils/mapDragPin"
 import { expect, test } from "@/tests/_utils/support"
-
-import { Page } from "@playwright/test"
 
 const testIntro1 = async (page: Page) => {
   await expect(page.getByRole("heading", { name: "Ihre Meinung zählt!" })).toBeVisible()

@@ -1,6 +1,6 @@
-import { Invite, User } from "@/db"
-import { roleTranslation } from "@/src/app/_components/memberships/roleTranslation.const"
-import { getFullname } from "@/src/app/_components/users/utils/getFullname"
+import { getFullname } from "@/src/components/core/users/getFullname"
+import { roleTranslation } from "@/src/components/core/users/roleTranslation.const"
+import { Invite, User } from "@/src/prisma/generated/browser"
 import { createLogEntry } from "../../logEntries/create/createLogEntry"
 
 type Props = {

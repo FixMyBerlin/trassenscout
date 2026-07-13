@@ -34,7 +34,7 @@ test.describe("Project records read flow", () => {
     const firstRecordTitle = (await firstRecordLink.innerText()).trim()
     await firstRecordLink.click()
 
-    await expect(page).toHaveURL(new RegExp(`/${projectSlug}/project-records/\\d+$`))
+    await expect(page).toHaveURL(/modalProjectRecordId=\d+/)
     await expect(page.getByRole("heading", { name: firstRecordTitle, exact: true })).toBeVisible({
       timeout: 30_000,
     })
@@ -42,6 +42,7 @@ test.describe("Project records read flow", () => {
     await page.goBack()
 
     await expect(page).toHaveURL(new RegExp(`/${projectSlug}/project-records$`))
+    await expect(page.locator('[aria-label="Schließen"]')).toHaveCount(0)
     await expect(page.getByRole("heading", { name: "Projektprotokoll", exact: true })).toBeVisible({
       timeout: 30_000,
     })

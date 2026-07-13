@@ -1,6 +1,5 @@
-import { emailTemplateKeys } from "@/src/server/emailTemplates/registry"
 import { resolveAndRenderEmailTemplate } from "@/src/server/emailTemplates/render"
-import { Route } from "next"
+import { emailTemplateKeys } from "@/src/shared/emailTemplates/registry"
 import { addressNoreply } from "./utils/addresses"
 import { mailUrl } from "./utils/mailUrl"
 import { sendMail } from "./utils/sendMail"
@@ -10,8 +9,8 @@ type Props = {
   userEmail: string
   projectName: string
   inviterName: string
-  signupPath: Route
-  loginPath: Route
+  signupPath: string
+  loginPath: string
 }
 
 export async function invitationCreatedMailToUser(props: Props) {

@@ -1,0 +1,30 @@
+import { createServerFn } from "@tanstack/react-start"
+import { getRequestHeaders } from "@tanstack/react-start/server"
+import {
+  CreateContactSchema,
+  DeleteContactSchema,
+  GetContactSchema,
+  GetContactsSchema,
+  UpdateContactSchema,
+} from "@/src/shared/contacts/schemas"
+import { createContact, deleteContact, updateContact } from "./mutations/contacts.server"
+import { getContact, getContacts } from "./queries/contacts.server"
+export const getContactsFn = createServerFn({ method: "GET" })
+  .validator(GetContactsSchema)
+  .handler(({ data }) => getContacts(getRequestHeaders(), data))
+
+export const getContactFn = createServerFn({ method: "GET" })
+  .validator(GetContactSchema)
+  .handler(({ data }) => getContact(getRequestHeaders(), data))
+
+export const createContactFn = createServerFn({ method: "POST" })
+  .validator(CreateContactSchema)
+  .handler(({ data }) => createContact(getRequestHeaders(), data))
+
+export const updateContactFn = createServerFn({ method: "POST" })
+  .validator(UpdateContactSchema)
+  .handler(({ data }) => updateContact(getRequestHeaders(), data))
+
+export const deleteContactFn = createServerFn({ method: "POST" })
+  .validator(DeleteContactSchema)
+  .handler(({ data }) => deleteContact(getRequestHeaders(), data))

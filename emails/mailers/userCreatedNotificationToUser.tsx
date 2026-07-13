@@ -1,6 +1,5 @@
-import { emailTemplateKeys } from "@/src/server/emailTemplates/registry"
 import { resolveAndRenderEmailTemplate } from "@/src/server/emailTemplates/render"
-import { Route } from "next"
+import { emailTemplateKeys } from "@/src/shared/emailTemplates/registry"
 import { addressNoreply } from "./utils/addresses"
 import { mailUrl } from "./utils/mailUrl"
 import { sendMail } from "./utils/sendMail"
@@ -8,7 +7,7 @@ import { assertValidRenderedTemplate, buildTemplateMail } from "./utils/template
 
 type Props = {
   user: { email: string; name: string }
-  path: Route
+  path: string
 }
 
 export async function userCreatedNotificationToUser(props: Props) {

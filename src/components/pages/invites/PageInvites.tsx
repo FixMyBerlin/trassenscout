@@ -1,0 +1,41 @@
+import { useSuspenseQuery } from "@tanstack/react-query"
+import { getRouteApi } from "@tanstack/react-router"
+import { useContactsTabs } from "@/src/components/contacts/useContactsTabs"
+import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
+import { ButtonWrapper } from "@/src/components/core/components/links/ButtonWrapper"
+import { Link } from "@/src/components/core/components/links/Link"
+import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { TabsApp } from "@/src/components/core/components/Tabs/TabsApp"
+import { TeamInviteDocumentation } from "@/src/components/invites/TeamInviteDocumentation"
+import { TeamInvitesTable } from "@/src/components/invites/TeamInvitesTable"
+import { invitesQueryOptions } from "@/src/server/invites/invitesQueryOptions"
+
+const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/invites/")
+
+export function PageInvites() {
+  const { projectSlug } = routeApi.useParams()
+  const tabs = useContactsTabs()
+  const { data } = useSuspenseQuery(invitesQueryOptions({ projectSlug }))
+
+  return (
+    <>
+      <PageHeader
+        title="Einladungen"
+        description="Übersicht der Einladungen zur Mitarbeit im Projekt."
+      />
+      <TabsApp tabs={tabs} className="mt-7" />
+      <TeamInvitesTable invites={data.invites} />
+      <ButtonWrapper className="mt-6">
+        <Link button="blue" icon="plus" to={`/${projectSlug}/invites/new`}>
+          Teammitglied einladen
+        </Link>
+      </ButtonWrapper>
+      <TeamInviteDocumentation />
+      <SuperAdminBox>
+        <Link button="blue" to="/admin/memberships">
+          Rechte verwalten
+        </Link>
+      </SuperAdminBox>
+    </>
+  )
+}

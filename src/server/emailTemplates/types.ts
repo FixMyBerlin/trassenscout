@@ -1,5 +1,5 @@
-import { Prettify } from "@/src/core/types"
-import { EmailTemplateDefinition, EmailTemplateKey } from "./registry"
+import { Prettify } from "@/src/components/core/types"
+import { EmailTemplateDefinition, EmailTemplateKey } from "@/src/shared/emailTemplates/registry"
 
 export type EmailTemplateEditableContent = {
   subject: string
@@ -10,7 +10,7 @@ export type EmailTemplateEditableContent = {
 
 export type EmailTemplateVariableContext = Record<string, string | null | undefined>
 
-export type EmailTemplateSource = "db" | "defaults"
+type EmailTemplateSource = "db" | "defaults"
 
 export type ResolvedEmailTemplate = Prettify<
   EmailTemplateEditableContent & {
@@ -20,7 +20,7 @@ export type ResolvedEmailTemplate = Prettify<
   }
 >
 
-export type EmailTemplateValidationResult = {
+type EmailTemplateValidationResult = {
   allowedVariables: string[]
   usedVariables: string[]
   unknownVariables: string[]

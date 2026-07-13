@@ -6,6 +6,9 @@ on:
         required: true
         type: string
 
+permissions:
+  contents: read
+
 jobs:
   setup_env:
     runs-on: ubuntu-latest
@@ -15,13 +18,45 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v6
 
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Verify env manifest
+        run: bun .github/scripts/verify-env-manifest.ts
+
+      - name: Generate deploy .env from manifest
+        env:
+          INPUT_ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
+          VAR_APP_ORIGIN: ${{ vars.APP_ORIGIN }}
+          VAR_APP_DOMAIN: ${{ vars.APP_DOMAIN }}
+          SECRET_BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+          SECRET_DATABASE_USER: ${{ secrets.DATABASE_USER }}
+          SECRET_DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+          SECRET_SESSION_SECRET_KEY: ${{ secrets.SESSION_SECRET_KEY }}
+          VAR_ADMIN_EMAIL: ${{ vars.ADMIN_EMAIL }}
+          SECRET_S3_UPLOAD_KEY: ${{ secrets.S3_UPLOAD_KEY }}
+          SECRET_S3_UPLOAD_SECRET: ${{ secrets.S3_UPLOAD_SECRET }}
+          GENERATED_S3_UPLOAD_ROOTFOLDER: upload-${{ inputs.ENVIRONMENT }}
+          SECRET_TS_API_KEY: ${{ secrets.TS_API_KEY }}
+          SECRET_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          SECRET_LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
+          SECRET_LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
+          VAR_LANGFUSE_BASEURL: ${{ vars.LANGFUSE_BASEURL }}
+          SECRET_LUCKY_CLOUD_TOKEN: ${{ secrets.LUCKY_CLOUD_TOKEN }}
+          VAR_ECR_REGISTRY: ${{ vars.ECR_REGISTRY }}
+          VAR_IMAP_HOST: ${{ vars.IMAP_HOST }}
+          VAR_IMAP_PORT: ${{ vars.IMAP_PORT }}
+          VAR_IMAP_USER: ${{ vars.IMAP_USER }}
+          SECRET_IMAP_PASSWORD: ${{ secrets.IMAP_PASSWORD }}
+        run: bun .github/scripts/generate-deploy-env.ts --manifest .github/env/deploy.manifest.json --output .env.deploy.generated
+
       - name: Copy files to server
         uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
-          source: "docker-compose.server.yml, docker"
+          source: "docker-compose.yml, docker, .env.deploy.generated"
           target: "/srv/trassenscout-${{ inputs.ENVIRONMENT }}"
           overwrite: true
 
@@ -32,56 +67,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
+            set -e
             cd /srv/trassenscout-${{ inputs.ENVIRONMENT }}
-
-            rm docker-compose.yml
-            mv docker-compose.server.yml docker-compose.yml
-
-            echo "Updating `.env`"
-            rm -f .env
-            cat <<EOF > .env
-            NEXT_PUBLIC_APP_ENV='${{ inputs.ENVIRONMENT }}'
-            NEXT_PUBLIC_APP_ORIGIN='${{ vars.APP_ORIGIN }}'
-            APP_DOMAIN='${{ vars.APP_DOMAIN }}'
-
-            BREVO_API_KEY='${{ secrets.BREVO_API_KEY }}'
-
-            POSTGRES_DB='${{ vars.POSTGRES_DB }}'
-            POSTGRES_USER='${{ secrets.POSTGRES_USER }}'
-            POSTGRES_PASSWORD='${{ secrets.POSTGRES_PASSWORD }}'
-            DATABASE_URL='postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ vars.POSTGRES_HOST }}/${{ vars.POSTGRES_DB }}'
-
-            SESSION_SECRET_KEY='${{ secrets.SESSION_SECRET_KEY }}'
-
-            ADMIN_EMAIL='${{ vars.ADMIN_EMAIL }}'
-
-            S3_UPLOAD_KEY='${{ secrets.S3_UPLOAD_KEY }}'
-            S3_UPLOAD_SECRET='${{ secrets.S3_UPLOAD_SECRET }}'
-            S3_UPLOAD_ROOTFOLDER='upload-${{ inputs.ENVIRONMENT }}'
-
-            TS_API_KEY='${{ secrets.TS_API_KEY }}'
-
-            OPENAI_API_KEY='${{ secrets.OPENAI_API_KEY }}'
-
-            LANGFUSE_SECRET_KEY='${{ secrets.LANGFUSE_SECRET_KEY }}'
-            LANGFUSE_PUBLIC_KEY='${{ secrets.LANGFUSE_PUBLIC_KEY }}'
-            LANGFUSE_BASEURL='${{ vars.LANGFUSE_BASEURL }}'
-
-            LUCKY_CLOUD_TOKEN='${{ secrets.LUCKY_CLOUD_TOKEN }}'
-
-            ECR_REGISTRY='${{ vars.ECR_REGISTRY }}'
-
-            # IMAP Listener Configuration
-            IMAP_HOST='${{ vars.IMAP_HOST }}'
-            IMAP_PORT='${{ vars.IMAP_PORT }}'
-            IMAP_USER='${{ vars.IMAP_USER }}'
-            IMAP_PASSWORD='${{ secrets.IMAP_PASSWORD }}'
-            IMAP_SECURE='true'
-            IMAP_INBOX_FOLDER='INBOX'
-            IMAP_DONE_FOLDER='INBOX/DONE'
-            IMAP_ERROR_FOLDER='INBOX/ERROR'
-            TS_API_WEBHOOK_URL='http://app:3000/api/process-project-record-email'
-            MAIL_PROCESSING_DELAY='10000'
-            MAX_RETRIES='3'
-            HEALTH_PORT='3100'
-            EOF
+            echo "Updating .env"
+            mv .env.deploy.generated .env

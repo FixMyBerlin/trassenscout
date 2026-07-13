@@ -1,7 +1,7 @@
 import { authFile, seedProjects } from "@/tests/_fixtures/auth"
 import { authorizationNoise, pageNoise } from "@/tests/_fixtures/console-noise"
 import { expect, test } from "@/tests/_fixtures/test"
-import { expectErrorPage } from "@/tests/_utils/pageAssertions"
+import { dashboardUrl, expectAccessDeniedRedirect } from "@/tests/_utils/pageAssertions"
 
 const projectSlug = seedProjects.richProject
 const qualityLevelsPath = `/${projectSlug}/quality-levels`
@@ -20,12 +20,11 @@ test.describe("Role guards", () => {
     test("are rejected from admin pages", async ({ page }) => {
       await page.goto("/admin")
 
-      await page.waitForURL("**/dashboard")
-      await expect(page).toHaveURL(/\/dashboard$/)
+      await expect(page).toHaveURL(dashboardUrl, { timeout: 30_000 })
       await expect(page.getByRole("button", { name: "User-Menü" })).toBeVisible({
         timeout: 30_000,
       })
-      await expect(page.getByRole("heading", { name: "Trassenscout ADMIN" })).toBeHidden()
+      await expect(page.getByRole("heading", { name: "Adminbereich" })).toBeHidden()
     })
   })
 
@@ -37,7 +36,7 @@ test.describe("Role guards", () => {
 
     test("are rejected from project pages", async ({ page }) => {
       await page.goto(contactsPath)
-      await expectErrorPage(page)
+      await expectAccessDeniedRedirect(page)
       await expect(page.getByRole("heading", { name: "Externe Kontakte" })).toBeHidden()
     })
   })

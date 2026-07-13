@@ -1,0 +1,20 @@
+import { FileIcon, FileTextIcon, ImageIcon } from "lucide-react"
+import { Upload } from "@/src/prisma/generated/browser"
+
+type Props = {
+  upload: Pick<Upload, "mimeType">
+}
+
+export const UploadMarkerIcon = ({ upload }: Props) => {
+  const Icon = upload.mimeType?.startsWith("image/")
+    ? ImageIcon
+    : upload.mimeType === "application/pdf"
+      ? FileTextIcon
+      : FileIcon
+
+  return (
+    <div className="flex items-center justify-center rounded-full bg-white p-1.5 shadow-md ring-1 ring-gray-300">
+      <Icon className="size-4 text-gray-700" />
+    </div>
+  )
+}

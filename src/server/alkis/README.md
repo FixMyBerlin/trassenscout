@@ -12,7 +12,7 @@ For now only these states have **`enabled: true`** (set manually when onboarding
 
 ## Workflow
 
-1. **`bun run alkis:audit`** — probes WFS endpoints and writes `scripts/alkis-wfs/results/audit-results.json` (and `.md`). Details: [`scripts/alkis-wfs/README.md`](../../../scripts/alkis-wfs/README.md).
+1. **`bun run alkis-audit`** — probes WFS endpoints and writes `scripts/alkis-wfs/results/audit-results.json` (and `.md`). Details: [`scripts/alkis-wfs/README.md`](../../../scripts/alkis-wfs/README.md).
 
 2. **`bun run alkis:update-config`** — reads the audit JSON and **only rewrites** `alkisStateConfig.data.ts`. Manual fields are copied from the previous file; **`wfs`** is merged from audit suggestions when that state is verified.
 

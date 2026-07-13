@@ -10,37 +10,41 @@
 
 ## Architecture
 
-This project is build with [Blitz](https://blitzjs.com/) a toolkit build upon [React](https://reactjs.org/). Data is stored in a PostgreSQL database using Docker.
+This project is built with [TanStack Start](https://tanstack.com/start), [React](https://react.dev/), [Vite](https://vite.dev/), and [Bun](https://bun.sh/). Data is stored in PostgreSQL via Prisma.
 
 ## Development
 
 For starting developing, the following steps could be helpful for getting started:
 
 - Use or nvm to install Node.js: `nvm use`
-- Install dependencies: `npm install`
-- Start develop environment: `npm run dev` (start docker, start blitz)
-- Run all checks: `npm run check` (check migrations, check typescript run linter, run prettier, run tests)
-- Use `npm run build && npx serve dist` to test the build
+- Install dependencies: `bun install`
+- Start the development environment: `bun run dev`
+- Run all checks: `bun run check` (check migrations, check TypeScript, run linter, run formatter, run tests)
+- Use `bun run build` to test the build
 - Husky: We run our checks on push. Use `git push --no-verify` to force-skip them.
 
-There is a `.env.local` and a `.env.production` file, which provide the keys to some services.
+Local development uses a gitignored `.env` file (see [`.env.example`](.env.example)). Production servers get `.env` from the deploy workflow.
 
-**Blitz vs. NextJS**
+**TanStack Start**
 
-- Blitz provides the basic file structure and conventions [(Docs)](https://blitzjs.com/docs/file-structure)
-- BLitz provides the [Blitz CLI (Docs)](https://blitzjs.com/docs/cli-overview), especially the [generators (Docs)](https://blitzjs.com/docs/cli-generate)
-- Blitz handles Authentication with [Blitz Auth (Docs)](https://blitzjs.com/docs/auth)
-- Blitz handles the communication between server and client with [Blitz RPC (Docs)](https://blitzjs.com/docs/rpc-overview)
-- Blitz enhances Next with [type save routes (Docs)](https://blitzjs.com/docs/cli-routes)
-- Everything else is part of Next and documented in [the Next Docs](https://nextjs.org/docs/getting-started).
+- File routes live in `src/routes`.
+- Shared UI lives in `src/components`.
+- Server-only code lives in `src/server`.
+- Authentication is handled by Better Auth.
+
+### Supported browsers
+
+Market-share queries in [`package.json`](./package.json) `browserslist`; wired to [`vite.config.mts`](./vite.config.mts) (client build) and [`oxlint.config.mjs`](./oxlint.config.mjs) (client API lint).
+
+**How it works:** [browser-target skill](https://github.com/FixMyBerlin/fixmyskills/blob/main/skills/tech-stack/references/browser-target.md)
 
 ## Getting Started
 
-1. Setup `.env.local`:<br />
-   This will setup up the [Environment Variables](#environment-variables) for PostgreSQL.
+1. Setup `.env`:<br />
+   This will set up environment variables for PostgreSQL and other services.
 
    ```
-   cp .env.local.example .env.local
+   cp .env.example .env
    ```
 
 1. Install Docker and open it once to finish the setup:
@@ -50,7 +54,7 @@ There is a `.env.local` and a `.env.production` file, which provide the keys to 
    ```
 
 1. Start the PostgreSQL Server<br />
-   This is done automatically with `npm run dev`.
+   This is done automatically with `bun run dev`.
 
    ```
    docker compose up -d
@@ -60,13 +64,13 @@ There is a `.env.local` and a `.env.production` file, which provide the keys to 
    Which will also apply migrations.
 
    ```
-   npm run seed
+   bun run seed
    ```
 
 1. Run your app in the development mode:
 
    ```
-   npm run dev
+   bun run dev
    ```
 
 1. Open [http://localhost:3000](http://localhost:3000).
@@ -76,30 +80,29 @@ There is a `.env.local` and a `.env.production` file, which provide the keys to 
 Runs your tests using Jest.
 
 ```
-npm run test
+bun run test
 ```
 
 Blitz comes with a test setup using [Vitest](https://vitest.dev/) and [react-testing-library](https://testing-library.com/).
 
 ## Working with data, database
 
-Follow this steps to add a model with forms and pages:
+Follow these steps to add a model with forms and pages:
 
-1. Use `blitz g all calendarEntries title:string startAt:dateTime "locationName:string?" "locationUrl:string?" "description:string?" --dry-run` for scaffolding.
-   - Run `--dry-run` first to check the folder names and file names.
+1. Add or update the Prisma model in [prisma/schema.prisma](./prisma/schema.prisma).
 
-1. Check [db/schema.prisma](./db/schema.prisma) if all was "translated".
+1. Check [prisma/schema.prisma](./prisma/schema.prisma) if all was "translated".
 
-1. Use `npm run migrate:create` (`blitz prisma migrate dev --create-only`) to create the migration but not run it direclty.
+1. Use `bun run migrate-create` (`bun prisma migrate dev --create-only`) to create the migration but not run it directly.
 
 1. Double check the migration. For example, column renames are handled by deleting the column and adding a new one which we do not always want.
 
-1. Use `npm run migrate` (`blitz prisma migrate dev`) to apply the migration.
+1. Use `bun run migrate` (`bun prisma migrate dev`) to apply the migration.
 
 1. Schema:
-   - Follow the steps in `src/core/templates/page/__modelIdParam__/edit.tsx` to create a shared [Zod schema (Docs)](https://zod.dev/) and add it to the form for client side validations.
+   - Add a shared [Zod schema (Docs)](https://zod.dev/) in `src/shared/<domain>/` and use it for client-side validations.
    - Update the Zod schema to match the Prisma schema.
      - You can use `type UserType = z.infer<typeof UserSchema>` to create a TS schema from Zod that can be compared to the prisma schema (which are located in `node_modules/.prisma/client/index.d.ts`)
-     - You can use https://github.com/CarterGrimmeisen/zod-prisma to generate a starting point for this based on the prisma schema. However, this package should only be used in a separate branch since it collides with blitz in some way.
+     - You can use https://github.com/CarterGrimmeisen/zod-prisma to generate a starting point for this based on the prisma schema. Use it in a separate branch when experimenting with generated schemas.
 
-1. Add seed data in [db/seeds.ts](./db/seeds.ts) – all models should have good seed data.
+1. Add seed data in [prisma/seed.ts](./prisma/seed.ts) and [prisma/seeds/](./prisma/seeds/) - all models should have good seed data.

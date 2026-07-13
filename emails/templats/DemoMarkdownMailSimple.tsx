@@ -21,7 +21,7 @@ For more details, visit our [website](https://example.com) or check out our [doc
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum. Cras venenatis euismod malesuada. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum. Cras venenatis euismod malesuada.
 `
 
-export const DemoMarkdownMailSimple = ({}) => {
+export const DemoMarkdownMailSimple = () => {
   return <MarkdownMail introMarkdown={demoTextIntroMarkdown} />
 }
 

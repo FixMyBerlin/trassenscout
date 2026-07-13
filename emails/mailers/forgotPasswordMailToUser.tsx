@@ -1,5 +1,5 @@
-import { emailTemplateKeys } from "@/src/server/emailTemplates/registry"
 import { resolveAndRenderEmailTemplate } from "@/src/server/emailTemplates/render"
+import { emailTemplateKeys } from "@/src/shared/emailTemplates/registry"
 import { addressNoreply } from "./utils/addresses"
 import { mailUrl } from "./utils/mailUrl"
 import { sendMail } from "./utils/sendMail"

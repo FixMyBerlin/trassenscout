@@ -5,6 +5,9 @@ on:
       ENVIRONMENT:
         required: true
         type: string
+      DEPLOY_WORKFLOW_FILE:
+        required: true
+        type: string
 
 jobs:
   diff_app:
@@ -12,8 +15,9 @@ jobs:
     secrets: inherit
     with:
       ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
-      CHECK_DIFF_LOCATIONS: src/ db/ public/ emails/ docker/
+      CHECK_DIFF_LOCATIONS: src/ prisma/ public/ emails/ docker/
       ENV_FINGERPRINT_SCOPE: app
+      DEPLOY_WORKFLOW_FILE: ${{ inputs.DEPLOY_WORKFLOW_FILE }}
 
   build_app:
     runs-on: ubuntu-latest
@@ -51,14 +55,17 @@ jobs:
             ${{ vars.ECR_REGISTRY }}/trassenscout/app:${{ github.sha }}
             ${{ vars.ECR_REGISTRY }}/trassenscout/app:${{ inputs.ENVIRONMENT }}-latest
           build-args: |
-            NEXT_PUBLIC_APP_ENV=${{ inputs.ENVIRONMENT }}
-            NEXT_PUBLIC_APP_ORIGIN=${{ vars.APP_ORIGIN }}
+            VITE_APP_ENV=${{ inputs.ENVIRONMENT }}
+            VITE_APP_ORIGIN=${{ vars.APP_ORIGIN }}
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
 
       - name: Prepare app environment fingerprint artifact
         run: |
-          mkdir -p .ci/env-fingerprints
-          echo "${{ needs.diff_app.outputs.env_fingerprint_cache_key }}" > .ci/env-fingerprints/app-${{ inputs.ENVIRONMENT }}.hash
-        shell: bash
+          bun .github/scripts/prepare-env-fingerprint-cache.ts \
+            --cache-key "${{ needs.diff_app.outputs.env_fingerprint_cache_key }}" \
+            --artifact-name "app-${{ inputs.ENVIRONMENT }}"
 
       - name: Cache app environment fingerprint
         if: ${{ needs.diff_app.outputs.env_fingerprint_cache_key != '' }}

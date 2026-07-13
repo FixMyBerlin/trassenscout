@@ -1,6 +1,7 @@
-import db, { LogLevelActionEnum } from "@/db"
 import { diff } from "datum-diff"
-import getProjectIdBySlug from "../../projects/queries/getProjectIdBySlug"
+import { LogLevelActionEnum } from "@/src/prisma/generated/browser"
+import db from "@/src/server/db.server"
+import { getProjectIdBySlug } from "../../projects/queries/getProjectIdBySlug.server"
 
 type LogEntryCreate = {
   userId?: number | null

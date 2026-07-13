@@ -13,12 +13,6 @@ const ShareLinkResponseSchema = z.object({
   }),
 })
 
-export interface ShareLinkResult {
-  shareLink: string
-  filePath: string
-  shareToken: string
-}
-
 export async function createShareLink(filePath: string) {
   const repoId = await getDefaultRepoId()
 

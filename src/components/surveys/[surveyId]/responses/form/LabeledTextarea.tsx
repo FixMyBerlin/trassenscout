@@ -1,0 +1,28 @@
+import { type JSX, type PropsWithoutRef } from "react"
+import { twJoin } from "tailwind-merge"
+
+interface LabeledTextareaProps extends PropsWithoutRef<JSX.IntrinsicElements["textarea"]> {
+  help?: string
+  className?: string
+  classNameOverwrite?: string
+}
+
+export const LabeledTextarea = ({
+  help,
+  classNameOverwrite,
+  className,
+  ...props
+}: LabeledTextareaProps) => {
+  return (
+    <>
+      <textarea
+        {...props}
+        className={twJoin(
+          classNameOverwrite || className,
+          "block h-24 w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-xs focus:border-blue-500 focus:ring-blue-500 focus:outline-hidden sm:text-sm",
+        )}
+      />
+      {help && <div className="mt-2 text-sm text-gray-500">{help}</div>}
+    </>
+  )
+}

@@ -1,35 +1,32 @@
 import { defineConfig, devices } from "@playwright/test"
+import { loadE2eEnvSync, toSpawnEnv } from "./scripts/shared/e2eEnv"
 
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-import dotenv from "dotenv"
-import path from "path"
-dotenv.config({ path: path.resolve(__dirname, ".env.test") })
+const e2eEnv = loadE2eEnvSync()
 
-const baseURL = process.env.E2E_BASE_URL ?? "http://127.0.0.1:6174"
+const baseURL = e2eEnv.VITE_APP_ORIGIN
 const runAllBrowsers = process.env.E2E_ALL_BROWSERS === "1"
-const useManagedWebServer = !process.env.E2E_BASE_URL
-const configuredWorkers = Number(process.env.E2E_WORKERS ?? 1)
+
+/** Local parallel workers. Lower (e.g. 2) if the dev server flakes under load. */
+const localWorkers = 2
+
+/** CI stays single-worker for deterministic smoke runs. */
+const ciWorkers = 1
 
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
   testDir: "./tests",
+  testMatch: "**/*.spec.ts",
   globalSetup: require.resolve("./playwright.global-setup"),
-  globalTeardown: require.resolve("./playwright.global-teardown"),
-  /* Keep file-level execution stable by default. */
-  fullyParallel: false,
+  fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  /* Keep CI deterministic and local runs bounded. */
-  workers: process.env.CI ? 1 : Number.isFinite(configuredWorkers) ? configuredWorkers : 1,
+  workers: process.env.CI ? ciWorkers : localWorkers,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: "html",
+  reporter: process.env.CI ? "github" : [["list"], ["html"]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
@@ -101,23 +98,11 @@ export default defineConfig({
     // },
   ],
 
-  /* Run your local dev server before starting the tests */
-  webServer: useManagedWebServer
-    ? {
-        command: "node scripts/e2e/prepareAndStartDev.js",
-        url: baseURL,
-        // Avoid accidentally reusing a manually started dev server that points at the wrong DB.
-        // Use E2E_BASE_URL when you intentionally want Playwright to hit an existing server.
-        reuseExistingServer: false,
-        timeout: 120 * 1000,
-        env: {
-          ...process.env,
-          DATABASE_URL: process.env.DATABASE_URL,
-          IS_TEST: process.env.IS_TEST ?? "true",
-          NEXT_PUBLIC_IS_TEST: process.env.NEXT_PUBLIC_IS_TEST ?? "true",
-          NEXT_PUBLIC_APP_ENV: process.env.NEXT_PUBLIC_APP_ENV ?? "development",
-          NEXT_IGNORE_INCORRECT_LOCKFILE: process.env.NEXT_IGNORE_INCORRECT_LOCKFILE ?? "1",
-        },
-      }
-    : undefined,
+  webServer: {
+    command: "bun tests/prepareAndStartDev.ts",
+    url: baseURL,
+    reuseExistingServer: !process.env.CI,
+    timeout: 120 * 1000,
+    env: toSpawnEnv(e2eEnv),
+  },
 })

@@ -1,0 +1,277 @@
+import { useQuery } from "@tanstack/react-query"
+import { getRouteApi } from "@tanstack/react-router"
+import { feature, featureCollection } from "@turf/helpers"
+import type { MultiPolygon, Polygon } from "geojson"
+import type { ExpressionSpecification, MapLayerMouseEvent } from "maplibre-gl"
+import { useMemo } from "react"
+import { Layer, Source } from "react-map-gl/maplibre"
+import { useAcquisitionAreaSelection } from "@/src/components/abschnitte/useAcquisitionAreaSelection"
+import { lookupTableRows } from "@/src/components/abschnitte/utils/lookupTableRows"
+import { acquisitionAreaStatusStyles } from "@/src/components/acquisition-area-status/acquisitionAreaStatusStyles"
+import { BaseMap } from "@/src/components/core/components/Map/BaseMap"
+import {
+  acquisitionAreaParcelFillPaint,
+  acquisitionAreaParcelLineDashPaint,
+} from "@/src/components/core/components/Map/colors/acquisitionAreaParcelLayerStyles"
+import { subsubsectionColors } from "@/src/components/core/components/Map/colors/subsubsectionColors"
+import { getLandAcquisitionLegendConfig } from "@/src/components/core/components/Map/LandAcquisitionMap.legendConfig"
+import { MapFooter } from "@/src/components/core/components/Map/MapFooter"
+import { getStaticOverlayForProject } from "@/src/components/core/components/Map/staticOverlay/getStaticOverlayForProject"
+import {
+  alkisAttributionToHtml,
+  useAlkisAttribution,
+} from "@/src/components/core/components/Map/useAlkisAttribution"
+import { geometriesBbox } from "@/src/components/core/components/Map/utils/bboxHelpers"
+import { getSubsubsectionFeatures } from "@/src/components/core/components/Map/utils/getSubsubsectionFeatures"
+import { polygonToGeoJSON } from "@/src/components/core/components/Map/utils/polygonToGeoJSON"
+import { acquisitionAreasBySubsubsectionQueryOptions } from "@/src/server/acquisitionAreas/acquisitionAreasAbschnitteQueryOptions"
+import type { AcquisitionAreaWithTypedGeometry } from "@/src/server/acquisitionAreas/types"
+import { adminLookupRowsWithCountQueryOptions } from "@/src/server/adminLookupTables/adminLookupTablesQueryOptions"
+import type { SubsubsectionWithPosition } from "@/src/server/subsubsections/types"
+import type { TAcquisitionAreaGeometrySchema } from "@/src/shared/acquisitionAreas/schemas"
+import type { SupportedGeometry } from "@/src/shared/geometry/geometrySchemas"
+
+const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
+
+const acquisitionAreaColorExpression: ExpressionSpecification = [
+  "match",
+  ["coalesce", ["get", "statusStyle"], 1],
+  2,
+  acquisitionAreaStatusStyles[2].color,
+  3,
+  acquisitionAreaStatusStyles[3].color,
+  4,
+  acquisitionAreaStatusStyles[4].color,
+  acquisitionAreaStatusStyles[1].color,
+]
+
+type Props = {
+  subsubsection: SubsubsectionWithPosition
+}
+
+const defaultQueryOptions = {
+  refetchOnWindowFocus: false,
+  refetchOnReconnect: false,
+} as const
+
+const toAcquisitionAreaFeatureCollection = (areas: AcquisitionAreaWithTypedGeometry[]) =>
+  featureCollection(
+    areas.flatMap((acquisitionArea) =>
+      polygonToGeoJSON(acquisitionArea.geometry as TAcquisitionAreaGeometrySchema, {
+        acquisitionAreaId: acquisitionArea.id,
+        statusStyle: acquisitionArea.acquisitionAreaStatus?.style ?? 1,
+      }).map((item, index) =>
+        feature(item.geometry, {
+          ...item.properties,
+          featureId: `acquisition-area-${acquisitionArea.id}-${index}`,
+        }),
+      ),
+    ),
+  )
+
+export const SubsubsectionLandAcquisitionMap = ({ subsubsection }: Props) => {
+  const { projectSlug } = loggedInProjectRouteApi.useParams()
+  const alkisAttribution = useAlkisAttribution()
+  const { acquisitionAreaId, setAcquisitionAreaId } = useAcquisitionAreaSelection()
+
+  const { data: acquisitionAreas = [] } = useQuery({
+    ...acquisitionAreasBySubsubsectionQueryOptions({
+      projectSlug,
+      subsubsectionId: subsubsection.id,
+    }),
+    ...defaultQueryOptions,
+  })
+  const { data: acquisitionAreaStatusesResult } = useQuery({
+    ...adminLookupRowsWithCountQueryOptions({ projectSlug, table: "acquisitionAreaStatuses" }),
+    ...defaultQueryOptions,
+  })
+
+  const {
+    lines: subsubsectionLines,
+    points: subsubsectionPoints,
+    polygons: subsubsectionPolygons,
+    lineEndPoints: subsubsectionLineEndPoints,
+  } = useMemo(
+    () =>
+      getSubsubsectionFeatures({
+        subsubsections: [subsubsection as SubsubsectionWithPosition],
+        selectedSubsubsectionSlug: subsubsection.slug,
+      }),
+    [subsubsection],
+  )
+
+  const selectedAcquisitionAreas = useMemo(
+    () => acquisitionAreas.filter((acquisitionArea) => acquisitionArea.id === acquisitionAreaId),
+    [acquisitionAreaId, acquisitionAreas],
+  )
+
+  const unselectedAcquisitionAreas = useMemo(
+    () => acquisitionAreas.filter((acquisitionArea) => acquisitionArea.id !== acquisitionAreaId),
+    [acquisitionAreaId, acquisitionAreas],
+  )
+
+  const selectedAcquisitionAreasFc = useMemo(
+    () => toAcquisitionAreaFeatureCollection(selectedAcquisitionAreas),
+    [selectedAcquisitionAreas],
+  )
+
+  const unselectedAcquisitionAreasFc = useMemo(
+    () => toAcquisitionAreaFeatureCollection(unselectedAcquisitionAreas),
+    [unselectedAcquisitionAreas],
+  )
+
+  const parcelFeatureCollection = useMemo(
+    () =>
+      featureCollection(
+        acquisitionAreas.map((acquisitionArea) =>
+          feature(acquisitionArea.parcel.geometry as Polygon | MultiPolygon, {
+            parcelId: acquisitionArea.parcel.id,
+            featureId: `acquisition-area-parcel-${acquisitionArea.parcel.id}`,
+          }),
+        ),
+      ),
+    [acquisitionAreas],
+  )
+
+  const acquisitionAreaIdByParcelId = useMemo(
+    () =>
+      new Map(
+        acquisitionAreas.map((acquisitionArea) => [acquisitionArea.parcel.id, acquisitionArea.id]),
+      ),
+    [acquisitionAreas],
+  )
+
+  const mapBbox = useMemo(() => {
+    const geometries: SupportedGeometry[] = [subsubsection.geometry as SupportedGeometry]
+    acquisitionAreas.forEach((acquisitionArea) => {
+      geometries.push(acquisitionArea.geometry as SupportedGeometry)
+    })
+    return geometriesBbox(geometries)
+  }, [acquisitionAreas, subsubsection.geometry])
+
+  const landAcquisitionLegendConfig = useMemo(
+    () =>
+      getLandAcquisitionLegendConfig(
+        lookupTableRows<{ id: number; style: number }>(
+          acquisitionAreaStatusesResult as Parameters<typeof lookupTableRows>[0],
+          "acquisitionAreaStatuses",
+        ).map((status) => status.style),
+      ),
+    [acquisitionAreaStatusesResult],
+  )
+
+  const handleClickMap = (event: MapLayerMouseEvent) => {
+    const clickedFeature = event.features?.at(0)
+    const clickedAcquisitionAreaId = Number(clickedFeature?.properties?.acquisitionAreaId)
+    if (Number.isFinite(clickedAcquisitionAreaId)) {
+      void setAcquisitionAreaId(clickedAcquisitionAreaId)
+      return
+    }
+
+    const clickedParcelId = Number(clickedFeature?.properties?.parcelId)
+    if (!Number.isFinite(clickedParcelId)) return
+
+    const acquisitionAreaIdFromParcel = acquisitionAreaIdByParcelId.get(clickedParcelId)
+    if (!acquisitionAreaIdFromParcel) return
+
+    void setAcquisitionAreaId(acquisitionAreaIdFromParcel)
+  }
+
+  return (
+    <>
+      <BaseMap
+        id="subsubsection-page-map"
+        initialViewState={{
+          bounds: mapBbox,
+          fitBoundsOptions: { padding: 60, maxZoom: 16 },
+        }}
+        onClick={handleClickMap}
+        interactiveLayerIds={[
+          "acquisition-area-click-target-unselected",
+          "acquisition-area-click-target-selected",
+          "acquisition-area-parcels-fill",
+          "acquisition-area-parcels-outline",
+        ]}
+        lines={subsubsectionLines?.features.length ? subsubsectionLines : undefined}
+        polygons={subsubsectionPolygons?.features.length ? subsubsectionPolygons : undefined}
+        points={subsubsectionPoints?.features.length ? subsubsectionPoints : undefined}
+        lineEndPoints={
+          subsubsectionLineEndPoints?.features.length ? subsubsectionLineEndPoints : undefined
+        }
+        selectableLayerIdSuffix="_subsubsection_detail"
+        interactiveUnifiedFeatures={false}
+        colorSchema="subsubsection"
+        staticOverlay={getStaticOverlayForProject(projectSlug)}
+      >
+        <Source
+          id="acquisition-area-parcels"
+          type="geojson"
+          data={parcelFeatureCollection}
+          attribution={alkisAttributionToHtml(alkisAttribution)}
+        >
+          <Layer
+            id="acquisition-area-parcels-fill"
+            type="fill"
+            paint={acquisitionAreaParcelFillPaint}
+          />
+          <Layer
+            id="acquisition-area-parcels-outline"
+            type="line"
+            paint={acquisitionAreaParcelLineDashPaint}
+          />
+        </Source>
+
+        <Source id="acquisition-area-unselected" type="geojson" data={unselectedAcquisitionAreasFc}>
+          <Layer
+            id="acquisition-area-fill-unselected"
+            type="fill"
+            paint={{
+              "fill-color": acquisitionAreaColorExpression,
+              "fill-opacity": 0.32,
+            }}
+          />
+          <Layer
+            id="acquisition-area-line-unselected"
+            type="line"
+            paint={{
+              "line-color": acquisitionAreaColorExpression,
+              "line-width": 2,
+              "line-opacity": 0.9,
+            }}
+          />
+          <Layer
+            id="acquisition-area-click-target-unselected"
+            type="fill"
+            paint={{ "fill-opacity": 0 }}
+          />
+        </Source>
+
+        <Source id="acquisition-area-selected" type="geojson" data={selectedAcquisitionAreasFc}>
+          <Layer
+            id="acquisition-area-fill-selected"
+            type="fill"
+            paint={{
+              "fill-color": subsubsectionColors.polygon.selected,
+              "fill-opacity": 0.38,
+            }}
+          />
+          <Layer
+            id="acquisition-area-line-selected"
+            type="line"
+            paint={{
+              "line-color": subsubsectionColors.polygon.selected,
+              "line-width": 3,
+              "line-opacity": 1,
+            }}
+          />
+          <Layer
+            id="acquisition-area-click-target-selected"
+            type="fill"
+            paint={{ "fill-opacity": 0 }}
+          />
+        </Source>
+      </BaseMap>
+      <MapFooter legendItemsConfig={landAcquisitionLegendConfig} />
+    </>
+  )
+}

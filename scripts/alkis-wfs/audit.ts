@@ -1,9 +1,9 @@
 #!/usr/bin/env bun
+import { join } from "node:path"
+import { $ } from "bun"
+import { StateKeyEnum } from "@/src/prisma/generated/client"
 import { alkisStateConfig } from "@/src/server/alkis/alkisStateConfig.data"
 import type { AlkisStateConfigEntry } from "@/src/server/alkis/alkisStateConfig.types"
-import { StateKeyEnum } from "@prisma/client"
-import { mkdirSync, writeFileSync } from "node:fs"
-import { join } from "node:path"
 import { AUDIT_SCHEMA_VERSION } from "./shared/constants"
 import { probeGetFeatureForState, type ProbeResult } from "./shared/probe"
 import {
@@ -290,7 +290,7 @@ async function main() {
     ([key]) => key !== StateKeyEnum.DISABLED,
   ) as [StateKeyEnum, AlkisStateConfigEntry][]
 
-  const results: StateAuditResult[] = new Array(entries.length)
+  const results: StateAuditResult[] = Array.from({ length: entries.length })
   for (let i = 0; i < entries.length; i += AUDIT_CONCURRENCY) {
     // Chunked Promise.all keeps wall-clock down while preserving results[i] order.
     const chunk = entries.slice(i, i + AUDIT_CONCURRENCY)
@@ -309,9 +309,9 @@ async function main() {
   }
 
   const outDir = join(import.meta.dir, "results")
-  mkdirSync(outDir, { recursive: true })
+  await $`mkdir -p ${outDir}`.quiet()
   const jsonPath = join(outDir, "audit-results.json")
-  writeFileSync(jsonPath, `${JSON.stringify(payload, null, 2)}\n`, "utf8")
+  await Bun.write(jsonPath, `${JSON.stringify(payload, null, 2)}\n`)
 
   const md = [
     "# ALKIS WFS audit",
@@ -329,12 +329,14 @@ async function main() {
     ...results.map(detailBlock),
   ].join("\n")
   const mdPath = join(outDir, "audit-results.md")
-  writeFileSync(mdPath, `${md}\n`, "utf8")
+  await Bun.write(mdPath, `${md}\n`)
 
   process.stderr.write(`\nWrote ${jsonPath}\nWrote ${mdPath}\n`)
 }
 
-main().catch((e) => {
-  console.error(e)
-  process.exit(1)
-})
+if (import.meta.main) {
+  main().catch((e) => {
+    console.error(e)
+    process.exit(1)
+  })
+}

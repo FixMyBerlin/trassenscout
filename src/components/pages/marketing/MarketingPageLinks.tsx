@@ -1,0 +1,68 @@
+import { GlobeAltIcon } from "@heroicons/react/24/outline"
+import { twJoin } from "tailwind-merge"
+import { linkStyles } from "@/src/components/core/components/links/styles"
+import { Img } from "@/src/components/shared/Img"
+import FMCIcon from "./assets/fmc-icon.svg"
+import LinkedInIcon from "./assets/linkedin-logo.svg"
+import RSVIcon from "./assets/rsv-icon.svg"
+
+export const MarketingPageLinks = () => {
+  const onlineList = [
+    {
+      title: "Radschnellverbindungen.info",
+      href: "https://radschnellverbindungen.info ",
+      logo: RSVIcon,
+      description: "Alle Radschnellverbindungen in Deutschland mit Planungsständen",
+    },
+    {
+      title: "FixMyCity Homepage",
+      href: "https://www.fixmycity.de/",
+      logo: FMCIcon,
+    },
+    {
+      title: "FixMyCity auf LinkedIn",
+      href: "https://www.linkedin.com/company/fixmycity/",
+      logo: LinkedInIcon,
+    },
+  ]
+
+  return (
+    <section className="rounded-2xl border border-gray-100 p-6">
+      <h2 className="flex items-center text-sm font-semibold text-gray-900">
+        <GlobeAltIcon className="size-7 flex-none text-gray-400" />
+        <span className="my-auto ml-3">Im Netz</span>
+      </h2>
+      <ol className="mt-6 space-y-2">
+        {onlineList.map((item, itemIndex) => (
+          <li
+            key={itemIndex}
+            className={twJoin(
+              "flex gap-4",
+              "description" in item ? "items-start pb-2" : "items-center",
+            )}
+          >
+            <div
+              className={twJoin(
+                "relative flex flex-none items-center justify-center grayscale",
+                "description" in item && "mt-1",
+              )}
+            >
+              <Img src={item.logo} alt="" height={32} width={32} className="rounded-md" />
+            </div>
+            <div className="flex flex-auto flex-col">
+              <dt className="sr-only">Netz-Links</dt>
+              <div className={twJoin(linkStyles, "text-sm")}>
+                <a target="_blank" href={item.href} rel="noreferrer">
+                  {item.title}
+                </a>
+              </div>
+              {"description" in item && (
+                <dd className="text-xs text-gray-400">{item.description}</dd>
+              )}
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+  )
+}

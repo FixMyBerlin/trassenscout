@@ -1,4 +1,4 @@
-export { STATE_TEST_COORDINATES } from "@/src/shared/alkisStateTestCoordinates"
+export { STATE_TEST_COORDINATES } from "@/src/data/alkisStateTestCoordinates"
 
 export const AUDIT_SCHEMA_VERSION = 1
 export const DEFAULT_TIMEOUT_MS = 45_000

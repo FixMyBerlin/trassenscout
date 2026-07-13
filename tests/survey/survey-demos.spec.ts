@@ -1,6 +1,6 @@
+import { Page } from "@playwright/test"
 import { surveyNoise } from "@/tests/_fixtures/console-noise"
 import { expect, test } from "@/tests/_fixtures/test"
-import { Page } from "@playwright/test"
 
 type SurveyPart = "part1" | "part2" | "part3"
 

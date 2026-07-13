@@ -1,0 +1,49 @@
+import { useRemarkSync } from "react-remark"
+import { twJoin } from "tailwind-merge"
+import { SurveyLink } from "@/src/components/beteiligung/links/SurveyLink"
+import { proseClasses } from "@/src/components/core/components/text/prose"
+
+type Props = {
+  markdown?: string | null
+  className?: string
+}
+
+const MdH4 = (props: any) => (
+  <p className="text-sm">
+    <strong {...props} />
+  </p>
+)
+const MdH5 = (props: any) => (
+  <p className="text-sm">
+    <strong {...props} />
+  </p>
+)
+const MdH6 = (props: any) => (
+  <p className="text-sm">
+    <strong {...props} />
+  </p>
+)
+const MdA = (props: any) => <SurveyLink blank href={props.href} {...props} />
+
+const components = {
+  h4: MdH4,
+  h5: MdH5,
+  h6: MdH6,
+  a: MdA,
+}
+
+const proseClassesSurvey = twJoin(
+  "prose-p:text-base prose-p:text-gray-700",
+  "prose-h2:mt-8 prose-h2:mb-4 prose-h2:text-lg prose-h2:font-bold prose-h2:text-gray-900 prose-h2:sm:text-xl prose-ol:text-base prose-ol:sm:text-lg",
+)
+
+export const SurveyMarkdown = ({ markdown, className }: Props) => {
+  const content = useRemarkSync(markdown ?? "", {
+    remarkToRehypeOptions: { allowDangerousHtml: true },
+    rehypeReactOptions: { components },
+  })
+
+  if (!markdown) return null
+
+  return <div className={twJoin(proseClasses, proseClassesSurvey, className)}>{content}</div>
+}

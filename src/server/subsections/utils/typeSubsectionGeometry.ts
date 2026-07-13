@@ -1,7 +1,7 @@
-import { Subsection } from "@/db"
-import { GeometryByGeometryType } from "@/src/server/shared/utils/geometrySchemas"
-import { typeGeometry } from "@/src/server/shared/utils/typeGeometry"
-import { GeometryTypeEnum } from "@prisma/client"
+import { Subsection } from "@/src/prisma/generated/browser"
+import { GeometryTypeEnum } from "@/src/prisma/generated/browser"
+import { GeometryByGeometryType } from "@/src/shared/geometry/geometrySchemas"
+import { typeGeometry } from "@/src/shared/geometry/typeGeometry"
 
 /**
  * Transforms a subsection by typing its geometry based on its type field.

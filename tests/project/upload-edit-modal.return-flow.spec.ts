@@ -1,8 +1,7 @@
-import db from "@/db"
-import { uploadEditRoute } from "@/src/core/routes/uploadRoutes"
 import { authFile, seedProjects } from "@/tests/_fixtures/auth"
-import { pageNoise } from "@/tests/_fixtures/console-noise"
+import { uploadPageNoise } from "@/tests/_fixtures/console-noise"
 import { expect, test } from "@/tests/_fixtures/test"
+import { getTestDb } from "@/tests/_utils/testDb"
 
 const projectSlug = seedProjects.richProject
 const uploadsPath = `/${projectSlug}/uploads`
@@ -10,26 +9,29 @@ const uploadsPath = `/${projectSlug}/uploads`
 type UploadModalFixture = {
   uploadId: number
   uploadTitle: string
+  fileName: string
 }
 
 test.describe("Upload edit return flow", () => {
   test.use({ storageState: authFile("editor") })
-  test.use({ allowedConsoleErrors: pageNoise })
+  test.use({ allowedConsoleErrors: uploadPageNoise })
 
   let fixture: UploadModalFixture
 
   test.beforeAll(async () => {
+    const db = await getTestDb()
     const project = await db.project.findFirstOrThrow({
       where: { slug: projectSlug },
       select: { id: true },
     })
 
     const uploadTitle = `E2E Upload ${Date.now()}`
+    const fileName = `e2e-upload-${Date.now()}.pdf`
     const upload = await db.upload.create({
       data: {
         projectId: project.id,
         title: uploadTitle,
-        externalUrl: "https://example.com/e2e-upload.pdf",
+        externalUrl: `https://example.com/${fileName}`,
         mimeType: "application/pdf",
       },
       select: { id: true },
@@ -38,16 +40,18 @@ test.describe("Upload edit return flow", () => {
     fixture = {
       uploadId: upload.id,
       uploadTitle,
+      fileName,
     }
   })
 
   test.afterAll(async () => {
     if (!fixture) return
+    const db = await getTestDb()
     await db.upload.delete({ where: { id: fixture.uploadId } }).catch(() => {})
   })
 
   test("returns from the edit route back to the uploads list via returnTo", async ({ page }) => {
-    const editPath = uploadEditRoute(projectSlug, fixture.uploadId, { returnTo: uploadsPath })
+    const editPath = `/${projectSlug}/uploads/${fixture.uploadId}/edit?returnTo=${encodeURIComponent(uploadsPath)}`
 
     await page.goto(editPath)
     await expect(
@@ -55,7 +59,7 @@ test.describe("Upload edit return flow", () => {
     ).toBeVisible({
       timeout: 30_000,
     })
-    await expect(page.getByLabel("Kurzbeschreibung")).toHaveValue(fixture.uploadTitle)
+    await expect(page.getByLabel("Anzeigename")).toHaveValue(fixture.uploadTitle)
 
     const maybeDirtyConfirm = page
       .waitForEvent("dialog", { timeout: 1_000 })
@@ -75,7 +79,7 @@ test.describe("Upload edit return flow", () => {
     await expect(
       page.getByRole("heading", { name: "Dokument bearbeiten", exact: true }),
     ).toHaveCount(0)
-    await expect(page.locator("tbody tr", { hasText: fixture.uploadTitle }).first()).toBeVisible({
+    await expect(page.locator("tbody tr", { hasText: fixture.fileName }).first()).toBeVisible({
       timeout: 30_000,
     })
   })

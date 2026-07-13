@@ -1,11 +1,11 @@
-import { isDev } from "@/src/core/utils/isEnv"
-import type { Feature, FeatureCollection, Geometry } from "geojson"
 import { execFile } from "node:child_process"
 import { randomBytes } from "node:crypto"
 import { mkdir, unlink, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { promisify } from "node:util"
+import type { Feature, FeatureCollection, Geometry } from "geojson"
+import { isDev } from "@/src/components/core/utils/isEnv"
 
 const execFileAsync = promisify(execFile)
 const KEEP_TEMP_FILES = isDev
@@ -28,7 +28,7 @@ export function buildWfsGetFeatureUrl(params: {
   count: number
   outputFormat: string
   bboxAxisOrder: "lonlat" | "latlon"
-}): string {
+}) {
   const url = new URL(params.wfsUrl)
   url.searchParams.set("SERVICE", "WFS")
   url.searchParams.set("VERSION", "2.0.0")
@@ -49,7 +49,7 @@ export function getWfsOutputFormat(wfsOutputFormat: string | null | undefined) {
   return wfsOutputFormat?.trim() ? wfsOutputFormat.trim() : GML_OUTPUT_FORMAT
 }
 
-function sniffTempExtension(body: string): string {
+function sniffTempExtension(body: string) {
   const t = body.trimStart()
   if (t.startsWith("<")) return ".gml"
   if (t.startsWith("{") || t.startsWith("[")) return ".json"
@@ -195,7 +195,7 @@ export function injectAlkisParcelIdsIntoGeoJson(
   for (const f of features) {
     if (!f || f.type !== "Feature") continue
     const { alkisParcelId, alkisParcelIdSource } = resolveAlkisParcelId(f, alkisParcelIdPropertyKey)
-    f.properties = { ...(f.properties ?? {}), alkisParcelId, alkisParcelIdSource }
+    f.properties = { ...f.properties, alkisParcelId, alkisParcelIdSource }
   }
   return { ok: true as const, geojson: JSON.stringify(parsed) }
 }

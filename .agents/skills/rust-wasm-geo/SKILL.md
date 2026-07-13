@@ -11,7 +11,7 @@ disable-model-invocation: true
 
 # Rust / WASM geo
 
-Default stack context: [LLM Technology Stack gist](https://gist.github.com/tordans/97b2a927494fa0be14751d4cbdb561cf). This skill covers **Rust/WASM geo only**.
+Default stack context: [tech-stack](https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/tech-stack) skill. This skill covers **Rust/WASM geo only**.
 
 ## When to apply
 
@@ -113,7 +113,6 @@ Both: dynamic-import WASM from `wasm.ts` only; never top-level `import` of `.was
 | Topic                            | Skill                                       |
 | -------------------------------- | ------------------------------------------- |
 | Map React API, layers, events    | React Map GL docs (load when touching maps) |
-| Route SSR, loaders, boundaries   | `tanstack-start-conventions`                |
-| Folder layout                    | `tanstack-start-app-structure`              |
+| Route SSR, loaders, layout       | `tanstack-start-conventions`                |
 | Client UI state around map tools | `zustand-state-management`                  |
-| useEffect / map listeners        | `react-useeffect`                           |
+| useEffect / map listeners        | `react-dev`                                 |

@@ -1,0 +1,93 @@
+import { z } from "zod"
+
+// todo maybe make this a function so that we can pass min max, required... values?
+export const fieldValidationEnum = {
+  optionalString: { zodSchema: z.string().optional(), required: false },
+  requiredString: {
+    zodSchema: z.string({ error: "Pflichtfeld." }).trim().min(1, { error: "Pflichtfeld." }),
+    required: true,
+  },
+  requiredEmailString: {
+    zodSchema: z
+      .string({ error: "Pflichtfeld." })
+      .trim()
+      .min(1, { error: "Pflichtfeld." })
+      .refine((value) => z.email().safeParse(value).success, {
+        error: "Bitte eine gültige E-Mail-Adresse eingeben.",
+      }),
+    required: true,
+  },
+  optionalYearString: {
+    zodSchema: z
+      .string()
+      .trim()
+      .regex(/^(\d{4}|)$/, { error: "Datum im Format JJJJ" })
+      .optional(),
+    required: false,
+  },
+  requiredYearString: {
+    zodSchema: z
+      .string()
+      .trim()
+      .min(4, { error: "Pflichtfeld." })
+      .regex(/^(\d{4}|)$/, { error: "Datum im Format JJJJ" }),
+    required: true,
+  },
+  // the optional zod schema with "required: true" seems contradictory, but it is used for a field that is required, but only if a condition is met
+  // the conditional required validation is handled in the form field logic manually - defined in the config
+  // we want to have "required: true" so that the field is marked as required in the UI
+  conditionalRequiredString: {
+    zodSchema: z.string().optional(),
+    required: true,
+  },
+  conditionalOptionalString: {
+    zodSchema: z.string().optional(),
+    required: false,
+  },
+  optionalArrayOfString: { zodSchema: z.array(z.string()), required: false },
+  requiredArrayOfString: {
+    zodSchema: z.array(z.string()).min(1, { error: "Pflichtfeld." }),
+    required: true,
+  },
+  requiredArrayOfStringMin2: {
+    zodSchema: z.array(z.string()).min(2, { error: "Bitte mindestens 2 Antworten auswählen" }),
+    required: true,
+  },
+  optionalArrayOfStringMax3: {
+    zodSchema: z.array(z.string()).max(3, { error: "Bitte maximal 3 Antworten auswählen" }),
+    required: false,
+  },
+
+  requiredBoolean: { zodSchema: z.boolean(), required: true },
+  requiredTrueBoolean: {
+    zodSchema: z.literal(true, { error: "Pflichtfeld." }),
+    required: true,
+  },
+
+  conditionalRequiredLatLng: {
+    zodSchema: z.object({ lat: z.number(), lng: z.number() }).nullish(),
+    required: true,
+  },
+  requiredLatLng: {
+    zodSchema: z.object({ lat: z.number(), lng: z.number() }, { error: "Pflichtfeld." }),
+    required: true,
+  },
+  optionalArrayOfNumber: {
+    zodSchema: z.array(z.coerce.number()),
+    required: false,
+  },
+  requiredArrayOfNumber: {
+    zodSchema: z.array(z.coerce.number()).min(1, { error: "Pflichtfeld." }),
+    required: true,
+  },
+  requiredNumber: {
+    zodSchema: z
+      .number({ error: "Pflichtfeld." })
+      .finite({ error: "Bitte eine gültige Zahl eingeben." }),
+    required: true,
+  },
+  optionalNumber: {
+    zodSchema: z.number().finite().nullish(),
+    required: false,
+  },
+}

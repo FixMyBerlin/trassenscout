@@ -1,0 +1,60 @@
+import { useSuspenseQuery } from "@tanstack/react-query"
+import { twJoin } from "tailwind-merge"
+import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
+import { Link } from "@/src/components/core/components/links/Link"
+import { shortTitle } from "@/src/components/core/components/text/titles"
+import { pillShellClasses } from "@/src/components/core/utils/pillClassNames"
+import { UserRoleEnum } from "@/src/prisma/generated/browser"
+import { adminProjectsWithCountsQueryOptions } from "@/src/server/projects/projectsQueryOptions"
+import { currentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
+
+export const AdminProjectsList = () => {
+  const { data: user } = useSuspenseQuery(currentUserQueryOptions())
+
+  if (user?.role !== UserRoleEnum.ADMIN) return null
+
+  return <AdminProjectsListContent />
+}
+
+const AdminProjectsListContent = () => {
+  const {
+    data: { projects },
+  } = useSuspenseQuery(adminProjectsWithCountsQueryOptions())
+
+  return (
+    <SuperAdminBox className="mx-auto">
+      <h2 className="mt-0">Alle Projekte</h2>
+      <ul>
+        {projects.map((project) => (
+          <li key={project.id}>
+            <div className="flex items-center gap-2">
+              <strong>
+                <Link to={`/${project.slug}`}>{shortTitle(project.slug)}</Link>
+              </strong>
+              <span className="inline-flex items-center gap-2">
+                <span
+                  className={twJoin(
+                    pillShellClasses,
+                    "border border-purple-200/70 bg-purple-100/60 text-[0.6875rem]",
+                    project.subsectionCount === 0 ? "opacity-60" : "",
+                  )}
+                >
+                  {project.subsectionCount} Abschnitte
+                </span>
+                <span
+                  className={twJoin(
+                    pillShellClasses,
+                    "border border-purple-200/70 bg-purple-100/60 text-[0.6875rem]",
+                    project.subsubsectionCount === 0 ? "opacity-60" : "",
+                  )}
+                >
+                  {project.subsubsectionCount} Teilabschnitte
+                </span>
+              </span>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </SuperAdminBox>
+  )
+}

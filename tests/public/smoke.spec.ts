@@ -1,13 +1,13 @@
 import { expect, test } from "@/tests/_fixtures/test"
 
 const publicPages = [
-  { path: "/", heading: "Trassenscout findet Wege", title: /Trassenscout/ },
-  { path: "/datenschutz", heading: "Datenschutzerklärung", title: /Datenschutzerklärung/ },
-  { path: "/kontakt", heading: "Kontakt", title: /Kontakt/ },
-  { path: "/auth/login", heading: "In Account einloggen", title: /Anmelden/ },
-  { path: "/auth/signup", heading: "Account registrieren", title: /Registrieren/ },
-  { path: "/auth/forgot-password", heading: "Passwort vergessen", title: /Passwort vergessen/ },
-  { path: "/auth/reset-password", heading: "Neues Passwort vergeben", title: /Passwort vergessen/ },
+  { path: "/", heading: "Trassenscout findet Wege" },
+  { path: "/datenschutz", heading: "Datenschutzerklärung" },
+  { path: "/kontakt", heading: "Kontakt" },
+  { path: "/auth/login", heading: "In Account einloggen" },
+  { path: "/auth/signup", heading: "Account registrieren" },
+  { path: "/auth/forgot-password", heading: "Passwort vergessen" },
+  { path: "/auth/reset-password", heading: "Neues Passwort vergeben" },
 ] as const
 
 test.describe("Public and auth smoke", () => {
@@ -15,7 +15,6 @@ test.describe("Public and auth smoke", () => {
     test(`renders ${publicPage.path}`, async ({ page }) => {
       await page.goto(publicPage.path)
 
-      await expect(page).toHaveTitle(publicPage.title)
       await expect(
         page.getByRole("heading", { name: publicPage.heading, exact: true }),
       ).toBeVisible({

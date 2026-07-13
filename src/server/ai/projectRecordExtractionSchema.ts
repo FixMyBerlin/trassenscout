@@ -1,0 +1,53 @@
+import { z } from "zod"
+
+export type CreateProjectRecordExtractionSchemaParams = {
+  tags: Array<{ id: number; title: string }>
+  isReprocessing?: boolean
+}
+
+export const createProjectRecordExtractionSchema = ({
+  tags,
+  isReprocessing,
+}: CreateProjectRecordExtractionSchemaParams) => {
+  return z.object({
+    body: z
+      .string()
+      .min(1)
+      .trim()
+      .describe(
+        `The complete text content of the ${isReprocessing ? "record entry" : "email body"}, formatted in clean Markdown."`,
+      ),
+
+    title: z
+      .string()
+      .min(1)
+      .max(150)
+      .trim()
+      .describe(
+        `A concise and meaningful title summarizing the ${isReprocessing ? "record entry" : "email"}'s main purpose or topic.`,
+      ),
+
+    date: z
+      .string()
+      .nullable()
+      .describe(
+        "The relevant date (or sent date) for the created project record entry in ISO format if available.",
+      ),
+
+    topics: z
+      .array(
+        tags.length > 0
+          ? z.enum(tags.map((t) => t.id.toString()) as [string, ...string[]])
+          : z.string(),
+      )
+      .describe(
+        tags.length > 0
+          ? `Array of topic IDs ('Tags') this ${isReprocessing ? "record entry" : "email"} relates to. Available topics: ${tags
+              .map((t) => `${t.id} (${t.title})`)
+              .join(
+                ", ",
+              )}. Select all that apply based on the ${isReprocessing ? "record entry" : "email"}'s content. Return [] if none are relevant.`
+          : "Empty array as no topics are available for this project.",
+      ),
+  })
+}

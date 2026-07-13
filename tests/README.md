@@ -1,74 +1,35 @@
-# Playwright E2E in Trassenscout
+# Testing
 
-## Runtime model
+## Unit tests (Vitest)
 
-- E2E runs against the dev server (`npm run dev:e2e`) on `127.0.0.1:6174`.
-- Docker is required locally because the suite provisions `ts-test-db`.
-- Test DB lifecycle is handled by Playwright global hooks:
-  - setup: start `ts-test-db`, run migrations, run seed
-  - teardown: stop/remove `ts-test-db` (unless `E2E_KEEP_DB=1`)
-- Auth uses Playwright project dependencies:
-  - `setup` project logs in real users and writes `tests/.auth/*.json`
-  - browser projects depend on `setup` and reuse `storageState`
+- Setup: [`setup.ts`](./setup.ts) (jest-dom + safe env defaults)
+- Shared mocks: [`mocks/`](./mocks/)
+- Run: `bun run test` (ensures Postgres via Docker, runs migrations, then Vitest)
+- Watch: `bun run test-watch`
 
-## Default execution
+Integration tests use the same local Postgres container as dev (`scripts/test/docker.ts`). Pure unit tests should not require the database.
 
-- Chromium is default.
-- `mobile-chrome` is included in the default suite for `tests/public` and `tests/survey`.
-- Firefox, WebKit, and `mobile-safari` run only with `E2E_ALL_BROWSERS=1`.
-- Stability defaults:
-  - `fullyParallel: false`
-  - local workers default to `1` (override with `E2E_WORKERS`)
+## E2E (Playwright)
 
-## Coverage notes
+- Run: `bun run e2e` (resets + seeds DB, starts dev server, runs auth setup, then chromium specs)
+- Smoke only: `bun run e2e-smoke`
+- Subsets while iterating:
+  - `bun run e2e -- tests/project`
+  - `bun run e2e -- tests/admin/smoke.spec.ts`
+- Convenience scripts: `e2e-smoke`, `e2e-project`, `e2e-admin`
 
-- Route/access coverage is broad across `public`, `auth`, `dashboard`, `admin`, and `project`.
-- Public survey flows run on desktop Chromium by default and on mobile browser projects.
-- Project canaries now include:
-  - [project-records.deep-link.spec.ts](./project/project-records.deep-link.spec.ts) for authenticated URL-state hydration
-  - [upload-edit-modal.return-flow.spec.ts](./project/upload-edit-modal.return-flow.spec.ts) for upload edit `returnTo` routing
-  - CRUD persistence for operators in addition to quality levels
+Parallel worker count is tuned in [`playwright.config.ts`](../playwright.config.ts) (`localWorkers` / `ciWorkers` constants — edit there if the dev server flakes under load).
 
-## Commands
+Playwright’s `webServer` runs [`prepareAndStartDev.ts`](./prepareAndStartDev.ts) with [`.env.test`](../.env.test) (`VITE_PLAYWRIGHT_ENABLED=true`). Auth setup signs in via [`_utils/signInViaApi.ts`](./_utils/signInViaApi.ts). Config: [`playwright.config.ts`](../playwright.config.ts).
 
-- `npm run e2e` — full configured suite
-- `npm run e2e:chromium` — Chromium project only
-- `npm run e2e:ui` — Playwright UI mode
-- `npx playwright test tests/project/surveys.permissions.spec.ts --project=chromium` — run a single spec
-- `npx playwright test tests/project/project-records.deep-link.spec.ts --project=chromium --headed` — run the deep-link canary in visible Chromium
-- `npx playwright test tests/project/upload-edit-modal.return-flow.spec.ts --project=chromium` — run the upload return-flow canary
+### Map testing
 
-## Useful env switches
+- Map helpers: [`utils/maps.ts`](./utils/maps.ts)
+- MapGrab for layer clicks: [MapGrab Playwright docs](https://mapgrab.github.io/docs/getting-started/stage-two/playwright)
+- Draggable pin example: [`survey/survey-frm7-neu.spec.ts`](./survey/survey-frm7-neu.spec.ts)
 
-- `E2E_ALL_BROWSERS=1` — enable Firefox + WebKit projects
-- `E2E_WORKERS=2` — override local worker count
-- `E2E_KEEP_DB=1` — keep `ts-test-db` running after suite
-- `E2E_BASE_URL=http://127.0.0.1:6174` — connect to an externally managed server (disables Playwright `webServer`)
+## Docs
 
-## Debug checklist
-
-1. Auth setup failures:
-   - run `npx playwright test tests/auth.setup.ts --project=setup`
-   - verify login labels still match UI (`E-Mail-Adresse`, `Passwort`, `Anmelden`)
-2. DB startup failures:
-   - check `docker ps` for `ts-test-db`
-   - rerun with clean DB: `npm run posttest && npm run e2e:chromium`
-3. Browser install failures:
-   - run `npx playwright install`
-   - for the opt-in browser matrix, install all three engines before `E2E_ALL_BROWSERS=1`
-4. Console noise / migration regressions:
-   - framework/router fetch errors are intentionally not part of the shared allowlist
-   - keep per-spec `allowedConsoleErrors` scoped and minimal
-5. Route guard flakiness:
-   - avoid overlapping local E2E runs against the same `ts-test-db`
-
-## Notes for map tests
-
-- Map readiness currently relies on [customMapLoadedEvent.ts](./_utils/customMapLoadedEvent.ts).
-- Drag-pin helpers live in [mapDragPin.ts](./_utils/mapDragPin.ts).
-
-## References
-
-- [Playwright Docs](https://playwright.dev/docs/intro)
-- [Next.js Playwright Guide](https://nextjs.org/docs/app/building-your-application/testing/playwright#running-your-playwright-tests)
+- [Playwright](https://playwright.dev/docs/intro)
+- [Vitest](https://vitest.dev/)
 - [MapGrab + Playwright](https://mapgrab.github.io/docs/getting-started/stage-two/playwright)

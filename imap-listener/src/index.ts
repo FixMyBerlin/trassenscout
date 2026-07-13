@@ -289,10 +289,6 @@ async function startImapListener() {
     secure: config.imap.secure,
   })
 
-  if (!config.imap.auth.user || !config.imap.auth.pass) {
-    throw new Error("IMAP_USER and IMAP_PASSWORD environment variables are required")
-  }
-
   // Verify target folders (done/error) exist before we start processing
   const tempClient = createImapClient()
   await tempClient.connect()

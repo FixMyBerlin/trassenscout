@@ -12,13 +12,20 @@ on:
         type: string
         required: false
         default: ""
+      DEPLOY_WORKFLOW_FILE:
+        type: string
+        required: true
     outputs:
       CHANGES:
-        description: "Whether the given directories have changed since the last successfull workflow run."
+        description: "Whether the given directories have changed since the last successful deploy workflow run."
         value: ${{ jobs.diff.outputs.CHANGES }}
       env_fingerprint_cache_key:
         description: "Computed cache key for the environment fingerprint."
         value: ${{ jobs.diff.outputs.env_fingerprint_cache_key }}
+
+permissions:
+  contents: read
+  actions: read
 
 jobs:
   diff:
@@ -29,55 +36,52 @@ jobs:
       CHANGES: ${{ steps.final_changes.outputs.CHANGES }}
       env_fingerprint_cache_key: ${{ steps.env_hash.outputs.cache_key }}
     steps:
-      - name: Get last run commit SHA
-        run: |
-          LAST_RUN_SHA=$(curl --fail -s -S --request GET \
-          --url https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=${{ github.head_ref || github.ref_name }} \
-          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-          | jq -r '.workflow_runs[] | select(.conclusion == "success") | .head_sha' | head -1)
-          echo LAST_RUN_SHA=$LAST_RUN_SHA >> $GITHUB_ENV
-        shell: bash
-
       - name: Checkout current version
         uses: actions/checkout@v6
 
-      - name: Checkout last build
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Get last run commit SHA
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          bun .github/scripts/get-last-success-sha.ts \
+            --repository "${{ github.repository }}" \
+            --branch "${{ github.head_ref || github.ref_name }}" \
+            --workflow-file "${{ inputs.DEPLOY_WORKFLOW_FILE }}"
+
+      - name: Fetch last run commit
         if: ${{ env.LAST_RUN_SHA != '' }}
-        uses: actions/checkout@v6
-        with:
-          ref: ${{ env.LAST_RUN_SHA }}
+        run: |
+          if ! git fetch --depth=1 origin "$LAST_RUN_SHA"; then
+            echo "Last run SHA $LAST_RUN_SHA is not fetchable; treating as changed."
+            echo "LAST_RUN_SHA=" >> "$GITHUB_ENV"
+          fi
 
       - name: Check for changes
         id: git_changes
         run: |
-          if [ -z "${{ env.LAST_RUN_SHA }}" ]; then
-            echo "CHANGES=true" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-
-          if git diff --exit-code ${{ env.LAST_RUN_SHA }} ${{ github.sha }} -- ${{ inputs.CHECK_DIFF_LOCATIONS }} .github/workflows/; then
-            echo "CHANGES=false" >> $GITHUB_OUTPUT
-          else
-            echo "CHANGES=true" >> $GITHUB_OUTPUT
-          fi
-        shell: bash
+          bun .github/scripts/check-git-changes.ts \
+            --last-run-sha "${{ env.LAST_RUN_SHA }}" \
+            --current-sha "${{ github.sha }}" \
+            --locations "${{ inputs.CHECK_DIFF_LOCATIONS }}"
 
       - name: Hash environment fingerprint
         id: env_hash
         if: ${{ inputs.ENV_FINGERPRINT_SCOPE != '' }}
         env:
-          NEXT_PUBLIC_APP_ENV: ${{ inputs.ENVIRONMENT }}
-          NEXT_PUBLIC_APP_ORIGIN: ${{ vars.APP_ORIGIN }}
+          VITE_APP_ENV: ${{ inputs.ENVIRONMENT }}
+          VITE_APP_ORIGIN: ${{ vars.APP_ORIGIN }}
           APP_DOMAIN: ${{ vars.APP_DOMAIN }}
           BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
-          POSTGRES_DB: ${{ vars.POSTGRES_DB }}
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_HOST: ${{ vars.POSTGRES_HOST }}
+          DATABASE_USER: ${{ secrets.DATABASE_USER }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
           SESSION_SECRET_KEY: ${{ secrets.SESSION_SECRET_KEY }}
           ADMIN_EMAIL: ${{ vars.ADMIN_EMAIL }}
           S3_UPLOAD_KEY: ${{ secrets.S3_UPLOAD_KEY }}
           S3_UPLOAD_SECRET: ${{ secrets.S3_UPLOAD_SECRET }}
+          S3_UPLOAD_ROOTFOLDER: upload-${{ inputs.ENVIRONMENT }}
           TS_API_KEY: ${{ secrets.TS_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
@@ -89,49 +93,10 @@ jobs:
           IMAP_USER: ${{ vars.IMAP_USER }}
           IMAP_PASSWORD: ${{ secrets.IMAP_PASSWORD }}
         run: |
-          case "${{ inputs.ENV_FINGERPRINT_SCOPE }}" in
-            app)
-              ENV_FINGERPRINT_VALUES=$(printf '%s\n' \
-                "NEXT_PUBLIC_APP_ENV=$NEXT_PUBLIC_APP_ENV" \
-                "NEXT_PUBLIC_APP_ORIGIN=$NEXT_PUBLIC_APP_ORIGIN" \
-                "APP_DOMAIN=$APP_DOMAIN" \
-                "BREVO_API_KEY=$BREVO_API_KEY" \
-                "POSTGRES_DB=$POSTGRES_DB" \
-                "POSTGRES_USER=$POSTGRES_USER" \
-                "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" \
-                "POSTGRES_HOST=$POSTGRES_HOST" \
-                "SESSION_SECRET_KEY=$SESSION_SECRET_KEY" \
-                "ADMIN_EMAIL=$ADMIN_EMAIL" \
-                "S3_UPLOAD_KEY=$S3_UPLOAD_KEY" \
-                "S3_UPLOAD_SECRET=$S3_UPLOAD_SECRET" \
-                "TS_API_KEY=$TS_API_KEY" \
-                "OPENAI_API_KEY=$OPENAI_API_KEY" \
-                "LANGFUSE_SECRET_KEY=$LANGFUSE_SECRET_KEY" \
-                "LANGFUSE_PUBLIC_KEY=$LANGFUSE_PUBLIC_KEY" \
-                "LANGFUSE_BASEURL=$LANGFUSE_BASEURL" \
-                "LUCKY_CLOUD_TOKEN=$LUCKY_CLOUD_TOKEN")
-              ;;
-            imap-listener)
-              ENV_FINGERPRINT_VALUES=$(printf '%s\n' \
-                "NEXT_PUBLIC_APP_ENV=$NEXT_PUBLIC_APP_ENV" \
-                "TS_API_KEY=$TS_API_KEY" \
-                "IMAP_HOST=$IMAP_HOST" \
-                "IMAP_PORT=$IMAP_PORT" \
-                "IMAP_USER=$IMAP_USER" \
-                "IMAP_PASSWORD=$IMAP_PASSWORD")
-              ;;
-            *)
-              echo "hash=" >> $GITHUB_OUTPUT
-              echo "cache_key=" >> $GITHUB_OUTPUT
-              exit 0
-              ;;
-          esac
-
-          HASH=$(printf '%s' "$ENV_FINGERPRINT_VALUES" | sha256sum | awk '{print $1}')
-          CACHE_KEY="env-fingerprint-${{ github.ref_name }}-${{ inputs.ENVIRONMENT }}-${{ inputs.ENV_FINGERPRINT_SCOPE }}-$HASH"
-          echo "hash=$HASH" >> $GITHUB_OUTPUT
-          echo "cache_key=$CACHE_KEY" >> $GITHUB_OUTPUT
-        shell: bash
+          bun .github/scripts/hash-env-fingerprint.ts \
+            --scope "${{ inputs.ENV_FINGERPRINT_SCOPE }}" \
+            --environment "${{ inputs.ENVIRONMENT }}" \
+            --ref-name "${{ github.ref_name }}"
 
       - name: Check environment fingerprint cache
         id: env_fingerprint_cache
@@ -147,21 +112,13 @@ jobs:
       - name: Check for environment changes
         id: env_changes
         run: |
-          if [ "${{ steps.env_hash.outputs.hash }}" = "" ]; then
-            echo "CHANGES=false" >> $GITHUB_OUTPUT
-          elif [ "${{ steps.env_fingerprint_cache.outputs.cache-hit }}" = "true" ]; then
-            echo "CHANGES=false" >> $GITHUB_OUTPUT
-          else
-            echo "CHANGES=true" >> $GITHUB_OUTPUT
-          fi
-        shell: bash
+          bun .github/scripts/resolve-env-changes.ts \
+            --hash "${{ steps.env_hash.outputs.hash }}" \
+            --cache-hit "${{ steps.env_fingerprint_cache.outputs.cache-hit }}"
 
       - name: Merge change signals
         id: final_changes
         run: |
-          if [ "${{ steps.git_changes.outputs.CHANGES }}" = "true" ] || [ "${{ steps.env_changes.outputs.CHANGES }}" = "true" ]; then
-            echo "CHANGES=true" >> $GITHUB_OUTPUT
-          else
-            echo "CHANGES=false" >> $GITHUB_OUTPUT
-          fi
-        shell: bash
+          bun .github/scripts/merge-change-signals.ts \
+            --git-changes "${{ steps.git_changes.outputs.CHANGES }}" \
+            --env-changes "${{ steps.env_changes.outputs.CHANGES }}"

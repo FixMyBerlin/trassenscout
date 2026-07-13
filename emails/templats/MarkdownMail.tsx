@@ -1,4 +1,3 @@
-import { getPrdOrStgDomain } from "@/src/core/components/links/getDomain"
 import {
   Body,
   Button,
@@ -11,14 +10,16 @@ import {
   Section,
   Tailwind,
 } from "@react-email/components"
+import { getPrdOrStgDomain } from "@/src/components/core/components/links/getDomain"
 import { footerTextMarkdown } from "./footerTextMarkdown"
 import { signatureTextMarkdown } from "./signatureTextMarkdown"
 
-const baseUrl = getPrdOrStgDomain()
+const emailLogoPath = "/emails/trassenscout-logo-mail-white.png"
 
 export type MarkdownMailProps = {
   introMarkdown: string
   outroMarkdown?: string
+  assetBaseUrl?: string
 } & ({ ctaLink: string; ctaText: string } | { ctaLink?: never | null; ctaText?: never | null })
 
 export const MarkdownMail = ({
@@ -26,6 +27,7 @@ export const MarkdownMail = ({
   outroMarkdown,
   ctaLink = null,
   ctaText = null,
+  assetBaseUrl = getPrdOrStgDomain(),
 }: MarkdownMailProps) => {
   return (
     <Tailwind>
@@ -36,10 +38,10 @@ export const MarkdownMail = ({
         {/* <Preview>Preview line</Preview> */}
         <Body className="m-0 bg-gray-100 sm:p-4">
           <Container className="mx-auto bg-white sm:rounded-lg sm:shadow-md">
-            <Section className="mb-4 bg-gray-800 px-4 py-5 text-center sm:rounded-t-lg sm:px-8 dark:bg-gray-800">
+            <Section className="mb-4 bg-gray-800 px-4 py-5 text-center sm:rounded-t-lg sm:px-8">
               <center>
                 <Img
-                  src={`${baseUrl}/emails/trassenscout-logo-mail-white.png`}
+                  src={`${assetBaseUrl}${emailLogoPath}`}
                   width="134"
                   height="45"
                   alt="Trassenscout Logo"
