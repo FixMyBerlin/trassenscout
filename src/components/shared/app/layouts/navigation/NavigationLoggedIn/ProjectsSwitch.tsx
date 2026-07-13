@@ -47,7 +47,10 @@ export const ProjectsSwitch = ({ projects }: Props) => {
           "hover:bg-yellow-400 focus:bg-yellow-400 data-open:bg-yellow-400",
           "focus:ring-2 focus:ring-white/30 focus:outline-hidden",
         )}
-        classNameDropdown="left-0 w-64"
+        classNameDropdown={twJoin(
+          "right-0 w-64 max-w-[calc(100vw-1rem)]",
+          "sm:right-auto sm:left-0 sm:max-w-none",
+        )}
         value={projectSlug}
         items={items}
         onChange={(value) => {
