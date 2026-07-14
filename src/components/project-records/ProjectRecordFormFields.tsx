@@ -149,7 +149,7 @@ export const ProjectRecordFormFields = ({
         <div className={splitView ? "flex-1 space-y-6" : "space-y-6"}>
           {assignmentAndStatusFields}
 
-          <div className="flex gap-4">
+          <div className="flex flex-col gap-4 sm:flex-row">
             <div className="w-48">
               <form.AppField name="date">
                 {(field) => <field.TextField type="date" label={dateLabel} placeholder="" />}
@@ -164,7 +164,9 @@ export const ProjectRecordFormFields = ({
 
           <div
             className={
-              landAcquisitionModuleEnabled ? "grid grid-cols-2 gap-4" : "grid grid-cols-1 gap-4"
+              landAcquisitionModuleEnabled
+                ? "grid grid-cols-1 gap-4 sm:grid-cols-2"
+                : "grid grid-cols-1 gap-4"
             }
           >
             {showSubsubsectionField && (

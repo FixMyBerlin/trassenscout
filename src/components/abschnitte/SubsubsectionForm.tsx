@@ -219,7 +219,7 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
           />
         )}
       </form.AppField>
-      <div className="flex items-end gap-5">
+      <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-end">
         <form.AppField name="subsubsectionTaskId">
           {(field) => (
             <field.SelectField
@@ -230,7 +230,10 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
             />
           )}
         </form.AppField>
-        <LinkWithFormDirtyConfirm to={`/${projectSlug}/subsubsection-task`} className="py-2">
+        <LinkWithFormDirtyConfirm
+          to={`/${projectSlug}/subsubsection-task`}
+          className="self-start py-2 sm:self-auto"
+        >
           Maßnahmentypen verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
@@ -291,7 +294,7 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
           />
         )}
       </form.AppField>
-      <div className="flex items-end gap-5">
+      <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-end">
         <div className="grow">
           <form.AppField name="subsubsectionInfrastructureTypeIds">
             {(field) => (
@@ -306,12 +309,12 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
         </div>
         <LinkWithFormDirtyConfirm
           to={`/${projectSlug}/subsubsection-infrastructure-type`}
-          className="py-2"
+          className="self-start py-2 sm:self-auto"
         >
           Gegenstände der Förderung verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
-      <div className="flex items-end gap-5">
+      <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-end">
         <form.AppField name="qualityLevelId">
           {(field) => (
             <field.SelectField
@@ -322,11 +325,14 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
             />
           )}
         </form.AppField>
-        <LinkWithFormDirtyConfirm to={`/${projectSlug}/quality-levels`} className="py-2">
+        <LinkWithFormDirtyConfirm
+          to={`/${projectSlug}/quality-levels`}
+          className="self-start py-2 sm:self-auto"
+        >
           Ausbaustandards verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
-      <div className="flex items-end gap-5">
+      <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-end">
         <form.AppField name="subsubsectionInfraId">
           {(field) => (
             <field.SelectField
@@ -336,11 +342,14 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
             />
           )}
         </form.AppField>
-        <LinkWithFormDirtyConfirm to={`/${projectSlug}/subsubsection-infra`} className="py-2">
+        <LinkWithFormDirtyConfirm
+          to={`/${projectSlug}/subsubsection-infra`}
+          className="self-start py-2 sm:self-auto"
+        >
           Führungsformen verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
-      <div className="flex items-end gap-5">
+      <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-end">
         <form.AppField name="subsubsectionStatusId">
           {(field) => (
             <field.SelectField
@@ -351,7 +360,10 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
             />
           )}
         </form.AppField>
-        <LinkWithFormDirtyConfirm to={`/${projectSlug}/subsubsection-status`} className="py-2">
+        <LinkWithFormDirtyConfirm
+          to={`/${projectSlug}/subsubsection-status`}
+          className="self-start py-2 sm:self-auto"
+        >
           Phase verwalten…
         </LinkWithFormDirtyConfirm>
       </div>

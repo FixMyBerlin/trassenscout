@@ -73,10 +73,14 @@ export function TagsFormSection({
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex items-end gap-5">
+      <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-end">
         <div className="grow">{tagsField}</div>
-        <SuperAdminBox className="shrink-0">
-          <LinkWithFormDirtyConfirm to={`/${projectSlug}/tags`} className="py-2" blank>
+        <SuperAdminBox className="shrink-0 self-start sm:self-auto">
+          <LinkWithFormDirtyConfirm
+            to={`/${projectSlug}/tags`}
+            className="self-start py-2 sm:self-auto"
+            blank
+          >
             Tags verwalten…
           </LinkWithFormDirtyConfirm>
         </SuperAdminBox>

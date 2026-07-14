@@ -158,7 +158,7 @@ function SubsectionFormWithQuery<S extends z.ZodTypeAny>({
       <form.AppField name="lengthM">
         {(field) => <field.TextFieldCalculateLength label="Länge" optional />}
       </form.AppField>
-      <div className="flex items-end gap-5">
+      <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-end">
         <form.AppField name="operatorId">
           {(field) => (
             <field.SelectField
@@ -169,11 +169,14 @@ function SubsectionFormWithQuery<S extends z.ZodTypeAny>({
             />
           )}
         </form.AppField>
-        <LinkWithFormDirtyConfirm to={`/${projectSlug}/operators`} className="py-2">
+        <LinkWithFormDirtyConfirm
+          to={`/${projectSlug}/operators`}
+          className="self-start py-2 sm:self-auto"
+        >
           Baulastträger verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
-      <div className="flex items-end gap-5">
+      <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-end">
         <form.AppField name="subsectionStatusId">
           {(field) => (
             <field.SelectField
@@ -184,7 +187,10 @@ function SubsectionFormWithQuery<S extends z.ZodTypeAny>({
             />
           )}
         </form.AppField>
-        <LinkWithFormDirtyConfirm to={`/${projectSlug}/subsection-status`} className="py-2">
+        <LinkWithFormDirtyConfirm
+          to={`/${projectSlug}/subsection-status`}
+          className="self-start py-2 sm:self-auto"
+        >
           Status verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
@@ -212,7 +218,7 @@ function SubsectionFormWithQuery<S extends z.ZodTypeAny>({
           <field.SelectField label="Priorität" optional options={prioritySelectOptions} />
         )}
       </form.AppField>
-      <div className="flex items-end gap-5">
+      <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-end">
         <form.AppField name="networkHierarchyId">
           {(field) => (
             <field.SelectField
@@ -223,7 +229,10 @@ function SubsectionFormWithQuery<S extends z.ZodTypeAny>({
             />
           )}
         </form.AppField>
-        <LinkWithFormDirtyConfirm to={`/${projectSlug}/network-hierarchy`} className="py-2">
+        <LinkWithFormDirtyConfirm
+          to={`/${projectSlug}/network-hierarchy`}
+          className="self-start py-2 sm:self-auto"
+        >
           Netzstufen verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
