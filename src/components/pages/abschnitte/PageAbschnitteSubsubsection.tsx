@@ -28,7 +28,7 @@ export function PageAbschnitteSubsubsection() {
   return (
     <MapPageSuspense>
       <div className="relative flex w-full flex-col items-start gap-6 lg:flex-row">
-        <div className="min-w-0 w-full lg:flex-1">
+        <div className="w-full min-w-0 lg:flex-1">
           <SubsubsectionMapWithProvider
             key={`map-subsubsection-${subsubsectionSlug}`}
             projectSlug={projectSlug}
@@ -39,7 +39,7 @@ export function PageAbschnitteSubsubsection() {
             selectedSubsubsectionSlug={subsubsectionSlug}
           />
         </div>
-        <div className="min-w-0 w-full lg:flex-1">
+        <div className="w-full min-w-0 lg:flex-1">
           <SubsubsectionDetailsContent subsubsection={subsubsection} />
         </div>
       </div>

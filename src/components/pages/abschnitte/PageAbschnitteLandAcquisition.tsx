@@ -22,10 +22,10 @@ export function PageAbschnitteLandAcquisition() {
   return (
     <MapPageSuspense>
       <div className="relative flex w-full flex-col items-start gap-6 lg:flex-row">
-        <div className="min-w-0 w-full lg:flex-1">
+        <div className="w-full min-w-0 lg:flex-1">
           <SubsubsectionLandAcquisitionMap subsubsection={subsubsection} />
         </div>
-        <div className="min-w-0 w-full lg:flex-1">
+        <div className="w-full min-w-0 lg:flex-1">
           <SubsubsectionLandAcquisitionContent
             subsectionId={subsection.id}
             subsubsectionId={subsubsection.id}
