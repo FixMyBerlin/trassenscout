@@ -120,7 +120,7 @@ export function ComboboxSingleBase({
                     value={query}
                     onChange={(event) => setQuery(event.target.value)}
                     placeholder={placeholder ?? "Suchen"}
-                    className="block w-full rounded-md border border-gray-300 px-3 py-1.5 text-sm placeholder-gray-400 focus:border-blue-500 focus:outline-hidden"
+                    className="block w-full rounded-md border border-gray-300 px-3 py-1.5 text-base placeholder-gray-400 focus:border-blue-500 focus:outline-hidden sm:text-sm"
                   />
                 </div>
                 <ComboboxOptions

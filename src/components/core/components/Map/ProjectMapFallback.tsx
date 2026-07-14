@@ -15,7 +15,7 @@ export const ProjectMapFallback = ({ subsections }: Props) => {
   const bounds = geometriesBbox(subsections.map((ss) => ss.geometry))
 
   return (
-    <section className="relative mt-3">
+    <section className="relative mt-3 mb-10">
       <BaseMap
         id="mainMap"
         initialViewState={{

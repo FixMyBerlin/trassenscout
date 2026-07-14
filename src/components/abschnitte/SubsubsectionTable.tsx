@@ -32,7 +32,7 @@ export const SubsubsectionTable = ({ subsubsections, compact }: Props) => {
 
   return (
     <section>
-      <TableWrapper className="mt-10">
+      <TableWrapper>
         <table className="min-w-full divide-y divide-gray-300">
           <thead className="bg-gray-50">
             <tr>

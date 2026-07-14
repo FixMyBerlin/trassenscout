@@ -23,11 +23,10 @@ type Props = {
     } | null
   }
 }
+export const metadataItemClassName = "flex flex-wrap items-center gap-3 text-sm text-gray-600"
 
 export const ProjectRecordSummary = ({ projectRecord }: Props) => {
   const projectSlug = projectRecord.project.slug
-
-  const metadataItemClassName = "flex flex-wrap items-center gap-3 text-sm text-gray-600"
   const metadataLabelClassName = "text-sm font-medium text-gray-700"
   const sectionClassName =
     "grid gap-2 sm:grid-cols-[minmax(170px,_190px)_1fr] sm:items-start sm:gap-x-1 sm:gap-y-4"
@@ -156,7 +155,7 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
       </div>
 
       <div>
-        <p className="mb-2 text-gray-500">Dokumente:</p>
+        <p className={metadataLabelClassName}>Dokumente:</p>
       </div>
     </div>
   )

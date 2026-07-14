@@ -1,3 +1,4 @@
+import { twJoin } from "tailwind-merge"
 import { Link } from "@/src/components/core/components/links/Link"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { formatBerlinTime } from "@/src/components/core/utils/formatBerlinTime"
@@ -150,7 +151,7 @@ export const UploadVerknuepfungen = ({
         )}
 
         {hasTags && (
-          <div className={sectionClassName}>
+          <div className={twJoin(sectionClassName, "mt-1")}>
             <p className={sectionLabelClassName}>{tags.length === 1 ? "Tag:" : "Tags:"}</p>
             <div className={sectionValueClassName}>
               <ProjectRecordTagsList tags={tags} />
