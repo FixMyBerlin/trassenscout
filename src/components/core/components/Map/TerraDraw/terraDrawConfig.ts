@@ -6,17 +6,18 @@ import {
   TerraDrawPolygonMode,
   TerraDrawSelectMode,
 } from "terra-draw"
+import { mapColorTokens } from "../colors/mapColorTokens"
 
 export const TERRA_DRAW_COLORS = {
   /** Yellow – selected (edit mode) or the feature being drawn (add mode) */
-  drawing: "#F8C62B" as HexColor,
-  selectedDark: "#F8C62B" as HexColor,
+  drawing: mapColorTokens.yellow400 as HexColor,
+  selectedDark: mapColorTokens.yellow400 as HexColor,
   /** Blue – unselected (edit mode) or at-rest features (add mode) */
-  unselected: "#2c62a9" as HexColor,
+  unselected: mapColorTokens.blue500 as HexColor,
   /** Pink – selection points (vertex handles) in edit mode */
-  selectionPoint: "#ec407a" as HexColor,
+  selectionPoint: mapColorTokens.terraDrawSelectionPink as HexColor,
   /** Purple – midpoint handles in edit mode */
-  midPoint: "#a855f7" as HexColor,
+  midPoint: mapColorTokens.terraDrawMidpointPurple as HexColor,
 }
 
 /** Use yellow for the feature currently being drawn, blue for the rest. */

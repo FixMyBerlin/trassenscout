@@ -27,14 +27,6 @@ type SubsectionMarkerProps = {
   onSelect: (props: { subsectionSlug: string; edit: boolean }) => void
 }
 
-const SubsectionDot = () => {
-  return (
-    <div data-testid="subsection-dot" className="flex h-6 w-6 items-center justify-center">
-      <div className="h-3 w-3 rounded-full border border-white bg-gray-900 shadow transition-colors group-hover:bg-yellow-400" />
-    </div>
-  )
-}
-
 const SubsectionMarker = ({ subsection, dotMode, onSelect }: SubsectionMarkerProps) => {
   const [longitude, latitude] = getLabelPosition(subsection.geometry, subsection.labelPos)
   const { isHighlighted, handleMouseEnter, handleMouseLeave } = useMarkerHighlight(
@@ -42,14 +34,14 @@ const SubsectionMarker = ({ subsection, dotMode, onSelect }: SubsectionMarkerPro
     subsection.slug,
   )
 
-  const label = (props: { dotMode: boolean }) => (
+  const label = (
     <TipMarker
       anchor={subsection.labelPos}
       slug={subsection.slug}
       highlightLevel="subsection"
       syncHighlightOnHover={false}
-      highlighted={props.dotMode ? false : undefined}
-      pillClassName={props.dotMode ? "group-hover:border-yellow-400" : undefined}
+      highlighted={isHighlighted}
+      highlightVariant="filled"
     >
       <MarkerLabel
         icon={
@@ -57,11 +49,7 @@ const SubsectionMarker = ({ subsection, dotMode, onSelect }: SubsectionMarkerPro
             label={shortTitle(subsection.slug)}
             className={twJoin(
               "transition-colors",
-              props.dotMode
-                ? "group-hover:border-yellow-400 group-hover:bg-yellow-400 group-hover:text-gray-900"
-                : isHighlighted
-                  ? "border-yellow-400 bg-yellow-400 text-gray-900"
-                  : "",
+              isHighlighted ? "border-yellow-400 bg-yellow-400 text-gray-900" : "",
             )}
           />
         }
@@ -78,16 +66,13 @@ const SubsectionMarker = ({ subsection, dotMode, onSelect }: SubsectionMarkerPro
       onClick={(e) => onSelect({ subsectionSlug: subsection.slug, edit: e.originalEvent.altKey })}
     >
       <div
-        className="group relative cursor-pointer"
+        className={twJoin("group relative cursor-pointer", dotMode && "h-6 w-6")}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        {dotMode && <SubsectionDot />}
         {dotMode
-          ? isHighlighted && (
-              <div className="absolute top-1/2 left-1/2">{label({ dotMode: true })}</div>
-            )
-          : label({ dotMode: false })}
+          ? isHighlighted && <div className="absolute top-1/2 left-1/2">{label}</div>
+          : label}
       </div>
     </Marker>
   )

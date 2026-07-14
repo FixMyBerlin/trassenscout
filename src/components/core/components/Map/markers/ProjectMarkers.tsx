@@ -1,6 +1,5 @@
 import { Marker } from "react-map-gl/maplibre"
 import { shortTitle } from "../../text/titles"
-import { ProjectMapIcon } from "../Icons/ProjectIcon"
 import { MarkerLabel } from "../Labels/MarkerLabel"
 import type { ProjectMapEntities as TGetProjectsWithGeometryWithMembershipRole } from "../mapEntityTypes"
 import { TipMarker } from "../TipMarker"
@@ -32,8 +31,20 @@ const ProjectMarker = ({ projectSlug, subsections, onSelect }: ProjectMarkerProp
       anchor="center"
       onClick={() => onSelect(projectSlug)}
     >
-      <TipMarker anchor="top" slug={projectSlug} highlightLevel="project">
-        <MarkerLabel icon={<ProjectMapIcon label={shortTitle(projectSlug)} />} />
+      <TipMarker
+        anchor="top"
+        slug={projectSlug}
+        highlightLevel="project"
+        highlightVariant="filled"
+        highlighted
+      >
+        <MarkerLabel
+          icon={
+            <div className="flex h-5 w-auto flex-none items-center justify-center px-1.5 font-sans text-xs leading-none font-semibold text-yellow-950">
+              {shortTitle(projectSlug)}
+            </div>
+          }
+        />
       </TipMarker>
     </Marker>
   )

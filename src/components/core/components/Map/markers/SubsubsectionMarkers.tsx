@@ -49,6 +49,7 @@ const SubsubsectionMarker = ({
         }
         slug={subsubsection.slug}
         highlightLevel="subsubsection"
+        highlightVariant="filled"
       >
         <TitleLabel
           icon={
@@ -56,7 +57,7 @@ const SubsubsectionMarker = ({
               slug={subsubsection.slug}
               className={twJoin(
                 "transition-colors",
-                isHighlighted ? "border-[#F8C62B] bg-[#F8C62B] text-gray-900" : "",
+                isHighlighted ? "border-yellow-400 bg-yellow-400 text-gray-900" : "",
               )}
             />
           }
