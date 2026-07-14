@@ -1,43 +1,32 @@
 import type { FileUploadInfo } from "@better-upload/client"
 import { useMutation } from "@tanstack/react-query"
+import type { UploadFileRecordResult } from "@/src/components/uploads/UploadDropzone"
+import { UploadDropzoneBase } from "@/src/components/uploads/UploadDropzoneBase"
 import { getAcceptAttribute } from "@/src/components/uploads/utils/getFileType"
 import { createUploadFn } from "@/src/server/uploads/uploads.functions"
 import { S3_MAX_FILE_SIZE_BYTES, S3_MAX_FILES_PROJECT } from "@/src/shared/uploads/config"
 import { getS3Url } from "@/src/shared/uploads/url"
-import { UploadDropzoneBase } from "./UploadDropzoneBase"
-
-type CreatedUpload = Awaited<ReturnType<typeof createUploadFn>>
-
-export type UploadFileRecordResult =
-  | { file: FileUploadInfo<"complete">; ok: true; upload: CreatedUpload }
-  | { file: FileUploadInfo<"complete">; ok: false; error: unknown }
 
 type Props = {
-  // Passed as a prop (not read from the route) so the dropzone also works outside
-  // `/_loggedInProjects/$projectSlug`, e.g. on admin routes
   projectSlug: string
-  subsubsectionIds?: number[]
-  acquisitionAreaIds?: number[]
-  projectRecordIds?: number[]
-  surveyResponseId?: number
+  assignSubsubsectionFromFilename: boolean
   onUploadComplete?: (uploadIds: number[]) => Promise<void>
   onBatchStart?: (files: File[]) => void
   onFileRecordResult?: (result: UploadFileRecordResult) => void
   onUploadFail?: (failedFiles: FileUploadInfo<"failed">[]) => void
-  fillContainer?: boolean
 }
 
-export const UploadDropzone = ({
+/**
+ * Uploads-page dropzone that can assign Maßnahmen from filenames.
+ * Kept separate from the generic UploadDropzone used elsewhere.
+ */
+export const UploadsPageDropzone = ({
   projectSlug,
-  subsubsectionIds,
-  acquisitionAreaIds,
-  projectRecordIds,
-  surveyResponseId,
+  assignSubsubsectionFromFilename,
   onUploadComplete,
   onBatchStart,
   onFileRecordResult,
   onUploadFail,
-  fillContainer,
 }: Props) => {
   const createUploadMutation = useMutation({
     mutationFn: createUploadFn,
@@ -50,16 +39,17 @@ export const UploadDropzone = ({
           title: file.name,
           externalUrl: getS3Url(file.objectInfo.key),
           projectSlug,
-          acquisitionAreas: acquisitionAreaIds?.length ? acquisitionAreaIds : undefined,
+          acquisitionAreas: undefined,
           summary: null,
-          subsubsections: subsubsectionIds?.length ? subsubsectionIds : undefined,
-          projectRecords: projectRecordIds?.length ? projectRecordIds : undefined,
-          surveyResponseId: surveyResponseId || null,
+          subsubsections: undefined,
+          projectRecords: undefined,
+          surveyResponseId: null,
           projectRecordEmailId: null,
           mimeType: file.type || null,
           fileSize: file.size || null,
           latitude: null,
           longitude: null,
+          assignSubsubsectionFromFilename,
         },
       })
       onFileRecordResult?.({ file, ok: true, upload })
@@ -77,7 +67,6 @@ export const UploadDropzone = ({
       onUploadComplete={onUploadComplete}
       onBatchStart={onBatchStart}
       onUploadFail={onUploadFail}
-      fillContainer={fillContainer}
       accept={getAcceptAttribute()}
       description={{
         fileTypes: `Bilder, PDF, Office-Dokumente bis ${S3_MAX_FILE_SIZE_BYTES / (1024 * 1024)} MB`,

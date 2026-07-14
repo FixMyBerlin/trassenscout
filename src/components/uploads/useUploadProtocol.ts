@@ -1,11 +1,7 @@
 import type { FileUploadInfo } from "@better-upload/client"
-import { useRef, useState } from "react"
+import { useState } from "react"
 import { checkUploadFilenameCollisionsFn } from "@/src/server/uploads/uploads.functions"
 import type { UploadFileRecordResult } from "./UploadDropzone"
-
-type UploadProtocolSlugAssignment =
-  | { kind: "matched"; subsectionSlug: string; subsubsectionSlug: string }
-  | { kind: "unmatched" }
 
 export type UploadProtocolEntry = {
   filename: string
@@ -15,25 +11,19 @@ export type UploadProtocolEntry = {
   collidesWithExisting?: boolean
   /** Same filename appears more than once in this batch. */
   collidesInBatch?: boolean
-  /** Only set when slug assignment was requested for the batch. */
-  slugAssignment?: UploadProtocolSlugAssignment
 }
 
 const getErrorMessage = (error: unknown) =>
   error instanceof Error ? error.message : "Ein unbekannter Fehler ist aufgetreten."
 
 /**
- * Ephemeral per-batch upload report: collects per-file upload/record results,
- * filename collisions and slug-assignment outcomes. A new batch replaces the
- * previous protocol.
+ * Ephemeral per-batch upload report: collects per-file upload/record results and
+ * filename collisions. A new batch replaces the previous protocol.
  */
 export const useUploadProtocol = ({ projectSlug }: { projectSlug: string }) => {
   const [entries, setEntries] = useState<UploadProtocolEntry[]>([])
-  const assignBySlugRef = useRef(false)
 
-  const startBatch = (files: { name: string }[], { assignBySlug }: { assignBySlug: boolean }) => {
-    assignBySlugRef.current = assignBySlug
-
+  const startBatch = (files: { name: string }[]) => {
     const filenames = files.map((file) => file.name)
     const lowerCounts = new Map<string, number>()
     for (const name of filenames) {
@@ -87,19 +77,7 @@ export const useUploadProtocol = ({ projectSlug }: { projectSlug: string }) => {
         return { ...entry, status: "recordFailed", errorMessage: getErrorMessage(result.error) }
       }
 
-      let slugAssignment: UploadProtocolSlugAssignment | undefined
-      if (assignBySlugRef.current) {
-        const matched = result.upload.subsubsections[0]
-        slugAssignment = matched
-          ? {
-              kind: "matched",
-              subsectionSlug: matched.subsection.slug,
-              subsubsectionSlug: matched.slug,
-            }
-          : { kind: "unmatched" }
-      }
-
-      return { ...entry, status: "success", slugAssignment }
+      return { ...entry, status: "success" }
     })
   }
 
