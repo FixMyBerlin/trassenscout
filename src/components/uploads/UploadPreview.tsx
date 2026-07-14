@@ -53,8 +53,9 @@ export const UploadPreview = (props: Props) => {
   const iconContainer = (
     <span
       className={twJoin(
+        sizeConfig.containerWidth,
         sizeConfig.containerHeight,
-        "flex w-full items-center justify-center",
+        "inline-flex shrink-0 items-center justify-center",
         isTable ? "rounded-md" : "rounded-xl",
       )}
     >
