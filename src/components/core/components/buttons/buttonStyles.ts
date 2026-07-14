@@ -2,7 +2,7 @@ import { twJoin } from "tailwind-merge"
 
 /** Compact action button base — Tailwind UI sizing, icon-ready via gap-x-1.5. */
 export const compactButtonBase =
-  "inline-flex w-full cursor-pointer items-center justify-center gap-x-1.5 rounded-md text-sm font-semibold shadow-xs no-underline transition-colors sm:w-auto"
+  "inline-flex w-full cursor-pointer items-center justify-center gap-x-1.5 rounded-md text-sm font-medium shadow-xs no-underline transition-colors sm:w-auto"
 
 const primaryColors =
   "bg-blue-500 text-white hover:bg-blue-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 active:bg-blue-500"
@@ -16,7 +16,7 @@ const secondaryColors =
 const secondaryColorsForButton =
   "enabled:bg-white enabled:text-gray-900 inset-ring inset-ring-gray-300 enabled:hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-300 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
 
-const compactPadding = "px-2.5 py-1.5"
+const compactPadding = "px-4 py-2.5"
 
 /** Primary action — link element (`<a>`). */
 export const primaryButtonLinkClassName = twJoin(compactButtonBase, compactPadding, primaryColors)
