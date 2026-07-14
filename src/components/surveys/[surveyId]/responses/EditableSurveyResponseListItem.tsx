@@ -165,6 +165,7 @@ const EditableSurveyResponseListItem = ({
           />
           <EditableSurveyResponseForm
             showMap={showMap}
+            withTags={false}
             response={response}
             operators={operators}
             topics={topics}

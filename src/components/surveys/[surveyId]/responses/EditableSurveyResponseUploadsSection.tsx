@@ -4,8 +4,7 @@ import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils
 import { getQuestionIdBySurveySlug } from "@/src/components/beteiligung/shared/utils/getQuestionIdBySurveySlug"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { UploadDropzone } from "@/src/components/uploads/UploadDropzone"
-import { UploadDropzoneContainer } from "@/src/components/uploads/UploadDropzoneContainer"
-import { UploadPreviewClickable } from "@/src/components/uploads/UploadPreviewClickable"
+import { UploadTable } from "@/src/components/uploads/UploadTable"
 import { surveyResponseUploadsSplitQueryOptions } from "@/src/server/uploads/uploadsQueryOptions"
 import { getFlatSurveyFormFields } from "./getFlatSurveyFormFields"
 
@@ -16,31 +15,22 @@ type Props = {
   responseData: Record<string, any>
   surveySlug: AllowedSurveySlugs
   refetchResponsesAndTopics: () => Promise<void>
+  withTags?: boolean
 }
 
 export const EditableSurveyResponseUploadsSection = ({
   projectSlug,
-  surveyId,
+  surveyId: _surveyId,
   responseId,
   responseData,
   surveySlug,
   refetchResponsesAndTopics,
+  withTags,
 }: Props) => {
-  const buildSurveyResponseUploadEditLink = (uploadId: number) => ({
-    to: "/$projectSlug/surveys/$surveyId/responses/$surveyResponseId/uploads/$uploadId/edit" as const,
-    params: {
-      projectSlug,
-      surveyId: String(surveyId),
-      surveyResponseId: String(responseId),
-      uploadId: String(uploadId),
-    },
-  })
-
   // Upload description (stored in response.data)
   const part2Config = getConfigBySurveySlug(surveySlug, "part2")
   const part2Fields = getFlatSurveyFormFields(part2Config)
   const uploadDescriptionQuestionId = getQuestionIdBySurveySlug(surveySlug, "uploadsDescription")
-  const uploadsQuestionId = getQuestionIdBySurveySlug(surveySlug, "uploads")
   const uploadDescription =
     uploadDescriptionQuestionId && uploadDescriptionQuestionId in responseData
       ? responseData[uploadDescriptionQuestionId]
@@ -48,9 +38,6 @@ export const EditableSurveyResponseUploadsSection = ({
   const uploadDescriptionLabel =
     part2Fields.find((field) => field.name === uploadDescriptionQuestionId)?.props.label ||
     "Beschreibung der Dokumente"
-  const uploadsLabel =
-    part2Fields.find((field) => field.name === uploadsQuestionId)?.props.label || "Dokumente"
-
   const uploadDescriptionSection = uploadDescription ? (
     <div className="max-w-2xl">
       <div className="mb-3 text-sm font-medium whitespace-nowrap text-gray-900">
@@ -71,6 +58,16 @@ export const EditableSurveyResponseUploadsSection = ({
   )
 
   const { uploadsInData, uploadsNotInData } = uploadsSplit
+  const uploads = [
+    ...uploadsInData.map((upload) => ({
+      ...upload,
+      source: "Formular",
+    })),
+    ...uploadsNotInData.map((upload) => ({
+      ...upload,
+      source: "Backend",
+    })),
+  ]
 
   const handleUploadComplete = async () => {
     // Uploads are already linked during creation, just refetch to update the UI
@@ -79,59 +76,29 @@ export const EditableSurveyResponseUploadsSection = ({
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="space-y-3">
       {uploadDescriptionSection}
 
-      {uploadsInData.length > 0 && (
-        <>
-          <div className="text-sm font-medium text-gray-900">
-            {uploadsLabel} (im Formular hochgeladen)
-          </div>
-          <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7">
-            {uploadsInData.map((upload) => (
-              <UploadPreviewClickable
-                key={upload.id}
-                uploadId={upload.id}
-                upload={upload}
-                projectSlug={projectSlug}
-                size="grid"
-                editLink={buildSurveyResponseUploadEditLink(upload.id)}
-              />
-            ))}
-          </div>
-        </>
-      )}
-
-      <div className="text-sm font-medium text-gray-900">
-        {uploadsInData.length > 0 && "Weitere "}Dokumente verknüpfen
-      </div>
-
-      {uploadsNotInData.length > 0 && (
-        <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7">
-          {uploadsNotInData.map((upload) => (
-            <UploadPreviewClickable
-              key={upload.id}
-              uploadId={upload.id}
-              upload={upload}
-              projectSlug={projectSlug}
-              size="grid"
-              editLink={buildSurveyResponseUploadEditLink(upload.id)}
-              onDeleted={async () => {}}
-            />
-          ))}
-        </div>
-      )}
-
-      <IfUserCanEdit>
-        <UploadDropzoneContainer className="h-40 max-w-md border border-gray-300 p-2">
+      <div className="flex flex-col gap-2">
+        <UploadTable
+          projectSlug={projectSlug}
+          withAction={false}
+          withRelations={false}
+          withSource
+          withTags={withTags}
+          uploads={uploads}
+          onDelete={async () => {
+            await refetchUploads()
+          }}
+        />
+        <IfUserCanEdit>
           <UploadDropzone
             projectSlug={projectSlug}
-            fillContainer
             surveyResponseId={responseId}
             onUploadComplete={handleUploadComplete}
           />
-        </UploadDropzoneContainer>
-      </IfUserCanEdit>
+        </IfUserCanEdit>
+      </div>
     </div>
   )
 }
