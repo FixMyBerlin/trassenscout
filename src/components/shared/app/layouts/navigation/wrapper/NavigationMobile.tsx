@@ -7,6 +7,7 @@ import type { ProjectsForCurrentUser } from "@/src/server/projects/types"
 import { ProjectsSwitch } from "../NavigationLoggedIn/ProjectsSwitch"
 import { shouldHighlight, useMenuItems } from "../NavigationLoggedInProject/useMenuItems"
 import { NavigationGeneralLogo } from "../NavigationLoggedOut/TrassenscoutLogo"
+import { NavigationMetaMenu } from "../NavigationMetaMenu"
 import { NavigationUser } from "../NavigationUser/NavigationUser"
 import { NavigationUserLoggedOut } from "../NavigationUser/NavigationUserLoggedOut"
 import { NavigationUserPublic } from "../NavigationUser/NavigationUserPublic"
@@ -42,7 +43,10 @@ export const NavigationMobile = ({
               ) : userVariant === "public" ? (
                 <NavigationUserPublic />
               ) : (
-                <NavigationUser />
+                <>
+                  <NavigationMetaMenu />
+                  <NavigationUser />
+                </>
               )}
 
               {Boolean(menuItems?.length) && (

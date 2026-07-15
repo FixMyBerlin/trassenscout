@@ -8,16 +8,14 @@ import { isDev, isProduction, isStaging } from "@/src/components/core/utils/isEn
 import { getInitials } from "@/src/components/shared/app/users/utils/getInitials"
 import { isAdmin } from "@/src/components/shared/app/users/utils/isAdmin"
 import type { CurrentUser } from "@/src/server/users/types"
+import {
+  navigationMenuItemLinkStyles,
+  navigationMenuTransitionProps,
+} from "../navigationMenuItemStyles"
 
 type Props = {
   user: CurrentUser
 }
-
-const menuItemLinkStyles = (focus: boolean) =>
-  twJoin(
-    focus ? "bg-gray-100" : "",
-    "block rounded-md px-3 py-2 text-sm text-gray-700 no-underline hover:text-blue-500",
-  )
 
 export const NavigationUserLoggedIn = ({ user }: Props) => {
   return (
@@ -40,15 +38,7 @@ export const NavigationUserLoggedIn = ({ user }: Props) => {
             </div>
           </MenuButton>
           {open && (
-            <Transition
-              as={Fragment}
-              enter="transition ease-out duration-100"
-              enterFrom="transform opacity-0 scale-95"
-              enterTo="transform opacity-100 scale-100"
-              leave="transition ease-in duration-75"
-              leaveFrom="transform opacity-100 scale-100"
-              leaveTo="transform opacity-0 scale-95"
-            >
+            <Transition as={Fragment} {...navigationMenuTransitionProps}>
               <MenuItems
                 modal={false}
                 className="absolute right-0 z-10 mt-2 w-64 origin-top-right rounded-md bg-gray-50 py-1 shadow-lg ring-1 ring-gray-200/5 focus:outline-hidden"
@@ -75,14 +65,20 @@ NODE_ENV: ${JSON.stringify(process.env.NODE_ENV)}`}
                 <div className="border-t border-gray-200 p-1.5 text-gray-700">
                   <MenuItem>
                     {({ focus }) => (
-                      <Link to="/user/edit" classNameOverwrites={menuItemLinkStyles(focus)}>
+                      <Link
+                        to="/user/edit"
+                        classNameOverwrites={navigationMenuItemLinkStyles(focus)}
+                      >
                         Ihr Profil
                       </Link>
                     )}
                   </MenuItem>
                   <MenuItem>
                     {({ focus }) => (
-                      <Link to="/auth/logout" classNameOverwrites={menuItemLinkStyles(focus)}>
+                      <Link
+                        to="/auth/logout"
+                        classNameOverwrites={navigationMenuItemLinkStyles(focus)}
+                      >
                         Abmelden
                       </Link>
                     )}

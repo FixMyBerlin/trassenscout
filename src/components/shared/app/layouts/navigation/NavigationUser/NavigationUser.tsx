@@ -8,9 +8,5 @@ export const NavigationUser = () => {
 
   if (!user) return null
 
-  return (
-    <div className="sm:ml-6">
-      <NavigationUserLoggedIn user={user} />
-    </div>
-  )
+  return <NavigationUserLoggedIn user={user} />
 }

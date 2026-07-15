@@ -1,6 +1,7 @@
 import { useLocation } from "@tanstack/react-router"
 import { Link } from "@/src/components/core/components/links/Link"
 import { NavigationGeneralLogo } from "../NavigationLoggedOut/TrassenscoutLogo"
+import { NavigationMetaMenu } from "../NavigationMetaMenu"
 import { NavigationUser } from "../NavigationUser/NavigationUser"
 import { NavigationUserLoggedOut } from "../NavigationUser/NavigationUserLoggedOut"
 import { NavigationUserPublic } from "../NavigationUser/NavigationUserPublic"
@@ -39,13 +40,16 @@ export const NavigationDesktop = ({
 
         {children}
       </div>
-      <div className="flex items-center">
+      <div className="flex items-center gap-2">
         {userVariant === "loggedOut" ? (
           <NavigationUserLoggedOut />
         ) : userVariant === "public" ? (
           <NavigationUserPublic />
         ) : (
-          <NavigationUser />
+          <>
+            <NavigationMetaMenu />
+            <NavigationUser />
+          </>
         )}
       </div>
     </div>
