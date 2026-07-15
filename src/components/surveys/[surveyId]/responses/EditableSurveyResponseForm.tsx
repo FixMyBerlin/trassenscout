@@ -25,6 +25,7 @@ const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
 type Props = Omit<PropsWithoutRef<JSX.IntrinsicElements["form"]>, "onSubmit"> & {
   backendConfig: import("@/src/components/beteiligung/shared/backend-types").TBackendConfig
   showMap?: boolean
+  withTags?: boolean
   refetchResponsesAndTopics: () => Promise<void>
 } & Pick<EditableSurveyResponseListItemProps, "response" | "operators" | "topics">
 
@@ -34,6 +35,7 @@ export function EditableSurveyResponseForm({
   topics,
   backendConfig,
   showMap,
+  withTags,
   refetchResponsesAndTopics,
 }: Props) {
   const userCanEdit = useUserCan().edit
@@ -206,6 +208,7 @@ export function EditableSurveyResponseForm({
           responseId={response.id}
           responseData={response.data}
           surveySlug={surveySlug}
+          withTags={withTags}
           refetchResponsesAndTopics={refetchResponsesAndTopics}
         />
         <div className={twJoin("flex gap-6", showMap ? "flex-row" : "flex-col")}>

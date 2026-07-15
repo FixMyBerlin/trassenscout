@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 import { z } from "zod"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
@@ -13,13 +13,29 @@ import type { Contact } from "@/src/server/contacts/types"
 import { ContactSchema } from "@/src/shared/contacts/schemas"
 import { ContactForm } from "./ContactForm"
 
+type UpdatedContact = Awaited<ReturnType<typeof updateContactFn>>
+
 type Props = {
   contact: Contact
   projectSlug: string
+  hideBackLink?: boolean
+  hideSuperAdminLogData?: boolean
+  returnPath?: string
+  onSuccess?: (contact: UpdatedContact) => void
+  layout?: "default" | "drawer"
 }
 
-export const EditContactForm = ({ contact, projectSlug }: Props) => {
+export const EditContactForm = ({
+  contact,
+  projectSlug,
+  hideBackLink,
+  hideSuperAdminLogData,
+  returnPath,
+  onSuccess,
+  layout,
+}: Props) => {
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const updateContactMutation = useMutation({ mutationFn: updateContactFn })
   const deleteContactMutation = useMutation({ mutationFn: deleteContactFn })
 
@@ -38,6 +54,14 @@ export const EditContactForm = ({ contact, projectSlug }: Props) => {
           projectSlug,
         },
       })
+      await queryClient.invalidateQueries({ queryKey: ["contacts", { projectSlug }] })
+      await queryClient.invalidateQueries({
+        queryKey: ["contact", { projectSlug, id: contact.id }],
+      })
+      if (onSuccess) {
+        onSuccess(updated)
+        return
+      }
       void navigate({ to: `/${projectSlug}/contacts/${updated.id}` })
     } catch (error: unknown) {
       return improveErrorMessage(error, FORM_ERROR, ["email"])
@@ -55,20 +79,22 @@ export const EditContactForm = ({ contact, projectSlug }: Props) => {
           tags: getM2MInitialValues(contact.tags) as unknown as HandleSubmit["tags"],
         }}
         onSubmit={handleSubmit}
+        layout={layout}
         actionBarRight={
           <DeleteActionBar
             itemTitle={getFullname(contact) || "Kontakt"}
-            onDelete={() =>
-              deleteContactMutation.mutateAsync({ data: { id: contact.id, projectSlug } })
-            }
-            returnPath={indexPath}
+            onDelete={async () => {
+              await deleteContactMutation.mutateAsync({ data: { id: contact.id, projectSlug } })
+              await queryClient.invalidateQueries({ queryKey: ["contacts", { projectSlug }] })
+            }}
+            returnPath={returnPath ?? indexPath}
           />
         }
       />
 
-      <BackLink to={showPath} text="Zurück zum Kontakt" />
+      {hideBackLink ? null : <BackLink to={showPath} text="Zurück zum Kontakt" />}
 
-      <SuperAdminLogData data={contact} />
+      {hideSuperAdminLogData ? null : <SuperAdminLogData data={contact} />}
     </>
   )
 }

@@ -211,21 +211,9 @@ export const ProjectRecordsTable = ({
                     <td className={twJoin("align-top", spaceClasses)}>
                       <Link
                         className="w-full"
-                        to={
-                          projectRecordModal
-                            ? projectRecordModal.getProjectRecordDetailHref({
-                                projectRecordId: projectRecord.id,
-                              })
-                            : "/$projectSlug/project-records/$projectRecordId"
-                        }
-                        params={
-                          projectRecordModal
-                            ? undefined
-                            : {
-                                projectSlug,
-                                projectRecordId: String(projectRecord.id),
-                              }
-                        }
+                        to={projectRecordModal.getProjectRecordDetailHref({
+                          projectRecordId: projectRecord.id,
+                        })}
                         resetScroll={false}
                         title={projectRecord.title}
                       >

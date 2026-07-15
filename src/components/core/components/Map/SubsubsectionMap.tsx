@@ -1,6 +1,6 @@
 import { useNavigate } from "@tanstack/react-router"
-import { useEffect, useEffectEvent, useMemo } from "react"
-import { MapLayerMouseEvent, useMap } from "react-map-gl/maplibre"
+import { useEffect, useEffectEvent, useMemo, useState } from "react"
+import { MapLayerMouseEvent, type MapProps, useMap } from "react-map-gl/maplibre"
 import { BaseMap } from "./BaseMap"
 import { getLineEndPointsLayerId } from "./layers/LineEndPointsLayer"
 import {
@@ -12,6 +12,7 @@ import { useMapLoaded } from "./map-loaded-store"
 import type { SubsectionMapEntity as TGetSubsection } from "./mapEntityTypes"
 import type { SubsubsectionMapEntity as SubsubsectionWithPosition } from "./mapEntityTypes"
 import { MapFooter } from "./MapFooter"
+import { SUBSECTION_LABEL_MIN_ZOOM } from "./markers/SubsectionMarkers"
 import { SubsubsectionMarkers } from "./markers/SubsubsectionMarkers"
 import { getStaticOverlayForProject } from "./staticOverlay/getStaticOverlayForProject"
 import { subsectionLegendConfig } from "./SubsectionSubsubsectionMap.legendConfig"
@@ -42,6 +43,7 @@ export const SubsubsectionMap = ({
   const navigate = useNavigate()
   const { mainMap } = useMap()
   const mapLoaded = useMapLoaded(MAP_ID)
+  const [dotMode, setDotMode] = useState<boolean | null>(null)
 
   const filteredSubsubsections = subsubsections.filter(
     (subsub) => subsub.subsectionId === selectedSubsection.id,
@@ -87,6 +89,14 @@ export const SubsubsectionMap = ({
     if (subsectionSlug && subsubsectionSlug) {
       handleSelect({ subsectionSlug, subsubsectionSlug, edit: event.originalEvent?.altKey })
     }
+  }
+
+  const handleZoomEnd: NonNullable<MapProps["onZoomEnd"]> = (event) => {
+    setDotMode(event.viewState.zoom < SUBSECTION_LABEL_MIN_ZOOM)
+  }
+
+  const handleLoad: NonNullable<MapProps["onLoad"]> = (event) => {
+    setDotMode(event.target.getZoom() < SUBSECTION_LABEL_MIN_ZOOM)
   }
 
   const filteredGeometries = filteredSubsubsections.map((s) => s.geometry)
@@ -228,6 +238,8 @@ export const SubsubsectionMap = ({
         selectableLayerIdSuffix="_subsubsection"
         colorSchema="subsubsection"
         staticOverlay={getStaticOverlayForProject(projectSlug)}
+        onLoad={handleLoad}
+        onZoomEnd={handleZoomEnd}
       >
         <SubsectionHullsLayer
           lines={subsectionLines}
@@ -236,7 +248,9 @@ export const SubsubsectionMap = ({
         />
         <SubsubsectionMarkers
           subsubsections={filteredSubsubsections}
+          dotMode={dotMode}
           pageSubsectionSlug={pageSubsectionSlug}
+          selectedSubsubsectionSlug={selectedSubsubsectionSlug}
           onSelect={handleSelect}
         />
       </BaseMap>

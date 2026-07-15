@@ -1,6 +1,8 @@
-const highlight = "#F8C62B" // yellow-400/ocker - hover and selected/current
-const defaultColor = "#38BDF8" // light-blue-400 - default fill/line for entries
-const greenColor = "#4BC556" // green for GREEN style status
+import { mapColorTokens } from "./mapColorTokens"
+
+const highlight = mapColorTokens.yellow400 // yellow-400 - hover and selected/current
+const defaultColor = mapColorTokens.sky400 // sky-400 - default fill/line for entries
+const greenColor = mapColorTokens.subsubsectionStatusGreen // custom green for GREEN style status
 
 export const subsubsectionColors = {
   line: {
@@ -10,20 +12,20 @@ export const subsubsectionColors = {
     selected: highlight,
     default: defaultColor,
     green: greenColor,
-    dashedSecondary: "#e5e7eb", // gray-200 - kept for structural consistency
-    borderColor: "#0F172A",
+    dashedSecondary: mapColorTokens.gray200, // gray-200 - kept for structural consistency
+    borderColor: mapColorTokens.slate900,
     width: 8,
     outlineWidth: 9,
     cap: "butt" as const,
   },
   lineEndPoints: {
-    current: "#38BDF8",
+    current: mapColorTokens.sky400,
     unselected: defaultColor,
     hovered: highlight,
     selected: highlight,
     default: defaultColor,
     green: greenColor,
-    ring: "#0F172A",
+    ring: mapColorTokens.slate900,
     strokeWidth: 0.5,
     radius: 4,
   },
@@ -34,23 +36,23 @@ export const subsubsectionColors = {
     selected: highlight,
     default: defaultColor,
     green: greenColor,
-    dashedSecondary: "#e5e7eb",
+    dashedSecondary: mapColorTokens.gray200,
   },
   /** Not used; subsubsection map does not show hulls. Stub for consistent config shape. */
   hull: {
     current: defaultColor,
-    unselected: "#2c62a9",
+    unselected: mapColorTokens.blue500,
   },
   point: {
     current: defaultColor,
-    unselected: "#2c62a9",
+    unselected: mapColorTokens.blue500,
     hovered: highlight,
     selected: highlight,
     default: defaultColor,
     green: greenColor,
-    dashedSecondary: "#e5e7eb",
+    dashedSecondary: mapColorTokens.gray200,
     currentBorderClass: "border-sky-400",
     currentTextClass: "text-sky-400",
-    innerFill: "#2C62A933", // dark blue with opacity
+    innerFill: mapColorTokens.blue500Alpha20, // blue-500 with opacity
   },
 } as const

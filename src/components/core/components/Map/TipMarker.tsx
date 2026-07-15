@@ -1,17 +1,8 @@
 import type React from "react"
 import { CSSProperties } from "react"
-import { useMap } from "react-map-gl/maplibre"
 import { twJoin } from "tailwind-merge"
-import { useIsMapHighlighted, useMapHighlightContext } from "./mapHighlightContext"
-import { applyMapHighlight, clearHighlightLevel, highlightStateForSlug } from "./mapHighlightState"
-
-const HIGHLIGHT_STATE_KEYS = {
-  project: "highlightProjectSlug",
-  subsection: "highlightSubsectionSlug",
-  subsubsection: "highlightSubsubsectionSlug",
-} as const
-
-type HighlightLevel = keyof typeof HIGHLIGHT_STATE_KEYS
+import type { MapHighlightLevel } from "./mapHighlightState"
+import { useMarkerHighlight } from "./useMarkerHighlight"
 
 type Props = React.HTMLAttributes<HTMLDivElement> & {
   anchor:
@@ -24,7 +15,11 @@ type Props = React.HTMLAttributes<HTMLDivElement> & {
     | "topRight"
     | "right"
   slug: string
-  highlightLevel: HighlightLevel
+  highlightLevel: MapHighlightLevel
+  syncHighlightOnHover?: boolean
+  highlighted?: boolean
+  highlightVariant?: "outline" | "filled"
+  pillClassName?: string
 }
 
 const createSvg = (style: CSSProperties, rotation: number, path: React.JSX.Element) => {
@@ -43,20 +38,9 @@ const createSvg = (style: CSSProperties, rotation: number, path: React.JSX.Eleme
   )
 }
 
-const pathProps = { stroke: "#999", strokeWidth: "1", fill: "white" }
-const pathCorner = <path d="M 11 16 L 0 0 L 16 11" {...pathProps} />
-const pathSide = <path d="M 0 15 L 5 0 L 10 15" {...pathProps} />
-
-const tipElements = {
-  bottomRight: createSvg({ top: 0, left: 0 }, 0, pathCorner),
-  bottom: createSvg({ top: 0, left: -5 }, 0, pathSide),
-  bottomLeft: createSvg({ top: 0, left: 0 }, 90, pathCorner),
-  left: createSvg({ top: -5, left: 0 }, 90, pathSide),
-  topLeft: createSvg({ top: 0, left: 0 }, 180, pathCorner),
-  top: createSvg({ top: 0, left: 5 }, 180, pathSide),
-  topRight: createSvg({ top: 0, left: 0 }, 270, pathCorner),
-  right: createSvg({ top: 5, left: 0 }, 270, pathSide),
-}
+const createTipPath = ({ d, className }: { d: string; className: string }) => (
+  <path d={d} strokeWidth="1" className={className} />
+)
 
 const shadow = {
   boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.25)",
@@ -78,33 +62,64 @@ export const TipMarker = ({
   children,
   slug,
   highlightLevel,
+  syncHighlightOnHover = true,
+  highlighted,
+  highlightVariant = "outline",
+  pillClassName,
   onMouseEnter: propsOnMouseEnter,
   onMouseLeave: propsOnMouseLeave,
   ...props
 }: Props) => {
-  const { mainMap } = useMap()
-  const highlightContext = useMapHighlightContext()
-  const isHighlighted = useIsMapHighlighted(highlightLevel, slug)
+  const {
+    isHighlighted: isContextHighlighted,
+    handleMouseEnter: highlightMouseEnter,
+    handleMouseLeave: highlightMouseLeave,
+  } = useMarkerHighlight(highlightLevel, slug)
+  const isHighlighted = highlighted ?? isContextHighlighted
+
+  const bubbleClasses = twJoin(
+    isHighlighted
+      ? highlightVariant === "filled"
+        ? "border-yellow-400 bg-yellow-400"
+        : "border-yellow-400"
+      : "",
+  )
+
+  const tipPathClasses = twJoin(
+    "transition-colors",
+    isHighlighted
+      ? highlightVariant === "filled"
+        ? "fill-yellow-400 stroke-yellow-400"
+        : "fill-white stroke-yellow-400"
+      : "fill-white stroke-gray-400",
+  )
+
+  const tipPathCorner = createTipPath({
+    d: "M 11 16 L 0 0 L 16 11",
+    className: tipPathClasses,
+  })
+  const tipPathSide = createTipPath({
+    d: "M 0 15 L 5 0 L 10 15",
+    className: tipPathClasses,
+  })
+  const tipElements = {
+    bottomRight: createSvg({ top: 0, left: 0 }, 0, tipPathCorner),
+    bottom: createSvg({ top: 0, left: -5 }, 0, tipPathSide),
+    bottomLeft: createSvg({ top: 0, left: 0 }, 90, tipPathCorner),
+    left: createSvg({ top: -5, left: 0 }, 90, tipPathSide),
+    topLeft: createSvg({ top: 0, left: 0 }, 180, tipPathCorner),
+    top: createSvg({ top: 0, left: 5 }, 180, tipPathSide),
+    topRight: createSvg({ top: 0, left: 0 }, 270, tipPathCorner),
+    right: createSvg({ top: 5, left: 0 }, 270, tipPathSide),
+  }
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
-    const map = mainMap?.getMap()
-    const next = highlightStateForSlug(highlightLevel, String(slug))
-    if (highlightContext) {
-      highlightContext.syncHighlight(map, next)
-    } else {
-      applyMapHighlight(map, next)
-    }
+    if (syncHighlightOnHover) highlightMouseEnter()
     propsOnMouseEnter?.(e)
   }
 
   const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
-    const map = mainMap?.getMap()
-    if (highlightContext) {
-      const next = clearHighlightLevel(highlightContext.highlight, highlightLevel)
-      highlightContext.syncHighlight(map, next)
-    } else {
-      map?.setGlobalStateProperty(HIGHLIGHT_STATE_KEYS[highlightLevel], null)
-    }
+    if (syncHighlightOnHover) highlightMouseLeave()
     propsOnMouseLeave?.(e)
   }
 
@@ -119,7 +134,8 @@ export const TipMarker = ({
         style={divStyles[anchor]}
         className={twJoin(
           "absolute rounded-md border border-gray-400 bg-white transition-colors",
-          isHighlighted ? "border-[#F8C62B]" : "",
+          bubbleClasses,
+          pillClassName,
         )}
       >
         {children}

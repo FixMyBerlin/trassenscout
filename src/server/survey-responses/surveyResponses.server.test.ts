@@ -68,7 +68,7 @@ describe("deleteSurveyResponseAsAdmin", () => {
 
   test("requires admin auth", async () => {
     const { deleteSurveyResponseAsAdmin } = await import("./surveyResponses.server")
-    mockEndpointAuth.admin.mockRejectedValue(new Error("Not authorized"))
+    mockEndpointAuth.admin.mockRejectedValueOnce(new Error("Not authorized"))
 
     await expect(
       deleteSurveyResponseAsAdmin(headers, { projectSlug: "rs23", id: 42 }),
@@ -135,7 +135,7 @@ describe("deleteSurveyResponseAsAdmin", () => {
         collaborationPath: null,
       },
     ])
-    mockDeleteUploadFileAndDbRecord.mockRejectedValue(new Error("S3 unavailable"))
+    mockDeleteUploadFileAndDbRecord.mockRejectedValueOnce(new Error("S3 unavailable"))
 
     await expect(
       deleteSurveyResponseAsAdmin(headers, { projectSlug: "rs23", id: 42 }),

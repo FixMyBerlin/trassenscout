@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 import { z } from "zod"
 import { improveErrorMessage } from "@/src/components/core/components/forms/improveErrorMessage"
@@ -7,12 +7,17 @@ import { createContactFn } from "@/src/server/contacts/contacts.functions"
 import { ContactSchema } from "@/src/shared/contacts/schemas"
 import { ContactForm } from "./ContactForm"
 
+type CreatedContact = Awaited<ReturnType<typeof createContactFn>>
+
 type Props = {
   projectSlug: string
+  onSuccess?: (contact: CreatedContact) => void
+  layout?: "default" | "drawer"
 }
 
-export const NewContactForm = ({ projectSlug }: Props) => {
+export const NewContactForm = ({ projectSlug, onSuccess, layout }: Props) => {
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const createContactMutation = useMutation({ mutationFn: createContactFn })
 
   type HandleSubmit = z.infer<typeof ContactSchema>
@@ -26,6 +31,11 @@ export const NewContactForm = ({ projectSlug }: Props) => {
           projectSlug,
         },
       })
+      await queryClient.invalidateQueries({ queryKey: ["contacts", { projectSlug }] })
+      if (onSuccess) {
+        onSuccess(contact)
+        return
+      }
       void navigate({ to: `/${projectSlug}/contacts/${contact.id}` })
     } catch (error: unknown) {
       return improveErrorMessage(error, FORM_ERROR, ["email"])
@@ -38,6 +48,7 @@ export const NewContactForm = ({ projectSlug }: Props) => {
       schema={ContactSchema}
       projectSlug={projectSlug}
       onSubmit={handleSubmit}
+      layout={layout}
     />
   )
 }

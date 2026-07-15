@@ -1,11 +1,11 @@
 import { getRouteApi, useNavigate } from "@tanstack/react-router"
-import { useEffect, useEffectEvent, useMemo } from "react"
-import { MapLayerMouseEvent, useMap } from "react-map-gl/maplibre"
+import { useEffect, useEffectEvent, useMemo, useState } from "react"
+import { MapLayerMouseEvent, type MapProps, useMap } from "react-map-gl/maplibre"
 import { BaseMap } from "./BaseMap"
 import { useMapLoaded } from "./map-loaded-store"
 import type { SubsectionMapEntities as TSubsections } from "./mapEntityTypes"
 import { MapFooter } from "./MapFooter"
-import { SubsectionMarkers } from "./markers/SubsectionMarkers"
+import { SubsectionMarkers, SUBSECTION_LABEL_MIN_ZOOM } from "./markers/SubsectionMarkers"
 import { projectLegendConfig } from "./ProjectMap.legendConfig"
 import { getStaticOverlayForProject } from "./staticOverlay/getStaticOverlayForProject"
 import { geometriesBbox } from "./utils/bboxHelpers"
@@ -22,6 +22,7 @@ export const ProjectMap = ({ subsections }: Props) => {
   const { projectSlug } = loggedInProjectRouteApi.useParams()
   const { mainMap } = useMap()
   const mapLoaded = useMapLoaded("mainMap")
+  const [dotMode, setDotMode] = useState<boolean | null>(null)
 
   // bundingBox only changes when subsections change / subsections array is created
   const boundingBox = useMemo(
@@ -62,6 +63,14 @@ export const ProjectMap = ({ subsections }: Props) => {
     }
   }
 
+  const handleZoomEnd: NonNullable<MapProps["onZoomEnd"]> = (event) => {
+    setDotMode(event.viewState.zoom < SUBSECTION_LABEL_MIN_ZOOM)
+  }
+
+  const handleLoad: NonNullable<MapProps["onLoad"]> = (event) => {
+    setDotMode(event.target.getZoom() < SUBSECTION_LABEL_MIN_ZOOM)
+  }
+
   const {
     lines: selectableLines,
     polygons: selectablePolygons,
@@ -82,8 +91,10 @@ export const ProjectMap = ({ subsections }: Props) => {
         lineEndPoints={lineEndPointsGeoms}
         colorSchema="subsection"
         staticOverlay={getStaticOverlayForProject(projectSlug)}
+        onLoad={handleLoad}
+        onZoomEnd={handleZoomEnd}
       >
-        <SubsectionMarkers subsections={subsections} onSelect={handleSelect} />
+        <SubsectionMarkers subsections={subsections} dotMode={dotMode} onSelect={handleSelect} />
       </BaseMap>
       <MapFooter legendItemsConfig={projectLegendConfig} />
     </section>

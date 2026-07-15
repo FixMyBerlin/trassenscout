@@ -1,4 +1,5 @@
 import { twJoin } from "tailwind-merge"
+import { metadataItemClassName } from "@/src/components/project-records/ProjectRecordSummary"
 
 type Props = {
   visible: boolean | number
@@ -24,7 +25,7 @@ export const ZeroCase = ({
   const content = text ?? `Es wurden noch ${name ? `keine ${name}` : "nichts"} ${verb}.`
 
   if (small) {
-    return <p className="my-4 text-base text-gray-500">{content}</p>
+    return <p className={metadataItemClassName}>{content}</p>
   }
 
   return (

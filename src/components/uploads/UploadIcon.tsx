@@ -25,18 +25,22 @@ export const UploadIcon = ({ upload, projectSlug, size, showFrame = false }: Pro
     const imageSrc = uploadUrl(upload, projectSlug)
 
     return (
-      <Img
-        src={imageSrc}
-        alt={fileType}
-        width={sizeConfig.iconPx}
-        height={sizeConfig.iconPx}
+      <span
         className={twJoin(
           sizeConfig.iconSize,
-          "pointer-events-none cursor-default rounded-md object-contain select-none",
+          "inline-flex shrink-0 items-center justify-center overflow-hidden rounded-md",
         )}
-        draggable={false}
-        onError={() => setImageError(true)}
-      />
+      >
+        <Img
+          src={imageSrc}
+          alt={fileType}
+          width={sizeConfig.iconPx}
+          height={sizeConfig.iconPx}
+          className="pointer-events-none size-full cursor-default object-contain select-none"
+          draggable={false}
+          onError={() => setImageError(true)}
+        />
+      </span>
     )
   }
 

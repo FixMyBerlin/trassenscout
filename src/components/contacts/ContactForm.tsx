@@ -1,5 +1,5 @@
 import { ReactNode, useState } from "react"
-import { twMerge } from "tailwind-merge"
+import { twJoin, twMerge } from "tailwind-merge"
 import { z } from "zod"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
@@ -22,6 +22,7 @@ export type ContactFormProps<S extends z.ZodType> = {
   actionBarRight?: ReactNode
   submitDisabled?: boolean
   submitClassName?: string
+  layout?: "default" | "drawer"
 }
 
 export function ContactForm<S extends z.ZodType>({
@@ -36,8 +37,10 @@ export function ContactForm<S extends z.ZodType>({
   actionBarRight,
   submitDisabled,
   submitClassName,
+  layout = "default",
 }: ContactFormProps<S>) {
   const [formError, setFormError] = useState<string | null>(null)
+  const isDrawerLayout = layout === "drawer"
 
   const form = useAppForm({
     defaultValues: { ...contactFormDefaultValues, ...initialValues },
@@ -57,31 +60,55 @@ export function ContactForm<S extends z.ZodType>({
       form={form}
       formError={formError}
       submitText={submitText}
-      className={twMerge("max-w-prose", className)}
+      className={twMerge(
+        isDrawerLayout ? "my-6 w-full max-w-5xl space-y-8" : "max-w-prose",
+        className,
+      )}
       actionBarLeft={actionBarLeft}
       actionBarRight={actionBarRight}
       submitDisabled={submitDisabled}
       submitClassName={submitClassName}
     >
-      <form.AppField name="firstName">
-        {(field) => <field.TextField type="text" label="Vorname" optional placeholder="" />}
-      </form.AppField>
-      <form.AppField name="lastName">
-        {(field) => <field.TextField type="text" label="Nachname" placeholder="" />}
-      </form.AppField>
-      <form.AppField name="email">
-        {(field) => <field.TextField type="text" label="E-Mail-Adresse" placeholder="" />}
-      </form.AppField>
-      <form.AppField name="phone">
-        {(field) => <field.TextField type="text" label="Telefonnummer" optional placeholder="" />}
-      </form.AppField>
-      <form.AppField name="note">
-        {(field) => <field.TextareaField label="Notizen" optional placeholder="" />}
-      </form.AppField>
-      <form.AppField name="role">
-        {(field) => <field.TextField type="text" label="Position" optional placeholder="" />}
-      </form.AppField>
-      <TagsFormSection projectSlug={projectSlug} showManageLink />
+      <div
+        className={twJoin("grid gap-6", isDrawerLayout ? "lg:grid-cols-2 lg:gap-x-8" : undefined)}
+      >
+        <form.AppField name="firstName">
+          {(field) => <field.TextField type="text" label="Vorname" optional placeholder="" />}
+        </form.AppField>
+        <form.AppField name="lastName">
+          {(field) => <field.TextField type="text" label="Nachname" placeholder="" />}
+        </form.AppField>
+        <form.AppField name="email">
+          {(field) => <field.TextField type="text" label="E-Mail-Adresse" placeholder="" />}
+        </form.AppField>
+        <form.AppField name="phone">
+          {(field) => <field.TextField type="text" label="Telefonnummer" optional placeholder="" />}
+        </form.AppField>
+        <div className={isDrawerLayout ? "lg:col-span-2" : undefined}>
+          <form.AppField name="role">
+            {(field) => <field.TextField type="text" label="Position" optional placeholder="" />}
+          </form.AppField>
+        </div>
+        <div className={isDrawerLayout ? "lg:col-span-2" : undefined}>
+          <form.AppField name="note">
+            {(field) => (
+              <field.TextareaField
+                label="Notizen"
+                optional
+                placeholder=""
+                rows={isDrawerLayout ? 5 : undefined}
+              />
+            )}
+          </form.AppField>
+        </div>
+      </div>
+      <TagsFormSection
+        projectSlug={projectSlug}
+        showManageLink
+        classNameItemWrapper={
+          isDrawerLayout ? "grid w-full gap-x-8 gap-y-3 sm:grid-cols-2 lg:grid-cols-3" : undefined
+        }
+      />
     </FormShell>
   )
 }

@@ -2,6 +2,8 @@ import type { getUploadFn } from "@/src/server/uploads/uploads.functions"
 
 export type UploadWithRelations = Awaited<ReturnType<typeof getUploadFn>>
 
+export type UploadTableUpload = UploadWithRelations & { source?: string }
+
 export type UploadEditLink = {
   to:
     | "/$projectSlug/uploads/$uploadId/edit"

@@ -116,7 +116,7 @@ export const DashboardMap = ({ projects }: Props) => {
   if (!bounds) return null
 
   return (
-    <section className="mt-3">
+    <section className="mt-3 mb-10">
       <BaseMap
         id="mainMap"
         initialViewState={{

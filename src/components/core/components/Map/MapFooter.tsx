@@ -16,7 +16,7 @@ export const MapFooter = ({ legendItemsConfig }: MapFooterProps) => {
   const buttonLabel = showMapLegend ? "Kartenlegende ausblenden" : "Kartenlegende anzeigen"
 
   return (
-    <>
+    <div className="mb-10">
       {showMapLegend && legendItemsConfig && <MapLegend legendItemsConfig={legendItemsConfig} />}
       <div className="mt-2 flex justify-between gap-2 text-xs text-gray-400">
         <button
@@ -27,6 +27,6 @@ export const MapFooter = ({ legendItemsConfig }: MapFooterProps) => {
           {buttonLabel}
         </button>
       </div>
-    </>
+    </div>
   )
 }

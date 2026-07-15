@@ -14,7 +14,7 @@ type Props = {
   className?: string
 }
 
-export const UploadProjectRecordLinks = ({ projectSlug, projectRecords, className }: Props) => {
+export const UploadProjectRecordLinks = ({ projectRecords, className }: Props) => {
   const projectRecordModal = useProjectRecordModal()
 
   if (projectRecords.length === 0) return null
@@ -28,21 +28,9 @@ export const UploadProjectRecordLinks = ({ projectSlug, projectRecords, classNam
         {projectRecords.map((projectRecord) => (
           <Link
             key={projectRecord.id}
-            to={
-              projectRecordModal
-                ? projectRecordModal.getProjectRecordDetailHref({
-                    projectRecordId: projectRecord.id,
-                  })
-                : "/$projectSlug/project-records/$projectRecordId"
-            }
-            params={
-              projectRecordModal
-                ? undefined
-                : {
-                    projectSlug,
-                    projectRecordId: String(projectRecord.id),
-                  }
-            }
+            to={projectRecordModal.getProjectRecordDetailHref({
+              projectRecordId: projectRecord.id,
+            })}
             resetScroll={false}
             className="block w-fit"
           >
