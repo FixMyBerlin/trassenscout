@@ -1,4 +1,4 @@
-export type ContactModalPreview = {
+type ContactModalPreview = {
   type: "contact"
   contact: {
     id: number
@@ -7,7 +7,7 @@ export type ContactModalPreview = {
   }
 }
 
-export type ProjectRecordModalPreview = {
+type ProjectRecordModalPreview = {
   type: "projectRecord"
   projectRecord: {
     id: number
@@ -15,7 +15,7 @@ export type ProjectRecordModalPreview = {
   }
 }
 
-export type UploadModalPreview = {
+type UploadModalPreview = {
   type: "upload"
   upload: {
     id: number
