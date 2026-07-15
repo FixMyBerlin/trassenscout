@@ -22,6 +22,7 @@ export type TeamInviteFormProps<S extends z.ZodType> = {
   actionBarRight?: ReactNode
   submitDisabled?: boolean
   submitClassName?: string
+  layout?: "default" | "drawer"
 }
 
 export function TeamInviteForm<S extends z.ZodType>({
@@ -35,8 +36,10 @@ export function TeamInviteForm<S extends z.ZodType>({
   actionBarRight,
   submitDisabled,
   submitClassName,
+  layout = "default",
 }: TeamInviteFormProps<S>) {
   const [formError, setFormError] = useState<string | null>(null)
+  const isDrawerLayout = layout === "drawer"
 
   const form = useAppForm({
     defaultValues: { ...inviteFormDefaultValues, ...initialValues },
@@ -61,18 +64,29 @@ export function TeamInviteForm<S extends z.ZodType>({
       form={form}
       formError={formError}
       submitText={submitText}
-      className={twMerge("max-w-prose", className)}
+      className={twMerge(
+        isDrawerLayout ? "my-6 w-full max-w-xl space-y-8" : "max-w-prose",
+        className,
+      )}
       actionBarLeft={actionBarLeft}
       actionBarRight={actionBarRight}
       submitDisabled={submitDisabled}
       submitClassName={submitClassName}
     >
-      <form.AppField name="email">
-        {(field) => <field.TextField type="text" label="E-Mail-Adresse" placeholder="" />}
-      </form.AppField>
-      <form.AppField name="role">
-        {(field) => <field.RadiobuttonGroup label="Rechte" items={roleItems} />}
-      </form.AppField>
+      <div className="grid gap-6">
+        <form.AppField name="email">
+          {(field) => <field.TextField type="text" label="E-Mail-Adresse" placeholder="" />}
+        </form.AppField>
+        <form.AppField name="role">
+          {(field) => (
+            <field.RadiobuttonGroup
+              label="Rechte"
+              items={roleItems}
+              classNameItemWrapper={isDrawerLayout ? "space-y-4" : undefined}
+            />
+          )}
+        </form.AppField>
+      </div>
     </FormShell>
   )
 }

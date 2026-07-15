@@ -1,6 +1,9 @@
 import { TrashIcon } from "@heroicons/react/24/outline"
 import { useNavigate } from "@tanstack/react-router"
+import { twJoin } from "tailwind-merge"
 import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { linkIcons } from "@/src/components/core/components/links/Link"
+import { linkStyles } from "@/src/components/core/components/links/styles"
 import { frenchQuote } from "@/src/components/core/components/text/quote"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 
@@ -9,7 +12,7 @@ type Props = {
   onDelete?: () => Promise<unknown>
   onClick?: () => Promise<unknown> | void
   returnPath: string
-  variant?: "text" | "icon"
+  variant?: "text" | "icon" | "linkWithIcon"
 }
 
 export const DeleteActionBar = ({
@@ -47,6 +50,25 @@ export const DeleteActionBar = ({
         )
       }
     }
+  }
+
+  if (variant === "linkWithIcon") {
+    return (
+      <IfUserCanEdit>
+        <button
+          type="button"
+          onClick={handleDelete}
+          className={twJoin(
+            "inline-flex cursor-pointer items-center justify-center gap-1",
+            linkStyles,
+          )}
+          title={`${itemTitle} löschen`}
+        >
+          {linkIcons["delete"]}
+          Löschen
+        </button>
+      </IfUserCanEdit>
+    )
   }
 
   return (

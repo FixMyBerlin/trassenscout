@@ -18,6 +18,7 @@ import {
   ContactTableFormSchema,
   contactTableFormDefaultValues,
 } from "@/src/shared/contacts/schemas"
+import { useContactsModal } from "./ContactsModalHost"
 
 type Props = {
   contacts: Contact[]
@@ -27,6 +28,7 @@ type Props = {
 
 export const ContactTable = ({ contacts, currentUserEmail, projectSlug }: Props) => {
   const { data: project } = useSuspenseQuery(projectBySlugQueryOptions(projectSlug))
+  const contactsModal = useContactsModal()
 
   const form = useAppForm({
     defaultValues: contactTableFormDefaultValues,
@@ -124,7 +126,12 @@ export const ContactTable = ({ contacts, currentUserEmail, projectSlug }: Props)
                         <ProjectRecordTagsList tags={contact.tags ?? []} />
                       </td>
                       <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">
-                        <Link to={`/${projectSlug}/contacts/${contact.id}`}>Details</Link>
+                        <Link
+                          to={contactsModal.getContactDetailHref({ contactId: contact.id })}
+                          resetScroll={false}
+                        >
+                          Details
+                        </Link>
                       </td>
                       <td className="relative py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-6">
                         <div className="flex items-center justify-end gap-4 text-right">

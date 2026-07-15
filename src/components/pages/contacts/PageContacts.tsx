@@ -1,5 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
+import { useContactsModal } from "@/src/components/contacts/ContactsModalHost"
 import { ContactTable } from "@/src/components/contacts/ContactTable"
 import { useContactsTabs } from "@/src/components/contacts/useContactsTabs"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
@@ -17,6 +18,7 @@ const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/contacts/")
 export function PageContacts() {
   const { projectSlug } = routeApi.useParams()
   const tabs = useContactsTabs()
+  const contactsModal = useContactsModal()
   const { data } = useSuspenseQuery(contactsQueryOptions({ projectSlug }))
   const { data: currentUser } = useSuspenseQuery(currentUserQueryOptions())
   const contacts = data.contacts
@@ -33,7 +35,12 @@ export function PageContacts() {
           <ZeroCase visible={contacts.length} name="Kontakte" />
           <IfUserCanEdit>
             <ButtonWrapper className="mt-6 justify-between">
-              <Link button="blue" icon="plus" to={`/${projectSlug}/contacts/new`}>
+              <Link
+                button="blue"
+                icon="plus"
+                to={contactsModal.getContactNewHref()}
+                resetScroll={false}
+              >
                 Neuer Kontakt
               </Link>
             </ButtonWrapper>
@@ -47,7 +54,13 @@ export function PageContacts() {
             projectSlug={projectSlug}
           />
           <IfUserCanEdit>
-            <Link button="blue" icon="plus" className="mt-4" to={`/${projectSlug}/contacts/new`}>
+            <Link
+              button="blue"
+              icon="plus"
+              className="mt-4"
+              to={contactsModal.getContactNewHref()}
+              resetScroll={false}
+            >
               Neuer Kontakt
             </Link>
           </IfUserCanEdit>

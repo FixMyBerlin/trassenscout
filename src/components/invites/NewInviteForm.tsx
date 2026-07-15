@@ -9,9 +9,11 @@ import { TeamInviteForm } from "./TeamInviteForm"
 
 type Props = {
   projectSlug: string
+  onSuccess?: () => void
+  layout?: "default" | "drawer"
 }
 
-export const NewInviteForm = ({ projectSlug }: Props) => {
+export const NewInviteForm = ({ projectSlug, onSuccess, layout }: Props) => {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const createInviteMutation = useMutation({ mutationFn: createInviteFn })
@@ -21,11 +23,22 @@ export const NewInviteForm = ({ projectSlug }: Props) => {
     try {
       await createInviteMutation.mutateAsync({ data: { ...values, projectSlug } })
       await queryClient.invalidateQueries({ queryKey: ["invites", { projectSlug }] })
+      if (onSuccess) {
+        onSuccess()
+        return
+      }
       void navigate({ to: `/${projectSlug}/invites` })
     } catch (error: unknown) {
       return improveErrorMessage(error, FORM_ERROR, ["email"])
     }
   }
 
-  return <TeamInviteForm submitText="Einladen" schema={InviteSchema} onSubmit={handleSubmit} />
+  return (
+    <TeamInviteForm
+      submitText="Einladen"
+      schema={InviteSchema}
+      onSubmit={handleSubmit}
+      layout={layout}
+    />
+  )
 }

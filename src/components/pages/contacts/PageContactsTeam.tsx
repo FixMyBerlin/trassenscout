@@ -1,5 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
+import { useContactsModal } from "@/src/components/contacts/ContactsModalHost"
 import { TeamTable } from "@/src/components/contacts/team/TeamTable"
 import { useContactsTabs } from "@/src/components/contacts/useContactsTabs"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
@@ -15,6 +16,7 @@ const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/contacts/team/")
 export function PageContactsTeam() {
   const { projectSlug } = routeApi.useParams()
   const tabs = useContactsTabs()
+  const contactsModal = useContactsModal()
   const { data: users } = useSuspenseQuery(projectUsersQueryOptions({ projectSlug }))
 
   return (
@@ -27,7 +29,7 @@ export function PageContactsTeam() {
       <TeamTable users={users} projectSlug={projectSlug} />
       <IfUserCanEdit>
         <ButtonWrapper className="mt-6">
-          <Link button="blue" icon="plus" to={`/${projectSlug}/invites/new`}>
+          <Link button="blue" icon="plus" to={contactsModal.getInviteNewHref()} resetScroll={false}>
             Teammitglied einladen
           </Link>
         </ButtonWrapper>

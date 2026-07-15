@@ -180,7 +180,7 @@ const UploadTableRow = ({
   // When the table is nested in another modal we keep the whole upload flow
   // (preview *and* edit) local so the surrounding modal stays open; otherwise the
   // hosted edit link would navigate and collapse it.
-  const useHostedUploadModal = Boolean(projectUploadModal) && !insideModal
+  const useHostedUploadModal = !insideModal
   const returnTo = useCurrentReturnTo()
   const editLink: UploadEditLink = {
     to: "/$projectSlug/uploads/$uploadId/edit",
@@ -300,7 +300,7 @@ const UploadTableRow = ({
               <Link
                 icon="edit"
                 to={
-                  useHostedUploadModal && projectUploadModal
+                  useHostedUploadModal
                     ? projectUploadModal.getUploadEditHref({ uploadId: upload.id })
                     : editLink.to
                 }

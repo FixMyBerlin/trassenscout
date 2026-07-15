@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { DeleteActionBar } from "@/src/components/core/components/forms/DeleteActionBar"
 import { deleteContactFn } from "@/src/server/contacts/contacts.functions"
 
@@ -7,6 +7,7 @@ type Props = {
   projectSlug: string
   contactTitle: string
   returnPath: string
+  variant?: "text" | "icon" | "linkWithIcon"
 }
 
 export const ContactDeleteActionBar = ({
@@ -14,14 +15,20 @@ export const ContactDeleteActionBar = ({
   projectSlug,
   contactTitle,
   returnPath,
+  variant,
 }: Props) => {
+  const queryClient = useQueryClient()
   const deleteContactMutation = useMutation({ mutationFn: deleteContactFn })
 
   return (
     <DeleteActionBar
       itemTitle={contactTitle}
-      onDelete={() => deleteContactMutation.mutateAsync({ data: { id: contactId, projectSlug } })}
+      onDelete={async () => {
+        await deleteContactMutation.mutateAsync({ data: { id: contactId, projectSlug } })
+        await queryClient.invalidateQueries({ queryKey: ["contacts", { projectSlug }] })
+      }}
       returnPath={returnPath}
+      variant={variant}
     />
   )
 }

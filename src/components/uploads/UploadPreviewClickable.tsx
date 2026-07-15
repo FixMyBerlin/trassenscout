@@ -50,11 +50,7 @@ export const UploadPreviewClickable = ({
   }
 
   const openPreview = async () => {
-    if (
-      !insideModal &&
-      projectUploadModal &&
-      (!editLink || editLink.to === "/$projectSlug/uploads/$uploadId/edit")
-    ) {
+    if (!insideModal && (!editLink || editLink.to === "/$projectSlug/uploads/$uploadId/edit")) {
       try {
         await primeUploadDetails()
       } finally {
