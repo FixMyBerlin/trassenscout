@@ -7,6 +7,11 @@ import { useIsMapHighlighted } from "../mapHighlightContext"
 import { TipMarker } from "../TipMarker"
 import { getLabelPosition } from "../utils/getLabelPosition"
 
+const markerStyles = {
+  default: { zIndex: 0 },
+  highlighted: { zIndex: 10 },
+} as const
+
 type Props = {
   subsubsections: SubsubsectionWithPosition[]
   dotMode: boolean | null
@@ -66,6 +71,7 @@ const SubsubsectionMarker = ({
       longitude={longitude as number}
       latitude={latitude as number}
       anchor="center"
+      style={isHighlighted || isSelected ? markerStyles.highlighted : markerStyles.default}
       onClick={(e) => {
         onSelect({
           subsectionSlug: subsubsection.subsection.slug,
