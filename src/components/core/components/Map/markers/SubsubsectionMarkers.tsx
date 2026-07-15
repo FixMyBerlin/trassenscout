@@ -34,6 +34,32 @@ const SubsubsectionMarker = ({
   const isHighlighted = useIsMapHighlighted("subsubsection", subsubsection.slug)
   const isSelected = subsubsection.slug === selectedSubsubsectionSlug
   const shouldShowLabel = !dotMode || isHighlighted || isSelected
+  const label = (
+    <TipMarker
+      anchor={subsubsection.labelPos}
+      className={
+        subsubsection.subsection.slug === pageSubsectionSlug
+          ? "opacity-100"
+          : "opacity-50 hover:opacity-100"
+      }
+      slug={subsubsection.slug}
+      highlightLevel="subsubsection"
+      highlightVariant="filled"
+    >
+      <TitleLabel
+        icon={
+          <SubsubsectionMapIcon
+            slug={subsubsection.slug}
+            className={twJoin(
+              "transition-colors",
+              isHighlighted ? "border-yellow-400 bg-yellow-400 text-gray-900" : "",
+            )}
+          />
+        }
+        subtitle={subsubsection.SubsubsectionTask?.title}
+      />
+    </TipMarker>
+  )
 
   return (
     <Marker
@@ -48,32 +74,15 @@ const SubsubsectionMarker = ({
         })
       }}
     >
-      {shouldShowLabel ? (
-        <TipMarker
-          anchor={subsubsection.labelPos}
-          className={
-            subsubsection.subsection.slug === pageSubsectionSlug
-              ? "opacity-100"
-              : "opacity-50 hover:opacity-100"
-          }
-          slug={subsubsection.slug}
-          highlightLevel="subsubsection"
-          highlightVariant="filled"
-        >
-          <TitleLabel
-            icon={
-              <SubsubsectionMapIcon
-                slug={subsubsection.slug}
-                className={twJoin(
-                  "transition-colors",
-                  isHighlighted ? "border-yellow-400 bg-yellow-400 text-gray-900" : "",
-                )}
-              />
-            }
-            subtitle={subsubsection.SubsubsectionTask?.title}
-          />
-        </TipMarker>
-      ) : null}
+      <div className={twJoin("group relative", dotMode && "h-6 w-6")}>
+        {shouldShowLabel ? (
+          dotMode ? (
+            <div className="absolute top-1/2 left-1/2">{label}</div>
+          ) : (
+            label
+          )
+        ) : null}
+      </div>
     </Marker>
   )
 }
