@@ -50,8 +50,9 @@ export const useMenuItems = () => {
     },
     {
       name: "Kontakte",
-      href: `/${projectSlug}/contacts`,
+      href: `/${projectSlug}/contacts/team`,
       alsoHighlightPaths: [
+        `/${projectSlug}/contacts`,
         `/${projectSlug}/contacts/`,
         `/${projectSlug}/invites`,
         `/${projectSlug}/invites/`,
