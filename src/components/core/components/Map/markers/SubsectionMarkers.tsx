@@ -9,6 +9,7 @@ import { useMarkerHighlight } from "../useMarkerHighlight"
 import { getLabelPosition } from "../utils/getLabelPosition"
 
 export const SUBSECTION_LABEL_MIN_ZOOM = 11
+const dotModeMarkerSizeClass = "h-5 w-5"
 
 const markerStyles = {
   default: { zIndex: 0 },
@@ -66,7 +67,7 @@ const SubsectionMarker = ({ subsection, dotMode, onSelect }: SubsectionMarkerPro
       onClick={(e) => onSelect({ subsectionSlug: subsection.slug, edit: e.originalEvent.altKey })}
     >
       <div
-        className={twJoin("group relative cursor-pointer", dotMode && "h-6 w-6")}
+        className={twJoin("group relative cursor-pointer", dotMode && dotModeMarkerSizeClass)}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
