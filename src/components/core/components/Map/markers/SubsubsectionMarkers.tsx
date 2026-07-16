@@ -11,6 +11,7 @@ const markerStyles = {
   default: { zIndex: 0 },
   highlighted: { zIndex: 10 },
 } as const
+const dotModeMarkerSizeClass = "h-5 w-5"
 
 type Props = {
   subsubsections: SubsubsectionWithPosition[]
@@ -80,7 +81,7 @@ const SubsubsectionMarker = ({
         })
       }}
     >
-      <div className={twJoin("group relative", dotMode && "h-6 w-6")}>
+      <div className={twJoin("group relative", dotMode && dotModeMarkerSizeClass)}>
         {shouldShowLabel ? (
           dotMode ? (
             <div className="absolute top-1/2 left-1/2">{label}</div>
