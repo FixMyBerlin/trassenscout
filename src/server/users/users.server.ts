@@ -61,7 +61,7 @@ export async function getUsersAdmin(headers: Headers) {
 
   const users = await db.user.findMany({
     orderBy: { id: "asc" },
-    take: 100,
+    take: 500,
     select: {
       id: true,
       firstName: true,
@@ -118,7 +118,7 @@ export async function getUsersWithMemberships(headers: Headers) {
 
   return db.user.findMany({
     orderBy: { id: "asc" },
-    take: 100,
+    take: 500,
     select: userWithMembershipsSelect,
   })
 }
