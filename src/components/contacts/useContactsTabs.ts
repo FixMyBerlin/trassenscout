@@ -8,11 +8,11 @@ export function useContactsTabs() {
   const { edit } = useUserCan()
 
   const tabs: { name: string; to: string }[] = [
-    { name: "Externe Kontakte", to: `/${projectSlug}/contacts` },
     { name: "Projektteam", to: `/${projectSlug}/contacts/team` },
   ]
   if (edit) {
     tabs.push({ name: "Einladungen", to: `/${projectSlug}/invites` })
   }
+  tabs.push({ name: "Externe Kontakte", to: `/${projectSlug}/contacts` })
   return tabs
 }
