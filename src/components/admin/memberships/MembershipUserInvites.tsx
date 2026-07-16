@@ -1,9 +1,11 @@
+import { twJoin, twMerge } from "tailwind-merge"
 import {
+  adminTableCellClassName,
   adminTableClassName,
+  adminTableHeaderClassName,
   adminTableWrapperClassName,
 } from "@/src/components/admin/adminListClasses"
 import { AdminTableExternalLink } from "@/src/components/admin/AdminTableActions"
-import { StatusLabel } from "@/src/components/core/components/Status/StatusLabel"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { roleTranslation } from "@/src/components/core/users/roleTranslation.const"
 import { formatTableDateTime } from "@/src/components/core/utils/formatTableDateTime"
@@ -27,10 +29,28 @@ type Props = {
   invites: MembershipUserInvite[]
 }
 
-const headerCellClassName =
-  "py-1.5 pr-3 pl-4 text-left text-sm font-medium whitespace-nowrap text-gray-500"
+const headerCellClassName = twMerge(
+  adminTableHeaderClassName,
+  "py-2.5 text-left text-sm font-medium whitespace-nowrap text-gray-500",
+)
 
-const bodyCellClassName = "py-1.5 pr-4 pl-0 text-left align-top text-sm text-gray-900"
+const bodyCellClassName = twMerge(
+  adminTableCellClassName,
+  "py-2.5 text-left align-middle text-sm text-gray-900",
+)
+
+function InviteStatusBadge({ invite }: { invite: MembershipUserInvite }) {
+  return (
+    <span
+      className={twJoin(
+        "inline-flex min-w-24 items-center justify-center rounded-full px-3 py-1 text-sm font-medium whitespace-nowrap",
+        inviteStatusClassNames[invite.status],
+      )}
+    >
+      {inviteStatusLabels[invite.status]}
+    </span>
+  )
+}
 
 function formatUpdatedAt(value: Date | string) {
   const formatted = formatTableDateTime(value)
@@ -48,8 +68,15 @@ export function MembershipUserInvites({ invites }: Props) {
         <p className="text-sm text-gray-500">Keine ausstehenden oder aktiven Einladungen.</p>
       ) : (
         <div className={adminTableWrapperClassName}>
-          <table className={adminTableClassName}>
-            <thead>
+          <table className={twJoin(adminTableClassName, "table-fixed")}>
+            <colgroup>
+              <col className="w-32" />
+              <col className="w-36" />
+              <col className="w-48" />
+              <col className="w-44" />
+              <col className="w-32" />
+            </colgroup>
+            <thead className="border-b border-gray-200 bg-gray-50">
               <tr>
                 <th scope="col" className={headerCellClassName}>
                   Projekt
@@ -63,7 +90,7 @@ export function MembershipUserInvites({ invites }: Props) {
                 <th scope="col" className={headerCellClassName}>
                   Aktualisiert
                 </th>
-                <th scope="col" className={headerCellClassName}>
+                <th scope="col" className={twMerge(headerCellClassName, "text-right")}>
                   <span className="sr-only">Zur Projekt-Einladungsseite</span>
                 </th>
               </tr>
@@ -71,16 +98,19 @@ export function MembershipUserInvites({ invites }: Props) {
             <tbody className="divide-y divide-gray-200 bg-white">
               {invites.map((invite) => (
                 <tr key={invite.id}>
-                  <td className={bodyCellClassName}>{shortTitle(invite.project.slug)}</td>
-                  <td className={bodyCellClassName}>
-                    <StatusLabel
-                      label={inviteStatusLabels[invite.status]}
-                      className={inviteStatusClassNames[invite.status]}
-                    />
+                  <td className={twMerge(bodyCellClassName, "font-medium")}>
+                    {shortTitle(invite.project.slug)}
                   </td>
-                  <td className={bodyCellClassName}>{roleTranslation[invite.role]}</td>
-                  <td className={bodyCellClassName}>{formatUpdatedAt(invite.updatedAt)}</td>
                   <td className={bodyCellClassName}>
+                    <InviteStatusBadge invite={invite} />
+                  </td>
+                  <td className={bodyCellClassName}>
+                    <span className="block truncate">{roleTranslation[invite.role]}</span>
+                  </td>
+                  <td className={twMerge(bodyCellClassName, "whitespace-nowrap")}>
+                    {formatUpdatedAt(invite.updatedAt)}
+                  </td>
+                  <td className={twMerge(bodyCellClassName, "text-right")}>
                     <AdminTableExternalLink href={`/${invite.project.slug}/invites`}>
                       Einladungen
                     </AdminTableExternalLink>
