@@ -15,9 +15,10 @@ const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
 
 type Props = {
   subsections: TSubsections
+  classHeight?: string
 }
 
-export const ProjectMap = ({ subsections }: Props) => {
+export const ProjectMap = ({ subsections, classHeight }: Props) => {
   const navigate = useNavigate()
   const { projectSlug } = loggedInProjectRouteApi.useParams()
   const { mainMap } = useMap()
@@ -78,7 +79,7 @@ export const ProjectMap = ({ subsections }: Props) => {
   } = useMemo(() => getSubsectionFeatures({ subsections, highlight: "all" }), [subsections])
 
   return (
-    <section className="mt-3">
+    <section className={classHeight ? "flex min-h-0 flex-1 flex-col" : "mt-3"}>
       <BaseMap
         id="mainMap"
         initialViewState={{
@@ -93,10 +94,11 @@ export const ProjectMap = ({ subsections }: Props) => {
         staticOverlay={getStaticOverlayForProject(projectSlug)}
         onLoad={handleLoad}
         onZoomEnd={handleZoomEnd}
+        classHeight={classHeight}
       >
         <SubsectionMarkers subsections={subsections} dotMode={dotMode} onSelect={handleSelect} />
       </BaseMap>
-      <MapFooter legendItemsConfig={projectLegendConfig} />
+      <MapFooter legendItemsConfig={projectLegendConfig} pinned={Boolean(classHeight)} />
     </section>
   )
 }

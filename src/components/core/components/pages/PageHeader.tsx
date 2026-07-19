@@ -1,13 +1,17 @@
 import { twJoin } from "tailwind-merge"
 import { PageHeaderInfo } from "@/src/components/core/components/pages/PageHeaderInfo"
-import { PageHeaderViewSwitch } from "@/src/components/core/components/pages/PageHeaderViewSwitch"
+import {
+  PageHeaderViewSwitch,
+  type ViewMode,
+} from "@/src/components/core/components/pages/PageHeaderViewSwitch"
 
 type Props = {
   breadcrumb?: React.ReactNode
   /** Page-specific info panel content. Renders the info button when provided. */
   info?: React.ReactNode
   tabs?: React.ReactNode
-  viewSwitch?: boolean
+  viewMode?: ViewMode
+  onViewModeChange?: (mode: ViewMode) => void
   title?: string
   action?: React.ReactNode
   className?: string
@@ -19,13 +23,15 @@ export const PageHeader = ({
   breadcrumb,
   info,
   tabs,
-  viewSwitch,
+  viewMode,
+  onViewModeChange,
   title,
   action,
   className,
 }: Props) => {
+  const hasViewSwitch = viewMode !== undefined && onViewModeChange !== undefined
   const hasRow1 = Boolean(breadcrumb || info || action)
-  const hasRow2 = Boolean(tabs || viewSwitch)
+  const hasRow2 = Boolean(tabs || hasViewSwitch)
   const hasRow3 = Boolean(title)
 
   if (!hasRow1 && !hasRow2 && !hasRow3) return null
@@ -47,7 +53,9 @@ export const PageHeader = ({
       {hasRow2 ? (
         <div className={twJoin(rowClassName, "bg-white")}>
           <div className="min-w-0 flex-1">{tabs}</div>
-          {viewSwitch ? <PageHeaderViewSwitch /> : null}
+          {hasViewSwitch ? (
+            <PageHeaderViewSwitch value={viewMode} onChange={onViewModeChange} />
+          ) : null}
         </div>
       ) : null}
 

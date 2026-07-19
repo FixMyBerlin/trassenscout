@@ -7,6 +7,14 @@ type Props = {
   bleed?: boolean
 }
 
+const tableChromeClassName = twJoin(
+  "not-prose overflow-hidden border border-gray-200",
+  "[&_table]:min-w-full [&_table]:divide-y [&_table]:divide-gray-200",
+  "[&_thead]:bg-white",
+  "[&_th]:text-left [&_th]:text-sm [&_th]:font-medium [&_th]:text-gray-500",
+  "[&_tbody]:divide-y [&_tbody]:divide-gray-200 [&_tbody]:bg-white",
+)
+
 export const TableWrapper = ({ className, children, bleed = true }: Props) => {
   return (
     <div
@@ -21,14 +29,7 @@ export const TableWrapper = ({ className, children, bleed = true }: Props) => {
           bleed ? "inline-block min-w-full md:px-6 lg:px-8" : "w-full",
         )}
       >
-        <div
-          className={twJoin(
-            "not-prose overflow-hidden shadow-sm md:rounded-lg",
-            bleed ? "ring-1 ring-gray-200" : "border border-gray-200",
-          )}
-        >
-          {children}
-        </div>
+        <div className={tableChromeClassName}>{children}</div>
       </div>
     </div>
   )

@@ -236,11 +236,16 @@ export const BaseMap = ({
     onRemove?.(event)
   }
 
+  const isFullscreen = Boolean(classHeight)
+
   return (
     <div
       className={twJoin(
-        "w-full overflow-clip rounded-t-md drop-shadow-md",
-        classHeight ?? "h-96 sm:h-[500px]",
+        "w-full",
+        isFullscreen
+          ? "min-h-0 overflow-hidden"
+          : "h-96 overflow-clip rounded-t-md drop-shadow-md sm:h-[500px]",
+        classHeight,
       )}
     >
       <div className="relative h-full w-full">
@@ -252,7 +257,7 @@ export const BaseMap = ({
             reuseMaps={reuseMaps}
             initialViewState={initialViewState}
             mapStyle={getMapStyle(selectedLayer)}
-            scrollZoom={scrollZoom}
+            scrollZoom={scrollZoom ?? true}
             cursor={cursorStyle}
             onMouseMove={handleMouseMoveInternal}
             onMouseLeave={handleMouseLeaveInternal}

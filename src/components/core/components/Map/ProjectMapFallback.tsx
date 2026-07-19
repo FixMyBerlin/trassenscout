@@ -8,14 +8,16 @@ import { geometriesBbox } from "./utils/bboxHelpers"
 
 const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
 
-type Props = { subsections: TSubsections }
+type Props = { subsections: TSubsections; classHeight?: string }
 
-export const ProjectMapFallback = ({ subsections }: Props) => {
+export const ProjectMapFallback = ({ subsections, classHeight }: Props) => {
   const { projectSlug } = loggedInProjectRouteApi.useParams()
   const bounds = geometriesBbox(subsections.map((ss) => ss.geometry))
 
   return (
-    <section className="relative mt-3 mb-10">
+    <section
+      className={classHeight ? "relative flex min-h-0 flex-1 flex-col" : "relative mt-3 mb-10"}
+    >
       <BaseMap
         id="mainMap"
         initialViewState={{
@@ -24,6 +26,7 @@ export const ProjectMapFallback = ({ subsections }: Props) => {
         }}
         colorSchema="subsection"
         staticOverlay={getStaticOverlayForProject(projectSlug)}
+        classHeight={classHeight}
       />
       <ZeroCase visible name="Planungsabschnitte" />
     </section>

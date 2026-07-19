@@ -13,7 +13,7 @@ function LoggedInMainShell({
   return (
     <div className="relative mx-auto flex h-full w-full max-w-480 grow flex-col overflow-x-hidden border border-gray-200">
       {navigation}
-      <main className="w-full border-t border-gray-200 pb-16">{children}</main>
+      <main className="w-full border-t border-gray-200">{children}</main>
     </div>
   )
 }

@@ -11,6 +11,8 @@ type Props = {
   subsubsections: SubsubsectionWithPosition[]
   selectedSubsubsectionSlug?: string
   clusterSubsubsections?: boolean
+  classHeight?: string
+
 }
 
 export const SubsubsectionMapWithProvider = (props: Props) => {

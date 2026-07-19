@@ -1,32 +1,18 @@
-import { linkStyles } from "@/src/components/core/components/links/styles"
-import {
-  useMapLegendActions,
-  useShowMapLegend,
-} from "@/src/components/core/components/Map/map-legend-store"
+import { twJoin } from "tailwind-merge"
 import { MapLegend, type LegendItemConfig } from "./MapLegend"
 
 type MapFooterProps = {
   legendItemsConfig?: LegendItemConfig[]
+  /** Pin legend to the bottom of a fullscreen map shell. */
+  pinned?: boolean
 }
 
-export const MapFooter = ({ legendItemsConfig }: MapFooterProps) => {
-  const showMapLegend = useShowMapLegend()
-  const { toggleShowMapLegend } = useMapLegendActions()
-
-  const buttonLabel = showMapLegend ? "Kartenlegende ausblenden" : "Kartenlegende anzeigen"
+export const MapFooter = ({ legendItemsConfig, pinned = false }: MapFooterProps) => {
+  if (!legendItemsConfig) return null
 
   return (
-    <div className="mb-10">
-      {showMapLegend && legendItemsConfig && <MapLegend legendItemsConfig={legendItemsConfig} />}
-      <div className="mt-2 flex justify-between gap-2 text-xs text-gray-400">
-        <button
-          onClick={toggleShowMapLegend}
-          className={`cursor-pointer ${linkStyles}`}
-          type="button"
-        >
-          {buttonLabel}
-        </button>
-      </div>
+    <div className={twJoin(pinned ? "shrink-0" : "mb-10")}>
+      <MapLegend legendItemsConfig={legendItemsConfig} pinned={pinned} />
     </div>
   )
 }

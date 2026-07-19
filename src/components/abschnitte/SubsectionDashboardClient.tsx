@@ -1,9 +1,12 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
+import { useState } from "react"
+import { twJoin } from "tailwind-merge"
 import { AbschnitteBreadcrumb } from "@/src/components/abschnitte/AbschnitteBreadcrumb"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "@/src/components/core/components/links/Link"
 import { SubsubsectionMapWithProvider } from "@/src/components/core/components/Map/SubsubsectionMapWithProvider"
+import { MapListViewLayout } from "@/src/components/core/components/pages/MapListViewLayout"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
 import { IfUserCanEdit } from "@/src/components/shared/memberships/IfUserCan"
 import { subsectionsQueryOptions } from "@/src/server/subsections/subsectionsQueryOptions"
@@ -28,16 +31,22 @@ function SubsectionDashboardContent({
   subsection: Subsection
   subsections: SubsectionsList
 }) {
+  const [viewMode, setViewMode] = useState<"map" | "list">("map")
+  const isMapMode = viewMode === "map"
   const { data: subsubsections } = useSuspenseQuery(
     subsubsectionsQueryOptions({ projectSlug, subsectionId: subsection.id }),
   )
 
   return (
-    <>
+    <div
+      className={twJoin(isMapMode && "-mb-16 flex h-[calc(100dvh-4rem)] flex-col overflow-hidden")}
+    >
       <PageHeader
+        className={isMapMode ? "mb-0 shrink-0" : undefined}
         breadcrumb={<AbschnitteBreadcrumb />}
         info="Übersicht über alle Maßnahmen dieses Planungsabschnitts."
-        viewSwitch
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
         action={
           <IfUserCanEdit>
             <Link
@@ -51,8 +60,9 @@ function SubsectionDashboardContent({
         }
       />
 
-      <div className="relative mt-12 flex w-full gap-10">
-        <div className="w-full">
+      <MapListViewLayout
+        mode={viewMode}
+        map={(classHeight) => (
           <SubsubsectionMapWithProvider
             key="map-subsection"
             projectSlug={projectSlug}
@@ -61,12 +71,15 @@ function SubsectionDashboardContent({
             selectedSubsection={subsection}
             subsubsections={subsubsections}
             clusterSubsubsections
+            classHeight={classHeight}
+
           />
-          <SubsubsectionTable subsubsections={subsubsections} compact={false} />
-        </div>
-      </div>
-      <SuperAdminLogData data={{ subsections, subsection, subsubsections }} />
-    </>
+        )}
+        list={<SubsubsectionTable subsubsections={subsubsections} compact={false} />}
+      >
+        <SuperAdminLogData data={{ subsections, subsection, subsubsections }} />
+      </MapListViewLayout>
+    </div>
   )
 }
 
