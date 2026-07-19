@@ -19,7 +19,7 @@ export function PageAbschnitteSubsubsectionEdit() {
   )
   return (
     <>
-      <PageHeader breadcrumb={<AbschnitteBreadcrumb />} title="Maßnahme  bearbeiten" />
+      <PageHeader breadcrumb={<AbschnitteBreadcrumb current="bearbeiten" />} />
       <Suspense fallback={<Spinner />}>
         <EditSubsubsectionForm subsubsection={subsubsection} />
       </Suspense>

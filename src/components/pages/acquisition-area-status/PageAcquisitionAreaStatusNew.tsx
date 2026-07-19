@@ -20,10 +20,9 @@ export function PageAcquisitionAreaStatusNew() {
           <ProjectPageBreadcrumb
             section="Flächenerwerb-Status"
             sectionTo="/$projectSlug/acquisition-area-status"
-            current="Status hinzufügen"
+            current="neu"
           />
         }
-        title="Status hinzufügen"
       />
       <NewAcquisitionAreaStatusForm projectSlug={projectSlug} />
       <hr className="my-5 text-gray-200" />

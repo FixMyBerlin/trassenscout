@@ -24,10 +24,7 @@ export function PageSubsubsectionSpecial() {
 
   return (
     <>
-      <PageHeader
-        breadcrumb={<ProjectPageBreadcrumb section="Besonderheiten" />}
-        title="Besonderheiten"
-      />
+      <PageHeader breadcrumb={<ProjectPageBreadcrumb section="Besonderheiten" />} />
       <SubsubsectionSpecialsTable subsubsectionSpecials={rows} />
       <IfUserCanEdit>
         <Link button="blue" icon="plus" className="mt-4" {...newLink}>

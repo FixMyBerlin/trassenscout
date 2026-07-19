@@ -24,10 +24,9 @@ export function PageSubsubsectionInfraEdit() {
           <ProjectPageBreadcrumb
             section="Infrastruktur"
             sectionTo="/$projectSlug/subsubsection-infra"
-            current="Infrastruktur bearbeiten"
+            current="bearbeiten"
           />
         }
-        title="Infrastruktur bearbeiten"
       />
       <EditSubsubsectionInfraForm
         subsubsectionInfra={subsubsectionInfra as never}

@@ -20,10 +20,9 @@ export function PageNetworkHierarchyNew() {
           <ProjectPageBreadcrumb
             section="Netzstufen"
             sectionTo="/$projectSlug/network-hierarchy"
-            current="Netzstufe hinzufügen"
+            current="neu"
           />
         }
-        title="Netzstufe hinzufügen"
       />
       <NewNetworkHierarchyForm projectSlug={projectSlug} />
       <hr className="my-5 text-gray-200" />

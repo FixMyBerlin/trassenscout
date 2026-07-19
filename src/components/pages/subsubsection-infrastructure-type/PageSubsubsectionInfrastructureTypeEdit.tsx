@@ -28,10 +28,9 @@ export function PageSubsubsectionInfrastructureTypeEdit() {
           <ProjectPageBreadcrumb
             section="Infrastrukturtypen"
             sectionTo="/$projectSlug/subsubsection-infrastructure-type"
-            current="Infrastrukturtyp bearbeiten"
+            current="bearbeiten"
           />
         }
-        title="Infrastrukturtyp bearbeiten"
       />
       <EditSubsubsectionInfrastructureTypeForm
         subsubsectionInfrastructureType={subsubsectionInfrastructureType as never}

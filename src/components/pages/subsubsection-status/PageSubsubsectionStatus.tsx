@@ -24,7 +24,7 @@ export function PageSubsubsectionStatus() {
 
   return (
     <>
-      <PageHeader breadcrumb={<ProjectPageBreadcrumb section="Status" />} title="Status" />
+      <PageHeader breadcrumb={<ProjectPageBreadcrumb section="Status" />} />
       <SubsubsectionStatussTable subsubsectionStatuss={rows} />
       <IfUserCanEdit>
         <Link button="blue" icon="plus" className="mt-4" {...newLink}>

@@ -30,7 +30,6 @@ export function PageContacts() {
         breadcrumb={<ProjectPageBreadcrumb section="Externe Kontakte" />}
         info="Kontaktdaten, die für das ganze Projektteam wichtig sind."
         tabs={<TabsApp tabs={tabs} embedded />}
-        title="Externe Kontakte"
       />
       {contacts.length === 0 ? (
         <>

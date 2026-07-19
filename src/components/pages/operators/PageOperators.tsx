@@ -22,10 +22,7 @@ export function PageOperators() {
 
   return (
     <>
-      <PageHeader
-        breadcrumb={<ProjectPageBreadcrumb section="Baulastträger" />}
-        title="Baulastträger"
-      />
+      <PageHeader breadcrumb={<ProjectPageBreadcrumb section="Baulastträger" />} />
       <OperatorsTable operators={data.rows} pagination={data} />
       <IfUserCanEdit>
         <Link button="blue" icon="plus" className="mt-4" {...newLink}>

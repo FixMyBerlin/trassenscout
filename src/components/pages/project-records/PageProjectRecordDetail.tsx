@@ -44,7 +44,6 @@ export function PageProjectRecordDetail() {
             current={projectRecord.title}
           />
         }
-        title={projectRecord.title}
         action={
           <IfUserCanEdit>
             <Link

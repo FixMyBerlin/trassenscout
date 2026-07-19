@@ -20,10 +20,9 @@ export function PageQualityLevelsNew() {
           <ProjectPageBreadcrumb
             section="Ausbaustandards"
             sectionTo="/$projectSlug/quality-levels"
-            current="Ausbaustandard hinzufügen"
+            current="neu"
           />
         }
-        title="Ausbaustandard hinzufügen"
       />
       <NewQualityLevelForm projectSlug={projectSlug} />
       <hr className="my-5 text-gray-200" />

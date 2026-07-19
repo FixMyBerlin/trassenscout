@@ -5,7 +5,6 @@ import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/Sup
 import { Link } from "@/src/components/core/components/links/Link"
 import { SubsubsectionMapWithProvider } from "@/src/components/core/components/Map/SubsubsectionMapWithProvider"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
-import { shortTitle } from "@/src/components/core/components/text/titles"
 import { IfUserCanEdit } from "@/src/components/shared/memberships/IfUserCan"
 import { subsectionsQueryOptions } from "@/src/server/subsections/subsectionsQueryOptions"
 import type { SubsectionsList } from "@/src/server/subsections/types"
@@ -39,7 +38,6 @@ function SubsectionDashboardContent({
         breadcrumb={<AbschnitteBreadcrumb />}
         info="Übersicht über alle Maßnahmen dieses Planungsabschnitts."
         viewSwitch
-        title={shortTitle(subsection.slug)}
         action={
           <IfUserCanEdit>
             <Link

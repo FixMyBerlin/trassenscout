@@ -27,10 +27,9 @@ export function PageSurveyResponseTagsEdit() {
           <ProjectPageBreadcrumb
             section="Tags (Beteiligung)"
             sectionTo="/$projectSlug/survey-response-tags"
-            current="Tag bearbeiten"
+            current="bearbeiten"
           />
         }
-        title="Tag bearbeiten"
       />
       <EditSurveyResponseTagForm tag={tag} projectSlug={projectSlug} />
     </>

@@ -27,7 +27,6 @@ export function PageSurveys() {
       <>
         <PageHeader
           breadcrumb={<ProjectPageBreadcrumb section="Beteiligungen" />}
-          title="Noch keine Beteiligung aktiv?"
           className="mt-12"
         />
         <NoSurveysInfoBox />
@@ -37,10 +36,7 @@ export function PageSurveys() {
 
   return (
     <>
-      <PageHeader
-        breadcrumb={<ProjectPageBreadcrumb section="Beteiligungen" />}
-        title="Beteiligungen"
-      />
+      <PageHeader breadcrumb={<ProjectPageBreadcrumb section="Beteiligungen" />} />
       <ul role="list" className="divide-y divide-gray-100">
         {surveys.map((survey) => {
           const dateRange = formatSurveyDateRange(survey.startDate, survey.endDate)

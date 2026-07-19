@@ -16,7 +16,6 @@ export function PageContactsTable() {
           />
         }
         info="Tipp: Kontakte können per Kopieren & Einfügen aus Excel übernommen werden."
-        title="Externe Kontakte"
       />
       <Suspense fallback={<Spinner page />}>
         <ContactsTable />

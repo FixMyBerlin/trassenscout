@@ -24,10 +24,7 @@ export function PageAcquisitionAreaStatus() {
 
   return (
     <>
-      <PageHeader
-        breadcrumb={<ProjectPageBreadcrumb section="Flächenerwerb-Status" />}
-        title="Flächenerwerb-Status"
-      />
+      <PageHeader breadcrumb={<ProjectPageBreadcrumb section="Flächenerwerb-Status" />} />
       <AcquisitionAreaStatusesTable acquisitionAreaStatuses={rows} />
       <IfUserCanEdit>
         <Link button="blue" icon="plus" className="mt-4" {...newLink}>

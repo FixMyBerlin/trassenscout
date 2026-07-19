@@ -24,7 +24,7 @@ export function PageNetworkHierarchy() {
 
   return (
     <>
-      <PageHeader breadcrumb={<ProjectPageBreadcrumb section="Netzstufen" />} title="Netzstufen" />
+      <PageHeader breadcrumb={<ProjectPageBreadcrumb section="Netzstufen" />} />
       <NetworkHierarchysTable networkHierarchys={rows} />
       <IfUserCanEdit>
         <Link button="blue" icon="plus" className="mt-4" {...newLink}>

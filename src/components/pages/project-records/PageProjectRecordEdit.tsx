@@ -21,10 +21,9 @@ export function PageProjectRecordEdit() {
           <ProjectPageBreadcrumb
             section="Projektprotokoll"
             sectionTo="/$projectSlug/project-records"
-            current="Protokolleintrag bearbeiten"
+            current="bearbeiten"
           />
         }
-        title="Protokolleintrag bearbeiten"
       />
       <EditProjectRecordForm projectRecord={projectRecord} />
     </>

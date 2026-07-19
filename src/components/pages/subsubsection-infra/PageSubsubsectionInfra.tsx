@@ -24,10 +24,7 @@ export function PageSubsubsectionInfra() {
 
   return (
     <>
-      <PageHeader
-        breadcrumb={<ProjectPageBreadcrumb section="Infrastruktur" />}
-        title="Infrastruktur"
-      />
+      <PageHeader breadcrumb={<ProjectPageBreadcrumb section="Infrastruktur" />} />
       <SubsubsectionInfrasTable subsubsectionInfras={rows} />
       <IfUserCanEdit>
         <Link button="blue" icon="plus" className="mt-4" {...newLink}>

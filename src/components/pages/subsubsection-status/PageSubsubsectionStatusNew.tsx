@@ -20,10 +20,9 @@ export function PageSubsubsectionStatusNew() {
           <ProjectPageBreadcrumb
             section="Status"
             sectionTo="/$projectSlug/subsubsection-status"
-            current="Status hinzufügen"
+            current="neu"
           />
         }
-        title="Status hinzufügen"
       />
       <NewSubsubsectionStatusForm projectSlug={projectSlug} />
       <hr className="my-5 text-gray-200" />

@@ -12,10 +12,7 @@ export function PageAbschnitteAcquisitionAreaEdit() {
   const { acquisitionArea } = routeApi.useLoaderData()
   return (
     <>
-      <PageHeader
-        breadcrumb={<AbschnitteBreadcrumb />}
-        title={`Verhandlungsfläche ${acquisitionArea.id} bearbeiten`}
-      />
+      <PageHeader breadcrumb={<AbschnitteBreadcrumb current="bearbeiten" />} />
       <EditAcquisitionAreaForm
         acquisitionArea={acquisitionArea}
         projectSlug={projectSlug}

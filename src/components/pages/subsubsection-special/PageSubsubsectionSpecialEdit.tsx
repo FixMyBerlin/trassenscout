@@ -24,10 +24,9 @@ export function PageSubsubsectionSpecialEdit() {
           <ProjectPageBreadcrumb
             section="Besonderheiten"
             sectionTo="/$projectSlug/subsubsection-special"
-            current="Besonderheit bearbeiten"
+            current="bearbeiten"
           />
         }
-        title="Besonderheit bearbeiten"
       />
       <EditSubsubsectionSpecialForm
         subsubsectionSpecial={subsubsectionSpecial as never}

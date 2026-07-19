@@ -20,10 +20,9 @@ export function PageSubsubsectionInfraNew() {
           <ProjectPageBreadcrumb
             section="Infrastruktur"
             sectionTo="/$projectSlug/subsubsection-infra"
-            current="Infrastruktur hinzufügen"
+            current="neu"
           />
         }
-        title="Infrastruktur hinzufügen"
       />
       <NewSubsubsectionInfraForm projectSlug={projectSlug} />
       <hr className="my-5 text-gray-200" />

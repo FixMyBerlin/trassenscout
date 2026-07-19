@@ -22,10 +22,9 @@ export function PageOperatorsEdit() {
           <ProjectPageBreadcrumb
             section="Baulastträger"
             sectionTo="/$projectSlug/operators"
-            current="Baulastträger bearbeiten"
+            current="bearbeiten"
           />
         }
-        title="Baulastträger bearbeiten"
       />
       <EditOperatorForm operator={operator as never} projectSlug={projectSlug} />
     </>

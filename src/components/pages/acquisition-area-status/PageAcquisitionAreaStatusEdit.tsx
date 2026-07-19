@@ -24,10 +24,9 @@ export function PageAcquisitionAreaStatusEdit() {
           <ProjectPageBreadcrumb
             section="Flächenerwerb-Status"
             sectionTo="/$projectSlug/acquisition-area-status"
-            current="Status bearbeiten"
+            current="bearbeiten"
           />
         }
-        title="Status bearbeiten"
       />
       <EditAcquisitionAreaStatusForm
         acquisitionAreaStatus={acquisitionAreaStatus as never}

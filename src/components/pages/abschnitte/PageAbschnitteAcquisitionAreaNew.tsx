@@ -17,10 +17,7 @@ export function PageAbschnitteAcquisitionAreaNew() {
   )
   return (
     <>
-      <PageHeader
-        breadcrumb={<AbschnitteBreadcrumb />}
-        title="Verhandlungsflächen der Maßnahme erstellen"
-      />
+      <PageHeader breadcrumb={<AbschnitteBreadcrumb current="neu" />} />
       <MapPageSuspense>
         <NewAcquisitionAreasForm initialSubsubsection={subsubsection} />
       </MapPageSuspense>

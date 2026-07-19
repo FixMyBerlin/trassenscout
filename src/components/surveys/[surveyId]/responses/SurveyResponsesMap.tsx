@@ -105,7 +105,6 @@ export function SurveyResponsesMap({ projectSlug, survey, tabs }: Props) {
             />
           }
           tabs={<SurveyTabs tabs={tabs} embedded />}
-          title={survey.title}
           className="mt-12 w-full max-w-7xl"
         />
       </div>

@@ -24,10 +24,9 @@ export function PageNetworkHierarchyEdit() {
           <ProjectPageBreadcrumb
             section="Netzstufen"
             sectionTo="/$projectSlug/network-hierarchy"
-            current="Netzstufe bearbeiten"
+            current="bearbeiten"
           />
         }
-        title="Netzstufe bearbeiten"
       />
       <EditNetworkHierarchyForm
         networkHierarchy={networkHierarchy as never}

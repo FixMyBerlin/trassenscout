@@ -20,10 +20,9 @@ export function PageOperatorsNew() {
           <ProjectPageBreadcrumb
             section="Baulastträger"
             sectionTo="/$projectSlug/operators"
-            current="Baulastträger hinzufügen"
+            current="neu"
           />
         }
-        title="Baulastträger hinzufügen"
       />
       <NewOperatorForm projectSlug={projectSlug} />
       <hr className="my-5 text-gray-200" />
