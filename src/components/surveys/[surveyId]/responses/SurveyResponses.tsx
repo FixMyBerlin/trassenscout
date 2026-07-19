@@ -120,7 +120,6 @@ export function SurveyResponses({ projectSlug, surveyId: _surveyId, survey, tabs
       />
 
       <div className="mt-12 space-y-4">
-        <H2>Eingaben</H2>
         <div className="mb-6">
           <Link
             className="mb-12 flex gap-1"
