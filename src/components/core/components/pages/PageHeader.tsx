@@ -1,4 +1,4 @@
-import { twJoin } from "tailwind-merge"
+import { twJoin, twMerge } from "tailwind-merge"
 import { PageHeaderInfo } from "@/src/components/core/components/pages/PageHeaderInfo"
 import {
   PageHeaderViewSwitch,
@@ -37,7 +37,7 @@ export const PageHeader = ({
   if (!hasRow1 && !hasRow2 && !hasRow3) return null
 
   return (
-    <header className={twJoin("mb-6 w-full", className)}>
+    <header className={twMerge("w-full", className)}>
       {hasRow1 ? (
         <div className={twJoin(rowClassName, "bg-gray-50")}>
           <div className="min-w-0 flex-1">{breadcrumb}</div>
