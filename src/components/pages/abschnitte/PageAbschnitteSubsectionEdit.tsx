@@ -1,5 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
+import { AbschnitteBreadcrumb } from "@/src/components/abschnitte/AbschnitteBreadcrumb"
 import { EditSubsectionForm } from "@/src/components/abschnitte/EditSubsectionForm"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
@@ -15,7 +16,10 @@ export function PageAbschnitteSubsectionEdit() {
   )
   return (
     <>
-      <PageHeader title={`${shortTitle(subsection.slug)} bearbeiten`} />
+      <PageHeader
+        breadcrumb={<AbschnitteBreadcrumb />}
+        title={`${shortTitle(subsection.slug)} bearbeiten`}
+      />
       <EditSubsectionForm subsection={subsection} projectSlug={projectSlug} />
       <SuperAdminLogData data={subsection} />
     </>

@@ -7,6 +7,7 @@ import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAd
 import { ButtonWrapper } from "@/src/components/core/components/links/ButtonWrapper"
 import { Link } from "@/src/components/core/components/links/Link"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { TabsApp } from "@/src/components/core/components/Tabs/TabsApp"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { projectUsersQueryOptions } from "@/src/server/memberships/projectUsersQueryOptions"
@@ -22,10 +23,11 @@ export function PageContactsTeam() {
   return (
     <>
       <PageHeader
+        breadcrumb={<ProjectPageBreadcrumb section="Projektteam" />}
+        info="Kontakt zu allen registrierten Mitgliedern des Projektes."
+        tabs={<TabsApp tabs={tabs} embedded />}
         title="Projektteam"
-        description="Kontakt zu allen registrierten Mitgliedern des Projektes."
       />
-      <TabsApp tabs={tabs} className="mt-7" />
       <TeamTable users={users} projectSlug={projectSlug} />
       <IfUserCanEdit>
         <ButtonWrapper className="mt-6">

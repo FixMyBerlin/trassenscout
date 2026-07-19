@@ -6,8 +6,8 @@ import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/Sup
 import { Link } from "@/src/components/core/components/links/Link"
 import { ProjectMap } from "@/src/components/core/components/Map/ProjectMap"
 import { ProjectMapFallback } from "@/src/components/core/components/Map/ProjectMapFallback"
-import { Markdown } from "@/src/components/core/components/Markdown/Markdown"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { projectBySlugQueryOptions } from "@/src/server/projects/projectsQueryOptions"
@@ -31,12 +31,13 @@ export const ProjectDashboardClient = () => {
   return (
     <>
       <PageHeader
+        breadcrumb={<ProjectPageBreadcrumb />}
+        info="Übersicht über alle Planungsabschnitte des Projekts."
+        viewSwitch
         title={shortTitle(project.slug)}
-        subtitle={project.subTitle}
-        description={project.description ? <Markdown markdown={project.description} /> : undefined}
         action={
           <IfUserCanEdit>
-            <Link button="white" icon="edit" to="/$projectSlug/edit" params={{ projectSlug }}>
+            <Link icon="edit" to="/$projectSlug/edit" params={{ projectSlug }}>
               bearbeiten
             </Link>
           </IfUserCanEdit>

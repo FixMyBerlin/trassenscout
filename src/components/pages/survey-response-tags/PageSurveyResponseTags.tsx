@@ -3,6 +3,7 @@ import { getRouteApi } from "@tanstack/react-router"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "@/src/components/core/components/links/Link"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { SurveyResponseTagsTable } from "@/src/components/survey-response-tags/SurveyResponseTagsTable"
 import { useSurveyResponseTagRouteLinks } from "@/src/components/survey-response-tags/useSurveyResponseTagActions"
@@ -19,7 +20,10 @@ export function PageSurveyResponseTags() {
 
   return (
     <>
-      <PageHeader title="Tags (Beteiligung)" />
+      <PageHeader
+        breadcrumb={<ProjectPageBreadcrumb section="Tags (Beteiligung)" />}
+        title="Tags (Beteiligung)"
+      />
       <SurveyResponseTagsTable tags={data.surveyResponseTags} />
       <IfUserCanEdit>
         <Link button="blue" icon="plus" className="mt-4" {...newLink}>

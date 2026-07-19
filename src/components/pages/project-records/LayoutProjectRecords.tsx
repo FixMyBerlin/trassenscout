@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi, Outlet, useMatchRoute, useRouteContext } from "@tanstack/react-router"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { TabsApp } from "@/src/components/core/components/Tabs/TabsApp"
 import { editorRoles } from "@/src/server/authorization/constants"
 import { projectRecordsTabCountsQueryOptions } from "@/src/server/projectRecords/projectRecordsQueryOptions"
@@ -39,8 +40,11 @@ export function LayoutProjectRecords() {
     <>
       {isListView && (
         <>
-          <PageHeader title="Projektprotokoll" />
-          <TabsApp tabs={tabs} className="mt-7" />
+          <PageHeader
+            breadcrumb={<ProjectPageBreadcrumb section="Projektprotokoll" />}
+            tabs={<TabsApp tabs={tabs} embedded />}
+            title="Projektprotokoll"
+          />
         </>
       )}
       <Outlet />

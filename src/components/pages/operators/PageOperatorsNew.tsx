@@ -1,6 +1,7 @@
 import { getRouteApi } from "@tanstack/react-router"
 import { Link } from "@/src/components/core/components/links/Link"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { useTryRouteSearch } from "@/src/components/core/routes/useTryRouteSearch"
 import { NewOperatorForm } from "@/src/components/operators/NewOperatorForm"
 import { useOperatorRouteLinks } from "@/src/components/operators/useOperatorActions"
@@ -14,7 +15,16 @@ export function PageOperatorsNew() {
 
   return (
     <>
-      <PageHeader title="Baulastträger hinzufügen" />
+      <PageHeader
+        breadcrumb={
+          <ProjectPageBreadcrumb
+            section="Baulastträger"
+            sectionTo="/$projectSlug/operators"
+            current="Baulastträger hinzufügen"
+          />
+        }
+        title="Baulastträger hinzufügen"
+      />
       <NewOperatorForm projectSlug={projectSlug} />
       <hr className="my-5 text-gray-200" />
       <Link {...listLink}>Zurück zur Übersicht</Link>

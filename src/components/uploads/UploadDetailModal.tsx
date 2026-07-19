@@ -2,8 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 import { useState } from "react"
 import { Modal, ModalCloseButton } from "@/src/components/core/components/Modal"
 import { Notice } from "@/src/components/core/components/Notice/Notice"
-import { H3 } from "@/src/components/core/components/text/Headings"
-import { HeadingWithAction } from "@/src/components/core/components/text/HeadingWithAction"
+import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
 import { Upload } from "@/src/prisma/generated/browser"
 import { uploadQueryOptions } from "@/src/server/uploads/uploadQueryOptions"
 import { UploadModalContent } from "./UploadModalContent"
@@ -100,10 +99,7 @@ function UploadDetailModalInner({
       align={isEditView ? "right" : "center"}
       className={isEditView ? "space-y-4" : "space-y-4 sm:max-w-2xl"}
     >
-      <HeadingWithAction>
-        <H3>{title}</H3>
-        <ModalCloseButton onClose={handleClose} />
-      </HeadingWithAction>
+      <PageHeader title={title} action={<ModalCloseButton onClose={handleClose} />} />
 
       {hasUploadError ? (
         <Notice type="error" title="Das Dokument konnte nicht geladen werden.">

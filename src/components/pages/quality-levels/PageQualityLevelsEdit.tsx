@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { EditQualityLevelForm } from "@/src/components/quality-levels/EditQualityLevelForm"
 import { adminLookupRowQueryOptions } from "@/src/server/adminLookupTables/adminLookupTablesQueryOptions"
 
@@ -16,7 +17,16 @@ export function PageQualityLevelsEdit() {
 
   return (
     <>
-      <PageHeader title="Ausbaustandard bearbeiten" />
+      <PageHeader
+        breadcrumb={
+          <ProjectPageBreadcrumb
+            section="Ausbaustandards"
+            sectionTo="/$projectSlug/quality-levels"
+            current="Ausbaustandard bearbeiten"
+          />
+        }
+        title="Ausbaustandard bearbeiten"
+      />
       <EditQualityLevelForm qualityLevel={qualityLevel as never} projectSlug={projectSlug} />
     </>
   )

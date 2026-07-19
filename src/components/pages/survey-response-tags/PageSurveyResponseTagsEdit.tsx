@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { EditSurveyResponseTagForm } from "@/src/components/survey-response-tags/EditSurveyResponseTagForm"
 import { surveyResponseTagsWithUsageCountQueryOptions } from "@/src/server/surveyResponseTags/surveyResponseTagsQueryOptions"
 
@@ -21,7 +22,16 @@ export function PageSurveyResponseTagsEdit() {
 
   return (
     <>
-      <PageHeader title="Tag bearbeiten" />
+      <PageHeader
+        breadcrumb={
+          <ProjectPageBreadcrumb
+            section="Tags (Beteiligung)"
+            sectionTo="/$projectSlug/survey-response-tags"
+            current="Tag bearbeiten"
+          />
+        }
+        title="Tag bearbeiten"
+      />
       <EditSurveyResponseTagForm tag={tag} projectSlug={projectSlug} />
     </>
   )

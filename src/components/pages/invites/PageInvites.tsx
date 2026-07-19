@@ -6,6 +6,7 @@ import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAd
 import { ButtonWrapper } from "@/src/components/core/components/links/ButtonWrapper"
 import { Link } from "@/src/components/core/components/links/Link"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { TabsApp } from "@/src/components/core/components/Tabs/TabsApp"
 import { TeamInviteDocumentation } from "@/src/components/invites/TeamInviteDocumentation"
 import { TeamInvitesTable } from "@/src/components/invites/TeamInvitesTable"
@@ -23,10 +24,11 @@ export function PageInvites() {
   return (
     <>
       <PageHeader
+        breadcrumb={<ProjectPageBreadcrumb section="Einladungen" />}
+        info="Übersicht der Einladungen zur Mitarbeit im Projekt."
+        tabs={<TabsApp tabs={tabs} embedded />}
         title="Einladungen"
-        description="Übersicht der Einladungen zur Mitarbeit im Projekt."
       />
-      <TabsApp tabs={tabs} className="mt-7" />
       <TeamInvitesTable invites={data.invites} />
       <IfUserCanEdit>
         <ButtonWrapper className="mt-6">

@@ -1,4 +1,5 @@
 import { getRouteApi } from "@tanstack/react-router"
+import { AbschnitteBreadcrumb } from "@/src/components/abschnitte/AbschnitteBreadcrumb"
 import { EditAcquisitionAreaForm } from "@/src/components/abschnitte/acquisition-areas/EditAcquisitionAreaForm"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
 
@@ -11,7 +12,10 @@ export function PageAbschnitteAcquisitionAreaEdit() {
   const { acquisitionArea } = routeApi.useLoaderData()
   return (
     <>
-      <PageHeader title={`Verhandlungsfläche ${acquisitionArea.id} bearbeiten`} />
+      <PageHeader
+        breadcrumb={<AbschnitteBreadcrumb />}
+        title={`Verhandlungsfläche ${acquisitionArea.id} bearbeiten`}
+      />
       <EditAcquisitionAreaForm
         acquisitionArea={acquisitionArea}
         projectSlug={projectSlug}

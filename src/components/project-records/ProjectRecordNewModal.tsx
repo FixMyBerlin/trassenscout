@@ -11,8 +11,7 @@ import {
   type OnSubmitResult,
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { Modal, ModalCloseButton } from "@/src/components/core/components/Modal"
-import { H3 } from "@/src/components/core/components/text/Headings"
-import { HeadingWithAction } from "@/src/components/core/components/text/HeadingWithAction"
+import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
 import { ProjectRecordFormFields } from "@/src/components/project-records/ProjectRecordFormFields"
 import { getDate } from "@/src/components/project-records/utils/splitStartAt"
 import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
@@ -194,10 +193,10 @@ export const ProjectRecordNewModal = ({
         align="center"
         className="space-y-4 sm:max-w-2xl"
       >
-        <HeadingWithAction>
-          <H3>Neuer Protokolleintrag</H3>
-          <ModalCloseButton onClose={resetAndClose} />
-        </HeadingWithAction>
+        <PageHeader
+          title="Neuer Protokolleintrag"
+          action={<ModalCloseButton onClose={resetAndClose} />}
+        />
 
         <div className="space-y-4">
           <p className="text-gray-600">
@@ -234,10 +233,10 @@ export const ProjectRecordNewModal = ({
       </Modal>
 
       <Modal open={formOpen} handleClose={handleClose} align="right" className="space-y-4">
-        <HeadingWithAction>
-          <H3>Neuer Protokolleintrag</H3>
-          <ModalCloseButton onClose={handleClose} />
-        </HeadingWithAction>
+        <PageHeader
+          title="Neuer Protokolleintrag"
+          action={<ModalCloseButton onClose={handleClose} />}
+        />
 
         <ProjectRecordCreateForm
           key={formKey}

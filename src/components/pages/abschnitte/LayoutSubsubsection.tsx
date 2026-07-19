@@ -4,9 +4,9 @@ import { AbschnitteBreadcrumb } from "@/src/components/abschnitte/AbschnitteBrea
 import { SubsubsectionDeleteAllAcquisitionAreasAdmin } from "@/src/components/abschnitte/SubsubsectionDeleteAllAcquisitionAreasAdmin"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "@/src/components/core/components/links/Link"
-import { SubsubsectionIcon } from "@/src/components/core/components/Map/Icons/SubsubsectionIcon"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
 import { TabsApp } from "@/src/components/core/components/Tabs/TabsApp"
+import { shortTitle } from "@/src/components/core/components/text/titles"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { subsectionBySlugQueryOptions } from "@/src/server/subsections/subsectionQueryOptions"
 import { subsubsectionBySlugQueryOptions } from "@/src/server/subsubsections/subsubsectionQueryOptions"
@@ -52,11 +52,13 @@ export function LayoutSubsubsection() {
     <>
       <PageHeader
         breadcrumb={<AbschnitteBreadcrumb />}
-        heading={<SubsubsectionIcon slug={subsubsection.slug} />}
+        info="Detailansicht der Maßnahme mit allgemeinen Informationen und Grunderwerb."
+        tabs={tabs.length > 1 ? <TabsApp tabs={tabs} embedded /> : undefined}
+        viewSwitch
+        title={shortTitle(subsubsection.slug)}
         action={
           <IfUserCanEdit>
             <Link
-              button="white"
               icon="edit"
               to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/edit"
               params={subsubsectionParams}
@@ -66,7 +68,6 @@ export function LayoutSubsubsection() {
           </IfUserCanEdit>
         }
       />
-      {tabs.length > 1 && <TabsApp tabs={tabs} className="mt-8 max-w-md" />}
       <Outlet />
       <SubsubsectionDeleteAllAcquisitionAreasAdmin
         projectSlug={projectSlug}

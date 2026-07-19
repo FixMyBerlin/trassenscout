@@ -10,9 +10,8 @@ import { ButtonWrapper } from "@/src/components/core/components/links/ButtonWrap
 import { Link } from "@/src/components/core/components/links/Link"
 import { Modal, ModalCloseButton } from "@/src/components/core/components/Modal"
 import { Notice } from "@/src/components/core/components/Notice/Notice"
+import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
 import { Spinner } from "@/src/components/core/components/Spinner"
-import { H3 } from "@/src/components/core/components/text/Headings"
-import { HeadingWithAction } from "@/src/components/core/components/text/HeadingWithAction"
 import { getFullname } from "@/src/components/core/users/getFullname"
 import { NewInviteForm } from "@/src/components/invites/NewInviteForm"
 import { EditProjectRecordForm } from "@/src/components/project-records/EditProjectRecordForm"
@@ -183,10 +182,7 @@ export function ProjectModalHost() {
         align={isUploadEditView ? "right" : "center"}
         className={isUploadEditView ? "space-y-4" : "space-y-4 sm:max-w-2xl"}
       >
-        <HeadingWithAction>
-          <H3>{modalTitle}</H3>
-          <ModalCloseButton onClose={closeModal} />
-        </HeadingWithAction>
+        <PageHeader title={modalTitle} action={<ModalCloseButton onClose={closeModal} />} />
 
         {hasUploadError ? (
           <Notice type="error" title="Das Dokument konnte nicht geladen werden.">
@@ -250,26 +246,28 @@ export function ProjectModalHost() {
 
     return (
       <Modal open handleClose={closeModal} align="right" className="space-y-4">
-        <HeadingWithAction>
-          <H3>{modalTitle}</H3>
-          <div className="flex items-center gap-4">
-            {!isProjectRecordEditView && projectRecord ? (
-              <IfUserCanEdit>
-                <Link
-                  icon="edit"
-                  to={buildModalHref({
-                    modalProjectRecordId: projectRecord.id,
-                    modalProjectRecordView: "edit",
-                  })}
-                  resetScroll={false}
-                >
-                  Bearbeiten
-                </Link>
-              </IfUserCanEdit>
-            ) : null}
-            <ModalCloseButton onClose={closeModal} />
-          </div>
-        </HeadingWithAction>
+        <PageHeader
+          title={modalTitle}
+          action={
+            <div className="flex items-center gap-4">
+              {!isProjectRecordEditView && projectRecord ? (
+                <IfUserCanEdit>
+                  <Link
+                    icon="edit"
+                    to={buildModalHref({
+                      modalProjectRecordId: projectRecord.id,
+                      modalProjectRecordView: "edit",
+                    })}
+                    resetScroll={false}
+                  >
+                    Bearbeiten
+                  </Link>
+                </IfUserCanEdit>
+              ) : null}
+              <ModalCloseButton onClose={closeModal} />
+            </div>
+          }
+        />
 
         {isProjectRecordEditView && projectRecord ? (
           <EditProjectRecordForm
@@ -356,10 +354,7 @@ export function ProjectModalHost() {
 
     return (
       <Modal open handleClose={closeModal} align={modalAlign} className={modalClassName}>
-        <HeadingWithAction>
-          <H3>{modalTitle}</H3>
-          <ModalCloseButton onClose={closeModal} />
-        </HeadingWithAction>
+        <PageHeader title={modalTitle} action={<ModalCloseButton onClose={closeModal} />} />
 
         {isContactNewView ? (
           <NewContactForm

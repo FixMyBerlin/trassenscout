@@ -7,6 +7,7 @@ import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/Sup
 import { ButtonWrapper } from "@/src/components/core/components/links/ButtonWrapper"
 import { Link } from "@/src/components/core/components/links/Link"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { TabsApp } from "@/src/components/core/components/Tabs/TabsApp"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
@@ -26,10 +27,11 @@ export function PageContacts() {
   return (
     <>
       <PageHeader
+        breadcrumb={<ProjectPageBreadcrumb section="Externe Kontakte" />}
+        info="Kontaktdaten, die für das ganze Projektteam wichtig sind."
+        tabs={<TabsApp tabs={tabs} embedded />}
         title="Externe Kontakte"
-        description="Kontaktdaten, die für das ganze Projektteam wichtig sind."
       />
-      <TabsApp tabs={tabs} className="mt-7" />
       {contacts.length === 0 ? (
         <>
           <ZeroCase visible={contacts.length} name="Kontakte" />

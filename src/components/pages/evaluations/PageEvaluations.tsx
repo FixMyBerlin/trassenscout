@@ -2,6 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { Markdown } from "@/src/components/core/components/Markdown/Markdown"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { evaluationsPageQueryOptions } from "@/src/server/evaluationsPage/evaluationsPageQueryOptions"
 
 const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/evaluations/")
@@ -20,7 +21,7 @@ export function PageEvaluations() {
 
   return (
     <>
-      <PageHeader title={title} />
+      <PageHeader breadcrumb={<ProjectPageBreadcrumb section="Auswertungen" />} title={title} />
       <Markdown markdown={markdown} />
     </>
   )

@@ -4,6 +4,7 @@ import { ActionBar } from "@/src/components/core/components/forms/ActionBar"
 import { BackLink } from "@/src/components/core/components/forms/BackLink"
 import { Link } from "@/src/components/core/components/links/Link"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { ProjectRecordDeleteActionBar } from "@/src/components/project-records/ProjectRecordDeleteActionBar"
 import { ProjectRecordDetailClient } from "@/src/components/project-records/ProjectRecordDetailClient"
 import { ProjectRecordNeedsReviewBanner } from "@/src/components/project-records/ProjectRecordNeedsReviewBanner"
@@ -36,6 +37,13 @@ export function PageProjectRecordDetail() {
   return (
     <>
       <PageHeader
+        breadcrumb={
+          <ProjectPageBreadcrumb
+            section="Projektprotokoll"
+            sectionTo="/$projectSlug/project-records"
+            current={projectRecord.title}
+          />
+        }
         title={projectRecord.title}
         action={
           <IfUserCanEdit>
