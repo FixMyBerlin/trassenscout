@@ -11,9 +11,9 @@ function LoggedInMainShell({
   navigation: React.ReactNode
 }) {
   return (
-    <div className="relative flex h-full grow flex-col overflow-x-hidden">
+    <div className="relative mx-auto flex h-full w-full max-w-480 grow flex-col overflow-x-hidden border border-gray-200">
       {navigation}
-      <main className="mx-auto w-full max-w-7xl border-t border-gray-200 pb-16">{children}</main>
+      <main className="w-full border-t border-gray-200 pb-16">{children}</main>
     </div>
   )
 }
