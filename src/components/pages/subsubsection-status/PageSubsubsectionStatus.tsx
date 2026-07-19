@@ -6,6 +6,7 @@ import { Link } from "@/src/components/core/components/links/Link"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
 import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { useTryRouteSearchKey } from "@/src/components/core/routes/useTryRouteSearch"
+import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { SubsubsectionStatussTable } from "@/src/components/subsubsection-status/SubsubsectionStatussTable"
 import { useSubsubsectionStatusRouteLinks } from "@/src/components/subsubsection-status/useSubsubsectionStatusActions"
@@ -15,22 +16,30 @@ const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/subsubsection-stat
 
 export function PageSubsubsectionStatus() {
   const { projectSlug } = routeApi.useParams()
+  const canEdit = useUserCan().edit
   const fromPath = useTryRouteSearchKey("from")
   const { newLink } = useSubsubsectionStatusRouteLinks(projectSlug)
   const { data } = useSuspenseQuery(
-    adminLookupRowsWithCountQueryOptions({ projectSlug, table: "subsubsectionStatuses" }),
+    adminLookupRowsWithCountQueryOptions({
+      projectSlug,
+      table: "subsubsectionStatuses",
+    }),
   )
   const rows = data.rows
 
   return (
     <>
-      <PageHeader breadcrumb={<ProjectPageBreadcrumb section="Status" />} />
+      <PageHeader
+        breadcrumb={<ProjectPageBreadcrumb section="Status" />}
+        primaryAction={
+          canEdit ? (
+            <Link button="blue" icon="plus" {...newLink}>
+              Neuer Status
+            </Link>
+          ) : undefined
+        }
+      />
       <SubsubsectionStatussTable subsubsectionStatuss={rows} />
-      <IfUserCanEdit>
-        <Link button="blue" icon="plus" className="mt-4" {...newLink}>
-          Neuer Status
-        </Link>
-      </IfUserCanEdit>
       <IfUserCanEdit>
         <ConditionalBackLink fromPath={fromPath} />
       </IfUserCanEdit>

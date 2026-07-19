@@ -6,6 +6,7 @@ import { Link } from "@/src/components/core/components/links/Link"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
 import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { useTryRouteSearchKey } from "@/src/components/core/routes/useTryRouteSearch"
+import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { SubsubsectionTasksTable } from "@/src/components/subsubsection-task/SubsubsectionTasksTable"
 import { useSubsubsectionTaskRouteLinks } from "@/src/components/subsubsection-task/useSubsubsectionTaskActions"
@@ -15,22 +16,30 @@ const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/subsubsection-task
 
 export function PageSubsubsectionTask() {
   const { projectSlug } = routeApi.useParams()
+  const canEdit = useUserCan().edit
   const fromPath = useTryRouteSearchKey("from")
   const { newLink } = useSubsubsectionTaskRouteLinks(projectSlug)
   const { data } = useSuspenseQuery(
-    adminLookupRowsWithCountQueryOptions({ projectSlug, table: "subsubsectionTasks" }),
+    adminLookupRowsWithCountQueryOptions({
+      projectSlug,
+      table: "subsubsectionTasks",
+    }),
   )
   const rows = data.rows
 
   return (
     <>
-      <PageHeader breadcrumb={<ProjectPageBreadcrumb section="Aufgaben" />} />
+      <PageHeader
+        breadcrumb={<ProjectPageBreadcrumb section="Aufgaben" />}
+        primaryAction={
+          canEdit ? (
+            <Link button="blue" icon="plus" {...newLink}>
+              Neue Aufgabe
+            </Link>
+          ) : undefined
+        }
+      />
       <SubsubsectionTasksTable subsubsectionTasks={rows} />
-      <IfUserCanEdit>
-        <Link button="blue" icon="plus" className="mt-4" {...newLink}>
-          Neue Aufgabe
-        </Link>
-      </IfUserCanEdit>
       <IfUserCanEdit>
         <ConditionalBackLink fromPath={fromPath} />
       </IfUserCanEdit>

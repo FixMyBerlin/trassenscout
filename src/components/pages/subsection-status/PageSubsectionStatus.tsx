@@ -6,6 +6,7 @@ import { Link } from "@/src/components/core/components/links/Link"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
 import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { useTryRouteSearchKey } from "@/src/components/core/routes/useTryRouteSearch"
+import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { SubsectionStatusesTable } from "@/src/components/subsection-status/SubsectionStatusesTable"
 import { useSubsectionStatusRouteLinks } from "@/src/components/subsection-status/useSubsectionStatusActions"
@@ -15,22 +16,30 @@ const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/subsection-status/
 
 export function PageSubsectionStatus() {
   const { projectSlug } = routeApi.useParams()
+  const canEdit = useUserCan().edit
   const fromPath = useTryRouteSearchKey("from")
   const { newLink } = useSubsectionStatusRouteLinks(projectSlug)
   const { data } = useSuspenseQuery(
-    adminLookupRowsWithCountQueryOptions({ projectSlug, table: "subsectionStatuses" }),
+    adminLookupRowsWithCountQueryOptions({
+      projectSlug,
+      table: "subsectionStatuses",
+    }),
   )
   const rows = data.rows
 
   return (
     <>
-      <PageHeader breadcrumb={<ProjectPageBreadcrumb section="Status" />} />
+      <PageHeader
+        breadcrumb={<ProjectPageBreadcrumb section="Status" />}
+        primaryAction={
+          canEdit ? (
+            <Link button="blue" icon="plus" {...newLink}>
+              Neuer Status
+            </Link>
+          ) : undefined
+        }
+      />
       <SubsectionStatusesTable subsectionStatuss={rows} projectSlug={projectSlug} />
-      <IfUserCanEdit>
-        <Link button="blue" icon="plus" className="mt-4" {...newLink}>
-          Neuer Status
-        </Link>
-      </IfUserCanEdit>
       <IfUserCanEdit>
         <ConditionalBackLink fromPath={fromPath} />
       </IfUserCanEdit>
