@@ -15,10 +15,9 @@ export function PageSurveyResponseTagsNew() {
           <ProjectPageBreadcrumb
             section="Tags (Beteiligung)"
             sectionTo="/$projectSlug/survey-response-tags"
-            current="Tag hinzufügen"
+            current="neu"
           />
         }
-        title="Tag hinzufügen"
       />
       <NewSurveyResponseTagForm projectSlug={projectSlug} />
     </>

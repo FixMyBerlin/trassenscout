@@ -8,16 +8,15 @@ import { projectBySlugQueryOptions } from "@/src/server/projects/projectsQueryOp
 
 const loggedInProjectRouteApi = getRouteApi(loggedInProjectRoute.id)
 
-export const AbschnitteBreadcrumb = () => {
+export const AbschnitteBreadcrumb = ({ current }: { current?: string }) => {
   const { projectSlug } = loggedInProjectRouteApi.useParams()
   const subsectionSlug = useTryRouteParam("subsectionSlug")
   const subsubsectionSlug = useTryRouteParam("subsubsectionSlug")
 
   const { data: project } = useSuspenseQuery(projectBySlugQueryOptions(projectSlug))
 
-  const projectStepLink = subsectionSlug
-    ? { to: "/$projectSlug" as const, params: { projectSlug } }
-    : {}
+  const projectStepLink =
+    subsectionSlug || current ? { to: "/$projectSlug" as const, params: { projectSlug } } : {}
 
   return (
     <Breadcrumb>
@@ -27,7 +26,10 @@ export const AbschnitteBreadcrumb = () => {
           projectSlug={projectSlug}
           subsectionSlug={subsectionSlug}
           subsubsectionSlug={subsubsectionSlug}
+          current={current}
         />
+      ) : current ? (
+        <BreadcrumbStep>{current}</BreadcrumbStep>
       ) : null}
     </Breadcrumb>
   )
@@ -37,13 +39,49 @@ function SubsectionCrumb({
   projectSlug,
   subsectionSlug,
   subsubsectionSlug,
+  current,
 }: {
   projectSlug: string
   subsectionSlug: string
   subsubsectionSlug?: string
+  current?: string
 }) {
   if (!subsubsectionSlug) {
+    if (current) {
+      return (
+        <>
+          <BreadcrumbStep
+            to="/$projectSlug/abschnitte/$subsectionSlug"
+            params={{ projectSlug, subsectionSlug }}
+          >
+            {shortTitle(subsectionSlug)}
+          </BreadcrumbStep>
+          <BreadcrumbStep>{current}</BreadcrumbStep>
+        </>
+      )
+    }
+
     return <BreadcrumbStep>{shortTitle(subsectionSlug)}</BreadcrumbStep>
+  }
+
+  if (current) {
+    return (
+      <>
+        <BreadcrumbStep
+          to="/$projectSlug/abschnitte/$subsectionSlug"
+          params={{ projectSlug, subsectionSlug }}
+        >
+          {shortTitle(subsectionSlug)}
+        </BreadcrumbStep>
+        <BreadcrumbStep
+          to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug"
+          params={{ projectSlug, subsectionSlug, subsubsectionSlug }}
+        >
+          {shortTitle(subsubsectionSlug)}
+        </BreadcrumbStep>
+        <BreadcrumbStep>{current}</BreadcrumbStep>
+      </>
+    )
   }
 
   return (

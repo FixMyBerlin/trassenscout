@@ -24,10 +24,9 @@ export function PageSurveyResponseUploadEdit() {
           <ProjectPageBreadcrumb
             section="Dokumente"
             sectionTo="/$projectSlug/uploads"
-            current="Dokument bearbeiten"
+            current="bearbeiten"
           />
         }
-        title="Dokument bearbeiten"
       />
       <EditUploadForm
         upload={upload}

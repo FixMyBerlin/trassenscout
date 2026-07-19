@@ -27,7 +27,6 @@ export function PageInvites() {
         breadcrumb={<ProjectPageBreadcrumb section="Einladungen" />}
         info="Übersicht der Einladungen zur Mitarbeit im Projekt."
         tabs={<TabsApp tabs={tabs} embedded />}
-        title="Einladungen"
       />
       <TeamInvitesTable invites={data.invites} />
       <IfUserCanEdit>

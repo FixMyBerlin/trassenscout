@@ -12,7 +12,7 @@ export function PageAbschnitteNew() {
   const { projectSlug } = routeApi.useParams()
   return (
     <>
-      <PageHeader breadcrumb={<AbschnitteBreadcrumb />} title="Planungsabschitt hinzufügen" />
+      <PageHeader breadcrumb={<AbschnitteBreadcrumb current="neu" />} />
       <Suspense fallback={<Spinner />}>
         <NewSubsectionForm projectSlug={projectSlug} />
       </Suspense>

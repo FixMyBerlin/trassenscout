@@ -20,10 +20,9 @@ export function PageSubsubsectionSpecialNew() {
           <ProjectPageBreadcrumb
             section="Besonderheiten"
             sectionTo="/$projectSlug/subsubsection-special"
-            current="Besonderheit hinzufügen"
+            current="neu"
           />
         }
-        title="Besonderheit hinzufügen"
       />
       <NewSubsubsectionSpecialForm projectSlug={projectSlug} />
       <hr className="my-5 text-gray-200" />

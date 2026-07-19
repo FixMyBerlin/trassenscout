@@ -20,10 +20,7 @@ export function PageSurveyResponseTags() {
 
   return (
     <>
-      <PageHeader
-        breadcrumb={<ProjectPageBreadcrumb section="Tags (Beteiligung)" />}
-        title="Tags (Beteiligung)"
-      />
+      <PageHeader breadcrumb={<ProjectPageBreadcrumb section="Tags (Beteiligung)" />} />
       <SurveyResponseTagsTable tags={data.surveyResponseTags} />
       <IfUserCanEdit>
         <Link button="blue" icon="plus" className="mt-4" {...newLink}>

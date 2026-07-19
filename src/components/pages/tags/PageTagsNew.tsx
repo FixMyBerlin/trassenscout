@@ -12,13 +12,8 @@ export function PageTagsNew() {
     <>
       <PageHeader
         breadcrumb={
-          <ProjectPageBreadcrumb
-            section="Tags"
-            sectionTo="/$projectSlug/tags"
-            current="Tag hinzufügen"
-          />
+          <ProjectPageBreadcrumb section="Tags" sectionTo="/$projectSlug/tags" current="neu" />
         }
-        title="Tag hinzufügen"
       />
       <NewTagForm projectSlug={projectSlug} />
     </>

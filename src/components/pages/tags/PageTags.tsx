@@ -20,7 +20,7 @@ export function PageTags() {
 
   return (
     <>
-      <PageHeader breadcrumb={<ProjectPageBreadcrumb section="Tags" />} title="Tags" />
+      <PageHeader breadcrumb={<ProjectPageBreadcrumb section="Tags" />} />
       <TagsTable tags={data.tags} />
       <IfUserCanEdit>
         <Link button="blue" icon="plus" className="mt-4" {...newLink}>

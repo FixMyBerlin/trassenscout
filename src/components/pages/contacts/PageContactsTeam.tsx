@@ -26,7 +26,6 @@ export function PageContactsTeam() {
         breadcrumb={<ProjectPageBreadcrumb section="Projektteam" />}
         info="Kontakt zu allen registrierten Mitgliedern des Projektes."
         tabs={<TabsApp tabs={tabs} embedded />}
-        title="Projektteam"
       />
       <TeamTable users={users} projectSlug={projectSlug} />
       <IfUserCanEdit>

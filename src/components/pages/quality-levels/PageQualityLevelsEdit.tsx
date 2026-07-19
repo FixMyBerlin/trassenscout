@@ -22,10 +22,9 @@ export function PageQualityLevelsEdit() {
           <ProjectPageBreadcrumb
             section="Ausbaustandards"
             sectionTo="/$projectSlug/quality-levels"
-            current="Ausbaustandard bearbeiten"
+            current="bearbeiten"
           />
         }
-        title="Ausbaustandard bearbeiten"
       />
       <EditQualityLevelForm qualityLevel={qualityLevel as never} projectSlug={projectSlug} />
     </>

@@ -84,7 +84,6 @@ export function SurveyAnalysis({ projectSlug, surveyId: _surveyId, survey, tabs 
           />
         }
         tabs={<SurveyTabs tabs={tabs} embedded />}
-        title={survey.title}
       />
 
       <div>

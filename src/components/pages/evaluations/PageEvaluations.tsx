@@ -8,7 +8,6 @@ import { evaluationsPageQueryOptions } from "@/src/server/evaluationsPage/evalua
 const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/evaluations/")
 
 const evaluationsPagePlaceholder = {
-  title: "Auswertungen",
   markdown: "Diese Seite wird in Kürze mit Auswertungen befüllt.",
 } as const
 
@@ -16,12 +15,11 @@ export function PageEvaluations() {
   const { projectSlug } = routeApi.useParams()
   const { data: evaluationsPage } = useSuspenseQuery(evaluationsPageQueryOptions({ projectSlug }))
 
-  const title = evaluationsPage?.title ?? evaluationsPagePlaceholder.title
   const markdown = evaluationsPage?.markdown ?? evaluationsPagePlaceholder.markdown
 
   return (
     <>
-      <PageHeader breadcrumb={<ProjectPageBreadcrumb section="Auswertungen" />} title={title} />
+      <PageHeader breadcrumb={<ProjectPageBreadcrumb section="Auswertungen" />} />
       <Markdown markdown={markdown} />
     </>
   )

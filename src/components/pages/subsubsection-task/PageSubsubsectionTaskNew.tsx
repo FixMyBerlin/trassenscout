@@ -20,10 +20,9 @@ export function PageSubsubsectionTaskNew() {
           <ProjectPageBreadcrumb
             section="Aufgaben"
             sectionTo="/$projectSlug/subsubsection-task"
-            current="Aufgabe hinzufügen"
+            current="neu"
           />
         }
-        title="Aufgabe hinzufügen"
       />
       <NewSubsubsectionTaskForm projectSlug={projectSlug} />
       <hr className="my-5 text-gray-200" />

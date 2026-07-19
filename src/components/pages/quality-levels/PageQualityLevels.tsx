@@ -24,10 +24,7 @@ export function PageQualityLevels() {
 
   return (
     <>
-      <PageHeader
-        breadcrumb={<ProjectPageBreadcrumb section="Ausbaustandards" />}
-        title="Ausbaustandards"
-      />
+      <PageHeader breadcrumb={<ProjectPageBreadcrumb section="Ausbaustandards" />} />
       <QualityLevelsTable qualityLevels={rows} />
       <IfUserCanEdit>
         <Link button="blue" icon="plus" className="mt-4" {...newLink}>

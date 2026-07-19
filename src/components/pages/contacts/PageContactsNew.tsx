@@ -14,10 +14,9 @@ export function PageContactsNew() {
           <ProjectPageBreadcrumb
             section="Externe Kontakte"
             sectionTo="/$projectSlug/contacts"
-            current="Kontakt hinzufügen"
+            current="neu"
           />
         }
-        title="Kontakt hinzufügen"
       />
       <NewContactForm projectSlug={projectSlug} />
     </>

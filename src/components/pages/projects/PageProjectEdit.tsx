@@ -16,10 +16,7 @@ export function PageProjectEdit() {
 
   return (
     <>
-      <PageHeader
-        breadcrumb={<ProjectPageBreadcrumb current="Projekt bearbeiten" />}
-        title="Projekt bearbeiten"
-      />
+      <PageHeader breadcrumb={<ProjectPageBreadcrumb current="bearbeiten" />} />
       <EditProjectClient initialProject={project} initialUsers={users} />
       <SuperAdminLogData data={project} />
     </>

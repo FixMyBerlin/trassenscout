@@ -85,7 +85,6 @@ export function SurveyResponses({ projectSlug, surveyId: _surveyId, survey, tabs
             />
           }
           tabs={<SurveyTabs tabs={tabs} embedded />}
-          title={survey.title}
         />
         <div className="mt-12 space-y-4">
           {" "}
@@ -118,7 +117,6 @@ export function SurveyResponses({ projectSlug, surveyId: _surveyId, survey, tabs
           />
         }
         tabs={<SurveyTabs tabs={tabs} embedded />}
-        title={survey.title}
       />
 
       <div className="mt-12 space-y-4">

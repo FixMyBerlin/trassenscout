@@ -14,10 +14,9 @@ export function PageInvitesNew() {
           <ProjectPageBreadcrumb
             section="Einladungen"
             sectionTo="/$projectSlug/invites"
-            current="Teammitglied einladen"
+            current="neu"
           />
         }
-        title="Teammitglied einladen"
       />
       <NewInviteForm projectSlug={projectSlug} />
     </>

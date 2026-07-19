@@ -24,10 +24,9 @@ export function PageSubsubsectionTaskEdit() {
           <ProjectPageBreadcrumb
             section="Aufgaben"
             sectionTo="/$projectSlug/subsubsection-task"
-            current="Aufgabe bearbeiten"
+            current="bearbeiten"
           />
         }
-        title="Aufgabe bearbeiten"
       />
       <EditSubsubsectionTaskForm
         subsubsectionTask={subsubsectionTask as never}

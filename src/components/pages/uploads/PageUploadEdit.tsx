@@ -35,10 +35,9 @@ export function PageUploadEdit() {
           <ProjectPageBreadcrumb
             section="Dokumente"
             sectionTo="/$projectSlug/uploads"
-            current="Dokument bearbeiten"
+            current="bearbeiten"
           />
         }
-        title="Dokument bearbeiten"
       />
       <EditUploadForm upload={upload} returnPath={returnPath} returnText={returnText} />
     </>

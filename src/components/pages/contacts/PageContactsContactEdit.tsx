@@ -20,10 +20,9 @@ export function PageContactsContactEdit() {
           <ProjectPageBreadcrumb
             section="Externe Kontakte"
             sectionTo="/$projectSlug/contacts"
-            current="Kontakt bearbeiten"
+            current="bearbeiten"
           />
         }
-        title="Kontakt bearbeiten"
       />
       <EditContactForm contact={contact} projectSlug={projectSlug} />
     </>

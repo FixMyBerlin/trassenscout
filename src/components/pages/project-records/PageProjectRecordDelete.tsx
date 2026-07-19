@@ -27,7 +27,6 @@ export function PageProjectRecordDelete() {
             current="Protokolleintrag löschen"
           />
         }
-        title="Protokolleintrag und verknüpfte Dokumente löschen"
       />
       <div className="mb-8 max-w-3xl">
         <H3>Verknüpfte Dokumente</H3>

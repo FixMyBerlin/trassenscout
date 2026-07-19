@@ -30,7 +30,6 @@ export function PageContactsContact() {
             current={`Kontakt von ${getFullname(contact)}`}
           />
         }
-        title={`Kontakt von ${getFullname(contact)}`}
       />
       <IfUserCanEdit>
         <ActionBar

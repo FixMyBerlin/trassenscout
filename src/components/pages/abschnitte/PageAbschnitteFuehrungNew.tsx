@@ -13,7 +13,7 @@ export function PageAbschnitteFuehrungNew() {
   const { subsection } = routeApi.useLoaderData()
   return (
     <>
-      <PageHeader breadcrumb={<AbschnitteBreadcrumb />} title="Neue Maßnahme  hinzufügen" />
+      <PageHeader breadcrumb={<AbschnitteBreadcrumb current="neu" />} />
       <Suspense fallback={<Spinner />}>
         <NewSubsubsectionForm subsection={subsection} />
       </Suspense>

@@ -43,7 +43,6 @@ export function LayoutProjectRecords() {
           <PageHeader
             breadcrumb={<ProjectPageBreadcrumb section="Projektprotokoll" />}
             tabs={<TabsApp tabs={tabs} embedded />}
-            title="Projektprotokoll"
           />
         </>
       )}

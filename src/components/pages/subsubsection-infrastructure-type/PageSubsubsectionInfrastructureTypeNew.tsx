@@ -22,10 +22,9 @@ export function PageSubsubsectionInfrastructureTypeNew() {
           <ProjectPageBreadcrumb
             section="Infrastrukturtypen"
             sectionTo="/$projectSlug/subsubsection-infrastructure-type"
-            current="Infrastrukturtyp hinzufügen"
+            current="neu"
           />
         }
-        title="Infrastrukturtyp hinzufügen"
       />
       <NewSubsubsectionInfrastructureTypeForm projectSlug={projectSlug} />
       <hr className="my-5 text-gray-200" />

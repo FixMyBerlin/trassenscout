@@ -24,10 +24,9 @@ export function PageSubsubsectionStatusEdit() {
           <ProjectPageBreadcrumb
             section="Status"
             sectionTo="/$projectSlug/subsubsection-status"
-            current="Status bearbeiten"
+            current="bearbeiten"
           />
         }
-        title="Status bearbeiten"
       />
       <EditSubsubsectionStatusForm
         subsubsectionStatus={subsubsectionStatus as never}

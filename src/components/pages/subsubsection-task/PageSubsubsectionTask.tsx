@@ -24,7 +24,7 @@ export function PageSubsubsectionTask() {
 
   return (
     <>
-      <PageHeader breadcrumb={<ProjectPageBreadcrumb section="Aufgaben" />} title="Aufgaben" />
+      <PageHeader breadcrumb={<ProjectPageBreadcrumb section="Aufgaben" />} />
       <SubsubsectionTasksTable subsubsectionTasks={rows} />
       <IfUserCanEdit>
         <Link button="blue" icon="plus" className="mt-4" {...newLink}>

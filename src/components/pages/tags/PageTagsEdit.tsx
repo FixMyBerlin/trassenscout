@@ -27,10 +27,9 @@ export function PageTagsEdit() {
           <ProjectPageBreadcrumb
             section="Tags"
             sectionTo="/$projectSlug/tags"
-            current="Tag bearbeiten"
+            current="bearbeiten"
           />
         }
-        title="Tag bearbeiten"
       />
       <EditTagForm tag={tag} projectSlug={projectSlug} />
     </>
