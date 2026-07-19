@@ -5,6 +5,7 @@ import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils
 import { getQuestionIdBySurveySlug } from "@/src/components/beteiligung/shared/utils/getQuestionIdBySurveySlug"
 import SurveyStaticPin from "@/src/components/core/components/Map/SurveyStaticPin"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { H3 } from "@/src/components/core/components/text/Headings"
 import EditableSurveyResponseListItem from "@/src/components/surveys/[surveyId]/responses/EditableSurveyResponseListItem"
 import { getFlatSurveyFormFields } from "@/src/components/surveys/[surveyId]/responses/getFlatSurveyFormFields"
@@ -96,9 +97,16 @@ export function SurveyResponsesMap({ projectSlug, survey, tabs }: Props) {
     <>
       <div className="flex items-center justify-center px-6">
         <PageHeader
+          breadcrumb={
+            <ProjectPageBreadcrumb
+              section="Beteiligungen"
+              sectionTo="/$projectSlug/surveys"
+              current={survey.title}
+            />
+          }
+          tabs={<SurveyTabs tabs={tabs} embedded />}
           title={survey.title}
           className="mt-12 w-full max-w-7xl"
-          description={<SurveyTabs tabs={tabs} />}
         />
       </div>
 

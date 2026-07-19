@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { EditUploadForm } from "@/src/components/uploads/EditUploadForm"
 import {
   getUploadReturnTarget,
@@ -29,7 +30,16 @@ export function PageUploadEdit() {
 
   return (
     <>
-      <PageHeader title="Dokument bearbeiten" />
+      <PageHeader
+        breadcrumb={
+          <ProjectPageBreadcrumb
+            section="Dokumente"
+            sectionTo="/$projectSlug/uploads"
+            current="Dokument bearbeiten"
+          />
+        }
+        title="Dokument bearbeiten"
+      />
       <EditUploadForm upload={upload} returnPath={returnPath} returnText={returnText} />
     </>
   )

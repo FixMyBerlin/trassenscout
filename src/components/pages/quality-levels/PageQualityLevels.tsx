@@ -4,6 +4,7 @@ import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/Sup
 import { ConditionalBackLink } from "@/src/components/core/components/forms/ConditionalBackLink"
 import { Link } from "@/src/components/core/components/links/Link"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { useTryRouteSearchKey } from "@/src/components/core/routes/useTryRouteSearch"
 import { QualityLevelsTable } from "@/src/components/quality-levels/QualityLevelsTable"
 import { useQualityLevelRouteLinks } from "@/src/components/quality-levels/useQualityLevelActions"
@@ -23,7 +24,10 @@ export function PageQualityLevels() {
 
   return (
     <>
-      <PageHeader title="Ausbaustandards" />
+      <PageHeader
+        breadcrumb={<ProjectPageBreadcrumb section="Ausbaustandards" />}
+        title="Ausbaustandards"
+      />
       <QualityLevelsTable qualityLevels={rows} />
       <IfUserCanEdit>
         <Link button="blue" icon="plus" className="mt-4" {...newLink}>

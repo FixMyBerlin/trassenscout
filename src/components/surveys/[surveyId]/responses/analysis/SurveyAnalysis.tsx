@@ -6,6 +6,7 @@ import { getQuestionIdBySurveySlug } from "@/src/components/beteiligung/shared/u
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
 import { Link } from "@/src/components/core/components/links/Link"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { H2 } from "@/src/components/core/components/text/Headings"
 import { SurveyChartAndCsvDownloadSection } from "@/src/components/surveys/[surveyId]/responses/analysis/SurveyChartAndCsvDownloadSection"
 import { getFormatDistanceInDays } from "@/src/components/surveys/[surveyId]/responses/getFormatDistanceInDays"
@@ -74,7 +75,17 @@ export function SurveyAnalysis({ projectSlug, surveyId: _surveyId, survey, tabs 
 
   return (
     <>
-      <PageHeader title={survey.title} description={<SurveyTabs tabs={tabs} />} />
+      <PageHeader
+        breadcrumb={
+          <ProjectPageBreadcrumb
+            section="Beteiligungen"
+            sectionTo="/$projectSlug/surveys"
+            current={survey.title}
+          />
+        }
+        tabs={<SurveyTabs tabs={tabs} embedded />}
+        title={survey.title}
+      />
 
       <div>
         <div className="mt-4 flex flex-col gap-y-2.5 rounded-sm bg-gray-100 p-6">

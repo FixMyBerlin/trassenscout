@@ -1,5 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
+import { AbschnitteBreadcrumb } from "@/src/components/abschnitte/AbschnitteBreadcrumb"
 import { NewAcquisitionAreasForm } from "@/src/components/abschnitte/acquisition-areas/NewAcquisitionAreasForm"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
 import { subsubsectionBySlugQueryOptions } from "@/src/server/subsubsections/subsubsectionQueryOptions"
@@ -16,7 +17,10 @@ export function PageAbschnitteAcquisitionAreaNew() {
   )
   return (
     <>
-      <PageHeader title="Verhandlungsflächen der Maßnahme erstellen" />
+      <PageHeader
+        breadcrumb={<AbschnitteBreadcrumb />}
+        title="Verhandlungsflächen der Maßnahme erstellen"
+      />
       <MapPageSuspense>
         <NewAcquisitionAreasForm initialSubsubsection={subsubsection} />
       </MapPageSuspense>

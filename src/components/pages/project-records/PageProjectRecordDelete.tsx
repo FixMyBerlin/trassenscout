@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { H3 } from "@/src/components/core/components/text/Headings"
 import { DeleteProjectRecordWithUploadsClient } from "@/src/components/project-records/DeleteProjectRecordWithUploadsClient"
 import { projectRecordDeleteInfoQueryOptions } from "@/src/server/projectRecords/projectRecordsQueryOptions"
@@ -19,8 +20,14 @@ export function PageProjectRecordDelete() {
   return (
     <>
       <PageHeader
+        breadcrumb={
+          <ProjectPageBreadcrumb
+            section="Projektprotokoll"
+            sectionTo="/$projectSlug/project-records"
+            current="Protokolleintrag löschen"
+          />
+        }
         title="Protokolleintrag und verknüpfte Dokumente löschen"
-        description={`Wollen Sie Protokolleintrag mit ID ${id} unwiderruflich löschen?`}
       />
       <div className="mb-8 max-w-3xl">
         <H3>Verknüpfte Dokumente</H3>

@@ -3,9 +3,7 @@ import { getRouteApi } from "@tanstack/react-router"
 import { AbschnitteBreadcrumb } from "@/src/components/abschnitte/AbschnitteBreadcrumb"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "@/src/components/core/components/links/Link"
-import { SubsectionIcon } from "@/src/components/core/components/Map/Icons/SubsectionIcon"
 import { SubsubsectionMapWithProvider } from "@/src/components/core/components/Map/SubsubsectionMapWithProvider"
-import { Markdown } from "@/src/components/core/components/Markdown/Markdown"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { IfUserCanEdit } from "@/src/components/shared/memberships/IfUserCan"
@@ -39,11 +37,12 @@ function SubsectionDashboardContent({
     <>
       <PageHeader
         breadcrumb={<AbschnitteBreadcrumb />}
-        heading={<SubsectionIcon label={shortTitle(subsection.slug)} />}
+        info="Übersicht über alle Maßnahmen dieses Planungsabschnitts."
+        viewSwitch
+        title={shortTitle(subsection.slug)}
         action={
           <IfUserCanEdit>
             <Link
-              button="white"
               icon="edit"
               to="/$projectSlug/abschnitte/$subsectionSlug/edit"
               params={{ projectSlug, subsectionSlug }}
@@ -51,9 +50,6 @@ function SubsectionDashboardContent({
               bearbeiten
             </Link>
           </IfUserCanEdit>
-        }
-        description={
-          subsection.description ? <Markdown markdown={subsection.description} /> : undefined
         }
       />
 

@@ -1,6 +1,7 @@
 import { getRouteApi } from "@tanstack/react-router"
 import { Link } from "@/src/components/core/components/links/Link"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { useTryRouteSearch } from "@/src/components/core/routes/useTryRouteSearch"
 import { NewNetworkHierarchyForm } from "@/src/components/network-hierarchy/NewNetworkHierarchyForm"
 import { useNetworkHierarchyRouteLinks } from "@/src/components/network-hierarchy/useNetworkHierarchyActions"
@@ -14,7 +15,16 @@ export function PageNetworkHierarchyNew() {
 
   return (
     <>
-      <PageHeader title="Netzstufe hinzufügen" />
+      <PageHeader
+        breadcrumb={
+          <ProjectPageBreadcrumb
+            section="Netzstufen"
+            sectionTo="/$projectSlug/network-hierarchy"
+            current="Netzstufe hinzufügen"
+          />
+        }
+        title="Netzstufe hinzufügen"
+      />
       <NewNetworkHierarchyForm projectSlug={projectSlug} />
       <hr className="my-5 text-gray-200" />
       <Link {...listLink}>Zurück zur Übersicht</Link>

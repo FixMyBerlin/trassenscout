@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { EditTagForm } from "@/src/components/tags/EditTagForm"
 import { tagsWithUsageCountQueryOptions } from "@/src/server/tags/tagsQueryOptions"
 
@@ -21,7 +22,16 @@ export function PageTagsEdit() {
 
   return (
     <>
-      <PageHeader title="Tag bearbeiten" />
+      <PageHeader
+        breadcrumb={
+          <ProjectPageBreadcrumb
+            section="Tags"
+            sectionTo="/$projectSlug/tags"
+            current="Tag bearbeiten"
+          />
+        }
+        title="Tag bearbeiten"
+      />
       <EditTagForm tag={tag} projectSlug={projectSlug} />
     </>
   )

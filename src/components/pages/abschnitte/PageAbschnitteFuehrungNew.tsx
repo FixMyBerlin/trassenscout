@@ -1,5 +1,6 @@
 import { getRouteApi } from "@tanstack/react-router"
 import { Suspense } from "react"
+import { AbschnitteBreadcrumb } from "@/src/components/abschnitte/AbschnitteBreadcrumb"
 import { NewSubsubsectionForm } from "@/src/components/abschnitte/NewSubsubsectionForm"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
 import { Spinner } from "@/src/components/core/components/Spinner"
@@ -12,7 +13,7 @@ export function PageAbschnitteFuehrungNew() {
   const { subsection } = routeApi.useLoaderData()
   return (
     <>
-      <PageHeader title="Neue Maßnahme  hinzufügen" subtitle={subsection.slug} />
+      <PageHeader breadcrumb={<AbschnitteBreadcrumb />} title="Neue Maßnahme  hinzufügen" />
       <Suspense fallback={<Spinner />}>
         <NewSubsubsectionForm subsection={subsection} />
       </Suspense>

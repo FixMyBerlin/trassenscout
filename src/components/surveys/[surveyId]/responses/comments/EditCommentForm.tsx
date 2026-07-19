@@ -11,8 +11,7 @@ import {
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { linkStyles } from "@/src/components/core/components/links/styles"
 import { Modal, ModalCloseButton } from "@/src/components/core/components/Modal"
-import { H3 } from "@/src/components/core/components/text/Headings"
-import { HeadingWithAction } from "@/src/components/core/components/text/HeadingWithAction"
+import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
 import { useCurrentUser } from "@/src/components/user/useCurrentUser"
 import type { ProjectRecord } from "@/src/server/projectRecords/types"
 import type { FeedbackSurveyResponse } from "@/src/server/survey-responses/surveyResponsesQueryOptions"
@@ -78,10 +77,11 @@ export const EditCommentForm = ({ comment, commentLabel, mutateComment }: Props)
       </button>
 
       <Modal open={open} handleClose={handleClose}>
-        <HeadingWithAction className="mb-2">
-          <H3>{commentLabel} bearbeiten</H3>
-          <ModalCloseButton onClose={handleClose} />
-        </HeadingWithAction>
+        <PageHeader
+          title={`${commentLabel} bearbeiten`}
+          action={<ModalCloseButton onClose={handleClose} />}
+          className="mb-2"
+        />
 
         <FormShell
           form={form}

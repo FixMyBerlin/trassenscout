@@ -7,6 +7,7 @@ import { ActionBar } from "@/src/components/core/components/forms/ActionBar"
 import { BackLink } from "@/src/components/core/components/forms/BackLink"
 import { Link } from "@/src/components/core/components/links/Link"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { getFullname } from "@/src/components/core/users/getFullname"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { contactQueryOptions } from "@/src/server/contacts/contactQueryOptions"
@@ -21,7 +22,16 @@ export function PageContactsContact() {
 
   return (
     <>
-      <PageHeader title={`Kontakt von ${getFullname(contact)}`} />
+      <PageHeader
+        breadcrumb={
+          <ProjectPageBreadcrumb
+            section="Externe Kontakte"
+            sectionTo="/$projectSlug/contacts"
+            current={`Kontakt von ${getFullname(contact)}`}
+          />
+        }
+        title={`Kontakt von ${getFullname(contact)}`}
+      />
       <IfUserCanEdit>
         <ActionBar
           className="mb-10"

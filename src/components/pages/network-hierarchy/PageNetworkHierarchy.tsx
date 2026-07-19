@@ -4,6 +4,7 @@ import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/Sup
 import { ConditionalBackLink } from "@/src/components/core/components/forms/ConditionalBackLink"
 import { Link } from "@/src/components/core/components/links/Link"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { useTryRouteSearchKey } from "@/src/components/core/routes/useTryRouteSearch"
 import { NetworkHierarchysTable } from "@/src/components/network-hierarchy/NetworkHierarchysTable"
 import { useNetworkHierarchyRouteLinks } from "@/src/components/network-hierarchy/useNetworkHierarchyActions"
@@ -23,7 +24,7 @@ export function PageNetworkHierarchy() {
 
   return (
     <>
-      <PageHeader title="Netzstufen" />
+      <PageHeader breadcrumb={<ProjectPageBreadcrumb section="Netzstufen" />} title="Netzstufen" />
       <NetworkHierarchysTable networkHierarchys={rows} />
       <IfUserCanEdit>
         <Link button="blue" icon="plus" className="mt-4" {...newLink}>

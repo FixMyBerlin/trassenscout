@@ -2,6 +2,7 @@ import { ChevronRightIcon, UserGroupIcon } from "@heroicons/react/20/solid"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi, useNavigate } from "@tanstack/react-router"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { NoSurveysInfoBox } from "@/src/components/surveys/NoSurveysInfoBox"
 import { surveysQueryOptions } from "@/src/server/surveys/surveysQueryOptions"
 
@@ -24,7 +25,11 @@ export function PageSurveys() {
   if (!surveys.length) {
     return (
       <>
-        <PageHeader title="Noch keine Beteiligung aktiv?" className="mt-12" />
+        <PageHeader
+          breadcrumb={<ProjectPageBreadcrumb section="Beteiligungen" />}
+          title="Noch keine Beteiligung aktiv?"
+          className="mt-12"
+        />
         <NoSurveysInfoBox />
       </>
     )
@@ -32,7 +37,10 @@ export function PageSurveys() {
 
   return (
     <>
-      <PageHeader title="Beteiligungen" />
+      <PageHeader
+        breadcrumb={<ProjectPageBreadcrumb section="Beteiligungen" />}
+        title="Beteiligungen"
+      />
       <ul role="list" className="divide-y divide-gray-100">
         {surveys.map((survey) => {
           const dateRange = formatSurveyDateRange(survey.startDate, survey.endDate)

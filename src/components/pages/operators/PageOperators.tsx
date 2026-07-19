@@ -4,6 +4,7 @@ import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/Sup
 import { ConditionalBackLink } from "@/src/components/core/components/forms/ConditionalBackLink"
 import { Link } from "@/src/components/core/components/links/Link"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { useTryRouteSearchKey } from "@/src/components/core/routes/useTryRouteSearch"
 import { OperatorsTable } from "@/src/components/operators/OperatorsTable"
 import { useOperatorRouteLinks } from "@/src/components/operators/useOperatorActions"
@@ -21,7 +22,10 @@ export function PageOperators() {
 
   return (
     <>
-      <PageHeader title="Baulastträger" />
+      <PageHeader
+        breadcrumb={<ProjectPageBreadcrumb section="Baulastträger" />}
+        title="Baulastträger"
+      />
       <OperatorsTable operators={data.rows} pagination={data} />
       <IfUserCanEdit>
         <Link button="blue" icon="plus" className="mt-4" {...newLink}>

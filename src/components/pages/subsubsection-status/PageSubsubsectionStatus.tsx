@@ -4,6 +4,7 @@ import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/Sup
 import { ConditionalBackLink } from "@/src/components/core/components/forms/ConditionalBackLink"
 import { Link } from "@/src/components/core/components/links/Link"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { useTryRouteSearchKey } from "@/src/components/core/routes/useTryRouteSearch"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { SubsubsectionStatussTable } from "@/src/components/subsubsection-status/SubsubsectionStatussTable"
@@ -23,7 +24,7 @@ export function PageSubsubsectionStatus() {
 
   return (
     <>
-      <PageHeader title="Status" />
+      <PageHeader breadcrumb={<ProjectPageBreadcrumb section="Status" />} title="Status" />
       <SubsubsectionStatussTable subsubsectionStatuss={rows} />
       <IfUserCanEdit>
         <Link button="blue" icon="plus" className="mt-4" {...newLink}>

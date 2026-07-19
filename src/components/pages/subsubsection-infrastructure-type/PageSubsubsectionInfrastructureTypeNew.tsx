@@ -1,6 +1,7 @@
 import { getRouteApi } from "@tanstack/react-router"
 import { Link } from "@/src/components/core/components/links/Link"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { useTryRouteSearch } from "@/src/components/core/routes/useTryRouteSearch"
 import { NewSubsubsectionInfrastructureTypeForm } from "@/src/components/subsubsection-infrastructure-type/NewSubsubsectionInfrastructureTypeForm"
 import { useSubsubsectionInfrastructureTypeRouteLinks } from "@/src/components/subsubsection-infrastructure-type/useSubsubsectionInfrastructureTypeActions"
@@ -16,7 +17,16 @@ export function PageSubsubsectionInfrastructureTypeNew() {
 
   return (
     <>
-      <PageHeader title="Infrastrukturtyp hinzufügen" />
+      <PageHeader
+        breadcrumb={
+          <ProjectPageBreadcrumb
+            section="Infrastrukturtypen"
+            sectionTo="/$projectSlug/subsubsection-infrastructure-type"
+            current="Infrastrukturtyp hinzufügen"
+          />
+        }
+        title="Infrastrukturtyp hinzufügen"
+      />
       <NewSubsubsectionInfrastructureTypeForm projectSlug={projectSlug} />
       <hr className="my-5 text-gray-200" />
       <Link {...listLink}>Zurück zur Übersicht</Link>

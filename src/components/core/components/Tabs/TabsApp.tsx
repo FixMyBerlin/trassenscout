@@ -12,15 +12,16 @@ type Tab = {
 type Props = {
   tabs: Tab[]
   className?: string
+  embedded?: boolean
 }
 
-export const TabsApp = ({ tabs, className }: Props) => {
+export const TabsApp = ({ tabs, className, embedded = false }: Props) => {
   const location = useLocation()
   const navigate = useNavigate()
   const pathname = location.pathname
 
   return (
-    <nav className={twJoin(className, "mb-8")}>
+    <nav className={twJoin(className, embedded ? undefined : "mb-8")}>
       <div className="sm:hidden">
         <label htmlFor="tabs" className="sr-only">
           Unterseiten
@@ -58,9 +59,9 @@ export const TabsApp = ({ tabs, className }: Props) => {
                 preload="intent"
                 className={twJoin(
                   current
-                    ? "border-b-2 border-gray-900 text-gray-900!"
-                    : "border-b border-transparent hover:border-gray-300 hover:text-gray-700",
-                  "flex px-3 py-3 text-sm font-medium",
+                    ? "border-b-2 border-gray-900 font-semibold text-gray-900!"
+                    : "border-b border-transparent text-blue-700 hover:border-gray-300 hover:text-blue-800",
+                  embedded ? "flex h-12 items-center px-3 text-sm" : "flex px-3 py-3 text-sm",
                 )}
                 aria-current={current ? "page" : undefined}
               >

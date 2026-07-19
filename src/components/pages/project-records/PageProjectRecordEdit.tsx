@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { EditProjectRecordForm } from "@/src/components/project-records/EditProjectRecordForm"
 import { projectRecordQueryOptions } from "@/src/server/projectRecords/projectRecordsQueryOptions"
 
@@ -15,7 +16,16 @@ export function PageProjectRecordEdit() {
 
   return (
     <>
-      <PageHeader title="Protokolleintrag bearbeiten" />
+      <PageHeader
+        breadcrumb={
+          <ProjectPageBreadcrumb
+            section="Projektprotokoll"
+            sectionTo="/$projectSlug/project-records"
+            current="Protokolleintrag bearbeiten"
+          />
+        }
+        title="Protokolleintrag bearbeiten"
+      />
       <EditProjectRecordForm projectRecord={projectRecord} />
     </>
   )

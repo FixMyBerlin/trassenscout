@@ -1,5 +1,6 @@
 import { getRouteApi } from "@tanstack/react-router"
 import { Suspense } from "react"
+import { AbschnitteBreadcrumb } from "@/src/components/abschnitte/AbschnitteBreadcrumb"
 import { NewSubsectionForm } from "@/src/components/abschnitte/NewSubsectionForm"
 import { Link } from "@/src/components/core/components/links/Link"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
@@ -11,7 +12,7 @@ export function PageAbschnitteNew() {
   const { projectSlug } = routeApi.useParams()
   return (
     <>
-      <PageHeader title="Planungsabschitt hinzufügen" />
+      <PageHeader breadcrumb={<AbschnitteBreadcrumb />} title="Planungsabschitt hinzufügen" />
       <Suspense fallback={<Spinner />}>
         <NewSubsectionForm projectSlug={projectSlug} />
       </Suspense>

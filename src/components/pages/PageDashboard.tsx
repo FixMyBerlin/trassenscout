@@ -25,7 +25,7 @@ export function PageDashboard() {
     <>
       <PageHeader
         title="Meine Projekte"
-        description="Willkommen im Trassenscout. Hier finden Sie alle Projekte, an denen Sie beteiligt sind."
+        info="Willkommen im Trassenscout. Hier finden Sie alle Projekte, an denen Sie beteiligt sind."
       />
       <DashboardMapWithProvider projects={projects} />
       <ProjectsTable projects={projects} />

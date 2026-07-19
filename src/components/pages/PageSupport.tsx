@@ -8,7 +8,7 @@ export function PageSupport() {
     <>
       <PageHeader
         title="Support & Dokumentation"
-        description="Hier finden Sie Anleitungen, Hintergrundinformationen und Erklärungen zu allen Funktionen des Trassenscouts."
+        info="Hier finden Sie Anleitungen, Hintergrundinformationen und Erklärungen zu allen Funktionen des Trassenscouts."
       />
       <Suspense fallback={<Spinner page />}>
         <SupportPageClient />

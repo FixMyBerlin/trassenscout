@@ -3,7 +3,6 @@ import { twJoin } from "tailwind-merge"
 import { ComboboxSingleBase } from "@/src/components/core/components/forms/ComboboxSingleBase"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { useTryRouteParam } from "@/src/components/core/routes/useTryRouteParam"
-import { CurrentUserCanIcon } from "@/src/components/shared/app/memberships/CurrentUserCanIcon"
 import type { ProjectsForCurrentUser } from "@/src/server/projects/types"
 
 const DASHBOARD_VALUE = "__dashboard__"
@@ -20,12 +19,7 @@ export const ProjectsSwitch = ({ projects }: Props) => {
     .map((project) => ({
       value: project.slug,
       searchText: shortTitle(project.slug),
-      label: (
-        <span className="flex items-center justify-between gap-2">
-          {shortTitle(project.slug)}
-          <CurrentUserCanIcon projectSlug={project.slug} />
-        </span>
-      ),
+      label: shortTitle(project.slug),
     }))
     .sort((a, b) => a.searchText.localeCompare(b.searchText))
 

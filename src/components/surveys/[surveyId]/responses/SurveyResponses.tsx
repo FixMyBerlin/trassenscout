@@ -8,6 +8,7 @@ import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAd
 import { Link } from "@/src/components/core/components/links/Link"
 import SurveyStaticPin from "@/src/components/core/components/Map/SurveyStaticPin"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { H2 } from "@/src/components/core/components/text/Headings"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { EditableSurveyResponseFilterForm } from "@/src/components/surveys/[surveyId]/responses/EditableSurveyResponseFilterForm"
@@ -75,7 +76,17 @@ export function SurveyResponses({ projectSlug, surveyId: _surveyId, survey, tabs
   if (!feedbackDefinition)
     return (
       <>
-        <PageHeader title={survey.title} description={<SurveyTabs tabs={tabs} />} />
+        <PageHeader
+          breadcrumb={
+            <ProjectPageBreadcrumb
+              section="Beteiligungen"
+              sectionTo="/$projectSlug/surveys"
+              current={survey.title}
+            />
+          }
+          tabs={<SurveyTabs tabs={tabs} embedded />}
+          title={survey.title}
+        />
         <div className="mt-12 space-y-4">
           {" "}
           <SuperAdminBox>
@@ -98,7 +109,17 @@ export function SurveyResponses({ projectSlug, surveyId: _surveyId, survey, tabs
 
   return (
     <>
-      <PageHeader title={survey.title} description={<SurveyTabs tabs={tabs} />} />
+      <PageHeader
+        breadcrumb={
+          <ProjectPageBreadcrumb
+            section="Beteiligungen"
+            sectionTo="/$projectSlug/surveys"
+            current={survey.title}
+          />
+        }
+        tabs={<SurveyTabs tabs={tabs} embedded />}
+        title={survey.title}
+      />
 
       <div className="mt-12 space-y-4">
         <H2>Eingaben</H2>
