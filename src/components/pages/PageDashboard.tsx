@@ -1,5 +1,8 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
+import { useState } from "react"
+import { twJoin } from "tailwind-merge"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
+import { MapListViewLayout } from "@/src/components/core/components/pages/MapListViewLayout"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
 import { AdminProjectsList } from "@/src/components/dashboard/AdminProjectsList"
 import { DashboardMapWithProvider } from "@/src/components/dashboard/DashboardMapWithProvider"
@@ -10,6 +13,8 @@ import { projectsWithGeometryWithMembershipRoleQueryOptions } from "@/src/server
 
 export function PageDashboard() {
   const { data: projects } = useSuspenseQuery(projectsWithGeometryWithMembershipRoleQueryOptions())
+  const [viewMode, setViewMode] = useState<"map" | "list">("map")
+  const isMapMode = viewMode === "map"
 
   if (!projects.length) {
     return (
@@ -22,16 +27,26 @@ export function PageDashboard() {
   }
 
   return (
-    <>
+    <div
+      className={twJoin(isMapMode && "-mb-16 flex h-[calc(100dvh-4rem)] flex-col overflow-hidden")}
+    >
       <PageHeader
-        title="Meine Projekte"
+        className={isMapMode ? "mb-0 shrink-0" : undefined}
         info="Willkommen im Trassenscout. Hier finden Sie alle Projekte, an denen Sie beteiligt sind."
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
       />
-      <DashboardMapWithProvider projects={projects} />
-      <ProjectsTable projects={projects} />
-      <AdminProjectsList />
-      <LogEntriesDashboard userProjects={projects} />
-      <SuperAdminLogData data={projects} />
-    </>
+      <MapListViewLayout
+        mode={viewMode}
+        map={(classHeight) => (
+          <DashboardMapWithProvider projects={projects} classHeight={classHeight} />
+        )}
+        list={<ProjectsTable projects={projects} />}
+      >
+        <AdminProjectsList />
+        <LogEntriesDashboard userProjects={projects} />
+        <SuperAdminLogData data={projects} />
+      </MapListViewLayout>
+    </div>
   )
 }

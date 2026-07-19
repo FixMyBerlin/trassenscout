@@ -16,9 +16,10 @@ import type { ProjectsWithGeometryWithMembershipRole } from "@/src/server/projec
 
 type Props = {
   projects: ProjectsWithGeometryWithMembershipRole
+  classHeight?: string
 }
 
-export const DashboardMap = ({ projects }: Props) => {
+export const DashboardMap = ({ projects, classHeight }: Props) => {
   const navigate = useNavigate()
 
   const handleSelect = (projectSlug: string) => {
@@ -116,7 +117,7 @@ export const DashboardMap = ({ projects }: Props) => {
   if (!bounds) return null
 
   return (
-    <section className="mt-3 mb-10">
+    <section className={classHeight ? "flex min-h-0 flex-1 flex-col" : "mt-3 mb-10"}>
       <BaseMap
         id="mainMap"
         initialViewState={{
@@ -129,6 +130,7 @@ export const DashboardMap = ({ projects }: Props) => {
         lineEndPoints={lineEndPoints}
         colorSchema="subsection"
         restrictHighlightToLevel="project"
+        classHeight={classHeight}
       >
         <ProjectMarkers projects={projects} onSelect={handleSelect} />
       </BaseMap>

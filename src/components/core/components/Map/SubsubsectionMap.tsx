@@ -41,6 +41,8 @@ type Props = {
   subsubsections: SubsubsectionWithPosition[]
   selectedSubsubsectionSlug?: string
   clusterSubsubsections?: boolean
+  classHeight?: string
+
 }
 
 export const SubsubsectionMap = ({
@@ -51,6 +53,8 @@ export const SubsubsectionMap = ({
   subsubsections,
   selectedSubsubsectionSlug,
   clusterSubsubsections = false,
+  classHeight,
+
 }: Props) => {
   const navigate = useNavigate()
   const { mainMap } = useMap()
@@ -280,7 +284,7 @@ export const SubsubsectionMap = ({
   )
 
   return (
-    <>
+    <div className={classHeight ? "flex min-h-0 flex-1 flex-col" : undefined}>
       <BaseMap
         id={MAP_ID}
         initialViewState={{
@@ -303,6 +307,7 @@ export const SubsubsectionMap = ({
         staticOverlay={getStaticOverlayForProject(projectSlug)}
         onLoad={handleLoad}
         onZoomEnd={handleZoomEnd}
+        classHeight={classHeight}
       >
         <SubsectionHullsLayer
           lines={subsectionLines}
@@ -320,7 +325,7 @@ export const SubsubsectionMap = ({
           />
         )}
       </BaseMap>
-      <MapFooter legendItemsConfig={subsectionLegendConfig} />
-    </>
+      <MapFooter legendItemsConfig={subsectionLegendConfig} pinned={Boolean(classHeight)} />
+    </div>
   )
 }

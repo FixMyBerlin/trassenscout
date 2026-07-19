@@ -53,7 +53,6 @@ export function LayoutSubsubsection() {
         breadcrumb={<AbschnitteBreadcrumb />}
         info="Detailansicht der Maßnahme mit allgemeinen Informationen und Grunderwerb."
         tabs={tabs.length > 1 ? <TabsApp tabs={tabs} embedded /> : undefined}
-        viewSwitch
         action={
           <IfUserCanEdit>
             <Link

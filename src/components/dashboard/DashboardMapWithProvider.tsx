@@ -4,12 +4,13 @@ import { DashboardMap } from "./DashboardMap"
 
 type Props = {
   projects: ProjectsWithGeometryWithMembershipRole
+  classHeight?: string
 }
 
-export const DashboardMapWithProvider = ({ projects }: Props) => {
+export const DashboardMapWithProvider = ({ projects, classHeight }: Props) => {
   return (
     <MapProvider>
-      <DashboardMap projects={projects} />
+      <DashboardMap projects={projects} classHeight={classHeight} />
     </MapProvider>
   )
 }

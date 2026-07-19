@@ -1,11 +1,14 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
+import { useState } from "react"
 import { MapProvider } from "react-map-gl/maplibre"
+import { twJoin } from "tailwind-merge"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "@/src/components/core/components/links/Link"
 import { ProjectMap } from "@/src/components/core/components/Map/ProjectMap"
 import { ProjectMapFallback } from "@/src/components/core/components/Map/ProjectMapFallback"
+import { MapListViewLayout } from "@/src/components/core/components/pages/MapListViewLayout"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
 import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
@@ -19,6 +22,8 @@ const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/")
 export const ProjectDashboardClient = () => {
   const { projectSlug } = routeApi.useParams()
   const { operator: operatorParam } = routeApi.useSearch()
+  const [viewMode, setViewMode] = useState<"map" | "list">("map")
+  const isMapMode = viewMode === "map"
 
   const { data: project } = useSuspenseQuery(projectBySlugQueryOptions(projectSlug))
   const { data: subsections } = useSuspenseQuery(subsectionsQueryOptions({ projectSlug }))
@@ -27,12 +32,34 @@ export const ProjectDashboardClient = () => {
     ? subsections.filter((sec) => sec.operator?.slug === operatorParam)
     : subsections
 
+  const renderMap = (classHeight: string) => {
+    if (subsections.length) {
+      if (filteredSubsections.length) {
+        return (
+          <MapProvider>
+            <ProjectMap subsections={filteredSubsections} classHeight={classHeight} />
+          </MapProvider>
+        )
+      }
+      return <ProjectMapFallback subsections={subsections} classHeight={classHeight} />
+    }
+    return (
+      <MapProvider>
+        <ProjectMapFallback subsections={[]} classHeight={classHeight} />
+      </MapProvider>
+    )
+  }
+
   return (
-    <>
+    <div
+      className={twJoin(isMapMode && "-mb-16 flex h-[calc(100dvh-4rem)] flex-col overflow-hidden")}
+    >
       <PageHeader
+        className={isMapMode ? "mb-0 shrink-0" : undefined}
         breadcrumb={<ProjectPageBreadcrumb />}
         info="Übersicht über alle Planungsabschnitte des Projekts."
-        viewSwitch
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
         action={
           <IfUserCanEdit>
             <Link icon="edit" to="/$projectSlug/edit" params={{ projectSlug }}>
@@ -42,32 +69,22 @@ export const ProjectDashboardClient = () => {
         }
       />
 
-      <OperatorFilter />
-      {subsections.length ? (
-        filteredSubsections.length ? (
-          <MapProvider>
-            <ProjectMap subsections={filteredSubsections} />
-          </MapProvider>
-        ) : (
-          <ProjectMapFallback subsections={subsections} />
-        )
-      ) : (
-        <MapProvider>
-          <ProjectMapFallback subsections={[]} />
-        </MapProvider>
-      )}
-
-      <SubsectionTable subsections={filteredSubsections} />
-
-      <SuperAdminBox className="flex flex-col items-start gap-4">
-        <Link button to={`/admin/projects/${projectSlug}/subsections/multiple-new`}>
-          Mehrere Planungsabschnitte erstellen
-        </Link>
-        <Link button to={`/admin/projects/${projectSlug}/subsections`}>
-          Placemark Import für Planungsabschnitte
-        </Link>
-      </SuperAdminBox>
-      <SuperAdminLogData data={{ project, subsections, filteredSubsections }} />
-    </>
+      <MapListViewLayout
+        mode={viewMode}
+        map={renderMap}
+        list={<SubsectionTable subsections={filteredSubsections} />}
+      >
+        <OperatorFilter />
+        <SuperAdminBox className="flex flex-col items-start gap-4">
+          <Link button to={`/admin/projects/${projectSlug}/subsections/multiple-new`}>
+            Mehrere Planungsabschnitte erstellen
+          </Link>
+          <Link button to={`/admin/projects/${projectSlug}/subsections`}>
+            Placemark Import für Planungsabschnitte
+          </Link>
+        </SuperAdminBox>
+        <SuperAdminLogData data={{ project, subsections, filteredSubsections }} />
+      </MapListViewLayout>
+    </div>
   )
 }
