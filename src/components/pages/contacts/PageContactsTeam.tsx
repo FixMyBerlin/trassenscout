@@ -4,18 +4,18 @@ import { useContactsModal } from "@/src/components/contacts/ContactsModalHost"
 import { TeamTable } from "@/src/components/contacts/team/TeamTable"
 import { useContactsTabs } from "@/src/components/contacts/useContactsTabs"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
-import { ButtonWrapper } from "@/src/components/core/components/links/ButtonWrapper"
 import { Link } from "@/src/components/core/components/links/Link"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
 import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { TabsApp } from "@/src/components/core/components/Tabs/TabsApp"
-import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
+import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { projectUsersQueryOptions } from "@/src/server/memberships/projectUsersQueryOptions"
 
 const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/contacts/team/")
 
 export function PageContactsTeam() {
   const { projectSlug } = routeApi.useParams()
+  const canEdit = useUserCan().edit
   const tabs = useContactsTabs()
   const contactsModal = useContactsModal()
   const { data: users } = useSuspenseQuery(projectUsersQueryOptions({ projectSlug }))
@@ -26,15 +26,20 @@ export function PageContactsTeam() {
         breadcrumb={<ProjectPageBreadcrumb section="Projektteam" />}
         info="Kontakt zu allen registrierten Mitgliedern des Projektes."
         tabs={<TabsApp tabs={tabs} embedded />}
+        primaryAction={
+          canEdit ? (
+            <Link
+              button="blue"
+              icon="plus"
+              to={contactsModal.getInviteNewHref()}
+              resetScroll={false}
+            >
+              Teammitglied einladen
+            </Link>
+          ) : undefined
+        }
       />
       <TeamTable users={users} projectSlug={projectSlug} />
-      <IfUserCanEdit>
-        <ButtonWrapper className="mt-6">
-          <Link button="blue" icon="plus" to={contactsModal.getInviteNewHref()} resetScroll={false}>
-            Teammitglied einladen
-          </Link>
-        </ButtonWrapper>
-      </IfUserCanEdit>
       <SuperAdminBox>
         <Link button="blue" to="/admin/memberships">
           Rechte verwalten

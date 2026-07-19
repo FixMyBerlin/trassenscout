@@ -8,6 +8,7 @@ import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/Pr
 import { useTryRouteSearchKey } from "@/src/components/core/routes/useTryRouteSearch"
 import { OperatorsTable } from "@/src/components/operators/OperatorsTable"
 import { useOperatorRouteLinks } from "@/src/components/operators/useOperatorActions"
+import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { operatorsPaginatedQueryOptions } from "@/src/server/operators/operatorsQueryOptions"
 
@@ -15,6 +16,7 @@ const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/operators/")
 
 export function PageOperators() {
   const { projectSlug } = routeApi.useParams()
+  const canEdit = useUserCan().edit
   const { page, pageSize } = routeApi.useSearch()
   const fromPath = useTryRouteSearchKey("from")
   const { newLink } = useOperatorRouteLinks(projectSlug)
@@ -22,13 +24,17 @@ export function PageOperators() {
 
   return (
     <>
-      <PageHeader breadcrumb={<ProjectPageBreadcrumb section="Baulastträger" />} />
+      <PageHeader
+        breadcrumb={<ProjectPageBreadcrumb section="Baulastträger" />}
+        primaryAction={
+          canEdit ? (
+            <Link button="blue" icon="plus" {...newLink}>
+              Neuer Baulastträger
+            </Link>
+          ) : undefined
+        }
+      />
       <OperatorsTable operators={data.rows} pagination={data} />
-      <IfUserCanEdit>
-        <Link button="blue" icon="plus" className="mt-4" {...newLink}>
-          Neuer Baulastträger
-        </Link>
-      </IfUserCanEdit>
       <IfUserCanEdit>
         <ConditionalBackLink fromPath={fromPath} />
       </IfUserCanEdit>

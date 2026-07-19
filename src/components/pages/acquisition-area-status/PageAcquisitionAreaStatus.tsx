@@ -8,6 +8,7 @@ import { Link } from "@/src/components/core/components/links/Link"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
 import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { useTryRouteSearchKey } from "@/src/components/core/routes/useTryRouteSearch"
+import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { adminLookupRowsWithCountQueryOptions } from "@/src/server/adminLookupTables/adminLookupTablesQueryOptions"
 
@@ -15,22 +16,30 @@ const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/acquisition-area-s
 
 export function PageAcquisitionAreaStatus() {
   const { projectSlug } = routeApi.useParams()
+  const canEdit = useUserCan().edit
   const fromPath = useTryRouteSearchKey("from")
   const { newLink } = useAcquisitionAreaStatusRouteLinks(projectSlug)
   const { data } = useSuspenseQuery(
-    adminLookupRowsWithCountQueryOptions({ projectSlug, table: "acquisitionAreaStatuses" }),
+    adminLookupRowsWithCountQueryOptions({
+      projectSlug,
+      table: "acquisitionAreaStatuses",
+    }),
   )
   const rows = data.rows
 
   return (
     <>
-      <PageHeader breadcrumb={<ProjectPageBreadcrumb section="Flächenerwerb-Status" />} />
+      <PageHeader
+        breadcrumb={<ProjectPageBreadcrumb section="Flächenerwerb-Status" />}
+        primaryAction={
+          canEdit ? (
+            <Link button="blue" icon="plus" {...newLink}>
+              Neuer Status
+            </Link>
+          ) : undefined
+        }
+      />
       <AcquisitionAreaStatusesTable acquisitionAreaStatuses={rows} />
-      <IfUserCanEdit>
-        <Link button="blue" icon="plus" className="mt-4" {...newLink}>
-          Neuer Status
-        </Link>
-      </IfUserCanEdit>
       <IfUserCanEdit>
         <ConditionalBackLink fromPath={fromPath} />
       </IfUserCanEdit>

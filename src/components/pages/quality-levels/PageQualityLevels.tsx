@@ -8,6 +8,7 @@ import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/Pr
 import { useTryRouteSearchKey } from "@/src/components/core/routes/useTryRouteSearch"
 import { QualityLevelsTable } from "@/src/components/quality-levels/QualityLevelsTable"
 import { useQualityLevelRouteLinks } from "@/src/components/quality-levels/useQualityLevelActions"
+import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { adminLookupRowsWithCountQueryOptions } from "@/src/server/adminLookupTables/adminLookupTablesQueryOptions"
 
@@ -15,22 +16,30 @@ const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/quality-levels/")
 
 export function PageQualityLevels() {
   const { projectSlug } = routeApi.useParams()
+  const canEdit = useUserCan().edit
   const fromPath = useTryRouteSearchKey("from")
   const { newLink } = useQualityLevelRouteLinks(projectSlug)
   const { data } = useSuspenseQuery(
-    adminLookupRowsWithCountQueryOptions({ projectSlug, table: "qualityLevels" }),
+    adminLookupRowsWithCountQueryOptions({
+      projectSlug,
+      table: "qualityLevels",
+    }),
   )
   const rows = data.rows
 
   return (
     <>
-      <PageHeader breadcrumb={<ProjectPageBreadcrumb section="Ausbaustandards" />} />
+      <PageHeader
+        breadcrumb={<ProjectPageBreadcrumb section="Ausbaustandards" />}
+        primaryAction={
+          canEdit ? (
+            <Link button="blue" icon="plus" {...newLink}>
+              Neuer Ausbaustandard
+            </Link>
+          ) : undefined
+        }
+      />
       <QualityLevelsTable qualityLevels={rows} />
-      <IfUserCanEdit>
-        <Link button="blue" icon="plus" className="mt-4" {...newLink}>
-          Neuer Ausbaustandard
-        </Link>
-      </IfUserCanEdit>
       <IfUserCanEdit>
         <ConditionalBackLink fromPath={fromPath} />
       </IfUserCanEdit>
