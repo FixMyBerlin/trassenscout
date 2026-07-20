@@ -60,7 +60,8 @@ export const ProjectDashboardClient = () => {
         info="Übersicht über alle Planungsabschnitte des Projekts."
         viewMode={viewMode}
         onViewModeChange={setViewMode}
-        action={
+        filters={<OperatorFilter />}
+        primaryAction={
           <IfUserCanEdit>
             <Link icon="edit" to="/$projectSlug/edit" params={{ projectSlug }}>
               bearbeiten
@@ -74,7 +75,6 @@ export const ProjectDashboardClient = () => {
         map={renderMap}
         list={<SubsectionTable subsections={filteredSubsections} />}
       >
-        <OperatorFilter />
         <SuperAdminBox className="flex flex-col items-start gap-4">
           <Link button to={`/admin/projects/${projectSlug}/subsections/multiple-new`}>
             Mehrere Planungsabschnitte erstellen

@@ -87,6 +87,7 @@ export const EditCommentForm = ({ comment, commentLabel, mutateComment }: Props)
           form={form}
           formError={formError}
           submitText={`${commentLabel} speichern`}
+          withPagePadding={false}
           className="space-y-0"
         >
           <FormDirtyStateReporter onDirtyChange={setIsDirty} />

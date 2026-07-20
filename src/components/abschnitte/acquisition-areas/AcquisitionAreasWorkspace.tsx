@@ -210,6 +210,7 @@ export function AcquisitionAreasWorkspace({
           <FormShell
             form={form}
             formError={submitError}
+            withPagePadding={false}
             className="mt-4 flex flex-col gap-2 space-y-0"
             submitText="Ausgewählte Verhandlungsflächen erstellen"
           >

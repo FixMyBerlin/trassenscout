@@ -5,6 +5,7 @@ import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils
 import { getQuestionIdBySurveySlug } from "@/src/components/beteiligung/shared/utils/getQuestionIdBySurveySlug"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
 import { Link } from "@/src/components/core/components/links/Link"
+import { pageContentPaddingClassName } from "@/src/components/core/components/pages/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
 import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { H2 } from "@/src/components/core/components/text/Headings"
@@ -86,8 +87,8 @@ export function SurveyAnalysis({ projectSlug, surveyId: _surveyId, survey, tabs 
         tabs={<SurveyTabs tabs={tabs} embedded />}
       />
 
-      <div>
-        <div className="mt-4 flex flex-col gap-y-2.5 rounded-sm bg-gray-100 p-6">
+      <div className={pageContentPaddingClassName}>
+        <div className="flex flex-col gap-y-2.5 rounded-sm bg-gray-100 p-6">
           {generalSurveyInformation.map((row, i) => {
             return (
               <div key={i} className="grid grid-cols-3 gap-2 sm:grid-cols-5">
@@ -105,29 +106,29 @@ export function SurveyAnalysis({ projectSlug, surveyId: _surveyId, survey, tabs 
             )
           })}
         </div>
-      </div>
 
-      <div className="mt-12 space-y-4">
-        {!surveyDefinition ? (
-          <SuperAdminBox>
-            <p>In der Beteiligung {survey.slug.toUpperCase()} gibt es keinen Umfrageteil 1. </p>
-          </SuperAdminBox>
-        ) : (
-          <>
-            <H2>Auswertung in Diagrammen und Korrelationen</H2>
-            {isSurveyFuture && <p>Die Beteiligung liegt in der Zukunft</p>}
-            <SurveyChartAndCsvDownloadSection
-              surveyDefinition={surveyDefinition}
-              projectSlug={projectSlug}
-              surveyId={survey.id}
-              rawData={rawData}
-            />
-          </>
-        )}
+        <div className="mt-12 space-y-4">
+          {!surveyDefinition ? (
+            <SuperAdminBox>
+              <p>In der Beteiligung {survey.slug.toUpperCase()} gibt es keinen Umfrageteil 1. </p>
+            </SuperAdminBox>
+          ) : (
+            <>
+              <H2>Auswertung in Diagrammen und Korrelationen</H2>
+              {isSurveyFuture && <p>Die Beteiligung liegt in der Zukunft</p>}
+              <SurveyChartAndCsvDownloadSection
+                surveyDefinition={surveyDefinition}
+                projectSlug={projectSlug}
+                surveyId={survey.id}
+                rawData={rawData}
+              />
+            </>
+          )}
+        </div>
+        <SuperAdminBox>
+          <Link to={`/admin/surveys/${survey.id}/edit`}>Bearbeiten</Link>
+        </SuperAdminBox>
       </div>
-      <SuperAdminBox>
-        <Link to={`/admin/surveys/${survey.id}/edit`}>Bearbeiten</Link>
-      </SuperAdminBox>
     </>
   )
 }
