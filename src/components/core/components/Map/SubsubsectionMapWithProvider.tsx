@@ -10,6 +10,7 @@ type Props = {
   selectedSubsection: TGetSubsection
   subsubsections: SubsubsectionWithPosition[]
   selectedSubsubsectionSlug?: string
+  clusterSubsubsections?: boolean
 }
 
 export const SubsubsectionMapWithProvider = (props: Props) => {

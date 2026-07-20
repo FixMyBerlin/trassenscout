@@ -1,5 +1,8 @@
 import { useNavigate } from "@tanstack/react-router"
-import { useEffect, useEffectEvent, useMemo, useState } from "react"
+import { featureCollection, point } from "@turf/helpers"
+import type { Point } from "geojson"
+import type { GeoJSONSource, MapGeoJSONFeature } from "maplibre-gl"
+import { useEffect, useEffectEvent, useState } from "react"
 import { MapLayerMouseEvent, type MapProps, useMap } from "react-map-gl/maplibre"
 import { BaseMap } from "./BaseMap"
 import { getLineEndPointsLayerId } from "./layers/LineEndPointsLayer"
@@ -7,6 +10,12 @@ import {
   getSubsectionHullOtherFillLayerId,
   SubsectionHullsLayer,
 } from "./layers/SubsectionHullsLayer"
+import {
+  SUBSUBSECTION_CLUSTER_INTERACTIVE_LAYER_IDS,
+  SUBSUBSECTION_CLUSTER_MAX_ZOOM,
+  SUBSUBSECTION_CLUSTER_SOURCE_ID,
+  SubsubsectionClustersLayer,
+} from "./layers/SubsubsectionClustersLayer"
 import { getUnifiedLayerId } from "./layers/UnifiedFeaturesLayer"
 import { useMapLoaded } from "./map-loaded-store"
 import type { SubsectionMapEntity as TGetSubsection } from "./mapEntityTypes"
@@ -17,6 +26,7 @@ import { SubsubsectionMarkers } from "./markers/SubsubsectionMarkers"
 import { getStaticOverlayForProject } from "./staticOverlay/getStaticOverlayForProject"
 import { subsectionLegendConfig } from "./SubsectionSubsubsectionMap.legendConfig"
 import { geometriesBbox } from "./utils/bboxHelpers"
+import { getLabelPosition } from "./utils/getLabelPosition"
 import { getSubsectionFeatures } from "./utils/getSubsectionFeatures"
 import { getSubsubsectionFeatures } from "./utils/getSubsubsectionFeatures"
 import { mergeFeatureCollections } from "./utils/mergeFeatureCollections"
@@ -30,6 +40,7 @@ type Props = {
   selectedSubsection: TGetSubsection
   subsubsections: SubsubsectionWithPosition[]
   selectedSubsubsectionSlug?: string
+  clusterSubsubsections?: boolean
 }
 
 export const SubsubsectionMap = ({
@@ -39,11 +50,14 @@ export const SubsubsectionMap = ({
   selectedSubsection,
   subsubsections,
   selectedSubsubsectionSlug,
+  clusterSubsubsections = false,
 }: Props) => {
   const navigate = useNavigate()
   const { mainMap } = useMap()
   const mapLoaded = useMapLoaded(MAP_ID)
   const [dotMode, setDotMode] = useState<boolean | null>(null)
+  const [clusterZoomActive, setClusterZoomActive] = useState<boolean | null>(null)
+  const clusterMode = clusterSubsubsections && clusterZoomActive === true
 
   const filteredSubsubsections = subsubsections.filter(
     (subsub) => subsub.subsectionId === selectedSubsection.id,
@@ -72,9 +86,48 @@ export const SubsubsectionMap = ({
     })
   }
 
+  const handleClusterClick = (event: MapLayerMouseEvent, feature: MapGeoJSONFeature) => {
+    const clusterIdValue = feature.properties?.cluster_id
+    const clusterId = typeof clusterIdValue === "number" ? clusterIdValue : Number(clusterIdValue)
+
+    if (!Number.isFinite(clusterId) || feature.geometry.type !== "Point") return false
+    const coordinates = (feature.geometry as Point).coordinates
+    const longitude = coordinates[0]
+    const latitude = coordinates[1]
+    if (longitude == null || latitude == null) return false
+
+    const source = event.target.getSource(SUBSUBSECTION_CLUSTER_SOURCE_ID)
+    if (!source || !("getClusterExpansionZoom" in source)) return false
+
+    void (source as GeoJSONSource)
+      .getClusterExpansionZoom(clusterId)
+      .then((zoom) => {
+        event.target.easeTo({
+          center: [longitude, latitude],
+          zoom,
+          duration: 350,
+        })
+      })
+      .catch((error: unknown) => {
+        // Cluster ids are invalidated whenever the source data changes; a stale
+        // click just means "no zoom happened" and must not break the map.
+        console.warn("getClusterExpansionZoom failed", error)
+      })
+
+    return true
+  }
+
   const handleClickMap = (event: MapLayerMouseEvent) => {
-    const subsectionSlug = event.features?.at(0)?.properties?.subsectionSlug
-    const subsubsectionSlug = event.features?.at(0)?.properties?.subsubsectionSlug
+    const features = event.features ?? []
+    const clusterFeature = features.find((feature) => feature.properties?.cluster_id != null)
+    if (clusterFeature && handleClusterClick(event, clusterFeature)) return
+
+    // Prefer the more specific subsubsection hit over enclosing subsection hulls.
+    const subsubsectionFeature = features.find((feature) => feature.properties?.subsubsectionSlug)
+    const subsectionFeature =
+      subsubsectionFeature ?? features.find((feature) => feature.properties?.subsectionSlug)
+    const subsectionSlug = subsectionFeature?.properties?.subsectionSlug
+    const subsubsectionSlug = subsubsectionFeature?.properties?.subsubsectionSlug
 
     // Handle subsection click (when subsectionSlug exists but no subsubsectionSlug)
     if (subsectionSlug && !subsubsectionSlug) {
@@ -93,13 +146,27 @@ export const SubsubsectionMap = ({
 
   const handleZoomEnd: NonNullable<MapProps["onZoomEnd"]> = (event) => {
     setDotMode(event.viewState.zoom < SUBSECTION_LABEL_MIN_ZOOM)
+    setClusterZoomActive(event.viewState.zoom <= SUBSUBSECTION_CLUSTER_MAX_ZOOM)
   }
 
   const handleLoad: NonNullable<MapProps["onLoad"]> = (event) => {
-    setDotMode(event.target.getZoom() < SUBSECTION_LABEL_MIN_ZOOM)
+    const zoom = event.target.getZoom()
+    setDotMode(zoom < SUBSECTION_LABEL_MIN_ZOOM)
+    setClusterZoomActive(zoom <= SUBSUBSECTION_CLUSTER_MAX_ZOOM)
   }
 
   const filteredGeometries = filteredSubsubsections.map((s) => s.geometry)
+  const subsubsectionClusterPoints = clusterMode
+    ? featureCollection(
+        filteredSubsubsections.map((subsubsection) =>
+          point(getLabelPosition(subsubsection.geometry, subsubsection.labelPos), {
+            subsectionSlug: subsubsection.subsection.slug,
+            subsubsectionSlug: subsubsection.slug,
+          }),
+        ),
+      )
+    : undefined
+  const clusterLayersVisible = (subsubsectionClusterPoints?.features.length ?? 0) > 0
   const selectedSubsubsection = selectedSubsubsectionSlug
     ? filteredSubsubsections.find((subsub) => subsub.slug === selectedSubsubsectionSlug)
     : undefined
@@ -124,34 +191,27 @@ export const SubsubsectionMap = ({
     [mapLoaded, mapBboxKey],
   )
 
-  const { lines: subsectionLines, polygons: subsectionPolygons } = useMemo(
-    () =>
-      getSubsectionFeatures({
-        subsections,
-        highlight: "currentSubsection",
-        selectedSubsectionSlug: selectedSubsection.slug,
-      }),
-    [subsections, selectedSubsection.slug],
-  )
+  const { lines: subsectionLines, polygons: subsectionPolygons } = getSubsectionFeatures({
+    subsections,
+    highlight: "currentSubsection",
+    selectedSubsectionSlug: selectedSubsection.slug,
+  })
 
   const {
     lines: subsubsectionLines,
     points: subsubsectionPoints,
     polygons: subsubsectionPolygons,
     lineEndPoints: subsubsectionLineEndPoints,
-  } = useMemo(
-    () =>
-      getSubsubsectionFeatures({
-        subsubsections: filteredSubsubsections,
-        selectedSubsubsectionSlug: selectedSubsubsectionSlug ?? null,
-      }),
-    [filteredSubsubsections, selectedSubsubsectionSlug],
-  )
+  } = getSubsubsectionFeatures({
+    subsubsections: filteredSubsubsections,
+    selectedSubsubsectionSlug: selectedSubsubsectionSlug ?? null,
+  })
 
   // Merge lines, polygons, and points into unified features
-  const unifiedSubsubsectionFeatures = useMemo(
-    () => mergeFeatureCollections(subsubsectionLines, subsubsectionPolygons, subsubsectionPoints),
-    [subsubsectionLines, subsubsectionPolygons, subsubsectionPoints],
+  const unifiedSubsubsectionFeatures = mergeFeatureCollections(
+    subsubsectionLines,
+    subsubsectionPolygons,
+    subsubsectionPoints,
   )
 
   // Set selected state via setFeatureState when selection changes
@@ -228,10 +288,13 @@ export const SubsubsectionMap = ({
           fitBoundsOptions: { padding: 60, maxZoom: 16 },
         }}
         onClick={handleClickMap}
-        interactiveLayerIds={[getSubsectionHullOtherFillLayerId("_subsubsection")]}
+        interactiveLayerIds={[
+          getSubsectionHullOtherFillLayerId("_subsubsection"),
+          ...(clusterLayersVisible ? SUBSUBSECTION_CLUSTER_INTERACTIVE_LAYER_IDS : []),
+        ]}
         lines={subsubsectionLines?.features.length ? subsubsectionLines : undefined}
         polygons={subsubsectionPolygons?.features.length ? subsubsectionPolygons : undefined}
-        points={subsubsectionPoints}
+        points={clusterMode ? undefined : subsubsectionPoints}
         lineEndPoints={
           subsubsectionLineEndPoints?.features.length ? subsubsectionLineEndPoints : undefined
         }
@@ -246,13 +309,16 @@ export const SubsubsectionMap = ({
           polygons={subsectionPolygons}
           layerIdSuffix="_subsubsection"
         />
-        <SubsubsectionMarkers
-          subsubsections={filteredSubsubsections}
-          dotMode={dotMode}
-          pageSubsectionSlug={pageSubsectionSlug}
-          selectedSubsubsectionSlug={selectedSubsubsectionSlug}
-          onSelect={handleSelect}
-        />
+        <SubsubsectionClustersLayer points={subsubsectionClusterPoints} />
+        {!clusterMode && (
+          <SubsubsectionMarkers
+            subsubsections={filteredSubsubsections}
+            dotMode={dotMode}
+            pageSubsectionSlug={pageSubsectionSlug}
+            selectedSubsubsectionSlug={selectedSubsubsectionSlug}
+            onSelect={handleSelect}
+          />
+        )}
       </BaseMap>
       <MapFooter legendItemsConfig={subsectionLegendConfig} />
     </>
