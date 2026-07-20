@@ -66,6 +66,7 @@ function SubsectionDashboardContent({
             subsections={subsections}
             selectedSubsection={subsection}
             subsubsections={subsubsections}
+            clusterSubsubsections
           />
           <SubsubsectionTable subsubsections={subsubsections} compact={false} />
         </div>
