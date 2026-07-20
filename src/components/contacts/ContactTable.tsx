@@ -1,5 +1,6 @@
 import { TrashIcon } from "@heroicons/react/20/solid"
 import { useSuspenseQuery } from "@tanstack/react-query"
+import { twJoin } from "tailwind-merge"
 import { secondaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
@@ -20,6 +21,18 @@ import {
 } from "@/src/shared/contacts/schemas"
 import { useContactsModal } from "./ContactsModalHost"
 
+/**
+ * Column width classes for `table-fixed` layout. Adjust percentages here only.
+ */
+const contactTableColWidths = {
+  name: "min-w-0 w-[40%] @xl:w-[18%]",
+  role: "hidden @xl:table-column @xl:w-[14%]",
+  phone: "w-[30%] @xl:w-[14%]",
+  email: "hidden @xl:table-column @xl:w-[20%]",
+  tags: "hidden @xl:table-column @xl:w-[20%]",
+  actions: "w-[30%] @xl:w-[14%]",
+} as const
+
 type Props = {
   contacts: Contact[]
   currentUserEmail?: string | null
@@ -29,6 +42,7 @@ type Props = {
 export const ContactTable = ({ contacts, currentUserEmail, projectSlug }: Props) => {
   const { data: project } = useSuspenseQuery(projectBySlugQueryOptions(projectSlug))
   const contactsModal = useContactsModal()
+  const spaceClasses = "px-3 py-2"
 
   const form = useAppForm({
     defaultValues: contactTableFormDefaultValues,
@@ -58,108 +72,119 @@ export const ContactTable = ({ contacts, currentUserEmail, projectSlug }: Props)
       submitText="Mail schreiben"
       hideSubmitButton
       withPagePadding={false}
-      className="mt-7 space-y-0"
+      className="space-y-0"
     >
       <form.AppField name="selectedContacts">
         {(field) => (
           <>
-            <TableWrapper>
-              <table className="min-w-full divide-y divide-gray-300">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th
-                      scope="col"
-                      className="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-6"
-                    >
-                      Name
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
-                      Position
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
-                      Telefon
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
-                      E-Mail
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
-                      Tags
-                    </th>
-                    <th scope="col" className="sr-only">
-                      Details
-                    </th>
-                    <th scope="col" className="relative py-3.5 pr-4 pl-3 sm:pr-6">
-                      <span className="sr-only">Edit</span>
-                    </th>
-                  </tr>
-                </thead>
-
-                <tbody className="divide-y divide-gray-200 bg-white">
-                  {contacts.map((contact) => (
-                    <tr key={contact.email}>
-                      <td className="h-20 py-4 pr-3 pl-4 text-sm whitespace-nowrap sm:pl-6">
-                        <div className="flex items-center font-medium text-gray-900">
-                          {getFullname(contact)}
-                        </div>
-                      </td>
-                      <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
-                        {contact.role}
-                      </td>
-                      <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">
-                        {contact.phone && <LinkTel>{contact.phone}</LinkTel>}
-                      </td>
-                      <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">
-                        <LinkMail subject="Abstimmung zum RS 8">{contact.email}</LinkMail>
-                      </td>
-                      <td className="px-3 py-4 text-sm text-gray-500">
-                        <ProjectRecordTagsList tags={contact.tags ?? []} />
-                      </td>
-                      <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">
-                        <Link
-                          to={contactsModal.getContactDetailHref({ contactId: contact.id })}
-                          resetScroll={false}
-                        >
-                          Details
-                        </Link>
-                      </td>
-                      <td className="relative py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-6">
-                        <div className="flex items-center justify-end gap-4 text-right">
-                          <IfUserCanEdit>
-                            <Link to={`/${projectSlug}/contacts/${contact.id}`}>
-                              <TrashIcon className="size-4" />
-                            </Link>
-                          </IfUserCanEdit>
-                          <field.MultiCheckbox
-                            value={String(contact.id)}
-                            labelProps={{ className: "sr-only" }}
-                            label="Markieren für 'Mail schreiben'"
-                          />
-                        </div>
-                      </td>
+            <TableWrapper className="[&>div>div]:border-t-0">
+              <div className="@container w-full">
+                <table className="min-w-full table-fixed border-collapse text-left text-sm text-gray-700">
+                  <colgroup>
+                    <col className={contactTableColWidths.name} />
+                    <col className={contactTableColWidths.role} />
+                    <col className={contactTableColWidths.phone} />
+                    <col className={contactTableColWidths.email} />
+                    <col className={contactTableColWidths.tags} />
+                    <col className={contactTableColWidths.actions} />
+                  </colgroup>
+                  <thead>
+                    <tr className="border-b border-gray-300 bg-gray-50">
+                      <th scope="col" className={twJoin(spaceClasses, "font-medium uppercase")}>
+                        Name
+                      </th>
+                      <th
+                        scope="col"
+                        className={twJoin(
+                          spaceClasses,
+                          "hidden font-medium uppercase @xl:table-cell",
+                        )}
+                      >
+                        Position
+                      </th>
+                      <th scope="col" className={twJoin(spaceClasses, "font-medium uppercase")}>
+                        Telefon
+                      </th>
+                      <th
+                        scope="col"
+                        className={twJoin(
+                          spaceClasses,
+                          "hidden font-medium uppercase @xl:table-cell",
+                        )}
+                      >
+                        E-Mail
+                      </th>
+                      <th
+                        scope="col"
+                        className={twJoin(
+                          spaceClasses,
+                          "hidden font-medium uppercase @xl:table-cell",
+                        )}
+                      >
+                        Tags
+                      </th>
+                      <th scope="col" className={twJoin(spaceClasses, "sr-only")}>
+                        Aktionen
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+
+                  <tbody className="divide-y divide-gray-200 bg-white">
+                    {contacts.map((contact) => (
+                      <tr key={contact.email} className="border-b border-gray-100">
+                        <td className={twJoin(spaceClasses, "align-top")}>
+                          <Link
+                            className="w-full"
+                            to={contactsModal.getContactDetailHref({ contactId: contact.id })}
+                            resetScroll={false}
+                          >
+                            {getFullname(contact)}
+                          </Link>
+                        </td>
+                        <td
+                          className={twJoin(
+                            "hidden align-top wrap-break-word @xl:table-cell",
+                            spaceClasses,
+                          )}
+                        >
+                          {contact.role || "—"}
+                        </td>
+                        <td className={twJoin(spaceClasses, "align-top whitespace-nowrap")}>
+                          {contact.phone ? <LinkTel>{contact.phone}</LinkTel> : "—"}
+                        </td>
+                        <td
+                          className={twJoin(
+                            "hidden align-top whitespace-nowrap @xl:table-cell",
+                            spaceClasses,
+                          )}
+                        >
+                          <LinkMail subject="Abstimmung zum RS 8">{contact.email}</LinkMail>
+                        </td>
+                        <td className={twJoin("hidden align-top @xl:table-cell", spaceClasses)}>
+                          <ProjectRecordTagsList tags={contact.tags ?? []} />
+                        </td>
+                        <td className={twJoin(spaceClasses, "align-top")}>
+                          <div className="flex items-center justify-end gap-4">
+                            <IfUserCanEdit>
+                              <Link to={`/${projectSlug}/contacts/${contact.id}`}>
+                                <TrashIcon className="size-4" />
+                              </Link>
+                            </IfUserCanEdit>
+                            <field.MultiCheckbox
+                              value={String(contact.id)}
+                              labelProps={{ className: "sr-only" }}
+                              label="Markieren für 'Mail schreiben'"
+                            />
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </TableWrapper>
 
-            <ButtonWrapper className="mt-6 justify-between">
-              <IfUserCanEdit>
-                <Link button="blue" icon="plus" to={`/${projectSlug}/contacts/table`}>
-                  Kontakte hinzufügen & bearbeiten
-                </Link>
-              </IfUserCanEdit>
+            <ButtonWrapper className="mt-6 justify-end px-4 sm:px-6 lg:px-8">
               <form.Subscribe
                 selector={(state) =>
                   [state.values.selectedContacts.length, state.isSubmitting] as const
