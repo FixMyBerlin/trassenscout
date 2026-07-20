@@ -25,8 +25,6 @@ type Props = {
   compact: boolean
 }
 
-const iconOnlyActionClassName = "size-10 shrink-0 justify-center gap-0 p-0"
-
 export const SubsubsectionTable = ({ subsubsections, compact }: Props) => {
   const navigate = useNavigate()
   const { projectSlug, subsectionSlug } = subsectionRouteApi.useParams()
@@ -153,29 +151,19 @@ export const SubsubsectionTable = ({ subsubsections, compact }: Props) => {
         )}
       </TableWrapper>
 
-      <div className="mt-4 flex gap-3">
+      {subsubsections.length > 0 && (
         <IfUserCanEdit>
-          <Link
-            button="blue"
-            icon="plus"
-            classNameOverwrites={iconOnlyActionClassName}
-            to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new"
-            params={{ projectSlug, subsectionSlug: subsectionSlug! }}
-          >
-            <span className="sr-only">Neue Maßnahme</span>
-          </Link>
-          {subsubsections.length > 0 && (
+          <div className="mt-4 flex flex-wrap gap-3">
             <Link
               button="white"
               icon="download"
-              classNameOverwrites={iconOnlyActionClassName}
               href={`/api/${projectSlug}/subsections/${subsectionSlug}/subsubsections/export`}
             >
-              <span className="sr-only">Maßnahmen herunterladen (CSV)</span>
+              Maßnahmen herunterladen (CSV)
             </Link>
-          )}
+          </div>
         </IfUserCanEdit>
-      </div>
+      )}
     </section>
   )
 }

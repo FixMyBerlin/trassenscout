@@ -159,7 +159,7 @@ export const SubsubsectionLandAcquisitionContent = ({
   }
 
   return (
-    <SubsubsectionPanel title="Grunderwerb">
+    <SubsubsectionPanel title="">
       <div className="space-y-8">
         {acquisitionAreas.length > 1 && (
           <SelectListbox
@@ -183,18 +183,6 @@ export const SubsubsectionLandAcquisitionContent = ({
                   ? "Es wurden noch keine Verhandlungsflächen angelegt. Legen Sie neue Verhandlungsflächen für diese Maßnahme an."
                   : "Es wurden noch keine Verhandlungsflächen angelegt."}
               </p>
-              <IfUserCanEdit>
-                <div className="pt-2">
-                  <Link
-                    to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/acquisition-areas/new"
-                    params={subsubsectionParams}
-                    button
-                    icon="plus"
-                  >
-                    Verhandlungsflächen anlegen
-                  </Link>
-                </div>
-              </IfUserCanEdit>
             </>
           ) : selectedAcquisitionArea ? (
             <section className="space-y-6">
@@ -350,18 +338,6 @@ export const SubsubsectionLandAcquisitionContent = ({
                 Nutzen Sie das Dropdown-Menü oder klicken Sie direkt auf eine Fläche in der Karte,
                 um den Grunderwerb eine Verhandlungsfläche auszuwählen.
               </p>
-              <IfUserCanEdit>
-                <div className="pt-1">
-                  <Link
-                    to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/acquisition-areas/new"
-                    params={subsubsectionParams}
-                    button
-                    icon="plus"
-                  >
-                    Weitere Verhandlungsflächen anlegen
-                  </Link>
-                </div>
-              </IfUserCanEdit>
               <IfUserCanEdit>
                 <button
                   type="button"

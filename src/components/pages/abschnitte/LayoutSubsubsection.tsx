@@ -1,11 +1,12 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { getRouteApi, Outlet, useRouter } from "@tanstack/react-router"
+import { getRouteApi, Outlet, useMatchRoute, useRouter } from "@tanstack/react-router"
 import { AbschnitteBreadcrumb } from "@/src/components/abschnitte/AbschnitteBreadcrumb"
 import { SubsubsectionDeleteAllAcquisitionAreasAdmin } from "@/src/components/abschnitte/SubsubsectionDeleteAllAcquisitionAreasAdmin"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "@/src/components/core/components/links/Link"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
 import { TabsApp } from "@/src/components/core/components/Tabs/TabsApp"
+import { LandAcquisitionPrimaryAction } from "@/src/components/pages/abschnitte/PageAbschnitteLandAcquisition"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { subsectionBySlugQueryOptions } from "@/src/server/subsections/subsectionQueryOptions"
 import { subsubsectionBySlugQueryOptions } from "@/src/server/subsubsections/subsubsectionQueryOptions"
@@ -17,7 +18,14 @@ const layoutRouteApi = getRouteApi(
 export function LayoutSubsubsection() {
   const { projectSlug, subsectionSlug, subsubsectionSlug } = layoutRouteApi.useParams()
   const router = useRouter()
+  const matchRoute = useMatchRoute()
   const subsubsectionParams = { projectSlug, subsectionSlug, subsubsectionSlug }
+  const isLandAcquisition = Boolean(
+    matchRoute({
+      to: "/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition",
+      params: subsubsectionParams,
+    }),
+  )
 
   const { data: subsection } = useSuspenseQuery(
     subsectionBySlugQueryOptions({ projectSlug, subsectionSlug }),
@@ -64,6 +72,7 @@ export function LayoutSubsubsection() {
             </Link>
           </IfUserCanEdit>
         }
+        primaryAction={isLandAcquisition ? <LandAcquisitionPrimaryAction /> : undefined}
       />
       <Outlet />
       <SubsubsectionDeleteAllAcquisitionAreasAdmin
