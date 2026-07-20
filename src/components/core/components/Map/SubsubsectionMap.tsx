@@ -42,7 +42,6 @@ type Props = {
   selectedSubsubsectionSlug?: string
   clusterSubsubsections?: boolean
   classHeight?: string
-
 }
 
 export const SubsubsectionMap = ({
@@ -54,7 +53,6 @@ export const SubsubsectionMap = ({
   selectedSubsubsectionSlug,
   clusterSubsubsections = false,
   classHeight,
-
 }: Props) => {
   const navigate = useNavigate()
   const { mainMap } = useMap()
