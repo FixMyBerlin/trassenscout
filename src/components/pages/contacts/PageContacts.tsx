@@ -32,14 +32,19 @@ export function PageContacts() {
         tabs={<TabsApp tabs={tabs} embedded />}
         primaryAction={
           canEdit ? (
-            <Link
-              button="blue"
-              icon="plus"
-              to={contactsModal.getContactNewHref()}
-              resetScroll={false}
-            >
-              Neuer Kontakt
-            </Link>
+            <div className="flex flex-wrap items-center justify-end gap-2">
+              <Link button="blue" icon="plus" to={`/${projectSlug}/contacts/table`}>
+                Kontakte hinzufügen & bearbeiten
+              </Link>
+              <Link
+                button="blue"
+                icon="plus"
+                to={contactsModal.getContactNewHref()}
+                resetScroll={false}
+              >
+                Neuer Kontakt
+              </Link>
+            </div>
           ) : undefined
         }
       />

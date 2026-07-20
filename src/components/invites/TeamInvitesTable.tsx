@@ -14,77 +14,106 @@ import {
 import { INVITE_DAYS_TO_DELETION } from "@/src/server/invites/inviteSettings.const"
 import type { InvitesResult } from "@/src/server/invites/types"
 
+/**
+ * Column width classes for `table-fixed` layout. Adjust percentages here only.
+ */
+const teamInvitesTableColWidths = {
+  status: "w-[28%] @xl:w-[12%]",
+  email: "min-w-0 w-[42%] @xl:w-[24%]",
+  role: "w-[30%] @xl:w-[12%]",
+  inviter: "hidden @xl:table-column @xl:w-[18%]",
+  date: "hidden @xl:table-column @xl:w-[18%]",
+  validity: "hidden @xl:table-column @xl:w-[16%]",
+} as const
+
 type Props = {
   invites: InvitesResult["invites"]
 }
 
 export const TeamInvitesTable = ({ invites }: Props) => {
   const currentDate = endOfDay(new Date())
+  const spaceClasses = "px-3 py-2"
 
   return (
     <>
-      <TableWrapper className="mt-7">
-        <table className="min-w-full divide-y divide-gray-300">
-          <thead className="bg-gray-50">
-            <tr>
-              <th
-                scope="col"
-                className="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-6"
-              >
-                Status
-              </th>
-              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                E-Mail
-              </th>
-              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                Rechte
-              </th>
-              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                Einladung von
-              </th>
-              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                Datum
-              </th>
-              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                Gültigkeit
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200 bg-white">
-            {invites.map((invite) => (
-              <tr key={invite.email}>
-                <td className="h-20 py-4 pr-3 pl-4 text-sm whitespace-nowrap sm:pl-6">
-                  <StatusLabel
-                    label={inviteStatusLabels[invite.status]}
-                    className={twJoin(inviteStatusClassNames[invite.status], "inline-flex")}
-                  />
-                </td>
-                <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">
-                  <strong>
-                    <LinkMail>{invite.email}</LinkMail>
-                  </strong>
-                </td>
-                <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">
-                  {roleTranslation[invite.role]}
-                </td>
-                <td className="px-3 py-4 text-sm text-gray-500">{getFullname(invite.inviter)}</td>
-                <td className="px-3 py-4 text-sm text-gray-500">
-                  {format(new Date(invite.updatedAt), "Pp", { locale: de })}
-                </td>
-                <td className="px-3 py-4 text-sm text-gray-500">
-                  {formatDistanceStrict(
-                    subDays(currentDate, INVITE_DAYS_TO_DELETION),
-                    invite.updatedAt,
-                    {
-                      locale: de,
-                      unit: "day",
-                    },
-                  )}
-                </td>
+      <TableWrapper className="[&>div>div]:border-t-0">
+        <div className="@container w-full">
+          <table className="min-w-full table-fixed border-collapse text-left text-sm text-gray-700">
+            <colgroup>
+              <col className={teamInvitesTableColWidths.status} />
+              <col className={teamInvitesTableColWidths.email} />
+              <col className={teamInvitesTableColWidths.role} />
+              <col className={teamInvitesTableColWidths.inviter} />
+              <col className={teamInvitesTableColWidths.date} />
+              <col className={teamInvitesTableColWidths.validity} />
+            </colgroup>
+            <thead>
+              <tr className="border-b border-gray-300 bg-gray-50">
+                <th scope="col" className={twJoin(spaceClasses, "font-medium uppercase")}>
+                  Status
+                </th>
+                <th scope="col" className={twJoin(spaceClasses, "font-medium uppercase")}>
+                  E-Mail
+                </th>
+                <th scope="col" className={twJoin(spaceClasses, "font-medium uppercase")}>
+                  Rechte
+                </th>
+                <th
+                  scope="col"
+                  className={twJoin(spaceClasses, "hidden font-medium uppercase @xl:table-cell")}
+                >
+                  Einladung von
+                </th>
+                <th
+                  scope="col"
+                  className={twJoin(spaceClasses, "hidden font-medium uppercase @xl:table-cell")}
+                >
+                  Datum
+                </th>
+                <th
+                  scope="col"
+                  className={twJoin(spaceClasses, "hidden font-medium uppercase @xl:table-cell")}
+                >
+                  Gültigkeit
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-gray-200 bg-white">
+              {invites.map((invite) => (
+                <tr key={invite.email} className="border-b border-gray-100">
+                  <td className={twJoin(spaceClasses, "align-top")}>
+                    <StatusLabel
+                      label={inviteStatusLabels[invite.status]}
+                      className={twJoin(inviteStatusClassNames[invite.status], "inline-flex")}
+                    />
+                  </td>
+                  <td className={twJoin(spaceClasses, "min-w-0 align-top")}>
+                    <LinkMail>{invite.email}</LinkMail>
+                  </td>
+                  <td className={twJoin(spaceClasses, "align-top whitespace-nowrap")}>
+                    {roleTranslation[invite.role]}
+                  </td>
+                  <td className={twJoin("hidden align-top @xl:table-cell", spaceClasses)}>
+                    {getFullname(invite.inviter)}
+                  </td>
+                  <td className={twJoin("hidden align-top @xl:table-cell", spaceClasses)}>
+                    {format(new Date(invite.updatedAt), "Pp", { locale: de })}
+                  </td>
+                  <td className={twJoin("hidden align-top @xl:table-cell", spaceClasses)}>
+                    {formatDistanceStrict(
+                      subDays(currentDate, INVITE_DAYS_TO_DELETION),
+                      invite.updatedAt,
+                      {
+                        locale: de,
+                        unit: "day",
+                      },
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </TableWrapper>
 
       <SuperAdminLogData data={invites} />
