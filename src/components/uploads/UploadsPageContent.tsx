@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
+import { pageContentPaddingClassName } from "@/src/components/core/components/pages/pageContentPadding"
 import { UploadsPageUploadSection } from "@/src/components/uploads/uploads-page/UploadsPageUploadSection"
 import { UploadTable } from "@/src/components/uploads/UploadTable"
 import { uploadsQueryOptions } from "@/src/server/uploads/uploadsQueryOptions"
@@ -26,8 +27,10 @@ export const UploadsPageContent = () => {
   return (
     <>
       {/* flex gap instead of space-y: TableWrapper's -my-2 overrides space-y margins (zero-specificity :where() in Tailwind v4) */}
-      <div className="mt-8 flex flex-col gap-8">
-        <UploadsPageUploadSection projectSlug={projectSlug} />
+      <div className="flex flex-col gap-8">
+        <div className={pageContentPaddingClassName}>
+          <UploadsPageUploadSection projectSlug={projectSlug} />
+        </div>
 
         <UploadTable projectSlug={projectSlug} withAction withRelations uploads={visibleUploads} />
       </div>

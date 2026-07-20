@@ -7,6 +7,7 @@ import type { CoreAppFormApi } from "@/src/components/core/components/forms/core
 import { FormError } from "@/src/components/core/components/forms/FormError"
 import { FormHydratedProvider } from "@/src/components/core/components/forms/hooks/useFormHydrated"
 import { useIsHydrated } from "@/src/components/core/components/forms/hooks/useIsHydrated"
+import { pageContentPaddingClassName } from "@/src/components/core/components/pages/pageContentPadding"
 
 export type FormShellProps<TFormData> = Omit<
   PropsWithoutRef<JSX.IntrinsicElements["form"]>,
@@ -21,6 +22,8 @@ export type FormShellProps<TFormData> = Omit<
   actionBarRight?: ReactNode
   actionBarClassName?: string
   hideSubmitButton?: boolean
+  /** Adds page content padding on logged-in routes. Set false for modals and embedded forms. */
+  withPagePadding?: boolean
   children: ReactNode
 }
 
@@ -34,6 +37,7 @@ export function FormShell<TFormData>({
   actionBarRight,
   actionBarClassName,
   hideSubmitButton,
+  withPagePadding,
   className,
   children,
   ...props
@@ -41,12 +45,18 @@ export function FormShell<TFormData>({
   const isHydrated = useIsHydrated()
   const { pathname } = useLocation()
   const isAdminRoute = pathname.startsWith("/admin")
+  const isAuthRoute = pathname.startsWith("/auth")
+  const shouldApplyPagePadding = withPagePadding ?? (!isAdminRoute && !isAuthRoute)
 
   return (
     <FormHydratedProvider value={isHydrated}>
       <form.AppForm>
         <form
-          className={twMerge("space-y-6", className)}
+          className={twMerge(
+            "space-y-6",
+            shouldApplyPagePadding && pageContentPaddingClassName,
+            className,
+          )}
           onSubmit={(event) => {
             event.preventDefault()
             event.stopPropagation()

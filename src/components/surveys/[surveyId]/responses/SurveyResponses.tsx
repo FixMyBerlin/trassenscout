@@ -7,6 +7,7 @@ import { getQuestionIdBySurveySlug } from "@/src/components/beteiligung/shared/u
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
 import { Link } from "@/src/components/core/components/links/Link"
 import SurveyStaticPin from "@/src/components/core/components/Map/SurveyStaticPin"
+import { pageContentPaddingClassName } from "@/src/components/core/components/pages/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
 import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { H2 } from "@/src/components/core/components/text/Headings"
@@ -120,22 +121,24 @@ export function SurveyResponses({ projectSlug, surveyId: _surveyId, survey, tabs
       />
 
       <div className="mt-12 space-y-4">
-        <div className="mb-6">
-          <Link
-            className="mb-12 flex gap-1"
-            href={`/api/${projectSlug}/surveys/${survey.id}/part2/results`}
-          >
-            <ArrowDownTrayIcon className="mr-1 size-5" />
-            Alle Daten als .csv herunterladen
-          </Link>
-        </div>
+        <div className={pageContentPaddingClassName}>
+          <div className="mb-6">
+            <Link
+              className="mb-12 flex gap-1"
+              href={`/api/${projectSlug}/surveys/${survey.id}/part2/results`}
+            >
+              <ArrowDownTrayIcon className="mr-1 size-5" />
+              Alle Daten als .csv herunterladen
+            </Link>
+          </div>
 
-        <EditableSurveyResponseFilterForm
-          surveySlug={surveySlug}
-          additionalFilters={additionalFilterQuestionsWithResponseOptions}
-          operators={operators}
-          topicsDefinition={topics}
-        />
+          <EditableSurveyResponseFilterForm
+            surveySlug={surveySlug}
+            additionalFilters={additionalFilterQuestionsWithResponseOptions}
+            operators={operators}
+            topicsDefinition={topics}
+          />
+        </div>
 
         <ZeroCase visible={filteredResponses.length} name={"Eingaben"} />
         <p className="mt-4 text-sm text-gray-500">

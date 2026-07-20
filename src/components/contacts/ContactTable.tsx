@@ -57,6 +57,7 @@ export const ContactTable = ({ contacts, currentUserEmail, projectSlug }: Props)
       formError={null}
       submitText="Mail schreiben"
       hideSubmitButton
+      withPagePadding={false}
       className="mt-7 space-y-0"
     >
       <form.AppField name="selectedContacts">
