@@ -73,7 +73,7 @@ export const ProjectRecordsTable = ({
 
   return (
     <>
-      <TableWrapper bleed={bleed}>
+      <TableWrapper bleed={bleed} className="[&>div>div]:border-t-0">
         <div className="@container w-full">
           <table className="min-w-full table-fixed border-collapse text-left text-sm text-gray-700">
             <colgroup>
