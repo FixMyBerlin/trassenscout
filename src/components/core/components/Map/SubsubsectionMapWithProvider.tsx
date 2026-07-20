@@ -12,7 +12,6 @@ type Props = {
   selectedSubsubsectionSlug?: string
   clusterSubsubsections?: boolean
   classHeight?: string
-
 }
 
 export const SubsubsectionMapWithProvider = (props: Props) => {

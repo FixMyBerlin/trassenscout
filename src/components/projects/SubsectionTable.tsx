@@ -21,8 +21,6 @@ type Props = {
 
 const tableHeadClasses = "pl-4 py-3.5 pr-3 text-left text-sm font-semibold text-gray-900  "
 
-const iconOnlyActionClassName = "size-10 shrink-0 justify-center gap-0 p-0"
-
 export const SubsectionTable = ({ subsections, createButton = true }: Props) => {
   const navigate = useNavigate()
   const { projectSlug } = loggedInProjectRouteApi.useParams()

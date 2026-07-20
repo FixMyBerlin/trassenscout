@@ -10,7 +10,6 @@ import SurveyStaticPin from "@/src/components/core/components/Map/SurveyStaticPi
 import { pageContentPaddingClassName } from "@/src/components/core/components/pages/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
 import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
-import { H2 } from "@/src/components/core/components/text/Headings"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { EditableSurveyResponseFilterForm } from "@/src/components/surveys/[surveyId]/responses/EditableSurveyResponseFilterForm"
 import EditableSurveyResponseListItem from "@/src/components/surveys/[surveyId]/responses/EditableSurveyResponseListItem"

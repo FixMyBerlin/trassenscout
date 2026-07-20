@@ -82,7 +82,6 @@ function SubsectionDashboardContent({
             subsubsections={subsubsections}
             clusterSubsubsections
             classHeight={classHeight}
-
           />
         )}
         list={<SubsubsectionTable subsubsections={subsubsections} compact={false} />}
