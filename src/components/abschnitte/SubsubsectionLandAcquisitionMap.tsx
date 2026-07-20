@@ -47,6 +47,7 @@ const acquisitionAreaColorExpression: ExpressionSpecification = [
 
 type Props = {
   subsubsection: SubsubsectionWithPosition
+  classHeight?: string
 }
 
 const defaultQueryOptions = {
@@ -69,7 +70,7 @@ const toAcquisitionAreaFeatureCollection = (areas: AcquisitionAreaWithTypedGeome
     ),
   )
 
-export const SubsubsectionLandAcquisitionMap = ({ subsubsection }: Props) => {
+export const SubsubsectionLandAcquisitionMap = ({ subsubsection, classHeight }: Props) => {
   const { projectSlug } = loggedInProjectRouteApi.useParams()
   const alkisAttribution = useAlkisAttribution()
   const { acquisitionAreaId, setAcquisitionAreaId } = useAcquisitionAreaSelection()
@@ -178,7 +179,7 @@ export const SubsubsectionLandAcquisitionMap = ({ subsubsection }: Props) => {
   }
 
   return (
-    <>
+    <section className={classHeight ? "flex min-h-0 flex-1 flex-col" : undefined}>
       <BaseMap
         id="subsubsection-page-map"
         initialViewState={{
@@ -202,6 +203,7 @@ export const SubsubsectionLandAcquisitionMap = ({ subsubsection }: Props) => {
         interactiveUnifiedFeatures={false}
         colorSchema="subsubsection"
         staticOverlay={getStaticOverlayForProject(projectSlug)}
+        classHeight={classHeight}
       >
         <Source
           id="acquisition-area-parcels"
@@ -271,7 +273,7 @@ export const SubsubsectionLandAcquisitionMap = ({ subsubsection }: Props) => {
           />
         </Source>
       </BaseMap>
-      <MapFooter legendItemsConfig={landAcquisitionLegendConfig} />
-    </>
+      <MapFooter legendItemsConfig={landAcquisitionLegendConfig} pinned={Boolean(classHeight)} />
+    </section>
   )
 }

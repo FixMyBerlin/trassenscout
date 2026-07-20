@@ -468,35 +468,37 @@ export const SurveyResponseOverviewMap = ({
   }
 
   return (
-    <div className="h-full rounded-md drop-shadow-md">
-      <Map
-        id="mainMap"
-        initialViewState={{
-          bounds: defaultViewState,
-        }}
-        mapStyle={getMapStyle(selectedLayer, getVectorStyleUrl(maptilerUrl))}
-        minZoom={6}
-        maxZoom={20}
-        onClick={handleMapClick}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        interactiveLayerIds={[
-          "survey-responses-with-location",
-          "survey-responses-without-location-clicktarget",
-          "survey-responses-without-location-polygon-clicktarget",
-        ]}
-        cursor={cursorStyle}
-      >
-        {staticOverlay && <StaticOverlay config={staticOverlay} />}
-        {surveyResponsesSource}
-        {geometryCategorySource}
-        <BackgroundSwitcher
-          position="top-left"
-          value={selectedLayer}
-          onChange={handleLayerSwitch}
-        />
-        <NavigationControl showCompass={false} />
-      </Map>
+    <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden">
+      <div className="relative h-full min-h-0 w-full">
+        <Map
+          id="mainMap"
+          initialViewState={{
+            bounds: defaultViewState,
+          }}
+          mapStyle={getMapStyle(selectedLayer, getVectorStyleUrl(maptilerUrl))}
+          minZoom={6}
+          maxZoom={20}
+          onClick={handleMapClick}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+          interactiveLayerIds={[
+            "survey-responses-with-location",
+            "survey-responses-without-location-clicktarget",
+            "survey-responses-without-location-polygon-clicktarget",
+          ]}
+          cursor={cursorStyle}
+        >
+          {staticOverlay && <StaticOverlay config={staticOverlay} />}
+          {surveyResponsesSource}
+          {geometryCategorySource}
+          <BackgroundSwitcher
+            position="top-left"
+            value={selectedLayer}
+            onChange={handleLayerSwitch}
+          />
+          <NavigationControl showCompass={false} />
+        </Map>
+      </div>
     </div>
   )
 }

@@ -1,14 +1,12 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi, Outlet, useMatchRoute, useRouter } from "@tanstack/react-router"
 import { AbschnitteBreadcrumb } from "@/src/components/abschnitte/AbschnitteBreadcrumb"
-import { SubsubsectionDeleteAllAcquisitionAreasAdmin } from "@/src/components/abschnitte/SubsubsectionDeleteAllAcquisitionAreasAdmin"
-import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "@/src/components/core/components/links/Link"
+import { MAP_VIEWPORT_SHELL_CLASS } from "@/src/components/core/components/pages/MapListViewLayout"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
 import { TabsApp } from "@/src/components/core/components/Tabs/TabsApp"
 import { LandAcquisitionPrimaryAction } from "@/src/components/pages/abschnitte/PageAbschnitteLandAcquisition"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
-import { subsectionBySlugQueryOptions } from "@/src/server/subsections/subsectionQueryOptions"
 import { subsubsectionBySlugQueryOptions } from "@/src/server/subsubsections/subsubsectionQueryOptions"
 
 const layoutRouteApi = getRouteApi(
@@ -27,9 +25,6 @@ export function LayoutSubsubsection() {
     }),
   )
 
-  const { data: subsection } = useSuspenseQuery(
-    subsectionBySlugQueryOptions({ projectSlug, subsectionSlug }),
-  )
   const { data: subsubsection } = useSuspenseQuery(
     subsubsectionBySlugQueryOptions({ projectSlug, subsectionSlug, subsubsectionSlug }),
   )
@@ -56,8 +51,9 @@ export function LayoutSubsubsection() {
   ]
 
   return (
-    <>
+    <div className={MAP_VIEWPORT_SHELL_CLASS}>
       <PageHeader
+        className="mb-0 shrink-0"
         breadcrumb={<AbschnitteBreadcrumb />}
         info="Detailansicht der Maßnahme mit allgemeinen Informationen und Grunderwerb."
         tabs={tabs.length > 1 ? <TabsApp tabs={tabs} embedded /> : undefined}
@@ -74,14 +70,9 @@ export function LayoutSubsubsection() {
         }
         primaryAction={isLandAcquisition ? <LandAcquisitionPrimaryAction /> : undefined}
       />
-      <Outlet />
-      <SubsubsectionDeleteAllAcquisitionAreasAdmin
-        projectSlug={projectSlug}
-        subsectionSlug={subsectionSlug}
-        subsubsectionSlug={subsubsectionSlug}
-        subsubsectionId={subsubsection.id}
-      />
-      <SuperAdminLogData data={{ subsection, subsubsection }} />
-    </>
+      <div className="min-h-0 flex-1 overflow-hidden">
+        <Outlet />
+      </div>
+    </div>
   )
 }

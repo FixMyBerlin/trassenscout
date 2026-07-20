@@ -2,7 +2,10 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { useState } from "react"
 import { twJoin } from "tailwind-merge"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
-import { MapListViewLayout } from "@/src/components/core/components/pages/MapListViewLayout"
+import {
+  MapListViewLayout,
+  MAP_VIEWPORT_SHELL_CLASS,
+} from "@/src/components/core/components/pages/MapListViewLayout"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
 import { AdminProjectsList } from "@/src/components/dashboard/AdminProjectsList"
 import { DashboardMapWithProvider } from "@/src/components/dashboard/DashboardMapWithProvider"
@@ -27,9 +30,7 @@ export function PageDashboard() {
   }
 
   return (
-    <div
-      className={twJoin(isMapMode && "-mb-16 flex h-[calc(100dvh-4rem)] flex-col overflow-hidden")}
-    >
+    <div className={twJoin(isMapMode && `-mb-16 ${MAP_VIEWPORT_SHELL_CLASS}`)}>
       <PageHeader
         className={isMapMode ? "mb-0 shrink-0" : undefined}
         info="Willkommen im Trassenscout. Hier finden Sie alle Projekte, an denen Sie beteiligt sind."
