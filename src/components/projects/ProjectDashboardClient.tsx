@@ -51,9 +51,7 @@ export const ProjectDashboardClient = () => {
   }
 
   return (
-    <div
-      className={twJoin(isMapMode && "-mb-16 flex h-[calc(100dvh-4rem)] flex-col overflow-hidden")}
-    >
+    <div className={twJoin(isMapMode && "flex h-[calc(100dvh-4rem)] flex-col overflow-hidden")}>
       <PageHeader
         className={isMapMode ? "mb-0 shrink-0" : undefined}
         breadcrumb={<ProjectPageBreadcrumb />}
@@ -61,12 +59,17 @@ export const ProjectDashboardClient = () => {
         viewMode={viewMode}
         onViewModeChange={setViewMode}
         filters={<OperatorFilter />}
-        primaryAction={
+        action={
           <IfUserCanEdit>
             <Link icon="edit" to="/$projectSlug/edit" params={{ projectSlug }}>
               bearbeiten
             </Link>
           </IfUserCanEdit>
+        }
+        primaryAction={
+          <Link button to="/$projectSlug/subsections/new" params={{ projectSlug }}>
+            Neuer Planungsabschnitt
+          </Link>
         }
       />
 

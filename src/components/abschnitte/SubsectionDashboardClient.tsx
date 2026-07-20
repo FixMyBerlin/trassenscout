@@ -38,9 +38,7 @@ function SubsectionDashboardContent({
   )
 
   return (
-    <div
-      className={twJoin(isMapMode && "-mb-16 flex h-[calc(100dvh-4rem)] flex-col overflow-hidden")}
-    >
+    <div className={twJoin(isMapMode && "flex h-[calc(100dvh-4rem)] flex-col overflow-hidden")}>
       <PageHeader
         className={isMapMode ? "mb-0 shrink-0" : undefined}
         breadcrumb={<AbschnitteBreadcrumb />}
@@ -57,6 +55,15 @@ function SubsectionDashboardContent({
               bearbeiten
             </Link>
           </IfUserCanEdit>
+        }
+        primaryAction={
+          <Link
+            button
+            to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new"
+            params={{ projectSlug, subsectionSlug }}
+          >
+            Neue Maßnahme
+          </Link>
         }
       />
 

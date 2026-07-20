@@ -112,23 +112,9 @@ export const SubsectionTable = ({ subsections, createButton = true }: Props) => 
       {createButton && (
         <IfUserCanEdit>
           <div className="mt-4 flex flex-wrap gap-3">
-            <Link
-              button="blue"
-              icon="plus"
-              classNameOverwrites={iconOnlyActionClassName}
-              to="/$projectSlug/abschnitte/new"
-              params={{ projectSlug }}
-            >
-              <span className="sr-only">Neuer Planungsabschnitt</span>
-            </Link>
             {hasAnySubsubsections && (
-              <Link
-                button="white"
-                icon="download"
-                classNameOverwrites={iconOnlyActionClassName}
-                href={`/api/${projectSlug}/subsections/export`}
-              >
-                <span className="sr-only">Alle Maßnahmen herunterladen (CSV)</span>
+              <Link button="white" icon="download" href={`/api/${projectSlug}/subsections/export`}>
+                Alle Maßnahmen herunterladen (CSV)
               </Link>
             )}
           </div>
