@@ -76,7 +76,6 @@ type Props = {
   errorMessage: string | null
   basePotentialAcquisitionAreas: PotentialAcquisitionArea[]
   mapHeightClass: string
-  desktopSharedHeightClass: string
 }
 
 export function AcquisitionAreasWorkspace({
@@ -90,7 +89,6 @@ export function AcquisitionAreasWorkspace({
   errorMessage,
   basePotentialAcquisitionAreas,
   mapHeightClass,
-  desktopSharedHeightClass,
 }: Props) {
   const navigate = useNavigate()
   const [potentialAcquisitionAreas, setPotentialAcquisitionAreas] = useState(
@@ -177,27 +175,8 @@ export function AcquisitionAreasWorkspace({
   })
 
   return (
-    <div className="flex min-w-0 flex-col gap-4 lg:flex-row lg:items-stretch">
-      <div className="min-w-0 lg:flex-4">
-        <MapProvider>
-          <AcquisitionAreaMap
-            subsubsection={initialSubsubsection}
-            bufferPolygonFeature={bufferPolygonFeature}
-            parcels={parcels}
-            isLoading={isLoading}
-            errorMessage={errorMessage}
-            potentialAcquisitionAreas={potentialAcquisitionAreas}
-            setPotentialAcquisitionAreas={setPotentialAcquisitionAreas}
-            classHeight={mapHeightClass}
-          />
-        </MapProvider>
-      </div>
-      <aside
-        className={twJoin(
-          "w-full shrink-0 rounded-md border border-gray-200 bg-white p-6 shadow-xs lg:flex-[3] lg:overflow-y-auto",
-          desktopSharedHeightClass,
-        )}
-      >
+    <div className="relative flex h-full min-h-0 w-full flex-col lg:flex-row lg:items-stretch">
+      <aside className="min-h-0 w-full overflow-y-auto p-4 lg:h-full lg:w-[45%] lg:shrink-0">
         <div className="flex flex-col gap-4">
           <div className="space-y-2">
             <h2 className="text-lg font-semibold text-gray-900">Verhandlungsflächen generieren</h2>
@@ -243,6 +222,20 @@ export function AcquisitionAreasWorkspace({
           </div>
         </div>
       </aside>
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col border-t border-gray-200 lg:border-t-0 lg:border-l">
+        <MapProvider>
+          <AcquisitionAreaMap
+            subsubsection={initialSubsubsection}
+            bufferPolygonFeature={bufferPolygonFeature}
+            parcels={parcels}
+            isLoading={isLoading}
+            errorMessage={errorMessage}
+            potentialAcquisitionAreas={potentialAcquisitionAreas}
+            setPotentialAcquisitionAreas={setPotentialAcquisitionAreas}
+            classHeight={mapHeightClass}
+          />
+        </MapProvider>
+      </div>
     </div>
   )
 }

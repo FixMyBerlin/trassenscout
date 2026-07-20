@@ -38,11 +38,13 @@ const layoutRouteApi = getRouteApi(
 type Props = {
   subsubsectionId: number
   subsectionId: number
+  className?: string
 }
 
 export const SubsubsectionLandAcquisitionContent = ({
   subsubsectionId,
   subsectionId: _subsectionId,
+  className,
 }: Props) => {
   const { projectSlug, subsectionSlug, subsubsectionSlug } = layoutRouteApi.useParams()
   const queryClient = useQueryClient()
@@ -159,7 +161,7 @@ export const SubsubsectionLandAcquisitionContent = ({
   }
 
   return (
-    <SubsubsectionPanel title="">
+    <SubsubsectionPanel title="" className={className}>
       <div className="space-y-8">
         {acquisitionAreas.length > 1 && (
           <SelectListbox

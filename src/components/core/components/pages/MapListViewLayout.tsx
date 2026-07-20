@@ -4,6 +4,8 @@ import type { ViewMode } from "@/src/components/core/components/pages/PageHeader
 
 /** Height class for maps inside the flex map-mode shell (parent uses h-[calc(100dvh-4rem)]). */
 export const MAP_FULLSCREEN_HEIGHT_CLASS = "min-h-0 flex-1"
+/** Outer shell: viewport minus top nav (4rem). Parent of PageHeader + map content. */
+export const MAP_VIEWPORT_SHELL_CLASS = "flex h-[calc(100dvh-4rem)] flex-col overflow-hidden"
 
 type Props = {
   mode: ViewMode

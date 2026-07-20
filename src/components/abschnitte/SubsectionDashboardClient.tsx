@@ -6,7 +6,10 @@ import { AbschnitteBreadcrumb } from "@/src/components/abschnitte/AbschnitteBrea
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "@/src/components/core/components/links/Link"
 import { SubsubsectionMapWithProvider } from "@/src/components/core/components/Map/SubsubsectionMapWithProvider"
-import { MapListViewLayout } from "@/src/components/core/components/pages/MapListViewLayout"
+import {
+  MapListViewLayout,
+  MAP_VIEWPORT_SHELL_CLASS,
+} from "@/src/components/core/components/pages/MapListViewLayout"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
 import { IfUserCanEdit } from "@/src/components/shared/memberships/IfUserCan"
 import { subsectionsQueryOptions } from "@/src/server/subsections/subsectionsQueryOptions"
@@ -38,7 +41,7 @@ function SubsectionDashboardContent({
   )
 
   return (
-    <div className={twJoin(isMapMode && "flex h-[calc(100dvh-4rem)] flex-col overflow-hidden")}>
+    <div className={twJoin(isMapMode && MAP_VIEWPORT_SHELL_CLASS)}>
       <PageHeader
         className={isMapMode ? "mb-0 shrink-0" : undefined}
         breadcrumb={<AbschnitteBreadcrumb />}

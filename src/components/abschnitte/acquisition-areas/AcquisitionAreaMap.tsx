@@ -1,6 +1,7 @@
 import type { Feature, MultiPolygon, Polygon } from "geojson"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { MapLayerMouseEvent, Popup, useMap } from "react-map-gl/maplibre"
+import { twJoin } from "tailwind-merge"
 import {
   ACQUISITION_POTENTIAL_AREAS_SOURCE_ID,
   AcquisitionAlkisParcelsLayers,
@@ -113,7 +114,12 @@ export function AcquisitionAreaMap({
   }, [])
 
   return (
-    <div className="relative w-full">
+    <div
+      className={twJoin(
+        "relative w-full",
+        classHeight ? "flex min-h-0 flex-1 flex-col" : undefined,
+      )}
+    >
       <BaseMap
         id="mainMap"
         initialViewState={{

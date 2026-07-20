@@ -2,6 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { AbschnitteBreadcrumb } from "@/src/components/abschnitte/AbschnitteBreadcrumb"
 import { NewAcquisitionAreasForm } from "@/src/components/abschnitte/acquisition-areas/NewAcquisitionAreasForm"
+import { MAP_VIEWPORT_SHELL_CLASS } from "@/src/components/core/components/pages/MapListViewLayout"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
 import { subsubsectionBySlugQueryOptions } from "@/src/server/subsubsections/subsubsectionQueryOptions"
 import { MapPageSuspense } from "./_components/MapPageSuspense"
@@ -16,11 +17,18 @@ export function PageAbschnitteAcquisitionAreaNew() {
     subsubsectionBySlugQueryOptions({ projectSlug, subsectionSlug, subsubsectionSlug }),
   )
   return (
-    <>
-      <PageHeader breadcrumb={<AbschnitteBreadcrumb current="neu" />} />
-      <MapPageSuspense>
-        <NewAcquisitionAreasForm initialSubsubsection={subsubsection} />
-      </MapPageSuspense>
-    </>
+    <div className={MAP_VIEWPORT_SHELL_CLASS}>
+      <PageHeader
+        breadcrumb={<AbschnitteBreadcrumb current="Verhandlungsflächen erstellen" />}
+        className="mb-0 shrink-0"
+      />
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+        <MapPageSuspense>
+          <div className="h-full min-h-0">
+            <NewAcquisitionAreasForm initialSubsubsection={subsubsection} />
+          </div>
+        </MapPageSuspense>
+      </div>
+    </div>
   )
 }

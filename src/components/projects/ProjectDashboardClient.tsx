@@ -8,7 +8,10 @@ import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/Sup
 import { Link } from "@/src/components/core/components/links/Link"
 import { ProjectMap } from "@/src/components/core/components/Map/ProjectMap"
 import { ProjectMapFallback } from "@/src/components/core/components/Map/ProjectMapFallback"
-import { MapListViewLayout } from "@/src/components/core/components/pages/MapListViewLayout"
+import {
+  MapListViewLayout,
+  MAP_VIEWPORT_SHELL_CLASS,
+} from "@/src/components/core/components/pages/MapListViewLayout"
 import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
 import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
@@ -51,7 +54,7 @@ export const ProjectDashboardClient = () => {
   }
 
   return (
-    <div className={twJoin(isMapMode && "flex h-[calc(100dvh-4rem)] flex-col overflow-hidden")}>
+    <div className={twJoin(isMapMode && MAP_VIEWPORT_SHELL_CLASS)}>
       <PageHeader
         className={isMapMode ? "mb-0 shrink-0" : undefined}
         breadcrumb={<ProjectPageBreadcrumb />}
