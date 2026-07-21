@@ -1,5 +1,5 @@
 import { Link } from "@/src/components/core/components/links/Link"
-import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 
 export function PageAccessDenied() {
   return (

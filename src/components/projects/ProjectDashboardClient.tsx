@@ -11,9 +11,9 @@ import { ProjectMapFallback } from "@/src/components/core/components/Map/Project
 import {
   MapListViewLayout,
   MAP_VIEWPORT_SHELL_CLASS,
-} from "@/src/components/core/components/pages/MapListViewLayout"
-import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
-import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
+} from "@/src/components/core/components/PageHeader/MapListViewLayout"
+import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
+import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { projectBySlugQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 import { subsectionsQueryOptions } from "@/src/server/subsections/subsectionsQueryOptions"

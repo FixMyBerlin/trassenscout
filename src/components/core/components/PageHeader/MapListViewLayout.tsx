@@ -1,6 +1,6 @@
 import { type ReactNode } from "react"
 import { twJoin } from "tailwind-merge"
-import type { ViewMode } from "@/src/components/core/components/pages/PageHeaderViewSwitch"
+import type { ViewMode } from "@/src/components/core/components/PageHeader/PageHeaderViewSwitch"
 
 /** Height class for maps inside the flex map-mode shell (parent uses h-[calc(100dvh-4rem)]). */
 export const MAP_FULLSCREEN_HEIGHT_CLASS = "min-h-0 flex-1"

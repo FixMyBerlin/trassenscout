@@ -1,22 +1,19 @@
-import { PageHeaderInfo } from "@/src/components/core/components/pages/PageHeaderInfo"
-import { PageHeaderLayout } from "@/src/components/core/components/pages/PageHeaderLayout"
+import { PageHeaderInfo } from "@/src/components/core/components/PageHeader/PageHeaderInfo"
+import { PageHeaderLayout } from "@/src/components/core/components/PageHeader/PageHeaderLayout"
 import {
   PageHeaderViewSwitch,
   type ViewMode,
-} from "@/src/components/core/components/pages/PageHeaderViewSwitch"
+} from "@/src/components/core/components/PageHeader/PageHeaderViewSwitch"
 
 type Props = {
   breadcrumb?: React.ReactNode
-  /** Page-specific info panel content. Renders the info button when provided. */
   info?: React.ReactNode
   tabs?: React.ReactNode
   viewMode?: ViewMode
   onViewModeChange?: (mode: ViewMode) => void
   title?: string
   action?: React.ReactNode
-  /** 4th row left: page filter UI */
   filters?: React.ReactNode
-  /** 4th row right: primary create/action CTA */
   primaryAction?: React.ReactNode
   className?: string
 }

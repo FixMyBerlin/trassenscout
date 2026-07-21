@@ -1,7 +1,7 @@
 import { Link } from "@/src/components/core/components/links/Link"
 import { LinkMail } from "@/src/components/core/components/links/LinkMail"
 import { LinkTel } from "@/src/components/core/components/links/LinkTel"
-import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { TableOfContents } from "@/src/components/pages/content/datenschutz/_components/TableOfContents/TableOfContents"
 import { TocHashLink } from "@/src/components/pages/content/datenschutz/_components/TableOfContents/types"
 const tocItems: TocHashLink = [

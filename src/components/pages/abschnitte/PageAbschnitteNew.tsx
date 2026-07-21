@@ -3,7 +3,7 @@ import { Suspense } from "react"
 import { AbschnitteBreadcrumb } from "@/src/components/abschnitte/AbschnitteBreadcrumb"
 import { NewSubsectionForm } from "@/src/components/abschnitte/NewSubsectionForm"
 import { Link } from "@/src/components/core/components/links/Link"
-import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { Spinner } from "@/src/components/core/components/Spinner"
 
 const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/abschnitte/new/")

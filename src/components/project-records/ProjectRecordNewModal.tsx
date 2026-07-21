@@ -11,7 +11,7 @@ import {
   type OnSubmitResult,
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { Modal, ModalCloseButton } from "@/src/components/core/components/Modal"
-import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { ProjectRecordFormFields } from "@/src/components/project-records/ProjectRecordFormFields"
 import { getDate } from "@/src/components/project-records/utils/splitStartAt"
 import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"

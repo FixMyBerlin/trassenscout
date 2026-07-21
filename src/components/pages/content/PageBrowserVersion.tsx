@@ -1,4 +1,4 @@
-import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { MailButton } from "./browser-version/_components/MailButton"
 
 export function PageBrowserVersion() {

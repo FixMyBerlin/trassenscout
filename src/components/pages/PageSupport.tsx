@@ -1,5 +1,5 @@
 import { Suspense } from "react"
-import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { Spinner } from "@/src/components/core/components/Spinner"
 import { SupportPageClient } from "@/src/components/support/SupportPageClient"
 

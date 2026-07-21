@@ -11,7 +11,7 @@ import {
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { linkStyles } from "@/src/components/core/components/links/styles"
 import { Modal, ModalCloseButton } from "@/src/components/core/components/Modal"
-import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { useCurrentUser } from "@/src/components/user/useCurrentUser"
 import type { ProjectRecord } from "@/src/server/projectRecords/types"
 import type { FeedbackSurveyResponse } from "@/src/server/survey-responses/surveyResponsesQueryOptions"

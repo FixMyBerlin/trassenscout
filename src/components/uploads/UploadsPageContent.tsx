@@ -1,7 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
-import { pageContentPaddingClassName } from "@/src/components/core/components/pages/pageContentPadding"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { UploadsPageUploadSection } from "@/src/components/uploads/uploads-page/UploadsPageUploadSection"
 import { UploadTable } from "@/src/components/uploads/UploadTable"
 import { uploadsQueryOptions } from "@/src/server/uploads/uploadsQueryOptions"

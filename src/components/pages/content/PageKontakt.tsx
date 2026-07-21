@@ -1,7 +1,7 @@
 import { Link } from "@/src/components/core/components/links/Link"
 import { LinkMail } from "@/src/components/core/components/links/LinkMail"
 import { LinkTel } from "@/src/components/core/components/links/LinkTel"
-import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { Img } from "@/src/components/shared/Img"
 import svgImageLogoFona from "./assets/BMBF_FONA_Logo_rgb.svg"
 import svgImageLogoBmftrFoerderung from "./assets/BMFTR_de_DTP_CMYK_gef_durch.svg"

@@ -10,7 +10,7 @@ import { ButtonWrapper } from "@/src/components/core/components/links/ButtonWrap
 import { Link } from "@/src/components/core/components/links/Link"
 import { Modal, ModalCloseButton } from "@/src/components/core/components/Modal"
 import { Notice } from "@/src/components/core/components/Notice/Notice"
-import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { Spinner } from "@/src/components/core/components/Spinner"
 import { getFullname } from "@/src/components/core/users/getFullname"
 import { NewInviteForm } from "@/src/components/invites/NewInviteForm"
