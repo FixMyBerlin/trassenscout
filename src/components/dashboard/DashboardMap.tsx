@@ -1,12 +1,11 @@
 import { useNavigate } from "@tanstack/react-router"
 import { featureCollection } from "@turf/helpers"
-import { bbox } from "@turf/turf"
 import type { Feature } from "geojson"
-import { LngLatBounds } from "maplibre-gl"
 import { useMemo } from "react"
 import type { MapLayerMouseEvent } from "react-map-gl/maplibre"
 import { BaseMap } from "@/src/components/core/components/Map/BaseMap"
 import { ProjectMarkers } from "@/src/components/core/components/Map/markers/ProjectMarkers"
+import { geometriesBbox } from "@/src/components/core/components/Map/utils/bboxHelpers"
 import {
   getSubsectionFeatures,
   type LineProperties,
@@ -45,7 +44,7 @@ export const DashboardMap = ({ projects, classHeight }: Props) => {
     return map
   }, [projects])
 
-  const { lines, polygons, lineEndPoints, bounds } = useMemo(() => {
+  const { lines, polygons, lineEndPoints, boundingBox } = useMemo(() => {
     const subsections = projects.flatMap((project) => project.subsections)
     const { lines, polygons, lineEndPoints } = getSubsectionFeatures({
       subsections,
@@ -96,32 +95,26 @@ export const DashboardMap = ({ projects, classHeight }: Props) => {
         lines: selectableLines,
         polygons: selectablePolygons,
         lineEndPoints: selectableLineEndPoints,
-        bounds: null,
+        boundingBox: null,
       }
     }
-
-    const boundingBox = bbox(featureCollection(allFeatures))
-    const bounds = new LngLatBounds(
-      [boundingBox[0], boundingBox[1]],
-      [boundingBox[2], boundingBox[3]],
-    )
 
     return {
       lines: selectableLines,
       polygons: selectablePolygons,
       lineEndPoints: selectableLineEndPoints,
-      bounds,
+      boundingBox: geometriesBbox(subsections.map((subsection) => subsection.geometry)),
     }
   }, [projects, projectSlugMap])
 
-  if (!bounds) return null
+  if (!boundingBox) return null
 
   return (
     <section className={classHeight ? "flex min-h-0 flex-1 flex-col" : "mt-3 mb-10"}>
       <BaseMap
         id="mainMap"
         initialViewState={{
-          bounds,
+          bounds: boundingBox,
           fitBoundsOptions: { padding: 60 },
         }}
         onClick={handleClickMap}
