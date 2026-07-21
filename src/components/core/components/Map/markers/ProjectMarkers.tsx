@@ -31,13 +31,7 @@ const ProjectMarker = ({ projectSlug, subsections, onSelect }: ProjectMarkerProp
       anchor="center"
       onClick={() => onSelect(projectSlug)}
     >
-      <TipMarker
-        anchor="top"
-        slug={projectSlug}
-        highlightLevel="project"
-        highlightVariant="filled"
-        highlighted
-      >
+      <TipMarker anchor="top" slug={projectSlug} highlightLevel="project" highlightVariant="filled">
         <MarkerLabel
           icon={
             <div className="flex h-5 w-auto flex-none items-center justify-center px-1.5 font-sans text-xs leading-none font-semibold text-yellow-950">

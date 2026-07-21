@@ -8,7 +8,12 @@ const SUBSUBSECTION_CLUSTER_CIRCLE_LAYER_ID = "subsubsection-cluster-circles"
 const SUBSUBSECTION_CLUSTER_COUNT_LAYER_ID = "subsubsection-cluster-counts"
 const SUBSUBSECTION_UNCLUSTERED_LAYER_ID = "subsubsection-unclustered-points"
 
-/** Layer ids the map must treat as click targets while the cluster layers are visible. */
+/**
+ * Click targets while clustering is visible: the cluster blobs (click to expand)
+ * and the location dot under each ungrouped point. The dot's styled tooltip is a
+ * DOM SubsubsectionMarker rendered by the caller on top, but the dot stays
+ * clickable for the area of it the bubble doesn't cover.
+ */
 export const SUBSUBSECTION_CLUSTER_INTERACTIVE_LAYER_IDS = [
   SUBSUBSECTION_CLUSTER_CIRCLE_LAYER_ID,
   SUBSUBSECTION_CLUSTER_COUNT_LAYER_ID,
@@ -24,6 +29,11 @@ type Props = {
   points: FeatureCollection<Point, SubsubsectionClusterProperties> | undefined
 }
 
+/**
+ * Renders the cluster source and the grouped-point blobs only. Points that are
+ * NOT grouped at the current zoom carry no canvas layer here — the caller reads
+ * them off this source and renders DOM markers instead (see SubsubsectionMap).
+ */
 export function SubsubsectionClustersLayer({ points }: Props) {
   if (!points || points.features.length === 0) return null
 
@@ -66,6 +76,8 @@ export function SubsubsectionClustersLayer({ points }: Props) {
           "text-color": mapColorTokens.slate900,
         }}
       />
+      {/* Location dot under each ungrouped point; the caller draws the styled
+          tooltip on top as a DOM SubsubsectionMarker. */}
       <Layer
         id={SUBSUBSECTION_UNCLUSTERED_LAYER_ID}
         type="circle"

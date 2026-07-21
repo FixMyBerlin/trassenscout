@@ -60,6 +60,9 @@ export const SubsubsectionMap = ({
   const [dotMode, setDotMode] = useState<boolean | null>(null)
   const [clusterZoomActive, setClusterZoomActive] = useState<boolean | null>(null)
   const clusterMode = clusterSubsubsections && clusterZoomActive === true
+  // Slugs of points the cluster engine currently leaves ungrouped. Those render
+  // as DOM markers (styled tooltip); grouped points stay as cluster blobs.
+  const [unclusteredSlugs, setUnclusteredSlugs] = useState<Set<string>>(() => new Set())
 
   const filteredSubsubsections = subsubsections.filter(
     (subsub) => subsub.subsectionId === selectedSubsection.id,
@@ -216,6 +219,59 @@ export const SubsubsectionMap = ({
     subsubsectionPoints,
   )
 
+  // Track which points the cluster engine leaves ungrouped at the current view,
+  // so we can render DOM markers for exactly those. Trigger on `idle`: a clustered
+  // GeoJSON source recomputes its cluster tiles on every zoom, and
+  // `querySourceFeatures` only sees *loaded* tiles — `moveend`/`sourcedata` fire
+  // before the new-zoom tiles are ready and return the previous zoom's clustering
+  // (markers lag a zoom level). `idle` fires only once all tiles for the current
+  // view have loaded, which is exactly when the query is reliable.
+  useEffect(
+    function trackUnclusteredSubsubsections() {
+      if (!clusterMode || !mainMap || !mapLoaded) return
+
+      const map = mainMap.getMap()
+
+      const readUnclustered = () => {
+        if (!map.getSource(SUBSUBSECTION_CLUSTER_SOURCE_ID)) return
+
+        const features = map.querySourceFeatures(SUBSUBSECTION_CLUSTER_SOURCE_ID, {
+          filter: ["!", ["has", "point_count"]],
+        })
+        const next = new Set<string>()
+        for (const feature of features) {
+          const slug = feature.properties?.subsubsectionSlug
+          if (typeof slug === "string") next.add(slug)
+        }
+
+        setUnclusteredSlugs((prev) => {
+          // Keep the previous Set identity when unchanged so markers don't churn.
+          if (prev.size === next.size && [...next].every((slug) => prev.has(slug))) return prev
+          return next
+        })
+      }
+
+      // Cover the case where the source is already loaded when this effect runs
+      // (re-mount); otherwise the first `idle` reads it once loading finishes.
+      if (
+        map.getSource(SUBSUBSECTION_CLUSTER_SOURCE_ID) &&
+        map.isSourceLoaded(SUBSUBSECTION_CLUSTER_SOURCE_ID)
+      ) {
+        readUnclustered()
+      }
+
+      map.on("idle", readUnclustered)
+      return () => {
+        map.off("idle", readUnclustered)
+      }
+    },
+    [clusterMode, mainMap, mapLoaded],
+  )
+
+  const clusterMarkerSubsubsections = clusterMode
+    ? filteredSubsubsections.filter((subsub) => unclusteredSlugs.has(subsub.slug))
+    : filteredSubsubsections
+
   // Set selected state via setFeatureState when selection changes
   useEffect(
     function synchronizeSelectedSubsubsectionFeatureState() {
@@ -313,15 +369,15 @@ export const SubsubsectionMap = ({
           layerIdSuffix="_subsubsection"
         />
         <SubsubsectionClustersLayer points={subsubsectionClusterPoints} />
-        {!clusterMode && (
-          <SubsubsectionMarkers
-            subsubsections={filteredSubsubsections}
-            dotMode={dotMode}
-            pageSubsectionSlug={pageSubsectionSlug}
-            selectedSubsubsectionSlug={selectedSubsubsectionSlug}
-            onSelect={handleSelect}
-          />
-        )}
+        {/* In cluster mode, only ungrouped points get a DOM marker (grouped ones
+            are cluster blobs); dotMode is forced off so the tooltip is shown. */}
+        <SubsubsectionMarkers
+          subsubsections={clusterMarkerSubsubsections}
+          dotMode={clusterMode ? false : dotMode}
+          pageSubsectionSlug={pageSubsectionSlug}
+          selectedSubsubsectionSlug={selectedSubsubsectionSlug}
+          onSelect={handleSelect}
+        />
       </BaseMap>
       <MapFooter legendItemsConfig={subsectionLegendConfig} pinned={Boolean(classHeight)} />
     </div>
