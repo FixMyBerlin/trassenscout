@@ -160,6 +160,35 @@ export const SubsubsectionMap = ({
     setClusterZoomActive(zoom <= SUBSUBSECTION_CLUSTER_MAX_ZOOM)
   }
 
+  // Track which points the cluster engine leaves ungrouped at the current view,
+  // so we render DOM markers for exactly those. Read on `idle`: a clustered
+  // GeoJSON source recomputes its cluster tiles on every zoom, and
+  // `querySourceFeatures` only sees *loaded* tiles — `moveend`/`sourcedata` fire
+  // before the new-zoom tiles are ready and return the previous zoom's clustering
+  // (markers lag a zoom level). `idle` fires only once all tiles for the current
+  // view have loaded, which is exactly when the query is reliable.
+  const handleIdle: NonNullable<MapProps["onIdle"]> = (event) => {
+    if (!clusterMode) return
+
+    const map = event.target
+    if (!map.getSource(SUBSUBSECTION_CLUSTER_SOURCE_ID)) return
+
+    const features = map.querySourceFeatures(SUBSUBSECTION_CLUSTER_SOURCE_ID, {
+      filter: ["!", ["has", "point_count"]],
+    })
+    const next = new Set<string>()
+    for (const feature of features) {
+      const slug = feature.properties?.subsubsectionSlug
+      if (typeof slug === "string") next.add(slug)
+    }
+
+    setUnclusteredSlugs((prev) => {
+      // Keep the previous Set identity when unchanged so markers don't churn.
+      if (prev.size === next.size && [...next].every((slug) => prev.has(slug))) return prev
+      return next
+    })
+  }
+
   const filteredGeometries = filteredSubsubsections.map((s) => s.geometry)
   const subsubsectionClusterPoints = clusterMode
     ? featureCollection(
@@ -167,6 +196,8 @@ export const SubsubsectionMap = ({
           point(getLabelPosition(subsubsection.geometry, subsubsection.labelPos), {
             subsectionSlug: subsubsection.subsection.slug,
             subsubsectionSlug: subsubsection.slug,
+            isPoint: subsubsection.type === "POINT",
+            featureId: subsubsection.slug,
           }),
         ),
       )
@@ -217,55 +248,6 @@ export const SubsubsectionMap = ({
     subsubsectionLines,
     subsubsectionPolygons,
     subsubsectionPoints,
-  )
-
-  // Track which points the cluster engine leaves ungrouped at the current view,
-  // so we can render DOM markers for exactly those. Trigger on `idle`: a clustered
-  // GeoJSON source recomputes its cluster tiles on every zoom, and
-  // `querySourceFeatures` only sees *loaded* tiles — `moveend`/`sourcedata` fire
-  // before the new-zoom tiles are ready and return the previous zoom's clustering
-  // (markers lag a zoom level). `idle` fires only once all tiles for the current
-  // view have loaded, which is exactly when the query is reliable.
-  useEffect(
-    function trackUnclusteredSubsubsections() {
-      if (!clusterMode || !mainMap || !mapLoaded) return
-
-      const map = mainMap.getMap()
-
-      const readUnclustered = () => {
-        if (!map.getSource(SUBSUBSECTION_CLUSTER_SOURCE_ID)) return
-
-        const features = map.querySourceFeatures(SUBSUBSECTION_CLUSTER_SOURCE_ID, {
-          filter: ["!", ["has", "point_count"]],
-        })
-        const next = new Set<string>()
-        for (const feature of features) {
-          const slug = feature.properties?.subsubsectionSlug
-          if (typeof slug === "string") next.add(slug)
-        }
-
-        setUnclusteredSlugs((prev) => {
-          // Keep the previous Set identity when unchanged so markers don't churn.
-          if (prev.size === next.size && [...next].every((slug) => prev.has(slug))) return prev
-          return next
-        })
-      }
-
-      // Cover the case where the source is already loaded when this effect runs
-      // (re-mount); otherwise the first `idle` reads it once loading finishes.
-      if (
-        map.getSource(SUBSUBSECTION_CLUSTER_SOURCE_ID) &&
-        map.isSourceLoaded(SUBSUBSECTION_CLUSTER_SOURCE_ID)
-      ) {
-        readUnclustered()
-      }
-
-      map.on("idle", readUnclustered)
-      return () => {
-        map.off("idle", readUnclustered)
-      }
-    },
-    [clusterMode, mainMap, mapLoaded],
   )
 
   const clusterMarkerSubsubsections = clusterMode
@@ -361,6 +343,7 @@ export const SubsubsectionMap = ({
         staticOverlay={getStaticOverlayForProject(projectSlug)}
         onLoad={handleLoad}
         onZoomEnd={handleZoomEnd}
+        onIdle={handleIdle}
         classHeight={classHeight}
       >
         <SubsectionHullsLayer
