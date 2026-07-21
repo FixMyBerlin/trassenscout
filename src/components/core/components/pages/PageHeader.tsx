@@ -1,5 +1,5 @@
-import { twJoin, twMerge } from "tailwind-merge"
 import { PageHeaderInfo } from "@/src/components/core/components/pages/PageHeaderInfo"
+import { PageHeaderLayout } from "@/src/components/core/components/pages/PageHeaderLayout"
 import {
   PageHeaderViewSwitch,
   type ViewMode,
@@ -21,8 +21,6 @@ type Props = {
   className?: string
 }
 
-const rowClassName = "flex h-12 items-center justify-between gap-4 border-b border-gray-200 px-4"
-
 export const PageHeader = ({
   breadcrumb,
   info,
@@ -36,56 +34,30 @@ export const PageHeader = ({
   className,
 }: Props) => {
   const hasViewSwitch = viewMode !== undefined && onViewModeChange !== undefined
-  const hasRow1 = Boolean(breadcrumb || info || action)
-  const hasRow2 = Boolean(tabs || hasViewSwitch)
-  const hasRow3 = Boolean(title)
-  const hasRow4 = Boolean(filters || primaryAction)
 
-  if (!hasRow1 && !hasRow2 && !hasRow3 && !hasRow4) return null
+  const row1Right =
+    action || info ? (
+      <div className="flex shrink-0 items-center gap-2">
+        {action}
+        {info ? <PageHeaderInfo>{info}</PageHeaderInfo> : null}
+      </div>
+    ) : undefined
+
+  const row2Right = hasViewSwitch ? (
+    <PageHeaderViewSwitch value={viewMode} onChange={onViewModeChange} />
+  ) : undefined
+
+  const row3Left = title ? (
+    <h1 className="text-base font-bold text-gray-900 sm:truncate">{title}</h1>
+  ) : undefined
 
   return (
-    <header className={twMerge("w-full", className)}>
-      {hasRow1 ? (
-        <div className={twJoin(rowClassName, "bg-gray-50")}>
-          <div className="min-w-0 flex-1">{breadcrumb}</div>
-          {action || info ? (
-            <div className="flex shrink-0 items-center gap-2">
-              {action}
-              {info ? <PageHeaderInfo>{info}</PageHeaderInfo> : null}
-            </div>
-          ) : null}
-        </div>
-      ) : null}
-
-      {hasRow2 ? (
-        <div className={twJoin(rowClassName, "bg-white")}>
-          <div className="min-w-0 flex-1">{tabs}</div>
-          {hasViewSwitch ? (
-            <PageHeaderViewSwitch value={viewMode} onChange={onViewModeChange} />
-          ) : null}
-        </div>
-      ) : null}
-
-      {hasRow3 ? (
-        <div className={twJoin(rowClassName, "bg-white")}>
-          <div className="min-w-0 flex-1">
-            {title ? (
-              <h1 className="text-base font-bold text-gray-900 sm:truncate">{title}</h1>
-            ) : null}
-          </div>
-        </div>
-      ) : null}
-
-      {hasRow4 ? (
-        <div
-          className={twJoin(
-            "flex min-h-12 items-center justify-between gap-4 border-b border-gray-200 bg-white px-4 py-2",
-          )}
-        >
-          <div className="min-w-0 flex-1">{filters}</div>
-          {primaryAction ? <div className="shrink-0">{primaryAction}</div> : null}
-        </div>
-      ) : null}
-    </header>
+    <PageHeaderLayout
+      className={className}
+      row1={{ left: breadcrumb, right: row1Right }}
+      row2={{ left: tabs, right: row2Right }}
+      row3={{ left: row3Left }}
+      row4={{ left: filters, right: primaryAction }}
+    />
   )
 }
