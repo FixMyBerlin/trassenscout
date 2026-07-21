@@ -1,4 +1,5 @@
 import type { FeatureCollection, Point } from "geojson"
+import type { ExpressionSpecification } from "maplibre-gl"
 import { Layer, Source } from "react-map-gl/maplibre"
 import { mapColorTokens } from "@/src/components/core/components/Map/colors/mapColorTokens"
 
@@ -23,7 +24,20 @@ export const SUBSUBSECTION_CLUSTER_INTERACTIVE_LAYER_IDS = [
 type SubsubsectionClusterProperties = {
   subsectionSlug: string
   subsubsectionSlug: string
+  isPoint: boolean
+  featureId: string
 }
+
+const unclusteredDotColor: ExpressionSpecification = [
+  "case",
+  [
+    "==",
+    ["get", "subsubsectionSlug"],
+    ["coalesce", ["global-state", "highlightSubsubsectionSlug"], ""],
+  ],
+  mapColorTokens.yellow400,
+  mapColorTokens.sky400,
+]
 
 type Props = {
   points: FeatureCollection<Point, SubsubsectionClusterProperties> | undefined
@@ -76,17 +90,15 @@ export function SubsubsectionClustersLayer({ points }: Props) {
           "text-color": mapColorTokens.slate900,
         }}
       />
-      {/* Location dot under each ungrouped point; the caller draws the styled
-          tooltip on top as a DOM SubsubsectionMarker. */}
       <Layer
         id={SUBSUBSECTION_UNCLUSTERED_LAYER_ID}
         type="circle"
         source={SUBSUBSECTION_CLUSTER_SOURCE_ID}
-        filter={["!", ["has", "point_count"]]}
+        filter={["all", ["!", ["has", "point_count"]], ["==", ["get", "isPoint"], true]]}
         paint={{
-          "circle-color": mapColorTokens.sky400,
+          "circle-color": unclusteredDotColor,
           "circle-radius": 10,
-          "circle-stroke-color": mapColorTokens.sky400,
+          "circle-stroke-color": unclusteredDotColor,
           "circle-stroke-width": 3,
           "circle-opacity": 0.3,
         }}
