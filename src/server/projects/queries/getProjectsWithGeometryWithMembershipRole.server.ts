@@ -1,13 +1,15 @@
+import { UserRoleEnum } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import db from "@/src/server/db.server"
 import { typeSubsectionGeometry } from "@/src/server/subsections/utils/typeSubsectionGeometry"
 
 export async function getProjectsWithGeometryWithMembershipRole(headers: Headers) {
   const session = await endpointAuth.session(headers)
+  const userId = Number(session.userId)
+  const isAdmin = session.role === UserRoleEnum.ADMIN
 
   const projectsWithGeometryWithMembershipRole = await db.project.findMany({
-    // Note: We don't have a "ADMIN" sees all here, because that would fill the Dashboard with a map of all projects
-    where: { memberships: { some: { userId: Number(session.userId) } } },
+    where: isAdmin ? {} : { memberships: { some: { userId } } },
     select: {
       id: true,
       slug: true,
@@ -23,7 +25,7 @@ export async function getProjectsWithGeometryWithMembershipRole(headers: Headers
           SubsectionStatus: { select: { style: true } },
         },
       },
-      memberships: { select: { role: true }, where: { userId: Number(session.userId) } },
+      memberships: { select: { role: true }, where: { userId } },
     },
   })
 
