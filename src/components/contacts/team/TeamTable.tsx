@@ -29,7 +29,7 @@ export const TeamTable = ({ users }: Props) => {
 
   return (
     <>
-      <TableWrapper className="[&>div>div]:border-t-0">
+      <TableWrapper flushTop>
         <div className="@container w-full">
           <table className="min-w-full table-fixed border-collapse text-left text-sm text-gray-700">
             <colgroup>

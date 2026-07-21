@@ -23,7 +23,7 @@ type Props = {
 
 export const TagsManagementTable = ({ tags, editLink, onArchive, onDelete }: Props) => {
   return (
-    <TableWrapper>
+    <TableWrapper flushTop>
       <table className="min-w-full divide-y divide-gray-300">
         <thead className="bg-gray-50">
           <tr>

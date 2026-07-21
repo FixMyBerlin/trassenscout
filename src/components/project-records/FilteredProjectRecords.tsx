@@ -26,6 +26,7 @@ export const FilteredProjectRecords = ({ projectRecords, highlightId }: Props) =
       ) : (
         <ProjectRecordsTable
           isTopicFilter
+          flushTop
           projectRecords={filteredProjectRecords}
           highlightId={highlightId}
           showRelationsColumn

@@ -5,6 +5,8 @@ type Props = {
   className?: string
   children: ReactNode
   bleed?: boolean
+  /** Omit top border when flush under PageHeader (header owns the separator). */
+  flushTop?: boolean
 }
 
 const tableChromeClassName = twJoin(
@@ -15,7 +17,7 @@ const tableChromeClassName = twJoin(
   "[&_tbody]:divide-y [&_tbody]:divide-gray-200 [&_tbody]:bg-white",
 )
 
-export const TableWrapper = ({ className, children, bleed = true }: Props) => {
+export const TableWrapper = ({ className, children, bleed = true, flushTop = false }: Props) => {
   return (
     <div
       className={twMerge(
@@ -29,7 +31,7 @@ export const TableWrapper = ({ className, children, bleed = true }: Props) => {
           bleed ? "inline-block min-w-full md:px-6 lg:px-8" : "w-full",
         )}
       >
-        <div className={tableChromeClassName}>{children}</div>
+        <div className={twMerge(tableChromeClassName, flushTop && "border-t-0")}>{children}</div>
       </div>
     </div>
   )
