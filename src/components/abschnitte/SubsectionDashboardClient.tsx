@@ -9,8 +9,8 @@ import { SubsubsectionMapWithProvider } from "@/src/components/core/components/M
 import {
   MapListViewLayout,
   MAP_VIEWPORT_SHELL_CLASS,
-} from "@/src/components/core/components/pages/MapListViewLayout"
-import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+} from "@/src/components/core/components/PageHeader/MapListViewLayout"
+import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { IfUserCanEdit } from "@/src/components/shared/memberships/IfUserCan"
 import { subsectionsQueryOptions } from "@/src/server/subsections/subsectionsQueryOptions"
 import type { SubsectionsList } from "@/src/server/subsections/types"

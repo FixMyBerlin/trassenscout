@@ -1,7 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
-import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
-import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
+import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
+import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
 import { EditSubsubsectionTaskForm } from "@/src/components/subsubsection-task/EditSubsubsectionTaskForm"
 import { adminLookupRowQueryOptions } from "@/src/server/adminLookupTables/adminLookupTablesQueryOptions"
 

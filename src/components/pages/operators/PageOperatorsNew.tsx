@@ -1,10 +1,10 @@
 import { getRouteApi } from "@tanstack/react-router"
 import { Link } from "@/src/components/core/components/links/Link"
-import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
-import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
+import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { useTryRouteSearch } from "@/src/components/core/routes/useTryRouteSearch"
 import { NewOperatorForm } from "@/src/components/operators/NewOperatorForm"
 import { useOperatorRouteLinks } from "@/src/components/operators/useOperatorActions"
+import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
 
 const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/operators/new/")
 

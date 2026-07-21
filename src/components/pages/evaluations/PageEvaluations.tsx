@@ -1,9 +1,9 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { Markdown } from "@/src/components/core/components/Markdown/Markdown"
-import { pageContentPaddingClassName } from "@/src/components/core/components/pages/pageContentPadding"
-import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
-import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
+import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
+import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
 import { evaluationsPageQueryOptions } from "@/src/server/evaluationsPage/evaluationsPageQueryOptions"
 
 const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/evaluations/")

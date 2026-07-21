@@ -5,7 +5,7 @@ import { SubsubsectionLandAcquisitionContent } from "@/src/components/abschnitte
 import { SubsubsectionLandAcquisitionMap } from "@/src/components/abschnitte/SubsubsectionLandAcquisitionMap"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "@/src/components/core/components/links/Link"
-import { MAP_FULLSCREEN_HEIGHT_CLASS } from "@/src/components/core/components/pages/MapListViewLayout"
+import { MAP_FULLSCREEN_HEIGHT_CLASS } from "@/src/components/core/components/PageHeader/MapListViewLayout"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { subsectionBySlugQueryOptions } from "@/src/server/subsections/subsectionQueryOptions"
 import { subsubsectionBySlugQueryOptions } from "@/src/server/subsubsections/subsubsectionQueryOptions"

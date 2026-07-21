@@ -3,7 +3,7 @@ import { getRouteApi } from "@tanstack/react-router"
 import { AbschnitteBreadcrumb } from "@/src/components/abschnitte/AbschnitteBreadcrumb"
 import { EditSubsectionForm } from "@/src/components/abschnitte/EditSubsectionForm"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
-import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { subsectionBySlugQueryOptions } from "@/src/server/subsections/subsectionQueryOptions"
 
 const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/edit/")

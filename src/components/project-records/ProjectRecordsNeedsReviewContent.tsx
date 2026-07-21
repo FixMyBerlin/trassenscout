@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
-import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { ProjectRecordsNeedsReviewInfoBanner } from "@/src/components/project-records/ProjectRecordNeedsReviewBanner"
 import { ProjectRecordsTable } from "@/src/components/project-records/ProjectRecordTable"

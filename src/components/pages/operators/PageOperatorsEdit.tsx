@@ -1,8 +1,8 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
-import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
-import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
+import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { EditOperatorForm } from "@/src/components/operators/EditOperatorForm"
+import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
 import { adminLookupRowQueryOptions } from "@/src/server/adminLookupTables/adminLookupTablesQueryOptions"
 
 const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/operators/$operatorId/edit/")

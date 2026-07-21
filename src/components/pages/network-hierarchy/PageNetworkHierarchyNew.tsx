@@ -1,10 +1,10 @@
 import { getRouteApi } from "@tanstack/react-router"
 import { Link } from "@/src/components/core/components/links/Link"
-import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
-import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
+import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { useTryRouteSearch } from "@/src/components/core/routes/useTryRouteSearch"
 import { NewNetworkHierarchyForm } from "@/src/components/network-hierarchy/NewNetworkHierarchyForm"
 import { useNetworkHierarchyRouteLinks } from "@/src/components/network-hierarchy/useNetworkHierarchyActions"
+import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
 
 const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/network-hierarchy/new/")
 

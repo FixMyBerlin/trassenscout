@@ -1,7 +1,7 @@
 import { getRouteApi } from "@tanstack/react-router"
 import { AbschnitteBreadcrumb } from "@/src/components/abschnitte/AbschnitteBreadcrumb"
 import { EditAcquisitionAreaForm } from "@/src/components/abschnitte/acquisition-areas/EditAcquisitionAreaForm"
-import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 
 const routeApi = getRouteApi(
   "/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/acquisition-areas/$acquisitionAreaId/edit/",

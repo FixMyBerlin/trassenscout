@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
-import { Breadcrumb, BreadcrumbStep } from "@/src/components/core/components/pages/Breadcrumb"
+import { Breadcrumb, BreadcrumbStep } from "@/src/components/core/components/PageHeader/Breadcrumb"
 import { Route as loggedInProjectRoute } from "@/src/routes/_loggedInProjects/$projectSlug"
 import { projectBySlugQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 

@@ -1,8 +1,8 @@
 import { getRouteApi } from "@tanstack/react-router"
 import { Link } from "@/src/components/core/components/links/Link"
-import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
-import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
+import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { useTryRouteSearch } from "@/src/components/core/routes/useTryRouteSearch"
+import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
 import { NewSubsubsectionTaskForm } from "@/src/components/subsubsection-task/NewSubsubsectionTaskForm"
 import { useSubsubsectionTaskRouteLinks } from "@/src/components/subsubsection-task/useSubsubsectionTaskActions"
 

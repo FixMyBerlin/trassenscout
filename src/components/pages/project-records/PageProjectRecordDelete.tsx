@@ -1,9 +1,9 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
-import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
-import { ProjectPageBreadcrumb } from "@/src/components/core/components/pages/ProjectPageBreadcrumb"
+import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { H3 } from "@/src/components/core/components/text/Headings"
 import { DeleteProjectRecordWithUploadsClient } from "@/src/components/project-records/DeleteProjectRecordWithUploadsClient"
+import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
 import { projectRecordDeleteInfoQueryOptions } from "@/src/server/projectRecords/projectRecordsQueryOptions"
 
 const routeApi = getRouteApi(

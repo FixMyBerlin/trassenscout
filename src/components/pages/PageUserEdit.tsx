@@ -1,4 +1,4 @@
-import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { UserEditForm } from "@/src/components/user/UserEditForm"
 
 export function PageUserEdit() {

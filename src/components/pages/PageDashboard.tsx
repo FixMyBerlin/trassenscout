@@ -5,8 +5,8 @@ import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/Sup
 import {
   MapListViewLayout,
   MAP_VIEWPORT_SHELL_CLASS,
-} from "@/src/components/core/components/pages/MapListViewLayout"
-import { PageHeader } from "@/src/components/core/components/pages/PageHeader"
+} from "@/src/components/core/components/PageHeader/MapListViewLayout"
+import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { AdminProjectsList } from "@/src/components/dashboard/AdminProjectsList"
 import { DashboardMapWithProvider } from "@/src/components/dashboard/DashboardMapWithProvider"
 import { LogEntriesDashboard } from "@/src/components/dashboard/LogEntriesDashboard"
