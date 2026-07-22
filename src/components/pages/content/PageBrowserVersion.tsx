@@ -1,4 +1,7 @@
+import { twMerge } from "tailwind-merge"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
+import { proseClasses } from "@/src/components/core/components/text/prose"
 import { MailButton } from "./browser-version/_components/MailButton"
 
 export function PageBrowserVersion() {
@@ -6,7 +9,7 @@ export function PageBrowserVersion() {
     <>
       <PageHeader title="Browser Version übermitteln" />
 
-      <section className="prose mt-12">
+      <section className={twMerge(proseClasses, pageContentPaddingClassName, "w-full")}>
         <MailButton />
         <p>Die E-Mail enthält Angaben zum Browser und System.</p>
         <p>Bitte senden Sie diese E-Mail an uns ab.</p>

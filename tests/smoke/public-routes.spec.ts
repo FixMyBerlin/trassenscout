@@ -1,10 +1,12 @@
 import { expect, test } from "@playwright/test"
 import { attachRequestFailureCollector } from "../_utils/serverErrors"
 
-const publicRoutes = [
+type PublicRoute = { path: string; heading: RegExp } | { path: string; breadcrumb: RegExp }
+
+const publicRoutes: PublicRoute[] = [
   { path: "/", heading: /Trassenscout findet Wege/ },
-  { path: "/datenschutz", heading: /Datenschutzerklärung/ },
-  { path: "/kontakt", heading: /Kontakt/ },
+  { path: "/datenschutz", breadcrumb: /Datenschutzerklärung/ },
+  { path: "/kontakt", breadcrumb: /Kontakt/ },
   { path: "/auth/login", heading: /In Account einloggen/ },
 ]
 
@@ -21,7 +23,13 @@ test.describe("public route smoke", () => {
       await page.goto(route.path)
 
       await expect(page).toHaveURL(new RegExp(`${route.path === "/" ? "/" : route.path}$`))
-      await expect(page.getByRole("heading", { name: route.heading }).first()).toBeVisible()
+      if ("breadcrumb" in route) {
+        await expect(
+          page.getByRole("navigation", { name: "Breadcrumb" }).getByText(route.breadcrumb),
+        ).toBeVisible()
+      } else {
+        await expect(page.getByRole("heading", { name: route.heading }).first()).toBeVisible()
+      }
       expect(consoleErrors).toEqual([])
       expect(requestFailures).toEqual([])
     })

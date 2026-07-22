@@ -21,6 +21,7 @@ export const ProjectRecordsNeedsReviewContent = () => {
       <PageHeader breadcrumb={breadcrumb} tabs={tabs} />
       {projectRecords.length === 0 ? (
         <ZeroCase
+        textBackgroundClassName="bg-white"
           visible={projectRecords.length}
           text="Momentan gibt es keine Protokolleinträge, die Bestätigung benötigen."
         />
