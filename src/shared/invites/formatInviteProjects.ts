@@ -12,7 +12,7 @@ type InviteProjectRole = InviteProject & {
 }
 
 function formatProjectName(project: InviteProject) {
-  return project.subTitle ?? shortTitle(project.slug)
+  return project.subTitle?.trim() || shortTitle(project.slug)
 }
 
 export function formatInviteProjects(projects: InviteProject[]) {

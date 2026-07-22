@@ -36,7 +36,7 @@ type ProjectRow = {
 }
 
 function getProjectTitle(project: ProjectRow) {
-  return project.subTitle ?? shortTitle(project.slug)
+  return project.subTitle?.trim() || shortTitle(project.slug)
 }
 
 function sortProjectsForInvite(projects: ProjectRow[], projectSlug: string) {
