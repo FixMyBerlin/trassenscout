@@ -20,7 +20,7 @@ export const AbschnitteBreadcrumb = ({ current }: { current?: string }) => {
 
   return (
     <Breadcrumb>
-      <BreadcrumbStep {...projectStepLink}>{project.slug}</BreadcrumbStep>
+      <BreadcrumbStep {...projectStepLink}>{shortTitle(project.slug)}</BreadcrumbStep>
       {subsectionSlug ? (
         <SubsectionCrumb
           projectSlug={projectSlug}
