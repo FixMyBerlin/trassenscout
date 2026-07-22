@@ -14,7 +14,11 @@ import Map, {
   useMap,
 } from "react-map-gl/maplibre"
 import { twJoin } from "tailwind-merge"
-import { FieldError } from "@/src/components/beteiligung/form/FieldErrror"
+import {
+  FieldError,
+  getFieldA11yProps,
+  getFieldDescriptionId,
+} from "@/src/components/beteiligung/form/FieldErrror"
 import {
   LayerType,
   SurveyBackgroundSwitcher,
@@ -107,7 +111,7 @@ export const SwitchableMap = ({
       <div className={twJoin("mt-8 mb-12 w-full p-2", hasError ? "rounded-sm bg-red-50" : "")}>
         <p className={formClasses.fieldLabel}>{label}</p>
         {description && (
-          <p className={formClasses.fieldDescription} id={`${field.name}-hint`}>
+          <p className={formClasses.fieldDescription} id={getFieldDescriptionId(field.name)}>
             {description}
           </p>
         )}
@@ -380,7 +384,14 @@ const SwitchableMapContent = ({
   }
 
   return (
-    <div className="mt-4" aria-describedby={description ? `${field.name}-hint` : undefined}>
+    <div
+      className="mt-4"
+      {...getFieldA11yProps({
+        description,
+        fieldName: field.name,
+        hasError: field.state.meta.errors.length > 0,
+      })}
+    >
       <p className={formClasses.fieldLabel}>
         Bezieht sich Ihre Anmeldung auf eine Haltestelle im Bestand?
       </p>
@@ -396,12 +407,15 @@ const SwitchableMapContent = ({
           <Radio
             key={String(option.key)}
             value={option.key}
-            className="group flex w-full items-start hover:cursor-pointer"
+            className={twJoin(
+              "group flex w-full items-start hover:cursor-pointer",
+              formClasses.choiceFocus,
+            )}
           >
             <div className="flex h-full min-h-10 items-center">
               <div
                 className={twJoin(
-                  "relative size-4 cursor-pointer rounded-full border border-gray-300 transition-colors group-hover:border-gray-400 focus:ring-0",
+                  "relative size-4 cursor-pointer rounded-full border border-gray-300 transition-colors group-hover:border-gray-400",
                 )}
               />
               <span className="absolute m-[2px] size-3 rounded-full border-4 border-(--survey-primary-color) opacity-0 transition group-data-checked:opacity-100" />

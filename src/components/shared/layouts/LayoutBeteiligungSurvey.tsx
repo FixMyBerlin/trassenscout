@@ -22,8 +22,14 @@ export function LayoutBeteiligungSurvey() {
     <>
       <style dangerouslySetInnerHTML={{ __html: themeStyles }} />
       <div className="relative flex h-full flex-col overflow-x-hidden">
+        <a
+          href="#survey-main-content"
+          className="sr-only z-50 rounded-md bg-white px-4 py-3 text-sm font-semibold text-gray-900 shadow-sm ring-2 ring-(--survey-dark-color) focus:not-sr-only focus:absolute focus:top-4 focus:left-4"
+        >
+          Zum Hauptinhalt springen
+        </a>
         <SurveyHeader landingPageUrl={canonicalUrl} logoSrc={logoUrl} title={title} />
-        <main className="mx-auto flex w-full flex-col pb-40">
+        <main id="survey-main-content" className="mx-auto flex w-full flex-col pb-40" tabIndex={-1}>
           <Outlet />
         </main>
         <SurveyFooter />

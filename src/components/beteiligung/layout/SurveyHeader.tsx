@@ -22,8 +22,12 @@ export const SurveyHeader = ({ logoSrc, landingPageUrl, title }: Props) => {
           </span>
           <span className="py-5 pl-5">{title}</span>
         </div>
-        <SurveyLink classNameOverwrites="text-gray-900" href={landingPageUrl}>
-          <XMarkIcon className="size-7" />
+        <SurveyLink
+          aria-label="Beteiligung schließen"
+          classNameOverwrites="text-gray-900 inline-flex min-h-11 min-w-11 items-center justify-center"
+          href={landingPageUrl}
+        >
+          <XMarkIcon className="size-7" aria-hidden="true" />
         </SurveyLink>
       </div>
     </nav>

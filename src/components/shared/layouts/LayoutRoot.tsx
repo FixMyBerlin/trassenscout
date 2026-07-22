@@ -11,7 +11,7 @@ export function LayoutRoot() {
   const { queryClient } = useRouteContext({ from: "__root__" })
 
   return (
-    <html lang="de" className="h-full scroll-smooth">
+    <html lang="de" className="h-full scroll-smooth motion-reduce:scroll-auto">
       <head>
         <HeadContent />
       </head>

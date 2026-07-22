@@ -8,6 +8,7 @@ import {
 import { CheckIcon, ChevronDownIcon } from "@heroicons/react/20/solid"
 import { Fragment } from "react"
 import { twJoin } from "tailwind-merge"
+import { formClasses } from "@/src/components/beteiligung/form/styles"
 import type { ControlPosition } from "@/src/components/core/components/Map/BackgroundSwitcher/BackgroundSwitcher"
 
 export type LayerType = "vector" | "satellite"
@@ -42,7 +43,12 @@ export const SurveyBackgroundSwitcher = ({
       <Listbox value={value} onChange={onChange}>
         {({ open }) => (
           <div className="relative mt-1">
-            <ListboxButton className="focus:border-black-500 relative cursor-default rounded-md border border-gray-300 bg-white py-1 pr-10 pl-3 text-left shadow-xs focus:ring-1 focus:ring-(--survey-primary-color) focus:outline-hidden sm:text-sm">
+            <ListboxButton
+              className={twJoin(
+                "relative cursor-default rounded-md border border-gray-300 bg-white py-1 pr-10 pl-3 text-left shadow-xs sm:text-sm",
+                formClasses.fieldFocus,
+              )}
+            >
               <span className="block truncate">{labels[value]}</span>
               <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                 <ChevronDownIcon className="size-5 text-gray-400" aria-hidden="true" />
@@ -62,8 +68,8 @@ export const SurveyBackgroundSwitcher = ({
                     key={id}
                     className={() =>
                       twJoin(
-                        "text-gray-900",
-                        "relative cursor-default py-1 pr-9 pl-3 text-sm select-none",
+                        "relative cursor-default py-1 pr-9 pl-3 text-sm text-gray-900 select-none",
+                        "data-focus:bg-gray-100 data-focus:outline-hidden",
                       )
                     }
                     value={id}

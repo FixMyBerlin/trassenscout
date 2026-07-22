@@ -1,7 +1,11 @@
 import { Description, Field, Input, Label } from "@headlessui/react"
 import { useEffect } from "react"
 import { FieldWithErrorContainer } from "@/src/components/beteiligung/form/ErrorContainer"
-import { FieldError } from "@/src/components/beteiligung/form/FieldErrror"
+import {
+  FieldError,
+  getFieldA11yProps,
+  getFieldDescriptionId,
+} from "@/src/components/beteiligung/form/FieldErrror"
 import { formClasses } from "@/src/components/beteiligung/form/styles"
 import { useFieldContext } from "@/src/components/beteiligung/shared/hooks/form-context"
 
@@ -34,14 +38,22 @@ export const SurveyVorgangsIdField = ({
           <Label className={formClasses.fieldLabel}>
             {label} {!required && "(optional)"}
           </Label>
-          <Description className={formClasses.fieldDescription}>{description}</Description>
+          {description && (
+            <Description
+              id={getFieldDescriptionId(field.name)}
+              className={formClasses.fieldDescription}
+            >
+              {description}
+            </Description>
+          )}
         </div>
         <Input
           id={field.name}
           name={field.name}
           value={field.state.value}
           readOnly
-          className="block w-full appearance-none rounded-md border border-gray-300 bg-gray-200 px-3 py-2 placeholder-gray-400 shadow-xs focus:border-(--survey-primary-color) focus:ring-(--survey-primary-color) focus:outline-hidden sm:text-sm"
+          className={`block w-full appearance-none rounded-md border border-gray-300 bg-gray-100 px-3 py-2 placeholder-gray-600 shadow-xs sm:text-sm ${formClasses.fieldFocus}`}
+          {...getFieldA11yProps({ description, fieldName: field.name, hasError })}
         />
       </Field>
       <FieldError field={field} />

@@ -2,7 +2,11 @@ import { useQuery } from "@tanstack/react-query"
 import { useState } from "react"
 import { twJoin } from "tailwind-merge"
 import { FieldWithErrorContainer } from "@/src/components/beteiligung/form/ErrorContainer"
-import { FieldError } from "@/src/components/beteiligung/form/FieldErrror"
+import {
+  FieldError,
+  getFieldA11yProps,
+  getFieldDescriptionId,
+} from "@/src/components/beteiligung/form/FieldErrror"
 import { formClasses } from "@/src/components/beteiligung/form/styles"
 import { useFieldContext } from "@/src/components/beteiligung/shared/hooks/form-context"
 import { Tooltip } from "@/src/components/core/components/Tooltip/Tooltip"
@@ -111,7 +115,7 @@ export const SurveyUploadField = ({
           {label} {!required && "(optional)"}
         </p>
         {description && (
-          <p className={formClasses.fieldDescription} id={`${field.name}-hint`}>
+          <p className={formClasses.fieldDescription} id={getFieldDescriptionId(field.name)}>
             {description}
           </p>
         )}
@@ -132,13 +136,19 @@ export const SurveyUploadField = ({
         </div>
       )}
 
-      <UploadDropzoneContainer className="h-40 max-w-md border border-gray-300 p-2">
-        <SurveyUploadDropzone
-          surveyResponseId={surveyResponseId}
-          surveySessionId={surveySessionId}
-          onUploadComplete={handleUploadComplete}
-        />
-      </UploadDropzoneContainer>
+      <div
+        role="group"
+        aria-label={label}
+        {...getFieldA11yProps({ description, fieldName: field.name, hasError })}
+      >
+        <UploadDropzoneContainer className="h-40 max-w-md border border-gray-300 p-2">
+          <SurveyUploadDropzone
+            surveyResponseId={surveyResponseId}
+            surveySessionId={surveySessionId}
+            onUploadComplete={handleUploadComplete}
+          />
+        </UploadDropzoneContainer>
+      </div>
 
       <FieldError field={field} />
     </FieldWithErrorContainer>
