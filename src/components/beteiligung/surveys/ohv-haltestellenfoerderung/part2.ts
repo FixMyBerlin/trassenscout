@@ -426,6 +426,8 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           defaultValue: "",
           props: {
             label: "Telefonnummer für Rückfragen",
+            type: "tel",
+            autoComplete: "tel",
           },
         },
         {
@@ -436,6 +438,8 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           defaultValue: "",
           props: {
             label: "E-Mail-Adresse zur Bestätigung der Maßnahmenmeldung",
+            type: "email",
+            autoComplete: "email",
           },
         },
         {

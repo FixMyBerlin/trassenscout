@@ -1,6 +1,10 @@
 import { Description, Field, Label, Textarea } from "@headlessui/react"
 import { FieldWithErrorContainer } from "@/src/components/beteiligung/form/ErrorContainer"
-import { FieldError } from "@/src/components/beteiligung/form/FieldErrror"
+import {
+  FieldError,
+  getFieldA11yProps,
+  getFieldDescriptionId,
+} from "@/src/components/beteiligung/form/FieldErrror"
 import { formClasses } from "@/src/components/beteiligung/form/styles"
 import { useFieldContext } from "@/src/components/beteiligung/shared/hooks/form-context"
 
@@ -27,7 +31,14 @@ export const SurveyTextarea = ({
           <Label className={formClasses.fieldLabel}>
             {label} {!required && "(optional)"}
           </Label>
-          <Description className={formClasses.fieldDescription}>{description}</Description>
+          {description && (
+            <Description
+              id={getFieldDescriptionId(field.name)}
+              className={formClasses.fieldDescription}
+            >
+              {description}
+            </Description>
+          )}
         </div>
         <Textarea
           id={field.name}
@@ -35,7 +46,8 @@ export const SurveyTextarea = ({
           value={field.state.value}
           onChange={(e) => field.handleChange(e.target.value)}
           rows={6}
-          className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-xs focus:border-(--survey-primary-color) focus:ring-(--survey-primary-color) focus:outline-hidden"
+          className={`block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-600 shadow-xs ${formClasses.fieldFocus}`}
+          {...getFieldA11yProps({ description, fieldName: field.name, hasError })}
           {...props}
         />
       </Field>

@@ -2,7 +2,11 @@ import { Description, Field, Input, Label, Select } from "@headlessui/react"
 import { useSearch } from "@tanstack/react-router"
 import { useEffect } from "react"
 import { FieldWithErrorContainer } from "@/src/components/beteiligung/form/ErrorContainer"
-import { FieldError } from "@/src/components/beteiligung/form/FieldErrror"
+import {
+  FieldError,
+  getFieldA11yProps,
+  getFieldDescriptionId,
+} from "@/src/components/beteiligung/form/FieldErrror"
 import { formClasses } from "@/src/components/beteiligung/form/styles"
 import { useFieldContext } from "@/src/components/beteiligung/shared/hooks/form-context"
 
@@ -56,7 +60,14 @@ export const SurveySelect = ({
           <Label className={formClasses.fieldLabel}>
             {label} {!required && "(optional)"}
           </Label>
-          <Description className={formClasses.fieldDescription}>{description}</Description>
+          {description && (
+            <Description
+              id={getFieldDescriptionId(field.name)}
+              className={formClasses.fieldDescription}
+            >
+              {description}
+            </Description>
+          )}
         </div>
         {readOnly ? (
           <Input
@@ -65,15 +76,19 @@ export const SurveySelect = ({
             value={selectedOptionLabel}
             readOnly
             aria-label={label}
-            className="block w-full appearance-none rounded-md border border-gray-300 bg-gray-200 px-3 py-2 shadow-xs focus:border-(--survey-primary-color) focus:ring-(--survey-primary-color) focus:outline-hidden sm:text-sm"
+            className={`block w-full appearance-none rounded-md border border-gray-300 bg-gray-100 px-3 py-2 shadow-xs sm:text-sm ${formClasses.fieldFocus}`}
+            {...getFieldA11yProps({ description, fieldName: field.name, hasError })}
           />
         ) : (
           <Select
+            id={field.name}
+            name={field.name}
             disabled={readOnly}
             value={field.state.value}
             onChange={(e) => field.handleChange(e.target.value)}
             aria-label={label}
-            className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 shadow-xs focus:border-(--survey-primary-color) focus:ring-(--survey-primary-color) focus:outline-hidden data-disabled:bg-gray-200 sm:text-sm"
+            className={`block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 shadow-xs data-disabled:bg-gray-100 sm:text-sm ${formClasses.fieldFocus}`}
+            {...getFieldA11yProps({ description, fieldName: field.name, hasError })}
           >
             {placeholder && (
               <option disabled value="">

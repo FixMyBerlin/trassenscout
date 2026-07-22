@@ -150,6 +150,7 @@ export function UploadDropzoneProgress({
   })
 
   const { getRootProps, getInputProps, isDragActive, inputRef } = useDropzone({
+    disabled: isPending,
     onDrop: async (files) => {
       if (files.length > 0) {
         // Clear any previous errors when new files are selected
@@ -168,7 +169,6 @@ export function UploadDropzoneProgress({
         inputRef.current.value = ""
       }
     },
-    noClick: true,
   })
 
   const inputProps = getInputProps()
@@ -193,15 +193,26 @@ export function UploadDropzoneProgress({
           isDragActive ? "border-blue-500" : "",
         )}
       >
-        <label
-          {...getRootProps()}
+        <input
+          {...inputProps}
+          aria-label={translations.dragAndDrop}
+          type="file"
+          multiple
+          id={_id || id}
+          accept={accept}
+          onChange={handleFileChange}
+        />
+        <div
+          {...getRootProps({
+            "aria-label": translations.dragAndDrop,
+            role: "button",
+          })}
           className={twMerge(
             "flex w-full cursor-pointer flex-col items-center justify-center rounded-lg bg-white px-2 py-6 transition-colors",
             fillContainer ? "h-full" : "min-w-72",
             isPending ? "cursor-not-allowed text-gray-500" : "hover:bg-blue-50",
             isDragActive ? "opacity-0" : "",
           )}
-          htmlFor={_id || id}
         >
           <div className="my-2">
             <ArrowUpTrayIcon className="size-6" />
@@ -227,17 +238,7 @@ export function UploadDropzoneProgress({
               )}
             </p>
           </div>
-
-          <input
-            {...inputProps}
-            type="file"
-            multiple
-            id={_id || id}
-            accept={accept}
-            disabled={isPending}
-            onChange={handleFileChange}
-          />
-        </label>
+        </div>
 
         {isDragActive && (
           <div className="pointer-events-none absolute inset-0 rounded-lg">

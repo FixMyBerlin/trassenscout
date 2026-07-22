@@ -3,11 +3,11 @@ import type { SurveyLinkProps } from "./SurveyLink"
 
 // BUTTON:
 const buttonBase =
-  "w-full font-medium sm:w-auto shadow-xs text-sm sm:text-base pb-3.5 pt-4 px-6 rounded-lg inline-flex items-center justify-center no-underline"
+  "w-full font-medium sm:w-auto shadow-xs text-sm sm:text-base pb-3.5 pt-4 px-6 rounded-lg inline-flex items-center justify-center no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--survey-dark-color)"
 
 // LINK
 export const partcipationLinkStyles =
-  "underline text-(--survey-primary-color) decoreation-[var(--survey-primary-color)] hover:text-(--survey-dark-color) hover:decoration-(--survey-dark-color)"
+  "underline text-(--survey-primary-color) decoreation-[var(--survey-primary-color)] hover:text-(--survey-dark-color) hover:decoration-(--survey-dark-color) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--survey-dark-color)"
 
 // HOVER and ACTIVE
 // for button elements

@@ -16,7 +16,10 @@ export const SurveyLink = forwardRef<HTMLAnchorElement, SurveyLinkProps>(functio
   { href, className, classNameOverwrites, children, blank = false, button, ...props },
   ref,
 ) {
-  const classNames = twJoin(classNameOverwrites ?? selectSurveyLinkStyle(button, className))
+  const classNames = twJoin(
+    "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--survey-dark-color)",
+    classNameOverwrites ?? selectSurveyLinkStyle(button, className),
+  )
 
   if (href.startsWith("http") || href.startsWith("mailto:") || href.startsWith("tel:")) {
     return (

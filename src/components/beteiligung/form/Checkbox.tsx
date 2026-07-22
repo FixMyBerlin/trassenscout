@@ -2,7 +2,11 @@ import { Checkbox, Description, Field } from "@headlessui/react"
 import { CheckIcon } from "@heroicons/react/16/solid"
 import { twJoin } from "tailwind-merge"
 import { FieldWithErrorContainer } from "@/src/components/beteiligung/form/ErrorContainer"
-import { FieldError } from "@/src/components/beteiligung/form/FieldErrror"
+import {
+  FieldError,
+  getFieldA11yProps,
+  getFieldDescriptionId,
+} from "@/src/components/beteiligung/form/FieldErrror"
 import { formClasses } from "@/src/components/beteiligung/form/styles"
 import { useFieldContext } from "@/src/components/beteiligung/shared/hooks/form-context"
 
@@ -28,7 +32,7 @@ export const SurveyCheckbox = ({
       <div className="mb-4">
         {label && <p className={formClasses.fieldLabel}>{label}</p>}
         {description && (
-          <p className={formClasses.fieldDescription} id={`${field.name}-hint`}>
+          <p className={formClasses.fieldDescription} id={getFieldDescriptionId(field.name)}>
             {description}
           </p>
         )}
@@ -40,7 +44,11 @@ export const SurveyCheckbox = ({
           checked={field.state.value}
           onChange={field.handleChange}
           onBlur={field.handleBlur}
-          className="group flex w-full cursor-pointer items-center"
+          className={twJoin(
+            "group flex w-full cursor-pointer items-center",
+            formClasses.choiceFocus,
+          )}
+          {...getFieldA11yProps({ description, fieldName: field.name, hasError })}
         >
           <div className="mr-3 flex h-5 items-center">
             <div className="relative">

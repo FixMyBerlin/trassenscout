@@ -9,7 +9,7 @@ export const formConfig: FormConfig = {
     canonicalUrl: "https://www.oberhavel.de/",
     maptilerUrl: "https://api.maptiler.com/maps/b09268b1-91d0-42e2-9518-321a1a94738f/style.json",
     hideProgressBar: true,
-    primaryColor: "#006ab2",
+    primaryColor: "#02558e",
     darkColor: "#00375D",
     lightColor: "#B8D5E9",
   },
