@@ -16,6 +16,7 @@ import { primaryButtonClassName } from "@/src/components/core/components/buttons
 import { Link } from "@/src/components/core/components/links/Link"
 import { linkStyles } from "@/src/components/core/components/links/styles"
 import { Prettify } from "@/src/components/core/types"
+import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { adminLookupRowsQueryOptions } from "@/src/server/adminLookupTables/adminLookupTablesQueryOptions"
 import { getSubsectionBySlugFn } from "@/src/server/subsections/subsections.functions"
 import {
@@ -53,6 +54,7 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
   normalizedResponseSubsectionSlug,
 }: ConvertWithLookupProps) => {
   const queryClient = useQueryClient()
+  const userCanEdit = useUserCan().edit
   const [convertError, setConvertError] = useState<string | null>(null)
   const [convertedSubsubsectionSlug, setConvertedSubsubsectionSlug] = useState<string | null>(null)
   const createSubsubsectionMutation = useMutation({ mutationFn: createSubsubsectionFn })
@@ -235,7 +237,7 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
           <p className="text-sm">{convertError}</p>
         </div>
       )}
-      {!existingSubsubsectionSlug && (
+      {!existingSubsubsectionSlug && userCanEdit && (
         <div className="flex justify-end">
           <button
             type="button"

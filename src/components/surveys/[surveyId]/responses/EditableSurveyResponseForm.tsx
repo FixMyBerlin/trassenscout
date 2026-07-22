@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
-import { type JSX, PropsWithoutRef, useState } from "react"
+import { type JSX, type PropsWithoutRef, type ReactNode, useState } from "react"
 import { twJoin } from "tailwind-merge"
 import { backendConfig as defaultBackendConfig } from "@/src/components/beteiligung/shared/backend-types"
 import { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
@@ -8,7 +8,6 @@ import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAd
 import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { Link } from "@/src/components/core/components/links/Link"
 import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
-import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { buildTagCheckboxItems } from "@/src/components/tags/buildTagCheckboxItems"
 import { Operator } from "@/src/prisma/generated/browser"
 import { patchSurveyResponseFn } from "@/src/server/survey-responses/surveyResponses.functions"
@@ -21,6 +20,32 @@ import { LabeledTextarea } from "./form/LabeledTextarea"
 import { useSurveyResponseFilters as useFilters } from "./useSurveyResponseFilters"
 
 const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
+
+type ReadOnlyPillProps = {
+  label: string
+  color?: string
+}
+
+const ReadOnlyPill = ({ label, color }: ReadOnlyPillProps) => (
+  <span
+    className="inline-flex rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-800"
+    style={color ? { backgroundColor: color } : undefined}
+  >
+    {label}
+  </span>
+)
+
+type ReadOnlyFieldProps = {
+  label: string
+  children: ReactNode
+}
+
+const ReadOnlyField = ({ label, children }: ReadOnlyFieldProps) => (
+  <div>
+    <p className="mb-3 font-semibold">{label}</p>
+    <div className="flex flex-wrap gap-2">{children}</div>
+  </div>
+)
 
 type Props = Omit<PropsWithoutRef<JSX.IntrinsicElements["form"]>, "onSubmit"> & {
   backendConfig: import("@/src/components/beteiligung/shared/backend-types").TBackendConfig
@@ -65,6 +90,12 @@ export function EditableSurveyResponseForm({
     return { value: String(operator.id), label: operator.title }
   })
   const topicsOptions = buildTagCheckboxItems(topics, responseTopics)
+  const responseOperatorLabel = response.operator?.title || "Nicht zugeordnet"
+  const responseStatusOption = statusOptions.find((item) => item.value === response.status)
+  const responseTagIds = response.surveyResponseTags.map(String)
+  const selectedTopicOptions = buildTagCheckboxItems(topics, responseTagIds).filter((item) =>
+    responseTagIds.includes(item.value),
+  )
 
   // Base the patch payload on the local (already-edited) state, not on the `response`
   // prop. The prop only refreshes after refetchResponsesAndTopics() settles, so reading
@@ -205,6 +236,7 @@ export function EditableSurveyResponseForm({
         <EditableSurveyResponseUploadsSection
           projectSlug={projectSlug}
           surveyId={response.surveySession.surveyId}
+          surveySessionId={response.surveySessionId}
           responseId={response.id}
           responseData={response.data}
           surveySlug={surveySlug}
@@ -212,74 +244,97 @@ export function EditableSurveyResponseForm({
           refetchResponsesAndTopics={refetchResponsesAndTopics}
         />
         <div className={twJoin("flex gap-6", showMap ? "flex-row" : "flex-col")}>
-          <form className="flex flex-col gap-6">
-            {/* BLT */}
-            <FormElementWrapper
-              label={labels.operator?.sg || defaultBackendConfig.labels.operator.sg}
-            >
-              {[...operatorsOptions, { value: "0", label: "Nicht zugeordnet" }].map((item) => (
-                <LabeledInputRadioCheckbox
-                  type="radio"
-                  name="responseOperator"
-                  key={item.value}
-                  checked={String(responseOperator?.id) === item.value}
-                  onChange={handleStatusOperatorTopicsInputChange}
-                  value={item.value}
-                  label={item.label}
-                  disabled={!userCanEdit}
+          {userCanEdit ? (
+            <form className="flex flex-col gap-6">
+              {/* BLT */}
+              <FormElementWrapper
+                label={labels.operator?.sg || defaultBackendConfig.labels.operator.sg}
+              >
+                {[...operatorsOptions, { value: "0", label: "Nicht zugeordnet" }].map((item) => (
+                  <LabeledInputRadioCheckbox
+                    type="radio"
+                    name="responseOperator"
+                    key={item.value}
+                    checked={String(responseOperator?.id) === item.value}
+                    onChange={handleStatusOperatorTopicsInputChange}
+                    value={item.value}
+                    label={item.label}
+                  />
+                ))}
+              </FormElementWrapper>
+              {/* STATUS */}
+              <FormElementWrapper
+                label={labels.status?.sg || defaultBackendConfig.labels.category.sg}
+              >
+                {statusOptions.map((item) => (
+                  <LabeledInputRadioCheckbox
+                    classNameLabelSpan={"px-2 py-1 rounded-full"}
+                    labelSpanStyle={{ backgroundColor: item.color }}
+                    type="radio"
+                    name="responseStatus"
+                    key={item.value}
+                    checked={responseStatus === item.value}
+                    onChange={handleStatusOperatorTopicsInputChange}
+                    value={item.value}
+                    label={item.label}
+                  />
+                ))}
+              </FormElementWrapper>
+            </form>
+          ) : (
+            <div className="flex flex-col gap-6">
+              <ReadOnlyField label={labels.operator?.sg || defaultBackendConfig.labels.operator.sg}>
+                <ReadOnlyPill label={responseOperatorLabel} />
+              </ReadOnlyField>
+              <ReadOnlyField label={labels.status?.sg || defaultBackendConfig.labels.category.sg}>
+                <ReadOnlyPill
+                  label={responseStatusOption?.label || response.status || "Kein Status"}
+                  color={responseStatusOption?.color}
                 />
-              ))}
-            </FormElementWrapper>
-            {/* STATUS */}
-            <FormElementWrapper
-              label={labels.status?.sg || defaultBackendConfig.labels.category.sg}
-            >
-              {statusOptions.map((item) => (
-                <LabeledInputRadioCheckbox
-                  classNameLabelSpan={"px-2 py-1 rounded-full"}
-                  labelSpanStyle={{ backgroundColor: item.color }}
-                  type="radio"
-                  name="responseStatus"
-                  key={item.value}
-                  checked={responseStatus === item.value}
-                  onChange={handleStatusOperatorTopicsInputChange}
-                  value={item.value}
-                  label={item.label}
-                  disabled={!userCanEdit}
-                />
-              ))}
-            </FormElementWrapper>
-          </form>
+              </ReadOnlyField>
+            </div>
+          )}
         </div>
         {/* TAGS */}
         <div className="flex flex-col items-start gap-4">
           <div className="flex w-full items-end gap-5">
-            <form className="grow">
-              <FormElementWrapper
-                label={labels.topics?.pl || defaultBackendConfig.labels.topics.pl}
-              >
-                <div
-                  // todo container query?
-                  className={twJoin(
-                    showMap ? "md:grid-cols-3 lg:grid-cols-4" : "",
-                    "grid grid-cols-2 gap-1.5",
-                  )}
+            {userCanEdit ? (
+              <form className="grow">
+                <FormElementWrapper
+                  label={labels.topics?.pl || defaultBackendConfig.labels.topics.pl}
                 >
-                  {topicsOptions.map((item) => (
-                    <LabeledInputRadioCheckbox
-                      type="checkbox"
-                      name="surveyResponseTags"
-                      key={item.value}
-                      checked={responseTopics.includes(item.value)}
-                      onChange={handleStatusOperatorTopicsInputChange}
-                      value={item.value}
-                      label={item.label}
-                      disabled={!userCanEdit}
-                    />
-                  ))}
-                </div>
-              </FormElementWrapper>
-            </form>
+                  <div
+                    // todo container query?
+                    className={twJoin(
+                      showMap ? "md:grid-cols-3 lg:grid-cols-4" : "",
+                      "grid grid-cols-2 gap-1.5",
+                    )}
+                  >
+                    {topicsOptions.map((item) => (
+                      <LabeledInputRadioCheckbox
+                        type="checkbox"
+                        name="surveyResponseTags"
+                        key={item.value}
+                        checked={responseTopics.includes(item.value)}
+                        onChange={handleStatusOperatorTopicsInputChange}
+                        value={item.value}
+                        label={item.label}
+                      />
+                    ))}
+                  </div>
+                </FormElementWrapper>
+              </form>
+            ) : (
+              <ReadOnlyField label={labels.topics?.pl || defaultBackendConfig.labels.topics.pl}>
+                {selectedTopicOptions.length ? (
+                  selectedTopicOptions.map((item) => (
+                    <ReadOnlyPill key={item.value} label={item.label} />
+                  ))
+                ) : (
+                  <span className="text-sm text-gray-500">Keine Tags ausgewählt.</span>
+                )}
+              </ReadOnlyField>
+            )}
             <SuperAdminBox className="shrink-0">
               <Link
                 to="/$projectSlug/survey-response-tags"
@@ -291,7 +346,7 @@ export function EditableSurveyResponseForm({
               </Link>
             </SuperAdminBox>
           </div>
-          <IfUserCanEdit>
+          {userCanEdit && (
             <form onSubmit={handleNewTopicFormSubmit} className="min-w-[300px] space-y-2">
               <input
                 onChange={(e) => setNewTopic(e.target.value)}
@@ -315,47 +370,56 @@ export function EditableSurveyResponseForm({
                 Hinzufügen
               </button>
             </form>
-          </IfUserCanEdit>
+          )}
         </div>
       </div>
       {/* NOTE */}
       {!backendConfig.disableNote && (
-        <form className="flex" onSubmit={handleNoteFormSubmit}>
-          <fieldset className="max-w-3xl">
-            <FormElementWrapper label={labels.note?.sg || defaultBackendConfig.labels.note.sg}>
-              <LabeledTextarea
-                name="note"
-                value={responseNote || ""}
-                onChange={(e) => {
-                  setHasUnsavedChanges(true)
-                  setResponseNote(e.target.value)
-                }}
-                className={twJoin(
-                  hasUnsavedChanges &&
-                    "border-yellow-500 ring-yellow-500 focus:border-yellow-500 focus:ring-yellow-500",
-                )}
-                disabled={!userCanEdit}
-              />
-            </FormElementWrapper>
-            <div className="my-2 text-sm text-gray-500">
-              {userCanEdit ? labels.note?.help || defaultBackendConfig.labels.note.help : undefined}
-            </div>
-            <IfUserCanEdit>
-              <div className="flex items-end justify-between">
-                <button
-                  type="submit"
-                  disabled={!userCanEdit}
-                  className={twJoin(primaryButtonClassName, "px-3! py-2.5!")}
-                >
-                  {labels.note?.sg || defaultBackendConfig.labels.note.sg} speichern
-                </button>
-                <small className={twJoin(!hasUnsavedChanges ? "opacity-0" : "", "text-yellow-500")}>
-                  ungespeicherte Änderungen
-                </small>
-              </div>
-            </IfUserCanEdit>
-          </fieldset>
-        </form>
+        <>
+          {userCanEdit ? (
+            <form className="flex" onSubmit={handleNoteFormSubmit}>
+              <fieldset className="max-w-3xl">
+                <FormElementWrapper label={labels.note?.sg || defaultBackendConfig.labels.note.sg}>
+                  <LabeledTextarea
+                    name="note"
+                    value={responseNote || ""}
+                    onChange={(e) => {
+                      setHasUnsavedChanges(true)
+                      setResponseNote(e.target.value)
+                    }}
+                    className={twJoin(
+                      hasUnsavedChanges &&
+                        "border-yellow-500 ring-yellow-500 focus:border-yellow-500 focus:ring-yellow-500",
+                    )}
+                  />
+                </FormElementWrapper>
+                <div className="my-2 text-sm text-gray-500">
+                  {labels.note?.help || defaultBackendConfig.labels.note.help}
+                </div>
+                <div className="flex items-end justify-between">
+                  <button
+                    type="submit"
+                    disabled={!userCanEdit}
+                    className={twJoin(primaryButtonClassName, "px-3! py-2.5!")}
+                  >
+                    {labels.note?.sg || defaultBackendConfig.labels.note.sg} speichern
+                  </button>
+                  <small
+                    className={twJoin(!hasUnsavedChanges ? "opacity-0" : "", "text-yellow-500")}
+                  >
+                    ungespeicherte Änderungen
+                  </small>
+                </div>
+              </fieldset>
+            </form>
+          ) : (
+            <ReadOnlyField label={labels.note?.sg || defaultBackendConfig.labels.note.sg}>
+              <p className="min-h-20 w-full max-w-3xl rounded-md border border-gray-200 bg-gray-50 p-3 text-sm whitespace-pre-wrap text-gray-700">
+                {response.note || "Keine Notiz vorhanden."}
+              </p>
+            </ReadOnlyField>
+          )}
+        </>
       )}
     </>
   )

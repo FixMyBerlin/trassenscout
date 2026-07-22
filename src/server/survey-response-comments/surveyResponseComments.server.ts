@@ -1,6 +1,6 @@
 import { z } from "zod"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
-import { editorRoles } from "@/src/server/authorization/constants"
+import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
 import { ProjectSlugRequiredSchema } from "@/src/shared/authorization/projectSlugSchema"
 import { CreateSurveyResponseCommentSchema } from "@/src/shared/survey-response-comments/schemas"
@@ -24,7 +24,7 @@ export async function createSurveyResponseComment(
   headers: Headers,
   input: z.infer<typeof CreateSurveyResponseCommentBySlugSchema>,
 ) {
-  const { session } = await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
+  const { session } = await endpointAuth.projectRole(headers, input.projectSlug, viewerRoles)
   await db.surveyResponse.findFirstOrThrow({
     where: surveyResponseInProjectWhere(input.projectSlug, input.surveyResponseId),
     select: { id: true },

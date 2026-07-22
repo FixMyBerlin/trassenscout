@@ -5,7 +5,7 @@ import {
   isSupportedUploadFilename,
 } from "@/src/components/core/uploads/getFileType"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
-import { editorRoles } from "@/src/server/authorization/constants"
+import { viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
 import { authErrorToResponse } from "@/src/shared/auth/errors"
 import { S3_BUCKET, S3_MAX_FILE_SIZE_BYTES, S3_MAX_FILES_SURVEY } from "@/src/shared/uploads/config"
@@ -17,6 +17,10 @@ import { uploadSource } from "./_utils/sources"
 const SurveyUploadParamsSchema = z.object({
   surveyResponseId: z.coerce.number().int().positive(),
   surveySessionId: z.coerce.number().int().positive(),
+})
+const ProjectSurveyResponseUploadParamsSchema = z.object({
+  surveyResponseId: z.coerce.number().int().positive(),
+  surveySessionId: z.coerce.number().int().positive().optional(),
 })
 
 function assertSupportedUploadMimeTypes(files: { name: string; type: string }[]) {
@@ -64,6 +68,37 @@ async function verifySurveyResponseSession(surveyResponseId: number, surveySessi
 
   return {
     projectSlug: surveyResponse.surveySession.survey.project.slug,
+  }
+}
+
+async function verifyProjectSurveyResponseUpload(
+  projectSlug: string,
+  clientMetadata: Record<string, unknown> | null,
+) {
+  const params = ProjectSurveyResponseUploadParamsSchema.safeParse({
+    surveyResponseId: clientMetadata?.surveyResponseId,
+    surveySessionId: clientMetadata?.surveySessionId,
+  })
+
+  if (!params.success) {
+    throw new RejectUpload("Missing or invalid surveyResponseId")
+  }
+
+  const surveyResponse = await db.surveyResponse.findFirst({
+    where: {
+      id: params.data.surveyResponseId,
+      ...(params.data.surveySessionId ? { surveySessionId: params.data.surveySessionId } : {}),
+      surveySession: {
+        survey: {
+          project: { slug: projectSlug },
+        },
+      },
+    },
+    select: { id: true },
+  })
+
+  if (!surveyResponse) {
+    throw new RejectUpload("Survey response not found or does not belong to the project")
   }
 }
 
@@ -133,17 +168,21 @@ export async function handleSurveyUploadRoute(request: Request) {
 }
 
 export async function handleProjectUploadRoute(request: Request, projectSlug: string) {
-  const session = await endpointAuth.projectMember({
+  const { membershipRole, userId } = await endpointAuth.projectMember({
     headers: request.headers,
     projectSlug,
-    roles: editorRoles,
+    roles: viewerRoles,
   })
+  const canEdit = membershipRole === null || membershipRole === "EDITOR"
 
   try {
     const router = createUploadRouter({
       keyPrefix: projectSlug,
-      userId: Number(session.userId),
-      onBeforeUpload: async (files) => {
+      userId: Number(userId),
+      onBeforeUpload: async (files, clientMetadata) => {
+        if (!canEdit) {
+          await verifyProjectSurveyResponseUpload(projectSlug, clientMetadata)
+        }
         assertSupportedUploadMimeTypes(files)
       },
     })

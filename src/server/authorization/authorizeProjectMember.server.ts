@@ -1,13 +1,12 @@
 import { UserRoleEnum } from "@/src/prisma/generated/browser"
 import db from "@/src/server/db.server"
 import { AuthorizationError } from "@/src/shared/auth/errors"
+import type { MembershipRole } from "./types"
 
 type ProjectAuthSession = {
   role: UserRoleEnum
   userId: number | string
 }
-
-type MembershipRole = "VIEWER" | "EDITOR"
 
 function getNumericUserId(userId: number | string) {
   const numericUserId = typeof userId === "number" ? userId : Number(userId)
@@ -23,7 +22,7 @@ export async function authorizeProjectMemberByProjectSlug(
   requiredRoles: MembershipRole[],
 ) {
   if (session.role === UserRoleEnum.ADMIN) {
-    return
+    return null
   }
 
   const freshMembership = await db.membership.findFirst({
@@ -36,4 +35,6 @@ export async function authorizeProjectMemberByProjectSlug(
   if (!freshMembership || !requiredRoles.includes(freshMembership.role)) {
     throw new AuthorizationError()
   }
+
+  return freshMembership.role
 }

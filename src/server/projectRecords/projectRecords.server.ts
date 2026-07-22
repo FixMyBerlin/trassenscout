@@ -3,7 +3,6 @@ import { projectRecordAssignedNotificationToUser } from "@/emails/mailers/projec
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { ProjectRecordReviewState, ProjectRecordType } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
-import { checkProjectAuthorization } from "@/src/server/authorization/checkProjectAuthorization.server"
 import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
@@ -364,21 +363,13 @@ export async function getProjectRecord(
   headers: Headers,
   input: z.infer<typeof GetProjectRecordSchema>,
 ) {
-  const { projectId, session } = await endpointAuth.projectRole(
+  const { projectId, membershipRole } = await endpointAuth.projectRole(
     headers,
     input.projectSlug,
     viewerRoles,
   )
 
-  const authorization = await checkProjectAuthorization(session, input.projectSlug)
-  if (!authorization.authorized) {
-    throw new NotFoundError()
-  }
-
-  const canEdit =
-    authorization.membershipRole === null ||
-    (authorization.membershipRole !== undefined &&
-      editorRoles.includes(authorization.membershipRole))
+  const canEdit = membershipRole === null || editorRoles.includes(membershipRole)
 
   const project = await db.project.findUnique({
     where: { id: projectId },

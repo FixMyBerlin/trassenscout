@@ -1,3 +1,6 @@
+import { S3_BUCKET, S3_REGION } from "@/src/shared/uploads/config"
+import { getS3KeyFromUrl } from "@/src/shared/uploads/url"
+
 const uuid = () => crypto.randomUUID()
 
 export const sanitizeKey = (value: string) => {
@@ -6,9 +9,27 @@ export const sanitizeKey = (value: string) => {
 }
 
 export const generateS3Key = (projectSlug: string, filename: string) => {
-  const rootFolder = process.env.S3_UPLOAD_ROOTFOLDER
   const sanitizedFilename = sanitizeKey(filename)
-  return `${rootFolder}/${projectSlug}/${uuid()}/${sanitizedFilename}` as const
+  return `${getProjectUploadS3KeyPrefix(projectSlug)}${uuid()}/${sanitizedFilename}` as const
+}
+
+export const getProjectUploadS3KeyPrefix = (projectSlug: string) => {
+  const rootFolder = process.env.S3_UPLOAD_ROOTFOLDER
+  if (!rootFolder) {
+    throw new Error("Missing S3_UPLOAD_ROOTFOLDER")
+  }
+  return `${rootFolder}/${projectSlug}/` as const
+}
+
+export const isProjectUploadS3Url = (externalUrl: string, projectSlug: string) => {
+  try {
+    const url = new URL(externalUrl)
+    if (url.protocol !== "https:") return false
+    if (url.host !== `${S3_BUCKET}.s3.${S3_REGION}.amazonaws.com`) return false
+    return getS3KeyFromUrl(externalUrl).startsWith(getProjectUploadS3KeyPrefix(projectSlug))
+  } catch {
+    return false
+  }
 }
 
 /**

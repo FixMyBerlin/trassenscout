@@ -10,10 +10,6 @@ import { getQuestionIdBySurveySlug } from "@/src/components/beteiligung/shared/u
 import SurveyStaticPin from "@/src/components/core/components/Map/SurveyStaticPin"
 import { Markdown } from "@/src/components/core/components/Markdown/Markdown"
 import { Prettify } from "@/src/components/core/types"
-import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
-import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
-import { authClient } from "@/src/components/shared/auth/auth-client"
-import { UserRoleEnum } from "@/src/prisma/generated/browser"
 import type { OperatorWithSubsectionCount } from "@/src/server/adminLookupTables/adminLookupTablesQueryOptions"
 import {
   createSurveyResponseCommentFn,
@@ -65,9 +61,6 @@ const EditableSurveyResponseListItem = ({
   })
   const open = !isAccordion ? true : parseInt(String(responseDetails)) === response.id
   const surveySlug = response.surveySession.survey.slug as AllowedSurveySlugs
-
-  const { data: session } = authClient.useSession()
-  const isEditorOrAdmin = useUserCan().edit || session?.role === UserRoleEnum.ADMIN
 
   const metaDefinition = getConfigBySurveySlug(surveySlug, "meta")
 
@@ -173,9 +166,7 @@ const EditableSurveyResponseListItem = ({
             refetchResponsesAndTopics={refetchResponsesAndTopics}
           />
           <div>
-            {(!!response.surveyResponseComments.length || isEditorOrAdmin) && (
-              <h4 className="mb-3 font-semibold">{commentLabel}</h4>
-            )}
+            <h4 className="mb-3 font-semibold">{commentLabel}</h4>
             <ul className="flex max-w-3xl flex-col gap-4">
               {response.surveyResponseComments?.map((comment) => {
                 return (
@@ -208,24 +199,22 @@ const EditableSurveyResponseListItem = ({
                   </li>
                 )
               })}
-              <IfUserCanEdit>
-                <li>
-                  <NewCommentForm
-                    commentLabel={commentLabel}
-                    commentHelp={commentHelp}
-                    createComment={async (body) => {
-                      await createSurveyResponseCommentMutation.mutateAsync({
-                        data: {
-                          projectSlug: projectSlug!,
-                          surveyResponseId: response.id,
-                          body,
-                        },
-                      })
-                      await refetchResponsesAndTopics()
-                    }}
-                  />
-                </li>
-              </IfUserCanEdit>
+              <li>
+                <NewCommentForm
+                  commentLabel={commentLabel}
+                  commentHelp={commentHelp}
+                  createComment={async (body) => {
+                    await createSurveyResponseCommentMutation.mutateAsync({
+                      data: {
+                        projectSlug: projectSlug!,
+                        surveyResponseId: response.id,
+                        body,
+                      },
+                    })
+                    await refetchResponsesAndTopics()
+                  }}
+                />
+              </li>
             </ul>
           </div>
           <ConvertSurveyResponseToSubsubsectionOhv

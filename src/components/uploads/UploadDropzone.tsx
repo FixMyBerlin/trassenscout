@@ -20,6 +20,7 @@ type Props = {
   acquisitionAreaIds?: number[]
   projectRecordIds?: number[]
   surveyResponseId?: number
+  surveySessionId?: number
   onUploadComplete?: (uploadIds: number[]) => Promise<void>
   onBatchStart?: (files: File[]) => void
   onFileRecordResult?: (result: UploadFileRecordResult) => void
@@ -33,6 +34,7 @@ export const UploadDropzone = ({
   acquisitionAreaIds,
   projectRecordIds,
   surveyResponseId,
+  surveySessionId,
   onUploadComplete,
   onBatchStart,
   onFileRecordResult,
@@ -73,6 +75,9 @@ export const UploadDropzone = ({
   return (
     <UploadDropzoneBase
       api={`/api/${projectSlug}/upload`}
+      surveyMeta={
+        surveyResponseId && surveySessionId ? { surveyResponseId, surveySessionId } : undefined
+      }
       createUploadRecord={createUploadRecord}
       onUploadComplete={onUploadComplete}
       onBatchStart={onBatchStart}
