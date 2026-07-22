@@ -7,18 +7,9 @@ type Props = {
   small?: boolean
   text?: string
   verb?: string
-  /** Background behind the label where it crosses the divider line. */
-  textBackgroundClassName?: string
 }
 
-export const ZeroCase = ({
-  visible,
-  name,
-  small,
-  text,
-  verb = "eingetragen",
-  textBackgroundClassName = "bg-inherit",
-}: Props) => {
+export const ZeroCase = ({ visible, name, small, text, verb = "eingetragen" }: Props) => {
   if (typeof visible === "number" && !!visible) return null
   if (typeof visible !== "number" && !visible) return null
 
@@ -30,13 +21,10 @@ export const ZeroCase = ({
 
   return (
     <div
-      className={twJoin(
-        "relative my-10 flex items-center justify-center text-xl text-gray-500",
-        textBackgroundClassName,
-      )}
+      className={twJoin("relative my-10 flex items-center justify-center text-xl text-gray-500")}
     >
       <div className="absolute inset-x-0 h-px bg-gray-200" />
-      <p className={twJoin("relative inline-block px-4", textBackgroundClassName)}>{content}</p>
+      <p className={twJoin("relative inline-block bg-white px-4")}>{content}</p>
     </div>
   )
 }
