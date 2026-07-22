@@ -24,27 +24,25 @@ type Props = {
   }
 }
 export const metadataItemClassName = "flex flex-wrap items-center gap-3 text-sm text-gray-600"
+export const projectRecordSectionClassName =
+  "grid gap-2 sm:grid-cols-[minmax(170px,_190px)_1fr] sm:items-start sm:gap-x-1 sm:gap-y-4"
+export const projectRecordSectionLabelClassName = "text-sm font-medium text-gray-700"
+export const projectRecordSectionValueClassName = "text-sm text-gray-700"
 
 export const ProjectRecordSummary = ({ projectRecord }: Props) => {
   const projectSlug = projectRecord.project.slug
-  const metadataLabelClassName = "text-sm font-medium text-gray-700"
-  const sectionClassName =
-    "grid gap-2 sm:grid-cols-[minmax(170px,_190px)_1fr] sm:items-start sm:gap-x-1 sm:gap-y-4"
-  const sectionLabelClassName = metadataLabelClassName
-  const sectionValueClassName = "text-sm text-gray-700"
-
   return (
     <div className="my-6 space-y-6">
       <div className="flex flex-wrap items-center gap-x-10 gap-y-3">
         <div className={metadataItemClassName}>
-          <span className={metadataLabelClassName}>Am/bis:</span>
+          <span className={projectRecordSectionLabelClassName}>Am/bis:</span>
           <span className="text-gray-600">
             {format(new Date(projectRecord.date!), "P", { locale: de })}
           </span>
         </div>
         {projectRecord.assignedTo && (
           <div className={metadataItemClassName}>
-            <span className={metadataLabelClassName}>Zugewiesen:</span>
+            <span className={projectRecordSectionLabelClassName}>Zugewiesen:</span>
             <Link
               classNameOverwrites="inline-flex rounded-md text-inherit no-underline hover:opacity-90 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-orange-500/40"
               to={createProjectRecordFilterUrl(projectSlug, {
@@ -56,7 +54,7 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
           </div>
         )}
         <div className={metadataItemClassName}>
-          <span className={metadataLabelClassName}>Status:</span>
+          <span className={projectRecordSectionLabelClassName}>Status:</span>
           <ProjectRecordEditingStateIndicator
             editingState={projectRecord.editingState}
             variant="detail"
@@ -92,8 +90,8 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
         </div>
       )}
 
-      <div className={sectionClassName}>
-        <p className={sectionLabelClassName}>Eintrag:</p>
+      <div className={projectRecordSectionClassName}>
+        <p className={projectRecordSectionLabelClassName}>Eintrag:</p>
         {projectRecord.subsubsections.length > 0 || projectRecord.subsubsection ? (
           <ProjectRecordVerknuepfungen
             projectSlug={projectSlug}
@@ -102,7 +100,7 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
             subsubsections={projectRecord.subsubsections}
             variant="valuesOnly"
             relationType="subsubsections"
-            className={sectionValueClassName}
+            className={projectRecordSectionValueClassName}
           />
         ) : (
           <span className="text-sm text-gray-500">Kein Eintrag zugeordnet</span>
@@ -111,8 +109,8 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
 
       {(projectRecord.acquisitionAreas.length > 0 || projectRecord.acquisitionArea) &&
         projectRecord.project.landAcquisitionModuleEnabled && (
-          <div className={sectionClassName}>
-            <p className={sectionLabelClassName}>
+          <div className={projectRecordSectionClassName}>
+            <p className={projectRecordSectionLabelClassName}>
               {(projectRecord.acquisitionAreas.length > 0
                 ? projectRecord.acquisitionAreas.length
                 : projectRecord.acquisitionArea
@@ -128,15 +126,15 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
               acquisitionAreas={projectRecord.acquisitionAreas}
               variant="valuesOnly"
               relationType="acquisitionAreas"
-              className={sectionValueClassName}
+              className={projectRecordSectionValueClassName}
             />
           </div>
         )}
 
-      <div className={sectionClassName}>
-        <p className={sectionLabelClassName}>Tags:</p>
+      <div className={projectRecordSectionClassName}>
+        <p className={projectRecordSectionLabelClassName}>Tags:</p>
         {projectRecord.tags.length ? (
-          <div className={`flex flex-wrap gap-x-3 gap-y-1 ${sectionValueClassName}`}>
+          <div className={`flex flex-wrap gap-x-3 gap-y-1 ${projectRecordSectionValueClassName}`}>
             {projectRecord.tags.map((tag) => (
               <span className="whitespace-nowrap" key={tag.id}>
                 <Link
@@ -155,7 +153,7 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
       </div>
 
       <div>
-        <p className={metadataLabelClassName}>Dokumente:</p>
+        <p className={projectRecordSectionLabelClassName}>Dokumente:</p>
       </div>
     </div>
   )
