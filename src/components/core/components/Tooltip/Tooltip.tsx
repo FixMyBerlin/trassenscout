@@ -3,6 +3,7 @@ import { twJoin } from "tailwind-merge"
 
 const placementClasses = {
   top: "bottom-full left-1/2 -translate-x-1/2 -translate-y-0.5 mb-0.5",
+  "top-start": "bottom-full left-1/2 -translate-x-[calc(50%+0.5rem)] -translate-y-0.5 mb-0.5",
   bottom: "top-full left-1/2 -translate-x-1/2 translate-y-0.5 mt-0.5",
   "bottom-end": "top-full right-0 translate-y-0.5 mt-0.5",
   left: "right-full top-1/2 -translate-y-1/2 -translate-x-0.5 mr-0.5",
@@ -10,14 +11,21 @@ const placementClasses = {
 } as const
 
 type Placement = keyof typeof placementClasses
+type Variant = "dark" | "light"
+
+const variantClasses: Record<Variant, string> = {
+  dark: "bg-gray-800 text-gray-100",
+  light: "bg-white text-gray-900 shadow-xs inset-ring inset-ring-gray-300",
+}
 
 type Props = {
   content: string | null | undefined
   placement?: Placement
+  variant?: Variant
   children: React.ReactElement<{ className?: string; title?: string }>
 }
 
-export const Tooltip = ({ content, placement = "top", children }: Props) => {
+export const Tooltip = ({ content, placement = "top", variant = "dark", children }: Props) => {
   if (content === undefined || content === null || content === "") {
     return <>{children}</>
   }
@@ -32,7 +40,8 @@ export const Tooltip = ({ content, placement = "top", children }: Props) => {
       <span
         role="tooltip"
         className={twJoin(
-          "pointer-events-none absolute z-50 hidden w-max max-w-[200px] rounded bg-gray-800 px-2 py-1 text-xs text-gray-100 opacity-100 transition-opacity transition-discrete duration-150 peer-hover:block peer-focus-visible:block starting:opacity-0",
+          "pointer-events-none absolute z-50 hidden w-max max-w-[200px] rounded px-2 py-1 text-xs opacity-100 transition-opacity transition-discrete duration-150 peer-hover:block peer-focus-visible:block starting:opacity-0",
+          variantClasses[variant],
           placementClasses[placement],
         )}
       >
