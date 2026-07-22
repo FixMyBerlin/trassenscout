@@ -47,7 +47,7 @@ const emailTemplateRegistry: Record<EmailTemplateKey, EmailTemplateDefinition> =
   [emailTemplateKeys.invitationCreatedUser]: {
     key: emailTemplateKeys.invitationCreatedUser,
     name: "Einladung an Mitwirkende",
-    description: "E-Mail an eingeladene Personen zur Mitarbeit in einem Projekt.",
+    description: "E-Mail an eingeladene Personen zur Mitarbeit in einem oder mehreren Projekten.",
     supportsCta: true,
     allowedVariables: ["inviterName", "projectName", "loginUrl"],
     sampleContext: {
