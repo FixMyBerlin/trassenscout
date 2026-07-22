@@ -44,17 +44,17 @@ export const subsectionColors = {
     unselected: mapColorTokens.gray600,
     hovered: highlight,
   },
-  /** Stub for type safety when UnifiedFeaturesLayer uses colorSchema subsection (points only rendered for subsubsection). */
+  /** Point styling for dashboard project preview circles (UnifiedFeaturesLayer). */
   point: {
-    current: mapColorTokens.black,
-    unselected: mapColorTokens.black,
-    hovered: mapColorTokens.black,
-    selected: mapColorTokens.black,
-    default: mapColorTokens.black,
-    green: mapColorTokens.black, // stub - GREEN style not used for subsections
-    dashedSecondary: mapColorTokens.black,
-    currentBorderClass: mapColorTokens.black,
-    currentTextClass: mapColorTokens.black,
-    innerFill: mapColorTokens.black,
+    current: mapColorTokens.blue500,
+    unselected: mapColorTokens.gray600,
+    hovered: highlight,
+    selected: highlight,
+    default: mapColorTokens.blue500,
+    green: mapColorTokens.blue500,
+    dashedSecondary: mapColorTokens.pink200,
+    currentBorderClass: "border-blue-500",
+    currentTextClass: "text-blue-500",
+    innerFill: mapColorTokens.blue500Alpha20,
   },
 } as const
