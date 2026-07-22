@@ -52,14 +52,14 @@ const emailTemplateRegistry: Record<EmailTemplateKey, EmailTemplateDefinition> =
     allowedVariables: ["inviterName", "projectName", "loginUrl"],
     sampleContext: {
       inviterName: "Alex Beispiel",
-      projectName: "Radschnellweg Nord",
+      projectName: "Radschnellweg Nord und Radschnellweg Süd",
       loginUrl: "https://trassenscout.de/auth/login?inviteToken=demo-token",
     },
     defaults: {
-      subject: "Trassenscout: Ihre Einladung zum Projekt {{projectName}}",
+      subject: "Trassenscout: Ihre Einladung zu {{projectName}}",
       introMarkdown: `Guten Tag!
 
-# {{inviterName}} hat Sie soeben eingeladen, am Projekt {{projectName}} mitzuwirken.
+# {{inviterName}} hat Sie soeben eingeladen, bei {{projectName}} mitzuwirken.
 
 Bitte registrieren Sie sich, um die Einladung anzunehmen.`,
       outroMarkdown: `Falls Sie schon einen Trassenscout-Account unter dieser E-Mail-Adresse besitzen, [melden Sie sich bitte damit an]({{loginUrl}}), um die Einladung anzunehmen.`,
@@ -71,19 +71,22 @@ Bitte registrieren Sie sich, um die Einladung anzunehmen.`,
     name: "Info an Editoren: Einladung erstellt",
     description: "Benachrichtigung an Editor-Mitglieder, dass eine Einladung erstellt wurde.",
     supportsCta: false,
-    allowedVariables: ["projectName", "inviterName", "invitesUrl"],
+    allowedVariables: ["projectName", "projectRoles", "inviterName", "invitesUrl"],
     sampleContext: {
-      projectName: "Radschnellweg Nord",
+      projectName: "Radschnellweg Nord und Radschnellweg Süd",
+      projectRoles: "Radschnellweg Nord (Leserechte), Radschnellweg Süd (Bearbeitungsrechte)",
       inviterName: "Alex Beispiel",
-      invitesUrl: "https://trassenscout.de/demo/invites",
+      invitesUrl: "https://trassenscout.de/dashboard",
     },
     defaults: {
       subject: "Trassenscout: Neues Teammitglied eingeladen",
       introMarkdown: `Guten Tag!
 
-Diese E-Mail dient zur Information aller Personen mit der Rolle "Editor" im Projekt {{projectName}}.
+Diese E-Mail dient zur Information aller Personen mit der Rolle "Editor" bei {{projectName}}.
 
 # {{inviterName}} hat soeben eine:n neue:n Mitwirkende:n eingeladen.
+
+Geplante Rechte: {{projectRoles}}
 
 Die Liste aller offenen Einladungen finden Sie unter {{invitesUrl}}.`,
     },
@@ -93,22 +96,26 @@ Die Liste aller offenen Einladungen finden Sie unter {{invitesUrl}}.`,
     name: "Info an Editoren: Einladung angenommen",
     description: "Benachrichtigung an Editor-Mitglieder, dass eine Einladung angenommen wurde.",
     supportsCta: false,
-    allowedVariables: ["projectName", "inviteeName", "roleName", "teamUrl"],
+    // Existing customized templates using the former `roleName` variable need
+    // to be migrated to `projectRoles`.
+    allowedVariables: ["projectName", "inviteeName", "projectRoles", "teamUrl"],
     sampleContext: {
-      projectName: "Radschnellweg Nord",
+      projectName: "Radschnellweg Nord und Radschnellweg Süd",
       inviteeName: "Jamie Beispiel",
-      roleName: "Editor",
-      teamUrl: "https://trassenscout.de/demo/contacts/team",
+      projectRoles: "Radschnellweg Nord (Leserechte), Radschnellweg Süd (Bearbeitungsrechte)",
+      teamUrl: "https://trassenscout.de/dashboard",
     },
     defaults: {
-      subject: "Trassenscout: Neues Teammitglied ({{projectName}})",
+      subject: "Trassenscout: Neues Teammitglied",
       introMarkdown: `Guten Tag!
 
-Diese E-Mail dient zur Information aller Personen mit der Rolle "Editor" im Projekt {{projectName}}.
+Diese E-Mail dient zur Information aller Personen mit der Rolle "Editor" bei {{projectName}}.
 
-# {{inviteeName}} hat soeben die Einladung zur Mitarbeit angenommen und hat jetzt {{roleName}}.
+# {{inviteeName}} hat soeben die Einladung zur Mitarbeit angenommen.
 
-Das Projektteam kann unter {{teamUrl}} eingesehen werden.`,
+Neue Rechte: {{projectRoles}}
+
+Alle Teammitglieder finden Sie unter {{teamUrl}}.`,
     },
   },
   [emailTemplateKeys.projectRecordAssignedUser]: {

@@ -7,6 +7,9 @@ import { createInviteFn } from "@/src/server/invites/invites.functions"
 import { InviteSchema } from "@/src/shared/invites/schemas"
 import { TeamInviteForm } from "./TeamInviteForm"
 
+const duplicateInviteConflictMessage =
+  "Diese E-Mail-Adresse ist bereits eingeladen oder bereits Mitglied des Projekts."
+
 type Props = {
   projectSlug: string
   onSuccess?: () => void
@@ -29,6 +32,12 @@ export const NewInviteForm = ({ projectSlug, onSuccess, layout }: Props) => {
       }
       void navigate({ to: `/${projectSlug}/invites` })
     } catch (error: unknown) {
+      const rawMessage = error instanceof Error ? error.message : String(error)
+      if (
+        rawMessage.includes("besteht bereits eine Mitgliedschaft oder eine ausstehende Einladung")
+      ) {
+        return { email: duplicateInviteConflictMessage }
+      }
       return improveErrorMessage(error, FORM_ERROR, ["email"])
     }
   }

@@ -1,31 +1,68 @@
 import { membershipCreatedNotificationToEditors } from "@/emails/mailers/membershipCreatedNotificationToEditors"
-import { shortTitle } from "@/src/components/core/components/text/titles"
 import { getFullname } from "@/src/components/core/users/getFullname"
-import { roleTranslation } from "@/src/components/core/users/roleTranslation.const"
-import { Invite, User } from "@/src/prisma/generated/browser"
+import { Invite, Project, User } from "@/src/prisma/generated/browser"
 import db from "@/src/server/db.server"
+import {
+  formatInviteProjectRoles,
+  formatInviteProjects,
+} from "@/src/shared/invites/formatInviteProjects"
 
-type Props = { invite: Invite | null; invitee: Pick<User, "firstName" | "lastName" | "email"> }
+type InviteWithProject = Invite & {
+  project: Pick<Project, "id" | "slug" | "subTitle">
+}
 
-export const notifyEditorsAboutNewMembership = async ({ invite, invitee }: Props) => {
-  if (!invite) return
+type Props = {
+  invitee: Pick<User, "firstName" | "lastName" | "email">
+  invites: InviteWithProject[]
+}
+
+export const notifyEditorsAboutNewMembership = async ({ invites, invitee }: Props) => {
+  if (invites.length === 0) return
 
   const projectMemberRoleEditor = await db.membership.findMany({
-    where: { projectId: invite.projectId, role: "EDITOR" },
-    select: { user: true, project: true },
+    where: { projectId: { in: invites.map((invite) => invite.projectId) }, role: "EDITOR" },
+    select: { projectId: true, user: true },
   })
 
+  const inviteByProjectId = new Map(invites.map((invite) => [invite.projectId, invite]))
+  const notifications = new Map<
+    number,
+    {
+      invites: InviteWithProject[]
+      user: { email: string; firstName: string | null; lastName: string | null }
+    }
+  >()
+
   for (const membership of projectMemberRoleEditor) {
+    const invite = inviteByProjectId.get(membership.projectId)
+    if (!invite) continue
+
+    const current = notifications.get(membership.user.id) ?? {
+      invites: [],
+      user: membership.user,
+    }
+    current.invites.push(invite)
+    notifications.set(membership.user.id, current)
+  }
+
+  for (const notification of notifications.values()) {
+    const projectRoles = notification.invites.map((invite) => ({
+      role: invite.role,
+      slug: invite.project.slug,
+      subTitle: invite.project.subTitle,
+    }))
+
     await (
       await membershipCreatedNotificationToEditors({
         user: {
-          email: membership.user.email,
-          name: getFullname(membership.user)!,
+          email: notification.user.email,
+          name: getFullname(notification.user) ?? notification.user.email,
         },
-        projectName: shortTitle(membership.project.slug),
-        invinteeName: getFullname(invitee)!,
-        roleName: roleTranslation[invite.role],
-        teamPath: `/${membership.project.slug}/contacts/team`,
+        projectName: formatInviteProjects(projectRoles),
+        invinteeName: getFullname(invitee) ?? invitee.email,
+        projectRoles: formatInviteProjectRoles(projectRoles),
+        teamPath:
+          projectRoles.length > 1 ? "/dashboard" : `/${projectRoles[0]!.slug}/contacts/team`,
       })
     ).send()
   }

@@ -10,6 +10,7 @@ const projectSlug = seedProjects.richProject
 const loggedInProjectSlug = seedProjects.forbiddenProject
 const formLoginProjectSlug = seedProjects.secondaryForbiddenProject
 const inviteEmail = seedUsers.noProject
+const batchInviteEmail = seedUsers.viewer
 const newInvitePath = `/${projectSlug}/invites/new`
 
 type InviteFixture = {
@@ -19,6 +20,8 @@ type InviteFixture = {
   loggedInInviteId: number
   formLoginToken: string
   formLoginInviteId: number
+  batchToken: string
+  batchInviteIds: number[]
   expiredToken: string
   expiredInviteId: number
 }
@@ -145,6 +148,23 @@ test.describe("Invite flow", () => {
       select: { id: true },
     })
 
+    const batchToken = `e2e-batch-${Date.now()}`
+    const batchInviteProjects = [project, loggedInProject]
+    await db.invite.createMany({
+      data: batchInviteProjects.map((batchProject, index) => ({
+        token: batchToken,
+        email: batchInviteEmail,
+        status: "PENDING",
+        role: index === 0 ? "VIEWER" : "EDITOR",
+        projectId: batchProject.id,
+        inviterId: editor.id,
+      })),
+    })
+    const batchInvites = await db.invite.findMany({
+      where: { token: batchToken, email: batchInviteEmail },
+      select: { id: true },
+    })
+
     fixture = {
       pendingToken,
       pendingInviteId: pendingInvite.id,
@@ -152,6 +172,8 @@ test.describe("Invite flow", () => {
       loggedInInviteId: loggedInInvite.id,
       formLoginToken,
       formLoginInviteId: formLoginInvite.id,
+      batchToken,
+      batchInviteIds: batchInvites.map((invite) => invite.id),
       expiredToken,
       expiredInviteId: expiredInvite.id,
     }
@@ -167,6 +189,9 @@ test.describe("Invite flow", () => {
     }
     if (fixture?.formLoginInviteId) {
       await db.invite.delete({ where: { id: fixture.formLoginInviteId } }).catch(() => {})
+    }
+    if (fixture?.batchInviteIds.length) {
+      await db.invite.deleteMany({ where: { id: { in: fixture.batchInviteIds } } }).catch(() => {})
     }
     if (fixture?.expiredInviteId) {
       await db.invite.delete({ where: { id: fixture.expiredInviteId } }).catch(() => {})
@@ -298,6 +323,38 @@ test.describe("Invite flow", () => {
     expect(membership).not.toBeNull()
   })
 
+  test("registered user accepts a multi-project invite and lands on the dashboard", async ({
+    page,
+  }) => {
+    await gotoInviteLogin(page, fixture.batchToken)
+    await expectInviteLoginStatus(page, fixture.batchToken, true)
+    await expect(page.getByLabel("E-Mail-Adresse der Einladung")).toHaveValue(batchInviteEmail)
+
+    await page.getByRole("button", { name: "all-projects-viewer", exact: true }).click()
+
+    await expect(page).toHaveURL(/\/dashboard/, { timeout: 30_000 })
+
+    const db = await getTestDb()
+    const invites = await db.invite.findMany({
+      where: { id: { in: fixture.batchInviteIds } },
+      select: { status: true },
+    })
+    expect(invites.every((invite) => invite.status === "ACCEPTED")).toBe(true)
+
+    const invitee = await db.user.findFirstOrThrow({
+      where: { email: batchInviteEmail },
+      select: { id: true },
+    })
+    const projects = await db.project.findMany({
+      where: { slug: { in: [projectSlug, loggedInProjectSlug] } },
+      select: { id: true },
+    })
+    const memberships = await db.membership.findMany({
+      where: { projectId: { in: projects.map((project) => project.id) }, userId: invitee.id },
+    })
+    expect(memberships).toHaveLength(2)
+  })
+
   test("already logged-in invited user accepts the invite by opening the mail link", async ({
     page,
   }) => {
@@ -334,5 +391,64 @@ test.describe("Invite flow", () => {
       where: { projectId: project.id, userId: invitee.id },
     })
     expect(membership).not.toBeNull()
+  })
+
+  test("already logged-in user accepts a multi-project invite by opening the mail link", async ({
+    page,
+  }) => {
+    await gotoInviteLogin(page)
+    await expect(async () => {
+      await page.getByRole("button", { name: "no-project", exact: true }).click()
+      await expect(page).toHaveURL(/\/dashboard/, { timeout: 5_000 })
+    }).toPass({ timeout: 30_000 })
+
+    const db = await getTestDb()
+    const editor = await db.user.findFirstOrThrow({
+      where: { email: seedUsers.editor },
+      select: { id: true },
+    })
+    const projects = await db.project.findMany({
+      where: { slug: { in: [projectSlug, loggedInProjectSlug] } },
+      select: { id: true, slug: true },
+    })
+    const loggedInBatchToken = `e2e-logged-in-batch-${Date.now()}`
+    await db.invite.createMany({
+      data: projects.map((project, index) => ({
+        token: loggedInBatchToken,
+        email: inviteEmail,
+        status: "PENDING",
+        role: index === 0 ? "VIEWER" : "EDITOR",
+        projectId: project.id,
+        inviterId: editor.id,
+      })),
+    })
+    const batchInvites = await db.invite.findMany({
+      where: { token: loggedInBatchToken, email: inviteEmail },
+      select: { id: true },
+    })
+
+    try {
+      await page.goto(`/auth/login?inviteToken=${loggedInBatchToken}`)
+      await expect(page).toHaveURL(/\/dashboard/, { timeout: 30_000 })
+
+      const acceptedInvites = await db.invite.findMany({
+        where: { id: { in: batchInvites.map((invite) => invite.id) } },
+        select: { status: true },
+      })
+      expect(acceptedInvites.every((invite) => invite.status === "ACCEPTED")).toBe(true)
+
+      const invitee = await db.user.findFirstOrThrow({
+        where: { email: inviteEmail },
+        select: { id: true },
+      })
+      const memberships = await db.membership.findMany({
+        where: { projectId: { in: projects.map((project) => project.id) }, userId: invitee.id },
+      })
+      expect(memberships).toHaveLength(2)
+    } finally {
+      await db.invite.deleteMany({
+        where: { id: { in: batchInvites.map((invite) => invite.id) } },
+      })
+    }
   })
 })

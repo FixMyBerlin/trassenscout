@@ -80,7 +80,7 @@ export const TeamInvitesTable = ({ invites }: Props) => {
             </thead>
             <tbody className="divide-y divide-gray-200 bg-white">
               {invites.map((invite) => (
-                <tr key={invite.email} className="border-b border-gray-100">
+                <tr key={invite.id} className="border-b border-gray-100">
                   <td className={twJoin(spaceClasses, "align-top")}>
                     <StatusLabel
                       label={inviteStatusLabels[invite.status]}

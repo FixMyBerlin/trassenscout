@@ -16,6 +16,11 @@ function getInviteTokenFromHref(href: string | undefined) {
   }
 }
 
+function getInviteRedirectHref(projectSlugs: string[]) {
+  if (projectSlugs.length === 1) return `/${projectSlugs[0]}`
+  return "/dashboard"
+}
+
 export const getSessionForRouteFn = createServerFn({ method: "GET" }).handler(() =>
   getAppSession(getRequestHeaders()),
 )
@@ -33,8 +38,8 @@ export const routeGuestFn = createServerFn({ method: "GET" })
       const inviteToken = getInviteTokenFromHref(location?.href)
       if (inviteToken) {
         const result = await acceptInviteForSession(inviteToken, session).catch(() => null)
-        if (result?.accepted && result.projectSlug) {
-          throw redirect({ href: `/${result.projectSlug}` })
+        if (result?.accepted) {
+          throw redirect({ href: getInviteRedirectHref(result.projectSlugs) })
         }
       }
       throw redirect({ to: "/dashboard" })

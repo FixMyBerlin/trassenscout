@@ -13,6 +13,7 @@ import {
   getProjectBySlug,
   getProjectsAdmin,
   getProjectsForCurrentUser,
+  getProjectsForInvite,
   updateProject,
   updateProjectsFeatureFlag,
 } from "./projects.server"
@@ -20,6 +21,10 @@ import { getProjectsWithGeometryWithMembershipRole } from "./queries/getProjects
 
 export const getProjectsForCurrentUserFn = createServerFn({ method: "GET" }).handler(() =>
   getProjectsForCurrentUser(getRequestHeaders()),
+)
+
+export const getProjectsForInviteFn = createServerFn({ method: "GET" }).handler(() =>
+  getProjectsForInvite(getRequestHeaders()),
 )
 
 export const getProjectsWithGeometryWithMembershipRoleFn = createServerFn({

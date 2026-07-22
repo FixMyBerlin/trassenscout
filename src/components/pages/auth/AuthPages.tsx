@@ -33,6 +33,7 @@ import type {
   ForgotPasswordSearch,
   ResetPasswordSearch,
 } from "@/src/shared/auth/searchSchemas"
+import { formatInviteProjects } from "@/src/shared/invites/formatInviteProjects"
 
 function getSafeCallbackURL(callbackURL?: string) {
   if (!callbackURL?.startsWith("/") || callbackURL.startsWith("//")) return "/dashboard"
@@ -61,17 +62,18 @@ function usePublicInvite(inviteToken?: string) {
 
 function getPostAuthRedirectURL({
   callbackURL,
-  projectSlug,
+  projectSlugs,
 }: {
   callbackURL?: string
-  projectSlug?: string | null
+  projectSlugs?: string[]
 }) {
-  if (projectSlug) return `/${projectSlug}`
+  if (projectSlugs?.length === 1) return `/${projectSlugs[0]}`
+  if (projectSlugs && projectSlugs.length > 1) return "/dashboard"
   return getSafeCallbackURL(callbackURL)
 }
 
 async function acceptInviteAfterAuth(inviteToken: string | null | undefined) {
-  if (!inviteToken) return { accepted: true as const, projectSlug: null }
+  if (!inviteToken) return { accepted: true as const, projectSlugs: [] }
 
   const { acceptInviteFn } = await import("@/src/server/auth/acceptInvite.functions")
   const result = await acceptInviteFn({ data: { inviteToken } })
@@ -85,7 +87,7 @@ async function acceptInviteAfterAuth(inviteToken: string | null | undefined) {
 
   return {
     accepted: true as const,
-    projectSlug: result.projectSlug,
+    projectSlugs: result.projectSlugs,
   }
 }
 
@@ -101,6 +103,16 @@ function getLoginErrorMessage(error: { code?: string; message?: string }) {
 }
 
 type PublicInvite = Awaited<ReturnType<typeof getPublicInviteByTokenFn>>
+
+function InviteProjectSummary({ invite }: { invite?: PublicInvite }) {
+  if (!invite?.projects.length) return null
+
+  return (
+    <div className="rounded-md bg-blue-50 px-3 py-2 text-sm text-blue-900">
+      Einladung zu <span className="font-medium">{formatInviteProjects(invite.projects)}</span>
+    </div>
+  )
+}
 
 function LoginForm({
   invite,
@@ -132,6 +144,7 @@ function LoginForm({
 
   return (
     <FormShell form={form} formError={formError} submitText="Anmelden">
+      <InviteProjectSummary invite={invite} />
       <form.AppField name="inviteToken">{(field) => <field.HiddenField />}</form.AppField>
       <form.AppField name="email">
         {(field) => (
@@ -193,6 +206,7 @@ function SignupForm({
 
   return (
     <FormShell form={form} formError={formError} submitText="Registrieren">
+      <InviteProjectSummary invite={invite} />
       <form.AppField name="inviteToken">{(field) => <field.HiddenField />}</form.AppField>
       <form.AppField name="email">
         {(field) => (
@@ -353,7 +367,7 @@ function PageLogin({ callbackURL, inviteToken }: AuthCallbackSearch) {
       void navigate({
         to: getPostAuthRedirectURL({
           callbackURL: safeCallbackURL,
-          projectSlug: inviteResult.projectSlug,
+          projectSlugs: inviteResult.projectSlugs,
         }),
       })
     } catch {
@@ -454,7 +468,7 @@ function PageSignup({ callbackURL, inviteToken }: AuthCallbackSearch) {
       void navigate({
         to: getPostAuthRedirectURL({
           callbackURL: safeCallbackURL,
-          projectSlug: inviteResult.projectSlug,
+          projectSlugs: inviteResult.projectSlugs,
         }),
       })
     } catch {
