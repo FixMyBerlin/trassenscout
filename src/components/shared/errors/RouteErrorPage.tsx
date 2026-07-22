@@ -2,6 +2,7 @@ import type { ErrorComponentProps } from "@tanstack/react-router"
 import { redirect, useRouterState } from "@tanstack/react-router"
 import { useEffect } from "react"
 import { Link } from "@/src/components/core/components/links/Link"
+import { appMainClassName, appShellClassName } from "@/src/components/shared/layouts/layoutClasses"
 import { isAuthorizationError, isNotAuthenticatedError } from "@/src/shared/auth/errors"
 
 export function RouteErrorPage({ error }: ErrorComponentProps) {
@@ -28,8 +29,8 @@ export function RouteErrorPage({ error }: ErrorComponentProps) {
   }
 
   return (
-    <div className="flex min-h-full grow flex-col bg-white">
-      <main className="mx-auto flex w-full max-w-7xl grow flex-col justify-center px-4 sm:px-6 lg:px-8">
+    <div className={appShellClassName}>
+      <main className={`${appMainClassName} justify-center px-4 sm:px-6 lg:px-8`}>
         <div className="py-16">
           <div className="text-center">
             <p className="text-base font-semibold text-amber-500">:-(</p>

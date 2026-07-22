@@ -7,7 +7,7 @@ import { newsItems } from "@/src/components/pages/marketing/news/newsItems.const
 export function PageMarketing() {
   return (
     <>
-      <section className="mx-auto w-full max-w-7xl px-6 pb-16 md:px-8">
+      <section className="w-full px-6 pb-16 md:px-8">
         <div className="max-w-2xl">
           <h1 className="mt-20 text-4xl font-semibold tracking-tight text-gray-800 sm:text-5xl">
             Trassenscout findet Wege
@@ -40,7 +40,7 @@ export function PageMarketing() {
 
       <MarketingPagePhotos />
 
-      <section className="mx-auto mt-16 w-full max-w-7xl px-6 pb-16 md:px-8">
+      <section className="mt-16 w-full px-6 pb-16 md:px-8">
         <div className="mx-auto grid max-w-xl grid-cols-1 gap-y-12 lg:max-w-none lg:grid-cols-2 lg:gap-y-20">
           <div className="flex flex-col gap-16">
             {newsItems.map((newsItem) => (
