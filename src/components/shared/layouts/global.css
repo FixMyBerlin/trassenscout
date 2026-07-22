@@ -80,6 +80,9 @@
   --font-red-hat-text: "Red Hat Text";
 }
 
+/** Viewport wider than app shell `max-w-480` (120rem). */
+@custom-variant app-column (@media (width > 120rem));
+
 @layer base {
 }
 
