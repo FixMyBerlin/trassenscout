@@ -1,8 +1,13 @@
-import { Fragment } from "react"
+import type { ReactNode } from "react"
 import { ProjectRecordReviewStatePill } from "@/src/components/admin/project-records/AdminProjectRecordTable"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
 import { getFullname } from "@/src/components/core/users/getFullname"
 import { formatBerlinTime } from "@/src/components/core/utils/formatBerlinTime"
+import {
+  projectRecordSectionClassName,
+  projectRecordSectionLabelClassName,
+  projectRecordSectionValueClassName,
+} from "@/src/components/project-records/ProjectRecordSummary"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { isAdmin } from "@/src/components/shared/app/users/utils/isAdmin"
 import { useCurrentUser } from "@/src/components/user/useCurrentUser"
@@ -42,7 +47,7 @@ const CreateEditReviewHistoryComponent = ({
 }: {
   projectRecord: ProjectRecordAdmin | ProjectRecordListItem | ProjectRecord
 }) => {
-  const rows = [
+  const rows: { label: string; value: ReactNode }[] = [
     {
       label: "Erstellt:",
       value: formatAuthorWithTimestamp({
@@ -67,46 +72,48 @@ const CreateEditReviewHistoryComponent = ({
     },
   ]
 
+  if (
+    projectRecord.projectRecordAuthorType === ProjectRecordType.SYSTEM &&
+    projectRecord.reviewState !== ProjectRecordReviewState.APPROVED
+  ) {
+    rows.push({
+      label: "Bestätigungsstatus:",
+      value: <ProjectRecordReviewStatePill state={projectRecord.reviewState} />,
+    })
+  }
+
+  if (
+    projectRecord.projectRecordAuthorType === ProjectRecordType.SYSTEM &&
+    projectRecord.reviewState === ProjectRecordReviewState.APPROVED &&
+    projectRecord.reviewedBy
+  ) {
+    rows.push({
+      label: "Bestätigung durch:",
+      value: formatAuthorWithTimestamp({
+        label: getFullname(projectRecord.reviewedBy) || "Nutzer*in",
+        timestamp: projectRecord.reviewedAt,
+      }),
+    })
+  }
+
+  if (
+    projectRecord.projectRecordAuthorType === ProjectRecordType.SYSTEM &&
+    projectRecord.reviewNotes
+  ) {
+    rows.push({
+      label: "Bestätigungsnotiz:",
+      value: projectRecord.reviewNotes,
+    })
+  }
+
   return (
-    <div className="mt-8 grid max-w-5xl grid-cols-[minmax(0,220px)_minmax(0,1fr)] gap-x-8 gap-y-3 text-sm sm:text-[15px]">
+    <div className="mt-8 max-w-5xl space-y-4 border-y border-gray-200 py-4">
       {rows.map((row) => (
-        <Fragment key={row.label}>
-          <span className="font-medium text-gray-700">{row.label}</span>
-          <span className="text-gray-500">{row.value}</span>
-        </Fragment>
+        <div key={row.label} className={projectRecordSectionClassName}>
+          <p className={projectRecordSectionLabelClassName}>{row.label}</p>
+          <div className={projectRecordSectionValueClassName}>{row.value}</div>
+        </div>
       ))}
-
-      {projectRecord.projectRecordAuthorType === ProjectRecordType.SYSTEM &&
-        projectRecord.reviewState !== ProjectRecordReviewState.APPROVED && (
-          <>
-            <span className="font-medium text-gray-700">Bestätigungsstatus:</span>
-            <span className="text-gray-500">
-              <ProjectRecordReviewStatePill state={projectRecord.reviewState} />
-            </span>
-          </>
-        )}
-
-      {projectRecord.projectRecordAuthorType === ProjectRecordType.SYSTEM &&
-        projectRecord.reviewState === ProjectRecordReviewState.APPROVED &&
-        projectRecord.reviewedBy && (
-          <>
-            <span className="font-medium text-gray-700">Bestätigung durch:</span>
-            <span className="text-gray-500">
-              {formatAuthorWithTimestamp({
-                label: getFullname(projectRecord.reviewedBy) || "Nutzer*in",
-                timestamp: projectRecord.reviewedAt,
-              })}
-            </span>
-          </>
-        )}
-
-      {projectRecord.projectRecordAuthorType === ProjectRecordType.SYSTEM &&
-        projectRecord.reviewNotes && (
-          <>
-            <span className="font-medium text-gray-700">Bestätigungsnotiz:</span>
-            <span className="text-gray-500">{projectRecord.reviewNotes}</span>
-          </>
-        )}
     </div>
   )
 }
