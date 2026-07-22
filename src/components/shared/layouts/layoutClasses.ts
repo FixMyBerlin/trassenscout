@@ -1,5 +1,5 @@
 const appColumnClassName = "relative mx-auto w-full max-w-480 grow"
-const appBorderClassName = "border-x border-gray-200"
+const appBorderClassName = "app-column:border-x border-gray-200"
 
 /**
  * Top-nav column (logged-in, marketing, content, error pages).
