@@ -55,10 +55,3 @@ export type SubsubsectionMapEntity =
       SubsubsectionStatus?: { style: string } | null
       SubsubsectionTask?: { title?: string | null } | null
     }
-
-type ProjectMapEntity = {
-  slug: string
-  subsections: SubsectionMapEntities
-}
-
-export type ProjectMapEntities = ProjectMapEntity[]

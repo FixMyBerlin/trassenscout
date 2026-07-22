@@ -1,111 +1,70 @@
 import { useNavigate } from "@tanstack/react-router"
-import { featureCollection } from "@turf/helpers"
-import type { Feature } from "geojson"
-import { useMemo } from "react"
+import { featureCollection, point } from "@turf/helpers"
+import { bbox } from "@turf/turf"
+import type { FeatureCollection, Point } from "geojson"
 import type { MapLayerMouseEvent } from "react-map-gl/maplibre"
 import { BaseMap } from "@/src/components/core/components/Map/BaseMap"
-import { ProjectMarkers } from "@/src/components/core/components/Map/markers/ProjectMarkers"
-import { geometriesBbox } from "@/src/components/core/components/Map/utils/bboxHelpers"
 import {
-  getSubsectionFeatures,
-  type LineProperties,
-  type PolygonProperties,
-} from "@/src/components/core/components/Map/utils/getSubsectionFeatures"
+  getUnifiedClickTargetLayerIds,
+  type UnifiedFeatureProperties,
+} from "@/src/components/core/components/Map/layers/UnifiedFeaturesLayer"
+import { ProjectMarkers } from "@/src/components/core/components/Map/markers/ProjectMarkers"
 import type { ProjectsWithGeometryWithMembershipRole } from "@/src/server/projects/types"
+
+type Bbox2D = [number, number, number, number]
+
+type DashboardMapFeatures = {
+  boundingBox: Bbox2D | null
+  projectPoints: FeatureCollection<Point, UnifiedFeatureProperties> | null
+}
 
 type Props = {
   projects: ProjectsWithGeometryWithMembershipRole
   classHeight?: string
 }
 
+function getDashboardMapFeatures(
+  projects: ProjectsWithGeometryWithMembershipRole,
+): DashboardMapFeatures {
+  const previewPoints = projects.flatMap((project) =>
+    project.previewPoint ? [{ slug: project.slug, coordinates: project.previewPoint }] : [],
+  )
+
+  if (previewPoints.length === 0) {
+    return { boundingBox: null, projectPoints: null }
+  }
+
+  return {
+    boundingBox: bbox(
+      featureCollection(previewPoints.map(({ coordinates }) => point(coordinates))),
+    ) as Bbox2D,
+    projectPoints: featureCollection(
+      previewPoints.map(({ slug, coordinates }) =>
+        point(coordinates, {
+          projectSlug: slug,
+          featureId: slug,
+          style: "REGULAR",
+        }),
+      ),
+    ),
+  }
+}
+
 export const DashboardMap = ({ projects, classHeight }: Props) => {
   const navigate = useNavigate()
+  const { boundingBox, projectPoints } = getDashboardMapFeatures(projects)
 
   const handleSelect = (projectSlug: string) => {
     if (!projectSlug) return
     void navigate({ to: "/$projectSlug", params: { projectSlug } })
   }
 
-  const handleClickMap = (e: MapLayerMouseEvent) => {
-    const feature = e.features?.at(0)
-    const projectSlug = feature?.properties?.projectSlug as string | undefined
-    if (projectSlug) {
-      handleSelect(projectSlug)
+  const handleClickMap = (event: MapLayerMouseEvent) => {
+    const properties = event.features?.at(0)?.properties as UnifiedFeatureProperties | undefined
+    if (properties?.projectSlug) {
+      handleSelect(properties.projectSlug)
     }
   }
-
-  const projectSlugMap = useMemo(() => {
-    const map = new Map<string, string>()
-    projects.forEach((project) => {
-      project.subsections.forEach((subsection) => {
-        map.set(subsection.slug, project.slug)
-      })
-    })
-    return map
-  }, [projects])
-
-  const { lines, polygons, lineEndPoints, boundingBox } = useMemo(() => {
-    const subsections = projects.flatMap((project) => project.subsections)
-    const { lines, polygons, lineEndPoints } = getSubsectionFeatures({
-      subsections,
-      highlight: "all",
-    })
-
-    const processedLines = lines.features.map((feature) => {
-      const projectSlug = projectSlugMap.get(feature.properties.subsectionSlug)
-      return {
-        ...feature,
-        properties: {
-          ...feature.properties,
-          projectSlug,
-        } as LineProperties & { projectSlug?: string },
-      }
-    })
-
-    const processedPolygons = polygons.features.map((feature) => {
-      const projectSlug = projectSlugMap.get(feature.properties.subsectionSlug)
-      return {
-        ...feature,
-        properties: { ...feature.properties, projectSlug } as PolygonProperties & {
-          projectSlug?: string
-        },
-      }
-    })
-
-    const processedLineEndPoints = lineEndPoints.features.map((feature) => {
-      const projectSlug = feature.properties.subsectionSlug
-        ? projectSlugMap.get(feature.properties.subsectionSlug)
-        : undefined
-      return {
-        ...feature,
-        properties: {
-          ...feature.properties,
-          projectSlug,
-        },
-      }
-    })
-
-    const selectableLines = featureCollection(processedLines)
-    const selectablePolygons = featureCollection(processedPolygons)
-    const selectableLineEndPoints = featureCollection(processedLineEndPoints)
-    const allFeatures: Feature[] = [...selectableLines.features, ...selectablePolygons.features]
-
-    if (allFeatures.length === 0) {
-      return {
-        lines: selectableLines,
-        polygons: selectablePolygons,
-        lineEndPoints: selectableLineEndPoints,
-        boundingBox: null,
-      }
-    }
-
-    return {
-      lines: selectableLines,
-      polygons: selectablePolygons,
-      lineEndPoints: selectableLineEndPoints,
-      boundingBox: geometriesBbox(subsections.map((subsection) => subsection.geometry)),
-    }
-  }, [projects, projectSlugMap])
 
   if (!boundingBox) return null
 
@@ -115,12 +74,11 @@ export const DashboardMap = ({ projects, classHeight }: Props) => {
         id="mainMap"
         initialViewState={{
           bounds: boundingBox,
-          fitBoundsOptions: { padding: 60 },
+          fitBoundsOptions: { padding: 60, maxZoom: 8 },
         }}
         onClick={handleClickMap}
-        lines={lines}
-        polygons={polygons}
-        lineEndPoints={lineEndPoints}
+        interactiveLayerIds={getUnifiedClickTargetLayerIds("")}
+        points={projectPoints ?? undefined}
         colorSchema="subsection"
         restrictHighlightToLevel="project"
         classHeight={classHeight}

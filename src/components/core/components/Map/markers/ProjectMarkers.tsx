@@ -1,33 +1,29 @@
 import { Marker } from "react-map-gl/maplibre"
+import type { ProjectsWithGeometryWithMembershipRole } from "@/src/server/projects/types"
 import { shortTitle } from "../../text/titles"
 import { MarkerLabel } from "../Labels/MarkerLabel"
-import type { ProjectMapEntities as TGetProjectsWithGeometryWithMembershipRole } from "../mapEntityTypes"
 import { TipMarker } from "../TipMarker"
-import { getLabelPosition } from "../utils/getLabelPosition"
 
 type Props = {
-  projects: TGetProjectsWithGeometryWithMembershipRole
+  projects: ProjectsWithGeometryWithMembershipRole
   onSelect: (projectSlug: string) => void
 }
 
 type ProjectMarkerProps = {
   projectSlug: string
-  subsections: TGetProjectsWithGeometryWithMembershipRole[number]["subsections"]
+  previewPoint: ProjectsWithGeometryWithMembershipRole[number]["previewPoint"]
   onSelect: (projectSlug: string) => void
 }
 
-const ProjectMarker = ({ projectSlug, subsections, onSelect }: ProjectMarkerProps) => {
-  if (subsections.length === 0) return null
+const ProjectMarker = ({ projectSlug, previewPoint, onSelect }: ProjectMarkerProps) => {
+  if (!previewPoint) return null
 
-  const firstSubsection = subsections[0]
-  if (!firstSubsection) return null
-
-  const center = getLabelPosition(firstSubsection.geometry, firstSubsection.labelPos)
+  const [longitude, latitude] = previewPoint
 
   return (
     <Marker
-      longitude={center[0]}
-      latitude={center[1]}
+      longitude={longitude}
+      latitude={latitude}
       anchor="center"
       onClick={() => onSelect(projectSlug)}
     >
@@ -51,7 +47,7 @@ export const ProjectMarkers = ({ projects, onSelect }: Props) => {
         <ProjectMarker
           key={project.slug}
           projectSlug={project.slug}
-          subsections={project.subsections}
+          previewPoint={project.previewPoint}
           onSelect={onSelect}
         />
       ))}

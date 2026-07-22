@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { useState } from "react"
+import { Suspense, useState } from "react"
 import { twJoin } from "tailwind-merge"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import {
@@ -13,6 +13,25 @@ import { LogEntriesDashboard } from "@/src/components/dashboard/LogEntriesDashbo
 import { NoProjectMembershipsYet } from "@/src/components/dashboard/NoProjectMembershipsYet"
 import { ProjectsTable } from "@/src/components/dashboard/ProjectsTable"
 import { projectsWithGeometryWithMembershipRoleQueryOptions } from "@/src/server/projects/projectsQueryOptions"
+import type { ProjectsWithGeometryWithMembershipRole } from "@/src/server/projects/types"
+
+function DashboardSupplementarySections({
+  projects,
+}: {
+  projects: ProjectsWithGeometryWithMembershipRole
+}) {
+  return (
+    <>
+      <Suspense fallback={null}>
+        <AdminProjectsList />
+      </Suspense>
+      <Suspense fallback={null}>
+        <LogEntriesDashboard userProjects={projects} />
+      </Suspense>
+      <SuperAdminLogData data={projects} />
+    </>
+  )
+}
 
 export function PageDashboard() {
   const { data: projects } = useSuspenseQuery(projectsWithGeometryWithMembershipRoleQueryOptions())
@@ -23,8 +42,7 @@ export function PageDashboard() {
     return (
       <>
         <NoProjectMembershipsYet />
-        <AdminProjectsList />
-        <LogEntriesDashboard userProjects={[]} />
+        <DashboardSupplementarySections projects={[]} />
       </>
     )
   }
@@ -44,9 +62,7 @@ export function PageDashboard() {
         )}
         list={<ProjectsTable projects={projects} />}
       >
-        <AdminProjectsList />
-        <LogEntriesDashboard userProjects={projects} />
-        <SuperAdminLogData data={projects} />
+        <DashboardSupplementarySections projects={projects} />
       </MapListViewLayout>
     </div>
   )
