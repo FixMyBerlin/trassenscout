@@ -2,6 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { Suspense, useState } from "react"
 import { twJoin } from "tailwind-merge"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
+import { Breadcrumb, BreadcrumbStep } from "@/src/components/core/components/PageHeader/Breadcrumb"
 import {
   MapListViewLayout,
   MAP_VIEWPORT_SHELL_CLASS,
@@ -41,6 +42,13 @@ export function PageDashboard() {
   if (!projects.length) {
     return (
       <>
+        <PageHeader
+          breadcrumb={
+            <Breadcrumb>
+              <BreadcrumbStep>Meine Projekte</BreadcrumbStep>
+            </Breadcrumb>
+          }
+        />
         <NoProjectMembershipsYet />
         <DashboardSupplementarySections projects={[]} />
       </>
@@ -51,6 +59,11 @@ export function PageDashboard() {
     <div className={twJoin(isMapMode && `-mb-16 ${MAP_VIEWPORT_SHELL_CLASS}`)}>
       <PageHeader
         className={isMapMode ? "mb-0 shrink-0" : undefined}
+        breadcrumb={
+          <Breadcrumb>
+            <BreadcrumbStep>Meine Projekte</BreadcrumbStep>
+          </Breadcrumb>
+        }
         info="Willkommen im Trassenscout. Hier finden Sie alle Projekte, an denen Sie beteiligt sind."
         viewMode={viewMode}
         onViewModeChange={setViewMode}

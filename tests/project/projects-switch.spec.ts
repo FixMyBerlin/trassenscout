@@ -30,6 +30,6 @@ test.describe("Projects switch", () => {
     await page.getByRole("option", { name: "Meine Projekte" }).click()
 
     await expect(page).toHaveURL(/\/dashboard$/)
-    await expect(page.getByRole("heading", { name: "Meine Projekte", exact: true })).toBeVisible()
+    await expect(page.getByText("Meine Projekte", { exact: true })).toBeVisible()
   })
 })
