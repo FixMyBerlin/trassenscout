@@ -2,6 +2,7 @@ import { Outlet } from "@tanstack/react-router"
 import { ProjectModalHost } from "@/src/components/projectModals/ProjectModalHost"
 import { NavigationLoggedInDashboard } from "@/src/components/shared/app/layouts/navigation/NavigationLoggedInDashboard"
 import { NavigationLoggedInProject } from "@/src/components/shared/app/layouts/navigation/NavigationLoggedInProject"
+import { appMainClassName, appShellClassName } from "@/src/components/shared/layouts/layoutClasses"
 
 function LoggedInMainShell({
   children,
@@ -11,9 +12,9 @@ function LoggedInMainShell({
   navigation: React.ReactNode
 }) {
   return (
-    <div className="relative mx-auto flex h-full w-full max-w-480 grow flex-col overflow-x-hidden">
+    <div className={appShellClassName}>
       {navigation}
-      <main className="w-full">{children}</main>
+      <main className={appMainClassName}>{children}</main>
     </div>
   )
 }

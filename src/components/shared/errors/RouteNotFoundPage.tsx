@@ -1,12 +1,13 @@
 import type { NotFoundRouteComponent } from "@tanstack/react-router"
 import { Link } from "@/src/components/core/components/links/Link"
 import { FooterMinimal } from "@/src/components/shared/app/layouts/footer/FooterMinimal"
+import { appMainClassName, appShellClassName } from "@/src/components/shared/layouts/layoutClasses"
 
 /** Global 404 page – ported from the pre-migration `src/app/not-found.tsx`. */
 export const RouteNotFoundPage: NotFoundRouteComponent = () => {
   return (
-    <div className="flex min-h-full grow flex-col bg-white">
-      <main className="mx-auto flex w-full max-w-7xl grow flex-col justify-center px-4 sm:px-6 lg:px-8">
+    <div className={appShellClassName}>
+      <main className={`${appMainClassName} justify-center px-4 sm:px-6 lg:px-8`}>
         <div className="py-16">
           <div className="text-center">
             <p className="text-base font-semibold text-yellow-500">404</p>
