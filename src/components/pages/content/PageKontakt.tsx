@@ -1,7 +1,11 @@
+import { twMerge } from "tailwind-merge"
 import { Link } from "@/src/components/core/components/links/Link"
 import { LinkMail } from "@/src/components/core/components/links/LinkMail"
 import { LinkTel } from "@/src/components/core/components/links/LinkTel"
+import { Breadcrumb, BreadcrumbStep } from "@/src/components/core/components/PageHeader/Breadcrumb"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
+import { proseClasses } from "@/src/components/core/components/text/prose"
 import { Img } from "@/src/components/shared/Img"
 import svgImageLogoFona from "./assets/BMBF_FONA_Logo_rgb.svg"
 import svgImageLogoBmftrFoerderung from "./assets/BMFTR_de_DTP_CMYK_gef_durch.svg"
@@ -9,9 +13,16 @@ import svgImageLogoBmftrFoerderung from "./assets/BMFTR_de_DTP_CMYK_gef_durch.sv
 export function PageKontakt() {
   return (
     <>
-      <PageHeader title="Kontakt" />
+      <PageHeader
+        breadcrumb={
+          <Breadcrumb>
+            <BreadcrumbStep>Kontakt & Impressum</BreadcrumbStep>
+          </Breadcrumb>
+        }
+      />
 
-      <section className="prose mt-12">
+      <div className={twMerge(proseClasses, pageContentPaddingClassName, "mt-6w-full")}>
+        <h2>Kontakt</h2>
         <p>
           <strong>FixMyCity GmbH</strong>
           <br />
@@ -35,10 +46,8 @@ export function PageKontakt() {
         </p>
         <p>Umsatzsteuer-Identifikationsnummer gem. § 27a UStG: DE323489466</p>
         <p>Verantwortlicher i.S.v. § 55 Rundfunkstaatsvertrag (RStV): Boris Hekele</p>
-      </section>
 
-      <section className="prose mt-12">
-        <h2 className="mb-2 text-3xl font-semibold">Feedback &amp; Kontakt</h2>
+        <h2>Feedback</h2>
         <p>
           Wir freuen uns über Kommentare Anregungen und Unterstützung an{" "}
           <LinkMail mailto="feedback@fixmycity.de" subject="Feedback zum Trassenscout">
@@ -108,7 +117,7 @@ export function PageKontakt() {
             />
           </Link>
         </div>
-      </section>
+      </div>
     </>
   )
 }

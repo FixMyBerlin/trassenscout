@@ -2,8 +2,8 @@ import { expect, test } from "@/tests/_fixtures/test"
 
 const publicPages = [
   { path: "/", heading: "Trassenscout findet Wege" },
-  { path: "/datenschutz", heading: "Datenschutzerklärung" },
-  { path: "/kontakt", heading: "Kontakt" },
+  { path: "/datenschutz", breadcrumb: "Datenschutzerklärung" },
+  { path: "/kontakt", breadcrumb: "Kontakt" },
   { path: "/auth/login", heading: "In Account einloggen" },
   { path: "/auth/signup", heading: "Account registrieren" },
   { path: "/auth/forgot-password", heading: "Passwort vergessen" },
@@ -15,11 +15,17 @@ test.describe("Public and auth smoke", () => {
     test(`renders ${publicPage.path}`, async ({ page }) => {
       await page.goto(publicPage.path)
 
-      await expect(
-        page.getByRole("heading", { name: publicPage.heading, exact: true }),
-      ).toBeVisible({
-        timeout: 30_000,
-      })
+      if ("breadcrumb" in publicPage) {
+        await expect(
+          page.getByRole("navigation", { name: "Breadcrumb" }).getByText(publicPage.breadcrumb),
+        ).toBeVisible({ timeout: 30_000 })
+      } else {
+        await expect(
+          page.getByRole("heading", { name: publicPage.heading, exact: true }),
+        ).toBeVisible({
+          timeout: 30_000,
+        })
+      }
     })
   }
 
