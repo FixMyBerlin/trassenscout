@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { Breadcrumb, BreadcrumbStep } from "@/src/components/core/components/PageHeader/Breadcrumb"
+import { shortTitle } from "@/src/components/core/components/text/titles"
 import { Route as loggedInProjectRoute } from "@/src/routes/_loggedInProjects/$projectSlug"
 import { projectBySlugQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 
@@ -29,7 +30,7 @@ export function ProjectPageBreadcrumb({ section, sectionTo, sectionParams, curre
           ? { to: "/$projectSlug" as const, params: { projectSlug } }
           : {})}
       >
-        {project.slug}
+        {shortTitle(project.slug)}
       </BreadcrumbStep>
       {section ? (
         sectionLinks && sectionTo ? (
