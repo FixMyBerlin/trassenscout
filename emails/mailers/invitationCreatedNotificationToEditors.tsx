@@ -8,6 +8,7 @@ import { assertValidRenderedTemplate, buildTemplateMail } from "./utils/template
 type Props = {
   user: { email: string; name: string }
   projectName: string
+  projectRoles: string
   inviterName: string
   path: string
 }
@@ -17,6 +18,7 @@ export async function invitationCreatedNotificationToEditors(props: Props) {
     emailTemplateKeys.invitationCreatedEditorsNotification,
     {
       projectName: props.projectName,
+      projectRoles: props.projectRoles,
       inviterName: props.inviterName,
       invitesUrl: mailUrl(props.path),
     },

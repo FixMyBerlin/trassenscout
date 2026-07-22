@@ -5,11 +5,21 @@ export async function getPublicInviteByToken(token: string | null) {
   endpointAuth.public("invite token lookup for accept-invite flow")
   if (!token) return null
 
-  const invite = await db.invite.findFirst({
+  const invites = await db.invite.findMany({
+    orderBy: { id: "asc" },
     where: { token, status: "PENDING" },
-    select: { token: true, email: true },
+    select: {
+      email: true,
+      project: { select: { slug: true, subTitle: true } },
+      token: true,
+    },
   })
-  if (!invite) return null
+  if (invites.length === 0) return null
+  const firstInvite = invites[0]!
 
-  return { token: invite.token, email: invite.email.toLowerCase() }
+  return {
+    email: firstInvite.email.toLowerCase(),
+    projects: invites.map((invite) => invite.project),
+    token: firstInvite.token,
+  }
 }

@@ -4,6 +4,7 @@ import {
   getProjectBySlugFn,
   getProjectsAdminFn,
   getProjectsForCurrentUserFn,
+  getProjectsForInviteFn,
   getProjectsWithGeometryWithMembershipRoleFn,
 } from "./projects.functions"
 
@@ -11,6 +12,13 @@ export function projectsForCurrentUserQueryOptions() {
   return queryOptions({
     queryKey: ["projects", "currentUser"],
     queryFn: () => getProjectsForCurrentUserFn(),
+  })
+}
+
+export function projectsForInviteQueryOptions() {
+  return queryOptions({
+    queryKey: ["projects", "invite"],
+    queryFn: () => getProjectsForInviteFn(),
   })
 }
 

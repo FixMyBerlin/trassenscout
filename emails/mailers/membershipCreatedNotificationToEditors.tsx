@@ -9,7 +9,7 @@ type Props = {
   user: { email: string; name: string }
   projectName: string
   invinteeName: string
-  roleName: string
+  projectRoles: string
   teamPath: string
 }
 
@@ -19,7 +19,7 @@ export async function membershipCreatedNotificationToEditors(props: Props) {
     {
       projectName: props.projectName,
       inviteeName: props.invinteeName,
-      roleName: props.roleName,
+      projectRoles: props.projectRoles,
       teamUrl: mailUrl(props.teamPath),
     },
   )

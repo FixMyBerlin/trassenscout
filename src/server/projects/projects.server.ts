@@ -13,6 +13,7 @@ import {
   GetProjectBySlugSchema,
   UpdateProjectsFeatureFlagSchema,
 } from "./projects.inputSchemas"
+import { getEditableProjectsForInvite } from "./queries/getEditableProjectsForInvite.server"
 
 const projectSelect = {
   id: true,
@@ -48,6 +49,11 @@ export async function getProjectsForCurrentUser(headers: Headers) {
       },
     },
   })
+}
+
+export async function getProjectsForInvite(headers: Headers) {
+  const session = await endpointAuth.session(headers)
+  return getEditableProjectsForInvite(session)
 }
 
 export async function getProjectBySlug(
