@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 import { useState } from "react"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
+import { BackLink } from "@/src/components/core/components/forms/BackLink"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
 import {
@@ -52,15 +53,19 @@ export const UserEditForm = () => {
 
   return (
     <>
-      <FormShell form={form} formError={formError} submitText="Speichern" className="max-w-prose">
-        <form.AppField name="firstName">
-          {(field) => <field.TextField label="Vorname" placeholder="" autoComplete="given-name" />}
-        </form.AppField>
-        <form.AppField name="lastName">
-          {(field) => (
-            <field.TextField label="Nachname" placeholder="" autoComplete="family-name" />
-          )}
-        </form.AppField>
+      <FormShell form={form} formError={formError} submitText="Änderungen speichern">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <form.AppField name="firstName">
+            {(field) => (
+              <field.TextField label="Vorname" placeholder="" autoComplete="given-name" />
+            )}
+          </form.AppField>
+          <form.AppField name="lastName">
+            {(field) => (
+              <field.TextField label="Nachname" placeholder="" autoComplete="family-name" />
+            )}
+          </form.AppField>
+        </div>
         <form.AppField name="institution">
           {(field) => <field.TextField label="Organisation / Kommune" placeholder="" optional />}
         </form.AppField>
@@ -76,6 +81,7 @@ export const UserEditForm = () => {
           )}
         </form.AppField>
       </FormShell>
+      <BackLink to="/dashboard" text="Zurück zu Meine Projekte" />
       <SuperAdminLogData data={user} />
     </>
   )
