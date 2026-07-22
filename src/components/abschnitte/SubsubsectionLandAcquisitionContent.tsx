@@ -273,7 +273,6 @@ export const SubsubsectionLandAcquisitionContent = ({
                   <ProjectRecordsTable
                     projectRecords={projectRecords}
                     highlightId={createdProjectRecordId}
-                    bleed={false}
                   />
                 ) : (
                   <ZeroCase small visible name="Protokolleinträge" />

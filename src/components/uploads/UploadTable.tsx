@@ -48,6 +48,8 @@ type Props = Prettify<{
   withSource?: boolean
   withTags?: boolean
   onDelete?: (uploadId: number) => Promise<void>
+  /** Omit top border when flush under PageHeader. */
+  flushTop?: boolean
 }>
 
 export const UploadTable = ({
@@ -58,6 +60,7 @@ export const UploadTable = ({
   withSource = false,
   withTags = true,
   onDelete,
+  flushTop = false,
 }: Props) => {
   if (!uploads.length) {
     return <ZeroCase small visible={uploads.length} name="Dokumente" verb="hochgeladen" />
@@ -66,7 +69,7 @@ export const UploadTable = ({
   const spaceClasses = "px-3 py-2"
 
   return (
-    <TableWrapper>
+    <TableWrapper flushTop={flushTop}>
       <div className="@container w-full">
         <table className="min-w-full table-fixed border-collapse text-left text-sm text-gray-700">
           <colgroup>
