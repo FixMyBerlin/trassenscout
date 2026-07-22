@@ -26,13 +26,18 @@ export const UploadsPageContent = () => {
 
   return (
     <>
-      {/* flex gap instead of space-y: TableWrapper's -my-2 overrides space-y margins (zero-specificity :where() in Tailwind v4) */}
       <div className="flex flex-col gap-8">
         <div className={pageContentPaddingClassName}>
           <UploadsPageUploadSection projectSlug={projectSlug} />
         </div>
 
-        <UploadTable projectSlug={projectSlug} withAction withRelations uploads={visibleUploads} />
+        <UploadTable
+          projectSlug={projectSlug}
+          withAction
+          withRelations
+          flushTop
+          uploads={visibleUploads}
+        />
       </div>
 
       <SuperAdminBox>

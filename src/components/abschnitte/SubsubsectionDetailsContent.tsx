@@ -293,7 +293,6 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
           <ProjectRecordsTable
             projectRecords={projectRecords}
             highlightId={createdProjectRecordId}
-            bleed={false}
           />
         ) : (
           <ZeroCase small visible name="Protokolleinträge" />

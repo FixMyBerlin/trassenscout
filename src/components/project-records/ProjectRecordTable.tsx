@@ -46,7 +46,6 @@ export const ProjectRecordsTable = ({
   projectRecords,
   highlightId,
   isTopicFilter,
-  bleed = true,
   flushTop = false,
   showAcquisitionAreaColumn = false,
   showRelationsColumn = false,
@@ -60,7 +59,6 @@ export const ProjectRecordsTable = ({
     | ProjectRecordsNeedsReviewList
   highlightId?: number | null
   isTopicFilter?: boolean
-  bleed?: boolean
   flushTop?: boolean
   showAcquisitionAreaColumn?: boolean
   showRelationsColumn?: boolean
@@ -75,7 +73,7 @@ export const ProjectRecordsTable = ({
 
   return (
     <>
-      <TableWrapper bleed={bleed} flushTop={flushTop}>
+      <TableWrapper flushTop={flushTop}>
         <div className="@container w-full">
           <table className="min-w-full table-fixed border-collapse text-left text-sm text-gray-700">
             <colgroup>
