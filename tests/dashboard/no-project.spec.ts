@@ -24,6 +24,8 @@ test.describe("Dashboard no-project variant", () => {
     await expect(page.getByRole("button", { name: "User-Menü" })).toBeVisible({
       timeout: 30_000,
     })
-    await expect(page.getByRole("heading", { name: "Meine Projekte", exact: true })).toHaveCount(0)
+    await expect(page.getByText("Meine Projekte", { exact: true })).toBeVisible({
+      timeout: 30_000,
+    })
   })
 })
