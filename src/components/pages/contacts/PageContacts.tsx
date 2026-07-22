@@ -27,7 +27,7 @@ export function PageContacts() {
   return (
     <>
       <PageHeader
-        breadcrumb={<ProjectPageBreadcrumb section="Externe Kontakte" />}
+        breadcrumb={<ProjectPageBreadcrumb section="Kontakte" />}
         info="Kontaktdaten, die für das ganze Projektteam wichtig sind."
         tabs={<TabsApp tabs={tabs} embedded />}
         primaryAction={

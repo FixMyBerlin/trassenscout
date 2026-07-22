@@ -24,7 +24,7 @@ export function PageInvites() {
   return (
     <>
       <PageHeader
-        breadcrumb={<ProjectPageBreadcrumb section="Einladungen" />}
+        breadcrumb={<ProjectPageBreadcrumb section="Kontakte" />}
         info="Übersicht der Einladungen zur Mitarbeit im Projekt."
         tabs={<TabsApp tabs={tabs} embedded />}
         primaryAction={
