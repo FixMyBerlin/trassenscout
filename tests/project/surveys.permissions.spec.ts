@@ -130,15 +130,18 @@ test.describe("Survey permissions", () => {
 
       test("see response controls as read-only", async ({ page }) => {
         await page.goto(responsesDetailsPath())
-        await expect(page.locator('input[name="responseOperator"]').first()).toBeVisible({
+        await expect(page.getByText("Nicht zugeordnet").first()).toBeVisible({
           timeout: 30_000,
         })
 
-        await expect(page.locator('input[name="responseOperator"]').first()).toBeDisabled()
-        await expect(page.locator('input[name="responseStatus"]').first()).toBeDisabled()
-        await expect(page.locator('textarea[name="note"]')).toBeDisabled()
-        await expect(page.locator("textarea#body")).toHaveCount(0)
+        await expect(page.locator('input[name="responseOperator"]')).toHaveCount(0)
+        await expect(page.locator('input[name="responseStatus"]')).toHaveCount(0)
+        await expect(page.locator('input[name="surveyResponseTags"]')).toHaveCount(0)
+        await expect(page.locator('textarea[name="note"]')).toHaveCount(0)
+        await expect(page.getByText("Keine Notiz vorhanden.")).toBeVisible()
+        await expect(page.locator("textarea#body")).toBeVisible()
         await expect(page.getByRole("button", { name: /speichern/i })).toHaveCount(0)
+        await expect(page.getByText("Dateien hierher ziehen und ablegen")).toBeVisible()
       })
     })
 

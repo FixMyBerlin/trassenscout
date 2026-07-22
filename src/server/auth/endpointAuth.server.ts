@@ -43,7 +43,7 @@ export const endpointAuth = {
     }
   },
   /**
-   * Require project membership with the given roles; returns session only.
+   * Require project membership with the given roles; returns session plus the matched membership role.
    * Prefer `projectRole` when you also need `projectId`.
    */
   projectMember: async (opts: ProjectMemberOpts) => {
@@ -51,18 +51,22 @@ export const endpointAuth = {
     if (!session) {
       throw new AuthorizationError(authMessages.notAuthenticated)
     }
-    await authorizeProjectMemberByProjectSlug(session, opts.projectSlug, opts.roles)
-    return session
+    const membershipRole = await authorizeProjectMemberByProjectSlug(
+      session,
+      opts.projectSlug,
+      opts.roles,
+    )
+    return { ...session, membershipRole }
   },
-  /** Require project membership; returns `{ projectId, session }`. Primary guard for `*.server.ts` exports. */
+  /** Require project membership; returns `{ projectId, session, membershipRole }`. Primary guard for `*.server.ts` exports. */
   projectRole: async (headers: Headers, projectSlug: string, roles: MembershipRole[]) => {
     const session = await getAppSession(headers)
     if (!session) {
       throw new AuthorizationError(authMessages.notAuthenticated)
     }
-    await authorizeProjectMemberByProjectSlug(session, projectSlug, roles)
+    const membershipRole = await authorizeProjectMemberByProjectSlug(session, projectSlug, roles)
     const projectId = await getProjectIdBySlug(projectSlug)
-    return { projectId, session }
+    return { projectId, session, membershipRole }
   },
   /** Validate `TS_API_KEY` from query or `Authorization` / `x-api-key` header. For cron and automation API routes. */
   apiKey: (request: Request) => {

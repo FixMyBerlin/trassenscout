@@ -8,11 +8,13 @@ import { ProjectRecordReviewState } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
+import { AuthorizationError } from "@/src/shared/auth/errors"
 import { connectIds, idsFromFormValue, setIds } from "@/src/shared/prisma/connectIds"
 import { UploadSchema } from "@/src/shared/uploads/schemas"
 import { deleteUploadFileAndDbRecord } from "./_utils/deleteUploadFileAndDbRecord"
 import { extractExifFromS3 } from "./_utils/extractExifFromS3.server"
 import { findCollidingFilenames } from "./_utils/filenameCollisions"
+import { isProjectUploadS3Url } from "./_utils/keys"
 import { matchSlugFromFilename } from "./_utils/matchSlugFromFilename"
 import { uploadWithSubsectionsInclude } from "./_utils/uploadInclude"
 import type { GetSurveyResponseUploadsSplitInput } from "./uploads.inputSchemas"
@@ -27,12 +29,22 @@ import {
 } from "./uploads.inputSchemas"
 
 type UploadInput = z.infer<typeof UploadSchema>
+type UploadRelationsInput = Pick<
+  UploadInput,
+  | "projectRecordEmailId"
+  | "surveyResponseId"
+  | "projectRecords"
+  | "subsubsections"
+  | "acquisitionAreas"
+  | "tags"
+>
+type UpdateUploadDataInput = Omit<UploadInput, "externalUrl">
 
 function uploadInProjectWhere(projectSlug: string, id: number) {
   return { id, project: { slug: projectSlug } }
 }
 
-async function validateUploadRelations(projectSlug: string, input: UploadInput) {
+async function validateUploadRelations(projectSlug: string, input: UploadRelationsInput) {
   const projectRecordIds = idsFromFormValue(input.projectRecords)
   const subsubsectionIds = idsFromFormValue(input.subsubsections)
   const acquisitionAreaIds = idsFromFormValue(input.acquisitionAreas)
@@ -117,7 +129,7 @@ function createUploadData(input: UploadInput, projectId: number, userId: number)
   }
 }
 
-function updateUploadData(input: UploadInput, projectId: number, userId: number) {
+function updateUploadData(input: UpdateUploadDataInput, projectId: number, userId: number) {
   const { acquisitionAreas, projectRecords, subsubsections, tags, ...data } = input
 
   return {
@@ -128,6 +140,32 @@ function updateUploadData(input: UploadInput, projectId: number, userId: number)
     projectRecords: setIds(idsFromFormValue(projectRecords)),
     subsubsections: setIds(idsFromFormValue(subsubsections)),
     tags: setIds(idsFromFormValue(tags)),
+  }
+}
+
+function assertViewerUploadOnlyAddsSurveyResponseDocument(input: UploadInput) {
+  const hasNoSummary = input.summary == null || input.summary.trim() === ""
+  const hasOnlySurveyResponseRelation =
+    input.surveyResponseId != null &&
+    hasNoSummary &&
+    input.projectRecordEmailId == null &&
+    input.latitude == null &&
+    input.longitude == null &&
+    input.collaborationUrl == null &&
+    input.collaborationPath == null &&
+    idsFromFormValue(input.projectRecords).length === 0 &&
+    idsFromFormValue(input.subsubsections).length === 0 &&
+    idsFromFormValue(input.acquisitionAreas).length === 0 &&
+    idsFromFormValue(input.tags).length === 0
+
+  if (!hasOnlySurveyResponseRelation) {
+    throw new AuthorizationError()
+  }
+}
+
+function assertUploadExternalUrlBelongsToProject(projectSlug: string, externalUrl: string) {
+  if (!isProjectUploadS3Url(externalUrl, projectSlug)) {
+    throw new AuthorizationError()
   }
 }
 
@@ -194,12 +232,23 @@ export async function getUpload(headers: Headers, input: z.infer<typeof GetUploa
 }
 
 export async function createUpload(headers: Headers, input: z.infer<typeof CreateUploadSchema>) {
-  const { projectId, session } = await endpointAuth.projectRole(
+  const { projectId, membershipRole, session } = await endpointAuth.projectRole(
     headers,
     input.projectSlug,
-    editorRoles,
+    viewerRoles,
   )
   const { projectSlug, assignSubsubsectionFromFilename, ...data } = input
+  const canEdit = membershipRole === null || membershipRole === "EDITOR"
+
+  assertUploadExternalUrlBelongsToProject(projectSlug, data.externalUrl)
+
+  if (!canEdit) {
+    if (assignSubsubsectionFromFilename) {
+      throw new AuthorizationError()
+    }
+    assertViewerUploadOnlyAddsSurveyResponseDocument(data)
+  }
+
   await validateUploadRelations(projectSlug, data)
 
   if (assignSubsubsectionFromFilename && idsFromFormValue(data.subsubsections).length === 0) {
@@ -245,7 +294,7 @@ export async function updateUpload(headers: Headers, input: z.infer<typeof Updat
     input.projectSlug,
     editorRoles,
   )
-  const { id, projectSlug, ...data } = input
+  const { id, projectSlug, externalUrl: _keepStoredExternalUrl, ...data } = input
   await validateUploadRelations(projectSlug, data)
   const previous = await db.upload.findFirstOrThrow({
     where: uploadInProjectWhere(projectSlug, id),

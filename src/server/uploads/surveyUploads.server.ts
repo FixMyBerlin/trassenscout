@@ -4,6 +4,7 @@ import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import db from "@/src/server/db.server"
 import { generateSecureToken } from "@/src/server/utils/generateSecureToken.server"
 import { deleteUploadFileAndDbRecord } from "./_utils/deleteUploadFileAndDbRecord"
+import { isProjectUploadS3Url } from "./_utils/keys"
 import {
   CreateSurveyUploadPublicSchema,
   DeleteSurveyUploadPublicSchema,
@@ -41,6 +42,7 @@ export async function createSurveyUploadPublic(
           survey: {
             select: {
               projectId: true,
+              project: { select: { slug: true } },
             },
           },
         },
@@ -53,6 +55,11 @@ export async function createSurveyUploadPublic(
   }
 
   const projectId = surveyResponse.surveySession.survey.projectId
+  const projectSlug = surveyResponse.surveySession.survey.project.slug
+  if (!isProjectUploadS3Url(input.externalUrl, projectSlug)) {
+    throw new Error("Invalid upload URL")
+  }
+
   const publicDeleteToken = generateSecureToken()
 
   return db.upload.create({

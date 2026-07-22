@@ -6,7 +6,7 @@ export const InviteSchema = z.object({
   role: z.enum(MembershipRoleEnum),
 })
 
-export const InviteProjectSchema = z.object({
+const InviteProjectSchema = z.object({
   projectSlug: z.string().min(1),
   role: z.enum(MembershipRoleEnum),
 })

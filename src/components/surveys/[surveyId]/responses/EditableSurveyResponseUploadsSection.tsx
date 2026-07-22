@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query"
 import { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
 import { getQuestionIdBySurveySlug } from "@/src/components/beteiligung/shared/utils/getQuestionIdBySurveySlug"
-import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { UploadDropzone } from "@/src/components/uploads/UploadDropzone"
 import { UploadTable } from "@/src/components/uploads/UploadTable"
 import { surveyResponseUploadsSplitQueryOptions } from "@/src/server/uploads/uploadsQueryOptions"
@@ -11,6 +10,7 @@ import { getFlatSurveyFormFields } from "./getFlatSurveyFormFields"
 type Props = {
   projectSlug: string
   surveyId: number
+  surveySessionId: number
   responseId: number
   responseData: Record<string, any>
   surveySlug: AllowedSurveySlugs
@@ -21,6 +21,7 @@ type Props = {
 export const EditableSurveyResponseUploadsSection = ({
   projectSlug,
   surveyId: _surveyId,
+  surveySessionId,
   responseId,
   responseData,
   surveySlug,
@@ -91,13 +92,12 @@ export const EditableSurveyResponseUploadsSection = ({
             await refetchUploads()
           }}
         />
-        <IfUserCanEdit>
-          <UploadDropzone
-            projectSlug={projectSlug}
-            surveyResponseId={responseId}
-            onUploadComplete={handleUploadComplete}
-          />
-        </IfUserCanEdit>
+        <UploadDropzone
+          projectSlug={projectSlug}
+          surveyResponseId={responseId}
+          surveySessionId={surveySessionId}
+          onUploadComplete={handleUploadComplete}
+        />
       </div>
     </div>
   )
