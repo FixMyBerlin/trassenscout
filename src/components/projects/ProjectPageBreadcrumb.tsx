@@ -12,11 +12,13 @@ type Props = {
   section?: string
   sectionTo?: string
   sectionParams?: Record<string, string>
+  /** Optional entity label between section and current (e.g. slug on edit pages). */
+  item?: string
   /** Final non-link crumb */
   current?: string
 }
 
-export function ProjectPageBreadcrumb({ section, sectionTo, sectionParams, current }: Props) {
+export function ProjectPageBreadcrumb({ section, sectionTo, sectionParams, item, current }: Props) {
   const { projectSlug } = loggedInProjectRouteApi.useParams()
   const { data: project } = useSuspenseQuery(projectBySlugQueryOptions(projectSlug))
 
@@ -41,6 +43,7 @@ export function ProjectPageBreadcrumb({ section, sectionTo, sectionParams, curre
           <BreadcrumbStep>{section}</BreadcrumbStep>
         )
       ) : null}
+      {item ? <BreadcrumbStep>{item}</BreadcrumbStep> : null}
       {current ? <BreadcrumbStep>{current}</BreadcrumbStep> : null}
     </Breadcrumb>
   )

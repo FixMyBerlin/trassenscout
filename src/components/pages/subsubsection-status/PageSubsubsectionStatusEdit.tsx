@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
+import { shortTitle } from "@/src/components/core/components/text/titles"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
 import { EditSubsubsectionStatusForm } from "@/src/components/subsubsection-status/EditSubsubsectionStatusForm"
 import { adminLookupRowQueryOptions } from "@/src/server/adminLookupTables/adminLookupTablesQueryOptions"
@@ -24,6 +25,7 @@ export function PageSubsubsectionStatusEdit() {
           <ProjectPageBreadcrumb
             section="Phase"
             sectionTo="/$projectSlug/subsubsection-status"
+            item={"slug" in subsubsectionStatus ? shortTitle(subsubsectionStatus.slug) : undefined}
             current="bearbeiten"
           />
         }
