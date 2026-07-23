@@ -13,6 +13,7 @@ import { twJoin } from "tailwind-merge"
 import { ObjectDump } from "@/src/components/admin/ObjectDump"
 import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { BackLink } from "@/src/components/core/components/forms/BackLink"
+import { BackLinkSection } from "@/src/components/core/components/forms/BackLinkSection"
 import { improveErrorMessage } from "@/src/components/core/components/forms/improveErrorMessage"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { isProduction } from "@/src/components/core/utils/isEnv"
@@ -161,9 +162,9 @@ export const ContactsTable = () => {
         }}
         columns={columns}
       />
-      <div className={pageContentPaddingClassName}>
+      <BackLinkSection>
         <BackLink to={`/${projectSlug}/contacts`} text="Zurück zur Kontaktliste" />
-      </div>
+      </BackLinkSection>
     </>
   )
 }

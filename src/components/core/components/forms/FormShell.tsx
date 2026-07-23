@@ -3,6 +3,7 @@ import type { JSX } from "react"
 import { PropsWithoutRef, ReactNode } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 import { ActionBar } from "@/src/components/core/components/forms/ActionBar"
+import { BackLinkSection } from "@/src/components/core/components/forms/BackLinkSection"
 import type { CoreAppFormApi } from "@/src/components/core/components/forms/coreFormTypes"
 import { FormError } from "@/src/components/core/components/forms/FormError"
 import { FormHydratedProvider } from "@/src/components/core/components/forms/hooks/useFormHydrated"
@@ -87,7 +88,7 @@ export function FormShell<TFormData>({
             />
           )}
 
-          {backLink !== null && <div className={pageContentPaddingClassName}>{backLink}</div>}
+          {backLink !== null && <BackLinkSection>{backLink}</BackLinkSection>}
         </form>
       </form.AppForm>
     </FormHydratedProvider>

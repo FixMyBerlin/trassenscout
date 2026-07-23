@@ -5,6 +5,7 @@ import { ContactSingle } from "@/src/components/contacts/ContactSingle"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
 import { ActionBar } from "@/src/components/core/components/forms/ActionBar"
 import { BackLink } from "@/src/components/core/components/forms/BackLink"
+import { BackLinkSection } from "@/src/components/core/components/forms/BackLinkSection"
 import { Link } from "@/src/components/core/components/links/Link"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
@@ -56,9 +57,9 @@ export function PageContactsContact() {
           <pre>{JSON.stringify(contact, null, 2)}</pre>
         </SuperAdminBox>
       </div>
-      <div className={pageContentPaddingClassName}>
+      <BackLinkSection>
         <BackLink to={`/${projectSlug}/contacts`} text="Zurück zur Kontaktliste" />
-      </div>
+      </BackLinkSection>
     </>
   )
 }

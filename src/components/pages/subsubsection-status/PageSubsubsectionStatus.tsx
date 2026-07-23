@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
+import { BackLinkSection } from "@/src/components/core/components/forms/BackLinkSection"
 import { ConditionalBackLink } from "@/src/components/core/components/forms/ConditionalBackLink"
 import { Link } from "@/src/components/core/components/links/Link"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
@@ -43,9 +44,9 @@ export function PageSubsubsectionStatus() {
       <SubsubsectionStatussTable subsubsectionStatuss={rows} />
       <IfUserCanEdit>
         {fromPath ? (
-          <div className={pageContentPaddingClassName}>
+          <BackLinkSection>
             <ConditionalBackLink fromPath={fromPath} />
-          </div>
+          </BackLinkSection>
         ) : null}
       </IfUserCanEdit>
       <div className={pageContentPaddingClassName}>

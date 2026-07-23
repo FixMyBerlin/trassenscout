@@ -2,6 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi, useRouter } from "@tanstack/react-router"
 import { ActionBar } from "@/src/components/core/components/forms/ActionBar"
 import { BackLink } from "@/src/components/core/components/forms/BackLink"
+import { BackLinkSection } from "@/src/components/core/components/forms/BackLinkSection"
 import { Link } from "@/src/components/core/components/links/Link"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
@@ -70,7 +71,7 @@ export function PageProjectRecordDetail() {
           }
         />
       )}
-      <div className={pageContentPaddingClassName}>
+      <BackLinkSection>
         <BackLink
           to={returnPath}
           text={
@@ -79,7 +80,7 @@ export function PageProjectRecordDetail() {
               : "Zurück zu den Protokolleinträgen"
           }
         />
-      </div>
+      </BackLinkSection>
     </>
   )
 }
