@@ -12,7 +12,13 @@ type Props = Record<string, Record<string, TLegendItem>>
 
 const LegendItemShape = ({ legendItem }: { legendItem: TLegendItem }) => {
   return (
-    <span className={twJoin("inline-block w-5 shrink-0", legendItem.color, legendItem.className)} />
+    <span
+      className={twJoin(
+        "inline-block w-5 shrink-0 ring-1 ring-gray-900/70",
+        legendItem.color,
+        legendItem.className,
+      )}
+    />
   )
 }
 
@@ -43,7 +49,7 @@ export const SurveyMapLegend = (legend: Props) => {
   })
 
   return (
-    <div className="mt-0! flex flex-col gap-3 bg-gray-200 p-4">
+    <div className="mt-0! flex flex-col gap-3 bg-gray-100 p-4">
       {legendGroups.map(({ groupLabel, items }) => (
         <Fragment key={groupLabel}>
           <p>{groupLabel}</p>
