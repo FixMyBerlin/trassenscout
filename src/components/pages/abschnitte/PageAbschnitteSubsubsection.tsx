@@ -3,7 +3,10 @@ import { getRouteApi } from "@tanstack/react-router"
 import { SubsubsectionDetailsContent } from "@/src/components/abschnitte/SubsubsectionDetailsContent"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { SubsubsectionMapWithProvider } from "@/src/components/core/components/Map/SubsubsectionMapWithProvider"
-import { MAP_FULLSCREEN_HEIGHT_CLASS } from "@/src/components/core/components/PageHeader/MapListViewLayout"
+import {
+  MAP_FULLSCREEN_HEIGHT_CLASS,
+  MapAsideSplitLayout,
+} from "@/src/components/core/components/PageHeader/MapListViewLayout"
 import { subsectionBySlugQueryOptions } from "@/src/server/subsections/subsectionQueryOptions"
 import { subsectionsQueryOptions } from "@/src/server/subsections/subsectionsQueryOptions"
 import { subsubsectionBySlugQueryOptions } from "@/src/server/subsubsections/subsubsectionQueryOptions"
@@ -29,15 +32,17 @@ export function PageAbschnitteSubsubsection() {
 
   return (
     <MapPageSuspense>
-      <div className="relative flex h-full min-h-0 w-full flex-col lg:flex-row lg:items-stretch">
-        <aside className="min-h-0 w-full overflow-y-auto lg:h-full lg:w-[45%] lg:shrink-0">
-          <SubsubsectionDetailsContent
-            subsubsection={subsubsection}
-            className="rounded-none border-0 shadow-none"
-          />
-          <SuperAdminLogData data={{ subsection, subsubsection }} />
-        </aside>
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col border-t border-gray-200 lg:border-t-0 lg:border-l">
+      <MapAsideSplitLayout
+        aside={
+          <>
+            <SubsubsectionDetailsContent
+              subsubsection={subsubsection}
+              className="rounded-none border-0 shadow-none"
+            />
+            <SuperAdminLogData data={{ subsection, subsubsection }} />
+          </>
+        }
+        map={
           <SubsubsectionMapWithProvider
             key={`map-subsubsection-${subsubsectionSlug}`}
             projectSlug={projectSlug}
@@ -48,8 +53,8 @@ export function PageAbschnitteSubsubsection() {
             selectedSubsubsectionSlug={subsubsectionSlug}
             classHeight={MAP_FULLSCREEN_HEIGHT_CLASS}
           />
-        </div>
-      </div>
+        }
+      />
     </MapPageSuspense>
   )
 }

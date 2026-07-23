@@ -9,6 +9,7 @@ import { TextField } from "@/src/components/core/components/forms/fields/TextFie
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useCoreAppFormContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
+import { MapAsideSplitLayout } from "@/src/components/core/components/PageHeader/MapListViewLayout"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { createAcquisitionAreasFromSelectionFn } from "@/src/server/acquisitionAreas/acquisitionAreas.functions"
 import type { AlkisWfsParcelFeatureCollection } from "@/src/server/alkis/alkisWfsParcelGeoJsonTypes"
@@ -176,14 +177,15 @@ export function AcquisitionAreasWorkspace({
   })
 
   return (
-    <div className="relative flex h-full min-h-0 w-full flex-col lg:flex-row lg:items-stretch">
-      <aside className="flex min-h-0 w-full flex-col overflow-y-auto p-4 lg:h-full lg:w-[45%] lg:shrink-0">
-        <div className="flex flex-col gap-4">
+    <MapAsideSplitLayout
+      asideClassName="flex flex-col"
+      aside={
+        <>
           <FormShell
             form={form}
             formError={submitError}
-            withPagePadding={false}
-            className="mt-4 flex flex-col gap-2 space-y-0"
+            className="flex flex-col gap-2 space-y-0"
+
             submitText="Ausgewählte Verhandlungsflächen erstellen"
           >
             <BufferRadiusControls onApplyRadius={onApplyRadius} />
@@ -203,27 +205,21 @@ export function AcquisitionAreasWorkspace({
             </div>
           </FormShell>
 
-          <div className="space-y-2">
+          <div className={twJoin(pageContentPaddingClassName, "space-y-2")}>
+
             <p className="text-sm text-gray-500">
               {selectedAcquisitionAreas.length} von {potentialAcquisitionAreas.length}{" "}
               Verhandlungsflächen ausgewählt
             </p>
+
+            <AcquisitionAreasList
+              potentialAcquisitionAreas={potentialAcquisitionAreas}
+              setPotentialAcquisitionAreas={setPotentialAcquisitionAreas}
+            />
           </div>
-        </FormShell>
-
-        <div className={twJoin(pageContentPaddingClassName, "space-y-2")}>
-          <p className="text-sm text-gray-500">
-            {selectedAcquisitionAreas.length} von {potentialAcquisitionAreas.length}{" "}
-            Verhandlungsflächen ausgewählt
-          </p>
-
-          <AcquisitionAreasList
-            potentialAcquisitionAreas={potentialAcquisitionAreas}
-            setPotentialAcquisitionAreas={setPotentialAcquisitionAreas}
-          />
-        </div>
-      </aside>
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col border-t border-gray-200 lg:border-t-0 lg:border-l">
+        </>
+      }
+      map={
         <MapProvider>
           <AcquisitionAreaMap
             subsubsection={initialSubsubsection}
@@ -236,7 +232,7 @@ export function AcquisitionAreasWorkspace({
             classHeight={mapHeightClass}
           />
         </MapProvider>
-      </div>
-    </div>
+      }
+    />
   )
 }

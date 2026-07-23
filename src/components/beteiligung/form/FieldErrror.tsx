@@ -1,7 +1,7 @@
 import { AnyFieldApi } from "@tanstack/react-form"
 
 export const getFieldDescriptionId = (fieldName: string) => `${fieldName}-description`
-export const getFieldErrorId = (fieldName: string) => `${fieldName}-error`
+const getFieldErrorId = (fieldName: string) => `${fieldName}-error`
 
 export const getFieldA11yProps = ({
   description,

@@ -51,7 +51,6 @@ export function NewAcquisitionAreasForm({ initialSubsubsection }: Props) {
   })
   const parcels = parcelsData ?? EMPTY_PARCELS
   const errorMessage = error instanceof Error ? error.message : null
-
   const basePotentialAcquisitionAreas = useMemo(() => {
     if (!bufferPolygonFeature) return []
 
