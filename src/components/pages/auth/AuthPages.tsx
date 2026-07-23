@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { Link, useNavigate, useRouter, useSearch } from "@tanstack/react-router"
 import { useEffect, useState } from "react"
+import { twJoin } from "tailwind-merge"
 import { z } from "zod"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
@@ -10,6 +11,7 @@ import {
   type OnSubmitResult,
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { linkStyles, selectLinkStyle } from "@/src/components/core/components/links/styles"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { Spinner } from "@/src/components/core/components/Spinner"
 import { frenchQuote } from "@/src/components/core/components/text/quote"
 import { AuthTitleBodyWrapper } from "@/src/components/pages/auth/AuthTitleBodyWrapper"
@@ -406,7 +408,7 @@ function PageLogin({ callbackURL, inviteToken }: AuthCallbackSearch) {
       />
 
       {passwordResetEmail && (
-        <div className="mt-4 text-sm">
+        <div className={twJoin("text-sm", pageContentPaddingClassName)}>
           <Link
             to="/auth/forgot-password"
             search={{ email: passwordResetEmail }}
@@ -417,7 +419,7 @@ function PageLogin({ callbackURL, inviteToken }: AuthCallbackSearch) {
         </div>
       )}
 
-      <div className="mt-4 text-sm">
+      <div className={twJoin("text-sm", pageContentPaddingClassName)}>
         Sie haben noch keinen Account? Zur{" "}
         <Link
           to="/auth/signup"
@@ -485,7 +487,7 @@ function PageSignup({ callbackURL, inviteToken }: AuthCallbackSearch) {
     >
       <SignupForm key={invite?.email ?? "signup"} invite={invite} onSubmit={handleSignup} />
 
-      <div className="mt-4 text-sm">
+      <div className={twJoin("text-sm", pageContentPaddingClassName)}>
         Sie haben bereits einen Account? Zur{" "}
         <Link
           to="/auth/login"
