@@ -80,7 +80,7 @@ export function SurveyAnalysis({ projectSlug, surveyId: _surveyId, survey, tabs 
       <PageHeader
         breadcrumb={
           <ProjectPageBreadcrumb
-            section="Beteiligungen"
+            section="Eingaben"
             sectionTo="/$projectSlug/surveys"
             current={survey.title}
           />
