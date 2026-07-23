@@ -56,6 +56,7 @@ export const ProjectRecordsTable = ({
   isTopicFilter,
   showAcquisitionAreaColumn = false,
   showRelationsColumn = false,
+  withTopBorder = false,
   onTopicClick,
   onAssigneeClick,
 }: {
@@ -68,6 +69,7 @@ export const ProjectRecordsTable = ({
   isTopicFilter?: boolean
   showAcquisitionAreaColumn?: boolean
   showRelationsColumn?: boolean
+  withTopBorder?: boolean
   onTopicClick?: (topic: string) => void
   onAssigneeClick?: (assigneeSearchText: string) => void
 }) => {
@@ -78,7 +80,7 @@ export const ProjectRecordsTable = ({
 
   return (
     <>
-      <TableWrapper>
+      <TableWrapper withTopBorder={withTopBorder}>
         <div className="@container w-full">
           <table className={tableFixedClassName}>
             <colgroup>
