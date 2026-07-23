@@ -2,7 +2,7 @@ import { z } from "zod"
 import { invitationCreatedMailToUser } from "@/emails/mailers/invitationCreatedMailToUser"
 import { invitationCreatedNotificationToEditors } from "@/emails/mailers/invitationCreatedNotificationToEditors"
 import { getFullname } from "@/src/components/core/users/getFullname"
-import { MembershipRoleEnum, UserRoleEnum } from "@/src/prisma/generated/browser"
+import { MembershipRoleEnum } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import type { AppSession } from "@/src/server/auth/session.server"
 import { getNumericUserId } from "@/src/server/auth/shared/getNumericUserId"
@@ -16,19 +16,16 @@ import {
 } from "@/src/server/projects/queries/getEditableProjectsForInvite.server"
 import { generateSecureToken } from "@/src/server/utils/generateSecureToken.server"
 import { paginate } from "@/src/server/utils/paginate.server"
-import { ProjectSlugRequiredSchema } from "@/src/shared/authorization/projectSlugSchema"
 import {
   formatInviteProjectRoles,
   formatInviteProjects,
 } from "@/src/shared/invites/formatInviteProjects"
-import { InviteSchema } from "@/src/shared/invites/schemas"
 import {
   CreateInvitesSchema,
   GetInviteEmailStatusSchema,
   GetInvitesSchema,
+  RevokeInviteSchema,
 } from "./invites.inputSchemas"
-
-export const CreateInviteSchema = ProjectSlugRequiredSchema.extend(InviteSchema.shape)
 
 export type GetInvitesInput = z.infer<typeof GetInvitesSchema>
 export type CreateInvitesInput = z.infer<typeof CreateInvitesSchema>
@@ -41,9 +38,9 @@ type SelectedInviteProject = {
   subTitle: string | null
 }
 
-function canUseMultiProjectInvite(session: AppSession) {
-  // MVP: only global admins see the batch UI. Later: ADMIN || hasEditorMembership.
-  return session.role === UserRoleEnum.ADMIN
+async function canUseMultiProjectInvite(session: AppSession) {
+  const editableProjects = await getEditableProjectsForInvite(session)
+  return editableProjects.length > 0
 }
 
 function caseInsensitiveEmailFilter(email: string) {
@@ -116,8 +113,8 @@ async function createInvitesForSession({
   requireAdminGate: boolean
   session: AppSession
 }) {
-  if (requireAdminGate && !canUseMultiProjectInvite(session)) {
-    throw new Error("Mehrprojekt-Einladungen sind aktuell nur für Admins verfügbar.")
+  if (requireAdminGate && !(await canUseMultiProjectInvite(session))) {
+    throw new Error("Mehrprojekt-Einladungen sind nur für Projekt-Editor:innen verfügbar.")
   }
 
   for (const project of input.projects) {
@@ -253,26 +250,6 @@ export async function getInvites(headers: Headers, input: GetInvitesInput) {
   return { invites, nextPage, hasMore, count }
 }
 
-export async function createInvite(headers: Headers, input: z.infer<typeof CreateInviteSchema>) {
-  const session = await endpointAuth.session(headers)
-  const result = await createInvitesForSession({
-    input: {
-      email: input.email,
-      projects: [{ projectSlug: input.projectSlug, role: input.role }],
-    },
-    requireAdminGate: false,
-    session,
-  })
-
-  const project = result.projects[0]!
-  return {
-    email: result.email,
-    project: { slug: project.slug, subTitle: project.subTitle },
-    role: project.role,
-    status: "PENDING" as const,
-  }
-}
-
 export async function createInvites(headers: Headers, input: CreateInvitesInput) {
   const session = await endpointAuth.session(headers)
   const result = await createInvitesForSession({ input, requireAdminGate: true, session })
@@ -287,11 +264,31 @@ export async function createInvites(headers: Headers, input: CreateInvitesInput)
   }
 }
 
+export async function revokeInvite(headers: Headers, input: z.infer<typeof RevokeInviteSchema>) {
+  const session = await endpointAuth.session(headers)
+  await authorizeProjectMemberByProjectSlug(session, input.projectSlug, editorRoles)
+
+  const result = await db.invite.updateMany({
+    where: {
+      id: input.inviteId,
+      project: { slug: input.projectSlug },
+      status: "PENDING",
+    },
+    data: {
+      status: "EXPIRED",
+      token: generateSecureToken(),
+    },
+  })
+
+  if (result.count === 0) {
+    throw new Error("Die Einladung konnte nicht zurückgezogen werden.")
+  }
+
+  return { success: true as const }
+}
+
 export async function getInviteEmailStatus(headers: Headers, input: GetInviteEmailStatusInput) {
   const session = await endpointAuth.session(headers)
-  if (!canUseMultiProjectInvite(session)) {
-    throw new Error("Mehrprojekt-Einladungen sind aktuell nur für Admins verfügbar.")
-  }
   const email = input.email.toLocaleLowerCase()
 
   const editableProjects = await getEditableProjectsForInvite(session)

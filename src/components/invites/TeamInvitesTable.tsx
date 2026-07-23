@@ -1,7 +1,9 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { endOfDay, format, formatDistanceStrict, subDays } from "date-fns"
 import { de } from "date-fns/locale"
 import { twJoin } from "tailwind-merge"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
+import { secondaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { LinkMail } from "@/src/components/core/components/links/LinkMail"
 import { StatusLabel } from "@/src/components/core/components/Status/StatusLabel"
 import {
@@ -19,6 +21,8 @@ import {
   inviteStatusClassNames,
   inviteStatusLabels,
 } from "@/src/components/invites/inviteStatusDisplay"
+import { InviteStatusEnum } from "@/src/prisma/generated/browser"
+import { revokeInviteFn } from "@/src/server/invites/invites.functions"
 import { INVITE_DAYS_TO_DELETION } from "@/src/server/invites/inviteSettings.const"
 import type { InvitesResult } from "@/src/server/invites/types"
 
@@ -32,14 +36,24 @@ const teamInvitesTableColWidths = {
   inviter: "hidden @xl:table-column @xl:w-[18%]",
   date: "hidden @xl:table-column @xl:w-[18%]",
   validity: "hidden @xl:table-column @xl:w-[16%]",
+  actions: "w-[18%] @xl:w-[12%]",
 } as const
 
 type Props = {
+  canEdit: boolean
   invites: InvitesResult["invites"]
+  projectSlug: string
 }
 
-export const TeamInvitesTable = ({ invites }: Props) => {
+export const TeamInvitesTable = ({ canEdit, invites, projectSlug }: Props) => {
+  const queryClient = useQueryClient()
+  const revokeMutation = useMutation({ mutationFn: revokeInviteFn })
   const currentDate = endOfDay(new Date())
+
+  const handleRevoke = async (inviteId: number) => {
+    await revokeMutation.mutateAsync({ data: { inviteId, projectSlug } })
+    await queryClient.invalidateQueries({ queryKey: ["invites", { projectSlug }] })
+  }
 
   return (
     <>
@@ -53,6 +67,7 @@ export const TeamInvitesTable = ({ invites }: Props) => {
               <col className={teamInvitesTableColWidths.inviter} />
               <col className={teamInvitesTableColWidths.date} />
               <col className={teamInvitesTableColWidths.validity} />
+              {canEdit && <col className={teamInvitesTableColWidths.actions} />}
             </colgroup>
             <thead>
               <tr className={tableHeadRowClassName}>
@@ -74,6 +89,11 @@ export const TeamInvitesTable = ({ invites }: Props) => {
                 <th scope="col" className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}>
                   Gültigkeit
                 </th>
+                {canEdit && (
+                  <th scope="col" className={tableHeadCellClassName}>
+                    Aktion
+                  </th>
+                )}
               </tr>
             </thead>
             <tbody className={tableBodyClassName}>
@@ -107,6 +127,20 @@ export const TeamInvitesTable = ({ invites }: Props) => {
                       },
                     )}
                   </td>
+                  {canEdit && (
+                    <td className={twJoin(tableCellClassName, "align-top")}>
+                      {invite.status === InviteStatusEnum.PENDING && (
+                        <button
+                          type="button"
+                          className={twJoin(secondaryButtonClassName, "px-2 py-1 text-xs")}
+                          disabled={revokeMutation.isPending}
+                          onClick={() => handleRevoke(invite.id)}
+                        >
+                          Zurückziehen
+                        </button>
+                      )}
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>
