@@ -55,7 +55,7 @@ export const UploadDetailPanelContent = ({ upload, projectSlug }: Props) => {
                   In Vollansicht öffnen
                 </Link>
               )}
-              <Link blank button href={uploadUrl(upload, projectSlug)}>
+              <Link blank button="white" href={uploadUrl(upload, projectSlug)}>
                 Datei {isUploadPdf && "im Browser "}öffnen
               </Link>
             </div>

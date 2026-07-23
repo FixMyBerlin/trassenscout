@@ -7,6 +7,7 @@ import {
   tableCellClassName,
   tableFixedClassName,
   tableHeadCellClassName,
+  tableHeadCellRightClassName,
   tableHeadRowClassName,
   tableRowClassName,
 } from "@/src/components/core/components/Table/tableClasses"
@@ -21,10 +22,11 @@ import { TeamTableEditMembershipModal } from "./TeamTableEditMembershipModal"
  * Column width classes for `table-fixed` layout. Adjust percentages here only.
  */
 const teamTableColWidths = {
-  name: "min-w-0 w-[40%] @xl:w-[28%]",
-  phone: "w-[30%] @xl:w-[20%]",
-  email: "hidden @xl:table-column @xl:w-[32%]",
-  rights: "w-[30%] @xl:w-[20%]",
+  name: "min-w-0 w-[32%] @xl:w-[24%]",
+  phone: "w-[24%] @xl:w-[16%]",
+  email: "hidden @xl:table-column @xl:w-[28%]",
+  rights: "w-[22%] @xl:w-[14%]",
+  actions: "w-[22%] @xl:w-[18%]",
 } as const
 
 type Props = {
@@ -43,6 +45,7 @@ export const TeamTable = ({ users }: Props) => {
               <col className={teamTableColWidths.phone} />
               <col className={teamTableColWidths.email} />
               <col className={teamTableColWidths.rights} />
+              <col className={teamTableColWidths.actions} />
             </colgroup>
             <thead>
               <tr className={tableHeadRowClassName}>
@@ -58,31 +61,41 @@ export const TeamTable = ({ users }: Props) => {
                 <th scope="col" className={tableHeadCellClassName}>
                   Rechte
                 </th>
+                <th scope="col" className={tableHeadCellRightClassName}>
+                  <span className="sr-only">Aktionen</span>
+                </th>
               </tr>
             </thead>
             <tbody className={tableBodyClassName}>
               {users.map((user) => (
                 <tr key={user.email} className={tableRowClassName}>
-                  <td className={twJoin(tableCellClassName, "align-top")}>
+                  <td className={twJoin(tableCellClassName, "align-middle")}>
                     {getFullname(user) || "—"}
                   </td>
-                  <td className={twJoin(tableCellClassName, "align-top whitespace-nowrap")}>
+                  <td className={twJoin(tableCellClassName, "align-middle whitespace-nowrap")}>
                     {user.phone ? <LinkTel>{user.phone}</LinkTel> : "—"}
                   </td>
                   <td
                     className={twJoin(
-                      "hidden align-top whitespace-nowrap @xl:table-cell",
+                      "hidden align-middle whitespace-nowrap @xl:table-cell",
                       tableCellClassName,
                     )}
                   >
                     <LinkMail subject="Abstimmung zum RS 8">{user.email}</LinkMail>
                   </td>
-                  <td className={twJoin(tableCellClassName, "align-top")}>
-                    <div className="flex items-center gap-2">
-                      <UserCanIcon
-                        role={user.currentMembershipRole}
-                        isAdmin={user.role === "ADMIN"}
-                      />
+                  <td className={twJoin(tableCellClassName, "align-middle whitespace-nowrap")}>
+                    <UserCanIcon
+                      role={user.currentMembershipRole}
+                      isAdmin={user.role === "ADMIN"}
+                    />
+                  </td>
+                  <td
+                    className={twJoin(
+                      "align-middle text-sm font-medium whitespace-nowrap",
+                      tableCellClassName,
+                    )}
+                  >
+                    <div className="flex flex-col items-end gap-1">
                       <TeamTableEditMembershipModal editUser={user} />
                       <TeamTableEditMembershipDelete membershipId={user.currentMembershipId} />
                     </div>

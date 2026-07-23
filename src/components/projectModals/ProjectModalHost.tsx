@@ -181,6 +181,14 @@ export function ProjectModalHost() {
           ? upload.title
           : (previewUpload?.title ?? "Dokument wird geladen …")
 
+    const uploadEditHref =
+      upload && !isDeletedUploadMarker(upload)
+        ? buildModalHref({
+            modalUploadId: upload.id,
+            modalUploadView: "edit",
+          })
+        : undefined
+
     return (
       <Modal
         open
@@ -188,7 +196,21 @@ export function ProjectModalHost() {
         align={isUploadEditView ? "right" : "center"}
         className={isUploadEditView ? undefined : "sm:max-w-2xl"}
       >
-        <PageHeader title={modalTitle} action={<ModalCloseButton onClose={closeModal} />} />
+        <PageHeader
+          title={modalTitle}
+          action={
+            <div className="flex items-center gap-4">
+              {!isUploadEditView && uploadEditHref ? (
+                <IfUserCanEdit>
+                  <Link icon="edit" to={uploadEditHref} resetScroll={false}>
+                    Bearbeiten
+                  </Link>
+                </IfUserCanEdit>
+              ) : null}
+              <ModalCloseButton onClose={closeModal} />
+            </div>
+          }
+        />
 
         {hasUploadError ? (
           <div className={pageContentPaddingClassName}>
@@ -208,27 +230,7 @@ export function ProjectModalHost() {
             projectSlug={projectSlug}
             isEditView={isUploadEditView}
             returnPath={backgroundHref}
-            editLink={
-              upload && !isDeletedUploadMarker(upload)
-                ? {
-                    to: "/$projectSlug/uploads/$uploadId/edit",
-                    params: { projectSlug, uploadId: String(upload.id) },
-                    search: { returnTo: backgroundHref },
-                  }
-                : undefined
-            }
-            editHref={
-              upload && !isDeletedUploadMarker(upload)
-                ? buildModalHref({
-                    modalUploadId: upload.id,
-                    modalUploadView: "edit",
-                  })
-                : undefined
-            }
             onClose={closeModal}
-            onDeleted={async () => {
-              closeModal()
-            }}
             onEditSuccess={async () => {
               projectUploadModal.openUploadDetail({ uploadId: modalUploadId })
             }}

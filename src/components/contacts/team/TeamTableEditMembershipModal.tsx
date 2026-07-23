@@ -4,6 +4,7 @@ import { linkIcons } from "@/src/components/core/components/links/Link"
 import { linkStyles } from "@/src/components/core/components/links/styles"
 import { Modal, ModalCloseButton } from "@/src/components/core/components/Modal"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
+import { getFullname } from "@/src/components/core/users/getFullname"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import type { ProjectUser } from "@/src/server/memberships/types"
 import { TeamTableEditMembershipModalForm } from "./TeamTableEditMembershipModalForm"
@@ -26,10 +27,13 @@ export const TeamTableEditMembershipModal = ({ editUser }: Props) => {
         className={twJoin("flex items-center gap-1", linkStyles)}
       >
         {linkIcons["edit"]}
-        Ändern
+        Rechte bearbeiten
       </button>
       <Modal className="sm:max-w-[600px]!" open={open} handleClose={handleClose}>
-        <PageHeader title="Rolle ändern" action={<ModalCloseButton onClose={handleClose} />} />
+        <PageHeader
+          title={`Rechte von ${getFullname(editUser)} bearbeiten`}
+          action={<ModalCloseButton onClose={handleClose} />}
+        />
         <TeamTableEditMembershipModalForm
           editUser={editUser}
           closeModal={() => {

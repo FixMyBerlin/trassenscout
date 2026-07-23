@@ -1,6 +1,12 @@
 import { twJoin } from "tailwind-merge"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { getFullname } from "@/src/components/core/users/getFullname"
 import { formatBerlinTime } from "@/src/components/core/utils/formatBerlinTime"
+import {
+  uploadAlignedLabelClassName,
+  uploadAlignedRowClassName,
+  uploadAlignedValueClassName,
+} from "@/src/components/uploads/uploadAlignedFieldStyles"
 
 type User = { firstName: string | null; lastName: string | null } | null
 
@@ -26,28 +32,35 @@ export const UploadAuthorAndDates = ({
   className,
   variant = "default",
 }: Props) => {
+  const sectionClassName = twJoin(
+    "border-t border-gray-200",
+    pageContentPaddingClassName,
+    className,
+  )
+
   if (variant === "aligned") {
     return (
-      <section
-        className={twJoin(
-          "grid max-w-5xl grid-cols-[minmax(0,160px)_minmax(0,1fr)] gap-x-6 gap-y-2 text-sm sm:text-[15px]",
-          className,
-        )}
-      >
-        <span className="font-medium text-gray-700">Erstellt:</span>
-        <span className="text-gray-500">{formatAuthorWithTimestamp(createdBy, createdAt)}</span>
+      <section className={sectionClassName}>
+        <div className={uploadAlignedRowClassName}>
+          <p className={uploadAlignedLabelClassName}>Erstellt:</p>
+          <span className={uploadAlignedValueClassName}>
+            {formatAuthorWithTimestamp(createdBy, createdAt)}
+          </span>
+        </div>
         {updatedBy && updatedAt && (
-          <>
-            <span className="font-medium text-gray-700">Aktualisiert:</span>
-            <span className="text-gray-500">{formatAuthorWithTimestamp(updatedBy, updatedAt)}</span>
-          </>
+          <div className={uploadAlignedRowClassName}>
+            <p className={uploadAlignedLabelClassName}>Aktualisiert:</p>
+            <span className={uploadAlignedValueClassName}>
+              {formatAuthorWithTimestamp(updatedBy, updatedAt)}
+            </span>
+          </div>
         )}
       </section>
     )
   }
 
   return (
-    <section className={className}>
+    <section className={sectionClassName}>
       <p className="text-sm">
         Erstellt
         {createdBy ? <> von {getFullname(createdBy)}</> : " von Unbekannt"} am{" "}
