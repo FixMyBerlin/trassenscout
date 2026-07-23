@@ -1,12 +1,13 @@
 import { ArrowDownTrayIcon } from "@heroicons/react/24/outline"
 import { useQuery } from "@tanstack/react-query"
+import { useNavigate } from "@tanstack/react-router"
 import { useEffect, useRef } from "react"
+import { twJoin } from "tailwind-merge"
 import { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
 import { getQuestionIdBySurveySlug } from "@/src/components/beteiligung/shared/utils/getQuestionIdBySurveySlug"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
 import { Link } from "@/src/components/core/components/links/Link"
-import SurveyStaticPin from "@/src/components/core/components/Map/SurveyStaticPin"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
@@ -38,6 +39,7 @@ type Props = {
 }
 
 export function SurveyResponses({ projectSlug, surveyId: _surveyId, survey, tabs }: Props) {
+  const navigate = useNavigate()
   const { data: feedbackData, refetch: refetchResponses } = useQuery(
     feedbackSurveyResponsesQueryOptions({
       projectSlug,
@@ -116,59 +118,61 @@ export function SurveyResponses({ projectSlug, surveyId: _surveyId, survey, tabs
           />
         }
         tabs={<SurveyTabs tabs={tabs} embedded />}
+        viewMode="list"
+        onViewModeChange={(mode) => {
+          void navigate({
+            to:
+              mode === "map"
+                ? "/$projectSlug/surveys/$surveyId/responses/map"
+                : "/$projectSlug/surveys/$surveyId/responses",
+            params: { projectSlug, surveyId: String(survey.id) },
+            search: (prev) => prev,
+          })
+        }}
+        primaryAction={
+          <Link
+            className="flex items-center gap-1"
+            href={`/api/${projectSlug}/surveys/${survey.id}/part2/results`}
+          >
+            <ArrowDownTrayIcon className="size-5" />
+            Alle Daten als .csv herunterladen
+          </Link>
+        }
       />
 
-      <div className="mt-12 space-y-4">
-        <div className={pageContentPaddingClassName}>
-          <div className="mb-6">
-            <Link
-              className="mb-12 flex gap-1"
-              href={`/api/${projectSlug}/surveys/${survey.id}/part2/results`}
-            >
-              <ArrowDownTrayIcon className="mr-1 size-5" />
-              Alle Daten als .csv herunterladen
-            </Link>
-          </div>
+      <EditableSurveyResponseFilterForm
+        surveySlug={surveySlug}
+        additionalFilters={additionalFilterQuestionsWithResponseOptions}
+        operators={operators}
+        topicsDefinition={topics}
+      />
 
-          <EditableSurveyResponseFilterForm
-            surveySlug={surveySlug}
-            additionalFilters={additionalFilterQuestionsWithResponseOptions}
-            operators={operators}
-            topicsDefinition={topics}
-          />
-        </div>
-
+      <div className={twJoin(pageContentPaddingClassName, "space-y-4")}>
         <ZeroCase visible={filteredResponses.length} name={"Eingaben"} />
-        <p className="mt-4 text-sm text-gray-500">
+        <p className="text-sm text-gray-500">
           {filteredResponses.length} {filteredResponses.length === 1 ? "Eingabe" : "Eingaben"}
         </p>
-        {filteredResponses.length !== 0 && (
-          <div className="mt-2 flex items-center">
-            <SurveyStaticPin surveySlug={surveySlug} small />
-            <small className="pl-4 text-[#7c3aed]">= Eingabe mit Verortung</small>
-          </div>
-        )}
-        <section>
-          {filteredResponses.map((response: FeedbackSurveyResponse) => (
-            <div
-              key={response.id}
-              className="w-full overflow-hidden border border-b-0 border-gray-300 text-sm first:rounded-t-xl last:rounded-b-xl last:border-b"
-              // @ts-expect-error TODO: this erros since we updated packages; we need to re-test this and maybe remove the feature?
-              ref={(element) => (accordionRefs.current[response.id] = element)}
-            >
-              <EditableSurveyResponseListItem
-                showMap
-                isAccordion
-                response={response}
-                operators={operators}
-                topics={topics}
-                refetchResponsesAndTopics={refetchResponsesAndTopics}
-                mapProps={mapProps}
-              />
-            </div>
-          ))}
-        </section>
       </div>
+      <section>
+        {filteredResponses.map((response: FeedbackSurveyResponse) => (
+          <div
+            key={response.id}
+            className="w-full overflow-hidden border border-b-0 border-gray-300 text-sm last:border-b"
+            // @ts-expect-error TODO: this erros since we updated packages; we need to re-test this and maybe remove the feature?
+            ref={(element) => (accordionRefs.current[response.id] = element)}
+          >
+            <EditableSurveyResponseListItem
+              showMap
+              isAccordion
+              response={response}
+              operators={operators}
+              topics={topics}
+              refetchResponsesAndTopics={refetchResponsesAndTopics}
+              mapProps={mapProps}
+            />
+          </div>
+        ))}
+      </section>
     </>
   )
 }

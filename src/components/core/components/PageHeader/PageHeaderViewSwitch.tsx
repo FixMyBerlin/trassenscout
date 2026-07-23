@@ -15,7 +15,7 @@ const buttonClassName =
 export function PageHeaderViewSwitch({ value, onChange }: Props) {
   return (
     <div
-      className="flex shrink-0 rounded-md border border-gray-200"
+      className="flex shrink-0 cursor-pointer rounded-md border border-gray-200"
       role="group"
       aria-label="Ansicht wechseln"
     >
@@ -31,7 +31,7 @@ export function PageHeaderViewSwitch({ value, onChange }: Props) {
           aria-pressed={value === "map"}
           onClick={() => onChange("map")}
         >
-          <MapIcon className="size-5" aria-hidden="true" />
+          <MapIcon className="pointer-events-none size-5" aria-hidden="true" />
         </button>
       </Tooltip>
       <Tooltip content="Listenansicht" variant="light" placement="top-start">
@@ -46,7 +46,7 @@ export function PageHeaderViewSwitch({ value, onChange }: Props) {
           aria-pressed={value === "list"}
           onClick={() => onChange("list")}
         >
-          <TableCellsIcon className="size-5" aria-hidden="true" />
+          <TableCellsIcon className="pointer-events-none size-5" aria-hidden="true" />
         </button>
       </Tooltip>
     </div>

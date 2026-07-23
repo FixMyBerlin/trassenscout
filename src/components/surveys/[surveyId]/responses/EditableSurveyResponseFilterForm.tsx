@@ -6,6 +6,7 @@ import { backendConfig as defaultBackendConfig } from "@/src/components/beteilig
 import { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
 import { linkStyles } from "@/src/components/core/components/links/styles"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { Prettify } from "@/src/components/core/types"
 import type { OperatorWithSubsectionCount } from "@/src/server/adminLookupTables/adminLookupTablesQueryOptions"
 import type { FeedbackSurveyResponsesResult } from "@/src/server/survey-responses/surveyResponsesQueryOptions"
@@ -146,13 +147,21 @@ export function EditableSurveyResponseFilterForm({
   }
 
   return (
-    <nav className="rounded-lg bg-gray-100">
-      <details open>
-        <summary className="cursor-pointer rounded-xl px-4 py-2 text-gray-700 hover:bg-gray-50">
+    <nav className="w-full border-b border-gray-200 bg-gray-100">
+      <details>
+        <summary
+          className={twJoin(
+            pageContentPaddingClassName,
+            "cursor-pointer py-2 text-gray-700 hover:bg-gray-50",
+          )}
+        >
           Filter
         </summary>
         <form
-          className="flex flex-col items-start justify-start gap-6 rounded-b-xl px-4 py-2"
+          className={twJoin(
+            pageContentPaddingClassName,
+            "flex flex-col items-start justify-start gap-6 py-2",
+          )}
           onSubmit={handleSubmit}
         >
           <DebugFilterForm filter={filter} />
@@ -310,7 +319,11 @@ export function EditableSurveyResponseFilterForm({
         </form>
         <button
           type="button"
-          className={twJoin(linkStyles, "mt-4 flex items-center gap-2 px-4 pb-2")}
+          className={twJoin(
+            linkStyles,
+            pageContentPaddingClassName,
+            "mt-4 flex items-center gap-2 pb-2",
+          )}
           onClick={handleFilterReset}
         >
           <XMarkIcon className="size-4" />

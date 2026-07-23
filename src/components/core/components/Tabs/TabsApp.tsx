@@ -8,6 +8,14 @@ type Tab = {
   name: string
   count?: number
   to: string
+  /** When true, tab stays active on nested routes under `to` (e.g. list + map). */
+  activeForSubpaths?: boolean
+}
+
+function isTabActive(pathname: string, tab: Tab) {
+  if (pathname === tab.to) return true
+  if (!tab.activeForSubpaths) return false
+  return pathname.startsWith(`${tab.to}/`)
 }
 
 type Props = {
@@ -31,7 +39,7 @@ export const TabsApp = ({ tabs, className, embedded = false }: Props) => {
           id="tabs"
           name="tabs"
           className="block w-full rounded-md border-gray-300 focus:border-gray-100 focus:ring-gray-500"
-          defaultValue={tabs.find((tab) => pathname === tab.to)?.name}
+          defaultValue={tabs.find((tab) => isTabActive(pathname, tab))?.name}
           onChange={(event) => {
             const tab = tabs.find((tab) => tab.name === event.target.value)
             if (tab?.to) {
@@ -51,7 +59,7 @@ export const TabsApp = ({ tabs, className, embedded = false }: Props) => {
       <div className="hidden sm:flex">
         <nav className="-mb-px flex w-full" aria-label="Tabs">
           {tabs.map((tab) => {
-            const current = pathname === tab.to
+            const current = isTabActive(pathname, tab)
 
             return (
               <Link

@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { isFuture, isPast } from "date-fns"
+import { twJoin } from "tailwind-merge"
 import type { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
 import { getQuestionIdBySurveySlug } from "@/src/components/beteiligung/shared/utils/getQuestionIdBySurveySlug"
@@ -87,8 +88,8 @@ export function SurveyAnalysis({ projectSlug, surveyId: _surveyId, survey, tabs 
         tabs={<SurveyTabs tabs={tabs} embedded />}
       />
 
-      <div className={pageContentPaddingClassName}>
-        <div className="flex flex-col gap-y-2.5 rounded-sm bg-gray-100 p-6">
+      <div className="w-full bg-gray-100">
+        <div className={twJoin(pageContentPaddingClassName, "flex flex-col gap-y-2.5")}>
           {generalSurveyInformation.map((row, i) => {
             return (
               <div key={i} className="grid grid-cols-3 gap-2 sm:grid-cols-5">
@@ -106,7 +107,9 @@ export function SurveyAnalysis({ projectSlug, surveyId: _surveyId, survey, tabs 
             )
           })}
         </div>
+      </div>
 
+      <div className={pageContentPaddingClassName}>
         <div className="mt-12 space-y-4">
           {!surveyDefinition ? (
             <SuperAdminBox>
