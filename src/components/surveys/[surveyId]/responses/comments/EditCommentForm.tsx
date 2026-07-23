@@ -11,6 +11,7 @@ import {
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { linkStyles } from "@/src/components/core/components/links/styles"
 import { Modal, ModalCloseButton } from "@/src/components/core/components/Modal"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { useCurrentUser } from "@/src/components/user/useCurrentUser"
 import type { ProjectRecord } from "@/src/server/projectRecords/types"
@@ -80,14 +81,12 @@ export const EditCommentForm = ({ comment, commentLabel, mutateComment }: Props)
         <PageHeader
           title={`${commentLabel} bearbeiten`}
           action={<ModalCloseButton onClose={handleClose} />}
-          className="mb-2"
         />
 
         <FormShell
           form={form}
           formError={formError}
           submitText={`${commentLabel} speichern`}
-          withPagePadding={false}
           className="space-y-0"
         >
           <FormDirtyStateReporter onDirtyChange={setIsDirty} />
@@ -104,31 +103,33 @@ export const EditCommentForm = ({ comment, commentLabel, mutateComment }: Props)
           </form.AppField>
         </FormShell>
 
-        <button
-          type="button"
-          title={`${commentLabel} löschen`}
-          onClick={async () => {
-            if (
-              window.confirm(`Sind Sie sicher, dass Sie diesen ${commentLabel} löschen möchten?`)
-            ) {
-              try {
-                setIsDirty(false)
-                setOpen(false)
-                await mutateComment.remove()
-              } catch (error: unknown) {
-                window.alert(String(error))
-                console.error(error)
+        <div className={pageContentPaddingClassName}>
+          <button
+            type="button"
+            title={`${commentLabel} löschen`}
+            onClick={async () => {
+              if (
+                window.confirm(`Sind Sie sicher, dass Sie diesen ${commentLabel} löschen möchten?`)
+              ) {
+                try {
+                  setIsDirty(false)
+                  setOpen(false)
+                  await mutateComment.remove()
+                } catch (error: unknown) {
+                  window.alert(String(error))
+                  console.error(error)
+                }
               }
-            }
-          }}
-          className={twJoin(
-            "mt-4 flex w-full items-end justify-end gap-2 hover:cursor-pointer",
-            linkStyles,
-          )}
-        >
-          <p>{commentLabel} löschen</p>
-          <TrashIcon className={twJoin(linkStyles, "size-6")} />
-        </button>
+            }}
+            className={twJoin(
+              "flex w-full items-end justify-end gap-2 hover:cursor-pointer",
+              linkStyles,
+            )}
+          >
+            <p>{commentLabel} löschen</p>
+            <TrashIcon className={twJoin(linkStyles, "size-6")} />
+          </button>
+        </div>
       </Modal>
     </>
   )

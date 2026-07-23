@@ -33,10 +33,9 @@ export const NewCommentForm = ({ commentLabel, commentHelp, createComment }: Pro
       form={form}
       formError={null}
       submitText={`${commentLabel} hinzufügen`}
-      withPagePadding={false}
-      submitClassName={twJoin(primaryButtonClassName, "mt-2 px-3! py-2.5!")}
+      submitClassName={twJoin(primaryButtonClassName, "px-3! py-2.5!")}
       submitDisabled={!isHydrated}
-      className="space-y-0"
+      className={"px-4 py-0 pb-4"}
     >
       <form.AppField name="body">
         {(field) => (

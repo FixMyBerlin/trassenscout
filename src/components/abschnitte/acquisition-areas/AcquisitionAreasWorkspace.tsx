@@ -185,7 +185,6 @@ export function AcquisitionAreasWorkspace({
             form={form}
             formError={submitError}
             className="flex flex-col gap-2 space-y-0"
-
             submitText="Ausgewählte Verhandlungsflächen erstellen"
           >
             <BufferRadiusControls onApplyRadius={onApplyRadius} />
@@ -206,7 +205,6 @@ export function AcquisitionAreasWorkspace({
           </FormShell>
 
           <div className={twJoin(pageContentPaddingClassName, "space-y-2")}>
-
             <p className="text-sm text-gray-500">
               {selectedAcquisitionAreas.length} von {potentialAcquisitionAreas.length}{" "}
               Verhandlungsflächen ausgewählt

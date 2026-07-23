@@ -27,7 +27,6 @@ export const NewNetworkHierarchyForm = ({ projectSlug }: Props) => {
 
   return (
     <NetworkHierarchyForm
-      className="mt-10"
       submitText="Erstellen"
       schema={NetworkHierarchySchema.omit({ projectId: true })}
       onSubmit={handleSubmit}

@@ -27,7 +27,6 @@ export const NewQualityLevelForm = ({ projectSlug }: Props) => {
 
   return (
     <QualityLevelForm
-      className="mt-10"
       submitText="Erstellen"
       schema={QualityLevelSchema.omit({ projectId: true })}
       onSubmit={handleSubmit}

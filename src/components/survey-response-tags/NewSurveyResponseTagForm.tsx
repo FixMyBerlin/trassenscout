@@ -25,7 +25,7 @@ export const NewSurveyResponseTagForm = ({ projectSlug }: Props) => {
 
   return (
     <>
-      <TagForm className="mt-10" submitText="Erstellen" onSubmit={handleSubmit} />
+      <TagForm submitText="Erstellen" onSubmit={handleSubmit} />
       <BackLink {...listLink} text="Zurück zur Übersicht" />
     </>
   )

@@ -1,27 +1,32 @@
 import { SparklesIcon } from "@heroicons/react/20/solid"
 import { ReactNode } from "react"
+import { twJoin } from "tailwind-merge"
 import { Link } from "@/src/components/core/components/links/Link"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 
 const BannerShell = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="mb-6 flex w-full flex-col space-y-2 rounded-md border border-gray-200 bg-yellow-100 p-4 text-gray-700">
-      {children}
+    <div className="w-full border-b border-gray-200 bg-yellow-100 text-gray-700">
+      <div className={twJoin(pageContentPaddingClassName, "flex flex-col space-y-2")}>
+        {children}
+      </div>
     </div>
   )
 }
 
-type ProjectRecordNeedsReviewBannerProps =
-  | {
-      withAction: true
-      projectSlug: string
-      projectRecordId: number
-    }
-  | {
-      withAction?: false
-      projectSlug?: string
-      projectRecordId?: number
-    }
-export const ProjectRecordNeedsReviewBanner = (props: ProjectRecordNeedsReviewBannerProps) => {
+type ProjectRecordNeedsReviewBannerProps = {
+  withAction?: boolean
+  projectSlug?: string
+  projectRecordId?: number
+  editHref?: string
+}
+
+export const ProjectRecordNeedsReviewBanner = ({
+  withAction,
+  projectSlug,
+  projectRecordId,
+  editHref,
+}: ProjectRecordNeedsReviewBannerProps) => {
   return (
     <BannerShell>
       <div className="flex items-center gap-2">
@@ -31,18 +36,24 @@ export const ProjectRecordNeedsReviewBanner = (props: ProjectRecordNeedsReviewBa
       <p className="text-sm">
         Dieser Protokolleintrag wurde per KI erstellt und muss noch bestätigt werden.
       </p>
-      {props.withAction && (
-        <Link
-          to="/$projectSlug/project-records/$projectRecordId/edit"
-          params={{
-            projectSlug: props.projectSlug,
-            projectRecordId: String(props.projectRecordId),
-          }}
-          className="text-sm"
-        >
-          Bearbeiten und bestätigen
-        </Link>
-      )}
+      {withAction &&
+        (editHref ? (
+          <Link href={editHref} className="text-sm">
+            Bearbeiten und bestätigen
+          </Link>
+        ) : projectSlug && projectRecordId !== undefined ? (
+          <Link
+            to="/$projectSlug/project-records/$projectRecordId/edit"
+            params={{
+              projectSlug,
+              projectRecordId: String(projectRecordId),
+            }}
+            className="text-sm"
+            resetScroll={false}
+          >
+            Bearbeiten und bestätigen
+          </Link>
+        ) : null)}
     </BannerShell>
   )
 }

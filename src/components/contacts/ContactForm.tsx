@@ -60,10 +60,7 @@ export function ContactForm<S extends z.ZodType>({
       form={form}
       formError={formError}
       submitText={submitText}
-      className={twMerge(
-        isDrawerLayout ? "my-6 w-full max-w-5xl space-y-8" : "max-w-prose",
-        className,
-      )}
+      className={twMerge(isDrawerLayout ? "w-full max-w-5xl space-y-8" : "max-w-prose", className)}
       actionBarLeft={actionBarLeft}
       actionBarRight={actionBarRight}
       submitDisabled={submitDisabled}

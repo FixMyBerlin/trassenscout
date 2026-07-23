@@ -86,8 +86,7 @@ export function SurveyResponses({ projectSlug, surveyId: _surveyId, survey, tabs
           }
           tabs={<SurveyTabs tabs={tabs} embedded />}
         />
-        <div className="mt-12 space-y-4">
-          {" "}
+        <div className={pageContentPaddingClassName}>
           <SuperAdminBox>
             <p>In der Beteiligung {survey.slug.toUpperCase()} gibt es keinen Umfrageteil 2. </p>
           </SuperAdminBox>

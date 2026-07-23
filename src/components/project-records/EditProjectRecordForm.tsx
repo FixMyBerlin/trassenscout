@@ -15,6 +15,7 @@ import {
   FORM_ERROR,
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { Link } from "@/src/components/core/components/links/Link"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { ProjectRecordCommentsSection } from "@/src/components/project-records/ProjectRecordCommentsSection"
 import { CreateEditReviewHistory } from "@/src/components/project-records/ProjectRecordCreateEditReviewHistory"
 import { ProjectRecordDeleteActionBar } from "@/src/components/project-records/ProjectRecordDeleteActionBar"
@@ -183,18 +184,20 @@ export const EditProjectRecordForm = ({
     <>
       {needsReview && <ProjectRecordNeedsReviewBanner />}
       {projectRecord.projectRecordAuthorType === "SYSTEM" && (
-        <SuperAdminBox className="mb-6">
-          In die{" "}
-          <Link
-            blank
-            to="/admin/project-records/$projectRecordId/edit"
-            params={{ projectRecordId: String(projectRecord.id) }}
-            className="text-blue-500 hover:underline"
-          >
-            Admin-Ansicht
-          </Link>{" "}
-          wechseln, um Bestätigungsstatus zu ändern.
-        </SuperAdminBox>
+        <div className={pageContentPaddingClassName}>
+          <SuperAdminBox className="mb-6">
+            In die{" "}
+            <Link
+              blank
+              to="/admin/project-records/$projectRecordId/edit"
+              params={{ projectRecordId: String(projectRecord.id) }}
+              className="text-blue-500 hover:underline"
+            >
+              Admin-Ansicht
+            </Link>{" "}
+            wechseln, um Bestätigungsstatus zu ändern.
+          </SuperAdminBox>
+        </div>
       )}
       <FormShell
         form={form}
@@ -226,7 +229,11 @@ export const EditProjectRecordForm = ({
       </FormShell>
       <CreateEditReviewHistory projectRecord={projectRecord} />
       <ProjectRecordCommentsSection projectRecord={projectRecord} />
-      {!hideBackLink && <BackLink to={showPath} text="Zurück zum Protokolleintrag" />}
+      {!hideBackLink && (
+        <div className={pageContentPaddingClassName}>
+          <BackLink to={showPath} text="Zurück zum Protokolleintrag" />
+        </div>
+      )}
       <SuperAdminLogData data={{ initialValues: projectRecord }} />
     </>
   )

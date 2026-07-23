@@ -29,7 +29,6 @@ export const NewSubsubsectionStatusForm = ({ projectSlug }: Props) => {
 
   return (
     <SubsubsectionStatusForm
-      className="mt-10"
       submitText="Erstellen"
       schema={CreateSubsubsectionStatusSchema}
       onSubmit={handleSubmit}

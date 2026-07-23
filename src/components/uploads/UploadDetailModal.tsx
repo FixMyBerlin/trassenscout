@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 import { useState } from "react"
 import { Modal, ModalCloseButton } from "@/src/components/core/components/Modal"
 import { Notice } from "@/src/components/core/components/Notice/Notice"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { Upload } from "@/src/prisma/generated/browser"
 import { uploadQueryOptions } from "@/src/server/uploads/uploadQueryOptions"
@@ -97,18 +98,22 @@ function UploadDetailModalInner({
       open
       handleClose={handleClose}
       align={isEditView ? "right" : "center"}
-      className={isEditView ? "space-y-4" : "space-y-4 sm:max-w-2xl"}
+      className={isEditView ? undefined : "sm:max-w-2xl"}
     >
       <PageHeader title={title} action={<ModalCloseButton onClose={handleClose} />} />
 
       {hasUploadError ? (
-        <Notice type="error" title="Das Dokument konnte nicht geladen werden.">
-          <p>Bitte versuchen Sie es erneut oder schließen Sie dieses Fenster.</p>
-        </Notice>
+        <div className={pageContentPaddingClassName}>
+          <Notice type="error" title="Das Dokument konnte nicht geladen werden.">
+            <p>Bitte versuchen Sie es erneut oder schließen Sie dieses Fenster.</p>
+          </Notice>
+        </div>
       ) : isUploadUnavailable ? (
-        <Notice type="warn" title="Dieses Dokument ist nicht mehr verfügbar.">
-          <p>Es wurde möglicherweise gelöscht oder ist für Sie nicht mehr zugänglich.</p>
-        </Notice>
+        <div className={pageContentPaddingClassName}>
+          <Notice type="warn" title="Dieses Dokument ist nicht mehr verfügbar.">
+            <p>Es wurde möglicherweise gelöscht oder ist für Sie nicht mehr zugänglich.</p>
+          </Notice>
+        </div>
       ) : (
         <UploadModalContent
           upload={upload}

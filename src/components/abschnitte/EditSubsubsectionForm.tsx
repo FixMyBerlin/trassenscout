@@ -92,7 +92,6 @@ export const EditSubsubsectionForm = ({ subsubsection }: Props) => {
   return (
     <>
       <SubsubsectionForm
-        className="mt-10"
         submitText="Speichern"
         schema={SubsubsectionFormSchema}
         initialValues={
