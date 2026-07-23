@@ -9,6 +9,7 @@ import { TextField } from "@/src/components/core/components/forms/fields/TextFie
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useCoreAppFormContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { createAcquisitionAreasFromSelectionFn } from "@/src/server/acquisitionAreas/acquisitionAreas.functions"
 import type { AlkisWfsParcelFeatureCollection } from "@/src/server/alkis/alkisWfsParcelGeoJsonTypes"
 import type { SubsubsectionWithPosition } from "@/src/server/subsubsections/types"
@@ -176,7 +177,7 @@ export function AcquisitionAreasWorkspace({
 
   return (
     <div className="relative flex h-full min-h-0 w-full flex-col lg:flex-row lg:items-stretch">
-      <aside className="min-h-0 w-full overflow-y-auto p-4 lg:h-full lg:w-[45%] lg:shrink-0">
+      <aside className="flex min-h-0 w-full flex-col overflow-y-auto p-4 lg:h-full lg:w-[45%] lg:shrink-0">
         <div className="flex flex-col gap-4">
           <FormShell
             form={form}
@@ -207,11 +208,19 @@ export function AcquisitionAreasWorkspace({
               {selectedAcquisitionAreas.length} von {potentialAcquisitionAreas.length}{" "}
               Verhandlungsflächen ausgewählt
             </p>
-            <AcquisitionAreasList
-              potentialAcquisitionAreas={potentialAcquisitionAreas}
-              setPotentialAcquisitionAreas={setPotentialAcquisitionAreas}
-            />
           </div>
+        </FormShell>
+
+        <div className={twJoin(pageContentPaddingClassName, "space-y-2")}>
+          <p className="text-sm text-gray-500">
+            {selectedAcquisitionAreas.length} von {potentialAcquisitionAreas.length}{" "}
+            Verhandlungsflächen ausgewählt
+          </p>
+
+          <AcquisitionAreasList
+            potentialAcquisitionAreas={potentialAcquisitionAreas}
+            setPotentialAcquisitionAreas={setPotentialAcquisitionAreas}
+          />
         </div>
       </aside>
       <div className="flex min-h-0 min-w-0 flex-1 flex-col border-t border-gray-200 lg:border-t-0 lg:border-l">
