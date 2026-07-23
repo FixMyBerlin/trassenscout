@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
+import { shortTitle } from "@/src/components/core/components/text/titles"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
 import { EditSubsubsectionInfrastructureTypeForm } from "@/src/components/subsubsection-infrastructure-type/EditSubsubsectionInfrastructureTypeForm"
 import { adminLookupRowQueryOptions } from "@/src/server/adminLookupTables/adminLookupTablesQueryOptions"
@@ -28,6 +29,11 @@ export function PageSubsubsectionInfrastructureTypeEdit() {
           <ProjectPageBreadcrumb
             section="Infrastrukturtypen"
             sectionTo="/$projectSlug/subsubsection-infrastructure-type"
+            item={
+              "slug" in subsubsectionInfrastructureType
+                ? shortTitle(subsubsectionInfrastructureType.slug)
+                : undefined
+            }
             current="bearbeiten"
           />
         }

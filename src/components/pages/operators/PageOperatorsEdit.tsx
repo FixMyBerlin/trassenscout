@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
+import { shortTitle } from "@/src/components/core/components/text/titles"
 import { EditOperatorForm } from "@/src/components/operators/EditOperatorForm"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
 import { adminLookupRowQueryOptions } from "@/src/server/adminLookupTables/adminLookupTablesQueryOptions"
@@ -22,6 +23,7 @@ export function PageOperatorsEdit() {
           <ProjectPageBreadcrumb
             section="Baulastträger"
             sectionTo="/$projectSlug/operators"
+            item={"slug" in operator ? shortTitle(operator.slug) : undefined}
             current="bearbeiten"
           />
         }

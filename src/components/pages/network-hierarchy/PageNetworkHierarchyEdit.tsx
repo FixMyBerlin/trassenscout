@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
+import { shortTitle } from "@/src/components/core/components/text/titles"
 import { EditNetworkHierarchyForm } from "@/src/components/network-hierarchy/EditNetworkHierarchyForm"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
 import { adminLookupRowQueryOptions } from "@/src/server/adminLookupTables/adminLookupTablesQueryOptions"
@@ -24,6 +25,7 @@ export function PageNetworkHierarchyEdit() {
           <ProjectPageBreadcrumb
             section="Netzstufen"
             sectionTo="/$projectSlug/network-hierarchy"
+            item={"slug" in networkHierarchy ? shortTitle(networkHierarchy.slug) : undefined}
             current="bearbeiten"
           />
         }

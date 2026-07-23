@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
+import { shortTitle } from "@/src/components/core/components/text/titles"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
 import { EditSubsubsectionInfraForm } from "@/src/components/subsubsection-infra/EditSubsubsectionInfraForm"
 import { adminLookupRowQueryOptions } from "@/src/server/adminLookupTables/adminLookupTablesQueryOptions"
@@ -24,6 +25,7 @@ export function PageSubsubsectionInfraEdit() {
           <ProjectPageBreadcrumb
             section="Infrastruktur"
             sectionTo="/$projectSlug/subsubsection-infra"
+            item={"slug" in subsubsectionInfra ? shortTitle(subsubsectionInfra.slug) : undefined}
             current="bearbeiten"
           />
         }
