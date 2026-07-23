@@ -17,7 +17,7 @@ import { ActionBar } from "@/src/components/core/components/forms/ActionBar"
 import { translateServerError } from "@/src/components/core/components/forms/errorMessageTranslations"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { Spinner } from "@/src/components/core/components/Spinner"
-import { longTitle, shortTitle } from "@/src/components/core/components/text/titles"
+import { shortTitle } from "@/src/components/core/components/text/titles"
 import { roleTranslation } from "@/src/components/core/users/roleTranslation.const"
 import { MembershipRoleEnum } from "@/src/prisma/generated/browser"
 import { createInvitesFn } from "@/src/server/invites/invites.functions"
@@ -37,7 +37,7 @@ type ProjectRow = {
 }
 
 function getProjectTitle(project: ProjectRow) {
-  return project.subTitle?.trim() || shortTitle(project.slug)
+  return shortTitle(project.slug)
 }
 
 function sortProjectsForInvite(projects: ProjectRow[], projectSlug: string) {
@@ -90,10 +90,7 @@ export function MultiProjectInviteForm({ onSuccess, projectSlug }: Props) {
   const filteredProjects = projects.filter((project) => {
     const query = projectFilter.trim().toLocaleLowerCase()
     if (!query) return true
-    return (
-      project.slug.toLocaleLowerCase().includes(query) ||
-      getProjectTitle(project).toLocaleLowerCase().includes(query)
-    )
+    return project.slug.toLocaleLowerCase().includes(query)
   })
   const selectedProjects = statusLookupPending
     ? []
@@ -233,19 +230,28 @@ export function MultiProjectInviteForm({ onSuccess, projectSlug }: Props) {
                 const projectTitle = getProjectTitle(project)
                 const current = statusBySlug.get(project.slug)?.current
                 const locked = current !== undefined && current !== "none"
-                const currentAccess = locked ? current.role : (accessBySlug[project.slug] ?? null)
+                const currentAccess = statusLookupPending
+                  ? null
+                  : locked
+                    ? current.role
+                    : (accessBySlug[project.slug] ?? null)
 
                 return (
                   <tr key={project.id}>
                     <th
                       scope="row"
-                      title={longTitle(project.slug)}
+                      title={project.slug}
                       className={twJoin(
                         adminTableCellClassName,
                         "text-left font-medium text-gray-900",
                       )}
                     >
                       <span className="block">{projectTitle}</span>
+                      {statusLookupPending && (
+                        <span className="mt-1 block text-xs font-normal text-gray-600">
+                          E-Mail wird geprüft...
+                        </span>
+                      )}
                       {locked && (
                         <span
                           className={twJoin(

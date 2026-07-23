@@ -52,7 +52,7 @@ const emailTemplateRegistry: Record<EmailTemplateKey, EmailTemplateDefinition> =
     allowedVariables: ["inviterName", "projectName", "loginUrl"],
     sampleContext: {
       inviterName: "Alex Beispiel",
-      projectName: "Radschnellweg Nord und Radschnellweg Süd",
+      projectName: "RS23 und RS24",
       loginUrl: "https://trassenscout.de/auth/login?inviteToken=demo-token",
     },
     defaults: {
@@ -73,8 +73,8 @@ Bitte registrieren Sie sich, um die Einladung anzunehmen.`,
     supportsCta: false,
     allowedVariables: ["projectName", "projectRoles", "inviterName", "invitesUrl"],
     sampleContext: {
-      projectName: "Radschnellweg Nord und Radschnellweg Süd",
-      projectRoles: "Radschnellweg Nord (Leserechte), Radschnellweg Süd (Bearbeitungsrechte)",
+      projectName: "RS23 und RS24",
+      projectRoles: "RS23 (Leserechte), RS24 (Bearbeitungsrechte)",
       inviterName: "Alex Beispiel",
       invitesUrl: "https://trassenscout.de/dashboard",
     },
@@ -100,9 +100,9 @@ Die Liste aller offenen Einladungen finden Sie unter {{invitesUrl}}.`,
     // to be migrated to `projectRoles`.
     allowedVariables: ["projectName", "inviteeName", "projectRoles", "teamUrl"],
     sampleContext: {
-      projectName: "Radschnellweg Nord und Radschnellweg Süd",
+      projectName: "RS23 und RS24",
       inviteeName: "Jamie Beispiel",
-      projectRoles: "Radschnellweg Nord (Leserechte), Radschnellweg Süd (Bearbeitungsrechte)",
+      projectRoles: "RS23 (Leserechte), RS24 (Bearbeitungsrechte)",
       teamUrl: "https://trassenscout.de/dashboard",
     },
     defaults: {
