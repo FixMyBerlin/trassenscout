@@ -34,6 +34,7 @@ export const AdminProjectsNewForm = () => {
   return (
     <ProjectForm
       submitText="Erstellen"
+      backLink={null}
       onSubmit={handleSubmit}
       schema={ProjectFormSchema}
       users={usersResult.users}

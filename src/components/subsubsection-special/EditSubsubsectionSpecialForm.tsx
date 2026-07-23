@@ -49,8 +49,8 @@ export const EditSubsubsectionSpecialForm = ({ subsubsectionSpecial, projectSlug
             returnPath={listHref}
           />
         }
+        backLink={<BackLink {...listLink} text="Zurück zur Übersicht" />}
       />
-      <BackLink {...listLink} text="Zurück zur Übersicht" />
       <SuperAdminLogData data={{ subsubsectionSpecial }} />
     </>
   )

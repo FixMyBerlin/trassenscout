@@ -36,6 +36,7 @@ export const NewCommentForm = ({ commentLabel, commentHelp, createComment }: Pro
       submitClassName={twJoin(primaryButtonClassName, "px-3! py-2.5!")}
       submitDisabled={!isHydrated}
       className={"px-4 py-0 pb-4"}
+      backLink={null}
     >
       <form.AppField name="body">
         {(field) => (

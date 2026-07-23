@@ -44,8 +44,8 @@ export const EditQualityLevelForm = ({ qualityLevel, projectSlug }: Props) => {
             returnPath={listHref}
           />
         }
+        backLink={<BackLink {...listLink} text="Zurück zur Übersicht" />}
       />
-      <BackLink {...listLink} text="Zurück zur Übersicht" />
       <SuperAdminLogData data={{ qualityLevel }} />
     </>
   )

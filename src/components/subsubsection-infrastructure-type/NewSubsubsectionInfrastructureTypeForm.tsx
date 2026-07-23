@@ -1,8 +1,13 @@
 import { getRouteApi } from "@tanstack/react-router"
 import { z } from "zod"
+import { BackLink } from "@/src/components/core/components/forms/BackLink"
 import { improveErrorMessage } from "@/src/components/core/components/forms/improveErrorMessage"
 import { FORM_ERROR } from "@/src/components/core/components/forms/utils/formSubmitResult"
-import { useSubsubsectionInfrastructureTypeMutations } from "@/src/components/subsubsection-infrastructure-type/useSubsubsectionInfrastructureTypeActions"
+import {
+  useSubsubsectionInfrastructureTypeMutations,
+  useSubsubsectionInfrastructureTypeRouteLinks,
+} from "@/src/components/subsubsection-infrastructure-type/useSubsubsectionInfrastructureTypeActions"
+import { preserveFromSearch } from "@/src/shared/routing/preserveListSearch"
 import { SubsubsectionInfrastructureType } from "@/src/shared/subsubsectionInfrastructureType/schemas"
 import { SubsubsectionInfrastructureTypeForm } from "./SubsubsectionInfrastructureTypeForm"
 
@@ -15,8 +20,9 @@ const routeApi = getRouteApi(
 )
 
 export const NewSubsubsectionInfrastructureTypeForm = ({ projectSlug }: Props) => {
-  const search = routeApi.useSearch()
+  const search = preserveFromSearch(routeApi.useSearch())
   const { createRow } = useSubsubsectionInfrastructureTypeMutations(projectSlug, search)
+  const { listLink } = useSubsubsectionInfrastructureTypeRouteLinks(projectSlug, search)
 
   type HandleSubmit = z.infer<
     ReturnType<typeof SubsubsectionInfrastructureType.omit<{ projectId: true }>>
@@ -32,6 +38,7 @@ export const NewSubsubsectionInfrastructureTypeForm = ({ projectSlug }: Props) =
   return (
     <SubsubsectionInfrastructureTypeForm
       submitText="Erstellen"
+      backLink={<BackLink {...listLink} text="Zurück zur Übersicht" />}
       schema={SubsubsectionInfrastructureType.omit({ projectId: true })}
       onSubmit={handleSubmit}
     />

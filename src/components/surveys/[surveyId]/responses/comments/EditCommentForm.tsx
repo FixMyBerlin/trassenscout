@@ -121,6 +121,7 @@ export const EditCommentForm = ({ comment, commentLabel, mutateComment }: Props)
               </button>
             ) : undefined
           }
+          backLink={null}
         >
           <FormDirtyStateReporter onDirtyChange={setIsDirty} />
           <form.AppField name="body">

@@ -59,6 +59,7 @@ export function SupportDocumentForm<S extends z.ZodType>({
       actionBarRight={actionBarRight}
       submitDisabled={submitDisabled}
       submitClassName={submitClassName}
+      backLink={null}
     >
       <form.AppField name="title">
         {(field) => <field.TextField type="text" label="Titel" />}

@@ -18,6 +18,7 @@ export type SubsubsectionInfrastructureTypeFormProps<S extends z.ZodType> = {
   className?: string
   actionBarLeft?: ReactNode
   actionBarRight?: ReactNode
+  backLink: ReactNode | null
   submitDisabled?: boolean
   submitClassName?: string
 }
@@ -31,6 +32,7 @@ export function SubsubsectionInfrastructureTypeForm<S extends z.ZodType>({
   className,
   actionBarLeft,
   actionBarRight,
+  backLink,
   submitDisabled,
   submitClassName,
 }: SubsubsectionInfrastructureTypeFormProps<S>) {
@@ -57,6 +59,7 @@ export function SubsubsectionInfrastructureTypeForm<S extends z.ZodType>({
       className={twMerge("max-w-prose", className)}
       actionBarLeft={actionBarLeft}
       actionBarRight={actionBarRight}
+      backLink={backLink}
       submitDisabled={submitDisabled}
       submitClassName={submitClassName}
     >

@@ -23,6 +23,7 @@ export type FormShellProps<TFormData> = Omit<
   actionBarClassName?: string
   edgeToEdgeFooter?: ReactNode
   hideSubmitButton?: boolean
+  backLink: ReactNode | null
   children: ReactNode
 }
 
@@ -37,6 +38,7 @@ export function FormShell<TFormData>({
   actionBarClassName,
   edgeToEdgeFooter,
   hideSubmitButton,
+  backLink,
   className,
   children,
   ...props
@@ -84,6 +86,8 @@ export function FormShell<TFormData>({
               right={actionBarRight}
             />
           )}
+
+          {backLink !== null && <div className={pageContentPaddingClassName}>{backLink}</div>}
         </form>
       </form.AppForm>
     </FormHydratedProvider>

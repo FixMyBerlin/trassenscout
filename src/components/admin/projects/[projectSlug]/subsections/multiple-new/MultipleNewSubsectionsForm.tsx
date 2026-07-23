@@ -88,7 +88,7 @@ export const MultipleNewSubsectionsForm = ({ projectSlug }: Props) => {
   })
 
   return (
-    <FormShell form={form} formError={formError} submitText="Erstellen">
+    <FormShell form={form} formError={formError} submitText="Erstellen" backLink={null}>
       <form.AppField name="prefix">
         {(field) => (
           <field.TextField

@@ -21,6 +21,7 @@ export type ProjectFormProps<S extends z.ZodType> = {
   className?: string
   actionBarLeft?: ReactNode
   actionBarRight?: ReactNode
+  backLink: ReactNode | null
   submitDisabled?: boolean
   submitClassName?: string
   users: UserSelectOptions
@@ -34,6 +35,7 @@ export function ProjectForm<S extends z.ZodType>({
   className,
   actionBarLeft,
   actionBarRight,
+  backLink,
   submitDisabled,
   submitClassName,
   schema,
@@ -61,6 +63,7 @@ export function ProjectForm<S extends z.ZodType>({
       className={twMerge(className)}
       actionBarLeft={actionBarLeft}
       actionBarRight={actionBarRight}
+      backLink={backLink}
       submitDisabled={submitDisabled}
       submitClassName={submitClassName}
     >

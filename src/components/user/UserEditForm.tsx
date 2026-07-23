@@ -53,7 +53,12 @@ export const UserEditForm = () => {
 
   return (
     <>
-      <FormShell form={form} formError={formError} submitText="Änderungen speichern">
+      <FormShell
+        form={form}
+        formError={formError}
+        submitText="Änderungen speichern"
+        backLink={<BackLink to="/dashboard" text="Zurück zu Meine Projekte" />}
+      >
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <form.AppField name="firstName">
             {(field) => (
@@ -81,7 +86,6 @@ export const UserEditForm = () => {
           )}
         </form.AppField>
       </FormShell>
-      <BackLink to="/dashboard" text="Zurück zu Meine Projekte" />
       <SuperAdminLogData data={user} />
     </>
   )

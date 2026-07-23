@@ -143,7 +143,7 @@ function LoginForm({
   })
 
   return (
-    <FormShell form={form} formError={formError} submitText="Anmelden">
+    <FormShell form={form} formError={formError} submitText="Anmelden" backLink={null}>
       <InviteProjectSummary invite={invite} />
       <form.AppField name="inviteToken">{(field) => <field.HiddenField />}</form.AppField>
       <form.AppField name="email">
@@ -205,7 +205,7 @@ function SignupForm({
   })
 
   return (
-    <FormShell form={form} formError={formError} submitText="Registrieren">
+    <FormShell form={form} formError={formError} submitText="Registrieren" backLink={null}>
       <InviteProjectSummary invite={invite} />
       <form.AppField name="inviteToken">{(field) => <field.HiddenField />}</form.AppField>
       <form.AppField name="email">
@@ -290,7 +290,7 @@ function ForgotPasswordForm({
   })
 
   return (
-    <FormShell form={form} formError={formError} submitText="E-Mail zusenden">
+    <FormShell form={form} formError={formError} submitText="E-Mail zusenden" backLink={null}>
       <form.AppField name="email">
         {(field) => (
           <field.TextField
@@ -323,7 +323,7 @@ function ResetPasswordForm({
   })
 
   return (
-    <FormShell form={form} formError={formError} submitText="Passwort zurücksetzen">
+    <FormShell form={form} formError={formError} submitText="Passwort zurücksetzen" backLink={null}>
       <form.AppField name="token">{(field) => <field.HiddenField />}</form.AppField>
       <form.AppField name="password">
         {(field) => <field.TextField label="Neues Passwort" type="password" />}

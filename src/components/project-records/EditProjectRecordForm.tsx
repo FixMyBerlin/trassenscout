@@ -215,6 +215,9 @@ export const EditProjectRecordForm = ({
             uploadsCount={projectRecord.uploads.length}
           />
         }
+        backLink={
+          hideBackLink ? null : <BackLink to={showPath} text="Zurück zum Protokolleintrag" />
+        }
       >
         <FormDirtyStateReporter onDirtyChange={onDirtyChange} />
         <ProjectRecordFormFields
@@ -228,11 +231,6 @@ export const EditProjectRecordForm = ({
       </FormShell>
       <CreateEditReviewHistory projectRecord={projectRecord} />
       <ProjectRecordCommentsSection projectRecord={projectRecord} />
-      {!hideBackLink && (
-        <div className={pageContentPaddingClassName}>
-          <BackLink to={showPath} text="Zurück zum Protokolleintrag" />
-        </div>
-      )}
       <SuperAdminLogData data={{ initialValues: projectRecord }} />
     </>
   )

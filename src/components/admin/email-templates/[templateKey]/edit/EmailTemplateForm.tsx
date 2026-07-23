@@ -60,6 +60,7 @@ export function EmailTemplateForm<S extends z.ZodType>({
       actionBarRight={actionBarRight}
       submitDisabled={submitDisabled}
       submitClassName={submitClassName}
+      backLink={null}
     >
       <form.AppField name="subject">
         {(field) => <field.TextField type="text" label="Subject" />}

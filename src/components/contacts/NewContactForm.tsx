@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 import { z } from "zod"
+import { BackLink } from "@/src/components/core/components/forms/BackLink"
 import { improveErrorMessage } from "@/src/components/core/components/forms/improveErrorMessage"
 import { FORM_ERROR } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { createContactFn } from "@/src/server/contacts/contacts.functions"
@@ -45,6 +46,15 @@ export const NewContactForm = ({ projectSlug, onSuccess, layout }: Props) => {
   return (
     <ContactForm
       submitText="Erstellen"
+      backLink={
+        layout === "drawer" ? null : (
+          <BackLink
+            to="/$projectSlug/contacts"
+            params={{ projectSlug }}
+            text="Zurück zur Übersicht"
+          />
+        )
+      }
       schema={ContactSchema}
       projectSlug={projectSlug}
       onSubmit={handleSubmit}

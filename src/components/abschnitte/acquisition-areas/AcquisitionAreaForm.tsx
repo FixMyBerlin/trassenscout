@@ -33,6 +33,7 @@ export type AcquisitionAreaFormProps<S extends z.ZodTypeAny> = {
   className?: string
   actionBarLeft?: ReactNode
   actionBarRight?: ReactNode
+  backLink: ReactNode | null
   submitDisabled?: boolean
   submitClassName?: string
   parcelGeometry: TAcquisitionAreaGeometrySchema
@@ -50,6 +51,7 @@ export function AcquisitionAreaForm<S extends z.ZodTypeAny>({
   className,
   actionBarLeft,
   actionBarRight,
+  backLink,
   submitDisabled,
   submitClassName,
 }: AcquisitionAreaFormProps<S>) {
@@ -91,6 +93,7 @@ export function AcquisitionAreaForm<S extends z.ZodTypeAny>({
       className={className}
       actionBarLeft={actionBarLeft}
       actionBarRight={actionBarRight}
+      backLink={backLink}
       submitDisabled={submitDisabled}
       submitClassName={submitClassName}
     >

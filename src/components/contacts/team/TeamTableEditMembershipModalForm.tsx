@@ -68,7 +68,7 @@ export const TeamTableEditMembershipModalForm = ({
   }))
 
   return (
-    <FormShell form={form} formError={formError} submitText="Speichern">
+    <FormShell form={form} formError={formError} submitText="Speichern" backLink={null}>
       <FormDirtyStateReporter onDirtyChange={onDirtyChange} />
       <form.AppField name="role">
         {(field) => <field.RadiobuttonGroup items={roleItems} />}

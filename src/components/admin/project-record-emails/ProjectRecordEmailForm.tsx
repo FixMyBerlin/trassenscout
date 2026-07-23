@@ -66,6 +66,7 @@ export function ProjectRecordEmailForm<S extends z.ZodType>({
       actionBarRight={actionBarRight}
       submitDisabled={submitDisabled}
       submitClassName={submitClassName}
+      backLink={null}
     >
       <div className="space-y-6">
         <form.AppField name="text">

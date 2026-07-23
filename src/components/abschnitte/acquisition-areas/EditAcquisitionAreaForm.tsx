@@ -96,13 +96,14 @@ export const EditAcquisitionAreaForm = ({
             returnPath={indexPath}
           />
         }
-      />
-
-      <BackLink
-        to={landAcquisitionLink.to}
-        params={landAcquisitionLink.params}
-        search={{ acquisitionAreaId: String(acquisitionArea.id) }}
-        text="Zurück zum Grunderwerb"
+        backLink={
+          <BackLink
+            to={landAcquisitionLink.to}
+            params={landAcquisitionLink.params}
+            search={{ acquisitionAreaId: String(acquisitionArea.id) }}
+            text="Zurück zum Grunderwerb"
+          />
+        }
       />
     </>
   )

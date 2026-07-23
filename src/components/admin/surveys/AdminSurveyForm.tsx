@@ -74,6 +74,7 @@ export function AdminSurveyForm({
       actionBarRight={actionBarRight}
       submitDisabled={submitDisabled}
       submitClassName={submitClassName}
+      backLink={null}
     >
       <SuperAdminLogData data={{ projects: projectsResult }} />
       <form.AppField name="slug">
