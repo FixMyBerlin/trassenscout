@@ -15,6 +15,7 @@ import {
   tableRowClassName,
 } from "@/src/components/core/components/Table/tableClasses"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
+import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { getFullname } from "@/src/components/core/users/getFullname"
 import { roleTranslation } from "@/src/components/core/users/roleTranslation.const"
 import {
@@ -53,6 +54,15 @@ export const TeamInvitesTable = ({ canEdit, invites, projectSlug }: Props) => {
   const handleRevoke = async (inviteId: number) => {
     await revokeMutation.mutateAsync({ data: { inviteId, projectSlug } })
     await queryClient.invalidateQueries({ queryKey: ["invites", { projectSlug }] })
+  }
+
+  if (!invites.length) {
+    return (
+      <>
+        <ZeroCase visible={invites.length} name="Einladungen" verb="versendet" />
+        <SuperAdminLogData data={invites} />
+      </>
+    )
   }
 
   return (

@@ -14,6 +14,7 @@ import {
 } from "@/src/components/core/components/Table/tableClasses"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/components/core/components/text/titles"
+import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import {
   useSubsubsectionTaskMutations,
@@ -103,6 +104,7 @@ export const SubsubsectionTasksTable = ({ subsubsectionTasks }: Props) => {
             })}
           </tbody>
         </table>
+        {!subsubsectionTasks.length && <ZeroCase visible name="Aufgaben" verb="angelegt" />}
       </TableWrapper>
       <SuperAdminLogData data={{ subsubsectionTasks }} />
     </>

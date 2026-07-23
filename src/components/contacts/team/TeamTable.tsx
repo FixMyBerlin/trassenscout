@@ -12,6 +12,7 @@ import {
   tableRowClassName,
 } from "@/src/components/core/components/Table/tableClasses"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
+import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { getFullname } from "@/src/components/core/users/getFullname"
 import { UserCanIcon } from "@/src/components/shared/app/memberships/UserCanIcon"
 import type { ProjectUsersList } from "@/src/server/memberships/types"
@@ -35,6 +36,15 @@ type Props = {
 }
 
 export const TeamTable = ({ users }: Props) => {
+  if (!users.length) {
+    return (
+      <>
+        <ZeroCase visible={users.length} name="Teammitglieder" verb="registriert" />
+        <SuperAdminLogData data={users} />
+      </>
+    )
+  }
+
   return (
     <>
       <TableWrapper>

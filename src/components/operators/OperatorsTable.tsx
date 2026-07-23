@@ -13,6 +13,7 @@ import {
 } from "@/src/components/core/components/Table/tableClasses"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/components/core/components/text/titles"
+import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { PaginationControls } from "@/src/components/core/pagination/PaginationControls"
 import { usePagination } from "@/src/components/core/pagination/usePagination"
 import {
@@ -117,7 +118,10 @@ export const OperatorsTable = ({ operators, pagination }: Props) => {
           })}
         </tbody>
       </table>
-      <PaginationControls page={page} result={pagination} onPageChange={goToPage} />
+      {!operators.length && <ZeroCase visible name="Baulastträger" verb="angelegt" />}
+      {operators.length > 0 && (
+        <PaginationControls page={page} result={pagination} onPageChange={goToPage} />
+      )}
     </TableWrapper>
   )
 }

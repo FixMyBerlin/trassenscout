@@ -51,6 +51,7 @@ export const SurveyResponseTagsTable = ({ tags }: Props) => {
       editLink={editLink}
       onArchive={handleArchive}
       onDelete={handleDelete}
+      zeroCaseName="Tags (Beteiligung)"
     />
   )
 }

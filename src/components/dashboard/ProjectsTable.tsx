@@ -10,6 +10,7 @@ import {
 } from "@/src/components/core/components/Table/tableClasses"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/components/core/components/text/titles"
+import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { roleTranslation } from "@/src/components/core/users/roleTranslation.const"
 import type { ProjectsWithGeometryWithMembershipRole } from "@/src/server/projects/types"
 
@@ -61,6 +62,7 @@ export const ProjectsTable = ({ projects }: Props) => {
           ))}
         </tbody>
       </table>
+      {!projects.length && <ZeroCase visible name="Projekte" verb="zugeordnet" />}
     </TableWrapper>
   )
 }
