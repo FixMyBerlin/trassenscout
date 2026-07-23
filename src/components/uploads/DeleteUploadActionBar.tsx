@@ -8,6 +8,7 @@ type Props = {
   uploadId: number
   uploadTitle: string
   returnPath: string
+  onDeleted?: () => void | Promise<void>
   variant?: "text" | "icon"
 }
 
@@ -16,6 +17,7 @@ export const DeleteUploadActionBar = ({
   uploadId,
   uploadTitle,
   returnPath,
+  onDeleted,
   variant = "icon",
 }: Props) => {
   const queryClient = useQueryClient()
@@ -34,6 +36,7 @@ export const DeleteUploadActionBar = ({
     <DeleteActionBar
       itemTitle={uploadTitle}
       onDelete={handleDelete}
+      onDeleted={onDeleted}
       returnPath={returnPath}
       variant={variant}
     />

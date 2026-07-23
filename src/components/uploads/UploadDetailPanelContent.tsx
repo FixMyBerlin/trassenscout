@@ -1,14 +1,8 @@
-import type { MouseEventHandler } from "react"
 import { twJoin } from "tailwind-merge"
-import { ButtonWrapper } from "@/src/components/core/components/links/ButtonWrapper"
 import { Link } from "@/src/components/core/components/links/Link"
 import { Markdown } from "@/src/components/core/components/Markdown/Markdown"
-import { useCurrentReturnTo } from "@/src/components/core/routes/useCurrentPathWithSearch"
 import { formatFileSize } from "@/src/components/core/utils/formatFileSize"
-import { IfUserCanEdit } from "@/src/components/shared/memberships/IfUserCan"
-import { DeleteUploadButton } from "@/src/components/uploads/DeleteUploadButton"
 import { LuckyCloudDocumentLink } from "@/src/components/uploads/LuckyCloudDocumentLink"
-import { UploadAuthorAndDates } from "@/src/components/uploads/UploadAuthorAndDates"
 import { UploadPdfViewer } from "@/src/components/uploads/UploadPdfViewer"
 import { UploadPreview } from "@/src/components/uploads/UploadPreview"
 import { UploadProjectRecordLinks } from "@/src/components/uploads/UploadProjectRecordLinks"
@@ -16,30 +10,14 @@ import { UploadVerknuepfungen } from "@/src/components/uploads/UploadVerknuepfun
 import { isPdf } from "@/src/components/uploads/utils/getFileType"
 import { uploadUrl } from "@/src/components/uploads/utils/uploadUrl"
 import { getFilenameFromS3 } from "@/src/shared/uploads/url"
-import type { UploadEditLink, UploadWithRelations } from "./uploadTypes"
+import type { UploadWithRelations } from "./uploadTypes"
 
 type Props = {
   upload: UploadWithRelations
   projectSlug: string
-  onDeleted?: () => void | Promise<void>
-  editLink?: UploadEditLink
-  editHref?: string
-  onEditClick?: MouseEventHandler<HTMLAnchorElement>
 }
 
-export const UploadDetailPanelContent = ({
-  upload,
-  projectSlug,
-  onDeleted,
-  editLink,
-  editHref,
-  onEditClick,
-}: Props) => {
-  const returnTo = useCurrentReturnTo()
-  const editSearch =
-    editLink && returnTo && !editLink.search?.returnTo
-      ? { ...editLink.search, returnTo }
-      : editLink?.search
+export const UploadDetailPanelContent = ({ upload, projectSlug }: Props) => {
   const isUploadPdf = isPdf(upload)
   const linkedProjectRecords = upload.projectRecords ?? []
 
@@ -123,45 +101,6 @@ export const UploadDetailPanelContent = ({
           </div>
         )}
       </div>
-
-      {(editLink || onDeleted) && (
-        <IfUserCanEdit>
-          <ButtonWrapper className="border-t border-gray-200 pt-4">
-            {editLink && (
-              <Link
-                button="blue"
-                to={editHref ?? editLink.to}
-                params={editHref ? undefined : editLink.params}
-                search={editHref ? undefined : editSearch}
-                preload={false}
-                replace
-                resetScroll={false}
-                onClick={onEditClick}
-              >
-                Bearbeiten
-              </Link>
-            )}
-            {onDeleted && (
-              <DeleteUploadButton
-                projectSlug={projectSlug}
-                uploadId={upload.id}
-                uploadTitle={upload.title}
-                onDeleted={onDeleted}
-                className="text-sm"
-              />
-            )}
-          </ButtonWrapper>
-        </IfUserCanEdit>
-      )}
-
-      <UploadAuthorAndDates
-        className="border-t border-gray-200 pt-4"
-        createdBy={upload.createdBy}
-        createdAt={upload.createdAt}
-        updatedBy={upload.updatedBy ?? undefined}
-        updatedAt={upload.updatedAt ?? undefined}
-        variant="aligned"
-      />
     </div>
   )
 }

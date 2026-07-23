@@ -11,6 +11,7 @@ type Props = {
   itemTitle: string
   onDelete?: () => Promise<unknown>
   onClick?: () => Promise<unknown> | void
+  onDeleted?: () => void | Promise<void>
   returnPath: string
   variant?: "text" | "icon" | "linkWithIcon"
 }
@@ -19,6 +20,7 @@ export const DeleteActionBar = ({
   itemTitle,
   onDelete,
   onClick,
+  onDeleted,
   returnPath,
   variant = "icon",
 }: Props) => {
@@ -42,7 +44,11 @@ export const DeleteActionBar = ({
     if (window.confirm(`Möchten Sie ${frenchQuote(itemTitle)} wirklich unwiderruflich löschen?`)) {
       try {
         await onDelete()
-        void navigate({ to: returnPath, replace: true })
+        if (onDeleted) {
+          await onDeleted()
+        } else {
+          void navigate({ to: returnPath, replace: true })
+        }
       } catch (error) {
         console.error(`Error deleting ${itemTitle}:`, error)
         alert(
