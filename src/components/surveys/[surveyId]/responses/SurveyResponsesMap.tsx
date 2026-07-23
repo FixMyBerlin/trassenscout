@@ -1,15 +1,14 @@
 import { useQuery } from "@tanstack/react-query"
+import { useNavigate } from "@tanstack/react-router"
 import { useEffect, useRef } from "react"
 import { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
 import { getQuestionIdBySurveySlug } from "@/src/components/beteiligung/shared/utils/getQuestionIdBySurveySlug"
-import SurveyStaticPin from "@/src/components/core/components/Map/SurveyStaticPin"
 import {
   MAP_VIEWPORT_SHELL_CLASS,
   MapAsideSplitLayout,
 } from "@/src/components/core/components/PageHeader/MapListViewLayout"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
-import { H3 } from "@/src/components/core/components/text/Headings"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
 import EditableSurveyResponseListItem from "@/src/components/surveys/[surveyId]/responses/EditableSurveyResponseListItem"
 import { getFlatSurveyFormFields } from "@/src/components/surveys/[surveyId]/responses/getFlatSurveyFormFields"
@@ -35,6 +34,7 @@ type Props = {
 }
 
 export function SurveyResponsesMap({ projectSlug, survey, tabs }: Props) {
+  const navigate = useNavigate()
   const { data: feedbackData, refetch: refetchResponses } = useQuery(
     feedbackSurveyResponsesQueryOptions({
       projectSlug,
@@ -91,10 +91,6 @@ export function SurveyResponsesMap({ projectSlug, survey, tabs }: Props) {
 
   const maptilerUrl = metaDefinition.maptilerUrl
 
-  const responsesWithoutLocation = feedbackSurveyResponses.filter(
-    (r) => !r.data[locationId] && !(geometryCategoryId && r.data[geometryCategoryId]),
-  )
-
   if (!feedbackSurveyResponses?.length) return null
 
   return (
@@ -102,79 +98,51 @@ export function SurveyResponsesMap({ projectSlug, survey, tabs }: Props) {
       <PageHeader
         breadcrumb={
           <ProjectPageBreadcrumb
-            section="Beteiligungen"
+            section="Eingaben"
             sectionTo="/$projectSlug/surveys"
             current={survey.title}
           />
         }
         tabs={<SurveyTabs tabs={tabs} embedded />}
+        viewMode="map"
+        onViewModeChange={(mode) => {
+          void navigate({
+            to:
+              mode === "map"
+                ? "/$projectSlug/surveys/$surveyId/responses/map"
+                : "/$projectSlug/surveys/$surveyId/responses",
+            params: { projectSlug, surveyId: String(survey.id) },
+            search: (prev) => prev,
+          })
+        }}
         className="mb-0 shrink-0"
       />
 
       <MapAsideSplitLayout
         className="flex-1 overflow-hidden"
         aside={
-          <>
-            {mapSelectedResponses.length > 0 && (
-              <div className="px-4 pt-4">
-                <H3>
-                  Ausgewählte{mapSelectedResponses.length === 1 ? "r" : ""}{" "}
-                  {mapSelectedResponses.length === 1 ? "Eingabe" : "Eingaben"}
-                </H3>
-                <div className="mt-2 flex items-center">
-                  <SurveyStaticPin surveySlug={surveySlug} small />
-                  <small className="pl-4 text-[#7c3aed]">= Eingabe mit Verortung</small>
+          mapSelectedResponses.length > 0 ? (
+            <section>
+              {mapSelectedResponses.map((response) => (
+                <div
+                  key={response.id}
+                  className="w-full overflow-hidden border border-b-0 border-gray-300 text-sm last:border-b"
+                  // @ts-expect-error TODO: this erros since we updated packages; we need to re-test this and maybe remove the feature?
+                  ref={(element) => (accordionRefs.current[response.id] = element)}
+                >
+                  <EditableSurveyResponseListItem
+                    isAccordion
+                    response={response}
+                    operators={operators}
+                    topics={topics}
+                    refetchResponsesAndTopics={refetchResponsesAndTopics}
+                    showMap={false}
+                    mapProps={mapProps}
+                  />
                 </div>
-              </div>
-            )}
-
-            {mapSelectedResponses.length > 0 && (
-              <section className="px-4 pb-4">
-                {mapSelectedResponses.map((response) => (
-                  <div
-                    key={response.id}
-                    className="w-full overflow-hidden border border-b-0 border-gray-300 text-sm first:rounded-t-xl last:rounded-b-xl last:border-b"
-                    // @ts-expect-error TODO: this erros since we updated packages; we need to re-test this and maybe remove the feature?
-                    ref={(element) => (accordionRefs.current[response.id] = element)}
-                  >
-                    <EditableSurveyResponseListItem
-                      isAccordion
-                      response={response}
-                      operators={operators}
-                      topics={topics}
-                      refetchResponsesAndTopics={refetchResponsesAndTopics}
-                      showMap={false}
-                      mapProps={mapProps}
-                    />
-                  </div>
-                ))}
-              </section>
-            )}
-
-            {responsesWithoutLocation.length > 0 && (
-              <div className="px-4 pb-4">
-                <H3>Eingaben ohne Verortung</H3>
-                <section className="mt-4">
-                  {responsesWithoutLocation.map((response) => (
-                    <div
-                      key={response.id}
-                      className="w-full overflow-hidden border border-b-0 border-gray-300 text-sm first:rounded-t-xl last:rounded-b-xl last:border-b"
-                    >
-                      <EditableSurveyResponseListItem
-                        isAccordion
-                        showMap={false}
-                        response={response}
-                        operators={operators}
-                        topics={topics}
-                        refetchResponsesAndTopics={refetchResponsesAndTopics}
-                        mapProps={mapProps}
-                      />
-                    </div>
-                  ))}
-                </section>
-              </div>
-            )}
-          </>
+              ))}
+            </section>
+          ) : null
         }
         map={
           <SurveyResponseOverviewMap

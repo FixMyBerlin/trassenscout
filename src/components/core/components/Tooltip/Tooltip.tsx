@@ -30,11 +30,12 @@ export const Tooltip = ({ content, placement = "top", variant = "dark", children
     return <>{children}</>
   }
   const child = React.Children.only(children)
+  const isButtonTrigger = child.type === "button"
   const trigger = React.cloneElement(child, {
     className: twJoin("peer inline-flex", child.props.className),
   })
   return (
-    <span className="relative inline-flex">
+    <span className={twJoin("relative inline-flex", isButtonTrigger && "cursor-pointer")}>
       {trigger}
       {/* `hidden` (not `opacity-0`) so idle tooltips don't widen scroll containers like the admin table wrapper */}
       <span
