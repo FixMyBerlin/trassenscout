@@ -80,6 +80,7 @@ export const ContactTable = ({ contacts, currentUserEmail, projectSlug }: Props)
       submitText="Mail schreiben"
       hideSubmitButton
       className="space-y-0"
+      backLink={null}
     >
       <form.AppField name="selectedContacts">
         {(field) => (

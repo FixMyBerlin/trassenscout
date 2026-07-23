@@ -244,6 +244,7 @@ export const EditUploadForm = ({
               />
             </>
           }
+          backLink={hideBackLink ? null : <BackLink to={returnPath} text={returnText} />}
         >
           <FormDirtyStateReporter onDirtyChange={onDirtyChange} />
           <div className="flex justify-center sm:block">
@@ -332,7 +333,6 @@ export const EditUploadForm = ({
       </div>
 
       <SuperAdminLuckyCloud upload={upload} projectSlug={projectSlug} />
-      {!hideBackLink && <BackLink to={returnPath} text={returnText} />}
 
       <UploadAuthorAndDates
         createdBy={upload.createdBy}

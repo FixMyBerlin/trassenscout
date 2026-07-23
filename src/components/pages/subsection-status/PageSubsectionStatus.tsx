@@ -41,10 +41,14 @@ export function PageSubsectionStatus() {
         }
       />
       <SubsectionStatusesTable subsectionStatuss={rows} projectSlug={projectSlug} />
+      <IfUserCanEdit>
+        {fromPath ? (
+          <div className={pageContentPaddingClassName}>
+            <ConditionalBackLink fromPath={fromPath} />
+          </div>
+        ) : null}
+      </IfUserCanEdit>
       <div className={pageContentPaddingClassName}>
-        <IfUserCanEdit>
-          <ConditionalBackLink fromPath={fromPath} />
-        </IfUserCanEdit>
         <SuperAdminLogData data={{ subsectionStatuss: rows }} />
       </div>
     </>

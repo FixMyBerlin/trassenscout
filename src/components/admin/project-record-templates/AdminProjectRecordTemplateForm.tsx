@@ -158,6 +158,7 @@ export function AdminProjectRecordTemplateForm({
       actionBarRight={actionBarRight}
       submitDisabled={submitDisabled}
       submitClassName={submitClassName}
+      backLink={null}
     >
       <form.AppField name="templateTitle">
         {(field) => <field.TextField type="text" label="Titel der Vorlage" />}

@@ -9,10 +9,8 @@ type Props = {
 
 export const BackLink = ({ text, to, params, search }: Props) => {
   return (
-    <div className="mt-6">
-      <Link icon="back" to={to} params={params} search={search}>
-        {text}
-      </Link>
-    </div>
+    <Link icon="back" to={to} params={params} search={search}>
+      {text}
+    </Link>
   )
 }

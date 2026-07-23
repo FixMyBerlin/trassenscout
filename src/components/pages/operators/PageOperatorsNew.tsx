@@ -1,17 +1,12 @@
 import { getRouteApi } from "@tanstack/react-router"
-import { Link } from "@/src/components/core/components/links/Link"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
-import { useTryRouteSearch } from "@/src/components/core/routes/useTryRouteSearch"
 import { NewOperatorForm } from "@/src/components/operators/NewOperatorForm"
-import { useOperatorRouteLinks } from "@/src/components/operators/useOperatorActions"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
 
 const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/operators/new/")
 
 export function PageOperatorsNew() {
   const { projectSlug } = routeApi.useParams()
-  const search = useTryRouteSearch() ?? {}
-  const { listLink } = useOperatorRouteLinks(projectSlug, search)
 
   return (
     <>
@@ -25,8 +20,6 @@ export function PageOperatorsNew() {
         }
       />
       <NewOperatorForm projectSlug={projectSlug} />
-      <hr className="my-5 text-gray-200" />
-      <Link {...listLink}>Zurück zur Übersicht</Link>
     </>
   )
 }

@@ -20,6 +20,7 @@ export type ContactFormProps<S extends z.ZodType> = {
   className?: string
   actionBarLeft?: ReactNode
   actionBarRight?: ReactNode
+  backLink: ReactNode | null
   submitDisabled?: boolean
   submitClassName?: string
   layout?: "default" | "drawer"
@@ -35,6 +36,7 @@ export function ContactForm<S extends z.ZodType>({
   className,
   actionBarLeft,
   actionBarRight,
+  backLink,
   submitDisabled,
   submitClassName,
   layout = "default",
@@ -63,6 +65,7 @@ export function ContactForm<S extends z.ZodType>({
       className={twMerge(isDrawerLayout ? "w-full max-w-5xl space-y-8" : "max-w-prose", className)}
       actionBarLeft={actionBarLeft}
       actionBarRight={actionBarRight}
+      backLink={backLink}
       submitDisabled={submitDisabled}
       submitClassName={submitClassName}
     >

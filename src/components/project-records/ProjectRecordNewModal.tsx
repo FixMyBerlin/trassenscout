@@ -76,7 +76,12 @@ function ProjectRecordCreateForm({
   })
 
   return (
-    <FormShell form={form} formError={formError} submitText="Protokolleintrag speichern">
+    <FormShell
+      form={form}
+      formError={formError}
+      submitText="Protokolleintrag speichern"
+      backLink={null}
+    >
       <FormDirtyStateReporter onDirtyChange={onDirtyChange} />
       <ProjectRecordFormFields
         formMode="create"

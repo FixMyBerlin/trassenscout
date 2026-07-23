@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { useState } from "react"
-import "react-datasheet-grid/dist/style.css"
 import {
   Column,
   createAddRowsComponent,
@@ -9,11 +8,13 @@ import {
   keyColumn,
   textColumn,
 } from "react-datasheet-grid"
+import "react-datasheet-grid/dist/style.css"
+import { twJoin } from "tailwind-merge"
 import { ObjectDump } from "@/src/components/admin/ObjectDump"
 import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { BackLink } from "@/src/components/core/components/forms/BackLink"
 import { improveErrorMessage } from "@/src/components/core/components/forms/improveErrorMessage"
-import { ButtonWrapper } from "@/src/components/core/components/links/ButtonWrapper"
-import { Link } from "@/src/components/core/components/links/Link"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { isProduction } from "@/src/components/core/utils/isEnv"
 import { createContactFn, updateContactFn } from "@/src/server/contacts/contacts.functions"
 import { contactsQueryOptions } from "@/src/server/contacts/contactsQueryOptions"
@@ -117,36 +118,29 @@ export const ContactsTable = () => {
 
   return (
     <>
-      <Link className="pb-4" to={`/${projectSlug}/contacts`}>
-        Zurück zu externen Kontakten
-      </Link>
-      <div className="mb-5 flex w-full items-start justify-between gap-5">
-        {errors.length > 0 ? (
-          <ul className="text-red-800">
-            {errors.map(([id, errorMessage]) => (
-              <li key={id} className="flex items-start gap-3">
-                <strong>ID {id}</strong>
-                <div>
-                  <p>{errorMessage}</p>
-                  <ObjectDump data={{ id, errors: errorMessage }} />
-                </div>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <div />
-        )}
+      {errors.length > 0 ? (
+        <ul className="mb-5 text-red-800">
+          {errors.map(([id, errorMessage]) => (
+            <li key={id} className="flex items-start gap-3">
+              <strong>ID {id}</strong>
+              <div>
+                <p>{errorMessage}</p>
+                <ObjectDump data={{ id, errors: errorMessage }} />
+              </div>
+            </li>
+          ))}
+        </ul>
+      ) : null}
 
-        <ButtonWrapper className="justify-end">
-          {!formDirty && isSaved && <span className="text-green-500">Gespeichert</span>}
-          <button
-            onClick={() => void handleUpdate()}
-            className={primaryButtonClassName}
-            disabled={!formDirty}
-          >
-            Speichern
-          </button>
-        </ButtonWrapper>
+      <div className={twJoin("flex items-center justify-end gap-3", pageContentPaddingClassName)}>
+        {!formDirty && isSaved && <span className="text-green-500">Gespeichert</span>}
+        <button
+          onClick={() => void handleUpdate()}
+          className={primaryButtonClassName}
+          disabled={!formDirty}
+        >
+          Speichern
+        </button>
       </div>
       <DataSheetGrid
         value={data}
@@ -167,6 +161,9 @@ export const ContactsTable = () => {
         }}
         columns={columns}
       />
+      <div className={pageContentPaddingClassName}>
+        <BackLink to={`/${projectSlug}/contacts`} text="Zurück zur Kontaktliste" />
+      </div>
     </>
   )
 }

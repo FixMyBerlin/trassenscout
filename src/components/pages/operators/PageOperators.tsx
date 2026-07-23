@@ -36,10 +36,14 @@ export function PageOperators() {
         }
       />
       <OperatorsTable operators={data.rows} pagination={data} />
+      <IfUserCanEdit>
+        {fromPath ? (
+          <div className={pageContentPaddingClassName}>
+            <ConditionalBackLink fromPath={fromPath} />
+          </div>
+        ) : null}
+      </IfUserCanEdit>
       <div className={pageContentPaddingClassName}>
-        <IfUserCanEdit>
-          <ConditionalBackLink fromPath={fromPath} />
-        </IfUserCanEdit>
         <SuperAdminLogData data={{ operators: data.rows }} />
       </div>
     </>

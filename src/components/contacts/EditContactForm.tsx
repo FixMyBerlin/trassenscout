@@ -90,9 +90,8 @@ export const EditContactForm = ({
             returnPath={returnPath ?? indexPath}
           />
         }
+        backLink={hideBackLink ? null : <BackLink to={showPath} text="Zurück zum Kontakt" />}
       />
-
-      {hideBackLink ? null : <BackLink to={showPath} text="Zurück zum Kontakt" />}
 
       {hideSuperAdminLogData ? null : <SuperAdminLogData data={contact} />}
     </>

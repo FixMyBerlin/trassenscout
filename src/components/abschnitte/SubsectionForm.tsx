@@ -30,6 +30,7 @@ export type SubsectionFormProps<S extends z.ZodTypeAny> = {
   className?: string
   actionBarLeft?: ReactNode
   actionBarRight?: ReactNode
+  backLink: ReactNode | null
   submitDisabled?: boolean
   submitClassName?: string
   subsectionSlug?: string
@@ -44,6 +45,7 @@ function SubsectionFormWithQuery<S extends z.ZodTypeAny>({
   className,
   actionBarLeft,
   actionBarRight,
+  backLink,
   submitDisabled,
   submitClassName,
   subsectionSlug,
@@ -115,6 +117,7 @@ function SubsectionFormWithQuery<S extends z.ZodTypeAny>({
       className={className}
       actionBarLeft={actionBarLeft}
       actionBarRight={actionBarRight}
+      backLink={backLink}
       submitDisabled={submitDisabled}
       submitClassName={submitClassName}
     >

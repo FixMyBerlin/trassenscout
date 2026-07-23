@@ -1,8 +1,13 @@
 import { getRouteApi } from "@tanstack/react-router"
 import { z } from "zod"
-import { useAcquisitionAreaStatusMutations } from "@/src/components/acquisition-area-status/useAcquisitionAreaStatusActions"
+import {
+  useAcquisitionAreaStatusMutations,
+  useAcquisitionAreaStatusRouteLinks,
+} from "@/src/components/acquisition-area-status/useAcquisitionAreaStatusActions"
+import { BackLink } from "@/src/components/core/components/forms/BackLink"
 import { improveErrorMessage } from "@/src/components/core/components/forms/improveErrorMessage"
 import { FORM_ERROR } from "@/src/components/core/components/forms/utils/formSubmitResult"
+import { preserveFromSearch } from "@/src/shared/routing/preserveListSearch"
 import {
   AcquisitionAreaStatusForm,
   AcquisitionAreaStatusFormSchema,
@@ -16,8 +21,9 @@ type Props = {
 const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/acquisition-area-status/new/")
 
 export const NewAcquisitionAreaStatusForm = ({ projectSlug }: Props) => {
-  const search = routeApi.useSearch()
+  const search = preserveFromSearch(routeApi.useSearch())
   const { createRow } = useAcquisitionAreaStatusMutations(projectSlug, search)
+  const { listLink } = useAcquisitionAreaStatusRouteLinks(projectSlug, search)
 
   type HandleSubmit = z.infer<typeof AcquisitionAreaStatusFormSchema>
   const handleSubmit = async (values: HandleSubmit) => {
@@ -31,6 +37,7 @@ export const NewAcquisitionAreaStatusForm = ({ projectSlug }: Props) => {
   return (
     <AcquisitionAreaStatusForm
       submitText="Erstellen"
+      backLink={<BackLink {...listLink} text="Zurück zu den Status" />}
       schema={AcquisitionAreaStatusFormSchema}
       onSubmit={handleSubmit}
     />

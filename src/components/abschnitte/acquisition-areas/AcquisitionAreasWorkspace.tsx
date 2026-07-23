@@ -186,6 +186,7 @@ export function AcquisitionAreasWorkspace({
             formError={submitError}
             className="flex flex-col gap-2 space-y-0"
             submitText="Ausgewählte Verhandlungsflächen erstellen"
+            backLink={null}
           >
             <BufferRadiusControls onApplyRadius={onApplyRadius} />
             <div className="mt-5 space-y-2 text-gray-500">

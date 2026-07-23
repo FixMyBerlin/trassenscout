@@ -106,6 +106,7 @@ export const AdminEditProjectRecordForm = ({ projectRecordId }: Props) => {
         formError={formError}
         submitText="Änderungen speichern"
         edgeToEdgeFooter={<ReviewProjectRecordForm admin />}
+        backLink={null}
         actionBarRight={
           <DeleteActionBar
             itemTitle={projectRecord.title}

@@ -1,8 +1,13 @@
 import { getRouteApi } from "@tanstack/react-router"
 import { z } from "zod"
+import { BackLink } from "@/src/components/core/components/forms/BackLink"
 import { improveErrorMessage } from "@/src/components/core/components/forms/improveErrorMessage"
 import { FORM_ERROR } from "@/src/components/core/components/forms/utils/formSubmitResult"
-import { useSubsubsectionStatusMutations } from "@/src/components/subsubsection-status/useSubsubsectionStatusActions"
+import {
+  useSubsubsectionStatusMutations,
+  useSubsubsectionStatusRouteLinks,
+} from "@/src/components/subsubsection-status/useSubsubsectionStatusActions"
+import { preserveFromSearch } from "@/src/shared/routing/preserveListSearch"
 import { SubsubsectionStatusSchema } from "@/src/shared/subsubsectionStatus/schemas"
 import { SubsubsectionStatusForm } from "./SubsubsectionStatusForm"
 
@@ -15,8 +20,9 @@ type Props = {
 const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/subsubsection-status/new/")
 
 export const NewSubsubsectionStatusForm = ({ projectSlug }: Props) => {
-  const search = routeApi.useSearch()
+  const search = preserveFromSearch(routeApi.useSearch())
   const { createRow } = useSubsubsectionStatusMutations(projectSlug, search)
+  const { listLink } = useSubsubsectionStatusRouteLinks(projectSlug, search)
 
   type HandleSubmit = z.infer<typeof CreateSubsubsectionStatusSchema>
   const handleSubmit = async (values: HandleSubmit) => {
@@ -30,6 +36,7 @@ export const NewSubsubsectionStatusForm = ({ projectSlug }: Props) => {
   return (
     <SubsubsectionStatusForm
       submitText="Erstellen"
+      backLink={<BackLink {...listLink} text="Zurück zur Übersicht" />}
       schema={CreateSubsubsectionStatusSchema}
       onSubmit={handleSubmit}
     />

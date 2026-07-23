@@ -27,8 +27,11 @@ export const NewTagForm = ({ projectSlug }: Props) => {
 
   return (
     <>
-      <TagForm submitText="Erstellen" onSubmit={handleSubmit} />
-      <BackLink {...listLink} text="Zurück zur Übersicht" />
+      <TagForm
+        submitText="Erstellen"
+        onSubmit={handleSubmit}
+        backLink={<BackLink {...listLink} text="Zurück zur Übersicht" />}
+      />
     </>
   )
 }

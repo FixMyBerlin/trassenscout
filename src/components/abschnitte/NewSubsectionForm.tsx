@@ -2,6 +2,7 @@ import { useMutation, useSuspenseQuery } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 import { z } from "zod"
 import { SubsectionForm } from "@/src/components/abschnitte/SubsectionForm"
+import { BackLink } from "@/src/components/core/components/forms/BackLink"
 import { improveErrorMessage } from "@/src/components/core/components/forms/improveErrorMessage"
 import { FORM_ERROR } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { subsectionMaxOrderQueryOptions } from "@/src/server/subsections/subsectionMaxOrderQueryOptions"
@@ -44,6 +45,7 @@ export const NewSubsectionForm = ({ projectSlug }: Props) => {
         order: (maxOrder ?? 0) + 1,
       }}
       submitText="Erstellen"
+      backLink={<BackLink to="/$projectSlug" params={{ projectSlug }} text="Zurück zum Projekt" />}
       schema={NewSubsectionSchema}
       onSubmit={handleSubmit}
     />

@@ -3,6 +3,7 @@ import { getRouteApi, useNavigate } from "@tanstack/react-router"
 import { z } from "zod"
 import { SubsubsectionForm } from "@/src/components/abschnitte/SubsubsectionForm"
 import { SubsubsectionSchemaAdminBox } from "@/src/components/abschnitte/SubsubsectionSchemaAdminBox"
+import { BackLink } from "@/src/components/core/components/forms/BackLink"
 import { improveErrorMessage } from "@/src/components/core/components/forms/improveErrorMessage"
 import { FORM_ERROR } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { LocationEnum } from "@/src/prisma/generated/browser"
@@ -63,6 +64,13 @@ export const NewSubsubsectionForm = ({ subsection }: Props) => {
       <SubsubsectionForm
         initialValues={{ type: "LINE", labelPos: "bottom", location: "" }}
         submitText="Erstellen"
+        backLink={
+          <BackLink
+            to="/$projectSlug/abschnitte/$subsectionSlug"
+            params={{ projectSlug, subsectionSlug }}
+            text="Zurück zum Abschnitt"
+          />
+        }
         schema={NewSubsubsectionSchema}
         onSubmit={handleSubmit}
         subsectionSlug={subsectionSlug}

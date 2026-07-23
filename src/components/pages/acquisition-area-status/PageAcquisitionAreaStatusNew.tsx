@@ -1,17 +1,12 @@
 import { getRouteApi } from "@tanstack/react-router"
 import { NewAcquisitionAreaStatusForm } from "@/src/components/acquisition-area-status/NewAcquisitionAreaStatusForm"
-import { useAcquisitionAreaStatusRouteLinks } from "@/src/components/acquisition-area-status/useAcquisitionAreaStatusActions"
-import { Link } from "@/src/components/core/components/links/Link"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
-import { useTryRouteSearch } from "@/src/components/core/routes/useTryRouteSearch"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
 
 const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/acquisition-area-status/new/")
 
 export function PageAcquisitionAreaStatusNew() {
   const { projectSlug } = routeApi.useParams()
-  const search = useTryRouteSearch() ?? {}
-  const { listLink } = useAcquisitionAreaStatusRouteLinks(projectSlug, search)
 
   return (
     <>
@@ -25,8 +20,6 @@ export function PageAcquisitionAreaStatusNew() {
         }
       />
       <NewAcquisitionAreaStatusForm projectSlug={projectSlug} />
-      <hr className="my-5 text-gray-200" />
-      <Link {...listLink}>Zurück zur Übersicht</Link>
     </>
   )
 }

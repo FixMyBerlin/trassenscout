@@ -41,10 +41,14 @@ export function PageSubsubsectionTask() {
         }
       />
       <SubsubsectionTasksTable subsubsectionTasks={rows} />
+      <IfUserCanEdit>
+        {fromPath ? (
+          <div className={pageContentPaddingClassName}>
+            <ConditionalBackLink fromPath={fromPath} />
+          </div>
+        ) : null}
+      </IfUserCanEdit>
       <div className={pageContentPaddingClassName}>
-        <IfUserCanEdit>
-          <ConditionalBackLink fromPath={fromPath} />
-        </IfUserCanEdit>
         <SuperAdminLogData data={{ subsubsectionTasks: rows }} />
       </div>
     </>

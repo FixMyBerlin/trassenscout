@@ -51,9 +51,10 @@ export const EditProjectClient = ({ initialProject, initialUsers }: Props) => {
         }}
         onSubmit={handleSubmit}
         users={initialUsers}
+        backLink={
+          <BackLink to="/$projectSlug" params={{ projectSlug }} text="Zurück zum Projekt" />
+        }
       />
-
-      <BackLink to="/$projectSlug" params={{ projectSlug }} text="Zurück zum Projekt" />
     </>
   )
 }

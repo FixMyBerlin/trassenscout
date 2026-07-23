@@ -70,8 +70,8 @@ export const EditAcquisitionAreaStatusForm = ({ acquisitionAreaStatus, projectSl
             returnPath={listHref}
           />
         }
+        backLink={<BackLink {...listLink} text="Zurück zu den Status" />}
       />
-      <BackLink {...listLink} text="Zurück zu den Status" />
       <SuperAdminLogData data={{ acquisitionAreaStatus }} />
     </>
   )

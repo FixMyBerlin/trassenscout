@@ -55,6 +55,8 @@ export function PageContactsContact() {
         <SuperAdminBox>
           <pre>{JSON.stringify(contact, null, 2)}</pre>
         </SuperAdminBox>
+      </div>
+      <div className={pageContentPaddingClassName}>
         <BackLink to={`/${projectSlug}/contacts`} text="Zurück zur Kontaktliste" />
       </div>
     </>

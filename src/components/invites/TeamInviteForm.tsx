@@ -7,11 +7,11 @@ import {
   applyFormSubmitResult,
   type OnSubmitResult,
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
-import { SubsectionStatusStyleEnum } from "@/src/prisma/generated/browser"
-import { subsectionStatusFormDefaultValues } from "@/src/shared/subsectionStatus/schemas"
-import { subsectionStatusStyleTranslations } from "./statusStyleTranslations"
+import { roleTranslation } from "@/src/components/core/users/roleTranslation.const"
+import { membershipRoles } from "@/src/server/authorization/constants"
+import { inviteFormDefaultValues } from "@/src/shared/invites/schemas"
 
-export type SubsectionStatusFormProps<S extends z.ZodType> = {
+export type TeamInviteFormProps<S extends z.ZodType> = {
   schema: S
   initialValues?: Partial<z.infer<S>>
   onSubmit: (values: z.infer<S>) => Promise<void | OnSubmitResult>
@@ -20,12 +20,12 @@ export type SubsectionStatusFormProps<S extends z.ZodType> = {
   className?: string
   actionBarLeft?: ReactNode
   actionBarRight?: ReactNode
-  backLink: ReactNode | null
   submitDisabled?: boolean
   submitClassName?: string
+  layout?: "default" | "drawer"
 }
 
-export function SubsectionStatusForm<S extends z.ZodType>({
+export function TeamInviteForm<S extends z.ZodType>({
   schema,
   initialValues,
   onSubmit,
@@ -34,14 +34,15 @@ export function SubsectionStatusForm<S extends z.ZodType>({
   className,
   actionBarLeft,
   actionBarRight,
-  backLink,
   submitDisabled,
   submitClassName,
-}: SubsectionStatusFormProps<S>) {
+  layout = "default",
+}: TeamInviteFormProps<S>) {
   const [formError, setFormError] = useState<string | null>(null)
+  const isDrawerLayout = layout === "drawer"
 
   const form = useAppForm({
-    defaultValues: { ...subsectionStatusFormDefaultValues, ...initialValues },
+    defaultValues: { ...inviteFormDefaultValues, ...initialValues },
     validators: { onSubmit: schema } as never,
     onSubmit: async ({ value }) => {
       const result = (await onSubmit(value as z.infer<S>)) || {}
@@ -53,9 +54,9 @@ export function SubsectionStatusForm<S extends z.ZodType>({
     },
   })
 
-  const styleItems = Object.entries(SubsectionStatusStyleEnum).map(([, value]) => ({
-    value,
-    label: subsectionStatusStyleTranslations[value],
+  const roleItems = membershipRoles.map((role) => ({
+    value: role,
+    label: roleTranslation[role],
   }))
 
   return (
@@ -63,28 +64,27 @@ export function SubsectionStatusForm<S extends z.ZodType>({
       form={form}
       formError={formError}
       submitText={submitText}
-      className={twMerge("max-w-prose", className)}
+      className={twMerge(isDrawerLayout ? "w-full max-w-xl space-y-8" : "max-w-prose", className)}
       actionBarLeft={actionBarLeft}
       actionBarRight={actionBarRight}
-      backLink={backLink}
       submitDisabled={submitDisabled}
       submitClassName={submitClassName}
+      backLink={null}
     >
-      <form.AppField name="slug">
-        {(field) => <field.TextField type="text" label="Kürzel" placeholder="" />}
-      </form.AppField>
-      <form.AppField name="title">
-        {(field) => <field.TextField type="text" label="Titel" placeholder="" />}
-      </form.AppField>
-      <form.AppField name="style">
-        {(field) => (
-          <field.RadiobuttonGroup
-            label="Darstellung"
-            items={styleItems}
-            classNameItemWrapper="flex gap-5 space-y-0! items-center"
-          />
-        )}
-      </form.AppField>
+      <div className="grid gap-6">
+        <form.AppField name="email">
+          {(field) => <field.TextField type="text" label="E-Mail-Adresse" placeholder="" />}
+        </form.AppField>
+        <form.AppField name="role">
+          {(field) => (
+            <field.RadiobuttonGroup
+              label="Rechte"
+              items={roleItems}
+              classNameItemWrapper={isDrawerLayout ? "space-y-4" : undefined}
+            />
+          )}
+        </form.AppField>
+      </div>
     </FormShell>
   )
 }

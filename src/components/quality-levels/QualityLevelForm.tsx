@@ -18,6 +18,7 @@ export type QualityLevelFormProps<S extends z.ZodType> = {
   className?: string
   actionBarLeft?: ReactNode
   actionBarRight?: ReactNode
+  backLink: ReactNode | null
   submitDisabled?: boolean
   submitClassName?: string
 }
@@ -31,6 +32,7 @@ export function QualityLevelForm<S extends z.ZodType>({
   className,
   actionBarLeft,
   actionBarRight,
+  backLink,
   submitDisabled,
   submitClassName,
 }: QualityLevelFormProps<S>) {
@@ -57,6 +59,7 @@ export function QualityLevelForm<S extends z.ZodType>({
       className={twMerge("max-w-prose", className)}
       actionBarLeft={actionBarLeft}
       actionBarRight={actionBarRight}
+      backLink={backLink}
       submitDisabled={submitDisabled}
       submitClassName={submitClassName}
     >
