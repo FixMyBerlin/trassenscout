@@ -24,8 +24,3 @@ export const CreateInvitesSchema = z
       path: ["projects"],
     },
   )
-
-export const inviteFormDefaultValues: z.infer<typeof InviteSchema> = {
-  email: "",
-  role: "VIEWER",
-}

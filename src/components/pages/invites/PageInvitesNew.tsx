@@ -1,6 +1,6 @@
 import { getRouteApi } from "@tanstack/react-router"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
-import { NewInviteForm } from "@/src/components/invites/NewInviteForm"
+import { MultiProjectInviteForm } from "@/src/components/invites/MultiProjectInviteForm"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
 
 const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/invites/new/")
@@ -18,7 +18,7 @@ export function PageInvitesNew() {
           />
         }
       />
-      <NewInviteForm projectSlug={projectSlug} />
+      <MultiProjectInviteForm projectSlug={projectSlug} />
     </>
   )
 }

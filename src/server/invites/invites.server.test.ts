@@ -32,6 +32,7 @@ const mockDb = {
   ),
   invite: {
     findMany: vi.fn(),
+    updateMany: vi.fn(),
   },
   membership: {
     findMany: vi.fn(),
@@ -97,6 +98,7 @@ describe("createInvites", () => {
     })
     mockTx.invite.createMany.mockResolvedValue({ count: 2 })
     mockDb.invite.findMany.mockResolvedValue([])
+    mockDb.invite.updateMany.mockResolvedValue({ count: 1 })
     mockDb.membership.findMany.mockResolvedValue([])
     mockDb.project.findMany.mockResolvedValue([{ id: 10, slug: "rs23", subTitle: null }])
     mockDb.user.findFirst.mockResolvedValue({ id: 3 })
@@ -132,6 +134,44 @@ describe("createInvites", () => {
       ],
     })
     expect(mailMocks.sendInviteeMail).toHaveBeenCalledTimes(1)
+  })
+
+  test("allows editors to create batch invites for editable projects", async () => {
+    const { createInvites } = await import("./invites.server")
+    authMocks.session.mockResolvedValue({
+      role: UserRoleEnum.USER,
+      user: { email: "editor@example.com" },
+      userId: 2,
+    })
+
+    await createInvites(new Headers(), {
+      email: "invitee@example.com",
+      projects: [
+        { projectSlug: "rs23", role: "VIEWER" },
+        { projectSlug: "rs24", role: "EDITOR" },
+      ],
+    })
+
+    expect(mockTx.invite.createMany).toHaveBeenCalled()
+  })
+
+  test("rejects batch invites when the user has no editable projects", async () => {
+    const { createInvites } = await import("./invites.server")
+    authMocks.session.mockResolvedValue({
+      role: UserRoleEnum.USER,
+      user: { email: "viewer@example.com" },
+      userId: 3,
+    })
+    mockDb.project.findMany.mockResolvedValue([])
+
+    await expect(
+      createInvites(new Headers(), {
+        email: "invitee@example.com",
+        projects: [{ projectSlug: "rs23", role: "VIEWER" }],
+      }),
+    ).rejects.toThrow("nur für Projekt-Editor:innen")
+
+    expect(mockTx.invite.createMany).not.toHaveBeenCalled()
   })
 
   test("does not fail creation when post-commit notifications fail", async () => {
@@ -213,17 +253,21 @@ describe("createInvites", () => {
     })
   })
 
-  test("rejects invite email status lookup for non-admin users", async () => {
+  test("does not reveal invite email status for users without editable projects", async () => {
     const { getInviteEmailStatus } = await import("./invites.server")
     authMocks.session.mockResolvedValue({
       role: UserRoleEnum.USER,
       user: { email: "viewer@example.com" },
       userId: 2,
     })
+    mockDb.project.findMany.mockResolvedValue([])
 
     await expect(
       getInviteEmailStatus(new Headers(), { email: "invitee@example.com" }),
-    ).rejects.toThrow("nur für Admins")
+    ).resolves.toEqual({
+      accountExists: false,
+      projectStates: [],
+    })
 
     expect(mockDb.user.findFirst).not.toHaveBeenCalled()
   })
@@ -242,5 +286,34 @@ describe("createInvites", () => {
     expect(mockDb.user.findFirst).not.toHaveBeenCalled()
     expect(mockDb.membership.findMany).not.toHaveBeenCalled()
     expect(mockDb.invite.findMany).not.toHaveBeenCalled()
+  })
+
+  test("revokes a pending invite by expiring it and replacing its token", async () => {
+    const { revokeInvite } = await import("./invites.server")
+
+    await expect(
+      revokeInvite(new Headers(), { inviteId: 42, projectSlug: "rs23" }),
+    ).resolves.toEqual({ success: true })
+
+    expect(mockDb.invite.updateMany).toHaveBeenCalledWith({
+      where: {
+        id: 42,
+        project: { slug: "rs23" },
+        status: "PENDING",
+      },
+      data: {
+        status: "EXPIRED",
+        token: "shared-token",
+      },
+    })
+  })
+
+  test("rejects revoking missing or non-pending invites", async () => {
+    const { revokeInvite } = await import("./invites.server")
+    mockDb.invite.updateMany.mockResolvedValue({ count: 0 })
+
+    await expect(
+      revokeInvite(new Headers(), { inviteId: 42, projectSlug: "rs23" }),
+    ).rejects.toThrow("konnte nicht zurückgezogen werden")
   })
 })

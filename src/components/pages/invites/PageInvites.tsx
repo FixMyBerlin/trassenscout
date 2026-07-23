@@ -41,7 +41,7 @@ export function PageInvites() {
           ) : undefined
         }
       />
-      <TeamInvitesTable invites={data.invites} />
+      <TeamInvitesTable canEdit={canEdit} invites={data.invites} projectSlug={projectSlug} />
       <div className={pageContentPaddingClassName}>
         <TeamInviteDocumentation />
         <SuperAdminBox>

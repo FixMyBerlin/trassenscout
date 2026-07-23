@@ -1,4 +1,4 @@
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import { getRouteApi, useLocation } from "@tanstack/react-router"
 import { useEffect, useRef, useState } from "react"
 import { ContactDeleteActionBar } from "@/src/components/contacts/ContactDeleteActionBar"
@@ -15,7 +15,6 @@ import { PageHeader } from "@/src/components/core/components/PageHeader/PageHead
 import { Spinner } from "@/src/components/core/components/Spinner"
 import { getFullname } from "@/src/components/core/users/getFullname"
 import { MultiProjectInviteForm } from "@/src/components/invites/MultiProjectInviteForm"
-import { NewInviteForm } from "@/src/components/invites/NewInviteForm"
 import { EditProjectRecordForm } from "@/src/components/project-records/EditProjectRecordForm"
 import { ProjectRecordDetailClient } from "@/src/components/project-records/ProjectRecordDetailClient"
 import { useProjectRecordModal } from "@/src/components/project-records/ProjectRecordModalHost"
@@ -26,11 +25,9 @@ import { useProjectModalNavigation } from "@/src/components/shared/projectModals
 import { useProjectUploadModal } from "@/src/components/uploads/ProjectUploadModalHost"
 import { UploadModalContent } from "@/src/components/uploads/UploadModalContent"
 import { isDeletedUploadMarker } from "@/src/components/uploads/uploadTypes"
-import { UserRoleEnum } from "@/src/prisma/generated/browser"
 import { contactQueryOptions } from "@/src/server/contacts/contactQueryOptions"
 import { projectRecordQueryOptions } from "@/src/server/projectRecords/projectRecordsQueryOptions"
 import { uploadQueryOptions } from "@/src/server/uploads/uploadQueryOptions"
-import { currentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
 import { getProjectModalPreview } from "@/src/shared/projectModals/historyState"
 
 const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
@@ -47,8 +44,6 @@ export function ProjectModalHost() {
   const projectUploadModal = useProjectUploadModal()
   const { backgroundHref, buildModalHref, updateModalSearch } = useProjectModalNavigation()
   const preview = getProjectModalPreview(location.state)
-  const { data: currentUser } = useSuspenseQuery(currentUserQueryOptions())
-  const isAdmin = currentUser.role === UserRoleEnum.ADMIN
   const closeTimeoutRef = useRef<number | undefined>(undefined)
   const [modalFormState, setModalFormState] = useState({
     modalKey: "",
@@ -364,10 +359,8 @@ export function ProjectModalHost() {
     const modalClassName = isContactDetailView
       ? "sm:max-w-2xl"
       : isInviteNewView
-        ? isAdmin
-          ? "sm:max-w-4xl"
-          : "sm:max-w-xl"
-        : undefined
+        ? "space-y-4 sm:max-w-4xl"
+        : "space-y-4"
     const modalTitle = isContactEditView
       ? "Kontakt bearbeiten"
       : isContactNewView
@@ -397,15 +390,8 @@ export function ProjectModalHost() {
               })
             }}
           />
-        ) : isInviteNewView && isAdmin ? (
-          <MultiProjectInviteForm
-            projectSlug={projectSlug}
-            onSuccess={() => {
-              closeModal()
-            }}
-          />
         ) : isInviteNewView ? (
-          <NewInviteForm
+          <MultiProjectInviteForm
             projectSlug={projectSlug}
             onSuccess={() => {
               closeModal()
