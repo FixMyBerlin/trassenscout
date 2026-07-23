@@ -177,8 +177,8 @@ export const ContactTable = ({ contacts, currentUserEmail, projectSlug }: Props)
                           <div className="flex flex-col items-end gap-1">
                             <field.MultiCheckbox
                               value={String(contact.id)}
-                              labelProps={{ className: "sr-only" }}
-                              label="Markieren für 'Email schreiben'"
+                              outerProps={{ className: "justify-end" }}
+                              label="Email schreiben"
                             />
                             <ContactTableDelete
                               contactId={contact.id}
