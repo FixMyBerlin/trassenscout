@@ -1,4 +1,3 @@
-import { TrashIcon } from "@heroicons/react/20/solid"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { twJoin } from "tailwind-merge"
 import { secondaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
@@ -21,7 +20,6 @@ import { TableWrapper } from "@/src/components/core/components/Table/TableWrappe
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { getFullname } from "@/src/components/core/users/getFullname"
 import { ProjectRecordTagsList } from "@/src/components/project-records/ProjectRecordTagsList"
-import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import type { Contact } from "@/src/server/contacts/types"
 import { projectBySlugQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 import {
@@ -29,6 +27,7 @@ import {
   contactTableFormDefaultValues,
 } from "@/src/shared/contacts/schemas"
 import { useContactsModal } from "./ContactsModalHost"
+import { ContactTableDelete } from "./ContactTableDelete"
 
 /**
  * Column width classes for `table-fixed` layout. Adjust percentages here only.
@@ -77,9 +76,9 @@ export const ContactTable = ({ contacts, currentUserEmail, projectSlug }: Props)
     <FormShell
       form={form}
       formError={null}
-      submitText="Mail schreiben"
+      submitText="Email schreiben"
       hideSubmitButton
-      className="space-y-0"
+      className="space-y-0 p-0"
       backLink={null}
     >
       <form.AppField name="selectedContacts">
@@ -131,7 +130,7 @@ export const ContactTable = ({ contacts, currentUserEmail, projectSlug }: Props)
                   <tbody className={tableBodyClassName}>
                     {contacts.map((contact) => (
                       <tr key={contact.email} className={tableRowClassName}>
-                        <td className={twJoin(tableCellClassName, "align-top")}>
+                        <td className={twJoin(tableCellClassName, "align-middle")}>
                           <Link
                             className="w-full"
                             to={contactsModal.getContactDetailHref({ contactId: contact.id })}
@@ -142,39 +141,49 @@ export const ContactTable = ({ contacts, currentUserEmail, projectSlug }: Props)
                         </td>
                         <td
                           className={twJoin(
-                            "hidden align-top wrap-break-word @xl:table-cell",
+                            "hidden align-middle wrap-break-word @xl:table-cell",
                             tableCellClassName,
                           )}
                         >
                           {contact.role || "—"}
                         </td>
-                        <td className={twJoin(tableCellClassName, "align-top whitespace-nowrap")}>
+                        <td
+                          className={twJoin(tableCellClassName, "align-middle whitespace-nowrap")}
+                        >
                           {contact.phone ? <LinkTel>{contact.phone}</LinkTel> : "—"}
                         </td>
                         <td
                           className={twJoin(
-                            "hidden align-top whitespace-nowrap @xl:table-cell",
+                            "hidden align-middle whitespace-nowrap @xl:table-cell",
                             tableCellClassName,
                           )}
                         >
                           <LinkMail subject="Abstimmung zum RS 8">{contact.email}</LinkMail>
                         </td>
                         <td
-                          className={twJoin("hidden align-top @xl:table-cell", tableCellClassName)}
+                          className={twJoin(
+                            "hidden align-middle @xl:table-cell",
+                            tableCellClassName,
+                          )}
                         >
                           <ProjectRecordTagsList tags={contact.tags ?? []} />
                         </td>
-                        <td className={twJoin(tableCellClassName, "align-top")}>
-                          <div className="flex items-center justify-end gap-4">
-                            <IfUserCanEdit>
-                              <Link to={`/${projectSlug}/contacts/${contact.id}`}>
-                                <TrashIcon className="size-4" />
-                              </Link>
-                            </IfUserCanEdit>
+                        <td
+                          className={twJoin(
+                            "align-middle text-sm font-medium whitespace-nowrap",
+                            tableCellClassName,
+                          )}
+                        >
+                          <div className="flex flex-col items-end gap-1">
                             <field.MultiCheckbox
                               value={String(contact.id)}
                               labelProps={{ className: "sr-only" }}
-                              label="Markieren für 'Mail schreiben'"
+                              label="Markieren für 'Email schreiben'"
+                            />
+                            <ContactTableDelete
+                              contactId={contact.id}
+                              projectSlug={projectSlug}
+                              contactTitle={getFullname(contact) || "Kontakt"}
                             />
                           </div>
                         </td>
@@ -185,23 +194,25 @@ export const ContactTable = ({ contacts, currentUserEmail, projectSlug }: Props)
               </div>
             </TableWrapper>
 
-            <ButtonWrapper className={twJoin("mt-6 justify-end", pageContentPaddingClassName)}>
-              <form.Subscribe
-                selector={(state) =>
-                  [state.values.selectedContacts.length, state.isSubmitting] as const
-                }
-              >
-                {([selectedCount, isSubmitting]) => (
-                  <button
-                    disabled={selectedCount === 0 || isSubmitting}
-                    className={secondaryButtonClassName}
-                    type="submit"
-                  >
-                    {isSubmitting ? "…" : "Mail schreiben"}
-                  </button>
-                )}
-              </form.Subscribe>
-            </ButtonWrapper>
+            <div className="w-full border-b border-gray-200">
+              <ButtonWrapper className={twJoin("justify-end", pageContentPaddingClassName)}>
+                <form.Subscribe
+                  selector={(state) =>
+                    [state.values.selectedContacts.length, state.isSubmitting] as const
+                  }
+                >
+                  {([selectedCount, isSubmitting]) => (
+                    <button
+                      disabled={selectedCount === 0 || isSubmitting}
+                      className={secondaryButtonClassName}
+                      type="submit"
+                    >
+                      {isSubmitting ? "…" : "Email schreiben"}
+                    </button>
+                  )}
+                </form.Subscribe>
+              </ButtonWrapper>
+            </div>
           </>
         )}
       </form.AppField>

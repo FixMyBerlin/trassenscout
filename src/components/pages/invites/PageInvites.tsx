@@ -42,8 +42,8 @@ export function PageInvites() {
         }
       />
       <TeamInvitesTable canEdit={canEdit} invites={data.invites} projectSlug={projectSlug} />
+      <TeamInviteDocumentation />
       <div className={pageContentPaddingClassName}>
-        <TeamInviteDocumentation />
         <SuperAdminBox>
           <Link button="blue" to="/admin/memberships">
             Rechte verwalten

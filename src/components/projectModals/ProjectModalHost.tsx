@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query"
 import { getRouteApi, useLocation } from "@tanstack/react-router"
 import { useEffect, useRef, useState } from "react"
+import { twJoin } from "tailwind-merge"
 import { ContactDeleteActionBar } from "@/src/components/contacts/ContactDeleteActionBar"
 import { ContactSingle } from "@/src/components/contacts/ContactSingle"
 import { useContactsModal } from "@/src/components/contacts/ContactsModalHost"
 import { EditContactForm } from "@/src/components/contacts/EditContactForm"
 import { NewContactForm } from "@/src/components/contacts/NewContactForm"
-import { ButtonWrapper } from "@/src/components/core/components/links/ButtonWrapper"
 import { Link } from "@/src/components/core/components/links/Link"
 import { Modal, ModalCloseButton } from "@/src/components/core/components/Modal"
 import { Notice } from "@/src/components/core/components/Notice/Notice"
@@ -377,7 +377,28 @@ export function ProjectModalHost() {
 
     return (
       <Modal open handleClose={closeModal} align={modalAlign} className={modalClassName}>
-        <PageHeader title={modalTitle} action={<ModalCloseButton onClose={closeModal} />} />
+        <PageHeader
+          title={modalTitle}
+          action={
+            <div className="flex items-center gap-4">
+              {isContactDetailView && contact ? (
+                <IfUserCanEdit>
+                  <Link
+                    icon="edit"
+                    to={buildModalHref({
+                      modalContactId: contact.id,
+                      modalContactView: "edit",
+                    })}
+                    resetScroll={false}
+                  >
+                    Bearbeiten
+                  </Link>
+                </IfUserCanEdit>
+              ) : null}
+              <ModalCloseButton onClose={closeModal} />
+            </div>
+          }
+        />
 
         {isContactNewView ? (
           <NewContactForm
@@ -413,30 +434,21 @@ export function ProjectModalHost() {
             }}
           />
         ) : contact ? (
-          <div className={pageContentPaddingClassName}>
-            <ContactSingle contact={contact} />
-            <IfUserCanEdit>
-              <ButtonWrapper className="border-t border-gray-200 pt-4">
-                <Link
-                  button="blue"
-                  to={buildModalHref({
-                    modalContactId: contact.id,
-                    modalContactView: "edit",
-                  })}
-                  resetScroll={false}
-                >
-                  Bearbeiten
-                </Link>
-                <ContactDeleteActionBar
-                  contactId={contact.id}
-                  projectSlug={projectSlug}
-                  contactTitle={getFullname(contact) || "Kontakt"}
-                  returnPath={backgroundHref}
-                  variant="linkWithIcon"
-                />
-              </ButtonWrapper>
-            </IfUserCanEdit>
-          </div>
+          <>
+            <div className={pageContentPaddingClassName}>
+              <ContactSingle contact={contact} />
+            </div>
+            <div className={twJoin("border-t border-gray-200", pageContentPaddingClassName)}>
+              <ContactDeleteActionBar
+                contactId={contact.id}
+                projectSlug={projectSlug}
+                contactTitle={getFullname(contact) || "Kontakt"}
+                returnPath={backgroundHref}
+                onDeleted={closeModal}
+                variant="linkWithIcon"
+              />
+            </div>
+          </>
         ) : hasContactError ? (
           <div className={pageContentPaddingClassName}>
             <Notice type="error" title="Der Kontakt konnte nicht geladen werden.">

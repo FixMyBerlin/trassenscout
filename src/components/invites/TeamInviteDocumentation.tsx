@@ -1,14 +1,16 @@
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
+import { twJoin } from "tailwind-merge"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { INVITE_DAYS_TO_DELETION } from "@/src/server/invites/inviteSettings.const"
 
 export const TeamInviteDocumentation = () => {
   return (
-    <>
-      <div className="items-top my-10 prose flex gap-3">
-        <InformationCircleIcon className="size-11 flex-none text-blue-500" />
+    <div className="w-full border-b border-gray-200 bg-blue-50 text-gray-700">
+      <div className={twJoin(pageContentPaddingClassName, "flex gap-3")}>
+        <InformationCircleIcon className="size-5 flex-none text-blue-500" />
         <div>
-          <h2 className="mt-1.5">So funktioniert der Einladungs-Prozess</h2>
-          <ul>
+          <h3 className="font-semibold">So funktioniert der Einladungs-Prozess</h3>
+          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
             <li>Jeder mit Editor-Rechten kann Nutzer:innen einladen.</li>
             <li>
               Mit der Einladung werden die E-Mail-Adresse, die zukünftige Rolle sowie die Person,
@@ -34,6 +36,6 @@ export const TeamInviteDocumentation = () => {
           </ul>
         </div>
       </div>
-    </>
+    </div>
   )
 }
