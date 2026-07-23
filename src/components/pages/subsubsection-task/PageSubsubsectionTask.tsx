@@ -32,11 +32,11 @@ export function PageSubsubsectionTask() {
   return (
     <>
       <PageHeader
-        breadcrumb={<ProjectPageBreadcrumb section="Aufgaben" />}
+        breadcrumb={<ProjectPageBreadcrumb section="Maßnahmentypen" />}
         primaryAction={
           canEdit ? (
             <Link button="blue" icon="plus" {...newLink}>
-              Neue Aufgabe
+              Neuer Maßnahmentyp
             </Link>
           ) : undefined
         }

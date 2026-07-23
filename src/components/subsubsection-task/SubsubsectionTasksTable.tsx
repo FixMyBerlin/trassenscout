@@ -104,7 +104,7 @@ export const SubsubsectionTasksTable = ({ subsubsectionTasks }: Props) => {
             })}
           </tbody>
         </table>
-        {!subsubsectionTasks.length && <ZeroCase visible name="Aufgaben" verb="angelegt" />}
+        {!subsubsectionTasks.length && <ZeroCase visible name="Maßnahmentypen" verb="angelegt" />}
       </TableWrapper>
       <SuperAdminLogData data={{ subsubsectionTasks }} />
     </>
