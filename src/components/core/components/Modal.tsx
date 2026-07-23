@@ -199,8 +199,8 @@ export const Modal = ({ children, open, handleClose, className, align = "center"
                   <DialogPanel
                     className={twMerge(
                       isRightAligned
-                        ? "relative ml-auto h-dvh w-full max-w-none overflow-y-auto bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:w-[clamp(960px,80vw,1280px)] sm:max-w-[calc(100vw-2rem)] sm:p-6"
-                        : "relative overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6",
+                        ? "relative ml-auto h-dvh w-full max-w-none overflow-y-auto bg-white text-left shadow-xl transition-all sm:w-[clamp(960px,80vw,1280px)] sm:max-w-[calc(100vw-2rem)]"
+                        : "relative overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm",
                       className,
                     )}
                   >
