@@ -91,6 +91,7 @@ export const UploadLocationMap = ({ excludeUploadId }: { excludeUploadId?: numbe
           classHeight={hasPosition ? undefined : "h-32 sm:h-[166px]"}
           colorSchema={colorSchema}
           interactiveLayerIds={[]}
+          scrollZoom={false}
           staticOverlay={getStaticOverlayForProject(projectSlug)}
         >
           <BackgroundGeometryLayers

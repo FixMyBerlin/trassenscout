@@ -134,6 +134,7 @@ export const GeometryDrawingMap = ({
           initialViewState={initialViewState}
           backgroundSwitcherPosition="bottom-left"
           colorSchema="subsection"
+          scrollZoom={false}
           staticOverlay={getStaticOverlayForProject(projectSlug)}
         >
           {children}
