@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { EditProjectClient } from "@/src/components/projects/EditProjectClient"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
@@ -18,7 +19,9 @@ export function PageProjectEdit() {
     <>
       <PageHeader breadcrumb={<ProjectPageBreadcrumb current="bearbeiten" />} />
       <EditProjectClient initialProject={project} initialUsers={users} />
-      <SuperAdminLogData data={project} />
+      <div className={pageContentPaddingClassName}>
+        <SuperAdminLogData data={project} />
+      </div>
     </>
   )
 }

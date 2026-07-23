@@ -2,6 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "@/src/components/core/components/links/Link"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
 import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
@@ -35,7 +36,9 @@ export function PageSurveyResponseTags() {
         }
       />
       <SurveyResponseTagsTable tags={data.surveyResponseTags} />
-      <SuperAdminLogData data={{ tags: data.surveyResponseTags }} />
+      <div className={pageContentPaddingClassName}>
+        <SuperAdminLogData data={{ tags: data.surveyResponseTags }} />
+      </div>
     </>
   )
 }

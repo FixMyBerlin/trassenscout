@@ -3,10 +3,10 @@ import { getRouteApi, useRouter } from "@tanstack/react-router"
 import { ActionBar } from "@/src/components/core/components/forms/ActionBar"
 import { BackLink } from "@/src/components/core/components/forms/BackLink"
 import { Link } from "@/src/components/core/components/links/Link"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { ProjectRecordDeleteActionBar } from "@/src/components/project-records/ProjectRecordDeleteActionBar"
 import { ProjectRecordDetailClient } from "@/src/components/project-records/ProjectRecordDetailClient"
-import { ProjectRecordNeedsReviewBanner } from "@/src/components/project-records/ProjectRecordNeedsReviewBanner"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
 import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
@@ -25,7 +25,6 @@ export function PageProjectRecordDetail() {
   const id = Number(projectRecordId)
   const { data: projectRecord } = useSuspenseQuery(projectRecordQueryOptions({ projectSlug, id }))
 
-  const needsReview = projectRecord.reviewState !== ProjectRecordReviewState.APPROVED
   const returnPath = router.buildLocation({
     to:
       projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
@@ -57,13 +56,9 @@ export function PageProjectRecordDetail() {
           </IfUserCanEdit>
         }
       />
-      {needsReview && (
-        <ProjectRecordNeedsReviewBanner withAction projectSlug={projectSlug} projectRecordId={id} />
-      )}
       <ProjectRecordDetailClient initialProjectRecord={projectRecord} />
       {canEdit && (
         <ActionBar
-          className="mt-6"
           right={
             <ProjectRecordDeleteActionBar
               projectSlug={projectSlug}
@@ -75,14 +70,16 @@ export function PageProjectRecordDetail() {
           }
         />
       )}
-      <BackLink
-        to={returnPath}
-        text={
-          projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
-            ? "Zurück zu den Protokolleinträgen zur Bestätigung"
-            : "Zurück zu den Protokolleinträgen"
-        }
-      />
+      <div className={pageContentPaddingClassName}>
+        <BackLink
+          to={returnPath}
+          text={
+            projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
+              ? "Zurück zu den Protokolleinträgen zur Bestätigung"
+              : "Zurück zu den Protokolleinträgen"
+          }
+        />
+      </div>
     </>
   )
 }

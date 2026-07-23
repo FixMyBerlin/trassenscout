@@ -3,6 +3,7 @@ import { getRouteApi } from "@tanstack/react-router"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { ConditionalBackLink } from "@/src/components/core/components/forms/ConditionalBackLink"
 import { Link } from "@/src/components/core/components/links/Link"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { useTryRouteSearchKey } from "@/src/components/core/routes/useTryRouteSearch"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
@@ -40,10 +41,12 @@ export function PageSubsubsectionStatus() {
         }
       />
       <SubsubsectionStatussTable subsubsectionStatuss={rows} />
-      <IfUserCanEdit>
-        <ConditionalBackLink fromPath={fromPath} />
-      </IfUserCanEdit>
-      <SuperAdminLogData data={{ subsubsectionStatuss: rows }} />
+      <div className={pageContentPaddingClassName}>
+        <IfUserCanEdit>
+          <ConditionalBackLink fromPath={fromPath} />
+        </IfUserCanEdit>
+        <SuperAdminLogData data={{ subsubsectionStatuss: rows }} />
+      </div>
     </>
   )
 }
