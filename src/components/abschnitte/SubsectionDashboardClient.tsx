@@ -1,3 +1,4 @@
+import { ArrowDownTrayIcon } from "@heroicons/react/24/outline"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { useState } from "react"
@@ -58,6 +59,19 @@ function SubsectionDashboardContent({
               bearbeiten
             </Link>
           </IfUserCanEdit>
+        }
+        filters={
+          subsubsections.length > 0 ? (
+            <IfUserCanEdit>
+              <Link
+                className="flex items-center gap-1"
+                href={`/api/${projectSlug}/subsections/${subsectionSlug}/subsubsections/export`}
+              >
+                <ArrowDownTrayIcon className="size-5" />
+                Maßnahmen herunterladen (CSV)
+              </Link>
+            </IfUserCanEdit>
+          ) : undefined
         }
         primaryAction={
           <Link
