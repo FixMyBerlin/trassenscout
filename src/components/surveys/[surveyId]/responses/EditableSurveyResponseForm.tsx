@@ -1,12 +1,13 @@
 import { useMutation } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { type JSX, type PropsWithoutRef, type ReactNode, useState } from "react"
-import { twJoin } from "tailwind-merge"
+import { twJoin, twMerge } from "tailwind-merge"
 import { backendConfig as defaultBackendConfig } from "@/src/components/beteiligung/shared/backend-types"
 import { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
 import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { Link } from "@/src/components/core/components/links/Link"
+import { pillShellClasses } from "@/src/components/core/utils/pillClassNames"
 import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { buildTagCheckboxItems } from "@/src/components/tags/buildTagCheckboxItems"
 import { Operator } from "@/src/prisma/generated/browser"
@@ -28,7 +29,7 @@ type ReadOnlyPillProps = {
 
 const ReadOnlyPill = ({ label, color }: ReadOnlyPillProps) => (
   <span
-    className="inline-flex rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-800"
+    className={twMerge(pillShellClasses, "bg-gray-100 text-sm text-gray-800")}
     style={color ? { backgroundColor: color } : undefined}
   >
     {label}

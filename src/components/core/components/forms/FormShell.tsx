@@ -21,6 +21,7 @@ export type FormShellProps<TFormData> = Omit<
   actionBarLeft?: ReactNode
   actionBarRight?: ReactNode
   actionBarClassName?: string
+  edgeToEdgeFooter?: ReactNode
   hideSubmitButton?: boolean
   children: ReactNode
 }
@@ -34,6 +35,7 @@ export function FormShell<TFormData>({
   actionBarLeft,
   actionBarRight,
   actionBarClassName,
+  edgeToEdgeFooter,
   hideSubmitButton,
   className,
   children,
@@ -58,6 +60,8 @@ export function FormShell<TFormData>({
             {children}
             <FormError formError={formError} />
           </div>
+
+          {edgeToEdgeFooter}
 
           {(hideSubmitButton ? Boolean(actionBarLeft || actionBarRight) : true) && (
             <ActionBar

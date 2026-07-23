@@ -17,6 +17,7 @@ import {
 } from "@/src/components/core/components/Table/tableClasses"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/components/core/components/text/titles"
+import { pillShellClasses } from "@/src/components/core/utils/pillClassNames"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import {
   type AcquisitionAreaStatusStyle,
@@ -81,7 +82,8 @@ export const AcquisitionAreaStatusesTable = ({ acquisitionAreaStatuses }: Props)
               <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">
                 <span
                   className={twJoin(
-                    "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
+                    pillShellClasses,
+                    "text-xs",
                     acquisitionAreaStatusStyleBadgeClasses[
                       status.style as AcquisitionAreaStatusStyle
                     ],

@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from "@tanstack/react-router"
 import { startTransition } from "react"
 import { twJoin } from "tailwind-merge"
 import { Link } from "@/src/components/core/components/links/Link"
+import { pillShellClasses } from "@/src/components/core/utils/pillClassNames"
 
 type Tab = {
   name: string
@@ -71,7 +72,8 @@ export const TabsApp = ({ tabs, className, embedded = false }: Props) => {
                     <span
                       className={twJoin(
                         current ? "bg-gray-100 text-gray-500" : "bg-gray-200 text-gray-900",
-                        "ml-3 hidden rounded-full px-2.5 py-0.5 text-xs font-medium md:inline-block",
+                        pillShellClasses,
+                        "ml-3 hidden text-xs md:inline-block",
                       )}
                     >
                       {tab.count}

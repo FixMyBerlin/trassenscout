@@ -2,9 +2,10 @@ import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react
 import { ArrowTopRightOnSquareIcon, ChevronRightIcon } from "@heroicons/react/20/solid"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { Link, useMatchRoute } from "@tanstack/react-router"
-import { twJoin } from "tailwind-merge"
+import { twJoin, twMerge } from "tailwind-merge"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { useTryRouteParam } from "@/src/components/core/routes/useTryRouteParam"
+import { pillShellClasses } from "@/src/components/core/utils/pillClassNames"
 import svgLogoTrassenscoutAdmin from "@/src/components/shared/app/layouts/assets/trassenscout-logo-admin-white.svg"
 import { Img } from "@/src/components/shared/Img"
 import { adminNavCountsQueryOptions } from "@/src/server/admin/adminNavCountsQueryOptions"
@@ -34,7 +35,10 @@ function NavCountBadge({ count }: { count: number | undefined }) {
   return (
     <span
       aria-hidden="true"
-      className="ml-auto w-9 min-w-max rounded-full bg-purple-600 px-2.5 py-0.5 text-center text-xs/5 font-medium whitespace-nowrap text-white outline-1 -outline-offset-1 outline-purple-500"
+      className={twMerge(
+        pillShellClasses,
+        "ml-auto w-9 min-w-max bg-purple-600 text-center text-xs/5 whitespace-nowrap text-white outline-1 -outline-offset-1 outline-purple-500",
+      )}
     >
       {formatAdminNavCount(count)}
     </span>
