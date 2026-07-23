@@ -178,7 +178,7 @@ export const ContactTable = ({ contacts, currentUserEmail, projectSlug }: Props)
                             <field.MultiCheckbox
                               value={String(contact.id)}
                               outerProps={{ className: "justify-end" }}
-                              label="Email schreiben"
+                              label="Markieren für 'Email schreiben'"
                             />
                             <ContactTableDelete
                               contactId={contact.id}
