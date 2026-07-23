@@ -109,25 +109,25 @@ export const TeamInvitesTable = ({ canEdit, invites, projectSlug }: Props) => {
             <tbody className={tableBodyClassName}>
               {invites.map((invite) => (
                 <tr key={invite.id} className={tableRowClassName}>
-                  <td className={twJoin(tableCellClassName, "align-top")}>
+                  <td className={twJoin(tableCellClassName, "align-middle")}>
                     <StatusLabel
                       label={inviteStatusLabels[invite.status]}
                       className={twJoin(inviteStatusClassNames[invite.status], "inline-flex")}
                     />
                   </td>
-                  <td className={twJoin(tableCellClassName, "min-w-0 align-top")}>
+                  <td className={twJoin(tableCellClassName, "min-w-0 align-middle")}>
                     <LinkMail>{invite.email}</LinkMail>
                   </td>
-                  <td className={twJoin(tableCellClassName, "align-top whitespace-nowrap")}>
+                  <td className={twJoin(tableCellClassName, "align-middle whitespace-nowrap")}>
                     {roleTranslation[invite.role]}
                   </td>
-                  <td className={twJoin("hidden align-top @xl:table-cell", tableCellClassName)}>
+                  <td className={twJoin("hidden align-middle @xl:table-cell", tableCellClassName)}>
                     {getFullname(invite.inviter)}
                   </td>
-                  <td className={twJoin("hidden align-top @xl:table-cell", tableCellClassName)}>
+                  <td className={twJoin("hidden align-middle @xl:table-cell", tableCellClassName)}>
                     {format(new Date(invite.updatedAt), "Pp", { locale: de })}
                   </td>
-                  <td className={twJoin("hidden align-top @xl:table-cell", tableCellClassName)}>
+                  <td className={twJoin("hidden align-middle @xl:table-cell", tableCellClassName)}>
                     {formatDistanceStrict(
                       subDays(currentDate, INVITE_DAYS_TO_DELETION),
                       invite.updatedAt,

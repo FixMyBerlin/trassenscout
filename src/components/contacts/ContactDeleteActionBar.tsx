@@ -7,6 +7,7 @@ type Props = {
   projectSlug: string
   contactTitle: string
   returnPath: string
+  onDeleted?: () => void | Promise<void>
   variant?: "text" | "icon" | "linkWithIcon"
 }
 
@@ -15,6 +16,7 @@ export const ContactDeleteActionBar = ({
   projectSlug,
   contactTitle,
   returnPath,
+  onDeleted,
   variant,
 }: Props) => {
   const queryClient = useQueryClient()
@@ -27,6 +29,7 @@ export const ContactDeleteActionBar = ({
         await deleteContactMutation.mutateAsync({ data: { id: contactId, projectSlug } })
         await queryClient.invalidateQueries({ queryKey: ["contacts", { projectSlug }] })
       }}
+      onDeleted={onDeleted}
       returnPath={returnPath}
       variant={variant}
     />

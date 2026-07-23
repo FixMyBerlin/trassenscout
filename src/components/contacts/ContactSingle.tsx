@@ -9,7 +9,6 @@ type Props = {
 }
 
 export const ContactSingle = ({ contact }: Props) => {
-  const sectionClassName = "border-t border-gray-200 pt-3"
   const labelClassName = "text-sm font-medium text-gray-700"
   const valueClassName = "text-sm text-gray-500"
   const markdownClassName =
@@ -18,12 +17,12 @@ export const ContactSingle = ({ contact }: Props) => {
   return (
     <div className="my-6 space-y-3 text-sm">
       <div className="grid gap-4 sm:grid-cols-2">
-        <section className={sectionClassName}>
+        <section>
           <h4 className={labelClassName}>Position</h4>
           <p className={valueClassName}>{contact.role || "Keine Position hinterlegt"}</p>
         </section>
 
-        <section className={sectionClassName}>
+        <section>
           <h4 className={labelClassName}>Telefon</h4>
           <p className={valueClassName}>
             {contact.phone ? <LinkTel>{contact.phone}</LinkTel> : "Keine Telefonnummer hinterlegt"}
@@ -31,7 +30,7 @@ export const ContactSingle = ({ contact }: Props) => {
         </section>
       </div>
 
-      <section className={sectionClassName}>
+      <section>
         <h4 className={labelClassName}>E-Mail</h4>
         <p className={valueClassName}>
           {contact.email ? (
@@ -42,7 +41,7 @@ export const ContactSingle = ({ contact }: Props) => {
         </p>
       </section>
 
-      <section className={sectionClassName}>
+      <section>
         <h4 className={labelClassName}>Notizen</h4>
         {contact.note ? (
           <div className="max-h-60 overflow-y-auto">
@@ -53,7 +52,7 @@ export const ContactSingle = ({ contact }: Props) => {
         )}
       </section>
 
-      <section className={sectionClassName}>
+      <section>
         <h4 className={labelClassName}>Tags</h4>
         {contact.tags?.length ? (
           <div className="mt-2">
