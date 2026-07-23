@@ -2,7 +2,6 @@ import dompurify from "dompurify"
 import { twJoin } from "tailwind-merge"
 import { Markdown } from "@/src/components/core/components/Markdown/Markdown"
 import { proseClasses } from "@/src/components/core/components/text/prose"
-import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import type { ProjectRecord } from "@/src/server/projectRecords/types"
 import type { FeedbackSurveyResponse } from "@/src/server/survey-responses/surveyResponsesQueryOptions"
 import { EditCommentForm } from "./EditCommentForm"
@@ -42,13 +41,11 @@ export const CommentField = ({ comment, commentLabel, mutateComment }: Props) =>
           {localDateTime(comment.createdAt)}
           {wasUpdated(comment) && <>, aktualisiert {localDateTime(comment.updatedAt)}</>}
         </div>
-        <IfUserCanEdit>
-          <EditCommentForm
-            comment={comment}
-            commentLabel={commentLabel}
-            mutateComment={mutateComment}
-          />
-        </IfUserCanEdit>
+        <EditCommentForm
+          comment={comment}
+          commentLabel={commentLabel}
+          mutateComment={mutateComment}
+        />
       </div>
     </div>
   )

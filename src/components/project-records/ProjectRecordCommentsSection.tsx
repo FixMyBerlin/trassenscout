@@ -2,7 +2,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
-import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { CommentField } from "@/src/components/surveys/[surveyId]/responses/comments/CommentField"
 import { NewCommentForm } from "@/src/components/surveys/[surveyId]/responses/comments/NewCommentForm"
 import {
@@ -26,7 +25,7 @@ type Props = {
 export const ProjectRecordCommentsSection = ({ projectRecord }: Props) => {
   const { projectSlug } = loggedInProjectRouteApi.useParams()
   const queryClient = useQueryClient()
-  const isEditorOrAdmin = useUserCan().edit
+  const userCanComment = useUserCan().view
   const createProjectRecordCommentMutation = useMutation({
     mutationFn: createProjectRecordCommentFn,
   })
@@ -55,7 +54,7 @@ export const ProjectRecordCommentsSection = ({ projectRecord }: Props) => {
 
   return (
     <>
-      {(hasComments || isEditorOrAdmin) && (
+      {(hasComments || userCanComment) && (
         <div className={pageContentPaddingClassName}>
           <h4 className="mb-3 font-semibold">Kommentare</h4>
           <ul className="flex max-w-3xl flex-col gap-4">
@@ -93,7 +92,7 @@ export const ProjectRecordCommentsSection = ({ projectRecord }: Props) => {
           </ul>
         </div>
       )}
-      <IfUserCanEdit>
+      {userCanComment && (
         <NewCommentForm
           commentLabel="Kommentar"
           commentHelp="Hier können Sie einen Kommentar zum Protokolleintrag hinzufügen."
@@ -108,7 +107,7 @@ export const ProjectRecordCommentsSection = ({ projectRecord }: Props) => {
             await invalidateProjectRecordQueries()
           }}
         />
-      </IfUserCanEdit>
+      )}
     </>
   )
 }
