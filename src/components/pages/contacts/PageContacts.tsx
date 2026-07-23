@@ -5,6 +5,7 @@ import { ContactTable } from "@/src/components/contacts/ContactTable"
 import { useContactsTabs } from "@/src/components/contacts/useContactsTabs"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "@/src/components/core/components/links/Link"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { TabsApp } from "@/src/components/core/components/Tabs/TabsApp"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
@@ -49,7 +50,9 @@ export function PageContacts() {
         }
       />
       {contacts.length === 0 ? (
-        <ZeroCase visible={contacts.length} name="Kontakte" />
+        <div className={pageContentPaddingClassName}>
+          <ZeroCase visible={contacts.length} name="Kontakte" />
+        </div>
       ) : (
         <ContactTable
           contacts={contacts}
@@ -57,7 +60,9 @@ export function PageContacts() {
           projectSlug={projectSlug}
         />
       )}
-      <SuperAdminLogData data={contacts} />
+      <div className={pageContentPaddingClassName}>
+        <SuperAdminLogData data={contacts} />
+      </div>
     </>
   )
 }

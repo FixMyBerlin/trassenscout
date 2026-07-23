@@ -7,6 +7,7 @@ import { AdminPageHeader } from "@/src/components/admin/AdminPageHeader"
 import { filterMembershipsTable } from "@/src/components/admin/memberships/filterMembershipsTable"
 import { MembershipsSearchBar } from "@/src/components/admin/memberships/MembershipsSearchBar"
 import { MembershipsTable } from "@/src/components/admin/memberships/MembershipsTable"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { preserveScrollNavigateOptions } from "@/src/components/core/routes/preserveScrollNavigateOptions"
 import { projectsAdminQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 import { usersWithMembershipsQueryOptions } from "@/src/server/users/usersQueryOptions"
@@ -50,30 +51,30 @@ export function PageAdminMemberships() {
   return (
     <>
       <AdminPageHeader title="Nutzer & Rechte" />
-      <div className="flex flex-col gap-4">
+      <div className={pageContentPaddingClassName}>
         <MembershipsSearchBar
           userValue={user}
           projectValue={project}
           onUserChange={(value) => setSearchField("user", value)}
           onProjectChange={(value) => setSearchField("project", value)}
         />
-        <div
-          className={twMerge(
-            adminTableWrapperClassName,
-            "max-h-[calc(100vh-13rem)] overflow-y-auto transition-opacity duration-150",
-            isFiltering ? "opacity-60" : "",
-          )}
-        >
-          {filteredUsers.length > 0 ? (
-            <MembershipsTable users={filteredUsers} projects={filteredProjects} />
-          ) : (
-            <p className="px-4 py-6 text-sm text-gray-600">
-              {hasActiveUserFilter
-                ? "Keine Nutzer für diese Suche gefunden."
-                : "Noch keine Nutzer vorhanden."}
-            </p>
-          )}
-        </div>
+      </div>
+      <div
+        className={twMerge(
+          adminTableWrapperClassName,
+          "max-h-[calc(100vh-13rem)] overflow-y-auto transition-opacity duration-150",
+          isFiltering ? "opacity-60" : "",
+        )}
+      >
+        {filteredUsers.length > 0 ? (
+          <MembershipsTable users={filteredUsers} projects={filteredProjects} />
+        ) : (
+          <p className="px-4 py-6 text-sm text-gray-600">
+            {hasActiveUserFilter
+              ? "Keine Nutzer für diese Suche gefunden."
+              : "Noch keine Nutzer vorhanden."}
+          </p>
+        )}
       </div>
     </>
   )

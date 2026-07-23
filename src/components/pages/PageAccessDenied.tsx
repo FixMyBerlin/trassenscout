@@ -1,11 +1,13 @@
+import { twMerge } from "tailwind-merge"
 import { Link } from "@/src/components/core/components/links/Link"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 
 export function PageAccessDenied() {
   return (
     <>
       <PageHeader title="Zugriff verweigert" />
-      <div className="prose mt-8 max-w-2xl">
+      <div className={twMerge("prose max-w-2xl", pageContentPaddingClassName)}>
         <p>
           Sie sind angemeldet, haben aber keinen Zugriff auf dieses Projekt. Bitte wenden Sie sich
           an einen Projekt-Administrator, falls Sie eine Einladung erwarten.

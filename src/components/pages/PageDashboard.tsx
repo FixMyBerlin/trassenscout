@@ -7,6 +7,7 @@ import {
   MapListViewLayout,
   MAP_VIEWPORT_SHELL_CLASS,
 } from "@/src/components/core/components/PageHeader/MapListViewLayout"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { AdminProjectsList } from "@/src/components/dashboard/AdminProjectsList"
 import { DashboardMapWithProvider } from "@/src/components/dashboard/DashboardMapWithProvider"
@@ -22,7 +23,7 @@ function DashboardSupplementarySections({
   projects: ProjectsWithGeometryWithMembershipRole
 }) {
   return (
-    <>
+    <div className={pageContentPaddingClassName}>
       <Suspense fallback={null}>
         <AdminProjectsList />
       </Suspense>
@@ -30,7 +31,7 @@ function DashboardSupplementarySections({
         <LogEntriesDashboard userProjects={projects} />
       </Suspense>
       <SuperAdminLogData data={projects} />
-    </>
+    </div>
   )
 }
 
@@ -49,8 +50,10 @@ export function PageDashboard() {
             </Breadcrumb>
           }
         />
-        <NoProjectMembershipsYet />
-        <DashboardSupplementarySections projects={[]} />
+        <div className={pageContentPaddingClassName}>
+          <NoProjectMembershipsYet />
+          <DashboardSupplementarySections projects={[]} />
+        </div>
       </>
     )
   }

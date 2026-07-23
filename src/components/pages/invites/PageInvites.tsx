@@ -4,6 +4,7 @@ import { useContactsModal } from "@/src/components/contacts/ContactsModalHost"
 import { useContactsTabs } from "@/src/components/contacts/useContactsTabs"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
 import { Link } from "@/src/components/core/components/links/Link"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { TabsApp } from "@/src/components/core/components/Tabs/TabsApp"
 import { TeamInviteDocumentation } from "@/src/components/invites/TeamInviteDocumentation"
@@ -41,12 +42,14 @@ export function PageInvites() {
         }
       />
       <TeamInvitesTable invites={data.invites} />
-      <TeamInviteDocumentation />
-      <SuperAdminBox>
-        <Link button="blue" to="/admin/memberships">
-          Rechte verwalten
-        </Link>
-      </SuperAdminBox>
+      <div className={pageContentPaddingClassName}>
+        <TeamInviteDocumentation />
+        <SuperAdminBox>
+          <Link button="blue" to="/admin/memberships">
+            Rechte verwalten
+          </Link>
+        </SuperAdminBox>
+      </div>
     </>
   )
 }

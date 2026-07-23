@@ -18,7 +18,7 @@ export function LayoutAdmin() {
           <AdminSidebar />
         </Suspense>
         <div className="flex min-w-0 flex-1 flex-col">
-          <main className="flex flex-1 flex-col bg-gray-50 px-6 pb-10 md:px-8">
+          <main className="flex flex-1 flex-col bg-gray-50 pb-10">
             <Outlet />
           </main>
         </div>

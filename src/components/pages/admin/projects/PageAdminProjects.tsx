@@ -8,6 +8,7 @@ import { AdminAlkisLandAcquisitionDemoTools } from "@/src/components/admin/proje
 import { AdminProjectsTable } from "@/src/components/admin/projects/AdminProjectsTable"
 import { filterAdminProjects } from "@/src/components/admin/projects/filterAdminProjects"
 import { Link as CoreLink } from "@/src/components/core/components/links/Link"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { preserveScrollNavigateOptions } from "@/src/components/core/routes/preserveScrollNavigateOptions"
 import { adminProjectsWithCountsQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 
@@ -47,7 +48,7 @@ export function PageAdminProjects() {
           </CoreLink>
         }
       />
-      <div className="flex flex-col gap-4">
+      <div className={pageContentPaddingClassName}>
         <form
           id="admin-projects-filter"
           className="flex flex-wrap items-center gap-2"
@@ -61,13 +62,13 @@ export function PageAdminProjects() {
             onChange={setProjectQuery}
           />
         </form>
-        <AdminProjectsTable
-          projects={filteredProjects}
-          isFiltering={isFiltering}
-          hasActiveFilter={deferredProjectQuery.trim().length > 0}
-        />
       </div>
-      <div className="mt-8">
+      <AdminProjectsTable
+        projects={filteredProjects}
+        isFiltering={isFiltering}
+        hasActiveFilter={deferredProjectQuery.trim().length > 0}
+      />
+      <div className={pageContentPaddingClassName}>
         <AdminAlkisLandAcquisitionDemoTools />
       </div>
     </>

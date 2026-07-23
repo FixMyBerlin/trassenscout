@@ -3,6 +3,7 @@ import { getRouteApi } from "@tanstack/react-router"
 import { AbschnitteBreadcrumb } from "@/src/components/abschnitte/AbschnitteBreadcrumb"
 import { EditSubsectionForm } from "@/src/components/abschnitte/EditSubsectionForm"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { subsectionBySlugQueryOptions } from "@/src/server/subsections/subsectionQueryOptions"
 
@@ -17,7 +18,9 @@ export function PageAbschnitteSubsectionEdit() {
     <>
       <PageHeader breadcrumb={<AbschnitteBreadcrumb current="bearbeiten" />} />
       <EditSubsectionForm subsection={subsection} projectSlug={projectSlug} />
-      <SuperAdminLogData data={subsection} />
+      <div className={pageContentPaddingClassName}>
+        <SuperAdminLogData data={subsection} />
+      </div>
     </>
   )
 }

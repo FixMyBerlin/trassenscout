@@ -4,6 +4,7 @@ import { Suspense } from "react"
 import { AbschnitteBreadcrumb } from "@/src/components/abschnitte/AbschnitteBreadcrumb"
 import { EditSubsubsectionForm } from "@/src/components/abschnitte/EditSubsubsectionForm"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { Spinner } from "@/src/components/core/components/Spinner"
 import { subsubsectionBySlugQueryOptions } from "@/src/server/subsubsections/subsubsectionQueryOptions"
@@ -23,7 +24,9 @@ export function PageAbschnitteSubsubsectionEdit() {
       <Suspense fallback={<Spinner />}>
         <EditSubsubsectionForm subsubsection={subsubsection} />
       </Suspense>
-      <SuperAdminLogData data={subsubsection} />
+      <div className={pageContentPaddingClassName}>
+        <SuperAdminLogData data={subsubsection} />
+      </div>
     </>
   )
 }

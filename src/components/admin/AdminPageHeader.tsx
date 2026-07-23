@@ -16,7 +16,7 @@ export function AdminPageHeader({ title, parent, action }: Props) {
   if (!title && !action) return null
 
   return (
-    <header className="mb-5 flex h-16 shrink-0 items-center justify-between gap-4">
+    <header className="mb-5 flex h-16 shrink-0 items-center justify-between gap-4 px-4">
       {title ? (
         <h1 className="flex min-w-0 items-center gap-2.5 text-3xl font-semibold text-gray-900">
           {parent ? (

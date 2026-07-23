@@ -21,7 +21,7 @@ export function PageKontakt() {
         }
       />
 
-      <div className={twMerge(proseClasses, pageContentPaddingClassName, "mt-6w-full")}>
+      <div className={twMerge(proseClasses, pageContentPaddingClassName, "mt-6 w-full")}>
         <h2>Kontakt</h2>
         <p>
           <strong>FixMyCity GmbH</strong>
