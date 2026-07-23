@@ -29,7 +29,7 @@ export function PageHeaderSearchFilter({
         onSubmit={(e) => e.preventDefault()}
         className="flex flex-wrap items-center gap-3"
       >
-        <div className="w-[300px] max-w-full">
+        <div className="w-[450px] max-w-full">
           <input
             type="text"
             name={name}

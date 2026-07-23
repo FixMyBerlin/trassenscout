@@ -4,6 +4,14 @@ import { twJoin } from "tailwind-merge"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { LinkMail } from "@/src/components/core/components/links/LinkMail"
 import { StatusLabel } from "@/src/components/core/components/Status/StatusLabel"
+import {
+  tableBodyClassName,
+  tableCellClassName,
+  tableFixedClassName,
+  tableHeadCellClassName,
+  tableHeadRowClassName,
+  tableRowClassName,
+} from "@/src/components/core/components/Table/tableClasses"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { getFullname } from "@/src/components/core/users/getFullname"
 import { roleTranslation } from "@/src/components/core/users/roleTranslation.const"
@@ -32,13 +40,12 @@ type Props = {
 
 export const TeamInvitesTable = ({ invites }: Props) => {
   const currentDate = endOfDay(new Date())
-  const spaceClasses = "px-3 py-2"
 
   return (
     <>
-      <TableWrapper flushTop>
+      <TableWrapper>
         <div className="@container w-full">
-          <table className="min-w-full table-fixed border-collapse text-left text-sm text-gray-700">
+          <table className={tableFixedClassName}>
             <colgroup>
               <col className={teamInvitesTableColWidths.status} />
               <col className={teamInvitesTableColWidths.email} />
@@ -48,58 +55,49 @@ export const TeamInvitesTable = ({ invites }: Props) => {
               <col className={teamInvitesTableColWidths.validity} />
             </colgroup>
             <thead>
-              <tr className="border-b border-gray-300 bg-gray-50">
-                <th scope="col" className={twJoin(spaceClasses, "font-medium uppercase")}>
+              <tr className={tableHeadRowClassName}>
+                <th scope="col" className={tableHeadCellClassName}>
                   Status
                 </th>
-                <th scope="col" className={twJoin(spaceClasses, "font-medium uppercase")}>
+                <th scope="col" className={tableHeadCellClassName}>
                   E-Mail
                 </th>
-                <th scope="col" className={twJoin(spaceClasses, "font-medium uppercase")}>
+                <th scope="col" className={tableHeadCellClassName}>
                   Rechte
                 </th>
-                <th
-                  scope="col"
-                  className={twJoin(spaceClasses, "hidden font-medium uppercase @xl:table-cell")}
-                >
+                <th scope="col" className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}>
                   Einladung von
                 </th>
-                <th
-                  scope="col"
-                  className={twJoin(spaceClasses, "hidden font-medium uppercase @xl:table-cell")}
-                >
+                <th scope="col" className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}>
                   Datum
                 </th>
-                <th
-                  scope="col"
-                  className={twJoin(spaceClasses, "hidden font-medium uppercase @xl:table-cell")}
-                >
+                <th scope="col" className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}>
                   Gültigkeit
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
+            <tbody className={tableBodyClassName}>
               {invites.map((invite) => (
-                <tr key={invite.id} className="border-b border-gray-100">
-                  <td className={twJoin(spaceClasses, "align-top")}>
+                <tr key={invite.id} className={tableRowClassName}>
+                  <td className={twJoin(tableCellClassName, "align-top")}>
                     <StatusLabel
                       label={inviteStatusLabels[invite.status]}
                       className={twJoin(inviteStatusClassNames[invite.status], "inline-flex")}
                     />
                   </td>
-                  <td className={twJoin(spaceClasses, "min-w-0 align-top")}>
+                  <td className={twJoin(tableCellClassName, "min-w-0 align-top")}>
                     <LinkMail>{invite.email}</LinkMail>
                   </td>
-                  <td className={twJoin(spaceClasses, "align-top whitespace-nowrap")}>
+                  <td className={twJoin(tableCellClassName, "align-top whitespace-nowrap")}>
                     {roleTranslation[invite.role]}
                   </td>
-                  <td className={twJoin("hidden align-top @xl:table-cell", spaceClasses)}>
+                  <td className={twJoin("hidden align-top @xl:table-cell", tableCellClassName)}>
                     {getFullname(invite.inviter)}
                   </td>
-                  <td className={twJoin("hidden align-top @xl:table-cell", spaceClasses)}>
+                  <td className={twJoin("hidden align-top @xl:table-cell", tableCellClassName)}>
                     {format(new Date(invite.updatedAt), "Pp", { locale: de })}
                   </td>
-                  <td className={twJoin("hidden align-top @xl:table-cell", spaceClasses)}>
+                  <td className={twJoin("hidden align-top @xl:table-cell", tableCellClassName)}>
                     {formatDistanceStrict(
                       subDays(currentDate, INVITE_DAYS_TO_DELETION),
                       invite.updatedAt,

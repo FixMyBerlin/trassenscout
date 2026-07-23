@@ -1,5 +1,13 @@
 import { useNavigate } from "@tanstack/react-router"
+import { twJoin } from "tailwind-merge"
 import { ProjectIcon } from "@/src/components/core/components/Map/Icons/ProjectIcon"
+import {
+  tableBodyClassName,
+  tableClassName,
+  tableHeadCellClassName,
+  tableHeadRowClassName,
+  tableRowClassName,
+} from "@/src/components/core/components/Table/tableClasses"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { roleTranslation } from "@/src/components/core/users/roleTranslation.const"
@@ -13,33 +21,26 @@ export const ProjectsTable = ({ projects }: Props) => {
   const navigate = useNavigate()
 
   return (
-    <TableWrapper flushTop>
-      <table className="min-w-full divide-y divide-gray-300">
-        <thead className="bg-gray-50">
-          <tr>
-            <th
-              scope="col"
-              colSpan={2}
-              className="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-6"
-            >
+    <TableWrapper>
+      <table className={tableClassName}>
+        <thead>
+          <tr className={tableHeadRowClassName}>
+            <th scope="col" colSpan={2} className={tableHeadCellClassName}>
               Projekt
             </th>
-            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+            <th scope="col" className={tableHeadCellClassName}>
               Anzahl Planungsabschnitte
             </th>
-            <th
-              scope="col"
-              className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:pr-6"
-            >
+            <th scope="col" className={tableHeadCellClassName}>
               Meine Rolle
             </th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-200 bg-white">
+        <tbody className={tableBodyClassName}>
           {projects.map((project) => (
             <tr
               key={project.id}
-              className="group cursor-pointer hover:bg-gray-50"
+              className={twJoin(tableRowClassName, "group cursor-pointer hover:bg-gray-50")}
               onClick={() =>
                 navigate({ to: "/$projectSlug", params: { projectSlug: project.slug } })
               }

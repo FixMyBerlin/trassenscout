@@ -5,6 +5,14 @@ import { de } from "date-fns/locale"
 import { twJoin } from "tailwind-merge"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "@/src/components/core/components/links/Link"
+import {
+  tableBodyClassName,
+  tableCellClassName,
+  tableFixedClassName,
+  tableHeadCellClassName,
+  tableHeadRowClassName,
+  tableRowClassName,
+} from "@/src/components/core/components/Table/tableClasses"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { ProjectRecordEditingState } from "@/src/prisma/generated/browser"
 import type {
@@ -46,7 +54,6 @@ export const ProjectRecordsTable = ({
   projectRecords,
   highlightId,
   isTopicFilter,
-  flushTop = false,
   showAcquisitionAreaColumn = false,
   showRelationsColumn = false,
   onTopicClick,
@@ -59,7 +66,6 @@ export const ProjectRecordsTable = ({
     | ProjectRecordsNeedsReviewList
   highlightId?: number | null
   isTopicFilter?: boolean
-  flushTop?: boolean
   showAcquisitionAreaColumn?: boolean
   showRelationsColumn?: boolean
   onTopicClick?: (topic: string) => void
@@ -69,13 +75,12 @@ export const ProjectRecordsTable = ({
   const projectRecordModal = useProjectRecordModal()
 
   if (!projectRecords.length) return null
-  const spaceClasses = "px-3 py-2"
 
   return (
     <>
-      <TableWrapper flushTop={flushTop}>
+      <TableWrapper>
         <div className="@container w-full">
-          <table className="min-w-full table-fixed border-collapse text-left text-sm text-gray-700">
+          <table className={tableFixedClassName}>
             <colgroup>
               <col className={projectRecordTableColWidths.editingState} />
               <col
@@ -102,46 +107,40 @@ export const ProjectRecordsTable = ({
               <col className={projectRecordTableColWidths.documents} />
             </colgroup>
             <thead>
-              <tr className="border-b border-gray-300 bg-gray-50">
-                <th scope="col" className={twJoin(spaceClasses, "sr-only font-medium")}>
+              <tr className={tableHeadRowClassName}>
+                <th scope="col" className={twJoin(tableHeadCellClassName, "sr-only")}>
                   Status
                 </th>
-                <th scope="col" className={twJoin(spaceClasses, "font-medium uppercase")}>
+                <th scope="col" className={twJoin(tableHeadCellClassName)}>
                   Datum
                 </th>
-                <th scope="col" className={twJoin(spaceClasses, "font-medium uppercase")}>
+                <th scope="col" className={twJoin(tableHeadCellClassName)}>
                   Titel
                 </th>
                 {showAcquisitionAreaColumn ? (
-                  <th scope="col" className={twJoin(spaceClasses, "font-medium uppercase")}>
+                  <th scope="col" className={twJoin(tableHeadCellClassName)}>
                     Verhandlungsfläche
                   </th>
                 ) : showRelationsColumn ? (
                   <th
                     scope="col"
-                    className={twJoin(spaceClasses, "hidden font-medium uppercase @xl:table-cell")}
+                    className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}
                   >
                     Verknüpfungen
                   </th>
                 ) : null}
-                <th
-                  scope="col"
-                  className={twJoin(spaceClasses, "hidden font-medium uppercase @xl:table-cell")}
-                >
+                <th scope="col" className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}>
                   Tags
                 </th>
-                <th
-                  scope="col"
-                  className={twJoin(spaceClasses, "hidden font-medium uppercase @xl:table-cell")}
-                >
+                <th scope="col" className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}>
                   Zugewiesen
                 </th>
-                <th scope="col" className={twJoin(spaceClasses, "sr-only")}>
+                <th scope="col" className={twJoin(tableHeadCellClassName, "sr-only")}>
                   Dokumente
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
+            <tbody className={tableBodyClassName}>
               {projectRecords.map((projectRecord) => {
                 const acquisitionAreaId =
                   "acquisitionArea" in projectRecord && projectRecord.acquisitionArea
@@ -190,25 +189,25 @@ export const ProjectRecordsTable = ({
                   <tr
                     key={projectRecord.id}
                     className={twJoin(
-                      "border-b border-gray-100",
+                      tableRowClassName,
                       highlightId === projectRecord.id
                         ? "bg-green-50"
                         : projectRecord.editingState === ProjectRecordEditingState.COMPLETED &&
                             "bg-gray-50/90 text-gray-500",
                     )}
                   >
-                    <td className={twJoin(spaceClasses, "align-top")}>
+                    <td className={twJoin(tableCellClassName, "align-top")}>
                       <ProjectRecordEditingStateIndicator
                         editingState={projectRecord.editingState}
                         variant="table"
                       />
                     </td>
-                    <td className={twJoin(spaceClasses, "align-top")}>
+                    <td className={twJoin(tableCellClassName, "align-top")}>
                       {projectRecord.date
                         ? format(new Date(projectRecord.date), "P", { locale: de })
                         : "—"}
                     </td>
-                    <td className={twJoin("align-top", spaceClasses)}>
+                    <td className={twJoin("align-top", tableCellClassName)}>
                       <Link
                         className="w-full"
                         to={projectRecordModal.getProjectRecordDetailHref({
@@ -221,11 +220,11 @@ export const ProjectRecordsTable = ({
                       </Link>
                     </td>
                     {showAcquisitionAreaColumn ? (
-                      <td className={twJoin("align-top wrap-break-word", spaceClasses)}>
+                      <td className={twJoin("align-top wrap-break-word", tableCellClassName)}>
                         {acquisitionAreaId ?? "—"}
                       </td>
                     ) : showRelationsColumn ? (
-                      <td className={twJoin("hidden align-top @xl:table-cell", spaceClasses)}>
+                      <td className={twJoin("hidden align-top @xl:table-cell", tableCellClassName)}>
                         <ProjectRecordVerknuepfungen
                           projectSlug={projectSlug}
                           landAcquisitionModuleEnabled={landAcquisitionEnabled}
@@ -236,7 +235,7 @@ export const ProjectRecordsTable = ({
                         />
                       </td>
                     ) : null}
-                    <td className={twJoin("hidden align-top @xl:table-cell", spaceClasses)}>
+                    <td className={twJoin("hidden align-top @xl:table-cell", tableCellClassName)}>
                       <div className="flex items-center justify-between gap-2">
                         <ProjectRecordTagsList
                           tags={projectRecordTags}
@@ -245,7 +244,7 @@ export const ProjectRecordsTable = ({
                         />
                       </div>
                     </td>
-                    <td className={twJoin("hidden align-top @xl:table-cell", spaceClasses)}>
+                    <td className={twJoin("hidden align-top @xl:table-cell", tableCellClassName)}>
                       <div className="flex items-center justify-start">
                         {assignedTo && (
                           <ProjectRecordAssignedToPill
@@ -259,7 +258,7 @@ export const ProjectRecordsTable = ({
                     </td>
                     <td
                       className={twJoin(
-                        spaceClasses,
+                        tableCellClassName,
                         "flex items-center justify-end gap-2 tabular-nums @xl:gap-4",
                       )}
                     >

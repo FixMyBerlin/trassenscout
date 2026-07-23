@@ -14,6 +14,13 @@ import {
 import { FormSuccess } from "@/src/components/core/components/forms/FormSuccess"
 import { SelectListbox } from "@/src/components/core/components/forms/SelectListbox"
 import { Link } from "@/src/components/core/components/links/Link"
+import {
+  tableBodyClassName,
+  tableClassName,
+  tableHeadCellClassName,
+  tableHeadRowClassName,
+  tableRowClassName,
+} from "@/src/components/core/components/Table/tableClasses"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { ProjectRecordNewModal } from "@/src/components/project-records/ProjectRecordNewModal"
@@ -214,25 +221,19 @@ export const SubsubsectionLandAcquisitionContent = ({
 
               <div className="overflow-x-auto rounded-md border border-gray-200">
                 <div className="inline-block min-w-full align-middle">
-                  <table className="min-w-full divide-y divide-gray-200">
+                  <table className={tableClassName}>
                     <thead className="sr-only">
-                      <tr>
-                        <th
-                          scope="col"
-                          className="py-3.5 pr-3 pl-3 text-left text-sm font-semibold text-gray-900"
-                        >
+                      <tr className={tableHeadRowClassName}>
+                        <th scope="col" className={tableHeadCellClassName}>
                           Attribut
                         </th>
-                        <th
-                          scope="col"
-                          className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                        >
+                        <th scope="col" className={tableHeadCellClassName}>
                           Wert
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-200 bg-white">
-                      <tr>
+                    <tbody className={tableBodyClassName}>
+                      <tr className={tableRowClassName}>
                         <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
                           ID
                         </th>
@@ -240,7 +241,7 @@ export const SubsubsectionLandAcquisitionContent = ({
                           {selectedAcquisitionArea.id}
                         </td>
                       </tr>
-                      <tr>
+                      <tr className={tableRowClassName}>
                         <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
                           Flurstücknummer ({selectedAcquisitionArea.parcel.alkisParcelIdSource})
                         </th>
@@ -249,7 +250,7 @@ export const SubsubsectionLandAcquisitionContent = ({
                             `Parcel ${selectedAcquisitionArea.parcel.id}`}
                         </td>
                       </tr>
-                      <tr>
+                      <tr className={tableRowClassName}>
                         <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
                           Phase
                         </th>

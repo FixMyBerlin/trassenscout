@@ -2,6 +2,14 @@ import { twJoin } from "tailwind-merge"
 import { ButtonWrapper } from "@/src/components/core/components/links/ButtonWrapper"
 import { Link, linkIcons, type LinkProps } from "@/src/components/core/components/links/Link"
 import { linkStyles } from "@/src/components/core/components/links/styles"
+import {
+  tableBodyClassName,
+  tableClassName,
+  tableHeadCellClassName,
+  tableHeadCellRightClassName,
+  tableHeadRowClassName,
+  tableRowClassName,
+} from "@/src/components/core/components/Table/tableClasses"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 
@@ -23,33 +31,33 @@ type Props = {
 
 export const TagsManagementTable = ({ tags, editLink, onArchive, onDelete }: Props) => {
   return (
-    <TableWrapper flushTop>
-      <table className="min-w-full divide-y divide-gray-300">
-        <thead className="bg-gray-50">
-          <tr>
-            <th
-              scope="col"
-              className="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-6"
-            >
+    <TableWrapper>
+      <table className={tableClassName}>
+        <thead>
+          <tr className={tableHeadRowClassName}>
+            <th scope="col" className={tableHeadCellClassName}>
               Titel
             </th>
-            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+            <th scope="col" className={tableHeadCellClassName}>
               Verwendungen
             </th>
-            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+            <th scope="col" className={tableHeadCellClassName}>
               Status
             </th>
-            <th
-              scope="col"
-              className="px-3 py-4 text-right text-sm font-semibold text-gray-900 sm:pr-6"
-            >
+            <th scope="col" className={tableHeadCellRightClassName}>
               <span className="sr-only">Aktionen</span>
             </th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-200 bg-white">
+        <tbody className={tableBodyClassName}>
           {tags.map((tag) => (
-            <tr key={tag.id} className={tag.archivedAt ? "bg-gray-50 text-gray-500" : undefined}>
+            <tr
+              key={tag.id}
+              className={twJoin(
+                tableRowClassName,
+                tag.archivedAt ? "bg-gray-50 text-gray-500" : undefined,
+              )}
+            >
               <td className="py-4 pr-3 pl-4 text-sm whitespace-nowrap sm:pl-6">
                 <strong className="font-semibold">{tag.title}</strong>
               </td>

@@ -5,6 +5,13 @@ import { LegendIcon } from "@/src/components/core/components/Map/Icons/LegendIco
 import { SubsubsectionIcon } from "@/src/components/core/components/Map/Icons/SubsubsectionIcon"
 import { getIconIdForSubsubsection } from "@/src/components/core/components/Map/legendIconRegistry"
 import { GEOMETRY_TYPE_TOOLTIPS } from "@/src/components/core/components/Map/utils/geometryTypeTranslations"
+import {
+  tableBodyClassName,
+  tableClassName,
+  tableHeadCellClassName,
+  tableHeadRowClassName,
+  tableRowClassName,
+} from "@/src/components/core/components/Table/tableClasses"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import {
   formattedEuro,
@@ -32,56 +39,36 @@ export const SubsubsectionTable = ({ subsubsections, compact }: Props) => {
 
   return (
     <section>
-      <TableWrapper flushTop>
-        <table className="min-w-full divide-y divide-gray-300">
-          <thead className="bg-gray-50">
-            <tr>
-              <th
-                scope="col"
-                className="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-6"
-              >
+      <TableWrapper>
+        <table className={tableClassName}>
+          <thead>
+            <tr className={tableHeadRowClassName}>
+              <th scope="col" className={tableHeadCellClassName}>
                 Maßnahmen
               </th>
-              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+              <th scope="col" className={tableHeadCellClassName}>
                 Maßnahmentyp
               </th>
-              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+              <th scope="col" className={tableHeadCellClassName}>
                 <span className="sr-only">Geometrietyp</span>
               </th>
-              <th
-                scope="col"
-                className={twJoin(
-                  compact ? "hidden" : "",
-                  "px-3 py-3.5 text-left text-sm font-semibold text-gray-900",
-                )}
-              >
+              <th scope="col" className={twJoin(compact ? "hidden" : "", tableHeadCellClassName)}>
                 Länge
               </th>
-              <th
-                scope="col"
-                className={twJoin(
-                  compact ? "hidden" : "",
-                  "px-3 py-3.5 text-left text-sm font-semibold text-gray-900",
-                )}
-              >
+              <th scope="col" className={twJoin(compact ? "hidden" : "", tableHeadCellClassName)}>
                 Kostenschätzung
               </th>
-              <th
-                scope="col"
-                className={twJoin(
-                  compact ? "hidden" : "",
-                  "px-3 py-3.5 text-left text-sm font-semibold text-gray-900",
-                )}
-              >
+              <th scope="col" className={twJoin(compact ? "hidden" : "", tableHeadCellClassName)}>
                 Ausbaustandard
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200 bg-white">
+          <tbody className={tableBodyClassName}>
             {subsubsections.map((subsubsection) => (
               <tr
                 key={subsubsection.id}
                 className={twJoin(
+                  tableRowClassName,
                   subsubsection.slug === subsubsectionSlug
                     ? "bg-gray-100"
                     : "group cursor-pointer hover:bg-gray-50",
