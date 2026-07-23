@@ -62,6 +62,7 @@ function SubsectionDashboardContent({
         primaryAction={
           <Link
             button
+            icon="plus"
             to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new"
             params={{ projectSlug, subsectionSlug }}
           >

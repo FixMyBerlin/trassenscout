@@ -70,7 +70,7 @@ export const ProjectDashboardClient = () => {
           </IfUserCanEdit>
         }
         primaryAction={
-          <Link button to="/$projectSlug/abschnitte/new" params={{ projectSlug }}>
+          <Link button icon="plus" to="/$projectSlug/abschnitte/new" params={{ projectSlug }}>
             Neuer Planungsabschnitt
           </Link>
         }
@@ -82,7 +82,7 @@ export const ProjectDashboardClient = () => {
         list={<SubsectionTable subsections={filteredSubsections} />}
       >
         <SuperAdminBox className="flex flex-col items-start gap-4">
-          <Link button to={`/admin/projects/${projectSlug}/subsections/multiple-new`}>
+          <Link button icon="plus" to={`/admin/projects/${projectSlug}/subsections/multiple-new`}>
             Mehrere Planungsabschnitte erstellen
           </Link>
           <Link button to={`/admin/projects/${projectSlug}/subsections`}>
