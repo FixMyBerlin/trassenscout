@@ -22,7 +22,7 @@ export function PageSubsubsectionStatusEdit() {
       <PageHeader
         breadcrumb={
           <ProjectPageBreadcrumb
-            section="Status"
+            section="Phase"
             sectionTo="/$projectSlug/subsubsection-status"
             current="bearbeiten"
           />

@@ -10,11 +10,11 @@ const newSubsubsectionStatusPath = `${subsubsectionStatusPath}/new`
 defineSettingsRoutePermissionSuite({
   suiteName: "Subsubsection status permissions",
   listPath: subsubsectionStatusPath,
-  listHeading: "Status",
+  listHeading: "Phase",
   createPath: newSubsubsectionStatusPath,
-  createHeading: "Status hinzufügen",
-  editHeading: "Status bearbeiten",
-  createLinkName: "Neuer Status",
+  createHeading: "Phase hinzufügen",
+  editHeading: "Phase bearbeiten",
+  createLinkName: "Neue Phase",
 })
 
 test.describe("Subsubsection status form validation", () => {

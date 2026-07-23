@@ -119,9 +119,7 @@ export const SubsubsectionStatussTable = ({ subsubsectionStatuss }: Props) => {
             })}
           </tbody>
         </table>
-        {!subsubsectionStatuss.length && (
-          <ZeroCase visible name="Status-Einträge" verb="angelegt" />
-        )}
+        {!subsubsectionStatuss.length && <ZeroCase visible name="Phasen" verb="angelegt" />}
       </TableWrapper>
     </>
   )
