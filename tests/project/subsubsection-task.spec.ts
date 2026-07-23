@@ -10,11 +10,11 @@ const newSubsubsectionTaskPath = `${subsubsectionTaskPath}/new`
 defineSettingsRoutePermissionSuite({
   suiteName: "Subsubsection task permissions",
   listPath: subsubsectionTaskPath,
-  listHeading: "Aufgaben",
+  listHeading: "Maßnahmentypen",
   createPath: newSubsubsectionTaskPath,
-  createHeading: "Aufgabe hinzufügen",
-  editHeading: "Aufgabe bearbeiten",
-  createLinkName: "Neue Aufgabe",
+  createHeading: "Maßnahmentyp hinzufügen",
+  editHeading: "Maßnahmentyp bearbeiten",
+  createLinkName: "Neuer Maßnahmentyp",
 })
 
 test.describe("Subsubsection task form validation", () => {

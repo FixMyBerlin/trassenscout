@@ -145,7 +145,7 @@ export function buildAdminProjectNavigation(projectSlug: string) {
       external: true,
     },
     {
-      name: "Aufgabe",
+      name: "Maßnahmentyp",
       link: projectNavLink("/$projectSlug/subsubsection-task", projectSlug),
       external: true,
     },

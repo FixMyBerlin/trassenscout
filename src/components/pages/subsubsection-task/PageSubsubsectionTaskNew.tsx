@@ -13,7 +13,7 @@ export function PageSubsubsectionTaskNew() {
       <PageHeader
         breadcrumb={
           <ProjectPageBreadcrumb
-            section="Aufgaben"
+            section="Maßnahmentypen"
             sectionTo="/$projectSlug/subsubsection-task"
             current="neu"
           />
