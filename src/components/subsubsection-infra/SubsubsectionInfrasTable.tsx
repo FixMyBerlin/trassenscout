@@ -13,6 +13,7 @@ import {
 } from "@/src/components/core/components/Table/tableClasses"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/components/core/components/text/titles"
+import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import {
   useSubsubsectionInfraMutations,
@@ -101,6 +102,7 @@ export const SubsubsectionInfrasTable = ({ subsubsectionInfras }: Props) => {
             })}
           </tbody>
         </table>
+        {!subsubsectionInfras.length && <ZeroCase visible name="Infrastruktur" verb="angelegt" />}
       </TableWrapper>
     </>
   )

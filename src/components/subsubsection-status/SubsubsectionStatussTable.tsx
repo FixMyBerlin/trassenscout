@@ -13,6 +13,7 @@ import {
 } from "@/src/components/core/components/Table/tableClasses"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/components/core/components/text/titles"
+import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { pillShellClasses } from "@/src/components/core/utils/pillClassNames"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import {
@@ -118,6 +119,9 @@ export const SubsubsectionStatussTable = ({ subsubsectionStatuss }: Props) => {
             })}
           </tbody>
         </table>
+        {!subsubsectionStatuss.length && (
+          <ZeroCase visible name="Status-Einträge" verb="angelegt" />
+        )}
       </TableWrapper>
     </>
   )

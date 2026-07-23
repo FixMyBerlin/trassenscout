@@ -11,6 +11,7 @@ import {
   tableRowClassName,
 } from "@/src/components/core/components/Table/tableClasses"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
+import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 
 export type TagManagementRow = {
@@ -27,9 +28,16 @@ type Props = {
   editLink: (id: number) => EditLinkProps
   onArchive: (tag: TagManagementRow) => Promise<void>
   onDelete: (tag: TagManagementRow) => Promise<void>
+  zeroCaseName?: string
 }
 
-export const TagsManagementTable = ({ tags, editLink, onArchive, onDelete }: Props) => {
+export const TagsManagementTable = ({
+  tags,
+  editLink,
+  onArchive,
+  onDelete,
+  zeroCaseName = "Tags",
+}: Props) => {
   return (
     <TableWrapper>
       <table className={tableClassName}>
@@ -108,6 +116,7 @@ export const TagsManagementTable = ({ tags, editLink, onArchive, onDelete }: Pro
           ))}
         </tbody>
       </table>
+      {!tags.length && <ZeroCase visible name={zeroCaseName} verb="angelegt" />}
     </TableWrapper>
   )
 }
