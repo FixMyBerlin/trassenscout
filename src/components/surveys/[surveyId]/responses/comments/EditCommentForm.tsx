@@ -13,6 +13,7 @@ import {
 import { linkStyles } from "@/src/components/core/components/links/styles"
 import { Modal, ModalCloseButton } from "@/src/components/core/components/Modal"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
+import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { useCurrentUser } from "@/src/components/user/useCurrentUser"
 import type { ProjectRecord } from "@/src/server/projectRecords/types"
 import type { FeedbackSurveyResponse } from "@/src/server/survey-responses/surveyResponsesQueryOptions"
@@ -37,6 +38,7 @@ export const EditCommentForm = ({ comment, commentLabel, mutateComment }: Props)
   const [isDirty, setIsDirty] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
   const user = useCurrentUser()
+  const userCanEditProject = useUserCan().edit
 
   const form = useAppForm({
     defaultValues: { ...commentBodyFormDefaultValues, body: comment.body ?? "" },
@@ -61,8 +63,12 @@ export const EditCommentForm = ({ comment, commentLabel, mutateComment }: Props)
     setOpen(false)
   }
 
-  const isAuthorOrAdmin = comment.author.id === user?.id || user?.role === "ADMIN"
-  if (!isAuthorOrAdmin) {
+  const isAdmin = user?.role === "ADMIN"
+  const isAuthor = comment.author.id === user?.id
+  const canUpdateComment = userCanEditProject || isAuthor || isAdmin
+  const canRemoveComment = userCanEditProject || isAdmin
+
+  if (!canUpdateComment) {
     return null
   }
 
@@ -89,29 +95,31 @@ export const EditCommentForm = ({ comment, commentLabel, mutateComment }: Props)
           submitText={`${commentLabel} speichern`}
           className="space-y-0"
           actionBarRight={
-            <button
-              type="button"
-              title={`${commentLabel} löschen`}
-              onClick={async () => {
-                if (
-                  window.confirm(
-                    `Sind Sie sicher, dass Sie diesen ${commentLabel} löschen möchten?`,
-                  )
-                ) {
-                  try {
-                    setIsDirty(false)
-                    setOpen(false)
-                    await mutateComment.remove()
-                  } catch (error: unknown) {
-                    window.alert(String(error))
-                    console.error(error)
+            canRemoveComment ? (
+              <button
+                type="button"
+                title={`${commentLabel} löschen`}
+                onClick={async () => {
+                  if (
+                    window.confirm(
+                      `Sind Sie sicher, dass Sie diesen ${commentLabel} löschen möchten?`,
+                    )
+                  ) {
+                    try {
+                      setIsDirty(false)
+                      setOpen(false)
+                      await mutateComment.remove()
+                    } catch (error: unknown) {
+                      window.alert(String(error))
+                      console.error(error)
+                    }
                   }
-                }
-              }}
-              className={primaryButtonClassName}
-            >
-              <TrashIcon className="size-5" />
-            </button>
+                }}
+                className={primaryButtonClassName}
+              >
+                <TrashIcon className="size-5" />
+              </button>
+            ) : undefined
           }
         >
           <FormDirtyStateReporter onDirtyChange={setIsDirty} />

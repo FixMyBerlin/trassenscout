@@ -2,6 +2,7 @@ import type { z } from "zod"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
+import { AuthorizationError } from "@/src/shared/auth/errors"
 import {
   CreateProjectRecordCommentBySlugSchema,
   DeleteProjectRecordCommentSchema,
@@ -32,7 +33,7 @@ export async function createProjectRecordComment(
   headers: Headers,
   input: z.infer<typeof CreateProjectRecordCommentBySlugSchema>,
 ) {
-  const { session } = await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
+  const { session } = await endpointAuth.projectRole(headers, input.projectSlug, viewerRoles)
   await db.projectRecord.findFirstOrThrow({
     where: { id: input.projectRecordId, project: { slug: input.projectSlug } },
     select: { id: true },
@@ -52,11 +53,20 @@ export async function updateProjectRecordComment(
   headers: Headers,
   input: z.infer<typeof UpdateProjectRecordCommentSchema>,
 ) {
-  await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
+  const { membershipRole, session } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    viewerRoles,
+  )
+  const canEditAnyComment = membershipRole === null || membershipRole === "EDITOR"
   const previous = await db.projectRecordComment.findFirstOrThrow({
     where: commentInProjectWhere(input.projectSlug, input.id),
-    select: { id: true },
+    select: { id: true, userId: true },
   })
+
+  if (!canEditAnyComment && previous.userId !== Number(session.userId)) {
+    throw new AuthorizationError()
+  }
 
   return db.projectRecordComment.update({
     where: { id: previous.id },

@@ -2,6 +2,7 @@ import { z } from "zod"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
+import { AuthorizationError } from "@/src/shared/auth/errors"
 import { ProjectSlugRequiredSchema } from "@/src/shared/authorization/projectSlugSchema"
 import { CreateSurveyResponseCommentSchema } from "@/src/shared/survey-response-comments/schemas"
 
@@ -44,11 +45,20 @@ export async function updateSurveyResponseComment(
   headers: Headers,
   input: z.infer<typeof UpdateSurveyResponseCommentSchema>,
 ) {
-  await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
+  const { membershipRole, session } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    viewerRoles,
+  )
+  const canEditAnyComment = membershipRole === null || membershipRole === "EDITOR"
   const previous = await db.surveyResponseComment.findFirstOrThrow({
     where: commentInProjectWhere(input.projectSlug, input.id),
-    select: { id: true },
+    select: { id: true, userId: true },
   })
+
+  if (!canEditAnyComment && previous.userId !== Number(session.userId)) {
+    throw new AuthorizationError()
+  }
 
   return db.surveyResponseComment.update({
     where: { id: previous.id },
