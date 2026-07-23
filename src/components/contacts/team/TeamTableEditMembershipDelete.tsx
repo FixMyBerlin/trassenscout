@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
+import { twJoin } from "tailwind-merge"
 import { linkIcons } from "@/src/components/core/components/links/Link"
 import { linkStyles } from "@/src/components/core/components/links/styles"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
@@ -36,11 +37,15 @@ export const TeamTableEditMembershipDelete = ({ membershipId }: Props) => {
   return (
     <IfUserCanEdit>
       <button
+        type="button"
         onClick={() => void handleDelete()}
-        className={linkStyles}
-        title="Mitgliedschaft im Projekt löschen"
+        className={twJoin(
+          "inline-flex cursor-pointer items-center justify-center gap-1",
+          linkStyles,
+        )}
       >
         {linkIcons["delete"]}
+        Löschen
       </button>
     </IfUserCanEdit>
   )

@@ -1,27 +1,32 @@
 import { LockClosedIcon, LockOpenIcon } from "@heroicons/react/20/solid"
 import { twJoin } from "tailwind-merge"
-import { Tooltip } from "@/src/components/core/components/Tooltip/Tooltip"
-import { roleTranslation } from "@/src/components/core/users/roleTranslation.const"
 import type { MembershipRole } from "@/src/server/authorization/types"
 
 type Props = { role: MembershipRole; isAdmin: boolean; className?: string }
 
+const membershipRoleLabels: Record<MembershipRole, string> = {
+  VIEWER: "Leserechte",
+  EDITOR: "Editierrechte",
+}
+
 export const UserCanIcon = ({ role, isAdmin, className }: Props) => {
-  const title = isAdmin ? "Trassenscout-Admin ('Superadmin')" : roleTranslation[role]
-  const classes = twJoin(className || "size-4", isAdmin ? "text-purple-400" : "")
+  const label = isAdmin ? "Admin" : membershipRoleLabels[role]
+  const iconClassName = twJoin("size-4 shrink-0", className)
 
   switch (role) {
     case "VIEWER":
       return (
-        <Tooltip content={title}>
-          <LockClosedIcon className={classes} />
-        </Tooltip>
+        <span className="inline-flex items-center gap-1">
+          <LockClosedIcon className={iconClassName} />
+          {label}
+        </span>
       )
     case "EDITOR":
       return (
-        <Tooltip content={title}>
-          <LockOpenIcon className={classes} />
-        </Tooltip>
+        <span className="inline-flex items-center gap-1">
+          <LockOpenIcon className={iconClassName} />
+          {label}
+        </span>
       )
   }
 }

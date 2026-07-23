@@ -2,7 +2,6 @@ import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-q
 import { getRouteApi, useNavigate } from "@tanstack/react-router"
 import { useState } from "react"
 import { z } from "zod"
-import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { BackLink } from "@/src/components/core/components/forms/BackLink"
 import { FormDirtyStateReporter } from "@/src/components/core/components/forms/FormDirtyStateReporter"
@@ -114,9 +113,9 @@ type Props = {
   upload: UploadWithRelations
   returnPath: string
   returnText: string
-  showDelete?: boolean
   hideBackLink?: boolean
   onSuccess?: () => void | Promise<void>
+  onDeleted?: () => void | Promise<void>
   onDirtyChange?: (isDirty: boolean) => void
   onSubmittingChange?: (isSubmitting: boolean) => void
 }
@@ -147,9 +146,9 @@ export const EditUploadForm = ({
   upload,
   returnPath,
   returnText,
-  showDelete = true,
   hideBackLink = false,
   onSuccess,
+  onDeleted,
   onDirtyChange,
   onSubmittingChange,
 }: Props) => {
@@ -236,23 +235,13 @@ export const EditUploadForm = ({
           actionBarRight={
             <>
               <LuckyCloudActionBar upload={upload} projectSlug={projectSlug} />
-              {showDelete ? (
-                <DeleteUploadActionBar
-                  projectSlug={projectSlug}
-                  uploadId={upload.id}
-                  uploadTitle={upload.title}
-                  returnPath={returnPath}
-                />
-              ) : (
-                <SuperAdminBox>
-                  <DeleteUploadActionBar
-                    projectSlug={projectSlug}
-                    uploadId={upload.id}
-                    uploadTitle={upload.title}
-                    returnPath={returnPath}
-                  />
-                </SuperAdminBox>
-              )}
+              <DeleteUploadActionBar
+                projectSlug={projectSlug}
+                uploadId={upload.id}
+                uploadTitle={upload.title}
+                returnPath={returnPath}
+                onDeleted={onDeleted}
+              />
             </>
           }
         >
@@ -346,7 +335,6 @@ export const EditUploadForm = ({
       {!hideBackLink && <BackLink to={returnPath} text={returnText} />}
 
       <UploadAuthorAndDates
-        className="mt-4"
         createdBy={upload.createdBy}
         createdAt={upload.createdAt}
         updatedBy={upload.updatedBy ?? undefined}

@@ -71,7 +71,7 @@ export const TeamTableEditMembershipModalForm = ({
     <FormShell form={form} formError={formError} submitText="Speichern">
       <FormDirtyStateReporter onDirtyChange={onDirtyChange} />
       <form.AppField name="role">
-        {(field) => <field.RadiobuttonGroup label="Rolle" items={roleItems} />}
+        {(field) => <field.RadiobuttonGroup items={roleItems} />}
       </form.AppField>
     </FormShell>
   )

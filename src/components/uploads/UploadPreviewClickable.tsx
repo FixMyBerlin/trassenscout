@@ -15,7 +15,6 @@ type Props = {
   upload?: Pick<Upload, "id" | "mimeType" | "title" | "externalUrl" | "collaborationUrl">
   projectSlug: string
   size: UploadSize
-  onDeleted?: () => void | Promise<void>
   editLink?: UploadEditLink
   closeOnEditSuccess?: boolean
 }
@@ -25,7 +24,6 @@ export const UploadPreviewClickable = ({
   upload,
   projectSlug,
   size,
-  onDeleted,
   editLink,
   closeOnEditSuccess = false,
 }: Props) => {
@@ -86,14 +84,6 @@ export const UploadPreviewClickable = ({
         projectSlug={projectSlug}
         open={isPreviewOpen}
         onClose={() => setIsPreviewOpen(false)}
-        onDeleted={
-          onDeleted
-            ? async () => {
-                setIsPreviewOpen(false)
-                await onDeleted()
-              }
-            : undefined
-        }
         editLink={editLink}
         closeOnEditSuccess={closeOnEditSuccess}
       />

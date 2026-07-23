@@ -1,9 +1,12 @@
 import { useQuery } from "@tanstack/react-query"
 import { useState } from "react"
+import { Link } from "@/src/components/core/components/links/Link"
 import { Modal, ModalCloseButton } from "@/src/components/core/components/Modal"
 import { Notice } from "@/src/components/core/components/Notice/Notice"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
+import { useCurrentReturnTo } from "@/src/components/core/routes/useCurrentPathWithSearch"
+import { IfUserCanEdit } from "@/src/components/shared/memberships/IfUserCan"
 import { Upload } from "@/src/prisma/generated/browser"
 import { uploadQueryOptions } from "@/src/server/uploads/uploadQueryOptions"
 import { UploadModalContent } from "./UploadModalContent"
@@ -14,7 +17,6 @@ type Props = {
   projectSlug: string
   open: boolean
   onClose: () => void
-  onDeleted?: () => void | Promise<void>
   editLink?: UploadEditLink
   previewUpload?: Pick<Upload, "id" | "title" | "mimeType" | "externalUrl" | "collaborationUrl">
   closeOnEditSuccess?: boolean
@@ -25,7 +27,6 @@ export const UploadDetailModal = ({
   projectSlug,
   open,
   onClose,
-  onDeleted,
   editLink,
   previewUpload,
   closeOnEditSuccess = false,
@@ -38,7 +39,6 @@ export const UploadDetailModal = ({
       uploadId={uploadId}
       projectSlug={projectSlug}
       onClose={onClose}
-      onDeleted={onDeleted}
       editLink={editLink}
       previewUpload={previewUpload}
       closeOnEditSuccess={closeOnEditSuccess}
@@ -54,7 +54,6 @@ function UploadDetailModalInner({
   uploadId,
   projectSlug,
   onClose,
-  onDeleted,
   editLink,
   previewUpload,
   closeOnEditSuccess,
@@ -78,6 +77,11 @@ function UploadDetailModalInner({
       : (upload?.title ?? previewUpload?.title ?? "Dokument wird geladen …")
 
   const canEditInLocalModal = editLink?.to === "/$projectSlug/uploads/$uploadId/edit"
+  const returnTo = useCurrentReturnTo()
+  const editSearch =
+    editLink && returnTo && !editLink.search?.returnTo
+      ? { ...editLink.search, returnTo }
+      : editLink?.search
 
   const handleClose = () => {
     if (isEditView && isSubmitting) return
@@ -100,7 +104,40 @@ function UploadDetailModalInner({
       align={isEditView ? "right" : "center"}
       className={isEditView ? undefined : "sm:max-w-2xl"}
     >
-      <PageHeader title={title} action={<ModalCloseButton onClose={handleClose} />} />
+      <PageHeader
+        title={title}
+        action={
+          <div className="flex items-center gap-4">
+            {!isEditView && editLink && upload ? (
+              <IfUserCanEdit>
+                <Link
+                  icon="edit"
+                  to={editLink.to}
+                  params={editLink.params}
+                  search={editSearch}
+                  preload={false}
+                  replace
+                  resetScroll={false}
+                  onClick={(event) => {
+                    if (!canEditInLocalModal) {
+                      onClose()
+                      return
+                    }
+
+                    event.preventDefault()
+                    setIsDirty(false)
+                    setIsSubmitting(false)
+                    setView("edit")
+                  }}
+                >
+                  Bearbeiten
+                </Link>
+              </IfUserCanEdit>
+            ) : null}
+            <ModalCloseButton onClose={handleClose} />
+          </div>
+        }
+      />
 
       {hasUploadError ? (
         <div className={pageContentPaddingClassName}>
@@ -120,27 +157,7 @@ function UploadDetailModalInner({
           projectSlug={projectSlug}
           isEditView={isEditView}
           returnPath={editLink?.search?.returnTo ?? `/${projectSlug}/uploads`}
-          editLink={editLink}
           onClose={onClose}
-          onDeleted={
-            onDeleted
-              ? async () => {
-                  onClose()
-                  await onDeleted()
-                }
-              : undefined
-          }
-          onEditClick={(event) => {
-            if (!canEditInLocalModal) {
-              onClose()
-              return
-            }
-
-            event.preventDefault()
-            setIsDirty(false)
-            setIsSubmitting(false)
-            setView("edit")
-          }}
           onEditSuccess={async () => {
             if (closeOnEditSuccess) {
               onClose()

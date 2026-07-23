@@ -4,6 +4,11 @@ import { shortTitle } from "@/src/components/core/components/text/titles"
 import { formatBerlinTime } from "@/src/components/core/utils/formatBerlinTime"
 import { useProjectRecordModal } from "@/src/components/project-records/ProjectRecordModalHost"
 import { ProjectRecordTagsList } from "@/src/components/project-records/ProjectRecordTagsList"
+import {
+  uploadAlignedLabelClassName,
+  uploadAlignedRowClassName,
+  uploadAlignedValueClassName,
+} from "@/src/components/uploads/uploadAlignedFieldStyles"
 
 type AcquisitionAreaLink = {
   id: number
@@ -67,11 +72,6 @@ export const UploadVerknuepfungen = ({
     : []
 
   if (variant === "aligned") {
-    const sectionClassName =
-      "grid gap-2 sm:grid-cols-[minmax(170px,_190px)_1fr] sm:items-start sm:gap-x-1 sm:gap-y-4"
-    const sectionLabelClassName = "text-sm font-medium text-gray-700"
-    const sectionValueClassName = "text-sm text-gray-700"
-
     if (!hasRelations) {
       return <p className="text-sm text-gray-500">Keine Verknüpfung</p>
     }
@@ -79,11 +79,11 @@ export const UploadVerknuepfungen = ({
     return (
       <section className={className}>
         {hasSubsubsection && (
-          <div className={sectionClassName}>
-            <p className={sectionLabelClassName}>
+          <div className={uploadAlignedRowClassName}>
+            <p className={uploadAlignedLabelClassName}>
               {subsubsections.length === 1 ? "Maßnahme:" : "Maßnahmen:"}
             </p>
-            <div className={`space-y-1 ${sectionValueClassName}`}>
+            <div className={`space-y-1 ${uploadAlignedValueClassName}`}>
               {subsubsections.map((subsub) => (
                 <Link
                   key={`${subsub.subsection.slug}-${subsub.slug}`}
@@ -103,11 +103,11 @@ export const UploadVerknuepfungen = ({
         )}
 
         {hasAcquisitionAreas && (
-          <div className={sectionClassName}>
-            <p className={sectionLabelClassName}>
+          <div className={uploadAlignedRowClassName}>
+            <p className={uploadAlignedLabelClassName}>
               {sortedAcquisitionAreas.length === 1 ? "Verhandlungsfläche:" : "Verhandlungsflächen:"}
             </p>
-            <div className={`space-y-1 ${sectionValueClassName}`}>
+            <div className={`space-y-1 ${uploadAlignedValueClassName}`}>
               {sortedAcquisitionAreas.map((area) => (
                 <Link
                   key={area.id}
@@ -128,9 +128,9 @@ export const UploadVerknuepfungen = ({
         )}
 
         {hasSurveyResponse && (
-          <div className={sectionClassName}>
-            <p className={sectionLabelClassName}>Beteiligung:</p>
-            <div className={sectionValueClassName}>
+          <div className={uploadAlignedRowClassName}>
+            <p className={uploadAlignedLabelClassName}>Beteiligung:</p>
+            <div className={uploadAlignedValueClassName}>
               <Link
                 to={`/${projectSlug}/surveys/${surveyResponse.surveySession.survey.id}/responses?responseDetails=${surveyResponse.id}`}
               >
@@ -142,18 +142,18 @@ export const UploadVerknuepfungen = ({
         )}
 
         {hasProjectRecordEmail && (
-          <div className={sectionClassName}>
-            <p className={sectionLabelClassName}>E-Mail-Anhang:</p>
-            <span className={sectionValueClassName}>
+          <div className={uploadAlignedRowClassName}>
+            <p className={uploadAlignedLabelClassName}>E-Mail-Anhang:</p>
+            <span className={uploadAlignedValueClassName}>
               {formatBerlinTime(projectRecordEmail!.createdAt, "dd.MM.yyyy, HH:mm")}
             </span>
           </div>
         )}
 
         {hasTags && (
-          <div className={twJoin(sectionClassName, "mt-1")}>
-            <p className={sectionLabelClassName}>{tags.length === 1 ? "Tag:" : "Tags:"}</p>
-            <div className={sectionValueClassName}>
+          <div className={twJoin(uploadAlignedRowClassName, "mt-1")}>
+            <p className={uploadAlignedLabelClassName}>{tags.length === 1 ? "Tag:" : "Tags:"}</p>
+            <div className={uploadAlignedValueClassName}>
               <ProjectRecordTagsList tags={tags} />
             </div>
           </div>

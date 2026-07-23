@@ -9,7 +9,7 @@ type Props = {
   uploadTitle: string
   returnPath: string
   onDeleted?: () => void | Promise<void>
-  variant?: "text" | "icon"
+  variant?: "text" | "icon" | "linkWithIcon"
 }
 
 export const DeleteUploadActionBar = ({

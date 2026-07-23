@@ -1,10 +1,6 @@
-import type { MouseEventHandler } from "react"
 import { Suspense, useEffect } from "react"
-import { ActionBar } from "@/src/components/core/components/forms/ActionBar"
-import { Link } from "@/src/components/core/components/links/Link"
+import { twJoin } from "tailwind-merge"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
-import { useCurrentReturnTo } from "@/src/components/core/routes/useCurrentPathWithSearch"
-import { IfUserCanEdit } from "@/src/components/shared/memberships/IfUserCan"
 import { DeleteUploadActionBar } from "./DeleteUploadActionBar"
 import { EditUploadForm } from "./EditUploadForm"
 import { UploadAuthorAndDates } from "./UploadAuthorAndDates"
@@ -12,7 +8,6 @@ import { UploadDetailPanelContent } from "./UploadDetailPanelContent"
 import {
   isDeletedUploadMarker,
   type DeletedUploadMarker,
-  type UploadEditLink,
   type UploadWithRelations,
 } from "./uploadTypes"
 
@@ -33,11 +28,7 @@ type Props = {
   projectSlug: string
   isEditView: boolean
   returnPath: string
-  editLink?: UploadEditLink
-  editHref?: string
   onClose: () => void
-  onDeleted?: () => void | Promise<void>
-  onEditClick?: MouseEventHandler<HTMLAnchorElement>
   onEditSuccess: () => void | Promise<void>
   onDirtyChange?: (isDirty: boolean) => void
   onSubmittingChange?: (isSubmitting: boolean) => void
@@ -49,22 +40,12 @@ export const UploadModalContent = ({
   projectSlug,
   isEditView,
   returnPath,
-  editLink,
-  editHref,
   onClose,
-  onDeleted,
-  onEditClick,
   onEditSuccess,
   onDirtyChange,
   onSubmittingChange,
   deletedState = "message",
 }: Props) => {
-  const returnTo = useCurrentReturnTo()
-  const editSearch =
-    editLink && returnTo && !editLink.search?.returnTo
-      ? { ...editLink.search, returnTo }
-      : editLink?.search
-
   useEffect(() => {
     if (deletedState !== "close") return
     if (!upload || !isDeletedUploadMarker(upload)) return
@@ -88,8 +69,8 @@ export const UploadModalContent = ({
           upload={upload}
           returnPath={returnPath}
           returnText="Zurück"
-          showDelete={false}
           hideBackLink
+          onDeleted={onClose}
           onDirtyChange={onDirtyChange}
           onSubmittingChange={onSubmittingChange}
           onSuccess={async () => {
@@ -108,46 +89,21 @@ export const UploadModalContent = ({
         <div className={pageContentPaddingClassName}>
           <UploadDetailPanelContent upload={upload} projectSlug={projectSlug} />
         </div>
-        {(editLink || onDeleted) && (
-          <IfUserCanEdit>
-            <ActionBar
-              left={
-                editLink ? (
-                  <Link
-                    button="blue"
-                    to={editHref ?? editLink.to}
-                    params={editHref ? undefined : editLink.params}
-                    search={editHref ? undefined : editSearch}
-                    preload={false}
-                    replace
-                    resetScroll={false}
-                    onClick={onEditClick}
-                  >
-                    Bearbeiten
-                  </Link>
-                ) : undefined
-              }
-              right={
-                onDeleted ? (
-                  <DeleteUploadActionBar
-                    projectSlug={projectSlug}
-                    uploadId={upload.id}
-                    uploadTitle={upload.title}
-                    returnPath={returnPath}
-                    onDeleted={onDeleted}
-                  />
-                ) : undefined
-              }
-            />
-          </IfUserCanEdit>
-        )}
-        <div className={pageContentPaddingClassName}>
-          <UploadAuthorAndDates
-            createdBy={upload.createdBy}
-            createdAt={upload.createdAt}
-            updatedBy={upload.updatedBy ?? undefined}
-            updatedAt={upload.updatedAt ?? undefined}
-            variant="aligned"
+        <UploadAuthorAndDates
+          createdBy={upload.createdBy}
+          createdAt={upload.createdAt}
+          updatedBy={upload.updatedBy ?? undefined}
+          updatedAt={upload.updatedAt ?? undefined}
+          variant="aligned"
+        />
+        <div className={twJoin("border-t border-gray-200", pageContentPaddingClassName)}>
+          <DeleteUploadActionBar
+            projectSlug={projectSlug}
+            uploadId={upload.id}
+            uploadTitle={upload.title}
+            returnPath={returnPath}
+            onDeleted={onClose}
+            variant="linkWithIcon"
           />
         </div>
       </>

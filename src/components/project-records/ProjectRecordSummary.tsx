@@ -82,7 +82,7 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
               <ProjectRecordEmailSourceText email={projectRecord.projectRecordEmail} />
             </div>
           </details>
-          <p className="font-normal text-gray-600">
+          <p className="text-sm font-normal text-gray-600">
             Die „Quellnachricht“ zeigt die unveränderte E-Mail, bevor die KI sie zusammengefasst
             hat. Nutzen Sie diese Ansicht gern zur Kontrolle, wenn Sie sich bei einzelnen
             Formulierungen oder Inhalten unsicher sind.
