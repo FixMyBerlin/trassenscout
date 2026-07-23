@@ -1,13 +1,12 @@
-import { PlusIcon } from "@heroicons/react/16/solid"
 import { useQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { useState } from "react"
 import { twJoin } from "tailwind-merge"
 import { SubsubsectionPanel } from "@/src/components/abschnitte/SubsubsectionPanel"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
-import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { FormSuccess } from "@/src/components/core/components/forms/FormSuccess"
-import { Link } from "@/src/components/core/components/links/Link"
+import { linkIcons, Link } from "@/src/components/core/components/links/Link"
+import { linkStyles } from "@/src/components/core/components/links/styles"
 import { Markdown } from "@/src/components/core/components/Markdown/Markdown"
 import {
   tableBodyClassName,
@@ -286,48 +285,57 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
       </section>
 
       <section className="mt-6 space-y-3">
-        <H2 className="text-lg font-semibold text-gray-700 sm:text-lg">Protokolleinträge</H2>
-        {showSuccess && (
-          <FormSuccess message="Protokolleintrag erfolgreich erstellt" show={showSuccess} />
-        )}
-        {projectRecords.length > 0 ? (
-          <ProjectRecordsTable
-            projectRecords={projectRecords}
-            highlightId={createdProjectRecordId}
-          />
-        ) : (
-          <ZeroCase small visible name="Protokolleinträge" />
-        )}
-        {acquisitionAreasWithProjectRecords.length > 0 && (
-          <div className="rounded-md border border-blue-200 bg-blue-50 p-3 text-sm text-blue-900">
-            <p className="font-medium">Hinweis:</p>
-            <p className="mt-1">
-              In untergeordneten Verhandlungsflächen gibt es zusätzliche Protokolleinträge:
-            </p>
-            <ul className="mt-2 list-inside list-disc space-y-1">
-              {acquisitionAreasWithProjectRecords.map((acquisitionArea) => (
-                <li key={acquisitionArea.id}>
-                  <Link
-                    to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition"
-                    params={subsubsectionParams}
-                    search={{ acquisitionAreaId: String(acquisitionArea.id) }}
-                  >
-                    Verhandlungsfläche #{acquisitionArea.id} ({acquisitionArea.projectRecordCount}{" "}
-                    Protokolleinträge)
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-        <IfUserCanEdit>
-          <button
-            onClick={() => setIsProjectRecordModalOpen(true)}
-            className={twJoin(primaryButtonClassName, "mt-5 items-center justify-center gap-1")}
-          >
-            <PlusIcon className="size-3.5" /> Neuer Protokolleintrag
-          </button>
-        </IfUserCanEdit>
+        <div className="flex items-center justify-between gap-3">
+          <H2 className="text-lg font-semibold text-gray-700 sm:text-lg">Protokolleinträge</H2>
+          <IfUserCanEdit>
+            <button
+              type="button"
+              onClick={() => setIsProjectRecordModalOpen(true)}
+              className={twJoin("inline-flex cursor-pointer items-center gap-1", linkStyles)}
+            >
+              {linkIcons.plus}
+              Neuer Protokolleintrag
+            </button>
+          </IfUserCanEdit>
+        </div>
+        <div className="space-y-3">
+          {showSuccess && (
+            <FormSuccess message="Protokolleintrag erfolgreich erstellt" show={showSuccess} />
+          )}
+          {projectRecords.length > 0 ? (
+            <ProjectRecordsTable
+              projectRecords={projectRecords}
+              highlightId={createdProjectRecordId}
+              withTopBorder
+            />
+          ) : (
+            <div className="border-t border-gray-200 pt-3">
+              <ZeroCase small visible name="Protokolleinträge" />
+            </div>
+          )}
+          {acquisitionAreasWithProjectRecords.length > 0 && (
+            <div className="rounded-md border border-blue-200 bg-blue-50 p-3 text-sm text-blue-900">
+              <p className="font-medium">Hinweis:</p>
+              <p className="mt-1">
+                In untergeordneten Verhandlungsflächen gibt es zusätzliche Protokolleinträge:
+              </p>
+              <ul className="mt-2 list-inside list-disc space-y-1">
+                {acquisitionAreasWithProjectRecords.map((acquisitionArea) => (
+                  <li key={acquisitionArea.id}>
+                    <Link
+                      to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition"
+                      params={subsubsectionParams}
+                      search={{ acquisitionAreaId: String(acquisitionArea.id) }}
+                    >
+                      Verhandlungsfläche #{acquisitionArea.id} ({acquisitionArea.projectRecordCount}{" "}
+                      Protokolleinträge)
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
 
         <ProjectRecordNewModal
           projectSlug={projectSlug}

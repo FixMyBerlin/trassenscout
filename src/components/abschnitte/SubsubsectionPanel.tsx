@@ -31,7 +31,7 @@ export const SubsubsectionPanel = ({
         </div>
       )}
 
-      <div className={twJoin("pt-6 pr-1", contentClassName)}>{children}</div>
+      <div className={contentClassName}>{children}</div>
     </section>
   )
 }
