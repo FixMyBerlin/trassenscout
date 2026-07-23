@@ -58,8 +58,7 @@ export const ProjectRecordsFormAndTable = () => {
             value={filter?.searchterm ?? ""}
             onChange={(searchterm) => setFilter({ searchterm })}
             onReset={() => void setFilter({ searchterm: "" })}
-            placeholder="Beiträge nach Suchwort filtern"
-            hint="Tags, Titel, Inhalte, Maßnahmen und Zugewiesene durchsuchen"
+            placeholder="Tags, Titel, Inhalte, Maßnahmen und Zugewiesene durchsuchen"
           />
         }
         primaryAction={
