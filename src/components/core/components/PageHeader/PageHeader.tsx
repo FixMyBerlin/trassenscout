@@ -45,7 +45,7 @@ export const PageHeader = ({
   ) : undefined
 
   const row3Left = title ? (
-    <h1 className="text-base font-bold text-gray-900 sm:truncate">{title}</h1>
+    <h1 className="text-base font-semibold text-gray-900 sm:truncate">{title}</h1>
   ) : undefined
 
   return (
