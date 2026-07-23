@@ -63,7 +63,7 @@ export const UploadsPageProtocolReport = ({
   return (
     <section
       aria-label="Upload-Protokoll"
-      className="rounded-lg border border-gray-300 bg-white p-4"
+      className="mt-4 rounded-lg border border-gray-300 bg-white p-4"
     >
       <div className="flex items-start justify-between gap-2">
         <div>

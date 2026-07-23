@@ -26,7 +26,7 @@ export const UploadsPageContent = () => {
 
   return (
     <>
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col">
         <div className={pageContentPaddingClassName}>
           <UploadsPageUploadSection projectSlug={projectSlug} />
         </div>
