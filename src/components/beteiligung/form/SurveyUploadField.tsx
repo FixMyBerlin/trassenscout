@@ -195,7 +195,7 @@ const SurveyUploadPreview = ({
         <Tooltip content={fileType}>
           <FileTypeIcon
             mimeType={upload.mimeType}
-            className={twJoin(sizeConfig.iconSize, "text-gray-500")}
+            className={twJoin(sizeConfig.iconSize, "text-gray-600")}
           />
         </Tooltip>
       </span>

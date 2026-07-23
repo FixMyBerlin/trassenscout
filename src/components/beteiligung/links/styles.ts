@@ -35,7 +35,7 @@ const whiteButtonStylesForLinkElement = twJoin(
 export const surveyWhiteButtonStyles = twJoin(
   buttonBase,
   "enabled:bg-white enabled:ring-1 enabled:ring-gray-400",
-  "disabled:bg-white disabled:text-gray-400 disabled:ring-1 disabled:ring-gray-200",
+  "disabled:bg-white disabled:text-gray-600 disabled:ring-1 disabled:ring-gray-300",
   hoverStyleForButtonElement,
   activeStyleWhiteButtonElement,
 )
