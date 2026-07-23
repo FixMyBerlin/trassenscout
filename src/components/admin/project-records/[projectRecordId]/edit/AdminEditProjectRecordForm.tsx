@@ -105,6 +105,7 @@ export const AdminEditProjectRecordForm = ({ projectRecordId }: Props) => {
         form={form}
         formError={formError}
         submitText="Änderungen speichern"
+        edgeToEdgeFooter={<ReviewProjectRecordForm admin />}
         actionBarRight={
           <DeleteActionBar
             itemTitle={projectRecord.title}
@@ -127,7 +128,6 @@ export const AdminEditProjectRecordForm = ({ projectRecordId }: Props) => {
             emailSource={projectRecord.projectRecordEmail}
           />
         </div>
-        <ReviewProjectRecordForm admin />
       </FormShell>
 
       <CreateEditReviewHistory projectRecord={projectRecord} />

@@ -1,7 +1,7 @@
-import { twJoin } from "tailwind-merge"
+import { twMerge } from "tailwind-merge"
+import { pillShellClasses } from "@/src/components/core/utils/pillClassNames"
 
-const adminBadgeBase =
-  "inline-flex items-center rounded-full px-1.5 py-px text-xs/3.5 font-medium ring-1 ring-inset"
+const adminBadgeBase = twMerge(pillShellClasses, "text-xs/3.5 ring-1 ring-inset")
 
 const adminBadgeVariants = {
   gray: "bg-gray-50 text-gray-600 ring-gray-500/10",
@@ -23,5 +23,7 @@ type Props = {
 }
 
 export const AdminBadge = ({ children, variant = "gray", className }: Props) => (
-  <span className={twJoin(adminBadgeBase, adminBadgeVariants[variant], className)}>{children}</span>
+  <span className={twMerge(adminBadgeBase, adminBadgeVariants[variant], className)}>
+    {children}
+  </span>
 )

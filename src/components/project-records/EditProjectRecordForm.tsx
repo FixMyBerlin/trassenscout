@@ -204,6 +204,7 @@ export const EditProjectRecordForm = ({
         formError={formError}
         submitText="Änderungen speichern"
         hideSubmitButton
+        edgeToEdgeFooter={needsReview ? <ReviewProjectRecordForm /> : undefined}
         actionBarLeft={<ProjectRecordSubmitButton />}
         actionBarRight={
           <ProjectRecordDeleteActionBar
@@ -224,8 +225,6 @@ export const EditProjectRecordForm = ({
           emailSource={projectRecord.projectRecordEmail ?? undefined}
           landAcquisitionModuleEnabled={projectRecord.project.landAcquisitionModuleEnabled}
         />
-
-        {needsReview && <ReviewProjectRecordForm />}
       </FormShell>
       <CreateEditReviewHistory projectRecord={projectRecord} />
       <ProjectRecordCommentsSection projectRecord={projectRecord} />

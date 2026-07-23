@@ -9,6 +9,7 @@ import { AdminTableExternalLink } from "@/src/components/admin/AdminTableActions
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { roleTranslation } from "@/src/components/core/users/roleTranslation.const"
 import { formatTableDateTime } from "@/src/components/core/utils/formatTableDateTime"
+import { pillShellClasses } from "@/src/components/core/utils/pillClassNames"
 import {
   inviteStatusClassNames,
   inviteStatusLabels,
@@ -42,8 +43,9 @@ const bodyCellClassName = twMerge(
 function InviteStatusBadge({ invite }: { invite: MembershipUserInvite }) {
   return (
     <span
-      className={twJoin(
-        "inline-flex min-w-24 items-center justify-center rounded-full px-3 py-1 text-sm font-medium whitespace-nowrap",
+      className={twMerge(
+        pillShellClasses,
+        "min-w-24 justify-center text-sm whitespace-nowrap",
         inviteStatusClassNames[invite.status],
       )}
     >
