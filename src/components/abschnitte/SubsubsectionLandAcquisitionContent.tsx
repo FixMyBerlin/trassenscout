@@ -1,4 +1,3 @@
-import { PlusIcon } from "@heroicons/react/16/solid"
 import { TrashIcon } from "@heroicons/react/24/outline"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
@@ -7,13 +6,11 @@ import { twJoin } from "tailwind-merge"
 import { SubsubsectionPanel } from "@/src/components/abschnitte/SubsubsectionPanel"
 import { useAcquisitionAreaSelection } from "@/src/components/abschnitte/useAcquisitionAreaSelection"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
-import {
-  primaryButtonClassName,
-  secondaryButtonClassName,
-} from "@/src/components/core/components/buttons/buttonStyles"
+import { secondaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { FormSuccess } from "@/src/components/core/components/forms/FormSuccess"
 import { SelectListbox } from "@/src/components/core/components/forms/SelectListbox"
-import { Link } from "@/src/components/core/components/links/Link"
+import { linkIcons, Link } from "@/src/components/core/components/links/Link"
+import { linkStyles } from "@/src/components/core/components/links/styles"
 import {
   tableBodyClassName,
   tableClassName,
@@ -186,13 +183,11 @@ export const SubsubsectionLandAcquisitionContent = ({
 
         <div className="space-y-3">
           {!acquisitionAreas.length ? (
-            <>
-              <p className="max-w-xl text-base text-gray-500">
-                {userCanEdit
-                  ? "Es wurden noch keine Verhandlungsflächen angelegt. Legen Sie neue Verhandlungsflächen für diese Maßnahme an."
-                  : "Es wurden noch keine Verhandlungsflächen angelegt."}
-              </p>
-            </>
+            <p className="max-w-xl text-base text-gray-500">
+              {userCanEdit
+                ? "Es wurden noch keine Verhandlungsflächen angelegt. Legen Sie neue Verhandlungsflächen für diese Maßnahme an."
+                : "Es wurden noch keine Verhandlungsflächen angelegt."}
+            </p>
           ) : selectedAcquisitionArea ? (
             <section className="space-y-6">
               <div className="flex items-center justify-between gap-3">
@@ -264,9 +259,24 @@ export const SubsubsectionLandAcquisitionContent = ({
               </div>
 
               <section className="mt-10 space-y-3">
-                <h2 className="text-lg font-semibold text-gray-700 sm:text-lg">
-                  Protokolleinträge
-                </h2>
+                <div className="flex items-center justify-between gap-3">
+                  <h2 className="text-lg font-semibold text-gray-700 sm:text-lg">
+                    Protokolleinträge
+                  </h2>
+                  <IfUserCanEdit>
+                    <button
+                      type="button"
+                      onClick={() => setIsProjectRecordModalOpen(true)}
+                      className={twJoin(
+                        "inline-flex cursor-pointer items-center gap-1",
+                        linkStyles,
+                      )}
+                    >
+                      {linkIcons.plus}
+                      Neuer Protokolleintrag
+                    </button>
+                  </IfUserCanEdit>
+                </div>
                 {showSuccess && (
                   <FormSuccess message="Protokolleintrag erfolgreich erstellt" show={showSuccess} />
                 )}
@@ -274,21 +284,13 @@ export const SubsubsectionLandAcquisitionContent = ({
                   <ProjectRecordsTable
                     projectRecords={projectRecords}
                     highlightId={createdProjectRecordId}
+                    withTopBorder
                   />
                 ) : (
-                  <ZeroCase small visible name="Protokolleinträge" />
+                  <div className="border-t border-gray-200 pt-3">
+                    <ZeroCase small visible name="Protokolleinträge" />
+                  </div>
                 )}
-                <IfUserCanEdit>
-                  <button
-                    onClick={() => setIsProjectRecordModalOpen(true)}
-                    className={twJoin(
-                      primaryButtonClassName,
-                      "mt-5 items-center justify-center gap-1",
-                    )}
-                  >
-                    <PlusIcon className="size-3.5" /> Neuer Protokolleintrag
-                  </button>
-                </IfUserCanEdit>
 
                 <ProjectRecordNewModal
                   projectSlug={projectSlug}
@@ -356,6 +358,17 @@ export const SubsubsectionLandAcquisitionContent = ({
             </>
           )}
         </div>
+
+        <IfUserCanEdit>
+          <Link
+            button
+            icon="plus"
+            to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/acquisition-areas/new"
+            params={subsubsectionParams}
+          >
+            Weitere Verhandlungsflächen anlegen
+          </Link>
+        </IfUserCanEdit>
       </div>
 
       <SuperAdminLogData
