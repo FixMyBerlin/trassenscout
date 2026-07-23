@@ -14,7 +14,7 @@ const projectPages = [
   { path: `/${projectSlug}/quality-levels`, heading: "Ausbaustandards" },
   { path: `/${projectSlug}/network-hierarchy`, heading: "Netzstufen" },
   { path: `/${projectSlug}/subsection-status`, heading: "Status" },
-  { path: `/${projectSlug}/subsubsection-status`, heading: "Status" },
+  { path: `/${projectSlug}/subsubsection-status`, heading: "Phase" },
 ] as const
 
 test.describe("Project smoke", () => {
