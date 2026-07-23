@@ -71,7 +71,6 @@ export const EditAcquisitionAreaForm = ({
   return (
     <>
       <AcquisitionAreaForm
-        className="mt-10"
         submitText="Speichern"
         schema={AcquisitionAreaFormSchema}
         parcelGeometry={parcelGeometry}

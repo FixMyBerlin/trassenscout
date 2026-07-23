@@ -31,7 +31,6 @@ export const NewSubsubsectionInfrastructureTypeForm = ({ projectSlug }: Props) =
 
   return (
     <SubsubsectionInfrastructureTypeForm
-      className="mt-10"
       submitText="Erstellen"
       schema={SubsubsectionInfrastructureType.omit({ projectId: true })}
       onSubmit={handleSubmit}

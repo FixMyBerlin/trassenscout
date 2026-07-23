@@ -62,7 +62,6 @@ export const NewSubsubsectionForm = ({ subsection }: Props) => {
     <>
       <SubsubsectionForm
         initialValues={{ type: "LINE", labelPos: "bottom", location: "" }}
-        className="mt-10"
         submitText="Erstellen"
         schema={NewSubsubsectionSchema}
         onSubmit={handleSubmit}

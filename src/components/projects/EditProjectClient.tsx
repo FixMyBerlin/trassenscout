@@ -43,7 +43,6 @@ export const EditProjectClient = ({ initialProject, initialUsers }: Props) => {
   return (
     <>
       <ProjectForm
-        className="mt-10"
         submitText="Speichern"
         schema={ProjectFormSchema}
         initialValues={{

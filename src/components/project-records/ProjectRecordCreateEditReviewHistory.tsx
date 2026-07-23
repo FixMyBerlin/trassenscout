@@ -107,7 +107,7 @@ const CreateEditReviewHistoryComponent = ({
   }
 
   return (
-    <div className="mt-8 max-w-5xl space-y-4 border-y border-gray-200 py-4">
+    <div className="mt-8 max-w-5xl space-y-4 border-y border-gray-200 px-4 py-4">
       {rows.map((row) => (
         <div key={row.label} className={projectRecordSectionClassName}>
           <p className={projectRecordSectionLabelClassName}>{row.label}</p>

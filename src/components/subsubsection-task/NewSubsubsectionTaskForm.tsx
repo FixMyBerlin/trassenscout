@@ -27,7 +27,6 @@ export const NewSubsubsectionTaskForm = ({ projectSlug }: Props) => {
 
   return (
     <SubsubsectionTaskForm
-      className="mt-10"
       submitText="Erstellen"
       schema={SubsubsectionTask.omit({ projectId: true })}
       onSubmit={handleSubmit}

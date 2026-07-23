@@ -10,6 +10,7 @@ import {
   applyFormSubmitResult,
   FORM_ERROR,
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { CreateEditReviewHistory } from "@/src/components/project-records/ProjectRecordCreateEditReviewHistory"
 import { ProjectRecordFormFields } from "@/src/components/project-records/ProjectRecordFormFields"
 import { ProjectRecordNeedsReviewBanner } from "@/src/components/project-records/ProjectRecordNeedsReviewBanner"
@@ -88,15 +89,17 @@ export const AdminEditProjectRecordForm = ({ projectRecordId }: Props) => {
 
   return (
     <>
+      {needsReview && <ProjectRecordNeedsReviewBanner />}
       {!projectRecord.project.aiEnabled && projectRecord.projectRecordAuthorType === "SYSTEM" && (
-        <div className="mb-6 inline-flex flex-col space-y-2 rounded-md border border-gray-200 bg-red-200 p-4 text-gray-700">
-          <p className="text-sm">
-            In diesem Projekt ist die KI-Unterstützung deaktiviert. Damit Protokolleinträge für
-            Projektmitglieder sichtbar werden, müssen KI Features aktiviert werden.
-          </p>
+        <div className={pageContentPaddingClassName}>
+          <div className="mb-6 inline-flex flex-col space-y-2 rounded-md border border-gray-200 bg-red-200 p-4 text-gray-700">
+            <p className="text-sm">
+              In diesem Projekt ist die KI-Unterstützung deaktiviert. Damit Protokolleinträge für
+              Projektmitglieder sichtbar werden, müssen KI Features aktiviert werden.
+            </p>
+          </div>
         </div>
       )}
-      {needsReview && <ProjectRecordNeedsReviewBanner />}
 
       <FormShell
         form={form}

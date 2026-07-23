@@ -32,7 +32,6 @@ export const NewOperatorForm = ({ projectSlug }: Props) => {
 
   return (
     <OperatorForm
-      className="mt-10"
       submitText="Erstellen"
       schema={CreateOperatorSchema}
       onSubmit={handleSubmit}

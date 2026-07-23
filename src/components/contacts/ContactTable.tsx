@@ -8,6 +8,7 @@ import { ButtonWrapper } from "@/src/components/core/components/links/ButtonWrap
 import { Link } from "@/src/components/core/components/links/Link"
 import { LinkMail } from "@/src/components/core/components/links/LinkMail"
 import { LinkTel } from "@/src/components/core/components/links/LinkTel"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { getFullname } from "@/src/components/core/users/getFullname"
@@ -71,7 +72,6 @@ export const ContactTable = ({ contacts, currentUserEmail, projectSlug }: Props)
       formError={null}
       submitText="Mail schreiben"
       hideSubmitButton
-      withPagePadding={false}
       className="space-y-0"
     >
       <form.AppField name="selectedContacts">
@@ -184,7 +184,7 @@ export const ContactTable = ({ contacts, currentUserEmail, projectSlug }: Props)
               </div>
             </TableWrapper>
 
-            <ButtonWrapper className="mt-6 justify-end px-4 sm:px-6 lg:px-8">
+            <ButtonWrapper className={twJoin("mt-6 justify-end", pageContentPaddingClassName)}>
               <form.Subscribe
                 selector={(state) =>
                   [state.values.selectedContacts.length, state.isSubmitting] as const

@@ -10,6 +10,7 @@ import { ButtonWrapper } from "@/src/components/core/components/links/ButtonWrap
 import { Link } from "@/src/components/core/components/links/Link"
 import { Modal, ModalCloseButton } from "@/src/components/core/components/Modal"
 import { Notice } from "@/src/components/core/components/Notice/Notice"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { Spinner } from "@/src/components/core/components/Spinner"
 import { getFullname } from "@/src/components/core/users/getFullname"
@@ -185,18 +186,22 @@ export function ProjectModalHost() {
         open
         handleClose={closeModal}
         align={isUploadEditView ? "right" : "center"}
-        className={isUploadEditView ? "space-y-4" : "space-y-4 sm:max-w-2xl"}
+        className={isUploadEditView ? undefined : "sm:max-w-2xl"}
       >
         <PageHeader title={modalTitle} action={<ModalCloseButton onClose={closeModal} />} />
 
         {hasUploadError ? (
-          <Notice type="error" title="Das Dokument konnte nicht geladen werden.">
-            <p>Bitte versuchen Sie es erneut oder schließen Sie dieses Fenster.</p>
-          </Notice>
+          <div className={pageContentPaddingClassName}>
+            <Notice type="error" title="Das Dokument konnte nicht geladen werden.">
+              <p>Bitte versuchen Sie es erneut oder schließen Sie dieses Fenster.</p>
+            </Notice>
+          </div>
         ) : isUploadUnavailable ? (
-          <Notice type="warn" title="Dieses Dokument ist nicht mehr verfügbar.">
-            <p>Es wurde möglicherweise gelöscht oder ist für Sie nicht mehr zugänglich.</p>
-          </Notice>
+          <div className={pageContentPaddingClassName}>
+            <Notice type="warn" title="Dieses Dokument ist nicht mehr verfügbar.">
+              <p>Es wurde möglicherweise gelöscht oder ist für Sie nicht mehr zugänglich.</p>
+            </Notice>
+          </div>
         ) : (
           <UploadModalContent
             upload={upload}
@@ -250,7 +255,7 @@ export function ProjectModalHost() {
         : (projectRecord?.title ?? previewProjectRecord?.title ?? "Protokolleintrag wird geladen …")
 
     return (
-      <Modal open handleClose={closeModal} align="right" className="space-y-4">
+      <Modal open handleClose={closeModal} align="right">
         <PageHeader
           title={modalTitle}
           action={
@@ -309,17 +314,33 @@ export function ProjectModalHost() {
             }}
           />
         ) : projectRecord ? (
-          <ProjectRecordDetailClient initialProjectRecord={projectRecord} />
+          <ProjectRecordDetailClient
+            initialProjectRecord={projectRecord}
+            needsReviewEditHref={
+              userCanEdit
+                ? buildModalHref({
+                    modalProjectRecordId: projectRecord.id,
+                    modalProjectRecordView: "edit",
+                  })
+                : undefined
+            }
+          />
         ) : hasProjectRecordError ? (
-          <Notice type="error" title="Der Protokolleintrag konnte nicht geladen werden.">
-            <p>Bitte versuchen Sie es erneut oder schließen Sie dieses Fenster.</p>
-          </Notice>
+          <div className={pageContentPaddingClassName}>
+            <Notice type="error" title="Der Protokolleintrag konnte nicht geladen werden.">
+              <p>Bitte versuchen Sie es erneut oder schließen Sie dieses Fenster.</p>
+            </Notice>
+          </div>
         ) : isProjectRecordUnavailable ? (
-          <Notice type="warn" title="Dieser Protokolleintrag ist nicht mehr verfügbar.">
-            <p>Er wurde möglicherweise gelöscht oder ist für Sie nicht mehr zugänglich.</p>
-          </Notice>
+          <div className={pageContentPaddingClassName}>
+            <Notice type="warn" title="Dieser Protokolleintrag ist nicht mehr verfügbar.">
+              <p>Er wurde möglicherweise gelöscht oder ist für Sie nicht mehr zugänglich.</p>
+            </Notice>
+          </div>
         ) : (
-          <Spinner />
+          <div className={pageContentPaddingClassName}>
+            <Spinner />
+          </div>
         )}
       </Modal>
     )
@@ -339,12 +360,12 @@ export function ProjectModalHost() {
     const previewContact = preview?.type === "contact" ? preview.contact : undefined
     const modalAlign = isContactDetailView || isInviteNewView ? "center" : "right"
     const modalClassName = isContactDetailView
-      ? "space-y-4 sm:max-w-2xl"
+      ? "sm:max-w-2xl"
       : isInviteNewView
         ? isAdmin
-          ? "space-y-4 sm:max-w-4xl"
-          : "space-y-4 sm:max-w-xl"
-        : "space-y-4"
+          ? "sm:max-w-4xl"
+          : "sm:max-w-xl"
+        : undefined
     const modalTitle = isContactEditView
       ? "Kontakt bearbeiten"
       : isContactNewView
@@ -404,7 +425,7 @@ export function ProjectModalHost() {
             }}
           />
         ) : contact ? (
-          <>
+          <div className={pageContentPaddingClassName}>
             <ContactSingle contact={contact} />
             <IfUserCanEdit>
               <ButtonWrapper className="border-t border-gray-200 pt-4">
@@ -427,17 +448,23 @@ export function ProjectModalHost() {
                 />
               </ButtonWrapper>
             </IfUserCanEdit>
-          </>
+          </div>
         ) : hasContactError ? (
-          <Notice type="error" title="Der Kontakt konnte nicht geladen werden.">
-            <p>Bitte versuchen Sie es erneut oder schließen Sie dieses Fenster.</p>
-          </Notice>
+          <div className={pageContentPaddingClassName}>
+            <Notice type="error" title="Der Kontakt konnte nicht geladen werden.">
+              <p>Bitte versuchen Sie es erneut oder schließen Sie dieses Fenster.</p>
+            </Notice>
+          </div>
         ) : isContactUnavailable ? (
-          <Notice type="warn" title="Dieser Kontakt ist nicht mehr verfügbar.">
-            <p>Er wurde möglicherweise gelöscht oder ist für Sie nicht mehr zugänglich.</p>
-          </Notice>
+          <div className={pageContentPaddingClassName}>
+            <Notice type="warn" title="Dieser Kontakt ist nicht mehr verfügbar.">
+              <p>Er wurde möglicherweise gelöscht oder ist für Sie nicht mehr zugänglich.</p>
+            </Notice>
+          </div>
         ) : (
-          <Spinner />
+          <div className={pageContentPaddingClassName}>
+            <Spinner />
+          </div>
         )}
       </Modal>
     )

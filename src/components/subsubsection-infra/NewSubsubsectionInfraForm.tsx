@@ -27,7 +27,6 @@ export const NewSubsubsectionInfraForm = ({ projectSlug }: Props) => {
 
   return (
     <SubsubsectionInfraForm
-      className="mt-10"
       submitText="Erstellen"
       schema={SubsubsectionInfra.omit({ projectId: true })}
       onSubmit={handleSubmit}

@@ -70,7 +70,7 @@ export const ProjectDashboardClient = () => {
           </IfUserCanEdit>
         }
         primaryAction={
-          <Link button to="/$projectSlug/subsections/new" params={{ projectSlug }}>
+          <Link button to="/$projectSlug/abschnitte/new" params={{ projectSlug }}>
             Neuer Planungsabschnitt
           </Link>
         }

@@ -15,6 +15,7 @@ import {
 import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { ActionBar } from "@/src/components/core/components/forms/ActionBar"
 import { translateServerError } from "@/src/components/core/components/forms/errorMessageTranslations"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { Spinner } from "@/src/components/core/components/Spinner"
 import { longTitle, shortTitle } from "@/src/components/core/components/text/titles"
 import { roleTranslation } from "@/src/components/core/users/roleTranslation.const"
@@ -129,169 +130,179 @@ export function MultiProjectInviteForm({ onSuccess, projectSlug }: Props) {
     }
   }
 
-  if (projectsForInviteQuery.isPending) return <Spinner />
+  if (projectsForInviteQuery.isPending) {
+    return (
+      <div className={pageContentPaddingClassName}>
+        <Spinner />
+      </div>
+    )
+  }
 
   if (projectsForInviteQuery.error) {
     return (
-      <div role="alert" className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-800">
-        Die Projektliste konnte nicht geladen werden.
+      <div className={pageContentPaddingClassName}>
+        <div role="alert" className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-800">
+          Die Projektliste konnte nicht geladen werden.
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-5">
-      <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(12rem,16rem)]">
-        <label className="block">
-          <span className="block text-sm font-medium text-gray-900">E-Mail-Adresse</span>
-          <input
-            type="email"
-            value={email}
-            onChange={(event) => setEmail(event.currentTarget.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 text-sm shadow-xs focus:border-blue-500 focus:ring-blue-500"
-          />
-        </label>
-        <label className="block">
-          <span className="block text-sm font-medium text-gray-900">Projekte filtern</span>
-          <input
-            type="search"
-            value={projectFilter}
-            onChange={(event) => setProjectFilter(event.currentTarget.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 text-sm shadow-xs focus:border-blue-500 focus:ring-blue-500"
-          />
-        </label>
-      </div>
+    <>
+      <div className={twJoin("space-y-5", pageContentPaddingClassName)}>
+        <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(12rem,16rem)]">
+          <label className="block">
+            <span className="block text-sm font-medium text-gray-900">E-Mail-Adresse</span>
+            <input
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.currentTarget.value)}
+              className="mt-1 block w-full rounded-md border-gray-300 text-sm shadow-xs focus:border-blue-500 focus:ring-blue-500"
+            />
+          </label>
+          <label className="block">
+            <span className="block text-sm font-medium text-gray-900">Projekte filtern</span>
+            <input
+              type="search"
+              value={projectFilter}
+              onChange={(event) => setProjectFilter(event.currentTarget.value)}
+              className="mt-1 block w-full rounded-md border-gray-300 text-sm shadow-xs focus:border-blue-500 focus:ring-blue-500"
+            />
+          </label>
+        </div>
 
-      {liveEmailIsValid && statusQuery.data?.accountExists && membershipProjects.length === 0 && (
-        <div className="rounded-md bg-green-50 px-3 py-2 text-sm text-green-800">
-          Diese E-Mail-Adresse ist bereits im Trassenscout registriert.
-        </div>
-      )}
-      {liveEmailIsValid && statusQuery.error && (
-        <div role="alert" className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-800">
-          Die E-Mail-Prüfung konnte nicht geladen werden.
-        </div>
-      )}
-      {membershipProjects.length > 0 && (
-        <div className="rounded-md bg-green-50 px-3 py-2 text-sm text-green-800">
-          Diese Person ist bereits in einigen deiner Projekte aktiv.
-        </div>
-      )}
-      {pendingInviteProjects.length > 0 && (
-        <div role="alert" className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-800">
-          Für einige Projekte besteht bereits eine ausstehende Einladung.
-        </div>
-      )}
-      {formError && (
-        <div role="alert" className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-800">
-          {translateServerError(formError)}
-        </div>
-      )}
+        {liveEmailIsValid && statusQuery.data?.accountExists && membershipProjects.length === 0 && (
+          <div className="rounded-md bg-green-50 px-3 py-2 text-sm text-green-800">
+            Diese E-Mail-Adresse ist bereits im Trassenscout registriert.
+          </div>
+        )}
+        {liveEmailIsValid && statusQuery.error && (
+          <div role="alert" className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-800">
+            Die E-Mail-Prüfung konnte nicht geladen werden.
+          </div>
+        )}
+        {membershipProjects.length > 0 && (
+          <div className="rounded-md bg-green-50 px-3 py-2 text-sm text-green-800">
+            Diese Person ist bereits in einigen deiner Projekte aktiv.
+          </div>
+        )}
+        {pendingInviteProjects.length > 0 && (
+          <div role="alert" className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-800">
+            Für einige Projekte besteht bereits eine ausstehende Einladung.
+          </div>
+        )}
+        {formError && (
+          <div role="alert" className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-800">
+            {translateServerError(formError)}
+          </div>
+        )}
 
-      <div className={adminTableWrapperClassName}>
-        <table className={twJoin(adminTableClassName, "table-fixed")}>
-          <colgroup>
-            <col className="w-[40%]" />
-            <col className="w-[20%]" />
-            <col className="w-[20%]" />
-            <col className="w-[20%]" />
-          </colgroup>
-          <thead className="border-b border-gray-200 bg-gray-50">
-            <tr>
-              <th scope="col" className={adminTableHeaderClassName}>
-                Projekt
-              </th>
-              {membershipRegionToggleOptions.map((option) => {
-                const { Icon, label } = option
-                return (
-                  <th
-                    key={label}
-                    scope="col"
-                    className={twJoin(adminTableHeaderClassName, "text-center")}
-                  >
-                    <span className="inline-flex items-center justify-center gap-2">
-                      <Icon className="size-4 shrink-0 text-gray-500" aria-hidden />
-                      {label}
-                    </span>
-                  </th>
-                )
-              })}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200 bg-white">
-            {filteredProjects.map((project) => {
-              const projectTitle = getProjectTitle(project)
-              const current = statusBySlug.get(project.slug)?.current
-              const locked = current !== undefined && current !== "none"
-              const currentAccess = locked ? current.role : (accessBySlug[project.slug] ?? null)
-
-              return (
-                <tr key={project.id}>
-                  <th
-                    scope="row"
-                    title={longTitle(project.slug)}
-                    className={twJoin(
-                      adminTableCellClassName,
-                      "text-left font-medium text-gray-900",
-                    )}
-                  >
-                    <span className="block">{projectTitle}</span>
-                    {locked && (
-                      <span
-                        className={twJoin(
-                          "mt-1 block text-xs font-normal",
-                          current.type === "membership" ? "text-green-700" : "text-red-700",
-                        )}
-                      >
-                        {current.type === "membership"
-                          ? `Aktiv: ${roleTranslation[current.role]}`
-                          : `Ausstehend: ${roleTranslation[current.role]}`}
+        <div className={adminTableWrapperClassName}>
+          <table className={twJoin(adminTableClassName, "table-fixed")}>
+            <colgroup>
+              <col className="w-[40%]" />
+              <col className="w-[20%]" />
+              <col className="w-[20%]" />
+              <col className="w-[20%]" />
+            </colgroup>
+            <thead className="border-b border-gray-200 bg-gray-50">
+              <tr>
+                <th scope="col" className={adminTableHeaderClassName}>
+                  Projekt
+                </th>
+                {membershipRegionToggleOptions.map((option) => {
+                  const { Icon, label } = option
+                  return (
+                    <th
+                      key={label}
+                      scope="col"
+                      className={twJoin(adminTableHeaderClassName, "text-center")}
+                    >
+                      <span className="inline-flex items-center justify-center gap-2">
+                        <Icon className="size-4 shrink-0 text-gray-500" aria-hidden />
+                        {label}
                       </span>
-                    )}
-                  </th>
-                  {membershipRegionToggleOptions.map((option) => {
-                    const isActive = currentAccess === option.value
-                    const optionDisplay = membershipRegionDisplay(option.value, false)
-                    const { Icon, label } = option
-                    return (
-                      <td key={label} className={twJoin(adminTableCellClassName, "text-center")}>
-                        <button
-                          type="button"
-                          disabled={locked || statusLookupPending || createMutation.isPending}
-                          aria-label={`${label}: ${projectTitle}`}
-                          aria-pressed={isActive}
-                          onClick={() =>
-                            setAccessBySlug((currentAccessBySlug) => ({
-                              ...currentAccessBySlug,
-                              [project.slug]: option.value,
-                            }))
-                          }
-                          className={twMerge(
-                            "inline-flex min-h-9 w-full cursor-pointer items-center justify-center rounded-md px-2 py-1.5 ring-1 ring-gray-200 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 disabled:cursor-not-allowed disabled:opacity-60",
-                            isActive
-                              ? twJoin(
-                                  optionDisplay.backgroundClassName,
-                                  "text-gray-900 ring-transparent",
-                                )
-                              : "bg-white text-gray-600 hover:bg-gray-50",
+                    </th>
+                  )
+                })}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200 bg-white">
+              {filteredProjects.map((project) => {
+                const projectTitle = getProjectTitle(project)
+                const current = statusBySlug.get(project.slug)?.current
+                const locked = current !== undefined && current !== "none"
+                const currentAccess = locked ? current.role : (accessBySlug[project.slug] ?? null)
+
+                return (
+                  <tr key={project.id}>
+                    <th
+                      scope="row"
+                      title={longTitle(project.slug)}
+                      className={twJoin(
+                        adminTableCellClassName,
+                        "text-left font-medium text-gray-900",
+                      )}
+                    >
+                      <span className="block">{projectTitle}</span>
+                      {locked && (
+                        <span
+                          className={twJoin(
+                            "mt-1 block text-xs font-normal",
+                            current.type === "membership" ? "text-green-700" : "text-red-700",
                           )}
                         >
-                          <Icon
+                          {current.type === "membership"
+                            ? `Aktiv: ${roleTranslation[current.role]}`
+                            : `Ausstehend: ${roleTranslation[current.role]}`}
+                        </span>
+                      )}
+                    </th>
+                    {membershipRegionToggleOptions.map((option) => {
+                      const isActive = currentAccess === option.value
+                      const optionDisplay = membershipRegionDisplay(option.value, false)
+                      const { Icon, label } = option
+                      return (
+                        <td key={label} className={twJoin(adminTableCellClassName, "text-center")}>
+                          <button
+                            type="button"
+                            disabled={locked || statusLookupPending || createMutation.isPending}
+                            aria-label={`${label}: ${projectTitle}`}
+                            aria-pressed={isActive}
+                            onClick={() =>
+                              setAccessBySlug((currentAccessBySlug) => ({
+                                ...currentAccessBySlug,
+                                [project.slug]: option.value,
+                              }))
+                            }
                             className={twMerge(
-                              "size-4 shrink-0",
-                              isActive ? optionDisplay.iconClassName : "text-gray-400",
+                              "inline-flex min-h-9 w-full cursor-pointer items-center justify-center rounded-md px-2 py-1.5 ring-1 ring-gray-200 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 disabled:cursor-not-allowed disabled:opacity-60",
+                              isActive
+                                ? twJoin(
+                                    optionDisplay.backgroundClassName,
+                                    "text-gray-900 ring-transparent",
+                                  )
+                                : "bg-white text-gray-600 hover:bg-gray-50",
                             )}
-                            aria-hidden
-                          />
-                        </button>
-                      </td>
-                    )
-                  })}
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
+                          >
+                            <Icon
+                              className={twMerge(
+                                "size-4 shrink-0",
+                                isActive ? optionDisplay.iconClassName : "text-gray-400",
+                              )}
+                              aria-hidden
+                            />
+                          </button>
+                        </td>
+                      )
+                    })}
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <ActionBar
@@ -311,6 +322,6 @@ export function MultiProjectInviteForm({ onSuccess, projectSlug }: Props) {
           </button>
         }
       />
-    </div>
+    </>
   )
 }

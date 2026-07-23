@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { CommentField } from "@/src/components/surveys/[surveyId]/responses/comments/CommentField"
@@ -50,62 +51,64 @@ export const ProjectRecordCommentsSection = ({ projectRecord }: Props) => {
     ])
   }
 
+  const hasComments = projectRecord.projectRecordComments.length > 0
+
   return (
-    <div>
-      {(!!projectRecord.projectRecordComments.length || isEditorOrAdmin) && (
-        <h4 className="mb-3 font-semibold">Kommentare</h4>
+    <>
+      {(hasComments || isEditorOrAdmin) && (
+        <div className={pageContentPaddingClassName}>
+          <h4 className="mb-3 font-semibold">Kommentare</h4>
+          <ul className="flex max-w-3xl flex-col gap-4">
+            {projectRecord.projectRecordComments?.map((comment) => {
+              return (
+                <li key={comment.id}>
+                  <CommentField
+                    comment={comment}
+                    commentLabel="Kommentar"
+                    mutateComment={{
+                      update: async (body) => {
+                        await updateProjectRecordCommentMutation.mutateAsync({
+                          data: {
+                            projectSlug: projectSlug!,
+                            id: comment.id,
+                            body,
+                          },
+                        })
+                        await invalidateProjectRecordQueries()
+                      },
+                      remove: async () => {
+                        await deleteProjectRecordCommentMutation.mutateAsync({
+                          data: {
+                            projectSlug: projectSlug!,
+                            id: comment.id,
+                          },
+                        })
+                        await invalidateProjectRecordQueries()
+                      },
+                    }}
+                  />
+                </li>
+              )
+            })}
+          </ul>
+        </div>
       )}
-      <ul className="flex max-w-3xl flex-col gap-4">
-        {projectRecord.projectRecordComments?.map((comment) => {
-          return (
-            <li key={comment.id}>
-              <CommentField
-                comment={comment}
-                commentLabel="Kommentar"
-                mutateComment={{
-                  update: async (body) => {
-                    await updateProjectRecordCommentMutation.mutateAsync({
-                      data: {
-                        projectSlug: projectSlug!,
-                        id: comment.id,
-                        body,
-                      },
-                    })
-                    await invalidateProjectRecordQueries()
-                  },
-                  remove: async () => {
-                    await deleteProjectRecordCommentMutation.mutateAsync({
-                      data: {
-                        projectSlug: projectSlug!,
-                        id: comment.id,
-                      },
-                    })
-                    await invalidateProjectRecordQueries()
-                  },
-                }}
-              />
-            </li>
-          )
-        })}
-        <IfUserCanEdit>
-          <li>
-            <NewCommentForm
-              commentLabel="Kommentar"
-              commentHelp="Hier können Sie einen Kommentar zum Protokolleintrag hinzufügen."
-              createComment={async (body) => {
-                await createProjectRecordCommentMutation.mutateAsync({
-                  data: {
-                    projectSlug: projectSlug!,
-                    projectRecordId: projectRecord.id,
-                    body,
-                  },
-                })
-                await invalidateProjectRecordQueries()
-              }}
-            />
-          </li>
-        </IfUserCanEdit>
-      </ul>
-    </div>
+      <IfUserCanEdit>
+        <NewCommentForm
+          commentLabel="Kommentar"
+          commentHelp="Hier können Sie einen Kommentar zum Protokolleintrag hinzufügen."
+          createComment={async (body) => {
+            await createProjectRecordCommentMutation.mutateAsync({
+              data: {
+                projectSlug: projectSlug!,
+                projectRecordId: projectRecord.id,
+                body,
+              },
+            })
+            await invalidateProjectRecordQueries()
+          }}
+        />
+      </IfUserCanEdit>
+    </>
   )
 }

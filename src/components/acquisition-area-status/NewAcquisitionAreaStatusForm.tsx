@@ -30,7 +30,6 @@ export const NewAcquisitionAreaStatusForm = ({ projectSlug }: Props) => {
 
   return (
     <AcquisitionAreaStatusForm
-      className="mt-10"
       submitText="Erstellen"
       schema={AcquisitionAreaStatusFormSchema}
       onSubmit={handleSubmit}

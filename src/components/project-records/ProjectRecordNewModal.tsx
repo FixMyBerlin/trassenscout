@@ -11,6 +11,7 @@ import {
   type OnSubmitResult,
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { Modal, ModalCloseButton } from "@/src/components/core/components/Modal"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { ProjectRecordFormFields } from "@/src/components/project-records/ProjectRecordFormFields"
 import { getDate } from "@/src/components/project-records/utils/splitStartAt"
@@ -75,12 +76,7 @@ function ProjectRecordCreateForm({
   })
 
   return (
-    <FormShell
-      form={form}
-      formError={formError}
-      submitText="Protokolleintrag speichern"
-      withPagePadding={false}
-    >
+    <FormShell form={form} formError={formError} submitText="Protokolleintrag speichern">
       <FormDirtyStateReporter onDirtyChange={onDirtyChange} />
       <ProjectRecordFormFields
         formMode="create"
@@ -192,18 +188,13 @@ export const ProjectRecordNewModal = ({
 
   return (
     <IfUserCanEdit>
-      <Modal
-        open={pickerOpen}
-        handleClose={resetAndClose}
-        align="center"
-        className="space-y-4 sm:max-w-2xl"
-      >
+      <Modal open={pickerOpen} handleClose={resetAndClose} align="center" className="sm:max-w-2xl">
         <PageHeader
           title="Neuer Protokolleintrag"
           action={<ModalCloseButton onClose={resetAndClose} />}
         />
 
-        <div className="space-y-4">
+        <div className={`space-y-4 ${pageContentPaddingClassName}`}>
           <p className="text-gray-600">
             Möchten Sie eine Vorlage nutzen oder mit einem leeren Formular starten?
           </p>
@@ -237,7 +228,7 @@ export const ProjectRecordNewModal = ({
         </div>
       </Modal>
 
-      <Modal open={formOpen} handleClose={handleClose} align="right" className="space-y-4">
+      <Modal open={formOpen} handleClose={handleClose} align="right">
         <PageHeader
           title="Neuer Protokolleintrag"
           action={<ModalCloseButton onClose={handleClose} />}

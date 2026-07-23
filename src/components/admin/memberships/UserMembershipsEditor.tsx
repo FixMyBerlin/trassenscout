@@ -21,6 +21,7 @@ import {
 import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { ActionBar } from "@/src/components/core/components/forms/ActionBar"
 import { translateServerError } from "@/src/components/core/components/forms/errorMessageTranslations"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { longTitle, shortTitle } from "@/src/components/core/components/text/titles"
 import { saveUserMembershipsFn } from "@/src/server/memberships/memberships.functions"
 import { projectsAdminQueryOptions } from "@/src/server/projects/projectsQueryOptions"
@@ -176,38 +177,44 @@ export function UserMembershipsEditor({ userId }: Props) {
   }
 
   return (
-    <div className="space-y-6">
-      {isAdmin && (
-        <p className="text-sm text-gray-600">
-          Admin-Nutzer haben automatisch Zugriff auf alle Projekte. Mitgliedschaften können hier
-          nicht bearbeitet werden.
-        </p>
-      )}
+    <>
+      <div className={pageContentPaddingClassName}>
+        <div className="space-y-6">
+          {isAdmin && (
+            <p className="text-sm text-gray-600">
+              Admin-Nutzer haben automatisch Zugriff auf alle Projekte. Mitgliedschaften können hier
+              nicht bearbeitet werden.
+            </p>
+          )}
 
-      <div className={adminTableWrapperClassName}>
-        <UserMembershipsProjectAccessTable
-          projects={projects}
-          accessByProjectId={accessByProjectId}
-          isAdmin={isAdmin}
-          disabled={isAdmin || saveMutation.isPending}
-          onAccessChange={(projectId, access) =>
-            setAccessByProjectId((current) => ({ ...current, [projectId]: access }))
-          }
-        />
-      </div>
+          <div className={adminTableWrapperClassName}>
+            <UserMembershipsProjectAccessTable
+              projects={projects}
+              accessByProjectId={accessByProjectId}
+              isAdmin={isAdmin}
+              disabled={isAdmin || saveMutation.isPending}
+              onAccessChange={(projectId, access) =>
+                setAccessByProjectId((current) => ({ ...current, [projectId]: access }))
+              }
+            />
+          </div>
 
-      {!isAdmin && (
-        <p className="text-sm text-gray-600">
-          Hinweis: Beim Speichern werden keine E-Mails versendet. Der Nutzer wird aus allen aktiven
-          Sitzungen abgemeldet, damit die geänderten Rechte beim nächsten Login greifen.
-        </p>
-      )}
+          {!isAdmin && (
+            <p className="text-sm text-gray-600">
+              Hinweis: Beim Speichern werden keine E-Mails versendet. Der Nutzer wird aus allen
+              aktiven Sitzungen abgemeldet, damit die geänderten Rechte beim nächsten Login greifen.
+            </p>
+          )}
 
-      {formError && (
-        <div role="alert" className="rounded-sm bg-red-50 px-2 py-1 text-red-800">
-          <span className="font-mono text-sm leading-tight">{translateServerError(formError)}</span>
+          {formError && (
+            <div role="alert" className="rounded-sm bg-red-50 px-2 py-1 text-red-800">
+              <span className="font-mono text-sm leading-tight">
+                {translateServerError(formError)}
+              </span>
+            </div>
+          )}
         </div>
-      )}
+      </div>
 
       <ActionBar
         left={
@@ -221,6 +228,6 @@ export function UserMembershipsEditor({ userId }: Props) {
           </button>
         }
       />
-    </div>
+    </>
   )
 }

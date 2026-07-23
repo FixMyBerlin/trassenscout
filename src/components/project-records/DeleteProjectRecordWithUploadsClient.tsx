@@ -6,6 +6,7 @@ import { twJoin } from "tailwind-merge"
 import { ActionBar } from "@/src/components/core/components/forms/ActionBar"
 import { DeleteActionBar } from "@/src/components/core/components/forms/DeleteActionBar"
 import { Link } from "@/src/components/core/components/links/Link"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { UploadPreviewClickable } from "@/src/components/uploads/UploadPreviewClickable"
 import { ProjectRecordReviewState } from "@/src/prisma/generated/browser"
@@ -164,60 +165,62 @@ export const DeleteProjectRecordWithUploadsClient = ({ deleteInfo, projectSlug }
   }
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-2 gap-6 md:grid-cols-4 lg:grid-cols-5">
-        {deleteInfo.uploads.map((upload) => {
-          const action = uploadActions[upload.id]
-          const isSave = action === "save"
+    <>
+      <div className={pageContentPaddingClassName}>
+        <div className="grid grid-cols-2 gap-6 md:grid-cols-4 lg:grid-cols-5">
+          {deleteInfo.uploads.map((upload) => {
+            const action = uploadActions[upload.id]
+            const isSave = action === "save"
 
-          return (
-            <div key={upload.id}>
-              <div
-                className={twJoin(
-                  "flex items-center justify-center rounded-lg border-2 p-4",
-                  isSave ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50",
-                )}
-              >
-                <UploadPreviewClickable
-                  uploadId={upload.id}
-                  projectSlug={projectSlug}
-                  size="grid"
-                />
-              </div>
-
-              <div className="my-2 flex items-center justify-between gap-3">
-                <span
+            return (
+              <div key={upload.id}>
+                <div
                   className={twJoin(
-                    "text-sm font-medium",
-                    isSave ? "text-green-700" : "text-red-700",
+                    "flex items-center justify-center rounded-lg border-2 p-4",
+                    isSave ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50",
                   )}
                 >
-                  {isSave ? "Speichern" : "Löschen"}
-                </span>
-                <Switch
-                  checked={isSave}
-                  onChange={() => toggleUploadAction(upload.id)}
-                  className={twJoin(
-                    "relative inline-flex h-6 w-11 items-center rounded-full transition-colors",
-                    isSave ? "bg-green-600" : "bg-red-600",
-                  )}
-                >
-                  <span className="sr-only">
-                    {isSave ? "Dokument speichern" : "Dokument löschen"}
-                  </span>
+                  <UploadPreviewClickable
+                    uploadId={upload.id}
+                    projectSlug={projectSlug}
+                    size="grid"
+                  />
+                </div>
+
+                <div className="my-2 flex items-center justify-between gap-3">
                   <span
                     className={twJoin(
-                      "inline-block size-4 transform rounded-full bg-white transition-transform",
-                      isSave ? "translate-x-6" : "translate-x-1",
+                      "text-sm font-medium",
+                      isSave ? "text-green-700" : "text-red-700",
                     )}
-                  />
-                </Switch>
-              </div>
+                  >
+                    {isSave ? "Speichern" : "Löschen"}
+                  </span>
+                  <Switch
+                    checked={isSave}
+                    onChange={() => toggleUploadAction(upload.id)}
+                    className={twJoin(
+                      "relative inline-flex h-6 w-11 items-center rounded-full transition-colors",
+                      isSave ? "bg-green-600" : "bg-red-600",
+                    )}
+                  >
+                    <span className="sr-only">
+                      {isSave ? "Dokument speichern" : "Dokument löschen"}
+                    </span>
+                    <span
+                      className={twJoin(
+                        "inline-block size-4 transform rounded-full bg-white transition-transform",
+                        isSave ? "translate-x-6" : "translate-x-1",
+                      )}
+                    />
+                  </Switch>
+                </div>
 
-              {renderProtectionReasons(upload)}
-            </div>
-          )
-        })}
+                {renderProtectionReasons(upload)}
+              </div>
+            )
+          })}
+        </div>
       </div>
       <ActionBar
         right={
@@ -228,6 +231,6 @@ export const DeleteProjectRecordWithUploadsClient = ({ deleteInfo, projectSlug }
           />
         }
       />
-    </div>
+    </>
   )
 }

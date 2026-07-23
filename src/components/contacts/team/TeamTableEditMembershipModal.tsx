@@ -2,7 +2,8 @@ import { useState } from "react"
 import { twJoin } from "tailwind-merge"
 import { linkIcons } from "@/src/components/core/components/links/Link"
 import { linkStyles } from "@/src/components/core/components/links/styles"
-import { Modal } from "@/src/components/core/components/Modal"
+import { Modal, ModalCloseButton } from "@/src/components/core/components/Modal"
+import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import type { ProjectUser } from "@/src/server/memberships/types"
 import { TeamTableEditMembershipModalForm } from "./TeamTableEditMembershipModalForm"
@@ -28,6 +29,7 @@ export const TeamTableEditMembershipModal = ({ editUser }: Props) => {
         Ändern
       </button>
       <Modal className="sm:max-w-[600px]!" open={open} handleClose={handleClose}>
+        <PageHeader title="Rolle ändern" action={<ModalCloseButton onClose={handleClose} />} />
         <TeamTableEditMembershipModalForm
           editUser={editUser}
           closeModal={() => {

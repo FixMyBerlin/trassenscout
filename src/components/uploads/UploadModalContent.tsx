@@ -1,5 +1,6 @@
 import type { MouseEventHandler } from "react"
 import { Suspense, useEffect } from "react"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { EditUploadForm } from "./EditUploadForm"
 import { UploadDetailPanelContent } from "./UploadDetailPanelContent"
 import {
@@ -10,7 +11,7 @@ import {
 } from "./uploadTypes"
 
 const UploadDetailModalSkeleton = () => (
-  <div className="space-y-4">
+  <div className={`space-y-4 ${pageContentPaddingClassName}`}>
     <div className="h-5 w-40 animate-pulse rounded bg-gray-200" />
     <div className="h-40 animate-pulse rounded-lg bg-gray-100" />
     <div className="space-y-2">
@@ -61,7 +62,11 @@ export const UploadModalContent = ({
 
   if (upload && isDeletedUploadMarker(upload)) {
     if (deletedState === "close") return null
-    return <p className="text-sm text-gray-600">Dieses Dokument wurde gelöscht.</p>
+    return (
+      <p className={`text-sm text-gray-600 ${pageContentPaddingClassName}`}>
+        Dieses Dokument wurde gelöscht.
+      </p>
+    )
   }
 
   if (isEditView && upload) {
@@ -87,14 +92,16 @@ export const UploadModalContent = ({
 
   if (upload) {
     return (
-      <UploadDetailPanelContent
-        upload={upload}
-        projectSlug={projectSlug}
-        editLink={editLink}
-        editHref={editHref}
-        onEditClick={onEditClick}
-        onDeleted={onDeleted}
-      />
+      <div className={pageContentPaddingClassName}>
+        <UploadDetailPanelContent
+          upload={upload}
+          projectSlug={projectSlug}
+          editLink={editLink}
+          editHref={editHref}
+          onEditClick={onEditClick}
+          onDeleted={onDeleted}
+        />
+      </div>
     )
   }
 
