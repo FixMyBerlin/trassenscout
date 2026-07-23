@@ -16,7 +16,12 @@ export function PageAdminSurveys() {
       <AdminPageHeader
         title="Beteiligungen (alle)"
         action={
-          <CoreLink to="/admin/surveys/new" button className={adminHeaderActionButtonClassName}>
+          <CoreLink
+            to="/admin/surveys/new"
+            button
+            icon="plus"
+            className={adminHeaderActionButtonClassName}
+          >
             Neue Beteiligung
           </CoreLink>
         }

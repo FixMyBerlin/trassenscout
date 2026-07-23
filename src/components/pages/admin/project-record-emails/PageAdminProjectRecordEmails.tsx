@@ -15,6 +15,7 @@ export function PageAdminProjectRecordEmails() {
           <CoreLink
             to="/admin/project-record-emails/new"
             button
+            icon="plus"
             className={adminHeaderActionButtonClassName}
           >
             Neue E-Mail

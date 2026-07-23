@@ -66,7 +66,7 @@ export const ProjectRecordEmailsTable = ({ projectRecordEmails }: Props) => {
     return (
       <div className="rounded-md border border-gray-200 bg-white p-4">
         <ZeroCase visible name="Emails" />
-        <Link to="/admin/project-record-emails/new" button className="mt-4">
+        <Link to="/admin/project-record-emails/new" button icon="plus" className="mt-4">
           Erste E-Mail hinzufügen
         </Link>
       </div>
@@ -195,7 +195,7 @@ export const ProjectRecordEmailsTable = ({ projectRecordEmails }: Props) => {
         </table>
       </div>
 
-      <Link to="/admin/project-record-emails/new" button className="mt-4">
+      <Link to="/admin/project-record-emails/new" button icon="plus" className="mt-4">
         Neue E-Mail manuell hinzufügen
       </Link>
     </div>

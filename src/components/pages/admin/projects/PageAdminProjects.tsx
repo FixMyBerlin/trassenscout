@@ -43,7 +43,12 @@ export function PageAdminProjects() {
       <AdminPageHeader
         title="Alle Projekte"
         action={
-          <CoreLink to="/admin/projects/new" button className={adminHeaderActionButtonClassName}>
+          <CoreLink
+            to="/admin/projects/new"
+            button
+            icon="plus"
+            className={adminHeaderActionButtonClassName}
+          >
             Neues Projekt
           </CoreLink>
         }

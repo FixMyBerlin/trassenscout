@@ -15,6 +15,7 @@ export function PageAdminProjectRecordTemplates() {
           <CoreLink
             to="/admin/project-record-templates/new"
             button
+            icon="plus"
             className={adminHeaderActionButtonClassName}
           >
             Neues Template
