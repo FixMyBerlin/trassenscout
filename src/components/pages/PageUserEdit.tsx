@@ -5,13 +5,7 @@ import { UserEditForm } from "@/src/components/user/UserEditForm"
 export function PageUserEdit() {
   return (
     <>
-      <PageHeader
-        breadcrumb={
-          <Breadcrumb>
-            <BreadcrumbStep>Profil bearbeiten</BreadcrumbStep>
-          </Breadcrumb>
-        }
-      />
+      <PageHeader title="Profil bearbeiten" />
       <UserEditForm />
     </>
   )

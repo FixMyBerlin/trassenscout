@@ -12,7 +12,12 @@ export function PageAbschnitteAcquisitionAreaEdit() {
   const { acquisitionArea } = routeApi.useLoaderData()
   return (
     <>
-      <PageHeader breadcrumb={<AbschnitteBreadcrumb current="bearbeiten" />} />
+      <PageHeader
+        breadcrumb={<AbschnitteBreadcrumb current="Grunderwerb" />}
+        info="Erstellen Sie automatisch neue Verhandlungsflächen durch einen räumlichen Abgleich mit den ALKIS-Flurstücken."
+        title="Verhandlungsfläche bearbeiten"
+        className="mb-0 shrink-0"
+      />
       <EditAcquisitionAreaForm
         acquisitionArea={acquisitionArea}
         projectSlug={projectSlug}

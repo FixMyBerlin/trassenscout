@@ -178,14 +178,6 @@ export function AcquisitionAreasWorkspace({
     <div className="relative flex h-full min-h-0 w-full flex-col lg:flex-row lg:items-stretch">
       <aside className="min-h-0 w-full overflow-y-auto p-4 lg:h-full lg:w-[45%] lg:shrink-0">
         <div className="flex flex-col gap-4">
-          <div className="space-y-2">
-            <h2 className="text-lg font-semibold text-gray-900">Verhandlungsflächen generieren</h2>
-            <p className="text-gray-500">
-              Erstellen Sie automatisch neue Verhandlungsflächen durch einen räumlichen Abgleich mit
-              den ALKIS-Flurstücken.
-            </p>
-          </div>
-
           <FormShell
             form={form}
             formError={submitError}

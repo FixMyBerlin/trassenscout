@@ -19,7 +19,9 @@ export function PageAbschnitteAcquisitionAreaNew() {
   return (
     <div className={MAP_VIEWPORT_SHELL_CLASS}>
       <PageHeader
-        breadcrumb={<AbschnitteBreadcrumb current="Verhandlungsflächen erstellen" />}
+        breadcrumb={<AbschnitteBreadcrumb current="Grunderwerb" />}
+        info="Erstellen Sie automatisch neue Verhandlungsflächen durch einen räumlichen Abgleich mit den ALKIS-Flurstücken."
+        title="Verhandlungsflächen erstellen"
         className="mb-0 shrink-0"
       />
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
