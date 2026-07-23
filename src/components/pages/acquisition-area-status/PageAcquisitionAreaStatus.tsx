@@ -3,6 +3,7 @@ import { getRouteApi } from "@tanstack/react-router"
 import { AcquisitionAreaStatusesTable } from "@/src/components/acquisition-area-status/AcquisitionAreaStatusesTable"
 import { useAcquisitionAreaStatusRouteLinks } from "@/src/components/acquisition-area-status/useAcquisitionAreaStatusActions"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
+import { BackLinkSection } from "@/src/components/core/components/forms/BackLinkSection"
 import { ConditionalBackLink } from "@/src/components/core/components/forms/ConditionalBackLink"
 import { Link } from "@/src/components/core/components/links/Link"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
@@ -43,9 +44,9 @@ export function PageAcquisitionAreaStatus() {
       <AcquisitionAreaStatusesTable acquisitionAreaStatuses={rows} />
       <IfUserCanEdit>
         {fromPath ? (
-          <div className={pageContentPaddingClassName}>
+          <BackLinkSection>
             <ConditionalBackLink fromPath={fromPath} />
-          </div>
+          </BackLinkSection>
         ) : null}
       </IfUserCanEdit>
       <div className={pageContentPaddingClassName}>
