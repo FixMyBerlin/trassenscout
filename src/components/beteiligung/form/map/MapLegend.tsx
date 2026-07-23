@@ -6,6 +6,7 @@ type TLegendItem = {
   label: string
   color: string
   className?: string
+  outline?: boolean
 }
 
 type Props = Record<string, Record<string, TLegendItem>>
@@ -14,7 +15,8 @@ const LegendItemShape = ({ legendItem }: { legendItem: TLegendItem }) => {
   return (
     <span
       className={twJoin(
-        "inline-block w-5 shrink-0 ring-1 ring-gray-900/70",
+        "inline-block w-5 shrink-0",
+        legendItem.outline === false ? null : "ring-1 ring-gray-900/70",
         legendItem.color,
         legendItem.className,
       )}
