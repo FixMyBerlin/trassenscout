@@ -2,6 +2,7 @@ import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline"
 import dompurify from "dompurify"
 import { useState } from "react"
 import { twJoin } from "tailwind-merge"
+import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { FormDirtyStateReporter } from "@/src/components/core/components/forms/FormDirtyStateReporter"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
@@ -11,7 +12,6 @@ import {
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { linkStyles } from "@/src/components/core/components/links/styles"
 import { Modal, ModalCloseButton } from "@/src/components/core/components/Modal"
-import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { useCurrentUser } from "@/src/components/user/useCurrentUser"
 import type { ProjectRecord } from "@/src/server/projectRecords/types"
@@ -88,6 +88,31 @@ export const EditCommentForm = ({ comment, commentLabel, mutateComment }: Props)
           formError={formError}
           submitText={`${commentLabel} speichern`}
           className="space-y-0"
+          actionBarRight={
+            <button
+              type="button"
+              title={`${commentLabel} löschen`}
+              onClick={async () => {
+                if (
+                  window.confirm(
+                    `Sind Sie sicher, dass Sie diesen ${commentLabel} löschen möchten?`,
+                  )
+                ) {
+                  try {
+                    setIsDirty(false)
+                    setOpen(false)
+                    await mutateComment.remove()
+                  } catch (error: unknown) {
+                    window.alert(String(error))
+                    console.error(error)
+                  }
+                }
+              }}
+              className={primaryButtonClassName}
+            >
+              <TrashIcon className="size-5" />
+            </button>
+          }
         >
           <FormDirtyStateReporter onDirtyChange={setIsDirty} />
           <form.AppField name="body">
@@ -102,34 +127,6 @@ export const EditCommentForm = ({ comment, commentLabel, mutateComment }: Props)
             )}
           </form.AppField>
         </FormShell>
-
-        <div className={pageContentPaddingClassName}>
-          <button
-            type="button"
-            title={`${commentLabel} löschen`}
-            onClick={async () => {
-              if (
-                window.confirm(`Sind Sie sicher, dass Sie diesen ${commentLabel} löschen möchten?`)
-              ) {
-                try {
-                  setIsDirty(false)
-                  setOpen(false)
-                  await mutateComment.remove()
-                } catch (error: unknown) {
-                  window.alert(String(error))
-                  console.error(error)
-                }
-              }
-            }}
-            className={twJoin(
-              "flex w-full items-end justify-end gap-2 hover:cursor-pointer",
-              linkStyles,
-            )}
-          >
-            <p>{commentLabel} löschen</p>
-            <TrashIcon className={twJoin(linkStyles, "size-6")} />
-          </button>
-        </div>
       </Modal>
     </>
   )
