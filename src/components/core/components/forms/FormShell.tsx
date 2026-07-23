@@ -8,7 +8,10 @@ import type { CoreAppFormApi } from "@/src/components/core/components/forms/core
 import { FormError } from "@/src/components/core/components/forms/FormError"
 import { FormHydratedProvider } from "@/src/components/core/components/forms/hooks/useFormHydrated"
 import { useIsHydrated } from "@/src/components/core/components/forms/hooks/useIsHydrated"
-import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
+import {
+  pageContentPaddingClassName,
+  paddedBackLinkWrapperClassName,
+} from "@/src/components/core/components/PageHeader/pageContentPadding"
 
 export type FormShellProps<TFormData> = Omit<
   PropsWithoutRef<JSX.IntrinsicElements["form"]>,
