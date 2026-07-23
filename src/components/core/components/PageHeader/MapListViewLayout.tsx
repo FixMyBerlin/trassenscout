@@ -7,6 +7,41 @@ export const MAP_FULLSCREEN_HEIGHT_CLASS = "min-h-0 flex-1"
 /** Outer shell: viewport minus top nav (4rem). Parent of PageHeader + map content. */
 export const MAP_VIEWPORT_SHELL_CLASS = "flex h-[calc(100dvh-4rem)] flex-col overflow-hidden"
 
+type MapAsideSplitLayoutProps = {
+  aside: ReactNode
+  map: ReactNode
+  className?: string
+  asideClassName?: string
+}
+
+export function MapAsideSplitLayout({
+  aside,
+  map,
+  className,
+  asideClassName,
+}: MapAsideSplitLayoutProps) {
+  return (
+    <div
+      className={twJoin(
+        "relative flex h-full min-h-0 w-full flex-col lg:flex-row lg:items-stretch",
+        className,
+      )}
+    >
+      <aside
+        className={twJoin(
+          "min-h-0 w-full overflow-y-auto lg:h-full lg:w-[45%] lg:shrink-0",
+          asideClassName,
+        )}
+      >
+        {aside}
+      </aside>
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col border-t border-gray-200 lg:border-t-0 lg:border-l">
+        {map}
+      </div>
+    </div>
+  )
+}
+
 type Props = {
   mode: ViewMode
   map: ReactNode | ((classHeight: string) => ReactNode)
