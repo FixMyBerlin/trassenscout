@@ -11,7 +11,7 @@ export const ActionBar = ({ left, right, className }: Props) => {
   return (
     <div
       className={twJoin(
-        "flex items-center justify-between gap-4 rounded-md bg-gray-100 p-4",
+        "flex items-center justify-between gap-4 border-y border-gray-200 bg-gray-100 p-4",
         className,
       )}
     >

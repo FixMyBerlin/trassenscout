@@ -18,20 +18,8 @@ const tableChromeClassName = twJoin(
 
 export const TableWrapper = ({ className, children, flushTop = false }: Props) => {
   return (
-    <div
-      className={twMerge(
-        bleed ? "-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8" : "w-full overflow-x-auto",
-        className,
-      )}
-    >
-      <div
-        className={twJoin(
-          "min-w-0 py-2 align-middle",
-          bleed ? "inline-block min-w-full md:px-6 lg:px-8" : "w-full",
-        )}
-      >
-        <div className={twMerge(tableChromeClassName, flushTop && "border-t-0")}>{children}</div>
-      </div>
+    <div className={twMerge("w-full overflow-x-auto", className)}>
+      <div className={twMerge(tableChromeClassName, flushTop && "border-t-0")}>{children}</div>
     </div>
   )
 }
