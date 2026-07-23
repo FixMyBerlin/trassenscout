@@ -3,14 +3,16 @@ import { endOfDay, format, formatDistanceStrict, subDays } from "date-fns"
 import { de } from "date-fns/locale"
 import { twJoin } from "tailwind-merge"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
-import { secondaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { linkIcons } from "@/src/components/core/components/links/Link"
 import { LinkMail } from "@/src/components/core/components/links/LinkMail"
+import { linkStyles } from "@/src/components/core/components/links/styles"
 import { StatusLabel } from "@/src/components/core/components/Status/StatusLabel"
 import {
   tableBodyClassName,
   tableCellClassName,
   tableFixedClassName,
   tableHeadCellClassName,
+  tableHeadCellRightClassName,
   tableHeadRowClassName,
   tableRowClassName,
 } from "@/src/components/core/components/Table/tableClasses"
@@ -100,8 +102,8 @@ export const TeamInvitesTable = ({ canEdit, invites, projectSlug }: Props) => {
                   Gültigkeit
                 </th>
                 {canEdit && (
-                  <th scope="col" className={tableHeadCellClassName}>
-                    Aktion
+                  <th scope="col" className={tableHeadCellRightClassName}>
+                    <span className="sr-only">Aktionen</span>
                   </th>
                 )}
               </tr>
@@ -128,24 +130,30 @@ export const TeamInvitesTable = ({ canEdit, invites, projectSlug }: Props) => {
                     {format(new Date(invite.updatedAt), "Pp", { locale: de })}
                   </td>
                   <td className={twJoin("hidden align-middle @xl:table-cell", tableCellClassName)}>
-                    {formatDistanceStrict(
-                      subDays(currentDate, INVITE_DAYS_TO_DELETION),
-                      invite.updatedAt,
-                      {
-                        locale: de,
-                        unit: "day",
-                      },
-                    )}
+                    {invite.status === InviteStatusEnum.PENDING
+                      ? formatDistanceStrict(
+                          subDays(currentDate, INVITE_DAYS_TO_DELETION),
+                          invite.updatedAt,
+                          {
+                            locale: de,
+                            unit: "day",
+                          },
+                        )
+                      : "—"}
                   </td>
                   {canEdit && (
-                    <td className={twJoin(tableCellClassName, "align-top")}>
+                    <td className={twJoin(tableCellClassName, "align-middle")}>
                       {invite.status === InviteStatusEnum.PENDING && (
                         <button
                           type="button"
-                          className={twJoin(secondaryButtonClassName, "px-2 py-1 text-xs")}
+                          className={twJoin(
+                            "inline-flex cursor-pointer items-center justify-center gap-1 disabled:cursor-not-allowed disabled:opacity-60",
+                            linkStyles,
+                          )}
                           disabled={revokeMutation.isPending}
                           onClick={() => handleRevoke(invite.id)}
                         >
+                          {linkIcons["delete"]}
                           Zurückziehen
                         </button>
                       )}
