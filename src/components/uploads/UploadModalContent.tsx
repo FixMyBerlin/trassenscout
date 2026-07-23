@@ -1,7 +1,13 @@
 import type { MouseEventHandler } from "react"
 import { Suspense, useEffect } from "react"
+import { ActionBar } from "@/src/components/core/components/forms/ActionBar"
+import { Link } from "@/src/components/core/components/links/Link"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
+import { useCurrentReturnTo } from "@/src/components/core/routes/useCurrentPathWithSearch"
+import { IfUserCanEdit } from "@/src/components/shared/memberships/IfUserCan"
+import { DeleteUploadActionBar } from "./DeleteUploadActionBar"
 import { EditUploadForm } from "./EditUploadForm"
+import { UploadAuthorAndDates } from "./UploadAuthorAndDates"
 import { UploadDetailPanelContent } from "./UploadDetailPanelContent"
 import {
   isDeletedUploadMarker,
@@ -53,6 +59,12 @@ export const UploadModalContent = ({
   onSubmittingChange,
   deletedState = "message",
 }: Props) => {
+  const returnTo = useCurrentReturnTo()
+  const editSearch =
+    editLink && returnTo && !editLink.search?.returnTo
+      ? { ...editLink.search, returnTo }
+      : editLink?.search
+
   useEffect(() => {
     if (deletedState !== "close") return
     if (!upload || !isDeletedUploadMarker(upload)) return
@@ -92,16 +104,53 @@ export const UploadModalContent = ({
 
   if (upload) {
     return (
-      <div className={pageContentPaddingClassName}>
-        <UploadDetailPanelContent
-          upload={upload}
-          projectSlug={projectSlug}
-          editLink={editLink}
-          editHref={editHref}
-          onEditClick={onEditClick}
-          onDeleted={onDeleted}
-        />
-      </div>
+      <>
+        <div className={pageContentPaddingClassName}>
+          <UploadDetailPanelContent upload={upload} projectSlug={projectSlug} />
+        </div>
+        {(editLink || onDeleted) && (
+          <IfUserCanEdit>
+            <ActionBar
+              left={
+                editLink ? (
+                  <Link
+                    button="blue"
+                    to={editHref ?? editLink.to}
+                    params={editHref ? undefined : editLink.params}
+                    search={editHref ? undefined : editSearch}
+                    preload={false}
+                    replace
+                    resetScroll={false}
+                    onClick={onEditClick}
+                  >
+                    Bearbeiten
+                  </Link>
+                ) : undefined
+              }
+              right={
+                onDeleted ? (
+                  <DeleteUploadActionBar
+                    projectSlug={projectSlug}
+                    uploadId={upload.id}
+                    uploadTitle={upload.title}
+                    returnPath={returnPath}
+                    onDeleted={onDeleted}
+                  />
+                ) : undefined
+              }
+            />
+          </IfUserCanEdit>
+        )}
+        <div className={pageContentPaddingClassName}>
+          <UploadAuthorAndDates
+            createdBy={upload.createdBy}
+            createdAt={upload.createdAt}
+            updatedBy={upload.updatedBy ?? undefined}
+            updatedAt={upload.updatedAt ?? undefined}
+            variant="aligned"
+          />
+        </div>
+      </>
     )
   }
 
