@@ -1,6 +1,5 @@
 import { getRouteApi, useNavigate } from "@tanstack/react-router"
 import { twJoin } from "tailwind-merge"
-import { Link } from "@/src/components/core/components/links/Link"
 import { LegendIcon } from "@/src/components/core/components/Map/Icons/LegendIcon"
 import { SubsubsectionIcon } from "@/src/components/core/components/Map/Icons/SubsubsectionIcon"
 import { getIconIdForSubsubsection } from "@/src/components/core/components/Map/legendIconRegistry"
@@ -20,7 +19,6 @@ import {
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { Tooltip } from "@/src/components/core/components/Tooltip/Tooltip"
 import { useTryRouteParam } from "@/src/components/core/routes/useTryRouteParam"
-import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { Route as subsectionRoute } from "@/src/routes/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/index"
 import type { SubsubsectionWithPosition } from "@/src/server/subsubsections/types"
 import { SubsubsectionTableFooter } from "./SubsubsectionTableFooter"
@@ -137,20 +135,6 @@ export const SubsubsectionTable = ({ subsubsections, compact }: Props) => {
           </div>
         )}
       </TableWrapper>
-
-      {subsubsections.length > 0 && (
-        <IfUserCanEdit>
-          <div className="mt-4 flex flex-wrap gap-3">
-            <Link
-              button="white"
-              icon="download"
-              href={`/api/${projectSlug}/subsections/${subsectionSlug}/subsubsections/export`}
-            >
-              Maßnahmen herunterladen (CSV)
-            </Link>
-          </div>
-        </IfUserCanEdit>
-      )}
     </section>
   )
 }
