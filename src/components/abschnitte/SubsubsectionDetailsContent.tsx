@@ -10,6 +10,13 @@ import { FormSuccess } from "@/src/components/core/components/forms/FormSuccess"
 import { Link } from "@/src/components/core/components/links/Link"
 import { Markdown } from "@/src/components/core/components/Markdown/Markdown"
 import {
+  tableBodyClassName,
+  tableClassName,
+  tableHeadCellClassName,
+  tableHeadRowClassName,
+  tableRowClassName,
+} from "@/src/components/core/components/Table/tableClasses"
+import {
   formattedEuro,
   formattedLength,
   formattedWidth,
@@ -120,26 +127,20 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
         {hasGeneralInfoRows ? (
           <div className="overflow-x-auto rounded-md border border-gray-200">
             <div className="inline-block min-w-full align-middle">
-              <table className="min-w-full divide-y divide-gray-200">
+              <table className={tableClassName}>
                 <thead className="sr-only">
-                  <tr>
-                    <th
-                      scope="col"
-                      className="py-3.5 pr-3 pl-3 text-left text-sm font-semibold text-gray-900"
-                    >
+                  <tr className={tableHeadRowClassName}>
+                    <th scope="col" className={tableHeadCellClassName}>
                       Attribut
                     </th>
-                    <th
-                      scope="col"
-                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
+                    <th scope="col" className={tableHeadCellClassName}>
                       Wert
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200 bg-white">
+                <tbody className={tableBodyClassName}>
                   {subsubsection.SubsubsectionTask?.title && (
-                    <tr>
+                    <tr className={tableRowClassName}>
                       <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
                         Maßnahmentyp
                       </th>
@@ -149,7 +150,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
                     </tr>
                   )}
                   {locationLabel && (
-                    <tr>
+                    <tr className={tableRowClassName}>
                       <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
                         Lage
                       </th>
@@ -159,7 +160,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
                     </tr>
                   )}
                   {hasLength && (
-                    <tr>
+                    <tr className={tableRowClassName}>
                       <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
                         Länge
                       </th>
@@ -169,7 +170,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
                     </tr>
                   )}
                   {hasWidth && (
-                    <tr>
+                    <tr className={tableRowClassName}>
                       <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
                         Breite
                       </th>
@@ -179,7 +180,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
                     </tr>
                   )}
                   {hasCostEstimate && (
-                    <tr>
+                    <tr className={tableRowClassName}>
                       <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
                         Kostenschätzung
                       </th>
@@ -189,7 +190,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
                     </tr>
                   )}
                   {infrastructureTypeTitles.length > 0 && (
-                    <tr>
+                    <tr className={tableRowClassName}>
                       <th className="py-4 pr-3 pl-4 text-left align-top text-sm font-normal text-gray-700">
                         Gegenstände der Förderung
                       </th>
@@ -208,7 +209,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
                     </tr>
                   )}
                   {subsubsection.qualityLevel?.title && (
-                    <tr>
+                    <tr className={tableRowClassName}>
                       <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
                         Ausbaustandard
                       </th>
@@ -228,7 +229,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
                     </tr>
                   )}
                   {subsubsection.SubsubsectionInfra?.title && (
-                    <tr>
+                    <tr className={tableRowClassName}>
                       <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
                         Führungsform
                       </th>
@@ -239,7 +240,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
                     </tr>
                   )}
                   {subsubsection.SubsubsectionStatus?.title && (
-                    <tr>
+                    <tr className={tableRowClassName}>
                       <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
                         Phase
                       </th>
@@ -250,7 +251,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
                     </tr>
                   )}
                   {subsubsection.estimatedConstructionDateString && (
-                    <tr>
+                    <tr className={tableRowClassName}>
                       <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
                         Angestrebtes Baujahr
                       </th>
@@ -260,7 +261,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
                     </tr>
                   )}
                   {subsubsection.manager && (
-                    <tr>
+                    <tr className={tableRowClassName}>
                       <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
                         Ansprechpartner:in
                       </th>

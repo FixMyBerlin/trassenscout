@@ -4,6 +4,13 @@ import { de } from "date-fns/locale/de"
 import { twJoin } from "tailwind-merge"
 import { AdminBoxSection } from "@/src/components/core/components/AdminBox/AdminBoxSection"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
+import {
+  tableBodyClassName,
+  tableClassName,
+  tableHeadCellClassName,
+  tableHeadRowClassName,
+  tableRowClassName,
+} from "@/src/components/core/components/Table/tableClasses"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { getFullname } from "@/src/components/core/users/getFullname"
 import { generalLogEntriesQueryOptions } from "@/src/server/logEntries/logEntriesQueryOptions"
@@ -33,33 +40,27 @@ export const GeneralLogEntries = () => {
       actions={<SuperAdminLogData data={logEntries} />}
     >
       <TableWrapper>
-        <table className="min-w-full divide-y divide-gray-300">
-          <thead className="bg-gray-50">
-            <tr>
-              <th
-                scope="col"
-                className="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-6"
-              >
+        <table className={tableClassName}>
+          <thead>
+            <tr className={tableHeadRowClassName}>
+              <th scope="col" className={tableHeadCellClassName}>
                 Date
               </th>
-              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+              <th scope="col" className={tableHeadCellClassName}>
                 Aktion
               </th>
-              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+              <th scope="col" className={tableHeadCellClassName}>
                 Details
               </th>
-              <th
-                scope="col"
-                className="py-3.5 pr-4 pl-3 text-left text-sm font-semibold text-gray-900 sm:pr-6"
-              >
+              <th scope="col" className={tableHeadCellClassName}>
                 Benutzer
               </th>
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-gray-200 bg-white">
+          <tbody className={tableBodyClassName}>
             {logEntries.map((entry) => (
-              <tr key={entry.id}>
+              <tr key={entry.id} className={tableRowClassName}>
                 <td className="py-4 pr-3 pl-4 align-top text-sm leading-tight sm:pl-6">
                   {format(entry.createdAt, "Pp", { locale: de })}
                   <br />

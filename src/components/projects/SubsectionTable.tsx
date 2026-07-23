@@ -5,6 +5,13 @@ import { LegendIcon } from "@/src/components/core/components/Map/Icons/LegendIco
 import { SubsectionIcon } from "@/src/components/core/components/Map/Icons/SubsectionIcon"
 import { getIconIdForSubsection } from "@/src/components/core/components/Map/legendIconRegistry"
 import { GEOMETRY_TYPE_TOOLTIPS } from "@/src/components/core/components/Map/utils/geometryTypeTranslations"
+import {
+  tableBodyClassName,
+  tableClassName,
+  tableHeadCellClassName,
+  tableHeadRowClassName,
+  tableRowClassName,
+} from "@/src/components/core/components/Table/tableClasses"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
@@ -19,7 +26,7 @@ type Props = {
   createButton?: boolean
 }
 
-const tableHeadClasses = "pl-4 py-3.5 pr-3 text-left text-sm font-semibold text-gray-900  "
+const tableHeadClasses = tableHeadCellClassName
 
 export const SubsectionTable = ({ subsections, createButton = true }: Props) => {
   const navigate = useNavigate()
@@ -28,11 +35,11 @@ export const SubsectionTable = ({ subsections, createButton = true }: Props) => 
 
   return (
     <section>
-      <TableWrapper flushTop>
-        <table className="min-w-full divide-y divide-gray-300">
-          <thead className="bg-gray-50">
-            <tr>
-              <th scope="col" className={twJoin("sm:pl-6", tableHeadClasses)}>
+      <TableWrapper>
+        <table className={tableClassName}>
+          <thead>
+            <tr className={tableHeadRowClassName}>
+              <th scope="col" className={tableHeadClasses}>
                 Planungsabschnitt
               </th>
               <th scope="col" className={tableHeadClasses}>
@@ -52,11 +59,11 @@ export const SubsectionTable = ({ subsections, createButton = true }: Props) => 
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200 bg-white">
+          <tbody className={tableBodyClassName}>
             {subsections.map((subsection) => (
               <tr
                 key={subsection.id}
-                className="group cursor-pointer hover:bg-gray-50"
+                className={twJoin(tableRowClassName, "group cursor-pointer hover:bg-gray-50")}
                 onClick={() =>
                   void navigate({
                     to: "/$projectSlug/abschnitte/$subsectionSlug",

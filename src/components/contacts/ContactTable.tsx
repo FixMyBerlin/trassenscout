@@ -9,6 +9,14 @@ import { Link } from "@/src/components/core/components/links/Link"
 import { LinkMail } from "@/src/components/core/components/links/LinkMail"
 import { LinkTel } from "@/src/components/core/components/links/LinkTel"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
+import {
+  tableBodyClassName,
+  tableCellClassName,
+  tableFixedClassName,
+  tableHeadCellClassName,
+  tableHeadRowClassName,
+  tableRowClassName,
+} from "@/src/components/core/components/Table/tableClasses"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { getFullname } from "@/src/components/core/users/getFullname"
@@ -43,7 +51,6 @@ type Props = {
 export const ContactTable = ({ contacts, currentUserEmail, projectSlug }: Props) => {
   const { data: project } = useSuspenseQuery(projectBySlugQueryOptions(projectSlug))
   const contactsModal = useContactsModal()
-  const spaceClasses = "px-3 py-2"
 
   const form = useAppForm({
     defaultValues: contactTableFormDefaultValues,
@@ -77,9 +84,9 @@ export const ContactTable = ({ contacts, currentUserEmail, projectSlug }: Props)
       <form.AppField name="selectedContacts">
         {(field) => (
           <>
-            <TableWrapper flushTop>
+            <TableWrapper>
               <div className="@container w-full">
-                <table className="min-w-full table-fixed border-collapse text-left text-sm text-gray-700">
+                <table className={tableFixedClassName}>
                   <colgroup>
                     <col className={contactTableColWidths.name} />
                     <col className={contactTableColWidths.role} />
@@ -89,50 +96,41 @@ export const ContactTable = ({ contacts, currentUserEmail, projectSlug }: Props)
                     <col className={contactTableColWidths.actions} />
                   </colgroup>
                   <thead>
-                    <tr className="border-b border-gray-300 bg-gray-50">
-                      <th scope="col" className={twJoin(spaceClasses, "font-medium uppercase")}>
+                    <tr className={tableHeadRowClassName}>
+                      <th scope="col" className={tableHeadCellClassName}>
                         Name
                       </th>
                       <th
                         scope="col"
-                        className={twJoin(
-                          spaceClasses,
-                          "hidden font-medium uppercase @xl:table-cell",
-                        )}
+                        className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}
                       >
                         Position
                       </th>
-                      <th scope="col" className={twJoin(spaceClasses, "font-medium uppercase")}>
+                      <th scope="col" className={tableHeadCellClassName}>
                         Telefon
                       </th>
                       <th
                         scope="col"
-                        className={twJoin(
-                          spaceClasses,
-                          "hidden font-medium uppercase @xl:table-cell",
-                        )}
+                        className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}
                       >
                         E-Mail
                       </th>
                       <th
                         scope="col"
-                        className={twJoin(
-                          spaceClasses,
-                          "hidden font-medium uppercase @xl:table-cell",
-                        )}
+                        className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}
                       >
                         Tags
                       </th>
-                      <th scope="col" className={twJoin(spaceClasses, "sr-only")}>
+                      <th scope="col" className={twJoin(tableHeadCellClassName, "sr-only")}>
                         Aktionen
                       </th>
                     </tr>
                   </thead>
 
-                  <tbody className="divide-y divide-gray-200 bg-white">
+                  <tbody className={tableBodyClassName}>
                     {contacts.map((contact) => (
-                      <tr key={contact.email} className="border-b border-gray-100">
-                        <td className={twJoin(spaceClasses, "align-top")}>
+                      <tr key={contact.email} className={tableRowClassName}>
+                        <td className={twJoin(tableCellClassName, "align-top")}>
                           <Link
                             className="w-full"
                             to={contactsModal.getContactDetailHref({ contactId: contact.id })}
@@ -144,26 +142,28 @@ export const ContactTable = ({ contacts, currentUserEmail, projectSlug }: Props)
                         <td
                           className={twJoin(
                             "hidden align-top wrap-break-word @xl:table-cell",
-                            spaceClasses,
+                            tableCellClassName,
                           )}
                         >
                           {contact.role || "—"}
                         </td>
-                        <td className={twJoin(spaceClasses, "align-top whitespace-nowrap")}>
+                        <td className={twJoin(tableCellClassName, "align-top whitespace-nowrap")}>
                           {contact.phone ? <LinkTel>{contact.phone}</LinkTel> : "—"}
                         </td>
                         <td
                           className={twJoin(
                             "hidden align-top whitespace-nowrap @xl:table-cell",
-                            spaceClasses,
+                            tableCellClassName,
                           )}
                         >
                           <LinkMail subject="Abstimmung zum RS 8">{contact.email}</LinkMail>
                         </td>
-                        <td className={twJoin("hidden align-top @xl:table-cell", spaceClasses)}>
+                        <td
+                          className={twJoin("hidden align-top @xl:table-cell", tableCellClassName)}
+                        >
                           <ProjectRecordTagsList tags={contact.tags ?? []} />
                         </td>
-                        <td className={twJoin(spaceClasses, "align-top")}>
+                        <td className={twJoin(tableCellClassName, "align-top")}>
                           <div className="flex items-center justify-end gap-4">
                             <IfUserCanEdit>
                               <Link to={`/${projectSlug}/contacts/${contact.id}`}>

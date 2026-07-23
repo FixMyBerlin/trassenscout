@@ -11,6 +11,14 @@ import {
 import { ButtonWrapper } from "@/src/components/core/components/links/ButtonWrapper"
 import { Link } from "@/src/components/core/components/links/Link"
 import { SubsectionIcon } from "@/src/components/core/components/Map/Icons/SubsectionIcon"
+import {
+  tableBodyClassName,
+  tableClassName,
+  tableHeadCellClassName,
+  tableHeadCellRightClassName,
+  tableHeadRowClassName,
+  tableRowClassName,
+} from "@/src/components/core/components/Table/tableClasses"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
@@ -64,36 +72,27 @@ export const SubsectionTableAdmin = ({ projectSlug }: Props) => {
       )}
 
       <TableWrapper>
-        <table className="min-w-full divide-y divide-gray-300">
-          <thead className="bg-gray-50">
-            <tr>
-              <th
-                scope="col"
-                className="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-6"
-              >
+        <table className={tableClassName}>
+          <thead>
+            <tr className={tableHeadRowClassName}>
+              <th scope="col" className={tableHeadCellClassName}>
                 Planungsabschnitt
               </th>
-              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+              <th scope="col" className={tableHeadCellClassName}>
                 Slug
               </th>
-              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+              <th scope="col" className={tableHeadCellClassName}>
                 Nummer (order)
               </th>
-              <th
-                scope="col"
-                className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:pr-6"
-              >
+              <th scope="col" className={tableHeadCellClassName}>
                 Geometrie
               </th>
-              <th
-                scope="col"
-                className="sr-only px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:pr-6"
-              >
+              <th scope="col" className={twJoin(tableHeadCellRightClassName, "sr-only")}>
                 bearbeiten
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200 bg-white">
+          <tbody className={tableBodyClassName}>
             {subsections.map((subsection) => {
               const noPreviewForDefaultGeometry =
                 String(subsection.geometry.coordinates) ===
@@ -103,6 +102,7 @@ export const SubsectionTableAdmin = ({ projectSlug }: Props) => {
                 <tr
                   key={subsection.id}
                   className={twJoin(
+                    tableRowClassName,
                     "h-full",
                     updatedIds?.includes(String(subsection.id)) ? "bg-blue-100" : "",
                   )}

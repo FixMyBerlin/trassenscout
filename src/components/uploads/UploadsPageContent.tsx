@@ -31,13 +31,7 @@ export const UploadsPageContent = () => {
           <UploadsPageUploadSection projectSlug={projectSlug} />
         </div>
 
-        <UploadTable
-          projectSlug={projectSlug}
-          withAction
-          withRelations
-          flushTop
-          uploads={visibleUploads}
-        />
+        <UploadTable projectSlug={projectSlug} withAction withRelations uploads={visibleUploads} />
       </div>
 
       <SuperAdminBox>

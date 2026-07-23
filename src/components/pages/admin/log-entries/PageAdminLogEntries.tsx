@@ -2,6 +2,13 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { AdminBadge } from "@/src/components/admin/AdminBadge"
 import { AdminPageHeader } from "@/src/components/admin/AdminPageHeader"
+import {
+  tableBodyClassName,
+  tableClassName,
+  tableHeadCellClassName,
+  tableHeadRowClassName,
+  tableRowClassName,
+} from "@/src/components/core/components/Table/tableClasses"
 import { TableDateTime } from "@/src/components/core/components/Table/TableDateTime"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { PaginationControls } from "@/src/components/core/pagination/PaginationControls"
@@ -24,23 +31,23 @@ export function PageAdminLogEntries() {
     <>
       <AdminPageHeader title="LogEntries" />
       <TableWrapper>
-        <table className="min-w-full divide-y divide-gray-300">
-          <thead className="bg-gray-50">
-            <tr>
-              <th scope="col" className="py-3.5 pr-3 pl-4 text-left text-sm font-semibold sm:pl-6">
+        <table className={tableClassName}>
+          <thead>
+            <tr className={tableHeadRowClassName}>
+              <th scope="col" className={tableHeadCellClassName}>
                 Datum
               </th>
-              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold sm:pr-6">
+              <th scope="col" className={tableHeadCellClassName}>
                 LogLevel
               </th>
-              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold sm:pr-6">
+              <th scope="col" className={tableHeadCellClassName}>
                 Message, Details, User, Project
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200 bg-white">
+          <tbody className={tableBodyClassName}>
             {data.logEntries.map((logEntry) => (
-              <tr key={logEntry.id}>
+              <tr key={logEntry.id} className={tableRowClassName}>
                 <td className="py-4 pr-3 pl-4 text-sm sm:pl-6">
                   <TableDateTime value={logEntry.createdAt} />
                 </td>

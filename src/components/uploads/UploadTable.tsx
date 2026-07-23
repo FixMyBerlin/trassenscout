@@ -2,7 +2,15 @@ import { MapPinIcon, UserGroupIcon } from "@heroicons/react/24/outline"
 import { twJoin } from "tailwind-merge"
 import { Link } from "@/src/components/core/components/links/Link"
 import { useIsInsideModal } from "@/src/components/core/components/Modal"
-import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
+import {
+  tableBodyClassName,
+  tableCellClassName,
+  tableFixedClassName,
+  tableHeadCellClassName,
+  tableHeadCellRightClassName,
+  tableHeadRowClassName,
+  tableRowClassName,
+} from "@/src/components/core/components/Table/tableClasses"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { Tooltip } from "@/src/components/core/components/Tooltip/Tooltip"
 import { useCurrentReturnTo } from "@/src/components/core/routes/useCurrentPathWithSearch"
@@ -48,8 +56,6 @@ type Props = Prettify<{
   withSource?: boolean
   withTags?: boolean
   onDelete?: (uploadId: number) => Promise<void>
-  /** Omit top border when flush under PageHeader. */
-  flushTop?: boolean
 }>
 
 export const UploadTable = ({
@@ -60,101 +66,93 @@ export const UploadTable = ({
   withSource = false,
   withTags = true,
   onDelete,
-  flushTop = false,
 }: Props) => {
   if (!uploads.length) {
     return <ZeroCase small visible={uploads.length} name="Dokumente" verb="hochgeladen" />
   }
 
-  const spaceClasses = "px-3 py-2"
-
   return (
-    <TableWrapper flushTop={flushTop}>
-      <div className="@container w-full">
-        <table className="min-w-full table-fixed border-collapse text-left text-sm text-gray-700">
-          <colgroup>
-            <col className={uploadTableColWidths.icon} />
-            <col
-              className={
-                withSource
-                  ? uploadTableColWidths.title.withSource
-                  : uploadTableColWidths.title.default
-              }
-            />
-            <col className={uploadTableColWidths.location} />
-            <col className={uploadTableColWidths.uploaded} />
-            {withTags && <col className={uploadTableColWidths.tags} />}
-            {withSource && <col className={uploadTableColWidths.source} />}
-            {withRelations && <col className={uploadTableColWidths.relations} />}
-            <col className={uploadTableColWidths.actions} />
-          </colgroup>
-          <thead>
-            <tr className="border-b border-gray-300 bg-gray-50">
-              <th scope="col" className={twJoin(spaceClasses, "sr-only font-medium")}>
-                Vorschau
-              </th>
-              <th scope="col" className={twJoin(spaceClasses, "font-medium uppercase")}>
-                Titel
-              </th>
-              <th
-                scope="col"
-                className={twJoin(spaceClasses, "hidden font-medium uppercase @xl:table-cell")}
-              >
-                <span className="sr-only">Standort</span>
-              </th>
-              <th
-                scope="col"
-                className={twJoin(spaceClasses, "hidden font-medium uppercase @xl:table-cell")}
-              >
-                Hochgeladen
-              </th>
-              {withTags && (
-                <th
-                  scope="col"
-                  className={twJoin(spaceClasses, "hidden font-medium uppercase @xl:table-cell")}
-                >
-                  Tags
-                </th>
-              )}
-              {withSource && (
-                <th scope="col" className={twJoin(spaceClasses, "font-medium uppercase")}>
-                  Quelle
-                </th>
-              )}
-              {withRelations && (
-                <th
-                  scope="col"
-                  className={twJoin(spaceClasses, "hidden font-medium uppercase @xl:table-cell")}
-                >
-                  Verknüpfungen
-                </th>
-              )}
-              <th
-                scope="col"
-                className={twJoin(spaceClasses, "hidden text-right font-medium @xl:table-cell")}
-              >
-                <span className="sr-only">Aktionen</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200 bg-white">
-            {uploads.map((upload) => (
-              <UploadTableRow
-                key={upload.id}
-                upload={upload}
-                projectSlug={projectSlug}
-                withAction={withAction}
-                withRelations={withRelations}
-                withSource={withSource}
-                withTags={withTags}
-                onDelete={onDelete}
-                spaceClasses={spaceClasses}
+    <div className="w-full overflow-x-auto">
+      <div className="not-prose overflow-hidden border border-gray-200">
+        <div className="@container w-full">
+          <table className={tableFixedClassName}>
+            <colgroup>
+              <col className={uploadTableColWidths.icon} />
+              <col
+                className={
+                  withSource
+                    ? uploadTableColWidths.title.withSource
+                    : uploadTableColWidths.title.default
+                }
               />
-            ))}
-          </tbody>
-        </table>
+              <col className={uploadTableColWidths.location} />
+              <col className={uploadTableColWidths.uploaded} />
+              {withTags && <col className={uploadTableColWidths.tags} />}
+              {withSource && <col className={uploadTableColWidths.source} />}
+              {withRelations && <col className={uploadTableColWidths.relations} />}
+              <col className={uploadTableColWidths.actions} />
+            </colgroup>
+            <thead>
+              <tr className={tableHeadRowClassName}>
+                <th scope="col" className={twJoin(tableHeadCellClassName, "sr-only")}>
+                  Vorschau
+                </th>
+                <th scope="col" className={tableHeadCellClassName}>
+                  Titel
+                </th>
+                <th scope="col" className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}>
+                  <span className="sr-only">Standort</span>
+                </th>
+                <th scope="col" className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}>
+                  Hochgeladen
+                </th>
+                {withTags && (
+                  <th
+                    scope="col"
+                    className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}
+                  >
+                    Tags
+                  </th>
+                )}
+                {withSource && (
+                  <th scope="col" className={tableHeadCellClassName}>
+                    Quelle
+                  </th>
+                )}
+                {withRelations && (
+                  <th
+                    scope="col"
+                    className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}
+                  >
+                    Verknüpfungen
+                  </th>
+                )}
+                <th
+                  scope="col"
+                  className={twJoin(tableHeadCellRightClassName, "hidden @xl:table-cell")}
+                >
+                  <span className="sr-only">Aktionen</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody className={tableBodyClassName}>
+              {uploads.map((upload) => (
+                <UploadTableRow
+                  key={upload.id}
+                  upload={upload}
+                  projectSlug={projectSlug}
+                  withAction={withAction}
+                  withRelations={withRelations}
+                  withSource={withSource}
+                  withTags={withTags}
+                  onDelete={onDelete}
+                />
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </TableWrapper>
+    </div>
   )
 }
 
@@ -166,7 +164,6 @@ const UploadTableRow = ({
   withSource,
   withTags,
   onDelete,
-  spaceClasses,
 }: {
   upload: UploadTableUpload
   projectSlug: string
@@ -175,7 +172,6 @@ const UploadTableRow = ({
   withSource: boolean
   withTags: boolean
   onDelete?: (uploadId: number) => Promise<void>
-  spaceClasses: string
 }) => {
   const hasLocation = upload.latitude !== null && upload.longitude !== null
   const projectUploadModal = useProjectUploadModal()
@@ -198,8 +194,8 @@ const UploadTableRow = ({
   const filename = getFilenameFromS3(upload.externalUrl)
   const isUploadPdf = isPdf(upload)
   return (
-    <tr className="border-b border-gray-100">
-      <td className={twJoin(spaceClasses, "align-top")}>
+    <tr className={tableRowClassName}>
+      <td className={twJoin(tableCellClassName, "align-top")}>
         <UploadPreviewClickable
           uploadId={upload.id}
           upload={upload}
@@ -209,7 +205,7 @@ const UploadTableRow = ({
           onDeleted={handleDelete}
         />
       </td>
-      <td className={twJoin(spaceClasses, "min-w-0 align-top")}>
+      <td className={twJoin(tableCellClassName, "min-w-0 align-top")}>
         {isUploadPdf ? (
           <Link
             to="/$projectSlug/uploads/$uploadId/view"
@@ -230,7 +226,7 @@ const UploadTableRow = ({
           </Link>
         )}
       </td>
-      <td className={twJoin("hidden align-top @xl:table-cell", spaceClasses)}>
+      <td className={twJoin("hidden align-top @xl:table-cell", tableCellClassName)}>
         {hasLocation && (
           <div className="flex items-center justify-center">
             <Tooltip content="Ist Geolokalisiert">
@@ -239,7 +235,7 @@ const UploadTableRow = ({
           </div>
         )}
       </td>
-      <td className={twJoin("hidden align-top text-gray-500 @xl:table-cell", spaceClasses)}>
+      <td className={twJoin("hidden align-top text-gray-500 @xl:table-cell", tableCellClassName)}>
         <div className="whitespace-nowrap">
           {formatBerlinTime(upload.createdAt, "dd.MM.yyyy, HH:mm")}
         </div>
@@ -253,17 +249,17 @@ const UploadTableRow = ({
         )}
       </td>
       {withTags && (
-        <td className={twJoin("hidden align-top text-gray-500 @xl:table-cell", spaceClasses)}>
+        <td className={twJoin("hidden align-top text-gray-500 @xl:table-cell", tableCellClassName)}>
           <ProjectRecordTagsList tags={"tags" in upload ? upload.tags : []} />
         </td>
       )}
       {withSource && (
-        <td className={twJoin("align-top whitespace-nowrap text-gray-500", spaceClasses)}>
+        <td className={twJoin("align-top whitespace-nowrap text-gray-500", tableCellClassName)}>
           {upload.source ?? "-"}
         </td>
       )}
       {withRelations && (
-        <td className={twJoin("hidden align-top text-gray-500 @xl:table-cell", spaceClasses)}>
+        <td className={twJoin("hidden align-top text-gray-500 @xl:table-cell", tableCellClassName)}>
           <UploadVerknuepfungen
             projectSlug={projectSlug}
             landAcquisitionModuleEnabled={upload.project?.landAcquisitionModuleEnabled ?? false}
@@ -278,7 +274,7 @@ const UploadTableRow = ({
       <td
         className={twJoin(
           "hidden align-top text-sm font-medium whitespace-nowrap @xl:table-cell",
-          spaceClasses,
+          tableCellClassName,
         )}
       >
         <div className="flex flex-col items-end gap-1">
