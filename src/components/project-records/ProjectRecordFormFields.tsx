@@ -5,7 +5,11 @@ import { useFormValue } from "@/src/components/core/components/forms/hooks/useFo
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { NumberArraySchema } from "@/src/components/core/utils/schema-shared"
 import { useSessionUploadCleanup } from "@/src/components/project-records/hooks/useSessionUploadCleanup"
-import { ProjectRecordEmailSource } from "@/src/components/project-records/ProjectRecordEmailSource"
+import {
+  ProjectRecordEmailSource,
+  ProjectRecordEmailSourceDisclosure,
+  type ProjectRecordEmailSourceValue,
+} from "@/src/components/project-records/ProjectRecordEmailSource"
 import { getUserComboboxItems } from "@/src/components/shared/app/users/utils/getUserSelectOptions"
 import { TagsFormSection } from "@/src/components/tags/TagsFormSection"
 import { UploadDropzone } from "@/src/components/uploads/UploadDropzone"
@@ -23,13 +27,7 @@ type Props = {
   projectSlug: string
   landAcquisitionModuleEnabled?: boolean
   disableSuspenseQueries?: boolean
-  emailSource?: {
-    from: string | null
-    subject: string | null
-    date: Date | null
-    textBody: string | null
-    uploads: { id: number; title: string }[]
-  } | null
+  emailSource?: ProjectRecordEmailSourceValue | null
 }
 
 export const ProjectRecordFormFields = ({
@@ -148,6 +146,10 @@ export const ProjectRecordFormFields = ({
       <div className={splitView ? "flex gap-6" : ""}>
         <div className={splitView ? "flex-1 space-y-6" : "space-y-6"}>
           {assignmentAndStatusFields}
+
+          {emailSource && !splitView && (
+            <ProjectRecordEmailSourceDisclosure email={emailSource} withHelp={false} />
+          )}
 
           <div className="flex flex-col gap-4 sm:flex-row">
             <div className="w-48">
