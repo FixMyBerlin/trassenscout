@@ -7,10 +7,6 @@ export const MembershipSchema = z.object({
   role: z.enum(MembershipRoleEnum),
 })
 
-export const updateMembershipRoleFormDefaultValues = {
-  role: "VIEWER" as const,
-}
-
 export const SaveUserMembershipsSchema = z.object({
   userId: z.number().int().positive(),
   projectRoles: z.array(

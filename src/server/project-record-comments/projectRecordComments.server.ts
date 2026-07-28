@@ -1,6 +1,6 @@
 import type { z } from "zod"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
-import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
+import { viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
 import { AuthorizationError } from "@/src/shared/auth/errors"
 import {
@@ -79,8 +79,22 @@ export async function deleteProjectRecordComment(
   headers: Headers,
   input: z.infer<typeof DeleteProjectRecordCommentSchema>,
 ) {
-  await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
-  return db.projectRecordComment.deleteMany({
+  const { membershipRole, session } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    viewerRoles,
+  )
+  const canDeleteAnyComment = membershipRole === null || membershipRole === "EDITOR"
+  const previous = await db.projectRecordComment.findFirstOrThrow({
     where: commentInProjectWhere(input.projectSlug, input.id),
+    select: { id: true, userId: true },
+  })
+
+  if (!canDeleteAnyComment && previous.userId !== Number(session.userId)) {
+    throw new AuthorizationError()
+  }
+
+  return db.projectRecordComment.deleteMany({
+    where: commentInProjectWhere(input.projectSlug, previous.id),
   })
 }

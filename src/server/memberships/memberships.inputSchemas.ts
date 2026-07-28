@@ -15,11 +15,6 @@ export const DeleteProjectMembershipSchema = ProjectSlugRequiredSchema.extend({
   membershipId: z.number().int().positive(),
 })
 
-export const UpdateProjectMembershipRoleSchema = ProjectSlugRequiredSchema.extend({
-  membershipId: z.number().int().positive(),
-  role: MembershipSchema.shape.role,
-})
-
 export const GetProjectUsersSchema = ProjectSlugRequiredSchema.extend({
   role: MembershipSchema.shape.role.optional(),
 })

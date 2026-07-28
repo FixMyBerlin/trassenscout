@@ -17,7 +17,6 @@ import { getFullname } from "@/src/components/core/users/getFullname"
 import { UserCanIcon } from "@/src/components/shared/app/memberships/UserCanIcon"
 import type { ProjectUsersList } from "@/src/server/memberships/types"
 import { TeamTableEditMembershipDelete } from "./TeamTableEditMembershipDelete"
-import { TeamTableEditMembershipModal } from "./TeamTableEditMembershipModal"
 
 /**
  * Column width classes for `table-fixed` layout. Adjust percentages here only.
@@ -32,7 +31,6 @@ const teamTableColWidths = {
 
 type Props = {
   users: ProjectUsersList
-  projectSlug: string
 }
 
 export const TeamTable = ({ users }: Props) => {
@@ -105,8 +103,7 @@ export const TeamTable = ({ users }: Props) => {
                       tableCellClassName,
                     )}
                   >
-                    <div className="flex flex-col items-end gap-1">
-                      <TeamTableEditMembershipModal editUser={user} />
+                    <div className="flex justify-end">
                       <TeamTableEditMembershipDelete membershipId={user.currentMembershipId} />
                     </div>
                   </td>

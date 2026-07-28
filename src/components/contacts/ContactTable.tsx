@@ -76,7 +76,7 @@ export const ContactTable = ({ contacts, currentUserEmail, projectSlug }: Props)
     <FormShell
       form={form}
       formError={null}
-      submitText="Email schreiben"
+      submitText="E-Mail schreiben"
       hideSubmitButton
       className="space-y-0 p-0"
       backLink={null}
@@ -178,7 +178,7 @@ export const ContactTable = ({ contacts, currentUserEmail, projectSlug }: Props)
                             <field.MultiCheckbox
                               value={String(contact.id)}
                               outerProps={{ className: "justify-end" }}
-                              label="Markieren für 'Email schreiben'"
+                              label="Markieren für 'E-Mail schreiben'"
                             />
                             <ContactTableDelete
                               contactId={contact.id}
@@ -207,7 +207,7 @@ export const ContactTable = ({ contacts, currentUserEmail, projectSlug }: Props)
                       className={secondaryButtonClassName}
                       type="submit"
                     >
-                      {isSubmitting ? "…" : "Email schreiben"}
+                      {isSubmitting ? "…" : "E-Mail schreiben"}
                     </button>
                   )}
                 </form.Subscribe>

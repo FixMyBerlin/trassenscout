@@ -22,11 +22,6 @@ export const DeleteProjectMembershipSchema = ProjectSlugRequiredSchema.extend({
   membershipId: z.number().int().positive(),
 })
 
-export const UpdateProjectMembershipRoleSchema = ProjectSlugRequiredSchema.extend({
-  membershipId: z.number().int().positive(),
-  role: MembershipSchema.shape.role,
-})
-
 export const GetProjectUsersSchema = ProjectSlugRequiredSchema.extend({
   role: MembershipSchema.shape.role.optional(),
 })
@@ -136,28 +131,6 @@ export async function deleteProjectMembership(
   return db.membership.deleteMany({
     where: { id: input.membershipId, project: { slug: input.projectSlug } },
   })
-}
-
-export async function updateProjectMembershipRole(
-  headers: Headers,
-  input: z.infer<typeof UpdateProjectMembershipRoleSchema>,
-) {
-  const session = await endpointAuth.session(headers)
-  await authorizeProjectMemberByProjectSlug(session, input.projectSlug, editorRoles)
-
-  // Bind the membership to the authorized project so a caller cannot pass a
-  // membershipId belonging to a different project (cross-tenant IDOR).
-  await db.membership.findFirstOrThrow({
-    where: { id: input.membershipId, project: { slug: input.projectSlug } },
-    select: { id: true },
-  })
-
-  const updated = await db.membership.update({
-    where: { id: input.membershipId },
-    data: { role: input.role },
-  })
-  await membershipUpdateSession(updated.userId)
-  return updated
 }
 
 export async function saveUserMemberships(

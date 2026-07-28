@@ -6,7 +6,6 @@ import {
   DeleteProjectMembershipSchema,
   GetProjectUsersSchema,
   UpdateMembershipRoleSchema,
-  UpdateProjectMembershipRoleSchema,
 } from "./memberships.inputSchemas"
 import {
   createMembership,
@@ -14,7 +13,6 @@ import {
   deleteProjectMembership,
   getProjectUsers,
   updateMembershipRole,
-  updateProjectMembershipRole,
   saveUserMemberships,
 } from "./memberships.server"
 
@@ -37,10 +35,6 @@ export const getProjectUsersFn = createServerFn({ method: "GET" })
 export const deleteProjectMembershipFn = createServerFn({ method: "POST" })
   .validator(DeleteProjectMembershipSchema)
   .handler(({ data }) => deleteProjectMembership(getRequestHeaders(), data))
-
-export const updateProjectMembershipRoleFn = createServerFn({ method: "POST" })
-  .validator(UpdateProjectMembershipRoleSchema)
-  .handler(({ data }) => updateProjectMembershipRole(getRequestHeaders(), data))
 
 export const saveUserMembershipsFn = createServerFn({ method: "POST" })
   .validator(SaveUserMembershipsSchema)

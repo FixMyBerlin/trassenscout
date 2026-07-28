@@ -40,7 +40,7 @@ export function PageContactsTeam() {
           ) : undefined
         }
       />
-      <TeamTable users={users} projectSlug={projectSlug} />
+      <TeamTable users={users} />
       <div className={pageContentPaddingClassName}>
         <SuperAdminBox>
           <Link button="blue" to="/admin/memberships">
