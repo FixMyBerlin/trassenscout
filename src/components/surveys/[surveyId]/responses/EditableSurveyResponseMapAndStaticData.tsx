@@ -111,6 +111,7 @@ const EditableSurveyResponseMapAndStaticData = ({ response, showMap, categoryLab
   }
 
   const locationPin = response.data[locationId] as { lat: number; lng: number } | undefined
+  const hasLocationPin = Number.isFinite(locationPin?.lat) && Number.isFinite(locationPin?.lng)
   const geometryCategoryValue = geometryCategoryId
     ? (response.data[geometryCategoryId] as string | undefined)
     : undefined
@@ -192,18 +193,20 @@ const EditableSurveyResponseMapAndStaticData = ({ response, showMap, categoryLab
               />
             </MapProvider>
             <div className="flex flex-col items-start pt-4">
-              <Link
-                to="/$projectSlug/surveys/$surveyId/responses/map"
-                params={{ projectSlug, surveyId: String(surveyId) }}
-                search={surveyResponsesSearchToRaw({
-                  responseDetails: response.id,
-                  selectedResponses: [response.id],
-                })}
-                className="flex items-center gap-2"
-              >
-                <ArrowsPointingOutIcon className="size-4" />
-                In großer Karte öffnen
-              </Link>
+              {hasLocationPin && (
+                <Link
+                  to="/$projectSlug/surveys/$surveyId/responses/map"
+                  params={{ projectSlug, surveyId: String(surveyId) }}
+                  search={surveyResponsesSearchToRaw({
+                    responseDetails: response.id,
+                    selectedResponses: [response.id],
+                  })}
+                  className="flex items-center gap-2"
+                >
+                  <ArrowsPointingOutIcon className="size-4" />
+                  In großer Karte öffnen
+                </Link>
+              )}
               {tildaUrl && (
                 <Link target="_blank" href={tildaUrl} className="flex items-center gap-2">
                   <ArrowUpRightIcon className="size-3" />
