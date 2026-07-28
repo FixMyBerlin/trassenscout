@@ -74,14 +74,16 @@ function SubsectionDashboardContent({
           ) : undefined
         }
         primaryAction={
-          <Link
-            button
-            icon="plus"
-            to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new"
-            params={{ projectSlug, subsectionSlug }}
-          >
-            Neue Maßnahme
-          </Link>
+          <IfUserCanEdit>
+            <Link
+              button
+              icon="plus"
+              to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new"
+              params={{ projectSlug, subsectionSlug }}
+            >
+              Neue Maßnahme
+            </Link>
+          </IfUserCanEdit>
         }
       />
 
