@@ -24,8 +24,11 @@ import {
 } from "@/src/components/core/components/Map/BackgroundSwitcher/BackgroundSwitcher"
 import "maplibre-gl/dist/maplibre-gl.css"
 import { getMapStyle, getVectorStyleUrl } from "@/src/components/core/components/Map/mapStyleConfig"
+import { MapTooltipPopup } from "@/src/components/core/components/Map/MapTooltipPopup"
 import { getStaticOverlayForProject } from "@/src/components/core/components/Map/staticOverlay/getStaticOverlayForProject"
 import { StaticOverlay } from "@/src/components/core/components/Map/staticOverlay/StaticOverlay"
+import { geometryAnchorPoint } from "@/src/components/core/components/Map/utils/geometryAnchorPoint"
+import type { SupportedGeometry } from "@/src/shared/geometry/geometrySchemas"
 import { useSurveyResponseDetails } from "./useSurveyResponseDetails"
 import { useSurveyResponseMapSelection } from "./useSurveyResponseMapSelection"
 
@@ -38,6 +41,20 @@ type Props = {
   locationRef: string
   categoryGeometryRef?: string
   surveySlug: AllowedSurveySlugs
+}
+
+type MapTooltip = {
+  longitude: number
+  latitude: number
+  content: string
+}
+
+const tooltipForFeature = (mapFeature: MapGeoJSONFeature | undefined): MapTooltip | null => {
+  const responseId = Number(mapFeature?.id)
+  if (!Number.isFinite(responseId) || !mapFeature?.geometry) return null
+
+  const anchor = geometryAnchorPoint(mapFeature.geometry as SupportedGeometry)
+  return anchor ? { ...anchor, content: String(responseId) } : null
 }
 
 export const SurveyResponseOverviewMap = ({
@@ -56,6 +73,7 @@ export const SurveyResponseOverviewMap = ({
     surveyResponses?.length ? [surveyResponses[0]?.id] : [],
   )
   const [cursorStyle, setCursorStyle] = useState("grab")
+  const [tooltip, setTooltip] = useState<MapTooltip | null>(null)
   const surveyResponsesWithLocation = surveyResponses.filter((r) => r.data[locationRef])
   // Setup pmtiles
   useEffect(() => {
@@ -457,10 +475,12 @@ export const SurveyResponseOverviewMap = ({
 
   const handleMouseMove = ({ features }: MapLayerMouseEvent) => {
     updateCursor(features)
+    setTooltip(tooltipForFeature(features?.at(0)))
   }
 
   const handleMouseLeave = () => {
     updateCursor([])
+    setTooltip(null)
   }
 
   const updateCursor = (features: MapGeoJSONFeature[] | undefined) => {
@@ -497,6 +517,11 @@ export const SurveyResponseOverviewMap = ({
             onChange={handleLayerSwitch}
           />
           <NavigationControl showCompass={false} />
+          {tooltip && (
+            <MapTooltipPopup longitude={tooltip.longitude} latitude={tooltip.latitude}>
+              {tooltip.content}
+            </MapTooltipPopup>
+          )}
         </Map>
       </div>
     </div>

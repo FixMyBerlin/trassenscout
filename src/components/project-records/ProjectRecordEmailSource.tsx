@@ -15,7 +15,7 @@ type Props = {
   email: ProjectRecordEmailSourceValue
 }
 
-export const ProjectRecordEmailSourceText = ({ email }: { email: Props["email"] }) => {
+const ProjectRecordEmailSourceText = ({ email }: { email: Props["email"] }) => {
   return (
     <div className="space-y-2 text-sm text-gray-700">
       {email.from && (
