@@ -1,27 +1,45 @@
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { feature, featureCollection } from "@turf/helpers"
 import type { MultiPolygon, Polygon } from "geojson"
 import type { ExpressionSpecification, MapLayerMouseEvent } from "maplibre-gl"
 import { useMemo } from "react"
 import { Layer, Source } from "react-map-gl/maplibre"
+import {
+  ACQUISITION_AREA_PARCEL_SOURCE_ID,
+  ACQUISITION_AREA_SELECTED_SOURCE_ID,
+  ACQUISITION_AREA_UNSELECTED_SOURCE_ID,
+  useAcquisitionAreaMapHover,
+} from "@/src/components/abschnitte/useAcquisitionAreaMapHover"
 import { useAcquisitionAreaSelection } from "@/src/components/abschnitte/useAcquisitionAreaSelection"
+import {
+  ACQUISITION_AREA_FIT_BOUNDS_OPTIONS,
+  ACQUISITION_AREA_OVERVIEW_FIT_BOUNDS_OPTIONS,
+  fitMapToAcquisitionArea,
+  SUBSUBSECTION_LAND_ACQUISITION_MAP_ID,
+} from "@/src/components/abschnitte/utils/landAcquisitionMapCamera"
 import { lookupTableRows } from "@/src/components/abschnitte/utils/lookupTableRows"
 import { acquisitionAreaStatusStyles } from "@/src/components/acquisition-area-status/acquisitionAreaStatusStyles"
 import { BaseMap } from "@/src/components/core/components/Map/BaseMap"
 import {
   acquisitionAreaParcelFillPaint,
   acquisitionAreaParcelLineDashPaint,
+  mapHoverExpression,
 } from "@/src/components/core/components/Map/colors/acquisitionAreaParcelLayerStyles"
+import { mapColorTokens } from "@/src/components/core/components/Map/colors/mapColorTokens"
 import { subsubsectionColors } from "@/src/components/core/components/Map/colors/subsubsectionColors"
 import { getLandAcquisitionLegendConfig } from "@/src/components/core/components/Map/LandAcquisitionMap.legendConfig"
 import { MapFooter } from "@/src/components/core/components/Map/MapFooter"
+import { MapTooltipPopup } from "@/src/components/core/components/Map/MapTooltipPopup"
 import { getStaticOverlayForProject } from "@/src/components/core/components/Map/staticOverlay/getStaticOverlayForProject"
 import {
   alkisAttributionToHtml,
   useAlkisAttribution,
 } from "@/src/components/core/components/Map/useAlkisAttribution"
-import { geometriesBbox } from "@/src/components/core/components/Map/utils/bboxHelpers"
+import {
+  geometriesBbox,
+  geometryBbox,
+} from "@/src/components/core/components/Map/utils/bboxHelpers"
 import { getSubsubsectionFeatures } from "@/src/components/core/components/Map/utils/getSubsubsectionFeatures"
 import { polygonToGeoJSON } from "@/src/components/core/components/Map/utils/polygonToGeoJSON"
 import { acquisitionAreasBySubsubsectionQueryOptions } from "@/src/server/acquisitionAreas/acquisitionAreasAbschnitteQueryOptions"
@@ -45,6 +63,19 @@ const acquisitionAreaColorExpression: ExpressionSpecification = [
   acquisitionAreaStatusStyles[1].color,
 ]
 
+/** Ocker-gelb on hover, as on Maßnahmenebene. One definition for every hoverable acquisition layer. */
+const hoverColorExpression = (base: ExpressionSpecification | string): ExpressionSpecification => [
+  "case",
+  mapHoverExpression,
+  mapColorTokens.yellow400,
+  base,
+]
+
+const acquisitionAreaHoverColorExpression = hoverColorExpression(acquisitionAreaColorExpression)
+const selectedAcquisitionAreaHoverColorExpression = hoverColorExpression(
+  subsubsectionColors.polygon.selected,
+)
+
 type Props = {
   subsubsection: SubsubsectionWithPosition
   classHeight?: string
@@ -60,6 +91,7 @@ const toAcquisitionAreaFeatureCollection = (areas: AcquisitionAreaWithTypedGeome
     areas.flatMap((acquisitionArea) =>
       polygonToGeoJSON(acquisitionArea.geometry as TAcquisitionAreaGeometrySchema, {
         acquisitionAreaId: acquisitionArea.id,
+        parcelId: acquisitionArea.parcel.id,
         statusStyle: acquisitionArea.acquisitionAreaStatus?.style ?? 1,
       }).map((item, index) =>
         feature(item.geometry, {
@@ -73,17 +105,20 @@ const toAcquisitionAreaFeatureCollection = (areas: AcquisitionAreaWithTypedGeome
 export const SubsubsectionLandAcquisitionMap = ({ subsubsection, classHeight }: Props) => {
   const { projectSlug } = loggedInProjectRouteApi.useParams()
   const alkisAttribution = useAlkisAttribution()
-  const { acquisitionAreaId, setAcquisitionAreaId } = useAcquisitionAreaSelection()
 
-  const { data: acquisitionAreas = [] } = useQuery({
+  const { data: acquisitionAreas } = useSuspenseQuery({
     ...acquisitionAreasBySubsubsectionQueryOptions({
       projectSlug,
       subsubsectionId: subsubsection.id,
     }),
     ...defaultQueryOptions,
   })
+  const { acquisitionAreaId, setAcquisitionAreaId } = useAcquisitionAreaSelection(acquisitionAreas)
   const { data: acquisitionAreaStatusesResult } = useQuery({
-    ...adminLookupRowsWithCountQueryOptions({ projectSlug, table: "acquisitionAreaStatuses" }),
+    ...adminLookupRowsWithCountQueryOptions({
+      projectSlug,
+      table: "acquisitionAreaStatuses",
+    }),
     ...defaultQueryOptions,
   })
 
@@ -105,6 +140,7 @@ export const SubsubsectionLandAcquisitionMap = ({ subsubsection, classHeight }: 
     () => acquisitionAreas.filter((acquisitionArea) => acquisitionArea.id === acquisitionAreaId),
     [acquisitionAreaId, acquisitionAreas],
   )
+  const selectedAcquisitionArea = selectedAcquisitionAreas[0]
 
   const unselectedAcquisitionAreas = useMemo(
     () => acquisitionAreas.filter((acquisitionArea) => acquisitionArea.id !== acquisitionAreaId),
@@ -127,6 +163,7 @@ export const SubsubsectionLandAcquisitionMap = ({ subsubsection, classHeight }: 
         acquisitionAreas.map((acquisitionArea) =>
           feature(acquisitionArea.parcel.geometry as Polygon | MultiPolygon, {
             parcelId: acquisitionArea.parcel.id,
+            acquisitionAreaId: acquisitionArea.id,
             featureId: `acquisition-area-parcel-${acquisitionArea.parcel.id}`,
           }),
         ),
@@ -134,21 +171,25 @@ export const SubsubsectionLandAcquisitionMap = ({ subsubsection, classHeight }: 
     [acquisitionAreas],
   )
 
-  const acquisitionAreaIdByParcelId = useMemo(
-    () =>
-      new Map(
-        acquisitionAreas.map((acquisitionArea) => [acquisitionArea.parcel.id, acquisitionArea.id]),
-      ),
-    [acquisitionAreas],
-  )
+  const { tooltip, acquisitionAreaIdForFeature, handleMouseMove, handleMouseLeave } =
+    useAcquisitionAreaMapHover({
+      acquisitionAreas,
+      parcelFeatures: parcelFeatureCollection,
+      selectedFeatures: selectedAcquisitionAreasFc,
+      unselectedFeatures: unselectedAcquisitionAreasFc,
+    })
 
   const mapBbox = useMemo(() => {
+    if (selectedAcquisitionArea) {
+      return geometryBbox(selectedAcquisitionArea.geometry)
+    }
+
     const geometries: SupportedGeometry[] = [subsubsection.geometry as SupportedGeometry]
     acquisitionAreas.forEach((acquisitionArea) => {
       geometries.push(acquisitionArea.geometry as SupportedGeometry)
     })
     return geometriesBbox(geometries)
-  }, [acquisitionAreas, subsubsection.geometry])
+  }, [acquisitionAreas, selectedAcquisitionArea, subsubsection.geometry])
 
   const landAcquisitionLegendConfig = useMemo(
     () =>
@@ -162,31 +203,33 @@ export const SubsubsectionLandAcquisitionMap = ({ subsubsection, classHeight }: 
   )
 
   const handleClickMap = (event: MapLayerMouseEvent) => {
-    const clickedFeature = event.features?.at(0)
-    const clickedAcquisitionAreaId = Number(clickedFeature?.properties?.acquisitionAreaId)
-    if (Number.isFinite(clickedAcquisitionAreaId)) {
-      void setAcquisitionAreaId(clickedAcquisitionAreaId)
-      return
+    const clickedAcquisitionAreaId = acquisitionAreaIdForFeature(event.features?.at(0))
+    if (clickedAcquisitionAreaId === null) return
+
+    const clickedAcquisitionArea = acquisitionAreas.find(
+      (acquisitionArea) => acquisitionArea.id === clickedAcquisitionAreaId,
+    )
+    // `event.target` is the maplibre map itself, so the fly-to needs no readiness check here:
+    // the user cannot click a feature on a map that has not rendered it.
+    if (clickedAcquisitionArea) {
+      fitMapToAcquisitionArea(event.target, clickedAcquisitionArea.geometry as SupportedGeometry)
     }
-
-    const clickedParcelId = Number(clickedFeature?.properties?.parcelId)
-    if (!Number.isFinite(clickedParcelId)) return
-
-    const acquisitionAreaIdFromParcel = acquisitionAreaIdByParcelId.get(clickedParcelId)
-    if (!acquisitionAreaIdFromParcel) return
-
-    void setAcquisitionAreaId(acquisitionAreaIdFromParcel)
+    void setAcquisitionAreaId(clickedAcquisitionAreaId)
   }
 
   return (
     <section className={classHeight ? "flex min-h-0 flex-1 flex-col" : undefined}>
       <BaseMap
-        id="subsubsection-page-map"
+        id={SUBSUBSECTION_LAND_ACQUISITION_MAP_ID}
         initialViewState={{
           bounds: mapBbox,
-          fitBoundsOptions: { padding: 60, maxZoom: 16 },
+          fitBoundsOptions: selectedAcquisitionArea
+            ? ACQUISITION_AREA_FIT_BOUNDS_OPTIONS
+            : ACQUISITION_AREA_OVERVIEW_FIT_BOUNDS_OPTIONS,
         }}
         onClick={handleClickMap}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
         interactiveLayerIds={[
           "acquisition-area-click-target-unselected",
           "acquisition-area-click-target-selected",
@@ -206,10 +249,11 @@ export const SubsubsectionLandAcquisitionMap = ({ subsubsection, classHeight }: 
         classHeight={classHeight}
       >
         <Source
-          id="acquisition-area-parcels"
+          id={ACQUISITION_AREA_PARCEL_SOURCE_ID}
           type="geojson"
           data={parcelFeatureCollection}
           attribution={alkisAttributionToHtml(alkisAttribution)}
+          promoteId="featureId"
         >
           <Layer
             id="acquisition-area-parcels-fill"
@@ -223,12 +267,17 @@ export const SubsubsectionLandAcquisitionMap = ({ subsubsection, classHeight }: 
           />
         </Source>
 
-        <Source id="acquisition-area-unselected" type="geojson" data={unselectedAcquisitionAreasFc}>
+        <Source
+          id={ACQUISITION_AREA_UNSELECTED_SOURCE_ID}
+          type="geojson"
+          data={unselectedAcquisitionAreasFc}
+          promoteId="featureId"
+        >
           <Layer
             id="acquisition-area-fill-unselected"
             type="fill"
             paint={{
-              "fill-color": acquisitionAreaColorExpression,
+              "fill-color": acquisitionAreaHoverColorExpression,
               "fill-opacity": 0.32,
             }}
           />
@@ -236,8 +285,8 @@ export const SubsubsectionLandAcquisitionMap = ({ subsubsection, classHeight }: 
             id="acquisition-area-line-unselected"
             type="line"
             paint={{
-              "line-color": acquisitionAreaColorExpression,
-              "line-width": 2,
+              "line-color": acquisitionAreaHoverColorExpression,
+              "line-width": ["case", mapHoverExpression, 3, 2],
               "line-opacity": 0.9,
             }}
           />
@@ -248,12 +297,17 @@ export const SubsubsectionLandAcquisitionMap = ({ subsubsection, classHeight }: 
           />
         </Source>
 
-        <Source id="acquisition-area-selected" type="geojson" data={selectedAcquisitionAreasFc}>
+        <Source
+          id={ACQUISITION_AREA_SELECTED_SOURCE_ID}
+          type="geojson"
+          data={selectedAcquisitionAreasFc}
+          promoteId="featureId"
+        >
           <Layer
             id="acquisition-area-fill-selected"
             type="fill"
             paint={{
-              "fill-color": subsubsectionColors.polygon.selected,
+              "fill-color": selectedAcquisitionAreaHoverColorExpression,
               "fill-opacity": 0.38,
             }}
           />
@@ -261,8 +315,8 @@ export const SubsubsectionLandAcquisitionMap = ({ subsubsection, classHeight }: 
             id="acquisition-area-line-selected"
             type="line"
             paint={{
-              "line-color": subsubsectionColors.polygon.selected,
-              "line-width": 3,
+              "line-color": selectedAcquisitionAreaHoverColorExpression,
+              "line-width": ["case", mapHoverExpression, 4, 3],
               "line-opacity": 1,
             }}
           />
@@ -272,6 +326,12 @@ export const SubsubsectionLandAcquisitionMap = ({ subsubsection, classHeight }: 
             paint={{ "fill-opacity": 0 }}
           />
         </Source>
+
+        {tooltip && (
+          <MapTooltipPopup longitude={tooltip.longitude} latitude={tooltip.latitude}>
+            {tooltip.content}
+          </MapTooltipPopup>
+        )}
       </BaseMap>
       <MapFooter legendItemsConfig={landAcquisitionLegendConfig} pinned={Boolean(classHeight)} />
     </section>

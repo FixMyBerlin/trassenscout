@@ -1,6 +1,7 @@
 import type React from "react"
 import { CSSProperties } from "react"
 import { twJoin } from "tailwind-merge"
+import { mapBubbleClassName, mapBubbleShadowStyle } from "./mapBubbleStyles"
 import type { MapHighlightLevel } from "./mapHighlightState"
 import { useMarkerHighlight } from "./useMarkerHighlight"
 
@@ -42,9 +43,7 @@ const createTipPath = ({ d, className }: { d: string; className: string }) => (
   <path d={d} strokeWidth="1" className={className} />
 )
 
-const shadow = {
-  boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.25)",
-}
+const shadow = mapBubbleShadowStyle
 const divStyles = {
   bottomRight: { ...shadow, top: 10, left: 10 },
   bottom: { ...shadow, top: 14, left: 0, transform: "translateX(-50%)" },
@@ -133,7 +132,8 @@ export const TipMarker = ({
       <div
         style={divStyles[anchor]}
         className={twJoin(
-          "absolute rounded-md border border-gray-400 bg-white transition-colors",
+          "absolute transition-colors",
+          mapBubbleClassName,
           bubbleClasses,
           pillClassName,
         )}

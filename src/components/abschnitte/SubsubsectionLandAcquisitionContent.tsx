@@ -1,10 +1,15 @@
 import { TrashIcon } from "@heroicons/react/24/outline"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
-import { useEffect, useState } from "react"
+import { useState } from "react"
+import { useMap } from "react-map-gl/maplibre"
 import { twJoin } from "tailwind-merge"
 import { SubsubsectionPanel } from "@/src/components/abschnitte/SubsubsectionPanel"
 import { useAcquisitionAreaSelection } from "@/src/components/abschnitte/useAcquisitionAreaSelection"
+import {
+  fitMapToAcquisitionArea,
+  SUBSUBSECTION_LAND_ACQUISITION_MAP_ID,
+} from "@/src/components/abschnitte/utils/landAcquisitionMapCamera"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { secondaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { FormSuccess } from "@/src/components/core/components/forms/FormSuccess"
@@ -52,7 +57,7 @@ export const SubsubsectionLandAcquisitionContent = ({
 }: Props) => {
   const { projectSlug, subsectionSlug, subsubsectionSlug } = layoutRouteApi.useParams()
   const queryClient = useQueryClient()
-  const { acquisitionAreaId, setAcquisitionAreaId } = useAcquisitionAreaSelection()
+  const landAcquisitionMap = useMap()[SUBSUBSECTION_LAND_ACQUISITION_MAP_ID]
   const userCanEdit = useUserCan().edit
   const [isProjectRecordModalOpen, setIsProjectRecordModalOpen] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
@@ -70,9 +75,8 @@ export const SubsubsectionLandAcquisitionContent = ({
     refetchOnReconnect: false,
   })
 
-  const selectedAcquisitionArea = acquisitionAreas.find(
-    (acquisitionArea) => acquisitionArea.id === acquisitionAreaId,
-  )
+  const { acquisitionAreaId, selectedAcquisitionArea, setAcquisitionAreaId } =
+    useAcquisitionAreaSelection(acquisitionAreas)
 
   const { data: projectRecords = [], refetch: refetchProjectRecords } = useQuery({
     ...(selectedAcquisitionArea
@@ -100,21 +104,22 @@ export const SubsubsectionLandAcquisitionContent = ({
   })
   const uploads = uploadsData?.uploads ?? []
 
-  useEffect(() => {
-    const onlyAcquisitionArea = acquisitionAreas[0]
-    if (
-      acquisitionAreas.length === 1 &&
-      onlyAcquisitionArea &&
-      acquisitionAreaId !== onlyAcquisitionArea.id
-    ) {
-      void setAcquisitionAreaId(onlyAcquisitionArea.id)
-    }
-  }, [acquisitionAreaId, acquisitionAreas, setAcquisitionAreaId])
-
   const subsubsectionParams = {
     projectSlug,
     subsectionSlug: subsectionSlug!,
     subsubsectionSlug: subsubsectionSlug!,
+  }
+
+  const handleSelectAcquisitionArea = (value: number | null) => {
+    const nextAcquisitionArea = acquisitionAreas.find(
+      (acquisitionArea) => acquisitionArea.id === value,
+    )
+
+    if (nextAcquisitionArea && landAcquisitionMap) {
+      fitMapToAcquisitionArea(landAcquisitionMap, nextAcquisitionArea.geometry)
+    }
+
+    void setAcquisitionAreaId(value)
   }
 
   const handleDeleteAllAcquisitionAreas = async () => {
@@ -170,9 +175,7 @@ export const SubsubsectionLandAcquisitionContent = ({
         {acquisitionAreas.length > 1 && (
           <SelectListbox
             value={acquisitionAreaId ?? null}
-            onChange={(value) => {
-              void setAcquisitionAreaId(value)
-            }}
+            onChange={handleSelectAcquisitionArea}
             placeholder="Verhandlungsfläche auswählen"
             options={acquisitionAreas.map((acquisitionArea) => ({
               value: acquisitionArea.id,

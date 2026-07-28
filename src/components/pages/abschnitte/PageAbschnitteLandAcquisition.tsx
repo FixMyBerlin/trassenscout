@@ -1,5 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
+import { MapProvider } from "react-map-gl/maplibre"
 import { SubsubsectionDeleteAllAcquisitionAreasAdmin } from "@/src/components/abschnitte/SubsubsectionDeleteAllAcquisitionAreasAdmin"
 import { SubsubsectionLandAcquisitionContent } from "@/src/components/abschnitte/SubsubsectionLandAcquisitionContent"
 import { SubsubsectionLandAcquisitionMap } from "@/src/components/abschnitte/SubsubsectionLandAcquisitionMap"
@@ -27,30 +28,32 @@ export function PageAbschnitteLandAcquisition() {
 
   return (
     <MapPageSuspense>
-      <MapAsideSplitLayout
-        aside={
-          <>
-            <SubsubsectionLandAcquisitionContent
-              subsectionId={subsection.id}
-              subsubsectionId={subsubsection.id}
-              className="rounded-none border-0 shadow-none"
+      <MapProvider>
+        <MapAsideSplitLayout
+          aside={
+            <>
+              <SubsubsectionLandAcquisitionContent
+                subsectionId={subsection.id}
+                subsubsectionId={subsubsection.id}
+                className="rounded-none border-0 shadow-none"
+              />
+              <SubsubsectionDeleteAllAcquisitionAreasAdmin
+                projectSlug={projectSlug}
+                subsectionSlug={subsectionSlug}
+                subsubsectionSlug={subsubsectionSlug}
+                subsubsectionId={subsubsection.id}
+              />
+              <SuperAdminLogData data={{ subsection, subsubsection }} />
+            </>
+          }
+          map={
+            <SubsubsectionLandAcquisitionMap
+              subsubsection={subsubsection}
+              classHeight={MAP_FULLSCREEN_HEIGHT_CLASS}
             />
-            <SubsubsectionDeleteAllAcquisitionAreasAdmin
-              projectSlug={projectSlug}
-              subsectionSlug={subsectionSlug}
-              subsubsectionSlug={subsubsectionSlug}
-              subsubsectionId={subsubsection.id}
-            />
-            <SuperAdminLogData data={{ subsection, subsubsection }} />
-          </>
-        }
-        map={
-          <SubsubsectionLandAcquisitionMap
-            subsubsection={subsubsection}
-            classHeight={MAP_FULLSCREEN_HEIGHT_CLASS}
-          />
-        }
-      />
+          }
+        />
+      </MapProvider>
     </MapPageSuspense>
   )
 }
