@@ -27,9 +27,11 @@ Commit path: `git status`, `git diff`, and `git log -5` in parallel; stage relev
 
 Safety: no push unless asked. No `--no-verify`. No amend of pushed commits. Do not stage secrets or unrelated dirty files.
 
-Already committed and `check` only fixed lint/format: `git commit --amend --no-edit` when HEAD has not been pushed; otherwise stage and ask before amending.
+Already committed and verify only fixed lint/format: `git commit --amend --no-edit` when HEAD has not been pushed; otherwise stage and ask before amending.
 
-E2E is not in `check`. For UI/routes/auth changes, also run `bun run e2e` (or `check-full` on trassenscout). See [playwright-skill](../playwright-skill/SKILL.md).
+E2E is not in `check`. For UI/routes/auth changes, also run `bun run e2e` (or `check-full` when defined). See [playwright-skill](../playwright-skill/SKILL.md).
+
+Script names: [package-json-scripts.md](../tech-stack/references/package-json-scripts.md).
 
 ## Commit message
 

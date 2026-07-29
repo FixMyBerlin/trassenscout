@@ -1,6 +1,6 @@
 ---
 name: nuqs
-description: nuqs (type-safe URL query state) for Next.js and legacy/shared components. Prefer TanStack Router validateSearch on TanStack Start/Router apps. Use when writing nuqs hooks, parsers, NuqsAdapter setup, or Next.js URL state — not for greenfield TanStack route search params.
+description: nuqs (type-safe URL query state) for Next.js and legacy/shared components. Prefer TanStack Router validateSearch on TanStack Router/Start apps. Use when writing nuqs hooks, parsers, NuqsAdapter setup, or Next.js URL state — not for greenfield TanStack route search params.
 ---
 
 **LLM reference:** Fetch [llms.txt](https://nuqs.dev/llms.txt) for the documentation index and latest API. Full docs in one file: [llms-full.txt](https://nuqs.dev/llms-full.txt). Human-readable docs: [nuqs.dev/docs](https://nuqs.dev/docs).
@@ -13,12 +13,12 @@ Do **not** duplicate upstream API reference in this skill — use `llms.txt` / `
 
 **On TanStack Router or TanStack Start, prefer the router’s built-in search params** unless you have a concrete reason to add nuqs.
 
-| Situation                                            | Use instead                                                                                 |
-| ---------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| App-owned filters, tabs, pagination, sort on a route | Route `validateSearch` (Zod) + `Route.useSearch()`, `loaderDeps`, typed `<Link search={…}>` |
-| Loaders / `beforeLoad` need query state              | Same parsers in `validateSearch`; `search` is typed in loader args                          |
-| FMC TanStack Start stack                             | Skill `tanstack-start-conventions` → `references/params-search-ui-vs-api.md`                |
-| API routes under `routes/api/*`                      | Parse `request.url` in `GET` with Zod — **not** route `validateSearch`                      |
+| Situation                                            | Use instead                                                                                           |
+| ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| App-owned filters, tabs, pagination, sort on a route | Route `validateSearch` (Zod) + `Route.useSearch()`, `loaderDeps`, typed `<Link search={…}>`           |
+| Loaders / `beforeLoad` need query state              | Same parsers in `validateSearch`; `search` is typed in loader args                                    |
+| FMC TanStack Router / Start stack                    | Skill `tanstack-router-conventions` → `references/params-search-ui-routes.md`                         |
+| API routes under `routes/api/*`                      | Parse `request.url` in `GET` with Zod — **not** route `validateSearch` (`tanstack-start-conventions`) |
 
 **Use nuqs on TanStack only when:**
 
@@ -39,11 +39,11 @@ Do **not** duplicate upstream API reference in this skill — use `llms.txt` / `
 
 ## FMC conventions
 
-**TanStack Start** (preferred URL state):
+**TanStack Router / Start** (preferred URL state):
 
 - Colocate Zod search schemas with the route or feature; wire `validateSearch` on the owning route file.
-- Wire **`parseSearch` / `stringifySearch`** in `router.tsx` (pretty JSON baseline; jsurl only for large objects) — `tanstack-start-conventions` → `router-search-serialization.md`.
-- See `tanstack-start-conventions` for folder layout; avoid `NuqsAdapter` unless a subtree truly needs nuqs hooks.
+- Wire **`parseSearch` / `stringifySearch`** in `router.tsx` (pretty JSON baseline; jsurl only for large objects) — `tanstack-router-conventions` → `router-search-serialization.md`.
+- Start folder layout: `tanstack-start-conventions`; avoid `NuqsAdapter` unless a subtree truly needs nuqs hooks.
 
 **Next.js + nuqs:**
 
@@ -121,8 +121,8 @@ These are easy to miss; full behavior is in upstream docs.
 
 ## Related FMC skills
 
-| Skill                        | Role                                                |
-| ---------------------------- | --------------------------------------------------- |
-| `tanstack-start-conventions` | Layout, `validateSearch`, loaders, API vs UI search |
-| `tanstack-start-migration`   | Next → Start; search params mental model            |
-| `react-dev`                  | TanStack Router patterns including `validateSearch` |
+| Skill                         | Role                                                     |
+| ----------------------------- | -------------------------------------------------------- |
+| `tanstack-router-conventions` | `validateSearch`, pretty search URLs, loaders + Query    |
+| `tanstack-start-conventions`  | Start layout, SSR, server functions, API vs UI search    |
+| `react-dev`                   | React TS patterns; Router TS notes point at router skill |

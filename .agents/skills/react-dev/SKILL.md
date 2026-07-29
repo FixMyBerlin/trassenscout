@@ -34,21 +34,22 @@ Type-safe React = compile-time guarantees. This skill covers **TypeScript patter
 | **React Compiler** | Enabled in the app build — auto-memoization is the default                                                                                                                                                                                                                                                                                |
 | **Lint**           | **Oxlint** + React Compiler rules via `eslint-plugin-react-hooks` v7+ as a **jsPlugin** (e.g. namespace `react-hooks-js` — `react-hooks` is reserved in oxlint). See [oxc plugins](https://oxc.rs/docs/guide/usage/linter/plugins.html), preset [oxlint-config-react-hooks-js](https://github.com/eai04191/oxlint-config-react-hooks-js). |
 | **Memoization**    | Do **not** add `useMemo` / `useCallback` / `memo` by default; add only when profiling or a lint rule requires it                                                                                                                                                                                                                          |
-| **TanStack Start** | Isomorphic by default; server I/O via `createServerFn` in `*.functions.ts` — **no** `'use server'` / `'use client'`                                                                                                                                                                                                                       |
-| **Data fetching**  | Route loaders + React Query — not `useEffect` fetch (see `tanstack-start-conventions`)                                                                                                                                                                                                                                                    |
+| **TanStack Start** | Server I/O and mutations → `tanstack-start-conventions` (this skill covers component typing only)                                                                                                                                                                                                                                         |
+| **Data fetching**  | Route loaders + React Query — not `useEffect` fetch (see `tanstack-router-conventions`)                                                                                                                                                                                                                                                   |
 
 Docs: [React Compiler](https://react.dev/learn/react-compiler.md) · [eslint-plugin-react-hooks](https://react.dev/reference/eslint-plugin-react-hooks.md) · [Rules of React](https://react.dev/reference/rules.md)
 
 ## Related skills
 
-| Topic                                   | Skill                                             |
-| --------------------------------------- | ------------------------------------------------- |
-| Effects, naming, when not to use Effect | `react-dev`                                       |
-| Routes, loaders, `validateSearch`, SSR  | `tanstack-start-conventions`                      |
-| Folder layout, thin routes              | `tanstack-start-conventions` → `app-structure.md` |
-| Next → Start, `createServerFn`          | `tanstack-start-migration`                        |
-| Client stores                           | `zustand-state-management`                        |
-| URL state (prefer router search)        | `tanstack-start-conventions`                      |
+| Topic                                   | Skill                                                                                                              |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Effects, naming, when not to use Effect | `react-dev`                                                                                                        |
+| Routes, loaders, `validateSearch`       | `tanstack-router-conventions`                                                                                      |
+| SSR, server functions, Start layout     | `tanstack-start-conventions`                                                                                       |
+| Folder layout, thin routes (Start)      | `tanstack-start-conventions` → `app-structure.md`                                                                  |
+| `createServerFn`, server mutations      | `tanstack-start-conventions` → [server-functions.md](../tanstack-start-conventions/references/server-functions.md) |
+| Client stores                           | `zustand-state-management`                                                                                         |
+| URL state (prefer router search)        | `tanstack-router-conventions`                                                                                      |
 
 ## Component props
 
@@ -283,13 +284,12 @@ Examples: [generic-components.md](examples/generic-components.md)
 | `useTransition`  | Non-urgent updates                      | [useTransition](https://react.dev/reference/react/useTransition.md)   |
 | `useEffectEvent` | Stable callback inside effects          | [useEffectEvent](https://react.dev/reference/react/useEffectEvent.md) |
 
-**FMC mutations:** prefer `createServerFn` + client handlers or React Query — not Next `'use server'` forms. Conceptual RSC background: [react.dev RSC](https://react.dev/reference/rsc/server-components.md) · TanStack Start implementation: `tanstack-start-conventions` → server-components.md.
-
-Short TS notes: [react-19-patterns.md](references/react-19-patterns.md)
+Short TS notes: [react-19-patterns.md](references/react-19-patterns.md). TanStack Start server mutations → `tanstack-start-conventions` → [server-functions.md](../tanstack-start-conventions/references/server-functions.md).
 
 ## Routing (TypeScript only)
 
-Route **behavior** and **layout** (loaders, Query, `ssr`, `validateSearch`, thin routes) → `tanstack-start-conventions`.
+Route **behavior** (`validateSearch`, loaders, Query, pretty search URLs) → `tanstack-router-conventions`.
+Start **layout / SSR / server functions** → `tanstack-start-conventions`.
 
 **Typed route hooks** — pass `from` for inference:
 
@@ -298,7 +298,7 @@ const { userId } = Route.useParams() // in createFileRoute component
 const { tab } = Route.useSearch()
 ```
 
-`validateSearch` with Zod is defined on the route file, not in this skill. TS quirks: [tanstack-router.md](references/tanstack-router.md)
+`validateSearch` with Zod is defined on the route file, not in this skill. TS quirks: [tanstack-router.md](references/tanstack-router.md) (canonical copy: `tanstack-router-conventions` → `router-typescript.md`)
 
 ## Rules
 
@@ -310,14 +310,12 @@ const { tab } = Route.useSearch()
 - Discriminated unions for variant props
 - `ref` as prop in React 19
 - React Compiler on; oxlint with Compiler rules (jsPlugin)
-- Server mutations via `createServerFn` in Start apps
 
 **Never**
 
 - `any` on events; `JSX.Element` for `children`
 - New `forwardRef` / `useFormState`
 - Default `useMemo` / `useCallback` / `memo` without cause
-- `'use server'` / `'use client'` in TanStack Start
 - `useEffect` for app data fetching (use loaders/Query)
 - Await a promise you pass to `use()` for streaming handoff
 
@@ -329,6 +327,6 @@ const { tab } = Route.useSearch()
 - [anti-patterns.md](references/anti-patterns.md) — derived state, fetch races, effect chains, parent sync
 - [use-effect-alternatives.md](references/use-effect-alternatives.md) — `useMemo`, `key`, `useSyncExternalStore`, `useEffectEvent`, fetch patterns
 - [generic-components.md](examples/generic-components.md) — Table, Select patterns
-- [tanstack-router.md](references/tanstack-router.md) — Router TS inference only
+- [tanstack-router.md](references/tanstack-router.md) — Router TS inference (canonical: `tanstack-router-conventions` → `router-typescript.md`)
 - React — [You Might Not Need an Effect](https://react.dev/learn/you-might-not-need-an-effect) · [React Compiler](https://react.dev/learn/react-compiler)
 - Neciu Dan — [Start naming your useEffect functions](https://neciudan.dev/name-your-effects)

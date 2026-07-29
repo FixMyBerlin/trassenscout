@@ -67,7 +67,7 @@ Note **group name** in the title (e.g. `app-framework-minor-patch`).
 | **High**              | `react`, `@tanstack/*`, `maplibre-gl`, `react-map-gl`, `prisma`, `better-auth`, `zod`, `tailwindcss`, `typescript` majors | Read all PR-body notes + migration sections; grep codebase for affected APIs; run build, lint, unit tests; Playwright if maps/auth/routing touched |
 | **Critical decision** | Semver **major**, explicit breaking changes, peer-dep conflicts, CI red, or changelog unclear                             | **AskQuestion** — do not merge until human chooses                                                                                                 |
 
-Security updates: treat as **medium** minimum — still read notes; do not merge blind even when labeled security.
+Security updates: treat as **medium** minimum — still read notes; do not merge blind even when labeled security. They bypass cooldown and may propose very fresh releases.
 
 ### 3. Investigate in code
 
@@ -75,7 +75,7 @@ When PR-body release notes or tier say investigate:
 
 1. `gh pr diff <number>` — focus on `package.json`, `bun.lock`, not only lockfile noise.
 2. Grep the local checkout for APIs mentioned in breaking sections (deprecated props, renamed exports, config keys).
-3. Load the relevant FMC skill if the bump touches that area (`react-dev`, `react-map-gl`, `tanstack-start-conventions`, `playwright-skill`, etc.).
+3. Load the relevant FMC skill if the bump touches that area (`react-dev`, `react-map-gl`, `tanstack-router-conventions`, `tanstack-start-conventions`, `playwright-skill`, etc.).
 4. Check **peer dependency** warnings in CI logs.
 
 **browserslist** bumps: Dependabot does not change the browserslist query — but lockfile may refresh `caniuse-lite`. After merge, ensure `bun oxlint` and `bun run build` still pass ([browser-target.md](../tech-stack/references/browser-target.md)).
@@ -95,6 +95,7 @@ Use Cursor **AskQuestion** when the agent cannot safely decide alone:
 - PR-body release notes missing or contradictory for a package you must decide on
 - Proposed **ignore** rule vs taking the update now
 - Merge vs wait for a sibling PR / upstream fix
+- A known release has no version-update PR yet — may be in cooldown or waiting for the next scheduled check
 
 Present concrete options, e.g. merge after local build, close and add `ignore`, or defer until next week.
 

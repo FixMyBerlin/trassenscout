@@ -1,19 +1,24 @@
 ---
 name: tanstack-start-migration
-description: Migrate Next.js apps to TanStack Start. Covers Vite/Nitro setup, isomorphic execution, route loaders with React Query, Server Actions → Server Functions, API routes, and FMC folder conventions. Use when migrating from Next.js to TanStack Start, converting server actions, getServerSideProps, or API routes.
+description: >-
+  DEPRECATED — FMC Next.js → TanStack Start migrations are complete. Use
+  tanstack-start-conventions and react-dev instead. Archived reference only;
+  not installable via skills CLI.
 ---
+
+> **Deprecated.** This skill lives under `deprecated/` and is excluded from `bunx skills add` / `--list`. For ongoing TanStack Start work use `tanstack-start-conventions` and `react-dev`.
 
 **LLM reference:** Fetch [llms.txt](https://tanstack.com/llms.txt) for the TanStack documentation index. Human docs: [Migrate from Next.js](https://tanstack.com/start/latest/docs/framework/react/migrate-from-next-js).
 
 # Next.js → TanStack Start Migration
 
-Focus: **mental model shift**, **data handling**, and **routing**. TanStack Start = TanStack Router + Vite (+ Nitro for FMC deployment). No Next.js async server components in route files. Optional experimental RSC: `tanstack-start-conventions` → [server-components.md](../tanstack-start-conventions/references/server-components.md).
+Focus: **mental model shift**, **data handling**, and **routing**. TanStack Start = TanStack Router + Vite (+ Nitro for FMC deployment). No Next.js async server components in route files. Optional experimental RSC: `tanstack-start-conventions` → [server-components.md](../../skills/tanstack-start-conventions/references/server-components.md).
 
 After the mechanical migration, apply FMC stack skills: `tanstack-start-conventions`, `tanstack-start-auth`.
 
 ## Critical mental model (read first)
 
-> TanStack Start is **isomorphic by default**. Components and loaders run on **both** server and client unless you isolate server-only logic in `createServerFn`. This is the **opposite** of Next.js Server Components (server-only by default). Experimental RSC exists but is opt-in — see [server-components.md](../tanstack-start-conventions/references/server-components.md).
+> TanStack Start is **isomorphic by default**. Components and loaders run on **both** server and client unless you isolate server-only logic in `createServerFn`. This is the **opposite** of Next.js Server Components (server-only by default). Experimental RSC exists but is opt-in — see [server-components.md](../../skills/tanstack-start-conventions/references/server-components.md).
 
 | Next.js habit                          | TanStack Start reality                                     |
 | -------------------------------------- | ---------------------------------------------------------- |
@@ -82,6 +87,8 @@ bun add -d @tailwindcss/vite tailwindcss   # if using Tailwind v4 + Vite
 }
 ```
 
+**`bunfig.toml` + Vite globalStore:** [tech-stack → bun-install.md](https://github.com/FixMyBerlin/fixmyskills/blob/main/skills/tech-stack/references/bun-install.md)
+
 **`vite.config.ts`** (minimal):
 
 ```ts
@@ -102,6 +109,8 @@ export default defineConfig({
   ],
 })
 ```
+
+With FMC [bunfig](https://github.com/FixMyBerlin/fixmyskills/blob/main/skills/tech-stack/references/bun-install.md): add `server.fs.allow` for the Bun global cache.
 
 **`src/router.tsx`:**
 
