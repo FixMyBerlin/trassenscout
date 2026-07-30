@@ -44,10 +44,11 @@ const contactTableColWidths = {
 type Props = {
   contacts: Contact[]
   currentUserEmail?: string | null
+  onTagClick?: (tag: string) => void
   projectSlug: string
 }
 
-export const ContactTable = ({ contacts, currentUserEmail, projectSlug }: Props) => {
+export const ContactTable = ({ contacts, currentUserEmail, onTagClick, projectSlug }: Props) => {
   const { data: project } = useSuspenseQuery(projectBySlugQueryOptions(projectSlug))
   const contactsModal = useContactsModal()
 
@@ -166,7 +167,11 @@ export const ContactTable = ({ contacts, currentUserEmail, projectSlug }: Props)
                             tableCellClassName,
                           )}
                         >
-                          <ProjectRecordTagsList tags={contact.tags ?? []} />
+                          <ProjectRecordTagsList
+                            tags={contact.tags ?? []}
+                            isInteractive={Boolean(onTagClick)}
+                            onTagClick={onTagClick}
+                          />
                         </td>
                         <td
                           className={twJoin(
@@ -197,19 +202,41 @@ export const ContactTable = ({ contacts, currentUserEmail, projectSlug }: Props)
             <div className="w-full border-b border-gray-200">
               <ButtonWrapper className={twJoin("justify-end", pageContentPaddingClassName)}>
                 <form.Subscribe
-                  selector={(state) =>
-                    [state.values.selectedContacts.length, state.isSubmitting] as const
-                  }
+                  selector={(state) => [state.values.selectedContacts, state.isSubmitting] as const}
                 >
-                  {([selectedCount, isSubmitting]) => (
-                    <button
-                      disabled={selectedCount === 0 || isSubmitting}
-                      className={secondaryButtonClassName}
-                      type="submit"
-                    >
-                      {isSubmitting ? "…" : "E-Mail schreiben"}
-                    </button>
-                  )}
+                  {([selectedContacts, isSubmitting]) => {
+                    const contactIds = contacts.map((contact) => String(contact.id))
+                    const visibleSelectedCount = contactIds.filter((contactId) =>
+                      selectedContacts.includes(contactId),
+                    ).length
+                    const allContactsSelected =
+                      contactIds.length > 0 &&
+                      contactIds.every((contactId) => selectedContacts.includes(contactId))
+
+                    return (
+                      <>
+                        <button
+                          disabled={contactIds.length === 0 || allContactsSelected || isSubmitting}
+                          className={secondaryButtonClassName}
+                          type="button"
+                          onClick={() =>
+                            field.handleChange(
+                              Array.from(new Set([...selectedContacts, ...contactIds])),
+                            )
+                          }
+                        >
+                          Alle markieren
+                        </button>
+                        <button
+                          disabled={visibleSelectedCount === 0 || isSubmitting}
+                          className={secondaryButtonClassName}
+                          type="submit"
+                        >
+                          {isSubmitting ? "…" : "E-Mail schreiben"}
+                        </button>
+                      </>
+                    )
+                  }}
                 </form.Subscribe>
               </ButtonWrapper>
             </div>

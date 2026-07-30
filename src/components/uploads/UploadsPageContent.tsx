@@ -2,8 +2,11 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
+import { PageHeaderSearchFilter } from "@/src/components/core/components/PageHeader/PageHeaderSearchFilter"
 import { UploadsPageUploadSection } from "@/src/components/uploads/uploads-page/UploadsPageUploadSection"
 import { UploadTable } from "@/src/components/uploads/UploadTable"
+import { useFilteredUploads } from "@/src/components/uploads/useFilteredUploads"
+import { useUploadFilters } from "@/src/components/uploads/useUploadFilters"
 import { uploadsQueryOptions } from "@/src/server/uploads/uploadsQueryOptions"
 import type { UploadWithRelations } from "./uploadTypes"
 
@@ -22,16 +25,35 @@ function isSurveyOnlyUpload(upload: UploadWithRelations) {
 export const UploadsPageContent = () => {
   const { projectSlug } = loggedInProjectRouteApi.useParams()
   const { data: uploads } = useSuspenseQuery(uploadsQueryOptions({ projectSlug }))
+  const { filter, setFilter } = useUploadFilters()
   const visibleUploads = uploads.filter((upload) => !isSurveyOnlyUpload(upload))
+  const filteredUploads = useFilteredUploads(visibleUploads)
+  const handleTagClick = (tag: string) => {
+    if (tag) void setFilter({ ...filter, searchterm: tag })
+  }
 
   return (
     <>
       <div className="flex flex-col">
         <div className={pageContentPaddingClassName}>
           <UploadsPageUploadSection projectSlug={projectSlug} />
+          <div className="mt-6">
+            <PageHeaderSearchFilter
+              value={filter?.searchterm ?? ""}
+              onChange={(searchterm) => setFilter({ searchterm })}
+              onReset={() => void setFilter({ searchterm: "" })}
+              placeholder="Tags, Dateinamen, Titel und Inhalte durchsuchen"
+            />
+          </div>
         </div>
 
-        <UploadTable projectSlug={projectSlug} withAction withRelations uploads={visibleUploads} />
+        <UploadTable
+          projectSlug={projectSlug}
+          withAction
+          withRelations
+          uploads={filteredUploads}
+          onTagClick={handleTagClick}
+        />
       </div>
 
       <SuperAdminBox>

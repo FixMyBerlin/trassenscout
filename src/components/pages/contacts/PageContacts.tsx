@@ -2,11 +2,14 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { useContactsModal } from "@/src/components/contacts/ContactsModalHost"
 import { ContactTable } from "@/src/components/contacts/ContactTable"
+import { useContactFilters } from "@/src/components/contacts/useContactFilters"
 import { useContactsTabs } from "@/src/components/contacts/useContactsTabs"
+import { useFilteredContacts } from "@/src/components/contacts/useFilteredContacts"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "@/src/components/core/components/links/Link"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
+import { PageHeaderSearchFilter } from "@/src/components/core/components/PageHeader/PageHeaderSearchFilter"
 import { TabsApp } from "@/src/components/core/components/Tabs/TabsApp"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
@@ -24,6 +27,11 @@ export function PageContacts() {
   const { data } = useSuspenseQuery(contactsQueryOptions({ projectSlug }))
   const { data: currentUser } = useSuspenseQuery(currentUserQueryOptions())
   const contacts = data.contacts
+  const filteredContacts = useFilteredContacts(contacts)
+  const { filter, setFilter } = useContactFilters()
+  const handleTagClick = (tag: string) => {
+    if (tag) void setFilter({ ...filter, searchterm: tag })
+  }
 
   return (
     <>
@@ -31,6 +39,14 @@ export function PageContacts() {
         breadcrumb={<ProjectPageBreadcrumb section="Kontakte" />}
         info="Kontaktdaten, die für das ganze Projektteam wichtig sind."
         tabs={<TabsApp tabs={tabs} embedded />}
+        filters={
+          <PageHeaderSearchFilter
+            value={filter?.searchterm ?? ""}
+            onChange={(searchterm) => setFilter({ searchterm })}
+            onReset={() => void setFilter({ searchterm: "" })}
+            placeholder="Tags, Namen, E-Mail, Telefonnummern und Positionen durchsuchen"
+          />
+        }
         primaryAction={
           canEdit ? (
             <div className="flex flex-wrap items-center justify-end gap-2">
@@ -55,8 +71,9 @@ export function PageContacts() {
         </div>
       ) : (
         <ContactTable
-          contacts={contacts}
+          contacts={filteredContacts}
           currentUserEmail={currentUser?.email}
+          onTagClick={handleTagClick}
           projectSlug={projectSlug}
         />
       )}

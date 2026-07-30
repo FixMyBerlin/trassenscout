@@ -3,10 +3,12 @@ import { PageContacts } from "@/src/components/pages/contacts/PageContacts"
 import { privateTitleHead } from "@/src/routeHead"
 import { contactsQueryOptions } from "@/src/server/contacts/contactsQueryOptions"
 import { currentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
+import { contactsSearchSchema } from "@/src/shared/contacts/searchSchemas"
 
 export const Route = createFileRoute("/_loggedInProjects/$projectSlug/contacts/")({
   head: () => privateTitleHead("Kontakte"),
   ssr: true,
+  validateSearch: contactsSearchSchema,
   loader: ({ context, params }) =>
     Promise.all([
       context.queryClient.ensureQueryData(

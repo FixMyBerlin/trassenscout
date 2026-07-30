@@ -56,6 +56,7 @@ type Props = Prettify<{
   withSource?: boolean
   withTags?: boolean
   onDelete?: (uploadId: number) => Promise<void>
+  onTagClick?: (tag: string) => void
 }>
 
 export const UploadTable = ({
@@ -66,6 +67,7 @@ export const UploadTable = ({
   withSource = false,
   withTags = true,
   onDelete,
+  onTagClick,
 }: Props) => {
   if (!uploads.length) {
     return <ZeroCase small visible={uploads.length} name="Dokumente" verb="hochgeladen" />
@@ -146,6 +148,7 @@ export const UploadTable = ({
                   withSource={withSource}
                   withTags={withTags}
                   onDelete={onDelete}
+                  onTagClick={onTagClick}
                 />
               ))}
             </tbody>
@@ -164,6 +167,7 @@ const UploadTableRow = ({
   withSource,
   withTags,
   onDelete,
+  onTagClick,
 }: {
   upload: UploadTableUpload
   projectSlug: string
@@ -172,6 +176,7 @@ const UploadTableRow = ({
   withSource: boolean
   withTags: boolean
   onDelete?: (uploadId: number) => Promise<void>
+  onTagClick?: (tag: string) => void
 }) => {
   const hasLocation = upload.latitude !== null && upload.longitude !== null
   const projectUploadModal = useProjectUploadModal()
@@ -249,7 +254,11 @@ const UploadTableRow = ({
       </td>
       {withTags && (
         <td className={twJoin("hidden align-top text-gray-500 @xl:table-cell", tableCellClassName)}>
-          <ProjectRecordTagsList tags={"tags" in upload ? upload.tags : []} />
+          <ProjectRecordTagsList
+            tags={"tags" in upload ? upload.tags : []}
+            isInteractive={Boolean(onTagClick)}
+            onTagClick={onTagClick}
+          />
         </td>
       )}
       {withSource && (
