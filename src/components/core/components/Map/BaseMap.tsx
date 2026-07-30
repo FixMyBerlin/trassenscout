@@ -45,6 +45,7 @@ export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
       | "onMouseLeave"
       | "onClick"
       | "onContextMenu"
+      | "onMoveStart"
       | "onZoomEnd"
       | "onLoad"
       | "onIdle"
@@ -77,6 +78,7 @@ export const BaseMap = ({
   onMouseLeave,
   onClick,
   onContextMenu,
+  onMoveStart,
   onZoomEnd,
   onLoad,
   onIdle,
@@ -201,9 +203,12 @@ export const BaseMap = ({
       })
     }
 
-    // Set selected on all features from the same subsubsection/subsection
+    // Set selected on all features from the same project/subsubsection/subsection
     const feature = features[0]
-    const lookupSlug = feature?.properties?.subsubsectionSlug || feature?.properties?.subsectionSlug
+    const lookupSlug =
+      feature?.properties?.subsubsectionSlug ||
+      feature?.properties?.subsectionSlug ||
+      feature?.properties?.projectSlug
 
     if (lookupSlug) {
       const featureIds = slugFeatureMap.get(lookupSlug)
@@ -263,6 +268,7 @@ export const BaseMap = ({
             onMouseLeave={handleMouseLeaveInternal}
             onClick={handleClickInternal}
             onContextMenu={onContextMenu}
+            onMoveStart={onMoveStart}
             onZoomEnd={onZoomEnd}
             onLoad={handleLoadInternal}
             onIdle={onIdle}

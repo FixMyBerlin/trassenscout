@@ -17,6 +17,7 @@ import {
   updateProject,
   updateProjectsFeatureFlag,
 } from "./projects.server"
+import { getProjectDashboardGeometries } from "./queries/getProjectDashboardGeometries.server"
 import { getProjectsWithGeometryWithMembershipRole } from "./queries/getProjectsWithGeometryWithMembershipRole.server"
 
 export const getProjectsForCurrentUserFn = createServerFn({ method: "GET" }).handler(() =>
@@ -30,6 +31,10 @@ export const getProjectsForInviteFn = createServerFn({ method: "GET" }).handler(
 export const getProjectsWithGeometryWithMembershipRoleFn = createServerFn({
   method: "GET",
 }).handler(() => getProjectsWithGeometryWithMembershipRole(getRequestHeaders()))
+
+export const getProjectDashboardGeometriesFn = createServerFn({
+  method: "GET",
+}).handler(() => getProjectDashboardGeometries(getRequestHeaders()))
 
 export const getAdminProjectsWithCountsFn = createServerFn({ method: "GET" }).handler(() =>
   getAdminProjectsWithCounts(getRequestHeaders()),
