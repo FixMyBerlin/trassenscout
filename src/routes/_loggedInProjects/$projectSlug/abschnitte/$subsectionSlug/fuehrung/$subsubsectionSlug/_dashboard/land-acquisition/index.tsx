@@ -1,6 +1,7 @@
 import { createFileRoute, redirect } from "@tanstack/react-router"
 import { PageAbschnitteLandAcquisition } from "@/src/components/pages/abschnitte/PageAbschnitteLandAcquisition"
 import { privateTitleHead } from "@/src/routeHead"
+import { acquisitionAreasBySubsubsectionQueryOptions } from "@/src/server/acquisitionAreas/acquisitionAreasAbschnitteQueryOptions"
 import { endpointAuth } from "@/src/server/auth/endpointAuthBoundary"
 import { subsubsectionBySlugQueryOptions } from "@/src/server/subsubsections/subsubsectionQueryOptions"
 import { landAcquisitionSearchSchema } from "@/src/shared/acquisitionAreas/searchSchemas"
@@ -30,6 +31,22 @@ export const Route = createFileRoute(
         },
       })
     }
+  },
+  loader: async ({ context, params }) => {
+    const subsubsection = await context.queryClient.ensureQueryData(
+      subsubsectionBySlugQueryOptions({
+        projectSlug: params.projectSlug,
+        subsectionSlug: params.subsectionSlug,
+        subsubsectionSlug: params.subsubsectionSlug,
+      }),
+    )
+
+    await context.queryClient.ensureQueryData(
+      acquisitionAreasBySubsubsectionQueryOptions({
+        projectSlug: params.projectSlug,
+        subsubsectionId: subsubsection.id,
+      }),
+    )
   },
   component: PageAbschnitteLandAcquisition,
 })

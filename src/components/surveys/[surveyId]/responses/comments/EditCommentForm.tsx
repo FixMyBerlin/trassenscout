@@ -66,7 +66,7 @@ export const EditCommentForm = ({ comment, commentLabel, mutateComment }: Props)
   const isAdmin = user?.role === "ADMIN"
   const isAuthor = comment.author.id === user?.id
   const canUpdateComment = userCanEditProject || isAuthor || isAdmin
-  const canRemoveComment = userCanEditProject || isAdmin
+  const canRemoveComment = userCanEditProject || isAuthor || isAdmin
 
   if (!canUpdateComment) {
     return null

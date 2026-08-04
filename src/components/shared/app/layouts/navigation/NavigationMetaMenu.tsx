@@ -69,9 +69,11 @@ export const NavigationMetaMenu = () => {
                     </MenuItem>
                   ))}
                 </div>
-                <div className="px-3 py-2">
-                  <FooterBuildByLine className="flex-nowrap text-sm text-gray-700" />
-                </div>
+                <MenuItem>
+                  {({ focus }) => (
+                    <FooterBuildByLine classNameOverwrites={navigationMenuItemLinkStyles(focus)} />
+                  )}
+                </MenuItem>
                 <MenuItem>
                   {({ focus }) => (
                     <Link

@@ -31,11 +31,12 @@ type Row = {
   phone: string | null
   note: string | null
   role: string | null
+  tags: string[]
 }
 
 const prepareData = (data: ContactsResult | undefined) => {
   if (!data) return []
-  return data.contacts.map(({ id, firstName, lastName, email, phone, note, role }) => ({
+  return data.contacts.map(({ id, firstName, lastName, email, phone, note, role, tags }) => ({
     id: String(id),
     firstName,
     lastName,
@@ -43,6 +44,7 @@ const prepareData = (data: ContactsResult | undefined) => {
     phone,
     note,
     role,
+    tags: tags.map((tag) => String(tag.id)),
   })) satisfies Row[]
 }
 
@@ -76,7 +78,7 @@ export const ContactsTable = () => {
     setErrors([])
     let refetchData = false
 
-    for (const { id, lastName, email, ...value } of data) {
+    for (const { id, lastName, email, tags, ...value } of data) {
       if (!lastName || !email) {
         setErrors((prev) => [
           ...prev,
@@ -88,11 +90,11 @@ export const ContactsTable = () => {
       try {
         if (!id || id === NEW_ID_VALUE) {
           await createContactMutation.mutateAsync({
-            data: { ...value, lastName, email, projectSlug, tags: [] },
+            data: { ...value, lastName, email, projectSlug, tags },
           })
         } else {
           await updateContactMutation.mutateAsync({
-            data: { ...value, lastName, email, projectSlug, id: Number(id), tags: [] },
+            data: { ...value, lastName, email, projectSlug, id: Number(id), tags },
           })
         }
         refetchData = true
@@ -154,6 +156,7 @@ export const ContactsTable = () => {
           phone: null,
           note: null,
           role: null,
+          tags: [],
         })}
         onChange={(values) => {
           setFormDirty(true)

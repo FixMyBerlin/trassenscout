@@ -32,8 +32,9 @@ const teamTableColWidths = {
 
 type Props = {
   users: ProjectUsersList
-  projectSlug: string
 }
+
+const editableMembershipRoles = ["VIEWER", "EDITOR"]
 
 export const TeamTable = ({ users }: Props) => {
   if (!users.length) {
@@ -77,41 +78,47 @@ export const TeamTable = ({ users }: Props) => {
               </tr>
             </thead>
             <tbody className={tableBodyClassName}>
-              {users.map((user) => (
-                <tr key={user.email} className={tableRowClassName}>
-                  <td className={twJoin(tableCellClassName, "align-middle")}>
-                    {getFullname(user) || "—"}
-                  </td>
-                  <td className={twJoin(tableCellClassName, "align-middle whitespace-nowrap")}>
-                    {user.phone ? <LinkTel>{user.phone}</LinkTel> : "—"}
-                  </td>
-                  <td
-                    className={twJoin(
-                      "hidden align-middle whitespace-nowrap @xl:table-cell",
-                      tableCellClassName,
-                    )}
-                  >
-                    <LinkMail subject="Abstimmung zum RS 8">{user.email}</LinkMail>
-                  </td>
-                  <td className={twJoin(tableCellClassName, "align-middle whitespace-nowrap")}>
-                    <UserCanIcon
-                      role={user.currentMembershipRole}
-                      isAdmin={user.role === "ADMIN"}
-                    />
-                  </td>
-                  <td
-                    className={twJoin(
-                      "align-middle text-sm font-medium whitespace-nowrap",
-                      tableCellClassName,
-                    )}
-                  >
-                    <div className="flex flex-col items-end gap-1">
-                      <TeamTableEditMembershipModal editUser={user} />
-                      <TeamTableEditMembershipDelete membershipId={user.currentMembershipId} />
-                    </div>
-                  </td>
-                </tr>
-              ))}
+              {users.map((user) => {
+                const canEditMembership =
+                  user.role !== "ADMIN" &&
+                  editableMembershipRoles.includes(user.currentMembershipRole)
+
+                return (
+                  <tr key={user.email} className={tableRowClassName}>
+                    <td className={twJoin(tableCellClassName, "align-middle")}>
+                      {getFullname(user) || "—"}
+                    </td>
+                    <td className={twJoin(tableCellClassName, "align-middle whitespace-nowrap")}>
+                      {user.phone ? <LinkTel>{user.phone}</LinkTel> : "—"}
+                    </td>
+                    <td
+                      className={twJoin(
+                        "hidden align-middle whitespace-nowrap @xl:table-cell",
+                        tableCellClassName,
+                      )}
+                    >
+                      <LinkMail subject="Abstimmung zum RS 8">{user.email}</LinkMail>
+                    </td>
+                    <td className={twJoin(tableCellClassName, "align-middle whitespace-nowrap")}>
+                      <UserCanIcon
+                        role={user.currentMembershipRole}
+                        isAdmin={user.role === "ADMIN"}
+                      />
+                    </td>
+                    <td
+                      className={twJoin(
+                        "align-middle text-sm font-medium whitespace-nowrap",
+                        tableCellClassName,
+                      )}
+                    >
+                      <div className="flex flex-col items-end gap-1">
+                        {canEditMembership && <TeamTableEditMembershipModal editUser={user} />}
+                        <TeamTableEditMembershipDelete membershipId={user.currentMembershipId} />
+                      </div>
+                    </td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         </div>

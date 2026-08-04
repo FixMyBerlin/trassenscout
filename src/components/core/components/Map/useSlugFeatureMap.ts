@@ -11,8 +11,8 @@ export type SlugFeatureIds = {
 
 /**
  * Builds a map from slug to feature IDs, grouping both unified features (lines, polygons, points)
- * and line end points by their slug (subsubsectionSlug or subsectionSlug). This allows highlighting all features belonging to
- * the same subsubsection/subsection when clicking on any feature.
+ * and line end points by their slug. This allows highlighting all features belonging to
+ * the same project/subsection/subsubsection when clicking on any feature.
  *
  * @param unifiedFeatures - Merged FeatureCollection of lines, polygons, and points
  * @param lineEndPoints - FeatureCollection of line end point features
@@ -27,8 +27,8 @@ export function useSlugFeatureMap(
   return useMemo(() => {
     const map = new Map<string, SlugFeatureIds>()
 
-    const getSlug = (props: LineEndPointFeatureProperties) =>
-      props.subsubsectionSlug || props.subsectionSlug
+    const getSlug = (props: LineEndPointFeatureProperties | UnifiedFeatureProperties) =>
+      props.subsubsectionSlug || props.subsectionSlug || props.projectSlug
 
     // Process unified features (lines, polygons, points)
     if (unifiedFeatures) {

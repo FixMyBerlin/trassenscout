@@ -89,24 +89,26 @@ export const ProjectRecordCommentsSection = ({ projectRecord }: Props) => {
                 </li>
               )
             })}
+            {userCanComment && (
+              <li>
+                <NewCommentForm
+                  commentLabel="Kommentar"
+                  commentHelp="Hier können Sie einen Kommentar zum Protokolleintrag hinzufügen."
+                  createComment={async (body) => {
+                    await createProjectRecordCommentMutation.mutateAsync({
+                      data: {
+                        projectSlug: projectSlug!,
+                        projectRecordId: projectRecord.id,
+                        body,
+                      },
+                    })
+                    await invalidateProjectRecordQueries()
+                  }}
+                />
+              </li>
+            )}
           </ul>
         </div>
-      )}
-      {userCanComment && (
-        <NewCommentForm
-          commentLabel="Kommentar"
-          commentHelp="Hier können Sie einen Kommentar zum Protokolleintrag hinzufügen."
-          createComment={async (body) => {
-            await createProjectRecordCommentMutation.mutateAsync({
-              data: {
-                projectSlug: projectSlug!,
-                projectRecordId: projectRecord.id,
-                body,
-              },
-            })
-            await invalidateProjectRecordQueries()
-          }}
-        />
       )}
     </>
   )

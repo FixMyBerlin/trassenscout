@@ -10,11 +10,10 @@ import {
   FORM_ERROR,
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { roleTranslation } from "@/src/components/core/users/roleTranslation.const"
-import { membershipRoles } from "@/src/server/authorization/constants"
+import { MembershipRoleEnum } from "@/src/prisma/generated/browser"
 import { updateProjectMembershipRoleFn } from "@/src/server/memberships/memberships.functions"
 import type { ProjectUser } from "@/src/server/memberships/types"
 import { MembershipSchema } from "@/src/shared/memberships/schemas"
-import { updateMembershipRoleFormDefaultValues } from "@/src/shared/memberships/schemas"
 
 const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
 
@@ -25,8 +24,6 @@ type Props = {
 }
 
 const submitSchema = z.object({ role: MembershipSchema.shape.role })
-
-type HandleSubmit = z.infer<typeof submitSchema>
 
 export const TeamTableEditMembershipModalForm = ({
   editUser,
@@ -40,7 +37,6 @@ export const TeamTableEditMembershipModalForm = ({
 
   const form = useAppForm({
     defaultValues: {
-      ...updateMembershipRoleFormDefaultValues,
       role: editUser.currentMembershipRole,
     },
     validators: { onSubmit: submitSchema } as never,
@@ -50,19 +46,23 @@ export const TeamTableEditMembershipModalForm = ({
           data: {
             projectSlug,
             membershipId: editUser.currentMembershipId,
-            role: (value as HandleSubmit).role,
+            role: submitSchema.parse(value).role,
           },
         })
         await queryClient.invalidateQueries({ queryKey: ["projectUsers", { projectSlug }] })
         closeModal()
       } catch (error: unknown) {
         console.error(error)
-        applyFormSubmitResult(form, { [FORM_ERROR]: String(error) }, setFormError)
+        applyFormSubmitResult(
+          form,
+          { [FORM_ERROR]: error instanceof Error ? error.message : String(error) },
+          setFormError,
+        )
       }
     },
   })
 
-  const roleItems = membershipRoles.map((role) => ({
+  const roleItems = Object.values(MembershipRoleEnum).map((role) => ({
     value: role,
     label: roleTranslation[role],
   }))

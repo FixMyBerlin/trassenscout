@@ -145,15 +145,17 @@ export async function updateProjectMembershipRole(
   const session = await endpointAuth.session(headers)
   await authorizeProjectMemberByProjectSlug(session, input.projectSlug, editorRoles)
 
-  // Bind the membership to the authorized project so a caller cannot pass a
-  // membershipId belonging to a different project (cross-tenant IDOR).
-  await db.membership.findFirstOrThrow({
+  const membership = await db.membership.findFirstOrThrow({
     where: { id: input.membershipId, project: { slug: input.projectSlug } },
-    select: { id: true },
+    select: { id: true, userId: true, user: { select: { role: true } } },
   })
 
+  if (membership.user.role === "ADMIN") {
+    throw new Error("Admin-Nutzer haben automatisch Zugriff auf alle Projekte.")
+  }
+
   const updated = await db.membership.update({
-    where: { id: input.membershipId },
+    where: { id: membership.id },
     data: { role: input.role },
   })
   await membershipUpdateSession(updated.userId)

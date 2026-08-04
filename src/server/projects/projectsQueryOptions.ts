@@ -2,6 +2,7 @@ import { queryOptions } from "@tanstack/react-query"
 import {
   getAdminProjectsWithCountsFn,
   getProjectBySlugFn,
+  getProjectDashboardGeometriesFn,
   getProjectsAdminFn,
   getProjectsForCurrentUserFn,
   getProjectsForInviteFn,
@@ -26,6 +27,13 @@ export function projectsWithGeometryWithMembershipRoleQueryOptions() {
   return queryOptions({
     queryKey: ["projects", "withGeometryWithMembershipRole"],
     queryFn: () => getProjectsWithGeometryWithMembershipRoleFn(),
+  })
+}
+
+export function projectDashboardGeometriesQueryOptions() {
+  return queryOptions({
+    queryKey: ["projects", "dashboardGeometries"],
+    queryFn: () => getProjectDashboardGeometriesFn(),
   })
 }
 

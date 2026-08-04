@@ -16,13 +16,18 @@ import type { ProjectsWithGeometryWithMembershipRole } from "@/src/server/projec
 
 type Props = {
   projects: ProjectsWithGeometryWithMembershipRole
+  /**
+   * When false, table is readable only (map-mode screen-reader list): no row navigation,
+   * and TableWrapper scroll is off so Firefox does not Tab into the hidden table. Default true.
+   */
+  interactive?: boolean
 }
 
-export const ProjectsTable = ({ projects }: Props) => {
+export const ProjectsTable = ({ projects, interactive = true }: Props) => {
   const navigate = useNavigate()
 
   return (
-    <TableWrapper>
+    <TableWrapper scrollable={interactive}>
       <table className={tableClassName}>
         <thead>
           <tr className={tableHeadRowClassName}>
@@ -41,18 +46,33 @@ export const ProjectsTable = ({ projects }: Props) => {
           {projects.map((project) => (
             <tr
               key={project.id}
-              className={twJoin(tableRowClassName, "group cursor-pointer hover:bg-gray-50")}
-              onClick={() =>
-                navigate({ to: "/$projectSlug", params: { projectSlug: project.slug } })
+              className={twJoin(
+                tableRowClassName,
+                interactive && "group cursor-pointer hover:bg-gray-50",
+              )}
+              onClick={
+                interactive
+                  ? () => navigate({ to: "/$projectSlug", params: { projectSlug: project.slug } })
+                  : undefined
               }
             >
               <td className="h-20 w-20 py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6">
                 <ProjectIcon label={shortTitle(project.slug)} />
               </td>
-              <td className="py-4 pr-3 pl-4 text-sm font-medium text-blue-500 group-hover:text-blue-800">
+              <td
+                className={twJoin(
+                  "py-4 pr-3 pl-4 text-sm font-medium",
+                  interactive ? "text-blue-500 group-hover:text-blue-800" : "text-gray-900",
+                )}
+              >
                 {project.subTitle}
               </td>
-              <td className="py-4 pr-3 pl-4 text-sm font-medium text-gray-900 group-hover:bg-gray-50">
+              <td
+                className={twJoin(
+                  "py-4 pr-3 pl-4 text-sm font-medium text-gray-900",
+                  interactive && "group-hover:bg-gray-50",
+                )}
+              >
                 {project.subsectionCount}
               </td>
               <td className="py-4 pr-4 pl-3 text-sm font-medium wrap-break-word sm:pr-6">

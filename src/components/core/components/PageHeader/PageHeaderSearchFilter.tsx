@@ -1,4 +1,3 @@
-import { MagnifyingGlassIcon } from "@heroicons/react/16/solid"
 import { XMarkIcon } from "@heroicons/react/20/solid"
 import { twJoin } from "tailwind-merge"
 import { linkStyles } from "@/src/components/core/components/links/styles"
@@ -39,9 +38,6 @@ export function PageHeaderSearchFilter({
             className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-xs focus:border-blue-500 focus:ring-blue-500 focus:outline-hidden sm:text-sm"
           />
         </div>
-        <button type="submit" className="shrink-0">
-          <MagnifyingGlassIcon className="h-9 w-9 rounded-md bg-blue-500 p-2 text-white hover:bg-blue-800" />
-        </button>
         <button
           type="button"
           className={twJoin(linkStyles, "flex items-center gap-2")}

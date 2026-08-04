@@ -1,6 +1,6 @@
 import type { Feature, MultiPolygon, Polygon } from "geojson"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { MapLayerMouseEvent, Popup, useMap } from "react-map-gl/maplibre"
+import { MapLayerMouseEvent, useMap } from "react-map-gl/maplibre"
 import { twJoin } from "tailwind-merge"
 import {
   ACQUISITION_POTENTIAL_AREAS_SOURCE_ID,
@@ -15,6 +15,7 @@ import {
 import type { PotentialAcquisitionArea } from "@/src/components/abschnitte/acquisition-areas/potentialAcquisitionAreaTypes"
 import { BackgroundGeometryLayers } from "@/src/components/core/components/Map/BackgroundGeometryLayers"
 import { BaseMap } from "@/src/components/core/components/Map/BaseMap"
+import { MapBubblePopup } from "@/src/components/core/components/Map/MapBubblePopup"
 import { geometryBbox } from "@/src/components/core/components/Map/utils/bboxHelpers"
 import { ModalCloseButton } from "@/src/components/core/components/Modal"
 import { Spinner } from "@/src/components/core/components/Spinner"
@@ -146,39 +147,34 @@ export function AcquisitionAreaMap({
         />
 
         {contextParcel && (
-          <Popup
+          <MapBubblePopup
             longitude={contextParcel.longitude}
             latitude={contextParcel.latitude}
-            closeButton={false}
             closeOnClick
             maxWidth="400px"
-            className="z-50 [&_.maplibregl-popup-content]:bg-transparent! [&_.maplibregl-popup-content]:p-0!"
             onClose={() => setContextParcel(null)}
+            contentClassName="w-full p-3 text-left"
           >
-            <div className="w-full overflow-hidden bg-white text-left shadow-xl">
-              <div className="p-3">
-                <HeadingWithAction className="mb-4">
-                  <p className="text-base font-bold">Flurstück Details</p>
-                  <ModalCloseButton onClose={() => setContextParcel(null)} />
-                </HeadingWithAction>
-                <div className="max-h-64 overflow-y-auto text-sm text-gray-700">
-                  <dl className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] gap-x-3 gap-y-1.5">
-                    {sortedPropertyEntries(contextParcel.properties).map(([key, value]) => (
-                      <div key={key} className="contents">
-                        <dt className="text-sm wrap-break-word text-gray-500">{key}</dt>
-                        <dd className="text-sm font-medium wrap-break-word text-gray-900">
-                          {formatPropertyValue(value)}
-                        </dd>
-                      </div>
-                    ))}
-                  </dl>
-                  {sortedPropertyEntries(contextParcel.properties).length === 0 && (
-                    <p className="text-sm text-gray-500">Keine Attribute in diesem Feature.</p>
-                  )}
-                </div>
-              </div>
+            <HeadingWithAction className="mb-4">
+              <p className="text-base font-bold">Flurstück Details</p>
+              <ModalCloseButton onClose={() => setContextParcel(null)} />
+            </HeadingWithAction>
+            <div className="max-h-64 overflow-y-auto text-sm text-gray-700">
+              <dl className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] gap-x-3 gap-y-1.5">
+                {sortedPropertyEntries(contextParcel.properties).map(([key, value]) => (
+                  <div key={key} className="contents">
+                    <dt className="text-sm wrap-break-word text-gray-500">{key}</dt>
+                    <dd className="text-sm font-medium wrap-break-word text-gray-900">
+                      {formatPropertyValue(value)}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+              {sortedPropertyEntries(contextParcel.properties).length === 0 && (
+                <p className="text-sm text-gray-500">Keine Attribute in diesem Feature.</p>
+              )}
             </div>
-          </Popup>
+          </MapBubblePopup>
         )}
       </BaseMap>
 

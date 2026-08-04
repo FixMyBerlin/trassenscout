@@ -33,6 +33,10 @@ import { mergeFeatureCollections } from "./utils/mergeFeatureCollections"
 
 const MAP_ID = "mainMap"
 
+const canClusterSubsubsections = (subsubsections: SubsubsectionWithPosition[]) =>
+  subsubsections.length > 0 &&
+  subsubsections.every((subsubsection) => subsubsection.type === "POINT")
+
 type Props = {
   projectSlug: string
   subsectionSlug: string
@@ -59,7 +63,6 @@ export const SubsubsectionMap = ({
   const mapLoaded = useMapLoaded(MAP_ID)
   const [dotMode, setDotMode] = useState<boolean | null>(null)
   const [clusterZoomActive, setClusterZoomActive] = useState<boolean | null>(null)
-  const clusterMode = clusterSubsubsections && clusterZoomActive === true
   // Slugs of points the cluster engine currently leaves ungrouped. Those render
   // as DOM markers (styled tooltip); grouped points stay as cluster blobs.
   const [unclusteredSlugs, setUnclusteredSlugs] = useState<Set<string>>(() => new Set())
@@ -67,6 +70,10 @@ export const SubsubsectionMap = ({
   const filteredSubsubsections = subsubsections.filter(
     (subsub) => subsub.subsectionId === selectedSubsection.id,
   )
+  const clusterMode =
+    clusterSubsubsections &&
+    clusterZoomActive === true &&
+    canClusterSubsubsections(filteredSubsubsections)
 
   type HandleSelectProps = {
     subsectionSlug: string
@@ -196,7 +203,6 @@ export const SubsubsectionMap = ({
           point(getLabelPosition(subsubsection.geometry, subsubsection.labelPos), {
             subsectionSlug: subsubsection.subsection.slug,
             subsubsectionSlug: subsubsection.slug,
-            isPoint: subsubsection.type === "POINT",
             featureId: subsubsection.slug,
           }),
         ),

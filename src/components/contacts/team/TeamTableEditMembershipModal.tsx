@@ -23,6 +23,7 @@ export const TeamTableEditMembershipModal = ({ editUser }: Props) => {
   return (
     <IfUserCanEdit>
       <button
+        type="button"
         onClick={() => setOpen(true)}
         className={twJoin("flex items-center gap-1", linkStyles)}
       >

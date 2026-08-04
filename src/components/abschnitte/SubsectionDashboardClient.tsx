@@ -74,14 +74,16 @@ function SubsectionDashboardContent({
           ) : undefined
         }
         primaryAction={
-          <Link
-            button
-            icon="plus"
-            to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new"
-            params={{ projectSlug, subsectionSlug }}
-          >
-            Neue Maßnahme
-          </Link>
+          <IfUserCanEdit>
+            <Link
+              button
+              icon="plus"
+              to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new"
+              params={{ projectSlug, subsectionSlug }}
+            >
+              Neue Maßnahme
+            </Link>
+          </IfUserCanEdit>
         }
       />
 
@@ -99,7 +101,13 @@ function SubsectionDashboardContent({
             classHeight={classHeight}
           />
         )}
-        list={<SubsubsectionTable subsubsections={subsubsections} compact={false} />}
+        list={({ interactive }) => (
+          <SubsubsectionTable
+            subsubsections={subsubsections}
+            compact={false}
+            interactive={interactive}
+          />
+        )}
       >
         <SuperAdminLogData data={{ subsections, subsection, subsubsections }} />
       </MapListViewLayout>

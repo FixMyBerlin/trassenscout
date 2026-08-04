@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { Link, useNavigate, useRouter, useSearch } from "@tanstack/react-router"
-import { useEffect, useState } from "react"
+import { type ReactNode, useEffect, useState } from "react"
 import { twJoin } from "tailwind-merge"
 import { z } from "zod"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
@@ -112,6 +112,16 @@ function InviteProjectSummary({ invite }: { invite?: PublicInvite }) {
   return (
     <div className="rounded-md bg-blue-50 px-3 py-2 text-sm text-blue-900">
       Einladung zu <span className="font-medium">{formatInviteProjects(invite.projects)}</span>
+    </div>
+  )
+}
+
+function AuthMessage({ children }: { children: ReactNode }) {
+  return (
+    <div
+      className={twJoin("space-y-4 text-sm leading-6 text-gray-700", pageContentPaddingClassName)}
+    >
+      {children}
     </div>
   )
 }
@@ -531,10 +541,10 @@ function PageForgotPassword({ email }: ForgotPasswordSearch) {
       subtitle="Bitte geben Sie Ihre E-Mail-Adresse ein, damit wir Ihnen einen Link zum Zurücksetzen Ihres Passwort senden können."
     >
       {isSuccess ? (
-        <div className="prose">
+        <AuthMessage>
           <p>Wenn Ihre E-Mail-Adresse im System ist, sollten Sie eine E-Mail bekommen haben.</p>
           <p>Klicken Sie darin auf den Link {frenchQuote("Ein neues Passwort vergeben")}.</p>
-        </div>
+        </AuthMessage>
       ) : (
         <ForgotPasswordForm
           key={email ?? "forgot-password"}
@@ -552,7 +562,9 @@ function PageResetPassword({ error, token }: ResetPasswordSearch) {
   if (error || !token) {
     return (
       <AuthTitleBodyWrapper title="Neues Passwort vergeben">
-        <h2>Dieser Link ist ungültig.</h2>
+        <AuthMessage>
+          <p>Dieser Link ist ungültig.</p>
+        </AuthMessage>
       </AuthTitleBodyWrapper>
     )
   }
@@ -575,14 +587,14 @@ function PageResetPassword({ error, token }: ResetPasswordSearch) {
   return (
     <AuthTitleBodyWrapper title="Neues Passwort vergeben">
       {isSuccess ? (
-        <>
-          <h2>Passwort erfolgreich zurückgesetzt.</h2>
-          <p className="mt-5">
+        <AuthMessage>
+          <p>Passwort erfolgreich zurückgesetzt.</p>
+          <p>
             <Link to="/dashboard" className={selectLinkStyle(true)}>
               Zur Startseite
             </Link>
           </p>
-        </>
+        </AuthMessage>
       ) : (
         <ResetPasswordForm token={token} onSubmit={handleResetPassword} />
       )}

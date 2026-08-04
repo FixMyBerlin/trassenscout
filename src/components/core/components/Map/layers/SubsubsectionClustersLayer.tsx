@@ -24,7 +24,6 @@ export const SUBSUBSECTION_CLUSTER_INTERACTIVE_LAYER_IDS = [
 type SubsubsectionClusterProperties = {
   subsectionSlug: string
   subsubsectionSlug: string
-  isPoint: boolean
   featureId: string
 }
 
@@ -94,7 +93,7 @@ export function SubsubsectionClustersLayer({ points }: Props) {
         id={SUBSUBSECTION_UNCLUSTERED_LAYER_ID}
         type="circle"
         source={SUBSUBSECTION_CLUSTER_SOURCE_ID}
-        filter={["all", ["!", ["has", "point_count"]], ["==", ["get", "isPoint"], true]]}
+        filter={["!", ["has", "point_count"]]}
         paint={{
           "circle-color": unclusteredDotColor,
           "circle-radius": 10,

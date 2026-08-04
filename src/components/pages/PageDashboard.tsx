@@ -76,7 +76,7 @@ export function PageDashboard() {
         map={(classHeight) => (
           <DashboardMapWithProvider projects={projects} classHeight={classHeight} />
         )}
-        list={<ProjectsTable projects={projects} />}
+        list={({ interactive }) => <ProjectsTable projects={projects} interactive={interactive} />}
       >
         <DashboardSupplementarySections projects={projects} />
       </MapListViewLayout>

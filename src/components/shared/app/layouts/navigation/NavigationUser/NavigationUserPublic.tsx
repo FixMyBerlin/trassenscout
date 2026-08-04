@@ -1,5 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { optionalCurrentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
+import { NavigationMetaMenu } from "../NavigationMetaMenu"
 import { NavigationUserLoggedIn } from "./NavigationUserLoggedIn"
 import { NavigationUserLoggedOut } from "./NavigationUserLoggedOut"
 
@@ -10,8 +11,9 @@ export const NavigationUserPublic = () => {
   if (!user) return <NavigationUserLoggedOut />
 
   return (
-    <div className="sm:ml-6">
+    <>
+      <NavigationMetaMenu />
       <NavigationUserLoggedIn user={user} />
-    </div>
+    </>
   )
 }

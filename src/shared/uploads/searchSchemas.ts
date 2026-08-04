@@ -1,5 +1,27 @@
 import { z } from "zod"
+import { jsonSearchParam } from "@/src/shared/routing/jsonSearchParam"
 import { sanitizeInternalReturnPath } from "@/src/shared/routing/sanitizeReturnTo"
+
+const uploadFilterSchema = z.object({
+  searchterm: z.string(),
+})
+
+export type UploadFilter = z.infer<typeof uploadFilterSchema>
+
+function parseUploadFilterParam(value: string | undefined) {
+  if (!value) return undefined
+  try {
+    return uploadFilterSchema.parse(JSON.parse(value))
+  } catch {
+    return undefined
+  }
+}
+
+export const uploadsSearchSchema = z.object({
+  filter: jsonSearchParam(uploadFilterSchema, parseUploadFilterParam),
+})
+
+export type UploadsSearch = z.infer<typeof uploadsSearchSchema>
 
 export const uploadEditSearchSchema = z.object({
   returnTo: z

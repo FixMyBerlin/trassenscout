@@ -1,4 +1,26 @@
 import { z } from "zod"
+import { jsonSearchParam } from "@/src/shared/routing/jsonSearchParam"
+
+const contactFilterSchema = z.object({
+  searchterm: z.string(),
+})
+
+export type ContactFilter = z.infer<typeof contactFilterSchema>
+
+function parseContactFilterParam(value: string | undefined) {
+  if (!value) return undefined
+  try {
+    return contactFilterSchema.parse(JSON.parse(value))
+  } catch {
+    return undefined
+  }
+}
+
+export const contactsSearchSchema = z.object({
+  filter: jsonSearchParam(contactFilterSchema, parseContactFilterParam),
+})
+
+export type ContactsSearch = z.infer<typeof contactsSearchSchema>
 
 export const contactModalViewSchema = z.enum(["detail", "edit", "new"])
 

@@ -201,9 +201,12 @@ export const BaseMap = ({
       })
     }
 
-    // Set selected on all features from the same subsubsection/subsection
+    // Set selected on all features from the same project/subsubsection/subsection
     const feature = features[0]
-    const lookupSlug = feature?.properties?.subsubsectionSlug || feature?.properties?.subsectionSlug
+    const lookupSlug =
+      feature?.properties?.subsubsectionSlug ||
+      feature?.properties?.subsectionSlug ||
+      feature?.properties?.projectSlug
 
     if (lookupSlug) {
       const featureIds = slugFeatureMap.get(lookupSlug)

@@ -1,26 +1,21 @@
 import { format } from "date-fns"
 import { de } from "date-fns/locale"
-import { twJoin } from "tailwind-merge"
 import { Link } from "@/src/components/core/components/links/Link"
-import { linkStyles } from "@/src/components/core/components/links/styles"
 import { Markdown } from "@/src/components/core/components/Markdown/Markdown"
 import { getFullname } from "@/src/components/core/users/getFullname"
 import { ProjectRecordAssignedToPill } from "@/src/components/project-records/ProjectRecordAssignedToPill"
 import { ProjectRecordEditingStateIndicator } from "@/src/components/project-records/ProjectRecordEditingStateIndicator"
-import { ProjectRecordEmailSourceText } from "@/src/components/project-records/ProjectRecordEmailSource"
+import {
+  ProjectRecordEmailSourceDisclosure,
+  type ProjectRecordEmailSourceValue,
+} from "@/src/components/project-records/ProjectRecordEmailSource"
 import { ProjectRecordVerknuepfungen } from "@/src/components/project-records/ProjectRecordVerknuepfungen"
 import { createProjectRecordFilterUrl } from "@/src/components/project-records/utils/filter/createFilterUrl"
 import type { ProjectRecord } from "@/src/server/projectRecords/types"
 
 type Props = {
   projectRecord: ProjectRecord & {
-    projectRecordEmail?: {
-      from: string | null
-      subject: string | null
-      date: Date | null
-      textBody: string | null
-      uploads: { id: number; title: string }[]
-    } | null
+    projectRecordEmail?: ProjectRecordEmailSourceValue | null
   }
 }
 export const metadataItemClassName = "flex flex-wrap items-center gap-3 text-sm text-gray-600"
@@ -73,21 +68,10 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
       )}
 
       {projectRecord.projectRecordEmail && (
-        <div className="mb-6">
-          <details className="mb-3 w-full rounded-lg border border-gray-300 px-3 py-2">
-            <summary className={twJoin(linkStyles, "cursor-pointer")}>
-              Quellnachricht (unverarbeitet)
-            </summary>
-            <div className="mt-4">
-              <ProjectRecordEmailSourceText email={projectRecord.projectRecordEmail} />
-            </div>
-          </details>
-          <p className="text-sm font-normal text-gray-600">
-            Die „Quellnachricht“ zeigt die unveränderte E-Mail, bevor die KI sie zusammengefasst
-            hat. Nutzen Sie diese Ansicht gern zur Kontrolle, wenn Sie sich bei einzelnen
-            Formulierungen oder Inhalten unsicher sind.
-          </p>
-        </div>
+        <ProjectRecordEmailSourceDisclosure
+          email={projectRecord.projectRecordEmail}
+          className="mb-6"
+        />
       )}
 
       <div className={projectRecordSectionClassName}>

@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { jsonSearchParam } from "@/src/shared/routing/jsonSearchParam"
 
 const projectRecordFilterSchema = z.object({
   searchterm: z.string(),
@@ -27,19 +28,6 @@ function parseProjectRecordInitialFormValuesParam(value: string | undefined) {
     return undefined
   }
 }
-
-const jsonSearchParam = <T extends z.ZodTypeAny>(
-  schema: T,
-  parseString: (value: string | undefined) => z.infer<T> | undefined,
-) =>
-  z
-    .union([z.string(), schema])
-    .optional()
-    .transform((value) => {
-      if (value === undefined) return undefined
-      if (typeof value === "string") return parseString(value)
-      return schema.parse(value)
-    })
 
 export const projectRecordsSearchSchema = z.object({
   filter: jsonSearchParam(projectRecordFilterSchema, parseProjectRecordFilterParam),
