@@ -14,6 +14,15 @@ const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/survey-response-ta
 
 export function PageSurveyResponseTags() {
   const { projectSlug } = routeApi.useParams()
+
+  return <SurveyResponseTagsOverview projectSlug={projectSlug} />
+}
+
+type SurveyResponseTagsOverviewProps = {
+  projectSlug: string
+}
+
+export function SurveyResponseTagsOverview({ projectSlug }: SurveyResponseTagsOverviewProps) {
   const canEdit = useUserCan().edit
   const { newLink } = useSurveyResponseTagRouteLinks(projectSlug)
   const { data } = useSuspenseQuery(

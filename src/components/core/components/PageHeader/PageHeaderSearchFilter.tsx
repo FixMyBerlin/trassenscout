@@ -1,4 +1,5 @@
 import { XMarkIcon } from "@heroicons/react/20/solid"
+import type { ReactNode } from "react"
 import { twJoin } from "tailwind-merge"
 import { linkStyles } from "@/src/components/core/components/links/styles"
 
@@ -10,6 +11,8 @@ type Props = {
   hint?: string
   name?: string
   formId?: string
+  children?: ReactNode
+  actions?: ReactNode
 }
 
 export function PageHeaderSearchFilter({
@@ -20,6 +23,8 @@ export function PageHeaderSearchFilter({
   hint,
   name = "searchterm",
   formId,
+  children,
+  actions,
 }: Props) {
   return (
     <div>
@@ -38,6 +43,7 @@ export function PageHeaderSearchFilter({
             className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-xs focus:border-blue-500 focus:ring-blue-500 focus:outline-hidden sm:text-sm"
           />
         </div>
+        {children}
         <button
           type="button"
           className={twJoin(linkStyles, "flex items-center gap-2")}
@@ -46,6 +52,7 @@ export function PageHeaderSearchFilter({
           <XMarkIcon className="size-4" />
           <span>Filter zurücksetzen</span>
         </button>
+        {actions}
       </form>
       {hint ? <p className="mt-2 text-sm text-gray-500">{hint}</p> : null}
     </div>

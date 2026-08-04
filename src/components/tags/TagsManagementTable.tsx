@@ -17,6 +17,7 @@ import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan
 export type TagManagementRow = {
   id: number
   title: string
+  description?: string | null
   archivedAt: Date | string | null
   usageCount: number
 }
@@ -29,6 +30,7 @@ type Props = {
   onArchive: (tag: TagManagementRow) => Promise<void>
   onDelete: (tag: TagManagementRow) => Promise<void>
   zeroCaseName?: string
+  showDescription?: boolean
 }
 
 export const TagsManagementTable = ({
@@ -37,6 +39,7 @@ export const TagsManagementTable = ({
   onArchive,
   onDelete,
   zeroCaseName = "Tags",
+  showDescription = false,
 }: Props) => {
   return (
     <TableWrapper>
@@ -46,6 +49,11 @@ export const TagsManagementTable = ({
             <th scope="col" className={tableHeadCellClassName}>
               Titel
             </th>
+            {showDescription && (
+              <th scope="col" className={tableHeadCellClassName}>
+                Beschreibung
+              </th>
+            )}
             <th scope="col" className={tableHeadCellClassName}>
               Verwendungen
             </th>
@@ -69,6 +77,11 @@ export const TagsManagementTable = ({
               <td className="py-4 pr-3 pl-4 text-sm whitespace-nowrap sm:pl-6">
                 <strong className="font-semibold">{tag.title}</strong>
               </td>
+              {showDescription && (
+                <td className="max-w-md px-3 py-4 text-sm wrap-break-word text-gray-500">
+                  {tag.description || "—"}
+                </td>
+              )}
               <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">
                 {tag.usageCount}
               </td>

@@ -21,6 +21,8 @@ export type ComboboxSingleItem = {
   label: string | ReactNode
   /** Search text when label is a ReactNode. Required for ReactNode labels. */
   searchText?: string
+  /** Optional text for the closed trigger button when it should differ from the option label. */
+  triggerText?: string
   disabled?: boolean
 }
 
@@ -48,7 +50,11 @@ function itemSearchText(item: ComboboxSingleItem) {
 }
 
 function selectedTriggerText(item: ComboboxSingleItem) {
-  return item.searchText ?? (typeof item.label === "string" ? item.label : String(item.label))
+  return (
+    item.triggerText ??
+    item.searchText ??
+    (typeof item.label === "string" ? item.label : String(item.label))
+  )
 }
 
 export function ComboboxSingleBase({

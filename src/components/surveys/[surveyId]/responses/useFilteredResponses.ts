@@ -2,101 +2,64 @@ import { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/al
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
 import { getQuestionIdBySurveySlug } from "@/src/components/beteiligung/shared/utils/getQuestionIdBySurveySlug"
 import type { FeedbackSurveyResponse } from "@/src/server/survey-responses/surveyResponsesQueryOptions"
+import type { SurveyResponseTagsResult } from "@/src/server/surveyResponseTags/surveyResponseTagsQueryOptions"
 import { useSurveyResponseFilters } from "./useSurveyResponseFilters"
 
 export const useFilteredResponses = (
   responses: FeedbackSurveyResponse[],
   surveySlug: AllowedSurveySlugs,
+  topicsDefinition: SurveyResponseTagsResult["surveyResponseTags"],
 ) => {
   const { filter } = useSurveyResponseFilters()
 
   if (!filter) return responses
 
-  const {
-    status,
-    operator,
-    hasnotes,
-    haslocation,
-    categories,
-    topics,
-    searchterm,
-    ...additionalFilters
-  } = filter
+  const { status, searchterm, ...additionalFilters } = filter
 
   const { additionalFilters: additionalFiltersDefinition } = getConfigBySurveySlug(
     surveySlug,
     "backend",
   )
 
-  const userLocationQuestionId = getQuestionIdBySurveySlug(surveySlug, "location")
-  const userCategoryQuestionId = getQuestionIdBySurveySlug(surveySlug, "category")
   const userFeedbackTextQuestionId = getQuestionIdBySurveySlug(surveySlug, "feedbackText")
   const userFeedbackText2QuestionId = getQuestionIdBySurveySlug(surveySlug, "feedbackText2")
+  const topicTitleById = new Map(
+    topicsDefinition.map((topic) => [topic.id, topic.title.trim().toLowerCase()]),
+  )
 
   const filtered = responses
     .filter((response) => {
       return status.includes(response.status || "NEVER")
     })
-    // Handle `operator` which is the `operatorId: number` as 'string'
-    .filter((response) => {
-      if (operator === "ALL") return response
-      if (operator === "0") return response.operatorId === null
-      if (typeof operator === "string") return response.operatorId === Number(operator)
-    })
-    // Handle `topics` which is the `surveyResponseTags: number[]` as 'string[]'
-    .filter((response) => {
-      if (topics.includes("0"))
-        return (
-          topics.map(Number).some((topic) => response.surveyResponseTags.includes(topic)) ||
-          response.surveyResponseTags.length === 0
-        )
-      return topics.map(Number).some((topic) => response.surveyResponseTags.includes(topic))
-    })
-    // Handle `hasnotes`
-    .filter((response) => {
-      if (hasnotes === "ALL") return response
-      if (hasnotes === "true") return response.note
-      if (hasnotes === "false") return !response.note
-      return response
-    })
-    // Handle `haslocation`
-    .filter((response) => {
-      if (haslocation === "ALL") return response
-      if (haslocation === "true") return response.data[userLocationQuestionId]
-      if (haslocation === "false") return !response.data[userLocationQuestionId]
-      return response
-    })
-    // Handle `categories`
-    .filter((response) => {
-      if (!categories) return true
-
-      const responseCategoryValue = response.data[userCategoryQuestionId]
-      const responseCategories = Array.isArray(responseCategoryValue)
-        ? responseCategoryValue
-        : responseCategoryValue != null && responseCategoryValue !== ""
-          ? [responseCategoryValue]
-          : []
-
-      return (responseCategories as Array<string | number>).some((category) =>
-        categories.includes(String(category)),
-      )
-    })
     // Handle `searchterm`
     .filter((response) => {
       if (!searchterm) return response
+      const cleanedSearchterm = searchterm.trim().toLowerCase().replace(/^#/, "")
+      const tagSearchterm = cleanedSearchterm.startsWith("tag:")
+        ? cleanedSearchterm.slice("tag:".length).trim()
+        : null
+      const responseTagTitles = response.surveyResponseTags
+        .map((tagId) => topicTitleById.get(tagId))
+        .filter((title): title is string => Boolean(title))
+
+      if (tagSearchterm !== null) {
+        return responseTagTitles.some((title) => title.includes(tagSearchterm))
+      }
+
       return (
-        response.note?.toLowerCase().includes(searchterm.trim().toLowerCase()) ||
+        response.note?.toLowerCase().includes(cleanedSearchterm) ||
         response.surveyResponseComments.some((comment: { body: string }) =>
-          comment.body.toLowerCase().includes(searchterm.trim().toLowerCase()),
+          comment.body.toLowerCase().includes(cleanedSearchterm),
         ) ||
+        responseTagTitles.some((title) => title.includes(cleanedSearchterm)) ||
         (response?.data[userFeedbackTextQuestionId] &&
           String(response.data[userFeedbackTextQuestionId])
             .toLowerCase()
-            .includes(searchterm.trim().toLowerCase())) ||
+            .includes(cleanedSearchterm)) ||
         (response?.data[userFeedbackText2QuestionId] &&
           String(response.data[userFeedbackText2QuestionId])
             .toLowerCase()
-            .includes(searchterm.trim().toLowerCase()))
+            .includes(cleanedSearchterm))
       )
     })
     // Handle additional filters

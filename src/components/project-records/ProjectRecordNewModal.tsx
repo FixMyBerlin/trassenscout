@@ -11,6 +11,7 @@ import {
   type OnSubmitResult,
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { Modal, ModalCloseButton } from "@/src/components/core/components/Modal"
+import { FormModal } from "@/src/components/core/components/Modal/FormModal"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { ProjectRecordFormFields } from "@/src/components/project-records/ProjectRecordFormFields"
@@ -233,12 +234,7 @@ export const ProjectRecordNewModal = ({
         </div>
       </Modal>
 
-      <Modal open={formOpen} handleClose={handleClose} align="right">
-        <PageHeader
-          title="Neuer Protokolleintrag"
-          action={<ModalCloseButton onClose={handleClose} />}
-        />
-
+      <FormModal open={formOpen} title="Neuer Protokolleintrag" onClose={handleClose} align="right">
         <ProjectRecordCreateForm
           key={formKey}
           formKey={formKey}
@@ -249,7 +245,7 @@ export const ProjectRecordNewModal = ({
           onDirtyChange={setIsDirty}
           onSubmit={handleSubmit}
         />
-      </Modal>
+      </FormModal>
     </IfUserCanEdit>
   )
 }

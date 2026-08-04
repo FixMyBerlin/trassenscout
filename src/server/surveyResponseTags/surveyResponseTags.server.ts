@@ -68,7 +68,7 @@ export async function createSurveyResponseTag(
   input: z.infer<typeof CreateSurveyResponseTagSchema>,
 ) {
   const { projectId } = await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
-  const { projectSlug: _projectSlug, title } = input
+  const { projectSlug: _projectSlug, title, description } = input
 
   return db.surveyResponseTag.upsert({
     where: {
@@ -80,6 +80,7 @@ export async function createSurveyResponseTag(
     update: {},
     create: {
       title,
+      description,
       projectId,
     },
   })
@@ -90,7 +91,7 @@ export async function updateSurveyResponseTag(
   input: z.infer<typeof UpdateSurveyResponseTagSchema>,
 ) {
   await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
-  const { id, projectSlug, title } = input
+  const { id, projectSlug, title, description } = input
 
   const tag = await db.surveyResponseTag.findFirstOrThrow({
     where: tagInProjectWhere(projectSlug, id),
@@ -98,7 +99,7 @@ export async function updateSurveyResponseTag(
 
   return db.surveyResponseTag.update({
     where: { id: tag.id },
-    data: { title },
+    data: { title, description },
   })
 }
 
