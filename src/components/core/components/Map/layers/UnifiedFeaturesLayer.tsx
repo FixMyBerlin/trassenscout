@@ -75,7 +75,12 @@ export const UnifiedFeaturesLayer = ({
     colors.polygon.selected,
     ["==", ["get", "style"], "GREEN"],
     colors.polygon.green,
-    ["case", ["get", "isCurrent"], colors.polygon.current, colors.polygon.unselected],
+    [
+      "case",
+      ["boolean", ["get", "isCurrent"], false],
+      colors.polygon.current,
+      colors.polygon.unselected,
+    ],
   ]
 
   // Line color expression (slugMatch → selected → GREEN → current/unselected)
@@ -87,7 +92,7 @@ export const UnifiedFeaturesLayer = ({
     colors.line.selected,
     ["==", ["get", "style"], "GREEN"],
     colors.line.green,
-    ["case", ["get", "isCurrent"], colors.line.current, colors.line.unselected],
+    ["case", ["boolean", ["get", "isCurrent"], false], colors.line.current, colors.line.unselected],
   ]
 
   // Point color expression (selected → slugMatch → GREEN → default) - different order than polygon/line

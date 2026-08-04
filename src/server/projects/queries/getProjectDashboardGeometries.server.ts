@@ -2,14 +2,13 @@ import { featureCollection } from "@turf/helpers"
 import { bbox, simplify, truncate } from "@turf/turf"
 import type { Feature, FeatureCollection, LineString, Polygon } from "geojson"
 import type { UnifiedFeatureProperties } from "@/src/components/core/components/Map/layers/UnifiedFeaturesLayer"
+import type { Bbox2D } from "@/src/components/core/components/Map/utils/bboxHelpers"
 import { lineStringToGeoJSON } from "@/src/components/core/components/Map/utils/lineStringToGeoJSON"
 import { polygonToGeoJSON } from "@/src/components/core/components/Map/utils/polygonToGeoJSON"
 import { GeometryTypeEnum } from "@/src/prisma/generated/client"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import db from "@/src/server/db.server"
 import { typeSubsectionGeometry } from "@/src/server/subsections/utils/typeSubsectionGeometry"
-
-type Bbox2D = [number, number, number, number]
 
 const DASHBOARD_GEOMETRY_PRECISION = 4
 const DASHBOARD_GEOMETRY_SIMPLIFY_TOLERANCE = 0.0003
@@ -72,6 +71,9 @@ export async function getProjectDashboardGeometries(headers: Headers): Promise<{
         const properties = {
           projectSlug: project.slug,
           style: "REGULAR",
+          // Required: UnifiedFeaturesLayer colors by `isCurrent`, and every project on the dashboard
+          // is primary. Note this view has no DASHED styling — `style` is always REGULAR here.
+          isCurrent: true,
         } satisfies Omit<UnifiedFeatureProperties, "featureId">
 
         if (typedSubsection.type === "LINE") {

@@ -4,7 +4,7 @@ import type { Feature } from "geojson"
 import { SupportedGeometry } from "@/src/shared/geometry/geometrySchemas"
 import { geometryToFeatures } from "./geometryToFeatures"
 
-type Bbox2D = [number, number, number, number]
+export type Bbox2D = [number, number, number, number]
 
 export const geometryBbox = (geometry: SupportedGeometry) => {
   const features: Feature<SupportedGeometry>[] = geometryToFeatures(geometry)

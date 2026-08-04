@@ -3,18 +3,21 @@ import { useNavigate } from "@tanstack/react-router"
 import { featureCollection, point } from "@turf/helpers"
 import { bbox } from "@turf/turf"
 import type { FeatureCollection, Point } from "geojson"
-import { RefObject, useEffect, useRef, useState } from "react"
+import type { MapLibreEvent } from "maplibre-gl"
+import { useEffect, useRef, useState } from "react"
 import type { MapLayerMouseEvent, MapProps } from "react-map-gl/maplibre"
 import { useMap } from "react-map-gl/maplibre"
 import { BaseMap } from "@/src/components/core/components/Map/BaseMap"
 import { type UnifiedFeatureProperties } from "@/src/components/core/components/Map/layers/UnifiedFeaturesLayer"
 import { useMapLoaded } from "@/src/components/core/components/Map/map-loaded-store"
 import { ProjectMarkers } from "@/src/components/core/components/Map/markers/ProjectMarkers"
+import type { Bbox2D } from "@/src/components/core/components/Map/utils/bboxHelpers"
 import { projectDashboardGeometriesQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 import type { ProjectsWithGeometryWithMembershipRole } from "@/src/server/projects/types"
 
-type Bbox2D = [number, number, number, number]
 const DASHBOARD_LABEL_MIN_ZOOM = 5
+/** Shared by the initial view and the deferred refit so the two can't drift apart. */
+const DASHBOARD_FIT_BOUNDS_OPTIONS = { padding: 60, maxZoom: 8 }
 
 type DashboardMapFeatures = {
   boundingBox: Bbox2D | null
@@ -53,16 +56,27 @@ function getDashboardMapFeatures(
   }
 }
 
-function DashboardGeometryAutoFit({
-  boundingBox,
-  userInteractedWithMapRef,
-}: {
-  boundingBox: Bbox2D | null | undefined
-  userInteractedWithMapRef: RefObject<boolean>
-}) {
+function DashboardGeometryAutoFit({ boundingBox }: { boundingBox: Bbox2D | null | undefined }) {
   const { mainMap } = useMap()
   const mapLoaded = useMapLoaded("mainMap")
   const didFitRef = useRef(false)
+  const userInteractedRef = useRef(false)
+
+  useEffect(
+    function trackUserMapInteraction() {
+      if (!mainMap) return
+
+      const handleMoveStart = (event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent>) => {
+        if (event.originalEvent) userInteractedRef.current = true
+      }
+
+      mainMap.on("movestart", handleMoveStart)
+      return () => {
+        mainMap.off("movestart", handleMoveStart)
+      }
+    },
+    [mainMap],
+  )
 
   useEffect(
     function fitDeferredDashboardGeometryBounds() {
@@ -70,22 +84,22 @@ function DashboardGeometryAutoFit({
         !boundingBox ||
         !mainMap ||
         !mapLoaded ||
-        userInteractedWithMapRef.current ||
+        userInteractedRef.current ||
         didFitRef.current
       ) {
         return
       }
 
-      didFitRef.current = true
       mainMap.fitBounds(
         [
           [boundingBox[0], boundingBox[1]],
           [boundingBox[2], boundingBox[3]],
         ],
-        { padding: 60, maxZoom: 8, duration: 0 },
+        { ...DASHBOARD_FIT_BOUNDS_OPTIONS, duration: 0 },
       )
+      didFitRef.current = true
     },
-    [boundingBox, mainMap, mapLoaded, userInteractedWithMapRef],
+    [boundingBox, mainMap, mapLoaded],
   )
 
   return null
@@ -94,13 +108,13 @@ function DashboardGeometryAutoFit({
 export const DashboardMap = ({ projects, classHeight }: Props) => {
   const navigate = useNavigate()
   const [dotMode, setDotMode] = useState<boolean | null>(null)
-  const userInteractedWithMapRef = useRef(false)
   const { data: dashboardGeometries } = useQuery(projectDashboardGeometriesQueryOptions())
   const { boundingBox, projectPoints } = getDashboardMapFeatures(projects)
-  const hasDashboardGeometry = Boolean(
-    (dashboardGeometries?.lines.features.length ?? 0) +
-    (dashboardGeometries?.polygons.features.length ?? 0),
-  )
+  const lines = dashboardGeometries?.lines.features.length ? dashboardGeometries.lines : undefined
+  const polygons = dashboardGeometries?.polygons.features.length
+    ? dashboardGeometries.polygons
+    : undefined
+  const hasDashboardGeometry = Boolean(lines || polygons)
 
   const handleSelect = (projectSlug: string) => {
     if (!projectSlug) return
@@ -120,12 +134,6 @@ export const DashboardMap = ({ projects, classHeight }: Props) => {
     setDotMode(event.target.getZoom() < DASHBOARD_LABEL_MIN_ZOOM)
   }
 
-  const handleMoveStart: NonNullable<MapProps["onMoveStart"]> = (event) => {
-    if (event.originalEvent) {
-      userInteractedWithMapRef.current = true
-    }
-  }
-
   const handleZoomEnd: NonNullable<MapProps["onZoomEnd"]> = (event) => {
     setDotMode(event.viewState.zoom < DASHBOARD_LABEL_MIN_ZOOM)
   }
@@ -136,25 +144,19 @@ export const DashboardMap = ({ projects, classHeight }: Props) => {
         id="mainMap"
         initialViewState={{
           bounds: boundingBox,
-          fitBoundsOptions: { padding: 60, maxZoom: 8 },
+          fitBoundsOptions: DASHBOARD_FIT_BOUNDS_OPTIONS,
         }}
         onClick={handleClickMap}
         onLoad={handleLoad}
-        onMoveStart={handleMoveStart}
         onZoomEnd={handleZoomEnd}
-        lines={dashboardGeometries?.lines.features.length ? dashboardGeometries.lines : undefined}
-        polygons={
-          dashboardGeometries?.polygons.features.length ? dashboardGeometries.polygons : undefined
-        }
+        lines={lines}
+        polygons={polygons}
         points={hasDashboardGeometry ? undefined : (projectPoints ?? undefined)}
         colorSchema="subsection"
         restrictHighlightToLevel="project"
         classHeight={classHeight}
       >
-        <DashboardGeometryAutoFit
-          boundingBox={dashboardGeometries?.boundingBox}
-          userInteractedWithMapRef={userInteractedWithMapRef}
-        />
+        <DashboardGeometryAutoFit boundingBox={dashboardGeometries?.boundingBox} />
         <ProjectMarkers projects={projects} dotMode={dotMode} onSelect={handleSelect} />
       </BaseMap>
     </section>

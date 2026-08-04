@@ -45,7 +45,6 @@ export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
       | "onMouseLeave"
       | "onClick"
       | "onContextMenu"
-      | "onMoveStart"
       | "onZoomEnd"
       | "onLoad"
       | "onIdle"
@@ -78,7 +77,6 @@ export const BaseMap = ({
   onMouseLeave,
   onClick,
   onContextMenu,
-  onMoveStart,
   onZoomEnd,
   onLoad,
   onIdle,
@@ -268,7 +266,6 @@ export const BaseMap = ({
             onMouseLeave={handleMouseLeaveInternal}
             onClick={handleClickInternal}
             onContextMenu={onContextMenu}
-            onMoveStart={onMoveStart}
             onZoomEnd={onZoomEnd}
             onLoad={handleLoadInternal}
             onIdle={onIdle}
