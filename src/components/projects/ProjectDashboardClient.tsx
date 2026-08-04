@@ -81,7 +81,9 @@ export const ProjectDashboardClient = () => {
       <MapListViewLayout
         mode={viewMode}
         map={renderMap}
-        list={<SubsectionTable subsections={filteredSubsections} />}
+        list={({ interactive }) => (
+          <SubsectionTable subsections={filteredSubsections} interactive={interactive} />
+        )}
       >
         <SuperAdminBox className="flex flex-col items-start gap-4">
           <Link button icon="plus" to={`/admin/projects/${projectSlug}/subsections/multiple-new`}>

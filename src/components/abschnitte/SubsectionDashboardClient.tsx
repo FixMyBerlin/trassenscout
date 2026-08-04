@@ -101,7 +101,13 @@ function SubsectionDashboardContent({
             classHeight={classHeight}
           />
         )}
-        list={<SubsubsectionTable subsubsections={subsubsections} compact={false} />}
+        list={({ interactive }) => (
+          <SubsubsectionTable
+            subsubsections={subsubsections}
+            compact={false}
+            interactive={interactive}
+          />
+        )}
       >
         <SuperAdminLogData data={{ subsections, subsection, subsubsections }} />
       </MapListViewLayout>

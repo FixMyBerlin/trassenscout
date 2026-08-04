@@ -24,18 +24,27 @@ const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
 type Props = {
   subsections: SubsectionsList
   createButton?: boolean
+  /**
+   * When false, table is readable only (map-mode screen-reader list): no row navigation / create actions,
+   * and TableWrapper scroll is off so Firefox does not Tab into the hidden table. Default true.
+   */
+  interactive?: boolean
 }
 
 const tableHeadClasses = tableHeadCellClassName
 
-export const SubsectionTable = ({ subsections, createButton = true }: Props) => {
+export const SubsectionTable = ({
+  subsections,
+  createButton = true,
+  interactive = true,
+}: Props) => {
   const navigate = useNavigate()
   const { projectSlug } = loggedInProjectRouteApi.useParams()
   const hasAnySubsubsections = subsections.some((s) => (s.subsubsectionCount ?? 0) > 0)
 
   return (
     <section>
-      <TableWrapper>
+      <TableWrapper scrollable={interactive}>
         <table className={tableClassName}>
           <thead>
             <tr className={tableHeadRowClassName}>
@@ -63,12 +72,18 @@ export const SubsectionTable = ({ subsections, createButton = true }: Props) => 
             {subsections.map((subsection) => (
               <tr
                 key={subsection.id}
-                className={twJoin(tableRowClassName, "group cursor-pointer hover:bg-gray-50")}
-                onClick={() =>
-                  void navigate({
-                    to: "/$projectSlug/abschnitte/$subsectionSlug",
-                    params: { projectSlug, subsectionSlug: subsection.slug },
-                  })
+                className={twJoin(
+                  tableRowClassName,
+                  interactive && "group cursor-pointer hover:bg-gray-50",
+                )}
+                onClick={
+                  interactive
+                    ? () =>
+                        void navigate({
+                          to: "/$projectSlug/abschnitte/$subsectionSlug",
+                          params: { projectSlug, subsectionSlug: subsection.slug },
+                        })
+                    : undefined
                 }
               >
                 <td className="size-20 py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6">
@@ -86,7 +101,12 @@ export const SubsectionTable = ({ subsections, createButton = true }: Props) => 
                     </Tooltip>
                   </div>
                 </td>
-                <td className="py-4 pr-3 pl-4 text-sm font-medium text-gray-900 group-hover:bg-gray-50">
+                <td
+                  className={twJoin(
+                    "py-4 pr-3 pl-4 text-sm font-medium text-gray-900",
+                    interactive && "group-hover:bg-gray-50",
+                  )}
+                >
                   {subsection.operator?.title || "–"}{" "}
                   {subsection.operator?.slug && (
                     <span className="uppercase">({subsection.operator?.slug})</span>
@@ -94,12 +114,18 @@ export const SubsectionTable = ({ subsections, createButton = true }: Props) => 
                 </td>
                 <td
                   className={twJoin(
-                    "py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 group-hover:bg-gray-50",
+                    "py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900",
+                    interactive && "group-hover:bg-gray-50",
                   )}
                 >
                   {subsection.SubsectionStatus?.title || "–"}
                 </td>
-                <td className="py-4 pr-3 pl-4 text-sm font-medium text-gray-900 group-hover:bg-gray-50">
+                <td
+                  className={twJoin(
+                    "py-4 pr-3 pl-4 text-sm font-medium text-gray-900",
+                    interactive && "group-hover:bg-gray-50",
+                  )}
+                >
                   {subsection.subsubsectionCount && subsection.subsubsectionCount > 0
                     ? subsection.subsubsectionCount
                     : "–"}
@@ -114,7 +140,7 @@ export const SubsectionTable = ({ subsections, createButton = true }: Props) => 
         {!subsections.length && <ZeroCase visible name="Planungsabschnitte" />}
       </TableWrapper>
 
-      {createButton && (
+      {interactive && createButton && (
         <IfUserCanEdit>
           <div className="mt-4 flex flex-wrap gap-3">
             {hasAnySubsubsections && (

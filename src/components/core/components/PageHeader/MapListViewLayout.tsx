@@ -42,10 +42,15 @@ export function MapAsideSplitLayout({
   )
 }
 
+type ListRenderOptions = {
+  /** When false, list is for screen readers only (map mode): readable, not navigable. */
+  interactive: boolean
+}
+
 type Props = {
   mode: ViewMode
   map: ReactNode | ((classHeight: string) => ReactNode)
-  list: ReactNode
+  list: (options: ListRenderOptions) => ReactNode
   children?: ReactNode
   className?: string
 }
@@ -66,9 +71,11 @@ export function MapListViewLayout({ mode, map, list, children, className }: Prop
         {renderMap(map, MAP_FULLSCREEN_HEIGHT_CLASS)}
       </div>
 
-      <div className={twJoin(isMapMode && "sr-only")} aria-hidden={isMapMode}>
-        {list}
-      </div>
+      {isMapMode ? (
+        <div className="sr-only overflow-hidden">{list({ interactive: false })}</div>
+      ) : (
+        list({ interactive: true })
+      )}
 
       {children ? (
         <div className={twJoin(isMapMode && "hidden")} aria-hidden={isMapMode}>

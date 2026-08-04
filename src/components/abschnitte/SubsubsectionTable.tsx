@@ -28,16 +28,21 @@ const subsectionRouteApi = getRouteApi(subsectionRoute.id)
 type Props = {
   subsubsections: SubsubsectionWithPosition[]
   compact: boolean
+  /**
+   * When false, table is readable only (map-mode screen-reader list): no row navigation,
+   * and TableWrapper scroll is off so Firefox does not Tab into the hidden table. Default true.
+   */
+  interactive?: boolean
 }
 
-export const SubsubsectionTable = ({ subsubsections, compact }: Props) => {
+export const SubsubsectionTable = ({ subsubsections, compact, interactive = true }: Props) => {
   const navigate = useNavigate()
   const { projectSlug, subsectionSlug } = subsectionRouteApi.useParams()
   const subsubsectionSlug = useTryRouteParam("subsubsectionSlug")
 
   return (
     <section>
-      <TableWrapper>
+      <TableWrapper scrollable={interactive}>
         <table className={tableClassName}>
           <thead>
             <tr className={tableHeadRowClassName}>
@@ -69,23 +74,31 @@ export const SubsubsectionTable = ({ subsubsections, compact }: Props) => {
                   tableRowClassName,
                   subsubsection.slug === subsubsectionSlug
                     ? "bg-gray-100"
-                    : "group cursor-pointer hover:bg-gray-50",
+                    : interactive && "group cursor-pointer hover:bg-gray-50",
                 )}
-                onClick={() =>
-                  void navigate({
-                    to: "/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug",
-                    params: {
-                      projectSlug,
-                      subsectionSlug: subsectionSlug!,
-                      subsubsectionSlug: subsubsection.slug,
-                    },
-                  })
+                onClick={
+                  interactive
+                    ? () =>
+                        void navigate({
+                          to: "/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug",
+                          params: {
+                            projectSlug,
+                            subsectionSlug: subsectionSlug!,
+                            subsubsectionSlug: subsubsection.slug,
+                          },
+                        })
+                    : undefined
                 }
               >
                 <td className="size-20 py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6">
                   <SubsubsectionIcon slug={subsubsection.slug} />
                 </td>
-                <td className="py-4 pr-3 pl-4 text-sm font-medium text-blue-500 group-hover:text-blue-800">
+                <td
+                  className={twJoin(
+                    "py-4 pr-3 pl-4 text-sm font-medium",
+                    interactive ? "text-blue-500 group-hover:text-blue-800" : "text-gray-900",
+                  )}
+                >
                   {subsubsection.SubsubsectionTask?.title || "k.A."}
                 </td>
                 <td className="px-1.5 py-2 text-sm">
