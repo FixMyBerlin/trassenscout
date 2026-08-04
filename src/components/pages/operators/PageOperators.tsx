@@ -27,6 +27,8 @@ export function PageOperators() {
   return (
     <>
       <PageHeader
+        title="Baulastträger"
+        titleVisuallyHidden
         breadcrumb={<ProjectPageBreadcrumb section="Baulastträger" />}
         primaryAction={
           canEdit ? (

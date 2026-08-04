@@ -26,7 +26,11 @@ export function PageSurveys() {
   if (!surveys.length) {
     return (
       <>
-        <PageHeader breadcrumb={<ProjectPageBreadcrumb section="Beteiligungen" />} />
+        <PageHeader
+          title="Beteiligungen"
+          titleVisuallyHidden
+          breadcrumb={<ProjectPageBreadcrumb section="Beteiligungen" />}
+        />
         <div className={pageContentPaddingClassName}>
           <NoSurveysInfoBox />
         </div>
@@ -36,7 +40,11 @@ export function PageSurveys() {
 
   return (
     <>
-      <PageHeader breadcrumb={<ProjectPageBreadcrumb section="Beteiligungen" />} />
+      <PageHeader
+        title="Beteiligungen"
+        titleVisuallyHidden
+        breadcrumb={<ProjectPageBreadcrumb section="Beteiligungen" />}
+      />
       <ul role="list" className="divide-y divide-gray-100">
         {surveys.map((survey) => {
           const dateRange = formatSurveyDateRange(survey.startDate, survey.endDate)

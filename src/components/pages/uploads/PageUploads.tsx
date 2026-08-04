@@ -8,6 +8,8 @@ export function PageUploads() {
   return (
     <>
       <PageHeader
+        title="Dokumente"
+        titleVisuallyHidden
         breadcrumb={<ProjectPageBreadcrumb section="Dokumente" />}
         info="Dokumente und Grafiken hochladen und bei Bedarf verknüpfen."
       />
