@@ -37,7 +37,7 @@ export const SurveyRadiobuttonGroup = ({ options, label, description, required }
         value={field.state.value}
         onChange={field.handleChange}
         aria-label={label}
-        {...getFieldA11yProps({ description, fieldName: field.name, hasError })}
+        {...getFieldA11yProps({ description, fieldName: field.name, hasError, required })}
       >
         {options.map((option, i) => (
           <Radio

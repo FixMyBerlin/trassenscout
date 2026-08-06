@@ -40,7 +40,7 @@ export const SurveyResponseIdField = ({
     <FieldWithErrorContainer hasError={hasError}>
       <Field>
         <div className="mb-4">
-          <Label className={formClasses.fieldLabel}>
+          <Label htmlFor={field.name} className={formClasses.fieldLabel}>
             {label} {!required && "(optional)"}
           </Label>
           {description && (
@@ -55,10 +55,11 @@ export const SurveyResponseIdField = ({
         <Input
           id={field.name}
           name={field.name}
+          invalid={hasError}
           value={field.state.value}
           readOnly
           className={`block w-full appearance-none rounded-md border border-gray-300 bg-gray-100 px-3 py-2 placeholder-gray-600 shadow-xs sm:text-sm ${formClasses.fieldFocus}`}
-          {...getFieldA11yProps({ description, fieldName: field.name, hasError })}
+          {...getFieldA11yProps({ description, fieldName: field.name, hasError, required })}
         />
       </Field>
       <FieldError field={field} />

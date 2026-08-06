@@ -57,7 +57,7 @@ export const SurveySelect = ({
     <FieldWithErrorContainer hasError={hasError}>
       <Field>
         <div className="mb-4">
-          <Label className={formClasses.fieldLabel}>
+          <Label htmlFor={field.name} className={formClasses.fieldLabel}>
             {label} {!required && "(optional)"}
           </Label>
           {description && (
@@ -73,22 +73,24 @@ export const SurveySelect = ({
           <Input
             id={field.name}
             name={field.name}
+            invalid={hasError}
             value={selectedOptionLabel}
             readOnly
             aria-label={label}
             className={`block w-full appearance-none rounded-md border border-gray-300 bg-gray-100 px-3 py-2 shadow-xs sm:text-sm ${formClasses.fieldFocus}`}
-            {...getFieldA11yProps({ description, fieldName: field.name, hasError })}
+            {...getFieldA11yProps({ description, fieldName: field.name, hasError, required })}
           />
         ) : (
           <Select
             id={field.name}
             name={field.name}
+            invalid={hasError}
             disabled={readOnly}
             value={field.state.value}
             onChange={(e) => field.handleChange(e.target.value)}
             aria-label={label}
             className={`block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 shadow-xs data-disabled:bg-gray-100 sm:text-sm ${formClasses.fieldFocus}`}
-            {...getFieldA11yProps({ description, fieldName: field.name, hasError })}
+            {...getFieldA11yProps({ description, fieldName: field.name, hasError, required })}
           >
             {placeholder && (
               <option disabled value="">

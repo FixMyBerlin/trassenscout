@@ -28,7 +28,7 @@ export const SurveyTextarea = ({
     <FieldWithErrorContainer hasError={hasError}>
       <Field>
         <div className="mb-4">
-          <Label className={formClasses.fieldLabel}>
+          <Label htmlFor={field.name} className={formClasses.fieldLabel}>
             {label} {!required && "(optional)"}
           </Label>
           {description && (
@@ -43,11 +43,12 @@ export const SurveyTextarea = ({
         <Textarea
           id={field.name}
           name={field.name}
+          invalid={hasError}
           value={field.state.value}
           onChange={(e) => field.handleChange(e.target.value)}
           rows={6}
           className={`block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-600 shadow-xs ${formClasses.fieldFocus}`}
-          {...getFieldA11yProps({ description, fieldName: field.name, hasError })}
+          {...getFieldA11yProps({ description, fieldName: field.name, hasError, required })}
           {...props}
         />
       </Field>

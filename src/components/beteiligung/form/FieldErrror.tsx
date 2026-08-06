@@ -7,10 +7,12 @@ export const getFieldA11yProps = ({
   description,
   fieldName,
   hasError,
+  required,
 }: {
   description?: string
   fieldName: string
   hasError: boolean
+  required?: boolean
 }) => {
   const describedBy = [
     description ? getFieldDescriptionId(fieldName) : null,
@@ -23,6 +25,7 @@ export const getFieldA11yProps = ({
     "aria-describedby": describedBy || undefined,
     "aria-errormessage": hasError ? getFieldErrorId(fieldName) : undefined,
     "aria-invalid": hasError || undefined,
+    "aria-required": required || undefined,
   }
 }
 

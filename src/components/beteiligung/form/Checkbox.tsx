@@ -48,7 +48,7 @@ export const SurveyCheckbox = ({
             "group flex w-full cursor-pointer items-center",
             formClasses.choiceFocus,
           )}
-          {...getFieldA11yProps({ description, fieldName: field.name, hasError })}
+          {...getFieldA11yProps({ description, fieldName: field.name, hasError, required })}
         >
           <div className="mr-3 flex h-5 items-center">
             <div className="relative">
