@@ -32,6 +32,8 @@ export function PageSubsubsectionTask() {
   return (
     <>
       <PageHeader
+        title="Maßnahmentypen"
+        titleVisuallyHidden
         breadcrumb={<ProjectPageBreadcrumb section="Maßnahmentypen" />}
         primaryAction={
           canEdit ? (

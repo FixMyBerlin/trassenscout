@@ -1,6 +1,7 @@
 import { authFile, seedProjects } from "@/tests/_fixtures/auth"
 import { authorizationNoise, pageNoise } from "@/tests/_fixtures/console-noise"
 import { expect, test } from "@/tests/_fixtures/test"
+import { cleanupNoProjectMemberships } from "@/tests/_utils/cleanupNoProjectMemberships"
 import { dashboardUrl, expectAccessDeniedRedirect } from "@/tests/_utils/pageAssertions"
 
 const projectSlug = seedProjects.richProject
@@ -33,6 +34,7 @@ test.describe("Role guards", () => {
     test.use({
       allowedConsoleErrors: [...pageNoise, ...authorizationNoise],
     })
+    test.beforeEach(cleanupNoProjectMemberships)
 
     test("are rejected from project pages", async ({ page }) => {
       await page.goto(contactsPath)

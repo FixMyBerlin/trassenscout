@@ -24,6 +24,7 @@ async function main() {
   process.stdout.write(
     JSON.stringify(result, (_key, value) => (typeof value === "bigint" ? value.toString() : value)),
   )
+  await db.$disconnect()
 }
 
 main().catch((error) => {

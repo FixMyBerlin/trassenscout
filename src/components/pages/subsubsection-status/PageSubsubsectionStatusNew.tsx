@@ -11,6 +11,8 @@ export function PageSubsubsectionStatusNew() {
   return (
     <>
       <PageHeader
+        title="Phase hinzufügen"
+        titleVisuallyHidden
         breadcrumb={
           <ProjectPageBreadcrumb
             section="Phase"

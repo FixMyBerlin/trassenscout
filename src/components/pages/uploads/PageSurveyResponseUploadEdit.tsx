@@ -20,6 +20,8 @@ export function PageSurveyResponseUploadEdit() {
   return (
     <>
       <PageHeader
+        title="Dokument bearbeiten"
+        titleVisuallyHidden
         breadcrumb={
           <ProjectPageBreadcrumb
             section="Dokumente"

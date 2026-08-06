@@ -2,6 +2,7 @@ import type { Page } from "@playwright/test"
 import { authFile, seedProjects } from "@/tests/_fixtures/auth"
 import { authorizationNoise, pageNoise } from "@/tests/_fixtures/console-noise"
 import { expect, test } from "@/tests/_fixtures/test"
+import { cleanupNoProjectMemberships } from "@/tests/_utils/cleanupNoProjectMemberships"
 import { expectAccessDeniedRedirect } from "@/tests/_utils/pageAssertions"
 import { getTestDb } from "@/tests/_utils/testDb"
 import { waitForSubmitReady } from "@/tests/_utils/waitForFormReady"
@@ -72,9 +73,13 @@ const ensureProjectRecordId = async (page: Page) => {
   const firstRecordLink = page.locator("tbody tr td a").first()
   if ((await page.locator("tbody tr td a").count()) > 0) {
     const href = await firstRecordLink.getAttribute("href")
-    const matched = href?.match(/\/project-records\/(\d+)$/)
-    if (!matched) throw new Error(`Could not parse project record id from href: ${href}`)
-    return Number(matched[1])
+    const pathMatch = href?.match(/\/project-records\/(\d+)$/)
+    if (pathMatch) return Number(pathMatch[1])
+
+    const modalMatch = href?.match(/[?&]modalProjectRecordId=(\d+)/)
+    if (modalMatch) return Number(modalMatch[1])
+
+    throw new Error(`Could not parse project record id from href: ${href}`)
   }
 
   const db = await getTestDb()
@@ -306,6 +311,7 @@ test.describe("Project records permissions", () => {
     test.describe("users without project membership", () => {
       test.use({ storageState: authFile("noProject") })
       test.use({ allowedConsoleErrors: [...pageNoise, ...authorizationNoise] })
+      test.beforeEach(cleanupNoProjectMemberships)
 
       test("cannot open edit URL", async ({ page }) => {
         await page.goto(`/${projectSlug}/project-records/${projectRecordId}/edit`)

@@ -25,6 +25,8 @@ export function PageSubsubsectionInfrastructureTypeEdit() {
   return (
     <>
       <PageHeader
+        title="Infrastrukturtyp bearbeiten"
+        titleVisuallyHidden
         breadcrumb={
           <ProjectPageBreadcrumb
             section="Infrastrukturtypen"

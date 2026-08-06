@@ -21,6 +21,8 @@ export function PageSubsubsectionSpecialEdit() {
   return (
     <>
       <PageHeader
+        title="Besonderheit bearbeiten"
+        titleVisuallyHidden
         breadcrumb={
           <ProjectPageBreadcrumb
             section="Besonderheiten"

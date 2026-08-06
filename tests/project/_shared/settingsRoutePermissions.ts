@@ -1,6 +1,7 @@
 import { authFile } from "@/tests/_fixtures/auth"
 import { authorizationNoise, pageNoise } from "@/tests/_fixtures/console-noise"
 import { expect, test } from "@/tests/_fixtures/test"
+import { cleanupNoProjectMemberships } from "@/tests/_utils/cleanupNoProjectMemberships"
 import { expectAccessDeniedRedirect } from "@/tests/_utils/pageAssertions"
 export { pageNoise }
 export const authorizationErrorNoise = authorizationNoise
@@ -13,6 +14,8 @@ type SettingsRoutePermissionConfig = {
   createHeading: string
   editHeading: string
   createLinkName: string
+  createFromListUrl?: RegExp
+  createFromListHeading?: string
 }
 
 export const defineSettingsRoutePermissionSuite = ({
@@ -23,6 +26,8 @@ export const defineSettingsRoutePermissionSuite = ({
   createHeading,
   editHeading,
   createLinkName,
+  createFromListUrl,
+  createFromListHeading,
 }: SettingsRoutePermissionConfig) => {
   test.describe(suiteName, () => {
     test.describe("viewer project members", () => {
@@ -85,10 +90,13 @@ export const defineSettingsRoutePermissionSuite = ({
 
         await page.getByRole("link", { name: createLinkName }).first().click()
 
-        await expect(page).toHaveURL(new RegExp(`${createPath}$`))
-        await expect(page.getByRole("heading", { name: createHeading, exact: true })).toBeVisible({
-          timeout: 30_000,
-        })
+        await expect(page).toHaveURL(createFromListUrl ?? new RegExp(`${createPath}$`))
+        await expect(
+          page.getByRole("heading", {
+            name: createFromListHeading ?? createHeading,
+            exact: true,
+          }),
+        ).toBeVisible({ timeout: 30_000 })
       })
     })
 
@@ -107,6 +115,7 @@ export const defineSettingsRoutePermissionSuite = ({
     test.describe("users without project membership", () => {
       test.use({ storageState: authFile("noProject") })
       test.use({ allowedConsoleErrors: [...pageNoise, ...authorizationErrorNoise] })
+      test.beforeEach(cleanupNoProjectMemberships)
 
       test("cannot read the list", async ({ page }) => {
         await page.goto(listPath)

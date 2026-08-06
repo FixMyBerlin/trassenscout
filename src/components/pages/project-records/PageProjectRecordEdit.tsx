@@ -17,6 +17,8 @@ export function PageProjectRecordEdit() {
   return (
     <>
       <PageHeader
+        title="Protokolleintrag bearbeiten"
+        titleVisuallyHidden
         breadcrumb={
           <ProjectPageBreadcrumb
             section="Projektprotokoll"

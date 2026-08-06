@@ -21,6 +21,8 @@ export function PageSubsectionStatusEdit() {
   return (
     <>
       <PageHeader
+        title="Status bearbeiten"
+        titleVisuallyHidden
         breadcrumb={
           <ProjectPageBreadcrumb
             section="Status"

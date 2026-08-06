@@ -1,11 +1,13 @@
 import { authFile } from "@/tests/_fixtures/auth"
 import { pageNoise } from "@/tests/_fixtures/console-noise"
 import { expect, test } from "@/tests/_fixtures/test"
+import { cleanupNoProjectMemberships } from "@/tests/_utils/cleanupNoProjectMemberships"
 import { dashboardUrl } from "@/tests/_utils/pageAssertions"
 
 test.describe("Dashboard no-project variant", () => {
   test.use({ storageState: authFile("noProject") })
   test.use({ allowedConsoleErrors: pageNoise })
+  test.beforeEach(cleanupNoProjectMemberships)
 
   test("shows the no-project onboarding state", async ({ page }) => {
     await page.goto("/dashboard")

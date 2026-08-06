@@ -9,7 +9,8 @@ import { waitForFormReady } from "@/tests/_utils/waitForFormReady"
 const projectSlug = seedProjects.richProject
 const loggedInProjectSlug = seedProjects.forbiddenProject
 const formLoginProjectSlug = seedProjects.secondaryForbiddenProject
-const inviteEmail = seedUsers.noProject
+const inviteEmail = "rs3000@fixmycity.test"
+const inviteLoginButton = "rs3000"
 const batchInviteEmail = seedUsers.viewer
 const newInvitePath = `/${projectSlug}/invites/new`
 
@@ -42,30 +43,21 @@ async function gotoInviteLogin(page: Page, inviteToken?: string) {
   })
 }
 
+const inviteProjectSlugs = [projectSlug, loggedInProjectSlug, formLoginProjectSlug]
+
 async function cleanupInviteFixtures() {
   const db = await getTestDb()
-  const projects = await db.project.findMany({
-    where: { slug: { in: [projectSlug, loggedInProjectSlug, formLoginProjectSlug] } },
-    select: { id: true },
-  })
-  const projectIds = projects.map((project) => project.id)
-  const invitee = await db.user.findUnique({
-    where: { email: inviteEmail },
-    select: { id: true },
-  })
-
   await db.invite.deleteMany({
-    where: {
-      projectId: { in: projectIds },
-      email: inviteEmail,
-    },
+    where: { project: { slug: { in: inviteProjectSlugs } }, email: inviteEmail },
   })
+  await cleanupInviteeMemberships()
+}
 
-  if (invitee) {
-    await db.membership.deleteMany({
-      where: { projectId: { in: projectIds }, userId: invitee.id },
-    })
-  }
+async function cleanupInviteeMemberships() {
+  const db = await getTestDb()
+  await db.membership.deleteMany({
+    where: { project: { slug: { in: inviteProjectSlugs } }, user: { email: inviteEmail } },
+  })
 }
 
 test.describe.configure({ mode: "serial" })
@@ -199,6 +191,10 @@ test.describe("Invite flow", () => {
     await cleanupInviteFixtures()
   })
 
+  test.afterEach(async () => {
+    await cleanupInviteeMemberships()
+  })
+
   test.describe("editor invite access", () => {
     test.use({ storageState: authFile("editor") })
 
@@ -257,7 +253,7 @@ test.describe("Invite flow", () => {
     await gotoInviteLogin(page, fixture.pendingToken)
     await expectInviteLoginStatus(page, fixture.pendingToken, true)
 
-    await page.getByRole("button", { name: "no-project", exact: true }).click()
+    await page.getByRole("button", { name: inviteLoginButton, exact: true }).click()
 
     await expect(page).toHaveURL(new RegExp(`/${projectSlug}(\\?.*)?$`), { timeout: 30_000 })
 
@@ -362,7 +358,7 @@ test.describe("Invite flow", () => {
     await gotoInviteLogin(page)
     // Retry until the click lands: quick-login buttons are dead before hydration
     await expect(async () => {
-      await page.getByRole("button", { name: "no-project", exact: true }).click()
+      await page.getByRole("button", { name: inviteLoginButton, exact: true }).click()
       await expect(page).toHaveURL(/\/dashboard/, { timeout: 5_000 })
     }).toPass({ timeout: 30_000 })
 
@@ -398,7 +394,7 @@ test.describe("Invite flow", () => {
   }) => {
     await gotoInviteLogin(page)
     await expect(async () => {
-      await page.getByRole("button", { name: "no-project", exact: true }).click()
+      await page.getByRole("button", { name: inviteLoginButton, exact: true }).click()
       await expect(page).toHaveURL(/\/dashboard/, { timeout: 5_000 })
     }).toPass({ timeout: 30_000 })
 

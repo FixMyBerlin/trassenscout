@@ -32,6 +32,8 @@ export function PageSubsubsectionInfra() {
   return (
     <>
       <PageHeader
+        title="Infrastruktur"
+        titleVisuallyHidden
         breadcrumb={<ProjectPageBreadcrumb section="Infrastruktur" />}
         primaryAction={
           canEdit ? (
