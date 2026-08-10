@@ -1,8 +1,12 @@
 import type { ReactNode } from "react"
 import {
-  adminTableClassName,
-  adminTableWrapperClassName,
-} from "@/src/components/admin/adminListClasses"
+  tableBodyClassName,
+  tableClassName,
+  tableHeadCellClassName,
+  tableHeadRowClassName,
+  tableRowClassName,
+} from "@/src/components/core/components/Table/tableClasses"
+import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { getFullname } from "@/src/components/core/users/getFullname"
 import { formatTableDateTime } from "@/src/components/core/utils/formatTableDateTime"
 import { UserRoleEnum } from "@/src/prisma/generated/browser"
@@ -30,14 +34,16 @@ const userRoleLabels: Record<UserRoleEnum, string> = {
 
 function DetailRow({ label, value }: { label: string; value: ReactNode }) {
   return (
-    <tr>
+    <tr className={tableRowClassName}>
       <th
         scope="row"
-        className="w-40 max-w-40 py-1.5 pr-3 pl-4 text-left align-top text-sm font-medium whitespace-nowrap text-gray-500"
+        className="py-4 pr-3 pl-4 text-left align-top text-sm font-normal whitespace-nowrap text-gray-700"
       >
         {label}
       </th>
-      <td className="py-1.5 pr-4 pl-0 text-left align-top text-sm text-gray-900">{value}</td>
+      <td className="px-4 py-4 text-left align-top text-sm wrap-break-word text-gray-900">
+        {value}
+      </td>
     </tr>
   )
 }
@@ -57,13 +63,23 @@ export function MembershipUserDetails({ user }: Props) {
     user.role in userRoleLabels ? userRoleLabels[user.role as UserRoleEnum] : user.role
 
   return (
-    <section aria-labelledby="membership-user-details-heading">
-      <h2 id="membership-user-details-heading" className="sr-only">
+    <section aria-labelledby="membership-user-details-heading" className="space-y-3">
+      <h2 id="membership-user-details-heading" className="px-4 text-lg font-semibold text-gray-700">
         Nutzerdetails
       </h2>
-      <div className={adminTableWrapperClassName}>
-        <table className={adminTableClassName}>
-          <tbody className="divide-y divide-gray-200 bg-white">
+      <TableWrapper withTopBorder>
+        <table className={tableClassName}>
+          <thead className="sr-only">
+            <tr className={tableHeadRowClassName}>
+              <th scope="col" className={tableHeadCellClassName}>
+                Attribut
+              </th>
+              <th scope="col" className={tableHeadCellClassName}>
+                Wert
+              </th>
+            </tr>
+          </thead>
+          <tbody className={tableBodyClassName}>
             <DetailRow label="Name" value={displayValue(fullName)} />
             <DetailRow label="E-Mail" value={user.email} />
             <DetailRow label="Telefon" value={displayValue(user.phone)} />
@@ -74,7 +90,7 @@ export function MembershipUserDetails({ user }: Props) {
             <DetailRow label="Nutzer-ID" value={user.id} />
           </tbody>
         </table>
-      </div>
+      </TableWrapper>
     </section>
   )
 }

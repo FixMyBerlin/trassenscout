@@ -1,14 +1,17 @@
 import { Link } from "@tanstack/react-router"
 import { AdminBadge } from "@/src/components/admin/AdminBadge"
 import {
+  adminTableBodyClassName,
   adminTableCellClassName,
   adminTableCellRightClassName,
   adminTableClassName,
   adminTableHeaderClassName,
   adminTableHeaderRightClassName,
-  adminTableWrapperClassName,
+  adminTableHeadRowClassName,
+  adminTableRowClassName,
 } from "@/src/components/admin/adminListClasses"
 import { AdminTableActions, AdminTableEditLink } from "@/src/components/admin/AdminTableActions"
+import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { formatTableDateTime } from "@/src/components/core/utils/formatTableDateTime"
 import type { EvaluationsPagesList } from "@/src/server/evaluationsPage/types"
 
@@ -25,14 +28,14 @@ function formatUpdatedAt(value: Date | string | null) {
 
 export const AdminEvaluationsPagesTable = ({ pages }: Props) => {
   if (!pages.length) {
-    return <p className="text-sm text-gray-600">Noch keine Projekte vorhanden.</p>
+    return <p className="px-4 text-sm text-gray-600">Noch keine Projekte vorhanden.</p>
   }
 
   return (
-    <div className={adminTableWrapperClassName}>
+    <TableWrapper withTopBorder className="mt-7">
       <table className={adminTableClassName}>
-        <thead className="bg-gray-50">
-          <tr>
+        <thead>
+          <tr className={adminTableHeadRowClassName}>
             <th className={adminTableHeaderClassName}>Projekt</th>
             <th className={adminTableHeaderClassName}>Auswertungen</th>
             <th className={adminTableHeaderClassName}>Titel</th>
@@ -40,9 +43,9 @@ export const AdminEvaluationsPagesTable = ({ pages }: Props) => {
             <th className={adminTableHeaderRightClassName}>Aktion</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-200">
+        <tbody className={adminTableBodyClassName}>
           {pages.map((page) => (
-            <tr key={page.projectSlug}>
+            <tr key={page.projectSlug} className={adminTableRowClassName}>
               <td className={adminTableCellClassName}>
                 {page.evaluationsEnabled ? (
                   <Link
@@ -72,6 +75,6 @@ export const AdminEvaluationsPagesTable = ({ pages }: Props) => {
           ))}
         </tbody>
       </table>
-    </div>
+    </TableWrapper>
   )
 }

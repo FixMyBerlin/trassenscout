@@ -19,9 +19,7 @@ type MembershipLike = {
 export function getMembershipAccess(
   memberships: MembershipLike[],
   projectId: number,
-  isAdmin: boolean,
 ): MembershipAccess {
-  if (isAdmin) return "EDITOR"
   return memberships.find((membership) => membership.project.id === projectId)?.role ?? null
 }
 
@@ -38,11 +36,10 @@ export function buildProjectRoles(
 export function buildAccessByProjectId(
   projects: { id: number }[],
   memberships: MembershipLike[],
-  isAdmin: boolean,
 ): Record<number, MembershipAccess> {
   const access: Record<number, MembershipAccess> = {}
   for (const project of projects) {
-    access[project.id] = getMembershipAccess(memberships, project.id, isAdmin)
+    access[project.id] = getMembershipAccess(memberships, project.id)
   }
   return access
 }

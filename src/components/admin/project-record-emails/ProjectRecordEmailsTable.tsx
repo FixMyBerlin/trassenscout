@@ -4,13 +4,14 @@ import { useNavigate } from "@tanstack/react-router"
 import { useState } from "react"
 import { twJoin } from "tailwind-merge"
 import {
+  adminTableBodyClassName,
   adminTableCellClassName,
   adminTableCellRightClassName,
   adminTableCellSubtextClassName,
   adminTableClassName,
   adminTableHeaderClassName,
   adminTableHeaderRightClassName,
-  adminTableWrapperClassName,
+  adminTableHeadRowClassName,
 } from "@/src/components/admin/adminListClasses"
 import {
   AdminTableActions,
@@ -19,6 +20,7 @@ import {
 } from "@/src/components/admin/AdminTableActions"
 import { Link } from "@/src/components/core/components/links/Link"
 import { TableDateTime } from "@/src/components/core/components/Table/TableDateTime"
+import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { Tooltip } from "@/src/components/core/components/Tooltip/Tooltip"
@@ -64,7 +66,7 @@ export const ProjectRecordEmailsTable = ({ projectRecordEmails }: Props) => {
 
   if (!projectRecordEmails.length) {
     return (
-      <div className="rounded-md border border-gray-200 bg-white p-4">
+      <div className="px-4">
         <ZeroCase visible name="Emails" />
         <Link to="/admin/project-record-emails/new" button icon="plus" className="mt-4">
           Erste E-Mail hinzufügen
@@ -74,21 +76,23 @@ export const ProjectRecordEmailsTable = ({ projectRecordEmails }: Props) => {
   }
 
   return (
-    <div>
-      <div className="mb-4 rounded-md border border-blue-200 bg-blue-50 p-4 text-sm text-blue-900">
-        <p className="mb-2">
-          <strong>Hinweis:</strong> E-Mails ohne Protokolleinträge (gelb markiert) müssen noch
-          prozessiert werden. <br />
-          ‼️ E-Mails ohne zugeordnetes Projekt können nicht mit KI prozessiert werden und müssen
-          zuerst bearbeitet werden.
-        </p>
-        <p>* Dokumente werden erst mit KI-Prozessierung erstellt und verknüpft.</p>
+    <div className="space-y-4">
+      <div className="px-4">
+        <div className="rounded-md border border-blue-200 bg-blue-50 p-4 text-sm text-blue-900">
+          <p className="mb-2">
+            <strong>Hinweis:</strong> E-Mails ohne Protokolleinträge (gelb markiert) müssen noch
+            prozessiert werden. <br />
+            ‼️ E-Mails ohne zugeordnetes Projekt können nicht mit KI prozessiert werden und müssen
+            zuerst bearbeitet werden.
+          </p>
+          <p>* Dokumente werden erst mit KI-Prozessierung erstellt und verknüpft.</p>
+        </div>
       </div>
 
-      <div className={adminTableWrapperClassName}>
+      <TableWrapper withTopBorder>
         <table className={adminTableClassName}>
-          <thead className="bg-gray-50">
-            <tr>
+          <thead>
+            <tr className={adminTableHeadRowClassName}>
               <th className={adminTableHeaderClassName}>ID</th>
               <th className={adminTableHeaderClassName}>Email vom</th>
               <th className={adminTableHeaderClassName}>Erstellt am</th>
@@ -100,14 +104,14 @@ export const ProjectRecordEmailsTable = ({ projectRecordEmails }: Props) => {
               <th className={adminTableHeaderRightClassName}>Aktion</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
+          <tbody className={adminTableBodyClassName}>
             {projectRecordEmails.map((email) => (
               <tr
                 key={email.id}
                 className={
                   email.projectRecords.length === 0
-                    ? "bg-yellow-50 hover:bg-yellow-100"
-                    : "hover:bg-gray-50"
+                    ? "border-b border-gray-100 bg-yellow-50 hover:bg-yellow-100"
+                    : "border-b border-gray-100 hover:bg-gray-50"
                 }
               >
                 <td className={adminTableCellClassName}>
@@ -193,11 +197,13 @@ export const ProjectRecordEmailsTable = ({ projectRecordEmails }: Props) => {
             ))}
           </tbody>
         </table>
-      </div>
+      </TableWrapper>
 
-      <Link to="/admin/project-record-emails/new" button icon="plus" className="mt-4">
-        Neue E-Mail manuell hinzufügen
-      </Link>
+      <div className="px-4">
+        <Link to="/admin/project-record-emails/new" button icon="plus">
+          Neue E-Mail manuell hinzufügen
+        </Link>
+      </div>
     </div>
   )
 }

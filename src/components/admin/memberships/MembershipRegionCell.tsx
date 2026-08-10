@@ -9,14 +9,13 @@ import { Tooltip } from "@/src/components/core/components/Tooltip/Tooltip"
 
 type Props = {
   access: MembershipAccess
-  isAdmin: boolean
 }
 
-export function MembershipRegionCell({ access, isAdmin }: Props) {
-  const { label, Icon, iconClassName } = membershipRegionDisplay(access, isAdmin)
+export function MembershipRegionCell({ access }: Props) {
+  const { label, Icon, iconClassName } = membershipRegionDisplay(access)
 
   return (
-    <td className={membershipRegionCellClassName(access, isAdmin)}>
+    <td className={membershipRegionCellClassName(access)}>
       <Tooltip content={label}>
         <span
           className={twJoin(

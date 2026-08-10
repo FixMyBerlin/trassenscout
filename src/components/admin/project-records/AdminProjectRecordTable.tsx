@@ -1,16 +1,16 @@
 import { twJoin } from "tailwind-merge"
 import { AdminBadge, type AdminBadgeVariant } from "@/src/components/admin/AdminBadge"
 import {
+  adminTableBodyClassName,
+  adminTableCellClassName,
+  adminTableHeaderClassName,
+  adminTableHeadRowClassName,
+  adminTableRowClassName,
+} from "@/src/components/admin/adminListClasses"
+import {
   AdminTableEditLink,
   AdminTableExternalLink,
 } from "@/src/components/admin/AdminTableActions"
-import {
-  tableBodyClassName,
-  tableCellClassName,
-  tableHeadCellClassName,
-  tableHeadRowClassName,
-  tableRowClassName,
-} from "@/src/components/core/components/Table/tableClasses"
 import { TableDateTime } from "@/src/components/core/components/Table/TableDateTime"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/components/core/components/text/titles"
@@ -46,61 +46,57 @@ export const AdminProjectRecordsTable = ({
 }) => {
   return (
     <>
-      <TableWrapper className="mt-7">
+      <TableWrapper withTopBorder className="mt-7">
         <div>
-          <div className={tableHeadRowClassName}>
+          <div className={adminTableHeadRowClassName}>
             <div className="grid grid-cols-8">
-              <div className={twJoin(tableCellClassName, tableHeadCellClassName)}>
+              <div className={adminTableHeaderClassName}>
                 <span className="sr-only">Status</span>
               </div>
-              <div className={twJoin(tableCellClassName, tableHeadCellClassName)}>ID</div>
-              <div className={twJoin(tableCellClassName, tableHeadCellClassName)}>Datum Email</div>
-              <div className={twJoin(tableCellClassName, tableHeadCellClassName)}>
-                Prozessiert am
-              </div>
-              <div className={twJoin(tableCellClassName, tableHeadCellClassName, "col-span-2")}>
-                Titel
-              </div>
-              <div className={twJoin(tableCellClassName, tableHeadCellClassName)}>Projekt</div>
-              <div className={twJoin(tableCellClassName, tableHeadCellClassName)}>Bestätigung</div>
+              <div className={adminTableHeaderClassName}>ID</div>
+              <div className={adminTableHeaderClassName}>Datum Email</div>
+              <div className={adminTableHeaderClassName}>Prozessiert am</div>
+              <div className={twJoin(adminTableHeaderClassName, "col-span-2")}>Titel</div>
+              <div className={adminTableHeaderClassName}>Projekt</div>
+              <div className={adminTableHeaderClassName}>Bestätigung</div>
             </div>
           </div>
-          <div className={tableBodyClassName}>
+          <div className={adminTableBodyClassName}>
             {projectRecords.length ? (
               projectRecords.map((projectRecord) => (
                 <div
                   key={projectRecord.id}
-                  className={twJoin("grid grid-cols-8", tableRowClassName)}
+                  className={twJoin("grid grid-cols-8", adminTableRowClassName)}
                 >
-                  <div className={twJoin(tableCellClassName, "text-sm text-gray-900")}>
+                  <div className={twJoin(adminTableCellClassName, "text-sm text-gray-900")}>
                     <ProjectRecordEditingStateIndicator
                       editingState={projectRecord.editingState}
                       variant="table"
                     />
                   </div>
-                  <div className={twJoin(tableCellClassName, "text-sm text-gray-900")}>
+                  <div className={twJoin(adminTableCellClassName, "text-sm text-gray-900")}>
                     {projectRecord.id}
                   </div>
-                  <div className={twJoin(tableCellClassName, "text-sm text-gray-900")}>
+                  <div className={twJoin(adminTableCellClassName, "text-sm text-gray-900")}>
                     <TableDateTime value={projectRecord.date} />
                   </div>
-                  <div className={twJoin(tableCellClassName, "text-sm text-gray-900")}>
+                  <div className={twJoin(adminTableCellClassName, "text-sm text-gray-900")}>
                     <TableDateTime value={projectRecord.createdAt} />
                   </div>
                   <div
                     className={twJoin(
-                      tableCellClassName,
+                      adminTableCellClassName,
                       "col-span-2 text-sm font-semibold text-blue-500",
                     )}
                   >
                     {projectRecord.title}
                   </div>
-                  <div className={twJoin(tableCellClassName, "text-sm text-gray-900")}>
+                  <div className={twJoin(adminTableCellClassName, "text-sm text-gray-900")}>
                     <AdminTableExternalLink href={`/${projectRecord.project.slug}/project-records`}>
                       {shortTitle(projectRecord.project.slug)}
                     </AdminTableExternalLink>
                   </div>
-                  <div className={twJoin(tableCellClassName, "text-sm text-gray-900")}>
+                  <div className={twJoin(adminTableCellClassName, "text-sm text-gray-900")}>
                     <div className="flex flex-col gap-1">
                       <ProjectRecordReviewStatePill state={projectRecord.reviewState} />
                       <AdminTableEditLink to={`/admin/project-records/${projectRecord.id}/edit`}>

@@ -9,10 +9,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { twMerge } from "tailwind-merge"
 import {
+  adminTableBodyClassName,
   adminTableCellClassName,
   adminTableClassName,
   adminTableHeaderClassName,
-  adminTableWrapperClassName,
+  adminTableHeadRowClassName,
+  adminTableRowClassName,
 } from "@/src/components/admin/adminListClasses"
 import {
   AdminTableEditLink,
@@ -20,6 +22,7 @@ import {
   AdminTableFeatureCheckbox,
 } from "@/src/components/admin/AdminTableActions"
 import { translateServerError } from "@/src/components/core/components/forms/errorMessageTranslations"
+import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { longTitle } from "@/src/components/core/components/text/titles"
 import { Tooltip } from "@/src/components/core/components/Tooltip/Tooltip"
@@ -105,7 +108,7 @@ export const AdminProjectsTable = ({ projects, isFiltering, hasActiveFilter }: P
 
   if (!projects.length) {
     return (
-      <p className="text-sm text-gray-600">
+      <p className="px-4 text-sm text-gray-600">
         {hasActiveFilter
           ? "Keine Projekte für diese Suche gefunden."
           : "Noch keine Projekte vorhanden."}
@@ -115,16 +118,16 @@ export const AdminProjectsTable = ({ projects, isFiltering, hasActiveFilter }: P
 
   return (
     <div className="flex flex-col gap-2">
-      <div
+      <TableWrapper
+        withTopBorder
         className={twMerge(
-          adminTableWrapperClassName,
           "transition-opacity duration-150",
           isFiltering || isPending ? "opacity-60" : "",
         )}
       >
         <table className={adminTableClassName}>
-          <thead className="bg-gray-50">
-            <tr>
+          <thead>
+            <tr className={adminTableHeadRowClassName}>
               <th className={adminTableHeaderClassName}>Projekt</th>
               <th className={adminTableHeaderClassName}>Planungsabschnitte</th>
               {projectFeatureColumns.map((column, columnIndex) => {
@@ -159,9 +162,9 @@ export const AdminProjectsTable = ({ projects, isFiltering, hasActiveFilter }: P
               })}
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
+          <tbody className={adminTableBodyClassName}>
             {projects.map((project) => (
-              <tr key={project.id}>
+              <tr key={project.id} className={adminTableRowClassName}>
                 <td className={adminTableCellClassName}>
                   <Tooltip content={longTitle(project.slug)}>
                     <span className="inline-flex">
@@ -196,9 +199,9 @@ export const AdminProjectsTable = ({ projects, isFiltering, hasActiveFilter }: P
             ))}
           </tbody>
         </table>
-      </div>
+      </TableWrapper>
       {formError && (
-        <div role="alert" className="rounded-sm bg-red-50 px-2 py-1 text-red-800">
+        <div role="alert" className="mx-4 rounded-sm bg-red-50 px-2 py-1 text-red-800">
           <span className="font-mono text-sm leading-tight">{translateServerError(formError)}</span>
         </div>
       )}

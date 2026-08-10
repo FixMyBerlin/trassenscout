@@ -19,7 +19,7 @@ export function PageAdminMembershipsUser({ userId }: Props) {
         parent={{ title: "Nutzer & Rechte", href: "/admin/memberships" }}
         title={getFullname(user) ?? user.email}
       />
-      <div className="space-y-6">
+      <div className="space-y-8">
         <MembershipUserDetails user={user} />
         <MembershipUserInvites invites={user.invites} />
         <UserMembershipsEditor key={userId} userId={userId} />

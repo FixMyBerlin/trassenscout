@@ -30,7 +30,7 @@ export function PageAdminLogEntries() {
   return (
     <>
       <AdminPageHeader title="LogEntries" />
-      <TableWrapper>
+      <TableWrapper withTopBorder>
         <table className={tableClassName}>
           <thead>
             <tr className={tableHeadRowClassName}>

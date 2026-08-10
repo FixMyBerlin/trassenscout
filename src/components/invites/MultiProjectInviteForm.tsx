@@ -2,10 +2,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 import {
+  adminTableBodyClassName,
   adminTableCellClassName,
   adminTableClassName,
   adminTableHeaderClassName,
-  adminTableWrapperClassName,
+  adminTableHeadRowClassName,
+  adminTableRowClassName,
 } from "@/src/components/admin/adminListClasses"
 import type { MembershipAccess } from "@/src/components/admin/memberships/membershipAccessUtils"
 import {
@@ -17,6 +19,7 @@ import { ActionBar } from "@/src/components/core/components/forms/ActionBar"
 import { translateServerError } from "@/src/components/core/components/forms/errorMessageTranslations"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { Spinner } from "@/src/components/core/components/Spinner"
+import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { roleTranslation } from "@/src/components/core/users/roleTranslation.const"
 import { MembershipRoleEnum } from "@/src/prisma/generated/browser"
@@ -194,122 +197,122 @@ export function MultiProjectInviteForm({ onSuccess, projectSlug }: Props) {
             {translateServerError(formError)}
           </div>
         )}
+      </div>
 
-        <div className={adminTableWrapperClassName}>
-          <table className={twJoin(adminTableClassName, "table-fixed")}>
-            <colgroup>
-              <col className="w-[40%]" />
-              <col className="w-[20%]" />
-              <col className="w-[20%]" />
-              <col className="w-[20%]" />
-            </colgroup>
-            <thead className="border-b border-gray-200 bg-gray-50">
-              <tr>
-                <th scope="col" className={adminTableHeaderClassName}>
-                  Projekt
-                </th>
-                {membershipRegionToggleOptions.map((option) => {
-                  const { Icon, label } = option
-                  return (
-                    <th
-                      key={label}
-                      scope="col"
-                      className={twJoin(adminTableHeaderClassName, "text-center")}
-                    >
-                      <span className="inline-flex items-center justify-center gap-2">
-                        <Icon className="size-4 shrink-0 text-gray-500" aria-hidden />
-                        {label}
-                      </span>
-                    </th>
-                  )
-                })}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
-              {filteredProjects.map((project) => {
-                const projectTitle = getProjectTitle(project)
-                const current = statusBySlug.get(project.slug)?.current
-                const locked = current !== undefined && current !== "none"
-                const currentAccess = statusLookupPending
-                  ? null
-                  : locked
-                    ? current.role
-                    : (accessBySlug[project.slug] ?? null)
-
+      <TableWrapper withTopBorder>
+        <table className={twJoin(adminTableClassName, "table-fixed")}>
+          <colgroup>
+            <col className="w-[40%]" />
+            <col className="w-[20%]" />
+            <col className="w-[20%]" />
+            <col className="w-[20%]" />
+          </colgroup>
+          <thead>
+            <tr className={adminTableHeadRowClassName}>
+              <th scope="col" className={adminTableHeaderClassName}>
+                Projekt
+              </th>
+              {membershipRegionToggleOptions.map((option) => {
+                const { Icon, label } = option
                 return (
-                  <tr key={project.id}>
-                    <th
-                      scope="row"
-                      title={project.slug}
-                      className={twJoin(
-                        adminTableCellClassName,
-                        "text-left font-medium text-gray-900",
-                      )}
-                    >
-                      <span className="block">{projectTitle}</span>
-                      {statusLookupPending && (
-                        <span className="mt-1 block text-xs font-normal text-gray-600">
-                          E-Mail wird geprüft...
-                        </span>
-                      )}
-                      {locked && (
-                        <span
-                          className={twJoin(
-                            "mt-1 block text-xs font-normal",
-                            current.type === "membership" ? "text-green-700" : "text-red-700",
-                          )}
-                        >
-                          {current.type === "membership"
-                            ? `Aktiv: ${roleTranslation[current.role]}`
-                            : `Ausstehend: ${roleTranslation[current.role]}`}
-                        </span>
-                      )}
-                    </th>
-                    {membershipRegionToggleOptions.map((option) => {
-                      const isActive = currentAccess === option.value
-                      const optionDisplay = membershipRegionDisplay(option.value, false)
-                      const { Icon, label } = option
-                      return (
-                        <td key={label} className={twJoin(adminTableCellClassName, "text-center")}>
-                          <button
-                            type="button"
-                            disabled={locked || statusLookupPending || createMutation.isPending}
-                            aria-label={`${label}: ${projectTitle}`}
-                            aria-pressed={isActive}
-                            onClick={() =>
-                              setAccessBySlug((currentAccessBySlug) => ({
-                                ...currentAccessBySlug,
-                                [project.slug]: option.value,
-                              }))
-                            }
-                            className={twMerge(
-                              "inline-flex min-h-9 w-full cursor-pointer items-center justify-center rounded-md px-2 py-1.5 ring-1 ring-gray-200 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 disabled:cursor-not-allowed disabled:opacity-60",
-                              isActive
-                                ? twJoin(
-                                    optionDisplay.backgroundClassName,
-                                    "text-gray-900 ring-transparent",
-                                  )
-                                : "bg-white text-gray-600 hover:bg-gray-50",
-                            )}
-                          >
-                            <Icon
-                              className={twMerge(
-                                "size-4 shrink-0",
-                                isActive ? optionDisplay.iconClassName : "text-gray-400",
-                              )}
-                              aria-hidden
-                            />
-                          </button>
-                        </td>
-                      )
-                    })}
-                  </tr>
+                  <th
+                    key={label}
+                    scope="col"
+                    className={twJoin(adminTableHeaderClassName, "text-center")}
+                  >
+                    <span className="inline-flex items-center justify-center gap-2">
+                      <Icon className="size-4 shrink-0 text-gray-500" aria-hidden />
+                      {label}
+                    </span>
+                  </th>
                 )
               })}
-            </tbody>
-          </table>
-        </div>
-      </div>
+            </tr>
+          </thead>
+          <tbody className={adminTableBodyClassName}>
+            {filteredProjects.map((project) => {
+              const projectTitle = getProjectTitle(project)
+              const current = statusBySlug.get(project.slug)?.current
+              const locked = current !== undefined && current !== "none"
+              const currentAccess = statusLookupPending
+                ? null
+                : locked
+                  ? current.role
+                  : (accessBySlug[project.slug] ?? null)
+
+              return (
+                <tr key={project.id} className={adminTableRowClassName}>
+                  <th
+                    scope="row"
+                    title={project.slug}
+                    className={twJoin(
+                      adminTableCellClassName,
+                      "text-left font-medium text-gray-900",
+                    )}
+                  >
+                    <span className="block">{projectTitle}</span>
+                    {statusLookupPending && (
+                      <span className="mt-1 block text-xs font-normal text-gray-600">
+                        E-Mail wird geprüft...
+                      </span>
+                    )}
+                    {locked && (
+                      <span
+                        className={twJoin(
+                          "mt-1 block text-xs font-normal",
+                          current.type === "membership" ? "text-green-700" : "text-red-700",
+                        )}
+                      >
+                        {current.type === "membership"
+                          ? `Aktiv: ${roleTranslation[current.role]}`
+                          : `Ausstehend: ${roleTranslation[current.role]}`}
+                      </span>
+                    )}
+                  </th>
+                  {membershipRegionToggleOptions.map((option) => {
+                    const isActive = currentAccess === option.value
+                    const optionDisplay = membershipRegionDisplay(option.value)
+                    const { Icon, label } = option
+                    return (
+                      <td key={label} className={twJoin(adminTableCellClassName, "text-center")}>
+                        <button
+                          type="button"
+                          disabled={locked || statusLookupPending || createMutation.isPending}
+                          aria-label={`${label}: ${projectTitle}`}
+                          aria-pressed={isActive}
+                          onClick={() =>
+                            setAccessBySlug((currentAccessBySlug) => ({
+                              ...currentAccessBySlug,
+                              [project.slug]: option.value,
+                            }))
+                          }
+                          className={twMerge(
+                            "inline-flex min-h-9 w-full cursor-pointer items-center justify-center rounded-md px-2 py-1.5 ring-1 ring-gray-200 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 disabled:cursor-not-allowed disabled:opacity-60",
+                            isActive
+                              ? twJoin(
+                                  optionDisplay.backgroundClassName,
+                                  "text-gray-900 ring-transparent",
+                                )
+                              : "bg-white text-gray-600 hover:bg-gray-50",
+                          )}
+                        >
+                          <Icon
+                            className={twMerge(
+                              "size-4 shrink-0",
+                              isActive ? optionDisplay.iconClassName : "text-gray-400",
+                            )}
+                            aria-hidden
+                          />
+                        </button>
+                      </td>
+                    )
+                  })}
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </TableWrapper>
 
       <ActionBar
         left={

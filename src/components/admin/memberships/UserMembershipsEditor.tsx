@@ -3,10 +3,12 @@ import { useNavigate } from "@tanstack/react-router"
 import { useState } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 import {
+  adminTableBodyClassName,
   adminTableCellClassName,
   adminTableClassName,
   adminTableHeaderClassName,
-  adminTableWrapperClassName,
+  adminTableHeadRowClassName,
+  adminTableRowClassName,
 } from "@/src/components/admin/adminListClasses"
 import {
   buildAccessByProjectId,
@@ -14,15 +16,12 @@ import {
   isMembershipAccessDirty,
   type MembershipAccess,
 } from "@/src/components/admin/memberships/membershipAccessUtils"
-import {
-  membershipRegionDisplay,
-  membershipRegionToggleOptions,
-} from "@/src/components/admin/memberships/membershipRegionDisplay"
+import { membershipRegionToggleOptions } from "@/src/components/admin/memberships/membershipRegionDisplay"
 import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { ActionBar } from "@/src/components/core/components/forms/ActionBar"
 import { translateServerError } from "@/src/components/core/components/forms/errorMessageTranslations"
 import { Notice } from "@/src/components/core/components/Notice/Notice"
-import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
+import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { longTitle, shortTitle } from "@/src/components/core/components/text/titles"
 import { saveUserMembershipsFn } from "@/src/server/memberships/memberships.functions"
 import { projectsAdminQueryOptions } from "@/src/server/projects/projectsQueryOptions"
@@ -41,13 +40,11 @@ function UserMembershipsProjectAccessTable({
   projects,
   accessByProjectId,
   disabled,
-  isAdmin,
   onAccessChange,
 }: {
   projects: ProjectLike[]
   accessByProjectId: Record<number, MembershipAccess>
   disabled?: boolean
-  isAdmin: boolean
   onAccessChange: (projectId: number, access: MembershipAccess) => void
 }) {
   return (
@@ -58,8 +55,8 @@ function UserMembershipsProjectAccessTable({
         <col className="w-[20%]" />
         <col className="w-[20%]" />
       </colgroup>
-      <thead className="border-b border-gray-200 bg-gray-50">
-        <tr>
+      <thead>
+        <tr className={adminTableHeadRowClassName}>
           <th scope="col" className={adminTableHeaderClassName}>
             Projekt
           </th>
@@ -81,13 +78,13 @@ function UserMembershipsProjectAccessTable({
           })}
         </tr>
       </thead>
-      <tbody className="divide-y divide-gray-200 bg-white">
+      <tbody className={adminTableBodyClassName}>
         {projects.map((project) => {
           const currentAccess = accessByProjectId[project.id] ?? null
           const projectTitle = shortTitle(project.slug)
 
           return (
-            <tr key={project.id}>
+            <tr key={project.id} className={adminTableRowClassName}>
               <th
                 scope="row"
                 title={longTitle(project.slug)}
@@ -97,8 +94,6 @@ function UserMembershipsProjectAccessTable({
               </th>
               {membershipRegionToggleOptions.map((option) => {
                 const isActive = currentAccess === option.value
-                const optionDisplay =
-                  isAdmin && isActive ? membershipRegionDisplay(option.value, true) : option
                 const { Icon, label } = option
 
                 return (
@@ -112,17 +107,14 @@ function UserMembershipsProjectAccessTable({
                       className={twMerge(
                         "inline-flex min-h-9 w-full cursor-pointer items-center justify-center rounded-md px-2 py-1.5 ring-1 ring-gray-200 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 disabled:cursor-not-allowed disabled:opacity-60",
                         isActive
-                          ? twJoin(
-                              optionDisplay.backgroundClassName,
-                              "text-gray-900 ring-transparent",
-                            )
+                          ? twJoin(option.backgroundClassName, "text-gray-900 ring-transparent")
                           : "bg-white text-gray-600 hover:bg-gray-50",
                       )}
                     >
                       <Icon
                         className={twMerge(
                           "size-4 shrink-0",
-                          isActive ? optionDisplay.iconClassName : "text-gray-400",
+                          isActive ? option.iconClassName : "text-gray-400",
                         )}
                         aria-hidden
                       />
@@ -148,7 +140,7 @@ export function UserMembershipsEditor({ userId }: Props) {
 
   const projects = projectsResult.projects
   const isAdmin = user.role === "ADMIN"
-  const initialAccessByProjectId = buildAccessByProjectId(projects, user.memberships, isAdmin)
+  const initialAccessByProjectId = buildAccessByProjectId(projects, user.memberships)
 
   const [accessByProjectId, setAccessByProjectId] =
     useState<Record<number, MembershipAccess>>(initialAccessByProjectId)
@@ -179,32 +171,40 @@ export function UserMembershipsEditor({ userId }: Props) {
 
   return (
     <>
-      <div className={pageContentPaddingClassName}>
-        <div className="space-y-6">
+      <section aria-labelledby="membership-project-access-heading" className="space-y-3">
+        <div className="space-y-4 px-4">
+          <h2
+            id="membership-project-access-heading"
+            className="text-lg font-semibold text-gray-700"
+          >
+            Projektrechte
+          </h2>
+
           {isAdmin && (
-            <Notice type="info" title="Admin-Nutzer haben automatisch Zugriff auf alle Projekte.">
-              Mitgliedschaften können hier nicht bearbeitet werden.
-            </Notice>
+            <div className="[&>div]:mb-0">
+              <Notice type="info" title="Admin-Nutzer haben automatisch Zugriff auf alle Projekte.">
+                Explizite Mitgliedschaften sind optional und hier nicht erforderlich.
+              </Notice>
+            </div>
           )}
+        </div>
 
-          <div className={adminTableWrapperClassName}>
-            <UserMembershipsProjectAccessTable
-              projects={projects}
-              accessByProjectId={accessByProjectId}
-              isAdmin={isAdmin}
-              disabled={isAdmin || saveMutation.isPending}
-              onAccessChange={(projectId, access) =>
-                setAccessByProjectId((current) => ({ ...current, [projectId]: access }))
-              }
-            />
-          </div>
+        <TableWrapper withTopBorder>
+          <UserMembershipsProjectAccessTable
+            projects={projects}
+            accessByProjectId={accessByProjectId}
+            disabled={saveMutation.isPending}
+            onAccessChange={(projectId, access) =>
+              setAccessByProjectId((current) => ({ ...current, [projectId]: access }))
+            }
+          />
+        </TableWrapper>
 
-          {!isAdmin && (
-            <p className="text-sm text-gray-600">
-              Hinweis: Beim Speichern werden keine E-Mails versendet. Der Nutzer wird aus allen
-              aktiven Sitzungen abgemeldet, damit die geänderten Rechte beim nächsten Login greifen.
-            </p>
-          )}
+        <div className="space-y-4 px-4">
+          <p className="text-sm text-gray-600">
+            Hinweis: Beim Speichern werden keine E-Mails versendet. Der Nutzer wird aus allen
+            aktiven Sitzungen abgemeldet, damit die geänderten Rechte beim nächsten Login greifen.
+          </p>
 
           {formError && (
             <div role="alert" className="rounded-sm bg-red-50 px-2 py-1 text-red-800">
@@ -214,14 +214,14 @@ export function UserMembershipsEditor({ userId }: Props) {
             </div>
           )}
         </div>
-      </div>
+      </section>
 
       <ActionBar
         left={
           <button
             type="button"
             className={primaryButtonClassName}
-            disabled={isAdmin || !isDirty || saveMutation.isPending}
+            disabled={!isDirty || saveMutation.isPending}
             onClick={handleSave}
           >
             Speichern

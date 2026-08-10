@@ -71,7 +71,7 @@ export const SubsectionTableAdmin = ({ projectSlug }: Props) => {
         </p>
       )}
 
-      <TableWrapper>
+      <TableWrapper withTopBorder>
         <table className={tableClassName}>
           <thead>
             <tr className={tableHeadRowClassName}>
