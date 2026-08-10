@@ -9,13 +9,11 @@ import {
   type FooterLink,
   publicLinks,
 } from "@/src/components/shared/app/layouts/footer/links.const"
-import { GitHubIcon } from "./GitHubIcon"
 import {
   navigationMenuItemLinkStyles,
   navigationMenuTransitionProps,
 } from "./navigationMenuItemStyles"
 
-const githubRepositoryUrl = "https://github.com/FixMyBerlin/trassenscout/"
 const [contactAndImprintLink, privacyLink] = publicLinks
 const [supportLink] = authLinks
 const metaLinks = [supportLink, privacyLink, contactAndImprintLink].filter(
@@ -72,18 +70,6 @@ export const NavigationMetaMenu = () => {
                 <MenuItem>
                   {({ focus }) => (
                     <FooterBuildByLine classNameOverwrites={navigationMenuItemLinkStyles(focus)} />
-                  )}
-                </MenuItem>
-                <MenuItem>
-                  {({ focus }) => (
-                    <Link
-                      href={githubRepositoryUrl}
-                      blank
-                      classNameOverwrites={navigationMenuItemLinkStyles(focus)}
-                    >
-                      <span className="sr-only">GitHub Repository</span>
-                      <GitHubIcon className="size-5" />
-                    </Link>
                   )}
                 </MenuItem>
               </MenuItems>
