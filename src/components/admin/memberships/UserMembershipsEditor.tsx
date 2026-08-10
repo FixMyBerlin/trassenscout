@@ -21,6 +21,7 @@ import {
 import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { ActionBar } from "@/src/components/core/components/forms/ActionBar"
 import { translateServerError } from "@/src/components/core/components/forms/errorMessageTranslations"
+import { Notice } from "@/src/components/core/components/Notice/Notice"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { longTitle, shortTitle } from "@/src/components/core/components/text/titles"
 import { saveUserMembershipsFn } from "@/src/server/memberships/memberships.functions"
@@ -181,10 +182,9 @@ export function UserMembershipsEditor({ userId }: Props) {
       <div className={pageContentPaddingClassName}>
         <div className="space-y-6">
           {isAdmin && (
-            <p className="text-sm text-gray-600">
-              Admin-Nutzer haben automatisch Zugriff auf alle Projekte. Mitgliedschaften können hier
-              nicht bearbeitet werden.
-            </p>
+            <Notice type="info" title="Admin-Nutzer haben automatisch Zugriff auf alle Projekte.">
+              Mitgliedschaften können hier nicht bearbeitet werden.
+            </Notice>
           )}
 
           <div className={adminTableWrapperClassName}>
