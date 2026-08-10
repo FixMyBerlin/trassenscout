@@ -89,7 +89,7 @@ export const part2Config: SurveyPart2 = {
                 propertyName: "subsectionSlug",
               },
               config: {
-                // Approximate RS23 / Frankfurt bounds; map also fits selected geometry
+                // Frankfurt viewport — seed PAs survey-line-west/east + survey-poly sit here
                 bounds: [8.68495, 50.103212, 8.793869, 50.148444],
               },
             },

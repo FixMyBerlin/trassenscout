@@ -220,6 +220,72 @@ const seedSubsections = async () => {
       subsectionStatusId: trassenverlaufUngeklaertStatus?.id ?? null,
       subsubsections: { create: addIrrelevantStatus(subsubsectionsForLine3) },
     },
+    // Survey demo PAs in the rstest-2 map viewport (Frankfurt area).
+    // Berlin fixtures above stay for geometry-variant tests; these are what Beteiligung sees on load.
+    {
+      projectId: 1,
+      operatorId: 1,
+      slug: "survey-line-west",
+      order: 5,
+      type: "LINE",
+      description: "Survey demo Planungsabschnitt (west line) in Frankfurt map bounds",
+      labelPos: "top",
+      geometry: {
+        type: "LineString",
+        coordinates: [
+          [8.705, 50.12],
+          [8.72, 50.125],
+          [8.735, 50.13],
+          [8.75, 50.135],
+        ],
+      },
+      lengthM: 2500,
+      managerId: null,
+    },
+    {
+      projectId: 1,
+      operatorId: 1,
+      slug: "survey-line-east",
+      order: 6,
+      type: "LINE",
+      description: "Survey demo Planungsabschnitt (east line) in Frankfurt map bounds",
+      labelPos: "bottom",
+      geometry: {
+        type: "LineString",
+        coordinates: [
+          [8.74, 50.115],
+          [8.755, 50.122],
+          [8.77, 50.13],
+          [8.78, 50.138],
+        ],
+      },
+      lengthM: 2200,
+      managerId: null,
+      subsectionStatusId: trassenverlaufUngeklaertStatus?.id ?? null,
+    },
+    {
+      projectId: 1,
+      operatorId: 1,
+      slug: "survey-poly",
+      order: 7,
+      type: "POLYGON",
+      description: "Survey demo Planungsabschnitt (polygon) in Frankfurt map bounds",
+      labelPos: "top",
+      geometry: {
+        type: "Polygon",
+        coordinates: [
+          [
+            [8.71, 50.118],
+            [8.725, 50.118],
+            [8.725, 50.128],
+            [8.71, 50.128],
+            [8.71, 50.118],
+          ],
+        ],
+      },
+      lengthM: null,
+      managerId: null,
+    },
   ]
 
   // Add RS3000 subsection with one LINE subsubsection
