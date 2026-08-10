@@ -64,7 +64,7 @@ const projectFeatureColumns: ProjectFeatureColumn[] = [
   },
   {
     key: "landAcquisitionModuleEnabled",
-    header: "Grunderwerb",
+    header: "Grund\u00ADerwerb",
     icon: <MapIcon className="size-4" aria-hidden />,
     label: (enabled) =>
       enabled ? "Grunderwerb-Modul ausschalten" : "Grunderwerb-Modul einschalten",
@@ -138,10 +138,7 @@ export const AdminProjectsTable = ({ projects, isFiltering, hasActiveFilter }: P
                 return (
                   <th key={column.key} className={adminTableHeaderClassName}>
                     <div className="flex items-center gap-2">
-                      <span className="inline-flex items-center gap-1">
-                        {column.icon}
-                        {column.header}
-                      </span>
+                      {column.header}
                       <AdminTableFeatureCheckbox
                         checked={allEnabled}
                         indeterminate={someEnabled && !allEnabled}
@@ -185,14 +182,17 @@ export const AdminProjectsTable = ({ projects, isFiltering, hasActiveFilter }: P
                 </td>
                 {projectFeatureColumns.map((column) => (
                   <td key={column.key} className={adminTableCellClassName}>
-                    <AdminTableFeatureCheckbox
-                      checked={project[column.key]}
-                      disabled={isPending}
-                      label={column.label(project[column.key])}
-                      onChange={() =>
-                        void handleUpdate([project.slug], column.key, !project[column.key])
-                      }
-                    />
+                    <div className="flex items-center gap-1.5 text-gray-500">
+                      {column.icon}
+                      <AdminTableFeatureCheckbox
+                        checked={project[column.key]}
+                        disabled={isPending}
+                        label={column.label(project[column.key])}
+                        onChange={() =>
+                          void handleUpdate([project.slug], column.key, !project[column.key])
+                        }
+                      />
+                    </div>
                   </td>
                 ))}
               </tr>
