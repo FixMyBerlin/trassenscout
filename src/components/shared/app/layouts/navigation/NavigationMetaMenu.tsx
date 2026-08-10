@@ -13,6 +13,7 @@ import {
   navigationMenuItemLinkStyles,
   navigationMenuTransitionProps,
 } from "./navigationMenuItemStyles"
+import { NavigationMenuSeparator } from "./NavigationMenuSeparator"
 
 const [contactAndImprintLink, privacyLink] = publicLinks
 const [supportLink] = authLinks
@@ -67,6 +68,7 @@ export const NavigationMetaMenu = () => {
                     </MenuItem>
                   ))}
                 </div>
+                <NavigationMenuSeparator />
                 <MenuItem>
                   {({ focus }) => (
                     <FooterBuildByLine classNameOverwrites={navigationMenuItemLinkStyles(focus)} />
