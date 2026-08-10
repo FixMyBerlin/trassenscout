@@ -38,6 +38,7 @@ import {
   type SwitchableMapLocationPoint,
 } from "@/src/components/beteiligung/form/map/utils"
 import { formClasses } from "@/src/components/beteiligung/form/styles"
+import { SurveyRadioIndicator } from "@/src/components/beteiligung/form/SurveyRadioIndicator"
 import { useFieldContext } from "@/src/components/beteiligung/shared/hooks/form-context"
 import { MapData } from "@/src/components/beteiligung/shared/types"
 import "maplibre-gl/dist/maplibre-gl.css"
@@ -408,19 +409,12 @@ const SwitchableMapContent = ({
             key={String(option.key)}
             value={option.key}
             className={twJoin(
-              "group flex w-full items-start hover:cursor-pointer",
+              "group flex w-full items-center hover:cursor-pointer",
               formClasses.choiceFocus,
             )}
           >
-            <div className="flex h-full min-h-10 items-center">
-              <div
-                className={twJoin(
-                  "relative size-4 cursor-pointer rounded-full border border-gray-300 transition-colors group-hover:border-gray-400",
-                )}
-              />
-              <span className="absolute m-[2px] size-3 rounded-full border-4 border-(--survey-primary-color) opacity-0 transition group-data-checked:opacity-100" />
-            </div>
-            {/* we do not use the simple pattern from the headless UI demos as we want the whole item to be clickable incl. label etc; we use p instead of Label from headless UI as Label breaks the hover for some reason */}{" "}
+            <SurveyRadioIndicator />
+            {/* we do not use the simple pattern from the headless UI demos as we want the whole item to be clickable incl. label etc; we use p instead of Label from headless UI as Label breaks the hover for some reason */}
             <div className={formClasses.labelItemWrapper}>
               <p className={twJoin(formClasses.fieldItemLabel)}>{option.label}</p>
             </div>
