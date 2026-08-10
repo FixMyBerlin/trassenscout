@@ -61,7 +61,11 @@ const adminPages = [
     visibleText: "Nicht-abgeschickte Eingaben",
   },
   {
-    path: "/admin/logEntries",
+    path: "/admin/log-entries",
+    visibleText: "Log-Einträge",
+  },
+  {
+    path: "/admin/system-log-entries",
     visibleText: "Einträgen",
   },
   {

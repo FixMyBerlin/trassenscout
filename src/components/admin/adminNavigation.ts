@@ -312,7 +312,12 @@ export function buildAdminNavigation() {
       name: "System",
       icon: Cog6ToothIcon,
       children: [
-        { name: "LogEntries", link: { to: "/admin/logEntries" }, countKey: "logEntries" },
+        { name: "Log-Einträge", link: { to: "/admin/log-entries" } },
+        {
+          name: "System-Logs",
+          link: { to: "/admin/system-log-entries" },
+          countKey: "logEntries",
+        },
         {
           name: "E-Mail-Templates",
           link: { to: "/admin/email-templates" },

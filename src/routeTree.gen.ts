@@ -36,6 +36,7 @@ import { Route as ApiProcessProjectRecordEmailIndexRouteImport } from './routes/
 import { Route as ApiCronSurveyResponsesCleanupIndexRouteImport } from './routes/api/cron-surveyResponses-cleanup/index'
 import { Route as ApiCronLogEntriesCleanupIndexRouteImport } from './routes/api/cron-logEntries-cleanup/index'
 import { Route as ApiCronInvitesCleanupIndexRouteImport } from './routes/api/cron-invites-cleanup/index'
+import { Route as AdminSystemLogEntriesIndexRouteImport } from './routes/admin/system-log-entries/index'
 import { Route as AdminSurveysIndexRouteImport } from './routes/admin/surveys/index'
 import { Route as AdminSupportDocumentsIndexRouteImport } from './routes/admin/support-documents/index'
 import { Route as AdminProjectsIndexRouteImport } from './routes/admin/projects/index'
@@ -43,7 +44,7 @@ import { Route as AdminProjectRecordsIndexRouteImport } from './routes/admin/pro
 import { Route as AdminProjectRecordTemplatesIndexRouteImport } from './routes/admin/project-record-templates/index'
 import { Route as AdminProjectRecordEmailsIndexRouteImport } from './routes/admin/project-record-emails/index'
 import { Route as AdminMembershipsIndexRouteImport } from './routes/admin/memberships/index'
-import { Route as AdminLogEntriesIndexRouteImport } from './routes/admin/logEntries/index'
+import { Route as AdminLogEntriesIndexRouteImport } from './routes/admin/log-entries/index'
 import { Route as AdminEvaluationsIndexRouteImport } from './routes/admin/evaluations/index'
 import { Route as AdminEmailTemplatesIndexRouteImport } from './routes/admin/email-templates/index'
 import { Route as LoggedInProjectsProjectSlugIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/index'
@@ -298,6 +299,12 @@ const ApiCronInvitesCleanupIndexRoute =
     path: '/api/cron-invites-cleanup/',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AdminSystemLogEntriesIndexRoute =
+  AdminSystemLogEntriesIndexRouteImport.update({
+    id: '/system-log-entries/',
+    path: '/system-log-entries/',
+    getParentRoute: () => AdminRoute,
+  } as any)
 const AdminSurveysIndexRoute = AdminSurveysIndexRouteImport.update({
   id: '/surveys/',
   path: '/surveys/',
@@ -338,8 +345,8 @@ const AdminMembershipsIndexRoute = AdminMembershipsIndexRouteImport.update({
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminLogEntriesIndexRoute = AdminLogEntriesIndexRouteImport.update({
-  id: '/logEntries/',
-  path: '/logEntries/',
+  id: '/log-entries/',
+  path: '/log-entries/',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminEvaluationsIndexRoute = AdminEvaluationsIndexRouteImport.update({
@@ -1115,7 +1122,7 @@ export interface FileRoutesByFullPath {
   '/$projectSlug/': typeof LoggedInProjectsProjectSlugIndexRoute
   '/admin/email-templates/': typeof AdminEmailTemplatesIndexRoute
   '/admin/evaluations/': typeof AdminEvaluationsIndexRoute
-  '/admin/logEntries/': typeof AdminLogEntriesIndexRoute
+  '/admin/log-entries/': typeof AdminLogEntriesIndexRoute
   '/admin/memberships/': typeof AdminMembershipsIndexRoute
   '/admin/project-record-emails/': typeof AdminProjectRecordEmailsIndexRoute
   '/admin/project-record-templates/': typeof AdminProjectRecordTemplatesIndexRoute
@@ -1123,6 +1130,7 @@ export interface FileRoutesByFullPath {
   '/admin/projects/': typeof AdminProjectsIndexRoute
   '/admin/support-documents/': typeof AdminSupportDocumentsIndexRoute
   '/admin/surveys/': typeof AdminSurveysIndexRoute
+  '/admin/system-log-entries/': typeof AdminSystemLogEntriesIndexRoute
   '/api/cron-invites-cleanup/': typeof ApiCronInvitesCleanupIndexRoute
   '/api/cron-logEntries-cleanup/': typeof ApiCronLogEntriesCleanupIndexRoute
   '/api/cron-surveyResponses-cleanup/': typeof ApiCronSurveyResponsesCleanupIndexRoute
@@ -1258,7 +1266,7 @@ export interface FileRoutesByTo {
   '/support': typeof LoggedInGeneralSupportIndexRoute
   '/admin/email-templates': typeof AdminEmailTemplatesIndexRoute
   '/admin/evaluations': typeof AdminEvaluationsIndexRoute
-  '/admin/logEntries': typeof AdminLogEntriesIndexRoute
+  '/admin/log-entries': typeof AdminLogEntriesIndexRoute
   '/admin/memberships': typeof AdminMembershipsIndexRoute
   '/admin/project-record-emails': typeof AdminProjectRecordEmailsIndexRoute
   '/admin/project-record-templates': typeof AdminProjectRecordTemplatesIndexRoute
@@ -1266,6 +1274,7 @@ export interface FileRoutesByTo {
   '/admin/projects': typeof AdminProjectsIndexRoute
   '/admin/support-documents': typeof AdminSupportDocumentsIndexRoute
   '/admin/surveys': typeof AdminSurveysIndexRoute
+  '/admin/system-log-entries': typeof AdminSystemLogEntriesIndexRoute
   '/api/cron-invites-cleanup': typeof ApiCronInvitesCleanupIndexRoute
   '/api/cron-logEntries-cleanup': typeof ApiCronLogEntriesCleanupIndexRoute
   '/api/cron-surveyResponses-cleanup': typeof ApiCronSurveyResponsesCleanupIndexRoute
@@ -1410,7 +1419,7 @@ export interface FileRoutesById {
   '/_loggedInProjects/$projectSlug/': typeof LoggedInProjectsProjectSlugIndexRoute
   '/admin/email-templates/': typeof AdminEmailTemplatesIndexRoute
   '/admin/evaluations/': typeof AdminEvaluationsIndexRoute
-  '/admin/logEntries/': typeof AdminLogEntriesIndexRoute
+  '/admin/log-entries/': typeof AdminLogEntriesIndexRoute
   '/admin/memberships/': typeof AdminMembershipsIndexRoute
   '/admin/project-record-emails/': typeof AdminProjectRecordEmailsIndexRoute
   '/admin/project-record-templates/': typeof AdminProjectRecordTemplatesIndexRoute
@@ -1418,6 +1427,7 @@ export interface FileRoutesById {
   '/admin/projects/': typeof AdminProjectsIndexRoute
   '/admin/support-documents/': typeof AdminSupportDocumentsIndexRoute
   '/admin/surveys/': typeof AdminSurveysIndexRoute
+  '/admin/system-log-entries/': typeof AdminSystemLogEntriesIndexRoute
   '/api/cron-invites-cleanup/': typeof ApiCronInvitesCleanupIndexRoute
   '/api/cron-logEntries-cleanup/': typeof ApiCronLogEntriesCleanupIndexRoute
   '/api/cron-surveyResponses-cleanup/': typeof ApiCronSurveyResponsesCleanupIndexRoute
@@ -1559,7 +1569,7 @@ export interface FileRouteTypes {
     | '/$projectSlug/'
     | '/admin/email-templates/'
     | '/admin/evaluations/'
-    | '/admin/logEntries/'
+    | '/admin/log-entries/'
     | '/admin/memberships/'
     | '/admin/project-record-emails/'
     | '/admin/project-record-templates/'
@@ -1567,6 +1577,7 @@ export interface FileRouteTypes {
     | '/admin/projects/'
     | '/admin/support-documents/'
     | '/admin/surveys/'
+    | '/admin/system-log-entries/'
     | '/api/cron-invites-cleanup/'
     | '/api/cron-logEntries-cleanup/'
     | '/api/cron-surveyResponses-cleanup/'
@@ -1702,7 +1713,7 @@ export interface FileRouteTypes {
     | '/support'
     | '/admin/email-templates'
     | '/admin/evaluations'
-    | '/admin/logEntries'
+    | '/admin/log-entries'
     | '/admin/memberships'
     | '/admin/project-record-emails'
     | '/admin/project-record-templates'
@@ -1710,6 +1721,7 @@ export interface FileRouteTypes {
     | '/admin/projects'
     | '/admin/support-documents'
     | '/admin/surveys'
+    | '/admin/system-log-entries'
     | '/api/cron-invites-cleanup'
     | '/api/cron-logEntries-cleanup'
     | '/api/cron-surveyResponses-cleanup'
@@ -1853,7 +1865,7 @@ export interface FileRouteTypes {
     | '/_loggedInProjects/$projectSlug/'
     | '/admin/email-templates/'
     | '/admin/evaluations/'
-    | '/admin/logEntries/'
+    | '/admin/log-entries/'
     | '/admin/memberships/'
     | '/admin/project-record-emails/'
     | '/admin/project-record-templates/'
@@ -1861,6 +1873,7 @@ export interface FileRouteTypes {
     | '/admin/projects/'
     | '/admin/support-documents/'
     | '/admin/surveys/'
+    | '/admin/system-log-entries/'
     | '/api/cron-invites-cleanup/'
     | '/api/cron-logEntries-cleanup/'
     | '/api/cron-surveyResponses-cleanup/'
@@ -2200,6 +2213,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiCronInvitesCleanupIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/system-log-entries/': {
+      id: '/admin/system-log-entries/'
+      path: '/system-log-entries'
+      fullPath: '/admin/system-log-entries/'
+      preLoaderRoute: typeof AdminSystemLogEntriesIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/surveys/': {
       id: '/admin/surveys/'
       path: '/surveys'
@@ -2249,10 +2269,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminMembershipsIndexRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/logEntries/': {
-      id: '/admin/logEntries/'
-      path: '/logEntries'
-      fullPath: '/admin/logEntries/'
+    '/admin/log-entries/': {
+      id: '/admin/log-entries/'
+      path: '/log-entries'
+      fullPath: '/admin/log-entries/'
       preLoaderRoute: typeof AdminLogEntriesIndexRouteImport
       parentRoute: typeof AdminRoute
     }
@@ -3453,6 +3473,7 @@ interface AdminRouteChildren {
   AdminProjectsIndexRoute: typeof AdminProjectsIndexRoute
   AdminSupportDocumentsIndexRoute: typeof AdminSupportDocumentsIndexRoute
   AdminSurveysIndexRoute: typeof AdminSurveysIndexRoute
+  AdminSystemLogEntriesIndexRoute: typeof AdminSystemLogEntriesIndexRoute
   AdminEvaluationsProjectSlugEditRoute: typeof AdminEvaluationsProjectSlugEditRoute
   AdminMembershipsUserIdIndexRoute: typeof AdminMembershipsUserIdIndexRoute
   AdminProjectRecordEmailsProjectRecordEmailIdIndexRoute: typeof AdminProjectRecordEmailsProjectRecordEmailIdIndexRoute
@@ -3485,6 +3506,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminProjectsIndexRoute: AdminProjectsIndexRoute,
   AdminSupportDocumentsIndexRoute: AdminSupportDocumentsIndexRoute,
   AdminSurveysIndexRoute: AdminSurveysIndexRoute,
+  AdminSystemLogEntriesIndexRoute: AdminSystemLogEntriesIndexRoute,
   AdminEvaluationsProjectSlugEditRoute: AdminEvaluationsProjectSlugEditRoute,
   AdminMembershipsUserIdIndexRoute: AdminMembershipsUserIdIndexRoute,
   AdminProjectRecordEmailsProjectRecordEmailIdIndexRoute:

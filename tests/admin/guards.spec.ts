@@ -8,7 +8,8 @@ const adminPaths = [
   "/admin/projects",
   "/admin/memberships",
   "/admin/surveys",
-  "/admin/logEntries",
+  "/admin/log-entries",
+  "/admin/system-log-entries",
 ]
 
 const loggedOutRedirectNoise = [
