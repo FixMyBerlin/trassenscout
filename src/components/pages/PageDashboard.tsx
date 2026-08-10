@@ -9,7 +9,6 @@ import {
 } from "@/src/components/core/components/PageHeader/MapListViewLayout"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
-import { AdminProjectsList } from "@/src/components/dashboard/AdminProjectsList"
 import { DashboardMapWithProvider } from "@/src/components/dashboard/DashboardMapWithProvider"
 import { LogEntriesDashboard } from "@/src/components/dashboard/LogEntriesDashboard"
 import { NoProjectMembershipsYet } from "@/src/components/dashboard/NoProjectMembershipsYet"
@@ -24,9 +23,6 @@ function DashboardSupplementarySections({
 }) {
   return (
     <div className={pageContentPaddingClassName}>
-      <Suspense fallback={null}>
-        <AdminProjectsList />
-      </Suspense>
       <Suspense fallback={null}>
         <LogEntriesDashboard userProjects={projects} />
       </Suspense>
