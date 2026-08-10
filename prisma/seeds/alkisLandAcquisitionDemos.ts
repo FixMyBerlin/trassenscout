@@ -14,20 +14,20 @@ export type AlkisLandAcquisitionDemoEntry = {
 }
 
 const SEED_DEMO_SPECS = [
-  { slug: "rs-berlin", subTitle: "Seed: ALKIS demo Berlin", alkisStateKey: StateKeyEnum.BERLIN },
+  { slug: "rs-be", subTitle: "Seed: ALKIS demo Berlin", alkisStateKey: StateKeyEnum.BERLIN },
   {
-    slug: "rs-baden-wuerttemberg",
+    slug: "rs-bw",
     subTitle: "Seed: ALKIS demo Baden-Württemberg",
     alkisStateKey: StateKeyEnum.BADEN_WUERTTEMBERG,
   },
-  { slug: "rs-hessen", subTitle: "Seed: ALKIS demo Hessen", alkisStateKey: StateKeyEnum.HESSEN },
+  { slug: "rs-he", subTitle: "Seed: ALKIS demo Hessen", alkisStateKey: StateKeyEnum.HESSEN },
   {
-    slug: "rs-brandenburg",
+    slug: "rs-bb",
     subTitle: "Seed: ALKIS demo Brandenburg",
     alkisStateKey: StateKeyEnum.BRANDENBURG,
   },
   {
-    slug: "rs-nordrhein-westfalen",
+    slug: "rs-nrw",
     subTitle: "Seed: ALKIS demo Nordrhein-Westfalen",
     alkisStateKey: StateKeyEnum.NORDRHEIN_WESTFALEN,
   },
