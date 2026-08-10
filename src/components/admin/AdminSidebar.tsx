@@ -206,7 +206,7 @@ export function AdminSidebar() {
   const navigation = buildAdminNavigation()
 
   return (
-    <div className="relative flex w-72 shrink-0 flex-col gap-y-5 overflow-y-auto bg-purple-700 px-6 pb-20">
+    <div className="relative flex w-56 shrink-0 flex-col gap-y-5 overflow-y-auto bg-purple-700 px-3 pb-20 lg:w-72 lg:px-6">
       <div className="flex h-16 shrink-0 items-center">
         <div className="flex items-end">
           <Img src={svgLogoTrassenscoutAdmin} alt="Trassenscout" height={30} width={84} />

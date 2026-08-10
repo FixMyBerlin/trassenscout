@@ -10,7 +10,7 @@ export function LayoutAdmin() {
       <div className={appShellRowClassName}>
         <Suspense
           fallback={
-            <div className="flex w-72 shrink-0 items-center justify-center bg-purple-700">
+            <div className="flex w-56 shrink-0 items-center justify-center bg-purple-700 lg:w-72">
               <Spinner />
             </div>
           }
