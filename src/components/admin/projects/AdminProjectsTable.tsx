@@ -12,16 +12,17 @@ import {
   adminTableBodyClassName,
   adminTableCellClassName,
   adminTableClassName,
+  adminTableExternalLinkClassName,
   adminTableHeaderClassName,
   adminTableHeadRowClassName,
   adminTableRowClassName,
 } from "@/src/components/admin/adminListClasses"
 import {
-  AdminTableEditLink,
   AdminTableExternalLink,
   AdminTableFeatureCheckbox,
 } from "@/src/components/admin/AdminTableActions"
 import { translateServerError } from "@/src/components/core/components/forms/errorMessageTranslations"
+import { Link } from "@/src/components/core/components/links/Link"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { longTitle } from "@/src/components/core/components/text/titles"
@@ -38,6 +39,9 @@ type Props = {
 }
 
 const formatPaCount = (count: number) => `${count} ${count === 1 ? "PA" : "PAs"}`
+
+const formatSubsubsectionCount = (count: number) =>
+  `${count} ${count === 1 ? "Teilabschnitt" : "Teilabschnitte"}`
 
 type ProjectFeatureColumn = {
   key: ProjectFeatureFlagKey
@@ -125,11 +129,11 @@ export const AdminProjectsTable = ({ projects, isFiltering, hasActiveFilter }: P
           isFiltering || isPending ? "opacity-60" : "",
         )}
       >
-        <table className={adminTableClassName}>
+        <table className={twMerge(adminTableClassName, "w-max min-w-full")}>
           <thead>
             <tr className={adminTableHeadRowClassName}>
               <th className={adminTableHeaderClassName}>Projekt</th>
-              <th className={adminTableHeaderClassName}>Planungsabschnitte</th>
+              <th className={adminTableHeaderClassName}>PA / TA</th>
               {projectFeatureColumns.map((column, columnIndex) => {
                 const allEnabled = projects.every((project) => project[column.key])
                 const someEnabled = projects.some((project) => project[column.key])
@@ -137,7 +141,7 @@ export const AdminProjectsTable = ({ projects, isFiltering, hasActiveFilter }: P
                 const isLastColumn = columnIndex === projectFeatureColumns.length - 1
                 return (
                   <th key={column.key} className={adminTableHeaderClassName}>
-                    <div className="flex items-center gap-2">
+                    <div className="flex min-w-18 flex-col gap-1 leading-snug">
                       {column.header}
                       <AdminTableFeatureCheckbox
                         checked={allEnabled}
@@ -172,13 +176,19 @@ export const AdminProjectsTable = ({ projects, isFiltering, hasActiveFilter }: P
                   </Tooltip>
                 </td>
                 <td className={adminTableCellClassName}>
-                  <Tooltip content="Planungsabschnitte verwalten">
-                    <span className="inline-flex">
-                      <AdminTableEditLink to={`/admin/projects/${project.slug}/subsections`}>
-                        {formatPaCount(project.subsectionCount)}
-                      </AdminTableEditLink>
+                  <div className="flex flex-col gap-0.5 leading-tight">
+                    <Link
+                      to={`/admin/projects/${project.slug}/subsections`}
+                      classNameOverwrites={adminTableExternalLinkClassName}
+                    >
+                      {formatPaCount(project.subsectionCount)}
+                    </Link>
+                    <span
+                      className={project.subsubsectionCount === 0 ? "text-gray-400" : undefined}
+                    >
+                      {formatSubsubsectionCount(project.subsubsectionCount)}
                     </span>
-                  </Tooltip>
+                  </div>
                 </td>
                 {projectFeatureColumns.map((column) => (
                   <td key={column.key} className={adminTableCellClassName}>

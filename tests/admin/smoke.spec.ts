@@ -14,7 +14,7 @@ const adminPages = [
   },
   {
     path: "/admin/projects",
-    visibleText: "Planungsabschnitte",
+    visibleText: "PA / TA",
   },
   {
     path: "/admin/projects",
