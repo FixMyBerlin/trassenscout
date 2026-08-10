@@ -9,6 +9,7 @@ import {
   navigationMenuItemLinkStyles,
   navigationMenuTransitionProps,
 } from "../navigationMenuItemStyles"
+import { NavigationMenuSeparator } from "../NavigationMenuSeparator"
 
 type Props = {
   user: CurrentUser
@@ -48,7 +49,8 @@ export const NavigationUserLoggedIn = ({ user }: Props) => {
                     <p className="mb-2 truncate text-xs text-gray-400">{user.institution}</p>
                   )}
                 </div>
-                <div className="border-t border-gray-200 p-1.5 text-gray-700">
+                <NavigationMenuSeparator />
+                <div className="p-1.5 text-gray-700">
                   <MenuItem>
                     {({ focus }) => (
                       <Link

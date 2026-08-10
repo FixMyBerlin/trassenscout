@@ -18,6 +18,7 @@ import {
   adminNavigationMenuItemLinkStyles,
   navigationMenuTransitionProps,
 } from "./navigationMenuItemStyles"
+import { NavigationMenuSeparator } from "./NavigationMenuSeparator"
 
 function NavigationAdminMenuLink({ item, focus }: { item: AdminQuickNavLink; focus: boolean }) {
   const navigate = useNavigate()
@@ -109,12 +110,13 @@ export const NavigationAdminMenu = () => {
             >
               <NavigationAdminMenuSection links={adminMenu.global} />
               {adminMenu.project ? (
-                <div className="mt-2 border-t border-purple-200/70 pt-2">
+                <>
+                  <NavigationMenuSeparator className="bg-purple-200/70" />
                   <NavigationAdminMenuSection
                     title={`Projekt: ${adminMenu.project.title}`}
                     links={adminMenu.project.links}
                   />
-                </div>
+                </>
               ) : null}
             </MenuItems>
           </Transition>
