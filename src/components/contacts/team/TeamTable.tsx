@@ -79,9 +79,9 @@ export const TeamTable = ({ users }: Props) => {
             </thead>
             <tbody className={tableBodyClassName}>
               {users.map((user) => {
-                const canEditMembership =
-                  user.role !== "ADMIN" &&
-                  editableMembershipRoles.includes(user.currentMembershipRole)
+                const canEditMembership = editableMembershipRoles.includes(
+                  user.currentMembershipRole,
+                )
 
                 return (
                   <tr key={user.email} className={tableRowClassName}>

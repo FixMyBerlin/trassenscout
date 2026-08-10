@@ -157,16 +157,16 @@ export function UserMembershipsEditor({ userId }: Props) {
           projectRoles: buildProjectRoles(projects, accessByProjectId),
         },
       })
-      await Promise.all([
-        queryClient.invalidateQueries({
-          queryKey: userWithMembershipsQueryOptions(userId).queryKey,
-        }),
-        queryClient.invalidateQueries({ queryKey: ["users", "withMemberships"] }),
-      ])
-      navigate({ to: "/admin/memberships" })
     } catch (error: unknown) {
       setFormError(error instanceof Error ? error.message : String(error))
+      return
     }
+
+    void queryClient.invalidateQueries({
+      queryKey: userWithMembershipsQueryOptions(userId).queryKey,
+    })
+    void queryClient.invalidateQueries({ queryKey: ["users", "withMemberships"] })
+    navigate({ to: "/admin/memberships" })
   }
 
   return (
@@ -202,7 +202,7 @@ export function UserMembershipsEditor({ userId }: Props) {
 
         <div className="space-y-4 px-4">
           <p className="text-sm text-gray-600">
-            Hinweis: Beim Speichern werden keine E-Mails versendet. Der Nutzer wird aus allen
+            Hinweis: Beim Speichern werden keine E-Mails versendet. Andere Nutzer werden aus allen
             aktiven Sitzungen abgemeldet, damit die geänderten Rechte beim nächsten Login greifen.
           </p>
 
