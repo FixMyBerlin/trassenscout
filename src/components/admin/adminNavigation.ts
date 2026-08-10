@@ -8,6 +8,7 @@ import {
 } from "@heroicons/react/24/outline"
 import { linkOptions, type useMatchRoute } from "@tanstack/react-router"
 import type { ComponentType, SVGProps } from "react"
+import { shortTitle } from "@/src/components/core/components/text/titles"
 import type { FileRouteTypes } from "@/src/routeTree.gen"
 import type { AdminNavCounts } from "@/src/server/admin/types"
 
@@ -18,6 +19,7 @@ export type AdminNavTo = FileRouteTypes["to"]
 export type AdminNavLink = {
   to: AdminNavTo
   params?: Record<string, string>
+  search?: Record<string, string | undefined>
   /** Only needed when fuzzy matching would be wrong — e.g. `/admin` vs `/admin/projects`. */
   activeOptions?: { exact: true }
 }
@@ -47,11 +49,16 @@ function projectNavLink(to: AdminNavTo, projectSlug: string) {
   return { to, params: { projectSlug } } satisfies AdminNavLink
 }
 
+function adminProjectNavName(entity: string, feature: string) {
+  return `${entity}: ${feature}`
+}
+
 /** Typed TanStack Router link options for admin sidebar items. */
 export function adminNavLinkOptions(link: AdminNavLink) {
   return linkOptions({
     to: link.to,
     params: link.params,
+    search: link.search,
     activeOptions: link.activeOptions,
   })
 }
@@ -81,80 +88,187 @@ export function isAdminNavItemActive(
 export function buildAdminProjectNavigation(projectSlug: string) {
   return [
     {
-      name: "Projekt bearbeiten",
+      name: adminProjectNavName("Projekt", "Bearbeiten"),
       link: projectNavLink("/$projectSlug/edit", projectSlug),
       external: true,
     },
     {
-      name: "Planungsabschnitte",
+      name: adminProjectNavName("Projekt", "Planungsabschnitte"),
       link: projectNavLink("/admin/projects/$projectSlug/subsections", projectSlug),
     },
     {
-      name: "Protokolleinträge",
+      name: adminProjectNavName("Projekt", "Protokolleinträge"),
       link: projectNavLink("/$projectSlug/project-records", projectSlug),
       external: true,
     },
     {
-      name: "Beteiligungen",
+      name: adminProjectNavName("Projekt", "Beteiligungen"),
       link: projectNavLink("/$projectSlug/surveys", projectSlug),
       external: true,
     },
     {
-      name: "Tags",
+      name: adminProjectNavName("Projekt", "Tags"),
       link: projectNavLink("/$projectSlug/tags", projectSlug),
       external: true,
     },
     {
-      name: "Ausbaustandard",
+      name: adminProjectNavName("Projekt", "Ausbaustandard"),
       link: projectNavLink("/$projectSlug/quality-levels", projectSlug),
       external: true,
     },
     {
-      name: "Baulastträger",
+      name: adminProjectNavName("Projekt", "Baulastträger"),
       link: projectNavLink("/$projectSlug/operators", projectSlug),
       external: true,
     },
     {
-      name: "Netzstufe",
+      name: adminProjectNavName("Projekt", "Netzstufe"),
       link: projectNavLink("/$projectSlug/network-hierarchy", projectSlug),
       external: true,
     },
     {
-      name: "Status",
+      name: adminProjectNavName("Planungsabschnitt", "Status"),
       link: projectNavLink("/$projectSlug/subsection-status", projectSlug),
       external: true,
     },
     {
-      name: "Status",
+      name: adminProjectNavName("Maßnahme", "Phase"),
       link: projectNavLink("/$projectSlug/subsubsection-status", projectSlug),
       external: true,
     },
     {
-      name: "Status",
-      link: projectNavLink("/$projectSlug/acquisition-area-status", projectSlug),
-      external: true,
-    },
-    {
-      name: "Infrastruktur",
+      name: adminProjectNavName("Maßnahme", "Infrastruktur"),
       link: projectNavLink("/$projectSlug/subsubsection-infra", projectSlug),
       external: true,
     },
     {
-      name: "Besonderheit",
+      name: adminProjectNavName("Maßnahme", "Besonderheit"),
       link: projectNavLink("/$projectSlug/subsubsection-special", projectSlug),
       external: true,
     },
     {
-      name: "Maßnahmentyp",
+      name: adminProjectNavName("Maßnahme", "Maßnahmentyp"),
       link: projectNavLink("/$projectSlug/subsubsection-task", projectSlug),
       external: true,
     },
     {
-      name: "Infrastrukturtyp",
+      name: adminProjectNavName("Maßnahme", "Infrastrukturtyp"),
       link: projectNavLink("/$projectSlug/subsubsection-infrastructure-type", projectSlug),
       external: true,
     },
+    {
+      name: adminProjectNavName("Flächenerwerb", "Status"),
+      link: projectNavLink("/$projectSlug/acquisition-area-status", projectSlug),
+      external: true,
+    },
   ] satisfies AdminNavChild[]
+}
+
+export type AdminQuickNavLink = {
+  name: string
+  link: AdminNavLink
+  external?: true
+}
+
+export type AdminQuickNavMenu = {
+  global: AdminQuickNavLink[]
+  project?: {
+    title: string
+    links: AdminQuickNavLink[]
+  }
+}
+
+export function adminQuickNavLinkKey(item: AdminQuickNavLink) {
+  const { to, params, search } = item.link
+  return [to, JSON.stringify(params), JSON.stringify(search), item.name].join("|")
+}
+
+function isAdminShellLink(link: AdminNavLink) {
+  return link.to === "/admin" || link.to.startsWith("/admin/")
+}
+
+function collectAdminShellNavLinks(items: AdminNavChild[]): AdminQuickNavLink[] {
+  const links: AdminQuickNavLink[] = []
+
+  for (const item of items) {
+    if (item.link && isAdminShellLink(item.link)) {
+      links.push({ name: item.name, link: item.link })
+    }
+
+    if (item.children?.length) {
+      links.push(...collectAdminShellNavLinks(item.children))
+    }
+  }
+
+  return links
+}
+
+function buildGlobalAdminQuickNavLinks(): AdminQuickNavLink[] {
+  const links: AdminQuickNavLink[] = [{ name: "Admin-Dashboard", link: { to: "/admin" } }]
+
+  for (const item of buildAdminNavigation()) {
+    if (item.link && item.external) {
+      continue
+    }
+
+    if (item.link && isAdminShellLink(item.link)) {
+      links.push({ name: item.name, link: item.link })
+      continue
+    }
+
+    if (item.children?.length) {
+      links.push(...collectAdminShellNavLinks(item.children))
+    }
+  }
+
+  return links
+}
+
+function buildAdminProjectQuickNavLinks(projectSlug: string): AdminQuickNavLink[] {
+  const links: AdminQuickNavLink[] = [
+    {
+      name: adminProjectNavName("Projekt", "Dashboard"),
+      link: projectNavLink("/$projectSlug", projectSlug),
+    },
+    {
+      name: adminProjectNavName("Projekt", "Admin-Liste"),
+      link: { to: "/admin/projects", search: { project: projectSlug } },
+    },
+    {
+      name: adminProjectNavName("Projekt", "Nutzer & Rechte"),
+      link: { to: "/admin/memberships", search: { project: projectSlug } },
+    },
+    {
+      name: adminProjectNavName("Projekt", "Auswertungen-Seite"),
+      link: projectNavLink("/admin/evaluations/$projectSlug/edit", projectSlug),
+    },
+  ]
+
+  for (const item of buildAdminProjectNavigation(projectSlug)) {
+    if (!item.link) continue
+
+    links.push({
+      name: item.name,
+      link: item.link,
+      external: item.external,
+    })
+  }
+
+  return links
+}
+
+/** Quick-nav menu for the main-app admin overflow button (mirrors the admin sidebar). */
+export function buildAdminQuickNavMenu(projectSlug?: string): AdminQuickNavMenu {
+  const menu: AdminQuickNavMenu = { global: buildGlobalAdminQuickNavLinks() }
+
+  if (projectSlug) {
+    menu.project = {
+      title: shortTitle(projectSlug),
+      links: buildAdminProjectQuickNavLinks(projectSlug),
+    }
+  }
+
+  return menu
 }
 
 export function buildAdminNavigation() {

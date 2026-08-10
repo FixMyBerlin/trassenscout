@@ -1,12 +1,9 @@
 import { Menu, MenuButton, MenuItem, MenuItems, Transition } from "@headlessui/react"
 import { Fragment } from "react"
 import { twJoin } from "tailwind-merge"
-import { AdminBox } from "@/src/components/core/components/AdminBox/AdminBox"
 import { Link } from "@/src/components/core/components/links/Link"
 import { getFullname } from "@/src/components/core/users/getFullname"
-import { isDev, isProduction, isStaging } from "@/src/components/core/utils/isEnv"
 import { getInitials } from "@/src/components/shared/app/users/utils/getInitials"
-import { isAdmin } from "@/src/components/shared/app/users/utils/isAdmin"
 import type { CurrentUser } from "@/src/server/users/types"
 import {
   navigationMenuItemLinkStyles,
@@ -49,17 +46,6 @@ export const NavigationUserLoggedIn = ({ user }: Props) => {
                   <p className="mb-2 truncate">{user.email}</p>
                   {user.institution && (
                     <p className="mb-2 truncate text-xs text-gray-400">{user.institution}</p>
-                  )}
-
-                  {isAdmin(user) && (
-                    <AdminBox label="Admin" compact className="divide-y divide-purple-200/70">
-                      <p className="font-semibold">Rolle: Admin</p>
-                      <pre className="overflow-x-auto text-[10px] leading-tight whitespace-pre-wrap">
-                        {`Env: ${JSON.stringify({ isProduction, isStaging, isDev })}
-VITE_APP_ENV: ${JSON.stringify(import.meta.env.VITE_APP_ENV)}
-NODE_ENV: ${JSON.stringify(process.env.NODE_ENV)}`}
-                      </pre>
-                    </AdminBox>
                   )}
                 </div>
                 <div className="border-t border-gray-200 p-1.5 text-gray-700">
