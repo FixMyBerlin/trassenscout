@@ -1,6 +1,6 @@
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react"
 import { ChevronRightIcon } from "@heroicons/react/20/solid"
-import { ArrowDownTrayIcon, XMarkIcon } from "@heroicons/react/24/outline"
+import { XMarkIcon } from "@heroicons/react/24/outline"
 import { type JSX, type PropsWithoutRef } from "react"
 import { twJoin } from "tailwind-merge"
 import { backendConfig as defaultBackendConfig } from "@/src/components/beteiligung/shared/backend-types"
@@ -8,7 +8,6 @@ import { type AllowedSurveySlugs } from "@/src/components/beteiligung/shared/uti
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
 import { ComboboxMultiBase } from "@/src/components/core/components/forms/ComboboxMultiBase"
 import { ComboboxSingleBase } from "@/src/components/core/components/forms/ComboboxSingleBase"
-import { Link } from "@/src/components/core/components/links/Link"
 import { linkStyles } from "@/src/components/core/components/links/styles"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeaderSearchFilter } from "@/src/components/core/components/PageHeader/PageHeaderSearchFilter"
@@ -25,13 +24,11 @@ type AdditionalFilters = Prettify<
 type FormProps = Omit<PropsWithoutRef<JSX.IntrinsicElements["form"]>, "onSubmit"> & {
   surveySlug: AllowedSurveySlugs
   additionalFilters: AdditionalFilters
-  csvDownloadHref: string
 }
 
 export function EditableSurveyResponseFilterForm({
   surveySlug,
   additionalFilters = [],
-  csvDownloadHref,
 }: FormProps) {
   const defaultFilters = useDefaultFilterValues(surveySlug)
   const { filter, setFilter } = useFilters()
@@ -102,15 +99,6 @@ export function EditableSurveyResponseFilterForm({
           onChange={(searchterm) => void handleSearchtermChange(searchterm)}
           onReset={() => void handleStandardFilterReset()}
           placeholder='Beiträge nach Suchwort filtern oder nach "tag:Name" für Tag suchen'
-          actions={
-            <Link
-              className={twJoin(linkStyles, "ml-auto flex items-center gap-2")}
-              href={csvDownloadHref}
-              icon={<ArrowDownTrayIcon className="size-5" />}
-            >
-              <span>Alle Daten als .csv herunterladen</span>
-            </Link>
-          }
         >
           <div className="w-[300px] max-w-full">
             <ComboboxMultiBase

@@ -11,6 +11,7 @@ import { getQuestionIdBySurveySlug } from "@/src/components/beteiligung/shared/u
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
+import { PageHeaderToolbarLink } from "@/src/components/core/components/PageHeader/PageHeaderToolbarLink"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
 import { EditableSurveyResponseFilterForm } from "@/src/components/surveys/[surveyId]/responses/EditableSurveyResponseFilterForm"
@@ -154,12 +155,19 @@ function SurveyResponsesConfigured({ projectSlug, survey, tabs, surveySlug }: Co
             search: (prev) => prev,
           })
         }}
+        toolbarAction={
+          <PageHeaderToolbarLink
+            href={`/api/${projectSlug}/surveys/${survey.id}/part2/results`}
+            label="Alle Daten als .csv herunterladen"
+          >
+            CSV
+          </PageHeaderToolbarLink>
+        }
       />
 
       <EditableSurveyResponseFilterForm
         surveySlug={surveySlug}
         additionalFilters={additionalFilterQuestionsWithResponseOptions}
-        csvDownloadHref={`/api/${projectSlug}/surveys/${survey.id}/part2/results`}
       />
 
       <div className={twJoin(pageContentPaddingClassName, "space-y-4")}>
