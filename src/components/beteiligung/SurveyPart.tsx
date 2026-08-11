@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from "react"
 import { z } from "zod"
 import { SurveyButtonGrid } from "@/src/components/beteiligung/buttons/SurveyButtonGrid"
-import { Debug } from "@/src/components/beteiligung/Debug"
 import { FormErrorBox } from "@/src/components/beteiligung/form/FormErrorBox"
 import { Intro } from "@/src/components/beteiligung/Intro"
 import { ProgressContext } from "@/src/components/beteiligung/shared/contexts/contexts"
@@ -203,14 +202,6 @@ export const SurveyPart = ({
 
   return (
     <>
-      <Debug className="border-red-500">
-        <code>
-          <pre>State im Surveypart: {isIntro ? "INTRO" : "UMFRAGE"}</pre>
-          <pre>
-            page: {page} - also {page + 1}.Seite der Umfrage
-          </pre>
-        </code>
-      </Debug>
       <form
         onSubmit={(e) => {
           e.preventDefault()
