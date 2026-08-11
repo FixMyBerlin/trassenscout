@@ -1,19 +1,15 @@
 import { Source } from "react-map-gl/maplibre"
 import type { MapData } from "./mapDataTypes"
-import { MapSourceType } from "./mapDataTypes"
+import { mapSourceFromExternalUrl } from "./mapSourceFromExternalUrl"
 
 type Props = { mapData: Pick<MapData, "sources"> }
 
 export const AllSources = ({ mapData }: Props) => {
-  const sources = Object.values(mapData.sources)
-
   return (
     <>
-      {sources.map(({ tildaUrl, type }) => {
-        if (type === MapSourceType.geojson) {
-          return <Source key={tildaUrl} id={tildaUrl} type="geojson" data={`${tildaUrl}.geojson`} />
-        }
-        return <Source key={tildaUrl} id={tildaUrl} type="vector" url={`pmtiles://${tildaUrl}`} />
+      {Object.entries(mapData.sources).map(([sourceId, { externalUrl, type }]) => {
+        const sourceProps = mapSourceFromExternalUrl(sourceId, externalUrl, type)
+        return <Source key={sourceProps.id} {...sourceProps} />
       })}
     </>
   )

@@ -193,7 +193,7 @@ export function featureStateTargetForMapSource(
   source: string,
   target: { id: string | number } & Record<string, unknown>,
 ) {
-  const config = Object.values(mapData.sources).find((s) => s.tildaUrl === source)
+  const config = mapData.sources[source]
   if (config?.type === MapSourceType.geojson) {
     return { source, ...target }
   }

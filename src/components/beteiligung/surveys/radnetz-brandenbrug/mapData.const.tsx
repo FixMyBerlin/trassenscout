@@ -3,7 +3,7 @@ import { MapData } from "@/src/components/beteiligung/shared/types"
 export const mapData: MapData = {
   sources: {
     netzentwurf: {
-      tildaUrl: "https://tilda-geo.de/api/uploads/bb-ramboll-netzentwurf-2-beteiligung",
+      externalUrl: "https://tilda-geo.de/api/uploads/bb-ramboll-netzentwurf-2-beteiligung.pmtiles",
       type: "pmtiles",
       layers: [
         {

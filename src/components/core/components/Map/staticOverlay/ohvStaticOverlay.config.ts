@@ -10,7 +10,7 @@ export const ohvStaticOverlayConfig: StaticOverlayConfig = {
   sources: {
     // TODO comment in when geometries are simplified in tilda
     // grenzenLandkreis: {
-    //   tildaUrl: "https://tilda-geo.de/api/uploads/ohv-grenzen-landkreis",
+    //   externalUrl: "https://tilda-geo.de/api/uploads/ohv-grenzen-landkreis.pmtiles",
     //   type: "pmtiles",
     //   layers: [
     //     {
@@ -41,7 +41,7 @@ export const ohvStaticOverlayConfig: StaticOverlayConfig = {
     //   ],
     // },
     haltestellen: {
-      tildaUrl: "https://tilda-geo.de/api/uploads/ohv-haltestellen",
+      externalUrl: "https://tilda-geo.de/api/uploads/ohv-haltestellen.geojson",
       type: "geojson",
       layers: [
         {
@@ -79,7 +79,7 @@ export const ohvStaticOverlayConfig: StaticOverlayConfig = {
       ],
     },
     buslinien: {
-      tildaUrl: "https://tilda-geo.de/api/uploads/ohv-busverbindungen",
+      externalUrl: "https://tilda-geo.de/api/uploads/ohv-busverbindungen.pmtiles",
       type: "pmtiles",
       layers: [
         {
@@ -115,7 +115,7 @@ export const ohvStaticOverlayConfig: StaticOverlayConfig = {
       ],
     },
     grenzenGemeinde: {
-      tildaUrl: "https://tilda-geo.de/api/uploads/ohv-grenzen-gemeinden",
+      externalUrl: "https://tilda-geo.de/api/uploads/ohv-grenzen-gemeinden.pmtiles",
       type: "pmtiles",
       layers: [
         {

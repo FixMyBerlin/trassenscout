@@ -3,7 +3,7 @@ import { MapData } from "@/src/components/beteiligung/shared/types"
 export const mapData: MapData = {
   sources: {
     haltestellen: {
-      tildaUrl: "https://tilda-geo.de/api/uploads/ohv-haltestellen",
+      externalUrl: "https://tilda-geo.de/api/uploads/ohv-haltestellen.geojson",
       type: "geojson",
       layers: [
         {
@@ -75,7 +75,7 @@ export const mapData: MapData = {
       interactiveLayerIds: ["ohv-haltestellen--circle", "ohv-haltestellen--circle--highlight"],
     },
     buslinien: {
-      tildaUrl: "https://tilda-geo.de/api/uploads/ohv-busverbindungen",
+      externalUrl: "https://tilda-geo.de/api/uploads/ohv-busverbindungen.pmtiles",
       type: "pmtiles",
       layers: [
         {
@@ -113,7 +113,7 @@ export const mapData: MapData = {
       ],
     },
     grenzenGemeinde: {
-      tildaUrl: "https://tilda-geo.de/api/uploads/ohv-grenzen-gemeinden",
+      externalUrl: "https://tilda-geo.de/api/uploads/ohv-grenzen-gemeinden.pmtiles",
       type: "pmtiles",
       layers: [
         {
@@ -145,7 +145,7 @@ export const mapData: MapData = {
       ],
     },
     grenzenLandkreis: {
-      tildaUrl: "https://tilda-geo.de/api/uploads/ohv-grenzen-landkreis",
+      externalUrl: "https://tilda-geo.de/api/uploads/ohv-grenzen-landkreis.pmtiles",
       type: "pmtiles",
       layers: [
         {

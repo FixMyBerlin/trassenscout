@@ -31,7 +31,7 @@ import type { SurveyMarkdown } from "@/src/components/beteiligung/layout/SurveyM
 import { TBackendConfig } from "@/src/components/beteiligung/shared/backend-types"
 import { fieldValidationEnum } from "@/src/components/beteiligung/shared/fieldvalidationEnum"
 
-/** How the resource at `tildaUrl` is exposed for map sources (GeoJSON vs PMTiles). */
+/** How the resource at `externalUrl` is exposed for map sources (GeoJSON vs PMTiles). */
 export const MapSourceType = {
   geojson: "geojson",
   pmtiles: "pmtiles",
@@ -42,7 +42,8 @@ export type MapData = {
   sources: {
     // Source `id`
     [sourceId: string]: {
-      tildaUrl: string
+      /** Full endpoint URL including format suffix (TILDA `.geojson`/`.pmtiles`, or Trassenscout `/api/projects/{slug}.json`). */
+      externalUrl: string
       type: MapSourceType
       layers: ((
         | Omit<FillLayerSpecification, "source" | "source-layer" | "metadata">

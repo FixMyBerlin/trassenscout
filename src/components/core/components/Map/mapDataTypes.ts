@@ -27,7 +27,8 @@ export type MapData = {
   sources: Record<
     string,
     {
-      tildaUrl: string
+      /** Full endpoint URL including format suffix (TILDA `.geojson`/`.pmtiles`, or Trassenscout `/api/projects/{slug}.json`). */
+      externalUrl: string
       type: MapSourceType
       layers: StaticMapLayer[]
       interactiveLayerIds?: string[]
