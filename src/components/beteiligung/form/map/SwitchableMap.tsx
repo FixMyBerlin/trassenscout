@@ -1,7 +1,5 @@
 import { Radio, RadioGroup } from "@headlessui/react"
 import { useSearch } from "@tanstack/react-router"
-import maplibregl from "maplibre-gl"
-import * as pmtiles from "pmtiles"
 import { useEffect, useState, type ComponentProps } from "react"
 import Map, {
   MapGeoJSONFeature,
@@ -31,6 +29,7 @@ import {
   notifyPlaywrightMapLoaded,
 } from "@/src/components/beteiligung/form/map/testMode"
 import {
+  applySelectedGeometryCategoryFeatureState,
   featureStateTargetForMapSource,
   type SwitchableMapLocationPoint,
 } from "@/src/components/beteiligung/form/map/utils"
@@ -43,6 +42,7 @@ import "maplibre-gl/dist/maplibre-gl.css"
 import { useAllowedSurveySlug } from "@/src/components/beteiligung/shared/utils/useAllowedSurveySlug"
 import { AllLayers, generateLayers } from "@/src/components/core/components/Map/AllLayers"
 import { AllSources } from "@/src/components/core/components/Map/AllSources"
+import { usePmtilesProtocol } from "@/src/components/core/components/Map/pmtilesProtocol"
 import { geometryAnchorPoint } from "@/src/components/core/components/Map/utils/geometryAnchorPoint"
 import type { SupportedGeometry } from "@/src/shared/geometry/geometrySchemas"
 
@@ -177,58 +177,11 @@ const SwitchableMapContent = ({
       return initialMode === "pin" ? (field.state.value ?? undefined) : undefined
     },
   )
-  const [mapLoading, setMapLoading] = useState(true)
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
   const [cursorStyle, setCursorStyle] = useState("grab")
   const surveySlug = useAllowedSurveySlug()
 
-  // Setup pmtiles
-  useEffect(() => {
-    const protocol = new pmtiles.Protocol()
-    maplibregl.addProtocol("pmtiles", protocol.tile)
-    return () => {
-      maplibregl.removeProtocol("pmtiles")
-    }
-  }, [])
-
-  // oxlint-disable-next-line react-hooks/exhaustive-deps -- Sync map highlight once on load; field.form deps would re-run on every keystroke.
-  useEffect(() => {
-    // if we have a selected feature (in the form context), we want to set the feature state for the selected geometry
-    // this allows us to highlight the selected geometry on the map - even if we reload the map (e.g. go back and forth in the survey)
-    // only the "existing" mode selects / highlights a map feature
-    if (mode !== "existing") return
-    const geometryCategorySourceId = field.form.getFieldValue("geometryCategorySourceId")
-    const geometryCategoryFeatureId = field.form.getFieldValue("geometryCategoryFeatureId")
-    const geoCategoryId = field.form.getFieldValue(geoCategoryIdDefinition.dataKey)
-    if (
-      mainMap &&
-      !mapLoading &&
-      geoCategoryId &&
-      geometryCategorySourceId &&
-      geometryCategoryFeatureId
-    ) {
-      mainMap.getMap().setFeatureState(
-        featureStateTargetForMapSource(mapData, geometryCategorySourceId, {
-          id: geometryCategoryFeatureId,
-          [geoCategoryIdDefinition.propertyName]: geoCategoryId,
-        }),
-        { selected: true },
-      )
-    }
-  }, [
-    mainMap,
-    mapLoading,
-    mapData,
-    mode,
-    geoCategoryIdDefinition.dataKey,
-    geoCategoryIdDefinition.propertyName,
-    field.form,
-  ])
-
-  useEffect(() => {
-    if (!mainMap) return
-    installMapGrabIfTest(mainMap.getMap(), "mainMap")
-  }, [mainMap])
+  usePmtilesProtocol()
 
   // the map stays mounted (to avoid re-initialization issues), but is hidden in "none" mode
   // when it becomes visible again we need to tell maplibre to recompute its size
@@ -264,6 +217,7 @@ const SwitchableMapContent = ({
   const handleMapClick = (event: MapLayerMouseEvent) => {
     const feature = event.features?.[0]
     if (!feature) return
+    const map = event.target
     const previouslySelectedFeatureId = field.form.getFieldValue("geometryCategoryFeatureId")
     const previouslySelectedSourceId = field.form.getFieldValue("geometryCategorySourceId")
 
@@ -274,24 +228,22 @@ const SwitchableMapContent = ({
     const sourceId = feature.source
 
     // Clear previous selection state if exists
-    if (previouslySelectedFeatureId && previouslySelectedSourceId && mainMap) {
-      mainMap.getMap().setFeatureState(
-        featureStateTargetForMapSource(mapData, previouslySelectedSourceId, {
-          id: previouslySelectedFeatureId,
-        }),
+    if (previouslySelectedFeatureId && previouslySelectedSourceId) {
+      map.setFeatureState(
+        featureStateTargetForMapSource(
+          mapData,
+          previouslySelectedSourceId,
+          previouslySelectedFeatureId,
+        ),
         { selected: false },
       )
     }
 
     // Set new selection state
-    if (geoCategoryId !== undefined && mainMap && featureId !== undefined) {
-      mainMap.getMap().setFeatureState(
-        featureStateTargetForMapSource(mapData, sourceId, {
-          id: featureId,
-          [geoCategoryIdDefinition.propertyName]: geoCategoryId,
-        }),
-        { selected: true },
-      )
+    if (geoCategoryId !== undefined && featureId !== undefined) {
+      map.setFeatureState(featureStateTargetForMapSource(mapData, sourceId, featureId), {
+        selected: true,
+      })
     }
 
     // we (temporarily) store the source and feature id as well, so we can keep teh state of the selected feature
@@ -325,11 +277,6 @@ const SwitchableMapContent = ({
     setCursorStyle(features?.length ? "pointer" : "grab")
   }
 
-  const handleMapLoad = (_: maplibregl.MapLibreEvent) => {
-    notifyPlaywrightMapLoaded()
-    setMapLoading(true)
-  }
-
   const allInteractiveLayerIds = Object.entries(mapData.sources).flatMap(([sourceId, source]) => {
     return source.interactiveLayerIds?.map((l) => `${sourceId}-${l}`) || []
   })
@@ -338,12 +285,16 @@ const SwitchableMapContent = ({
     const geometryCategoryFeatureId = field.form.getFieldValue("geometryCategoryFeatureId")
     const geometryCategorySourceId = field.form.getFieldValue("geometryCategorySourceId")
     if (mainMap && geometryCategoryFeatureId != null && geometryCategorySourceId != null) {
-      mainMap.getMap().setFeatureState(
-        featureStateTargetForMapSource(mapData, geometryCategorySourceId, {
-          id: geometryCategoryFeatureId,
-        }),
-        { selected: false },
-      )
+      mainMap
+        .getMap()
+        .setFeatureState(
+          featureStateTargetForMapSource(
+            mapData,
+            geometryCategorySourceId,
+            geometryCategoryFeatureId,
+          ),
+          { selected: false },
+        )
     }
     field.form.setFieldValue("geometryCategorySourceId", undefined)
     field.form.setFieldValue("geometryCategoryFeatureId", undefined)
@@ -438,13 +389,22 @@ const SwitchableMapContent = ({
           onClick={handleMapClick}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
-          // Set map state for <MapData>:
-          onLoad={(event) => handleMapLoad(event)}
+          onLoad={(event) => {
+            notifyPlaywrightMapLoaded()
+            installMapGrabIfTest(event.target, "mainMap")
+          }}
           maxZoom={config.maxZoom}
           minZoom={config.minZoom}
           cursor={cursorStyle}
           interactiveLayerIds={mode === "existing" ? allInteractiveLayerIds : []}
-          onIdle={() => setMapLoading(false)}
+          onIdle={(event) => {
+            if (mode !== "existing") return
+            applySelectedGeometryCategoryFeatureState(
+              event.target,
+              mapData,
+              field.form.getFieldValue,
+            )
+          }}
         >
           <NavigationControl showCompass={false} />
           <AllSources mapData={mapData} />

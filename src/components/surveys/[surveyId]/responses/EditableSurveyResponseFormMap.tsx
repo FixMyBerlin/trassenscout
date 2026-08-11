@@ -1,7 +1,6 @@
 import { getRouteApi } from "@tanstack/react-router"
 import maplibregl from "maplibre-gl"
-import * as pmtiles from "pmtiles"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import Map, { Layer, Marker, NavigationControl, Source } from "react-map-gl/maplibre"
 import {
   createGeoJSONFromString,
@@ -18,6 +17,7 @@ import {
 } from "@/src/components/core/components/Map/BackgroundSwitcher/BackgroundSwitcher"
 import { getMapStyle, getVectorStyleUrl } from "@/src/components/core/components/Map/mapStyleConfig"
 import "maplibre-gl/dist/maplibre-gl.css"
+import { usePmtilesProtocol } from "@/src/components/core/components/Map/pmtilesProtocol"
 import { getStaticOverlayForProject } from "@/src/components/core/components/Map/staticOverlay/getStaticOverlayForProject"
 import { StaticOverlay } from "@/src/components/core/components/Map/staticOverlay/StaticOverlay"
 import SurveyStaticPin from "@/src/components/core/components/Map/SurveyStaticPin"
@@ -51,14 +51,7 @@ export const EditableSurveyResponseFormMap = ({
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
   const [_mapLoading, setMapLoading] = useState(true)
 
-  // Setup pmtiles
-  useEffect(() => {
-    const protocol = new pmtiles.Protocol()
-    maplibregl.addProtocol("pmtiles", protocol.tile)
-    return () => {
-      maplibregl.removeProtocol("pmtiles")
-    }
-  }, [])
+  usePmtilesProtocol()
 
   const handleLayerSwitch = (layer: LayerType) => {
     setSelectedLayer(layer)

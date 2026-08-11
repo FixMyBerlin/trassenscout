@@ -1,12 +1,9 @@
 import { useSearch } from "@tanstack/react-router"
-import maplibregl from "maplibre-gl"
-import * as pmtiles from "pmtiles"
-import { useEffect, useRef, useState } from "react"
+import { useRef, useState } from "react"
 import Map, {
   MapGeoJSONFeature,
   MapLayerMouseEvent,
   NavigationControl,
-  useMap,
 } from "react-map-gl/maplibre"
 import {
   LayerType,
@@ -20,6 +17,7 @@ import {
   notifyPlaywrightMapLoaded,
 } from "@/src/components/beteiligung/form/map/testMode"
 import {
+  applySelectedGeometryCategoryFeatureState,
   featureStateTargetForMapSource,
   getInitialViewStateFromGeometryString,
   latLngOnGeometryCategory,
@@ -31,6 +29,7 @@ import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils
 import { useAllowedSurveySlug } from "@/src/components/beteiligung/shared/utils/useAllowedSurveySlug"
 import { AllLayers, generateLayers } from "@/src/components/core/components/Map/AllLayers"
 import { AllSources } from "@/src/components/core/components/Map/AllSources"
+import { usePmtilesProtocol } from "@/src/components/core/components/Map/pmtilesProtocol"
 
 export type GeoCategoryMapProps = {
   description?: string
@@ -79,59 +78,14 @@ export const SurveyGeoCategoryMap = ({
   mapData,
   infoPanelText,
 }: GeoCategoryMapProps) => {
-  const { mainMap } = useMap()
   const field = useFieldContext<string>()
   const search = useSearch({ from: "/beteiligung/$surveySlug/" })
-  const [mapLoading, setMapLoading] = useState(true)
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
   const [cursorStyle, setCursorStyle] = useState("grab")
   const hoveredFeatureRef = useRef<{ source: string; id: string | number } | null>(null)
   const surveySlug = useAllowedSurveySlug()
 
-  // Setup pmtiles
-  useEffect(() => {
-    const protocol = new pmtiles.Protocol()
-    maplibregl.addProtocol("pmtiles", protocol.tile)
-    return () => {
-      maplibregl.removeProtocol("pmtiles")
-    }
-  }, [])
-
-  // oxlint-disable-next-line react-hooks/exhaustive-deps -- Sync map highlight once on load; field.form deps would re-run on every keystroke.
-  useEffect(() => {
-    // if we have a selected feature (in the form context), we want to set the feature state for the selected geometry
-    // this allows us to highlight the selected geometry on the map - even if we reload the map (e.g. go back and forth in the survey)
-    const geometryCategorySourceId = field.form.getFieldValue("geometryCategorySourceId")
-    const geometryCategoryFeatureId = field.form.getFieldValue("geometryCategoryFeatureId")
-    const geoCategoryId = field.form.getFieldValue(geoCategoryIdDefinition.dataKey)
-    if (
-      mainMap &&
-      !mapLoading &&
-      geoCategoryId &&
-      geometryCategorySourceId &&
-      geometryCategoryFeatureId
-    ) {
-      mainMap.getMap().setFeatureState(
-        featureStateTargetForMapSource(mapData, geometryCategorySourceId, {
-          id: geometryCategoryFeatureId,
-          [geoCategoryIdDefinition.propertyName]: geoCategoryId,
-        }),
-        { selected: true },
-      )
-    }
-  }, [
-    mainMap,
-    mapLoading,
-    mapData,
-    geoCategoryIdDefinition.dataKey,
-    geoCategoryIdDefinition.propertyName,
-    field.form,
-  ])
-
-  useEffect(() => {
-    if (!mainMap) return
-    installMapGrabIfTest(mainMap.getMap(), "mainMap")
-  }, [mainMap])
+  usePmtilesProtocol()
 
   const initialBoundsMatch = setInitialBounds?.initialBoundsDefinition.find(
     (d) => d[setInitialBounds.queryParameter] === search[setInitialBounds.queryParameter],
@@ -154,6 +108,7 @@ export const SurveyGeoCategoryMap = ({
   const handleMapClick = (event: MapLayerMouseEvent) => {
     const feature = event.features?.[0]
     if (!feature) return
+    const map = event.target
 
     const previouslySelectedFeatureId = field.form.getFieldValue("geometryCategoryFeatureId")
     const previouslySelectedSourceId = field.form.getFieldValue("geometryCategorySourceId")
@@ -165,24 +120,22 @@ export const SurveyGeoCategoryMap = ({
     const sourceId = feature.source
 
     // Clear previous selection state if exists
-    if (previouslySelectedFeatureId && previouslySelectedSourceId && mainMap) {
-      mainMap.getMap().setFeatureState(
-        featureStateTargetForMapSource(mapData, previouslySelectedSourceId, {
-          id: previouslySelectedFeatureId,
-        }),
+    if (previouslySelectedFeatureId && previouslySelectedSourceId) {
+      map.setFeatureState(
+        featureStateTargetForMapSource(
+          mapData,
+          previouslySelectedSourceId,
+          previouslySelectedFeatureId,
+        ),
         { selected: false },
       )
     }
 
     // Set new selection state
-    if (geoCategoryId !== undefined && mainMap && featureId !== undefined) {
-      mainMap.getMap().setFeatureState(
-        featureStateTargetForMapSource(mapData, sourceId, {
-          id: featureId,
-          [geoCategoryIdDefinition.propertyName]: geoCategoryId,
-        }),
-        { selected: true },
-      )
+    if (geoCategoryId !== undefined && featureId !== undefined) {
+      map.setFeatureState(featureStateTargetForMapSource(mapData, sourceId, featureId), {
+        selected: true,
+      })
     }
 
     // we (temporarily) store the source and feature id as well, so we can keep teh state of the selected feature
@@ -209,17 +162,17 @@ export const SurveyGeoCategoryMap = ({
   }
 
   const setHover = (
+    map: MapLayerMouseEvent["target"],
     feature: { source: string; id: string | number } | null,
     hover: boolean,
   ) => {
-    if (!feature || !mainMap) return
-    mainMap.getMap().setFeatureState(
-      featureStateTargetForMapSource(mapData, feature.source, { id: feature.id }),
-      { hover },
-    )
+    if (!feature) return
+    map.setFeatureState(featureStateTargetForMapSource(mapData, feature.source, feature.id), {
+      hover,
+    })
   }
 
-  const handleMouseMove = ({ features }: MapLayerMouseEvent) => {
+  const handleMouseMove = ({ features, target: map }: MapLayerMouseEvent) => {
     updateCursor(features)
 
     const feature = features?.[0]
@@ -228,24 +181,19 @@ export const SurveyGeoCategoryMap = ({
     const prev = hoveredFeatureRef.current
     if (prev?.id === next?.id && prev?.source === next?.source) return
 
-    setHover(prev, false)
-    setHover(next, true)
+    setHover(map, prev, false)
+    setHover(map, next, true)
     hoveredFeatureRef.current = next
   }
 
-  const handleMouseLeave = () => {
+  const handleMouseLeave = ({ target: map }: MapLayerMouseEvent) => {
     updateCursor([])
-    setHover(hoveredFeatureRef.current, false)
+    setHover(map, hoveredFeatureRef.current, false)
     hoveredFeatureRef.current = null
   }
 
   const updateCursor = (features: MapGeoJSONFeature[] | undefined) => {
     setCursorStyle(features?.length ? "pointer" : "grab")
-  }
-
-  const handleMapLoad = (_: maplibregl.MapLibreEvent) => {
-    notifyPlaywrightMapLoaded()
-    setMapLoading(true)
   }
 
   const allInteractiveLayerIds = Object.entries(mapData.sources).flatMap(([sourceId, source]) => {
@@ -265,13 +213,17 @@ export const SurveyGeoCategoryMap = ({
         onClick={handleMapClick}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        // Set map state for <MapData>:
-        onLoad={(event) => handleMapLoad(event)}
+        onLoad={(event) => {
+          notifyPlaywrightMapLoaded()
+          installMapGrabIfTest(event.target, "mainMap")
+        }}
         maxZoom={config.maxZoom}
         minZoom={config.minZoom}
         cursor={cursorStyle}
         interactiveLayerIds={allInteractiveLayerIds}
-        onIdle={() => setMapLoading(false)}
+        onIdle={(event) => {
+          applySelectedGeometryCategoryFeatureState(event.target, mapData, field.form.getFieldValue)
+        }}
       >
         <NavigationControl showCompass={false} />
         <AllSources mapData={mapData} />

@@ -1,8 +1,6 @@
 import { useStore } from "@tanstack/react-form"
-import maplibregl from "maplibre-gl"
 import type { Map as MaplibreMap, MapLibreEvent } from "maplibre-gl"
-import * as pmtiles from "pmtiles"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import Map, {
   MapLayerMouseEvent,
   Marker,
@@ -32,6 +30,7 @@ import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils
 import { useAllowedSurveySlug } from "@/src/components/beteiligung/shared/utils/useAllowedSurveySlug"
 import { AllLayers, generateLayers } from "@/src/components/core/components/Map/AllLayers"
 import { AllSources } from "@/src/components/core/components/Map/AllSources"
+import { usePmtilesProtocol } from "@/src/components/core/components/Map/pmtilesProtocol"
 
 type Props = {
   description?: string
@@ -75,14 +74,7 @@ export const SurveySimpleMap = ({ config, description, mapData }: Props) => {
   const [isPinInView, setIsPinInView] = useState(true)
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
 
-  // Setup pmtiles
-  useEffect(() => {
-    const protocol = new pmtiles.Protocol()
-    maplibregl.addProtocol("pmtiles", protocol.tile)
-    return () => {
-      maplibregl.removeProtocol("pmtiles")
-    }
-  }, [])
+  usePmtilesProtocol()
 
   const { maptilerUrl } = getConfigBySurveySlug(surveySlug, "meta")
 
