@@ -12,6 +12,7 @@ const seedSubsections = async () => {
   // Get projects
   const projects = await db.project.findMany()
   const rs3000Project = projects.find((p) => p.slug === "rs3000")
+  const rsvDProject = projects.find((p) => p.slug === "rsv-d")
 
   // Get operators
   const operators = await db.operator.findMany()
@@ -310,6 +311,75 @@ const seedSubsections = async () => {
       managerId: null,
       subsubsections: { create: [rs3000Subsubsection] },
     })
+  }
+
+  // Demo Strecken for radschnellverbindungen-info-feedback (/api/projects/rsv-d.json).
+  if (rsvDProject) {
+    seedData.push(
+      {
+        projectId: rsvDProject.id,
+        operatorId: null,
+        slug: "rsv-berlin",
+        order: 1,
+        type: "LINE",
+        description: "Demo-Strecke Berlin (RSV feedback survey)",
+        labelPos: "top",
+        geometry: {
+          type: "LineString",
+          coordinates: [
+            [13.35, 52.48],
+            [13.38, 52.5],
+            [13.42, 52.52],
+            [13.45, 52.53],
+          ],
+        },
+        lengthM: 8000,
+        managerId: null,
+      },
+      {
+        projectId: rsvDProject.id,
+        operatorId: null,
+        slug: "rsv-frankfurt",
+        order: 2,
+        type: "LINE",
+        description: "Demo-Strecke Frankfurt (RSV feedback survey)",
+        labelPos: "bottom",
+        geometry: {
+          type: "LineString",
+          coordinates: [
+            [8.65, 50.11],
+            [8.68, 50.12],
+            [8.72, 50.13],
+            [8.76, 50.14],
+          ],
+        },
+        lengthM: 9000,
+        managerId: null,
+      },
+      {
+        projectId: rsvDProject.id,
+        operatorId: null,
+        slug: "rsv-muenchen",
+        order: 3,
+        type: "POLYGON",
+        description: "Demo-Fläche München (RSV feedback survey)",
+        labelPos: "top",
+        geometry: {
+          type: "Polygon",
+          coordinates: [
+            [
+              [11.54, 48.13],
+              [11.58, 48.13],
+              [11.58, 48.15],
+              [11.54, 48.15],
+              [11.54, 48.13],
+            ],
+          ],
+        },
+        lengthM: null,
+        managerId: null,
+      },
+    )
   }
 
   for (const data of seedData) {

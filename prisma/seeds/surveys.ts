@@ -2,6 +2,8 @@ import { Prisma } from "@/src/prisma/generated/client"
 import db from "@/src/server/db.server"
 
 const seedSurveys = async () => {
+  const rsvDProject = await db.project.findUnique({ where: { slug: "rsv-d" } })
+
   const seedData: Prisma.SurveyUncheckedCreateInput[] = [
     {
       projectId: 1,
@@ -70,7 +72,7 @@ const seedSurveys = async () => {
       active: true,
     },
     {
-      projectId: 1,
+      projectId: rsvDProject?.id ?? 1,
       slug: "radschnellverbindungen-info-feedback",
       title: "Hinweise zu Radschnellverbindungen",
       active: true,

@@ -9,8 +9,7 @@ const rsvMapColors = {
 } as const
 
 /**
- * Live Planungsabschnitt geometries from project `rsv-d`.
- * Requires `Project.exportEnabled` for that project.
+ * Live Planungsabschnitt geometries from seed project `rsv-d` (`exportEnabled: true`).
  */
 export const mapData: MapData = {
   sources: {

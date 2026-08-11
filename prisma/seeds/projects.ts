@@ -58,6 +58,20 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
       evaluationsEnabled: false,
       alkisStateKey: StateKeyEnum.DISABLED,
     },
+    {
+      slug: "rsv-d",
+      subTitle: "Radschnellverbindungen.info – Demo-Strecken",
+      description:
+        "Seed project for the public radschnellverbindungen-info-feedback survey. Export enabled so /api/projects/rsv-d.json serves Planungsabschnitte.",
+      logoSrc: null,
+      partnerLogoSrcs: [],
+      exportEnabled: true,
+      aiEnabled: false,
+      landAcquisitionModuleEnabled: false,
+      showLogEntries: false,
+      evaluationsEnabled: false,
+      alkisStateKey: StateKeyEnum.DISABLED,
+    },
     ...alkisLandAcquisitionDemoProjects(),
   ]
 
