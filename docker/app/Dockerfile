@@ -15,7 +15,9 @@ ENV VITE_APP_ENV=${VITE_APP_ENV}
 ENV TZ=Europe/Berlin
 
 COPY package.json bun.lock bunfig.toml ./
-RUN bun install --frozen-lockfile --ignore-scripts
+# Disable Bun's global store in Docker: the install runs as root, while the
+# container runs as bun, so root-cache links would fail with EACCES at runtime.
+RUN BUN_INSTALL_GLOBAL_STORE=0 bun install --frozen-lockfile --ignore-scripts
 
 COPY . .
 
@@ -27,4 +29,4 @@ USER bun
 
 EXPOSE 4000
 
-CMD ["/bin/sh", "-c", "bunx prisma migrate deploy && exec bun .output/server/index.mjs"]
+CMD ["/bin/sh", "-c", "bunx --no-install prisma migrate deploy && exec bun .output/server/index.mjs"]
