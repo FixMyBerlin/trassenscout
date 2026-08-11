@@ -18,7 +18,6 @@ import { EditableSurveyResponseUploadsSection } from "./EditableSurveyResponseUp
 import { LabeledInputRadioCheckbox } from "./form/LabeledInputRadioCheckbox"
 import { FormElementWrapper } from "./form/LabeledInputRadioCheckboxWrapper"
 import { LabeledTextarea } from "./form/LabeledTextarea"
-import { useSurveyResponseFilters as useFilters } from "./useSurveyResponseFilters"
 
 const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
 
@@ -66,8 +65,6 @@ export function EditableSurveyResponseForm({
 }: Props) {
   const userCanEdit = useUserCan().edit
   const { projectSlug } = loggedInProjectRouteApi.useParams()
-
-  const { filter, setFilter } = useFilters()
 
   const createSurveyResponseTagMutation = useMutation({
     mutationFn: createSurveyResponseTagFn,
@@ -222,7 +219,6 @@ export function EditableSurveyResponseForm({
       })
       await refetchResponsesAndTopics()
       setResponseTopics([...responseTopics, String(createdOrFetched.id)])
-      if (filter) setFilter({ ...filter, topics: [...filter.topics, String(createdOrFetched.id)] })
     } catch (error: any) {
       console.error(error)
     }

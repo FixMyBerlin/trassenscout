@@ -63,14 +63,14 @@ export function useSurveyResponseTagMutations(projectSlug: string) {
   const unarchiveTagMutation = useMutation({ mutationFn: unarchiveSurveyResponseTagFn })
   const deleteTagMutation = useMutation({ mutationFn: deleteSurveyResponseTagFn })
 
-  const createTag = async (title: string) => {
-    await createTagMutation.mutateAsync({ data: { projectSlug, title } })
+  const createTag = async (title: string, description?: string | null) => {
+    await createTagMutation.mutateAsync({ data: { projectSlug, title, description } })
     invalidateTags()
     void router.navigate(listNavigateOptions)
   }
 
-  const updateTag = async (id: number, title: string) => {
-    await updateTagMutation.mutateAsync({ data: { projectSlug, id, title } })
+  const updateTag = async (id: number, title: string, description?: string | null) => {
+    await updateTagMutation.mutateAsync({ data: { projectSlug, id, title, description } })
     invalidateTags()
     void router.navigate(listNavigateOptions)
   }

@@ -1,335 +1,182 @@
-import { MagnifyingGlassIcon } from "@heroicons/react/20/solid"
-import { XMarkIcon } from "@heroicons/react/24/outline"
-import { type JSX, PropsWithoutRef, useState } from "react"
+import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react"
+import { ChevronRightIcon } from "@heroicons/react/20/solid"
+import { ArrowDownTrayIcon, XMarkIcon } from "@heroicons/react/24/outline"
+import { type JSX, type PropsWithoutRef } from "react"
 import { twJoin } from "tailwind-merge"
 import { backendConfig as defaultBackendConfig } from "@/src/components/beteiligung/shared/backend-types"
-import { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
+import { type AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
+import { ComboboxMultiBase } from "@/src/components/core/components/forms/ComboboxMultiBase"
+import { ComboboxSingleBase } from "@/src/components/core/components/forms/ComboboxSingleBase"
+import { Link } from "@/src/components/core/components/links/Link"
 import { linkStyles } from "@/src/components/core/components/links/styles"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
-import { Prettify } from "@/src/components/core/types"
-import type { OperatorWithSubsectionCount } from "@/src/server/adminLookupTables/adminLookupTablesQueryOptions"
+import { PageHeaderSearchFilter } from "@/src/components/core/components/PageHeader/PageHeaderSearchFilter"
+import { type Prettify } from "@/src/components/core/types"
 import type { FeedbackSurveyResponsesResult } from "@/src/server/survey-responses/surveyResponsesQueryOptions"
-import type { SurveyResponseTagsResult } from "@/src/server/surveyResponseTags/surveyResponseTagsQueryOptions"
 import { DebugFilterForm } from "./DebugFilterForm"
-import { LabeledInputRadioCheckbox } from "./form/LabeledInputRadioCheckbox"
-import { FormElementWrapper } from "./form/LabeledInputRadioCheckboxWrapper"
-import { getSurveyCategoryOptions } from "./getSurveyCategoryOptions"
 import { useDefaultFilterValues } from "./useDefaultFilterValues"
 import { useSurveyResponseFilters as useFilters } from "./useSurveyResponseFilters"
 
+type AdditionalFilters = Prettify<
+  NonNullable<FeedbackSurveyResponsesResult["additionalFilterQuestionsWithResponseOptions"]>
+>
+
 type FormProps = Omit<PropsWithoutRef<JSX.IntrinsicElements["form"]>, "onSubmit"> & {
   surveySlug: AllowedSurveySlugs
-  additionalFilters: Prettify<
-    FeedbackSurveyResponsesResult["additionalFilterQuestionsWithResponseOptions"]
-  >
-  operators: OperatorWithSubsectionCount[]
-  topicsDefinition: Prettify<SurveyResponseTagsResult["surveyResponseTags"]>
+  additionalFilters: AdditionalFilters
+  csvDownloadHref: string
 }
 
 export function EditableSurveyResponseFilterForm({
   surveySlug,
-  operators,
-  topicsDefinition,
-  additionalFilters,
+  additionalFilters = [],
+  csvDownloadHref,
 }: FormProps) {
   const defaultFilters = useDefaultFilterValues(surveySlug)
   const { filter, setFilter } = useFilters()
 
   const effectiveFilter = filter ?? defaultFilters
-  const [searchtermDraft, setSearchtermDraft] = useState<string | null>(null)
-  const searchterm = searchtermDraft ?? effectiveFilter.searchterm
 
-  // backend configurations: status
   const backendConfig = getConfigBySurveySlug(surveySlug, "backend")
   const surveyResponseStatus = backendConfig.status
-
-  const handleFilterReset = async () => {
-    setSearchtermDraft(null)
-    await setFilter(defaultFilters)
-  }
-
-  // backend configurations: labels
   const labels = backendConfig.labels || defaultBackendConfig.labels
+  const hasAdvancedFilters = additionalFilters.length > 0
 
-  const operatorOptions = [
-    { value: "ALL", label: "Alle" },
-    ...operators.map((operator) => {
-      return { value: String(operator.id), label: operator.title }
-    }),
-    { value: "0", label: "Nicht zugeordnet" },
-  ]
-  const statusOptions = surveyResponseStatus.map(({ value, label }) => {
-    return { value, label }
-  })
-  const topicsOptions = topicsDefinition.length
-    ? [
-        ...topicsDefinition.map((t) => {
-          return {
-            value: String(t.id),
-            label: t.archivedAt ? `${t.title} (archiviert)` : t.title,
-          }
-        }),
-        { value: "0", label: `Ohne ${labels.topics?.sg || "Tag"}` },
-      ]
-    : []
+  const statusOptions = surveyResponseStatus.map(({ value, label }) => ({ value, label }))
 
-  const categoryOptions = getSurveyCategoryOptions(surveySlug)
+  const getAdditionalFilterValue = (name: string) => {
+    const value = (effectiveFilter as Record<string, unknown>)[name]
+    return typeof value === "string" ? value : "ALL"
+  }
 
-  const hasnotesOptions = [
-    { value: "ALL", label: "Alle" },
-    { value: "true", label: `Mit ${labels.note?.sg || defaultBackendConfig.labels.note.sg}` },
-    { value: "false", label: `Ohne ${labels.note?.sg || defaultBackendConfig.labels.note.sg}` },
-  ]
-  const haslocationOptions = [
-    { value: "ALL", label: "Alle" },
-    {
-      value: "true",
-      label: `Mit ${labels.location?.sg || defaultBackendConfig.labels.location.sg}`,
-    },
-    {
-      value: "false",
-      label: `Ohne ${labels.location?.sg || defaultBackendConfig.labels.location.sg}`,
-    },
-  ]
+  const handleStandardFilterReset = async () => {
+    await setFilter((prevValues) => ({
+      ...(prevValues ?? defaultFilters),
+      searchterm: "",
+      status: defaultFilters.status,
+    }))
+  }
 
-  const handleInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = event.target
-    if (type === "checkbox") {
-      await setFilter((prevValues) => {
-        const current = prevValues ?? defaultFilters
-        const currentList = (current as Record<string, string[]>)[name] ?? []
-        return {
-          ...current,
-          [name]: checked ? [...currentList, value] : currentList.filter((item) => item !== value),
-        }
+  const handleAdvancedFilterReset = async () => {
+    await setFilter((prevValues) => {
+      const current = prevValues ?? defaultFilters
+      const next = { ...current } as Record<string, unknown>
+      const defaultFilterLookup = defaultFilters as Record<string, unknown>
+
+      additionalFilters.forEach((advancedFilter) => {
+        next[advancedFilter.value] = defaultFilterLookup[advancedFilter.value] ?? "ALL"
       })
-    }
-    if (type === "radio") {
-      await setFilter((prevValues) => ({
-        ...(prevValues ?? defaultFilters),
-        [name]: value,
-      }))
-    }
+
+      return next as typeof current
+    })
   }
 
-  const handleSelectChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const { name, value } = event.target
+  const handleStatusChange = async (value: string[]) => {
     await setFilter((prevValues) => ({
       ...(prevValues ?? defaultFilters),
-      [name]: value,
+      status: value,
     }))
   }
 
-  const handleSearchtermInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchtermDraft(event.target.value)
-  }
-
-  const handleSearchtermInputBlur = async (event: React.FocusEvent<HTMLInputElement>) => {
-    const { name, value } = event.target
-    setSearchtermDraft(null)
+  const handleAdditionalFilterChange = async (name: string, value: string | null) => {
     await setFilter((prevValues) => ({
       ...(prevValues ?? defaultFilters),
-      [name]: value,
+      [name]: value ?? "ALL",
     }))
   }
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const committedSearchterm = searchtermDraft ?? effectiveFilter.searchterm
-    setSearchtermDraft(null)
+  const handleSearchtermChange = async (value: string) => {
     await setFilter((prevValues) => ({
       ...(prevValues ?? defaultFilters),
-      searchterm: committedSearchterm,
+      searchterm: value,
     }))
-    console.log("handleSubmit", event)
-    console.log("handleSubmit", filter)
   }
 
   return (
-    <nav className="w-full border-b border-gray-200 bg-gray-100">
-      <details>
-        <summary
-          className={twJoin(
-            pageContentPaddingClassName,
-            "cursor-pointer py-2 text-gray-700 hover:bg-gray-50",
-          )}
+    <nav className="w-full border-b border-gray-200 bg-white">
+      <DebugFilterForm filter={filter} />
+      <div className={twJoin(pageContentPaddingClassName, "py-5")}>
+        <PageHeaderSearchFilter
+          value={effectiveFilter.searchterm}
+          onChange={(searchterm) => void handleSearchtermChange(searchterm)}
+          onReset={() => void handleStandardFilterReset()}
+          placeholder='Beiträge nach Suchwort filtern oder nach "tag:Name" für Tag suchen'
+          actions={
+            <Link
+              className={twJoin(linkStyles, "ml-auto flex items-center gap-2")}
+              href={csvDownloadHref}
+              icon={<ArrowDownTrayIcon className="size-5" />}
+            >
+              <span>Alle Daten als .csv herunterladen</span>
+            </Link>
+          }
         >
-          Filter
-        </summary>
-        <form
-          className={twJoin(
-            pageContentPaddingClassName,
-            "flex flex-col items-start justify-start gap-6 py-2",
-          )}
-          onSubmit={handleSubmit}
-        >
-          <DebugFilterForm filter={filter} />
-          <div className="mt-6 flex flex-col gap-6">
-            <div className="flex flex-col items-start gap-6 sm:flex-row">
-              <FormElementWrapper
-                label={labels.status?.sg || defaultBackendConfig.labels.status.sg}
-              >
-                {statusOptions.map((item) => (
-                  <LabeledInputRadioCheckbox
-                    type="checkbox"
-                    name="status"
-                    key={item.value}
-                    checked={effectiveFilter.status.includes(item.value)}
-                    onChange={handleInputChange}
-                    label={item.label}
-                    value={item.value}
-                  />
-                ))}
-              </FormElementWrapper>
-              <div className="flex shrink-0 flex-col gap-4">
-                {!backendConfig.disableNote && (
-                  <FormElementWrapper
-                    label={labels.note?.sg || defaultBackendConfig.labels.note.sg}
-                  >
-                    {hasnotesOptions.map((item) => (
-                      <LabeledInputRadioCheckbox
-                        type="radio"
-                        label={item.label}
-                        value={item.value}
-                        key={item.value}
-                        name="hasnotes"
-                        onChange={handleInputChange}
-                        checked={effectiveFilter.hasnotes === item.value}
-                      />
-                    ))}
-                  </FormElementWrapper>
-                )}
-                <FormElementWrapper
-                  label={labels.location?.sg || defaultBackendConfig.labels.location.sg}
-                >
-                  {haslocationOptions.map((item) => (
-                    <LabeledInputRadioCheckbox
-                      type="radio"
-                      label={item.label}
-                      value={item.value}
-                      key={item.value}
-                      name="haslocation"
-                      onChange={handleInputChange}
-                      checked={effectiveFilter.haslocation === item.value}
-                    />
-                  ))}
-                </FormElementWrapper>
-              </div>
-              {additionalFilters && Boolean(additionalFilters?.length) && (
-                <ul className="flex shrink flex-col gap-6">
-                  {additionalFilters.map((addFilter) => (
-                    <li key={addFilter.id}>
-                      <FormElementWrapper label={addFilter.label}>
-                        <select
-                          onChange={handleSelectChange}
-                          name={addFilter.value}
-                          value={String(
-                            (effectiveFilter as Record<string, string | undefined>)[
-                              addFilter.value
-                            ] ?? "ALL",
-                          )}
-                          className={
-                            "w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-xs focus:border-blue-500 focus:ring-blue-500 focus:outline-hidden sm:text-sm"
-                          }
-                        >
-                          {addFilter.options.map(({ value, label }) => (
-                            <option key={value} value={value}>
-                              {label}
-                            </option>
-                          ))}
-                        </select>
-                      </FormElementWrapper>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-            <div className="flex flex-col gap-12 sm:flex-row">
-              <FormElementWrapper
-                label={labels.category?.sg || defaultBackendConfig.labels.category.sg}
-              >
-                {categoryOptions.map((item) => (
-                  <LabeledInputRadioCheckbox
-                    type="checkbox"
-                    label={item.label}
-                    value={item.value}
-                    key={item.value}
-                    name="categories"
-                    onChange={handleInputChange}
-                    checked={effectiveFilter.categories.includes(item.value)}
-                  />
-                ))}
-              </FormElementWrapper>
-              <FormElementWrapper
-                label={labels.operator?.sg || defaultBackendConfig.labels.operator.sg}
-              >
-                {operatorOptions.map((item) => (
-                  <LabeledInputRadioCheckbox
-                    type="radio"
-                    label={item.label}
-                    value={item.value}
-                    key={item.value}
-                    name="operator"
-                    onChange={handleInputChange}
-                    checked={effectiveFilter.operator === item.value}
-                  />
-                ))}
-              </FormElementWrapper>
-            </div>
-            {!!topicsOptions.length && (
-              <FormElementWrapper
-                label={labels.topics?.pl || defaultBackendConfig.labels.topics.pl}
-              >
-                <div className="grid grid-cols-2 gap-1.5 md:grid-cols-3 lg:grid-cols-4">
-                  {topicsOptions.map((item) => (
-                    <LabeledInputRadioCheckbox
-                      type="checkbox"
-                      name="topics"
-                      key={item.value}
-                      checked={effectiveFilter.topics.includes(item.value)}
-                      onChange={handleInputChange}
-                      label={item.label}
-                      value={item.value}
-                    />
-                  ))}
-                </div>
-              </FormElementWrapper>
-            )}
-            <div className="flex items-end gap-4">
-              <div className="w-[300px]">
-                <p className="mb-3 font-semibold">Freitextsuche</p>
-                <input
-                  onChange={handleSearchtermInputChange}
-                  type="text"
-                  value={searchterm}
-                  onBlur={handleSearchtermInputBlur}
-                  name="searchterm"
-                  placeholder="Eingaben nach Suchwort filtern"
-                  className={
-                    "block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-xs focus:border-blue-500 focus:ring-blue-500 focus:outline-hidden sm:text-sm"
-                  }
-                />
-              </div>
-              <button type="button" className="h-full">
-                <MagnifyingGlassIcon className="h-9 w-9 rounded-md bg-blue-500 p-2 text-white hover:bg-blue-800" />
-              </button>
-            </div>
+          <div className="w-[300px] max-w-full">
+            <ComboboxMultiBase
+              value={effectiveFilter.status}
+              onChange={(value) => void handleStatusChange(value)}
+              items={statusOptions}
+              placeholder="Status suchen"
+              buttonSrLabel={labels.status?.sg || defaultBackendConfig.labels.status.sg}
+              allSelectedLabel="Alle Status"
+              selectedCountLabel={(count) => `${count} Status ausgewählt`}
+            />
           </div>
-        </form>
-        <button
-          type="button"
-          className={twJoin(
-            linkStyles,
-            pageContentPaddingClassName,
-            "mt-4 flex items-center gap-2 pb-2",
-          )}
-          onClick={handleFilterReset}
-        >
-          <XMarkIcon className="size-4" />
-          <span>Alle Filter zurücksetzen</span>
-        </button>
-      </details>
+        </PageHeaderSearchFilter>
+      </div>
+
+      {hasAdvancedFilters && (
+        <Disclosure as="div" className="relative z-20 border-t border-gray-200 bg-gray-50">
+          <DisclosureButton
+            className={twJoin(
+              pageContentPaddingClassName,
+              "group flex w-full cursor-pointer items-center gap-2 py-4 text-left text-gray-700 hover:bg-gray-100",
+            )}
+          >
+            <ChevronRightIcon
+              className="size-5 shrink-0 text-gray-500 transition-transform duration-200 group-data-open:rotate-90 motion-reduce:transition-none"
+              aria-hidden="true"
+            />
+            Erweiterte Filter
+          </DisclosureButton>
+          <DisclosurePanel
+            transition
+            className="grid grid-rows-[1fr] overflow-visible opacity-100 transition-[grid-template-rows,opacity,transform] duration-200 ease-out data-closed:-translate-y-1 data-closed:grid-rows-[0fr] data-closed:overflow-hidden data-closed:opacity-0 motion-reduce:transition-none"
+          >
+            <div className="min-h-0">
+              <div className={twJoin(pageContentPaddingClassName, "flex flex-wrap gap-4 pb-5")}>
+                {additionalFilters.map((advancedFilter) => (
+                  <div key={advancedFilter.id} className="min-w-[260px] flex-1 md:max-w-sm">
+                    <ComboboxSingleBase
+                      value={getAdditionalFilterValue(advancedFilter.value)}
+                      onChange={(value) =>
+                        void handleAdditionalFilterChange(advancedFilter.value, value)
+                      }
+                      items={advancedFilter.options.map(({ value, label }) => ({
+                        value,
+                        label,
+                        triggerText:
+                          value === "ALL" ? `Nach ${advancedFilter.label} filtern` : undefined,
+                      }))}
+                      placeholder={`${advancedFilter.label} suchen`}
+                      buttonSrLabel={advancedFilter.label}
+                    />
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  className={twJoin(linkStyles, "flex items-center gap-2 self-center")}
+                  onClick={() => void handleAdvancedFilterReset()}
+                >
+                  <XMarkIcon className="size-4" />
+                  <span>Filter zurücksetzen</span>
+                </button>
+              </div>
+            </div>
+          </DisclosurePanel>
+        </Disclosure>
+      )}
     </nav>
   )
 }

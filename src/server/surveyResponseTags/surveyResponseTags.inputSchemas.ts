@@ -11,10 +11,11 @@ export const CreateSurveyResponseTagSchema = ProjectSlugRequiredSchema.extend(
 )
 
 export const UpdateSurveyResponseTagSchema = ProjectSlugRequiredSchema.extend({
-  id: z.number(),
+  id: z.number().int().positive(),
   title: z.string().trim().min(1),
+  description: z.string().trim().nullish(),
 })
 
 export const SurveyResponseTagIdSchema = ProjectSlugRequiredSchema.extend({
-  id: z.number(),
+  id: z.number().int().positive(),
 })

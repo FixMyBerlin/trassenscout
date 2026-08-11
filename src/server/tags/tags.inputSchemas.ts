@@ -11,10 +11,10 @@ export const CreateTagSchema = ProjectSlugRequiredSchema.extend(
 )
 
 export const UpdateTagSchema = ProjectSlugRequiredSchema.extend({
-  id: z.number(),
+  id: z.number().int().positive(),
   title: z.string().trim().min(1),
 })
 
 export const TagIdSchema = ProjectSlugRequiredSchema.extend({
-  id: z.number(),
+  id: z.number().int().positive(),
 })

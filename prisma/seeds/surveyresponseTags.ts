@@ -6,6 +6,7 @@ const seedSurveyResponseTags = async () => {
     {
       title: "Grünflächen",
       projectId: 1,
+      description: null,
       createdAt: new Date(),
       updatedAt: new Date(),
       archivedAt: null,
@@ -13,6 +14,7 @@ const seedSurveyResponseTags = async () => {
     {
       title: "Spielende Kinder",
       projectId: 1,
+      description: null,
       createdAt: new Date(),
       updatedAt: new Date(),
       archivedAt: null,
@@ -20,6 +22,7 @@ const seedSurveyResponseTags = async () => {
     {
       title: "Einkaufen",
       projectId: 1,
+      description: null,
       createdAt: new Date(),
       updatedAt: new Date(),
       archivedAt: null,
@@ -27,6 +30,7 @@ const seedSurveyResponseTags = async () => {
     {
       title: "Geschwindigkeit",
       projectId: 1,
+      description: null,
       createdAt: new Date(),
       updatedAt: new Date(),
       archivedAt: null,
@@ -34,6 +38,7 @@ const seedSurveyResponseTags = async () => {
     {
       title: "Wegführung",
       projectId: 1,
+      description: null,
       createdAt: new Date(),
       updatedAt: new Date(),
       archivedAt: null,

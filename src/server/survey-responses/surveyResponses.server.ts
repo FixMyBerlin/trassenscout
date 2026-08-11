@@ -30,7 +30,13 @@ import {
 export type GetSurveyResponsesInput = z.infer<typeof GetSurveyResponsesSchema>
 export type GetFeedbackSurveyResponsesInput = z.infer<typeof GetFeedbackSurveyResponsesSchema>
 export type GetGroupedSurveyResponsesInput = z.infer<typeof GetGroupedSurveyResponsesSchema>
-type SurveyResponseJsonData = Record<string, string | number | boolean | null>
+type SurveyResponseJsonValue =
+  | string
+  | number
+  | boolean
+  | null
+  | Array<string | number | boolean | null>
+type SurveyResponseJsonData = Record<string, SurveyResponseJsonValue>
 type SurveyResponseInput = z.infer<typeof SurveyResponseFormSchema>
 
 function surveyResponseInProjectWhere(projectSlug: string, id: number) {
@@ -43,6 +49,13 @@ function parseSurveyResponseData(data: string): SurveyResponseJsonData | null {
   } catch {
     return null
   }
+}
+
+function responseFilterOptionValues(value: SurveyResponseJsonValue | undefined) {
+  const values = Array.isArray(value) ? value : [value]
+  return values
+    .filter((item) => item !== null && item !== undefined && item !== "")
+    .map((item) => String(item))
 }
 
 async function findLinkedSubsubsectionForSurveyResponse(responseId: number) {
@@ -461,23 +474,21 @@ export async function getFeedbackSurveyResponsesWithSurveyDataAndComments(
         : question.surveyPart === "part3"
           ? part3Fields.find((f) => String(f.name) === String(question.id))
           : part2Fields.find((f) => String(f.name) === String(question.id))
-    const questionDatas = parsedAndSorted
-      .map((responseItem) => {
-        let result: string | null
-        if (question.surveyPart === "part1") {
-          result = responseItem.surveyPart1ResponseData
-            ? String(responseItem.surveyPart1ResponseData[String(question.id)] ?? "")
-            : null
-        } else if (question.surveyPart === "part3") {
-          result = responseItem.surveyPart3ResponseData
-            ? String(responseItem.surveyPart3ResponseData[String(question.id)] ?? "")
-            : null
-        } else {
-          result = String(responseItem.data[String(question.id)] ?? "")
-        }
-        return result
-      })
-      .filter(Boolean)
+    const questionDatas = parsedAndSorted.flatMap((responseItem) => {
+      let result: SurveyResponseJsonValue | undefined
+      if (question.surveyPart === "part1") {
+        result = responseItem.surveyPart1ResponseData
+          ? responseItem.surveyPart1ResponseData[String(question.id)]
+          : undefined
+      } else if (question.surveyPart === "part3") {
+        result = responseItem.surveyPart3ResponseData
+          ? responseItem.surveyPart3ResponseData[String(question.id)]
+          : undefined
+      } else {
+        result = responseItem.data[String(question.id)]
+      }
+      return responseFilterOptionValues(result)
+    })
     let uniqueSortedResponseOptions = Array.from(new Set(questionDatas))
       .sort()
       .map((option) => {

@@ -16,48 +16,60 @@ import {
   ListboxOptionLabel,
 } from "@/src/components/core/components/forms/checkmarkListboxUi"
 
-export type ComboboxSingleItem = {
+export type ComboboxMultiItem = {
   value: string
   label: string | ReactNode
-  /** Search text when label is a ReactNode. Required for ReactNode labels. */
   searchText?: string
-  /** Optional text for the closed trigger button when it should differ from the option label. */
-  triggerText?: string
   disabled?: boolean
 }
 
-export type ComboboxSingleBaseProps = {
-  value: string | null
-  onChange: (value: string | null) => void
-  items: ComboboxSingleItem[]
-  /** Placeholder for the search field inside the dropdown. */
+export type ComboboxMultiBaseProps = {
+  value: string[]
+  onChange: (value: string[]) => void
+  items: ComboboxMultiItem[]
   placeholder?: string
   disabled?: boolean
-  /** Custom trigger button styling. Defaults to form-field select styling. */
   classNameButton?: string
-  /** Dropdown panel width. Defaults to full trigger width. */
   classNameDropdown?: string
   optionUi?: ListboxOptionUi
   invalid?: boolean
   id?: string
   onBlur?: () => void
-  /** Screen-reader label for the trigger button. */
   buttonSrLabel?: string
+  allSelectedLabel?: string
+  selectedCountLabel?: (count: number) => string
 }
 
-function itemSearchText(item: ComboboxSingleItem) {
+function itemSearchText(item: ComboboxMultiItem) {
   return item.searchText ?? String(item.label)
 }
 
-function selectedTriggerText(item: ComboboxSingleItem) {
-  return (
-    item.triggerText ??
-    item.searchText ??
-    (typeof item.label === "string" ? item.label : String(item.label))
-  )
+function selectedTriggerText(item: ComboboxMultiItem) {
+  return item.searchText ?? (typeof item.label === "string" ? item.label : String(item.label))
 }
 
-export function ComboboxSingleBase({
+function triggerText(
+  selectedValues: string[],
+  items: ComboboxMultiItem[],
+  allSelectedLabel: string,
+  selectedCountLabel: (count: number) => string,
+) {
+  const selectedValueSet = new Set(selectedValues)
+  const selectedItems = items.filter((item) => selectedValueSet.has(item.value))
+
+  if (selectedItems.length === 0 || selectedItems.length === items.length) {
+    return allSelectedLabel
+  }
+
+  const selectedItem = selectedItems.at(0)
+  if (selectedItems.length === 1 && selectedItem) {
+    return selectedTriggerText(selectedItem)
+  }
+
+  return selectedCountLabel(selectedItems.length)
+}
+
+export function ComboboxMultiBase({
   value,
   onChange,
   items,
@@ -70,15 +82,16 @@ export function ComboboxSingleBase({
   id,
   onBlur,
   buttonSrLabel,
-}: ComboboxSingleBaseProps) {
+  allSelectedLabel = "Alle",
+  selectedCountLabel = (count) => `${count} ausgewählt`,
+}: ComboboxMultiBaseProps) {
   const [query, setQuery] = useState("")
   const disabledOrEmpty = Boolean(disabled || items.length === 0)
-  const selectedItem = items.find((item) => item.value === value) ?? null
-
   const filteredItems =
     query === ""
       ? items
       : items.filter((item) => itemSearchText(item).toLowerCase().includes(query.toLowerCase()))
+  const buttonText = triggerText(value, items, allSelectedLabel, selectedCountLabel)
 
   const triggerClassName =
     classNameButton ??
@@ -94,6 +107,7 @@ export function ComboboxSingleBase({
   return (
     <HeadlessCombobox
       immediate
+      multiple
       value={value}
       onChange={onChange}
       onClose={() => setQuery("")}
@@ -104,9 +118,7 @@ export function ComboboxSingleBase({
         <div className="relative">
           <ComboboxButton id={id} onBlur={onBlur} className={triggerClassName}>
             {buttonSrLabel && <span className="sr-only">{buttonSrLabel}</span>}
-            <span className="truncate">
-              {selectedItem ? selectedTriggerText(selectedItem) : "Auswählen"}
-            </span>
+            <span className="truncate">{buttonText}</span>
             <ChevronDownIcon className="size-5 shrink-0 text-gray-400" aria-hidden="true" />
           </ComboboxButton>
 
