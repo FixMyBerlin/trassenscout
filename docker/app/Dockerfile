@@ -14,10 +14,10 @@ ENV VITE_APP_ORIGIN=${VITE_APP_ORIGIN}
 ENV VITE_APP_ENV=${VITE_APP_ENV}
 ENV TZ=Europe/Berlin
 
-COPY package.json bun.lock bunfig.toml ./
-# Disable Bun's global store in Docker: the install runs as root, while the
-# container runs as bun, so root-cache links would fail with EACCES at runtime.
-RUN BUN_INSTALL_GLOBAL_STORE=0 bun install --frozen-lockfile --ignore-scripts
+# Do not copy bunfig.toml here: it enables the isolated linker + globalStore for local/dev only.
+# That layout symlinks into /root/.bun, which USER bun cannot read at runtime.
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile --ignore-scripts
 
 COPY . .
 
