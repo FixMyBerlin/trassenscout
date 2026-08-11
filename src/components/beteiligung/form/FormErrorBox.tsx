@@ -12,11 +12,16 @@ type Props = {
 export const FormErrorBox = ({ fieldMeta, allCurrentFieldsOfPage }: Props) => {
   const errors = getFieldsErrors({ fieldMeta, fields: allCurrentFieldsOfPage })
   const errorSummaryRef = useRef<HTMLDivElement>(null)
+  const previousErrorsLengthRef = useRef(0)
 
   useEffect(
-    function focusErrorSummaryOnSubmitErrors() {
-      if (!errors.length) return
-      errorSummaryRef.current?.focus()
+    function focusErrorSummaryWhenErrorsAppear() {
+      // Only steal focus when the summary first appears (e.g. after Next/Submit).
+      // Re-focusing on every errors.length change breaks typing while correcting fields.
+      if (errors.length > 0 && previousErrorsLengthRef.current === 0) {
+        errorSummaryRef.current?.focus()
+      }
+      previousErrorsLengthRef.current = errors.length
     },
     [errors.length],
   )
