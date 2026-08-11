@@ -70,7 +70,7 @@ jobs:
 
       - name: Cache app environment fingerprint
         if: ${{ needs.diff_app.outputs.env_fingerprint_cache_key != '' }}
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .ci/env-fingerprints
           key: ${{ needs.diff_app.outputs.env_fingerprint_cache_key }}

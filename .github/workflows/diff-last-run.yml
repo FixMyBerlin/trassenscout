@@ -101,7 +101,7 @@ jobs:
       - name: Check environment fingerprint cache
         id: env_fingerprint_cache
         if: ${{ steps.env_hash.outputs.hash != '' }}
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: .ci/env-fingerprints
           key: ${{ steps.env_hash.outputs.cache_key }}

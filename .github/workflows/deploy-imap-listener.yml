@@ -72,7 +72,7 @@ jobs:
 
       - name: Cache IMAP environment fingerprint
         if: ${{ needs.diff_imap.outputs.env_fingerprint_cache_key != '' }}
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .ci/env-fingerprints
           key: ${{ needs.diff_imap.outputs.env_fingerprint_cache_key }}
