@@ -7,7 +7,7 @@ export const formConfig: FormConfig = {
     title: "Hinweise zu Radschnellverbindungen",
     logoUrl: "https://radschnellverbindungen.info/favicon.svg",
     canonicalUrl: "https://trassenscout.de/beteiligung/radschnellverbindungen-info-feedback",
-    maptilerUrl: "https://api.maptiler.com/maps/a9cd44e7-43f6-4277-8ae0-d910f8162524/style.json",
+    maptilerUrl: "https://api.maptiler.com/maps/positron/style.json",
     primaryColor: "#059669",
     darkColor: "#047857",
     lightColor: "#d1fae5",

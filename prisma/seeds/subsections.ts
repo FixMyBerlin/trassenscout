@@ -314,6 +314,7 @@ const seedSubsections = async () => {
   }
 
   // Demo Strecken for radschnellverbindungen-info-feedback (/api/projects/rsv-d.json).
+  // Two distant lines (Berlin + Leipzig) so Germany-bounds zoom shows far-apart features.
   if (rsvDProject) {
     seedData.push(
       {
@@ -339,44 +340,21 @@ const seedSubsections = async () => {
       {
         projectId: rsvDProject.id,
         operatorId: null,
-        slug: "rsv-frankfurt",
+        slug: "rsv-leipzig",
         order: 2,
         type: "LINE",
-        description: "Demo-Strecke Frankfurt (RSV feedback survey)",
+        description: "Demo-Strecke Leipzig (RSV feedback survey)",
         labelPos: "bottom",
         geometry: {
           type: "LineString",
           coordinates: [
-            [8.65, 50.11],
-            [8.68, 50.12],
-            [8.72, 50.13],
-            [8.76, 50.14],
+            [12.33, 51.32],
+            [12.36, 51.34],
+            [12.39, 51.35],
+            [12.42, 51.36],
           ],
         },
-        lengthM: 9000,
-        managerId: null,
-      },
-      {
-        projectId: rsvDProject.id,
-        operatorId: null,
-        slug: "rsv-muenchen",
-        order: 3,
-        type: "POLYGON",
-        description: "Demo-Fläche München (RSV feedback survey)",
-        labelPos: "top",
-        geometry: {
-          type: "Polygon",
-          coordinates: [
-            [
-              [11.54, 48.13],
-              [11.58, 48.13],
-              [11.58, 48.15],
-              [11.54, 48.15],
-              [11.54, 48.13],
-            ],
-          ],
-        },
-        lengthM: null,
+        lengthM: 7000,
         managerId: null,
       },
     )
