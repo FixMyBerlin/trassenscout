@@ -14,18 +14,18 @@ ENV VITE_APP_ORIGIN=${VITE_APP_ORIGIN}
 ENV VITE_APP_ENV=${VITE_APP_ENV}
 ENV TZ=Europe/Berlin
 
-COPY package.json bun.lock bunfig.toml ./
-# Disable Bun's global store in Docker: the install runs as root, while the
-# container runs as bun, so root-cache links would fail with EACCES at runtime.
-RUN BUN_INSTALL_GLOBAL_STORE=0 bun install --frozen-lockfile --ignore-scripts
+# Install and run as the same user — bunfig's globalStore links node_modules into $HOME/.bun,
+# so a root install + bun runtime fails with EACCES. Don't add a `USER root` layer below.
+RUN chown bun:bun /app
+USER bun
 
-COPY . .
+COPY --chown=bun:bun package.json bun.lock bunfig.toml ./
+RUN bun install --frozen-lockfile --ignore-scripts
+
+COPY --chown=bun:bun . .
 
 RUN bun run postinstall
 RUN bun run build
-
-RUN chown -R bun:bun /app
-USER bun
 
 EXPOSE 4000
 
