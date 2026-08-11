@@ -72,7 +72,6 @@ export const EditSurveyResponseTagForm = ({
         className={isModalLayout ? "max-w-none" : "grow"}
         submitText="Speichern"
         withDescription
-        titleLabel={isModalLayout ? "Name" : undefined}
         initialValues={{ title: tag.title, description: tag.description }}
         onSubmit={handleSubmit}
         actionBarLeft={isModalLayout ? deleteAction : undefined}

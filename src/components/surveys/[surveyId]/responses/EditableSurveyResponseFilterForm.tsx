@@ -1,10 +1,14 @@
+import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react"
+import { ChevronRightIcon } from "@heroicons/react/20/solid"
 import { ArrowDownTrayIcon, XMarkIcon } from "@heroicons/react/24/outline"
 import { type JSX, type PropsWithoutRef } from "react"
 import { twJoin } from "tailwind-merge"
 import { backendConfig as defaultBackendConfig } from "@/src/components/beteiligung/shared/backend-types"
 import { type AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
+import { ComboboxMultiBase } from "@/src/components/core/components/forms/ComboboxMultiBase"
 import { ComboboxSingleBase } from "@/src/components/core/components/forms/ComboboxSingleBase"
+import { Link } from "@/src/components/core/components/links/Link"
 import { linkStyles } from "@/src/components/core/components/links/styles"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeaderSearchFilter } from "@/src/components/core/components/PageHeader/PageHeaderSearchFilter"
@@ -39,14 +43,12 @@ export function EditableSurveyResponseFilterForm({
   const labels = backendConfig.labels || defaultBackendConfig.labels
   const hasAdvancedFilters = additionalFilters.length > 0
 
-  const statusOptions = [
-    { value: "ALL", label: "Alle Status" },
-    ...surveyResponseStatus.map(({ value, label }) => ({ value, label })),
-  ]
-  const selectedStatusValue =
-    effectiveFilter.status.length === surveyResponseStatus.length
-      ? "ALL"
-      : (effectiveFilter.status[0] ?? "ALL")
+  const statusOptions = surveyResponseStatus.map(({ value, label }) => ({ value, label }))
+
+  const getAdditionalFilterValue = (name: string) => {
+    const value = (effectiveFilter as Record<string, unknown>)[name]
+    return typeof value === "string" ? value : "ALL"
+  }
 
   const handleStandardFilterReset = async () => {
     await setFilter((prevValues) => ({
@@ -70,10 +72,10 @@ export function EditableSurveyResponseFilterForm({
     })
   }
 
-  const handleStatusChange = async (value: string | null) => {
+  const handleStatusChange = async (value: string[]) => {
     await setFilter((prevValues) => ({
       ...(prevValues ?? defaultFilters),
-      status: value === null || value === "ALL" ? defaultFilters.status : [value],
+      status: value,
     }))
   }
 
@@ -101,69 +103,79 @@ export function EditableSurveyResponseFilterForm({
           onReset={() => void handleStandardFilterReset()}
           placeholder='Beiträge nach Suchwort filtern oder nach "tag:Name" für Tag suchen'
           actions={
-            <a
+            <Link
               className={twJoin(linkStyles, "ml-auto flex items-center gap-2")}
               href={csvDownloadHref}
+              icon={<ArrowDownTrayIcon className="size-5" />}
             >
-              <ArrowDownTrayIcon className="size-5" />
               <span>Alle Daten als .csv herunterladen</span>
-            </a>
+            </Link>
           }
         >
           <div className="w-[300px] max-w-full">
-            <ComboboxSingleBase
-              value={selectedStatusValue}
+            <ComboboxMultiBase
+              value={effectiveFilter.status}
               onChange={(value) => void handleStatusChange(value)}
               items={statusOptions}
               placeholder="Status suchen"
               buttonSrLabel={labels.status?.sg || defaultBackendConfig.labels.status.sg}
+              allSelectedLabel="Alle Status"
+              selectedCountLabel={(count) => `${count} Status ausgewählt`}
             />
           </div>
         </PageHeaderSearchFilter>
       </div>
 
       {hasAdvancedFilters && (
-        <details className="border-t border-gray-200 bg-gray-50">
-          <summary
+        <Disclosure as="div" className="relative z-20 border-t border-gray-200 bg-gray-50">
+          <DisclosureButton
             className={twJoin(
               pageContentPaddingClassName,
-              "cursor-pointer py-4 text-gray-700 hover:bg-gray-100",
+              "group flex w-full cursor-pointer items-center gap-2 py-4 text-left text-gray-700 hover:bg-gray-100",
             )}
           >
+            <ChevronRightIcon
+              className="size-5 shrink-0 text-gray-500 transition-transform duration-200 group-data-open:rotate-90 motion-reduce:transition-none"
+              aria-hidden="true"
+            />
             Erweiterte Filter
-          </summary>
-          <div className={twJoin(pageContentPaddingClassName, "flex flex-wrap gap-4 pb-5")}>
-            {additionalFilters.map((advancedFilter) => (
-              <div key={advancedFilter.id} className="min-w-[260px] flex-1 md:max-w-sm">
-                <ComboboxSingleBase
-                  value={String(
-                    (effectiveFilter as Record<string, string | undefined>)[advancedFilter.value] ??
-                      "ALL",
-                  )}
-                  onChange={(value) =>
-                    void handleAdditionalFilterChange(advancedFilter.value, value)
-                  }
-                  items={advancedFilter.options.map(({ value, label }) => ({
-                    value,
-                    label,
-                    triggerText:
-                      value === "ALL" ? `Nach ${advancedFilter.label} filtern` : undefined,
-                  }))}
-                  placeholder={`${advancedFilter.label} suchen`}
-                  buttonSrLabel={advancedFilter.label}
-                />
+          </DisclosureButton>
+          <DisclosurePanel
+            transition
+            className="grid grid-rows-[1fr] overflow-visible opacity-100 transition-[grid-template-rows,opacity,transform] duration-200 ease-out data-closed:-translate-y-1 data-closed:grid-rows-[0fr] data-closed:overflow-hidden data-closed:opacity-0 motion-reduce:transition-none"
+          >
+            <div className="min-h-0">
+              <div className={twJoin(pageContentPaddingClassName, "flex flex-wrap gap-4 pb-5")}>
+                {additionalFilters.map((advancedFilter) => (
+                  <div key={advancedFilter.id} className="min-w-[260px] flex-1 md:max-w-sm">
+                    <ComboboxSingleBase
+                      value={getAdditionalFilterValue(advancedFilter.value)}
+                      onChange={(value) =>
+                        void handleAdditionalFilterChange(advancedFilter.value, value)
+                      }
+                      items={advancedFilter.options.map(({ value, label }) => ({
+                        value,
+                        label,
+                        triggerText:
+                          value === "ALL" ? `Nach ${advancedFilter.label} filtern` : undefined,
+                      }))}
+                      placeholder={`${advancedFilter.label} suchen`}
+                      buttonSrLabel={advancedFilter.label}
+                    />
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  className={twJoin(linkStyles, "flex items-center gap-2 self-center")}
+                  onClick={() => void handleAdvancedFilterReset()}
+                >
+                  <XMarkIcon className="size-4" />
+                  <span>Filter zurücksetzen</span>
+                </button>
               </div>
-            ))}
-            <button
-              type="button"
-              className={twJoin(linkStyles, "flex items-center gap-2 self-center")}
-              onClick={() => void handleAdvancedFilterReset()}
-            >
-              <XMarkIcon className="size-4" />
-              <span>Filter zurücksetzen</span>
-            </button>
-          </div>
-        </details>
+            </div>
+          </DisclosurePanel>
+        </Disclosure>
       )}
     </nav>
   )

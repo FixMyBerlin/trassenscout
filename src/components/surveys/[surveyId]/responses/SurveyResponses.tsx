@@ -2,7 +2,10 @@ import { useQuery } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 import { useEffect, useRef } from "react"
 import { twJoin } from "tailwind-merge"
-import { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
+import {
+  allowedSurveySlugs,
+  type AllowedSurveySlugs,
+} from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
 import { getQuestionIdBySurveySlug } from "@/src/components/beteiligung/shared/utils/getQuestionIdBySurveySlug"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
@@ -40,7 +43,37 @@ type Props = {
   tabs: Array<{ name: string; to: string }>
 }
 
-export function SurveyResponses({ projectSlug, surveyId: _surveyId, survey, tabs }: Props) {
+function isAllowedSurveySlug(slug: string): slug is AllowedSurveySlugs {
+  return allowedSurveySlugs.includes(slug as AllowedSurveySlugs)
+}
+
+function SurveyResponsesWithoutPart2({ survey, tabs }: Pick<Props, "survey" | "tabs">) {
+  return (
+    <>
+      <PageHeader
+        breadcrumb={
+          <ProjectPageBreadcrumb
+            section="Eingaben"
+            sectionTo="/$projectSlug/surveys"
+            current={survey.title}
+          />
+        }
+        tabs={<SurveyTabs tabs={tabs} embedded />}
+      />
+      <div className={pageContentPaddingClassName}>
+        <SuperAdminBox>
+          <p>In der Beteiligung {survey.slug.toUpperCase()} gibt es keinen Umfrageteil 2. </p>
+        </SuperAdminBox>
+      </div>
+    </>
+  )
+}
+
+type ConfiguredProps = Props & {
+  surveySlug: AllowedSurveySlugs
+}
+
+function SurveyResponsesConfigured({ projectSlug, survey, tabs, surveySlug }: ConfiguredProps) {
   const navigate = useNavigate()
   const { data: feedbackData, refetch: refetchResponses } = useQuery(
     feedbackSurveyResponsesQueryOptions({
@@ -52,7 +85,6 @@ export function SurveyResponses({ projectSlug, surveyId: _surveyId, survey, tabs
   const additionalFilterQuestionsWithResponseOptions =
     feedbackData?.additionalFilterQuestionsWithResponseOptions ?? []
 
-  const surveySlug = survey.slug as AllowedSurveySlugs
   const defaultFilters = useDefaultFilterValues(surveySlug)
   const { filter, setFilter } = useSurveyResponseFilters()
   const { data: operatorsData } = useQuery(
@@ -70,35 +102,17 @@ export function SurveyResponses({ projectSlug, surveyId: _surveyId, survey, tabs
   const { responseDetails: paramsSurveyResponseId } = useSurveyResponseDetails()
   const accordionRefs = useRef<Array<HTMLDivElement | null>>([])
 
-  useEffect(() => {
-    if (paramsSurveyResponseId) {
-      const currentRef = accordionRefs.current?.at(paramsSurveyResponseId)
-      currentRef?.scrollIntoView({ behavior: "smooth" })
-    }
-  }, [paramsSurveyResponseId])
+  useEffect(
+    function scrollToOpenedSurveyResponse() {
+      if (paramsSurveyResponseId) {
+        const currentRef = accordionRefs.current?.at(paramsSurveyResponseId)
+        currentRef?.scrollIntoView({ behavior: "smooth" })
+      }
+    },
+    [paramsSurveyResponseId],
+  )
 
-  const feedbackDefinition = getConfigBySurveySlug(surveySlug, "part2")
-
-  if (!feedbackDefinition)
-    return (
-      <>
-        <PageHeader
-          breadcrumb={
-            <ProjectPageBreadcrumb
-              section="Eingaben"
-              sectionTo="/$projectSlug/surveys"
-              current={survey.title}
-            />
-          }
-          tabs={<SurveyTabs tabs={tabs} embedded />}
-        />
-        <div className={pageContentPaddingClassName}>
-          <SuperAdminBox>
-            <p>In der Beteiligung {survey.slug.toUpperCase()} gibt es keinen Umfrageteil 2. </p>
-          </SuperAdminBox>
-        </div>
-      </>
-    )
+  const feedbackDefinition = getConfigBySurveySlug(surveySlug, "part2")!
 
   const refetchResponsesAndTopics = async () => {
     await refetchTopics()
@@ -193,4 +207,15 @@ export function SurveyResponses({ projectSlug, surveyId: _surveyId, survey, tabs
       </section>
     </>
   )
+}
+
+export function SurveyResponses(props: Props) {
+  const surveySlug = isAllowedSurveySlug(props.survey.slug) ? props.survey.slug : null
+  const feedbackDefinition = surveySlug ? getConfigBySurveySlug(surveySlug, "part2") : undefined
+
+  if (!surveySlug || !feedbackDefinition) {
+    return <SurveyResponsesWithoutPart2 survey={props.survey} tabs={props.tabs} />
+  }
+
+  return <SurveyResponsesConfigured {...props} surveySlug={surveySlug} />
 }

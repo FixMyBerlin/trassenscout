@@ -7,7 +7,7 @@ import { getTagUsageCount } from "./tagUsageCount"
 
 function tagInProjectWhere(projectSlug: string, id?: number) {
   return {
-    ...(id ? { id } : {}),
+    ...(id !== undefined ? { id } : {}),
     project: { slug: projectSlug },
   }
 }
@@ -58,7 +58,7 @@ export async function createTag(headers: Headers, input: z.infer<typeof CreateTa
         projectId,
       },
     },
-    update: {},
+    update: { archivedAt: null },
     create: {
       title,
       projectId,

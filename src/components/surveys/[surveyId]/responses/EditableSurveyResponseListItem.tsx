@@ -11,6 +11,7 @@ import { getQuestionIdBySurveySlug } from "@/src/components/beteiligung/shared/u
 import SurveyStaticPin from "@/src/components/core/components/Map/SurveyStaticPin"
 import { Markdown } from "@/src/components/core/components/Markdown/Markdown"
 import { Prettify } from "@/src/components/core/types"
+import { ProjectRecordTagsList } from "@/src/components/project-records/ProjectRecordTagsList"
 import type { OperatorWithSubsectionCount } from "@/src/server/adminLookupTables/adminLookupTablesQueryOptions"
 import {
   createSurveyResponseCommentFn,
@@ -146,21 +147,11 @@ const EditableSurveyResponseListItem = ({
             markdown={typeof userTextPreview === "string" ? userTextPreview : null}
           />
 
-          <div className="flex flex-wrap gap-1">
-            {responseTags.map((tag) => (
-              <button
-                key={tag.id}
-                type="button"
-                className="rounded-sm bg-gray-100 px-2 py-1 text-xs text-gray-700 hover:bg-gray-200"
-                onClick={(event) => {
-                  event.stopPropagation()
-                  onTagClick?.(tag.title)
-                }}
-              >
-                #{tag.title}
-              </button>
-            ))}
-          </div>
+          <ProjectRecordTagsList
+            tags={responseTags}
+            isInteractive={Boolean(onTagClick)}
+            onTagClick={onTagClick}
+          />
 
           <div className="flex items-center justify-end gap-2 text-gray-600">
             <ChatBubbleBottomCenterTextIcon className="size-5 shrink-0" aria-hidden="true" />

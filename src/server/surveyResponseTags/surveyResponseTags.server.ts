@@ -12,7 +12,7 @@ import { getSurveyResponseTagUsageCount } from "./surveyResponseTagUsageCount"
 
 function tagInProjectWhere(projectSlug: string, id?: number) {
   return {
-    ...(id ? { id } : {}),
+    ...(id !== undefined ? { id } : {}),
     project: { slug: projectSlug },
   }
 }
@@ -77,7 +77,7 @@ export async function createSurveyResponseTag(
         projectId,
       },
     },
-    update: {},
+    update: { description, archivedAt: null },
     create: {
       title,
       description,

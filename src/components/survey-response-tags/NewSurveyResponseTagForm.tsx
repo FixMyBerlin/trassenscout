@@ -33,7 +33,6 @@ export const NewSurveyResponseTagForm = ({ projectSlug, layout = "page", onCance
         className={isModalLayout ? "max-w-none" : undefined}
         submitText="Erstellen"
         withDescription
-        titleLabel={isModalLayout ? "Name" : undefined}
         onSubmit={handleSubmit}
         actionBarRight={
           isModalLayout && onCancel ? (

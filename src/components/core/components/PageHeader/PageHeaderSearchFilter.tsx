@@ -1,5 +1,5 @@
 import { XMarkIcon } from "@heroicons/react/20/solid"
-import type { ReactNode } from "react"
+import { type ReactNode, useEffect, useState } from "react"
 import { twJoin } from "tailwind-merge"
 import { linkStyles } from "@/src/components/core/components/links/styles"
 
@@ -13,6 +13,7 @@ type Props = {
   formId?: string
   children?: ReactNode
   actions?: ReactNode
+  debounceMs?: number
 }
 
 export function PageHeaderSearchFilter({
@@ -25,7 +26,26 @@ export function PageHeaderSearchFilter({
   formId,
   children,
   actions,
+  debounceMs = 300,
 }: Props) {
+  const [draft, setDraft] = useState<{ baseValue: string; value: string } | null>(null)
+  const draftValue = draft?.baseValue === value ? draft.value : value
+
+  useEffect(
+    function commitDebouncedSearchDraft() {
+      if (!draft || draft.baseValue !== value || draft.value === value) return
+
+      const timeout = setTimeout(() => onChange(draft.value), debounceMs)
+      return () => clearTimeout(timeout)
+    },
+    [debounceMs, draft, onChange, value],
+  )
+
+  const handleReset = () => {
+    setDraft(null)
+    onReset()
+  }
+
   return (
     <div>
       <form
@@ -37,8 +57,8 @@ export function PageHeaderSearchFilter({
           <input
             type="text"
             name={name}
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
+            value={draftValue}
+            onChange={(e) => setDraft({ baseValue: value, value: e.target.value })}
             placeholder={placeholder}
             className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-xs focus:border-blue-500 focus:ring-blue-500 focus:outline-hidden sm:text-sm"
           />
@@ -47,7 +67,7 @@ export function PageHeaderSearchFilter({
         <button
           type="button"
           className={twJoin(linkStyles, "flex items-center gap-2")}
-          onClick={onReset}
+          onClick={handleReset}
         >
           <XMarkIcon className="size-4" />
           <span>Filter zurücksetzen</span>
