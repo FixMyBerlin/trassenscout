@@ -8,6 +8,7 @@ type FormModalProps = {
   children: ReactNode
   open?: boolean
   align?: "center" | "right"
+  className?: string
 }
 
 export function FormModal({
@@ -16,9 +17,10 @@ export function FormModal({
   children,
   open = true,
   align = "center",
+  className,
 }: FormModalProps) {
   return (
-    <Modal open={open} handleClose={onClose} align={align}>
+    <Modal open={open} handleClose={onClose} align={align} className={className}>
       <PageHeader title={title} action={<ModalCloseButton onClose={onClose} />} />
       {children}
     </Modal>

@@ -18,7 +18,7 @@ export function PageSurveyResponseTagsNew() {
   return (
     <>
       <SurveyResponseTagsOverview projectSlug={projectSlug} />
-      <FormModal title="Tag hinzufügen" onClose={closeModal}>
+      <FormModal title="Tag hinzufügen" onClose={closeModal} className="sm:max-w-2xl">
         <NewSurveyResponseTagForm projectSlug={projectSlug} layout="modal" onCancel={closeModal} />
       </FormModal>
     </>

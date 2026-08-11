@@ -30,7 +30,7 @@ export function PageSurveyResponseTagsEdit() {
   return (
     <>
       <SurveyResponseTagsOverview projectSlug={projectSlug} />
-      <FormModal title="Tag bearbeiten" onClose={closeModal}>
+      <FormModal title="Tag bearbeiten" onClose={closeModal} className="sm:max-w-2xl">
         <EditSurveyResponseTagForm
           tag={tag}
           projectSlug={projectSlug}
