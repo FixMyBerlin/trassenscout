@@ -1,8 +1,11 @@
 import { bbox, lineString, multiLineString, point, polygon } from "@turf/turf"
+import type { Map as MaplibreMap } from "maplibre-gl"
 import { z } from "zod"
 import type { MapData } from "@/src/components/beteiligung/shared/types"
 import { MapSourceType } from "@/src/components/beteiligung/shared/types"
+import { geometryAnchorPoint } from "@/src/components/core/components/Map/utils/geometryAnchorPoint"
 import { PositionArraySchema, PositionSchema } from "@/src/shared/geometry/geojsonSchemas"
+import type { SupportedGeometry } from "@/src/shared/geometry/geometrySchemas"
 
 /** `location` value for SwitchableMap (GeoJSON Point → `{ lng, lat }`). */
 const SwitchableMapLocationPointSchema = z.object({
@@ -125,15 +128,62 @@ export const getInitialViewStateFromGeometryString = (geometryString: string) =>
   }
 }
 
+/** Pin on the selected geometry (same anchor helper as map labels/popups). */
+export function latLngOnGeometryCategory(geometryString: string) {
+  try {
+    const feature = createGeoJSONFromString(geometryString)
+    const anchor = geometryAnchorPoint(feature.geometry as SupportedGeometry)
+    if (!anchor) return null
+    return { lat: anchor.latitude, lng: anchor.longitude }
+  } catch {
+    return null
+  }
+}
+
 /** MapLibre `setFeatureState` needs `sourceLayer` for vector/PMTiles sources, not for GeoJSON sources. */
 export function featureStateTargetForMapSource(
   mapData: MapData,
   source: string,
-  target: { id: string | number } & Record<string, unknown>,
+  id: string | number,
 ) {
   const config = mapData.sources[source]
   if (config?.type === MapSourceType.geojson) {
-    return { source, ...target }
+    return { source, id }
   }
-  return { source, sourceLayer: "default" as const, ...target }
+  return { source, sourceLayer: "default" as const, id }
+}
+
+/**
+ * Ephemeral form fields written by GeoCategoryMap / SwitchableMap for MapLibre feature-state.
+ * `undefined` = no selection (cleared on mode change); otherwise set from `feature.source` / `feature.id`.
+ */
+type GeometryCategoryFeatureSelection = {
+  geometryCategorySourceId: string
+  geometryCategoryFeatureId: string | number
+}
+
+type GetSurveyFieldValue = {
+  <K extends keyof GeometryCategoryFeatureSelection>(
+    name: K,
+  ): GeometryCategoryFeatureSelection[K] | undefined
+}
+
+/**
+ * Re-apply `selected` feature-state from form values after the map style is ready.
+ * Selection is always by MapLibre feature `id` (plus source / sourceLayer).
+ */
+export function applySelectedGeometryCategoryFeatureState(
+  map: MaplibreMap | undefined,
+  mapData: MapData | undefined,
+  getFieldValue: GetSurveyFieldValue,
+) {
+  if (!map || !mapData || !map.isStyleLoaded()) return
+
+  const sourceId = getFieldValue("geometryCategorySourceId")
+  const featureId = getFieldValue("geometryCategoryFeatureId")
+  if (sourceId == null || featureId == null) return
+
+  map.setFeatureState(featureStateTargetForMapSource(mapData, sourceId, featureId), {
+    selected: true,
+  })
 }

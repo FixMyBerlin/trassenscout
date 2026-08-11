@@ -1,5 +1,15 @@
+import { useStore } from "@tanstack/react-form"
+import maplibregl from "maplibre-gl"
+import type { Map as MaplibreMap, MapLibreEvent } from "maplibre-gl"
+import * as pmtiles from "pmtiles"
 import { useEffect, useState } from "react"
-import Map, { Marker, MarkerDragEvent, NavigationControl, useMap } from "react-map-gl/maplibre"
+import Map, {
+  MapLayerMouseEvent,
+  Marker,
+  MarkerDragEvent,
+  NavigationControl,
+  useMap,
+} from "react-map-gl/maplibre"
 import {
   LayerType,
   SurveyBackgroundSwitcher,
@@ -11,16 +21,26 @@ import {
   installMapGrabIfTest,
   notifyPlaywrightMapLoaded,
 } from "@/src/components/beteiligung/form/map/testMode"
-import { getInitialViewStateFromGeometryString } from "@/src/components/beteiligung/form/map/utils"
+import {
+  applySelectedGeometryCategoryFeatureState,
+  getInitialViewStateFromGeometryString,
+} from "@/src/components/beteiligung/form/map/utils"
 import "maplibre-gl/dist/maplibre-gl.css"
 import { useFieldContext } from "@/src/components/beteiligung/shared/hooks/form-context"
+import type { MapData } from "@/src/components/beteiligung/shared/types"
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
 import { useAllowedSurveySlug } from "@/src/components/beteiligung/shared/utils/useAllowedSurveySlug"
+import { AllLayers, generateLayers } from "@/src/components/core/components/Map/AllLayers"
+import { AllSources } from "@/src/components/core/components/Map/AllSources"
 
 type Props = {
   description?: string
+  /** Same survey `mapData` as {@link SurveyGeoCategoryMap}; selected feature is highlighted via feature-state. */
+  mapData?: MapData
   config: {
     bounds: [number, number, number, number]
+    minZoom: number
+    maxZoom: number
   }
 }
 
@@ -29,26 +49,40 @@ type LatLng = { lat: number; lng: number }
 /**
  * Free pin map (follow-up step after a geometry category was chosen elsewhere).
  *
- * Use case: participant drags a pin to a concrete spot. Field value is `{ lat, lng }`.
- * Camera: already-placed pin → form `geometryCategory` coords (fit bounds) → `config.bounds`.
+ * Use case: participant drags or clicks a pin to a concrete spot. Field value is `{ lat, lng }`.
+ * Camera: remount on `geometryCategory` change (`key`) → fit selected Strecke / config.bounds.
+ * Overlay: optional `mapData` with the previously selected feature highlighted (same as GeoCategoryMap).
+ * Pin reset on Strecke change happens in {@link SurveyGeoCategoryMap} (sets `location`).
  *
  * Use after {@link SurveyGeoCategoryMap} (e.g. RSV steckbrief feedback).
  */
-export const SurveySimpleMap = ({ config, description }: Props) => {
+export const SurveySimpleMap = ({ config, description, mapData }: Props) => {
   const mapBounds: { bounds: [number, number, number, number] } = {
     bounds: config.bounds,
   }
   const surveySlug = useAllowedSurveySlug()
   const { mainMap } = useMap()
   const field = useFieldContext<LatLng>()
-  const [markerPosition, setMarkerPosition] = useState<LatLng | undefined>(() => field.state.value)
+  const geometryCategory = useStore(field.form.store, (state) => state.values.geometryCategory)
+  const geometryKey = typeof geometryCategory === "string" ? geometryCategory : ""
+  const [dragPosition, setDragPosition] = useState<LatLng | null>(null)
+  const [dragGeometryKey, setDragGeometryKey] = useState(geometryKey)
+  if (dragGeometryKey !== geometryKey) {
+    setDragGeometryKey(geometryKey)
+    setDragPosition(null)
+  }
+  const markerPosition = dragPosition ?? field.state.value
   const [isPinInView, setIsPinInView] = useState(true)
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
 
+  // Setup pmtiles
   useEffect(() => {
-    if (!mainMap) return
-    installMapGrabIfTest(mainMap.getMap(), "mainMap")
-  }, [mainMap])
+    const protocol = new pmtiles.Protocol()
+    maplibregl.addProtocol("pmtiles", protocol.tile)
+    return () => {
+      maplibregl.removeProtocol("pmtiles")
+    }
+  }, [])
 
   const { maptilerUrl } = getConfigBySurveySlug(surveySlug, "meta")
 
@@ -56,21 +90,28 @@ export const SurveySimpleMap = ({ config, description }: Props) => {
     setSelectedLayer(layer)
   }
 
-  const checkPinInView = () => {
-    if (mainMap && markerPosition && mainMap.getBounds().contains(markerPosition)) {
+  const checkPinInView = (map: MaplibreMap) => {
+    if (markerPosition && map.getBounds().contains(markerPosition)) {
       setIsPinInView(true)
     } else {
       setIsPinInView(false)
     }
   }
 
+  const placePin = (position: LatLng) => {
+    setDragPosition(null)
+    field.handleChange(position)
+  }
+
   const onMarkerDrag = (event: MarkerDragEvent) => {
-    const newPosition = { lng: event.lngLat.lng, lat: event.lngLat.lat }
-    setMarkerPosition(newPosition)
+    setDragPosition({ lng: event.lngLat.lng, lat: event.lngLat.lat })
   }
   const onMarkerDragEnd = (event: MarkerDragEvent) => {
-    const newPosition = { lng: event.lngLat.lng, lat: event.lngLat.lat }
-    if (newPosition) field.handleChange(newPosition)
+    placePin({ lng: event.lngLat.lng, lat: event.lngLat.lat })
+  }
+
+  const handleMapClick = (event: MapLayerMouseEvent) => {
+    placePin({ lng: event.lngLat.lng, lat: event.lngLat.lat })
   }
 
   const easeToPin = () => {
@@ -82,42 +123,54 @@ export const SurveySimpleMap = ({ config, description }: Props) => {
     }
   }
 
-  const handleMapMove = () => {
-    checkPinInView()
+  const handleMapMove = (event: MapLibreEvent) => {
+    checkPinInView(event.target)
   }
-  const handleMapZoom = () => {
-    checkPinInView()
+  const handleMapZoom = (event: MapLibreEvent) => {
+    checkPinInView(event.target)
   }
 
-  // Camera: pin already set → selected geometryCategory → config.bounds.
+  // Remount when Strecke changes so initialViewState fits the new geometry (no fitBounds effect).
   const boundsViewState = { ...mapBounds, fitBoundsOptions: { padding: 100 } }
-  const pinViewState =
-    !field.state.meta.isPristine && field.state.value
-      ? { latitude: field.state.value.lat, longitude: field.state.value.lng, zoom: 12 }
-      : null
-  const geometryCategory = field.form.getFieldValue("geometryCategory")
-  const viewFromGeometry =
-    typeof geometryCategory === "string"
-      ? getInitialViewStateFromGeometryString(geometryCategory)
-      : undefined
-  const initialViewState = pinViewState ?? viewFromGeometry ?? boundsViewState
+  const viewFromGeometry = geometryKey
+    ? getInitialViewStateFromGeometryString(geometryKey)
+    : undefined
+  const initialViewState = viewFromGeometry ?? boundsViewState
 
   return (
     <>
       <div className="mt-4 h-125" aria-describedby={description ? `${field.name}-hint` : undefined}>
         <Map
+          key={geometryKey || "bounds"}
           id="mainMap"
           onMove={handleMapMove}
           onZoom={handleMapZoom}
-          onLoad={notifyPlaywrightMapLoaded}
+          onClick={handleMapClick}
+          onLoad={(event) => {
+            notifyPlaywrightMapLoaded()
+            installMapGrabIfTest(event.target, "mainMap")
+          }}
+          onIdle={(event) => {
+            applySelectedGeometryCategoryFeatureState(
+              event.target,
+              mapData,
+              field.form.getFieldValue,
+            )
+          }}
           mapStyle={getSurveyMapStyle({ selectedLayer, maptilerUrl })}
           scrollZoom={false}
           initialViewState={initialViewState}
-          maxZoom={13}
-          minZoom={7}
-          cursor="grab"
+          maxZoom={config.maxZoom}
+          minZoom={config.minZoom}
+          cursor="crosshair"
         >
           <NavigationControl showCompass={false} />
+          {mapData && (
+            <>
+              <AllSources mapData={mapData} />
+              <AllLayers layers={[...generateLayers(mapData)]} />
+            </>
+          )}
           {markerPosition && (
             <Marker
               longitude={markerPosition.lng}

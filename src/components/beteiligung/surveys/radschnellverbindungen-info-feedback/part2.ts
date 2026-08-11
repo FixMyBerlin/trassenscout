@@ -150,6 +150,7 @@ export const part2Config: SurveyPart2 = {
             description:
               "Klicken Sie auf die Karte oder verschieben Sie den Pin. Bei Wechsel der Strecke wird der Pin neu gesetzt.",
             mapProps: {
+              mapData,
               config: {
                 bounds: germanyBounds,
                 minZoom: germanyMinZoom,

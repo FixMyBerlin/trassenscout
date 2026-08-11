@@ -22,6 +22,7 @@ import {
 import {
   featureStateTargetForMapSource,
   getInitialViewStateFromGeometryString,
+  latLngOnGeometryCategory,
 } from "@/src/components/beteiligung/form/map/utils"
 import { useFieldContext } from "@/src/components/beteiligung/shared/hooks/form-context"
 import "maplibre-gl/dist/maplibre-gl.css"
@@ -190,8 +191,14 @@ export const SurveyGeoCategoryMap = ({
     // geometry and id are always set here
     // tbd we always want to stroe and id and a geometry maybe it makes more sense to store it as an object {id: string, geometry: string}
     field.form.setFieldValue(geoCategoryIdDefinition.dataKey, geoCategoryId)
-    // @ts-expect-error
-    field.handleChange(JSON.stringify(geometry.coordinates))
+    // @ts-expect-error GeoJSON coordinates → survey stores bare coordinate JSON
+    const geometryString = JSON.stringify(geometry.coordinates)
+    field.handleChange(geometryString)
+    // Reset follow-up pin onto the new Strecke (SimpleMap reads `location`).
+    const pinOnGeometry = latLngOnGeometryCategory(geometryString)
+    if (pinOnGeometry) {
+      field.form.setFieldValue("location", pinOnGeometry)
+    }
     // read additional properties and set values in from context
     {
       additionalData.map((data) => {
