@@ -10,10 +10,16 @@ export function mapSourceFromExternalUrl(
   sourceId: string,
   externalUrl: string,
   type: MapSourceType,
+  promoteId?: string,
 ) {
   switch (type) {
     case MapSourceType.geojson:
-      return { id: sourceId, type: "geojson" as const, data: externalUrl }
+      return {
+        id: sourceId,
+        type: "geojson" as const,
+        data: externalUrl,
+        ...(promoteId ? { promoteId } : {}),
+      }
     case MapSourceType.pmtiles:
       return { id: sourceId, type: "vector" as const, url: `pmtiles://${externalUrl}` }
   }

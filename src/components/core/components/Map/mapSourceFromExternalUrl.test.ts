@@ -21,6 +21,22 @@ describe("mapSourceFromExternalUrl", () => {
     })
   })
 
+  test("passes promoteId for geojson sources when configured", () => {
+    expect(
+      mapSourceFromExternalUrl(
+        "planungsabschnitte",
+        "/api/projects/rsv-d.json",
+        MapSourceType.geojson,
+        "subsectionSlug",
+      ),
+    ).toEqual({
+      id: "planungsabschnitte",
+      type: "geojson",
+      data: "/api/projects/rsv-d.json",
+      promoteId: "subsectionSlug",
+    })
+  })
+
   test("wraps pmtiles externalUrl with pmtiles protocol and uses config sourceId", () => {
     const url = "https://tilda-geo.de/api/uploads/bb-ramboll-netzentwurf-2-beteiligung.pmtiles"
     expect(mapSourceFromExternalUrl("netzentwurf", url, MapSourceType.pmtiles)).toEqual({

@@ -7,8 +7,8 @@ type Props = { mapData: Pick<MapData, "sources"> }
 export const AllSources = ({ mapData }: Props) => {
   return (
     <>
-      {Object.entries(mapData.sources).map(([sourceId, { externalUrl, type }]) => {
-        const sourceProps = mapSourceFromExternalUrl(sourceId, externalUrl, type)
+      {Object.entries(mapData.sources).map(([sourceId, { externalUrl, type, promoteId }]) => {
+        const sourceProps = mapSourceFromExternalUrl(sourceId, externalUrl, type, promoteId)
         return <Source key={sourceProps.id} {...sourceProps} />
       })}
     </>
