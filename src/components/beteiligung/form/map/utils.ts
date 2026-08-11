@@ -1,109 +1,68 @@
 import { bbox, lineString, multiLineString, point, polygon } from "@turf/turf"
+import { z } from "zod"
 import type { MapData } from "@/src/components/beteiligung/shared/types"
 import { MapSourceType } from "@/src/components/beteiligung/shared/types"
+import { PositionArraySchema, PositionSchema } from "@/src/shared/geometry/geojsonSchemas"
 
 /** `location` value for SwitchableMap (GeoJSON Point → `{ lng, lat }`). */
-export type SwitchableMapLocationPoint = { lng: number; lat: number }
+const SwitchableMapLocationPointSchema = z.object({
+  lng: z.number(),
+  lat: z.number(),
+})
+export type SwitchableMapLocationPoint = z.infer<typeof SwitchableMapLocationPointSchema>
 
+/** Survey map fields store bare coordinates (not full GeoJSON `{ type, coordinates }`). */
+const SurveyPointCoordsSchema = PositionSchema
+const SurveyLineStringCoordsSchema = PositionArraySchema.min(2)
+const SurveyMultiLineStringCoordsSchema = z.array(SurveyLineStringCoordsSchema)
+const SurveyPolygonRingSchema = SurveyLineStringCoordsSchema.min(4).refine(
+  (ring) => {
+    const first = ring[0]
+    const last = ring[ring.length - 1]
+    return first != null && last != null && first[0] === last[0] && first[1] === last[1]
+  },
+  { error: "Polygon ring must be closed" },
+)
 /**
- * Normalizes a stored field value to a JSON string that {@link detectGeometryType} understands
- * (point = `[lng, lat]`).
+ * GeoJSON Polygon `coordinates` as persisted by GeoCategoryMap (`[[[lng,lat],…]]`).
+ * Checked before MultiLineString — both are Position[][], distinguished by closed rings.
  */
-function geometryStringForSwitchableMapLocationPoint(value: unknown) {
-  if (value == null || value === "") return null
-  if (typeof value === "object" && value !== null && "lng" in value && "lat" in value) {
-    const o = value as { lng: unknown; lat: unknown }
-    if (typeof o.lng === "number" && typeof o.lat === "number") {
-      return JSON.stringify([o.lng, o.lat])
-    }
-  }
-  if (typeof value === "string") {
-    try {
-      const parsed = JSON.parse(value) as unknown
-      if (
-        Array.isArray(parsed) &&
-        parsed.length >= 2 &&
-        typeof parsed[0] === "number" &&
-        typeof parsed[1] === "number"
-      ) {
-        return JSON.stringify([parsed[0], parsed[1]])
-      }
-      if (typeof parsed === "object" && parsed !== null && "lng" in parsed && "lat" in parsed) {
-        const p = parsed as { lng: unknown; lat: unknown }
-        if (typeof p.lng === "number" && typeof p.lat === "number") {
-          return JSON.stringify([p.lng, p.lat])
-        }
-      }
-      return value
-    } catch {
-      return null
-    }
-  }
-  return null
-}
+const SurveyPolygonCoordsSchema = z.array(SurveyPolygonRingSchema).min(1)
 
-export const detectGeometryType = (geometryString: string) => {
+function parseJsonUnknown(value: string) {
   try {
-    const parsedGeometry = JSON.parse(geometryString)
-
-    // point (array with 2 numbers)
-    if (
-      Array.isArray(parsedGeometry) &&
-      parsedGeometry.length === 2 &&
-      typeof parsedGeometry[0] === "number" &&
-      typeof parsedGeometry[1] === "number"
-    ) {
-      return "point"
-    }
-
-    // line, multiline or polygon (array of coordinate pairs or arrays)
-    if (Array.isArray(parsedGeometry) && Array.isArray(parsedGeometry[0])) {
-      // multiLineString (array of arrays of coordinate pairs)
-      // multiLineString structure: [[[x1,y1],[x2,y2]], [[x3,y3],[x4,y4]]]
-      if (Array.isArray(parsedGeometry[0][0]) && typeof parsedGeometry[0][0][0] === "number") {
-        return "multiLineString"
-      }
-
-      // polygon (closed loop with at least 4 coordinates)
-      if (parsedGeometry.length >= 4) {
-        const firstCoord = parsedGeometry[0]
-        const lastCoord = parsedGeometry[parsedGeometry.length - 1]
-        if (
-          Array.isArray(firstCoord) &&
-          Array.isArray(lastCoord) &&
-          firstCoord.length >= 2 &&
-          lastCoord.length >= 2 &&
-          firstCoord[0] === lastCoord[0] &&
-          firstCoord[1] === lastCoord[1]
-        ) {
-          return "polygon"
-        }
-      }
-      // if not a closed loop or multiline, assume it's a lineString
-      return "lineString"
-    }
-
-    return "unknown"
+    return JSON.parse(value)
   } catch {
-    return "unknown"
+    return undefined
   }
 }
 
 /**
- * Parses the `location` field for SwitchableMap. **Points only** — uses {@link detectGeometryType}.
- * @throws If the value encodes a non-point geometry (line, polygon, etc.).
+ * Classifies bare survey coordinate JSON (e.g. `[lng,lat]` or line/polygon rings)
+ * using shared Position schemas.
+ *
+ * Polygons are only nested GeoJSON Polygon coords (closed rings). A closed LineString
+ * stays `lineString` — prod has no flat-ring polygon storage.
+ */
+export const detectGeometryType = (geometryString: string) => {
+  const parsed = parseJsonUnknown(geometryString)
+  if (parsed == null) return "unknown" as const
+
+  if (SurveyPointCoordsSchema.safeParse(parsed).success) return "point" as const
+  // Nested closed rings (GeoJSON Polygon coords) before MultiLineString — same nesting depth.
+  if (SurveyPolygonCoordsSchema.safeParse(parsed).success) return "polygon" as const
+  if (SurveyMultiLineStringCoordsSchema.safeParse(parsed).success) return "multiLineString" as const
+  if (SurveyLineStringCoordsSchema.safeParse(parsed).success) return "lineString" as const
+  return "unknown" as const
+}
+
+/**
+ * Validates a SwitchableMap `location` value from survey response JSON (`unknown`).
+ * Form state is already typed as `SwitchableMapLocationPoint | null` — use it directly there.
  */
 export function parseSwitchableMapLocationFieldValue(value: unknown) {
-  const str = geometryStringForSwitchableMapLocationPoint(value)
-  if (str == null) return null
-  const type = detectGeometryType(str)
-  if (type !== "point") {
-    throw new Error(
-      `SwitchableMap only supports point locations; expected a point, got geometry type "${type}"`,
-    )
-  }
-  const parsed = JSON.parse(str) as [number, number]
-  return { lng: parsed[0], lat: parsed[1] }
+  const parsed = SwitchableMapLocationPointSchema.safeParse(value)
+  return parsed.success ? parsed.data : null
 }
 
 export const createGeoJSONFromString = (
@@ -113,77 +72,56 @@ export const createGeoJSONFromString = (
   },
   options?: { [id: string]: string | number },
 ) => {
-  const geometryType = detectGeometryType(geometryString)
-  const parsedGeometry = JSON.parse(geometryString)
-
-  switch (geometryType) {
-    case "point":
-      return point(
-        parsedGeometry as [number, number],
-        { ...properties, geometryType: "point" },
-        options,
-      )
-    case "lineString":
-      return lineString(
-        parsedGeometry as [number, number][],
-        { ...properties, geometryType: "line" },
-        options,
-      )
-    case "multiLineString":
-      return multiLineString(
-        parsedGeometry as [number, number][][],
-        { ...properties, geometryType: "line" },
-        options,
-      )
-    case "polygon":
-      return polygon(
-        [parsedGeometry as [number, number][]],
-        { ...properties, geometryType: "polygon" },
-        options,
-      )
-    case "unknown":
-      throw new Error(`Unsupported geometry type: ${geometryType}`)
-    default:
-      throw new Error(`Unsupported geometry type: ${geometryType}`)
+  const parsed = parseJsonUnknown(geometryString)
+  if (parsed == null) {
+    throw new Error(`Unsupported geometry type: unknown`)
   }
+
+  const pointCoords = SurveyPointCoordsSchema.safeParse(parsed)
+  if (pointCoords.success) {
+    return point(pointCoords.data, { ...properties, geometryType: "point" }, options)
+  }
+
+  const polygonCoords = SurveyPolygonCoordsSchema.safeParse(parsed)
+  if (polygonCoords.success) {
+    return polygon(polygonCoords.data, { ...properties, geometryType: "polygon" }, options)
+  }
+
+  const multiLineCoords = SurveyMultiLineStringCoordsSchema.safeParse(parsed)
+  if (multiLineCoords.success) {
+    return multiLineString(multiLineCoords.data, { ...properties, geometryType: "line" }, options)
+  }
+
+  const lineCoords = SurveyLineStringCoordsSchema.safeParse(parsed)
+  if (lineCoords.success) {
+    return lineString(lineCoords.data, { ...properties, geometryType: "line" }, options)
+  }
+
+  throw new Error(`Unsupported geometry type: unknown`)
 }
 
-const createBboxFromGeometryString = (geometryString: string) => {
-  try {
-    const geoJsonFeature = createGeoJSONFromString(geometryString)
-    return bbox(geoJsonFeature) as [number, number, number, number]
-  } catch (error) {
-    console.error("Error creating bbox from geometry string:", error)
-    return null
-  }
-}
-
-// Create initial bounds based on existing geometry value
-export const getInitialViewStateFromGeometryString = (geometryString: string): any | null => {
+export const getInitialViewStateFromGeometryString = (geometryString: string) => {
   if (!geometryString || typeof geometryString !== "string") {
-    return null
+    return undefined
   }
 
-  const geometryType = detectGeometryType(geometryString)
-
-  if (geometryType === "point") {
-    // For points, center on the point with a reasonable zoom level
+  try {
     const geoJSON = createGeoJSONFromString(geometryString)
-    const [lng, lat] = geoJSON.geometry.coordinates
-    return {
-      latitude: lat,
-      longitude: lng,
-      zoom: 12,
+    if (geoJSON.geometry.type === "Point") {
+      const [lng, lat] = geoJSON.geometry.coordinates
+      return {
+        latitude: lat!,
+        longitude: lng!,
+        zoom: 12,
+      }
     }
-  }
 
-  // For lines, polygons, and other geometries, use bbox
-  const bbox = createBboxFromGeometryString(geometryString)
-  if (bbox) {
     return {
-      bounds: bbox,
+      bounds: bbox(geoJSON) as [number, number, number, number],
       fitBoundsOptions: { padding: 70 },
     }
+  } catch {
+    return undefined
   }
 }
 

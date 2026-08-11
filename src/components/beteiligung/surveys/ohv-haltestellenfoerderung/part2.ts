@@ -206,6 +206,16 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
             label: "Maßnahmenverortung",
             description:
               "Wählen Sie eine Bushaltestelle aus, zu welcher Sie eine Maßnahme melden möchten. Die Bushaltestellen sind auf der Karte mit orangen Punkten markiert. Klicken Sie auf einen Punkt, um die Haltestelle auszuwählen. Die Karte kann bei Bedarf verschoben oder über die Schaltflächen „+/-“ verkleinert oder vergrößert werden.",
+            modeSelector: {
+              question: "Bezieht sich Ihre Anmeldung auf eine Haltestelle im Bestand?",
+              description:
+                "Wenn sich ihre Anmeldung nicht auf eine Haltestelle im Bestand bezieht, können Sie einen individuellen Pin setzen.",
+              existingLabel: "Ja",
+              pinLabel: "Nein, ich möchte einen Pin setzen",
+              noneLabel: "Ich möchte eine Maßnahme ohne Karte abschicken",
+              noneHelpText:
+                'Sie haben sich entschieden, eine Maßnahme ohne Verortung auf der Karte zu melden. Beschreiben Sie bitte im Textfeld "Maßnahmenbeschreibung und Zielsetzung", wo die bauliche Maßnahme geplant ist.',
+            },
             mapProps: {
               mapData: mapData,
               setInitialBounds: {

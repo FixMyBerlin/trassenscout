@@ -40,9 +40,9 @@ export const coordinatesToWkt = (coordinatesString: string) => {
       }
 
       case "polygon": {
-        const polygonCoordinates = coordinates as [number, number][]
-        const wktString = toCommaString(polygonCoordinates)
-        return `POLYGON ((${wktString}))`
+        const polygonCoordinates = coordinates as [number, number][][]
+        const wktString = polygonCoordinates.map((ring) => `(${toCommaString(ring)})`).join(", ")
+        return `POLYGON (${wktString})`
       }
 
       case "unknown":

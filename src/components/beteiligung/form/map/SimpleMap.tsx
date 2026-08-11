@@ -11,6 +11,7 @@ import {
   installMapGrabIfTest,
   notifyPlaywrightMapLoaded,
 } from "@/src/components/beteiligung/form/map/testMode"
+import { getInitialViewStateFromGeometryString } from "@/src/components/beteiligung/form/map/utils"
 import "maplibre-gl/dist/maplibre-gl.css"
 import { useFieldContext } from "@/src/components/beteiligung/shared/hooks/form-context"
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
@@ -23,15 +24,24 @@ type Props = {
   }
 }
 
+type LatLng = { lat: number; lng: number }
+
+/**
+ * Free pin map (follow-up step after a geometry category was chosen elsewhere).
+ *
+ * Use case: participant drags a pin to a concrete spot. Field value is `{ lat, lng }`.
+ * Camera: already-placed pin → form `geometryCategory` coords (fit bounds) → `config.bounds`.
+ *
+ * Use after {@link SurveyGeoCategoryMap} (e.g. RSV steckbrief feedback).
+ */
 export const SurveySimpleMap = ({ config, description }: Props) => {
   const mapBounds: { bounds: [number, number, number, number] } = {
     bounds: config.bounds,
   }
   const surveySlug = useAllowedSurveySlug()
   const { mainMap } = useMap()
-  const field = useFieldContext<object>()
-  // tbd - maybe we do not need another internal state here
-  const [markerPosition, setMarkerPosition] = useState(field.state.value)
+  const field = useFieldContext<LatLng>()
+  const [markerPosition, setMarkerPosition] = useState<LatLng | undefined>(() => field.state.value)
   const [isPinInView, setIsPinInView] = useState(true)
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
 
@@ -47,9 +57,7 @@ export const SurveySimpleMap = ({ config, description }: Props) => {
   }
 
   const checkPinInView = () => {
-    console.log({ markerPosition, mainMap })
-    // @ts-expect-error todo
-    if (mainMap && markerPosition && mainMap?.getBounds().contains(markerPosition)) {
+    if (mainMap && markerPosition && mainMap.getBounds().contains(markerPosition)) {
       setIsPinInView(true)
     } else {
       setIsPinInView(false)
@@ -68,7 +76,6 @@ export const SurveySimpleMap = ({ config, description }: Props) => {
   const easeToPin = () => {
     if (markerPosition) {
       mainMap?.easeTo({
-        // @ts-expect-error todo
         center: [markerPosition.lng, markerPosition.lat],
         duration: 1000,
       })
@@ -82,12 +89,22 @@ export const SurveySimpleMap = ({ config, description }: Props) => {
     checkPinInView()
   }
 
+  // Camera: pin already set → selected geometryCategory → config.bounds.
+  const boundsViewState = { ...mapBounds, fitBoundsOptions: { padding: 100 } }
+  const pinViewState =
+    !field.state.meta.isPristine && field.state.value
+      ? { latitude: field.state.value.lat, longitude: field.state.value.lng, zoom: 12 }
+      : null
+  const geometryCategory = field.form.getFieldValue("geometryCategory")
+  const viewFromGeometry =
+    typeof geometryCategory === "string"
+      ? getInitialViewStateFromGeometryString(geometryCategory)
+      : undefined
+  const initialViewState = pinViewState ?? viewFromGeometry ?? boundsViewState
+
   return (
     <>
-      <div
-        className="mt-4 h-[500px]"
-        aria-describedby={description ? `${field.name}-hint` : undefined}
-      >
+      <div className="mt-4 h-125" aria-describedby={description ? `${field.name}-hint` : undefined}>
         <Map
           id="mainMap"
           onMove={handleMapMove}
@@ -95,7 +112,7 @@ export const SurveySimpleMap = ({ config, description }: Props) => {
           onLoad={notifyPlaywrightMapLoaded}
           mapStyle={getSurveyMapStyle({ selectedLayer, maptilerUrl })}
           scrollZoom={false}
-          initialViewState={{ ...mapBounds, fitBoundsOptions: { padding: 100 } }}
+          initialViewState={initialViewState}
           maxZoom={13}
           minZoom={7}
           cursor="grab"
@@ -103,9 +120,7 @@ export const SurveySimpleMap = ({ config, description }: Props) => {
           <NavigationControl showCompass={false} />
           {markerPosition && (
             <Marker
-              // @ts-expect-error todo
               longitude={markerPosition.lng}
-              // @ts-expect-error todo
               latitude={markerPosition.lat}
               anchor="bottom"
               draggable

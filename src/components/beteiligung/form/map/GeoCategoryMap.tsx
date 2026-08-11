@@ -13,6 +13,7 @@ import {
   SurveyBackgroundSwitcher,
 } from "@/src/components/beteiligung/form/map/BackgroundSwitcher"
 import { SurveyMapGeoCategoryInfoPanel } from "@/src/components/beteiligung/form/map/MapGeoCategoryInfoPanel"
+import { initialViewStateFromMapStartParam } from "@/src/components/beteiligung/form/map/mapStartParam"
 import {
   getSurveyMapStyle,
   installMapGrabIfTest,
@@ -23,8 +24,8 @@ import {
   getInitialViewStateFromGeometryString,
 } from "@/src/components/beteiligung/form/map/utils"
 import { useFieldContext } from "@/src/components/beteiligung/shared/hooks/form-context"
-import { MapData } from "@/src/components/beteiligung/shared/types"
 import "maplibre-gl/dist/maplibre-gl.css"
+import { MapData } from "@/src/components/beteiligung/shared/types"
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
 import { useAllowedSurveySlug } from "@/src/components/beteiligung/shared/utils/useAllowedSurveySlug"
 import { AllLayers, generateLayers } from "@/src/components/core/components/Map/AllLayers"
@@ -55,6 +56,17 @@ export type GeoCategoryMapProps = {
   }
 }
 
+/**
+ * Geometry-category picker map (first step when the survey splits location into two maps).
+ *
+ * Use case: participant clicks an existing feature (Strecke / PA / stop) on configured layers.
+ * Stores the feature’s coordinates plus id/label fields from `geoCategoryIdDefinition` /
+ * `additionalData`.
+ *
+ * Camera: restored selection → `?mapStart=zoom/lat/lng` → optional `setInitialBounds` query lookup → `config.bounds`.
+ *
+ * Pair with {@link SurveySimpleMap} when a free pin is a separate follow-up step.
+ */
 export const SurveyGeoCategoryMap = ({
   config,
   additionalData,
@@ -117,23 +129,17 @@ export const SurveyGeoCategoryMap = ({
     installMapGrabIfTest(mainMap.getMap(), "mainMap")
   }, [mainMap])
 
-  const initialViewState =
-    // if we have a selected geometry category already, use its bbox
-    getInitialViewStateFromGeometryString(field.state.value) || {
-      bounds:
-        setInitialBounds &&
-        setInitialBounds.initialBoundsDefinition.find(
-          (d) => d[setInitialBounds.queryParameter] === search[setInitialBounds.queryParameter],
-        )
-          ? setInitialBounds.initialBoundsDefinition.find(
-              (d) => d[setInitialBounds.queryParameter] === search[setInitialBounds.queryParameter],
-            )?.bbox
-          : // generally use the normal config bounds
-            config.bounds,
-      fitBoundsOptions: { padding: 70 },
-    }
-  // if we have a setInitialBounds config, set the bbox depending on the search params
-  // this allows us to set the initial bounds based on a query parameter (e.g. set in a read only field)
+  const initialBoundsMatch = setInitialBounds?.initialBoundsDefinition.find(
+    (d) => d[setInitialBounds.queryParameter] === search[setInitialBounds.queryParameter],
+  )
+  // Camera: restored selection → ?mapStart= → setInitialBounds / config.bounds
+  const boundsViewState = {
+    bounds: initialBoundsMatch?.bbox ?? config.bounds,
+    fitBoundsOptions: { padding: 70 },
+  }
+  const viewFromMapStart = initialViewStateFromMapStartParam(search.mapStart)
+  const viewFromGeometry = getInitialViewStateFromGeometryString(field.state.value)
+  const initialViewState = viewFromGeometry ?? viewFromMapStart ?? boundsViewState
 
   const { maptilerUrl } = getConfigBySurveySlug(surveySlug, "meta")
 
@@ -145,7 +151,6 @@ export const SurveyGeoCategoryMap = ({
     const feature = event.features?.[0]
     if (!feature) return
 
-    console.log("handleMapClick", feature)
     const previouslySelectedFeatureId = field.form.getFieldValue("geometryCategoryFeatureId")
     const previouslySelectedSourceId = field.form.getFieldValue("geometryCategorySourceId")
 
@@ -216,7 +221,7 @@ export const SurveyGeoCategoryMap = ({
 
   return (
     <div
-      className="relative mt-4 h-[500px]"
+      className="relative mt-4 h-125"
       aria-describedby={description ? `${field.name}-hint` : undefined}
     >
       <Map
