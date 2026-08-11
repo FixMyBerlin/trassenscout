@@ -1,6 +1,39 @@
+# Host deps — must not overwrite the Linux install inside the image
+**/node_modules
+
+# Build / local artifacts
 .husky
 .output
+.tanstack
+playwright-report
+test-results
+blob-report
+**/*.tsbuildinfo
+
+# Env / secrets (VITE_* reach the build as build args, never as files)
 .env
-.editorconfig
+.env.*
+
+# Git (never needed in the image)
+.git
+
+# Only some scripts are needed in the app image; list each (new) script folder here.
+# scripts/prisma-generate-placeholder # Required in Docker: postinstall
+# scripts/shared # Required: playwright.config.ts imports e2eEnv
+# scripts/auth, scripts/db-pull, … # Kept: reachable via `docker exec … bun run <script>`
+# scripts/db-pull/data # untracked local dumps
+scripts/db-pull/data
+
+# Separate service with its own image and build context
 imap-listener
-node_modules
+
+# Context-only noise (not needed by `vite build` or runtime)
+.agents
+.cursor
+.vscode
+.idea
+.github
+.editorconfig
+_migration
+**/.DS_Store
+tmp
