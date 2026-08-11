@@ -15,7 +15,7 @@ jobs:
     secrets: inherit
     with:
       ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
-      CHECK_DIFF_LOCATIONS: src/ prisma/ public/ emails/ docker/
+      CHECK_DIFF_LOCATIONS: src/ prisma/ public/ emails/ docker/ package.json bun.lock vite.config.mts prisma.config.ts .dockerignore
       ENV_FINGERPRINT_SCOPE: app
       DEPLOY_WORKFLOW_FILE: ${{ inputs.DEPLOY_WORKFLOW_FILE }}
 
@@ -48,6 +48,8 @@ jobs:
       - name: Build and push app image
         uses: docker/build-push-action@v6
         with:
+          # Path context: use the checked-out tree so .dockerignore applies the same way as locally.
+          context: .
           file: ./docker/app/Dockerfile
           push: true
           cache-from: type=gha
