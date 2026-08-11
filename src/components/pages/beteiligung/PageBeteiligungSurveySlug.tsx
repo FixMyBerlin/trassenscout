@@ -3,6 +3,7 @@ import SurveyInactivePage from "@/src/components/beteiligung/SurveyInactivePage"
 import { SurveyFRM7 } from "@/src/components/beteiligung/surveys/frm7/SurveyFRM7"
 import { SurveyOhvHaltestellenfoerderung } from "@/src/components/beteiligung/surveys/ohv-haltestellenfoerderung/SurveyOhvHaltestellenfoerderung"
 import { SurveyBB } from "@/src/components/beteiligung/surveys/radnetz-brandenbrug/SurveyBB"
+import { SurveyRadschnellverbindungenInfoFeedback } from "@/src/components/beteiligung/surveys/radschnellverbindungen-info-feedback/SurveyRadschnellverbindungenInfoFeedback"
 import { SurveyRS8 } from "@/src/components/beteiligung/surveys/rs8/SurveyRS8"
 import { SurveyRsTest123 } from "@/src/components/beteiligung/surveys/rstest-1-2-3/SurveyRsTest123"
 import { SurveyRsTest1 } from "@/src/components/beteiligung/surveys/rstest-1/SurveyRsTest1"
@@ -34,8 +35,8 @@ function SurveyBySlug({
       return <SurveyRsTest1 surveyId={surveyId} />
     case "ohv-haltestellenfoerderung":
       return <SurveyOhvHaltestellenfoerderung surveyId={surveyId} />
-    default:
-      return null
+    case "radschnellverbindungen-info-feedback":
+      return <SurveyRadschnellverbindungenInfoFeedback surveyId={surveyId} />
   }
 }
 

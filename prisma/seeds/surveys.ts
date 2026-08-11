@@ -69,6 +69,12 @@ const seedSurveys = async () => {
       title: "OHV Haltestellenfoerderung",
       active: true,
     },
+    {
+      projectId: 1,
+      slug: "radschnellverbindungen-info-feedback",
+      title: "Hinweise zu Radschnellverbindungen",
+      active: true,
+    },
   ]
 
   for (const data of seedData) {

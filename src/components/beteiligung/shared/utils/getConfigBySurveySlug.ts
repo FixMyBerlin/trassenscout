@@ -6,6 +6,7 @@ import {
 import { formConfig as FRM7Config } from "@/src/components/beteiligung/surveys/frm7/config"
 import { formConfig as SurveyOhvHaltestellenfoerderungConfig } from "@/src/components/beteiligung/surveys/ohv-haltestellenfoerderung/config"
 import { formConfig as BBConfig } from "@/src/components/beteiligung/surveys/radnetz-brandenbrug/config"
+import { formConfig as SurveyRadschnellverbindungenInfoFeedbackConfig } from "@/src/components/beteiligung/surveys/radschnellverbindungen-info-feedback/config"
 import { formConfig as RS8Config } from "@/src/components/beteiligung/surveys/rs8/config"
 import { formConfig as TestConfig } from "@/src/components/beteiligung/surveys/rstest-1-2-3/config"
 import { formConfig as Test1Config } from "@/src/components/beteiligung/surveys/rstest-1/config"
@@ -33,6 +34,8 @@ export const getConfigBySurveySlug = <K extends keyof FormConfig>(
       return BBConfig[part]
     case "ohv-haltestellenfoerderung":
       return SurveyOhvHaltestellenfoerderungConfig[part]
+    case "radschnellverbindungen-info-feedback":
+      return SurveyRadschnellverbindungenInfoFeedbackConfig[part]
   }
 }
 
