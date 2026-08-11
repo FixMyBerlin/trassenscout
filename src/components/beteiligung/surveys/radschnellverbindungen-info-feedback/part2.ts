@@ -201,7 +201,7 @@ export const part2Config: SurveyPart2 = {
           validation: fieldValidationEnum["optionalArrayOfNumber"],
           defaultValue: [],
           props: {
-            label: "Datei hochladen (optional)",
+            label: "Datei hochladen",
           },
         },
       ],
