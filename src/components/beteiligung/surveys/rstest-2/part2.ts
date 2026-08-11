@@ -91,6 +91,8 @@ export const part2Config: SurveyPart2 = {
               config: {
                 // Frankfurt viewport — seed PAs survey-line-west/east + survey-poly sit here
                 bounds: [8.68495, 50.103212, 8.793869, 50.148444],
+                minZoom: 7,
+                maxZoom: 16,
               },
             },
             legendProps: {

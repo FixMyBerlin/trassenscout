@@ -5,6 +5,10 @@ import { mapData } from "@/src/components/beteiligung/surveys/radschnellverbindu
 
 /** Default map bounds: Germany (steckbrief deep links can override via `?mapStart=zoom/lat/lng`) */
 const germanyBounds: [number, number, number, number] = [5.8, 47.2, 15.1, 55.1]
+/** Below z7 so fitBounds / zoom-out can show all of Germany (Berlin + Leipzig, etc.) */
+const germanyMinZoom = 5
+const germanyMaxZoomGeoCategory = 16
+const germanyMaxZoomPin = 13
 
 export const part2Config: SurveyPart2 = {
   progressBarDefinition: 1,
@@ -88,6 +92,8 @@ export const part2Config: SurveyPart2 = {
               infoPanelText: "Wählen Sie eine Strecke aus, zu der Sie einen Hinweis geben möchten.",
               config: {
                 bounds: germanyBounds,
+                minZoom: germanyMinZoom,
+                maxZoom: germanyMaxZoomGeoCategory,
               },
             },
             legendProps: {
@@ -141,14 +147,22 @@ export const part2Config: SurveyPart2 = {
           },
           props: {
             label: "Pin setzen",
-            description: "Verschieben Sie den Pin an die Stelle, zu der Ihr Hinweis gehört.",
+            description:
+              "Klicken Sie auf die Karte oder verschieben Sie den Pin. Bei Wechsel der Strecke wird der Pin neu gesetzt.",
             mapProps: {
               config: {
                 bounds: germanyBounds,
+                minZoom: germanyMinZoom,
+                maxZoom: germanyMaxZoomPin,
               },
             },
             legendProps: {
               Legende: {
+                pa: {
+                  label: "Ausgewählte Strecke",
+                  color: "bg-[#34D399]",
+                  className: "h-[5px]",
+                },
                 pin: {
                   label: "Ihr Pin",
                   color: "bg-[#34D399]",

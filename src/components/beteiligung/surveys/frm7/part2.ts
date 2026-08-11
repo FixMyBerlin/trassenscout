@@ -118,6 +118,8 @@ export const part2Config: SurveyPart2 = {
             mapProps: {
               config: {
                 bounds: [8.68495, 50.103212, 8.793869, 50.148444],
+                minZoom: 7,
+                maxZoom: 13,
               },
             },
             legendProps: {

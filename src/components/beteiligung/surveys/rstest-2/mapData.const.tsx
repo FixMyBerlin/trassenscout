@@ -9,6 +9,7 @@ export const mapData: MapData = {
     planungsabschnitte: {
       externalUrl: "/api/projects/rs23.json",
       type: "geojson",
+      promoteId: "subsectionSlug",
       layers: [
         {
           id: "pa-line-highlighted",
@@ -20,9 +21,23 @@ export const mapData: MapData = {
             "line-join": "round",
           },
           paint: {
-            "line-color": "#F5814D",
+            "line-color": [
+              "case",
+              ["boolean", ["feature-state", "selected"], false],
+              "#F5814D",
+              "#111827",
+            ],
             "line-width": ["interpolate", ["linear"], ["zoom"], 0, 4, 8, 8, 13.8, 12],
-            "line-opacity": ["case", ["boolean", ["feature-state", "selected"], false], 1, 0],
+            "line-opacity": [
+              "case",
+              [
+                "any",
+                ["boolean", ["feature-state", "selected"], false],
+                ["boolean", ["feature-state", "hover"], false],
+              ],
+              1,
+              0,
+            ],
           },
         },
         {
@@ -48,8 +63,20 @@ export const mapData: MapData = {
             visibility: "visible",
           },
           paint: {
-            "fill-color": "#F5814D",
-            "fill-opacity": ["case", ["boolean", ["feature-state", "selected"], false], 0.45, 0],
+            "fill-color": [
+              "case",
+              ["boolean", ["feature-state", "selected"], false],
+              "#F5814D",
+              "#4B5563",
+            ],
+            "fill-opacity": [
+              "case",
+              ["boolean", ["feature-state", "selected"], false],
+              0.45,
+              ["boolean", ["feature-state", "hover"], false],
+              0.35,
+              0,
+            ],
           },
         },
         {
@@ -73,7 +100,14 @@ export const mapData: MapData = {
             visibility: "visible",
           },
           paint: {
-            "line-color": "#2563eb",
+            "line-color": [
+              "case",
+              ["boolean", ["feature-state", "selected"], false],
+              "#F5814D",
+              ["boolean", ["feature-state", "hover"], false],
+              "#111827",
+              "#2563eb",
+            ],
             "line-width": 2,
           },
           beforeId: "planungsabschnitte-pa-polygon",

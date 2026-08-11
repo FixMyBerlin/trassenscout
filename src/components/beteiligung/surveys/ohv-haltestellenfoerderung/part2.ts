@@ -232,6 +232,8 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
               allowNoMapOption: true,
               config: {
                 bounds: [12.824965, 52.586742, 13.520948, 53.251088], // Bounding box for Oberhavel to be validated
+                minZoom: 7,
+                maxZoom: 16,
               },
             },
             legendProps: {

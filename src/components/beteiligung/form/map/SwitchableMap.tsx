@@ -63,6 +63,8 @@ type SwitchableMapContentProps = {
   allowNoMapOption?: boolean
   config: {
     bounds: [number, number, number, number]
+    minZoom: number
+    maxZoom: number
   }
   setInitialBounds?: {
     initialBoundsDefinition: ({
@@ -438,9 +440,8 @@ const SwitchableMapContent = ({
           onMouseLeave={handleMouseLeave}
           // Set map state for <MapData>:
           onLoad={(event) => handleMapLoad(event)}
-          // todo make configurable
-          maxZoom={16}
-          minZoom={7}
+          maxZoom={config.maxZoom}
+          minZoom={config.minZoom}
           cursor={cursorStyle}
           interactiveLayerIds={mode === "existing" ? allInteractiveLayerIds : []}
           onIdle={() => setMapLoading(false)}

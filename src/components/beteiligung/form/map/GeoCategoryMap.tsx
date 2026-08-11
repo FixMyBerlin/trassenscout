@@ -1,7 +1,7 @@
 import { useSearch } from "@tanstack/react-router"
 import maplibregl from "maplibre-gl"
 import * as pmtiles from "pmtiles"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Map, {
   MapGeoJSONFeature,
   MapLayerMouseEvent,
@@ -43,6 +43,8 @@ export type GeoCategoryMapProps = {
   infoPanelText?: string
   config: {
     bounds: [number, number, number, number]
+    minZoom: number
+    maxZoom: number
   }
   setInitialBounds?: {
     initialBoundsDefinition: ({
@@ -82,6 +84,7 @@ export const SurveyGeoCategoryMap = ({
   const [mapLoading, setMapLoading] = useState(true)
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
   const [cursorStyle, setCursorStyle] = useState("grab")
+  const hoveredFeatureRef = useRef<{ source: string; id: string | number } | null>(null)
   const surveySlug = useAllowedSurveySlug()
 
   // Setup pmtiles
@@ -198,12 +201,35 @@ export const SurveyGeoCategoryMap = ({
     }
   }
 
+  const setHover = (
+    feature: { source: string; id: string | number } | null,
+    hover: boolean,
+  ) => {
+    if (!feature || !mainMap) return
+    mainMap.getMap().setFeatureState(
+      featureStateTargetForMapSource(mapData, feature.source, { id: feature.id }),
+      { hover },
+    )
+  }
+
   const handleMouseMove = ({ features }: MapLayerMouseEvent) => {
     updateCursor(features)
+
+    const feature = features?.[0]
+    const next =
+      feature?.id != null && feature.source ? { source: feature.source, id: feature.id } : null
+    const prev = hoveredFeatureRef.current
+    if (prev?.id === next?.id && prev?.source === next?.source) return
+
+    setHover(prev, false)
+    setHover(next, true)
+    hoveredFeatureRef.current = next
   }
 
   const handleMouseLeave = () => {
     updateCursor([])
+    setHover(hoveredFeatureRef.current, false)
+    hoveredFeatureRef.current = null
   }
 
   const updateCursor = (features: MapGeoJSONFeature[] | undefined) => {
@@ -234,9 +260,8 @@ export const SurveyGeoCategoryMap = ({
         onMouseLeave={handleMouseLeave}
         // Set map state for <MapData>:
         onLoad={(event) => handleMapLoad(event)}
-        // todo make configurable
-        maxZoom={16}
-        minZoom={7}
+        maxZoom={config.maxZoom}
+        minZoom={config.minZoom}
         cursor={cursorStyle}
         interactiveLayerIds={allInteractiveLayerIds}
         onIdle={() => setMapLoading(false)}

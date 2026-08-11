@@ -6,6 +6,9 @@ const rsvMapColors = {
   main: "#34D399",
   /** Selected highlight (darker emerald for clear contrast) */
   selected: "#047857",
+  /** Hover: near-black line / gray fill */
+  hoverLine: "#111827",
+  hoverFill: "#4B5563",
 } as const
 
 /**
@@ -16,6 +19,7 @@ export const mapData: MapData = {
     planungsabschnitte: {
       externalUrl: "/api/projects/rsv-d.json",
       type: "geojson",
+      promoteId: "subsectionSlug",
       layers: [
         {
           id: "pa-line-highlighted",
@@ -27,9 +31,23 @@ export const mapData: MapData = {
             "line-join": "round",
           },
           paint: {
-            "line-color": rsvMapColors.selected,
+            "line-color": [
+              "case",
+              ["boolean", ["feature-state", "selected"], false],
+              rsvMapColors.selected,
+              rsvMapColors.hoverLine,
+            ],
             "line-width": ["interpolate", ["linear"], ["zoom"], 0, 4, 8, 8, 13.8, 12],
-            "line-opacity": ["case", ["boolean", ["feature-state", "selected"], false], 1, 0],
+            "line-opacity": [
+              "case",
+              [
+                "any",
+                ["boolean", ["feature-state", "selected"], false],
+                ["boolean", ["feature-state", "hover"], false],
+              ],
+              1,
+              0,
+            ],
           },
         },
         {
@@ -55,8 +73,20 @@ export const mapData: MapData = {
             visibility: "visible",
           },
           paint: {
-            "fill-color": rsvMapColors.selected,
-            "fill-opacity": ["case", ["boolean", ["feature-state", "selected"], false], 0.45, 0],
+            "fill-color": [
+              "case",
+              ["boolean", ["feature-state", "selected"], false],
+              rsvMapColors.selected,
+              rsvMapColors.hoverFill,
+            ],
+            "fill-opacity": [
+              "case",
+              ["boolean", ["feature-state", "selected"], false],
+              0.45,
+              ["boolean", ["feature-state", "hover"], false],
+              0.35,
+              0,
+            ],
           },
         },
         {
@@ -80,7 +110,14 @@ export const mapData: MapData = {
             visibility: "visible",
           },
           paint: {
-            "line-color": rsvMapColors.main,
+            "line-color": [
+              "case",
+              ["boolean", ["feature-state", "selected"], false],
+              rsvMapColors.selected,
+              ["boolean", ["feature-state", "hover"], false],
+              rsvMapColors.hoverLine,
+              rsvMapColors.main,
+            ],
             "line-width": 2,
           },
           beforeId: "planungsabschnitte-pa-polygon",

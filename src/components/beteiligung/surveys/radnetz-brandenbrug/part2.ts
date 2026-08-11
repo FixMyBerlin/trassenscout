@@ -98,6 +98,8 @@ export const part2Config: SurveyPart2 = {
               geoCategoryIdDefinition: { dataKey: "20", propertyName: "Verbindung" },
               config: {
                 bounds: [11.2688, 51.3592, 14.7655, 53.5586],
+                minZoom: 7,
+                maxZoom: 16,
               },
             },
             legendProps: {
@@ -203,6 +205,8 @@ export const part2Config: SurveyPart2 = {
                 bounds: [
                   10.634343374814875, 50.99884540733649, 15.169801938047982, 53.769864338023126,
                 ],
+                minZoom: 7,
+                maxZoom: 13,
               },
             },
             legendProps: {
