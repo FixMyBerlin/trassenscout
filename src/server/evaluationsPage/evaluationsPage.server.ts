@@ -11,29 +11,6 @@ function evaluationsPageInProjectWhere(projectSlug: string) {
   return { project: { slug: projectSlug } }
 }
 
-export async function getEvaluationsPages(headers: Headers) {
-  await endpointAuth.admin(headers)
-
-  const projects = await db.project.findMany({
-    select: {
-      slug: true,
-      subTitle: true,
-      evaluationsEnabled: true,
-      evaluationsPage: { select: { title: true, updatedAt: true, updatedById: true } },
-    },
-    orderBy: { slug: "asc" },
-  })
-
-  return projects.map((project) => ({
-    projectSlug: project.slug,
-    projectSubTitle: project.subTitle,
-    evaluationsEnabled: project.evaluationsEnabled,
-    title: project.evaluationsPage?.title ?? null,
-    updatedAt: project.evaluationsPage?.updatedAt ?? null,
-    updatedById: project.evaluationsPage?.updatedById ?? null,
-  }))
-}
-
 export async function getEvaluationsPage(
   headers: Headers,
   input: z.infer<typeof EvaluationsPageByProjectSlugSchema>,

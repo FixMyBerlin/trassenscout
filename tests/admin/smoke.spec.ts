@@ -37,27 +37,27 @@ const adminPages = [
     visibleText: "Nutzer & Rechte",
   },
   {
-    path: "/admin/surveys",
+    path: "/admin/projects/rs23/surveys",
     visibleText: "radnetz-brandenburg",
   },
   {
-    path: "/admin/surveys/new",
+    path: "/admin/projects/rs23/surveys/new",
     visibleText: "Slug",
   },
   {
-    path: "/admin/surveys/4/edit",
+    path: "/admin/projects/rs23/surveys/4/edit",
     visibleText: "Beteiligung 4",
   },
   {
-    path: "/admin/surveys/4/responses",
+    path: "/admin/projects/rs23/surveys/4/responses",
     visibleText: "Radnetz Brandenburg",
   },
   {
-    path: "/admin/surveys/4/responses/test",
+    path: "/admin/projects/rs23/surveys/4/responses/test",
     visibleText: "Testeinträge",
   },
   {
-    path: "/admin/surveys/4/responses/created",
+    path: "/admin/projects/rs23/surveys/4/responses/created",
     visibleText: "Nicht-abgeschickte Eingaben",
   },
   {
@@ -166,7 +166,7 @@ test.describe("Admin writes and validation", () => {
   })
 
   test("shows validation errors on empty survey create form", async ({ page }) => {
-    await page.goto("/admin/surveys/new")
+    await page.goto("/admin/projects/rs23/surveys/new")
     await assertFormValidationOnEmptySubmit({
       page,
       labels: ["Slug", "Titel"],

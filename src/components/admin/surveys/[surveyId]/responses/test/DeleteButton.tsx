@@ -6,11 +6,16 @@ import { primaryButtonClassName } from "@/src/components/core/components/buttons
 import { deleteTestSurveyResponsesFn } from "@/src/server/survey-responses/surveyResponses.functions"
 
 type DeleteButtonProps = {
+  projectSlug: string
   testSurveyResponseIds: number[]
   surveySlug: AllowedSurveySlugs
 }
 
-export const DeleteButton = ({ testSurveyResponseIds, surveySlug }: DeleteButtonProps) => {
+export const DeleteButton = ({
+  projectSlug,
+  testSurveyResponseIds,
+  surveySlug,
+}: DeleteButtonProps) => {
   const deleteTestSurveyMutation = useMutation({ mutationFn: deleteTestSurveyResponsesFn })
   const navigate = useNavigate()
 
@@ -23,7 +28,7 @@ export const DeleteButton = ({ testSurveyResponseIds, surveySlug }: DeleteButton
       } catch {
         alert("Beim Löschen ist ein Fehler aufgetreten.")
       }
-      navigate({ to: "/admin/surveys" })
+      navigate({ to: "/admin/projects/$projectSlug/surveys", params: { projectSlug } })
     }
   }
 

@@ -20,7 +20,10 @@ export const AdminEvaluationsPageEditForm = ({ projectSlug }: Props) => {
   const handleSubmit = async (values: { title: string; markdown: string }) => {
     try {
       await upsertMutation.mutateAsync({ data: { projectSlug, ...values } })
-      navigate({ to: "/admin/evaluations" })
+      navigate({
+        to: "/admin/projects/$projectSlug/evaluations",
+        params: { projectSlug },
+      })
     } catch (error: unknown) {
       console.error(error)
       return { [FORM_ERROR]: error instanceof Error ? error.message : String(error) }

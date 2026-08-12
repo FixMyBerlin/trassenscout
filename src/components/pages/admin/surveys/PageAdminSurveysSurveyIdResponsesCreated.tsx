@@ -5,10 +5,10 @@ import type { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/uti
 import { createdSurveyResponsesQueryOptions } from "@/src/server/survey-responses/surveyResponsesQueryOptions"
 import { adminSurveyQueryOptions } from "@/src/server/surveys/surveysQueryOptions"
 
-const routeApi = getRouteApi("/admin/surveys/$surveyId/responses/created/")
+const routeApi = getRouteApi("/admin/projects/$projectSlug/surveys/$surveyId/responses/created/")
 
 export function PageAdminSurveysSurveyIdResponsesCreated() {
-  const { surveyId: surveyIdString } = routeApi.useParams()
+  const { projectSlug, surveyId: surveyIdString } = routeApi.useParams()
   const surveyId = Number(surveyIdString)
   const { data: survey } = useSuspenseQuery(adminSurveyQueryOptions(surveyId))
   const { data: createdResponses } = useSuspenseQuery(
@@ -20,7 +20,7 @@ export function PageAdminSurveysSurveyIdResponsesCreated() {
       <AdminPageHeader
         parent={{
           title: `Beteiligung ${surveyId}`,
-          href: `/admin/surveys/${surveyId}/edit`,
+          href: `/admin/projects/${projectSlug}/surveys/${surveyId}/edit`,
         }}
         title="Nicht-abgeschickte Eingaben"
       />

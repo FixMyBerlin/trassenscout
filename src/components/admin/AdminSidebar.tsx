@@ -3,7 +3,6 @@ import { ArrowTopRightOnSquareIcon, ChevronRightIcon } from "@heroicons/react/20
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { Link, useMatchRoute } from "@tanstack/react-router"
 import { twJoin, twMerge } from "tailwind-merge"
-import { shortTitle } from "@/src/components/core/components/text/titles"
 import { useTryRouteParam } from "@/src/components/core/routes/useTryRouteParam"
 import { pillShellClasses } from "@/src/components/core/utils/pillClassNames"
 import svgLogoTrassenscoutAdmin from "@/src/components/shared/app/layouts/assets/trassenscout-logo-admin-white.svg"
@@ -13,7 +12,7 @@ import type { AdminNavCounts } from "@/src/server/admin/types"
 import {
   adminNavLinkOptions,
   buildAdminNavigation,
-  buildAdminProjectNavigation,
+  buildAdminProjectSectionNavigation,
   formatAdminNavCount,
   getAdminNavCount,
   isAdminNavItemActive,
@@ -21,6 +20,7 @@ import {
   type AdminNavItem,
   type AdminNavLink,
 } from "./adminNavigation"
+import { AdminProjectSwitch } from "./AdminProjectSwitch"
 
 const navItemLinkClass =
   "group flex w-full items-center gap-x-3 rounded-md px-2 py-1.5 text-sm/5 font-semibold no-underline text-purple-100 hover:bg-purple-800 hover:text-white data-[status=active]:bg-purple-800 data-[status=active]:text-white"
@@ -223,20 +223,18 @@ export function AdminSidebar() {
               ))}
             </ul>
           </li>
-          {projectSlug ? (
-            <li>
-              <div className="text-xs/6 font-semibold text-purple-300">
-                Projekt: {shortTitle(projectSlug)}
-              </div>
+          <li>
+            <AdminProjectSwitch />
+            {projectSlug ? (
               <ul role="list" className="-mx-2 mt-2 space-y-0.5">
                 <AdminNavChildLinks
-                  items={buildAdminProjectNavigation(projectSlug)}
+                  items={buildAdminProjectSectionNavigation(projectSlug)}
                   counts={counts}
                   matchRoute={matchRoute}
                 />
               </ul>
-            </li>
-          ) : null}
+            ) : null}
+          </li>
         </ul>
       </nav>
     </div>

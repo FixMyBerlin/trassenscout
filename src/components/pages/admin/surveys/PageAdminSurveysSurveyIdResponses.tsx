@@ -7,10 +7,10 @@ import type { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/uti
 import { Spinner } from "@/src/components/core/components/Spinner"
 import { adminSurveyQueryOptions } from "@/src/server/surveys/surveysQueryOptions"
 
-const routeApi = getRouteApi("/admin/surveys/$surveyId/responses/")
+const routeApi = getRouteApi("/admin/projects/$projectSlug/surveys/$surveyId/responses/")
 
 export function PageAdminSurveysSurveyIdResponses() {
-  const { surveyId: surveyIdString } = routeApi.useParams()
+  const { projectSlug, surveyId: surveyIdString } = routeApi.useParams()
   const surveyId = Number(surveyIdString)
   const { data: survey } = useSuspenseQuery(adminSurveyQueryOptions(surveyId))
 
@@ -19,14 +19,14 @@ export function PageAdminSurveysSurveyIdResponses() {
       <AdminPageHeader
         parent={{
           title: `Beteiligung ${surveyId}`,
-          href: `/admin/surveys/${surveyId}/edit`,
+          href: `/admin/projects/${projectSlug}/surveys/${surveyId}/edit`,
         }}
         title={`Eingaben: ${survey.title}`}
       />
       <article className="bg-white p-5">
         <Suspense fallback={<Spinner page />}>
           <AdminSurveyResponsesNew
-            projectSlug={survey.project.slug}
+            projectSlug={projectSlug}
             surveyId={surveyId}
             survey={{ slug: survey.slug as AllowedSurveySlugs }}
           />

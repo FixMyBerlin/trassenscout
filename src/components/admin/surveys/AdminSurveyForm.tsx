@@ -18,6 +18,7 @@ import {
 
 export type AdminSurveyFormProps = {
   initialValues?: Partial<CreateSurveyFormValues>
+  fixedProjectId?: number
   onSubmit: (values: CreateSurveyType) => Promise<void | OnSubmitResult>
   submitText: string
   resetOnSubmit?: boolean
@@ -30,6 +31,7 @@ export type AdminSurveyFormProps = {
 
 export function AdminSurveyForm({
   initialValues,
+  fixedProjectId,
   onSubmit,
   submitText,
   resetOnSubmit,
@@ -52,7 +54,11 @@ export function AdminSurveyForm({
   const editForm = pathname?.endsWith("edit")
 
   const form = useAppForm({
-    defaultValues: { ...createSurveyFormDefaultValues, ...initialValues },
+    defaultValues: {
+      ...createSurveyFormDefaultValues,
+      ...(fixedProjectId ? { projectId: fixedProjectId } : {}),
+      ...initialValues,
+    },
     validators: { onSubmit: CreateSurveySchema } as never,
     onSubmit: async ({ value }) => {
       const result = (await onSubmit(value as CreateSurveyType)) || {}
@@ -91,7 +97,7 @@ export function AdminSurveyForm({
           />
         )}
       </form.AppField>
-      {!editForm && (
+      {!editForm && !fixedProjectId && (
         <form.AppField name="projectId">
           {(field) => <field.SelectField label="Projekt" options={projectOptions} />}
         </form.AppField>

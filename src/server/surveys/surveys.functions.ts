@@ -6,7 +6,7 @@ import {
   DeleteAdminSurveySchema,
   DeleteSurveySchema,
   GetAdminSurveySchema,
-  GetAdminSurveysSchema,
+  GetAdminSurveysByProjectSchema,
   GetSurveySchema,
   GetSurveysSchema,
   UpdateAdminSurveySchema,
@@ -18,7 +18,7 @@ import {
   deleteAdminSurvey,
   deleteSurvey,
   getAdminSurvey,
-  getAdminSurveys,
+  getAdminSurveysByProject,
   getSurvey,
   getSurveys,
   updateAdminSurvey,
@@ -44,9 +44,9 @@ const _deleteSurveyFn = createServerFn({ method: "POST" })
   .validator(DeleteSurveySchema)
   .handler(({ data }) => deleteSurvey(getRequestHeaders(), data))
 
-export const getAdminSurveysFn = createServerFn({ method: "GET" })
-  .validator(GetAdminSurveysSchema)
-  .handler(() => getAdminSurveys(getRequestHeaders()))
+export const getAdminSurveysByProjectFn = createServerFn({ method: "GET" })
+  .validator(GetAdminSurveysByProjectSchema)
+  .handler(({ data }) => getAdminSurveysByProject(getRequestHeaders(), data))
 
 export const getAdminSurveyFn = createServerFn({ method: "GET" })
   .validator(GetAdminSurveySchema)

@@ -1,23 +1,28 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { Link } from "@tanstack/react-router"
+import { getRouteApi, Link } from "@tanstack/react-router"
 import { AdminBadge } from "@/src/components/admin/AdminBadge"
 import { adminTableEditButtonClassName } from "@/src/components/admin/adminListClasses"
 import { AdminPageHeader } from "@/src/components/admin/AdminPageHeader"
 import { adminHeaderActionButtonClassName } from "@/src/components/admin/HeaderWrapper"
 import { AllowedSurveySlugsSchema } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { Link as CoreLink } from "@/src/components/core/components/links/Link"
-import { adminSurveysQueryOptions } from "@/src/server/surveys/surveysQueryOptions"
+import { shortTitle } from "@/src/components/core/components/text/titles"
+import { adminSurveysByProjectQueryOptions } from "@/src/server/surveys/surveysQueryOptions"
+
+const routeApi = getRouteApi("/admin/projects/$projectSlug/surveys/")
 
 export function PageAdminSurveys() {
-  const { data: surveys } = useSuspenseQuery(adminSurveysQueryOptions())
+  const { projectSlug } = routeApi.useParams()
+  const { data: surveys } = useSuspenseQuery(adminSurveysByProjectQueryOptions(projectSlug))
 
   return (
     <>
       <AdminPageHeader
-        title="Beteiligungen (alle)"
+        title={`Beteiligungen: ${shortTitle(projectSlug)}`}
         action={
           <CoreLink
-            to="/admin/surveys/new"
+            to="/admin/projects/$projectSlug/surveys/new"
+            params={{ projectSlug }}
             button
             icon="plus"
             className={adminHeaderActionButtonClassName}
@@ -27,9 +32,8 @@ export function PageAdminSurveys() {
         }
       />
       <p className="mb-6 text-gray-600">
-        Hier verwalten Sie alle Beteiligungen (Umfragen) projektübergreifend: Sie können neue
-        Beteiligungen anlegen, bestehende bearbeiten sowie deren Antworten, Testeinträge und
-        nicht-abgeschickte Einträge einsehen.
+        Beteiligungen (Umfragen) für dieses Projekt verwalten: anlegen, bearbeiten sowie Antworten,
+        Testeinträge und nicht-abgeschickte Einträge einsehen.
       </p>
       <ul className="list-none space-y-8 pl-0">
         {surveys.map((survey) => (
@@ -45,29 +49,29 @@ export function PageAdminSurveys() {
             <div className="flex flex-wrap gap-2">
               <Link
                 className={adminTableEditButtonClassName}
-                to="/admin/surveys/$surveyId/edit"
-                params={{ surveyId: String(survey.id) }}
+                to="/admin/projects/$projectSlug/surveys/$surveyId/edit"
+                params={{ projectSlug, surveyId: String(survey.id) }}
               >
                 Bearbeiten
               </Link>
               <Link
                 className={adminTableEditButtonClassName}
-                to="/admin/surveys/$surveyId/responses"
-                params={{ surveyId: String(survey.id) }}
+                to="/admin/projects/$projectSlug/surveys/$surveyId/responses"
+                params={{ projectSlug, surveyId: String(survey.id) }}
               >
                 Antworten
               </Link>
               <Link
                 className={adminTableEditButtonClassName}
-                to="/admin/surveys/$surveyId/responses/test"
-                params={{ surveyId: String(survey.id) }}
+                to="/admin/projects/$projectSlug/surveys/$surveyId/responses/test"
+                params={{ projectSlug, surveyId: String(survey.id) }}
               >
                 Testeinträge prüfen und löschen
               </Link>
               <Link
                 className={adminTableEditButtonClassName}
-                to="/admin/surveys/$surveyId/responses/created"
-                params={{ surveyId: String(survey.id) }}
+                to="/admin/projects/$projectSlug/surveys/$surveyId/responses/created"
+                params={{ projectSlug, surveyId: String(survey.id) }}
               >
                 Nicht-abgeschickte Einträge
               </Link>

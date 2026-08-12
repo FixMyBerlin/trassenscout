@@ -10,7 +10,7 @@ export const CreateSurveyBySlugSchema = ProjectSlugRequiredSchema.extend(SurveyI
 export const UpdateSurveyBySlugSchema = GetSurveySchema.extend(SurveyInputSchema.shape)
 export const DeleteSurveySchema = GetSurveySchema
 
-export const GetAdminSurveysSchema = z.object({})
+export const GetAdminSurveysByProjectSchema = ProjectSlugRequiredSchema
 export const GetAdminSurveySchema = z.object({ id: z.number() })
 export const CreateAdminSurveySchema = CreateSurveySchema
 export const UpdateAdminSurveySchema = UpdateSurveySchema

@@ -6,10 +6,10 @@ import type { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/uti
 import { testSurveyResponsesQueryOptions } from "@/src/server/survey-responses/surveyResponsesQueryOptions"
 import { adminSurveyQueryOptions } from "@/src/server/surveys/surveysQueryOptions"
 
-const routeApi = getRouteApi("/admin/surveys/$surveyId/responses/test/")
+const routeApi = getRouteApi("/admin/projects/$projectSlug/surveys/$surveyId/responses/test/")
 
 export function PageAdminSurveysSurveyIdResponsesTest() {
-  const { surveyId: surveyIdString } = routeApi.useParams()
+  const { projectSlug, surveyId: surveyIdString } = routeApi.useParams()
   const surveyId = Number(surveyIdString)
   const { data: survey } = useSuspenseQuery(adminSurveyQueryOptions(surveyId))
   const { data: testSurveyResponses } = useSuspenseQuery(
@@ -21,7 +21,7 @@ export function PageAdminSurveysSurveyIdResponsesTest() {
       <AdminPageHeader
         parent={{
           title: `Beteiligung ${surveyId}`,
-          href: `/admin/surveys/${surveyId}/edit`,
+          href: `/admin/projects/${projectSlug}/surveys/${surveyId}/edit`,
         }}
         title="Testeinträge"
       />
@@ -37,6 +37,7 @@ export function PageAdminSurveysSurveyIdResponsesTest() {
           ))}
       {!!testSurveyResponses.length && (
         <DeleteButton
+          projectSlug={projectSlug}
           surveySlug={survey.slug as AllowedSurveySlugs}
           testSurveyResponseIds={testSurveyResponses.map((response) => response.id)}
         />

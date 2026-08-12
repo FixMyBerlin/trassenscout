@@ -1,16 +1,5 @@
 import { queryOptions } from "@tanstack/react-query"
-import {
-  getEvaluationsPageAdminFn,
-  getEvaluationsPageFn,
-  getEvaluationsPagesFn,
-} from "./evaluationsPage.functions"
-
-export function evaluationsPagesQueryOptions() {
-  return queryOptions({
-    queryKey: ["evaluationsPages"],
-    queryFn: () => getEvaluationsPagesFn({ data: {} }),
-  })
-}
+import { getEvaluationsPageAdminFn, getEvaluationsPageFn } from "./evaluationsPage.functions"
 
 export function evaluationsPageQueryOptions({ projectSlug }: { projectSlug: string }) {
   return queryOptions({

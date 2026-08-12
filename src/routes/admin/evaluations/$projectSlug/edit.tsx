@@ -1,14 +1,13 @@
-import { createFileRoute } from "@tanstack/react-router"
-import { PageAdminEvaluationsProjectSlugEdit } from "@/src/components/pages/admin/evaluations/PageAdminEvaluationsProjectSlugEdit"
-import { adminTitleHead } from "@/src/routeHead"
-import { evaluationsPageAdminQueryOptions } from "@/src/server/evaluationsPage/evaluationsPageQueryOptions"
+import { createFileRoute, redirect } from "@tanstack/react-router"
+import { endpointAuth } from "@/src/server/auth/endpointAuthBoundary"
 
 export const Route = createFileRoute("/admin/evaluations/$projectSlug/edit")({
-  head: ({ params }) => adminTitleHead(`Auswertungen-Seite: ${params.projectSlug}`),
   ssr: true,
-  loader: ({ context, params }) =>
-    context.queryClient.ensureQueryData(
-      evaluationsPageAdminQueryOptions({ projectSlug: params.projectSlug }),
-    ),
-  component: PageAdminEvaluationsProjectSlugEdit,
+  beforeLoad: ({ params }) => {
+    endpointAuth.inherited("auth enforced by admin layout")
+    throw redirect({
+      to: "/admin/projects/$projectSlug/evaluations",
+      params: { projectSlug: params.projectSlug },
+    })
+  },
 })

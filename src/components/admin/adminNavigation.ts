@@ -1,5 +1,4 @@
 import {
-  ClipboardDocumentListIcon,
   Cog6ToothIcon,
   FolderIcon,
   HomeIcon,
@@ -20,8 +19,6 @@ export type AdminNavLink = {
   to: AdminNavTo
   params?: Record<string, string>
   search?: Record<string, string | undefined>
-  /** Only needed when fuzzy matching would be wrong — e.g. `/admin` vs `/admin/projects`. */
-  activeOptions?: { exact: true }
 }
 
 type HeroIcon = ComponentType<SVGProps<SVGSVGElement>>
@@ -59,7 +56,6 @@ export function adminNavLinkOptions(link: AdminNavLink) {
     to: link.to,
     params: link.params,
     search: link.search,
-    activeOptions: link.activeOptions,
   })
 }
 
@@ -69,7 +65,6 @@ function isAdminNavLinkActive(matchRoute: MatchRoute, link: AdminNavLink) {
   return !!matchRoute({
     to: link.to,
     params: link.params,
-    fuzzy: !link.activeOptions?.exact,
   })
 }
 
@@ -85,8 +80,74 @@ export function isAdminNavItemActive(
   return item.children?.some((child) => isAdminNavItemActive(matchRoute, child)) ?? false
 }
 
-export function buildAdminProjectNavigation(projectSlug: string) {
+/** Routes matched when switching the admin project selector. */
+const adminProjectSwitchRoutes = [
+  "/admin/projects/$projectSlug/subsubsection-extra-fields",
+  "/admin/projects/$projectSlug/evaluations",
+  "/admin/projects/$projectSlug/surveys/new",
+  "/admin/projects/$projectSlug/surveys/$surveyId/responses/created",
+  "/admin/projects/$projectSlug/surveys/$surveyId/responses/test",
+  "/admin/projects/$projectSlug/surveys/$surveyId/responses",
+  "/admin/projects/$projectSlug/surveys/$surveyId/edit",
+  "/admin/projects/$projectSlug/surveys",
+  "/admin/projects/$projectSlug/subsections/edit",
+  "/admin/projects/$projectSlug/subsections/multiple-new",
+  "/admin/projects/$projectSlug/subsections",
+  "/$projectSlug/edit",
+  "/$projectSlug/project-records",
+  "/$projectSlug/tags",
+  "/$projectSlug/quality-levels",
+  "/$projectSlug/operators",
+  "/$projectSlug/network-hierarchy",
+  "/$projectSlug/subsection-status",
+  "/$projectSlug/subsubsection-status",
+  "/$projectSlug/acquisition-area-status",
+  "/$projectSlug/subsubsection-infra",
+  "/$projectSlug/subsubsection-special",
+  "/$projectSlug/subsubsection-task",
+  "/$projectSlug/subsubsection-infrastructure-type",
+] as const satisfies readonly AdminNavTo[]
+
+export function getAdminProjectSwitchTarget(
+  matchRoute: MatchRoute,
+  newProjectSlug: string,
+): AdminNavLink {
+  for (const to of adminProjectSwitchRoutes) {
+    if (matchRoute({ to, fuzzy: false })) {
+      return { to, params: { projectSlug: newProjectSlug } }
+    }
+  }
+
+  return {
+    to: "/admin/projects/$projectSlug/subsubsection-extra-fields",
+    params: { projectSlug: newProjectSlug },
+  }
+}
+
+export function buildAdminProjectSectionNavigation(projectSlug: string) {
   return [
+    {
+      name: "Zusätzliche Felder (Maßnahmen)",
+      link: projectNavLink("/admin/projects/$projectSlug/subsubsection-extra-fields", projectSlug),
+    },
+    {
+      name: "Auswertungen-Seite",
+      link: projectNavLink("/admin/projects/$projectSlug/evaluations", projectSlug),
+    },
+    ...buildAdminProjectNavigation(projectSlug),
+  ] satisfies AdminNavChild[]
+}
+
+function buildAdminProjectNavigation(projectSlug: string) {
+  return [
+    {
+      name: "Planungsabschnitte",
+      link: projectNavLink("/admin/projects/$projectSlug/subsections", projectSlug),
+    },
+    {
+      name: "Beteiligungen",
+      link: projectNavLink("/admin/projects/$projectSlug/surveys", projectSlug),
+    },
     {
       name: adminProjectNavName("Projekt", "Bearbeiten"),
       link: projectNavLink("/$projectSlug/edit", projectSlug),
@@ -303,12 +364,6 @@ export function buildAdminNavigation() {
       countKey: "users",
     },
     {
-      name: "Beteiligungen",
-      link: { to: "/admin/surveys" },
-      icon: ClipboardDocumentListIcon,
-      countKey: "surveys",
-    },
-    {
       name: "System",
       icon: Cog6ToothIcon,
       children: [
@@ -322,10 +377,6 @@ export function buildAdminNavigation() {
           name: "E-Mail-Templates",
           link: { to: "/admin/email-templates" },
           countKey: "emailTemplates",
-        },
-        {
-          name: "Auswertungen-Seite",
-          link: { to: "/admin/evaluations" },
         },
         {
           name: "Support-Dokumente",
