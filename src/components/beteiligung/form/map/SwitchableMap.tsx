@@ -15,6 +15,7 @@ import {
   FieldError,
   getFieldA11yProps,
   getFieldDescriptionId,
+  useFieldHasVisibleError,
 } from "@/src/components/beteiligung/form/FieldErrror"
 import {
   LayerType,
@@ -117,7 +118,7 @@ export const SwitchableMap = ({
   modeSelector,
 }: SwitchableMapProps) => {
   const field = useFieldContext<SwitchableMapLocationPoint | null>()
-  const hasError = field.state.meta.errors.length > 0
+  const hasError = useFieldHasVisibleError(field)
 
   return (
     <MapProvider>
@@ -163,6 +164,7 @@ const SwitchableMapContent = ({
 }: SwitchableMapContentWrapperProps) => {
   const { mainMap } = useMap()
   const field = useFieldContext<SwitchableMapLocationPoint | null>()
+  const hasError = useFieldHasVisibleError(field)
   const search = useSearch({ from: "/beteiligung/$surveySlug/" })
   // we keep the selected mode in the form state as well (field name `locationMode`) so the survey config
   // can read it in a custom validator to decide whether the location value is required
@@ -352,7 +354,7 @@ const SwitchableMapContent = ({
       {...getFieldA11yProps({
         description,
         fieldName: field.name,
-        hasError: field.state.meta.errors.length > 0,
+        hasError,
       })}
     >
       <p className={formClasses.fieldLabel}>{modeSelector.question}</p>

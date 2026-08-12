@@ -4,6 +4,7 @@ import { FieldWithErrorContainer } from "@/src/components/beteiligung/form/Error
 import {
   FieldError,
   getFieldA11yProps,
+  useFieldHasVisibleError,
   getFieldDescriptionId,
 } from "@/src/components/beteiligung/form/FieldErrror"
 import { formClasses } from "@/src/components/beteiligung/form/styles"
@@ -20,7 +21,7 @@ type Props = {
 export const SurveyRadiobuttonGroup = ({ options, label, description, required }: Props) => {
   const field = useFieldContext<string>()
   // field.state.meta.isTouched && does not make sense here tbd
-  const hasError = field.state.meta.errors.length > 0
+  const hasError = useFieldHasVisibleError(field)
 
   return (
     <FieldWithErrorContainer hasError={hasError}>

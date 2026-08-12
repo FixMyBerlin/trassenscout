@@ -1,7 +1,8 @@
 import { XCircleIcon } from "@heroicons/react/20/solid"
 import { AnyFieldMeta, DeepKeys } from "@tanstack/react-form"
-import { useEffect, useRef } from "react"
+import { useContext, useEffect, useRef } from "react"
 import { FieldWithErrorContainer } from "@/src/components/beteiligung/form/ErrorContainer"
+import { SurveyVisibleErrorContext } from "@/src/components/beteiligung/shared/contexts/contexts"
 import { FieldConfig } from "@/src/components/beteiligung/shared/types"
 import { getFieldsErrors } from "@/src/components/beteiligung/shared/utils/pageHasErrors"
 
@@ -10,7 +11,8 @@ type Props = {
   allCurrentFieldsOfPage: FieldConfig[]
 }
 export const FormErrorBox = ({ fieldMeta, allCurrentFieldsOfPage }: Props) => {
-  const errors = getFieldsErrors({ fieldMeta, fields: allCurrentFieldsOfPage })
+  const { showErrors } = useContext(SurveyVisibleErrorContext)
+  const errors = showErrors ? getFieldsErrors({ fieldMeta, fields: allCurrentFieldsOfPage }) : []
   const errorSummaryRef = useRef<HTMLDivElement>(null)
   const previousErrorsLengthRef = useRef(0)
 

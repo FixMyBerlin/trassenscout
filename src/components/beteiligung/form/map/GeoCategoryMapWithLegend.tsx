@@ -1,7 +1,7 @@
 import { ComponentProps } from "react"
 import { MapProvider } from "react-map-gl/maplibre"
 import { twJoin } from "tailwind-merge"
-import { FieldError } from "@/src/components/beteiligung/form/FieldErrror"
+import { FieldError, useFieldHasVisibleError } from "@/src/components/beteiligung/form/FieldErrror"
 import { SurveyGeoCategoryMap } from "@/src/components/beteiligung/form/map/GeoCategoryMap"
 import { SurveyMapLegend } from "@/src/components/beteiligung/form/map/MapLegend"
 import { formClasses } from "@/src/components/beteiligung/form/styles"
@@ -21,7 +21,7 @@ export const SurveyGeoCategoryMapWithLegend = ({
   description,
 }: Props) => {
   const field = useFieldContext<object>()
-  const hasError = field.state.meta.errors.length > 0
+  const hasError = useFieldHasVisibleError(field)
 
   return (
     <MapProvider>

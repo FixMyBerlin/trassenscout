@@ -5,6 +5,7 @@ import { FieldWithErrorContainer } from "@/src/components/beteiligung/form/Error
 import {
   FieldError,
   getFieldA11yProps,
+  useFieldHasVisibleError,
   getFieldDescriptionId,
 } from "@/src/components/beteiligung/form/FieldErrror"
 import { formClasses } from "@/src/components/beteiligung/form/styles"
@@ -30,7 +31,7 @@ export const SurveySelect = ({
   queryId,
 }: SelectProps) => {
   const field = useFieldContext<string>()
-  const hasError = field.state.meta.errors.length > 0
+  const hasError = useFieldHasVisibleError(field)
   const selectedOptionLabel =
     options.find((option) => option.key === field.state.value)?.label || field.state.value || ""
 

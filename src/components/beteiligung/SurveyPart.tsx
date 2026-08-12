@@ -3,7 +3,10 @@ import { z } from "zod"
 import { SurveyButtonGrid } from "@/src/components/beteiligung/buttons/SurveyButtonGrid"
 import { FormErrorBox } from "@/src/components/beteiligung/form/FormErrorBox"
 import { Intro } from "@/src/components/beteiligung/Intro"
-import { ProgressContext } from "@/src/components/beteiligung/shared/contexts/contexts"
+import {
+  ProgressContext,
+  SurveyVisibleErrorContext,
+} from "@/src/components/beteiligung/shared/contexts/contexts"
 import { useAppForm } from "@/src/components/beteiligung/shared/hooks/form"
 import { Stage } from "@/src/components/beteiligung/shared/types"
 import {
@@ -89,6 +92,8 @@ export const SurveyPart = ({
 }: Props) => {
   const surveySlug = useAllowedSurveySlug()
   const [page, setPage] = useState(0)
+  // Errors are only rendered once the user tried to leave the page — see SurveyVisibleErrorContext.
+  const [showErrors, setShowErrors] = useState(false)
   const { setProgress } = useContext(ProgressContext)
   const surveyPart = getConfigBySurveySlug(surveySlug, stage)
 
@@ -162,6 +167,7 @@ export const SurveyPart = ({
     // Ensure we have a CREATED response before starting the form
     // (server-side getOrCreate prevents duplicates when switching intro <-> form)
     await onStartPart()
+    setShowErrors(false)
     setIsIntro(false)
     setPage(0)
     scrollToTopWithDelay()
@@ -169,15 +175,20 @@ export const SurveyPart = ({
   }
 
   const handleNextClick = () => {
-    if (!pageHasErrors({ form, fields: allCurrentPageFormFields })) {
-      const newPage = Math.min(surveyPart.pages.length - 1, page + 1)
-      setPage(newPage)
-      scrollToTopWithDelay()
-      setProgress(currentProgressBar + newPage)
+    if (pageHasErrors({ form, fields: allCurrentPageFormFields })) {
+      setShowErrors(true)
+      return
     }
+
+    const newPage = Math.min(surveyPart.pages.length - 1, page + 1)
+    setPage(newPage)
+    setShowErrors(false)
+    scrollToTopWithDelay()
+    setProgress(currentProgressBar + newPage)
   }
 
   const handleSubmitClick = () => {
+    setShowErrors(true)
     // we need to validate all fields of the current page programmatically
     // because if no field of (last) page is touched the form is somehow "not submittable" but errors are also not shown - this workaround works ok for now
     // tbd
@@ -190,6 +201,7 @@ export const SurveyPart = ({
   }
 
   const handleBackClick = () => {
+    setShowErrors(false)
     if (page === 0) {
       setIsIntro(true)
     } else {
@@ -201,11 +213,12 @@ export const SurveyPart = ({
   }
 
   return (
-    <>
+    <SurveyVisibleErrorContext.Provider value={{ showErrors }}>
       <form
         onSubmit={(e) => {
           e.preventDefault()
           e.stopPropagation()
+          setShowErrors(true)
           if (!surveyResponseId) return
           const submitter = (e.nativeEvent as SubmitEvent).submitter
           const again = submitter?.id === "again"
@@ -374,6 +387,6 @@ export const SurveyPart = ({
           </>
         )}
       </form>
-    </>
+    </SurveyVisibleErrorContext.Provider>
   )
 }

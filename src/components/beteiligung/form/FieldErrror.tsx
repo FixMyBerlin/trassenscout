@@ -1,4 +1,6 @@
 import { AnyFieldApi } from "@tanstack/react-form"
+import { useContext } from "react"
+import { SurveyVisibleErrorContext } from "@/src/components/beteiligung/shared/contexts/contexts"
 
 export const getFieldDescriptionId = (fieldName: string) => `${fieldName}-description`
 const getFieldErrorId = (fieldName: string) => `${fieldName}-error`
@@ -29,15 +31,21 @@ export const getFieldA11yProps = ({
   }
 }
 
+export const useFieldHasVisibleError = (field: AnyFieldApi) => {
+  const { showErrors } = useContext(SurveyVisibleErrorContext)
+  return showErrors && field.state.meta.errors.length > 0
+}
+
 export const FieldError = ({ field }: { field: AnyFieldApi }) => {
   // console.log("FieldError", field.state.meta.errors)
   // console.log("FieldErrorMap", field.state.meta.errorMap)
   const errors = field.state.meta.errors
+  const hasError = useFieldHasVisibleError(field)
 
   return (
     // field.state.meta.isTouched && does not make sense here tbd
     <div className="pt-2">
-      {errors.length ? (
+      {hasError ? (
         <p id={getFieldErrorId(field.name)} className="text-sm font-semibold text-red-800">
           {errors.map((err) => err.message || err).join(",")}
         </p>
