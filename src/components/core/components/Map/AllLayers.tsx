@@ -5,7 +5,6 @@ import { MapSourceType } from "./mapDataTypes"
 type GeneratedMapLayer = {
   layerKey: string
   sourceId: string
-  tildaUrl: string
   mapSourceType: MapSourceType
   layer: StaticMapLayer
 }
@@ -21,7 +20,6 @@ export const generateLayers = (mapData: Pick<MapData, "sources">) => {
         const layerKey = `${sourceId}-${layer.id}`
         return {
           sourceId,
-          tildaUrl: sources.tildaUrl,
           mapSourceType: sources.type,
           layerKey,
           layer,
@@ -34,11 +32,11 @@ export const generateLayers = (mapData: Pick<MapData, "sources">) => {
 export const AllLayers = ({ layers }: Props) => {
   return (
     <>
-      {layers.map(({ layerKey, tildaUrl, layer, mapSourceType }) => {
+      {layers.map(({ layerKey, sourceId, layer, mapSourceType }) => {
         return (
           <Layer
             {...layer}
-            source={tildaUrl}
+            source={sourceId}
             key={layerKey}
             id={layerKey}
             {...(mapSourceType === MapSourceType.pmtiles

@@ -1,116 +1,101 @@
-import { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
+import type { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
 import { getQuestionIdBySurveySlug } from "@/src/components/beteiligung/shared/utils/getQuestionIdBySurveySlug"
+import { normalizeSearchterm } from "@/src/components/core/utils/normalizeSearchterm"
 import type { FeedbackSurveyResponse } from "@/src/server/survey-responses/surveyResponsesQueryOptions"
+import type { SurveyResponseTagsResult } from "@/src/server/surveyResponseTags/surveyResponseTagsQueryOptions"
 import { useSurveyResponseFilters } from "./useSurveyResponseFilters"
+
+function toFilterValueList(value: unknown) {
+  const values = Array.isArray(value) ? value : [value]
+  return values
+    .filter((item) => item !== null && item !== undefined && item !== "")
+    .map((item) => String(item))
+}
+
+function responseValueMatchesFilter(responseValue: unknown, filterValue: unknown) {
+  if (filterValue === "ALL") return true
+
+  const selectedValues = toFilterValueList(filterValue)
+  if (selectedValues.length === 0) return true
+
+  const responseValues = toFilterValueList(responseValue)
+  return responseValues.some((value) => selectedValues.includes(value))
+}
 
 export const useFilteredResponses = (
   responses: FeedbackSurveyResponse[],
   surveySlug: AllowedSurveySlugs,
+  topicsDefinition: SurveyResponseTagsResult["surveyResponseTags"],
 ) => {
   const { filter } = useSurveyResponseFilters()
 
   if (!filter) return responses
 
-  const {
-    status,
-    operator,
-    hasnotes,
-    haslocation,
-    categories,
-    topics,
-    searchterm,
-    ...additionalFilters
-  } = filter
+  const { status, searchterm, ...additionalFilters } = filter
 
-  const { additionalFilters: additionalFiltersDefinition } = getConfigBySurveySlug(
-    surveySlug,
-    "backend",
-  )
+  const backendConfig = getConfigBySurveySlug(surveySlug, "backend")
+  const activeStatuses =
+    status.length > 0 ? status : backendConfig.status.map((statusItem) => statusItem.value)
 
-  const userLocationQuestionId = getQuestionIdBySurveySlug(surveySlug, "location")
-  const userCategoryQuestionId = getQuestionIdBySurveySlug(surveySlug, "category")
   const userFeedbackTextQuestionId = getQuestionIdBySurveySlug(surveySlug, "feedbackText")
-  const userFeedbackText2QuestionId = getQuestionIdBySurveySlug(surveySlug, "feedbackText2")
+  const userFeedbackText2QuestionId = getQuestionIdBySurveySlug(surveySlug, "feedbackText_2")
+  const topicTitleById = new Map(
+    topicsDefinition.map((topic) => [topic.id, normalizeSearchterm(topic.title)]),
+  )
+  const knownTagTitles = new Set(topicTitleById.values())
 
   const filtered = responses
     .filter((response) => {
-      return status.includes(response.status || "NEVER")
+      return activeStatuses.includes(response.status || "NEVER")
     })
-    // Handle `operator` which is the `operatorId: number` as 'string'
-    .filter((response) => {
-      if (operator === "ALL") return response
-      if (operator === "0") return response.operatorId === null
-      if (typeof operator === "string") return response.operatorId === Number(operator)
-    })
-    // Handle `topics` which is the `surveyResponseTags: number[]` as 'string[]'
-    .filter((response) => {
-      if (topics.includes("0"))
-        return (
-          topics.map(Number).some((topic) => response.surveyResponseTags.includes(topic)) ||
-          response.surveyResponseTags.length === 0
-        )
-      return topics.map(Number).some((topic) => response.surveyResponseTags.includes(topic))
-    })
-    // Handle `hasnotes`
-    .filter((response) => {
-      if (hasnotes === "ALL") return response
-      if (hasnotes === "true") return response.note
-      if (hasnotes === "false") return !response.note
-      return response
-    })
-    // Handle `haslocation`
-    .filter((response) => {
-      if (haslocation === "ALL") return response
-      if (haslocation === "true") return response.data[userLocationQuestionId]
-      if (haslocation === "false") return !response.data[userLocationQuestionId]
-      return response
-    })
-    // Handle `categories`
-    .filter((response) => {
-      if (!categories) return true
-
-      const responseCategoryValue = response.data[userCategoryQuestionId]
-      const responseCategories = Array.isArray(responseCategoryValue)
-        ? responseCategoryValue
-        : responseCategoryValue != null && responseCategoryValue !== ""
-          ? [responseCategoryValue]
-          : []
-
-      return (responseCategories as Array<string | number>).some((category) =>
-        categories.includes(String(category)),
-      )
-    })
-    // Handle `searchterm`
     .filter((response) => {
       if (!searchterm) return response
+      const cleanedSearchterm = normalizeSearchterm(searchterm)
+      if (!cleanedSearchterm) return response
+
+      const tagSearchterm = cleanedSearchterm.startsWith("tag:")
+        ? cleanedSearchterm.slice("tag:".length).trim()
+        : null
+      const responseTagTitles = response.surveyResponseTags
+        .map((tagId) => topicTitleById.get(tagId))
+        .filter((title): title is string => Boolean(title))
+
+      if (tagSearchterm !== null) {
+        if (!tagSearchterm) return response
+
+        if (knownTagTitles.has(tagSearchterm)) {
+          return responseTagTitles.some((title) => title === tagSearchterm)
+        }
+
+        return responseTagTitles.some((title) => title.includes(tagSearchterm))
+      }
+
       return (
-        response.note?.toLowerCase().includes(searchterm.trim().toLowerCase()) ||
+        response.note?.toLowerCase().includes(cleanedSearchterm) ||
         response.surveyResponseComments.some((comment: { body: string }) =>
-          comment.body.toLowerCase().includes(searchterm.trim().toLowerCase()),
+          comment.body.toLowerCase().includes(cleanedSearchterm),
         ) ||
+        responseTagTitles.some((title) => title.includes(cleanedSearchterm)) ||
         (response?.data[userFeedbackTextQuestionId] &&
           String(response.data[userFeedbackTextQuestionId])
             .toLowerCase()
-            .includes(searchterm.trim().toLowerCase())) ||
+            .includes(cleanedSearchterm)) ||
         (response?.data[userFeedbackText2QuestionId] &&
           String(response.data[userFeedbackText2QuestionId])
             .toLowerCase()
-            .includes(searchterm.trim().toLowerCase()))
+            .includes(cleanedSearchterm))
       )
     })
-    // Handle additional filters
     .filter((response) => {
-      if (!additionalFilters) return response
+      if (!additionalFilters) return true
       return Object.keys(additionalFilters).every((key) => {
-        if (additionalFilters[key] === "ALL") return response
-        const additionalFiltersConfigItem = additionalFiltersDefinition?.find(
+        if (additionalFilters[key] === "ALL") return true
+
+        const additionalFiltersConfigItem = backendConfig.additionalFilters?.find(
           (filter) => filter.value === key,
         )
-        // if the filter is not defined in the backend config (e.g. broken url), we do not filter by it
-        if (!additionalFiltersConfigItem) return response
-        // on dev and staging we have some surveyresponses (Hinweise) that do not have a first part (Umfrage)
-        // so we need to check if the first part exists, here we filter out the surveyresponses that do not have a first part when a filter concerning the first part is used; in production these surveyresponses do not exist
+        if (!additionalFiltersConfigItem) return true
         if (
           additionalFiltersConfigItem?.surveyPart === "part1" &&
           !response.surveyPart1ResponseData
@@ -123,19 +108,21 @@ export const useFilteredResponses = (
           return false
         switch (additionalFiltersConfigItem?.surveyPart) {
           case "part1":
-            return (
-              response.surveyPart1ResponseData?.[additionalFiltersConfigItem.id] ===
-              additionalFilters[key]
+            return responseValueMatchesFilter(
+              response.surveyPart1ResponseData?.[additionalFiltersConfigItem.id],
+              additionalFilters[key],
             )
           case "part2":
-            return response.data[additionalFiltersConfigItem.id] === additionalFilters[key]
+            return responseValueMatchesFilter(
+              response.data[additionalFiltersConfigItem.id],
+              additionalFilters[key],
+            )
           case "part3":
-            return (
-              response.surveyPart3ResponseData?.[additionalFiltersConfigItem.id] ===
-              additionalFilters[key]
+            return responseValueMatchesFilter(
+              response.surveyPart3ResponseData?.[additionalFiltersConfigItem.id],
+              additionalFilters[key],
             )
           default:
-            // If surveyPart is not recognized, don't filter
             return true
         }
       })

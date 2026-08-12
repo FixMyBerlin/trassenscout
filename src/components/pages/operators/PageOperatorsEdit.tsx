@@ -19,6 +19,8 @@ export function PageOperatorsEdit() {
   return (
     <>
       <PageHeader
+        title="Baulastträger bearbeiten"
+        titleVisuallyHidden
         breadcrumb={
           <ProjectPageBreadcrumb
             section="Baulastträger"

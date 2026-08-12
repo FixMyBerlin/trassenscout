@@ -36,6 +36,8 @@ export function PageProjectRecordDetail() {
   return (
     <>
       <PageHeader
+        title={projectRecord.title}
+        titleVisuallyHidden
         breadcrumb={
           <ProjectPageBreadcrumb
             section="Projektprotokoll"

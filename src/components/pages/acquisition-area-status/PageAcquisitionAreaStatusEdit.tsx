@@ -21,6 +21,8 @@ export function PageAcquisitionAreaStatusEdit() {
   return (
     <>
       <PageHeader
+        title="Status bearbeiten"
+        titleVisuallyHidden
         breadcrumb={
           <ProjectPageBreadcrumb
             section="Flächenerwerb-Status"

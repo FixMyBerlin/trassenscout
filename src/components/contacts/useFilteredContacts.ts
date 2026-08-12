@@ -1,9 +1,7 @@
 import { getFullname } from "@/src/components/core/users/getFullname"
+import { normalizeSearchterm } from "@/src/components/core/utils/normalizeSearchterm"
 import type { Contact } from "@/src/server/contacts/types"
 import { useContactFilters } from "./useContactFilters"
-
-const normalizeSearchterm = (searchterm: string) =>
-  searchterm.trim().toLowerCase().replace(/#/g, "").trim()
 
 export const useFilteredContacts = (contacts: Contact[]) => {
   const { filter } = useContactFilters()

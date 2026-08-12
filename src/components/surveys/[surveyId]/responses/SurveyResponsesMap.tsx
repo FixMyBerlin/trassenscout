@@ -9,6 +9,7 @@ import {
   MapAsideSplitLayout,
 } from "@/src/components/core/components/PageHeader/MapListViewLayout"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
+import { PageHeaderToolbarLink } from "@/src/components/core/components/PageHeader/PageHeaderToolbarLink"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
 import EditableSurveyResponseListItem from "@/src/components/surveys/[surveyId]/responses/EditableSurveyResponseListItem"
 import { getFlatSurveyFormFields } from "@/src/components/surveys/[surveyId]/responses/getFlatSurveyFormFields"
@@ -115,6 +116,14 @@ export function SurveyResponsesMap({ projectSlug, survey, tabs }: Props) {
             search: (prev) => prev,
           })
         }}
+        toolbarAction={
+          <PageHeaderToolbarLink
+            href={`/api/${projectSlug}/surveys/${survey.id}/part2/results`}
+            label="Alle Daten als .csv herunterladen"
+          >
+            CSV
+          </PageHeaderToolbarLink>
+        }
         className="mb-0 shrink-0"
       />
 

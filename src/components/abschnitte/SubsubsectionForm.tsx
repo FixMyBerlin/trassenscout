@@ -9,6 +9,10 @@ import { subsubsectionFieldTranslations } from "@/src/components/abschnitte/util
 import { AdminBox } from "@/src/components/core/components/AdminBox/AdminBox"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
+import {
+  formDetailsClassName,
+  formDetailsSummaryClassName,
+} from "@/src/components/core/components/forms/styles/formDetailsStyles"
 import { clearImperativeFieldSubmitErrors } from "@/src/components/core/components/forms/utils/clearImperativeFieldSubmitErrors"
 import { createFormOptions } from "@/src/components/core/components/forms/utils/createFormOptions"
 import {
@@ -22,8 +26,10 @@ import { getUserSelectOptions } from "@/src/components/shared/app/users/utils/ge
 import { isAdmin } from "@/src/components/shared/app/users/utils/isAdmin"
 import { adminLookupRowsWithCountQueryOptions } from "@/src/server/adminLookupTables/adminLookupTablesQueryOptions"
 import { projectUsersQueryOptions } from "@/src/server/memberships/projectUsersQueryOptions"
+import { projectBySlugQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 import { subsectionsQueryOptions } from "@/src/server/subsections/subsectionsQueryOptions"
 import { currentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
+import { parseDefinitions, sortByOrder } from "@/src/shared/subsubsections/extraFieldSchemas"
 import { subsubsectionFormDefaultValues } from "@/src/shared/subsubsections/schemas"
 
 const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
@@ -94,6 +100,10 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
 
   const { data: users } = useSuspenseQuery(
     projectUsersQueryOptions({ projectSlug, role: "EDITOR" }),
+  )
+  const { data: project } = useSuspenseQuery(projectBySlugQueryOptions(projectSlug))
+  const extraFieldDefinitions = sortByOrder(
+    parseDefinitions(project.subsubsectionExtraFieldDefinitions),
   )
   const { data: qualityData } = useSuspenseQuery(
     adminLookupRowsWithCountQueryOptions({ projectSlug, table: "qualityLevels" }),
@@ -245,8 +255,8 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
         subsectionSlug={subsectionSlug}
         selectedSubsubsectionSlug={selectedSubsubsectionSlug}
       />
-      <details>
-        <summary className="mb-2 cursor-pointer">Anzeige-Optionen für Karten-Label</summary>
+      <details className={formDetailsClassName}>
+        <summary className={formDetailsSummaryClassName}>Anzeige-Optionen für Karten-Label</summary>
         <form.AppField name="labelPos">
           {(field) => (
             <field.RadiobuttonGroup label="" classNameItemWrapper="space-y-6 sm:columns-2 pt-2" />
@@ -388,8 +398,18 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
           />
         )}
       </form.AppField>
-      <details>
-        <summary className="mb-2 cursor-pointer">Verkehrsbelastung</summary>
+      {extraFieldDefinitions.length > 0 && (
+        <details open className={formDetailsClassName}>
+          <summary className={formDetailsSummaryClassName}>Zusätzliche Felder</summary>
+          {extraFieldDefinitions.map((definition) => (
+            <form.AppField key={definition.name} name={`extraFields.${definition.name}`}>
+              {(field) => <field.TextField label={definition.label} optional />}
+            </form.AppField>
+          ))}
+        </details>
+      )}
+      <details className={formDetailsClassName}>
+        <summary className={formDetailsSummaryClassName}>Verkehrsbelastung</summary>
         <form.AppField name="maxSpeed">
           {(field) => (
             <field.NumberField
@@ -418,8 +438,8 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
           )}
         </form.AppField>
       </details>
-      <details>
-        <summary className="mb-2 cursor-pointer">Kostenstruktur</summary>
+      <details className={formDetailsClassName}>
+        <summary className={formDetailsSummaryClassName}>Kostenstruktur</summary>
         <form.AppField name="planningCosts">
           {(field) => (
             <field.NumberField
@@ -520,8 +540,8 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
           )}
         </form.AppField>
       </details>
-      <details>
-        <summary className="mb-2 cursor-pointer">Dauer</summary>
+      <details className={formDetailsClassName}>
+        <summary className={formDetailsSummaryClassName}>Dauer</summary>
         <form.AppField name="planningPeriod">
           {(field) => (
             <field.NumberField

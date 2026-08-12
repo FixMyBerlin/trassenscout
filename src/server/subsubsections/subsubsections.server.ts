@@ -4,6 +4,10 @@ import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
 import { connectIds, idsFromFormValue, setIds } from "@/src/shared/prisma/connectIds"
+import {
+  parseDefinitions,
+  sanitizeExtraFieldsForSave,
+} from "@/src/shared/subsubsections/extraFieldSchemas"
 import { SubsubsectionSchema } from "@/src/shared/subsubsections/schemas"
 import { m2mFieldRelationNames, m2mFields } from "./m2mFields"
 import {
@@ -33,7 +37,12 @@ const subsubsectionDetailInclude = {
   subsection: {
     select: {
       slug: true,
-      project: { select: { landAcquisitionModuleEnabled: true } },
+      project: {
+        select: {
+          landAcquisitionModuleEnabled: true,
+          subsubsectionExtraFieldDefinitions: true,
+        },
+      },
     },
   },
   ...Object.fromEntries(
@@ -45,6 +54,23 @@ const subsubsectionDetailInclude = {
 } as const
 
 type SubsubsectionInput = z.infer<typeof SubsubsectionSchema>
+
+async function getProjectExtraFieldDefinitions(projectSlug: string) {
+  const project = await db.project.findFirstOrThrow({
+    where: { slug: projectSlug },
+    select: { subsubsectionExtraFieldDefinitions: true },
+  })
+
+  return parseDefinitions(project.subsubsectionExtraFieldDefinitions)
+}
+
+async function subsubsectionExtraFieldsData(
+  projectSlug: string,
+  extraFields: SubsubsectionInput["extraFields"],
+) {
+  const definitions = await getProjectExtraFieldDefinitions(projectSlug)
+  return sanitizeExtraFieldsForSave(extraFields, definitions) as Prisma.InputJsonValue
+}
 
 function subsubsectionInProjectWhere(projectSlug: string, id: number) {
   return { id, subsection: { project: { slug: projectSlug } } }
@@ -108,12 +134,18 @@ async function validateSubsubsectionRelations(projectSlug: string, input: Subsub
   ])
 }
 
-function subsubsectionData(input: SubsubsectionInput) {
-  const { specialFeatures, subsubsectionInfrastructureTypeIds, ...data } = input
+function subsubsectionData(input: SubsubsectionInput, extraFields: Prisma.InputJsonValue) {
+  const {
+    specialFeatures,
+    subsubsectionInfrastructureTypeIds,
+    extraFields: _extraFields,
+    ...data
+  } = input
 
   return {
     ...data,
     geometry: data.geometry as Prisma.InputJsonValue,
+    extraFields,
     specialFeatures: connectIds(idsFromFormValue(specialFeatures)),
     SubsubsectionInfrastructureTypes: connectIds(
       idsFromFormValue(subsubsectionInfrastructureTypeIds),
@@ -121,12 +153,18 @@ function subsubsectionData(input: SubsubsectionInput) {
   }
 }
 
-function subsubsectionUpdateData(input: SubsubsectionInput) {
-  const { specialFeatures, subsubsectionInfrastructureTypeIds, ...data } = input
+function subsubsectionUpdateData(input: SubsubsectionInput, extraFields: Prisma.InputJsonValue) {
+  const {
+    specialFeatures,
+    subsubsectionInfrastructureTypeIds,
+    extraFields: _extraFields,
+    ...data
+  } = input
 
   return {
     ...data,
     geometry: data.geometry as Prisma.InputJsonValue,
+    extraFields,
     specialFeatures: setIds(idsFromFormValue(specialFeatures)),
     SubsubsectionInfrastructureTypes: setIds(idsFromFormValue(subsubsectionInfrastructureTypeIds)),
   }
@@ -193,9 +231,10 @@ export async function createSubsubsection(
   await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
   const { projectSlug, ...data } = input
   await validateSubsubsectionRelations(projectSlug, data)
+  const extraFields = await subsubsectionExtraFieldsData(projectSlug, data.extraFields)
 
   return db.subsubsection.create({
-    data: subsubsectionData(data),
+    data: subsubsectionData(data, extraFields),
   })
 }
 
@@ -215,9 +254,11 @@ export async function updateSubsubsection(
     await endpointAuth.admin(headers)
   }
 
+  const extraFields = await subsubsectionExtraFieldsData(projectSlug, data.extraFields)
+
   return db.subsubsection.update({
     where: { id: previous.id },
-    data: subsubsectionUpdateData(data),
+    data: subsubsectionUpdateData(data, extraFields),
     include: { subsection: { select: { slug: true } } },
   })
 }

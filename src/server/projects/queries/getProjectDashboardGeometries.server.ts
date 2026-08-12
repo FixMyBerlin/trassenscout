@@ -1,6 +1,13 @@
 import { featureCollection } from "@turf/helpers"
 import { bbox, simplify, truncate } from "@turf/turf"
-import type { Feature, FeatureCollection, LineString, Polygon } from "geojson"
+import type {
+  Feature,
+  FeatureCollection,
+  GeoJsonProperties,
+  LineString,
+  Polygon,
+  Position,
+} from "geojson"
 import type { UnifiedFeatureProperties } from "@/src/components/core/components/Map/layers/UnifiedFeaturesLayer"
 import type { Bbox2D } from "@/src/components/core/components/Map/utils/bboxHelpers"
 import { lineStringToGeoJSON } from "@/src/components/core/components/Map/utils/lineStringToGeoJSON"
@@ -9,12 +16,16 @@ import { GeometryTypeEnum } from "@/src/prisma/generated/client"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import db from "@/src/server/db.server"
 import { typeSubsectionGeometry } from "@/src/server/subsections/utils/typeSubsectionGeometry"
+import { mergeContiguousLines } from "@/src/shared/geometry/mergeContiguousLines"
 
-const DASHBOARD_GEOMETRY_PRECISION = 4
-const DASHBOARD_GEOMETRY_SIMPLIFY_TOLERANCE = 0.0003
+const DASHBOARD_GEOMETRY_PRECISION = 5
+// Degrees; limits dashboard payload fidelity.
+const DASHBOARD_GEOMETRY_SIMPLIFY_TOLERANCE = 0.00003
+// Degrees; only stitches subsection endpoints.
+const DASHBOARD_GEOMETRY_MERGE_TOLERANCE = 0.0003
 
-function simplifyDashboardFeature<T extends LineString | Polygon>(
-  input: Feature<T, UnifiedFeatureProperties>,
+function simplifyDashboardFeature<T extends LineString | Polygon, P extends GeoJsonProperties>(
+  input: Feature<T, P>,
 ) {
   try {
     const simplified = simplify(input, {
@@ -25,16 +36,13 @@ function simplifyDashboardFeature<T extends LineString | Polygon>(
     const truncated = truncate(simplified, { precision: DASHBOARD_GEOMETRY_PRECISION })
 
     if (truncated.geometry.type === input.geometry.type) {
-      return truncated as Feature<T, UnifiedFeatureProperties>
+      return truncated as Feature<T, P>
     }
   } catch {
     // Fall back to coordinate truncation if Turf cannot simplify an edge-case geometry.
   }
 
-  return truncate(input, { precision: DASHBOARD_GEOMETRY_PRECISION }) as Feature<
-    T,
-    UnifiedFeatureProperties
-  >
+  return truncate(input, { precision: DASHBOARD_GEOMETRY_PRECISION }) as Feature<T, P>
 }
 
 export async function getProjectDashboardGeometries(headers: Headers): Promise<{
@@ -65,29 +73,26 @@ export async function getProjectDashboardGeometries(headers: Headers): Promise<{
   const polygons: Feature<Polygon, UnifiedFeatureProperties>[] = []
 
   projects.forEach((project) => {
+    const properties = {
+      projectSlug: project.slug,
+      style: "REGULAR",
+      // Required: UnifiedFeaturesLayer colors by `isCurrent`, and every project on the dashboard
+      // is primary. Note this view has no DASHED styling — `style` is always REGULAR here.
+      isCurrent: true,
+    } satisfies Omit<UnifiedFeatureProperties, "featureId">
+
+    const projectLineCoordinates: Position[][] = []
+
     project.subsections.forEach((subsection) => {
       try {
         const typedSubsection = typeSubsectionGeometry(subsection)
-        const properties = {
-          projectSlug: project.slug,
-          style: "REGULAR",
-          // Required: UnifiedFeaturesLayer colors by `isCurrent`, and every project on the dashboard
-          // is primary. Note this view has no DASHED styling — `style` is always REGULAR here.
-          isCurrent: true,
-        } satisfies Omit<UnifiedFeatureProperties, "featureId">
 
         if (typedSubsection.type === "LINE") {
-          lines.push(
-            ...lineStringToGeoJSON(typedSubsection.geometry, properties).map((feature, index) =>
-              simplifyDashboardFeature({
-                ...feature,
-                properties: {
-                  ...feature.properties,
-                  featureId: `project-${project.slug}-subsection-${subsection.id}-line-${index}`,
-                },
-              }),
-            ),
-          )
+          lineStringToGeoJSON(typedSubsection.geometry).forEach((feature) => {
+            projectLineCoordinates.push(
+              simplifyDashboardFeature(feature).geometry.coordinates as Position[],
+            )
+          })
           return
         }
 
@@ -106,6 +111,17 @@ export async function getProjectDashboardGeometries(headers: Headers): Promise<{
         // Skip malformed legacy/imported geometries so one bad subsection does not remove all dashboard geometry.
       }
     })
+
+    // Dashboard renders project lines as one entity, without subsection-level identity.
+    mergeContiguousLines(projectLineCoordinates, DASHBOARD_GEOMETRY_MERGE_TOLERANCE).forEach(
+      (coordinates, index) => {
+        lines.push({
+          type: "Feature",
+          geometry: { type: "LineString", coordinates },
+          properties: { ...properties, featureId: `project-${project.slug}-line-${index}` },
+        })
+      },
+    )
   })
 
   const geometryFeatures = [...lines, ...polygons]

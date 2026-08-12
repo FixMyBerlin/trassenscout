@@ -2,6 +2,7 @@ import { responseConfig as radnetzBrandenburgResponseConfig } from "@/src/compon
 import { authFile, seedProjects } from "@/tests/_fixtures/auth"
 import { authorizationNoise, pageNoise, surveyNoise } from "@/tests/_fixtures/console-noise"
 import { expect, test } from "@/tests/_fixtures/test"
+import { cleanupNoProjectMemberships } from "@/tests/_utils/cleanupNoProjectMemberships"
 import { expectAccessDeniedRedirect } from "@/tests/_utils/pageAssertions"
 import { getTestDb } from "@/tests/_utils/testDb"
 
@@ -11,6 +12,11 @@ const surveyCategoryFieldId = String(radnetzBrandenburgResponseConfig.evaluation
 const surveyFeedbackTextFieldId = String(
   radnetzBrandenburgResponseConfig.evaluationRefs.feedbackText,
 )
+const surveyResponseMapNoise = [
+  ...surveyNoise,
+  "Failed to load resource: the server responded with a status of 404",
+  "Bad response code: 404",
+]
 
 type SurveyFixture = {
   surveyId: number
@@ -112,6 +118,7 @@ test.describe("Survey permissions", () => {
     test.describe("users without project membership", () => {
       test.use({ storageState: authFile("noProject") })
       test.use({ allowedConsoleErrors: [...pageNoise, ...authorizationNoise] })
+      test.beforeEach(cleanupNoProjectMemberships)
 
       test("cannot open responses", async ({ page }) => {
         await page.goto(`/${projectSlug}/surveys/${surveyFixture.surveyId}/responses`)
@@ -126,11 +133,11 @@ test.describe("Survey permissions", () => {
 
     test.describe("viewer users", () => {
       test.use({ storageState: authFile("viewer") })
-      test.use({ allowedConsoleErrors: surveyNoise })
+      test.use({ allowedConsoleErrors: surveyResponseMapNoise })
 
       test("see response controls as read-only", async ({ page }) => {
         await page.goto(responsesDetailsPath())
-        await expect(page.getByText("Nicht zugeordnet").first()).toBeVisible({
+        await expect(page.getByText("Nicht zugeordnet").last()).toBeVisible({
           timeout: 30_000,
         })
 
@@ -147,7 +154,7 @@ test.describe("Survey permissions", () => {
 
     test.describe("editor users", () => {
       test.use({ storageState: authFile("editor") })
-      test.use({ allowedConsoleErrors: surveyNoise })
+      test.use({ allowedConsoleErrors: surveyResponseMapNoise })
 
       test("can edit response controls", async ({ page }) => {
         await page.goto(responsesDetailsPath())
@@ -215,6 +222,7 @@ test.describe("Survey permissions", () => {
     test.describe("users without project membership", () => {
       test.use({ storageState: authFile("noProject") })
       test.use({ allowedConsoleErrors: [...pageNoise, ...authorizationNoise] })
+      test.beforeEach(cleanupNoProjectMemberships)
 
       test("cannot open response details", async ({ page }) => {
         await page.goto(responsesDetailsPath())
@@ -268,6 +276,7 @@ test.describe("Survey permissions", () => {
     test.describe("users without project membership", () => {
       test.use({ storageState: authFile("noProject") })
       test.use({ allowedConsoleErrors: [...pageNoise, ...authorizationNoise] })
+      test.beforeEach(cleanupNoProjectMemberships)
 
       test("cannot open the upload edit route", async ({ page }) => {
         await page.goto(uploadEditPath())

@@ -6,6 +6,12 @@ export const navigationMenuItemLinkStyles = (focus: boolean) =>
     "block rounded-md px-3 py-2 text-sm text-gray-700 no-underline hover:bg-gray-100 hover:text-blue-500",
   )
 
+export const adminNavigationMenuItemLinkStyles = (focus: boolean) =>
+  twJoin(
+    focus ? "bg-purple-100/80" : "",
+    "block rounded-md px-3 py-2 text-sm text-purple-950/90 no-underline hover:bg-purple-100/80 hover:text-purple-900",
+  )
+
 export const navigationMenuTransitionProps = {
   enter: "transition ease-out duration-100",
   enterFrom: "transform opacity-0 scale-95",

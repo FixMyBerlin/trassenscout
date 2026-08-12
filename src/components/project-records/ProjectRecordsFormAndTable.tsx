@@ -50,6 +50,8 @@ export const ProjectRecordsFormAndTable = () => {
   return (
     <>
       <PageHeader
+        title="Projektprotokoll"
+        titleVisuallyHidden
         breadcrumb={breadcrumb}
         tabs={tabs}
         filters={

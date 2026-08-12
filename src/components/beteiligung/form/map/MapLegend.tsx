@@ -1,5 +1,4 @@
 import "maplibre-gl/dist/maplibre-gl.css"
-import { Fragment } from "react"
 import { twJoin } from "tailwind-merge"
 
 type TLegendItem = {
@@ -53,19 +52,17 @@ export const SurveyMapLegend = (legend: Props) => {
   return (
     <div className="mt-0! flex flex-col gap-3 bg-gray-100 p-4">
       {legendGroups.map(({ groupLabel, items }) => (
-        <Fragment key={groupLabel}>
-          <p>{groupLabel}</p>
-          <div className="grid grid-cols-1 gap-y-1 sm:grid-cols-2">
-            {items.map(({ itemKey, itemValue }) => (
-              <div key={itemKey} className="flex items-center gap-2">
-                <div className="flex h-6 flex-col justify-center">
-                  <LegendItemShape legendItem={itemValue} />
-                </div>
-                <div className="text-sm leading-none font-semibold">{itemValue.label}</div>
+        <div key={groupLabel} className="flex flex-wrap items-center gap-x-7 gap-y-3">
+          <p className="shrink-0 font-medium">{groupLabel}</p>
+          {items.map(({ itemKey, itemValue }) => (
+            <div key={itemKey} className="flex items-center gap-2.5">
+              <div className="flex h-6 flex-col justify-center">
+                <LegendItemShape legendItem={itemValue} />
               </div>
-            ))}
-          </div>
-        </Fragment>
+              <div className="text-sm leading-none font-semibold">{itemValue.label}</div>
+            </div>
+          ))}
+        </div>
       ))}
     </div>
   )

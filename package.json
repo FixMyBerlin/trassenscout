@@ -200,5 +200,15 @@
   },
   "prisma": {
     "schema": "prisma/schema.prisma"
-  }
+  },
+  "trustedDependencies": [
+    "@headlessui/react",
+    "@mapgrab/playwright",
+    "@tanstack/react-form",
+    "eslint-plugin-compat",
+    "maplibre-gl",
+    "react-dropzone",
+    "react-map-gl",
+    "recharts"
+  ]
 }

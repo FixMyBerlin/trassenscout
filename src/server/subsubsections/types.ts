@@ -1,4 +1,5 @@
 import type {
+  Prisma,
   QualityLevel,
   Subsubsection,
   SubsubsectionStatusStyleEnum,
@@ -9,7 +10,15 @@ import type { getSubsubsections } from "./subsubsections.server"
 export type SubsubsectionWithPosition = Omit<Subsubsection, "geometry" | "type"> &
   GeometryWithTypeDiscriminated & {
     manager: { firstName: string; lastName: string } | null
-  } & { subsection: { slug: string; project: { landAcquisitionModuleEnabled: boolean } } } & {
+  } & {
+    subsection: {
+      slug: string
+      project: {
+        landAcquisitionModuleEnabled: boolean
+        subsubsectionExtraFieldDefinitions: Prisma.JsonValue
+      }
+    }
+  } & {
     qualityLevel?: Pick<QualityLevel, "title" | "slug" | "url"> | null
   } & { SubsubsectionTask?: { title: string } | null } & {
     SubsubsectionInfrastructureTypes: { id: number; title: string; slug: string }[]

@@ -17,4 +17,5 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
   showLogEntries: false,
   evaluationsEnabled: false,
   alkisStateKey: StateKeyEnum.DISABLED,
+  subsubsectionExtraFieldDefinitions: [],
 }

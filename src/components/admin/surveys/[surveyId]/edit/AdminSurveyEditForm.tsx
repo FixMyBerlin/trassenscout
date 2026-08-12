@@ -8,14 +8,16 @@ import { type CreateSurveyType } from "@/src/shared/surveys/schemas"
 import { AdminSurveyForm } from "../../AdminSurveyForm"
 
 type Props = {
+  projectSlug: string
   surveyId: number
 }
 
-export const AdminSurveyEditForm = ({ surveyId }: Props) => {
+export const AdminSurveyEditForm = ({ projectSlug, surveyId }: Props) => {
   const navigate = useNavigate()
   const { data: survey } = useSuspenseQuery(adminSurveyQueryOptions(surveyId))
   const updateSurveyMutation = useMutation({ mutationFn: updateAdminSurveyFn })
   const deleteSurveyMutation = useMutation({ mutationFn: deleteAdminSurveyFn })
+  const surveysPath = `/admin/projects/${projectSlug}/surveys`
 
   const handleSubmit = async (values: CreateSurveyType) => {
     try {
@@ -28,7 +30,7 @@ export const AdminSurveyEditForm = ({ surveyId }: Props) => {
           endDate: values.endDate ? new Date(values.endDate) : null,
         },
       })
-      navigate({ to: "/admin/surveys" })
+      navigate({ to: "/admin/projects/$projectSlug/surveys", params: { projectSlug } })
     } catch (error: unknown) {
       console.error(error)
       return { [FORM_ERROR]: error instanceof Error ? error.message : String(error) }
@@ -39,12 +41,13 @@ export const AdminSurveyEditForm = ({ surveyId }: Props) => {
     <AdminSurveyForm
       submitText="Aktualisieren"
       initialValues={survey}
+      fixedProjectId={survey.projectId}
       onSubmit={handleSubmit}
       actionBarRight={
         <DeleteActionBar
           itemTitle={survey.title}
           onDelete={() => deleteSurveyMutation.mutateAsync({ data: { id: survey.id } })}
-          returnPath="/admin/surveys"
+          returnPath={surveysPath}
         />
       }
     />

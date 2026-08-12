@@ -7,24 +7,27 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-ARG VITE_APP_ORIGIN
-ARG VITE_APP_ENV
-
-ENV VITE_APP_ORIGIN=${VITE_APP_ORIGIN}
-ENV VITE_APP_ENV=${VITE_APP_ENV}
-ENV TZ=Europe/Berlin
-
-COPY package.json bun.lock bunfig.toml ./
+# Do not copy bunfig.toml here: it enables the isolated linker + globalStore for local/dev only.
+# That layout symlinks into /root/.bun, which USER bun cannot read at runtime.
+COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile --ignore-scripts
 
 COPY . .
 
 RUN bun run postinstall
+
+# Build-time env for the Vite client bundle (inlined at build).
+# Keep below the install layer so staging and production share the dependency cache.
+ARG VITE_APP_ORIGIN
+ARG VITE_APP_ENV
+ENV VITE_APP_ORIGIN=${VITE_APP_ORIGIN}
+ENV VITE_APP_ENV=${VITE_APP_ENV}
 RUN bun run build
 
 RUN chown -R bun:bun /app
 USER bun
 
+ENV TZ=Europe/Berlin
 EXPOSE 4000
 
-CMD ["/bin/sh", "-c", "bunx prisma migrate deploy && exec bun .output/server/index.mjs"]
+CMD ["/bin/sh", "-c", "bunx --no-install prisma migrate deploy && exec bun .output/server/index.mjs"]

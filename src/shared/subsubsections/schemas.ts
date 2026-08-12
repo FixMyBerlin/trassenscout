@@ -3,6 +3,7 @@ import { InputNumberOrNullSchema, SlugSchema } from "@/src/components/core/utils
 import { GeometryTypeEnum, LabelPositionEnum, LocationEnum } from "@/src/prisma/generated/browser"
 import { SupportedGeometrySchema } from "@/src/shared/geometry/geometrySchemas"
 import { geometryTypeValidationRefine } from "@/src/shared/geometry/geometryTypeValidation"
+import { SubsubsectionExtraFieldsValuesSchema } from "@/src/shared/subsubsections/extraFieldSchemas"
 
 export const NullableDateSchema = z.union([
   z.coerce
@@ -67,6 +68,7 @@ export const SubsubsectionBaseSchema = z.object({
     .union([z.undefined(), z.boolean(), z.array(z.coerce.number())])
     .optional(),
   specialFeatures: z.union([z.literal(false), z.array(z.coerce.number())]).optional(),
+  extraFields: SubsubsectionExtraFieldsValuesSchema.optional(),
 })
 
 // Refined schema with geometry type validation
@@ -79,6 +81,7 @@ type SubsubsectionFormExtraFields = {
   estimatedCompletionDate: string
   subsubsectionInfrastructureTypeIds: string[]
   specialFeatures: string[]
+  extraFields: Record<string, string>
 }
 
 /** Empty form state for AppField typing + `form.reset()`. */
@@ -126,6 +129,7 @@ export const subsubsectionFormDefaultValues: Omit<
   ownFunds: null,
   subsubsectionInfrastructureTypeIds: [],
   specialFeatures: [],
+  extraFields: {},
 }
 
 export const SubsubsectionFormSchema = SubsubsectionBaseSchema.extend({
@@ -140,4 +144,5 @@ export const SubsubsectionFormSchema = SubsubsectionBaseSchema.extend({
   specialFeatures: z
     .union([z.undefined(), z.boolean(), z.array(z.coerce.number())])
     .transform((v) => v || []),
+  extraFields: SubsubsectionExtraFieldsValuesSchema.optional(),
 })

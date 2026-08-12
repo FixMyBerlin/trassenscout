@@ -35,6 +35,11 @@ import { projectRecordsBySubsubsectionQueryOptions } from "@/src/server/projectR
 import type { SubsubsectionWithPosition } from "@/src/server/subsubsections/types"
 import { linkedSurveyResponseForSubsubsectionQueryOptions } from "@/src/server/survey-responses/surveyResponsesQueryOptions"
 import { uploadsWithSubsectionsQueryOptions } from "@/src/server/uploads/uploadsWithSubsectionsQueryOptions"
+import {
+  parseDefinitions,
+  parseExtraFields,
+  sortByOrder,
+} from "@/src/shared/subsubsections/extraFieldSchemas"
 
 const layoutRouteApi = getRouteApi(
   "/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard",
@@ -60,6 +65,16 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
   const hasLength = subsubsection.lengthM != null
   const hasWidth = subsubsection.width != null
   const hasCostEstimate = subsubsection.costEstimate != null
+  const extraFieldDefinitions = sortByOrder(
+    parseDefinitions(subsubsection.subsection.project.subsubsectionExtraFieldDefinitions),
+  )
+  const extraFieldValues = parseExtraFields(subsubsection.extraFields)
+  const extraFieldRows = extraFieldDefinitions
+    .map((definition) => ({
+      definition,
+      value: extraFieldValues[definition.name],
+    }))
+    .filter((row) => row.value)
   const hasGeneralInfoRows = Boolean(
     subsubsection.SubsubsectionTask?.title ||
     locationLabel ||
@@ -71,7 +86,8 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
     subsubsection.SubsubsectionInfra?.title ||
     subsubsection.SubsubsectionStatus?.title ||
     subsubsection.estimatedConstructionDateString ||
-    subsubsection.manager,
+    subsubsection.manager ||
+    extraFieldRows.length > 0,
   )
 
   const { data: uploadsData, refetch: refetchUploads } = useQuery(
@@ -269,6 +285,16 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
                       </td>
                     </tr>
                   )}
+                  {extraFieldRows.map(({ definition, value }) => (
+                    <tr key={definition.name} className={tableRowClassName}>
+                      <th className="py-4 pr-3 pl-4 text-left align-top text-sm font-normal text-gray-700">
+                        {definition.label}
+                      </th>
+                      <td className="px-4 py-4 text-sm whitespace-pre-wrap text-gray-400">
+                        {value}
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>

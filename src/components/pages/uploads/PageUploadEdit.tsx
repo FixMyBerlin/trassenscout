@@ -31,6 +31,8 @@ export function PageUploadEdit() {
   return (
     <>
       <PageHeader
+        title="Dokument bearbeiten"
+        titleVisuallyHidden
         breadcrumb={
           <ProjectPageBreadcrumb
             section="Dokumente"

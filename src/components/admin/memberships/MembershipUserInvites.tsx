@@ -1,11 +1,14 @@
 import { twJoin, twMerge } from "tailwind-merge"
 import {
+  adminTableBodyClassName,
   adminTableCellClassName,
   adminTableClassName,
   adminTableHeaderClassName,
-  adminTableWrapperClassName,
+  adminTableHeadRowClassName,
+  adminTableRowClassName,
 } from "@/src/components/admin/adminListClasses"
 import { AdminTableExternalLink } from "@/src/components/admin/AdminTableActions"
+import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { roleTranslation } from "@/src/components/core/users/roleTranslation.const"
 import { formatTableDateTime } from "@/src/components/core/utils/formatTableDateTime"
@@ -30,14 +33,9 @@ type Props = {
   invites: MembershipUserInvite[]
 }
 
-const headerCellClassName = twMerge(
-  adminTableHeaderClassName,
-  "py-2.5 text-left text-sm font-medium whitespace-nowrap text-gray-500",
-)
-
 const bodyCellClassName = twMerge(
   adminTableCellClassName,
-  "py-2.5 text-left align-middle text-sm text-gray-900",
+  "text-left align-middle text-sm text-gray-900",
 )
 
 function InviteStatusBadge({ invite }: { invite: MembershipUserInvite }) {
@@ -62,14 +60,14 @@ function formatUpdatedAt(value: Date | string) {
 export function MembershipUserInvites({ invites }: Props) {
   return (
     <section aria-labelledby="membership-user-invites-heading" className="space-y-3">
-      <h2 id="membership-user-invites-heading" className="text-sm font-semibold text-gray-900">
+      <h2 id="membership-user-invites-heading" className="px-4 text-lg font-semibold text-gray-700">
         Einladungen
       </h2>
 
       {invites.length === 0 ? (
-        <p className="text-sm text-gray-500">Keine ausstehenden oder aktiven Einladungen.</p>
+        <p className="px-4 text-sm text-gray-600">Keine ausstehenden oder aktiven Einladungen.</p>
       ) : (
-        <div className={adminTableWrapperClassName}>
+        <TableWrapper withTopBorder>
           <table className={twJoin(adminTableClassName, "table-fixed")}>
             <colgroup>
               <col className="w-32" />
@@ -78,28 +76,28 @@ export function MembershipUserInvites({ invites }: Props) {
               <col className="w-44" />
               <col className="w-32" />
             </colgroup>
-            <thead className="border-b border-gray-200 bg-gray-50">
-              <tr>
-                <th scope="col" className={headerCellClassName}>
+            <thead>
+              <tr className={adminTableHeadRowClassName}>
+                <th scope="col" className={adminTableHeaderClassName}>
                   Projekt
                 </th>
-                <th scope="col" className={headerCellClassName}>
+                <th scope="col" className={adminTableHeaderClassName}>
                   Status
                 </th>
-                <th scope="col" className={headerCellClassName}>
+                <th scope="col" className={adminTableHeaderClassName}>
                   Rechte
                 </th>
-                <th scope="col" className={headerCellClassName}>
+                <th scope="col" className={adminTableHeaderClassName}>
                   Aktualisiert
                 </th>
-                <th scope="col" className={twMerge(headerCellClassName, "text-right")}>
+                <th scope="col" className={twMerge(adminTableHeaderClassName, "text-right")}>
                   <span className="sr-only">Zur Projekt-Einladungsseite</span>
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
+            <tbody className={adminTableBodyClassName}>
               {invites.map((invite) => (
-                <tr key={invite.id}>
+                <tr key={invite.id} className={adminTableRowClassName}>
                   <td className={twMerge(bodyCellClassName, "font-medium")}>
                     {shortTitle(invite.project.slug)}
                   </td>
@@ -121,7 +119,7 @@ export function MembershipUserInvites({ invites }: Props) {
               ))}
             </tbody>
           </table>
-        </div>
+        </TableWrapper>
       )}
     </section>
   )

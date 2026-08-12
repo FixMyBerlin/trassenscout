@@ -13,6 +13,7 @@ import {
   MAP_VIEWPORT_SHELL_CLASS,
 } from "@/src/components/core/components/PageHeader/MapListViewLayout"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
+import { shortTitle } from "@/src/components/core/components/text/titles"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { projectBySlugQueryOptions } from "@/src/server/projects/projectsQueryOptions"
@@ -57,6 +58,8 @@ export const ProjectDashboardClient = () => {
     <div className={twJoin(isMapMode && MAP_VIEWPORT_SHELL_CLASS)}>
       <PageHeader
         className={isMapMode ? "mb-0 shrink-0" : undefined}
+        title={shortTitle(project.slug)}
+        titleVisuallyHidden
         breadcrumb={<ProjectPageBreadcrumb />}
         info="Übersicht über alle Planungsabschnitte des Projekts."
         viewMode={viewMode}

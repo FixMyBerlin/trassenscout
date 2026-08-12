@@ -129,7 +129,7 @@ export function SurveyAnalysis({ projectSlug, surveyId: _surveyId, survey, tabs 
           )}
         </div>
         <SuperAdminBox>
-          <Link to={`/admin/surveys/${survey.id}/edit`}>Bearbeiten</Link>
+          <Link to={`/admin/projects/${projectSlug}/surveys/${survey.id}/edit`}>Bearbeiten</Link>
         </SuperAdminBox>
       </div>
     </>

@@ -5,6 +5,7 @@ import { FieldWithErrorContainer } from "@/src/components/beteiligung/form/Error
 import {
   FieldError,
   getFieldA11yProps,
+  useFieldHasVisibleError,
   getFieldDescriptionId,
 } from "@/src/components/beteiligung/form/FieldErrror"
 import { formClasses } from "@/src/components/beteiligung/form/styles"
@@ -19,7 +20,7 @@ type CheckboxProps = {
 
 export const SurveyCheckboxGroup = ({ label, description, options, required }: CheckboxProps) => {
   const field = useFieldContext<Array<string>>()
-  const hasError = field.state.meta.errors.length > 0
+  const hasError = useFieldHasVisibleError(field)
 
   return (
     <FieldWithErrorContainer hasError={hasError}>

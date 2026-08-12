@@ -36,14 +36,16 @@ import { Route as ApiProcessProjectRecordEmailIndexRouteImport } from './routes/
 import { Route as ApiCronSurveyResponsesCleanupIndexRouteImport } from './routes/api/cron-surveyResponses-cleanup/index'
 import { Route as ApiCronLogEntriesCleanupIndexRouteImport } from './routes/api/cron-logEntries-cleanup/index'
 import { Route as ApiCronInvitesCleanupIndexRouteImport } from './routes/api/cron-invites-cleanup/index'
+import { Route as AdminSystemLogEntriesIndexRouteImport } from './routes/admin/system-log-entries/index'
 import { Route as AdminSurveysIndexRouteImport } from './routes/admin/surveys/index'
 import { Route as AdminSupportDocumentsIndexRouteImport } from './routes/admin/support-documents/index'
+import { Route as AdminSubsubsectionExtraFieldsIndexRouteImport } from './routes/admin/subsubsection-extra-fields/index'
 import { Route as AdminProjectsIndexRouteImport } from './routes/admin/projects/index'
 import { Route as AdminProjectRecordsIndexRouteImport } from './routes/admin/project-records/index'
 import { Route as AdminProjectRecordTemplatesIndexRouteImport } from './routes/admin/project-record-templates/index'
 import { Route as AdminProjectRecordEmailsIndexRouteImport } from './routes/admin/project-record-emails/index'
 import { Route as AdminMembershipsIndexRouteImport } from './routes/admin/memberships/index'
-import { Route as AdminLogEntriesIndexRouteImport } from './routes/admin/logEntries/index'
+import { Route as AdminLogEntriesIndexRouteImport } from './routes/admin/log-entries/index'
 import { Route as AdminEvaluationsIndexRouteImport } from './routes/admin/evaluations/index'
 import { Route as AdminEmailTemplatesIndexRouteImport } from './routes/admin/email-templates/index'
 import { Route as LoggedInProjectsProjectSlugIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/index'
@@ -85,6 +87,7 @@ import { Route as LoggedInProjectsProjectSlugEditIndexRouteImport } from './rout
 import { Route as LoggedInProjectsProjectSlugContactsIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/contacts/index'
 import { Route as LoggedInProjectsProjectSlugAcquisitionAreaStatusIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/acquisition-area-status/index'
 import { Route as LoggedInGeneralUserEditIndexRouteImport } from './routes/_loggedInGeneral/user/edit/index'
+import { Route as AdminSubsubsectionExtraFieldsProjectSlugEditRouteImport } from './routes/admin/subsubsection-extra-fields/$projectSlug/edit'
 import { Route as AdminEvaluationsProjectSlugEditRouteImport } from './routes/admin/evaluations/$projectSlug/edit'
 import { Route as ApiSupportDocumentsUploadIndexRouteImport } from './routes/api/support/documents/upload/index'
 import { Route as ApiProjectSlugUploadsUploadIdIndexRouteImport } from './routes/api/$projectSlug/uploads/$uploadId/index'
@@ -92,7 +95,10 @@ import { Route as ApiProjectSlugSubsectionsExportIndexRouteImport } from './rout
 import { Route as AdminSurveysSurveyIdResponsesIndexRouteImport } from './routes/admin/surveys/$surveyId/responses/index'
 import { Route as AdminSurveysSurveyIdEditIndexRouteImport } from './routes/admin/surveys/$surveyId/edit/index'
 import { Route as AdminSupportDocumentsSupportDocumentIdEditIndexRouteImport } from './routes/admin/support-documents/$supportDocumentId/edit/index'
+import { Route as AdminProjectsProjectSlugSurveysIndexRouteImport } from './routes/admin/projects/$projectSlug/surveys/index'
+import { Route as AdminProjectsProjectSlugSubsubsectionExtraFieldsIndexRouteImport } from './routes/admin/projects/$projectSlug/subsubsection-extra-fields/index'
 import { Route as AdminProjectsProjectSlugSubsectionsIndexRouteImport } from './routes/admin/projects/$projectSlug/subsections/index'
+import { Route as AdminProjectsProjectSlugEvaluationsIndexRouteImport } from './routes/admin/projects/$projectSlug/evaluations/index'
 import { Route as AdminProjectRecordsProjectRecordIdEditIndexRouteImport } from './routes/admin/project-records/$projectRecordId/edit/index'
 import { Route as AdminProjectRecordTemplatesTemplateIdEditIndexRouteImport } from './routes/admin/project-record-templates/$templateId/edit/index'
 import { Route as AdminProjectRecordEmailsProjectRecordEmailIdEditIndexRouteImport } from './routes/admin/project-record-emails/$projectRecordEmailId/edit/index'
@@ -124,6 +130,7 @@ import { Route as ApiSupportDocumentsDocumentIdSplatIndexRouteImport } from './r
 import { Route as ApiProjectSlugUploadsUploadIdSplatIndexRouteImport } from './routes/api/$projectSlug/uploads/$uploadId/$/index'
 import { Route as AdminSurveysSurveyIdResponsesTestIndexRouteImport } from './routes/admin/surveys/$surveyId/responses/test/index'
 import { Route as AdminSurveysSurveyIdResponsesCreatedIndexRouteImport } from './routes/admin/surveys/$surveyId/responses/created/index'
+import { Route as AdminProjectsProjectSlugSurveysNewIndexRouteImport } from './routes/admin/projects/$projectSlug/surveys/new/index'
 import { Route as AdminProjectsProjectSlugSubsectionsMultipleNewIndexRouteImport } from './routes/admin/projects/$projectSlug/subsections/multiple-new/index'
 import { Route as AdminProjectsProjectSlugSubsectionsEditIndexRouteImport } from './routes/admin/projects/$projectSlug/subsections/edit/index'
 import { Route as LoggedInProjectsProjectSlugUploadsUploadIdEditIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/uploads/$uploadId/edit/index'
@@ -151,9 +158,13 @@ import { Route as ApiProjectSlugSurveysSurveyIdPart1ResultsIndexRouteImport } fr
 import { Route as ApiProjectSlugSurveysSurveyIdPart1QuestionsIndexRouteImport } from './routes/api/$projectSlug/surveys/$surveyId/part1/questions/index'
 import { Route as ApiProjectSlugSurveysSurveyIdPart1AnswersIndexRouteImport } from './routes/api/$projectSlug/surveys/$surveyId/part1/answers/index'
 import { Route as ApiProjectSlugSubsectionsSubsectionSlugSubsubsectionsExportIndexRouteImport } from './routes/api/$projectSlug/subsections/$subsectionSlug/subsubsections/export/index'
+import { Route as AdminProjectsProjectSlugSurveysSurveyIdResponsesIndexRouteImport } from './routes/admin/projects/$projectSlug/surveys/$surveyId/responses/index'
+import { Route as AdminProjectsProjectSlugSurveysSurveyIdEditIndexRouteImport } from './routes/admin/projects/$projectSlug/surveys/$surveyId/edit/index'
 import { Route as LoggedInProjectsProjectSlugSurveysSurveyIdResponsesMapIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/surveys/$surveyId/responses/map/index'
 import { Route as LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungNewIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new/index'
 import { Route as LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardRouteRouteImport } from './routes/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard/route'
+import { Route as AdminProjectsProjectSlugSurveysSurveyIdResponsesTestIndexRouteImport } from './routes/admin/projects/$projectSlug/surveys/$surveyId/responses/test/index'
+import { Route as AdminProjectsProjectSlugSurveysSurveyIdResponsesCreatedIndexRouteImport } from './routes/admin/projects/$projectSlug/surveys/$surveyId/responses/created/index'
 import { Route as LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugEditIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/edit/index'
 import { Route as LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard/index'
 import { Route as LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardLandAcquisitionIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard/land-acquisition/index'
@@ -298,6 +309,12 @@ const ApiCronInvitesCleanupIndexRoute =
     path: '/api/cron-invites-cleanup/',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AdminSystemLogEntriesIndexRoute =
+  AdminSystemLogEntriesIndexRouteImport.update({
+    id: '/system-log-entries/',
+    path: '/system-log-entries/',
+    getParentRoute: () => AdminRoute,
+  } as any)
 const AdminSurveysIndexRoute = AdminSurveysIndexRouteImport.update({
   id: '/surveys/',
   path: '/surveys/',
@@ -307,6 +324,12 @@ const AdminSupportDocumentsIndexRoute =
   AdminSupportDocumentsIndexRouteImport.update({
     id: '/support-documents/',
     path: '/support-documents/',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminSubsubsectionExtraFieldsIndexRoute =
+  AdminSubsubsectionExtraFieldsIndexRouteImport.update({
+    id: '/subsubsection-extra-fields/',
+    path: '/subsubsection-extra-fields/',
     getParentRoute: () => AdminRoute,
   } as any)
 const AdminProjectsIndexRoute = AdminProjectsIndexRouteImport.update({
@@ -338,8 +361,8 @@ const AdminMembershipsIndexRoute = AdminMembershipsIndexRouteImport.update({
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminLogEntriesIndexRoute = AdminLogEntriesIndexRouteImport.update({
-  id: '/logEntries/',
-  path: '/logEntries/',
+  id: '/log-entries/',
+  path: '/log-entries/',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminEvaluationsIndexRoute = AdminEvaluationsIndexRouteImport.update({
@@ -584,6 +607,12 @@ const LoggedInGeneralUserEditIndexRoute =
     path: '/user/edit/',
     getParentRoute: () => LoggedInGeneralRoute,
   } as any)
+const AdminSubsubsectionExtraFieldsProjectSlugEditRoute =
+  AdminSubsubsectionExtraFieldsProjectSlugEditRouteImport.update({
+    id: '/subsubsection-extra-fields/$projectSlug/edit',
+    path: '/subsubsection-extra-fields/$projectSlug/edit',
+    getParentRoute: () => AdminRoute,
+  } as any)
 const AdminEvaluationsProjectSlugEditRoute =
   AdminEvaluationsProjectSlugEditRouteImport.update({
     id: '/evaluations/$projectSlug/edit',
@@ -626,10 +655,28 @@ const AdminSupportDocumentsSupportDocumentIdEditIndexRoute =
     path: '/support-documents/$supportDocumentId/edit/',
     getParentRoute: () => AdminRoute,
   } as any)
+const AdminProjectsProjectSlugSurveysIndexRoute =
+  AdminProjectsProjectSlugSurveysIndexRouteImport.update({
+    id: '/surveys/',
+    path: '/surveys/',
+    getParentRoute: () => AdminProjectsProjectSlugRouteRoute,
+  } as any)
+const AdminProjectsProjectSlugSubsubsectionExtraFieldsIndexRoute =
+  AdminProjectsProjectSlugSubsubsectionExtraFieldsIndexRouteImport.update({
+    id: '/subsubsection-extra-fields/',
+    path: '/subsubsection-extra-fields/',
+    getParentRoute: () => AdminProjectsProjectSlugRouteRoute,
+  } as any)
 const AdminProjectsProjectSlugSubsectionsIndexRoute =
   AdminProjectsProjectSlugSubsectionsIndexRouteImport.update({
     id: '/subsections/',
     path: '/subsections/',
+    getParentRoute: () => AdminProjectsProjectSlugRouteRoute,
+  } as any)
+const AdminProjectsProjectSlugEvaluationsIndexRoute =
+  AdminProjectsProjectSlugEvaluationsIndexRouteImport.update({
+    id: '/evaluations/',
+    path: '/evaluations/',
     getParentRoute: () => AdminProjectsProjectSlugRouteRoute,
   } as any)
 const AdminProjectRecordsProjectRecordIdEditIndexRoute =
@@ -822,6 +869,12 @@ const AdminSurveysSurveyIdResponsesCreatedIndexRoute =
     path: '/surveys/$surveyId/responses/created/',
     getParentRoute: () => AdminRoute,
   } as any)
+const AdminProjectsProjectSlugSurveysNewIndexRoute =
+  AdminProjectsProjectSlugSurveysNewIndexRouteImport.update({
+    id: '/surveys/new/',
+    path: '/surveys/new/',
+    getParentRoute: () => AdminProjectsProjectSlugRouteRoute,
+  } as any)
 const AdminProjectsProjectSlugSubsectionsMultipleNewIndexRoute =
   AdminProjectsProjectSlugSubsectionsMultipleNewIndexRouteImport.update({
     id: '/subsections/multiple-new/',
@@ -1013,6 +1066,18 @@ const ApiProjectSlugSubsectionsSubsectionSlugSubsubsectionsExportIndexRoute =
       getParentRoute: () => rootRouteImport,
     } as any,
   )
+const AdminProjectsProjectSlugSurveysSurveyIdResponsesIndexRoute =
+  AdminProjectsProjectSlugSurveysSurveyIdResponsesIndexRouteImport.update({
+    id: '/surveys/$surveyId/responses/',
+    path: '/surveys/$surveyId/responses/',
+    getParentRoute: () => AdminProjectsProjectSlugRouteRoute,
+  } as any)
+const AdminProjectsProjectSlugSurveysSurveyIdEditIndexRoute =
+  AdminProjectsProjectSlugSurveysSurveyIdEditIndexRouteImport.update({
+    id: '/surveys/$surveyId/edit/',
+    path: '/surveys/$surveyId/edit/',
+    getParentRoute: () => AdminProjectsProjectSlugRouteRoute,
+  } as any)
 const LoggedInProjectsProjectSlugSurveysSurveyIdResponsesMapIndexRoute =
   LoggedInProjectsProjectSlugSurveysSurveyIdResponsesMapIndexRouteImport.update(
     {
@@ -1036,6 +1101,20 @@ const LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSl
       id: '/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard',
       path: '/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug',
       getParentRoute: () => LoggedInProjectsProjectSlugRoute,
+    } as any,
+  )
+const AdminProjectsProjectSlugSurveysSurveyIdResponsesTestIndexRoute =
+  AdminProjectsProjectSlugSurveysSurveyIdResponsesTestIndexRouteImport.update({
+    id: '/surveys/$surveyId/responses/test/',
+    path: '/surveys/$surveyId/responses/test/',
+    getParentRoute: () => AdminProjectsProjectSlugRouteRoute,
+  } as any)
+const AdminProjectsProjectSlugSurveysSurveyIdResponsesCreatedIndexRoute =
+  AdminProjectsProjectSlugSurveysSurveyIdResponsesCreatedIndexRouteImport.update(
+    {
+      id: '/surveys/$surveyId/responses/created/',
+      path: '/surveys/$surveyId/responses/created/',
+      getParentRoute: () => AdminProjectsProjectSlugRouteRoute,
     } as any,
   )
 const LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugEditIndexRoute =
@@ -1115,14 +1194,16 @@ export interface FileRoutesByFullPath {
   '/$projectSlug/': typeof LoggedInProjectsProjectSlugIndexRoute
   '/admin/email-templates/': typeof AdminEmailTemplatesIndexRoute
   '/admin/evaluations/': typeof AdminEvaluationsIndexRoute
-  '/admin/logEntries/': typeof AdminLogEntriesIndexRoute
+  '/admin/log-entries/': typeof AdminLogEntriesIndexRoute
   '/admin/memberships/': typeof AdminMembershipsIndexRoute
   '/admin/project-record-emails/': typeof AdminProjectRecordEmailsIndexRoute
   '/admin/project-record-templates/': typeof AdminProjectRecordTemplatesIndexRoute
   '/admin/project-records/': typeof AdminProjectRecordsIndexRoute
   '/admin/projects/': typeof AdminProjectsIndexRoute
+  '/admin/subsubsection-extra-fields/': typeof AdminSubsubsectionExtraFieldsIndexRoute
   '/admin/support-documents/': typeof AdminSupportDocumentsIndexRoute
   '/admin/surveys/': typeof AdminSurveysIndexRoute
+  '/admin/system-log-entries/': typeof AdminSystemLogEntriesIndexRoute
   '/api/cron-invites-cleanup/': typeof ApiCronInvitesCleanupIndexRoute
   '/api/cron-logEntries-cleanup/': typeof ApiCronLogEntriesCleanupIndexRoute
   '/api/cron-surveyResponses-cleanup/': typeof ApiCronSurveyResponsesCleanupIndexRoute
@@ -1130,6 +1211,7 @@ export interface FileRoutesByFullPath {
   '/api/survey-upload/': typeof ApiSurveyUploadIndexRoute
   '/beteiligung/$surveySlug/': typeof BeteiligungSurveySlugIndexRoute
   '/admin/evaluations/$projectSlug/edit': typeof AdminEvaluationsProjectSlugEditRoute
+  '/admin/subsubsection-extra-fields/$projectSlug/edit': typeof AdminSubsubsectionExtraFieldsProjectSlugEditRoute
   '/user/edit/': typeof LoggedInGeneralUserEditIndexRoute
   '/$projectSlug/acquisition-area-status/': typeof LoggedInProjectsProjectSlugAcquisitionAreaStatusIndexRoute
   '/$projectSlug/contacts/': typeof LoggedInProjectsProjectSlugContactsIndexRoute
@@ -1189,7 +1271,10 @@ export interface FileRoutesByFullPath {
   '/admin/project-record-emails/$projectRecordEmailId/edit/': typeof AdminProjectRecordEmailsProjectRecordEmailIdEditIndexRoute
   '/admin/project-record-templates/$templateId/edit/': typeof AdminProjectRecordTemplatesTemplateIdEditIndexRoute
   '/admin/project-records/$projectRecordId/edit/': typeof AdminProjectRecordsProjectRecordIdEditIndexRoute
+  '/admin/projects/$projectSlug/evaluations/': typeof AdminProjectsProjectSlugEvaluationsIndexRoute
   '/admin/projects/$projectSlug/subsections/': typeof AdminProjectsProjectSlugSubsectionsIndexRoute
+  '/admin/projects/$projectSlug/subsubsection-extra-fields/': typeof AdminProjectsProjectSlugSubsubsectionExtraFieldsIndexRoute
+  '/admin/projects/$projectSlug/surveys/': typeof AdminProjectsProjectSlugSurveysIndexRoute
   '/admin/support-documents/$supportDocumentId/edit/': typeof AdminSupportDocumentsSupportDocumentIdEditIndexRoute
   '/admin/surveys/$surveyId/edit/': typeof AdminSurveysSurveyIdEditIndexRoute
   '/admin/surveys/$surveyId/responses/': typeof AdminSurveysSurveyIdResponsesIndexRoute
@@ -1218,6 +1303,7 @@ export interface FileRoutesByFullPath {
   '/$projectSlug/uploads/$uploadId/edit/': typeof LoggedInProjectsProjectSlugUploadsUploadIdEditIndexRoute
   '/admin/projects/$projectSlug/subsections/edit/': typeof AdminProjectsProjectSlugSubsectionsEditIndexRoute
   '/admin/projects/$projectSlug/subsections/multiple-new/': typeof AdminProjectsProjectSlugSubsectionsMultipleNewIndexRoute
+  '/admin/projects/$projectSlug/surveys/new/': typeof AdminProjectsProjectSlugSurveysNewIndexRoute
   '/admin/surveys/$surveyId/responses/created/': typeof AdminSurveysSurveyIdResponsesCreatedIndexRoute
   '/admin/surveys/$surveyId/responses/test/': typeof AdminSurveysSurveyIdResponsesTestIndexRoute
   '/api/$projectSlug/uploads/$uploadId/$/': typeof ApiProjectSlugUploadsUploadIdSplatIndexRoute
@@ -1225,6 +1311,8 @@ export interface FileRoutesByFullPath {
   '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardRouteRouteWithChildren
   '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new/': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungNewIndexRoute
   '/$projectSlug/surveys/$surveyId/responses/map/': typeof LoggedInProjectsProjectSlugSurveysSurveyIdResponsesMapIndexRoute
+  '/admin/projects/$projectSlug/surveys/$surveyId/edit/': typeof AdminProjectsProjectSlugSurveysSurveyIdEditIndexRoute
+  '/admin/projects/$projectSlug/surveys/$surveyId/responses/': typeof AdminProjectsProjectSlugSurveysSurveyIdResponsesIndexRoute
   '/api/$projectSlug/subsections/$subsectionSlug/subsubsections/export/': typeof ApiProjectSlugSubsectionsSubsectionSlugSubsubsectionsExportIndexRoute
   '/api/$projectSlug/surveys/$surveyId/part1/answers/': typeof ApiProjectSlugSurveysSurveyIdPart1AnswersIndexRoute
   '/api/$projectSlug/surveys/$surveyId/part1/questions/': typeof ApiProjectSlugSurveysSurveyIdPart1QuestionsIndexRoute
@@ -1232,6 +1320,8 @@ export interface FileRoutesByFullPath {
   '/api/$projectSlug/surveys/$surveyId/part2/results/': typeof ApiProjectSlugSurveysSurveyIdPart2ResultsIndexRoute
   '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardIndexRoute
   '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/edit/': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugEditIndexRoute
+  '/admin/projects/$projectSlug/surveys/$surveyId/responses/created/': typeof AdminProjectsProjectSlugSurveysSurveyIdResponsesCreatedIndexRoute
+  '/admin/projects/$projectSlug/surveys/$surveyId/responses/test/': typeof AdminProjectsProjectSlugSurveysSurveyIdResponsesTestIndexRoute
   '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardLandAcquisitionIndexRoute
   '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/acquisition-areas/new/': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugLandAcquisitionAcquisitionAreasNewIndexRoute
   '/$projectSlug/surveys/$surveyId/responses/$surveyResponseId/uploads/$uploadId/edit/': typeof LoggedInProjectsProjectSlugSurveysSurveyIdResponsesSurveyResponseIdUploadsUploadIdEditIndexRoute
@@ -1258,14 +1348,16 @@ export interface FileRoutesByTo {
   '/support': typeof LoggedInGeneralSupportIndexRoute
   '/admin/email-templates': typeof AdminEmailTemplatesIndexRoute
   '/admin/evaluations': typeof AdminEvaluationsIndexRoute
-  '/admin/logEntries': typeof AdminLogEntriesIndexRoute
+  '/admin/log-entries': typeof AdminLogEntriesIndexRoute
   '/admin/memberships': typeof AdminMembershipsIndexRoute
   '/admin/project-record-emails': typeof AdminProjectRecordEmailsIndexRoute
   '/admin/project-record-templates': typeof AdminProjectRecordTemplatesIndexRoute
   '/admin/project-records': typeof AdminProjectRecordsIndexRoute
   '/admin/projects': typeof AdminProjectsIndexRoute
+  '/admin/subsubsection-extra-fields': typeof AdminSubsubsectionExtraFieldsIndexRoute
   '/admin/support-documents': typeof AdminSupportDocumentsIndexRoute
   '/admin/surveys': typeof AdminSurveysIndexRoute
+  '/admin/system-log-entries': typeof AdminSystemLogEntriesIndexRoute
   '/api/cron-invites-cleanup': typeof ApiCronInvitesCleanupIndexRoute
   '/api/cron-logEntries-cleanup': typeof ApiCronLogEntriesCleanupIndexRoute
   '/api/cron-surveyResponses-cleanup': typeof ApiCronSurveyResponsesCleanupIndexRoute
@@ -1273,6 +1365,7 @@ export interface FileRoutesByTo {
   '/api/survey-upload': typeof ApiSurveyUploadIndexRoute
   '/beteiligung/$surveySlug': typeof BeteiligungSurveySlugIndexRoute
   '/admin/evaluations/$projectSlug/edit': typeof AdminEvaluationsProjectSlugEditRoute
+  '/admin/subsubsection-extra-fields/$projectSlug/edit': typeof AdminSubsubsectionExtraFieldsProjectSlugEditRoute
   '/user/edit': typeof LoggedInGeneralUserEditIndexRoute
   '/$projectSlug/acquisition-area-status': typeof LoggedInProjectsProjectSlugAcquisitionAreaStatusIndexRoute
   '/$projectSlug/contacts': typeof LoggedInProjectsProjectSlugContactsIndexRoute
@@ -1331,7 +1424,10 @@ export interface FileRoutesByTo {
   '/admin/project-record-emails/$projectRecordEmailId/edit': typeof AdminProjectRecordEmailsProjectRecordEmailIdEditIndexRoute
   '/admin/project-record-templates/$templateId/edit': typeof AdminProjectRecordTemplatesTemplateIdEditIndexRoute
   '/admin/project-records/$projectRecordId/edit': typeof AdminProjectRecordsProjectRecordIdEditIndexRoute
+  '/admin/projects/$projectSlug/evaluations': typeof AdminProjectsProjectSlugEvaluationsIndexRoute
   '/admin/projects/$projectSlug/subsections': typeof AdminProjectsProjectSlugSubsectionsIndexRoute
+  '/admin/projects/$projectSlug/subsubsection-extra-fields': typeof AdminProjectsProjectSlugSubsubsectionExtraFieldsIndexRoute
+  '/admin/projects/$projectSlug/surveys': typeof AdminProjectsProjectSlugSurveysIndexRoute
   '/admin/support-documents/$supportDocumentId/edit': typeof AdminSupportDocumentsSupportDocumentIdEditIndexRoute
   '/admin/surveys/$surveyId/edit': typeof AdminSurveysSurveyIdEditIndexRoute
   '/admin/surveys/$surveyId/responses': typeof AdminSurveysSurveyIdResponsesIndexRoute
@@ -1360,12 +1456,15 @@ export interface FileRoutesByTo {
   '/$projectSlug/uploads/$uploadId/edit': typeof LoggedInProjectsProjectSlugUploadsUploadIdEditIndexRoute
   '/admin/projects/$projectSlug/subsections/edit': typeof AdminProjectsProjectSlugSubsectionsEditIndexRoute
   '/admin/projects/$projectSlug/subsections/multiple-new': typeof AdminProjectsProjectSlugSubsectionsMultipleNewIndexRoute
+  '/admin/projects/$projectSlug/surveys/new': typeof AdminProjectsProjectSlugSurveysNewIndexRoute
   '/admin/surveys/$surveyId/responses/created': typeof AdminSurveysSurveyIdResponsesCreatedIndexRoute
   '/admin/surveys/$surveyId/responses/test': typeof AdminSurveysSurveyIdResponsesTestIndexRoute
   '/api/$projectSlug/uploads/$uploadId/$': typeof ApiProjectSlugUploadsUploadIdSplatIndexRoute
   '/api/support/documents/$documentId/$': typeof ApiSupportDocumentsDocumentIdSplatIndexRoute
   '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungNewIndexRoute
   '/$projectSlug/surveys/$surveyId/responses/map': typeof LoggedInProjectsProjectSlugSurveysSurveyIdResponsesMapIndexRoute
+  '/admin/projects/$projectSlug/surveys/$surveyId/edit': typeof AdminProjectsProjectSlugSurveysSurveyIdEditIndexRoute
+  '/admin/projects/$projectSlug/surveys/$surveyId/responses': typeof AdminProjectsProjectSlugSurveysSurveyIdResponsesIndexRoute
   '/api/$projectSlug/subsections/$subsectionSlug/subsubsections/export': typeof ApiProjectSlugSubsectionsSubsectionSlugSubsubsectionsExportIndexRoute
   '/api/$projectSlug/surveys/$surveyId/part1/answers': typeof ApiProjectSlugSurveysSurveyIdPart1AnswersIndexRoute
   '/api/$projectSlug/surveys/$surveyId/part1/questions': typeof ApiProjectSlugSurveysSurveyIdPart1QuestionsIndexRoute
@@ -1373,6 +1472,8 @@ export interface FileRoutesByTo {
   '/api/$projectSlug/surveys/$surveyId/part2/results': typeof ApiProjectSlugSurveysSurveyIdPart2ResultsIndexRoute
   '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardIndexRoute
   '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/edit': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugEditIndexRoute
+  '/admin/projects/$projectSlug/surveys/$surveyId/responses/created': typeof AdminProjectsProjectSlugSurveysSurveyIdResponsesCreatedIndexRoute
+  '/admin/projects/$projectSlug/surveys/$surveyId/responses/test': typeof AdminProjectsProjectSlugSurveysSurveyIdResponsesTestIndexRoute
   '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardLandAcquisitionIndexRoute
   '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/acquisition-areas/new': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugLandAcquisitionAcquisitionAreasNewIndexRoute
   '/$projectSlug/surveys/$surveyId/responses/$surveyResponseId/uploads/$uploadId/edit': typeof LoggedInProjectsProjectSlugSurveysSurveyIdResponsesSurveyResponseIdUploadsUploadIdEditIndexRoute
@@ -1410,14 +1511,16 @@ export interface FileRoutesById {
   '/_loggedInProjects/$projectSlug/': typeof LoggedInProjectsProjectSlugIndexRoute
   '/admin/email-templates/': typeof AdminEmailTemplatesIndexRoute
   '/admin/evaluations/': typeof AdminEvaluationsIndexRoute
-  '/admin/logEntries/': typeof AdminLogEntriesIndexRoute
+  '/admin/log-entries/': typeof AdminLogEntriesIndexRoute
   '/admin/memberships/': typeof AdminMembershipsIndexRoute
   '/admin/project-record-emails/': typeof AdminProjectRecordEmailsIndexRoute
   '/admin/project-record-templates/': typeof AdminProjectRecordTemplatesIndexRoute
   '/admin/project-records/': typeof AdminProjectRecordsIndexRoute
   '/admin/projects/': typeof AdminProjectsIndexRoute
+  '/admin/subsubsection-extra-fields/': typeof AdminSubsubsectionExtraFieldsIndexRoute
   '/admin/support-documents/': typeof AdminSupportDocumentsIndexRoute
   '/admin/surveys/': typeof AdminSurveysIndexRoute
+  '/admin/system-log-entries/': typeof AdminSystemLogEntriesIndexRoute
   '/api/cron-invites-cleanup/': typeof ApiCronInvitesCleanupIndexRoute
   '/api/cron-logEntries-cleanup/': typeof ApiCronLogEntriesCleanupIndexRoute
   '/api/cron-surveyResponses-cleanup/': typeof ApiCronSurveyResponsesCleanupIndexRoute
@@ -1425,6 +1528,7 @@ export interface FileRoutesById {
   '/api/survey-upload/': typeof ApiSurveyUploadIndexRoute
   '/beteiligung/$surveySlug/': typeof BeteiligungSurveySlugIndexRoute
   '/admin/evaluations/$projectSlug/edit': typeof AdminEvaluationsProjectSlugEditRoute
+  '/admin/subsubsection-extra-fields/$projectSlug/edit': typeof AdminSubsubsectionExtraFieldsProjectSlugEditRoute
   '/_loggedInGeneral/user/edit/': typeof LoggedInGeneralUserEditIndexRoute
   '/_loggedInProjects/$projectSlug/acquisition-area-status/': typeof LoggedInProjectsProjectSlugAcquisitionAreaStatusIndexRoute
   '/_loggedInProjects/$projectSlug/contacts/': typeof LoggedInProjectsProjectSlugContactsIndexRoute
@@ -1484,7 +1588,10 @@ export interface FileRoutesById {
   '/admin/project-record-emails/$projectRecordEmailId/edit/': typeof AdminProjectRecordEmailsProjectRecordEmailIdEditIndexRoute
   '/admin/project-record-templates/$templateId/edit/': typeof AdminProjectRecordTemplatesTemplateIdEditIndexRoute
   '/admin/project-records/$projectRecordId/edit/': typeof AdminProjectRecordsProjectRecordIdEditIndexRoute
+  '/admin/projects/$projectSlug/evaluations/': typeof AdminProjectsProjectSlugEvaluationsIndexRoute
   '/admin/projects/$projectSlug/subsections/': typeof AdminProjectsProjectSlugSubsectionsIndexRoute
+  '/admin/projects/$projectSlug/subsubsection-extra-fields/': typeof AdminProjectsProjectSlugSubsubsectionExtraFieldsIndexRoute
+  '/admin/projects/$projectSlug/surveys/': typeof AdminProjectsProjectSlugSurveysIndexRoute
   '/admin/support-documents/$supportDocumentId/edit/': typeof AdminSupportDocumentsSupportDocumentIdEditIndexRoute
   '/admin/surveys/$surveyId/edit/': typeof AdminSurveysSurveyIdEditIndexRoute
   '/admin/surveys/$surveyId/responses/': typeof AdminSurveysSurveyIdResponsesIndexRoute
@@ -1513,6 +1620,7 @@ export interface FileRoutesById {
   '/_loggedInProjects/$projectSlug/uploads/$uploadId/edit/': typeof LoggedInProjectsProjectSlugUploadsUploadIdEditIndexRoute
   '/admin/projects/$projectSlug/subsections/edit/': typeof AdminProjectsProjectSlugSubsectionsEditIndexRoute
   '/admin/projects/$projectSlug/subsections/multiple-new/': typeof AdminProjectsProjectSlugSubsectionsMultipleNewIndexRoute
+  '/admin/projects/$projectSlug/surveys/new/': typeof AdminProjectsProjectSlugSurveysNewIndexRoute
   '/admin/surveys/$surveyId/responses/created/': typeof AdminSurveysSurveyIdResponsesCreatedIndexRoute
   '/admin/surveys/$surveyId/responses/test/': typeof AdminSurveysSurveyIdResponsesTestIndexRoute
   '/api/$projectSlug/uploads/$uploadId/$/': typeof ApiProjectSlugUploadsUploadIdSplatIndexRoute
@@ -1520,6 +1628,8 @@ export interface FileRoutesById {
   '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardRouteRouteWithChildren
   '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new/': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungNewIndexRoute
   '/_loggedInProjects/$projectSlug/surveys/$surveyId/responses/map/': typeof LoggedInProjectsProjectSlugSurveysSurveyIdResponsesMapIndexRoute
+  '/admin/projects/$projectSlug/surveys/$surveyId/edit/': typeof AdminProjectsProjectSlugSurveysSurveyIdEditIndexRoute
+  '/admin/projects/$projectSlug/surveys/$surveyId/responses/': typeof AdminProjectsProjectSlugSurveysSurveyIdResponsesIndexRoute
   '/api/$projectSlug/subsections/$subsectionSlug/subsubsections/export/': typeof ApiProjectSlugSubsectionsSubsectionSlugSubsubsectionsExportIndexRoute
   '/api/$projectSlug/surveys/$surveyId/part1/answers/': typeof ApiProjectSlugSurveysSurveyIdPart1AnswersIndexRoute
   '/api/$projectSlug/surveys/$surveyId/part1/questions/': typeof ApiProjectSlugSurveysSurveyIdPart1QuestionsIndexRoute
@@ -1527,6 +1637,8 @@ export interface FileRoutesById {
   '/api/$projectSlug/surveys/$surveyId/part2/results/': typeof ApiProjectSlugSurveysSurveyIdPart2ResultsIndexRoute
   '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard/': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardIndexRoute
   '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/edit/': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugEditIndexRoute
+  '/admin/projects/$projectSlug/surveys/$surveyId/responses/created/': typeof AdminProjectsProjectSlugSurveysSurveyIdResponsesCreatedIndexRoute
+  '/admin/projects/$projectSlug/surveys/$surveyId/responses/test/': typeof AdminProjectsProjectSlugSurveysSurveyIdResponsesTestIndexRoute
   '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard/land-acquisition/': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardLandAcquisitionIndexRoute
   '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/acquisition-areas/new/': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugLandAcquisitionAcquisitionAreasNewIndexRoute
   '/_loggedInProjects/$projectSlug/surveys/$surveyId/responses/$surveyResponseId/uploads/$uploadId/edit/': typeof LoggedInProjectsProjectSlugSurveysSurveyIdResponsesSurveyResponseIdUploadsUploadIdEditIndexRoute
@@ -1559,14 +1671,16 @@ export interface FileRouteTypes {
     | '/$projectSlug/'
     | '/admin/email-templates/'
     | '/admin/evaluations/'
-    | '/admin/logEntries/'
+    | '/admin/log-entries/'
     | '/admin/memberships/'
     | '/admin/project-record-emails/'
     | '/admin/project-record-templates/'
     | '/admin/project-records/'
     | '/admin/projects/'
+    | '/admin/subsubsection-extra-fields/'
     | '/admin/support-documents/'
     | '/admin/surveys/'
+    | '/admin/system-log-entries/'
     | '/api/cron-invites-cleanup/'
     | '/api/cron-logEntries-cleanup/'
     | '/api/cron-surveyResponses-cleanup/'
@@ -1574,6 +1688,7 @@ export interface FileRouteTypes {
     | '/api/survey-upload/'
     | '/beteiligung/$surveySlug/'
     | '/admin/evaluations/$projectSlug/edit'
+    | '/admin/subsubsection-extra-fields/$projectSlug/edit'
     | '/user/edit/'
     | '/$projectSlug/acquisition-area-status/'
     | '/$projectSlug/contacts/'
@@ -1633,7 +1748,10 @@ export interface FileRouteTypes {
     | '/admin/project-record-emails/$projectRecordEmailId/edit/'
     | '/admin/project-record-templates/$templateId/edit/'
     | '/admin/project-records/$projectRecordId/edit/'
+    | '/admin/projects/$projectSlug/evaluations/'
     | '/admin/projects/$projectSlug/subsections/'
+    | '/admin/projects/$projectSlug/subsubsection-extra-fields/'
+    | '/admin/projects/$projectSlug/surveys/'
     | '/admin/support-documents/$supportDocumentId/edit/'
     | '/admin/surveys/$surveyId/edit/'
     | '/admin/surveys/$surveyId/responses/'
@@ -1662,6 +1780,7 @@ export interface FileRouteTypes {
     | '/$projectSlug/uploads/$uploadId/edit/'
     | '/admin/projects/$projectSlug/subsections/edit/'
     | '/admin/projects/$projectSlug/subsections/multiple-new/'
+    | '/admin/projects/$projectSlug/surveys/new/'
     | '/admin/surveys/$surveyId/responses/created/'
     | '/admin/surveys/$surveyId/responses/test/'
     | '/api/$projectSlug/uploads/$uploadId/$/'
@@ -1669,6 +1788,8 @@ export interface FileRouteTypes {
     | '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug'
     | '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new/'
     | '/$projectSlug/surveys/$surveyId/responses/map/'
+    | '/admin/projects/$projectSlug/surveys/$surveyId/edit/'
+    | '/admin/projects/$projectSlug/surveys/$surveyId/responses/'
     | '/api/$projectSlug/subsections/$subsectionSlug/subsubsections/export/'
     | '/api/$projectSlug/surveys/$surveyId/part1/answers/'
     | '/api/$projectSlug/surveys/$surveyId/part1/questions/'
@@ -1676,6 +1797,8 @@ export interface FileRouteTypes {
     | '/api/$projectSlug/surveys/$surveyId/part2/results/'
     | '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/'
     | '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/edit/'
+    | '/admin/projects/$projectSlug/surveys/$surveyId/responses/created/'
+    | '/admin/projects/$projectSlug/surveys/$surveyId/responses/test/'
     | '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/'
     | '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/acquisition-areas/new/'
     | '/$projectSlug/surveys/$surveyId/responses/$surveyResponseId/uploads/$uploadId/edit/'
@@ -1702,14 +1825,16 @@ export interface FileRouteTypes {
     | '/support'
     | '/admin/email-templates'
     | '/admin/evaluations'
-    | '/admin/logEntries'
+    | '/admin/log-entries'
     | '/admin/memberships'
     | '/admin/project-record-emails'
     | '/admin/project-record-templates'
     | '/admin/project-records'
     | '/admin/projects'
+    | '/admin/subsubsection-extra-fields'
     | '/admin/support-documents'
     | '/admin/surveys'
+    | '/admin/system-log-entries'
     | '/api/cron-invites-cleanup'
     | '/api/cron-logEntries-cleanup'
     | '/api/cron-surveyResponses-cleanup'
@@ -1717,6 +1842,7 @@ export interface FileRouteTypes {
     | '/api/survey-upload'
     | '/beteiligung/$surveySlug'
     | '/admin/evaluations/$projectSlug/edit'
+    | '/admin/subsubsection-extra-fields/$projectSlug/edit'
     | '/user/edit'
     | '/$projectSlug/acquisition-area-status'
     | '/$projectSlug/contacts'
@@ -1775,7 +1901,10 @@ export interface FileRouteTypes {
     | '/admin/project-record-emails/$projectRecordEmailId/edit'
     | '/admin/project-record-templates/$templateId/edit'
     | '/admin/project-records/$projectRecordId/edit'
+    | '/admin/projects/$projectSlug/evaluations'
     | '/admin/projects/$projectSlug/subsections'
+    | '/admin/projects/$projectSlug/subsubsection-extra-fields'
+    | '/admin/projects/$projectSlug/surveys'
     | '/admin/support-documents/$supportDocumentId/edit'
     | '/admin/surveys/$surveyId/edit'
     | '/admin/surveys/$surveyId/responses'
@@ -1804,12 +1933,15 @@ export interface FileRouteTypes {
     | '/$projectSlug/uploads/$uploadId/edit'
     | '/admin/projects/$projectSlug/subsections/edit'
     | '/admin/projects/$projectSlug/subsections/multiple-new'
+    | '/admin/projects/$projectSlug/surveys/new'
     | '/admin/surveys/$surveyId/responses/created'
     | '/admin/surveys/$surveyId/responses/test'
     | '/api/$projectSlug/uploads/$uploadId/$'
     | '/api/support/documents/$documentId/$'
     | '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new'
     | '/$projectSlug/surveys/$surveyId/responses/map'
+    | '/admin/projects/$projectSlug/surveys/$surveyId/edit'
+    | '/admin/projects/$projectSlug/surveys/$surveyId/responses'
     | '/api/$projectSlug/subsections/$subsectionSlug/subsubsections/export'
     | '/api/$projectSlug/surveys/$surveyId/part1/answers'
     | '/api/$projectSlug/surveys/$surveyId/part1/questions'
@@ -1817,6 +1949,8 @@ export interface FileRouteTypes {
     | '/api/$projectSlug/surveys/$surveyId/part2/results'
     | '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug'
     | '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/edit'
+    | '/admin/projects/$projectSlug/surveys/$surveyId/responses/created'
+    | '/admin/projects/$projectSlug/surveys/$surveyId/responses/test'
     | '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition'
     | '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/acquisition-areas/new'
     | '/$projectSlug/surveys/$surveyId/responses/$surveyResponseId/uploads/$uploadId/edit'
@@ -1853,14 +1987,16 @@ export interface FileRouteTypes {
     | '/_loggedInProjects/$projectSlug/'
     | '/admin/email-templates/'
     | '/admin/evaluations/'
-    | '/admin/logEntries/'
+    | '/admin/log-entries/'
     | '/admin/memberships/'
     | '/admin/project-record-emails/'
     | '/admin/project-record-templates/'
     | '/admin/project-records/'
     | '/admin/projects/'
+    | '/admin/subsubsection-extra-fields/'
     | '/admin/support-documents/'
     | '/admin/surveys/'
+    | '/admin/system-log-entries/'
     | '/api/cron-invites-cleanup/'
     | '/api/cron-logEntries-cleanup/'
     | '/api/cron-surveyResponses-cleanup/'
@@ -1868,6 +2004,7 @@ export interface FileRouteTypes {
     | '/api/survey-upload/'
     | '/beteiligung/$surveySlug/'
     | '/admin/evaluations/$projectSlug/edit'
+    | '/admin/subsubsection-extra-fields/$projectSlug/edit'
     | '/_loggedInGeneral/user/edit/'
     | '/_loggedInProjects/$projectSlug/acquisition-area-status/'
     | '/_loggedInProjects/$projectSlug/contacts/'
@@ -1927,7 +2064,10 @@ export interface FileRouteTypes {
     | '/admin/project-record-emails/$projectRecordEmailId/edit/'
     | '/admin/project-record-templates/$templateId/edit/'
     | '/admin/project-records/$projectRecordId/edit/'
+    | '/admin/projects/$projectSlug/evaluations/'
     | '/admin/projects/$projectSlug/subsections/'
+    | '/admin/projects/$projectSlug/subsubsection-extra-fields/'
+    | '/admin/projects/$projectSlug/surveys/'
     | '/admin/support-documents/$supportDocumentId/edit/'
     | '/admin/surveys/$surveyId/edit/'
     | '/admin/surveys/$surveyId/responses/'
@@ -1956,6 +2096,7 @@ export interface FileRouteTypes {
     | '/_loggedInProjects/$projectSlug/uploads/$uploadId/edit/'
     | '/admin/projects/$projectSlug/subsections/edit/'
     | '/admin/projects/$projectSlug/subsections/multiple-new/'
+    | '/admin/projects/$projectSlug/surveys/new/'
     | '/admin/surveys/$surveyId/responses/created/'
     | '/admin/surveys/$surveyId/responses/test/'
     | '/api/$projectSlug/uploads/$uploadId/$/'
@@ -1963,6 +2104,8 @@ export interface FileRouteTypes {
     | '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard'
     | '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new/'
     | '/_loggedInProjects/$projectSlug/surveys/$surveyId/responses/map/'
+    | '/admin/projects/$projectSlug/surveys/$surveyId/edit/'
+    | '/admin/projects/$projectSlug/surveys/$surveyId/responses/'
     | '/api/$projectSlug/subsections/$subsectionSlug/subsubsections/export/'
     | '/api/$projectSlug/surveys/$surveyId/part1/answers/'
     | '/api/$projectSlug/surveys/$surveyId/part1/questions/'
@@ -1970,6 +2113,8 @@ export interface FileRouteTypes {
     | '/api/$projectSlug/surveys/$surveyId/part2/results/'
     | '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard/'
     | '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/edit/'
+    | '/admin/projects/$projectSlug/surveys/$surveyId/responses/created/'
+    | '/admin/projects/$projectSlug/surveys/$surveyId/responses/test/'
     | '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard/land-acquisition/'
     | '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/acquisition-areas/new/'
     | '/_loggedInProjects/$projectSlug/surveys/$surveyId/responses/$surveyResponseId/uploads/$uploadId/edit/'
@@ -2200,6 +2345,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiCronInvitesCleanupIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/system-log-entries/': {
+      id: '/admin/system-log-entries/'
+      path: '/system-log-entries'
+      fullPath: '/admin/system-log-entries/'
+      preLoaderRoute: typeof AdminSystemLogEntriesIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/surveys/': {
       id: '/admin/surveys/'
       path: '/surveys'
@@ -2212,6 +2364,13 @@ declare module '@tanstack/react-router' {
       path: '/support-documents'
       fullPath: '/admin/support-documents/'
       preLoaderRoute: typeof AdminSupportDocumentsIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/subsubsection-extra-fields/': {
+      id: '/admin/subsubsection-extra-fields/'
+      path: '/subsubsection-extra-fields'
+      fullPath: '/admin/subsubsection-extra-fields/'
+      preLoaderRoute: typeof AdminSubsubsectionExtraFieldsIndexRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/projects/': {
@@ -2249,10 +2408,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminMembershipsIndexRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/logEntries/': {
-      id: '/admin/logEntries/'
-      path: '/logEntries'
-      fullPath: '/admin/logEntries/'
+    '/admin/log-entries/': {
+      id: '/admin/log-entries/'
+      path: '/log-entries'
+      fullPath: '/admin/log-entries/'
       preLoaderRoute: typeof AdminLogEntriesIndexRouteImport
       parentRoute: typeof AdminRoute
     }
@@ -2543,6 +2702,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoggedInGeneralUserEditIndexRouteImport
       parentRoute: typeof LoggedInGeneralRoute
     }
+    '/admin/subsubsection-extra-fields/$projectSlug/edit': {
+      id: '/admin/subsubsection-extra-fields/$projectSlug/edit'
+      path: '/subsubsection-extra-fields/$projectSlug/edit'
+      fullPath: '/admin/subsubsection-extra-fields/$projectSlug/edit'
+      preLoaderRoute: typeof AdminSubsubsectionExtraFieldsProjectSlugEditRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/evaluations/$projectSlug/edit': {
       id: '/admin/evaluations/$projectSlug/edit'
       path: '/evaluations/$projectSlug/edit'
@@ -2592,11 +2758,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSupportDocumentsSupportDocumentIdEditIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/projects/$projectSlug/surveys/': {
+      id: '/admin/projects/$projectSlug/surveys/'
+      path: '/surveys'
+      fullPath: '/admin/projects/$projectSlug/surveys/'
+      preLoaderRoute: typeof AdminProjectsProjectSlugSurveysIndexRouteImport
+      parentRoute: typeof AdminProjectsProjectSlugRouteRoute
+    }
+    '/admin/projects/$projectSlug/subsubsection-extra-fields/': {
+      id: '/admin/projects/$projectSlug/subsubsection-extra-fields/'
+      path: '/subsubsection-extra-fields'
+      fullPath: '/admin/projects/$projectSlug/subsubsection-extra-fields/'
+      preLoaderRoute: typeof AdminProjectsProjectSlugSubsubsectionExtraFieldsIndexRouteImport
+      parentRoute: typeof AdminProjectsProjectSlugRouteRoute
+    }
     '/admin/projects/$projectSlug/subsections/': {
       id: '/admin/projects/$projectSlug/subsections/'
       path: '/subsections'
       fullPath: '/admin/projects/$projectSlug/subsections/'
       preLoaderRoute: typeof AdminProjectsProjectSlugSubsectionsIndexRouteImport
+      parentRoute: typeof AdminProjectsProjectSlugRouteRoute
+    }
+    '/admin/projects/$projectSlug/evaluations/': {
+      id: '/admin/projects/$projectSlug/evaluations/'
+      path: '/evaluations'
+      fullPath: '/admin/projects/$projectSlug/evaluations/'
+      preLoaderRoute: typeof AdminProjectsProjectSlugEvaluationsIndexRouteImport
       parentRoute: typeof AdminProjectsProjectSlugRouteRoute
     }
     '/admin/project-records/$projectRecordId/edit/': {
@@ -2816,6 +3003,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSurveysSurveyIdResponsesCreatedIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/projects/$projectSlug/surveys/new/': {
+      id: '/admin/projects/$projectSlug/surveys/new/'
+      path: '/surveys/new'
+      fullPath: '/admin/projects/$projectSlug/surveys/new/'
+      preLoaderRoute: typeof AdminProjectsProjectSlugSurveysNewIndexRouteImport
+      parentRoute: typeof AdminProjectsProjectSlugRouteRoute
+    }
     '/admin/projects/$projectSlug/subsections/multiple-new/': {
       id: '/admin/projects/$projectSlug/subsections/multiple-new/'
       path: '/subsections/multiple-new'
@@ -3005,6 +3199,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiProjectSlugSubsectionsSubsectionSlugSubsubsectionsExportIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/projects/$projectSlug/surveys/$surveyId/responses/': {
+      id: '/admin/projects/$projectSlug/surveys/$surveyId/responses/'
+      path: '/surveys/$surveyId/responses'
+      fullPath: '/admin/projects/$projectSlug/surveys/$surveyId/responses/'
+      preLoaderRoute: typeof AdminProjectsProjectSlugSurveysSurveyIdResponsesIndexRouteImport
+      parentRoute: typeof AdminProjectsProjectSlugRouteRoute
+    }
+    '/admin/projects/$projectSlug/surveys/$surveyId/edit/': {
+      id: '/admin/projects/$projectSlug/surveys/$surveyId/edit/'
+      path: '/surveys/$surveyId/edit'
+      fullPath: '/admin/projects/$projectSlug/surveys/$surveyId/edit/'
+      preLoaderRoute: typeof AdminProjectsProjectSlugSurveysSurveyIdEditIndexRouteImport
+      parentRoute: typeof AdminProjectsProjectSlugRouteRoute
+    }
     '/_loggedInProjects/$projectSlug/surveys/$surveyId/responses/map/': {
       id: '/_loggedInProjects/$projectSlug/surveys/$surveyId/responses/map/'
       path: '/map'
@@ -3025,6 +3233,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug'
       preLoaderRoute: typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardRouteRouteImport
       parentRoute: typeof LoggedInProjectsProjectSlugRoute
+    }
+    '/admin/projects/$projectSlug/surveys/$surveyId/responses/test/': {
+      id: '/admin/projects/$projectSlug/surveys/$surveyId/responses/test/'
+      path: '/surveys/$surveyId/responses/test'
+      fullPath: '/admin/projects/$projectSlug/surveys/$surveyId/responses/test/'
+      preLoaderRoute: typeof AdminProjectsProjectSlugSurveysSurveyIdResponsesTestIndexRouteImport
+      parentRoute: typeof AdminProjectsProjectSlugRouteRoute
+    }
+    '/admin/projects/$projectSlug/surveys/$surveyId/responses/created/': {
+      id: '/admin/projects/$projectSlug/surveys/$surveyId/responses/created/'
+      path: '/surveys/$surveyId/responses/created'
+      fullPath: '/admin/projects/$projectSlug/surveys/$surveyId/responses/created/'
+      preLoaderRoute: typeof AdminProjectsProjectSlugSurveysSurveyIdResponsesCreatedIndexRouteImport
+      parentRoute: typeof AdminProjectsProjectSlugRouteRoute
     }
     '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/edit/': {
       id: '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/edit/'
@@ -3420,19 +3642,43 @@ const MarketingRouteWithChildren = MarketingRoute._addFileChildren(
 )
 
 interface AdminProjectsProjectSlugRouteRouteChildren {
+  AdminProjectsProjectSlugEvaluationsIndexRoute: typeof AdminProjectsProjectSlugEvaluationsIndexRoute
   AdminProjectsProjectSlugSubsectionsIndexRoute: typeof AdminProjectsProjectSlugSubsectionsIndexRoute
+  AdminProjectsProjectSlugSubsubsectionExtraFieldsIndexRoute: typeof AdminProjectsProjectSlugSubsubsectionExtraFieldsIndexRoute
+  AdminProjectsProjectSlugSurveysIndexRoute: typeof AdminProjectsProjectSlugSurveysIndexRoute
   AdminProjectsProjectSlugSubsectionsEditIndexRoute: typeof AdminProjectsProjectSlugSubsectionsEditIndexRoute
   AdminProjectsProjectSlugSubsectionsMultipleNewIndexRoute: typeof AdminProjectsProjectSlugSubsectionsMultipleNewIndexRoute
+  AdminProjectsProjectSlugSurveysNewIndexRoute: typeof AdminProjectsProjectSlugSurveysNewIndexRoute
+  AdminProjectsProjectSlugSurveysSurveyIdEditIndexRoute: typeof AdminProjectsProjectSlugSurveysSurveyIdEditIndexRoute
+  AdminProjectsProjectSlugSurveysSurveyIdResponsesIndexRoute: typeof AdminProjectsProjectSlugSurveysSurveyIdResponsesIndexRoute
+  AdminProjectsProjectSlugSurveysSurveyIdResponsesCreatedIndexRoute: typeof AdminProjectsProjectSlugSurveysSurveyIdResponsesCreatedIndexRoute
+  AdminProjectsProjectSlugSurveysSurveyIdResponsesTestIndexRoute: typeof AdminProjectsProjectSlugSurveysSurveyIdResponsesTestIndexRoute
 }
 
 const AdminProjectsProjectSlugRouteRouteChildren: AdminProjectsProjectSlugRouteRouteChildren =
   {
+    AdminProjectsProjectSlugEvaluationsIndexRoute:
+      AdminProjectsProjectSlugEvaluationsIndexRoute,
     AdminProjectsProjectSlugSubsectionsIndexRoute:
       AdminProjectsProjectSlugSubsectionsIndexRoute,
+    AdminProjectsProjectSlugSubsubsectionExtraFieldsIndexRoute:
+      AdminProjectsProjectSlugSubsubsectionExtraFieldsIndexRoute,
+    AdminProjectsProjectSlugSurveysIndexRoute:
+      AdminProjectsProjectSlugSurveysIndexRoute,
     AdminProjectsProjectSlugSubsectionsEditIndexRoute:
       AdminProjectsProjectSlugSubsectionsEditIndexRoute,
     AdminProjectsProjectSlugSubsectionsMultipleNewIndexRoute:
       AdminProjectsProjectSlugSubsectionsMultipleNewIndexRoute,
+    AdminProjectsProjectSlugSurveysNewIndexRoute:
+      AdminProjectsProjectSlugSurveysNewIndexRoute,
+    AdminProjectsProjectSlugSurveysSurveyIdEditIndexRoute:
+      AdminProjectsProjectSlugSurveysSurveyIdEditIndexRoute,
+    AdminProjectsProjectSlugSurveysSurveyIdResponsesIndexRoute:
+      AdminProjectsProjectSlugSurveysSurveyIdResponsesIndexRoute,
+    AdminProjectsProjectSlugSurveysSurveyIdResponsesCreatedIndexRoute:
+      AdminProjectsProjectSlugSurveysSurveyIdResponsesCreatedIndexRoute,
+    AdminProjectsProjectSlugSurveysSurveyIdResponsesTestIndexRoute:
+      AdminProjectsProjectSlugSurveysSurveyIdResponsesTestIndexRoute,
   }
 
 const AdminProjectsProjectSlugRouteRouteWithChildren =
@@ -3451,9 +3697,12 @@ interface AdminRouteChildren {
   AdminProjectRecordTemplatesIndexRoute: typeof AdminProjectRecordTemplatesIndexRoute
   AdminProjectRecordsIndexRoute: typeof AdminProjectRecordsIndexRoute
   AdminProjectsIndexRoute: typeof AdminProjectsIndexRoute
+  AdminSubsubsectionExtraFieldsIndexRoute: typeof AdminSubsubsectionExtraFieldsIndexRoute
   AdminSupportDocumentsIndexRoute: typeof AdminSupportDocumentsIndexRoute
   AdminSurveysIndexRoute: typeof AdminSurveysIndexRoute
+  AdminSystemLogEntriesIndexRoute: typeof AdminSystemLogEntriesIndexRoute
   AdminEvaluationsProjectSlugEditRoute: typeof AdminEvaluationsProjectSlugEditRoute
+  AdminSubsubsectionExtraFieldsProjectSlugEditRoute: typeof AdminSubsubsectionExtraFieldsProjectSlugEditRoute
   AdminMembershipsUserIdIndexRoute: typeof AdminMembershipsUserIdIndexRoute
   AdminProjectRecordEmailsProjectRecordEmailIdIndexRoute: typeof AdminProjectRecordEmailsProjectRecordEmailIdIndexRoute
   AdminProjectRecordEmailsNewIndexRoute: typeof AdminProjectRecordEmailsNewIndexRoute
@@ -3483,9 +3732,14 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminProjectRecordTemplatesIndexRoute: AdminProjectRecordTemplatesIndexRoute,
   AdminProjectRecordsIndexRoute: AdminProjectRecordsIndexRoute,
   AdminProjectsIndexRoute: AdminProjectsIndexRoute,
+  AdminSubsubsectionExtraFieldsIndexRoute:
+    AdminSubsubsectionExtraFieldsIndexRoute,
   AdminSupportDocumentsIndexRoute: AdminSupportDocumentsIndexRoute,
   AdminSurveysIndexRoute: AdminSurveysIndexRoute,
+  AdminSystemLogEntriesIndexRoute: AdminSystemLogEntriesIndexRoute,
   AdminEvaluationsProjectSlugEditRoute: AdminEvaluationsProjectSlugEditRoute,
+  AdminSubsubsectionExtraFieldsProjectSlugEditRoute:
+    AdminSubsubsectionExtraFieldsProjectSlugEditRoute,
   AdminMembershipsUserIdIndexRoute: AdminMembershipsUserIdIndexRoute,
   AdminProjectRecordEmailsProjectRecordEmailIdIndexRoute:
     AdminProjectRecordEmailsProjectRecordEmailIdIndexRoute,

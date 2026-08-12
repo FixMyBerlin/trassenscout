@@ -32,6 +32,8 @@ export function PageSubsubsectionStatus() {
   return (
     <>
       <PageHeader
+        title="Phase"
+        titleVisuallyHidden
         breadcrumb={<ProjectPageBreadcrumb section="Phase" />}
         primaryAction={
           canEdit ? (

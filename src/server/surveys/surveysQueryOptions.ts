@@ -1,6 +1,11 @@
 import { queryOptions } from "@tanstack/react-query"
 import type { z } from "zod"
-import { getAdminSurveyFn, getAdminSurveysFn, getSurveyFn, getSurveysFn } from "./surveys.functions"
+import {
+  getAdminSurveyFn,
+  getAdminSurveysByProjectFn,
+  getSurveyFn,
+  getSurveysFn,
+} from "./surveys.functions"
 import type { GetSurveySchema } from "./surveys.inputSchemas"
 import type { GetSurveysInput } from "./surveys.server"
 
@@ -18,10 +23,10 @@ export function surveyQueryOptions(input: z.infer<typeof GetSurveySchema>) {
   })
 }
 
-export function adminSurveysQueryOptions() {
+export function adminSurveysByProjectQueryOptions(projectSlug: string) {
   return queryOptions({
-    queryKey: ["adminSurveys"],
-    queryFn: () => getAdminSurveysFn({ data: {} }),
+    queryKey: ["adminSurveys", projectSlug],
+    queryFn: () => getAdminSurveysByProjectFn({ data: { projectSlug } }),
   })
 }
 

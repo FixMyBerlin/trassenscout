@@ -147,12 +147,8 @@ export async function updateProjectMembershipRole(
 
   const membership = await db.membership.findFirstOrThrow({
     where: { id: input.membershipId, project: { slug: input.projectSlug } },
-    select: { id: true, userId: true, user: { select: { role: true } } },
+    select: { id: true, userId: true },
   })
-
-  if (membership.user.role === "ADMIN") {
-    throw new Error("Admin-Nutzer haben automatisch Zugriff auf alle Projekte.")
-  }
 
   const updated = await db.membership.update({
     where: { id: membership.id },
@@ -166,16 +162,12 @@ export async function saveUserMemberships(
   headers: Headers,
   input: z.infer<typeof SaveUserMembershipsSchema>,
 ) {
-  await endpointAuth.admin(headers)
+  const adminSession = await endpointAuth.admin(headers)
 
-  const user = await db.user.findUniqueOrThrow({
+  await db.user.findUniqueOrThrow({
     where: { id: input.userId },
-    select: { role: true },
+    select: { id: true },
   })
-
-  if (user.role === "ADMIN") {
-    throw new Error("Admin-Nutzer haben automatisch Zugriff auf alle Projekte.")
-  }
 
   const existing = await db.membership.findMany({
     where: { userId: input.userId },
@@ -209,5 +201,9 @@ export async function saveUserMemberships(
     }
   }
 
-  await membershipUpdateSession(input.userId)
+  // Editing your own memberships must not delete the current session — that aborts the
+  // save response and leaves the UI looking like nothing was stored.
+  if (Number(adminSession.userId) !== input.userId) {
+    await membershipUpdateSession(input.userId)
+  }
 }

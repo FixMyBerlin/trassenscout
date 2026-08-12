@@ -1,8 +1,8 @@
 import { z } from "zod"
 
 // GeoJSON Position: [longitude, latitude]
-const PositionSchema = z.tuple([z.number(), z.number()]) // [number, number]
-const PositionArraySchema = z.array(PositionSchema) // [[number, number], ...]
+export const PositionSchema = z.tuple([z.number(), z.number()]) // [number, number]
+export const PositionArraySchema = z.array(PositionSchema) // [[number, number], ...]
 const PositionArrayArraySchema = z.array(PositionArraySchema) // [[[number, number], ...], ...]
 const PositionArrayArrayArraySchema = z.array(PositionArrayArraySchema) // [[[[number, number], ...], ...], ...]
 

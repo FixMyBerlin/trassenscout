@@ -9,7 +9,7 @@ import type { StaticOverlayConfig } from "./staticOverlay.types"
 export const radnetzStaticOverlayConfig: StaticOverlayConfig = {
   sources: {
     netzentwurf: {
-      tildaUrl: "https://tilda-geo.de/api/uploads/bb-ramboll-netzentwurf-2-beteiligung",
+      externalUrl: "https://tilda-geo.de/api/uploads/bb-ramboll-netzentwurf-2-beteiligung.pmtiles",
       type: "pmtiles",
       layers: [
         {

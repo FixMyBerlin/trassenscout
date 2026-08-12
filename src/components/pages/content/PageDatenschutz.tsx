@@ -21,6 +21,8 @@ export function PageDatenschutz() {
   return (
     <>
       <PageHeader
+        title="Datenschutzerklärung"
+        titleVisuallyHidden
         breadcrumb={
           <Breadcrumb>
             <BreadcrumbStep>Datenschutzerklärung</BreadcrumbStep>

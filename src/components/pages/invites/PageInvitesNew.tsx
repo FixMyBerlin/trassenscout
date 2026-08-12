@@ -10,6 +10,8 @@ export function PageInvitesNew() {
   return (
     <>
       <PageHeader
+        title="Teammitglied einladen"
+        titleVisuallyHidden
         breadcrumb={
           <ProjectPageBreadcrumb
             section="Einladungen"

@@ -20,19 +20,7 @@ export type MembershipRegionToggleOption = MembershipRegionDisplay & {
   value: MembershipAccessLevel
 }
 
-export function membershipRegionDisplay(
-  access: MembershipAccess,
-  isAdmin = false,
-): MembershipRegionDisplay {
-  if (isAdmin) {
-    return {
-      label: "Trassenscout-Admin",
-      Icon: LockOpenIcon,
-      iconClassName: "text-purple-600",
-      backgroundClassName: "bg-purple-200 group-hover:bg-purple-300",
-    }
-  }
-
+export function membershipRegionDisplay(access: MembershipAccess): MembershipRegionDisplay {
   switch (access) {
     case null:
       return {
@@ -65,5 +53,5 @@ export function membershipRegionDisplay(
 export const membershipRegionToggleOptions: readonly MembershipRegionToggleOption[] =
   MEMBERSHIP_ACCESS_LEVELS.map((value) => ({
     value,
-    ...membershipRegionDisplay(value, false),
+    ...membershipRegionDisplay(value),
   }))

@@ -1,6 +1,7 @@
 import { authFile, seedProjects } from "@/tests/_fixtures/auth"
 import { authorizationNoise, pageNoise, uploadPageNoise } from "@/tests/_fixtures/console-noise"
 import { expect, test } from "@/tests/_fixtures/test"
+import { cleanupNoProjectMemberships } from "@/tests/_utils/cleanupNoProjectMemberships"
 import { expectAccessDeniedRedirect, loginUrl } from "@/tests/_utils/pageAssertions"
 
 const projectSlug = seedProjects.richProject
@@ -72,6 +73,7 @@ test.describe("Project core route permissions", () => {
   test.describe("users without project membership", () => {
     test.use({ storageState: authFile("noProject") })
     test.use({ allowedConsoleErrors: [...pageNoise, ...authorizationNoise] })
+    test.beforeEach(cleanupNoProjectMemberships)
 
     test("cannot access project overview", async ({ page }) => {
       await page.goto(projectOverviewPath)

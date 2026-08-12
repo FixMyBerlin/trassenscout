@@ -1,7 +1,7 @@
 import { ComponentProps } from "react"
 import { MapProvider } from "react-map-gl/maplibre"
 import { twJoin } from "tailwind-merge"
-import { FieldError } from "@/src/components/beteiligung/form/FieldErrror"
+import { FieldError, useFieldHasVisibleError } from "@/src/components/beteiligung/form/FieldErrror"
 import { SurveyMapLegend } from "@/src/components/beteiligung/form/map/MapLegend"
 import { SurveySimpleMap } from "@/src/components/beteiligung/form/map/SimpleMap"
 import { formClasses } from "@/src/components/beteiligung/form/styles"
@@ -16,7 +16,7 @@ type Props = {
 
 export const SurveySimpleMapWithLegend = ({ mapProps, legendProps, label, description }: Props) => {
   const field = useFieldContext<object>()
-  const hasError = field.state.meta.errors.length > 0
+  const hasError = useFieldHasVisibleError(field)
 
   return (
     <MapProvider>

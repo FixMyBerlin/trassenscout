@@ -1,8 +1,5 @@
 import { Radio, RadioGroup } from "@headlessui/react"
 import { useSearch } from "@tanstack/react-router"
-import type { Point } from "geojson"
-import maplibregl from "maplibre-gl"
-import * as pmtiles from "pmtiles"
 import { useEffect, useState, type ComponentProps } from "react"
 import Map, {
   MapGeoJSONFeature,
@@ -18,6 +15,7 @@ import {
   FieldError,
   getFieldA11yProps,
   getFieldDescriptionId,
+  useFieldHasVisibleError,
 } from "@/src/components/beteiligung/form/FieldErrror"
 import {
   LayerType,
@@ -32,31 +30,24 @@ import {
   notifyPlaywrightMapLoaded,
 } from "@/src/components/beteiligung/form/map/testMode"
 import {
+  applySelectedGeometryCategoryFeatureState,
   featureStateTargetForMapSource,
-  getInitialViewStateFromGeometryString,
-  parseSwitchableMapLocationFieldValue,
   type SwitchableMapLocationPoint,
 } from "@/src/components/beteiligung/form/map/utils"
 import { formClasses } from "@/src/components/beteiligung/form/styles"
+import { SurveyRadioIndicator } from "@/src/components/beteiligung/form/SurveyRadioIndicator"
 import { useFieldContext } from "@/src/components/beteiligung/shared/hooks/form-context"
 import { MapData } from "@/src/components/beteiligung/shared/types"
-import "maplibre-gl/dist/maplibre-gl.css"
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
+import "maplibre-gl/dist/maplibre-gl.css"
 import { useAllowedSurveySlug } from "@/src/components/beteiligung/shared/utils/useAllowedSurveySlug"
 import { AllLayers, generateLayers } from "@/src/components/core/components/Map/AllLayers"
 import { AllSources } from "@/src/components/core/components/Map/AllSources"
+import { usePmtilesProtocol } from "@/src/components/core/components/Map/pmtilesProtocol"
+import { geometryAnchorPoint } from "@/src/components/core/components/Map/utils/geometryAnchorPoint"
+import type { SupportedGeometry } from "@/src/shared/geometry/geometrySchemas"
 
 export type { SwitchableMapLocationPoint }
-
-function fieldValueToGeometryString(value: unknown) {
-  if (value == null || value === "") return ""
-  return typeof value === "string" ? value : JSON.stringify(value)
-}
-
-function pointFromPointGeometry(geometry: Point) {
-  const [lng = 0, lat = 0] = geometry.coordinates
-  return { lng, lat }
-}
 
 type SwitchableMapContentProps = {
   description?: string
@@ -73,6 +64,8 @@ type SwitchableMapContentProps = {
   allowNoMapOption?: boolean
   config: {
     bounds: [number, number, number, number]
+    minZoom: number
+    maxZoom: number
   }
   setInitialBounds?: {
     initialBoundsDefinition: ({
@@ -86,25 +79,46 @@ type SwitchableMapContentProps = {
   }
 }
 
+/** Labels for the existing-geometry vs pin (vs optional none) radio group — set per survey config. */
+type SwitchableMapModeSelector = {
+  question: string
+  description?: string
+  existingLabel: string
+  pinLabel: string
+  noneLabel?: string
+  noneHelpText?: string
+}
+
 export type SwitchableMapProps = {
   label: string
   description?: string
   mapProps: Omit<SwitchableMapContentProps, "description">
   legendProps: ComponentProps<typeof SurveyMapLegend>
+  modeSelector: SwitchableMapModeSelector
 }
 
 type SwitchableMapLocationMode = "existing" | "pin" | "none"
 
 type LocationMode = SwitchableMapLocationMode
 
+/**
+ * Combined location field: pick an existing map feature, place a free pin, or skip the map.
+ *
+ * Use case: one survey question with a mode radio (existing / pin / optional none) over a
+ * single map — e.g. OHV Haltestelle vs individual pin vs “ohne Karte”.
+ *
+ * Camera: restored `{ lat, lng }` → `setInitialBounds` query lookup (OHV `?id=` commune
+ * bbox) → `config.bounds`.
+ */
 export const SwitchableMap = ({
   label,
   description,
   mapProps,
   legendProps,
+  modeSelector,
 }: SwitchableMapProps) => {
   const field = useFieldContext<SwitchableMapLocationPoint | null>()
-  const hasError = field.state.meta.errors.length > 0
+  const hasError = useFieldHasVisibleError(field)
 
   return (
     <MapProvider>
@@ -119,6 +133,7 @@ export const SwitchableMap = ({
           description={description}
           mapProps={mapProps}
           legendProps={legendProps}
+          modeSelector={modeSelector}
         />
         <FieldError field={field} />
       </div>
@@ -130,6 +145,7 @@ type SwitchableMapContentWrapperProps = {
   description?: string
   mapProps: SwitchableMapContentProps
   legendProps: ComponentProps<typeof SurveyMapLegend>
+  modeSelector: SwitchableMapModeSelector
 }
 
 const SwitchableMapContent = ({
@@ -144,71 +160,30 @@ const SwitchableMapContent = ({
   },
   description,
   legendProps,
+  modeSelector,
 }: SwitchableMapContentWrapperProps) => {
   const { mainMap } = useMap()
   const field = useFieldContext<SwitchableMapLocationPoint | null>()
+  const hasError = useFieldHasVisibleError(field)
   const search = useSearch({ from: "/beteiligung/$surveySlug/" })
-  /** Only used when `mode` is "pin"; no default — pin mode places the marker. */
-  const [markerPosition, setMarkerPosition] = useState<SwitchableMapLocationPoint | undefined>(
-    undefined,
-  )
   // we keep the selected mode in the form state as well (field name `locationMode`) so the survey config
   // can read it in a custom validator to decide whether the location value is required
   const [mode, setMode] = useState<LocationMode>(
     () => (field.form.getFieldValue("locationMode") as LocationMode | undefined) ?? "existing",
   )
-  const [mapLoading, setMapLoading] = useState(true)
+  /** Pin marker; restore from field when returning with `locationMode` still `"pin"`. */
+  const [markerPosition, setMarkerPosition] = useState<SwitchableMapLocationPoint | undefined>(
+    () => {
+      const initialMode =
+        (field.form.getFieldValue("locationMode") as LocationMode | undefined) ?? "existing"
+      return initialMode === "pin" ? (field.state.value ?? undefined) : undefined
+    },
+  )
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
   const [cursorStyle, setCursorStyle] = useState("grab")
   const surveySlug = useAllowedSurveySlug()
 
-  // Setup pmtiles
-  useEffect(() => {
-    const protocol = new pmtiles.Protocol()
-    maplibregl.addProtocol("pmtiles", protocol.tile)
-    return () => {
-      maplibregl.removeProtocol("pmtiles")
-    }
-  }, [])
-
-  // oxlint-disable-next-line react-hooks/exhaustive-deps -- Sync map highlight once on load; field.form deps would re-run on every keystroke.
-  useEffect(() => {
-    // if we have a selected feature (in the form context), we want to set the feature state for the selected geometry
-    // this allows us to highlight the selected geometry on the map - even if we reload the map (e.g. go back and forth in the survey)
-    // only the "existing" mode selects / highlights a map feature
-    if (mode !== "existing") return
-    const geometryCategorySourceId = field.form.getFieldValue("geometryCategorySourceId")
-    const geometryCategoryFeatureId = field.form.getFieldValue("geometryCategoryFeatureId")
-    const geoCategoryId = field.form.getFieldValue(geoCategoryIdDefinition.dataKey)
-    if (
-      mainMap &&
-      !mapLoading &&
-      geoCategoryId &&
-      geometryCategorySourceId &&
-      geometryCategoryFeatureId
-    ) {
-      mainMap.getMap().setFeatureState(
-        featureStateTargetForMapSource(mapData, geometryCategorySourceId, {
-          id: geometryCategoryFeatureId,
-          [geoCategoryIdDefinition.propertyName]: geoCategoryId,
-        }),
-        { selected: true },
-      )
-    }
-  }, [
-    mainMap,
-    mapLoading,
-    mapData,
-    mode,
-    geoCategoryIdDefinition.dataKey,
-    geoCategoryIdDefinition.propertyName,
-    field.form,
-  ])
-
-  useEffect(() => {
-    if (!mainMap) return
-    installMapGrabIfTest(mainMap.getMap(), "mainMap")
-  }, [mainMap])
+  usePmtilesProtocol()
 
   // the map stays mounted (to avoid re-initialization issues), but is hidden in "none" mode
   // when it becomes visible again we need to tell maplibre to recompute its size
@@ -216,32 +191,24 @@ const SwitchableMapContent = ({
     if (mode !== "none") mainMap?.getMap().resize()
   }, [mode, mainMap])
 
-  const initialLocationPoint = (() => {
-    try {
-      return parseSwitchableMapLocationFieldValue(field.state.value)
-    } catch {
-      return null
-    }
-  })()
-
   const initialBoundsMatch = setInitialBounds?.initialBoundsDefinition.find(
     (d) => d[setInitialBounds.queryParameter] === search[setInitialBounds.queryParameter],
   )
-  const boundsFromConfig = initialBoundsMatch?.bbox ?? config.bounds
-
-  const initialViewState =
-    initialLocationPoint != null
+  // setInitialBounds wins over config.bounds when matched via query param lookup (OHV/BB).
+  // Camera: location already set → ?id= commune bbox / config.bounds.
+  const boundsViewState = {
+    bounds: initialBoundsMatch?.bbox ?? config.bounds,
+    fitBoundsOptions: { padding: 70 },
+  }
+  const pinViewState =
+    field.state.value != null
       ? {
-          latitude: initialLocationPoint.lat,
-          longitude: initialLocationPoint.lng,
+          latitude: field.state.value.lat,
+          longitude: field.state.value.lng,
           zoom: 12,
         }
-      : (getInitialViewStateFromGeometryString(fieldValueToGeometryString(field.state.value)) ?? {
-          bounds: boundsFromConfig,
-          fitBoundsOptions: { padding: 70 },
-        })
-  // if we have a setInitialBounds config, set the bbox depending on the search params
-  // this allows us to set the initial bounds based on a query parameter (e.g. set in a read only field)
+      : null
+  const initialViewState = pinViewState ?? boundsViewState
 
   const { maptilerUrl } = getConfigBySurveySlug(surveySlug, "meta")
 
@@ -252,6 +219,7 @@ const SwitchableMapContent = ({
   const handleMapClick = (event: MapLayerMouseEvent) => {
     const feature = event.features?.[0]
     if (!feature) return
+    const map = event.target
     const previouslySelectedFeatureId = field.form.getFieldValue("geometryCategoryFeatureId")
     const previouslySelectedSourceId = field.form.getFieldValue("geometryCategorySourceId")
 
@@ -262,24 +230,22 @@ const SwitchableMapContent = ({
     const sourceId = feature.source
 
     // Clear previous selection state if exists
-    if (previouslySelectedFeatureId && previouslySelectedSourceId && mainMap) {
-      mainMap.getMap().setFeatureState(
-        featureStateTargetForMapSource(mapData, previouslySelectedSourceId, {
-          id: previouslySelectedFeatureId,
-        }),
+    if (previouslySelectedFeatureId && previouslySelectedSourceId) {
+      map.setFeatureState(
+        featureStateTargetForMapSource(
+          mapData,
+          previouslySelectedSourceId,
+          previouslySelectedFeatureId,
+        ),
         { selected: false },
       )
     }
 
     // Set new selection state
-    if (geoCategoryId !== undefined && mainMap && featureId !== undefined) {
-      mainMap.getMap().setFeatureState(
-        featureStateTargetForMapSource(mapData, sourceId, {
-          id: featureId,
-          [geoCategoryIdDefinition.propertyName]: geoCategoryId,
-        }),
-        { selected: true },
-      )
+    if (geoCategoryId !== undefined && featureId !== undefined) {
+      map.setFeatureState(featureStateTargetForMapSource(mapData, sourceId, featureId), {
+        selected: true,
+      })
     }
 
     // we (temporarily) store the source and feature id as well, so we can keep teh state of the selected feature
@@ -288,10 +254,13 @@ const SwitchableMapContent = ({
     // geometry and id are always set here
     // tbd we always want to stroe and id and a geometry maybe it makes more sense to store it as an object {id: string, geometry: string}
     field.form.setFieldValue(geoCategoryIdDefinition.dataKey, geoCategoryId)
-    if (geometry.type !== "Point") {
-      throw new Error(`SwitchableMap only supports Point geometries; got ${geometry.type}`)
-    }
-    field.handleChange(pointFromPointGeometry(geometry))
+    const anchor = geometryAnchorPoint(geometry as SupportedGeometry)
+    // Fallback is for TS only — clickable features always yield a valid anchor in practice.
+    field.handleChange(
+      anchor
+        ? { lng: anchor.longitude, lat: anchor.latitude }
+        : { lng: event.lngLat.lng, lat: event.lngLat.lat },
+    )
     // read additional properties and set values in from context
     for (const { dataKey, propertyName } of additionalData) {
       field.form.setFieldValue(dataKey, feature.properties[propertyName])
@@ -310,11 +279,6 @@ const SwitchableMapContent = ({
     setCursorStyle(features?.length ? "pointer" : "grab")
   }
 
-  const handleMapLoad = (_: maplibregl.MapLibreEvent) => {
-    notifyPlaywrightMapLoaded()
-    setMapLoading(true)
-  }
-
   const allInteractiveLayerIds = Object.entries(mapData.sources).flatMap(([sourceId, source]) => {
     return source.interactiveLayerIds?.map((l) => `${sourceId}-${l}`) || []
   })
@@ -323,12 +287,16 @@ const SwitchableMapContent = ({
     const geometryCategoryFeatureId = field.form.getFieldValue("geometryCategoryFeatureId")
     const geometryCategorySourceId = field.form.getFieldValue("geometryCategorySourceId")
     if (mainMap && geometryCategoryFeatureId != null && geometryCategorySourceId != null) {
-      mainMap.getMap().setFeatureState(
-        featureStateTargetForMapSource(mapData, geometryCategorySourceId, {
-          id: geometryCategoryFeatureId,
-        }),
-        { selected: false },
-      )
+      mainMap
+        .getMap()
+        .setFeatureState(
+          featureStateTargetForMapSource(
+            mapData,
+            geometryCategorySourceId,
+            geometryCategoryFeatureId,
+          ),
+          { selected: false },
+        )
     }
     field.form.setFieldValue("geometryCategorySourceId", undefined)
     field.form.setFieldValue("geometryCategoryFeatureId", undefined)
@@ -363,14 +331,11 @@ const SwitchableMapContent = ({
     })
   }
 
-  const radioButtonDescription =
-    "Wenn sich ihre Anmeldung nicht auf eine Haltestelle im Bestand bezieht, können Sie einen individuellen Pin setzen."
-
   const options: { key: LocationMode; label: string }[] = [
-    { key: "existing", label: "Ja" },
-    { key: "pin", label: "Nein, ich möchte einen Pin setzen" },
-    ...(allowNoMapOption
-      ? [{ key: "none" as const, label: "Ich möchte eine Maßnahme ohne Karte abschicken" }]
+    { key: "existing", label: modeSelector.existingLabel },
+    { key: "pin", label: modeSelector.pinLabel },
+    ...(allowNoMapOption && modeSelector.noneLabel
+      ? [{ key: "none" as const, label: modeSelector.noneLabel }]
       : []),
   ]
 
@@ -389,52 +354,35 @@ const SwitchableMapContent = ({
       {...getFieldA11yProps({
         description,
         fieldName: field.name,
-        hasError: field.state.meta.errors.length > 0,
+        hasError,
       })}
     >
-      <p className={formClasses.fieldLabel}>
-        Bezieht sich Ihre Anmeldung auf eine Haltestelle im Bestand?
-      </p>
-      {radioButtonDescription && (
-        <p className={formClasses.fieldDescription}>{radioButtonDescription}</p>
+      <p className={formClasses.fieldLabel}>{modeSelector.question}</p>
+      {modeSelector.description && (
+        <p className={formClasses.fieldDescription}>{modeSelector.description}</p>
       )}
-      <RadioGroup
-        value={mode}
-        onChange={handleModeChange}
-        aria-label="Bezieht sich Ihre Anmeldung auf eine Haltestelle im Bestand?"
-      >
+      <RadioGroup value={mode} onChange={handleModeChange} aria-label={modeSelector.question}>
         {options.map((option) => (
           <Radio
             key={String(option.key)}
             value={option.key}
             className={twJoin(
-              "group flex w-full items-start hover:cursor-pointer",
+              "group flex w-full items-center hover:cursor-pointer",
               formClasses.choiceFocus,
             )}
           >
-            <div className="flex h-full min-h-10 items-center">
-              <div
-                className={twJoin(
-                  "relative size-4 cursor-pointer rounded-full border border-gray-300 transition-colors group-hover:border-gray-400",
-                )}
-              />
-              <span className="absolute m-[2px] size-3 rounded-full border-4 border-(--survey-primary-color) opacity-0 transition group-data-checked:opacity-100" />
-            </div>
-            {/* we do not use the simple pattern from the headless UI demos as we want the whole item to be clickable incl. label etc; we use p instead of Label from headless UI as Label breaks the hover for some reason */}{" "}
+            <SurveyRadioIndicator />
+            {/* we do not use the simple pattern from the headless UI demos as we want the whole item to be clickable incl. label etc; we use p instead of Label from headless UI as Label breaks the hover for some reason */}
             <div className={formClasses.labelItemWrapper}>
               <p className={twJoin(formClasses.fieldItemLabel)}>{option.label}</p>
             </div>
           </Radio>
         ))}
       </RadioGroup>
-      {mode === "none" && (
-        <p className={twJoin(formClasses.fieldDescription, "mt-4")}>
-          Sie haben sich entschieden, eine Maßnahme ohne Verortung auf der Karte zu melden.
-          Beschreiben Sie bitte im Textfeld &quot;Maßnahmenbeschreibung und Zielsetzung&quot;, wo
-          die bauliche Maßnahme geplant ist.
-        </p>
+      {mode === "none" && modeSelector.noneHelpText && (
+        <p className={twJoin(formClasses.fieldDescription, "mt-4")}>{modeSelector.noneHelpText}</p>
       )}
-      <div className={twJoin("relative mt-4 h-[500px]", mode === "none" ? "hidden" : "")}>
+      <div className={twJoin("relative mt-4 h-125", mode === "none" ? "hidden" : "")}>
         <Map
           id="mainMap"
           scrollZoom={false}
@@ -443,14 +391,22 @@ const SwitchableMapContent = ({
           onClick={handleMapClick}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
-          // Set map state for <MapData>:
-          onLoad={(event) => handleMapLoad(event)}
-          // todo make configurable
-          maxZoom={16}
-          minZoom={7}
+          onLoad={(event) => {
+            notifyPlaywrightMapLoaded()
+            installMapGrabIfTest(event.target, "mainMap")
+          }}
+          maxZoom={config.maxZoom}
+          minZoom={config.minZoom}
           cursor={cursorStyle}
           interactiveLayerIds={mode === "existing" ? allInteractiveLayerIds : []}
-          onIdle={() => setMapLoading(false)}
+          onIdle={(event) => {
+            if (mode !== "existing") return
+            applySelectedGeometryCategoryFeatureState(
+              event.target,
+              mapData,
+              field.form.getFieldValue,
+            )
+          }}
         >
           <NavigationControl showCompass={false} />
           <AllSources mapData={mapData} />

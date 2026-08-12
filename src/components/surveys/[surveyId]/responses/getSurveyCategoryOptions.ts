@@ -5,15 +5,20 @@ import { getQuestionIdBySurveySlug } from "@/src/components/beteiligung/shared/u
 import { getFlatSurveyFormFields } from "@/src/components/surveys/[surveyId]/responses/getFlatSurveyFormFields"
 import { transformQuestionsOptions } from "@/src/components/surveys/[surveyId]/responses/transformQuestionsOptions"
 
+/** Category radio/checkbox options for response filters. Empty when the survey has no `category` field. */
 export const getSurveyCategoryOptions = (slug: AllowedSurveySlugs) => {
   const feedbackDefinition = getConfigBySurveySlug(slug, "part2")
+  if (!feedbackDefinition) return []
+
   const feedbackQuestions = getFlatSurveyFormFields(feedbackDefinition)
   const categoryId = getQuestionIdBySurveySlug(slug, "category")
 
-  const categoryQuestion = feedbackQuestions.find(
-    (q) => String(q.name) === String(categoryId),
-  )! as SurveyFieldRadioOrCheckboxGroupConfig
-  const categoryQuestionOptions = categoryQuestion.props.options
+  const categoryQuestion = feedbackQuestions.find((q) => String(q.name) === String(categoryId)) as
+    | SurveyFieldRadioOrCheckboxGroupConfig
+    | undefined
 
-  return [...transformQuestionsOptions(categoryQuestionOptions)]
+  const options = categoryQuestion?.props?.options
+  if (!options?.length) return []
+
+  return [...transformQuestionsOptions(options)]
 }

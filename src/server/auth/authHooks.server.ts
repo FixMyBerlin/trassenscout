@@ -1,6 +1,7 @@
 import { APIError } from "better-auth"
 import { createAuthMiddleware } from "better-auth/api"
 import db from "@/src/server/db.server"
+import { isSignupHoneypotFilled } from "@/src/shared/auth/signupHoneypot"
 import {
   PASSWORD_RESET_REQUIRED_CODE,
   passwordResetRequiredMessage,
@@ -9,8 +10,19 @@ import { clearPasswordResetRequired, isPasswordResetRequired } from "./authPassw
 import { hashPassword, isLegacyHashFormat, verifyPassword } from "./passwordHashing.server"
 
 const credentialProviderId = "credential"
+const signupRejectedMessage = "Die Registrierung ist fehlgeschlagen."
 
 export const authBeforeHook = createAuthMiddleware(async (ctx) => {
+  if (ctx.path === "/sign-up/email") {
+    if (isSignupHoneypotFilled(ctx.body)) {
+      throw APIError.from("BAD_REQUEST", {
+        code: "SIGNUP_FAILED",
+        message: signupRejectedMessage,
+      })
+    }
+    return
+  }
+
   if (ctx.path !== "/sign-in/email") return
 
   const body = ctx.body as { email?: string }

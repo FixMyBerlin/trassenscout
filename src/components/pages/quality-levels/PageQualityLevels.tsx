@@ -32,6 +32,8 @@ export function PageQualityLevels() {
   return (
     <>
       <PageHeader
+        title="Ausbaustandards"
+        titleVisuallyHidden
         breadcrumb={<ProjectPageBreadcrumb section="Ausbaustandards" />}
         primaryAction={
           canEdit ? (

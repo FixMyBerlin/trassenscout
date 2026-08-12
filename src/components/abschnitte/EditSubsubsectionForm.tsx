@@ -19,6 +19,7 @@ import {
   updateSubsubsectionFn,
 } from "@/src/server/subsubsections/subsubsections.functions"
 import type { SubsubsectionWithPosition } from "@/src/server/subsubsections/types"
+import { parseExtraFields } from "@/src/shared/subsubsections/extraFieldSchemas"
 import { SubsubsectionFormSchema } from "@/src/shared/subsubsections/schemas"
 
 const subsubsectionEditRouteApi = getRouteApi(
@@ -105,6 +106,7 @@ export const EditSubsubsectionForm = ({ subsubsection }: Props) => {
             estimatedCompletionDate: subsubsection.estimatedCompletionDate
               ? getDate(subsubsection.estimatedCompletionDate)
               : "",
+            extraFields: parseExtraFields(subsubsection.extraFields),
           } as unknown as z.infer<typeof SubsubsectionFormSchema>
         }
         onSubmit={handleSubmit}

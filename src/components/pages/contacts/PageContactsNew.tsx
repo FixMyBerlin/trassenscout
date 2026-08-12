@@ -10,6 +10,8 @@ export function PageContactsNew() {
   return (
     <>
       <PageHeader
+        title="Kontakt hinzufügen"
+        titleVisuallyHidden
         breadcrumb={
           <ProjectPageBreadcrumb
             section="Externe Kontakte"

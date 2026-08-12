@@ -32,6 +32,8 @@ export function PageNetworkHierarchy() {
   return (
     <>
       <PageHeader
+        title="Netzstufen"
+        titleVisuallyHidden
         breadcrumb={<ProjectPageBreadcrumb section="Netzstufen" />}
         primaryAction={
           canEdit ? (

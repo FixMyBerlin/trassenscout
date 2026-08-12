@@ -27,8 +27,14 @@ export type MapData = {
   sources: Record<
     string,
     {
-      tildaUrl: string
+      /** Full endpoint URL including format suffix (TILDA `.geojson`/`.pmtiles`, or Trassenscout `/api/projects/{slug}.json`). */
+      externalUrl: string
       type: MapSourceType
+      /**
+       * GeoJSON only: property used as Feature id for `setFeatureState` (hover/selected).
+       * Required when GeoJSON `id` is a non-numeric string (MapLibre ignores those).
+       */
+      promoteId?: string
       layers: StaticMapLayer[]
       interactiveLayerIds?: string[]
     }

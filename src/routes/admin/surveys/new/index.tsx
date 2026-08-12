@@ -1,11 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router"
-import { PageAdminSurveysNew } from "@/src/components/pages/admin/surveys/PageAdminSurveysNew"
-import { adminTitleHead } from "@/src/routeHead"
-import { projectsAdminQueryOptions } from "@/src/server/projects/projectsQueryOptions"
+import { createFileRoute, redirect } from "@tanstack/react-router"
+import { endpointAuth } from "@/src/server/auth/endpointAuthBoundary"
 
 export const Route = createFileRoute("/admin/surveys/new/")({
-  head: () => adminTitleHead("Neue Beteiligung erstellen"),
   ssr: true,
-  loader: ({ context }) => context.queryClient.ensureQueryData(projectsAdminQueryOptions()),
-  component: PageAdminSurveysNew,
+  beforeLoad: () => {
+    endpointAuth.inherited("auth enforced by admin layout")
+    throw redirect({ to: "/admin/projects" })
+  },
 })

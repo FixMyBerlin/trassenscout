@@ -11,6 +11,8 @@ export function PageNetworkHierarchyNew() {
   return (
     <>
       <PageHeader
+        title="Netzstufe hinzufügen"
+        titleVisuallyHidden
         breadcrumb={
           <ProjectPageBreadcrumb
             section="Netzstufen"

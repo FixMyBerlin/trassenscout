@@ -6,37 +6,24 @@ import { getTestDb } from "@/tests/_utils/testDb"
 
 const membershipsListPath = "/admin/memberships"
 
-function membershipsTable(page: Page) {
-  return page.getByRole("table").filter({
-    has: page.getByRole("columnheader", { name: "User" }),
-  })
-}
-
-async function clickMembershipToggleInColumn(
+async function clickMembershipToggleForProject(
   page: Page,
   projectSlugPattern: RegExp,
   toggleLabel: string,
 ) {
-  const table = membershipsTable(page)
-  const header = table.getByRole("columnheader", { name: projectSlugPattern })
-  await expect(header).toBeVisible()
-
-  const columnIndex = await header.evaluate((element) => {
-    const headerRow = element.closest("tr")
-    if (!headerRow) return -1
-    return Array.from(headerRow.children).indexOf(element)
+  const table = page.getByRole("table").filter({
+    has: page.getByRole("columnheader", { name: "Projekt" }),
   })
-
-  expect(columnIndex).toBeGreaterThan(-1)
-
-  const toggle = table
-    .locator("tbody tr")
-    .first()
-    .locator(`td:nth-child(${columnIndex + 1})`)
-    .getByRole("button", { name: toggleLabel })
+  const projectRow = table.getByRole("row").filter({
+    has: page.getByRole("rowheader", { name: projectSlugPattern }),
+  })
+  const toggle = projectRow.getByRole("button", {
+    name: new RegExp(`^${toggleLabel}:`, "i"),
+  })
 
   const saveButton = page.getByRole("button", { name: "Speichern" })
 
+  await expect(projectRow).toBeVisible()
   await expect(toggle).toBeVisible()
   await toggle.scrollIntoViewIfNeeded()
 
@@ -99,7 +86,7 @@ test.describe("Admin memberships", () => {
 
     const projectHeader = new RegExp(seedProjects.richProject, "i")
 
-    await clickMembershipToggleInColumn(page, projectHeader, "Leserechte")
+    await clickMembershipToggleForProject(page, projectHeader, "Leserechte")
     await page.getByRole("button", { name: "Speichern" }).click()
 
     await expect(page).toHaveURL(new RegExp(`${membershipsListPath}$`), { timeout: 30_000 })
@@ -114,7 +101,7 @@ test.describe("Admin memberships", () => {
 
     await page.getByRole("link", { name: targetEmail }).click()
 
-    await clickMembershipToggleInColumn(page, projectHeader, "Kein Zugriff")
+    await clickMembershipToggleForProject(page, projectHeader, "Kein Zugriff")
     await page.getByRole("button", { name: "Speichern" }).click()
 
     await expect(page).toHaveURL(new RegExp(`${membershipsListPath}$`), { timeout: 30_000 })

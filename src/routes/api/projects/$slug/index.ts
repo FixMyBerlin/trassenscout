@@ -62,6 +62,7 @@ export const Route = createFileRoute("/api/projects/$slug/")({
           // LINE → LineString feature(s); MultiLineString → one LineString feature per part.
           // POLYGON → Polygon feature(s); MultiPolygon → one Polygon feature per part.
           // Export properties are duplicated on every feature from the same subsection.
+          // Feature.id is the subsection slug (same for MultiLine parts) for MapLibre setFeatureState.
           const features = subsections.flatMap<Feature>((subsection) => {
             const typedSubsection = typeSubsectionGeometry(subsection)
             const properties = {
@@ -72,11 +73,16 @@ export const Route = createFileRoute("/api/projects/$slug/")({
               status: subsection.SubsectionStatus?.title,
             }
 
+            const withFeatureId = <T extends Feature>(feature: T): T => ({
+              ...feature,
+              id: subsection.slug,
+            })
+
             switch (typedSubsection.type) {
               case "LINE":
-                return lineStringToGeoJSON(typedSubsection.geometry, properties)
+                return lineStringToGeoJSON(typedSubsection.geometry, properties).map(withFeatureId)
               case "POLYGON":
-                return polygonToGeoJSON(typedSubsection.geometry, properties)
+                return polygonToGeoJSON(typedSubsection.geometry, properties).map(withFeatureId)
             }
           })
 

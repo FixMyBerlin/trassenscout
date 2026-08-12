@@ -1,10 +1,8 @@
 import { getFullname } from "@/src/components/core/users/getFullname"
+import { normalizeSearchterm } from "@/src/components/core/utils/normalizeSearchterm"
 import { getFilenameFromS3 } from "@/src/shared/uploads/url"
 import type { UploadTableUpload } from "./uploadTypes"
 import { useUploadFilters } from "./useUploadFilters"
-
-const normalizeSearchterm = (searchterm: string) =>
-  searchterm.trim().toLowerCase().replace(/#/g, "").trim()
 
 export const useFilteredUploads = (uploads: UploadTableUpload[]) => {
   const { filter } = useUploadFilters()

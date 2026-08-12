@@ -30,7 +30,7 @@ import { useMapLoadedActions } from "./map-loaded-store"
 import { MapHighlightContext } from "./mapHighlightContext"
 import { applyMapHighlight, CLEAR_MAP_HIGHLIGHT, type MapHighlightState } from "./mapHighlightState"
 import { getMapStyle } from "./mapStyleConfig"
-import { retainPmtilesProtocol } from "./pmtilesProtocol"
+import { usePmtilesProtocol } from "./pmtilesProtocol"
 import { StaticOverlay } from "./staticOverlay/StaticOverlay"
 import type { StaticOverlayConfig } from "./staticOverlay/staticOverlay.types"
 import { useMapHighlight, type MapHighlightLevel } from "./useMapHighlight"
@@ -108,13 +108,7 @@ export const BaseMap = ({
 
   const showScaleControl = backgroundSwitcherPosition !== "bottom-left"
 
-  useEffect(
-    function registerPmtilesProtocolForStaticOverlay() {
-      if (!staticOverlay) return
-      return retainPmtilesProtocol()
-    },
-    [staticOverlay],
-  )
+  usePmtilesProtocol()
 
   // Merge lines, polygons, and points into a single FeatureCollection
   const unifiedFeatures = useMemo(

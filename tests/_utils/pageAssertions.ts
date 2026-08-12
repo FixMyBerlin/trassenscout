@@ -10,10 +10,10 @@ export const expectDashboardRedirect = async (page: Page) => {
 }
 
 export const expectAccessDeniedRedirect = async (page: Page) => {
-  await expect(page).toHaveURL(accessDeniedUrl, { timeout: 30_000 })
-  await expect(page.getByRole("heading", { name: "Zugriff verweigert", exact: true })).toBeVisible({
-    timeout: 30_000,
-  })
+  const heading = page.getByRole("heading", { name: "Zugriff verweigert", exact: true })
+
+  await expect(heading).toBeVisible({ timeout: 30_000 })
+  await expect(page).toHaveURL(accessDeniedUrl)
 }
 
 export const expectErrorPage = async (page: Page) => {

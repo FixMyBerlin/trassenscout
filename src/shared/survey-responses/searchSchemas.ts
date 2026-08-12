@@ -2,11 +2,6 @@ import { z } from "zod"
 
 const surveyResponseFilterSchema = z.looseObject({
   status: z.array(z.string()),
-  operator: z.string(),
-  hasnotes: z.enum(["true", "false", "ALL"]),
-  haslocation: z.enum(["true", "false", "ALL"]),
-  categories: z.array(z.string()),
-  topics: z.array(z.string()),
   searchterm: z.string(),
 })
 

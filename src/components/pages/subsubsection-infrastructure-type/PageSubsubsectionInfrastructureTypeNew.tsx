@@ -13,6 +13,8 @@ export function PageSubsubsectionInfrastructureTypeNew() {
   return (
     <>
       <PageHeader
+        title="Infrastrukturtyp hinzufügen"
+        titleVisuallyHidden
         breadcrumb={
           <ProjectPageBreadcrumb
             section="Infrastrukturtypen"

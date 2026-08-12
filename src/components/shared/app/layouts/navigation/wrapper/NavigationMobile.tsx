@@ -4,6 +4,7 @@ import { useLocation } from "@tanstack/react-router"
 import { twJoin } from "tailwind-merge"
 import { Link } from "@/src/components/core/components/links/Link"
 import type { ProjectsForCurrentUser } from "@/src/server/projects/types"
+import { NavigationAdminMenu } from "../NavigationAdminMenu"
 import { ProjectsSwitch } from "../NavigationLoggedIn/ProjectsSwitch"
 import { shouldHighlight, useMenuItems } from "../NavigationLoggedInProject/useMenuItems"
 import { NavigationGeneralLogo } from "../NavigationLoggedOut/TrassenscoutLogo"
@@ -44,6 +45,7 @@ export const NavigationMobile = ({
                 <NavigationUserPublic />
               ) : (
                 <>
+                  <NavigationAdminMenu />
                   <NavigationMetaMenu />
                   <NavigationUser />
                 </>

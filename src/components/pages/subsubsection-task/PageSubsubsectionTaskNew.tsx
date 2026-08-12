@@ -11,6 +11,8 @@ export function PageSubsubsectionTaskNew() {
   return (
     <>
       <PageHeader
+        title="Maßnahmentyp hinzufügen"
+        titleVisuallyHidden
         breadcrumb={
           <ProjectPageBreadcrumb
             section="Maßnahmentypen"

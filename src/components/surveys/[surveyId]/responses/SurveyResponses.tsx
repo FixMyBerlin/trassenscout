@@ -1,21 +1,27 @@
-import { ArrowDownTrayIcon } from "@heroicons/react/24/outline"
 import { useQuery } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 import { useEffect, useRef } from "react"
 import { twJoin } from "tailwind-merge"
-import { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
+import {
+  allowedSurveySlugs,
+  type AllowedSurveySlugs,
+} from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
 import { getQuestionIdBySurveySlug } from "@/src/components/beteiligung/shared/utils/getQuestionIdBySurveySlug"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
-import { Link } from "@/src/components/core/components/links/Link"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
+import { PageHeaderToolbarLink } from "@/src/components/core/components/PageHeader/PageHeaderToolbarLink"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
 import { EditableSurveyResponseFilterForm } from "@/src/components/surveys/[surveyId]/responses/EditableSurveyResponseFilterForm"
-import EditableSurveyResponseListItem from "@/src/components/surveys/[surveyId]/responses/EditableSurveyResponseListItem"
+import EditableSurveyResponseListItem, {
+  surveyResponseListGridClassName,
+} from "@/src/components/surveys/[surveyId]/responses/EditableSurveyResponseListItem"
+import { useDefaultFilterValues } from "@/src/components/surveys/[surveyId]/responses/useDefaultFilterValues"
 import { useFilteredResponses } from "@/src/components/surveys/[surveyId]/responses/useFilteredResponses"
 import { useSurveyResponseDetails } from "@/src/components/surveys/[surveyId]/responses/useSurveyResponseDetails"
+import { useSurveyResponseFilters } from "@/src/components/surveys/[surveyId]/responses/useSurveyResponseFilters"
 import { SurveyTabs } from "@/src/components/surveys/SurveyTabs"
 import {
   adminLookupRowsWithCountQueryOptions,
@@ -38,7 +44,37 @@ type Props = {
   tabs: Array<{ name: string; to: string }>
 }
 
-export function SurveyResponses({ projectSlug, surveyId: _surveyId, survey, tabs }: Props) {
+function isAllowedSurveySlug(slug: string): slug is AllowedSurveySlugs {
+  return allowedSurveySlugs.includes(slug as AllowedSurveySlugs)
+}
+
+function SurveyResponsesWithoutPart2({ survey, tabs }: Pick<Props, "survey" | "tabs">) {
+  return (
+    <>
+      <PageHeader
+        breadcrumb={
+          <ProjectPageBreadcrumb
+            section="Eingaben"
+            sectionTo="/$projectSlug/surveys"
+            current={survey.title}
+          />
+        }
+        tabs={<SurveyTabs tabs={tabs} embedded />}
+      />
+      <div className={pageContentPaddingClassName}>
+        <SuperAdminBox>
+          <p>In der Beteiligung {survey.slug.toUpperCase()} gibt es keinen Umfrageteil 2. </p>
+        </SuperAdminBox>
+      </div>
+    </>
+  )
+}
+
+type ConfiguredProps = Props & {
+  surveySlug: AllowedSurveySlugs
+}
+
+function SurveyResponsesConfigured({ projectSlug, survey, tabs, surveySlug }: ConfiguredProps) {
   const navigate = useNavigate()
   const { data: feedbackData, refetch: refetchResponses } = useQuery(
     feedbackSurveyResponsesQueryOptions({
@@ -50,8 +86,8 @@ export function SurveyResponses({ projectSlug, surveyId: _surveyId, survey, tabs
   const additionalFilterQuestionsWithResponseOptions =
     feedbackData?.additionalFilterQuestionsWithResponseOptions ?? []
 
-  const surveySlug = survey.slug as AllowedSurveySlugs
-  const filteredResponses = useFilteredResponses(feedbackSurveyResponses, surveySlug)
+  const defaultFilters = useDefaultFilterValues(surveySlug)
+  const { filter, setFilter } = useSurveyResponseFilters()
   const { data: operatorsData } = useQuery(
     adminLookupRowsWithCountQueryOptions({ projectSlug, table: "operators" }),
   )
@@ -62,43 +98,33 @@ export function SurveyResponses({ projectSlug, surveyId: _surveyId, survey, tabs
   })
   const topics = (topicsData?.surveyResponseTags ??
     []) as SurveyResponseTagsResult["surveyResponseTags"]
+  const filteredResponses = useFilteredResponses(feedbackSurveyResponses, surveySlug, topics)
 
   const { responseDetails: paramsSurveyResponseId } = useSurveyResponseDetails()
   const accordionRefs = useRef<Array<HTMLDivElement | null>>([])
 
-  useEffect(() => {
-    if (paramsSurveyResponseId) {
-      const currentRef = accordionRefs.current?.at(paramsSurveyResponseId)
-      currentRef?.scrollIntoView({ behavior: "smooth" })
-    }
-  }, [paramsSurveyResponseId])
+  useEffect(
+    function scrollToOpenedSurveyResponse() {
+      if (paramsSurveyResponseId) {
+        const currentRef = accordionRefs.current?.at(paramsSurveyResponseId)
+        currentRef?.scrollIntoView({ behavior: "smooth" })
+      }
+    },
+    [paramsSurveyResponseId],
+  )
 
-  const feedbackDefinition = getConfigBySurveySlug(surveySlug, "part2")
-
-  if (!feedbackDefinition)
-    return (
-      <>
-        <PageHeader
-          breadcrumb={
-            <ProjectPageBreadcrumb
-              section="Eingaben"
-              sectionTo="/$projectSlug/surveys"
-              current={survey.title}
-            />
-          }
-          tabs={<SurveyTabs tabs={tabs} embedded />}
-        />
-        <div className={pageContentPaddingClassName}>
-          <SuperAdminBox>
-            <p>In der Beteiligung {survey.slug.toUpperCase()} gibt es keinen Umfrageteil 2. </p>
-          </SuperAdminBox>
-        </div>
-      </>
-    )
+  const feedbackDefinition = getConfigBySurveySlug(surveySlug, "part2")!
 
   const refetchResponsesAndTopics = async () => {
     await refetchTopics()
     await refetchResponses()
+  }
+
+  const handleTagClick = (tagTitle: string) => {
+    void setFilter({
+      ...(filter ?? defaultFilters),
+      searchterm: `tag:${tagTitle}`,
+    })
   }
 
   const locationId = getQuestionIdBySurveySlug(surveySlug, "location")
@@ -129,22 +155,19 @@ export function SurveyResponses({ projectSlug, surveyId: _surveyId, survey, tabs
             search: (prev) => prev,
           })
         }}
-        primaryAction={
-          <Link
-            className="flex items-center gap-1"
+        toolbarAction={
+          <PageHeaderToolbarLink
             href={`/api/${projectSlug}/surveys/${survey.id}/part2/results`}
+            label="Alle Daten als .csv herunterladen"
           >
-            <ArrowDownTrayIcon className="size-5" />
-            Alle Daten als .csv herunterladen
-          </Link>
+            CSV
+          </PageHeaderToolbarLink>
         }
       />
 
       <EditableSurveyResponseFilterForm
         surveySlug={surveySlug}
         additionalFilters={additionalFilterQuestionsWithResponseOptions}
-        operators={operators}
-        topicsDefinition={topics}
       />
 
       <div className={twJoin(pageContentPaddingClassName, "space-y-4")}>
@@ -154,6 +177,22 @@ export function SurveyResponses({ projectSlug, surveyId: _surveyId, survey, tabs
         </p>
       </div>
       <section>
+        <div className="border-y border-gray-200 bg-gray-50">
+          <div
+            className={twJoin(
+              surveyResponseListGridClassName,
+              "px-6 py-4 text-sm font-medium text-gray-900",
+            )}
+          >
+            <div aria-hidden="true" />
+            <div>ID</div>
+            <div>Status</div>
+            <div>Eingabe</div>
+            <div>Tags</div>
+            <div className="sr-only">Kommentare</div>
+            <div aria-hidden="true" />
+          </div>
+        </div>
         {filteredResponses.map((response: FeedbackSurveyResponse) => (
           <div
             key={response.id}
@@ -167,6 +206,7 @@ export function SurveyResponses({ projectSlug, surveyId: _surveyId, survey, tabs
               response={response}
               operators={operators}
               topics={topics}
+              onTagClick={handleTagClick}
               refetchResponsesAndTopics={refetchResponsesAndTopics}
               mapProps={mapProps}
             />
@@ -175,4 +215,15 @@ export function SurveyResponses({ projectSlug, surveyId: _surveyId, survey, tabs
       </section>
     </>
   )
+}
+
+export function SurveyResponses(props: Props) {
+  const surveySlug = isAllowedSurveySlug(props.survey.slug) ? props.survey.slug : null
+  const feedbackDefinition = surveySlug ? getConfigBySurveySlug(surveySlug, "part2") : undefined
+
+  if (!surveySlug || !feedbackDefinition) {
+    return <SurveyResponsesWithoutPart2 survey={props.survey} tabs={props.tabs} />
+  }
+
+  return <SurveyResponsesConfigured {...props} surveySlug={surveySlug} />
 }

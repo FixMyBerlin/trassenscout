@@ -9,11 +9,11 @@ export const membershipRegionHeaderClassName = twJoin(
   "sticky top-0 z-10 h-[130px] max-h-[130px] overflow-hidden border-l border-gray-100 bg-gray-50 py-2 text-center align-bottom text-xs font-semibold text-gray-700",
 )
 
-export function membershipRegionCellClassName(access: MembershipAccess, isAdmin: boolean) {
+export function membershipRegionCellClassName(access: MembershipAccess) {
   return twJoin(
     membershipRegionColumnClassName,
     "border-l border-gray-100 text-center align-middle transition-colors",
-    membershipRegionDisplay(access, isAdmin).backgroundClassName,
+    membershipRegionDisplay(access).backgroundClassName,
   )
 }
 
@@ -33,5 +33,5 @@ export const membershipUserLineClassName =
 
 export const membershipUserHeaderClassName = twJoin(
   membershipUserColumnWidthClassName,
-  "sticky top-0 left-0 z-30 max-w-28 min-w-0 border-r border-gray-200 bg-gray-50 py-1.5 pr-1.5 pl-2 text-left text-sm font-semibold text-gray-700",
+  "sticky top-0 left-0 z-30 max-w-28 min-w-0 border-r border-gray-200 bg-gray-50 py-1.5 pr-1.5 pl-2 text-left text-sm font-medium text-gray-700",
 )

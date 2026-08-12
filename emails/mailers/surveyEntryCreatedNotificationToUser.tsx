@@ -1,25 +1,9 @@
 import { centroid, polygon } from "@turf/turf"
+import { detectGeometryType } from "@/src/components/beteiligung/form/map/utils"
 import { midPoint } from "@/src/components/core/components/Map/utils/midPoint"
 import { addressNoreply } from "./utils/addresses"
 import { sendMail } from "./utils/sendMail"
 import { Mail } from "./utils/types"
-
-function detectGeometryType(
-  value: string,
-): "point" | "lineString" | "multiLineString" | "polygon" | "unknown" {
-  try {
-    const geometry = JSON.parse(value) as unknown
-    if (!Array.isArray(geometry)) return "unknown"
-    if (typeof geometry[0] === "number" && typeof geometry[1] === "number") return "point"
-    if (Array.isArray(geometry[0]) && typeof geometry[0][0] === "number") return "lineString"
-    if (Array.isArray(geometry[0]) && Array.isArray(geometry[0][0])) {
-      return Array.isArray(geometry[0][0][0]) ? "polygon" : "multiLineString"
-    }
-    return "unknown"
-  } catch {
-    return "unknown"
-  }
-}
 
 function generateOsmLink(fieldName: string, value: string): string {
   try {
@@ -48,8 +32,9 @@ function generateOsmLink(fieldName: string, value: string): string {
           break
 
         case "polygon":
-          const polygonCoords = JSON.parse(value) as [number, number][]
-          const polygonFeature = polygon([polygonCoords])
+          // GeoJSON Polygon coordinates from GeoCategoryMap: [ring, …]
+          const polygonCoords = JSON.parse(value) as [number, number][][]
+          const polygonFeature = polygon(polygonCoords)
           const center = centroid(polygonFeature)
           osmCoords = center.geometry.coordinates as [number, number]
           break

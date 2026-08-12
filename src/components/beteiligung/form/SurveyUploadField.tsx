@@ -5,6 +5,7 @@ import { FieldWithErrorContainer } from "@/src/components/beteiligung/form/Error
 import {
   FieldError,
   getFieldA11yProps,
+  useFieldHasVisibleError,
   getFieldDescriptionId,
 } from "@/src/components/beteiligung/form/FieldErrror"
 import { formClasses } from "@/src/components/beteiligung/form/styles"
@@ -47,7 +48,7 @@ export const SurveyUploadField = ({
   surveySessionId,
 }: Props) => {
   const field = useFieldContext<number[]>()
-  const hasError = field.state.meta.errors.length > 0
+  const hasError = useFieldHasVisibleError(field)
 
   const TOKEN_STORAGE_KEY = surveyUploadTokenStorageKey(surveyResponseId)
   const [tokens, setTokens] = useState<TokenMap>(() => {

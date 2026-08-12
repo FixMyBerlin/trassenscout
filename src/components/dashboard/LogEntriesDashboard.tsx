@@ -1,21 +1,10 @@
-import { useSuspenseQuery } from "@tanstack/react-query"
-import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
-import { UserRoleEnum } from "@/src/prisma/generated/browser"
-import { adminProjectsWithCountsQueryOptions } from "@/src/server/projects/projectsQueryOptions"
+import { ProjectLogEntries } from "@/src/components/admin/log-entries/ProjectLogEntries"
 import type { ProjectsWithGeometryWithMembershipRole } from "@/src/server/projects/types"
-import { currentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
-import { GeneralLogEntries } from "./GeneralLogEntries"
-import { ProjectLogEntries } from "./ProjectLogEntries"
 
 type Props = { userProjects: ProjectsWithGeometryWithMembershipRole }
 
+/** Editors with `showLogEntries` see project audit logs on the dashboard. Admins use `/admin/log-entries`. */
 export const LogEntriesDashboard = ({ userProjects }: Props) => {
-  const { data: user } = useSuspenseQuery(currentUserQueryOptions())
-
-  if (user?.role === UserRoleEnum.ADMIN) {
-    return <AdminLogEntriesDashboard />
-  }
-
   const relevantProjects = userProjects.filter(
     (project) => project.showLogEntries && project.memberships[0]?.role === "EDITOR",
   )
@@ -28,20 +17,5 @@ export const LogEntriesDashboard = ({ userProjects }: Props) => {
         <ProjectLogEntries key={project.id} projectId={project.id} projectSlug={project.slug} />
       ))}
     </section>
-  )
-}
-
-const AdminLogEntriesDashboard = () => {
-  const {
-    data: { projects },
-  } = useSuspenseQuery(adminProjectsWithCountsQueryOptions())
-
-  return (
-    <SuperAdminBox>
-      <GeneralLogEntries />
-      {projects.map((project) => (
-        <ProjectLogEntries key={project.id} projectId={project.id} projectSlug={project.slug} />
-      ))}
-    </SuperAdminBox>
   )
 }

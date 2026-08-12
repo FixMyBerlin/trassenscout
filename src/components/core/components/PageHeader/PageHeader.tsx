@@ -1,5 +1,6 @@
 import { PageHeaderInfo } from "@/src/components/core/components/PageHeader/PageHeaderInfo"
 import { PageHeaderLayout } from "@/src/components/core/components/PageHeader/PageHeaderLayout"
+import { PageHeaderRowActions } from "@/src/components/core/components/PageHeader/PageHeaderRowActions"
 import {
   PageHeaderViewSwitch,
   type ViewMode,
@@ -11,7 +12,10 @@ type Props = {
   tabs?: React.ReactNode
   viewMode?: ViewMode
   onViewModeChange?: (mode: ViewMode) => void
+  /** Actions next to the view switch in the tabs row (e.g. CSV download). */
+  toolbarAction?: React.ReactNode
   title?: string
+  titleVisuallyHidden?: boolean
   action?: React.ReactNode
   filters?: React.ReactNode
   primaryAction?: React.ReactNode
@@ -24,7 +28,9 @@ export const PageHeader = ({
   tabs,
   viewMode,
   onViewModeChange,
+  toolbarAction,
   title,
+  titleVisuallyHidden = false,
   action,
   filters,
   primaryAction,
@@ -34,27 +40,37 @@ export const PageHeader = ({
 
   const row1Right =
     action || info ? (
-      <div className="flex shrink-0 items-center gap-2">
+      <PageHeaderRowActions>
         {action}
         {info ? <PageHeaderInfo>{info}</PageHeaderInfo> : null}
-      </div>
+      </PageHeaderRowActions>
     ) : undefined
 
-  const row2Right = hasViewSwitch ? (
-    <PageHeaderViewSwitch value={viewMode} onChange={onViewModeChange} />
-  ) : undefined
+  const row2Right =
+    hasViewSwitch || toolbarAction ? (
+      <PageHeaderRowActions>
+        {toolbarAction}
+        {hasViewSwitch ? (
+          <PageHeaderViewSwitch value={viewMode} onChange={onViewModeChange} />
+        ) : null}
+      </PageHeaderRowActions>
+    ) : undefined
 
-  const row3Left = title ? (
-    <h1 className="text-base font-semibold text-gray-900 sm:truncate">{title}</h1>
-  ) : undefined
+  const row3Left =
+    title && !titleVisuallyHidden ? (
+      <h1 className="text-base font-semibold text-gray-900 sm:truncate">{title}</h1>
+    ) : undefined
 
   return (
-    <PageHeaderLayout
-      className={className}
-      row1={{ left: breadcrumb, right: row1Right }}
-      row2={{ left: tabs, right: row2Right }}
-      row3={{ left: row3Left }}
-      row4={{ left: filters, right: primaryAction }}
-    />
+    <>
+      {title && titleVisuallyHidden ? <h1 className="sr-only">{title}</h1> : null}
+      <PageHeaderLayout
+        className={className}
+        row1={{ left: breadcrumb, right: row1Right }}
+        row2={{ left: tabs, right: row2Right }}
+        row3={{ left: row3Left }}
+        row4={{ left: filters, right: primaryAction }}
+      />
+    </>
   )
 }

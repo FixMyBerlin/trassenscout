@@ -3,7 +3,7 @@ import { MapData } from "@/src/components/beteiligung/shared/types"
 export const mapData: MapData = {
   sources: {
     netzentwurf: {
-      tildaUrl: "https://tilda-geo.de/api/uploads/bb-ramboll-netzentwurf-2-beteiligung",
+      externalUrl: "https://tilda-geo.de/api/uploads/bb-ramboll-netzentwurf-2-beteiligung.pmtiles",
       type: "pmtiles",
       layers: [
         {
@@ -15,9 +15,23 @@ export const mapData: MapData = {
             visibility: "visible",
           },
           paint: {
-            "line-color": "#F5814D",
+            "line-color": [
+              "case",
+              ["boolean", ["feature-state", "selected"], false],
+              "#F5814D",
+              "#111827",
+            ],
             "line-width": ["interpolate", ["linear"], ["zoom"], 0, 4, 8, 8, 13.8, 12],
-            "line-opacity": ["case", ["boolean", ["feature-state", "selected"], false], 1, 0],
+            "line-opacity": [
+              "case",
+              [
+                "any",
+                ["boolean", ["feature-state", "selected"], false],
+                ["boolean", ["feature-state", "hover"], false],
+              ],
+              1,
+              0,
+            ],
           },
         },
         {

@@ -1,6 +1,10 @@
 import { useNavigate } from "@tanstack/react-router"
 import { twJoin } from "tailwind-merge"
-import { adminTableClassName } from "@/src/components/admin/adminListClasses"
+import {
+  adminTableBodyClassName,
+  adminTableClassName,
+  adminTableRowClassName,
+} from "@/src/components/admin/adminListClasses"
 import { getMembershipAccess } from "@/src/components/admin/memberships/membershipAccessUtils"
 import { MembershipRegionCell } from "@/src/components/admin/memberships/MembershipRegionCell"
 import {
@@ -65,14 +69,12 @@ export function MembershipsTable({ users, projects }: Props) {
           ))}
         </tr>
       </thead>
-      <tbody className="divide-y divide-gray-200 bg-white">
+      <tbody className={adminTableBodyClassName}>
         {users.map((user) => {
-          const isAdmin = user.role === "ADMIN"
-
           return (
             <tr
               key={user.id}
-              className="group cursor-pointer"
+              className={twJoin(adminTableRowClassName, "group cursor-pointer")}
               onClick={() =>
                 void navigate({
                   to: "/admin/memberships/$userId",
@@ -84,8 +86,7 @@ export function MembershipsTable({ users, projects }: Props) {
               {projects.map((project) => (
                 <MembershipRegionCell
                   key={project.id}
-                  isAdmin={isAdmin}
-                  access={getMembershipAccess(user.memberships, project.id, isAdmin)}
+                  access={getMembershipAccess(user.memberships, project.id)}
                 />
               ))}
             </tr>

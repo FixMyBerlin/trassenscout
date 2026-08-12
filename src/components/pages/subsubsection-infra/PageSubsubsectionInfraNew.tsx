@@ -11,6 +11,8 @@ export function PageSubsubsectionInfraNew() {
   return (
     <>
       <PageHeader
+        title="Infrastruktur hinzufügen"
+        titleVisuallyHidden
         breadcrumb={
           <ProjectPageBreadcrumb
             section="Infrastruktur"

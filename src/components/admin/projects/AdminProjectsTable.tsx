@@ -9,17 +9,21 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { twMerge } from "tailwind-merge"
 import {
+  adminTableBodyClassName,
   adminTableCellClassName,
   adminTableClassName,
+  adminTableExternalLinkClassName,
   adminTableHeaderClassName,
-  adminTableWrapperClassName,
+  adminTableHeadRowClassName,
+  adminTableRowClassName,
 } from "@/src/components/admin/adminListClasses"
 import {
-  AdminTableEditLink,
   AdminTableExternalLink,
   AdminTableFeatureCheckbox,
 } from "@/src/components/admin/AdminTableActions"
 import { translateServerError } from "@/src/components/core/components/forms/errorMessageTranslations"
+import { Link } from "@/src/components/core/components/links/Link"
+import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { longTitle } from "@/src/components/core/components/text/titles"
 import { Tooltip } from "@/src/components/core/components/Tooltip/Tooltip"
@@ -35,6 +39,9 @@ type Props = {
 }
 
 const formatPaCount = (count: number) => `${count} ${count === 1 ? "PA" : "PAs"}`
+
+const formatSubsubsectionCount = (count: number) =>
+  `${count} ${count === 1 ? "Teilabschnitt" : "Teilabschnitte"}`
 
 type ProjectFeatureColumn = {
   key: ProjectFeatureFlagKey
@@ -61,7 +68,7 @@ const projectFeatureColumns: ProjectFeatureColumn[] = [
   },
   {
     key: "landAcquisitionModuleEnabled",
-    header: "Grunderwerb",
+    header: "Grund\u00ADerwerb",
     icon: <MapIcon className="size-4" aria-hidden />,
     label: (enabled) =>
       enabled ? "Grunderwerb-Modul ausschalten" : "Grunderwerb-Modul einschalten",
@@ -105,7 +112,7 @@ export const AdminProjectsTable = ({ projects, isFiltering, hasActiveFilter }: P
 
   if (!projects.length) {
     return (
-      <p className="text-sm text-gray-600">
+      <p className="px-4 text-sm text-gray-600">
         {hasActiveFilter
           ? "Keine Projekte für diese Suche gefunden."
           : "Noch keine Projekte vorhanden."}
@@ -115,18 +122,18 @@ export const AdminProjectsTable = ({ projects, isFiltering, hasActiveFilter }: P
 
   return (
     <div className="flex flex-col gap-2">
-      <div
+      <TableWrapper
+        withTopBorder
         className={twMerge(
-          adminTableWrapperClassName,
           "transition-opacity duration-150",
           isFiltering || isPending ? "opacity-60" : "",
         )}
       >
-        <table className={adminTableClassName}>
-          <thead className="bg-gray-50">
-            <tr>
+        <table className={twMerge(adminTableClassName, "w-max min-w-full")}>
+          <thead>
+            <tr className={adminTableHeadRowClassName}>
               <th className={adminTableHeaderClassName}>Projekt</th>
-              <th className={adminTableHeaderClassName}>Planungsabschnitte</th>
+              <th className={adminTableHeaderClassName}>PA / TA</th>
               {projectFeatureColumns.map((column, columnIndex) => {
                 const allEnabled = projects.every((project) => project[column.key])
                 const someEnabled = projects.some((project) => project[column.key])
@@ -134,11 +141,8 @@ export const AdminProjectsTable = ({ projects, isFiltering, hasActiveFilter }: P
                 const isLastColumn = columnIndex === projectFeatureColumns.length - 1
                 return (
                   <th key={column.key} className={adminTableHeaderClassName}>
-                    <div className="flex items-center gap-2">
-                      <span className="inline-flex items-center gap-1">
-                        {column.icon}
-                        {column.header}
-                      </span>
+                    <div className="flex min-w-18 flex-col gap-1 leading-snug">
+                      {column.header}
                       <AdminTableFeatureCheckbox
                         checked={allEnabled}
                         indeterminate={someEnabled && !allEnabled}
@@ -159,9 +163,9 @@ export const AdminProjectsTable = ({ projects, isFiltering, hasActiveFilter }: P
               })}
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
+          <tbody className={adminTableBodyClassName}>
             {projects.map((project) => (
-              <tr key={project.id}>
+              <tr key={project.id} className={adminTableRowClassName}>
                 <td className={adminTableCellClassName}>
                   <Tooltip content={longTitle(project.slug)}>
                     <span className="inline-flex">
@@ -172,33 +176,42 @@ export const AdminProjectsTable = ({ projects, isFiltering, hasActiveFilter }: P
                   </Tooltip>
                 </td>
                 <td className={adminTableCellClassName}>
-                  <Tooltip content="Planungsabschnitte verwalten">
-                    <span className="inline-flex">
-                      <AdminTableEditLink to={`/admin/projects/${project.slug}/subsections`}>
-                        {formatPaCount(project.subsectionCount)}
-                      </AdminTableEditLink>
+                  <div className="flex flex-col gap-0.5 leading-tight">
+                    <Link
+                      to={`/admin/projects/${project.slug}/subsections`}
+                      classNameOverwrites={adminTableExternalLinkClassName}
+                    >
+                      {formatPaCount(project.subsectionCount)}
+                    </Link>
+                    <span
+                      className={project.subsubsectionCount === 0 ? "text-gray-400" : undefined}
+                    >
+                      {formatSubsubsectionCount(project.subsubsectionCount)}
                     </span>
-                  </Tooltip>
+                  </div>
                 </td>
                 {projectFeatureColumns.map((column) => (
                   <td key={column.key} className={adminTableCellClassName}>
-                    <AdminTableFeatureCheckbox
-                      checked={project[column.key]}
-                      disabled={isPending}
-                      label={column.label(project[column.key])}
-                      onChange={() =>
-                        void handleUpdate([project.slug], column.key, !project[column.key])
-                      }
-                    />
+                    <div className="flex items-center gap-1.5 text-gray-500">
+                      {column.icon}
+                      <AdminTableFeatureCheckbox
+                        checked={project[column.key]}
+                        disabled={isPending}
+                        label={column.label(project[column.key])}
+                        onChange={() =>
+                          void handleUpdate([project.slug], column.key, !project[column.key])
+                        }
+                      />
+                    </div>
                   </td>
                 ))}
               </tr>
             ))}
           </tbody>
         </table>
-      </div>
+      </TableWrapper>
       {formError && (
-        <div role="alert" className="rounded-sm bg-red-50 px-2 py-1 text-red-800">
+        <div role="alert" className="mx-4 rounded-sm bg-red-50 px-2 py-1 text-red-800">
           <span className="font-mono text-sm leading-tight">{translateServerError(formError)}</span>
         </div>
       )}

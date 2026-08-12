@@ -121,6 +121,7 @@ test.describe("Project export API", () => {
     const payload = (await response.json()) as {
       type: string
       features: Array<{
+        id?: string | number
         geometry: { type: string; coordinates: number[][] | number[][][] }
         properties: {
           subsectionSlug: string
@@ -136,6 +137,10 @@ test.describe("Project export API", () => {
     // LineString (1) + MultiLineString parts (2) + Polygon (1)
     expect(payload.features).toHaveLength(4)
 
+    for (const feature of payload.features) {
+      expect(feature.id).toBe(feature.properties.subsectionSlug)
+    }
+
     const lineFeature = payload.features.find(
       (feature) =>
         feature.geometry.type === "LineString" && feature.properties.subsectionSlug === "s1",
@@ -147,11 +152,14 @@ test.describe("Project export API", () => {
     )
     const polygonFeature = payload.features.find((feature) => feature.geometry.type === "Polygon")
 
+    expect(lineFeature?.id).toBe("s1")
     expect(lineFeature?.properties.projectSlug).toBe(projectSlug)
     expect(multiLineFeatures).toHaveLength(2)
+    expect(multiLineFeatures.every((feature) => feature.id === "s3-multi-line")).toBe(true)
     expect(
       multiLineFeatures.every((feature) => feature.properties.projectSlug === projectSlug),
     ).toBe(true)
+    expect(polygonFeature?.id).toBe("s2-polygon")
     expect(polygonFeature?.properties.subsectionSlug).toBe("s2-polygon")
     expect(polygonFeature?.properties.projectSlug).toBe(projectSlug)
   })

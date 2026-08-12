@@ -10,7 +10,7 @@ export const SurveyMapOutOfViewPanel = ({ status, action }: Props) => {
     case "default":
       return (
         <SurveyMapPanelContainer>
-          Bewegen Sie den Pin auf die gewünschte Position.
+          Bewegen Sie den Pin oder klicken Sie auf die Karte.
         </SurveyMapPanelContainer>
       )
     case "pinOutOfView":

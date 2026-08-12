@@ -1,7 +1,6 @@
 import { useMutation } from "@tanstack/react-query"
 import { useSearch } from "@tanstack/react-router"
 import { useState } from "react"
-import { Debug } from "@/src/components/beteiligung/Debug"
 import { SurveyEnd } from "@/src/components/beteiligung/End"
 import { ProgressBar } from "@/src/components/beteiligung/layout/ProgressBar"
 import { SurveyContainer } from "@/src/components/beteiligung/layout/SurveyContainer"
@@ -17,6 +16,7 @@ import { getQuestionIdBySurveySlug } from "@/src/components/beteiligung/shared/u
 import { scrollToTopWithDelay } from "@/src/components/beteiligung/shared/utils/scrollToTopWithDelay"
 import { useAllowedSurveySlug } from "@/src/components/beteiligung/shared/utils/useAllowedSurveySlug"
 import { SurveyPart } from "@/src/components/beteiligung/SurveyPart"
+import { DevAdminBox } from "@/src/components/core/components/AdminBox/DevAdminBox"
 import {
   getOrCreateCreatedSurveyResponsePublicFn,
   sendSurveyPart2EmailFn,
@@ -293,15 +293,12 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
     <ProgressContext.Provider value={{ progress, setProgress }}>
       {!surveyMeta.hideProgressBar && <ProgressBar />}
       <SurveyContainer>
-        <Debug className="border border-red-500">
-          <code>stage: {stage}</code>
-          <br />
-          <code>progressbar: {progress}</code>
-          <br />
-          <code>surveySessionId: {surveySessionId ?? "null"}</code>
-          <br />
-          <code>responseIdByPart: {JSON.stringify(responseIdByPart, null, 2)}</code>
-        </Debug>
+        <DevAdminBox>
+          <p className="m-0 font-mono leading-tight">
+            stage: {stage} · view: {isIntro ? "INTRO" : "UMFRAGE"} · progress: {progress} · session:{" "}
+            {surveySessionId ?? "null"} · responses: {JSON.stringify(responseIdByPart)}
+          </p>
+        </DevAdminBox>
         <div className={isSpinner ? "blur-sm" : ""}>{component}</div>
         {isSpinner && <SurveySpinnerLayover />}
       </SurveyContainer>

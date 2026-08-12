@@ -15,6 +15,8 @@ defineSettingsRoutePermissionSuite({
   createHeading: "Kontakt hinzufügen",
   editHeading: "Kontakt bearbeiten",
   createLinkName: "Neuer Kontakt",
+  createFromListUrl: new RegExp(`${contactsPath}\\?modalContactView=new$`),
+  createFromListHeading: "Neuen Kontakt anlegen",
 })
 
 test.describe("Contacts form validation", () => {

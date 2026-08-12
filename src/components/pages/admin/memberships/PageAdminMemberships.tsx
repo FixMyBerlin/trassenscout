@@ -2,12 +2,12 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { startTransition, useDeferredValue } from "react"
 import { twMerge } from "tailwind-merge"
-import { adminTableWrapperClassName } from "@/src/components/admin/adminListClasses"
 import { AdminPageHeader } from "@/src/components/admin/AdminPageHeader"
 import { filterMembershipsTable } from "@/src/components/admin/memberships/filterMembershipsTable"
 import { MembershipsSearchBar } from "@/src/components/admin/memberships/MembershipsSearchBar"
 import { MembershipsTable } from "@/src/components/admin/memberships/MembershipsTable"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
+import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { preserveScrollNavigateOptions } from "@/src/components/core/routes/preserveScrollNavigateOptions"
 import { projectsAdminQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 import { usersWithMembershipsQueryOptions } from "@/src/server/users/usersQueryOptions"
@@ -59,9 +59,9 @@ export function PageAdminMemberships() {
           onProjectChange={(value) => setSearchField("project", value)}
         />
       </div>
-      <div
+      <TableWrapper
+        withTopBorder
         className={twMerge(
-          adminTableWrapperClassName,
           "max-h-[calc(100vh-13rem)] overflow-y-auto transition-opacity duration-150",
           isFiltering ? "opacity-60" : "",
         )}
@@ -75,7 +75,7 @@ export function PageAdminMemberships() {
               : "Noch keine Nutzer vorhanden."}
           </p>
         )}
-      </div>
+      </TableWrapper>
     </>
   )
 }

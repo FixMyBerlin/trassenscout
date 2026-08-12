@@ -126,6 +126,8 @@ export const part2Config: SurveyPart2 = {
                 bounds: [
                   9.103949029818097, 48.81629635563661, 9.387312714501604, 48.90390202531458,
                 ],
+                minZoom: 7,
+                maxZoom: 13,
               },
             },
             legendProps: {

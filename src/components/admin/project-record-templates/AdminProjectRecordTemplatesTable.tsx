@@ -1,18 +1,21 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { AdminBadge } from "@/src/components/admin/AdminBadge"
 import {
+  adminTableBodyClassName,
   adminTableCellClassName,
   adminTableCellRightClassName,
   adminTableClassName,
   adminTableHeaderClassName,
   adminTableHeaderRightClassName,
-  adminTableWrapperClassName,
+  adminTableHeadRowClassName,
+  adminTableRowClassName,
 } from "@/src/components/admin/adminListClasses"
 import {
   AdminTableActions,
   AdminTableDeleteButton,
   AdminTableEditLink,
 } from "@/src/components/admin/AdminTableActions"
+import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { deleteProjectRecordTemplateFn } from "@/src/server/projectRecordTemplates/projectRecordTemplates.functions"
 import { projectRecordTemplatesQueryOptions } from "@/src/server/projectRecordTemplates/projectRecordTemplatesQueryOptions"
 import type { ProjectRecordTemplatesList } from "@/src/server/projectRecordTemplates/types"
@@ -36,22 +39,22 @@ export const AdminProjectRecordTemplatesTable = ({ templates }: Props) => {
   }
 
   if (!templates.length) {
-    return <p className="text-sm text-gray-600">Noch keine Vorlagen vorhanden.</p>
+    return <p className="px-4 text-sm text-gray-600">Noch keine Vorlagen vorhanden.</p>
   }
 
   return (
-    <div className={adminTableWrapperClassName}>
+    <TableWrapper withTopBorder className="mt-7">
       <table className={adminTableClassName}>
-        <thead className="bg-gray-50">
-          <tr>
+        <thead>
+          <tr className={adminTableHeadRowClassName}>
             <th className={adminTableHeaderClassName}>Titel der Vorlage</th>
             <th className={adminTableHeaderClassName}>Projekte</th>
             <th className={adminTableHeaderRightClassName}>Aktion</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-200">
+        <tbody className={adminTableBodyClassName}>
           {templates.map((template) => (
-            <tr key={template.id}>
+            <tr key={template.id} className={adminTableRowClassName}>
               <td className={adminTableCellClassName}>{template.templateTitle}</td>
               <td className={adminTableCellClassName}>
                 <div className="flex flex-wrap gap-2">
@@ -76,6 +79,6 @@ export const AdminProjectRecordTemplatesTable = ({ templates }: Props) => {
           ))}
         </tbody>
       </table>
-    </div>
+    </TableWrapper>
   )
 }

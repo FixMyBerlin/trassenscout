@@ -1,19 +1,34 @@
 import { twJoin } from "tailwind-merge"
 import { actionButtonBase } from "@/src/components/core/components/buttons/actionButtonClasses"
+import {
+  tableBodyClassName,
+  tableCellClassName,
+  tableClassName,
+  tableHeadRowClassName,
+  tableRowClassName,
+} from "@/src/components/core/components/Table/tableClasses"
 
-export const adminTableWrapperClassName =
-  "not-prose overflow-x-auto rounded-md border border-gray-200 bg-white"
+/** Aligns with frontend `tableClassName` (border-collapse, no uppercase headers). */
+export const adminTableClassName = tableClassName
 
-/** Caps table body copy at text-sm; use {@link adminTableCellSubtextClassName} for secondary lines. */
-export const adminTableClassName = "min-w-full divide-y divide-gray-200 text-sm text-gray-700"
+/** Gray header row — same as frontend `tableHeadRowClassName`. */
+export const adminTableHeadRowClassName = tableHeadRowClassName
 
-export const adminTableHeaderClassName = "px-4 py-3 text-left font-semibold text-gray-700"
+/**
+ * Header cell: same metrics as frontend `tableHeadCellClassName`, but sentence case (no uppercase).
+ */
+export const adminTableHeaderClassName = "px-3 pt-3 pb-2 text-left font-medium text-gray-700"
 
-export const adminTableHeaderRightClassName = "px-4 py-3 text-right font-semibold text-gray-700"
+export const adminTableHeaderRightClassName = twJoin(adminTableHeaderClassName, "text-right")
 
-export const adminTableCellClassName = "px-4 py-3"
+/** White body with row dividers — same as frontend `tableBodyClassName`. */
+export const adminTableBodyClassName = tableBodyClassName
 
-export const adminTableCellRightClassName = "px-4 py-3 text-right"
+export const adminTableRowClassName = tableRowClassName
+
+export const adminTableCellClassName = tableCellClassName
+
+export const adminTableCellRightClassName = twJoin(adminTableCellClassName, "text-right")
 
 /** Secondary line inside a table cell (slug, hint, relative time). Never larger than the table base. */
 export const adminTableCellSubtextClassName = "text-xs text-gray-500"

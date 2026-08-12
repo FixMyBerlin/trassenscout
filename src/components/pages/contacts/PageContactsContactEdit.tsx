@@ -16,6 +16,8 @@ export function PageContactsContactEdit() {
   return (
     <>
       <PageHeader
+        title="Kontakt bearbeiten"
+        titleVisuallyHidden
         breadcrumb={
           <ProjectPageBreadcrumb
             section="Externe Kontakte"

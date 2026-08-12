@@ -86,12 +86,15 @@ export async function deleteSurvey(headers: Headers, input: z.infer<typeof Delet
   })
 }
 
-export async function getAdminSurveys(headers: Headers) {
+export async function getAdminSurveysByProject(
+  headers: Headers,
+  input: z.infer<typeof GetSurveysSchema>,
+) {
   await endpointAuth.admin(headers)
 
   return db.survey.findMany({
     orderBy: { id: "asc" },
-    take: 100,
+    where: { project: { slug: input.projectSlug } },
   })
 }
 

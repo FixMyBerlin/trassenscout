@@ -11,6 +11,8 @@ export function PageAcquisitionAreaStatusNew() {
   return (
     <>
       <PageHeader
+        title="Status hinzufügen"
+        titleVisuallyHidden
         breadcrumb={
           <ProjectPageBreadcrumb
             section="Flächenerwerb-Status"

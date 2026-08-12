@@ -1,11 +1,7 @@
 import { getRouteApi } from "@tanstack/react-router"
 import { featureCollection, point } from "@turf/helpers"
-import maplibregl, {
-  DataDrivenPropertyValueSpecification,
-  ExpressionSpecification,
-} from "maplibre-gl"
-import * as pmtiles from "pmtiles"
-import { useEffect, useState } from "react"
+import { DataDrivenPropertyValueSpecification, ExpressionSpecification } from "maplibre-gl"
+import { useState } from "react"
 import Map, {
   Layer,
   LayerProps,
@@ -25,6 +21,7 @@ import {
 import "maplibre-gl/dist/maplibre-gl.css"
 import { getMapStyle, getVectorStyleUrl } from "@/src/components/core/components/Map/mapStyleConfig"
 import { MapTooltipPopup } from "@/src/components/core/components/Map/MapTooltipPopup"
+import { usePmtilesProtocol } from "@/src/components/core/components/Map/pmtilesProtocol"
 import { getStaticOverlayForProject } from "@/src/components/core/components/Map/staticOverlay/getStaticOverlayForProject"
 import { StaticOverlay } from "@/src/components/core/components/Map/staticOverlay/StaticOverlay"
 import { geometryAnchorPoint } from "@/src/components/core/components/Map/utils/geometryAnchorPoint"
@@ -75,14 +72,7 @@ export const SurveyResponseOverviewMap = ({
   const [cursorStyle, setCursorStyle] = useState("grab")
   const [tooltip, setTooltip] = useState<MapTooltip | null>(null)
   const surveyResponsesWithLocation = surveyResponses.filter((r) => r.data[locationRef])
-  // Setup pmtiles
-  useEffect(() => {
-    const protocol = new pmtiles.Protocol()
-    maplibregl.addProtocol("pmtiles", protocol.tile)
-    return () => {
-      maplibregl.removeProtocol("pmtiles")
-    }
-  }, [])
+  usePmtilesProtocol()
 
   // Only include responses that have geometry coordinates (geometryCategory or location)
   const surveyResponsesWithGeometryCategory = surveyResponses.filter(

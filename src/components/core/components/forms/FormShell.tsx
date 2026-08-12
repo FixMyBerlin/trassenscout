@@ -19,6 +19,7 @@ export type FormShellProps<TFormData> = Omit<
   submitText: string
   submitClassName?: string
   submitDisabled?: boolean
+  submitPlacement?: "left" | "right"
   actionBarLeft?: ReactNode
   actionBarRight?: ReactNode
   actionBarClassName?: string
@@ -34,6 +35,7 @@ export function FormShell<TFormData>({
   submitText,
   submitClassName,
   submitDisabled,
+  submitPlacement = "left",
   actionBarLeft,
   actionBarRight,
   actionBarClassName,
@@ -47,6 +49,20 @@ export function FormShell<TFormData>({
   const isHydrated = useIsHydrated()
   const { pathname } = useLocation()
   const isAdminRoute = pathname.startsWith("/admin")
+  const submitButton = !hideSubmitButton ? (
+    <form.SubmitButton
+      label={submitText}
+      className={submitClassName}
+      disabled={!isHydrated || submitDisabled}
+    />
+  ) : null
+  const actionBarRightContent =
+    actionBarRight || submitPlacement === "right" ? (
+      <>
+        {actionBarRight}
+        {submitPlacement === "right" ? submitButton : null}
+      </>
+    ) : undefined
 
   return (
     <FormHydratedProvider value={isHydrated}>
@@ -74,17 +90,11 @@ export function FormShell<TFormData>({
               )}
               left={
                 <>
-                  {!hideSubmitButton && (
-                    <form.SubmitButton
-                      label={submitText}
-                      className={submitClassName}
-                      disabled={!isHydrated || submitDisabled}
-                    />
-                  )}
+                  {submitPlacement === "left" ? submitButton : null}
                   {actionBarLeft}
                 </>
               }
-              right={actionBarRight}
+              right={actionBarRightContent}
             />
           )}
 

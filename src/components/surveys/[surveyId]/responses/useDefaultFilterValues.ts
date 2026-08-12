@@ -1,22 +1,11 @@
-import { useQuery } from "@tanstack/react-query"
-import { getRouteApi } from "@tanstack/react-router"
-import { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
+import type { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
-import { getSurveyCategoryOptions } from "@/src/components/surveys/[surveyId]/responses/getSurveyCategoryOptions"
-import { surveyResponseTagsQueryOptions } from "@/src/server/surveyResponseTags/surveyResponseTagsQueryOptions"
 import type { SurveyResponseFilter } from "@/src/shared/survey-responses/searchSchemas"
 
-const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
-
 export const useDefaultFilterValues = (slug: AllowedSurveySlugs) => {
-  const { projectSlug } = loggedInProjectRouteApi.useParams()
-  const { data } = useQuery(surveyResponseTagsQueryOptions({ projectSlug }))
-  const topics = data?.surveyResponseTags ?? []
-
   const backendConfig = getConfigBySurveySlug(slug, "backend")
   const surveyResponseStatus = backendConfig.status
 
-  const categoryOptions = getSurveyCategoryOptions(slug)
   const defaultAdditionalFiltersQueryValues: Record<string, string> = {}
 
   backendConfig.additionalFilters?.forEach(
@@ -25,11 +14,6 @@ export const useDefaultFilterValues = (slug: AllowedSurveySlugs) => {
 
   return {
     status: surveyResponseStatus.map((s) => s.value),
-    operator: "ALL",
-    hasnotes: "ALL",
-    haslocation: "ALL",
-    categories: categoryOptions.map((c) => String(c.value)),
-    topics: [...topics.map((t) => String(t.id)), "0"],
     searchterm: "",
     ...defaultAdditionalFiltersQueryValues,
   } satisfies SurveyResponseFilter

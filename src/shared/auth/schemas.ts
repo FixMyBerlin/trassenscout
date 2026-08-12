@@ -18,6 +18,7 @@ export const SignupSchema = z.object({
   lastName: z.string().min(2, { error: "Pflichtfeld. Mindestens 2 Zeichen." }),
   institution: z.string().nullable(),
   inviteToken: z.string().nullable(), // Signup will create a membership or not…
+  newsletter: z.literal(""),
   privacyPolicyAccepted: z.boolean().refine((value) => value === true, {
     error: "Bitte bestätigen Sie die Datenschutzerklärung.",
   }),
@@ -74,6 +75,7 @@ export const signupFormDefaultValues: z.infer<typeof SignupSchema> = {
   phone: null,
   institution: null,
   inviteToken: null,
+  newsletter: "",
   privacyPolicyAccepted: false,
 }
 

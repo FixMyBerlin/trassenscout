@@ -1,6 +1,9 @@
 import { beforeEach, describe, expect, test, vi } from "vitest"
 
 const mockDb = {
+  project: {
+    findFirstOrThrow: vi.fn(),
+  },
   subsection: {
     findFirstOrThrow: vi.fn(),
   },
@@ -38,6 +41,7 @@ const baseInput = {
 describe("updateSubsubsection", () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockDb.project.findFirstOrThrow.mockResolvedValue({ subsubsectionExtraFieldDefinitions: [] })
     mockDb.subsection.findFirstOrThrow.mockResolvedValue({ id: 10 })
     mockDb.subsubsection.update.mockResolvedValue({ id: 1 })
   })

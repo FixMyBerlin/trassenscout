@@ -28,6 +28,7 @@ const projectSelect = {
   showLogEntries: true,
   slug: true,
   subTitle: true,
+  subsubsectionExtraFieldDefinitions: true,
 } as const
 
 export async function getProjectsForCurrentUser(headers: Headers) {

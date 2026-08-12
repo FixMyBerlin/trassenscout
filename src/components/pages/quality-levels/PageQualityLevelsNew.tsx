@@ -11,6 +11,8 @@ export function PageQualityLevelsNew() {
   return (
     <>
       <PageHeader
+        title="Ausbaustandard hinzufügen"
+        titleVisuallyHidden
         breadcrumb={
           <ProjectPageBreadcrumb
             section="Ausbaustandards"

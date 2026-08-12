@@ -35,6 +35,7 @@ import type {
   ForgotPasswordSearch,
   ResetPasswordSearch,
 } from "@/src/shared/auth/searchSchemas"
+import { SIGNUP_HONEYPOT_FIELD } from "@/src/shared/auth/signupHoneypot"
 import { formatInviteProjects } from "@/src/shared/invites/formatInviteProjects"
 
 function getSafeCallbackURL(callbackURL?: string) {
@@ -255,6 +256,18 @@ function SignupForm({
           />
         )}
       </form.AppField>
+      <form.AppField name="newsletter">
+        {(field) => (
+          <field.TextField
+            label="Newsletter abonnieren"
+            autoComplete="off"
+            tabIndex={-1}
+            aria-hidden="true"
+            outerProps={{ className: "absolute -left-[9999px] h-0 w-0 overflow-hidden" }}
+            labelProps={{ className: "sr-only" }}
+          />
+        )}
+      </form.AppField>
       <form.AppField name="privacyPolicyAccepted">
         {(field) => (
           <field.Checkbox
@@ -465,7 +478,8 @@ function PageSignup({ callbackURL, inviteToken }: AuthCallbackSearch) {
       name: `${firstName} ${lastName}`.trim(),
       password: values.password,
       phone: nullableString(values.phone) ?? undefined,
-    })
+      [SIGNUP_HONEYPOT_FIELD]: values.newsletter,
+    } as Parameters<typeof authClient.signUp.email>[0])
 
     if (error) {
       return { [FORM_ERROR]: error.message || "Die Registrierung ist fehlgeschlagen." }

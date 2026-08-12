@@ -21,6 +21,8 @@ export function PageSubsubsectionTaskEdit() {
   return (
     <>
       <PageHeader
+        title="Maßnahmentyp bearbeiten"
+        titleVisuallyHidden
         breadcrumb={
           <ProjectPageBreadcrumb
             section="Maßnahmentypen"

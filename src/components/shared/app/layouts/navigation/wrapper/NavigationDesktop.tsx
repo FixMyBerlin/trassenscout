@@ -1,5 +1,6 @@
 import { useLocation } from "@tanstack/react-router"
 import { Link } from "@/src/components/core/components/links/Link"
+import { NavigationAdminMenu } from "../NavigationAdminMenu"
 import { NavigationGeneralLogo } from "../NavigationLoggedOut/TrassenscoutLogo"
 import { NavigationMetaMenu } from "../NavigationMetaMenu"
 import { NavigationUser } from "../NavigationUser/NavigationUser"
@@ -47,6 +48,7 @@ export const NavigationDesktop = ({
           <NavigationUserPublic />
         ) : (
           <>
+            <NavigationAdminMenu />
             <NavigationMetaMenu />
             <NavigationUser />
           </>

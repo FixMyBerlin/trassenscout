@@ -1,13 +1,23 @@
-import { AnyFieldApi } from "@tanstack/react-form"
 import { fieldValidationEnum } from "@/src/components/beteiligung/shared/fieldvalidationEnum"
 import { SurveyPart2 } from "@/src/components/beteiligung/shared/types"
+import { mapData } from "@/src/components/beteiligung/surveys/rstest-2/mapData.const"
 
+/**
+ * Pilot: GeoCategoryMap loads live Planungsabschnitte from `/api/projects/rs23.json`
+ * (requires Project.exportEnabled).
+ */
 export const part2Config: SurveyPart2 = {
   progressBarDefinition: 1,
   intro: {
     title: "RSTest 2 In dieser Umfrage steigen wir direkt ein: Ihre Hinweise und Wünsche",
-    description:
-      "Wenn Sie möchten, können Sie nun konkrete Hinweise zum Radschnellweg abgeben.\n\nDabei interessiert uns besonders, wenn sie Probleme an bestimmten Stellen des Radwegs sehen. Zum Beispiel: Gibt es Orte, die verbessert werden könnten? Oder gibt es Bereiche, die zu Problemen oder Konflikten, zum Beispiel mit zu Fußgehenden oder Autos führen könnten?\n\nIhre speziellen Hinweise, Kommentare oder Ideen sind für uns wichtig. Das hilft uns sehr weiter, den Radschnellweg noch besser zu planen.",
+    description: `Wenn Sie möchten, können Sie nun konkrete Hinweise zu den Planungsabschnitten abgeben.
+
+## So geht's:
+1. Wählen Sie auf der Karte einen Planungsabschnitt aus.
+2. Wählen Sie eine Kategorie aus, zu der Ihr Hinweis passt.
+3. Schreiben Sie Ihren Hinweis in das Textfeld.
+4. Nach dem Speichern können Sie einen weiteren Hinweis formulieren oder die Beteiligung beenden.
+`,
     type: "standard",
     buttons: [
       { action: "next", label: "Weiter", position: "right" },
@@ -22,18 +32,84 @@ export const part2Config: SurveyPart2 = {
   },
   pages: [
     {
-      id: "feedback",
+      id: "1",
       fields: [
         {
-          name: "titleCategory",
+          name: "titleGeoCategory",
           componentType: "content",
           component: "SurveyPageTitle",
-          props: { title: "Wir sind gespannt auf Ihre Hinweise." },
+          props: { title: "Planungsabschnitt und Kategorie auswählen." },
+        },
+        {
+          name: "descriptionGeoCategory",
+          componentType: "content",
+          component: "SurveyMarkdown",
+          props: {
+            markdown:
+              "Wählen Sie den Planungsabschnitt durch Klicken auf eine der Linien oder Flächen auf der Karte aus.",
+          },
+        },
+        {
+          name: "geometryCategoryId",
+          componentType: "form",
+          component: "hidden",
+          props: {
+            label: "Kürzel des ausgewählten Planungsabschnitts",
+          },
+        },
+        {
+          name: "geometryCategoryLabel",
+          componentType: "form",
+          component: "hidden",
+          props: {
+            label: "Planungsabschnitt",
+          },
+        },
+        {
+          name: "geometryCategory",
+          componentType: "form",
+          component: "SurveyGeoCategoryMapWithLegend",
+          validation: fieldValidationEnum["requiredString"],
+          defaultValue: null,
+          props: {
+            label: "Planungsabschnitt auswählen",
+            description:
+              "Wählen Sie einen Planungsabschnitt aus, zu dem Sie einen Hinweis geben möchten.",
+            mapProps: {
+              mapData,
+              additionalData: [
+                {
+                  dataKey: "geometryCategoryLabel",
+                  propertyName: "subsectionSlug",
+                  label: "Planungsabschnitt",
+                },
+              ],
+              geoCategoryIdDefinition: {
+                dataKey: "geometryCategoryId",
+                propertyName: "subsectionSlug",
+              },
+              config: {
+                // Frankfurt viewport — seed PAs survey-line-west/east + survey-poly sit here
+                bounds: [8.68495, 50.103212, 8.793869, 50.148444],
+                minZoom: 7,
+                maxZoom: 16,
+              },
+            },
+            legendProps: {
+              items: {
+                pa: {
+                  label: "Planungsabschnitt",
+                  color: "bg-[#2563eb]",
+                  className: "h-[5px]",
+                },
+              },
+            },
+          },
         },
         {
           name: "category",
-          component: "SurveyRadiobuttonGroup",
           componentType: "form",
+          component: "SurveyRadiobuttonGroup",
           validation: fieldValidationEnum["requiredString"],
           defaultValue: "",
           props: {
@@ -50,99 +126,13 @@ export const part2Config: SurveyPart2 = {
       ],
     },
     {
-      id: "feedback2",
+      id: "2",
       fields: [
         {
-          name: "titleLocation",
+          name: "titleFeedback",
+          componentType: "content",
           component: "SurveyPageTitle",
-          componentType: "content",
           props: { title: "Was möchten Sie uns mitteilen?" },
-        },
-        {
-          name: "descriptionLocation",
-          component: "SurveyMarkdown",
-          componentType: "content",
-          props: {
-            markdown:
-              "Beschreiben Sie hier, was Ihnen wichtig ist. Beschreiben Sie die Situation oder das Problem so genau wie möglich. Es ist hilfreich, wenn Ihre Verbesserungsvorschläge leicht nachvollziehbar sind.",
-          },
-        },
-        {
-          name: "enableLocation",
-          component: "SurveyRadiobuttonGroup",
-          componentType: "form",
-          validation: fieldValidationEnum["requiredString"],
-          defaultValue: "ja",
-          props: {
-            label: "Bezieht sich Ihr Hinweis auf eine konkrete Stelle entlang der Route?",
-            options: [
-              { key: "ja", label: "Ja" },
-              { key: "nein", label: "Nein" },
-            ],
-          },
-        },
-        {
-          name: "location",
-          componentType: "form",
-          condition: {
-            fieldName: "enableLocation",
-            conditionFn: (fieldValue) => fieldValue === "ja",
-          },
-          // here we use validators (not superrefine) as we need the isPristine state and as we do not have the pagehaserror problem here as it is the last page of the part tbd
-          validators: {
-            onSubmit: ({ fieldApi }: { fieldApi: AnyFieldApi }) => {
-              if (
-                fieldApi.state.meta.isPristine &&
-                fieldApi.form.getFieldValue("enableLocation") === "ja"
-              ) {
-                console.log({ fieldApi })
-                return "Bitte wählen Sie einen Ort auf der Karte oder wählen sie oben, dass Sie keinen Ort angeben möchten."
-              }
-              return undefined
-            },
-          },
-          component: "SurveySimpleMapWithLegend",
-          // this field is a conditionally required field but we handle it a bit differently than other conditionally required fields
-          // as we want to keep the value in the form state even if enableLocation is "nein", even if we go back and forth, we do not delete the value
-          // we delete the value manually in the SurveyMainPage submit function if enableLocation is "nein"
-          validation: fieldValidationEnum["conditionalRequiredLatLng"],
-          defaultValue: {
-            lat: 50.13115168672226,
-            lng: 8.732094920912573,
-          },
-          props: {
-            label: "Bitte markieren Sie den Ort, zu dem Sie etwas sagen möchten.",
-            mapProps: {
-              config: {
-                bounds: [8.68495, 50.103212, 8.793869, 50.148444],
-              },
-            },
-            legendProps: {
-              Streckenführung: {
-                variant1: {
-                  label:
-                    "Streckenführung A: Eher an großen Straßen auf Radwegen, getrennt von Autos",
-                  color: "bg-[#006EFF]",
-                  className: "h-[5px]",
-                },
-                variant2: {
-                  label: "Streckenführung B: Eher in ruhigen Wohnstraßen, dafür zusammen mit Autos",
-                  color: "bg-[#FFD900]",
-                  className: "h-[5px]",
-                },
-                irrelevant: {
-                  label: "Bereits beschlossene Strecke (außerhalb von Frankfurt)",
-                  color: "bg-black",
-                  className: "h-[5px]",
-                },
-                blockedArea: {
-                  label: "Gesperrt aus Gründen des Natur- oder Denkmalschutzes",
-                  color: "opacity-70 stripe-background",
-                  className: "h-5",
-                },
-              },
-            },
-          },
         },
         {
           name: "feedbackText",
@@ -152,7 +142,6 @@ export const part2Config: SurveyPart2 = {
           defaultValue: "",
           props: {
             label: "Ihr Hinweis",
-            // placeholder: "Beantworten Sie hier...",
           },
         },
       ],
