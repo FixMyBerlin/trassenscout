@@ -1,4 +1,4 @@
-import type { Prisma, Project } from "@/src/prisma/generated/client"
+import type { Prisma } from "@/src/prisma/generated/client"
 import { StateKeyEnum } from "@/src/prisma/generated/client"
 import { requireStateTestCoordinate } from "../../src/data/alkisStateTestCoordinates"
 
@@ -43,10 +43,7 @@ export const ALKIS_LAND_ACQUISITION_DEMO_ENTRIES: AlkisLandAcquisitionDemoEntry[
 export const ALKIS_LAND_ACQUISITION_DEMO_PROJECT_SLUGS: readonly string[] =
   ALKIS_LAND_ACQUISITION_DEMO_ENTRIES.map((e) => e.slug)
 
-export function alkisLandAcquisitionDemoProjects(): Omit<
-  Project,
-  "id" | "createdAt" | "updatedAt"
->[] {
+export function alkisLandAcquisitionDemoProjects(): Prisma.ProjectUncheckedCreateInput[] {
   return ALKIS_LAND_ACQUISITION_DEMO_ENTRIES.map((d) => ({
     slug: d.slug,
     subTitle: d.subTitle,
@@ -59,6 +56,7 @@ export function alkisLandAcquisitionDemoProjects(): Omit<
     showLogEntries: false,
     evaluationsEnabled: false,
     alkisStateKey: d.alkisStateKey,
+    subsubsectionExtraFieldDefinitions: [],
   }))
 }
 

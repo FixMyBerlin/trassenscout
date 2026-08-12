@@ -1,9 +1,9 @@
-import { Project, StateKeyEnum } from "@/src/prisma/generated/client"
+import { Prisma, StateKeyEnum } from "@/src/prisma/generated/client"
 import db from "@/src/server/db.server"
 import { alkisLandAcquisitionDemoProjects } from "./alkisLandAcquisitionDemos"
 
 const seedProjects = async () => {
-  const seedData: Omit<Project, "id" | "createdAt" | "updatedAt">[] = [
+  const seedData: Prisma.ProjectUncheckedCreateInput[] = [
     {
       slug: "rs23", // "W" ist der 23. Buchstabe
       subTitle: "Radschnellverbindung Berliner Wasserwege",
@@ -18,6 +18,7 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
       showLogEntries: false,
       evaluationsEnabled: false,
       alkisStateKey: StateKeyEnum.DISABLED,
+      subsubsectionExtraFieldDefinitions: [],
     },
     {
       slug: "rs3000",
@@ -31,6 +32,7 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
       showLogEntries: false,
       evaluationsEnabled: false,
       alkisStateKey: StateKeyEnum.DISABLED,
+      subsubsectionExtraFieldDefinitions: [],
     },
     {
       slug: "rs0v1",
@@ -44,6 +46,7 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
       showLogEntries: false,
       evaluationsEnabled: false,
       alkisStateKey: StateKeyEnum.DISABLED,
+      subsubsectionExtraFieldDefinitions: [],
     },
     {
       slug: "rs0v2",
@@ -57,6 +60,7 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
       showLogEntries: false,
       evaluationsEnabled: false,
       alkisStateKey: StateKeyEnum.DISABLED,
+      subsubsectionExtraFieldDefinitions: [],
     },
     {
       slug: "rsv-d",

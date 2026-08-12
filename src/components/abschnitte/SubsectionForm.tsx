@@ -7,6 +7,10 @@ import { SubsectionGeometryInput } from "@/src/components/abschnitte/SubsectionG
 import { getPriorityTranslation } from "@/src/components/abschnitte/utils/getPriorityTranslation"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
+import {
+  formDetailsClassName,
+  formDetailsSummaryClassName,
+} from "@/src/components/core/components/forms/styles/formDetailsStyles"
 import { createFormOptions } from "@/src/components/core/components/forms/utils/createFormOptions"
 import {
   applyFormSubmitResult,
@@ -142,21 +146,19 @@ function SubsectionFormWithQuery<S extends z.ZodTypeAny>({
         {(field) => <field.TextareaField label="Beschreibung (Markdown)" optional />}
       </form.AppField>
       <SubsectionGeometryInput projectSlug={projectSlug} subsectionSlug={subsectionSlug} />
-      <details>
-        <summary className="mb-2 cursor-pointer">Anzeige-Optionen für Karten-Label</summary>
-        <div className="space-y-6">
-          <form.AppField name="labelPos">
-            {(field) => <field.RadiobuttonGroup label="" classNameItemWrapper="sm:columns-2" />}
-          </form.AppField>
-          <form.AppField name="order">
-            {(field) => (
-              <field.NumberField
-                label="Reihenfolge Planungsabschnitte"
-                help="Die muss sicherstellen, dass die Geometrien in einer fortlaufenden Linie mit gleicher Linienrichtung dargestellt werden; sie ist auch die Standard-Sortierung."
-              />
-            )}
-          </form.AppField>
-        </div>
+      <details className={formDetailsClassName}>
+        <summary className={formDetailsSummaryClassName}>Anzeige-Optionen für Karten-Label</summary>
+        <form.AppField name="labelPos">
+          {(field) => <field.RadiobuttonGroup label="" classNameItemWrapper="sm:columns-2" />}
+        </form.AppField>
+        <form.AppField name="order">
+          {(field) => (
+            <field.NumberField
+              label="Reihenfolge Planungsabschnitte"
+              help="Die muss sicherstellen, dass die Geometrien in einer fortlaufenden Linie mit gleicher Linienrichtung dargestellt werden; sie ist auch die Standard-Sortierung."
+            />
+          )}
+        </form.AppField>
       </details>
       <form.AppField name="lengthM">
         {(field) => <field.TextFieldCalculateLength label="Länge" optional />}
