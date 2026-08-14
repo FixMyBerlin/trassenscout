@@ -39,7 +39,7 @@ export function PageContacts() {
         title="Externe Kontakte"
         titleVisuallyHidden
         breadcrumb={<ProjectPageBreadcrumb section="Kontakte" />}
-        info="Kontaktdaten, die für das ganze Projektteam wichtig sind."
+        info="Relevante externe Ansprechpersonen verwalten, filtern und direkt per Sammel-E-Mail kontaktieren."
         tabs={<TabsApp tabs={tabs} embedded />}
         filters={
           <PageHeaderSearchFilter

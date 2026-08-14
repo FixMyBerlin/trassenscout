@@ -53,6 +53,7 @@ export const ProjectRecordsFormAndTable = () => {
         title="Projektprotokoll"
         titleVisuallyHidden
         breadcrumb={breadcrumb}
+        info="Übersicht aller Protokolle zum Sichten, Filtern, Ergänzen, Bearbeiten und Kommentieren."
         tabs={tabs}
         filters={
           <PageHeaderSearchFilter

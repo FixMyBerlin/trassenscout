@@ -11,7 +11,7 @@ export function PageUploads() {
         title="Dokumente"
         titleVisuallyHidden
         breadcrumb={<ProjectPageBreadcrumb section="Dokumente" />}
-        info="Dokumente und Grafiken hochladen und bei Bedarf verknüpfen."
+        info="Unterlagen und Grafiken verwalten, hochladen und direkt mit Maßnahmen verknüpfen."
       />
       <Suspense fallback={<Spinner page />}>
         <UploadsPageContent />

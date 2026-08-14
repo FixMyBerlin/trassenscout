@@ -85,6 +85,7 @@ export function SurveyAnalysis({ projectSlug, surveyId: _surveyId, survey, tabs 
             current={survey.title}
           />
         }
+        info={`Statistische Zusammenfassung und fachliche Auswertung der Rückmeldungen der Eingabe ${survey.title}.`}
         tabs={<SurveyTabs tabs={tabs} embedded />}
       />
 
