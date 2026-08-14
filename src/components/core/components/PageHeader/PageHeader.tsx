@@ -12,12 +12,11 @@ type Props = {
   tabs?: React.ReactNode
   viewMode?: ViewMode
   onViewModeChange?: (mode: ViewMode) => void
-  /** Actions next to the view switch in the tabs row (e.g. CSV download). */
-  toolbarAction?: React.ReactNode
   title?: string
   titleVisuallyHidden?: boolean
   action?: React.ReactNode
   filters?: React.ReactNode
+  /** Row 2 actions next to the view switch (e.g. CSV download, create buttons). */
   primaryAction?: React.ReactNode
   className?: string
 }
@@ -28,7 +27,6 @@ export const PageHeader = ({
   tabs,
   viewMode,
   onViewModeChange,
-  toolbarAction,
   title,
   titleVisuallyHidden = false,
   action,
@@ -47,9 +45,9 @@ export const PageHeader = ({
     ) : undefined
 
   const row2Right =
-    hasViewSwitch || toolbarAction ? (
+    hasViewSwitch || primaryAction ? (
       <PageHeaderRowActions>
-        {toolbarAction}
+        {primaryAction}
         {hasViewSwitch ? (
           <PageHeaderViewSwitch value={viewMode} onChange={onViewModeChange} />
         ) : null}
@@ -69,7 +67,7 @@ export const PageHeader = ({
         row1={{ left: breadcrumb, right: row1Right }}
         row2={{ left: tabs, right: row2Right }}
         row3={{ left: row3Left }}
-        row4={{ left: filters, right: primaryAction }}
+        row4={{ left: filters }}
       />
     </>
   )

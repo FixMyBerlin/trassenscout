@@ -117,7 +117,7 @@ export function SurveyResponsesMap({ projectSlug, survey, tabs }: Props) {
             search: (prev) => prev,
           })
         }}
-        toolbarAction={
+        primaryAction={
           <PageHeaderToolbarLink
             href={`/api/${projectSlug}/surveys/${survey.id}/part2/results`}
             label="Alle Daten als .csv herunterladen"

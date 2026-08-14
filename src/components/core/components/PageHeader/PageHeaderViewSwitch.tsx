@@ -10,7 +10,7 @@ type Props = {
 }
 
 const buttonClassName =
-  "flex h-8 cursor-pointer items-center justify-center px-2.5 text-gray-400 hover:text-gray-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+  "flex cursor-pointer items-center justify-center px-2.5 py-2.5 text-gray-400 hover:text-gray-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
 
 export function PageHeaderViewSwitch({ value, onChange }: Props) {
   return (
