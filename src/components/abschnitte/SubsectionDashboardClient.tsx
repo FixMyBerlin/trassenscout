@@ -1,4 +1,3 @@
-import { ArrowDownTrayIcon } from "@heroicons/react/24/outline"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { useState } from "react"
@@ -12,6 +11,7 @@ import {
   MAP_VIEWPORT_SHELL_CLASS,
 } from "@/src/components/core/components/PageHeader/MapListViewLayout"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
+import { PageHeaderToolbarLink } from "@/src/components/core/components/PageHeader/PageHeaderToolbarLink"
 import { IfUserCanEdit } from "@/src/components/shared/memberships/IfUserCan"
 import { subsectionsQueryOptions } from "@/src/server/subsections/subsectionsQueryOptions"
 import type { SubsectionsList } from "@/src/server/subsections/types"
@@ -60,29 +60,26 @@ function SubsectionDashboardContent({
             </Link>
           </IfUserCanEdit>
         }
-        filters={
-          subsubsections.length > 0 ? (
-            <IfUserCanEdit>
-              <Link
-                className="flex items-center gap-1"
-                href={`/api/${projectSlug}/subsections/${subsectionSlug}/subsubsections/export`}
-              >
-                <ArrowDownTrayIcon className="size-5" />
-                Maßnahmen herunterladen (CSV)
-              </Link>
-            </IfUserCanEdit>
-          ) : undefined
-        }
         primaryAction={
           <IfUserCanEdit>
-            <Link
-              button
-              icon="plus"
-              to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new"
-              params={{ projectSlug, subsectionSlug }}
-            >
-              Neue Maßnahme
-            </Link>
+            <>
+              {subsubsections.length > 0 ? (
+                <PageHeaderToolbarLink
+                  href={`/api/${projectSlug}/subsections/${subsectionSlug}/subsubsections/export`}
+                  label="Maßnahmen als .csv herunterladen"
+                >
+                  CSV
+                </PageHeaderToolbarLink>
+              ) : null}
+              <Link
+                button
+                icon="plus"
+                to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new"
+                params={{ projectSlug, subsectionSlug }}
+              >
+                Neue Maßnahme
+              </Link>
+            </>
           </IfUserCanEdit>
         }
       />

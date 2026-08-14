@@ -157,7 +157,7 @@ function SurveyResponsesConfigured({ projectSlug, survey, tabs, surveySlug }: Co
             search: (prev) => prev,
           })
         }}
-        toolbarAction={
+        primaryAction={
           <PageHeaderToolbarLink
             href={`/api/${projectSlug}/surveys/${survey.id}/part2/results`}
             label="Alle Daten als .csv herunterladen"
