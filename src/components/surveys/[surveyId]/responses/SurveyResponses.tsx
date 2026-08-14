@@ -59,6 +59,7 @@ function SurveyResponsesWithoutPart2({ survey, tabs }: Pick<Props, "survey" | "t
             current={survey.title}
           />
         }
+        info={`Tabellarische Übersicht aller eingegangenen Rückmeldungen der Eingabe ${survey.title}.`}
         tabs={<SurveyTabs tabs={tabs} embedded />}
       />
       <div className={pageContentPaddingClassName}>
@@ -143,6 +144,7 @@ function SurveyResponsesConfigured({ projectSlug, survey, tabs, surveySlug }: Co
             current={survey.title}
           />
         }
+        info={`Tabellarische Übersicht aller eingegangenen Rückmeldungen der Eingabe ${survey.title}.`}
         tabs={<SurveyTabs tabs={tabs} embedded />}
         viewMode="list"
         onViewModeChange={(mode) => {

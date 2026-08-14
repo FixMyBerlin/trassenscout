@@ -19,7 +19,11 @@ export const ProjectRecordsNeedsReviewContent = () => {
 
   return (
     <>
-      <PageHeader breadcrumb={breadcrumb} tabs={tabs} />
+      <PageHeader
+        breadcrumb={breadcrumb}
+        info="Übersicht aller Protokolle zum Sichten, Filtern, Ergänzen, Bearbeiten und Kommentieren."
+        tabs={tabs}
+      />
       {projectRecords.length === 0 ? (
         <div className={pageContentPaddingClassName}>
           <ZeroCase

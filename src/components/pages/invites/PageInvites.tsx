@@ -26,7 +26,7 @@ export function PageInvites() {
     <>
       <PageHeader
         breadcrumb={<ProjectPageBreadcrumb section="Kontakte" />}
-        info="Übersicht der Einladungen zur Mitarbeit im Projekt."
+        info="Übersicht aller noch offenen Einladungen für neue Projektmitglieder."
         tabs={<TabsApp tabs={tabs} embedded />}
         primaryAction={
           canEdit ? (

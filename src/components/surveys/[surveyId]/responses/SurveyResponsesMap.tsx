@@ -104,6 +104,7 @@ export function SurveyResponsesMap({ projectSlug, survey, tabs }: Props) {
             current={survey.title}
           />
         }
+        info="Geografische Darstellung aller Rückmeldungen mit konkretem Ort- oder Raumbezug."
         tabs={<SurveyTabs tabs={tabs} embedded />}
         viewMode="map"
         onViewModeChange={(mode) => {
