@@ -50,42 +50,27 @@ export function TagsFormSection({
     }
   }
 
-  const tagsField = (
+  return (
     <form.AppField name={fieldName}>
       {(field) => (
         <field.CheckboxGroup
           classNameItemWrapper={classNameItemWrapper}
           items={tagItems}
           label={label}
+          trailingControl={
+            <>
+              {showManageLink ? (
+                <SuperAdminBox>
+                  <LinkWithFormDirtyConfirm to={`/${projectSlug}/tags`} blank>
+                    Tags verwalten…
+                  </LinkWithFormDirtyConfirm>
+                </SuperAdminBox>
+              ) : null}
+              <NewTagInline onCreate={handleCreateTag} />
+            </>
+          }
         />
       )}
     </form.AppField>
-  )
-
-  if (!showManageLink) {
-    return (
-      <div className="flex flex-col gap-3">
-        {tagsField}
-        <NewTagInline onCreate={handleCreateTag} />
-      </div>
-    )
-  }
-
-  return (
-    <div className="flex flex-col gap-3">
-      <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-end">
-        <div className="grow">{tagsField}</div>
-        <SuperAdminBox className="shrink-0 self-start sm:self-auto">
-          <LinkWithFormDirtyConfirm
-            to={`/${projectSlug}/tags`}
-            className="self-start py-2 sm:self-auto"
-            blank
-          >
-            Tags verwalten…
-          </LinkWithFormDirtyConfirm>
-        </SuperAdminBox>
-      </div>
-      <NewTagInline onCreate={handleCreateTag} />
-    </div>
   )
 }

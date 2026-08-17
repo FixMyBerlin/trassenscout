@@ -1,5 +1,4 @@
 import { ReactNode, useState } from "react"
-import { twMerge } from "tailwind-merge"
 import { z } from "zod"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
@@ -62,7 +61,7 @@ export function TagForm({
       form={form}
       formError={formError}
       submitText={submitText}
-      className={twMerge("max-w-prose", className)}
+      className={className}
       actionBarLeft={actionBarLeft}
       actionBarRight={actionBarRight}
       backLink={backLink}
@@ -70,6 +69,7 @@ export function TagForm({
       submitClassName={submitClassName}
       submitPlacement={submitPlacement}
       actionBarClassName={actionBarClassName}
+      fieldLayout={backLink ? "labelsOnLeft" : "stacked"}
     >
       <form.AppField name="title">
         {(field) => <field.TextField type="text" label={titleLabel} placeholder="" />}

@@ -5,6 +5,10 @@ import { twJoin, twMerge } from "tailwind-merge"
 import { ActionBar } from "@/src/components/core/components/forms/ActionBar"
 import { BackLinkSection } from "@/src/components/core/components/forms/BackLinkSection"
 import type { CoreAppFormApi } from "@/src/components/core/components/forms/coreFormTypes"
+import {
+  type FormFieldLayout,
+  formFieldLayoutLabelsOnLeftClassName,
+} from "@/src/components/core/components/forms/fieldLayoutStyles"
 import { FormError } from "@/src/components/core/components/forms/FormError"
 import { FormHydratedProvider } from "@/src/components/core/components/forms/hooks/useFormHydrated"
 import { useIsHydrated } from "@/src/components/core/components/forms/hooks/useIsHydrated"
@@ -26,6 +30,8 @@ export type FormShellProps<TFormData> = Omit<
   edgeToEdgeFooter?: ReactNode
   hideSubmitButton?: boolean
   backLink: ReactNode | null
+  /** Default `stacked`. Pass `labelsOnLeft` to opt into the two-column grid. */
+  fieldLayout?: FormFieldLayout
   children: ReactNode
 }
 
@@ -42,6 +48,7 @@ export function FormShell<TFormData>({
   edgeToEdgeFooter,
   hideSubmitButton,
   backLink,
+  fieldLayout = "stacked",
   className,
   children,
   ...props
@@ -73,6 +80,9 @@ export function FormShell<TFormData>({
             event.stopPropagation()
             form.handleSubmit()
           }}
+          className={
+            fieldLayout === "labelsOnLeft" ? formFieldLayoutLabelsOnLeftClassName : undefined
+          }
           {...props}
         >
           <div className={twMerge("space-y-6", pageContentPaddingClassName, className)}>

@@ -1,4 +1,5 @@
 import { useLocation } from "@tanstack/react-router"
+import { twMerge } from "tailwind-merge"
 import { useFormDirty } from "@/src/components/core/components/forms/hooks/useFormDirty"
 import { Link } from "@/src/components/core/components/links/Link"
 
@@ -17,7 +18,7 @@ export const LinkWithFormDirtyConfirm = ({ to, className, blank, children }: Pro
       to={to}
       blank={blank}
       search={!blank && pathname ? { from: pathname } : undefined}
-      className={className}
+      className={twMerge("text-sm", className)}
       onClick={(event) => {
         if (isDirty) {
           const userConfirmed = confirm(`

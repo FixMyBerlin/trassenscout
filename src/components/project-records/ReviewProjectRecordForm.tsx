@@ -1,5 +1,6 @@
 import { SparklesIcon } from "@heroicons/react/20/solid"
 import { twJoin } from "tailwind-merge"
+import { fieldLayoutStackedOverrideClassName } from "@/src/components/core/components/forms/fieldLayoutStyles"
 import { useCoreAppFormContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { ProjectRecordReviewState } from "@/src/prisma/generated/browser"
@@ -34,7 +35,13 @@ export const ReviewProjectRecordForm = ({ admin }: { admin?: boolean }) => {
 
   return (
     <div className="w-full border-t border-gray-200 bg-yellow-50 text-gray-700">
-      <div className={twJoin(pageContentPaddingClassName, "space-y-4")}>
+      <div
+        className={twJoin(
+          pageContentPaddingClassName,
+          fieldLayoutStackedOverrideClassName,
+          "space-y-4",
+        )}
+      >
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <SparklesIcon className="size-5" />

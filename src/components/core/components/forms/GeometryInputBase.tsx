@@ -1,7 +1,7 @@
 import type { Geometry } from "geojson"
 import { ReactNode, useState } from "react"
 import { twJoin } from "tailwind-merge"
-import { FieldErrors } from "@/src/components/core/components/forms/FieldErrors"
+import { FieldLayout } from "@/src/components/core/components/forms/FieldLayout"
 import {
   GeoJSONPreviewLink,
   GeoJSONPreviewPanel,
@@ -38,13 +38,12 @@ export const GeometryInputBase = ({
   // Once in raw mode, stay in raw mode (one-way switch)
   if (isRawMode) {
     return (
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700">{label}</label>
-
+      <FieldLayout label={label} help={description} errors={geometryErrors}>
         <div className="rounded-md border border-gray-200 bg-gray-100 p-2">
           <form.AppField name="geometry">
             {(field) => (
               <field.GeometryField
+                layout="bare"
                 label="GeoJSON Geometrie (`Point`, `MultiPoint`, `LineString`, `MultiLineString`, `Polygon`, oder `MultiPolygon`)"
                 allowedGeometryTypesFor={allowedGeometryTypesFor}
                 outerProps={{
@@ -54,8 +53,7 @@ export const GeometryInputBase = ({
             )}
           </form.AppField>
         </div>
-        <FieldErrors errors={geometryErrors} />
-      </div>
+      </FieldLayout>
     )
   }
 
@@ -64,21 +62,7 @@ export const GeometryInputBase = ({
   ) : null
 
   return (
-    <section className={description || isPreviewOpen ? "space-y-2" : ""}>
-      <div className="mb-1 flex justify-between gap-1">
-        <label className="block text-sm font-medium text-gray-700">{label}</label>
-        {previewLink}
-      </div>
-      {description && <p className="text-sm text-gray-500">{description}</p>}
-
-      {showPreviewLink && isPreviewOpen && (
-        <GeoJSONPreviewPanel
-          geometry={geometry}
-          onEdit={() => setIsRawMode(true)}
-          onClose={() => setIsPreviewOpen(false)}
-        />
-      )}
-
+    <FieldLayout label={label} help={description} errors={geometryErrors}>
       <div
         className={twJoin(
           "rounded-md border border-gray-200 bg-gray-100 p-2",
@@ -87,7 +71,16 @@ export const GeometryInputBase = ({
       >
         {children}
       </div>
-      <FieldErrors errors={geometryErrors} />
-    </section>
+
+      {previewLink && <div className="mt-2">{previewLink}</div>}
+
+      {showPreviewLink && isPreviewOpen && (
+        <GeoJSONPreviewPanel
+          geometry={geometry}
+          onEdit={() => setIsRawMode(true)}
+          onClose={() => setIsPreviewOpen(false)}
+        />
+      )}
+    </FieldLayout>
   )
 }

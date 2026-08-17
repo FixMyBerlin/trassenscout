@@ -66,6 +66,7 @@ export function ProjectForm<S extends z.ZodType>({
       backLink={backLink}
       submitDisabled={submitDisabled}
       submitClassName={submitClassName}
+      fieldLayout="labelsOnLeft"
     >
       <form.AppField name="slug">
         {(field) => (

@@ -1,5 +1,4 @@
 import { ReactNode, useState } from "react"
-import { twMerge } from "tailwind-merge"
 import { z } from "zod"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
@@ -63,12 +62,13 @@ export function SubsubsectionStatusForm<S extends z.ZodType>({
       form={form}
       formError={formError}
       submitText={submitText}
-      className={twMerge("max-w-prose", className)}
+      className={className}
       actionBarLeft={actionBarLeft}
       actionBarRight={actionBarRight}
       backLink={backLink}
       submitDisabled={submitDisabled}
       submitClassName={submitClassName}
+      fieldLayout="labelsOnLeft"
     >
       <form.AppField name="slug">
         {(field) => <field.TextField type="text" label="Kürzel" placeholder="" />}

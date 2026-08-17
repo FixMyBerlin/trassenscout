@@ -2,7 +2,7 @@ import { Switch as HeadlessSwitch } from "@headlessui/react"
 import type { JSX } from "react"
 import { ComponentPropsWithoutRef, PropsWithoutRef } from "react"
 import { twJoin } from "tailwind-merge"
-import { FieldErrors } from "@/src/components/core/components/forms/FieldErrors"
+import { FieldLayout } from "@/src/components/core/components/forms/FieldLayout"
 import { useFieldContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { useFieldDisabled } from "@/src/components/core/components/forms/hooks/useFormHydrated"
 
@@ -55,16 +55,16 @@ export function Switch<T extends boolean | string | number = boolean>(props: Swi
   const activeStateLabel = stateLabels ? (checked ? stateLabels.on : stateLabels.off) : null
 
   return (
-    <div {...outerProps}>
-      <label
-        {...labelProps}
-        htmlFor={field.name}
-        className={classLabelOverwrite || "mb-1 block text-sm font-medium text-gray-700"}
-      >
-        {label}
-        {optional && <> (optional)</>}
-      </label>
-
+    <FieldLayout
+      label={label}
+      optional={optional}
+      htmlFor={field.name}
+      help={help}
+      errors={field.state.meta.errors}
+      labelProps={labelProps}
+      classLabelOverwrite={classLabelOverwrite}
+      outerProps={outerProps}
+    >
       <div className={twJoin("flex items-center gap-3", contentClassName)}>
         <HeadlessSwitch
           id={field.name}
@@ -104,9 +104,6 @@ export function Switch<T extends boolean | string | number = boolean>(props: Swi
           </span>
         )}
       </div>
-
-      {Boolean(help) && <p className="mt-2 text-sm text-gray-500">{help}</p>}
-      <FieldErrors errors={field.state.meta.errors} />
-    </div>
+    </FieldLayout>
   )
 }

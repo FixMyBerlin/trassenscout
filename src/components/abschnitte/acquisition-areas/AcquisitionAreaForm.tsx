@@ -96,25 +96,25 @@ export function AcquisitionAreaForm<S extends z.ZodTypeAny>({
       backLink={backLink}
       submitDisabled={submitDisabled}
       submitClassName={submitClassName}
+      fieldLayout="labelsOnLeft"
     >
       <form.AppField name="description">
         {(field) => <field.TextareaField label="Beschreibung" optional />}
       </form.AppField>
-      <div className="flex items-end gap-5">
-        <form.AppField name="acquisitionAreaStatusId">
-          {(field) => (
-            <field.SelectField
-              label="Status"
-              optional
-              options={acquisitionAreaStatusOptions}
-              outerProps={{ className: "grow" }}
-            />
-          )}
-        </form.AppField>
-        <LinkWithFormDirtyConfirm to={`/${projectSlug}/acquisition-area-status`} className="py-2">
-          Status verwalten…
-        </LinkWithFormDirtyConfirm>
-      </div>
+      <form.AppField name="acquisitionAreaStatusId">
+        {(field) => (
+          <field.SelectField
+            label="Status"
+            optional
+            options={acquisitionAreaStatusOptions}
+            trailingControl={
+              <LinkWithFormDirtyConfirm to={`/${projectSlug}/acquisition-area-status`}>
+                Status verwalten…
+              </LinkWithFormDirtyConfirm>
+            }
+          />
+        )}
+      </form.AppField>
       <AcquisitionAreaGeometryInput
         parcelGeometry={parcelGeometry}
         subsubsectionGeometry={subsubsectionGeometry}
