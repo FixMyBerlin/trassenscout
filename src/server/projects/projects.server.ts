@@ -29,6 +29,12 @@ const projectSelect = {
   slug: true,
   subTitle: true,
   subsubsectionExtraFieldDefinitions: true,
+  operators: {
+    select: {
+      id: true,
+      slug: true,
+    },
+  },
 } as const
 
 export async function getProjectsForCurrentUser(headers: Headers) {
