@@ -8,10 +8,6 @@ import { getPriorityTranslation } from "@/src/components/abschnitte/utils/getPri
 import { FieldLayoutRightColumn } from "@/src/components/core/components/forms/FieldLayout"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
-import {
-  formDetailsClassName,
-  formDetailsSummaryClassName,
-} from "@/src/components/core/components/forms/styles/formDetailsStyles"
 import { createFormOptions } from "@/src/components/core/components/forms/utils/createFormOptions"
 import {
   applyFormSubmitResult,
@@ -147,10 +143,8 @@ function SubsectionFormWithQuery<S extends z.ZodTypeAny>({
       </form.AppField>
       <SubsectionGeometryInput projectSlug={projectSlug} subsectionSlug={subsectionSlug} />
       <FieldLayoutRightColumn>
-        <details className={formDetailsClassName}>
-          <summary className={formDetailsSummaryClassName}>
-            Anzeige-Optionen für Karten-Label
-          </summary>
+        <details className="space-y-6 text-sm">
+          <summary className="cursor-pointer">Anzeige-Optionen für Karten-Label</summary>
           <form.AppField name="labelPos">
             {(field) => <field.RadiobuttonGroup label="" classNameItemWrapper="sm:columns-2" />}
           </form.AppField>

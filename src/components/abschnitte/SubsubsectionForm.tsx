@@ -8,11 +8,13 @@ import { lookupTableRows } from "@/src/components/abschnitte/utils/lookupTableRo
 import { subsubsectionFieldTranslations } from "@/src/components/abschnitte/utils/subsubsectionFieldMappings"
 import { AdminBox } from "@/src/components/core/components/AdminBox/AdminBox"
 import { FieldLayoutRightColumn } from "@/src/components/core/components/forms/FieldLayout"
+import { FormDetailsSummary } from "@/src/components/core/components/forms/FormDetailsSummary"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
 import {
   formDetailsClassName,
-  formDetailsSummaryClassName,
+  formDetailsPanelClassName,
+  formDetailsStackClassName,
 } from "@/src/components/core/components/forms/styles/formDetailsStyles"
 import { clearImperativeFieldSubmitErrors } from "@/src/components/core/components/forms/utils/clearImperativeFieldSubmitErrors"
 import { createFormOptions } from "@/src/components/core/components/forms/utils/createFormOptions"
@@ -254,10 +256,8 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
         selectedSubsubsectionSlug={selectedSubsubsectionSlug}
       />
       <FieldLayoutRightColumn>
-        <details className={formDetailsClassName}>
-          <summary className={formDetailsSummaryClassName}>
-            Anzeige-Optionen für Karten-Label
-          </summary>
+        <details className="space-y-6 text-sm">
+          <summary className="cursor-pointer">Anzeige-Optionen für Karten-Label</summary>
           <form.AppField name="labelPos">
             {(field) => (
               <field.RadiobuttonGroup label="" classNameItemWrapper="space-y-6 sm:columns-2 pt-2" />
@@ -383,180 +383,190 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
           />
         )}
       </form.AppField>
-      {extraFieldDefinitions.length > 0 && (
-        <details open className={formDetailsClassName}>
-          <summary className={formDetailsSummaryClassName}>Zusätzliche Felder</summary>
-          {extraFieldDefinitions.map((definition) => (
-            <form.AppField key={definition.name} name={`extraFields.${definition.name}`}>
-              {(field) => <field.TextField label={definition.label} optional />}
+      <div className={formDetailsStackClassName}>
+        {extraFieldDefinitions.length > 0 && (
+          <details open className={formDetailsClassName}>
+            <FormDetailsSummary>Zusätzliche Felder</FormDetailsSummary>
+            <div className={formDetailsPanelClassName}>
+              {extraFieldDefinitions.map((definition) => (
+                <form.AppField key={definition.name} name={`extraFields.${definition.name}`}>
+                  {(field) => <field.TextField label={definition.label} optional />}
+                </form.AppField>
+              ))}
+            </div>
+          </details>
+        )}
+        <details className={formDetailsClassName}>
+          <FormDetailsSummary>Verkehrsbelastung</FormDetailsSummary>
+          <div className={formDetailsPanelClassName}>
+            <form.AppField name="maxSpeed">
+              {(field) => (
+                <field.NumberField
+                  inlineLeadingAddon="kmh"
+                  label={subsubsectionFieldTranslations.maxSpeed}
+                  optional
+                />
+              )}
             </form.AppField>
-          ))}
+            <form.AppField name="trafficLoad">
+              {(field) => (
+                <field.NumberField
+                  inlineLeadingAddon="Kfz"
+                  label={subsubsectionFieldTranslations.trafficLoad}
+                  optional
+                />
+              )}
+            </form.AppField>
+            <form.AppField name="trafficLoadDate">
+              {(field) => (
+                <field.TextField
+                  type="date"
+                  label={subsubsectionFieldTranslations.trafficLoadDate}
+                  optional
+                />
+              )}
+            </form.AppField>
+          </div>
         </details>
-      )}
-      <details className={formDetailsClassName}>
-        <summary className={formDetailsSummaryClassName}>Verkehrsbelastung</summary>
-        <form.AppField name="maxSpeed">
-          {(field) => (
-            <field.NumberField
-              inlineLeadingAddon="kmh"
-              label={subsubsectionFieldTranslations.maxSpeed}
-              optional
-            />
-          )}
-        </form.AppField>
-        <form.AppField name="trafficLoad">
-          {(field) => (
-            <field.NumberField
-              inlineLeadingAddon="Kfz"
-              label={subsubsectionFieldTranslations.trafficLoad}
-              optional
-            />
-          )}
-        </form.AppField>
-        <form.AppField name="trafficLoadDate">
-          {(field) => (
-            <field.TextField
-              type="date"
-              label={subsubsectionFieldTranslations.trafficLoadDate}
-              optional
-            />
-          )}
-        </form.AppField>
-      </details>
-      <details className={formDetailsClassName}>
-        <summary className={formDetailsSummaryClassName}>Kostenstruktur</summary>
-        <form.AppField name="planningCosts">
-          {(field) => (
-            <field.NumberField
-              inlineLeadingAddon="€"
-              label={subsubsectionFieldTranslations.planningCosts}
-              optional
-            />
-          )}
-        </form.AppField>
-        <form.AppField name="constructionCosts">
-          {(field) => (
-            <field.NumberField
-              inlineLeadingAddon="€"
-              label={subsubsectionFieldTranslations.constructionCosts}
-              optional
-            />
-          )}
-        </form.AppField>
-        <form.AppField name="deliveryCosts">
-          {(field) => (
-            <field.NumberField
-              inlineLeadingAddon="€"
-              label={subsubsectionFieldTranslations.deliveryCosts}
-              optional
-            />
-          )}
-        </form.AppField>
-        <form.AppField name="landAcquisitionCosts">
-          {(field) => (
-            <field.NumberField
-              inlineLeadingAddon="€"
-              label={subsubsectionFieldTranslations.landAcquisitionCosts}
-              optional
-            />
-          )}
-        </form.AppField>
-        <form.AppField name="expensesOfficialOrders">
-          {(field) => (
-            <field.NumberField
-              inlineLeadingAddon="€"
-              label={subsubsectionFieldTranslations.expensesOfficialOrders}
-              optional
-            />
-          )}
-        </form.AppField>
-        <form.AppField name="expensesTechnicalVerification">
-          {(field) => (
-            <field.NumberField
-              inlineLeadingAddon="€"
-              label={subsubsectionFieldTranslations.expensesTechnicalVerification}
-              optional
-            />
-          )}
-        </form.AppField>
-        <form.AppField name="nonEligibleExpenses">
-          {(field) => (
-            <field.NumberField
-              inlineLeadingAddon="€"
-              label={subsubsectionFieldTranslations.nonEligibleExpenses}
-              optional
-            />
-          )}
-        </form.AppField>
-        <form.AppField name="revenuesEconomicIncome">
-          {(field) => (
-            <field.NumberField
-              inlineLeadingAddon="€"
-              label={subsubsectionFieldTranslations.revenuesEconomicIncome}
-              optional
-            />
-          )}
-        </form.AppField>
-        <form.AppField name="contributionsThirdParties">
-          {(field) => (
-            <field.NumberField
-              inlineLeadingAddon="€"
-              label={subsubsectionFieldTranslations.contributionsThirdParties}
-              optional
-            />
-          )}
-        </form.AppField>
-        <form.AppField name="grantsOtherFunding">
-          {(field) => (
-            <field.NumberField
-              inlineLeadingAddon="€"
-              label={subsubsectionFieldTranslations.grantsOtherFunding}
-              optional
-            />
-          )}
-        </form.AppField>
-        <form.AppField name="ownFunds">
-          {(field) => (
-            <field.NumberField
-              inlineLeadingAddon="€"
-              label={subsubsectionFieldTranslations.ownFunds}
-              optional
-            />
-          )}
-        </form.AppField>
-      </details>
-      <details className={formDetailsClassName}>
-        <summary className={formDetailsSummaryClassName}>Dauer</summary>
-        <form.AppField name="planningPeriod">
-          {(field) => (
-            <field.NumberField
-              step={1}
-              max={100}
-              label={subsubsectionFieldTranslations.planningPeriod}
-              optional
-            />
-          )}
-        </form.AppField>
-        <form.AppField name="constructionPeriod">
-          {(field) => (
-            <field.NumberField
-              step={1}
-              max={100}
-              label={subsubsectionFieldTranslations.constructionPeriod}
-              optional
-            />
-          )}
-        </form.AppField>
-        <form.AppField name="estimatedCompletionDate">
-          {(field) => (
-            <field.TextField
-              type="date"
-              label={subsubsectionFieldTranslations.estimatedCompletionDate}
-              optional
-            />
-          )}
-        </form.AppField>
-      </details>
+        <details className={formDetailsClassName}>
+          <FormDetailsSummary>Kostenstruktur</FormDetailsSummary>
+          <div className={formDetailsPanelClassName}>
+            <form.AppField name="planningCosts">
+              {(field) => (
+                <field.NumberField
+                  inlineLeadingAddon="€"
+                  label={subsubsectionFieldTranslations.planningCosts}
+                  optional
+                />
+              )}
+            </form.AppField>
+            <form.AppField name="constructionCosts">
+              {(field) => (
+                <field.NumberField
+                  inlineLeadingAddon="€"
+                  label={subsubsectionFieldTranslations.constructionCosts}
+                  optional
+                />
+              )}
+            </form.AppField>
+            <form.AppField name="deliveryCosts">
+              {(field) => (
+                <field.NumberField
+                  inlineLeadingAddon="€"
+                  label={subsubsectionFieldTranslations.deliveryCosts}
+                  optional
+                />
+              )}
+            </form.AppField>
+            <form.AppField name="landAcquisitionCosts">
+              {(field) => (
+                <field.NumberField
+                  inlineLeadingAddon="€"
+                  label={subsubsectionFieldTranslations.landAcquisitionCosts}
+                  optional
+                />
+              )}
+            </form.AppField>
+            <form.AppField name="expensesOfficialOrders">
+              {(field) => (
+                <field.NumberField
+                  inlineLeadingAddon="€"
+                  label={subsubsectionFieldTranslations.expensesOfficialOrders}
+                  optional
+                />
+              )}
+            </form.AppField>
+            <form.AppField name="expensesTechnicalVerification">
+              {(field) => (
+                <field.NumberField
+                  inlineLeadingAddon="€"
+                  label={subsubsectionFieldTranslations.expensesTechnicalVerification}
+                  optional
+                />
+              )}
+            </form.AppField>
+            <form.AppField name="nonEligibleExpenses">
+              {(field) => (
+                <field.NumberField
+                  inlineLeadingAddon="€"
+                  label={subsubsectionFieldTranslations.nonEligibleExpenses}
+                  optional
+                />
+              )}
+            </form.AppField>
+            <form.AppField name="revenuesEconomicIncome">
+              {(field) => (
+                <field.NumberField
+                  inlineLeadingAddon="€"
+                  label={subsubsectionFieldTranslations.revenuesEconomicIncome}
+                  optional
+                />
+              )}
+            </form.AppField>
+            <form.AppField name="contributionsThirdParties">
+              {(field) => (
+                <field.NumberField
+                  inlineLeadingAddon="€"
+                  label={subsubsectionFieldTranslations.contributionsThirdParties}
+                  optional
+                />
+              )}
+            </form.AppField>
+            <form.AppField name="grantsOtherFunding">
+              {(field) => (
+                <field.NumberField
+                  inlineLeadingAddon="€"
+                  label={subsubsectionFieldTranslations.grantsOtherFunding}
+                  optional
+                />
+              )}
+            </form.AppField>
+            <form.AppField name="ownFunds">
+              {(field) => (
+                <field.NumberField
+                  inlineLeadingAddon="€"
+                  label={subsubsectionFieldTranslations.ownFunds}
+                  optional
+                />
+              )}
+            </form.AppField>
+          </div>
+        </details>
+        <details className={formDetailsClassName}>
+          <FormDetailsSummary>Dauer</FormDetailsSummary>
+          <div className={formDetailsPanelClassName}>
+            <form.AppField name="planningPeriod">
+              {(field) => (
+                <field.NumberField
+                  step={1}
+                  max={100}
+                  label={subsubsectionFieldTranslations.planningPeriod}
+                  optional
+                />
+              )}
+            </form.AppField>
+            <form.AppField name="constructionPeriod">
+              {(field) => (
+                <field.NumberField
+                  step={1}
+                  max={100}
+                  label={subsubsectionFieldTranslations.constructionPeriod}
+                  optional
+                />
+              )}
+            </form.AppField>
+            <form.AppField name="estimatedCompletionDate">
+              {(field) => (
+                <field.TextField
+                  type="date"
+                  label={subsubsectionFieldTranslations.estimatedCompletionDate}
+                  optional
+                />
+              )}
+            </form.AppField>
+          </div>
+        </details>
+      </div>
     </FormShell>
   )
 }
