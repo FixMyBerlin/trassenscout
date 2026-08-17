@@ -6,6 +6,7 @@ import {
   type ComboboxSingleItem,
 } from "@/src/components/core/components/forms/ComboboxSingleBase"
 import { FieldErrors } from "@/src/components/core/components/forms/FieldErrors"
+import { FieldLayout } from "@/src/components/core/components/forms/FieldLayout"
 import { useFieldContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { useFieldDisabled } from "@/src/components/core/components/forms/hooks/useFormHydrated"
 import { linkStyles } from "@/src/components/core/components/links/styles"
@@ -38,33 +39,20 @@ export function ComboboxSingle({
     field.state.value !== null && field.state.value !== undefined && field.state.value !== ""
   const comboboxValue = hasValue ? String(field.state.value) : ""
 
-  return (
-    <div>
-      <div className="flex items-center gap-1">
-        {Boolean(label) && (
-          <label
-            htmlFor={field.name}
-            className={classLabelOverwrite || "mb-1 block text-sm font-medium text-gray-700"}
+  const control = (
+    <>
+      {optional && hasValue && (
+        <div className="mb-2 flex items-center justify-end">
+          <button
+            type="button"
+            className={twJoin(linkStyles, "flex cursor-pointer items-center gap-1 text-sm")}
+            onClick={() => field.handleChange(null)}
           >
-            {label}
-            {optional && <> (optional)</>}
-          </label>
-        )}
-        {optional && hasValue && (
-          <div className="flex grow items-center justify-end">
-            <button
-              type="button"
-              className={twJoin(linkStyles, "flex cursor-pointer items-center gap-1 text-sm")}
-              onClick={() => field.handleChange(null)}
-            >
-              <XMarkIcon className="size-4" />
-              <span>Auswahl zurücksetzen</span>
-            </button>
-          </div>
-        )}
-      </div>
-
-      {Boolean(help) && <p className="mb-2 text-sm text-gray-500">{help}</p>}
+            <XMarkIcon className="size-4" />
+            <span>Auswahl zurücksetzen</span>
+          </button>
+        </div>
+      )}
 
       <ComboboxSingleBase
         id={field.name}
@@ -77,8 +65,29 @@ export function ComboboxSingle({
         invalid={hasError}
         optionUi={optionUi}
       />
+    </>
+  )
 
-      <FieldErrors errors={field.state.meta.errors} />
-    </div>
+  if (!label) {
+    return (
+      <div>
+        {control}
+        {Boolean(help) && <p className="mt-2 text-sm text-gray-500">{help}</p>}
+        <FieldErrors errors={field.state.meta.errors} />
+      </div>
+    )
+  }
+
+  return (
+    <FieldLayout
+      label={label}
+      optional={optional}
+      htmlFor={field.name}
+      help={help}
+      errors={field.state.meta.errors}
+      classLabelOverwrite={classLabelOverwrite}
+    >
+      {control}
+    </FieldLayout>
   )
 }

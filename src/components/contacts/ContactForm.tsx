@@ -1,5 +1,5 @@
 import { ReactNode, useState } from "react"
-import { twJoin, twMerge } from "tailwind-merge"
+import { twJoin } from "tailwind-merge"
 import { z } from "zod"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
@@ -17,7 +17,6 @@ export type ContactFormProps<S extends z.ZodType> = {
   onSubmit: (values: z.infer<S>) => Promise<void | OnSubmitResult>
   submitText: string
   resetOnSubmit?: boolean
-  className?: string
   actionBarLeft?: ReactNode
   actionBarRight?: ReactNode
   backLink: ReactNode | null
@@ -33,7 +32,6 @@ export function ContactForm<S extends z.ZodType>({
   onSubmit,
   submitText,
   resetOnSubmit,
-  className,
   actionBarLeft,
   actionBarRight,
   backLink,
@@ -62,7 +60,6 @@ export function ContactForm<S extends z.ZodType>({
       form={form}
       formError={formError}
       submitText={submitText}
-      className={twMerge(isDrawerLayout ? "w-full max-w-5xl space-y-8" : "max-w-prose", className)}
       actionBarLeft={actionBarLeft}
       actionBarRight={actionBarRight}
       backLink={backLink}

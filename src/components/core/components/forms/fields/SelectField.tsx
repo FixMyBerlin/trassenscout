@@ -1,7 +1,7 @@
 import type { JSX } from "react"
-import { ComponentPropsWithoutRef, PropsWithoutRef } from "react"
+import { ComponentPropsWithoutRef, PropsWithoutRef, ReactNode } from "react"
 import { twJoin } from "tailwind-merge"
-import { FieldErrors } from "@/src/components/core/components/forms/FieldErrors"
+import { FieldLayout } from "@/src/components/core/components/forms/FieldLayout"
 import { useFieldContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { useFieldDisabled } from "@/src/components/core/components/forms/hooks/useFormHydrated"
 
@@ -14,6 +14,7 @@ export type SelectFieldProps = {
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
   labelProps?: ComponentPropsWithoutRef<"label">
   classLabelOverwrite?: string
+  trailingControl?: ReactNode
   onChange?: (value: string) => void
 } & Omit<PropsWithoutRef<JSX.IntrinsicElements["select"]>, "value" | "onChange" | "onBlur">
 
@@ -26,6 +27,7 @@ export function SelectField({
   outerProps,
   labelProps,
   classLabelOverwrite,
+  trailingControl,
   onChange,
   ...props
 }: SelectFieldProps) {
@@ -33,41 +35,51 @@ export function SelectField({
   const fieldDisabled = useFieldDisabled(disabled)
   const hasError = field.state.meta.errors.length > 0
 
+  const select = (
+    <select
+      disabled={fieldDisabled}
+      id={field.name}
+      {...props}
+      value={String(field.state.value ?? "")}
+      onChange={(e) => {
+        field.handleChange(e.target.value)
+        onChange?.(e.target.value)
+      }}
+      onBlur={field.handleBlur}
+      className={twJoin(
+        "w-full rounded-md border border-gray-200 bg-white px-3 py-2 shadow-xs focus:outline-hidden sm:text-sm",
+        hasError
+          ? "border-red-800 shadow-red-200 focus:border-red-800 focus:ring-red-800"
+          : "border-gray-300 focus:border-blue-500 focus:ring-blue-500",
+      )}
+    >
+      {options.map(([value, text]) => (
+        <option key={value} value={value}>
+          {text}
+        </option>
+      ))}
+    </select>
+  )
+
   return (
-    <div {...outerProps}>
-      <label
-        {...labelProps}
-        htmlFor={field.name}
-        className={classLabelOverwrite || "mb-1 block text-sm font-medium text-gray-700"}
-      >
-        {label}
-        {optional && <> (optional)</>}
-      </label>
-      <select
-        disabled={fieldDisabled}
-        id={field.name}
-        {...props}
-        value={String(field.state.value ?? "")}
-        onChange={(e) => {
-          field.handleChange(e.target.value)
-          onChange?.(e.target.value)
-        }}
-        onBlur={field.handleBlur}
-        className={twJoin(
-          "w-full rounded-md border border-gray-200 bg-white px-3 py-2 shadow-xs focus:outline-hidden sm:text-sm",
-          hasError
-            ? "border-red-800 shadow-red-200 focus:border-red-800 focus:ring-red-800"
-            : "border-gray-300 focus:border-blue-500 focus:ring-blue-500",
-        )}
-      >
-        {options.map(([value, text]) => (
-          <option key={value} value={value}>
-            {text}
-          </option>
-        ))}
-      </select>
-      {Boolean(help) && <p className="mt-2 text-sm text-gray-500">{help}</p>}
-      <FieldErrors errors={field.state.meta.errors} />
-    </div>
+    <FieldLayout
+      label={label}
+      optional={optional}
+      htmlFor={field.name}
+      help={help}
+      errors={field.state.meta.errors}
+      labelProps={labelProps}
+      classLabelOverwrite={classLabelOverwrite}
+      outerProps={outerProps}
+    >
+      {trailingControl ? (
+        <div className="flex flex-col items-start gap-2">
+          {select}
+          {trailingControl}
+        </div>
+      ) : (
+        select
+      )}
+    </FieldLayout>
   )
 }

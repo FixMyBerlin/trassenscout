@@ -1,7 +1,7 @@
 import type { JSX } from "react"
 import { ComponentPropsWithoutRef, PropsWithoutRef } from "react"
-import { twJoin, twMerge } from "tailwind-merge"
-import { FieldErrors } from "@/src/components/core/components/forms/FieldErrors"
+import { twJoin } from "tailwind-merge"
+import { FieldLayout } from "@/src/components/core/components/forms/FieldLayout"
 import { useFieldContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { useFieldDisabled } from "@/src/components/core/components/forms/hooks/useFormHydrated"
 
@@ -29,7 +29,6 @@ export function NumberField({
   const field = useFieldContext<string | number | null>()
   const fieldDisabled = useFieldDisabled(disabled)
   const hasError = field.state.meta.errors.length > 0
-  const { className: labelClassName, ...restLabelProps } = labelProps ?? {}
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "ArrowUp" || e.key === "ArrowDown") {
@@ -39,15 +38,15 @@ export function NumberField({
   }
 
   return (
-    <div {...outerProps}>
-      <label
-        {...restLabelProps}
-        htmlFor={field.name}
-        className={twMerge("mb-1 block text-sm font-medium text-gray-700", labelClassName)}
-      >
-        {label}
-        {optional && <> (optional)</>}
-      </label>
+    <FieldLayout
+      label={label}
+      optional={optional}
+      htmlFor={field.name}
+      help={help}
+      errors={field.state.meta.errors}
+      labelProps={labelProps}
+      outerProps={outerProps}
+    >
       <div className="relative">
         {inlineLeadingAddon && (
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -74,8 +73,6 @@ export function NumberField({
           )}
         />
       </div>
-      {Boolean(help) && <p className="mt-2 text-sm text-gray-500">{help}</p>}
-      <FieldErrors errors={field.state.meta.errors} />
-    </div>
+    </FieldLayout>
   )
 }

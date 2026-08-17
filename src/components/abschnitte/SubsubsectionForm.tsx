@@ -7,6 +7,7 @@ import { SubsubsectionGeometryInput } from "@/src/components/abschnitte/Subsubse
 import { lookupTableRows } from "@/src/components/abschnitte/utils/lookupTableRows"
 import { subsubsectionFieldTranslations } from "@/src/components/abschnitte/utils/subsubsectionFieldMappings"
 import { AdminBox } from "@/src/components/core/components/AdminBox/AdminBox"
+import { FieldLayoutRightColumn } from "@/src/components/core/components/forms/FieldLayout"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
 import {
@@ -173,7 +174,7 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
     subsubsectionFieldTranslations.subsubsectionInfrastructureTypeIds,
     { slugInLabel: true },
   )
-  const subsubsectionInfrastructureTypeCheckboxItems = subsubsectionInfrastructureTypeOptions.map(
+  const subsubsectionInfrastructureTypeItems = subsubsectionInfrastructureTypeOptions.map(
     ([value, label]) => ({
       value: String(value),
       label,
@@ -191,6 +192,7 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
       backLink={backLink}
       submitDisabled={submitDisabled}
       submitClassName={submitClassName}
+      fieldLayout="labelsOnLeft"
     >
       <form.AppField
         name="slug"
@@ -232,37 +234,37 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
           />
         )}
       </form.AppField>
-      <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-end">
-        <form.AppField name="subsubsectionTaskId">
-          {(field) => (
-            <field.SelectField
-              label={subsubsectionFieldTranslations.subsubsectionTaskId}
-              options={subsubsectionTaskOptions}
-              outerProps={{ className: "grow" }}
-              optional
-            />
-          )}
-        </form.AppField>
-        <LinkWithFormDirtyConfirm
-          to={`/${projectSlug}/subsubsection-task`}
-          className="self-start py-2 sm:self-auto"
-        >
-          Maßnahmentypen verwalten…
-        </LinkWithFormDirtyConfirm>
-      </div>
+      <form.AppField name="subsubsectionTaskId">
+        {(field) => (
+          <field.SelectField
+            label={subsubsectionFieldTranslations.subsubsectionTaskId}
+            options={subsubsectionTaskOptions}
+            optional
+            trailingControl={
+              <LinkWithFormDirtyConfirm to={`/${projectSlug}/subsubsection-task`}>
+                Maßnahmentypen verwalten…
+              </LinkWithFormDirtyConfirm>
+            }
+          />
+        )}
+      </form.AppField>
       <SubsubsectionGeometryInput
         projectSlug={projectSlug}
         subsectionSlug={subsectionSlug}
         selectedSubsubsectionSlug={selectedSubsubsectionSlug}
       />
-      <details className={formDetailsClassName}>
-        <summary className={formDetailsSummaryClassName}>Anzeige-Optionen für Karten-Label</summary>
-        <form.AppField name="labelPos">
-          {(field) => (
-            <field.RadiobuttonGroup label="" classNameItemWrapper="space-y-6 sm:columns-2 pt-2" />
-          )}
-        </form.AppField>
-      </details>
+      <FieldLayoutRightColumn>
+        <details className={formDetailsClassName}>
+          <summary className={formDetailsSummaryClassName}>
+            Anzeige-Optionen für Karten-Label
+          </summary>
+          <form.AppField name="labelPos">
+            {(field) => (
+              <field.RadiobuttonGroup label="" classNameItemWrapper="space-y-6 sm:columns-2 pt-2" />
+            )}
+          </form.AppField>
+        </details>
+      </FieldLayoutRightColumn>
       <form.AppField name="isExistingInfra">
         {(field) => <field.Checkbox label={subsubsectionFieldTranslations.isExistingInfra} />}
       </form.AppField>
@@ -307,79 +309,62 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
           />
         )}
       </form.AppField>
-      <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-end">
-        <div className="grow">
-          <form.AppField name="subsubsectionInfrastructureTypeIds">
-            {(field) => (
-              <field.CheckboxGroup
-                label={subsubsectionFieldTranslations.subsubsectionInfrastructureTypeIds}
-                optional
-                items={subsubsectionInfrastructureTypeCheckboxItems}
-                classNameItemWrapper="grid grid-cols-1 gap-2 md:grid-cols-2"
-              />
-            )}
-          </form.AppField>
-        </div>
-        <LinkWithFormDirtyConfirm
-          to={`/${projectSlug}/subsubsection-infrastructure-type`}
-          className="self-start py-2 sm:self-auto"
-        >
-          Gegenstände der Förderung verwalten…
-        </LinkWithFormDirtyConfirm>
-      </div>
-      <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-end">
-        <form.AppField name="qualityLevelId">
-          {(field) => (
-            <field.SelectField
-              label={subsubsectionFieldTranslations.qualityLevelId}
-              optional
-              options={qualityLevelOptions}
-              outerProps={{ className: "grow" }}
-            />
-          )}
-        </form.AppField>
-        <LinkWithFormDirtyConfirm
-          to={`/${projectSlug}/quality-levels`}
-          className="self-start py-2 sm:self-auto"
-        >
-          Ausbaustandards verwalten…
-        </LinkWithFormDirtyConfirm>
-      </div>
-      <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-end">
-        <form.AppField name="subsubsectionInfraId">
-          {(field) => (
-            <field.SelectField
-              label={subsubsectionFieldTranslations.subsubsectionInfraId}
-              options={subsubsectionInfraOptions}
-              outerProps={{ className: "grow" }}
-            />
-          )}
-        </form.AppField>
-        <LinkWithFormDirtyConfirm
-          to={`/${projectSlug}/subsubsection-infra`}
-          className="self-start py-2 sm:self-auto"
-        >
-          Führungsformen verwalten…
-        </LinkWithFormDirtyConfirm>
-      </div>
-      <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-end">
-        <form.AppField name="subsubsectionStatusId">
-          {(field) => (
-            <field.SelectField
-              label={subsubsectionFieldTranslations.subsubsectionStatusId}
-              optional
-              options={subsubsectionStatusOptions}
-              outerProps={{ className: "grow" }}
-            />
-          )}
-        </form.AppField>
-        <LinkWithFormDirtyConfirm
-          to={`/${projectSlug}/subsubsection-status`}
-          className="self-start py-2 sm:self-auto"
-        >
-          Phase verwalten…
-        </LinkWithFormDirtyConfirm>
-      </div>
+      <form.AppField name="subsubsectionInfrastructureTypeIds">
+        {(field) => (
+          <field.Combobox
+            label={subsubsectionFieldTranslations.subsubsectionInfrastructureTypeIds}
+            optional
+            items={subsubsectionInfrastructureTypeItems}
+            placeholder="Gegenstände der Förderung suchen"
+            trailingControl={
+              <LinkWithFormDirtyConfirm to={`/${projectSlug}/subsubsection-infrastructure-type`}>
+                Gegenstände der Förderung verwalten…
+              </LinkWithFormDirtyConfirm>
+            }
+          />
+        )}
+      </form.AppField>
+      <form.AppField name="qualityLevelId">
+        {(field) => (
+          <field.SelectField
+            label={subsubsectionFieldTranslations.qualityLevelId}
+            optional
+            options={qualityLevelOptions}
+            trailingControl={
+              <LinkWithFormDirtyConfirm to={`/${projectSlug}/quality-levels`}>
+                Ausbaustandards verwalten…
+              </LinkWithFormDirtyConfirm>
+            }
+          />
+        )}
+      </form.AppField>
+      <form.AppField name="subsubsectionInfraId">
+        {(field) => (
+          <field.SelectField
+            label={subsubsectionFieldTranslations.subsubsectionInfraId}
+            options={subsubsectionInfraOptions}
+            trailingControl={
+              <LinkWithFormDirtyConfirm to={`/${projectSlug}/subsubsection-infra`}>
+                Führungsformen verwalten…
+              </LinkWithFormDirtyConfirm>
+            }
+          />
+        )}
+      </form.AppField>
+      <form.AppField name="subsubsectionStatusId">
+        {(field) => (
+          <field.SelectField
+            label={subsubsectionFieldTranslations.subsubsectionStatusId}
+            optional
+            options={subsubsectionStatusOptions}
+            trailingControl={
+              <LinkWithFormDirtyConfirm to={`/${projectSlug}/subsubsection-status`}>
+                Phase verwalten…
+              </LinkWithFormDirtyConfirm>
+            }
+          />
+        )}
+      </form.AppField>
       <form.AppField name="estimatedConstructionDateString">
         {(field) => (
           <field.TextField

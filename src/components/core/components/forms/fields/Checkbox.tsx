@@ -1,7 +1,6 @@
 import type { JSX } from "react"
 import { ComponentPropsWithoutRef, PropsWithoutRef } from "react"
-import { twJoin } from "tailwind-merge"
-import { FieldErrors } from "@/src/components/core/components/forms/FieldErrors"
+import { FieldLayout } from "@/src/components/core/components/forms/FieldLayout"
 import { useFieldContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { useFieldDisabled } from "@/src/components/core/components/forms/hooks/useFormHydrated"
 import {
@@ -12,6 +11,7 @@ import {
 
 export type CheckboxProps = {
   label: string | React.ReactNode
+  fieldLabel?: string | React.ReactNode
   help?: string
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
   labelProps?: ComponentPropsWithoutRef<"label">
@@ -24,6 +24,7 @@ export type CheckboxProps = {
 
 export function Checkbox({
   label,
+  fieldLabel,
   help,
   outerProps,
   labelProps,
@@ -34,9 +35,10 @@ export function Checkbox({
   const field = useFieldContext<boolean>()
   const fieldDisabled = useFieldDisabled(disabled)
   const hasError = field.state.meta.errors.length > 0
+  const leftLabel = fieldLabel ?? label
 
-  return (
-    <div {...outerProps} className={twJoin(outerProps?.className, checkboxRowClassName)}>
+  const checkboxControl = (
+    <div className={checkboxRowClassName}>
       <div className="flex h-5 items-center">
         <input
           aria-describedby={`${field.name}-hint`}
@@ -58,8 +60,19 @@ export function Checkbox({
       >
         {label}
         {help && <div className="m-0 text-gray-500">{help}</div>}
-        <FieldErrors errors={field.state.meta.errors} />
       </label>
     </div>
+  )
+
+  return (
+    <FieldLayout
+      label={leftLabel}
+      htmlFor={field.name}
+      errors={field.state.meta.errors}
+      labelProps={labelProps}
+      outerProps={outerProps}
+    >
+      {checkboxControl}
+    </FieldLayout>
   )
 }

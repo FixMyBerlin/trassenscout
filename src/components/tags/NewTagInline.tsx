@@ -34,7 +34,7 @@ export function NewTagInline({
   }
 
   return (
-    <div className="flex w-full items-end gap-2">
+    <div className="flex w-full items-end gap-2 self-stretch">
       <div className="grow">
         <label htmlFor={inputId} className="sr-only">
           {placeholder}

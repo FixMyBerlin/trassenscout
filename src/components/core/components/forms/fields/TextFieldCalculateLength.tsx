@@ -13,7 +13,7 @@ import { lineStringToGeoJSON } from "../../Map/utils/lineStringToGeoJSON"
 export function TextFieldCalculateLength({
   readOnly,
   ...rest
-}: Omit<TextFieldProps, "type" | "inlineLeadingAddon" | "step">) {
+}: Omit<TextFieldProps, "type" | "inlineLeadingAddon" | "step" | "trailingControl">) {
   const field = useFieldContext<string>()
   const geometryType =
     (field.form.getFieldValue("type") as GeometryTypeEnum | undefined) || GeometryTypeEnum.LINE
@@ -37,25 +37,24 @@ export function TextFieldCalculateLength({
   const showCalculateButton = geometryType === "LINE" && !readOnly
 
   return (
-    <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
-      <TextField
-        inlineLeadingAddon="m"
-        type="number"
-        step="1"
-        readOnly={readOnly}
-        {...rest}
-        help={helpText}
-      />
-
-      {showCalculateButton && (
-        <button
-          type="button"
-          onClick={calculateLength}
-          className={twJoin(primaryButtonClassName, "px-2! py-1!")}
-        >
-          Länge aus Geometrie ermitteln
-        </button>
-      )}
-    </div>
+    <TextField
+      inlineLeadingAddon="m"
+      type="number"
+      step="1"
+      readOnly={readOnly}
+      {...rest}
+      help={helpText}
+      trailingControl={
+        showCalculateButton ? (
+          <button
+            type="button"
+            onClick={calculateLength}
+            className={twJoin(primaryButtonClassName, "px-2! py-1!")}
+          >
+            Länge aus Geometrie ermitteln
+          </button>
+        ) : undefined
+      }
+    />
   )
 }

@@ -2,6 +2,7 @@ import type { JSX } from "react"
 import { ComponentPropsWithoutRef, PropsWithoutRef, useState } from "react"
 import { twJoin } from "tailwind-merge"
 import { z } from "zod"
+import { FieldLayout } from "@/src/components/core/components/forms/FieldLayout"
 import { useFieldContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { useFieldDisabled } from "@/src/components/core/components/forms/hooks/useFormHydrated"
 import { GeometryTypeEnum } from "@/src/prisma/generated/browser"
@@ -29,6 +30,8 @@ export type GeometryFieldProps = {
   help?: string
   optional?: boolean
   disabled?: boolean
+  /** Skip FieldLayout when nested inside GeometryInputBase raw mode. */
+  layout?: "default" | "bare"
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
   labelProps?: ComponentPropsWithoutRef<"label">
   /** "subsection" allows LineString and Polygon only. "subsubsection" allows all types. */
@@ -38,6 +41,7 @@ export type GeometryFieldProps = {
 export function GeometryField({
   label,
   help,
+  layout = "default",
   outerProps,
   labelProps,
   optional,
@@ -131,96 +135,108 @@ export function GeometryField({
     }
   }
 
-  return (
-    <div {...outerProps}>
-      <label
-        {...labelProps}
-        htmlFor={field.name}
-        className="mb-1 block text-sm font-medium text-gray-700"
-      >
-        {label}
-        {optional && <> (optional)</>}
-      </label>
-      <div className="grid grid-cols-2 gap-5">
-        <div className="flex flex-col">
-          <textarea
-            disabled={fieldDisabled}
-            id={field.name}
-            {...props}
-            value={valueString}
-            onChange={handleTextareaChange}
-            onBlur={handleTextareaChange}
-            onPaste={handlePaste}
-            className={twJoin(
-              textareaClassName,
-              "block w-full grow rounded-md font-mono text-xs shadow-sm",
-              hasError
-                ? "border-red-800 shadow-red-200 focus:border-red-800 focus:ring-red-800"
-                : "border-gray-300 focus:border-blue-500 focus:ring-blue-500",
-            )}
-          />
-          {Boolean(help) && <p className="mt-2 text-sm text-gray-500">{help}</p>}
-          <p className="mt-2 text-sm text-gray-500">
-            Das richtige Koordinatensystem ist EPSG:4326 / WGS84.
-          </p>
-          <p className="mt-2 text-sm text-gray-500">
-            {geometryType === "POINT" ? (
-              <>
-                Das richtige Format für einen Punkt ist{" "}
-                <code>{JSON.stringify({ type: "Point", coordinates: [9.1943, 48.8932] })}</code>.
-                Unterstützt auch MultiPoint.
-              </>
-            ) : geometryType === "LINE" ? (
-              <>
-                Das richtige Format für eine Linie ist{" "}
-                <code>
-                  {JSON.stringify({
-                    type: "LineString",
-                    coordinates: [
+  const editor = (
+    <div className="grid grid-cols-2 gap-5">
+      <div className="flex flex-col">
+        <textarea
+          disabled={fieldDisabled}
+          id={field.name}
+          {...props}
+          value={valueString}
+          onChange={handleTextareaChange}
+          onBlur={handleTextareaChange}
+          onPaste={handlePaste}
+          className={twJoin(
+            textareaClassName,
+            "block w-full grow rounded-md font-mono text-xs shadow-sm",
+            hasError
+              ? "border-red-800 shadow-red-200 focus:border-red-800 focus:ring-red-800"
+              : "border-gray-300 focus:border-blue-500 focus:ring-blue-500",
+          )}
+        />
+        <p className="mt-2 text-sm text-gray-500">
+          Das richtige Koordinatensystem ist EPSG:4326 / WGS84.
+        </p>
+        <p className="mt-2 text-sm text-gray-500">
+          {geometryType === "POINT" ? (
+            <>
+              Das richtige Format für einen Punkt ist{" "}
+              <code>{JSON.stringify({ type: "Point", coordinates: [9.1943, 48.8932] })}</code>.
+              Unterstützt auch MultiPoint.
+            </>
+          ) : geometryType === "LINE" ? (
+            <>
+              Das richtige Format für eine Linie ist{" "}
+              <code>
+                {JSON.stringify({
+                  type: "LineString",
+                  coordinates: [
+                    [9.1943, 48.8932],
+                    [9.2043, 48.8933],
+                  ],
+                })}
+              </code>
+              . Unterstützt auch MultiLineString.
+            </>
+          ) : geometryType === "POLYGON" ? (
+            <>
+              Das richtige Format für ein Polygon ist{" "}
+              <code>
+                {JSON.stringify({
+                  type: "Polygon",
+                  coordinates: [
+                    [
                       [9.1943, 48.8932],
                       [9.2043, 48.8933],
+                      [9.2143, 48.8943],
+                      [9.1943, 48.8932],
                     ],
-                  })}
-                </code>
-                . Unterstützt auch MultiLineString.
-              </>
-            ) : geometryType === "POLYGON" ? (
-              <>
-                Das richtige Format für ein Polygon ist{" "}
-                <code>
-                  {JSON.stringify({
-                    type: "Polygon",
-                    coordinates: [
-                      [
-                        [9.1943, 48.8932],
-                        [9.2043, 48.8933],
-                        [9.2143, 48.8943],
-                        [9.1943, 48.8932],
-                      ],
-                    ],
-                  })}
-                </code>
-                . Unterstützt auch MultiPolygon.
-              </>
-            ) : (
-              <>Bitte wählen Sie einen Geometrietyp aus.</>
-            )}
-          </p>
-          <p className="mt-2 text-sm text-gray-500">
-            Es kann eine GeoJSON Feature in das Eingabefeld kopiert (strg+v) werden.
-          </p>
-        </div>
-        <div>
-          {hasJsonParseError && (
-            <div role="alert" className="mb-3 rounded bg-red-800 p-3 text-sm text-white">
-              Es ist ein Fehler beim Verarbeiten der Geometrie aufgetreten. Die Änderung wurde daher
-              verworfen. Es könnte sein, dass ein Syntaxfehler vorlag, bspw. durch ein Komma zu
-              viel/wenig.
-            </div>
+                  ],
+                })}
+              </code>
+              . Unterstützt auch MultiPolygon.
+            </>
+          ) : (
+            <>Bitte wählen Sie einen Geometrietyp aus.</>
           )}
-          <GeometryFieldPreview hasError={hasJsonParseError || hasError} />
-        </div>
+        </p>
+        <p className="mt-2 text-sm text-gray-500">
+          Es kann eine GeoJSON Feature in das Eingabefeld kopiert (strg+v) werden.
+        </p>
+      </div>
+      <div>
+        {hasJsonParseError && (
+          <div role="alert" className="mb-3 rounded bg-red-800 p-3 text-sm text-white">
+            Es ist ein Fehler beim Verarbeiten der Geometrie aufgetreten. Die Änderung wurde daher
+            verworfen. Es könnte sein, dass ein Syntaxfehler vorlag, bspw. durch ein Komma zu
+            viel/wenig.
+          </div>
+        )}
+        <GeometryFieldPreview hasError={hasJsonParseError || hasError} />
       </div>
     </div>
+  )
+
+  if (layout === "bare") {
+    return (
+      <div {...outerProps}>
+        <p className="mb-2 text-sm font-medium text-gray-700">{label}</p>
+        {editor}
+      </div>
+    )
+  }
+
+  return (
+    <FieldLayout
+      label={label}
+      optional={optional}
+      htmlFor={field.name}
+      help={help}
+      errors={field.state.meta.errors}
+      labelProps={labelProps}
+      outerProps={outerProps}
+    >
+      {editor}
+    </FieldLayout>
   )
 }

@@ -58,19 +58,16 @@ export const UserEditForm = () => {
         formError={formError}
         submitText="Änderungen speichern"
         backLink={<BackLink to="/dashboard" text="Zurück zu Meine Projekte" />}
+        fieldLayout="labelsOnLeft"
       >
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <form.AppField name="firstName">
-            {(field) => (
-              <field.TextField label="Vorname" placeholder="" autoComplete="given-name" />
-            )}
-          </form.AppField>
-          <form.AppField name="lastName">
-            {(field) => (
-              <field.TextField label="Nachname" placeholder="" autoComplete="family-name" />
-            )}
-          </form.AppField>
-        </div>
+        <form.AppField name="firstName">
+          {(field) => <field.TextField label="Vorname" placeholder="" autoComplete="given-name" />}
+        </form.AppField>
+        <form.AppField name="lastName">
+          {(field) => (
+            <field.TextField label="Nachname" placeholder="" autoComplete="family-name" />
+          )}
+        </form.AppField>
         <form.AppField name="institution">
           {(field) => <field.TextField label="Organisation / Kommune" placeholder="" optional />}
         </form.AppField>

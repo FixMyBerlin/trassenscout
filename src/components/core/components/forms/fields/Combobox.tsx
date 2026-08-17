@@ -16,6 +16,7 @@ import {
   ListboxOptionLabel,
 } from "@/src/components/core/components/forms/checkmarkListboxUi"
 import { FieldErrors } from "@/src/components/core/components/forms/FieldErrors"
+import { FieldLayout } from "@/src/components/core/components/forms/FieldLayout"
 import { useFieldContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { useFieldDisabled } from "@/src/components/core/components/forms/hooks/useFormHydrated"
 import { linkStyles } from "@/src/components/core/components/links/styles"
@@ -34,6 +35,7 @@ export type ComboboxProps = {
   items: ComboboxItem[]
   placeholder?: string
   classLabelOverwrite?: string
+  trailingControl?: ReactNode
   /** Dropdown option layout. Defaults to left checkmarks. */
   optionUi?: ListboxOptionUi
 }
@@ -46,6 +48,7 @@ export function Combobox({
   items,
   placeholder,
   classLabelOverwrite,
+  trailingControl,
   optionUi = "checkmark",
 }: ComboboxProps) {
   const field = useFieldContext<string[]>()
@@ -71,39 +74,26 @@ export function Combobox({
       ? orderedItems
       : orderedItems.filter((i) => String(i.label).toLowerCase().includes(query.toLowerCase()))
 
-  return (
-    <div>
-      <div className="flex items-center gap-1">
-        {Boolean(label) && (
-          <label
-            htmlFor={field.name}
-            className={classLabelOverwrite || "mb-1 block text-sm font-medium text-gray-700"}
+  const control = (
+    <>
+      {value.length > 0 && (
+        <div className="mb-2 flex items-center justify-between gap-1">
+          <span className="inline-flex size-4.5 shrink-0 items-center justify-center rounded-full bg-gray-400 p-1 text-xs font-bold text-white">
+            {value.length}
+          </span>
+          <button
+            type="button"
+            className={twJoin(linkStyles, "flex cursor-pointer items-center gap-1 text-sm")}
+            onClick={() => {
+              field.handleChange([])
+              setQuery("")
+            }}
           >
-            {label}
-            {optional && <> (optional)</>}
-          </label>
-        )}
-        {value.length > 0 && (
-          <div className="flex grow items-center justify-between gap-1">
-            <span className="inline-flex size-4.5 shrink-0 items-center justify-center rounded-full bg-gray-400 p-1 text-xs font-bold text-white">
-              {value.length}
-            </span>
-            <button
-              type="button"
-              className={twJoin(linkStyles, "flex cursor-pointer items-center gap-1 text-sm")}
-              onClick={() => {
-                field.handleChange([])
-                setQuery("")
-              }}
-            >
-              <XMarkIcon className="size-4" />
-              <span>Auswahl zurücksetzen</span>
-            </button>
-          </div>
-        )}
-      </div>
-
-      {Boolean(help) && <p className="mb-2 text-sm text-gray-500">{help}</p>}
+            <XMarkIcon className="size-4" />
+            <span>Auswahl zurücksetzen</span>
+          </button>
+        </div>
+      )}
 
       <HeadlessCombobox
         immediate
@@ -176,8 +166,38 @@ export function Combobox({
           </div>
         )}
       </HeadlessCombobox>
+    </>
+  )
 
-      <FieldErrors errors={field.state.meta.errors} />
+  const controlWithTrailing = trailingControl ? (
+    <div className="flex w-full flex-col items-start gap-2">
+      {control}
+      {trailingControl}
     </div>
+  ) : (
+    control
+  )
+
+  if (!label) {
+    return (
+      <div>
+        {controlWithTrailing}
+        {Boolean(help) && <p className="mt-2 text-sm text-gray-500">{help}</p>}
+        <FieldErrors errors={field.state.meta.errors} />
+      </div>
+    )
+  }
+
+  return (
+    <FieldLayout
+      label={label}
+      optional={optional}
+      htmlFor={field.name}
+      help={help}
+      errors={field.state.meta.errors}
+      classLabelOverwrite={classLabelOverwrite}
+    >
+      {controlWithTrailing}
+    </FieldLayout>
   )
 }
