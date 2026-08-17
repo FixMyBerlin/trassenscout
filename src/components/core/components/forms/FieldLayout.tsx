@@ -54,7 +54,7 @@ export function FieldLayout({
   )
 }
 
-/** Full-width block that lines up with the control column (e.g. collapsible extras). */
+/** Block that lines up with the control column (e.g. collapsible extras). */
 export function FieldLayoutRightColumn({
   children,
   className,
