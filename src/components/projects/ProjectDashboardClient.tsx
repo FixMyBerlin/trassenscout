@@ -31,6 +31,7 @@ export const ProjectDashboardClient = () => {
 
   const { data: project } = useSuspenseQuery(projectBySlugQueryOptions(projectSlug))
   const { data: subsections } = useSuspenseQuery(subsectionsQueryOptions({ projectSlug }))
+  const showOperatorFilter = project.operators.length > 0 || Boolean(operatorParam)
 
   const filteredSubsections = operatorParam
     ? subsections.filter((sec) => sec.operator?.slug === operatorParam)
@@ -64,7 +65,7 @@ export const ProjectDashboardClient = () => {
         info="Übersicht über alle Planungsabschnitte des Projekts."
         viewMode={viewMode}
         onViewModeChange={setViewMode}
-        filters={<OperatorFilter />}
+        filters={showOperatorFilter ? <OperatorFilter /> : undefined}
         action={
           <IfUserCanEdit>
             <Link icon="edit" to="/$projectSlug/edit" params={{ projectSlug }}>
