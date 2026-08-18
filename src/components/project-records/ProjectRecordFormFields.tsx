@@ -56,10 +56,7 @@ export const ProjectRecordFormFields = ({
     ...queryBehavior,
   })
   const { data: users = [] } = useQuery({
-    ...projectUsersQueryOptions({
-      projectSlug,
-      role: splitView ? "EDITOR" : undefined,
-    }),
+    ...projectUsersQueryOptions({ projectSlug }),
     ...queryBehavior,
   })
   const { trackSessionUploads } = useSessionUploadCleanup({ projectSlug })
@@ -106,11 +103,6 @@ export const ProjectRecordFormFields = ({
             items={assignedToItems}
             label="Zuweisen an"
             placeholder="Nutzer suchen"
-            help={
-              splitView
-                ? "Alle unbestätigten Protokolleinträge können nur Nutzer mit Editierrechten zugewiesen werden."
-                : undefined
-            }
           />
         )}
       </form.AppField>
