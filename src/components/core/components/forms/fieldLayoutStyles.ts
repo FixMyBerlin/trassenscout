@@ -6,10 +6,10 @@ export const fieldLayoutLabelClassName =
 export const fieldLayoutControlClassName = "field-layout-control"
 
 export const formFieldLayoutLabelsOnLeftClassName =
-  "[&_.field-layout]:sm:grid [&_.field-layout]:sm:grid-cols-[18rem_minmax(0,1fr)] [&_.field-layout]:sm:items-start [&_.field-layout]:sm:gap-4 [&_.field-layout-label]:sm:mb-0 [&_.field-layout-label]:sm:pt-1.5 [&_.field-layout-control]:sm:mt-0"
+  "[&_.field-layout]:sm:grid [&_.field-layout]:sm:grid-cols-[18rem_minmax(0,1fr)] [&_.field-layout]:sm:items-start [&_.field-layout]:sm:gap-4 [&_.field-layout-label]:sm:mb-0 [&_.field-layout-control]:sm:mt-0"
 
 /** Reset labels-on-left for a subtree still inside a FormShell form (e.g. review footer). */
 export const fieldLayoutStackedOverrideClassName =
-  "[&_.field-layout]:sm:!block [&_.field-layout-label]:sm:!mb-1 [&_.field-layout-label]:sm:!pt-0"
+  "[&_.field-layout]:sm:!block [&_.field-layout-label]:sm:!mb-1"
 
 export type FormFieldLayout = "stacked" | "labelsOnLeft"
