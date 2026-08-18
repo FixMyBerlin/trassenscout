@@ -1,5 +1,6 @@
 import { MapIcon, TableCellsIcon } from "@heroicons/react/24/outline"
 import { twJoin } from "tailwind-merge"
+import { compactPaddingIcon } from "@/src/components/core/components/buttons/buttonStyles"
 import { Tooltip } from "@/src/components/core/components/Tooltip/Tooltip"
 
 export type ViewMode = "map" | "list"
@@ -9,8 +10,10 @@ type Props = {
   onChange: (mode: ViewMode) => void
 }
 
-const buttonClassName =
-  "flex cursor-pointer items-center justify-center px-2.5 py-2.5 text-gray-400 hover:text-gray-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+const buttonClassName = twJoin(
+  "flex cursor-pointer items-center justify-center text-gray-400 hover:text-gray-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500",
+  compactPaddingIcon,
+)
 
 export function PageHeaderViewSwitch({ value, onChange }: Props) {
   return (

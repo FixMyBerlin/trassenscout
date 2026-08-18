@@ -31,6 +31,7 @@ export function PageContactsTeam() {
           canEdit ? (
             <Link
               button="blue"
+              buttonSize="sm"
               icon="plus"
               to={contactsModal.getInviteNewHref()}
               resetScroll={false}

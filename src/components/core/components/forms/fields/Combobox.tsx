@@ -74,16 +74,31 @@ export function Combobox({
       ? orderedItems
       : orderedItems.filter((i) => String(i.label).toLowerCase().includes(query.toLowerCase()))
 
+  const selectedLabels = value
+    .map((selectedValue) => items.find((item) => item.value === selectedValue)?.label)
+    .filter((itemLabel): itemLabel is string => typeof itemLabel === "string" && itemLabel !== "")
+
   const control = (
     <>
       {value.length > 0 && (
-        <div className="mb-2 flex items-center justify-between gap-1">
+        <div className="mb-2 flex items-center gap-2">
           <span className="inline-flex size-4.5 shrink-0 items-center justify-center rounded-full bg-gray-400 p-1 text-xs font-bold text-white">
             {value.length}
           </span>
+          {selectedLabels.length > 0 && (
+            <p
+              className="min-w-0 flex-1 truncate text-xs text-gray-700"
+              title={selectedLabels.join(", ")}
+            >
+              {selectedLabels.join(", ")}
+            </p>
+          )}
           <button
             type="button"
-            className={twJoin(linkStyles, "flex cursor-pointer items-center gap-1 text-sm")}
+            className={twJoin(
+              linkStyles,
+              "flex shrink-0 cursor-pointer items-center gap-1 text-sm",
+            )}
             onClick={() => {
               field.handleChange([])
               setQuery("")
@@ -108,7 +123,7 @@ export function Combobox({
         invalid={hasError}
       >
         {({ open }) => (
-          <div className="relative">
+          <div className="relative w-full">
             <ComboboxInput
               id={field.name}
               autoComplete="off"
@@ -170,7 +185,7 @@ export function Combobox({
   )
 
   const controlWithTrailing = trailingControl ? (
-    <div className="flex w-full flex-col items-start gap-2">
+    <div className="flex w-full min-w-0 flex-col gap-2">
       {control}
       {trailingControl}
     </div>

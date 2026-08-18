@@ -37,7 +37,7 @@ export function PageSubsubsectionInfra() {
         breadcrumb={<ProjectPageBreadcrumb section="Infrastruktur" />}
         primaryAction={
           canEdit ? (
-            <Link button="blue" icon="plus" {...newLink}>
+            <Link button="blue" buttonSize="sm" icon="plus" {...newLink}>
               Neue Infrastruktur
             </Link>
           ) : undefined

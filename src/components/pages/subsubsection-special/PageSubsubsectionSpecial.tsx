@@ -37,7 +37,7 @@ export function PageSubsubsectionSpecial() {
         breadcrumb={<ProjectPageBreadcrumb section="Besonderheiten" />}
         primaryAction={
           canEdit ? (
-            <Link button="blue" icon="plus" {...newLink}>
+            <Link button="blue" buttonSize="sm" icon="plus" {...newLink}>
               Neue Besonderheit
             </Link>
           ) : undefined

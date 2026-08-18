@@ -26,7 +26,7 @@ export function PageTags() {
         breadcrumb={<ProjectPageBreadcrumb section="Tags" />}
         primaryAction={
           canEdit ? (
-            <Link button="blue" icon="plus" {...newLink}>
+            <Link button="blue" buttonSize="sm" icon="plus" {...newLink}>
               Neues Tag
             </Link>
           ) : undefined

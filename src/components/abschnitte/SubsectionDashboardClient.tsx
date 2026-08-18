@@ -73,6 +73,7 @@ function SubsectionDashboardContent({
               ) : null}
               <Link
                 button
+                buttonSize="sm"
                 icon="plus"
                 to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new"
                 params={{ projectSlug, subsectionSlug }}

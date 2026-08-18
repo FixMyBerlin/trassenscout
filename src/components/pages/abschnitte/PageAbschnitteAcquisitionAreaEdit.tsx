@@ -13,7 +13,7 @@ export function PageAbschnitteAcquisitionAreaEdit() {
   return (
     <>
       <PageHeader
-        breadcrumb={<AbschnitteBreadcrumb current="Grunderwerb" />}
+        breadcrumb={<AbschnitteBreadcrumb current="Verhandlungsfläche" />}
         info="Erstellen Sie automatisch neue Verhandlungsflächen durch einen räumlichen Abgleich mit den ALKIS-Flurstücken."
         title="Verhandlungsfläche bearbeiten"
         className="mb-0 shrink-0"

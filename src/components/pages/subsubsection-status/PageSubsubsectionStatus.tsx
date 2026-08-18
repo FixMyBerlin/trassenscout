@@ -37,7 +37,7 @@ export function PageSubsubsectionStatus() {
         breadcrumb={<ProjectPageBreadcrumb section="Phase" />}
         primaryAction={
           canEdit ? (
-            <Link button="blue" icon="plus" {...newLink}>
+            <Link button="blue" buttonSize="sm" icon="plus" {...newLink}>
               Neue Phase
             </Link>
           ) : undefined
