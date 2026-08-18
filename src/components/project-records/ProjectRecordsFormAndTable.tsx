@@ -3,7 +3,7 @@ import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { useEffect, useRef, useState } from "react"
 import { twJoin } from "tailwind-merge"
-import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { primaryButtonSmClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { FormSuccess } from "@/src/components/core/components/forms/FormSuccess"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { PageHeaderSearchFilter } from "@/src/components/core/components/PageHeader/PageHeaderSearchFilter"
@@ -70,7 +70,7 @@ export const ProjectRecordsFormAndTable = () => {
               ref={createRecordButtonRef}
               type="button"
               onClick={() => setIsProjectRecordModalOpen(true)}
-              className={twJoin(primaryButtonClassName, "items-center justify-center gap-1")}
+              className={twJoin(primaryButtonSmClassName, "items-center justify-center gap-1")}
             >
               <PlusIcon className="size-3.5" /> Neuer Protokolleintrag
             </button>

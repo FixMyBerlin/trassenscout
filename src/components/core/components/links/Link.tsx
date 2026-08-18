@@ -10,6 +10,7 @@ import { ArrowTopRightOnSquareIcon, PencilIcon, UserGroupIcon } from "@heroicons
 import { Link as RouterLink, type LinkComponentProps } from "@tanstack/react-router"
 import { cloneElement, isValidElement } from "react"
 import { twMerge } from "tailwind-merge"
+import type { CompactButtonSize } from "@/src/components/core/components/buttons/buttonStyles"
 import { selectLinkStyle } from "./styles"
 
 type CoreLinkStyleProps = {
@@ -19,6 +20,8 @@ type CoreLinkStyleProps = {
   blank?: boolean
   /** @desc Style Link as Button */
   button?: true | "blue" | "white" | "pink"
+  /** Compact padding. `"sm"` is used in PageHeader primary actions (`px-3 py-1.5`). */
+  buttonSize?: CompactButtonSize
   icon?: keyof typeof linkIcons | React.ReactNode
   children: React.ReactNode
 }
@@ -78,8 +81,12 @@ function useLinkPresentation({
   className,
   classNameOverwrites,
   button,
+  buttonSize,
   icon,
-}: Pick<CoreLinkStyleProps, "className" | "classNameOverwrites" | "button" | "icon">) {
+}: Pick<
+  CoreLinkStyleProps,
+  "className" | "classNameOverwrites" | "button" | "buttonSize" | "icon"
+>) {
   const rawIconElement =
     icon && typeof icon === "string" && icon in linkIcons
       ? linkIcons[icon as keyof typeof linkIcons]
@@ -87,7 +94,7 @@ function useLinkPresentation({
         ? (icon as React.ReactNode)
         : null
 
-  const classNames = twMerge(classNameOverwrites ?? selectLinkStyle(button, className))
+  const classNames = twMerge(classNameOverwrites ?? selectLinkStyle(button, className, buttonSize))
 
   const iconElement =
     rawIconElement && button && isValidElement<{ className?: string }>(rawIconElement)
@@ -119,12 +126,22 @@ function renderLinkContent(
 }
 
 export function Link(props: LinkProps) {
-  const { className, classNameOverwrites, children, blank = false, button, icon, ...rest } = props
+  const {
+    className,
+    classNameOverwrites,
+    children,
+    blank = false,
+    button,
+    buttonSize,
+    icon,
+    ...rest
+  } = props
 
   const { classNames, iconElement } = useLinkPresentation({
     className,
     classNameOverwrites,
     button,
+    buttonSize,
     icon,
   })
 

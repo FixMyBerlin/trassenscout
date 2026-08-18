@@ -190,7 +190,7 @@ export const GeometryDrawingMap = ({
           </div>
         </BaseMap>
       </div>
-      {legendItemsConfig && <MapFooter legendItemsConfig={legendItemsConfig} />}
+      {legendItemsConfig && <MapFooter legendItemsConfig={legendItemsConfig} pinned />}
     </div>
   )
 }

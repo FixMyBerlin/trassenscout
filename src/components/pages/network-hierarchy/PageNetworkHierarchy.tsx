@@ -37,7 +37,7 @@ export function PageNetworkHierarchy() {
         breadcrumb={<ProjectPageBreadcrumb section="Netzstufen" />}
         primaryAction={
           canEdit ? (
-            <Link button="blue" icon="plus" {...newLink}>
+            <Link button="blue" buttonSize="sm" icon="plus" {...newLink}>
               Neue Netzstufe
             </Link>
           ) : undefined

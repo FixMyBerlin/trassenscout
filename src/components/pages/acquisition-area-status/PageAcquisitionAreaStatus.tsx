@@ -37,7 +37,7 @@ export function PageAcquisitionAreaStatus() {
         breadcrumb={<ProjectPageBreadcrumb section="Flächenerwerb-Status" />}
         primaryAction={
           canEdit ? (
-            <Link button="blue" icon="plus" {...newLink}>
+            <Link button="blue" buttonSize="sm" icon="plus" {...newLink}>
               Neuer Status
             </Link>
           ) : undefined

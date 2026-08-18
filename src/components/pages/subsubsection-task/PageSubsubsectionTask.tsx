@@ -37,7 +37,7 @@ export function PageSubsubsectionTask() {
         breadcrumb={<ProjectPageBreadcrumb section="Maßnahmentypen" />}
         primaryAction={
           canEdit ? (
-            <Link button="blue" icon="plus" {...newLink}>
+            <Link button="blue" buttonSize="sm" icon="plus" {...newLink}>
               Neuer Maßnahmentyp
             </Link>
           ) : undefined

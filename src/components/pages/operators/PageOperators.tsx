@@ -32,7 +32,7 @@ export function PageOperators() {
         breadcrumb={<ProjectPageBreadcrumb section="Baulastträger" />}
         primaryAction={
           canEdit ? (
-            <Link button="blue" icon="plus" {...newLink}>
+            <Link button="blue" buttonSize="sm" icon="plus" {...newLink}>
               Neuer Baulastträger
             </Link>
           ) : undefined

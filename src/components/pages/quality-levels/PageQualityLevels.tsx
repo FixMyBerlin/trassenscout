@@ -37,7 +37,7 @@ export function PageQualityLevels() {
         breadcrumb={<ProjectPageBreadcrumb section="Ausbaustandards" />}
         primaryAction={
           canEdit ? (
-            <Link button="blue" icon="plus" {...newLink}>
+            <Link button="blue" buttonSize="sm" icon="plus" {...newLink}>
               Neuer Ausbaustandard
             </Link>
           ) : undefined

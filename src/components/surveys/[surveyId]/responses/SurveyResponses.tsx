@@ -160,7 +160,7 @@ function SurveyResponsesConfigured({ projectSlug, survey, tabs, surveySlug }: Co
         primaryAction={
           <PageHeaderToolbarLink
             href={`/api/${projectSlug}/surveys/${survey.id}/part2/results`}
-            label="Alle Daten als .csv herunterladen"
+            label="Alle gefilterten Eingaben als .csv herunterladen"
           >
             CSV
           </PageHeaderToolbarLink>
