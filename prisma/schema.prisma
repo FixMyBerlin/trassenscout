@@ -786,7 +786,7 @@ model EvaluationsPage {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   title       String
-  markdown    String
+  config      Json     @default("{\"version\":1,\"sections\":[]}")
   project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId   Int      @unique
   updatedBy   User?    @relation("EvaluationsPageUpdatedBy", fields: [updatedById], references: [id])

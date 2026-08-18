@@ -1,5 +1,6 @@
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
+import { z } from "zod"
 import { FORM_ERROR } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { upsertEvaluationsPageFn } from "@/src/server/evaluationsPage/evaluationsPage.functions"
 import { EvaluationsPageContentSchema } from "@/src/server/evaluationsPage/evaluationsPage.inputSchemas"
@@ -17,7 +18,7 @@ export const AdminEvaluationsPageEditForm = ({ projectSlug }: Props) => {
   )
   const upsertMutation = useMutation({ mutationFn: upsertEvaluationsPageFn })
 
-  const handleSubmit = async (values: { title: string; markdown: string }) => {
+  const handleSubmit = async (values: z.infer<typeof EvaluationsPageContentSchema>) => {
     try {
       await upsertMutation.mutateAsync({ data: { projectSlug, ...values } })
       navigate({
@@ -32,7 +33,7 @@ export const AdminEvaluationsPageEditForm = ({ projectSlug }: Props) => {
 
   return (
     <EvaluationsPageForm
-      key={`${projectSlug}:${evaluationsPage.title}:${evaluationsPage.markdown}`}
+      key={`${projectSlug}:${evaluationsPage.title}:${JSON.stringify(evaluationsPage.config)}`}
       submitText="Speichern"
       schema={EvaluationsPageContentSchema}
       initialValues={evaluationsPage}
