@@ -18,8 +18,8 @@ import {
   AdminTablePrimaryButton,
 } from "@/src/components/admin/AdminTableActions"
 import {
+  iconButtonClassName,
   primaryButtonClassName,
-  secondaryButtonClassName,
 } from "@/src/components/core/components/buttons/buttonStyles"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
@@ -32,6 +32,7 @@ import { linkIcons } from "@/src/components/core/components/links/Link"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
+import { moveItem } from "@/src/components/core/utils/moveItem"
 import { projectBySlugQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 import { subsubsectionExtraFieldsProjectsQueryOptions } from "@/src/server/projects/subsubsectionExtraFieldsQueryOptions"
 import {
@@ -41,8 +42,6 @@ import {
   SubsubsectionExtraFieldDefinitionsSchema,
 } from "@/src/shared/subsubsections/extraFieldSchemas"
 import { ExtraFieldDefinitionModal } from "./ExtraFieldDefinitionModal"
-
-const compactSecondaryButtonClassName = twJoin(secondaryButtonClassName, "px-2.5 py-2")
 
 const AdminExtraFieldDefinitionsFormSchema = z.object({
   definitions: SubsubsectionExtraFieldDefinitionsSchema,
@@ -122,17 +121,7 @@ export function AdminSubsubsectionExtraFieldsForm({
 
   const moveDefinition = (index: number, direction: "up" | "down") => {
     const definitions = form.getFieldValue("definitions")
-    const targetIndex = direction === "up" ? index - 1 : index + 1
-    if (targetIndex < 0 || targetIndex >= definitions.length) return
-
-    const next = [...definitions]
-    const item = next[index]
-    const swapWith = next[targetIndex]
-    if (!item || !swapWith) return
-
-    next[index] = swapWith
-    next[targetIndex] = item
-    form.setFieldValue("definitions", normalizeOrders(next))
+    form.setFieldValue("definitions", normalizeOrders(moveItem(definitions, index, direction)))
   }
 
   const handleImportFromProject = async (sourceSlug: string) => {
@@ -187,7 +176,7 @@ export function AdminSubsubsectionExtraFieldsForm({
                         <div className="flex items-center gap-1">
                           <button
                             type="button"
-                            className={compactSecondaryButtonClassName}
+                            className={iconButtonClassName}
                             disabled={index === 0}
                             onClick={() => moveDefinition(index, "up")}
                             title="Nach oben"
@@ -197,7 +186,7 @@ export function AdminSubsubsectionExtraFieldsForm({
                           </button>
                           <button
                             type="button"
-                            className={compactSecondaryButtonClassName}
+                            className={iconButtonClassName}
                             disabled={index === definitions.length - 1}
                             onClick={() => moveDefinition(index, "down")}
                             title="Nach unten"

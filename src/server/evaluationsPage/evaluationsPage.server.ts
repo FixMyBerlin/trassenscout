@@ -1,7 +1,14 @@
 import type { z } from "zod"
+import type { Prisma } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
+import {
+  emptyEvaluationsPageConfig,
+  type EvaluationChartType,
+  parseEvaluationsPageConfig,
+} from "@/src/shared/evaluations/evaluationsPageConfig"
+import { getEvaluationChartData } from "./evaluationChartData.server"
 import type {
   EvaluationsPageByProjectSlugSchema,
   UpsertEvaluationsPageSchema,
@@ -23,7 +30,16 @@ export async function getEvaluationsPage(
 
   if (!page) return null
 
-  return { title: page.title, markdown: page.markdown }
+  const config = parseEvaluationsPageConfig(page.config)
+  const charts = [...new Set(config.sections.map((section) => section.chart))].filter(
+    (chart) => chart !== "",
+  ) as EvaluationChartType[]
+
+  return {
+    title: page.title,
+    config,
+    chartData: await getEvaluationChartData(input.projectSlug, charts),
+  }
 }
 
 export async function getEvaluationsPageAdmin(
@@ -37,12 +53,17 @@ export async function getEvaluationsPageAdmin(
   })
 
   if (!page) {
-    return { title: "", markdown: "", updatedAt: null, updatedById: null }
+    return {
+      title: "",
+      config: emptyEvaluationsPageConfig(),
+      updatedAt: null,
+      updatedById: null,
+    }
   }
 
   return {
     title: page.title,
-    markdown: page.markdown,
+    config: parseEvaluationsPageConfig(page.config),
     updatedAt: page.updatedAt,
     updatedById: page.updatedById,
   }
@@ -53,7 +74,7 @@ export async function upsertEvaluationsPage(
   input: z.infer<typeof UpsertEvaluationsPageSchema>,
 ) {
   const session = await endpointAuth.admin(headers)
-  const { projectSlug, title, markdown } = input
+  const { projectSlug, title, config } = input
 
   const project = await db.project.findUniqueOrThrow({
     where: { slug: projectSlug },
@@ -65,12 +86,12 @@ export async function upsertEvaluationsPage(
     create: {
       projectId: project.id,
       title,
-      markdown,
+      config: config as Prisma.InputJsonValue,
       updatedById: Number(session.userId),
     },
     update: {
       title,
-      markdown,
+      config: config as Prisma.InputJsonValue,
       updatedById: Number(session.userId),
     },
   })

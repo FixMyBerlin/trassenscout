@@ -131,7 +131,7 @@ export function buildAdminProjectSectionNavigation(projectSlug: string) {
       link: projectNavLink("/admin/projects/$projectSlug/subsubsection-extra-fields", projectSlug),
     },
     {
-      name: "Auswertungen-Seite",
+      name: "Auswertung",
       link: projectNavLink("/admin/projects/$projectSlug/evaluations", projectSlug),
     },
     ...buildAdminProjectNavigation(projectSlug),
@@ -300,8 +300,8 @@ function buildAdminProjectQuickNavLinks(projectSlug: string): AdminQuickNavLink[
       link: { to: "/admin/memberships", search: { project: projectSlug } },
     },
     {
-      name: adminProjectNavName("Projekt", "Auswertungen-Seite"),
-      link: projectNavLink("/admin/evaluations/$projectSlug/edit", projectSlug),
+      name: adminProjectNavName("Projekt", "Auswertung"),
+      link: projectNavLink("/admin/projects/$projectSlug/evaluations", projectSlug),
     },
   ]
 
