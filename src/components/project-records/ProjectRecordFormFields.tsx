@@ -6,6 +6,7 @@ import { useFormValue } from "@/src/components/core/components/forms/hooks/useFo
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { NumberArraySchema } from "@/src/components/core/utils/schema-shared"
 import { useSessionUploadCleanup } from "@/src/components/project-records/hooks/useSessionUploadCleanup"
+import { ProjectRecordAssignmentFields } from "@/src/components/project-records/ProjectRecordAssignmentFields"
 import {
   ProjectRecordEmailSource,
   ProjectRecordEmailSourceDisclosure,
@@ -15,7 +16,6 @@ import { getUserComboboxItems } from "@/src/components/shared/app/users/utils/ge
 import { TagsFormSection } from "@/src/components/tags/TagsFormSection"
 import { UploadDropzone } from "@/src/components/uploads/UploadDropzone"
 import { UploadTable } from "@/src/components/uploads/UploadTable"
-import { ProjectRecordEditingState } from "@/src/prisma/generated/browser"
 import { acquisitionAreasQueryOptions } from "@/src/server/acquisitionAreas/acquisitionAreasQueryOptions"
 import { projectUsersQueryOptions } from "@/src/server/memberships/projectUsersQueryOptions"
 import { subsubsectionsQueryOptions } from "@/src/server/subsubsections/subsubsectionsQueryOptions"
@@ -96,37 +96,7 @@ export const ProjectRecordFormFields = ({
   const subsubsectionLabel = "Verknüpfungen mit Eintrag"
   const acquisitionAreaLabel = "Verknüpfungen mit Verhandlungsflächen"
   const assignmentAndStatusFields = (
-    <>
-      <form.AppField name="assignedToId">
-        {(field) => (
-          <field.ComboboxSingle
-            items={assignedToItems}
-            label="Zuweisen an"
-            placeholder="Nutzer suchen"
-          />
-        )}
-      </form.AppField>
-      <form.AppField name="editingState">
-        {(field) => (
-          <field.Switch
-            values={{
-              off: ProjectRecordEditingState.PENDING,
-              on: ProjectRecordEditingState.COMPLETED,
-            }}
-            label="Status"
-            contentClassName="pt-2"
-            stateLabels={{
-              off: "In Bearbeitung",
-              on: "Abgeschlossen",
-            }}
-            trackClassNames={{
-              off: "bg-blue-500",
-              on: "bg-gray-300",
-            }}
-          />
-        )}
-      </form.AppField>
-    </>
+    <ProjectRecordAssignmentFields assignedToItems={assignedToItems} />
   )
 
   return (

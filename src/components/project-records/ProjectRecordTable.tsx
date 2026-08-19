@@ -40,13 +40,13 @@ const projectRecordTableColWidths = {
     withAcquisitionArea: "w-[16%] @xl:w-[9%]",
   },
   title: {
-    default: "w-[52%] @xl:w-[41%]",
-    withAcquisitionArea: "min-w-0 w-[32%] @xl:w-[24%]",
+    default: "w-[52%] @xl:w-[35%]",
+    withAcquisitionArea: "min-w-0 w-[32%] @xl:w-[18%]",
   },
   acquisitionArea: "w-[28%] @xl:w-[14%]",
   tags: "hidden @xl:table-column @xl:w-[24%]",
   relations: "hidden @xl:table-column @xl:w-[24%]",
-  assignedTo: "hidden @xl:table-column @xl:w-[10%]",
+  assignedTo: "hidden @xl:table-column @xl:w-[16%]",
   documents: "w-[18%] @xl:w-[10%]",
 } as const
 
@@ -246,8 +246,13 @@ export const ProjectRecordsTable = ({
                         />
                       </div>
                     </td>
-                    <td className={twJoin("hidden align-top @xl:table-cell", tableCellClassName)}>
-                      <div className="flex items-center justify-start">
+                    <td
+                      className={twJoin(
+                        "hidden min-w-0 align-top @xl:table-cell",
+                        tableCellClassName,
+                      )}
+                    >
+                      <div className="flex max-w-full min-w-0 items-center">
                         {assignedTo && (
                           <ProjectRecordAssignedToPill
                             assignedTo={assignedTo}

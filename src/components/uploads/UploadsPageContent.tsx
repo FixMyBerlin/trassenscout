@@ -3,6 +3,7 @@ import { getRouteApi } from "@tanstack/react-router"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeaderSearchFilter } from "@/src/components/core/components/PageHeader/PageHeaderSearchFilter"
+import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { UploadsPageUploadSection } from "@/src/components/uploads/uploads-page/UploadsPageUploadSection"
 import { UploadTable } from "@/src/components/uploads/UploadTable"
 import { useFilteredUploads } from "@/src/components/uploads/useFilteredUploads"
@@ -36,7 +37,9 @@ export const UploadsPageContent = () => {
     <>
       <div className="flex flex-col">
         <div className={pageContentPaddingClassName}>
-          <UploadsPageUploadSection projectSlug={projectSlug} />
+          <IfUserCanEdit>
+            <UploadsPageUploadSection projectSlug={projectSlug} />
+          </IfUserCanEdit>
           <div className="mt-6">
             <PageHeaderSearchFilter
               value={filter?.searchterm ?? ""}

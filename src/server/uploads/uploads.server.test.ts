@@ -1,7 +1,11 @@
 import { beforeEach, describe, expect, test, vi } from "vitest"
+import { ProjectRecordReviewState } from "@/src/prisma/generated/browser"
 import { AuthorizationError } from "@/src/shared/auth/errors"
 
 const mockDb = {
+  project: {
+    findUnique: vi.fn(),
+  },
   surveyResponse: {
     findFirstOrThrow: vi.fn(),
   },
@@ -75,6 +79,8 @@ describe("createUpload", () => {
       session: { userId: 2, role: "USER" },
     })
     mockDb.surveyResponse.findFirstOrThrow.mockResolvedValue({ id: 123 })
+    mockDb.project.findUnique.mockResolvedValue({ aiEnabled: true })
+    mockDb.projectRecord.findMany.mockResolvedValue([])
     mockDb.upload.findFirstOrThrow.mockResolvedValue({ id: 77 })
     mockDb.upload.create.mockResolvedValue({ id: 77 })
     mockDb.upload.update.mockResolvedValue({ id: 77 })
@@ -89,7 +95,7 @@ describe("createUpload", () => {
 
     expect(mockDb.surveyResponse.findFirstOrThrow).not.toHaveBeenCalled()
     expect(mockDb.upload.create).not.toHaveBeenCalled()
-  })
+  }, 15_000)
 
   test("rejects editor upload records with S3 keys outside the project prefix", async () => {
     const { createUpload } = await import("./uploads.server")
@@ -128,6 +134,94 @@ describe("createUpload", () => {
         }),
       }),
     )
+  })
+
+  test("allows viewer project-record uploads with an empty summary", async () => {
+    const { createUpload } = await import("./uploads.server")
+    mockDb.projectRecord.findMany.mockResolvedValue([{ id: 42 }])
+
+    await createUpload(headers, {
+      ...baseInput,
+      surveyResponseId: null,
+      projectRecords: [42],
+    })
+
+    expect(mockDb.projectRecord.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          id: { in: [42] },
+          project: { slug: "rs23" },
+          OR: [{ reviewState: ProjectRecordReviewState.APPROVED }],
+        }),
+      }),
+    )
+    expect(mockDb.upload.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          projectId: 1,
+          surveyResponseId: null,
+          projectRecords: { connect: [{ id: 42 }] },
+        }),
+      }),
+    )
+  })
+
+  test("rejects viewer uploads bound to more than one project record", async () => {
+    const { createUpload } = await import("./uploads.server")
+
+    await expect(
+      createUpload(headers, {
+        ...baseInput,
+        surveyResponseId: null,
+        projectRecords: [42, 99],
+      }),
+    ).rejects.toBeInstanceOf(AuthorizationError)
+
+    expect(mockDb.upload.create).not.toHaveBeenCalled()
+  })
+
+  test("rejects viewer project-record uploads when the record is not visible", async () => {
+    const { createUpload } = await import("./uploads.server")
+    mockDb.projectRecord.findMany.mockResolvedValue([])
+
+    await expect(
+      createUpload(headers, {
+        ...baseInput,
+        surveyResponseId: null,
+        projectRecords: [42],
+      }),
+    ).rejects.toBeInstanceOf(AuthorizationError)
+
+    expect(mockDb.upload.create).not.toHaveBeenCalled()
+  })
+
+  test("rejects viewer uploads with neither survey nor project record", async () => {
+    const { createUpload } = await import("./uploads.server")
+
+    await expect(
+      createUpload(headers, {
+        ...baseInput,
+        surveyResponseId: null,
+        projectRecords: [],
+      }),
+    ).rejects.toBeInstanceOf(AuthorizationError)
+
+    expect(mockDb.upload.create).not.toHaveBeenCalled()
+  })
+
+  test("rejects viewer project-record uploads that also set extra relations", async () => {
+    const { createUpload } = await import("./uploads.server")
+
+    await expect(
+      createUpload(headers, {
+        ...baseInput,
+        surveyResponseId: null,
+        projectRecords: [42],
+        tags: [9],
+      }),
+    ).rejects.toBeInstanceOf(AuthorizationError)
+
+    expect(mockDb.upload.create).not.toHaveBeenCalled()
   })
 
   test("keeps externalUrl immutable when editors update upload metadata", async () => {

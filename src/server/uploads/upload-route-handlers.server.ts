@@ -5,8 +5,9 @@ import {
   isSupportedUploadFilename,
 } from "@/src/components/core/uploads/getFileType"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
-import { viewerRoles } from "@/src/server/authorization/constants"
+import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
+import { projectRecordDetailVisibilityWhere } from "@/src/server/projectRecords/projectRecordVisibility.server"
 import { authErrorToResponse } from "@/src/shared/auth/errors"
 import { S3_BUCKET, S3_MAX_FILE_SIZE_BYTES, S3_MAX_FILES_SURVEY } from "@/src/shared/uploads/config"
 import { createUploadRouter } from "./_utils/createUploadRouter"
@@ -71,17 +72,47 @@ async function verifySurveyResponseSession(surveyResponseId: number, surveySessi
   }
 }
 
-async function verifyProjectSurveyResponseUpload(
+const ViewerUploadContextSchema = z.union([
+  z.object({
+    projectRecordId: z.coerce.number().int().positive(),
+  }),
+  ProjectSurveyResponseUploadParamsSchema,
+])
+
+async function verifyViewerUploadContext(
   projectSlug: string,
   clientMetadata: Record<string, unknown> | null,
+  canEdit: boolean,
 ) {
-  const params = ProjectSurveyResponseUploadParamsSchema.safeParse({
-    surveyResponseId: clientMetadata?.surveyResponseId,
-    surveySessionId: clientMetadata?.surveySessionId,
-  })
+  const params = ViewerUploadContextSchema.safeParse(clientMetadata ?? {})
 
   if (!params.success) {
-    throw new RejectUpload("Missing or invalid surveyResponseId")
+    throw new RejectUpload("Missing or invalid viewer upload context")
+  }
+
+  if ("projectRecordId" in params.data) {
+    const project = await db.project.findUnique({
+      where: { slug: projectSlug },
+      select: { id: true, aiEnabled: true },
+    })
+
+    if (!project) {
+      throw new RejectUpload("Project record not found or does not belong to the project")
+    }
+
+    const projectRecord = await db.projectRecord.findFirst({
+      where: {
+        id: params.data.projectRecordId,
+        project: { slug: projectSlug },
+        ...projectRecordDetailVisibilityWhere(project.aiEnabled ?? false, canEdit),
+      },
+      select: { id: true },
+    })
+
+    if (!projectRecord) {
+      throw new RejectUpload("Project record not found or does not belong to the project")
+    }
+    return
   }
 
   const surveyResponse = await db.surveyResponse.findFirst({
@@ -173,7 +204,7 @@ export async function handleProjectUploadRoute(request: Request, projectSlug: st
     projectSlug,
     roles: viewerRoles,
   })
-  const canEdit = membershipRole === null || membershipRole === "EDITOR"
+  const canEdit = membershipRole === null || editorRoles.includes(membershipRole)
 
   try {
     const router = createUploadRouter({
@@ -181,7 +212,7 @@ export async function handleProjectUploadRoute(request: Request, projectSlug: st
       userId: Number(userId),
       onBeforeUpload: async (files, clientMetadata) => {
         if (!canEdit) {
-          await verifyProjectSurveyResponseUpload(projectSlug, clientMetadata)
+          await verifyViewerUploadContext(projectSlug, clientMetadata, canEdit)
         }
         assertSupportedUploadMimeTypes(files)
       },

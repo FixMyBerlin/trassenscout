@@ -42,15 +42,13 @@ test.describe("Project core route permissions", () => {
       })
     })
 
-    test("can access uploads and see upload dropzone", async ({ page }) => {
+    test("can access uploads without the page dropzone", async ({ page }) => {
       await page.goto(uploadsPath)
 
       await expect(page.getByRole("heading", { name: "Dokumente", exact: true })).toBeVisible({
         timeout: 30_000,
       })
-      await expect(page.getByText("Dateien hierher ziehen und ablegen")).toBeVisible({
-        timeout: 30_000,
-      })
+      await expect(page.getByText("Dateien hierher ziehen und ablegen")).toHaveCount(0)
     })
   })
 

@@ -25,7 +25,8 @@ export const ProjectRecordAssignedToPill = ({
 
   const className = twJoin(
     pillShellWithGapClasses,
-    "bg-orange-100 text-xs text-orange-600",
+    "max-w-full min-w-0 bg-orange-100 text-xs whitespace-nowrap text-orange-600",
+    variant === "list" && "overflow-hidden",
     isInteractive &&
       "cursor-pointer hover:bg-orange-200/90 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-orange-500/40",
   )
@@ -36,7 +37,7 @@ export const ProjectRecordAssignedToPill = ({
     onAssigneeClick?.(filterSearchText)
   }
 
-  const content = <span>{displayLabel}</span>
+  const content = <span className="truncate">{displayLabel}</span>
 
   if (isInteractive) {
     return (
