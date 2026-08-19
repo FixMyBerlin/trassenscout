@@ -48,15 +48,6 @@ export const primaryButtonSmClassName = compactClassName(primaryColorsForButton,
 /** Secondary action — button element (`<button>`). */
 export const secondaryButtonClassName = compactClassName(secondaryColorsForButton)
 
-/** Primary action — link element (`<a>`). */
-export const primaryButtonLinkClassName = compactClassName(primaryColors)
-
-/** Secondary action — link element (`<a>`). */
-export const secondaryButtonLinkClassName = compactClassName(secondaryColors)
-
-/** Accent action — link element (`<a>`). */
-export const pinkButtonLinkClassName = compactClassName(pinkColors)
-
 export const iconButtonClassName = twJoin(
   "inline-flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-md shadow-xs transition-colors",
   secondaryColorsForButton,
