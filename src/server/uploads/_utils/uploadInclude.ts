@@ -68,3 +68,15 @@ export const uploadWithSubsectionsInclude = {
   },
   tags: true,
 } as const
+
+export const replaceableUploadWhere = { surveyResponseId: null } as const
+
+export const isReplaceableUpload = (upload: { surveyResponseId: number | null }) =>
+  upload.surveyResponseId === replaceableUploadWhere.surveyResponseId
+
+export const uploadForDeletionSelect = {
+  id: true,
+  collaborationPath: true,
+  collaborationUrl: true,
+  externalUrl: true,
+} as const

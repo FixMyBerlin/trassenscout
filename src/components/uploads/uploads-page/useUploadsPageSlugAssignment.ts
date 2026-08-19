@@ -1,5 +1,5 @@
 import { useRef, useState } from "react"
-import type { UploadFileRecordResult } from "@/src/components/uploads/UploadDropzone"
+import type { UploadFileRecordResult } from "@/src/components/uploads/useUploadRecordCreation"
 
 export type UploadSlugAssignment =
   | { kind: "matched"; subsectionSlug: string; subsubsectionSlug: string }

@@ -22,6 +22,20 @@ export const DeleteUploadSchema = GetUploadSchema
 export const GetSurveyResponseUploadsSplitSchema = ProjectSlugRequiredSchema.extend({
   surveyResponseId: z.number(),
 })
+// Swapping the stored file keeps the record's own fields (title, summary is reset server
+// side), so only the file's own fields and the relations to link it into travel with it.
+export const ReplaceUploadFileSchema = GetUploadSchema.extend({ externalUrl: z.url() }).and(
+  UploadSchema.pick({
+    mimeType: true,
+    fileSize: true,
+    projectRecordEmailId: true,
+    surveyResponseId: true,
+    projectRecords: true,
+    subsubsections: true,
+    acquisitionAreas: true,
+    tags: true,
+  }).partial(),
+)
 
 export const GetGeolocatedUploadsSchema = ProjectSlugRequiredSchema
 

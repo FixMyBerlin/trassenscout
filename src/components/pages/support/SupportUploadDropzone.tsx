@@ -1,6 +1,6 @@
 import type { FileUploadInfo } from "@better-upload/client"
 import { useMutation } from "@tanstack/react-query"
-import { UploadDropzoneBase } from "@/src/components/uploads/UploadDropzoneBase"
+import { UploadDropzone } from "@/src/components/uploads/UploadDropzone"
 import { getAcceptAttribute } from "@/src/components/uploads/utils/getFileType"
 import { createSupportDocumentFn } from "@/src/server/supportDocuments/supportDocuments.functions"
 import { S3_MAX_FILE_SIZE_BYTES, S3_MAX_FILES_PROJECT } from "@/src/shared/uploads/config"
@@ -27,7 +27,7 @@ export const SupportUploadDropzone = ({ onUploadComplete }: Props) => {
   }
 
   return (
-    <UploadDropzoneBase
+    <UploadDropzone
       api="/api/support/documents/upload"
       createUploadRecord={createUploadRecord}
       onUploadComplete={onUploadComplete ? async () => await onUploadComplete() : undefined}

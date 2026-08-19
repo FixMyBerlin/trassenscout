@@ -14,7 +14,7 @@ import {
 } from "@/src/components/project-records/ProjectRecordEmailSource"
 import { getUserComboboxItems } from "@/src/components/shared/app/users/utils/getUserSelectOptions"
 import { TagsFormSection } from "@/src/components/tags/TagsFormSection"
-import { UploadDropzone } from "@/src/components/uploads/UploadDropzone"
+import { ProjectUploadDropzone } from "@/src/components/uploads/ProjectUploadDropzone"
 import { UploadTable } from "@/src/components/uploads/UploadTable"
 import { acquisitionAreasQueryOptions } from "@/src/server/acquisitionAreas/acquisitionAreasQueryOptions"
 import { projectUsersQueryOptions } from "@/src/server/memberships/projectUsersQueryOptions"
@@ -160,7 +160,7 @@ export const ProjectRecordFormFields = ({
               form.setFieldValue("uploads", newUploads)
             }}
           />
-          <UploadDropzone
+          <ProjectUploadDropzone
             projectSlug={projectSlug}
             onUploadComplete={async (newUploadIds: number[]) => {
               trackSessionUploads(newUploadIds)

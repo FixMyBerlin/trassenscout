@@ -29,7 +29,7 @@ import { ProjectRecordNewModal } from "@/src/components/project-records/ProjectR
 import { ProjectRecordsTable } from "@/src/components/project-records/ProjectRecordTable"
 import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
-import { UploadDropzone } from "@/src/components/uploads/UploadDropzone"
+import { ProjectUploadDropzone } from "@/src/components/uploads/ProjectUploadDropzone"
 import { UploadTable } from "@/src/components/uploads/UploadTable"
 import { deleteAllAcquisitionAreasForSubsubsectionFn } from "@/src/server/acquisitionAreas/acquisitionAreas.functions"
 import { acquisitionAreasBySubsubsectionQueryOptions } from "@/src/server/acquisitionAreas/acquisitionAreasAbschnitteQueryOptions"
@@ -328,7 +328,7 @@ export const SubsubsectionLandAcquisitionContent = ({
                     }}
                   />
                   <IfUserCanEdit>
-                    <UploadDropzone
+                    <ProjectUploadDropzone
                       projectSlug={projectSlug}
                       acquisitionAreaIds={[selectedAcquisitionArea.id]}
                       onUploadComplete={async () => {

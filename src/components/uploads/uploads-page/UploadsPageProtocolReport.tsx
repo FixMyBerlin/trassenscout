@@ -30,7 +30,7 @@ const summaryLine = (
     (entry) => entry.status === "uploadFailed" || entry.status === "recordFailed",
   ).length
   const collisions = entries.filter(
-    (entry) => entry.collidesWithExisting || entry.collidesInBatch,
+    (entry) => entry.existingCollisionResolution || entry.collidesInBatch,
   ).length
   const matched = Object.values(assignmentsByFilename).filter(
     (assignment) => assignment.kind === "matched",
@@ -103,13 +103,13 @@ export const UploadsPageProtocolReport = ({
 
               <span className="min-w-0 truncate font-medium">{entry.filename}</span>
 
-              {(entry.collidesWithExisting || entry.collidesInBatch) && (
+              {(entry.existingCollisionResolution || entry.collidesInBatch) && (
                 <span className="inline-flex items-center gap-1 rounded bg-amber-100 px-1.5 py-0.5 text-xs text-amber-800">
                   <ExclamationTriangleIcon className="size-3.5" />
-                  {entry.collidesWithExisting && entry.collidesInBatch
-                    ? "Dateiname existiert bereits und ist mehrfach in dieser Auswahl"
-                    : entry.collidesWithExisting
-                      ? "Dateiname existiert bereits im Projekt"
+                  {entry.existingCollisionResolution === "replace"
+                    ? "Vorhandene Datei ersetzt"
+                    : entry.existingCollisionResolution === "keepBoth"
+                      ? "Beide Dateien behalten"
                       : "Dateiname mehrfach in dieser Auswahl"}
                 </span>
               )}

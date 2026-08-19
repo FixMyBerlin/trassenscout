@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 import { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
 import { getQuestionIdBySurveySlug } from "@/src/components/beteiligung/shared/utils/getQuestionIdBySurveySlug"
-import { UploadDropzone } from "@/src/components/uploads/UploadDropzone"
+import { ProjectUploadDropzone } from "@/src/components/uploads/ProjectUploadDropzone"
 import { UploadTable } from "@/src/components/uploads/UploadTable"
 import { surveyResponseUploadsSplitQueryOptions } from "@/src/server/uploads/uploadsQueryOptions"
 import { getFlatSurveyFormFields } from "./getFlatSurveyFormFields"
@@ -92,7 +92,7 @@ export const EditableSurveyResponseUploadsSection = ({
             await refetchUploads()
           }}
         />
-        <UploadDropzone
+        <ProjectUploadDropzone
           projectSlug={projectSlug}
           surveyResponseId={responseId}
           surveySessionId={surveySessionId}

@@ -8,7 +8,7 @@ import { translateServerError } from "@/src/components/core/components/forms/err
 import { beginModalCloseBlock } from "@/src/components/core/components/Modal/modalCloseGuard"
 import { SpinnerIcon } from "@/src/components/core/components/Spinner"
 import { Tooltip } from "@/src/components/core/components/Tooltip/Tooltip"
-import type { ViewerUploadMetadata } from "@/src/components/uploads/UploadDropzoneBase"
+import type { PreparedUploadBatch } from "@/src/components/uploads/UploadDropzone"
 import { FileTypeIcon } from "@/src/components/uploads/utils/FileTypeIcon"
 import { getFileTypeLabel } from "@/src/components/uploads/utils/getFileType"
 import { Progress } from "./UploadProgress"
@@ -18,7 +18,8 @@ type Props = {
   control: UploadHookControl<true>
   id?: string
   accept?: string
-  viewerUploadMeta?: ViewerUploadMetadata
+  /** Runs before any byte moves; returning null cancels the batch. */
+  prepareUpload: (files: File[]) => PreparedUploadBatch | null | Promise<PreparedUploadBatch | null>
   description?:
     | {
         fileTypes?: string
@@ -26,7 +27,6 @@ type Props = {
         maxFiles?: number
       }
     | string
-  uploadOverride?: (...args: Parameters<UploadHookControl<true>["upload"]>) => void
   translations?: {
     dragAndDrop?: string
     dropFiles?: string
@@ -47,13 +47,12 @@ type Props = {
   onErrorDismiss?: () => void
 }
 
-export function UploadDropzoneProgress({
+export function UploadDropzoneView({
   control: { upload, isPending, progresses },
   id: _id,
   accept,
-  viewerUploadMeta,
   description,
-  uploadOverride,
+  prepareUpload,
   fillContainer = false,
   error,
   onErrorDismiss,
@@ -72,17 +71,20 @@ export function UploadDropzoneProgress({
 }: Props) {
   const id = useId()
   const ANIMATION_DURATION_MS = 5500 // 5s animation + 0.5s buffer
-  const [awaitingProgress, setAwaitingProgress] = useState(false)
+  const [phase, setPhase] = useState<"idle" | "preparing" | "uploading">("idle")
   const [completionTimes, setCompletionTimes] = useState<Record<string, number>>({})
   const [now, setNow] = useState(0)
   const [dismissedFiles, setDismissedFiles] = useState<Set<string>>(new Set())
   const endCloseBlockRef = useRef<null | (() => void)>(null)
-  const isProcessingFiles = awaitingProgress && progresses.length === 0 && !error
+  const isProcessingFiles = phase !== "idle" && progresses.length === 0 && !error
+  // The preflight moves no bytes and shows its own modal, so only a running upload may
+  // block closing the tab or the surrounding modal.
+  const hasUploadInFlight = isPending || (isProcessingFiles && phase === "uploading")
 
   // Warn user when closing tab during upload (same logic as spinner)
   useEffect(() => {
     function beforeUnload(e: BeforeUnloadEvent) {
-      if (isPending || isProcessingFiles) {
+      if (hasUploadInFlight) {
         e.preventDefault()
         e.returnValue = ""
       }
@@ -91,7 +93,7 @@ export function UploadDropzoneProgress({
     return () => {
       window.removeEventListener("beforeunload", beforeUnload)
     }
-  }, [isPending, isProcessingFiles])
+  }, [hasUploadInFlight])
 
   useEffect(
     function trackCompletedUploadVisibility() {
@@ -120,15 +122,14 @@ export function UploadDropzoneProgress({
   )
 
   useEffect(() => {
-    const isActive = isPending || isProcessingFiles
-    if (isActive && !endCloseBlockRef.current) {
+    if (hasUploadInFlight && !endCloseBlockRef.current) {
       endCloseBlockRef.current = beginModalCloseBlock()
     }
-    if (!isActive && endCloseBlockRef.current) {
+    if (!hasUploadInFlight && endCloseBlockRef.current) {
       endCloseBlockRef.current()
       endCloseBlockRef.current = null
     }
-  }, [isPending, isProcessingFiles])
+  }, [hasUploadInFlight])
 
   useEffect(() => {
     return () => {
@@ -150,24 +151,25 @@ export function UploadDropzoneProgress({
   })
 
   const { getRootProps, getInputProps, isDragActive, inputRef } = useDropzone({
-    disabled: isPending,
+    disabled: isPending || phase === "preparing",
     onDrop: async (files) => {
-      if (files.length > 0) {
-        // Clear any previous errors when new files are selected
-        if (onErrorDismiss) {
-          onErrorDismiss()
-        }
-        setAwaitingProgress(true)
-
-        if (uploadOverride) {
-          uploadOverride(files, { metadata: viewerUploadMeta })
-        } else {
-          upload(files, { metadata: viewerUploadMeta })
-        }
+      if (files.length === 0) return
+      if (onErrorDismiss) {
+        onErrorDismiss()
       }
+      setPhase("preparing")
+
+      const prepared = await prepareUpload(files)
       if (inputRef.current) {
         inputRef.current.value = ""
       }
+      if (!prepared) {
+        setPhase("idle")
+        return
+      }
+
+      setPhase("uploading")
+      upload(prepared.files, { metadata: prepared.metadata })
     },
   })
 
@@ -175,9 +177,8 @@ export function UploadDropzoneProgress({
   const originalOnChange = inputProps.onChange
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files
-    if (files && files.length > 0) {
-      setAwaitingProgress(true)
+    if (event.target.files?.length) {
+      setPhase("preparing")
     }
     if (originalOnChange) {
       originalOnChange(event)

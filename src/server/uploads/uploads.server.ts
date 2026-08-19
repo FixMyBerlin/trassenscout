@@ -10,14 +10,26 @@ import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
 import { projectRecordDetailVisibilityWhere } from "@/src/server/projectRecords/projectRecordVisibility.server"
 import { AuthorizationError } from "@/src/shared/auth/errors"
-import { connectIds, idsFromFormValue, setIds } from "@/src/shared/prisma/connectIds"
+import {
+  connectIds,
+  connectIdsIfAny,
+  idsFromFormValue,
+  setIds,
+} from "@/src/shared/prisma/connectIds"
 import { UploadSchema } from "@/src/shared/uploads/schemas"
-import { deleteUploadFileAndDbRecord } from "./_utils/deleteUploadFileAndDbRecord"
+import {
+  deleteUploadFileAndDbRecord,
+  deleteUploadStoredFiles,
+} from "./_utils/deleteUploadFileAndDbRecord"
 import { extractExifFromS3 } from "./_utils/extractExifFromS3.server"
-import { findCollidingFilenames } from "./_utils/filenameCollisions"
+import { findFilenameCollisions } from "./_utils/filenameCollisions"
 import { isProjectUploadS3Url } from "./_utils/keys"
 import { matchSlugFromFilename } from "./_utils/matchSlugFromFilename"
-import { uploadWithSubsectionsInclude } from "./_utils/uploadInclude"
+import {
+  replaceableUploadWhere,
+  uploadForDeletionSelect,
+  uploadWithSubsectionsInclude,
+} from "./_utils/uploadInclude"
 import type { GetSurveyResponseUploadsSplitInput } from "./uploads.inputSchemas"
 import {
   CheckUploadFilenameCollisionsSchema,
@@ -26,6 +38,7 @@ import {
   GetUploadSchema,
   GetUploadsSchema,
   GetUploadsWithSubsectionsSchema,
+  ReplaceUploadFileSchema,
   UpdateUploadSchema,
 } from "./uploads.inputSchemas"
 
@@ -158,6 +171,12 @@ function updateUploadData(input: UpdateUploadDataInput, projectId: number, userI
     subsubsections: setIds(idsFromFormValue(subsubsections)),
     tags: setIds(idsFromFormValue(tags)),
   }
+}
+
+/** Images carry their own coordinates; read them from the freshly stored object. */
+async function exifCoordinates(input: { mimeType?: string | null; externalUrl: string }) {
+  if (!isImageMimeType(input.mimeType)) return null
+  return extractExifFromS3(input.externalUrl)
 }
 
 function viewerCreateUploadHasNoExtraFields(input: UploadInput) {
@@ -298,8 +317,8 @@ export async function createUpload(headers: Headers, input: z.infer<typeof Creat
     if (matchedId) data.subsubsections = [matchedId]
   }
 
-  if (isImageMimeType(data.mimeType) && data.latitude == null && data.longitude == null) {
-    const exif = await extractExifFromS3(data.externalUrl)
+  if (data.latitude == null && data.longitude == null) {
+    const exif = await exifCoordinates(data)
     if (exif) {
       data.latitude = exif.latitude
       data.longitude = exif.longitude
@@ -354,23 +373,97 @@ export async function checkUploadFilenameCollisions(
 ) {
   await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
   const existing = await db.upload.findMany({
-    where: { project: { slug: input.projectSlug } },
-    select: { externalUrl: true, title: true },
+    where: { project: { slug: input.projectSlug }, ...replaceableUploadWhere },
+    select: { id: true, externalUrl: true, title: true },
   })
 
-  return { collidingFilenames: findCollidingFilenames(input.filenames, existing) }
+  return {
+    collisions: findFilenameCollisions(input.filenames, existing).map((collision) => ({
+      filename: collision.filename,
+      existingUpload: {
+        id: collision.existingUpload.id,
+        title: collision.existingUpload.title,
+        filename: collision.existingUpload.filename,
+      },
+    })),
+  }
+}
+
+export async function replaceUploadFile(
+  headers: Headers,
+  input: z.infer<typeof ReplaceUploadFileSchema>,
+) {
+  const { session } = await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
+  const {
+    id,
+    projectSlug,
+    acquisitionAreas,
+    projectRecordEmailId,
+    projectRecords,
+    subsubsections,
+    surveyResponseId,
+    tags,
+    ...data
+  } = input
+
+  assertUploadExternalUrlBelongsToProject(projectSlug, data.externalUrl)
+
+  const [previous, , exif] = await Promise.all([
+    db.upload.findFirstOrThrow({
+      where: { ...uploadInProjectWhere(projectSlug, id), ...replaceableUploadWhere },
+      select: uploadForDeletionSelect,
+    }),
+    validateUploadRelations(projectSlug, {
+      acquisitionAreas,
+      projectRecordEmailId: projectRecordEmailId ?? null,
+      projectRecords,
+      subsubsections,
+      surveyResponseId: surveyResponseId ?? null,
+      tags,
+    }),
+    exifCoordinates(data),
+  ])
+
+  const upload = await db.upload.update({
+    where: { id: previous.id },
+    data: {
+      ...data,
+      updatedById: Number(session.userId),
+      // The file is a different one now, so anything derived from the old content goes.
+      summary: null,
+      collaborationPath: null,
+      collaborationUrl: null,
+      latitude: exif?.latitude ?? null,
+      longitude: exif?.longitude ?? null,
+      acquisitionAreas: connectIdsIfAny(acquisitionAreas),
+      projectRecordEmailId: projectRecordEmailId || undefined,
+      projectRecords: connectIdsIfAny(projectRecords),
+      subsubsections: connectIdsIfAny(subsubsections),
+      surveyResponseId: surveyResponseId || undefined,
+      tags: connectIdsIfAny(tags),
+    },
+    include: uploadWithSubsectionsInclude,
+  })
+
+  // Best effort: the record already points at the new object, so a failed cleanup only
+  // leaves an orphan behind. The URL check guards against a payload that reuses the
+  // stored URL, which would otherwise delete the file the record now points at.
+  if (previous.externalUrl !== upload.externalUrl) {
+    try {
+      await deleteUploadStoredFiles(previous)
+    } catch (error) {
+      console.warn("Failed to delete replaced upload file:", error)
+    }
+  }
+
+  return upload
 }
 
 export async function deleteUpload(headers: Headers, input: z.infer<typeof DeleteUploadSchema>) {
   await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
   const upload = await db.upload.findFirstOrThrow({
     where: uploadInProjectWhere(input.projectSlug, input.id),
-    select: {
-      id: true,
-      collaborationPath: true,
-      collaborationUrl: true,
-      externalUrl: true,
-    },
+    select: uploadForDeletionSelect,
   })
 
   await deleteUploadFileAndDbRecord(upload)

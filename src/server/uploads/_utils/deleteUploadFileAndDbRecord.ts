@@ -14,15 +14,7 @@ type UploadForDeletion = {
   collaborationPath: string | null
 }
 
-/**
- * Deletes an upload file from S3 (and Luckycloud if applicable) and then deletes the DB record.
- * Includes environment root folder safety check to prevent accidental deletion of production files.
- *
- * @param upload - Upload record with id, externalUrl, collaborationUrl, and collaborationPath
- * @throws NotFoundError if the file doesn't belong to the current environment's root folder
- * @throws Error if file deletion fails (fail-fast behavior)
- */
-export async function deleteUploadFileAndDbRecord(upload: UploadForDeletion) {
+export async function deleteUploadStoredFiles(upload: UploadForDeletion) {
   const key = getS3KeyFromUrl(upload.externalUrl)
   const rootFolder = process.env.S3_UPLOAD_ROOTFOLDER
 
@@ -52,6 +44,18 @@ export async function deleteUploadFileAndDbRecord(upload: UploadForDeletion) {
   // Delete from S3 (fail-fast: if this fails, we don't delete the DB record)
   const s3 = getConfiguredS3Client()
   await deleteObject(s3, { bucket: S3_BUCKET, key })
+}
+
+/**
+ * Deletes an upload file from S3 (and Luckycloud if applicable) and then deletes the DB record.
+ * Includes environment root folder safety check to prevent accidental deletion of production files.
+ *
+ * @param upload - Upload record with id, externalUrl, collaborationUrl, and collaborationPath
+ * @throws NotFoundError if the file doesn't belong to the current environment's root folder
+ * @throws Error if file deletion fails (fail-fast behavior)
+ */
+export async function deleteUploadFileAndDbRecord(upload: UploadForDeletion) {
+  await deleteUploadStoredFiles(upload)
 
   // Delete DB record
   await db.upload.deleteMany({ where: { id: upload.id } })

@@ -1,9 +1,10 @@
 import { useQueryClient } from "@tanstack/react-query"
-import type { UploadFileRecordResult } from "@/src/components/uploads/UploadDropzone"
+import type { UploadFilenameConflictResolution } from "@/src/components/uploads/uploadFilenameConflicts"
 import { UploadsPageDropzone } from "@/src/components/uploads/uploads-page/UploadsPageDropzone"
 import { UploadsPageProtocolReport } from "@/src/components/uploads/uploads-page/UploadsPageProtocolReport"
 import { useUploadsPageSlugAssignment } from "@/src/components/uploads/uploads-page/useUploadsPageSlugAssignment"
 import { useUploadProtocol } from "@/src/components/uploads/useUploadProtocol"
+import type { UploadFileRecordResult } from "@/src/components/uploads/useUploadRecordCreation"
 import { uploadsQueryOptions } from "@/src/server/uploads/uploadsQueryOptions"
 
 type Props = {
@@ -12,12 +13,15 @@ type Props = {
 
 export const UploadsPageUploadSection = ({ projectSlug }: Props) => {
   const queryClient = useQueryClient()
-  const protocol = useUploadProtocol({ projectSlug })
+  const protocol = useUploadProtocol()
   const slugAssignment = useUploadsPageSlugAssignment()
 
-  const handleBatchStart = (files: File[]) => {
+  const handleBatchStart = (
+    files: File[],
+    resolutions?: Record<string, UploadFilenameConflictResolution>,
+  ) => {
     slugAssignment.resetAssignments()
-    protocol.startBatch(files)
+    protocol.startBatch(files, resolutions)
   }
 
   const handleFileRecordResult = (result: UploadFileRecordResult) => {
