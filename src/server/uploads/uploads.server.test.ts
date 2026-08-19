@@ -2,6 +2,8 @@ import { beforeEach, describe, expect, test, vi } from "vitest"
 import { ProjectRecordReviewState } from "@/src/prisma/generated/browser"
 import { AuthorizationError } from "@/src/shared/auth/errors"
 
+const mockDeleteObject = vi.fn()
+const mockS3Client = { client: "s3" }
 const mockDb = {
   project: {
     findUnique: vi.fn(),
@@ -26,6 +28,7 @@ const mockDb = {
   },
   upload: {
     create: vi.fn(),
+    findMany: vi.fn(),
     findFirstOrThrow: vi.fn(),
     update: vi.fn(),
   },
@@ -43,10 +46,20 @@ vi.mock("@/src/server/auth/endpointAuth.server", () => ({
   endpointAuth: mockEndpointAuth,
 }))
 
+vi.mock("@/src/server/uploads/_utils/s3Client.server", () => ({
+  getConfiguredS3Client: () => mockS3Client,
+}))
+
+vi.mock("@better-upload/server/helpers", () => ({
+  deleteObject: mockDeleteObject,
+}))
+
 const headers = new Headers()
 
 const projectExternalUrl =
   "https://trassenscout.s3.eu-central-1.amazonaws.com/upload-localdev/rs23/uuid/document.pdf"
+const replacementExternalUrl =
+  "https://trassenscout.s3.eu-central-1.amazonaws.com/upload-localdev/rs23/uuid/document-v2.pdf"
 const otherProjectExternalUrl =
   "https://trassenscout.s3.eu-central-1.amazonaws.com/upload-localdev/other-project/uuid/document.pdf"
 
@@ -82,8 +95,10 @@ describe("createUpload", () => {
     mockDb.project.findUnique.mockResolvedValue({ aiEnabled: true })
     mockDb.projectRecord.findMany.mockResolvedValue([])
     mockDb.upload.findFirstOrThrow.mockResolvedValue({ id: 77 })
+    mockDb.upload.findMany.mockResolvedValue([])
     mockDb.upload.create.mockResolvedValue({ id: 77 })
     mockDb.upload.update.mockResolvedValue({ id: 77 })
+    mockDeleteObject.mockResolvedValue(undefined)
   })
 
   test("rejects viewer upload records with S3 keys outside the project prefix", async () => {
@@ -247,5 +262,160 @@ describe("createUpload", () => {
         }),
       }),
     )
+  })
+
+  test("returns existing upload metadata for filename collisions", async () => {
+    const { checkUploadFilenameCollisions } = await import("./uploads.server")
+    mockEndpointAuth.projectRole.mockResolvedValueOnce({
+      projectId: 1,
+      membershipRole: "EDITOR",
+      session: { userId: 2, role: "USER" },
+    })
+    mockDb.upload.findMany.mockResolvedValueOnce([
+      {
+        id: 77,
+        externalUrl: projectExternalUrl,
+        title: "Dokumenttitel",
+      },
+    ])
+
+    const result = await checkUploadFilenameCollisions(headers, {
+      projectSlug: "rs23",
+      filenames: ["document.pdf"],
+    })
+
+    expect(result).toEqual({
+      collisions: [
+        {
+          filename: "document.pdf",
+          existingUpload: {
+            id: 77,
+            filename: "document.pdf",
+            title: "Dokumenttitel",
+          },
+        },
+      ],
+    })
+    // Compares project-wide, but never against a participant's own survey upload
+    expect(mockDb.upload.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { project: { slug: "rs23" }, surveyResponseId: null },
+      }),
+    )
+  })
+
+  test("refuses to replace the file of a survey upload", async () => {
+    const { replaceUploadFile } = await import("./uploads.server")
+    mockEndpointAuth.projectRole.mockResolvedValueOnce({
+      projectId: 1,
+      membershipRole: "EDITOR",
+      session: { userId: 2, role: "USER" },
+    })
+    mockDb.upload.findFirstOrThrow.mockRejectedValueOnce(new Error("No Upload found"))
+
+    await expect(
+      replaceUploadFile(headers, {
+        id: 77,
+        projectSlug: "rs23",
+        externalUrl: replacementExternalUrl,
+      }),
+    ).rejects.toThrow()
+    expect(mockDb.upload.findFirstOrThrow).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({ surveyResponseId: null }),
+      }),
+    )
+    expect(mockDb.upload.update).not.toHaveBeenCalled()
+  })
+
+  test("replaces the stored file without overwriting the existing title", async () => {
+    const { replaceUploadFile } = await import("./uploads.server")
+    mockEndpointAuth.projectRole.mockResolvedValueOnce({
+      projectId: 1,
+      membershipRole: "EDITOR",
+      session: { userId: 2, role: "USER" },
+    })
+    mockDb.upload.findFirstOrThrow.mockResolvedValueOnce({
+      id: 77,
+      collaborationPath: null,
+      collaborationUrl: null,
+      externalUrl: projectExternalUrl,
+    })
+    mockDb.upload.update.mockResolvedValueOnce({ id: 77, externalUrl: replacementExternalUrl })
+
+    await replaceUploadFile(headers, {
+      id: 77,
+      projectSlug: "rs23",
+      externalUrl: replacementExternalUrl,
+      mimeType: "application/pdf",
+      fileSize: 4321,
+    })
+
+    expect(mockDb.upload.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: 77 },
+        data: expect.objectContaining({
+          externalUrl: replacementExternalUrl,
+          fileSize: 4321,
+          summary: null,
+          updatedById: 2,
+        }),
+      }),
+    )
+    expect(mockDb.upload.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.not.objectContaining({
+          title: expect.any(String),
+        }),
+      }),
+    )
+    expect(mockDeleteObject).toHaveBeenCalledWith(
+      mockS3Client,
+      expect.objectContaining({
+        key: "upload-localdev/rs23/uuid/document.pdf",
+      }),
+    )
+  })
+
+  test("keeps the stored file when the replacement points at the same object", async () => {
+    const { replaceUploadFile } = await import("./uploads.server")
+    mockEndpointAuth.projectRole.mockResolvedValueOnce({
+      projectId: 1,
+      membershipRole: "EDITOR",
+      session: { userId: 2, role: "USER" },
+    })
+    mockDb.upload.findFirstOrThrow.mockResolvedValueOnce({
+      id: 77,
+      collaborationPath: null,
+      collaborationUrl: null,
+      externalUrl: projectExternalUrl,
+    })
+    mockDb.upload.update.mockResolvedValueOnce({ id: 77, externalUrl: projectExternalUrl })
+
+    await replaceUploadFile(headers, {
+      id: 77,
+      projectSlug: "rs23",
+      externalUrl: projectExternalUrl,
+    })
+
+    expect(mockDeleteObject).not.toHaveBeenCalled()
+  })
+
+  test("rejects a replacement file stored outside the project prefix", async () => {
+    const { replaceUploadFile } = await import("./uploads.server")
+    mockEndpointAuth.projectRole.mockResolvedValueOnce({
+      projectId: 1,
+      membershipRole: "EDITOR",
+      session: { userId: 2, role: "USER" },
+    })
+
+    await expect(
+      replaceUploadFile(headers, {
+        id: 77,
+        projectSlug: "rs23",
+        externalUrl: otherProjectExternalUrl,
+      }),
+    ).rejects.toBeInstanceOf(AuthorizationError)
+    expect(mockDb.upload.update).not.toHaveBeenCalled()
   })
 })

@@ -21,6 +21,7 @@ import {
   GetUploadsMetaPublicSchema,
   GetUploadsSchema,
   GetUploadsWithSubsectionsSchema,
+  ReplaceUploadFileSchema,
   UpdateUploadSchema,
 } from "./uploads.inputSchemas"
 import {
@@ -32,6 +33,7 @@ import {
   getUpload,
   getUploads,
   getUploadsWithSubsections,
+  replaceUploadFile,
   updateUpload,
 } from "./uploads.server"
 export const getUploadsFn = createServerFn({ method: "GET" })
@@ -57,6 +59,10 @@ export const createUploadFn = createServerFn({ method: "POST" })
 export const updateUploadFn = createServerFn({ method: "POST" })
   .validator(UpdateUploadSchema)
   .handler(({ data }) => updateUpload(getRequestHeaders(), data))
+
+export const replaceUploadFileFn = createServerFn({ method: "POST" })
+  .validator(ReplaceUploadFileSchema)
+  .handler(({ data }) => replaceUploadFile(getRequestHeaders(), data))
 
 export const deleteUploadFn = createServerFn({ method: "POST" })
   .validator(DeleteUploadSchema)

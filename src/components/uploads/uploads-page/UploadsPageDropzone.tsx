@@ -1,24 +1,27 @@
 import type { FileUploadInfo } from "@better-upload/client"
-import { useMutation } from "@tanstack/react-query"
-import type { UploadFileRecordResult } from "@/src/components/uploads/UploadDropzone"
-import { UploadDropzoneBase } from "@/src/components/uploads/UploadDropzoneBase"
+import { UploadDropzone } from "@/src/components/uploads/UploadDropzone"
+import type { UploadFilenameConflictResolution } from "@/src/components/uploads/uploadFilenameConflicts"
+import { useUploadFilenameConflictResolution } from "@/src/components/uploads/useUploadFilenameConflictResolution"
+import type { UploadFileRecordResult } from "@/src/components/uploads/useUploadRecordCreation"
+import { useUploadRecordCreation } from "@/src/components/uploads/useUploadRecordCreation"
 import { getAcceptAttribute } from "@/src/components/uploads/utils/getFileType"
-import { createUploadFn } from "@/src/server/uploads/uploads.functions"
 import { S3_MAX_FILE_SIZE_BYTES, S3_MAX_FILES_PROJECT } from "@/src/shared/uploads/config"
-import { getS3Url } from "@/src/shared/uploads/url"
 
 type Props = {
   projectSlug: string
   assignSubsubsectionFromFilename: boolean
   onUploadComplete?: (uploadIds: number[]) => Promise<void>
-  onBatchStart?: (files: File[]) => void
+  onBatchStart?: (
+    files: File[],
+    resolutions?: Record<string, UploadFilenameConflictResolution>,
+  ) => void
   onFileRecordResult?: (result: UploadFileRecordResult) => void
   onUploadFail?: (failedFiles: FileUploadInfo<"failed">[]) => void
 }
 
 /**
- * Uploads-page dropzone that can assign Maßnahmen from filenames.
- * Kept separate from the generic UploadDropzone used elsewhere.
+ * Uploads page variant: no relations, but it reports per-file results and lets the page
+ * assign a Maßnahme from the filename.
  */
 export const UploadsPageDropzone = ({
   projectSlug,
@@ -28,50 +31,34 @@ export const UploadsPageDropzone = ({
   onFileRecordResult,
   onUploadFail,
 }: Props) => {
-  const createUploadMutation = useMutation({
-    mutationFn: createUploadFn,
+  const createUploadRecord = useUploadRecordCreation({
+    projectSlug,
+    assignSubsubsectionFromFilename,
+    onFileRecordResult,
   })
+  const conflicts = useUploadFilenameConflictResolution({ projectSlug })
 
-  const createUploadRecord = async (file: FileUploadInfo<"complete">) => {
-    try {
-      const upload = await createUploadMutation.mutateAsync({
-        data: {
-          title: file.name,
-          externalUrl: getS3Url(file.objectInfo.key),
-          projectSlug,
-          acquisitionAreas: undefined,
-          summary: null,
-          subsubsections: undefined,
-          projectRecords: undefined,
-          surveyResponseId: null,
-          projectRecordEmailId: null,
-          mimeType: file.type || null,
-          fileSize: file.size || null,
-          latitude: null,
-          longitude: null,
-          assignSubsubsectionFromFilename,
-        },
-      })
-      onFileRecordResult?.({ file, ok: true, upload })
-      return upload
-    } catch (error) {
-      onFileRecordResult?.({ file, ok: false, error })
-      throw error
-    }
+  const prepareUpload = async (files: File[]) => {
+    const prepared = await conflicts.prepareUpload(files)
+    if (prepared) onBatchStart?.(prepared.files, prepared.resolutions)
+    return prepared
   }
 
   return (
-    <UploadDropzoneBase
-      api={`/api/${projectSlug}/upload`}
-      createUploadRecord={createUploadRecord}
-      onUploadComplete={onUploadComplete}
-      onBatchStart={onBatchStart}
-      onUploadFail={onUploadFail}
-      accept={getAcceptAttribute()}
-      description={{
-        fileTypes: `Bilder, PDF, Office-Dokumente bis ${S3_MAX_FILE_SIZE_BYTES / (1024 * 1024)} MB`,
-        maxFiles: S3_MAX_FILES_PROJECT,
-      }}
-    />
+    <>
+      <UploadDropzone
+        api={`/api/${projectSlug}/upload`}
+        createUploadRecord={createUploadRecord}
+        onUploadComplete={onUploadComplete}
+        prepareUpload={prepareUpload}
+        onUploadFail={onUploadFail}
+        accept={getAcceptAttribute()}
+        description={{
+          fileTypes: `Bilder, PDF, Office-Dokumente bis ${S3_MAX_FILE_SIZE_BYTES / (1024 * 1024)} MB`,
+          maxFiles: S3_MAX_FILES_PROJECT,
+        }}
+      />
+      {conflicts.dialog}
+    </>
   )
 }

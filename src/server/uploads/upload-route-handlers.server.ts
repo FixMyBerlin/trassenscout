@@ -210,6 +210,7 @@ export async function handleProjectUploadRoute(request: Request, projectSlug: st
     const router = createUploadRouter({
       keyPrefix: projectSlug,
       userId: Number(userId),
+      allowFilenameReplacement: canEdit,
       onBeforeUpload: async (files, clientMetadata) => {
         if (!canEdit) {
           await verifyViewerUploadContext(projectSlug, clientMetadata, canEdit)

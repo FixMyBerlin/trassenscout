@@ -4,7 +4,7 @@ import { getAcceptAttribute } from "@/src/components/uploads/utils/getFileType"
 import { createSurveyUploadPublicFn } from "@/src/server/uploads/uploads.functions"
 import { S3_MAX_FILE_SIZE_BYTES, S3_MAX_FILES_SURVEY } from "@/src/shared/uploads/config"
 import { getS3Url } from "@/src/shared/uploads/url"
-import { UploadDropzoneBase, type UploadDropzoneCompleteItem } from "./UploadDropzoneBase"
+import { UploadDropzone, type UploadDropzoneCompleteItem } from "./UploadDropzone"
 
 type Props = {
   surveyResponseId: number
@@ -35,7 +35,7 @@ export const SurveyUploadDropzone = ({
   }
 
   return (
-    <UploadDropzoneBase
+    <UploadDropzone
       api="/api/survey-upload"
       viewerUploadMeta={{ surveyResponseId, surveySessionId }}
       createUploadRecord={createUploadRecord}

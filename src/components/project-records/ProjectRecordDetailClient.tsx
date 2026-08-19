@@ -5,7 +5,7 @@ import { ProjectRecordCommentsSection } from "@/src/components/project-records/P
 import { CreateEditReviewHistory } from "@/src/components/project-records/ProjectRecordCreateEditReviewHistory"
 import { ProjectRecordNeedsReviewBanner } from "@/src/components/project-records/ProjectRecordNeedsReviewBanner"
 import { ProjectRecordSummary } from "@/src/components/project-records/ProjectRecordSummary"
-import { UploadDropzone } from "@/src/components/uploads/UploadDropzone"
+import { ProjectUploadDropzone } from "@/src/components/uploads/ProjectUploadDropzone"
 import { UploadDropzoneContainer } from "@/src/components/uploads/UploadDropzoneContainer"
 import { UploadTable } from "@/src/components/uploads/UploadTable"
 import { ProjectRecordReviewState } from "@/src/prisma/generated/browser"
@@ -35,7 +35,7 @@ const ProjectRecordQuickUpload = ({
         Dokumente ergänzen
       </label>
       <UploadDropzoneContainer className="h-36 rounded-md p-0">
-        <UploadDropzone
+        <ProjectUploadDropzone
           projectSlug={projectSlug}
           fillContainer
           projectRecordIds={[projectRecordId]}

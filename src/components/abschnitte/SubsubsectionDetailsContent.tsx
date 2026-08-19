@@ -28,7 +28,7 @@ import { subsubsectionLocationLabelMap } from "@/src/components/core/utils/subsu
 import { ProjectRecordNewModal } from "@/src/components/project-records/ProjectRecordNewModal"
 import { ProjectRecordsTable } from "@/src/components/project-records/ProjectRecordTable"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
-import { UploadDropzone } from "@/src/components/uploads/UploadDropzone"
+import { ProjectUploadDropzone } from "@/src/components/uploads/ProjectUploadDropzone"
 import { UploadTable } from "@/src/components/uploads/UploadTable"
 import { acquisitionAreasWithProjectRecordCountQueryOptions } from "@/src/server/acquisitionAreas/acquisitionAreasAbschnitteQueryOptions"
 import { projectRecordsBySubsubsectionQueryOptions } from "@/src/server/projectRecords/projectRecordsAbschnitteQueryOptions"
@@ -409,7 +409,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
             }}
           />
           <IfUserCanEdit>
-            <UploadDropzone
+            <ProjectUploadDropzone
               projectSlug={projectSlug}
               subsubsectionIds={[subsubsection.id]}
               onUploadComplete={async () => {

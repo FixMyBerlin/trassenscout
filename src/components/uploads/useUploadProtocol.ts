@@ -1,14 +1,14 @@
 import type { FileUploadInfo } from "@better-upload/client"
 import { useState } from "react"
-import { checkUploadFilenameCollisionsFn } from "@/src/server/uploads/uploads.functions"
-import type { UploadFileRecordResult } from "./UploadDropzone"
+import type { UploadFilenameConflictResolution } from "@/src/components/uploads/uploadFilenameConflicts"
+import type { UploadFileRecordResult } from "./useUploadRecordCreation"
 
 export type UploadProtocolEntry = {
   filename: string
   status: "pending" | "success" | "uploadFailed" | "recordFailed"
   errorMessage?: string
-  /** Same filename already exists among the project's uploads. */
-  collidesWithExisting?: boolean
+  /** How the user resolved the conflict with the upload the project already had. */
+  existingCollisionResolution?: UploadFilenameConflictResolution
   /** Same filename appears more than once in this batch. */
   collidesInBatch?: boolean
 }
@@ -20,10 +20,13 @@ const getErrorMessage = (error: unknown) =>
  * Ephemeral per-batch upload report: collects per-file upload/record results and
  * filename collisions. A new batch replaces the previous protocol.
  */
-export const useUploadProtocol = ({ projectSlug }: { projectSlug: string }) => {
+export const useUploadProtocol = () => {
   const [entries, setEntries] = useState<UploadProtocolEntry[]>([])
 
-  const startBatch = (files: { name: string }[]) => {
+  const startBatch = (
+    files: { name: string }[],
+    resolutions?: Record<string, UploadFilenameConflictResolution>,
+  ) => {
     const filenames = files.map((file) => file.name)
     const lowerCounts = new Map<string, number>()
     for (const name of filenames) {
@@ -35,25 +38,13 @@ export const useUploadProtocol = ({ projectSlug }: { projectSlug: string }) => {
       filenames.map((filename) => ({
         filename,
         status: "pending",
+        // "keepBoth" holds for every file of that name; "replace" is claimed by whichever
+        // file actually took the record over, once `recordResult` knows (see below).
+        existingCollisionResolution:
+          resolutions?.[filename] === "keepBoth" ? "keepBoth" : undefined,
         collidesInBatch: (lowerCounts.get(filename.toLowerCase()) ?? 0) > 1,
       })),
     )
-
-    // Warn-only check against existing uploads; runs while the S3 upload is in flight
-    checkUploadFilenameCollisionsFn({ data: { projectSlug, filenames } })
-      .then(({ collidingFilenames }) => {
-        const colliding = new Set(collidingFilenames.map((name) => name.toLowerCase()))
-        setEntries((previous) =>
-          previous.map((entry) =>
-            colliding.has(entry.filename.toLowerCase())
-              ? { ...entry, collidesWithExisting: true }
-              : entry,
-          ),
-        )
-      })
-      .catch((error) => {
-        console.error("Error checking filename collisions:", error)
-      })
   }
 
   const updateFirstPendingEntry = (
@@ -77,7 +68,11 @@ export const useUploadProtocol = ({ projectSlug }: { projectSlug: string }) => {
         return { ...entry, status: "recordFailed", errorMessage: getErrorMessage(result.error) }
       }
 
-      return { ...entry, status: "success" }
+      return {
+        ...entry,
+        status: "success",
+        ...(result.replacedUploadId ? { existingCollisionResolution: "replace" as const } : {}),
+      }
     })
   }
 
