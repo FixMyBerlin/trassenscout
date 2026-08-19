@@ -4,10 +4,14 @@ import { RouteMapShellPending } from "@/src/components/pages/RouteMapShellPendin
 import { privateTitleHead } from "@/src/routeHead"
 import { projectsWithGeometryWithMembershipRoleQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 import { currentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
+import { fromBackLinkSearchSchema } from "@/src/shared/routing/fromBackLinkSearch"
+import { viewModeSearchMiddlewares, withViewModeSearch } from "@/src/shared/routing/viewModeSearch"
 
 export const Route = createFileRoute("/_loggedInGeneral/dashboard/")({
   head: () => privateTitleHead("Meine Projekte (Dashboard)"),
   ssr: "data-only",
+  validateSearch: withViewModeSearch(fromBackLinkSearchSchema),
+  search: { middlewares: viewModeSearchMiddlewares },
   loader: ({ context }) =>
     Promise.all([
       context.queryClient.ensureQueryData(currentUserQueryOptions()),

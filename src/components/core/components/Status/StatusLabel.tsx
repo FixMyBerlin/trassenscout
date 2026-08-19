@@ -21,7 +21,7 @@ export const StatusLabel = ({ icon, label, color, className }: Props) => {
     <div
       style={{ backgroundColor: color }}
       className={twMerge(
-        "inline-flex w-fit shrink-0 items-center justify-self-start gap-4 rounded-full px-5 py-2 whitespace-nowrap",
+        "inline-flex w-fit shrink-0 items-center gap-4 justify-self-start rounded-full px-5 py-2 whitespace-nowrap",
         className,
       )}
     >
