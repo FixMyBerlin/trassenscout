@@ -1,6 +1,6 @@
 import { CheckIcon, XMarkIcon } from "@heroicons/react/20/solid"
 import { ClockIcon, DocumentTextIcon } from "@heroicons/react/24/outline"
-import { twJoin } from "tailwind-merge"
+import { twMerge } from "tailwind-merge"
 
 type Props = {
   icon?: "XMARK" | "CLOCK" | "CHECKMARK" | "DOCUMENT" | undefined
@@ -20,13 +20,13 @@ export const StatusLabel = ({ icon, label, color, className }: Props) => {
   return (
     <div
       style={{ backgroundColor: color }}
-      className={twJoin(
+      className={twMerge(
+        "inline-flex w-fit shrink-0 items-center justify-self-start gap-4 rounded-full px-5 py-2 whitespace-nowrap",
         className,
-        "flex shrink-0 items-center gap-4 rounded-full px-5 py-2 whitespace-nowrap",
       )}
     >
-      {icon && <span>{statusIcon[icon]}</span>}
-      <span className="truncate"> {label}</span>
+      {icon && <span className="shrink-0">{statusIcon[icon]}</span>}
+      <span className="truncate">{label}</span>
     </div>
   )
 }
