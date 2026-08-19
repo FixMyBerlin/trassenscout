@@ -5,7 +5,6 @@ import { ProjectRecordCommentsSection } from "@/src/components/project-records/P
 import { CreateEditReviewHistory } from "@/src/components/project-records/ProjectRecordCreateEditReviewHistory"
 import { ProjectRecordNeedsReviewBanner } from "@/src/components/project-records/ProjectRecordNeedsReviewBanner"
 import { ProjectRecordSummary } from "@/src/components/project-records/ProjectRecordSummary"
-import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { UploadDropzone } from "@/src/components/uploads/UploadDropzone"
 import { UploadDropzoneContainer } from "@/src/components/uploads/UploadDropzoneContainer"
 import { UploadTable } from "@/src/components/uploads/UploadTable"
@@ -31,23 +30,21 @@ const ProjectRecordQuickUpload = ({
   onUploaded: () => void
 }) => {
   return (
-    <IfUserCanEdit>
-      <div className="mt-4">
-        <label className="sr-only mb-2 block text-sm font-medium text-gray-700">
-          Dokumente ergänzen
-        </label>
-        <UploadDropzoneContainer className="h-36 rounded-md p-0">
-          <UploadDropzone
-            projectSlug={projectSlug}
-            fillContainer
-            projectRecordIds={[projectRecordId]}
-            onUploadComplete={async () => {
-              onUploaded()
-            }}
-          />
-        </UploadDropzoneContainer>
-      </div>
-    </IfUserCanEdit>
+    <div className="mt-4">
+      <label className="sr-only mb-2 block text-sm font-medium text-gray-700">
+        Dokumente ergänzen
+      </label>
+      <UploadDropzoneContainer className="h-36 rounded-md p-0">
+        <UploadDropzone
+          projectSlug={projectSlug}
+          fillContainer
+          projectRecordIds={[projectRecordId]}
+          onUploadComplete={async () => {
+            onUploaded()
+          }}
+        />
+      </UploadDropzoneContainer>
+    </div>
   )
 }
 

@@ -37,7 +37,7 @@ export const SurveyUploadDropzone = ({
   return (
     <UploadDropzoneBase
       api="/api/survey-upload"
-      surveyMeta={{ surveyResponseId, surveySessionId }}
+      viewerUploadMeta={{ surveyResponseId, surveySessionId }}
       createUploadRecord={createUploadRecord}
       onSurveyPublicUploadBatchComplete={onUploadComplete}
       fillContainer

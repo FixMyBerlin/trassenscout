@@ -8,7 +8,7 @@ import { translateServerError } from "@/src/components/core/components/forms/err
 import { beginModalCloseBlock } from "@/src/components/core/components/Modal/modalCloseGuard"
 import { SpinnerIcon } from "@/src/components/core/components/Spinner"
 import { Tooltip } from "@/src/components/core/components/Tooltip/Tooltip"
-import { SurveyUploadMetadata } from "@/src/components/uploads/UploadDropzoneBase"
+import type { ViewerUploadMetadata } from "@/src/components/uploads/UploadDropzoneBase"
 import { FileTypeIcon } from "@/src/components/uploads/utils/FileTypeIcon"
 import { getFileTypeLabel } from "@/src/components/uploads/utils/getFileType"
 import { Progress } from "./UploadProgress"
@@ -18,7 +18,7 @@ type Props = {
   control: UploadHookControl<true>
   id?: string
   accept?: string
-  surveyMeta?: SurveyUploadMetadata
+  viewerUploadMeta?: ViewerUploadMetadata
   description?:
     | {
         fileTypes?: string
@@ -51,7 +51,7 @@ export function UploadDropzoneProgress({
   control: { upload, isPending, progresses },
   id: _id,
   accept,
-  surveyMeta,
+  viewerUploadMeta,
   description,
   uploadOverride,
   fillContainer = false,
@@ -160,9 +160,9 @@ export function UploadDropzoneProgress({
         setAwaitingProgress(true)
 
         if (uploadOverride) {
-          uploadOverride(files, { metadata: surveyMeta })
+          uploadOverride(files, { metadata: viewerUploadMeta })
         } else {
-          upload(files, { metadata: surveyMeta })
+          upload(files, { metadata: viewerUploadMeta })
         }
       }
       if (inputRef.current) {

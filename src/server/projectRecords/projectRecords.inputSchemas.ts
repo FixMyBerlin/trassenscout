@@ -3,6 +3,7 @@ import { ProjectSlugRequiredSchema } from "@/src/shared/authorization/projectSlu
 import {
   DeleteProjectRecordSchema,
   NewProjectRecordFormSchema,
+  PatchProjectRecordAssignmentSchema,
   ProjectRecordFormSchema,
 } from "@/src/shared/projectRecords/schemas"
 
@@ -27,3 +28,4 @@ export const DeleteProjectRecordWithUploadsDecisionSchema = ProjectSlugRequiredS
   id: z.number(),
   keepUploadIds: z.array(z.number()),
 })
+export { PatchProjectRecordAssignmentSchema }

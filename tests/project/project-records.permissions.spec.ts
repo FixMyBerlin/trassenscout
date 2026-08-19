@@ -162,6 +162,28 @@ test.describe("Project records permissions", () => {
         await page.goto(`/${projectSlug}/project-records/${projectRecordId}/edit`)
         await expectAccessDeniedRedirect(page)
       })
+
+      test("can change status on the detail page", async ({ page }) => {
+        await page.goto(`/${projectSlug}/project-records/${persistenceProjectRecordId}`)
+        await expect(
+          page.getByRole("heading", { name: /E2E Persistenz/, exact: false }),
+        ).toBeVisible({
+          timeout: 30_000,
+        })
+
+        const statusSwitch = page.getByRole("switch", { name: /Status/ })
+        await expect(statusSwitch).toBeVisible({ timeout: 30_000 })
+        await expect(statusSwitch).toHaveAttribute("aria-checked", "false")
+        await statusSwitch.click()
+        await expect(statusSwitch).toHaveAttribute("aria-checked", "true", { timeout: 15_000 })
+
+        await page.reload()
+        await expect(page.getByRole("switch", { name: /Status/ })).toHaveAttribute(
+          "aria-checked",
+          "true",
+          { timeout: 30_000 },
+        )
+      })
     })
 
     test.describe("editor users", () => {

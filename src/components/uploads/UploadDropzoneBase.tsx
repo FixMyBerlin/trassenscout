@@ -10,10 +10,9 @@ type UploadDropzoneBaseDescription = {
   maxFiles?: number
 }
 
-export type SurveyUploadMetadata = {
-  surveyResponseId: number
-  surveySessionId: number
-}
+export type ViewerUploadMetadata =
+  | { surveyResponseId: number; surveySessionId: number }
+  | { projectRecordId: number }
 
 /** Payload for the optional public survey batch callback (Beteiligung only). */
 export type UploadDropzoneCompleteItem = {
@@ -23,7 +22,7 @@ export type UploadDropzoneCompleteItem = {
 
 type Props = {
   api: string
-  surveyMeta?: SurveyUploadMetadata
+  viewerUploadMeta?: ViewerUploadMetadata
   createUploadRecord: (file: FileUploadInfo<"complete">) => Promise<{ id: number } | number>
   onUploadComplete?: (uploadIds: number[]) => Promise<void> | void
   /** Only used by the public survey (`beteiligung`) dropzone — receives delete capability tokens from `createSurveyUploadPublic`. */
@@ -56,7 +55,7 @@ async function mapWithConcurrency<T, R>(items: T[], limit: number, fn: (item: T)
 
 export const UploadDropzoneBase = ({
   api,
-  surveyMeta,
+  viewerUploadMeta,
   createUploadRecord,
   onUploadComplete,
   onSurveyPublicUploadBatchComplete,
@@ -120,7 +119,7 @@ export const UploadDropzoneBase = ({
           : undefined
       }
       accept={accept}
-      surveyMeta={surveyMeta}
+      viewerUploadMeta={viewerUploadMeta}
       fillContainer={fillContainer}
       error={uploadError}
       onErrorDismiss={() => setUploadError(null)}

@@ -75,8 +75,12 @@ export const UploadDropzone = ({
   return (
     <UploadDropzoneBase
       api={`/api/${projectSlug}/upload`}
-      surveyMeta={
-        surveyResponseId && surveySessionId ? { surveyResponseId, surveySessionId } : undefined
+      viewerUploadMeta={
+        surveyResponseId && surveySessionId
+          ? { surveyResponseId, surveySessionId }
+          : projectRecordIds?.[0]
+            ? { projectRecordId: projectRecordIds[0] }
+            : undefined
       }
       createUploadRecord={createUploadRecord}
       onUploadComplete={onUploadComplete}

@@ -7,16 +7,21 @@ import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { deleteUploadFileAndDbRecord } from "@/src/server/uploads/_utils/deleteUploadFileAndDbRecord"
-import { NotFoundError } from "@/src/shared/auth/errors"
+import { AuthorizationError, NotFoundError } from "@/src/shared/auth/errors"
 import { ProjectSlugRequiredSchema } from "@/src/shared/authorization/projectSlugSchema"
 import { connectIds, idsFromFormValue, setIds } from "@/src/shared/prisma/connectIds"
 import {
   DeleteProjectRecordSchema,
   NewProjectRecordFormSchema,
+  PatchProjectRecordAssignmentSchema,
   ProjectRecordFormSchema,
 } from "@/src/shared/projectRecords/schemas"
 import { projectRecordInclude } from "./projectRecordInclude"
 import { GetProjectRecordAdminSchema } from "./projectRecords.inputSchemas"
+import {
+  projectRecordDetailVisibilityWhere,
+  projectRecordOverviewVisibilityWhere,
+} from "./projectRecordVisibility.server"
 
 export { GetProjectRecordAdminSchema }
 
@@ -54,32 +59,10 @@ function normalizeDate(date: string | Date | null | undefined) {
   return date instanceof Date ? date : new Date(date)
 }
 
-function projectRecordOverviewVisibilityWhere(aiEnabled: boolean) {
-  const where = {
-    reviewState: ProjectRecordReviewState.APPROVED,
-  }
-
-  if (aiEnabled) return where
-
-  return {
-    ...where,
-    projectRecordAuthorType: { not: ProjectRecordType.SYSTEM },
-  }
-}
-
 function projectRecordOverviewWhere(projectId: number, aiEnabled: boolean) {
   return {
     projectId,
     ...projectRecordOverviewVisibilityWhere(aiEnabled),
-  }
-}
-
-function projectRecordDetailVisibilityWhere(aiEnabled: boolean, canEdit: boolean) {
-  return {
-    OR: [
-      projectRecordOverviewVisibilityWhere(aiEnabled),
-      ...(canEdit && aiEnabled ? [{ reviewState: ProjectRecordReviewState.NEEDSREVIEW }] : []),
-    ],
   }
 }
 
@@ -455,6 +438,86 @@ export async function updateProjectRecord(
       recordId: record.id,
     })
   }
+
+  return record
+}
+
+export async function patchProjectRecordAssignment(
+  headers: Headers,
+  input: z.infer<typeof PatchProjectRecordAssignmentSchema>,
+) {
+  const { projectId, membershipRole, session } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    viewerRoles,
+  )
+  const { id, projectSlug, assignedToId, editingState } = input
+  const userId = Number(session.userId)
+  const canEdit = membershipRole === null || editorRoles.includes(membershipRole)
+
+  if (assignedToId != null) {
+    const assigneeMembership = await db.membership.findFirst({
+      where: { userId: assignedToId, project: { slug: projectSlug } },
+      select: { id: true },
+    })
+    if (!assigneeMembership) {
+      throw new AuthorizationError()
+    }
+  }
+
+  const project = await db.project.findUnique({
+    where: { id: projectId },
+    select: { aiEnabled: true },
+  })
+
+  if (!project) {
+    throw new NotFoundError()
+  }
+
+  const aiEnabled = project.aiEnabled ?? false
+
+  const previous = await db.projectRecord.findFirstOrThrow({
+    where: {
+      id,
+      projectId,
+      ...projectRecordDetailVisibilityWhere(aiEnabled, canEdit),
+    },
+  })
+
+  const record = await db.projectRecord.update({
+    where: { id: previous.id },
+    data: {
+      assignedToId,
+      editingState,
+      updatedById: userId,
+      projectRecordUpdatedByType: ProjectRecordType.USER,
+    },
+    include: projectRecordInclude,
+  })
+
+  const previousAssigneeId = previous.assignedToId ?? null
+  const newAssigneeId = record.assignedToId
+  const isNewAssignment = newAssigneeId !== null && newAssigneeId !== previousAssigneeId
+
+  if (isNewAssignment) {
+    await sendProjectRecordAssignmentNotification({
+      assigneeId: newAssigneeId,
+      actorUserId: userId,
+      recordTitle: record.title,
+      projectSlug,
+      recordId: record.id,
+    })
+  }
+
+  await createLogEntry({
+    action: "UPDATE",
+    message: "Protokoll-Eintrag Zuweisung oder Status geändert",
+    userId,
+    projectSlug,
+    projectRecordId: record.id,
+    previousRecord: previous,
+    updatedRecord: record,
+  })
 
   return record
 }

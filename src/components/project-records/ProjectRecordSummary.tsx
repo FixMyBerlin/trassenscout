@@ -2,9 +2,7 @@ import { format } from "date-fns"
 import { de } from "date-fns/locale"
 import { Link } from "@/src/components/core/components/links/Link"
 import { Markdown } from "@/src/components/core/components/Markdown/Markdown"
-import { getFullname } from "@/src/components/core/users/getFullname"
-import { ProjectRecordAssignedToPill } from "@/src/components/project-records/ProjectRecordAssignedToPill"
-import { ProjectRecordEditingStateIndicator } from "@/src/components/project-records/ProjectRecordEditingStateIndicator"
+import { ProjectRecordAssignmentForm } from "@/src/components/project-records/ProjectRecordAssignmentForm"
 import {
   ProjectRecordEmailSourceDisclosure,
   type ProjectRecordEmailSourceValue,
@@ -34,26 +32,6 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
           <span className="text-gray-600">
             {format(new Date(projectRecord.date!), "P", { locale: de })}
           </span>
-        </div>
-        {projectRecord.assignedTo && (
-          <div className={metadataItemClassName}>
-            <span className={projectRecordSectionLabelClassName}>Zugewiesen:</span>
-            <Link
-              classNameOverwrites="inline-flex rounded-md text-inherit no-underline hover:opacity-90 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-orange-500/40"
-              to={createProjectRecordFilterUrl(projectSlug, {
-                searchterm: getFullname(projectRecord.assignedTo)!.trim(),
-              })}
-            >
-              <ProjectRecordAssignedToPill assignedTo={projectRecord.assignedTo} variant="detail" />
-            </Link>
-          </div>
-        )}
-        <div className={metadataItemClassName}>
-          <span className={projectRecordSectionLabelClassName}>Status:</span>
-          <ProjectRecordEditingStateIndicator
-            editingState={projectRecord.editingState}
-            variant="detail"
-          />
         </div>
       </div>
 
@@ -135,6 +113,8 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
           <span className="text-sm text-gray-500">Keine Tags zugeordnet</span>
         )}
       </div>
+
+      <ProjectRecordAssignmentForm key={projectRecord.id} projectRecord={projectRecord} />
 
       <div>
         <p className={projectRecordSectionLabelClassName}>Dokumente:</p>

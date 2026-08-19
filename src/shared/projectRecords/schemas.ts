@@ -49,6 +49,12 @@ export const DeleteProjectRecordSchema = ProjectSlugRequiredSchema.extend({
   id: z.number(),
 })
 
+export const PatchProjectRecordAssignmentSchema = ProjectSlugRequiredSchema.extend({
+  id: z.number(),
+  assignedToId: InputNumberOrNullSchema,
+  editingState: z.enum(ProjectRecordEditingState),
+}).strict()
+
 export const projectRecordFormDefaultValues = {
   date: "",
   title: "",

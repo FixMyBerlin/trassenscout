@@ -9,6 +9,7 @@ import {
   GetProjectRecordsByAcquisitionAreaSchema,
   GetProjectRecordsBySubsubsectionSchema,
   GetProjectRecordsSchema,
+  PatchProjectRecordAssignmentSchema,
   UpdateProjectRecordBySlugSchema,
 } from "./projectRecords.inputSchemas"
 import {
@@ -24,8 +25,10 @@ import {
   getProjectRecordsBySubsubsection,
   getProjectRecordsNeedsReview,
   getProjectRecordsTabCounts,
+  patchProjectRecordAssignment,
   updateProjectRecord,
 } from "./projectRecords.server"
+
 export const getAllProjectRecordsAdminFn = createServerFn({ method: "GET" }).handler(() =>
   getAllProjectRecordsAdmin(getRequestHeaders()),
 )
@@ -49,6 +52,10 @@ export const createProjectRecordFn = createServerFn({ method: "POST" })
 export const updateProjectRecordFn = createServerFn({ method: "POST" })
   .validator(UpdateProjectRecordBySlugSchema)
   .handler(({ data }) => updateProjectRecord(getRequestHeaders(), data))
+
+export const patchProjectRecordAssignmentFn = createServerFn({ method: "POST" })
+  .validator(PatchProjectRecordAssignmentSchema)
+  .handler(({ data }) => patchProjectRecordAssignment(getRequestHeaders(), data))
 
 export const deleteProjectRecordFn = createServerFn({ method: "POST" })
   .validator(DeleteProjectRecordBySlugSchema)

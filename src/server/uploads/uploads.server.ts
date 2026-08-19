@@ -8,6 +8,7 @@ import { ProjectRecordReviewState } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
+import { projectRecordDetailVisibilityWhere } from "@/src/server/projectRecords/projectRecordVisibility.server"
 import { AuthorizationError } from "@/src/shared/auth/errors"
 import { connectIds, idsFromFormValue, setIds } from "@/src/shared/prisma/connectIds"
 import { UploadSchema } from "@/src/shared/uploads/schemas"
@@ -44,11 +45,21 @@ function uploadInProjectWhere(projectSlug: string, id: number) {
   return { id, project: { slug: projectSlug } }
 }
 
-async function validateUploadRelations(projectSlug: string, input: UploadRelationsInput) {
+async function validateUploadRelations(
+  projectSlug: string,
+  input: UploadRelationsInput,
+  viewerRecordVisibility?: { canEdit: boolean; aiEnabled: boolean },
+) {
   const projectRecordIds = idsFromFormValue(input.projectRecords)
   const subsubsectionIds = idsFromFormValue(input.subsubsections)
   const acquisitionAreaIds = idsFromFormValue(input.acquisitionAreas)
   const tagIds = idsFromFormValue(input.tags)
+  const projectRecordVisibilityWhere = viewerRecordVisibility
+    ? projectRecordDetailVisibilityWhere(
+        viewerRecordVisibility.aiEnabled,
+        viewerRecordVisibility.canEdit,
+      )
+    : {}
 
   await Promise.all([
     input.projectRecordEmailId
@@ -69,12 +80,18 @@ async function validateUploadRelations(projectSlug: string, input: UploadRelatio
     projectRecordIds.length
       ? db.projectRecord
           .findMany({
-            where: { id: { in: projectRecordIds }, project: { slug: projectSlug } },
+            where: {
+              id: { in: projectRecordIds },
+              project: { slug: projectSlug },
+              ...projectRecordVisibilityWhere,
+            },
             select: { id: true },
           })
           .then((records) => {
-            if (records.length !== projectRecordIds.length)
+            if (records.length !== projectRecordIds.length) {
+              if (viewerRecordVisibility) throw new AuthorizationError()
               throw new Error("Invalid project record")
+            }
           })
       : undefined,
     subsubsectionIds.length
@@ -143,22 +160,32 @@ function updateUploadData(input: UpdateUploadDataInput, projectId: number, userI
   }
 }
 
-function assertViewerUploadOnlyAddsSurveyResponseDocument(input: UploadInput) {
-  const hasNoSummary = input.summary == null || input.summary.trim() === ""
-  const hasOnlySurveyResponseRelation =
-    input.surveyResponseId != null &&
-    hasNoSummary &&
+function viewerCreateUploadHasNoExtraFields(input: UploadInput) {
+  return (
+    (input.summary == null || input.summary.trim() === "") &&
     input.projectRecordEmailId == null &&
     input.latitude == null &&
     input.longitude == null &&
     input.collaborationUrl == null &&
     input.collaborationPath == null &&
-    idsFromFormValue(input.projectRecords).length === 0 &&
     idsFromFormValue(input.subsubsections).length === 0 &&
     idsFromFormValue(input.acquisitionAreas).length === 0 &&
     idsFromFormValue(input.tags).length === 0
+  )
+}
 
-  if (!hasOnlySurveyResponseRelation) {
+function assertViewerCreateUploadAllowed(input: UploadInput) {
+  const projectRecordIds = idsFromFormValue(input.projectRecords)
+  const isSurveyOnly =
+    input.surveyResponseId != null &&
+    projectRecordIds.length === 0 &&
+    viewerCreateUploadHasNoExtraFields(input)
+  const isProjectRecordOnly =
+    projectRecordIds.length === 1 &&
+    input.surveyResponseId == null &&
+    viewerCreateUploadHasNoExtraFields(input)
+
+  if (!isSurveyOnly && !isProjectRecordOnly) {
     throw new AuthorizationError()
   }
 }
@@ -238,7 +265,7 @@ export async function createUpload(headers: Headers, input: z.infer<typeof Creat
     viewerRoles,
   )
   const { projectSlug, assignSubsubsectionFromFilename, ...data } = input
-  const canEdit = membershipRole === null || membershipRole === "EDITOR"
+  const canEdit = membershipRole === null || editorRoles.includes(membershipRole)
 
   assertUploadExternalUrlBelongsToProject(projectSlug, data.externalUrl)
 
@@ -246,10 +273,23 @@ export async function createUpload(headers: Headers, input: z.infer<typeof Creat
     if (assignSubsubsectionFromFilename) {
       throw new AuthorizationError()
     }
-    assertViewerUploadOnlyAddsSurveyResponseDocument(data)
+    assertViewerCreateUploadAllowed(data)
   }
 
-  await validateUploadRelations(projectSlug, data)
+  const projectRecordIds = idsFromFormValue(data.projectRecords)
+  let viewerRecordVisibility: { canEdit: boolean; aiEnabled: boolean } | undefined
+  if (!canEdit && projectRecordIds.length === 1) {
+    const project = await db.project.findUnique({
+      where: { id: projectId },
+      select: { aiEnabled: true },
+    })
+    viewerRecordVisibility = {
+      canEdit: false,
+      aiEnabled: project?.aiEnabled ?? false,
+    }
+  }
+
+  await validateUploadRelations(projectSlug, data, viewerRecordVisibility)
 
   if (assignSubsubsectionFromFilename && idsFromFormValue(data.subsubsections).length === 0) {
     // `title` still holds the original filename at creation time (the dropzone sets
