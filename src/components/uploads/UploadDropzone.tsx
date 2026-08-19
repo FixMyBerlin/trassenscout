@@ -10,7 +10,7 @@ type UploadDropzoneDescription = {
   maxFiles?: number
 }
 
-export type ViewerUploadMetadata =
+type ViewerUploadMetadata =
   | {
       surveyResponseId: number
       surveySessionId: number
