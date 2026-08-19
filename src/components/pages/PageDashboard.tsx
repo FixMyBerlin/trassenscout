@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { Suspense, useState } from "react"
+import { Suspense } from "react"
 import { twJoin } from "tailwind-merge"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { Breadcrumb, BreadcrumbStep } from "@/src/components/core/components/PageHeader/Breadcrumb"
@@ -9,6 +9,7 @@ import {
 } from "@/src/components/core/components/PageHeader/MapListViewLayout"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
+import { useViewMode } from "@/src/components/core/routes/useViewMode"
 import { DashboardMapWithProvider } from "@/src/components/dashboard/DashboardMapWithProvider"
 import { LogEntriesDashboard } from "@/src/components/dashboard/LogEntriesDashboard"
 import { NoProjectMembershipsYet } from "@/src/components/dashboard/NoProjectMembershipsYet"
@@ -33,7 +34,7 @@ function DashboardSupplementarySections({
 
 export function PageDashboard() {
   const { data: projects } = useSuspenseQuery(projectsWithGeometryWithMembershipRoleQueryOptions())
-  const [viewMode, setViewMode] = useState<"map" | "list">("map")
+  const { viewMode, setViewMode } = useViewMode()
   const isMapMode = viewMode === "map"
 
   if (!projects.length) {

@@ -1,6 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
-import { useState } from "react"
 import { twJoin } from "tailwind-merge"
 import { AbschnitteBreadcrumb } from "@/src/components/abschnitte/AbschnitteBreadcrumb"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
@@ -12,6 +11,7 @@ import {
 } from "@/src/components/core/components/PageHeader/MapListViewLayout"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { PageHeaderToolbarLink } from "@/src/components/core/components/PageHeader/PageHeaderToolbarLink"
+import { useViewMode } from "@/src/components/core/routes/useViewMode"
 import { IfUserCanEdit } from "@/src/components/shared/memberships/IfUserCan"
 import { subsectionsQueryOptions } from "@/src/server/subsections/subsectionsQueryOptions"
 import type { SubsectionsList } from "@/src/server/subsections/types"
@@ -35,7 +35,7 @@ function SubsectionDashboardContent({
   subsection: Subsection
   subsections: SubsectionsList
 }) {
-  const [viewMode, setViewMode] = useState<"map" | "list">("map")
+  const { viewMode, setViewMode } = useViewMode()
   const isMapMode = viewMode === "map"
   const { data: subsubsections } = useSuspenseQuery(
     subsubsectionsQueryOptions({ projectSlug, subsectionId: subsection.id }),

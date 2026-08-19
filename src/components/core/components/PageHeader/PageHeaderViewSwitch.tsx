@@ -2,8 +2,9 @@ import { MapIcon, TableCellsIcon } from "@heroicons/react/24/outline"
 import { twJoin } from "tailwind-merge"
 import { compactPaddingIcon } from "@/src/components/core/components/buttons/buttonStyles"
 import { Tooltip } from "@/src/components/core/components/Tooltip/Tooltip"
+import type { ViewMode } from "@/src/shared/routing/viewModeSearch"
 
-export type ViewMode = "map" | "list"
+export type { ViewMode }
 
 type Props = {
   value: ViewMode
