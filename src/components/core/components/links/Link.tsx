@@ -11,6 +11,7 @@ import { Link as RouterLink, type LinkComponentProps } from "@tanstack/react-rou
 import { cloneElement, isValidElement } from "react"
 import { twMerge } from "tailwind-merge"
 import type { CompactButtonSize } from "@/src/components/core/components/buttons/buttonStyles"
+import { splitResolvedTo } from "@/src/shared/routing/resolvedTo"
 import { selectLinkStyle } from "./styles"
 
 type CoreLinkStyleProps = {
@@ -53,7 +54,11 @@ type ExternalLinkProps = CoreLinkStyleProps & {
   to?: never
 } & Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "href">
 
-/** App navigation via TanStack Router — `to` accepts resolved paths including search strings. */
+/**
+ * App navigation via TanStack Router — `to` accepts resolved paths including search and
+ * hash ("/a/b?x=1#c"). `Link` splits those off and passes them to the router structurally;
+ * see `splitResolvedTo`. `search` and `hash` props override what the string carries.
+ */
 type InternalLinkProps = CoreLinkStyleProps &
   RouterLinkBehaviorProps & {
     href?: never
@@ -161,11 +166,20 @@ export function Link(props: LinkProps) {
     )
   }
 
-  const { to, ...routerProps } = rest as Omit<InternalLinkProps, keyof CoreLinkStyleProps>
+  const {
+    to,
+    search: searchProp,
+    hash: hashProp,
+    ...routerProps
+  } = rest as Omit<InternalLinkProps, keyof CoreLinkStyleProps>
+
+  const resolved = splitResolvedTo(to)
 
   return (
     <RouterLink
-      to={to as LinkComponentProps<"a">["to"]}
+      to={resolved.to as LinkComponentProps<"a">["to"]}
+      search={(searchProp ?? resolved.search) as LinkComponentProps<"a">["search"]}
+      hash={hashProp ?? resolved.hash}
       className={classNames}
       target={blank ? "_blank" : undefined}
       {...routerProps}

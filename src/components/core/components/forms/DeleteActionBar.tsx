@@ -6,6 +6,7 @@ import { linkIcons } from "@/src/components/core/components/links/Link"
 import { linkStyles } from "@/src/components/core/components/links/styles"
 import { frenchQuote } from "@/src/components/core/components/text/quote"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
+import { resolvedToNavigateOptions } from "@/src/shared/routing/resolvedTo"
 
 type Props = {
   itemTitle: string
@@ -47,7 +48,7 @@ export const DeleteActionBar = ({
         if (onDeleted) {
           await onDeleted()
         } else {
-          void navigate({ to: returnPath, replace: true })
+          void navigate({ ...resolvedToNavigateOptions(returnPath), replace: true })
         }
       } catch (error) {
         console.error(`Error deleting ${itemTitle}:`, error)

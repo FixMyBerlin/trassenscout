@@ -17,6 +17,7 @@ import {
   projectRecordsTabCountsQueryOptions,
 } from "@/src/server/projectRecords/projectRecordsQueryOptions"
 import type { ProjectRecordDeleteInfo } from "@/src/server/projectRecords/types"
+import { resolvedToNavigateOptions } from "@/src/shared/routing/resolvedTo"
 
 type DeleteInfo = ProjectRecordDeleteInfo
 
@@ -89,7 +90,7 @@ export const DeleteProjectRecordWithUploadsClient = ({ deleteInfo, projectSlug }
           queryKey: projectRecordsTabCountsQueryOptions({ projectSlug }).queryKey,
         }),
       ])
-      navigate({ to: returnPath })
+      navigate({ ...resolvedToNavigateOptions(returnPath) })
     } catch (error) {
       console.error("Error deleting project record:", error)
       alert("Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.")

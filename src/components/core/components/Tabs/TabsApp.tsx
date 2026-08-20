@@ -3,6 +3,7 @@ import { startTransition } from "react"
 import { twJoin } from "tailwind-merge"
 import { Link } from "@/src/components/core/components/links/Link"
 import { pillShellClasses } from "@/src/components/core/utils/pillClassNames"
+import { resolvedToNavigateOptions } from "@/src/shared/routing/resolvedTo"
 
 type Tab = {
   name: string
@@ -44,7 +45,7 @@ export const TabsApp = ({ tabs, className, embedded = false }: Props) => {
             const tab = tabs.find((tab) => tab.name === event.target.value)
             if (tab?.to) {
               startTransition(() => {
-                void navigate({ to: tab.to })
+                void navigate({ ...resolvedToNavigateOptions(tab.to) })
               })
             }
           }}
