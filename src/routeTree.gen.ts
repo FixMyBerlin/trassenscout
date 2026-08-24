@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as McpRouteImport } from './routes/mcp'
 import { Route as BeteiligungRouteImport } from './routes/beteiligung'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
@@ -48,6 +49,7 @@ import { Route as AdminMembershipsIndexRouteImport } from './routes/admin/member
 import { Route as AdminLogEntriesIndexRouteImport } from './routes/admin/log-entries/index'
 import { Route as AdminEvaluationsIndexRouteImport } from './routes/admin/evaluations/index'
 import { Route as AdminEmailTemplatesIndexRouteImport } from './routes/admin/email-templates/index'
+import { Route as AdminApiTokensIndexRouteImport } from './routes/admin/api-tokens/index'
 import { Route as LoggedInProjectsProjectSlugIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/index'
 import { Route as LoggedInGeneralSupportIndexRouteImport } from './routes/_loggedInGeneral/support/index'
 import { Route as LoggedInGeneralDashboardIndexRouteImport } from './routes/_loggedInGeneral/dashboard/index'
@@ -172,6 +174,11 @@ import { Route as LoggedInProjectsProjectSlugSurveysSurveyIdResponsesSurveyRespo
 import { Route as LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugLandAcquisitionAcquisitionAreasNewIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/acquisition-areas/new/index'
 import { Route as LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugLandAcquisitionAcquisitionAreasAcquisitionAreaIdEditIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/acquisition-areas/$acquisitionAreaId/edit/index'
 
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BeteiligungRoute = BeteiligungRouteImport.update({
   id: '/beteiligung',
   path: '/beteiligung',
@@ -376,6 +383,11 @@ const AdminEmailTemplatesIndexRoute =
     path: '/email-templates/',
     getParentRoute: () => AdminRoute,
   } as any)
+const AdminApiTokensIndexRoute = AdminApiTokensIndexRouteImport.update({
+  id: '/api-tokens/',
+  path: '/api-tokens/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const LoggedInProjectsProjectSlugIndexRoute =
   LoggedInProjectsProjectSlugIndexRouteImport.update({
     id: '/',
@@ -1174,6 +1186,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/beteiligung': typeof BeteiligungRouteWithChildren
+  '/mcp': typeof McpRoute
   '/browser-version': typeof ContentBrowserVersionRoute
   '/datenschutz': typeof ContentDatenschutzRoute
   '/kontakt': typeof ContentKontaktRoute
@@ -1192,6 +1205,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/': typeof LoggedInGeneralDashboardIndexRoute
   '/support/': typeof LoggedInGeneralSupportIndexRoute
   '/$projectSlug/': typeof LoggedInProjectsProjectSlugIndexRoute
+  '/admin/api-tokens/': typeof AdminApiTokensIndexRoute
   '/admin/email-templates/': typeof AdminEmailTemplatesIndexRoute
   '/admin/evaluations/': typeof AdminEvaluationsIndexRoute
   '/admin/log-entries/': typeof AdminLogEntriesIndexRoute
@@ -1331,6 +1345,7 @@ export interface FileRoutesByTo {
   '/': typeof MarketingIndexRoute
   '/auth': typeof AuthRouteWithChildren
   '/beteiligung': typeof BeteiligungRouteWithChildren
+  '/mcp': typeof McpRoute
   '/browser-version': typeof ContentBrowserVersionRoute
   '/datenschutz': typeof ContentDatenschutzRoute
   '/kontakt': typeof ContentKontaktRoute
@@ -1346,6 +1361,7 @@ export interface FileRoutesByTo {
   '/access-denied': typeof LoggedInGeneralAccessDeniedIndexRoute
   '/dashboard': typeof LoggedInGeneralDashboardIndexRoute
   '/support': typeof LoggedInGeneralSupportIndexRoute
+  '/admin/api-tokens': typeof AdminApiTokensIndexRoute
   '/admin/email-templates': typeof AdminEmailTemplatesIndexRoute
   '/admin/evaluations': typeof AdminEvaluationsIndexRoute
   '/admin/log-entries': typeof AdminLogEntriesIndexRoute
@@ -1489,6 +1505,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/beteiligung': typeof BeteiligungRouteWithChildren
+  '/mcp': typeof McpRoute
   '/_content/browser-version': typeof ContentBrowserVersionRoute
   '/_content/datenschutz': typeof ContentDatenschutzRoute
   '/_content/kontakt': typeof ContentKontaktRoute
@@ -1509,6 +1526,7 @@ export interface FileRoutesById {
   '/_loggedInGeneral/dashboard/': typeof LoggedInGeneralDashboardIndexRoute
   '/_loggedInGeneral/support/': typeof LoggedInGeneralSupportIndexRoute
   '/_loggedInProjects/$projectSlug/': typeof LoggedInProjectsProjectSlugIndexRoute
+  '/admin/api-tokens/': typeof AdminApiTokensIndexRoute
   '/admin/email-templates/': typeof AdminEmailTemplatesIndexRoute
   '/admin/evaluations/': typeof AdminEvaluationsIndexRoute
   '/admin/log-entries/': typeof AdminLogEntriesIndexRoute
@@ -1651,6 +1669,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/beteiligung'
+    | '/mcp'
     | '/browser-version'
     | '/datenschutz'
     | '/kontakt'
@@ -1669,6 +1688,7 @@ export interface FileRouteTypes {
     | '/dashboard/'
     | '/support/'
     | '/$projectSlug/'
+    | '/admin/api-tokens/'
     | '/admin/email-templates/'
     | '/admin/evaluations/'
     | '/admin/log-entries/'
@@ -1808,6 +1828,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/beteiligung'
+    | '/mcp'
     | '/browser-version'
     | '/datenschutz'
     | '/kontakt'
@@ -1823,6 +1844,7 @@ export interface FileRouteTypes {
     | '/access-denied'
     | '/dashboard'
     | '/support'
+    | '/admin/api-tokens'
     | '/admin/email-templates'
     | '/admin/evaluations'
     | '/admin/log-entries'
@@ -1965,6 +1987,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/beteiligung'
+    | '/mcp'
     | '/_content/browser-version'
     | '/_content/datenschutz'
     | '/_content/kontakt'
@@ -1985,6 +2008,7 @@ export interface FileRouteTypes {
     | '/_loggedInGeneral/dashboard/'
     | '/_loggedInGeneral/support/'
     | '/_loggedInProjects/$projectSlug/'
+    | '/admin/api-tokens/'
     | '/admin/email-templates/'
     | '/admin/evaluations/'
     | '/admin/log-entries/'
@@ -2130,6 +2154,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
   BeteiligungRoute: typeof BeteiligungRouteWithChildren
+  McpRoute: typeof McpRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiCronInvitesCleanupIndexRoute: typeof ApiCronInvitesCleanupIndexRoute
   ApiCronLogEntriesCleanupIndexRoute: typeof ApiCronLogEntriesCleanupIndexRoute
@@ -2156,6 +2181,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/beteiligung': {
       id: '/beteiligung'
       path: '/beteiligung'
@@ -2427,6 +2459,13 @@ declare module '@tanstack/react-router' {
       path: '/email-templates'
       fullPath: '/admin/email-templates/'
       preLoaderRoute: typeof AdminEmailTemplatesIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/api-tokens/': {
+      id: '/admin/api-tokens/'
+      path: '/api-tokens'
+      fullPath: '/admin/api-tokens/'
+      preLoaderRoute: typeof AdminApiTokensIndexRouteImport
       parentRoute: typeof AdminRoute
     }
     '/_loggedInProjects/$projectSlug/': {
@@ -3689,6 +3728,7 @@ const AdminProjectsProjectSlugRouteRouteWithChildren =
 interface AdminRouteChildren {
   AdminIndexRoute: typeof AdminIndexRoute
   AdminProjectsProjectSlugRouteRoute: typeof AdminProjectsProjectSlugRouteRouteWithChildren
+  AdminApiTokensIndexRoute: typeof AdminApiTokensIndexRoute
   AdminEmailTemplatesIndexRoute: typeof AdminEmailTemplatesIndexRoute
   AdminEvaluationsIndexRoute: typeof AdminEvaluationsIndexRoute
   AdminLogEntriesIndexRoute: typeof AdminLogEntriesIndexRoute
@@ -3724,6 +3764,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminIndexRoute: AdminIndexRoute,
   AdminProjectsProjectSlugRouteRoute:
     AdminProjectsProjectSlugRouteRouteWithChildren,
+  AdminApiTokensIndexRoute: AdminApiTokensIndexRoute,
   AdminEmailTemplatesIndexRoute: AdminEmailTemplatesIndexRoute,
   AdminEvaluationsIndexRoute: AdminEvaluationsIndexRoute,
   AdminLogEntriesIndexRoute: AdminLogEntriesIndexRoute,
@@ -3821,6 +3862,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
   BeteiligungRoute: BeteiligungRouteWithChildren,
+  McpRoute: McpRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiCronInvitesCleanupIndexRoute: ApiCronInvitesCleanupIndexRoute,
   ApiCronLogEntriesCleanupIndexRoute: ApiCronLogEntriesCleanupIndexRoute,
