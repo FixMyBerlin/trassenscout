@@ -114,7 +114,6 @@ export default defineConfig({
       jsPlugins: [{ name: "react-hooks-js", specifier: "eslint-plugin-react-hooks" }],
       rules: {
         ...reactHooksJs.rules,
-        "react/react-compiler": "error",
       },
     },
     {

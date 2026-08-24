@@ -185,8 +185,8 @@
     "vitest": "4.1.11"
   },
   "optionalDependencies": {
-    "@typescript/typescript-darwin-arm64": "7.0.1-rc",
-    "@typescript/typescript-linux-x64": "7.0.1-rc"
+    "@typescript/typescript-darwin-arm64": "7.0.2",
+    "@typescript/typescript-linux-x64": "7.0.2"
   },
   "browserslist": [
     "> 1%",

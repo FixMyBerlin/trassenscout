@@ -11,8 +11,8 @@ export const getFieldsErrors = ({
   fields: FieldConfig[]
 }) => {
   const errors = Object.entries(fieldMeta)
-    .filter(([key, _value]) => fields.find((f) => f.name === key))
-    .filter(([_, value]) => value.errorMap?.onSubmit?.length)
+    .filter(([key]) => fields.find((f) => f.name === key))
+    .filter(([, value]) => value.errorMap?.onSubmit?.length)
     .map(([key, value]) => ({
       // @ts-expect-error we know form components have props.label tbd
       label: fields.find((f) => f.name === key)?.props.label,

@@ -53,7 +53,7 @@ export const DeleteProjectRecordWithUploadsClient = ({ deleteInfo, projectSlug }
 
   const handleSubmit = async () => {
     const deleteUploadIds = Object.entries(uploadActions)
-      .filter(([_, action]) => action === "delete")
+      .filter(([, action]) => action === "delete")
       .map(([uploadId]) => parseInt(uploadId))
 
     const deleteUploadsText =
@@ -69,7 +69,7 @@ export const DeleteProjectRecordWithUploadsClient = ({ deleteInfo, projectSlug }
 
     try {
       const keepUploadIds = Object.entries(uploadActions)
-        .filter(([_, action]) => action === "save")
+        .filter(([, action]) => action === "save")
         .map(([uploadId]) => parseInt(uploadId))
 
       await deleteMutation.mutateAsync({

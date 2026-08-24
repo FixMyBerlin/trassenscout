@@ -1,5 +1,4 @@
 import { getRouteApi } from "@tanstack/react-router"
-import maplibregl from "maplibre-gl"
 import { useState } from "react"
 import Map, { Layer, Marker, NavigationControl, Source } from "react-map-gl/maplibre"
 import {
@@ -59,7 +58,7 @@ export const EditableSurveyResponseFormMap = ({
 
   const mapData = geoCategoryQuestion ? geoCategoryQuestion.props.mapProps.mapData : undefined
 
-  const handleMapLoad = (_: maplibregl.MapLibreEvent) => {
+  const handleMapLoad = () => {
     setMapLoading(true)
   }
 
@@ -163,7 +162,7 @@ export const EditableSurveyResponseFormMap = ({
         scrollZoom={false}
         mapStyle={getMapStyle(selectedLayer, getVectorStyleUrl(maptilerUrl))}
         // Set map state for <MapData>:
-        onLoad={(event) => handleMapLoad(event)}
+        onLoad={() => handleMapLoad()}
         onIdle={() => setMapLoading(false)}
       >
         {staticOverlay && <StaticOverlay config={staticOverlay} />}
