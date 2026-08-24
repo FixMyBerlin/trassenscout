@@ -1,0 +1,22 @@
+{
+  "mcpServers": {
+    "trassenscout-admin--DEV": {
+      "url": "http://127.0.0.1:4000/mcp",
+      "headers": {
+        "Authorization": "Bearer trassenscout_admin_local_dev_mcp_only"
+      }
+    },
+    "trassenscout-admin--STG": {
+      "url": "https://staging.trassenscout.de/mcp",
+      "headers": {
+        "Authorization": "Bearer ${env:TRASSENSCOUT_ADMIN_API_TOKEN_STG}"
+      }
+    },
+    "trassenscout-admin--PRD": {
+      "url": "https://trassenscout.de/mcp",
+      "headers": {
+        "Authorization": "Bearer ${env:TRASSENSCOUT_ADMIN_API_TOKEN_PRD}"
+      }
+    }
+  }
+}

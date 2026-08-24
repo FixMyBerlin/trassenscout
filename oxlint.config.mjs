@@ -91,6 +91,7 @@ export default defineConfig({
       files: ["src/routes/api/**/*.ts", "src/routes/**/*.{ts,tsx}", "src/server/**/*.server.ts"],
       excludeFiles: [
         "src/server/auth/**",
+        "src/server/api/admin/**",
         "**/db.server.ts",
         "**/paginate.server.ts",
         "**/_utils/**",

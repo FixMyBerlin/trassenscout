@@ -78,6 +78,7 @@
     "@langfuse/tracing": "5.4.1",
     "@mapgrab/map-interface": "1.0.2",
     "@mapgrab/playwright": "0.0.4",
+    "@modelcontextprotocol/sdk": "1.29.0",
     "@node-rs/argon2": "2.0.2",
     "@opentelemetry/sdk-node": "0.218.0",
     "@prisma/adapter-pg": "7.8.0",
