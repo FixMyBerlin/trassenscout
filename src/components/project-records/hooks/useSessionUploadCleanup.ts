@@ -11,6 +11,8 @@ export function useSessionUploadCleanup({ projectSlug }: Props) {
   const queryClient = useQueryClient()
   const sessionUploadIdsRef = useRef(new Set<number>())
   const contextRef = useRef({ projectSlug, queryClient })
+  // Latest values for unmount cleanup; writing during render is the supported "latest ref" pattern.
+  // oxlint-disable-next-line react/refs
   contextRef.current = { projectSlug, queryClient }
 
   useEffect(function cleanupSessionUploadsOnUnmount() {
