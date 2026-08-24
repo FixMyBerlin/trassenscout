@@ -12,6 +12,7 @@ import {
   MAP_VIEWPORT_SHELL_CLASS,
 } from "@/src/components/core/components/PageHeader/MapListViewLayout"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
+import { PageHeaderToolbarLink } from "@/src/components/core/components/PageHeader/PageHeaderToolbarLink"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { useViewMode } from "@/src/components/core/routes/useViewMode"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
@@ -36,6 +37,7 @@ export const ProjectDashboardClient = () => {
   const filteredSubsections = operatorParam
     ? subsections.filter((sec) => sec.operator?.slug === operatorParam)
     : subsections
+  const hasAnySubsubsections = subsections.some((s) => (s.subsubsectionCount ?? 0) > 0)
 
   const renderMap = (classHeight: string) => {
     if (subsections.length) {
@@ -75,15 +77,25 @@ export const ProjectDashboardClient = () => {
         }
         primaryAction={
           <IfUserCanEdit>
-            <Link
-              button
-              buttonSize="sm"
-              icon="plus"
-              to="/$projectSlug/abschnitte/new"
-              params={{ projectSlug }}
-            >
-              Neuer Planungsabschnitt
-            </Link>
+            <>
+              {hasAnySubsubsections ? (
+                <PageHeaderToolbarLink
+                  href={`/api/${projectSlug}/subsections/export`}
+                  label="Alle Maßnahmen als .csv herunterladen"
+                >
+                  CSV
+                </PageHeaderToolbarLink>
+              ) : null}
+              <Link
+                button
+                buttonSize="sm"
+                icon="plus"
+                to="/$projectSlug/abschnitte/new"
+                params={{ projectSlug }}
+              >
+                Neuer Planungsabschnitt
+              </Link>
+            </>
           </IfUserCanEdit>
         }
       />
