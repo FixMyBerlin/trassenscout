@@ -56,6 +56,7 @@ model User {
   projectRecordComments    ProjectRecordComment[]
   emailTemplatesUpdated    EmailTemplate[]         @relation("EmailTemplateUpdatedBy")
   evaluationsPagesUpdated  EvaluationsPage[]       @relation("EvaluationsPageUpdatedBy")
+  formTemplatesUpdated     FormTemplate[]          @relation("FormTemplateUpdatedBy")
   adminApiTokens           AdminApiToken[]
 }
 
@@ -231,6 +232,7 @@ model Project {
   projectRecords                     ProjectRecord[]
   tags                               Tag[]
   projectRecordTemplates             ProjectRecordTemplate[]
+  formTemplates                      FormTemplate[]
   ProjectRecordEmail                 ProjectRecordEmail[]
   acquisitionAreaStatuses            AcquisitionAreaStatus[]
   evaluationsPage                    EvaluationsPage?
@@ -930,6 +932,10 @@ model ProjectRecord {
   LogEntry                   LogEntry[]
   uploads                    Upload[]
   //
+  projectRecordTemplate      ProjectRecordTemplate?    @relation(fields: [projectRecordTemplateId], references: [id], onDelete: SetNull)
+  projectRecordTemplateId    Int?
+  formTemplates              FormTemplate[]            @relation("FormTemplateToProjectRecord")
+  //
   reviewState                ProjectRecordReviewState  @default(APPROVED)
   reviewedAt                 DateTime? // review metadata tbd
   reviewedBy                 User?                     @relation("ProjectRecordReviewedBy", fields: [reviewedById], references: [id])
@@ -988,15 +994,41 @@ model Tag {
 }
 
 model ProjectRecordTemplate {
-  id            Int       @id @default(autoincrement())
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  templateTitle String
-  entryTitle    String
-  body          String?
-  purpose       String?
-  projects      Project[]
-  tags          Tag[]     @relation("TagToProjectRecordTemplate")
+  id             Int             @id @default(autoincrement())
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  templateTitle  String
+  entryTitle     String
+  body           String?
+  purpose        String?
+  projects       Project[]
+  tags           Tag[]           @relation("TagToProjectRecordTemplate")
+  formTemplates  FormTemplate[]  @relation("FormTemplateToProjectRecordTemplate")
+  projectRecords ProjectRecord[]
+}
+
+model FormTemplate {
+  id                     Int                     @id @default(autoincrement())
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
+  //
+  title                  String
+  slug                   String                  @unique
+  bodyMarkdown           String
+  fields                 Json                    @default("[]")
+  type                   FormTemplateTypeEnum
+  //
+  projects               Project[]
+  projectRecordTemplates ProjectRecordTemplate[] @relation("FormTemplateToProjectRecordTemplate")
+  projectRecords         ProjectRecord[]         @relation("FormTemplateToProjectRecord")
+  //
+  updatedBy              User?                   @relation("FormTemplateUpdatedBy", fields: [updatedById], references: [id])
+  updatedById            Int?
+}
+
+enum FormTemplateTypeEnum {
+  SUBSUBSECTION
+  ACQUISITIONAREA
 }
 
 model Meta {

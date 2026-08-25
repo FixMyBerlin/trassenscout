@@ -389,6 +389,11 @@ export function buildAdminNavigation() {
           countKey: "projectRecordTemplates",
         },
         { name: "API-Tokens (MCP)", link: { to: "/admin/api-tokens" } },
+        {
+          name: "Vorlagen Formulare",
+          link: { to: "/admin/form-templates" },
+          countKey: "formTemplates",
+        },
       ],
     },
   ] satisfies AdminNavItem[]

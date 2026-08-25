@@ -23,3 +23,30 @@ export const validateTemplateTagScope = async ({
     throw new Error("Ausgewählte Tags müssen zu den ausgewählten Projekten gehören.")
   }
 }
+
+/** A form must be available in at least one of the template's projects. */
+export const validateTemplateFormTemplateScope = async ({
+  projectIds,
+  formTemplateIds,
+}: {
+  projectIds: number[]
+  formTemplateIds: number[]
+}) => {
+  if (!formTemplateIds.length) return
+
+  const formTemplates = await db.formTemplate.findMany({
+    where: { id: { in: formTemplateIds } },
+    select: { id: true, projects: { select: { id: true } } },
+  })
+
+  if (formTemplates.length !== formTemplateIds.length) {
+    throw new Error("Mindestens ein ausgewähltes Formular ist ungültig.")
+  }
+
+  const invalid = formTemplates.find(
+    (formTemplate) => !formTemplate.projects.some((project) => projectIds.includes(project.id)),
+  )
+  if (invalid) {
+    throw new Error("Ausgewählte Formulare müssen zu den ausgewählten Projekten gehören.")
+  }
+}

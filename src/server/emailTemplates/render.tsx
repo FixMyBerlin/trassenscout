@@ -2,38 +2,25 @@ import { render } from "@react-email/render"
 import { MarkdownMail } from "@/emails/templats/MarkdownMail"
 import db from "@/src/server/db.server"
 import { EmailTemplateKey, getEmailTemplateDefinition } from "@/src/shared/emailTemplates/registry"
+import { extractPlaceholders, replacePlaceholders } from "@/src/shared/templates/placeholders"
 import {
   EmailTemplateEditableContent,
   EmailTemplateVariableContext,
   ResolvedEmailTemplate,
 } from "./types"
 
-const PLACEHOLDER_REGEX = /{{\s*([a-zA-Z0-9_]+)\s*}}/g
 const HTML_TAG_REGEX = /<[^>]+>/
 
 const normalizeOptionalString = (value: string | null | undefined) =>
   value == null || value === "" ? undefined : value
 
-const extractVariablesFromString = (value: string | null | undefined) => {
-  if (!value) return []
-
-  const variables = new Set<string>()
-
-  for (const match of value.matchAll(PLACEHOLDER_REGEX)) {
-    const variable = match[1]?.trim()
-    if (variable) variables.add(variable)
-  }
-
-  return Array.from(variables)
-}
-
 const extractEmailTemplateVariables = (content: EmailTemplateEditableContent) => {
   return Array.from(
     new Set([
-      ...extractVariablesFromString(content.subject),
-      ...extractVariablesFromString(content.introMarkdown),
-      ...extractVariablesFromString(content.outroMarkdown),
-      ...extractVariablesFromString(content.ctaText),
+      ...extractPlaceholders(content.subject),
+      ...extractPlaceholders(content.introMarkdown),
+      ...extractPlaceholders(content.outroMarkdown),
+      ...extractPlaceholders(content.ctaText),
     ]),
   )
 }
@@ -70,9 +57,7 @@ const renderTemplateString = (
 ) => {
   if (!value) return undefined
 
-  return value.replace(PLACEHOLDER_REGEX, (_, variableName: string) => {
-    return context[variableName]?.toString() ?? ""
-  })
+  return replacePlaceholders(value, context)
 }
 
 const renderEmailTemplateContent = (

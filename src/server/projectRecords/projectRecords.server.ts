@@ -66,11 +66,32 @@ function projectRecordOverviewWhere(projectId: number, aiEnabled: boolean) {
   }
 }
 
-async function validateProjectRecordRelations(projectSlug: string, input: ProjectRecordInput) {
+/**
+ * Which forms a record offers is admin-only, so the server has to hold that line against a
+ * hand-crafted payload. Only an authorization failure means "not an admin" — anything else
+ * must propagate, or an admin's change would vanish from an otherwise successful save.
+ */
+async function isAdminRequest(headers: Headers) {
+  try {
+    await endpointAuth.admin(headers)
+    return true
+  } catch (error) {
+    if (error instanceof AuthorizationError) return false
+    throw error
+  }
+}
+
+async function validateProjectRecordRelations(
+  projectSlug: string,
+  input: ProjectRecordInput,
+  /** Whether this request writes `projectRecordTemplateId`; see the call below. */
+  validatesOriginTemplate: boolean,
+) {
   const tagIds = idsFromFormValue(input.tags)
   const uploadIds = idsFromFormValue(input.uploads)
   const subsubsectionIds = idsFromFormValue(input.subsubsections)
   const acquisitionAreaIds = idsFromFormValue(input.acquisitionAreas)
+  const formTemplateIds = idsFromFormValue(input.formTemplates)
 
   await Promise.all([
     input.subsubsectionId
@@ -132,6 +153,27 @@ async function validateProjectRecordRelations(projectSlug: string, input: Projec
               throw new Error("Invalid acquisition area")
           })
       : undefined,
+    formTemplateIds.length
+      ? db.formTemplate
+          .findMany({
+            where: { id: { in: formTemplateIds }, projects: { some: { slug: projectSlug } } },
+            select: { id: true },
+          })
+          .then((records) => {
+            if (records.length !== formTemplateIds.length) throw new Error("Invalid form template")
+          })
+      : undefined,
+    // Skipped on a non-admin update: the value is dropped from the write anyway, and checking
+    // a link the request is not changing would make such a record unsaveable.
+    validatesOriginTemplate && input.projectRecordTemplateId
+      ? db.projectRecordTemplate.findFirstOrThrow({
+          where: {
+            id: input.projectRecordTemplateId,
+            projects: { some: { slug: projectSlug } },
+          },
+          select: { id: true },
+        })
+      : undefined,
   ])
 }
 
@@ -139,8 +181,9 @@ function createProjectRecordData(
   input: CreateProjectRecordInput,
   projectId: number,
   userId: number,
+  allowFormTemplates: boolean,
 ) {
-  const { acquisitionAreas, tags, subsubsections, uploads, ...data } = input
+  const { acquisitionAreas, tags, subsubsections, uploads, formTemplates, ...data } = input
 
   return {
     ...data,
@@ -155,11 +198,26 @@ function createProjectRecordData(
     tags: connectIds(idsFromFormValue(tags)),
     subsubsections: connectIds(idsFromFormValue(subsubsections)),
     uploads: connectIds(idsFromFormValue(uploads)),
+    // Omitted for a non-admin so Prisma leaves the relation alone. `projectRecordTemplateId`
+    // is not gated on create: it records the template the author picked.
+    ...(allowFormTemplates ? { formTemplates: connectIds(idsFromFormValue(formTemplates)) } : {}),
   }
 }
 
-function updateProjectRecordData(input: UpdateProjectRecordInput, userId: number) {
-  const { acquisitionAreas, tags, subsubsections, uploads, ...data } = input
+function updateProjectRecordData(
+  input: UpdateProjectRecordInput,
+  userId: number,
+  allowAdminFields: boolean,
+) {
+  const {
+    acquisitionAreas,
+    tags,
+    subsubsections,
+    uploads,
+    formTemplates,
+    projectRecordTemplateId,
+    ...data
+  } = input
 
   return {
     ...data,
@@ -170,6 +228,10 @@ function updateProjectRecordData(input: UpdateProjectRecordInput, userId: number
     tags: setIds(idsFromFormValue(tags)),
     subsubsections: setIds(idsFromFormValue(subsubsections)),
     uploads: setIds(idsFromFormValue(uploads)),
+    // The origin template belongs here too: repointing it also changes the forms offered.
+    ...(allowAdminFields
+      ? { projectRecordTemplateId, formTemplates: setIds(idsFromFormValue(formTemplates)) }
+      : {}),
   }
 }
 
@@ -250,6 +312,18 @@ export async function getProjectRecordAdmin(
         },
       },
       tags: true,
+      // Every `m2mFields` entry must be here: the edit form resubmits what this returns, so a
+      // missing relation arrives back as [] and the save wipes it.
+      formTemplates: {
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          type: true,
+          projects: { select: { slug: true } },
+        },
+        orderBy: { title: "asc" },
+      },
       subsubsection: {
         include: {
           subsection: {
@@ -385,11 +459,12 @@ export async function createProjectRecord(
     editorRoles,
   )
   const { projectSlug, ...data } = input
-  await validateProjectRecordRelations(projectSlug, data)
+  const allowFormTemplates = await isAdminRequest(headers)
+  await validateProjectRecordRelations(projectSlug, data, true)
   const userId = Number(session.userId)
 
   const record = await db.projectRecord.create({
-    data: createProjectRecordData(data, projectId, userId),
+    data: createProjectRecordData(data, projectId, userId, allowFormTemplates),
     include: projectRecordInclude,
   })
 
@@ -412,7 +487,8 @@ export async function updateProjectRecord(
 ) {
   const { session } = await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
   const { id, projectSlug, ...data } = input
-  await validateProjectRecordRelations(projectSlug, data)
+  const allowAdminFields = await isAdminRequest(headers)
+  await validateProjectRecordRelations(projectSlug, data, allowAdminFields)
   const userId = Number(session.userId)
   const previous = await db.projectRecord.findFirstOrThrow({
     where: projectRecordInProjectWhere(projectSlug, id),
@@ -421,7 +497,7 @@ export async function updateProjectRecord(
 
   const record = await db.projectRecord.update({
     where: { id: previous.id },
-    data: updateProjectRecordData(data, userId),
+    data: updateProjectRecordData(data, userId, allowAdminFields),
     include: projectRecordInclude,
   })
 

@@ -62,6 +62,7 @@ export const AdminEditProjectRecordForm = ({ projectRecordId }: Props) => {
       editingState: projectRecord.editingState,
       reviewState: projectRecord.reviewState,
       reviewNotes: projectRecord.reviewNotes ?? "",
+      projectRecordTemplateId: projectRecord.projectRecordTemplateId,
       ...m2mFieldsInitialValues,
     },
     validators: { onSubmit: ProjectRecordFormSchema } as never,
@@ -78,6 +79,7 @@ export const AdminEditProjectRecordForm = ({ projectRecordId }: Props) => {
             uploads: values.uploads === true ? false : values.uploads,
             subsubsections: values.subsubsections === true ? false : values.subsubsections,
             acquisitionAreas: values.acquisitionAreas === true ? false : values.acquisitionAreas,
+            formTemplates: values.formTemplates === true ? false : values.formTemplates,
           },
         })
         navigate({ to: `/admin/project-records` })

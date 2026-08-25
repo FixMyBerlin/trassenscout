@@ -137,7 +137,8 @@ export const ProjectRecordNewModal = ({
   type HandleSubmit = z.infer<typeof NewProjectRecordFormSchema>
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      const { uploads, tags, subsubsections, acquisitionAreas, ...restValues } = values
+      const { uploads, tags, subsubsections, acquisitionAreas, formTemplates, ...restValues } =
+        values
       const projectRecord = await createProjectRecordMutation.mutateAsync({
         data: {
           ...restValues,
@@ -147,6 +148,7 @@ export const ProjectRecordNewModal = ({
           tags,
           subsubsections,
           acquisitionAreas,
+          formTemplates,
         },
       })
       if (onSuccess) {
@@ -171,6 +173,8 @@ export const ProjectRecordNewModal = ({
       title: selectedTemplate.entryTitle,
       body: selectedTemplate.body || "",
       tags: selectedTemplate.tags.map((tag) => String(tag.id)),
+      // Stored so the record keeps inheriting this template's forms, including later additions.
+      projectRecordTemplateId: selectedTemplate.id,
     }),
   }
 
