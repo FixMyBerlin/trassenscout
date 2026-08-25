@@ -1,5 +1,6 @@
 import { responseConfig as radnetzBrandenburgResponseConfig } from "@/src/components/beteiligung/surveys/radnetz-brandenbrug/response-config"
 import {
+  FormTemplateTypeEnum,
   ProjectRecordEditingState,
   ProjectRecordReviewState,
   ProjectRecordType,
@@ -140,6 +141,129 @@ const seedAdmin = async () => {
         purpose: template.purpose,
         projects: { connect: [{ id: project.id }] },
         tags: { connect: [{ id: tags[template.topicIndex]!.id }] },
+      },
+    })
+  }
+
+  const formTemplateSeedData = [
+    {
+      title: "Antrag",
+      slug: "antrag",
+      type: FormTemplateTypeEnum.SUBSUBSECTION,
+      bodyMarkdown: [
+        "# Antrag auf Gewährung einer Zuwendung",
+        "",
+        "**Antragsteller:in:** {{antragsteller}}",
+        "",
+        "**Bezeichnung des Bauvorhabens:** {{bauvorhaben}}",
+        "",
+        "**Ort:** {{ort}}",
+        "",
+        "**Fördergegenstand:** {{foerdergegenstand}}",
+        "",
+        "**Gesamtkosten:** {{gesamtkosten}} EUR",
+        "",
+        "**Geplanter Baubeginn:** {{baubeginn}}",
+        "",
+        "Ort, Datum, Unterschrift: ______________________________",
+      ].join("\n"),
+      fields: [
+        { name: "antragsteller", label: "Antragsteller:in", type: "text" },
+        { name: "bauvorhaben", label: "Bezeichnung des Bauvorhabens", type: "text" },
+        { name: "ort", label: "Ort", type: "text" },
+        { name: "foerdergegenstand", label: "Fördergegenstand", type: "textarea" },
+        { name: "gesamtkosten", label: "Gesamtkosten in Euro", type: "number" },
+        { name: "baubeginn", label: "Geplanter Baubeginn", type: "date" },
+      ],
+    },
+    {
+      title: "Mittelabruf",
+      slug: "mittelabruf",
+      type: FormTemplateTypeEnum.SUBSUBSECTION,
+      bodyMarkdown: [
+        "# Mittelabruf",
+        "",
+        "**Antragsteller:in:** {{antragsteller}}",
+        "",
+        "**Aktenzeichen:** {{aktenzeichen}}",
+        "",
+        "**Abgerufener Betrag:** {{betrag}} EUR",
+        "",
+        "**Verwendungszeitraum:** {{zeitraum}}",
+        "",
+        "Ort, Datum, Unterschrift: ______________________________",
+      ].join("\n"),
+      fields: [
+        { name: "antragsteller", label: "Antragsteller:in", type: "text" },
+        { name: "aktenzeichen", label: "Aktenzeichen", type: "text" },
+        { name: "betrag", label: "Abgerufener Betrag in Euro", type: "number" },
+        { name: "zeitraum", label: "Verwendungszeitraum", type: "text" },
+      ],
+    },
+    {
+      title: "Verwendungsnachweis",
+      slug: "verwendungsnachweis",
+      type: FormTemplateTypeEnum.SUBSUBSECTION,
+      bodyMarkdown: [
+        "# Verwendungsnachweis",
+        "",
+        "**Antragsteller:in:** {{antragsteller}}",
+        "",
+        "**Aktenzeichen:** {{aktenzeichen}}",
+        "",
+        "**Bewilligte Zuwendung:** {{bewilligt}} EUR",
+        "",
+        "**Tatsächliche Ausgaben:** {{ausgaben}} EUR",
+        "",
+        "**Sachbericht:**",
+        "",
+        "{{sachbericht}}",
+        "",
+        "Ort, Datum, Unterschrift: ______________________________",
+      ].join("\n"),
+      fields: [
+        { name: "antragsteller", label: "Antragsteller:in", type: "text" },
+        { name: "aktenzeichen", label: "Aktenzeichen", type: "text" },
+        { name: "bewilligt", label: "Bewilligte Zuwendung in Euro", type: "number" },
+        { name: "ausgaben", label: "Tatsächliche Ausgaben in Euro", type: "number" },
+        { name: "sachbericht", label: "Sachbericht", type: "textarea" },
+      ],
+    },
+    {
+      title: "Verzicht",
+      slug: "verzicht",
+      type: FormTemplateTypeEnum.ACQUISITIONAREA,
+      bodyMarkdown: [
+        "# Verzichtserklärung",
+        "",
+        "**Eigentümer:in:** {{eigentuemer}}",
+        "",
+        "**Flurstück:** {{flurstueck}}",
+        "",
+        "**Gemarkung:** {{gemarkung}}",
+        "",
+        "Hiermit verzichte ich auf {{verzichtsgegenstand}}.",
+        "",
+        "Ort, Datum, Unterschrift: ______________________________",
+      ].join("\n"),
+      fields: [
+        { name: "eigentuemer", label: "Eigentümer:in", type: "text" },
+        { name: "flurstueck", label: "Flurstück", type: "text" },
+        { name: "gemarkung", label: "Gemarkung", type: "text" },
+        { name: "verzichtsgegenstand", label: "Gegenstand des Verzichts", type: "textarea" },
+      ],
+    },
+  ] as const
+
+  for (const template of formTemplateSeedData) {
+    await db.formTemplate.create({
+      data: {
+        title: template.title,
+        slug: template.slug,
+        type: template.type,
+        bodyMarkdown: template.bodyMarkdown,
+        fields: template.fields,
+        projects: { connect: [{ id: project.id }] },
       },
     })
   }

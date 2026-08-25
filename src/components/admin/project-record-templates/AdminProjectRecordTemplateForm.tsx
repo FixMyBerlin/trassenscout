@@ -10,8 +10,10 @@ import {
   applyFormSubmitResult,
   type OnSubmitResult,
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
+import { formTemplatesQueryOptions } from "@/src/server/formTemplates/formTemplatesQueryOptions"
 import { tagsAdminQueryOptions } from "@/src/server/projectRecordTemplates/projectRecordTemplatesQueryOptions"
 import { projectsAdminQueryOptions } from "@/src/server/projects/projectsQueryOptions"
+import { formTemplateTypeLabels } from "@/src/shared/formTemplates/schemas"
 import {
   projectRecordTemplateFormDefaultValues,
   type ProjectRecordTemplateFormFieldValues,
@@ -36,6 +38,65 @@ export type AdminProjectRecordTemplateFormProps<S extends z.ZodType> = {
 const toNumericIds = (value: unknown) => {
   if (!Array.isArray(value)) return []
   return value.map((entry) => Number(entry)).filter((entry) => Number.isInteger(entry) && entry > 0)
+}
+
+const FormTemplateFields = () => {
+  const form = useCoreAppFormContext()
+  const { data: formTemplates } = useSuspenseQuery(formTemplatesQueryOptions())
+
+  const selectedProjectIds = toNumericIds(useFormValue<string[]>("projectIds"))
+  const selectedFormTemplateIds = toNumericIds(useFormValue<string[]>("formTemplateIds"))
+  const selectedProjectIdSet = useMemo(() => new Set(selectedProjectIds), [selectedProjectIds])
+
+  const availableFormTemplates = useMemo(
+    () =>
+      formTemplates.filter((formTemplate) =>
+        formTemplate.projects.some((project) => selectedProjectIdSet.has(project.id)),
+      ),
+    [formTemplates, selectedProjectIdSet],
+  )
+
+  useEffect(
+    function filterFormTemplateIdsWhenProjectsChange() {
+      const availableIds = new Set(availableFormTemplates.map((formTemplate) => formTemplate.id))
+      const filteredIds = selectedFormTemplateIds.filter((id) => availableIds.has(id))
+      if (filteredIds.length === selectedFormTemplateIds.length) return
+      form.setFieldValue("formTemplateIds", filteredIds.map(String))
+    },
+    [availableFormTemplates, form, selectedFormTemplateIds],
+  )
+
+  return (
+    <div className="space-y-4">
+      <p className="mb-0 block text-sm font-medium text-gray-700">Formulare (optional)</p>
+      <p className="mt-0 text-sm text-gray-500">
+        Protokolleinträge aus dieser Vorlage bieten die hier gewählten Formulare zum Ausfüllen an.
+        Änderungen wirken auch auf bereits bestehende Protokolleinträge.
+      </p>
+      {!selectedProjectIds.length ? (
+        <p className="mt-0 text-sm text-gray-500">
+          Wählen Sie zuerst ein oder mehrere Projekte aus.
+        </p>
+      ) : !availableFormTemplates.length ? (
+        <p className="mt-0 text-sm text-gray-500">
+          Für die gewählten Projekte sind keine Formulartemplates hinterlegt.
+        </p>
+      ) : (
+        <form.AppField name="formTemplateIds">
+          {(field) => (
+            <field.CheckboxGroup
+              classLabelOverwrite="hidden"
+              classNameItemWrapper="grid grid-cols-2 gap-1.5 w-full"
+              items={availableFormTemplates.map((formTemplate) => ({
+                value: String(formTemplate.id),
+                label: `${formTemplate.title} (${formTemplateTypeLabels[formTemplate.type]})`,
+              }))}
+            />
+          )}
+        </form.AppField>
+      )}
+    </div>
+  )
 }
 
 const ProjectAndTagFields = () => {
@@ -170,6 +231,7 @@ export function AdminProjectRecordTemplateForm({
         {(field) => <field.TextareaField label="Notizen" optional rows={12} />}
       </form.AppField>
       <ProjectAndTagFields />
+      <FormTemplateFields />
       <form.AppField name="purpose">
         {(field) => <field.TextareaField label="Verwendungszweck" optional rows={5} />}
       </form.AppField>

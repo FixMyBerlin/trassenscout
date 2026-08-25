@@ -7,14 +7,17 @@ import {
   ProjectRecordEmailSourceDisclosure,
   type ProjectRecordEmailSourceValue,
 } from "@/src/components/project-records/ProjectRecordEmailSource"
+import { ProjectRecordFormTemplatesSection } from "@/src/components/project-records/ProjectRecordFormTemplatesSection"
 import { ProjectRecordVerknuepfungen } from "@/src/components/project-records/ProjectRecordVerknuepfungen"
 import { createProjectRecordFilterUrl } from "@/src/components/project-records/utils/filter/createFilterUrl"
 import type { ProjectRecord } from "@/src/server/projectRecords/types"
+import { getEffectiveFormTemplates } from "@/src/shared/formTemplates/effectiveFormTemplates"
 
 type Props = {
   projectRecord: ProjectRecord & {
     projectRecordEmail?: ProjectRecordEmailSourceValue | null
   }
+  onFormSaved?: () => void
 }
 export const metadataItemClassName = "flex flex-wrap items-center gap-3 text-sm text-gray-600"
 export const projectRecordSectionClassName =
@@ -22,8 +25,16 @@ export const projectRecordSectionClassName =
 export const projectRecordSectionLabelClassName = "text-sm font-medium text-gray-700"
 export const projectRecordSectionValueClassName = "text-sm text-gray-700"
 
-export const ProjectRecordSummary = ({ projectRecord }: Props) => {
+export const ProjectRecordSummary = ({ projectRecord, onFormSaved }: Props) => {
   const projectSlug = projectRecord.project.slug
+  const formTemplates = getEffectiveFormTemplates(projectRecord, {
+    projectSlug,
+    hasSubsubsection:
+      projectRecord.subsubsections.length > 0 || Boolean(projectRecord.subsubsection),
+    hasAcquisitionArea:
+      projectRecord.acquisitionAreas.length > 0 || Boolean(projectRecord.acquisitionArea),
+  })
+
   return (
     <div className="my-6 space-y-6">
       <div className="flex flex-wrap items-center gap-x-10 gap-y-3">
@@ -115,6 +126,18 @@ export const ProjectRecordSummary = ({ projectRecord }: Props) => {
       </div>
 
       <ProjectRecordAssignmentForm key={projectRecord.id} projectRecord={projectRecord} />
+
+      {formTemplates.length > 0 && (
+        <div className={projectRecordSectionClassName}>
+          <p className={projectRecordSectionLabelClassName}>Formulare:</p>
+          <ProjectRecordFormTemplatesSection
+            projectSlug={projectSlug}
+            projectRecord={projectRecord}
+            formTemplates={formTemplates}
+            onUploadSaved={onFormSaved}
+          />
+        </div>
+      )}
 
       <div>
         <p className={projectRecordSectionLabelClassName}>Dokumente:</p>

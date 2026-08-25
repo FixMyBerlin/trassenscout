@@ -54,6 +54,7 @@ export const AdminProjectRecordTemplateEditForm = ({ templateId }: Props) => {
           purpose: template.purpose || "",
           projectIds: template.projects.map((project) => String(project.id)),
           tagIds: template.tags.map((tag) => String(tag.id)),
+          formTemplateIds: template.formTemplates.map((formTemplate) => String(formTemplate.id)),
         }}
       />
 

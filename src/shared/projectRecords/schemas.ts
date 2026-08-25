@@ -19,6 +19,9 @@ const m2mFormFields = {
   acquisitionAreas: z
     .union([z.undefined(), z.boolean(), z.array(z.coerce.number())])
     .transform((v) => v || []),
+  formTemplates: z
+    .union([z.undefined(), z.boolean(), z.array(z.coerce.number())])
+    .transform((v) => v || []),
 }
 
 const ProjectRecordSchema = z.object({
@@ -43,6 +46,8 @@ const ProjectRecordSchema = z.object({
   uploads: z.union([z.literal(false), z.array(z.coerce.number())]).optional(),
   subsubsections: z.union([z.literal(false), z.array(z.coerce.number())]).optional(),
   acquisitionAreas: z.union([z.literal(false), z.array(z.coerce.number())]).optional(),
+  formTemplates: z.union([z.literal(false), z.array(z.coerce.number())]).optional(),
+  projectRecordTemplateId: InputNumberOrNullSchema,
 })
 
 export const DeleteProjectRecordSchema = ProjectSlugRequiredSchema.extend({
@@ -69,6 +74,8 @@ export const projectRecordFormDefaultValues = {
   uploads: [] as string[],
   subsubsections: [] as string[],
   acquisitionAreas: [] as string[],
+  formTemplates: [] as string[],
+  projectRecordTemplateId: null as number | null,
 }
 
 export const newProjectRecordFormDefaultValues = {
@@ -83,6 +90,8 @@ export const newProjectRecordFormDefaultValues = {
   uploads: [] as string[],
   subsubsections: [] as string[],
   acquisitionAreas: [] as string[],
+  formTemplates: [] as string[],
+  projectRecordTemplateId: null as number | null,
 }
 
 export const NewProjectRecordFormSchema = ProjectRecordSchema.omit({
