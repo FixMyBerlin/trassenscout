@@ -93,7 +93,7 @@ export function EditableSurveyResponseFilterForm({
   return (
     <nav className="w-full border-b border-gray-200 bg-white">
       <DebugFilterForm filter={filter} />
-      <div className={twJoin(pageContentPaddingClassName, "relative z-30 py-5")}>
+      <div className={twJoin(pageContentPaddingClassName, "relative z-10 py-5")}>
         <PageHeaderSearchFilter
           value={effectiveFilter.searchterm}
           onChange={(searchterm) => void handleSearchtermChange(searchterm)}
@@ -115,7 +115,8 @@ export function EditableSurveyResponseFilterForm({
       </div>
 
       {hasAdvancedFilters && (
-        <Disclosure as="div" className="relative z-10 border-t border-gray-200 bg-gray-50">
+        // Below the filter bar (10), above the unpositioned table.
+        <Disclosure as="div" className="relative z-[5] border-t border-gray-200 bg-gray-50">
           <DisclosureButton
             className={twJoin(
               pageContentPaddingClassName,
