@@ -207,6 +207,7 @@
   "trustedDependencies": [
     "@headlessui/react",
     "@mapgrab/playwright",
+    "@react-pdf/renderer",
     "@tanstack/react-form",
     "eslint-plugin-compat",
     "maplibre-gl",
