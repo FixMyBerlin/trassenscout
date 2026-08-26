@@ -139,6 +139,7 @@
     "@mapgrab/playwright",
     "eslint-plugin-compat",
     "react-dropzone",
+    "@react-pdf/renderer",
     "@headlessui/react",
     "recharts",
   ],
