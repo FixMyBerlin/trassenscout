@@ -11,7 +11,7 @@ import { viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
 import {
   loadUserRedactionContext,
-  serializeProjectAuthor,
+  serializeProjectUser,
 } from "@/src/server/memberships/redactFormerProjectMemberUser.server"
 import { getSurveyResponseTagsByProject } from "@/src/server/surveyResponseTags/surveyResponseTags.server"
 import { coordinatesToWkt } from "./coordinatesToWkt.server"
@@ -154,7 +154,7 @@ export async function exportPart2ResultsCsv(
             operator: operatorId ? operators.find((o) => o.id === operatorId)?.title : undefined,
             comments: surveyResponseComments
               .map((c) => {
-                const author = serializeProjectAuthor(c.author, redactionContext)
+                const author = serializeProjectUser(c.author, redactionContext)
                 return (
                   getFullname(author) +
                   " (" +
