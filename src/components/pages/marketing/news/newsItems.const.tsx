@@ -167,8 +167,8 @@ export const newsItems = [
     body: (
       <>
         <p>
-          Neue KI-Funktionen unterstützen bei der Verarbeitung von Projektinformationen.
-          Dokumente können automatisch zusammengefasst und E-Mails inklusive Anhängen für die
+          Neue KI-Funktionen unterstützen bei der Verarbeitung von Projektinformationen. Dokumente
+          können automatisch zusammengefasst und E-Mails inklusive Anhängen für die
           Projektdokumentation aufbereitet werden. Die Funktionen befinden sich aktuell noch in
           einer Alpha-Phase.
         </p>
