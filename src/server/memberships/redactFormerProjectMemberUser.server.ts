@@ -3,7 +3,7 @@ import db from "@/src/server/db.server"
 
 export const FORMER_MEMBER_PLACEHOLDER = "Ehemalige:r Mitarbeiter:in"
 export const FORMER_MEMBER_ADMIN_SUFFIX = " (kein Projektmitglied mehr)"
-/** Shown instead of author names for non-global-admins (active project members). */
+/** Generic label for current members in record/upload attribution (serializeProjectAuthor, non-admin viewers). */
 export const ANONYMOUS_AUTHOR_PLACEHOLDER = "Projektmitglied"
 
 type UserToRedact = {
@@ -181,6 +181,7 @@ export function serializeProjectAuthor(
 
 export type RedactedComment<T> = WithSerializedUsers<T> & { isOwnComment: boolean }
 
+/** Comments use serializeProjectUser so project viewers see member names; record attribution stays anonymous. */
 export function redactCommentAuthor<
   T extends {
     author?: UserToRedact | null
@@ -190,8 +191,8 @@ export function redactCommentAuthor<
   const userId = "userId" in comment ? comment.userId : null
   return {
     ...comment,
-    author: serializeProjectAuthor(comment.author, context),
-    ...("userId" in comment ? { userId: redactAuthorUserId(userId, context) } : {}),
+    author: serializeProjectUser(comment.author, context),
+    ...("userId" in comment ? { userId: formerMemberFk(userId, context) } : {}),
     isOwnComment: userId === context.sessionUserId,
   } as unknown as RedactedComment<T>
 }

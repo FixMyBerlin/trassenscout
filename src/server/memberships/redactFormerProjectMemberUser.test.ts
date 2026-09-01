@@ -139,21 +139,18 @@ describe("redactAuthorUserId", () => {
 describe("redactCommentAuthor", () => {
   const author = { id: 1, firstName: "Ada", lastName: "Lovelace" }
 
-  test("strips userId for non-admins and sets isOwnComment from session", () => {
+  test("keeps author names and userId for all users", () => {
     const result = redactCommentAuthor(
       { id: 10, body: "Hi", userId: 1, author },
       { memberUserIds, isAdmin: false, sessionUserId: 99 },
     )
 
-    expect(result.userId).toBeNull()
+    expect(result.userId).toBe(1)
     expect(result.isOwnComment).toBe(false)
-    expect(result.author).toEqual({
-      firstName: ANONYMOUS_AUTHOR_PLACEHOLDER,
-      lastName: "",
-    })
+    expect(result.author).toEqual({ id: 1, firstName: "Ada", lastName: "Lovelace" })
   })
 
-  test("marks own comments without exposing userId to non-admins", () => {
+  test("marks own comments and keeps userId", () => {
     const result = redactCommentAuthor(
       {
         id: 11,
@@ -164,8 +161,27 @@ describe("redactCommentAuthor", () => {
       { memberUserIds, isAdmin: false, sessionUserId },
     )
 
-    expect(result.userId).toBeNull()
+    expect(result.userId).toBe(sessionUserId)
     expect(result.isOwnComment).toBe(true)
+    expect(result.author).toEqual({ id: sessionUserId, firstName: "Me", lastName: "User" })
+  })
+
+  test("uses former-member placeholder for non-admins", () => {
+    const result = redactCommentAuthor(
+      {
+        id: 13,
+        body: "Old",
+        userId: 9,
+        author: { id: 9, firstName: "Former", lastName: "Member" },
+      },
+      { memberUserIds, isAdmin: false, sessionUserId },
+    )
+
+    expect(result.userId).toBeNull()
+    expect(result.author).toEqual({
+      firstName: FORMER_MEMBER_PLACEHOLDER,
+      lastName: "",
+    })
   })
 
   test("keeps userId for admins", () => {

@@ -2,8 +2,6 @@ import dompurify from "dompurify"
 import { twJoin } from "tailwind-merge"
 import { Markdown } from "@/src/components/core/components/Markdown/Markdown"
 import { proseClasses } from "@/src/components/core/components/text/prose"
-import { isAdmin } from "@/src/components/shared/app/users/utils/isAdmin"
-import { useCurrentUser } from "@/src/components/user/useCurrentUser"
 import type { RedactedCommentView } from "./commentTypes"
 import { EditCommentForm } from "./EditCommentForm"
 import { localDateTime } from "./utils/localDateTime"
@@ -20,7 +18,6 @@ type Props = {
 
 export const CommentField = ({ comment, commentLabel, mutateComment }: Props) => {
   const { author } = comment
-  const showAuthor = isAdmin(useCurrentUser())
   return (
     <div className="rounded-lg border border-gray-300 bg-blue-50 p-3 text-gray-700">
       <Markdown
@@ -32,16 +29,12 @@ export const CommentField = ({ comment, commentLabel, mutateComment }: Props) =>
       />
       <div className="relative mt-3 flex items-center justify-between border-t border-gray-300 pt-2">
         <div>
-          {showAuthor ? (
-            <>
-              <strong>
-                <span className="inline-flex items-center gap-1">
-                  {author?.firstName} {author?.lastName}
-                </span>
-              </strong>
-              {wasUpdated(comment) ? <br /> : ", "}
-            </>
-          ) : null}
+          <strong>
+            <span className="inline-flex items-center gap-1">
+              {author?.firstName} {author?.lastName}
+            </span>
+          </strong>
+          {wasUpdated(comment) ? <br /> : ", "}
           {localDateTime(comment.createdAt)}
           {wasUpdated(comment) && <>, aktualisiert {localDateTime(comment.updatedAt)}</>}
         </div>
