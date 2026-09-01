@@ -1,14 +1,20 @@
 import { createObjectCsvStringifier } from "csv-writer"
 import { format } from "date-fns"
 import { getPrdOrStgDomain } from "@/src/components/core/components/links/getDomain"
+import { getFullname } from "@/src/components/core/users/getFullname"
 import { subsubsectionLocationLabelMap } from "@/src/components/core/utils/subsubsectionLocationLabelMap"
 import type { Prisma } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
+import {
+  type UserRedactionContext,
+  loadUserRedactionContext,
+  serializeProjectUser,
+} from "@/src/server/memberships/redactFormerProjectMemberUser.server"
 
 const subsubsectionExportInclude = {
-  manager: { select: { firstName: true, lastName: true } },
+  manager: { select: { id: true, firstName: true, lastName: true } },
   subsection: {
     select: {
       slug: true,
@@ -25,7 +31,7 @@ export type SubsubsectionExportRow = Prisma.SubsubsectionGetPayload<{
   include: typeof subsubsectionExportInclude
 }>
 
-function getExportColumns(projectSlug: string) {
+function getExportColumns(projectSlug: string, redactionContext: UserRedactionContext) {
   const origin = getPrdOrStgDomain()
   return {
     titel: {
@@ -47,7 +53,7 @@ function getExportColumns(projectSlug: string) {
     ansprechpartner: {
       title: "Ansprechpartner:in",
       value: (s: SubsubsectionExportRow) =>
-        s.manager ? `${s.manager.firstName} ${s.manager.lastName}` : "",
+        s.manager ? (getFullname(serializeProjectUser(s.manager, redactionContext)) ?? "") : "",
     },
     kostenschaetzung_euro: {
       title: "Kostenschätzung (Euro)",
@@ -98,8 +104,12 @@ function getExportColumns(projectSlug: string) {
   }
 }
 
-function subsubsectionsToCsvString(subsubsections: SubsubsectionExportRow[], projectSlug: string) {
-  const columns = getExportColumns(projectSlug)
+function subsubsectionsToCsvString(
+  subsubsections: SubsubsectionExportRow[],
+  projectSlug: string,
+  redactionContext: UserRedactionContext,
+) {
+  const columns = getExportColumns(projectSlug, redactionContext)
   const headers = Object.entries(columns).map(([id, { title }]) => ({ id, title }))
 
   const csvData = subsubsections.map((s) =>
@@ -133,11 +143,12 @@ function subsubsectionCsvResponse(csvString: string, filename: string) {
 }
 
 export async function exportProjectSubsubsectionsCsv(headers: Headers, projectSlug: string) {
-  await endpointAuth.projectMember({
-    headers,
-    projectSlug,
-    roles: viewerRoles,
-  })
+  const { projectId, session } = await endpointAuth.projectRole(headers, projectSlug, viewerRoles)
+  const redactionContext = await loadUserRedactionContext(
+    projectId,
+    session.role,
+    Number(session.userId),
+  )
 
   const subsubsections = await db.subsubsection.findMany({
     where: {
@@ -149,7 +160,7 @@ export async function exportProjectSubsubsectionsCsv(headers: Headers, projectSl
     orderBy: [{ subsection: { slug: "asc" } }, { slug: "asc" }],
   })
 
-  const csvString = subsubsectionsToCsvString(subsubsections, projectSlug)
+  const csvString = subsubsectionsToCsvString(subsubsections, projectSlug, redactionContext)
   const filename = subsubsectionExportFilename(projectSlug)
 
   return subsubsectionCsvResponse(csvString, filename)
@@ -160,11 +171,12 @@ export async function exportSubsectionSubsubsectionsCsv(
   projectSlug: string,
   subsectionSlug: string,
 ) {
-  await endpointAuth.projectMember({
-    headers,
-    projectSlug,
-    roles: viewerRoles,
-  })
+  const { projectId, session } = await endpointAuth.projectRole(headers, projectSlug, viewerRoles)
+  const redactionContext = await loadUserRedactionContext(
+    projectId,
+    session.role,
+    Number(session.userId),
+  )
 
   const subsubsections = await db.subsubsection.findMany({
     where: {
@@ -177,7 +189,7 @@ export async function exportSubsectionSubsubsectionsCsv(
     orderBy: { slug: "asc" },
   })
 
-  const csvString = subsubsectionsToCsvString(subsubsections, projectSlug)
+  const csvString = subsubsectionsToCsvString(subsubsections, projectSlug, redactionContext)
   const filename = subsubsectionExportFilename(projectSlug, subsectionSlug)
 
   return subsubsectionCsvResponse(csvString, filename)

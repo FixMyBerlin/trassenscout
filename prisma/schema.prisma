@@ -458,6 +458,7 @@ model Subsubsection {
 
   specialFeatures SubsubsectionSpecial[] // - UNUSED
   extraFields     Json                   @default("{}")
+  logEntries      LogEntry[]
 
   @@unique([subsectionId, slug])
 }
@@ -505,6 +506,7 @@ model AcquisitionArea {
   uploads                 Upload[]
   projectRecords          ProjectRecord[]
   projectRecordRelations  ProjectRecord[]        @relation("ProjectRecordAcquisitionAreas")
+  logEntries              LogEntry[]
 }
 
 enum GeometryTypeEnum {
@@ -707,6 +709,7 @@ model Survey {
   project                Project         @relation(fields: [projectId], references: [id])
   //
   surveySessions         SurveySession[]
+  logEntries             LogEntry[]
 }
 
 model SurveySession {
@@ -779,6 +782,7 @@ model SurveyResponseComment {
   surveyResponseId Int
   //
   body             String
+  logEntries       LogEntry[]
 }
 
 model EmailTemplate {
@@ -829,43 +833,53 @@ enum SystemLogLevelEnum {
 }
 
 model LogEntry {
-  id                 Int                @id @default(autoincrement())
-  createdAt          DateTime           @default(now())
-  updatedAt          DateTime           @updatedAt
+  id                      Int                    @id @default(autoincrement())
+  createdAt               DateTime               @default(now())
+  updatedAt               DateTime               @updatedAt
   //
   // WHO…
-  userId             Int?
-  user               User?              @relation(fields: [userId], references: [id])
+  userId                  Int?
+  user                    User?                  @relation(fields: [userId], references: [id], onDelete: Restrict)
   // DID WHAT…
-  action             LogLevelActionEnum
-  message            String?
-  changes            Json?
+  action                  LogLevelActionEnum
+  message                 String?
+  changes                 Json?
   // RELATED PROJECT…
-  projectId          Int?
-  project            Project?           @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId               Int?
+  project                 Project?               @relation(fields: [projectId], references: [id], onDelete: Cascade)
   // OPTIONAL RELATED MODEL…
-  inviteId           Int?
-  invite             Invite?            @relation(fields: [inviteId], references: [id])
-  membershipId       Int?
-  membership         Membership?        @relation(fields: [membershipId], references: [id])
-  contactId          Int?
-  contact            Contact?           @relation(fields: [contactId], references: [id])
-  operatorId         Int?
-  operator           Operator?          @relation(fields: [operatorId], references: [id])
-  subsectionId       Int?
-  subsection         Subsection?        @relation(fields: [subsectionId], references: [id])
-  networkhierarchyId Int?
-  networkhierarchy   NetworkHierarchy?  @relation(fields: [networkhierarchyId], references: [id])
-  qualitylevelId     Int?
-  qualitylevel       QualityLevel?      @relation(fields: [qualitylevelId], references: [id])
-  uploadId           Int?
-  upload             Upload?            @relation(fields: [uploadId], references: [id])
-  surveyResponseId   Int?
-  surveyResponse     SurveyResponse?    @relation(fields: [surveyResponseId], references: [id])
-  ProjectRecord      ProjectRecord?     @relation(fields: [projectRecordId], references: [id])
-  projectRecordId    Int?
-  supportDocument    SupportDocument?   @relation(fields: [supportDocumentId], references: [id])
-  supportDocumentId  Int?
+  inviteId                Int?
+  invite                  Invite?                @relation(fields: [inviteId], references: [id], onDelete: SetNull)
+  membershipId            Int?
+  membership              Membership?            @relation(fields: [membershipId], references: [id], onDelete: SetNull)
+  contactId               Int?
+  contact                 Contact?               @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  operatorId              Int?
+  operator                Operator?              @relation(fields: [operatorId], references: [id], onDelete: SetNull)
+  subsectionId            Int?
+  subsection              Subsection?            @relation(fields: [subsectionId], references: [id], onDelete: SetNull)
+  subsubsectionId         Int?
+  subsubsection           Subsubsection?         @relation(fields: [subsubsectionId], references: [id], onDelete: SetNull)
+  acquisitionAreaId       Int?
+  acquisitionArea         AcquisitionArea?       @relation(fields: [acquisitionAreaId], references: [id], onDelete: SetNull)
+  networkhierarchyId      Int?
+  networkhierarchy        NetworkHierarchy?      @relation(fields: [networkhierarchyId], references: [id], onDelete: SetNull)
+  qualitylevelId          Int?
+  qualitylevel            QualityLevel?          @relation(fields: [qualitylevelId], references: [id], onDelete: SetNull)
+  uploadId                Int?
+  upload                  Upload?                @relation(fields: [uploadId], references: [id], onDelete: SetNull)
+  surveyResponseId        Int?
+  surveyResponse          SurveyResponse?        @relation(fields: [surveyResponseId], references: [id], onDelete: SetNull)
+  surveyId                Int?
+  survey                  Survey?                @relation(fields: [surveyId], references: [id], onDelete: SetNull)
+  projectRecord           ProjectRecord?         @relation(fields: [projectRecordId], references: [id], onDelete: SetNull)
+  projectRecordId         Int?
+  projectRecordCommentId  Int?
+  projectRecordComment    ProjectRecordComment?  @relation(fields: [projectRecordCommentId], references: [id], onDelete: SetNull)
+  surveyResponseCommentId Int?
+  surveyResponseComment   SurveyResponseComment? @relation(fields: [surveyResponseCommentId], references: [id], onDelete: SetNull)
+  supportDocument         SupportDocument?       @relation(fields: [supportDocumentId], references: [id], onDelete: SetNull)
+  supportDocumentId       Int?
 
   @@index([projectId, createdAt])
 }
@@ -961,6 +975,7 @@ model ProjectRecordComment {
   projectRecordId Int
   //
   body            String
+  logEntries      LogEntry[]
 }
 
 enum ProjectRecordType {

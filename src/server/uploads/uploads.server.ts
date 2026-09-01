@@ -1,6 +1,8 @@
 import type { z } from "zod"
 import { AllowedSurveySlugsSchema } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { getQuestionIdBySurveySlug } from "@/src/components/beteiligung/shared/utils/getQuestionIdBySurveySlug"
+import { frenchQuote } from "@/src/components/core/components/text/quote"
+import { shortTitle } from "@/src/components/core/components/text/titles"
 import { isImageMimeType } from "@/src/components/core/uploads/isImageUpload"
 import { NumberArraySchema } from "@/src/components/core/utils/schema-shared"
 import type { Prisma } from "@/src/prisma/generated/browser"
@@ -8,6 +10,12 @@ import { ProjectRecordReviewState } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
+import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
+import { relationIds } from "@/src/server/logEntries/create/relationIds"
+import {
+  loadUserRedactionContext,
+  redactUploadUsers,
+} from "@/src/server/memberships/redactFormerProjectMemberUser.server"
 import { projectRecordDetailVisibilityWhere } from "@/src/server/projectRecords/projectRecordVisibility.server"
 import { AuthorizationError } from "@/src/shared/auth/errors"
 import {
@@ -216,21 +224,33 @@ function assertUploadExternalUrlBelongsToProject(projectSlug: string, externalUr
 }
 
 export async function getUploads(headers: Headers, input: z.infer<typeof GetUploadsSchema>) {
-  await endpointAuth.projectRole(headers, input.projectSlug, viewerRoles)
+  const { projectId, session } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    viewerRoles,
+  )
   const uploads = await db.upload.findMany({
     include: uploadWithSubsectionsInclude,
     orderBy: { id: "desc" },
     where: { project: { slug: input.projectSlug } },
   })
-
-  return uploads
+  const redactionContext = await loadUserRedactionContext(
+    projectId,
+    session.role,
+    Number(session.userId),
+  )
+  return uploads.map((upload) => redactUploadUsers(upload, redactionContext))
 }
 
 export async function getUploadsWithSubsections(
   headers: Headers,
   input: z.infer<typeof GetUploadsWithSubsectionsSchema>,
 ) {
-  await endpointAuth.projectRole(headers, input.projectSlug, viewerRoles)
+  const { projectId, session } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    viewerRoles,
+  )
   const { projectSlug, where, orderBy = { id: "desc" }, skip = 0, take = 100 } = input
   const safeWhere: Prisma.UploadWhereInput = {
     project: { slug: projectSlug },
@@ -259,22 +279,35 @@ export async function getUploadsWithSubsections(
     }),
     db.upload.count({ where: safeWhere }),
   ])
+  const redactionContext = await loadUserRedactionContext(
+    projectId,
+    session.role,
+    Number(session.userId),
+  )
 
   return {
-    uploads,
+    uploads: uploads.map((upload) => redactUploadUsers(upload, redactionContext)),
     hasMore: skip + uploads.length < count,
     count,
   }
 }
 
 export async function getUpload(headers: Headers, input: z.infer<typeof GetUploadSchema>) {
-  await endpointAuth.projectRole(headers, input.projectSlug, viewerRoles)
+  const { projectId, session } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    viewerRoles,
+  )
   const upload = await db.upload.findFirstOrThrow({
     include: uploadWithSubsectionsInclude,
     where: uploadInProjectWhere(input.projectSlug, input.id),
   })
-
-  return upload
+  const redactionContext = await loadUserRedactionContext(
+    projectId,
+    session.role,
+    Number(session.userId),
+  )
+  return redactUploadUsers(upload, redactionContext)
 }
 
 export async function createUpload(headers: Headers, input: z.infer<typeof CreateUploadSchema>) {
@@ -325,10 +358,55 @@ export async function createUpload(headers: Headers, input: z.infer<typeof Creat
     }
   }
 
-  return db.upload.create({
+  const upload = await db.upload.create({
     data: createUploadData(data, projectId, Number(session.userId)),
     include: uploadWithSubsectionsInclude,
   })
+
+  const parentMessages: string[] = []
+  for (const subsubsection of upload.subsubsections ?? []) {
+    parentMessages.push(`zur Maßnahme ${frenchQuote(shortTitle(subsubsection.slug))}`)
+  }
+  for (const projectRecord of upload.projectRecords ?? []) {
+    parentMessages.push(`zum Protokolleintrag ${frenchQuote(projectRecord.title)}`)
+  }
+  for (const acquisitionArea of upload.acquisitionAreas ?? []) {
+    parentMessages.push(`zur Erwerbsfläche ${acquisitionArea.parcel.alkisParcelId}`)
+  }
+  const parentSuffix = parentMessages.length > 0 ? ` ${parentMessages.join(" und ")}` : ""
+
+  await createLogEntry({
+    action: "CREATE",
+    message: `Neues Dokument ${frenchQuote(upload.title)}${parentSuffix} wurde hinzugefügt.`,
+    userId: Number(session.userId),
+    projectSlug,
+    uploadId: upload.id,
+    updatedRecord: {
+      id: upload.id,
+      title: upload.title,
+      summary: upload.summary,
+      externalUrl: upload.externalUrl,
+      mimeType: upload.mimeType,
+      fileSize: upload.fileSize,
+      latitude: upload.latitude,
+      longitude: upload.longitude,
+      collaborationUrl: upload.collaborationUrl,
+      collaborationPath: upload.collaborationPath,
+      projectRecordEmailId: upload.projectRecordEmailId,
+      surveyResponseId: upload.surveyResponseId,
+      projectRecordIds: relationIds(upload.projectRecords),
+      subsubsectionIds: relationIds(upload.subsubsections),
+      acquisitionAreaIds: relationIds(upload.acquisitionAreas),
+      tagIds: relationIds(upload.tags),
+    },
+  })
+
+  const redactionContext = await loadUserRedactionContext(
+    projectId,
+    session.role,
+    Number(session.userId),
+  )
+  return redactUploadUsers(upload, redactionContext)
 }
 
 async function matchSubsubsectionIdFromFilename(projectSlug: string, filename: string) {
@@ -355,16 +433,83 @@ export async function updateUpload(headers: Headers, input: z.infer<typeof Updat
   )
   const { id, projectSlug, externalUrl: _keepStoredExternalUrl, ...data } = input
   await validateUploadRelations(projectSlug, data)
-  const previous = await db.upload.findFirstOrThrow({
+  const previousUpload = await db.upload.findFirstOrThrow({
     where: uploadInProjectWhere(projectSlug, id),
-    select: { id: true },
+    select: {
+      id: true,
+      title: true,
+      summary: true,
+      externalUrl: true,
+      mimeType: true,
+      fileSize: true,
+      latitude: true,
+      longitude: true,
+      collaborationUrl: true,
+      collaborationPath: true,
+      projectRecordEmailId: true,
+      surveyResponseId: true,
+      projectRecords: { select: { id: true } },
+      subsubsections: { select: { id: true } },
+      acquisitionAreas: { select: { id: true } },
+      tags: { select: { id: true } },
+    },
   })
 
-  return db.upload.update({
-    where: { id: previous.id },
+  const upload = await db.upload.update({
+    where: { id: previousUpload.id },
     data: updateUploadData(data, projectId, Number(session.userId)),
     include: uploadWithSubsectionsInclude,
   })
+  await createLogEntry({
+    action: "UPDATE",
+    message: `Dokument ${frenchQuote(upload.title)} wurde bearbeitet.`,
+    userId: Number(session.userId),
+    projectSlug,
+    previousRecord: {
+      id: previousUpload.id,
+      title: previousUpload.title,
+      summary: previousUpload.summary,
+      externalUrl: previousUpload.externalUrl,
+      mimeType: previousUpload.mimeType,
+      fileSize: previousUpload.fileSize,
+      latitude: previousUpload.latitude,
+      longitude: previousUpload.longitude,
+      collaborationUrl: previousUpload.collaborationUrl,
+      collaborationPath: previousUpload.collaborationPath,
+      projectRecordEmailId: previousUpload.projectRecordEmailId,
+      surveyResponseId: previousUpload.surveyResponseId,
+      projectRecordIds: relationIds(previousUpload.projectRecords),
+      subsubsectionIds: relationIds(previousUpload.subsubsections),
+      acquisitionAreaIds: relationIds(previousUpload.acquisitionAreas),
+      tagIds: relationIds(previousUpload.tags),
+    },
+    updatedRecord: {
+      id: upload.id,
+      title: upload.title,
+      summary: upload.summary,
+      externalUrl: upload.externalUrl,
+      mimeType: upload.mimeType,
+      fileSize: upload.fileSize,
+      latitude: upload.latitude,
+      longitude: upload.longitude,
+      collaborationUrl: upload.collaborationUrl,
+      collaborationPath: upload.collaborationPath,
+      projectRecordEmailId: upload.projectRecordEmailId,
+      surveyResponseId: upload.surveyResponseId,
+      projectRecordIds: relationIds(upload.projectRecords),
+      subsubsectionIds: relationIds(upload.subsubsections),
+      acquisitionAreaIds: relationIds(upload.acquisitionAreas),
+      tagIds: relationIds(upload.tags),
+    },
+    uploadId: upload.id,
+  })
+
+  const redactionContext = await loadUserRedactionContext(
+    projectId,
+    session.role,
+    Number(session.userId),
+  )
+  return redactUploadUsers(upload, redactionContext)
 }
 
 export async function checkUploadFilenameCollisions(
@@ -393,7 +538,11 @@ export async function replaceUploadFile(
   headers: Headers,
   input: z.infer<typeof ReplaceUploadFileSchema>,
 ) {
-  const { session } = await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
+  const { projectId, session } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    editorRoles,
+  )
   const {
     id,
     projectSlug,
@@ -408,10 +557,27 @@ export async function replaceUploadFile(
 
   assertUploadExternalUrlBelongsToProject(projectSlug, data.externalUrl)
 
-  const [previous, , exif] = await Promise.all([
+  const [previousUpload, , exif] = await Promise.all([
     db.upload.findFirstOrThrow({
       where: { ...uploadInProjectWhere(projectSlug, id), ...replaceableUploadWhere },
-      select: uploadForDeletionSelect,
+      select: {
+        id: true,
+        title: true,
+        summary: true,
+        externalUrl: true,
+        mimeType: true,
+        fileSize: true,
+        latitude: true,
+        longitude: true,
+        collaborationUrl: true,
+        collaborationPath: true,
+        projectRecordEmailId: true,
+        surveyResponseId: true,
+        projectRecords: { select: { id: true } },
+        subsubsections: { select: { id: true } },
+        acquisitionAreas: { select: { id: true } },
+        tags: { select: { id: true } },
+      },
     }),
     validateUploadRelations(projectSlug, {
       acquisitionAreas,
@@ -425,7 +591,7 @@ export async function replaceUploadFile(
   ])
 
   const upload = await db.upload.update({
-    where: { id: previous.id },
+    where: { id: previousUpload.id },
     data: {
       ...data,
       updatedById: Number(session.userId),
@@ -445,28 +611,86 @@ export async function replaceUploadFile(
     include: uploadWithSubsectionsInclude,
   })
 
+  await createLogEntry({
+    action: "UPDATE",
+    message: `Datei des Dokuments ${frenchQuote(upload.title)} wurde ersetzt.`,
+    userId: Number(session.userId),
+    projectSlug,
+    previousRecord: {
+      id: previousUpload.id,
+      title: previousUpload.title,
+      summary: previousUpload.summary,
+      externalUrl: previousUpload.externalUrl,
+      mimeType: previousUpload.mimeType,
+      fileSize: previousUpload.fileSize,
+      latitude: previousUpload.latitude,
+      longitude: previousUpload.longitude,
+      collaborationUrl: previousUpload.collaborationUrl,
+      collaborationPath: previousUpload.collaborationPath,
+      projectRecordEmailId: previousUpload.projectRecordEmailId,
+      surveyResponseId: previousUpload.surveyResponseId,
+      projectRecordIds: relationIds(previousUpload.projectRecords),
+      subsubsectionIds: relationIds(previousUpload.subsubsections),
+      acquisitionAreaIds: relationIds(previousUpload.acquisitionAreas),
+      tagIds: relationIds(previousUpload.tags),
+    },
+    updatedRecord: {
+      id: upload.id,
+      title: upload.title,
+      summary: upload.summary,
+      externalUrl: upload.externalUrl,
+      mimeType: upload.mimeType,
+      fileSize: upload.fileSize,
+      latitude: upload.latitude,
+      longitude: upload.longitude,
+      collaborationUrl: upload.collaborationUrl,
+      collaborationPath: upload.collaborationPath,
+      projectRecordEmailId: upload.projectRecordEmailId,
+      surveyResponseId: upload.surveyResponseId,
+      projectRecordIds: relationIds(upload.projectRecords),
+      subsubsectionIds: relationIds(upload.subsubsections),
+      acquisitionAreaIds: relationIds(upload.acquisitionAreas),
+      tagIds: relationIds(upload.tags),
+    },
+    uploadId: upload.id,
+  })
+
   // Best effort: the record already points at the new object, so a failed cleanup only
   // leaves an orphan behind. The URL check guards against a payload that reuses the
   // stored URL, which would otherwise delete the file the record now points at.
-  if (previous.externalUrl !== upload.externalUrl) {
+  if (previousUpload.externalUrl !== upload.externalUrl) {
     try {
-      await deleteUploadStoredFiles(previous)
+      await deleteUploadStoredFiles(previousUpload)
     } catch (error) {
       console.warn("Failed to delete replaced upload file:", error)
     }
   }
 
-  return upload
+  const redactionContext = await loadUserRedactionContext(
+    projectId,
+    session.role,
+    Number(session.userId),
+  )
+  return redactUploadUsers(upload, redactionContext)
 }
 
 export async function deleteUpload(headers: Headers, input: z.infer<typeof DeleteUploadSchema>) {
-  await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
+  const { session } = await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
   const upload = await db.upload.findFirstOrThrow({
     where: uploadInProjectWhere(input.projectSlug, input.id),
     select: uploadForDeletionSelect,
   })
 
   await deleteUploadFileAndDbRecord(upload)
+
+  await createLogEntry({
+    action: "DELETE",
+    message: `Dokument ${frenchQuote(upload.title)} wurde gelöscht.`,
+    userId: Number(session.userId),
+    projectSlug: input.projectSlug,
+    previousRecord: { id: upload.id },
+  })
+
   return { success: true }
 }
 
@@ -474,11 +698,12 @@ export async function deleteUploadIfOrphan(
   headers: Headers,
   input: z.infer<typeof DeleteUploadSchema>,
 ) {
-  await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
+  const { session } = await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
   const upload = await db.upload.findFirstOrThrow({
     where: uploadInProjectWhere(input.projectSlug, input.id),
     select: {
       id: true,
+      title: true,
       collaborationPath: true,
       collaborationUrl: true,
       externalUrl: true,
@@ -508,6 +733,15 @@ export async function deleteUploadIfOrphan(
   }
 
   await deleteUploadFileAndDbRecord(upload)
+
+  await createLogEntry({
+    action: "DELETE",
+    message: `Verwaistes Dokument ${frenchQuote(upload.title)} wurde gelöscht.`,
+    userId: Number(session.userId),
+    projectSlug: input.projectSlug,
+    previousRecord: { id: upload.id },
+  })
+
   return { deleted: true }
 }
 
@@ -515,7 +749,11 @@ export async function getSurveyResponseUploadsSplit(
   headers: Headers,
   input: GetSurveyResponseUploadsSplitInput,
 ) {
-  await endpointAuth.projectRole(headers, input.projectSlug, viewerRoles)
+  const { projectId, session } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    viewerRoles,
+  )
   const { projectSlug, surveyResponseId } = input
 
   const surveyResponse = await db.surveyResponse.findFirst({
@@ -543,6 +781,12 @@ export async function getSurveyResponseUploadsSplit(
     orderBy: { id: "desc" },
     include: uploadWithSubsectionsInclude,
   })
+  const redactionContext = await loadUserRedactionContext(
+    projectId,
+    session.role,
+    Number(session.userId),
+  )
+  const serializedUploads = uploads.map((upload) => redactUploadUsers(upload, redactionContext))
 
   const data = JSON.parse(surveyResponse.data) as Record<string, unknown>
   const parsedSurveySlug = AllowedSurveySlugsSchema.safeParse({
@@ -553,7 +797,7 @@ export async function getSurveyResponseUploadsSplit(
     : undefined
 
   if (!uploadsQuestionId || !(uploadsQuestionId in data)) {
-    return { uploadsInData: [], uploadsNotInData: uploads }
+    return { uploadsInData: [], uploadsNotInData: serializedUploads }
   }
 
   const rawUploadIds = data[uploadsQuestionId]
@@ -562,16 +806,16 @@ export async function getSurveyResponseUploadsSplit(
   )
 
   if (uploadIdsInData.length === 0) {
-    return { uploadsInData: [], uploadsNotInData: uploads }
+    return { uploadsInData: [], uploadsNotInData: serializedUploads }
   }
 
-  const uploadMap = new Map(uploads.map((upload) => [upload.id, upload]))
+  const uploadMap = new Map(serializedUploads.map((upload) => [upload.id, upload]))
   const uploadsInData = uploadIdsInData
     .map((id) => uploadMap.get(id))
     .filter((upload): upload is NonNullable<typeof upload> => upload != null)
 
   const uploadsInDataIds = new Set(uploadsInData.map((upload) => upload.id))
-  const uploadsNotInData = uploads.filter((upload) => !uploadsInDataIds.has(upload.id))
+  const uploadsNotInData = serializedUploads.filter((upload) => !uploadsInDataIds.has(upload.id))
 
   return {
     uploadsInData,

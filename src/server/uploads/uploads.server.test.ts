@@ -5,6 +5,9 @@ import { AuthorizationError } from "@/src/shared/auth/errors"
 const mockDeleteObject = vi.fn()
 const mockS3Client = { client: "s3" }
 const mockDb = {
+  membership: {
+    findMany: vi.fn(),
+  },
   project: {
     findUnique: vi.fn(),
   },
@@ -46,8 +49,15 @@ vi.mock("@/src/server/auth/endpointAuth.server", () => ({
   endpointAuth: mockEndpointAuth,
 }))
 
+const mockCreateLogEntry = vi.fn().mockResolvedValue(undefined)
+
+vi.mock("@/src/server/logEntries/create/createLogEntry", () => ({
+  createLogEntry: mockCreateLogEntry,
+}))
+
 vi.mock("@/src/server/uploads/_utils/s3Client.server", () => ({
   getConfiguredS3Client: () => mockS3Client,
+  getAwsSdkS3Client: () => mockS3Client,
 }))
 
 vi.mock("@better-upload/server/helpers", () => ({
@@ -96,8 +106,9 @@ describe("createUpload", () => {
     mockDb.projectRecord.findMany.mockResolvedValue([])
     mockDb.upload.findFirstOrThrow.mockResolvedValue({ id: 77 })
     mockDb.upload.findMany.mockResolvedValue([])
-    mockDb.upload.create.mockResolvedValue({ id: 77 })
+    mockDb.upload.create.mockResolvedValue({ id: 77, title: "document.pdf" })
     mockDb.upload.update.mockResolvedValue({ id: 77 })
+    mockDb.membership.findMany.mockResolvedValue([{ projectId: 1, userId: 2 }])
     mockDeleteObject.mockResolvedValue(undefined)
   })
 
@@ -147,6 +158,14 @@ describe("createUpload", () => {
           surveyResponseId: 123,
           externalUrl: projectExternalUrl,
         }),
+      }),
+    )
+    expect(mockCreateLogEntry).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action: "CREATE",
+        uploadId: 77,
+        userId: 2,
+        projectSlug: "rs23",
       }),
     )
   })
@@ -222,6 +241,41 @@ describe("createUpload", () => {
     ).rejects.toBeInstanceOf(AuthorizationError)
 
     expect(mockDb.upload.create).not.toHaveBeenCalled()
+  })
+
+  test("includes Maßnahme and Protokolleintrag in the CREATE log message", async () => {
+    const { createUpload } = await import("./uploads.server")
+    mockEndpointAuth.projectRole.mockResolvedValueOnce({
+      projectId: 1,
+      membershipRole: "EDITOR",
+      session: { userId: 2, role: "USER" },
+    })
+    mockDb.subsubsection.findMany.mockResolvedValue([{ id: 5 }])
+    mockDb.projectRecord.findMany.mockResolvedValue([{ id: 42 }])
+    mockDb.upload.create.mockResolvedValue({
+      id: 77,
+      title: "Foto.jpg",
+      subsubsections: [{ slug: "rf1" }],
+      projectRecords: [{ title: "Ortstermin" }],
+      acquisitionAreas: [],
+    })
+
+    await createUpload(headers, {
+      ...baseInput,
+      title: "Foto.jpg",
+      surveyResponseId: null,
+      subsubsections: [5],
+      projectRecords: [42],
+    })
+
+    expect(mockCreateLogEntry).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action: "CREATE",
+        message:
+          "Neues Dokument »Foto.jpg« zur Maßnahme »RF1« und zum Protokolleintrag »Ortstermin« wurde hinzugefügt.",
+        uploadId: 77,
+      }),
+    )
   })
 
   test("rejects viewer project-record uploads that also set extra relations", async () => {

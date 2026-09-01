@@ -14,7 +14,7 @@ import { TableWrapper } from "@/src/components/core/components/Table/TableWrappe
 import { frenchQuote } from "@/src/components/core/components/text/quote"
 import { longTitle } from "@/src/components/core/components/text/titles"
 import { getFullname } from "@/src/components/core/users/getFullname"
-import type { LogLevelActionEnum } from "@/src/prisma/generated/browser"
+import { type LogLevelActionEnum } from "@/src/prisma/generated/browser"
 import { projectLogEntriesQueryOptions } from "@/src/server/logEntries/logEntriesQueryOptions"
 import { AdminLogEntryChanges } from "./AdminLogEntryChanges"
 
@@ -39,7 +39,7 @@ const actionColorClasses: Record<LogLevelActionEnum, string> = {
 
 export const ProjectLogEntries = ({ projectId, projectSlug, hideWhenEmpty = true }: Props) => {
   const {
-    data: { logEntries },
+    data: { isAdmin, logEntries },
   } = useSuspenseQuery(projectLogEntriesQueryOptions({ projectSlug, projectId }))
 
   if (hideWhenEmpty && !logEntries.length) return null
@@ -68,49 +68,63 @@ export const ProjectLogEntries = ({ projectId, projectSlug, hideWhenEmpty = true
                 <th scope="col" className={tableHeadCellClassName}>
                   Details
                 </th>
-                <th scope="col" className={tableHeadCellClassName}>
-                  Benutzer
-                </th>
+                {isAdmin ? (
+                  <th scope="col" className={tableHeadCellClassName}>
+                    Benutzer
+                  </th>
+                ) : null}
               </tr>
             </thead>
 
             <tbody className={tableBodyClassName}>
-              {logEntries.map((entry) => (
-                <tr key={entry.id} className={tableRowClassName}>
-                  <td className="py-4 pr-3 pl-4 align-top text-sm leading-tight sm:pl-6">
-                    {format(entry.createdAt, "Pp", { locale: de })}
-                    <br />
-                    <span className="text-xs text-gray-500">
-                      {formatDistanceToNow(entry.createdAt, { addSuffix: true, locale: de })}
-                    </span>
-                  </td>
-                  <td className="px-3 py-4 align-top text-sm text-gray-500">
-                    <span
-                      className={twJoin(
-                        "inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset",
-                        actionColorClasses[entry.action],
+              {logEntries.map((entry) => {
+                const changes =
+                  entry.changes != null &&
+                  (Array.isArray(entry.changes)
+                    ? entry.changes.length > 0
+                    : typeof entry.changes === "object" && Object.keys(entry.changes).length > 0)
+                    ? entry.changes
+                    : null
+
+                return (
+                  <tr key={entry.id} className={tableRowClassName}>
+                    <td className="py-4 pr-3 pl-4 align-top text-sm leading-tight sm:pl-6">
+                      {format(entry.createdAt, "Pp", { locale: de })}
+                      <br />
+                      <span className="text-xs text-gray-500">
+                        {formatDistanceToNow(entry.createdAt, { addSuffix: true, locale: de })}
+                      </span>
+                    </td>
+                    <td className="px-3 py-4 align-top text-sm text-gray-500">
+                      <span
+                        className={twJoin(
+                          "inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset",
+                          actionColorClasses[entry.action],
+                        )}
+                      >
+                        {actionName[entry.action]}
+                      </span>
+                    </td>
+                    <td className="px-3 py-4 align-top text-sm text-gray-500">
+                      {isAdmin && changes ? (
+                        <details>
+                          <summary className="cursor-pointer underline-offset-2 hover:underline">
+                            {entry.message}
+                          </summary>
+                          <AdminLogEntryChanges context={changes} />
+                        </details>
+                      ) : (
+                        entry.message
                       )}
-                    >
-                      {actionName[entry.action]}
-                    </span>
-                  </td>
-                  <td className="px-3 py-4 align-top text-sm text-gray-500">
-                    {entry.changes ? (
-                      <details>
-                        <summary className="cursor-pointer underline-offset-2 hover:underline">
-                          {entry.message}
-                        </summary>
-                        <AdminLogEntryChanges context={entry.changes} />
-                      </details>
-                    ) : (
-                      entry.message
-                    )}
-                  </td>
-                  <td className="py-4 pr-4 pl-3 align-top text-sm sm:pr-6">
-                    {entry.user ? getFullname(entry.user) : null}
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    {isAdmin ? (
+                      <td className="py-4 pr-4 pl-3 align-top text-sm sm:pr-6">
+                        {entry.user ? getFullname(entry.user) : null}
+                      </td>
+                    ) : null}
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         </TableWrapper>

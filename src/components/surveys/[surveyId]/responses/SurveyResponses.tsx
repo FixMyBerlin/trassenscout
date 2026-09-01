@@ -12,6 +12,7 @@ import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAd
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { PageHeaderToolbarLink } from "@/src/components/core/components/PageHeader/PageHeaderToolbarLink"
+import { frenchQuote } from "@/src/components/core/components/text/quote"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
 import { EditableSurveyResponseFilterForm } from "@/src/components/surveys/[surveyId]/responses/EditableSurveyResponseFilterForm"
@@ -64,7 +65,7 @@ function SurveyResponsesWithoutPart2({ survey, tabs }: Pick<Props, "survey" | "t
       />
       <div className={pageContentPaddingClassName}>
         <SuperAdminBox>
-          <p>In der Beteiligung {survey.slug.toUpperCase()} gibt es keinen Umfrageteil 2. </p>
+          <p>In {frenchQuote(survey.slug.toUpperCase())} gibt es keinen Umfrageteil 2. </p>
         </SuperAdminBox>
       </div>
     </>

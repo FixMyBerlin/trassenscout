@@ -117,6 +117,7 @@ export const projectRecordInclude = {
     select: {
       id: true,
       projectRecordId: true,
+      userId: true,
       createdAt: true,
       updatedAt: true,
       body: true,

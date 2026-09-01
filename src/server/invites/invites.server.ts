@@ -11,9 +11,14 @@ import { editorRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import {
+  loadUserRedactionContext,
+  serializeProjectAuthor,
+} from "@/src/server/memberships/redactFormerProjectMemberUser.server"
+import {
   getEditableProjectsForInvite,
   inviteProjectSelect,
 } from "@/src/server/projects/queries/getEditableProjectsForInvite.server"
+import { getProjectIdBySlug } from "@/src/server/projects/queries/getProjectIdBySlug.server"
 import { generateSecureToken } from "@/src/server/utils/generateSecureToken.server"
 import { paginate } from "@/src/server/utils/paginate.server"
 import {
@@ -183,14 +188,31 @@ async function createInvitesForSession({
 
   const inviterName = getFullname(result.inviter) ?? result.inviter.email
   const projectName = formatInviteProjects(result.projects)
+  const createdInvites = await db.invite.findMany({
+    where: {
+      email: result.email,
+      token: result.token,
+      projectId: { in: result.projects.map((project) => project.id) },
+    },
+    select: { id: true, projectId: true },
+  })
+  const inviteIdByProjectId = new Map(createdInvites.map((invite) => [invite.projectId, invite.id]))
 
   try {
     for (const project of result.projects) {
       await createLogEntry({
         action: "CREATE",
-        message: `Einladung an ${result.email} versendet`,
+        message: `Einladung an ${result.email} wurde versendet.`,
         userId: inviterId,
         projectId: project.id,
+        inviteId: inviteIdByProjectId.get(project.id),
+        updatedRecord: {
+          id: inviteIdByProjectId.get(project.id),
+          email: result.email,
+          role: project.role,
+          status: "PENDING",
+          projectId: project.id,
+        },
       })
     }
 
@@ -221,6 +243,12 @@ export async function getInvites(headers: Headers, input: GetInvitesInput) {
 
   const { projectSlug, skip = 0, take = 100 } = input
   const safeWhere = { project: { slug: projectSlug } }
+  const projectId = await getProjectIdBySlug(projectSlug)
+  const redactionContext = await loadUserRedactionContext(
+    projectId,
+    session.role,
+    Number(session.userId),
+  )
 
   const {
     items: invites,
@@ -242,12 +270,20 @@ export async function getInvites(headers: Headers, input: GetInvitesInput) {
           email: true,
           role: true,
           updatedAt: true,
-          inviter: { select: { firstName: true, lastName: true } },
+          inviter: { select: { id: true, firstName: true, lastName: true } },
         },
       }),
   })
 
-  return { invites, nextPage, hasMore, count }
+  return {
+    invites: invites.map((invite) => ({
+      ...invite,
+      inviter: serializeProjectAuthor(invite.inviter, redactionContext),
+    })),
+    nextPage,
+    hasMore,
+    count,
+  }
 }
 
 export async function createInvites(headers: Headers, input: CreateInvitesInput) {
@@ -268,6 +304,15 @@ export async function revokeInvite(headers: Headers, input: z.infer<typeof Revok
   const session = await endpointAuth.session(headers)
   await authorizeProjectMemberByProjectSlug(session, input.projectSlug, editorRoles)
 
+  const invite = await db.invite.findFirst({
+    where: {
+      id: input.inviteId,
+      project: { slug: input.projectSlug },
+      status: "PENDING",
+    },
+    select: { id: true, email: true, projectId: true },
+  })
+
   const result = await db.invite.updateMany({
     where: {
       id: input.inviteId,
@@ -282,6 +327,18 @@ export async function revokeInvite(headers: Headers, input: z.infer<typeof Revok
 
   if (result.count === 0) {
     throw new Error("Die Einladung konnte nicht zurückgezogen werden.")
+  }
+
+  if (invite) {
+    await createLogEntry({
+      action: "UPDATE",
+      message: `Einladung an ${invite.email} wurde zurückgezogen.`,
+      userId: Number(session.userId),
+      projectId: invite.projectId,
+      inviteId: invite.id,
+      previousRecord: { email: invite.email, status: "PENDING" },
+      updatedRecord: { email: invite.email, status: "EXPIRED" },
+    })
   }
 
   return { success: true as const }

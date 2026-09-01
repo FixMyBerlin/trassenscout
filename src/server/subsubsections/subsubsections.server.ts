@@ -1,8 +1,16 @@
 import { z } from "zod"
+import { frenchQuote } from "@/src/components/core/components/text/quote"
+import { shortTitle } from "@/src/components/core/components/text/titles"
 import type { Prisma } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
+import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
+import {
+  formerMemberFk,
+  loadUserRedactionContext,
+  serializeProjectUser,
+} from "@/src/server/memberships/redactFormerProjectMemberUser.server"
 import { connectIds, idsFromFormValue, setIds } from "@/src/shared/prisma/connectIds"
 import {
   parseDefinitions,
@@ -10,6 +18,10 @@ import {
 } from "@/src/shared/subsubsections/extraFieldSchemas"
 import { SubsubsectionSchema } from "@/src/shared/subsubsections/schemas"
 import { m2mFieldRelationNames, m2mFields } from "./m2mFields"
+import {
+  subsubsectionLogSnapshot,
+  subsubsectionLogSnapshotSelect,
+} from "./subsubsectionLogSnapshot"
 import {
   CreateSubsubsectionSchema,
   DeleteSubsubsectionSchema,
@@ -22,7 +34,7 @@ import type { SubsubsectionWithPosition } from "./types"
 import { typeSubsubsectionGeometry } from "./utils/typeSubsubsectionGeometry"
 
 const subsubsectionListInclude = {
-  manager: { select: { firstName: true, lastName: true } },
+  manager: { select: { id: true, firstName: true, lastName: true } },
   subsection: { select: { id: true, slug: true } },
   qualityLevel: { select: { title: true, slug: true, url: true } },
   SubsubsectionTask: { select: { title: true } },
@@ -174,7 +186,11 @@ export async function getSubsubsections(
   headers: Headers,
   input: z.infer<typeof GetSubsubsectionsSchema>,
 ) {
-  await endpointAuth.projectRole(headers, input.projectSlug, viewerRoles)
+  const { projectId, session } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    viewerRoles,
+  )
   const subsubsections = await db.subsubsection.findMany({
     orderBy: { slug: "asc" },
     where: {
@@ -185,31 +201,58 @@ export async function getSubsubsections(
     },
     include: subsubsectionListInclude,
   })
-
-  return subsubsections.map(
-    (subsubsection) =>
-      typeSubsubsectionGeometry(subsubsection) as unknown as SubsubsectionWithPosition,
+  const redactionContext = await loadUserRedactionContext(
+    projectId,
+    session.role,
+    Number(session.userId),
   )
+
+  return subsubsections.map((subsubsection) => {
+    const typed = typeSubsubsectionGeometry(subsubsection) as unknown as SubsubsectionWithPosition
+    return {
+      ...typed,
+      manager: serializeProjectUser(subsubsection.manager, redactionContext),
+      managerId: formerMemberFk(subsubsection.managerId, redactionContext),
+    }
+  })
 }
 
 export async function getSubsubsection(
   headers: Headers,
   input: z.infer<typeof GetSubsubsectionSchema>,
 ) {
-  await endpointAuth.projectRole(headers, input.projectSlug, viewerRoles)
+  const { projectId, session } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    viewerRoles,
+  )
   const subsubsection = await db.subsubsection.findFirstOrThrow({
     where: subsubsectionInProjectWhere(input.projectSlug, input.id),
     include: subsubsectionDetailInclude,
   })
+  const redactionContext = await loadUserRedactionContext(
+    projectId,
+    session.role,
+    Number(session.userId),
+  )
+  const typed = typeSubsubsectionGeometry(subsubsection) as SubsubsectionWithPosition
 
-  return typeSubsubsectionGeometry(subsubsection) as SubsubsectionWithPosition
+  return {
+    ...typed,
+    manager: serializeProjectUser(subsubsection.manager, redactionContext),
+    managerId: formerMemberFk(subsubsection.managerId, redactionContext),
+  }
 }
 
 export async function getSubsubsectionBySlug(
   headers: Headers,
   input: z.infer<typeof GetSubsubsectionBySlugSchema>,
 ) {
-  await endpointAuth.projectRole(headers, input.projectSlug, viewerRoles)
+  const { projectId, session } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    viewerRoles,
+  )
   const subsubsection = await db.subsubsection.findFirstOrThrow({
     where: {
       slug: input.subsubsectionSlug,
@@ -220,34 +263,115 @@ export async function getSubsubsectionBySlug(
     },
     include: subsubsectionDetailInclude,
   })
+  const redactionContext = await loadUserRedactionContext(
+    projectId,
+    session.role,
+    Number(session.userId),
+  )
+  const typed = typeSubsubsectionGeometry(subsubsection) as SubsubsectionWithPosition
 
-  return typeSubsubsectionGeometry(subsubsection) as SubsubsectionWithPosition
+  return {
+    ...typed,
+    manager: serializeProjectUser(subsubsection.manager, redactionContext),
+    managerId: formerMemberFk(subsubsection.managerId, redactionContext),
+  }
 }
 
 export async function createSubsubsection(
   headers: Headers,
   input: z.infer<typeof CreateSubsubsectionSchema>,
 ) {
-  await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
+  const { projectId, session } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    editorRoles,
+  )
   const { projectSlug, ...data } = input
   await validateSubsubsectionRelations(projectSlug, data)
   const extraFields = await subsubsectionExtraFieldsData(projectSlug, data.extraFields)
 
-  return db.subsubsection.create({
+  const record = await db.subsubsection.create({
     data: subsubsectionData(data, extraFields),
+    include: { manager: subsubsectionListInclude.manager },
   })
+
+  await createLogEntry({
+    action: "CREATE",
+    message: `Neue Maßnahme ${frenchQuote(shortTitle(record.slug))} wurde erstellt.`,
+    userId: Number(session.userId),
+    projectSlug,
+    subsubsectionId: record.id,
+    updatedRecord: {
+      id: record.id,
+      slug: record.slug,
+      subTitle: record.subTitle,
+      type: record.type,
+      location: record.location,
+      geometry: record.geometry,
+      labelPos: record.labelPos,
+      lengthM: record.lengthM,
+      width: record.width,
+      widthExisting: record.widthExisting,
+      description: record.description,
+      mapillaryKey: record.mapillaryKey,
+      isExistingInfra: record.isExistingInfra,
+      maxSpeed: record.maxSpeed,
+      trafficLoad: record.trafficLoad,
+      trafficLoadDate: record.trafficLoadDate,
+      planningPeriod: record.planningPeriod,
+      constructionPeriod: record.constructionPeriod,
+      estimatedCompletionDate: record.estimatedCompletionDate,
+      estimatedConstructionDateString: record.estimatedConstructionDateString,
+      costEstimate: record.costEstimate,
+      planningCosts: record.planningCosts,
+      deliveryCosts: record.deliveryCosts,
+      constructionCosts: record.constructionCosts,
+      landAcquisitionCosts: record.landAcquisitionCosts,
+      expensesOfficialOrders: record.expensesOfficialOrders,
+      expensesTechnicalVerification: record.expensesTechnicalVerification,
+      nonEligibleExpenses: record.nonEligibleExpenses,
+      revenuesEconomicIncome: record.revenuesEconomicIncome,
+      contributionsThirdParties: record.contributionsThirdParties,
+      grantsOtherFunding: record.grantsOtherFunding,
+      ownFunds: record.ownFunds,
+      qualityLevelId: record.qualityLevelId,
+      managerId: record.managerId,
+      subsectionId: record.subsectionId,
+      subsubsectionStatusId: record.subsubsectionStatusId,
+      subsubsectionTaskId: record.subsubsectionTaskId,
+      subsubsectionInfraId: record.subsubsectionInfraId,
+      extraFields: record.extraFields,
+      specialFeatureIds: idsFromFormValue(data.specialFeatures),
+      subsubsectionInfrastructureTypeIds: idsFromFormValue(data.subsubsectionInfrastructureTypeIds),
+    },
+  })
+
+  const redactionContext = await loadUserRedactionContext(
+    projectId,
+    session.role,
+    Number(session.userId),
+  )
+  return {
+    ...record,
+    manager: serializeProjectUser(record.manager, redactionContext),
+    managerId: formerMemberFk(record.managerId, redactionContext),
+  }
 }
 
 export async function updateSubsubsection(
   headers: Headers,
   input: z.infer<typeof UpdateSubsubsectionSchema>,
 ) {
-  await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
+  const { projectId, session } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    editorRoles,
+  )
   const { id, projectSlug, ...data } = input
   await validateSubsubsectionRelations(projectSlug, data)
   const previous = await db.subsubsection.findFirstOrThrow({
     where: subsubsectionInProjectWhere(projectSlug, id),
-    select: { id: true, subsectionId: true },
+    select: { id: true, ...subsubsectionLogSnapshotSelect },
   })
 
   if (data.subsectionId !== previous.subsectionId) {
@@ -256,19 +380,67 @@ export async function updateSubsubsection(
 
   const extraFields = await subsubsectionExtraFieldsData(projectSlug, data.extraFields)
 
-  return db.subsubsection.update({
+  const record = await db.subsubsection.update({
     where: { id: previous.id },
     data: subsubsectionUpdateData(data, extraFields),
-    include: { subsection: { select: { slug: true } } },
+    include: {
+      subsection: { select: { slug: true } },
+      specialFeatures: { select: { id: true } },
+      SubsubsectionInfrastructureTypes: { select: { id: true } },
+      manager: subsubsectionListInclude.manager,
+    },
   })
+
+  await createLogEntry({
+    action: "UPDATE",
+    message: `Maßnahme ${frenchQuote(shortTitle(record.slug))} wurde bearbeitet.`,
+    userId: Number(session.userId),
+    projectSlug,
+    subsubsectionId: record.id,
+    previousRecord: {
+      id: previous.id,
+      ...subsubsectionLogSnapshot(previous),
+    },
+    updatedRecord: {
+      id: record.id,
+      ...subsubsectionLogSnapshot(record),
+    },
+  })
+
+  const redactionContext = await loadUserRedactionContext(
+    projectId,
+    session.role,
+    Number(session.userId),
+  )
+  return {
+    ...record,
+    manager: serializeProjectUser(record.manager, redactionContext),
+    managerId: formerMemberFk(record.managerId, redactionContext),
+  }
 }
 
 export async function deleteSubsubsection(
   headers: Headers,
   input: z.infer<typeof DeleteSubsubsectionSchema>,
 ) {
-  await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
-  return db.subsubsection.deleteMany({
+  const { session } = await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
+  const previous = await db.subsubsection.findFirst({
+    where: subsubsectionInProjectWhere(input.projectSlug, input.id),
+    select: { id: true, slug: true },
+  })
+  const result = await db.subsubsection.deleteMany({
     where: subsubsectionInProjectWhere(input.projectSlug, input.id),
   })
+
+  if (previous) {
+    await createLogEntry({
+      action: "DELETE",
+      message: `Maßnahme ${frenchQuote(shortTitle(previous.slug))} wurde gelöscht.`,
+      userId: Number(session.userId),
+      projectSlug: input.projectSlug,
+      previousRecord: { id: previous.id },
+    })
+  }
+
+  return result
 }

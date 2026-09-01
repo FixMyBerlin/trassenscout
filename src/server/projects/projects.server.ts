@@ -1,5 +1,6 @@
 import { z } from "zod"
-import { longTitle } from "@/src/components/core/components/text/titles"
+import { frenchQuote } from "@/src/components/core/components/text/quote"
+import { shortTitle } from "@/src/components/core/components/text/titles"
 import { UserRoleEnum } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { authorizeProjectMemberByProjectSlug } from "@/src/server/authorization/authorizeProjectMember.server"
@@ -85,7 +86,21 @@ export async function updateProject(headers: Headers, input: z.infer<typeof Upda
   await authorizeProjectMemberByProjectSlug(session, input.projectSlug, editorRoles)
 
   const { projectSlug, partnerLogoSrcs, ...data } = input
-  const previous = await db.project.findFirst({ where: { slug: projectSlug } })
+  const previous = await db.project.findFirstOrThrow({
+    where: { slug: projectSlug },
+    select: {
+      id: true,
+      slug: true,
+      subTitle: true,
+      description: true,
+      logoSrc: true,
+      partnerLogoSrcs: true,
+      exportEnabled: true,
+      aiEnabled: true,
+      alkisStateKey: true,
+      landAcquisitionModuleEnabled: true,
+    },
+  })
 
   const project = await db.project.update({
     where: { slug: projectSlug },
@@ -94,11 +109,33 @@ export async function updateProject(headers: Headers, input: z.infer<typeof Upda
 
   await createLogEntry({
     action: "UPDATE",
-    message: `Projekt ${longTitle(project.slug)} bearbeitet`,
+    message: `Projekt ${frenchQuote(shortTitle(project.slug))} wurde bearbeitet.`,
     userId: Number(session.userId),
     projectId: project.id,
-    previousRecord: previous,
-    updatedRecord: project,
+    previousRecord: {
+      id: previous.id,
+      slug: previous.slug,
+      subTitle: previous.subTitle,
+      description: previous.description,
+      logoSrc: previous.logoSrc,
+      partnerLogoSrcs: previous.partnerLogoSrcs,
+      exportEnabled: previous.exportEnabled,
+      aiEnabled: previous.aiEnabled,
+      alkisStateKey: previous.alkisStateKey,
+      landAcquisitionModuleEnabled: previous.landAcquisitionModuleEnabled,
+    },
+    updatedRecord: {
+      id: project.id,
+      slug: project.slug,
+      subTitle: project.subTitle,
+      description: project.description,
+      logoSrc: project.logoSrc,
+      partnerLogoSrcs: project.partnerLogoSrcs,
+      exportEnabled: project.exportEnabled,
+      aiEnabled: project.aiEnabled,
+      alkisStateKey: project.alkisStateKey,
+      landAcquisitionModuleEnabled: project.landAcquisitionModuleEnabled,
+    },
   })
 
   if (previous?.slug && previous.slug !== project.slug) {
@@ -150,12 +187,33 @@ export async function getAdminProjectsWithCounts(headers: Headers) {
 }
 
 export async function createProject(headers: Headers, input: z.infer<typeof CreateProjectSchema>) {
-  await endpointAuth.admin(headers)
+  const adminSession = await endpointAuth.admin(headers)
   const { partnerLogoSrcs, ...data } = input
 
-  return db.project.create({
+  const project = await db.project.create({
     data: { ...data, partnerLogoSrcs: partnerLogoSrcs || undefined },
   })
+
+  await createLogEntry({
+    action: "CREATE",
+    message: `Neues Projekt ${frenchQuote(shortTitle(project.slug))} wurde erstellt.`,
+    userId: Number(adminSession.userId),
+    projectId: project.id,
+    updatedRecord: {
+      id: project.id,
+      slug: project.slug,
+      subTitle: project.subTitle,
+      description: project.description,
+      logoSrc: project.logoSrc,
+      partnerLogoSrcs: project.partnerLogoSrcs,
+      exportEnabled: project.exportEnabled,
+      aiEnabled: project.aiEnabled,
+      alkisStateKey: project.alkisStateKey,
+      landAcquisitionModuleEnabled: project.landAcquisitionModuleEnabled,
+    },
+  })
+
+  return project
 }
 
 export async function updateProjectsFeatureFlag(

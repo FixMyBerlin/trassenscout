@@ -1,8 +1,10 @@
 import { z } from "zod"
 import type { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
+import { frenchQuote } from "@/src/components/core/components/text/quote"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
+import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { CreateSurveySchema } from "@/src/shared/surveys/schemas"
 import {
   CreateAdminSurveySchema,
@@ -120,18 +122,56 @@ export async function createAdminSurvey(
   headers: Headers,
   input: z.infer<typeof CreateAdminSurveySchema>,
 ) {
-  await endpointAuth.admin(headers)
+  const { userId } = await endpointAuth.admin(headers)
+  const survey = await db.survey.create({ data: input })
 
-  return db.survey.create({ data: input })
+  await createLogEntry({
+    action: "CREATE",
+    message: `Neue Beteiligung ${frenchQuote(survey.title)} wurde erstellt.`,
+    userId: Number(userId),
+    projectId: input.projectId,
+    surveyId: survey.id,
+    updatedRecord: {
+      id: survey.id,
+      slug: survey.slug,
+      title: survey.title,
+      active: survey.active,
+      projectId: survey.projectId,
+    },
+  })
+
+  return survey
 }
 
 export async function updateAdminSurvey(
   headers: Headers,
   input: z.infer<typeof UpdateAdminSurveySchema>,
 ) {
-  await endpointAuth.admin(headers)
+  const { userId } = await endpointAuth.admin(headers)
   const { id, ...data } = input
+  const previous = await db.survey.findFirstOrThrow({
+    where: { id },
+    select: { id: true, active: true, title: true, projectId: true },
+  })
   const updatedSurvey = await db.survey.update({ where: { id }, data })
+
+  if (previous.active !== updatedSurvey.active) {
+    await createLogEntry({
+      action: "UPDATE",
+      message: updatedSurvey.active
+        ? `Beteiligung ${frenchQuote(updatedSurvey.title)} wurde aktiviert.`
+        : `Beteiligung ${frenchQuote(updatedSurvey.title)} wurde deaktiviert.`,
+      userId: Number(userId),
+      projectId: previous.projectId,
+      surveyId: updatedSurvey.id,
+      previousRecord: { id: previous.id, active: previous.active, title: previous.title },
+      updatedRecord: {
+        id: updatedSurvey.id,
+        active: updatedSurvey.active,
+        title: updatedSurvey.title,
+      },
+    })
+  }
 
   return { ...updatedSurvey, slug: updatedSurvey.slug as AllowedSurveySlugs }
 }
