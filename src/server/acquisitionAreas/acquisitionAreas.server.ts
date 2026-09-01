@@ -1,4 +1,6 @@
 import { z } from "zod"
+import { frenchQuote } from "@/src/components/core/components/text/quote"
+import { shortTitle } from "@/src/components/core/components/text/titles"
 import type { Prisma } from "@/src/prisma/generated/browser"
 import { ProjectRecordReviewState } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
@@ -79,46 +81,112 @@ export async function createAcquisitionArea(
   headers: Headers,
   input: z.infer<typeof CreateAcquisitionAreaSchema>,
 ) {
-  await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
+  const { session } = await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
   const { projectSlug, ...data } = input
   await validateAcquisitionAreaInput({ projectSlug, ...data })
 
-  return db.acquisitionArea.create({
+  const record = await db.acquisitionArea.create({
     data: acquisitionAreaData(data),
     include: acquisitionAreaInclude,
   })
+
+  await createLogEntry({
+    action: "CREATE",
+    message: `Neue Erwerbsfläche ${record.parcel.alkisParcelId} wurde erstellt.`,
+    userId: Number(session.userId),
+    projectSlug,
+    acquisitionAreaId: record.id,
+    updatedRecord: {
+      id: record.id,
+      geometry: record.geometry,
+      description: record.description,
+      bufferRadiusM: record.bufferRadiusM,
+      subsubsectionId: record.subsubsectionId,
+      parcelId: record.parcelId,
+      acquisitionAreaStatusId: record.acquisitionAreaStatusId,
+    },
+  })
+
+  return record
 }
 
 export async function updateAcquisitionArea(
   headers: Headers,
   input: z.infer<typeof UpdateAcquisitionAreaSchema>,
 ) {
-  await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
+  const { session } = await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
   const { id, projectSlug, ...data } = input
   await validateAcquisitionAreaInput({ projectSlug, ...data })
   const previous = await db.acquisitionArea.findFirstOrThrow({
     where: acquisitionAreaInProjectWhere(projectSlug, id),
-    select: { id: true },
+    select: {
+      id: true,
+      geometry: true,
+      description: true,
+      bufferRadiusM: true,
+      subsubsectionId: true,
+      parcelId: true,
+      acquisitionAreaStatusId: true,
+    },
   })
 
-  return db.acquisitionArea.update({
+  const record = await db.acquisitionArea.update({
     where: { id: previous.id },
     data: acquisitionAreaData(data),
     include: acquisitionAreaInclude,
   })
+
+  await createLogEntry({
+    action: "UPDATE",
+    message: `Erwerbsfläche ${record.parcel.alkisParcelId} wurde bearbeitet.`,
+    userId: Number(session.userId),
+    projectSlug,
+    acquisitionAreaId: record.id,
+    previousRecord: previous,
+    updatedRecord: {
+      id: record.id,
+      geometry: record.geometry,
+      description: record.description,
+      bufferRadiusM: record.bufferRadiusM,
+      subsubsectionId: record.subsubsectionId,
+      parcelId: record.parcelId,
+      acquisitionAreaStatusId: record.acquisitionAreaStatusId,
+    },
+  })
+
+  return record
 }
 
 export async function deleteAcquisitionArea(
   headers: Headers,
   input: z.infer<typeof DeleteAcquisitionAreaSchema>,
 ) {
-  await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
-  return db.$transaction((tx) =>
+  const { session } = await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
+  const previous = await db.acquisitionArea.findFirst({
+    where: acquisitionAreaInProjectWhere(input.projectSlug, input.id),
+    select: {
+      id: true,
+      parcel: { select: { alkisParcelId: true } },
+    },
+  })
+  const result = await db.$transaction((tx) =>
     deleteAcquisitionAreasAndOrphanParcels(
       tx,
       acquisitionAreaInProjectWhere(input.projectSlug, input.id),
     ),
   )
+
+  if (previous) {
+    await createLogEntry({
+      action: "DELETE",
+      message: `Erwerbsfläche ${previous.parcel.alkisParcelId} wurde gelöscht.`,
+      userId: Number(session.userId),
+      projectSlug: input.projectSlug,
+      previousRecord: { id: previous.id },
+    })
+  }
+
+  return result
 }
 
 export async function getAcquisitionAreasBySubsubsection(
@@ -220,12 +288,12 @@ export async function createAcquisitionAreasFromSelection(
   const { session } = await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
   const { projectSlug, subsubsectionId, acquisitionAreas } = input
 
-  await db.subsubsection.findFirstOrThrow({
+  const subsubsection = await db.subsubsection.findFirstOrThrow({
     where: {
       id: subsubsectionId,
       subsection: { project: { slug: projectSlug } },
     },
-    select: { id: true },
+    select: { id: true, slug: true },
   })
 
   const acquisitionAreaStatusIds = Array.from(
@@ -336,12 +404,21 @@ export async function createAcquisitionAreasFromSelection(
     }
   })
 
-  await createLogEntry({
-    action: "CREATE",
-    message: `${result.createdAcquisitionAreas.length} Erwerbsflächen erstellt, ${result.updatedAcquisitionAreasCount} aktualisiert, ${result.keptAcquisitionAreasCount} unverändert`,
-    userId: Number(session.userId),
-    projectSlug,
-  })
+  const created = result.createdAcquisitionAreas.length
+
+  if (created > 0) {
+    await createLogEntry({
+      action: "CREATE",
+      message: `${created} Erwerbsflächen für Maßnahme ${frenchQuote(shortTitle(subsubsection.slug))} wurden erstellt.`,
+      userId: Number(session.userId),
+      projectSlug,
+      subsubsectionId: subsubsection.id,
+      updatedRecord: {
+        subsubsectionId: subsubsection.id,
+        acquisitionAreaIds: result.createdAcquisitionAreas.map((area) => area.id),
+      },
+    })
+  }
 
   return result.createdAcquisitionAreas
 }

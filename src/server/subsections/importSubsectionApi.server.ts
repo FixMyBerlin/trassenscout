@@ -1,10 +1,12 @@
 import { z } from "zod"
+import { frenchQuote } from "@/src/components/core/components/text/quote"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import db from "@/src/server/db.server"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { subsectionGeometryTypeValidationRefine } from "@/src/shared/geometry/geometryTypeValidation"
 import { ImportSubsectionDataSchema } from "./importSchema"
+import { subsectionLogSnapshot, subsectionLogSnapshotSelect } from "./subsectionLogSnapshot"
 
 const ImportSubsectionRequestSchema = z.object({
   projectSlug: z.string(),
@@ -61,6 +63,7 @@ export async function importSubsectionFromApi(request: Request) {
         slug,
         projectId: project.id,
       },
+      select: { id: true, ...subsectionLogSnapshotSelect },
     })
 
     const applyFallback = !data.geometry && !existing
@@ -116,30 +119,33 @@ export async function importSubsectionFromApi(request: Request) {
       result = await db.subsection.update({
         where: { id: existing.id },
         data: subsectionData,
+        select: { id: true, ...subsectionLogSnapshotSelect },
       })
       action = "updated"
 
       await createLogEntry({
         action: "UPDATE",
-        message: `Planungsabschnitt ${shortTitle(result.slug)} wurde über CSV-Import aktualisiert`,
+        message: `Planungsabschnitt ${frenchQuote(shortTitle(result.slug))} wurde über CSV-Import aktualisiert.`,
         userId,
         projectId: project.id,
         subsectionId: existing.id,
-        previousRecord: existing,
-        updatedRecord: result,
+        previousRecord: { id: existing.id, ...subsectionLogSnapshot(existing) },
+        updatedRecord: { id: result.id, ...subsectionLogSnapshot(result) },
       })
     } else {
       result = await db.subsection.create({
         data: subsectionData as Parameters<typeof db.subsection.create>[0]["data"],
+        select: { id: true, ...subsectionLogSnapshotSelect },
       })
       action = "created"
 
       await createLogEntry({
         action: "CREATE",
-        message: `Neuer Planungsabschnitt ${shortTitle(result.slug)} per CSV-Import`,
+        message: `Neuer Planungsabschnitt ${frenchQuote(shortTitle(result.slug))} wurde per CSV-Import erstellt.`,
         userId,
         projectId: project.id,
         subsectionId: result.id,
+        updatedRecord: { id: result.id, ...subsectionLogSnapshot(result) },
       })
     }
 

@@ -1,5 +1,6 @@
 import { z } from "zod"
 import { getLabelPosition } from "@/src/components/core/components/Map/utils/getLabelPosition"
+import { frenchQuote } from "@/src/components/core/components/text/quote"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import db from "@/src/server/db.server"
@@ -9,6 +10,10 @@ import { PointGeometrySchema } from "@/src/shared/geometry/geojsonSchemas"
 import { subsubsectionGeometryTypeValidationRefine } from "@/src/shared/geometry/geometryTypeValidation"
 import { ImportSubsubsectionDataSchema } from "./importSchema"
 import { m2mFieldRelationNames, m2mFields, type M2MFieldsType } from "./m2mFields"
+import {
+  subsubsectionLogSnapshot,
+  subsubsectionLogSnapshotSelect,
+} from "./subsubsectionLogSnapshot"
 
 const ImportSubsubsectionRequestSchema = z.object({
   projectSlug: z.string(),
@@ -134,6 +139,7 @@ export async function importSubsubsectionFromApi(request: Request) {
         slug,
         subsectionId: subsection.id,
       },
+      select: { id: true, ...subsubsectionLogSnapshotSelect },
     })
 
     const calculateFallbackGeometry = () => {
@@ -208,32 +214,35 @@ export async function importSubsubsectionFromApi(request: Request) {
       result = await db.subsubsection.update({
         where: { id: existing.id },
         data: { ...subsubsectionData, ...connect },
+        select: { id: true, ...subsubsectionLogSnapshotSelect },
       })
       action = "updated"
 
       await createLogEntry({
         action: "UPDATE",
-        message: `Maßnahme  ${shortTitle(result.slug)} wurde über CSV-Import aktualisiert`,
+        message: `Maßnahme ${frenchQuote(shortTitle(result.slug))} wurde über CSV-Import aktualisiert.`,
         userId,
         projectId: project.id,
-        subsectionId: subsection.id,
-        previousRecord: existing,
-        updatedRecord: result,
+        subsubsectionId: result.id,
+        previousRecord: { id: existing.id, ...subsubsectionLogSnapshot(existing) },
+        updatedRecord: { id: result.id, ...subsubsectionLogSnapshot(result) },
       })
     } else {
       result = await db.subsubsection.create({
         data: { ...subsubsectionData, ...connect } as Parameters<
           typeof db.subsubsection.create
         >[0]["data"],
+        select: { id: true, ...subsubsectionLogSnapshotSelect },
       })
       action = "created"
 
       await createLogEntry({
         action: "CREATE",
-        message: `Neue Maßnahme  ${shortTitle(result.slug)} per CSV-Import`,
+        message: `Neue Maßnahme ${frenchQuote(shortTitle(result.slug))} wurde per CSV-Import erstellt.`,
         userId,
         projectId: project.id,
-        subsectionId: subsection.id,
+        subsubsectionId: result.id,
+        updatedRecord: { id: result.id, ...subsubsectionLogSnapshot(result) },
       })
     }
 

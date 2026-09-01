@@ -1,5 +1,3 @@
-import { getFullname } from "@/src/components/core/users/getFullname"
-import { roleTranslation } from "@/src/components/core/users/roleTranslation.const"
 import { Invite, User } from "@/src/prisma/generated/browser"
 import { createLogEntry } from "../../logEntries/create/createLogEntry"
 
@@ -13,9 +11,12 @@ export const createInviteLogEntry = async ({ invite, invitee }: Props) => {
   if (!invite) return
 
   await createLogEntry({
-    action: "CREATE",
-    message: `${getFullname(invitee)} hat die Einladung angenommen und hat jetzt ${roleTranslation[invite.role]}.`,
+    action: "UPDATE",
+    message: `Einladung an ${invite.email} wurde angenommen.`,
     userId: invitee.id,
     projectId: invite.projectId,
+    inviteId: invite.id,
+    previousRecord: { email: invite.email, status: "PENDING" },
+    updatedRecord: { email: invite.email, status: "ACCEPTED" },
   })
 }

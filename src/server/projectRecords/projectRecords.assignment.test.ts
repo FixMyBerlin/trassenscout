@@ -4,7 +4,7 @@ import {
   ProjectRecordReviewState,
   ProjectRecordType,
 } from "@/src/prisma/generated/browser"
-import { AuthorizationError } from "@/src/shared/auth/errors"
+import { AuthorizationError, NotFoundError } from "@/src/shared/auth/errors"
 import { PatchProjectRecordAssignmentSchema } from "@/src/shared/projectRecords/schemas"
 
 const mockCreateLogEntry = vi.fn().mockResolvedValue(undefined)
@@ -13,13 +13,16 @@ const mockSend = vi.fn().mockResolvedValue(undefined)
 const mockDb = {
   membership: {
     findFirst: vi.fn(),
+    findMany: vi.fn(),
   },
   project: {
     findUnique: vi.fn(),
   },
   projectRecord: {
     findFirstOrThrow: vi.fn(),
+    findFirst: vi.fn(),
     update: vi.fn(),
+    deleteMany: vi.fn(),
   },
   user: {
     findUnique: vi.fn(),
@@ -87,14 +90,12 @@ describe("patchProjectRecordAssignment", () => {
       session: { userId: 2, role: "USER" },
     })
     mockDb.membership.findFirst.mockResolvedValue({ id: 99 })
+    mockDb.membership.findMany.mockResolvedValue([{ projectId: 1, userId: 2 }])
     mockDb.project.findUnique.mockResolvedValue({ aiEnabled: true })
-    mockDb.projectRecord.findFirstOrThrow.mockResolvedValue(previousRecord)
     mockDb.projectRecord.update.mockResolvedValue({
-      ...previousRecord,
+      title: "Protokoll",
       assignedToId: 3,
       editingState: ProjectRecordEditingState.COMPLETED,
-      updatedById: 2,
-      projectRecordUpdatedByType: ProjectRecordType.USER,
     })
     mockDb.user.findUnique.mockResolvedValue({
       email: "a@example.com",
@@ -104,6 +105,7 @@ describe("patchProjectRecordAssignment", () => {
   })
 
   test("allows viewers to patch assignment and status and writes a log entry", async () => {
+    mockDb.projectRecord.findFirstOrThrow.mockResolvedValueOnce(previousRecord)
     const { patchProjectRecordAssignment } = await import("./projectRecords.server")
 
     await patchProjectRecordAssignment(headers, {
@@ -134,11 +136,21 @@ describe("patchProjectRecordAssignment", () => {
         }),
       }),
     )
+    expect(mockCreateLogEntry).toHaveBeenCalledTimes(2)
     expect(mockCreateLogEntry).toHaveBeenCalledWith(
       expect.objectContaining({
         action: "UPDATE",
         projectRecordId: 12,
         userId: 2,
+        message: expect.stringContaining("zugewiesen"),
+      }),
+    )
+    expect(mockCreateLogEntry).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action: "UPDATE",
+        projectRecordId: 12,
+        userId: 2,
+        message: expect.stringContaining("Bearbeitungsstatus"),
       }),
     )
   })
@@ -160,8 +172,8 @@ describe("patchProjectRecordAssignment", () => {
   })
 
   test("rejects viewer patches for records that are not visible", async () => {
-    const { patchProjectRecordAssignment } = await import("./projectRecords.server")
     mockDb.projectRecord.findFirstOrThrow.mockRejectedValueOnce(new Error("No ProjectRecord found"))
+    const { patchProjectRecordAssignment } = await import("./projectRecords.server")
 
     await expect(
       patchProjectRecordAssignment(headers, {
@@ -173,5 +185,49 @@ describe("patchProjectRecordAssignment", () => {
     ).rejects.toThrow("No ProjectRecord found")
 
     expect(mockDb.projectRecord.update).not.toHaveBeenCalled()
+  })
+})
+
+describe("deleteProjectRecord", () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockEndpointAuth.projectRole.mockResolvedValue({
+      projectId: 1,
+      membershipRole: "EDITOR",
+      session: { userId: 2, role: "USER" },
+    })
+    mockDb.projectRecord.findFirst.mockResolvedValue({
+      id: 12,
+      title: "Protokoll",
+    })
+    mockDb.projectRecord.deleteMany.mockResolvedValue({ count: 1 })
+  })
+
+  test("writes a delete log entry", async () => {
+    const { deleteProjectRecord } = await import("./projectRecords.server")
+
+    await deleteProjectRecord(headers, { projectSlug: "rs23", id: 12 })
+
+    expect(mockDb.projectRecord.deleteMany).toHaveBeenCalled()
+    expect(mockCreateLogEntry).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action: "DELETE",
+        userId: 2,
+        projectSlug: "rs23",
+        message: expect.stringContaining("Protokoll"),
+      }),
+    )
+  })
+
+  test("throws NotFoundError when the record is missing", async () => {
+    const { deleteProjectRecord } = await import("./projectRecords.server")
+    mockDb.projectRecord.findFirst.mockResolvedValueOnce(null)
+
+    await expect(
+      deleteProjectRecord(headers, { projectSlug: "rs23", id: 12 }),
+    ).rejects.toBeInstanceOf(NotFoundError)
+
+    expect(mockDb.projectRecord.deleteMany).not.toHaveBeenCalled()
+    expect(mockCreateLogEntry).not.toHaveBeenCalled()
   })
 })

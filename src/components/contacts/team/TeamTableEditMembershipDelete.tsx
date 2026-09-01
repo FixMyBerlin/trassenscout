@@ -20,7 +20,7 @@ export const TeamTableEditMembershipDelete = ({ membershipId }: Props) => {
   const handleDelete = async () => {
     if (
       window.confirm(
-        `Den Eintrag mit ID ${membershipId} auf diesem Projekt unwiderruflich löschen? Die Nutzer:in hat dann keinen Zugriff auf das Projekt mehr. Der Nutzer Account bleibt jedoch erhalten. Alle Daten und Änderungen der Nutzer:in bleiben ebenfalls erhalten.`,
+        `Möchtest du den Zugriff auf dieses Projekt für diese:n Nutzer:in (ID ${membershipId}) unwiderruflich löschen?\nZugriff: Die Nutzer:in verliert den Zugriff auf dieses Projekt.\nDatenschutz: Die personenbezogenen Kontoinformationen werden im System anonymisiert.\nDatenbestand: Alle bisher getätigten Eingaben und Änderungen bleiben im Projekt erhalten.`,
       )
     ) {
       try {

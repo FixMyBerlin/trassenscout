@@ -232,7 +232,9 @@ export async function renderFormTemplatePdf(input: RenderFormTemplatePdfInput) {
         ))}
         <Text
           style={styles.pageNumber}
-          render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`}
+          render={({ pageNumber, totalPages }: { pageNumber: number; totalPages: number }) =>
+            `${pageNumber} / ${totalPages}`
+          }
           fixed
         />
       </Page>

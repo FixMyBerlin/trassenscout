@@ -4,12 +4,13 @@ import type {
   Subsubsection,
   SubsubsectionStatusStyleEnum,
 } from "@/src/prisma/generated/browser"
+import type { ProjectUserDto } from "@/src/server/memberships/redactFormerProjectMemberUser.server"
 import type { GeometryWithTypeDiscriminated } from "@/src/shared/geometry/geometrySchemas"
 import type { getSubsubsections } from "./subsubsections.server"
 
 export type SubsubsectionWithPosition = Omit<Subsubsection, "geometry" | "type"> &
   GeometryWithTypeDiscriminated & {
-    manager: { firstName: string; lastName: string } | null
+    manager: ProjectUserDto | null
   } & {
     subsection: {
       slug: string

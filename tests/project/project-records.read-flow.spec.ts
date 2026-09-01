@@ -38,6 +38,9 @@ test.describe("Project records read flow", () => {
     await expect(page.getByRole("heading", { name: firstRecordTitle, exact: true })).toBeVisible({
       timeout: 30_000,
     })
+    await expect(page.getByText("Erstellt:")).toHaveCount(0)
+    await expect(page.getByText("Zuletzt bearbeitet:")).toHaveCount(0)
+    await expect(page.getByText("Bestätigung durch:")).toHaveCount(0)
 
     await page.goBack()
 

@@ -32,6 +32,7 @@ const mockDb = {
   ),
   invite: {
     findMany: vi.fn(),
+    findFirst: vi.fn(),
     updateMany: vi.fn(),
   },
   membership: {
@@ -98,6 +99,11 @@ describe("createInvites", () => {
     })
     mockTx.invite.createMany.mockResolvedValue({ count: 2 })
     mockDb.invite.findMany.mockResolvedValue([])
+    mockDb.invite.findFirst.mockResolvedValue({
+      id: 42,
+      email: "invitee@example.com",
+      projectId: 10,
+    })
     mockDb.invite.updateMany.mockResolvedValue({ count: 1 })
     mockDb.membership.findMany.mockResolvedValue([])
     mockDb.project.findMany.mockResolvedValue([{ id: 10, slug: "rs23", subTitle: null }])
@@ -134,6 +140,39 @@ describe("createInvites", () => {
       ],
     })
     expect(mailMocks.sendInviteeMail).toHaveBeenCalledTimes(1)
+  })
+
+  test("logs each created invite with inviteId", async () => {
+    const { createInvites } = await import("./invites.server")
+    const { createLogEntry } = await import("@/src/server/logEntries/create/createLogEntry")
+    mockDb.invite.findMany.mockResolvedValue([
+      { id: 101, projectId: 10 },
+      { id: 102, projectId: 11 },
+    ])
+
+    await createInvites(new Headers(), {
+      email: "invitee@example.com",
+      projects: [
+        { projectSlug: "rs23", role: "VIEWER" },
+        { projectSlug: "rs24", role: "EDITOR" },
+      ],
+    })
+
+    expect(createLogEntry).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action: "CREATE",
+        inviteId: 101,
+        projectId: 10,
+        message: "Einladung an invitee@example.com wurde versendet.",
+      }),
+    )
+    expect(createLogEntry).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action: "CREATE",
+        inviteId: 102,
+        projectId: 11,
+      }),
+    )
   })
 
   test("allows editors to create batch invites for editable projects", async () => {
@@ -305,6 +344,17 @@ describe("createInvites", () => {
         status: "EXPIRED",
         token: "shared-token",
       },
+    })
+
+    const { createLogEntry } = await import("@/src/server/logEntries/create/createLogEntry")
+    expect(createLogEntry).toHaveBeenCalledWith({
+      action: "UPDATE",
+      message: "Einladung an invitee@example.com wurde zurückgezogen.",
+      userId: 1,
+      projectId: 10,
+      inviteId: 42,
+      previousRecord: { email: "invitee@example.com", status: "PENDING" },
+      updatedRecord: { email: "invitee@example.com", status: "EXPIRED" },
     })
   })
 
