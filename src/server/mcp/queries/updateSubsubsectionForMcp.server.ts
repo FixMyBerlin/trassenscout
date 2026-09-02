@@ -2,39 +2,39 @@ import { frenchQuote } from "@/src/components/core/components/text/quote"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import db from "@/src/server/db.server"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
-import type { FuehrungMcpPatch } from "@/src/server/mcp/fuehrungUpdate/patchSchema"
+import type { SubsubsectionMcpPatch } from "@/src/server/mcp/subsubsectionUpdate/patchSchema"
 import {
-  fuehrungPreviewPayload,
-  resolveFuehrungUpdate,
-} from "@/src/server/mcp/fuehrungUpdate/resolveFuehrungUpdate.server"
+  resolveSubsubsectionUpdate,
+  subsubsectionPreviewPayload,
+} from "@/src/server/mcp/subsubsectionUpdate/resolveSubsubsectionUpdate.server"
 import {
   subsubsectionLogSnapshot,
   subsubsectionLogSnapshotSelect,
 } from "@/src/server/subsubsections/subsubsectionLogSnapshot"
 
-export async function previewFuehrungUpdateForMcp(input: {
+export async function previewSubsubsectionUpdateForMcp(input: {
   projectSlug: string
   subsectionSlug: string
   slug: string
-  patch: FuehrungMcpPatch
+  patch: SubsubsectionMcpPatch
   origin: string
 }) {
-  const resolved = await resolveFuehrungUpdate(input)
-  return fuehrungPreviewPayload(resolved)
+  const resolved = await resolveSubsubsectionUpdate(input)
+  return subsubsectionPreviewPayload(resolved)
 }
 
-export async function updateFuehrungForMcp(input: {
+export async function updateSubsubsectionForMcp(input: {
   projectSlug: string
   subsectionSlug: string
   slug: string
-  patch: FuehrungMcpPatch
+  patch: SubsubsectionMcpPatch
   origin: string
   confirm: boolean
   createdById: number
 }) {
   if (input.confirm !== true) {
     throw new Error(
-      "fuehrungen_update requires confirm: true after fuehrungen_update_preview. MCP does not write without explicit confirmation.",
+      "subsubsections_update requires confirm: true after subsubsections_update_preview. MCP does not write without explicit confirmation.",
     )
   }
 
@@ -42,13 +42,13 @@ export async function updateFuehrungForMcp(input: {
   // A future improvement could require a hash or updatedAt from preview on write, so confirm
   // applies against the same snapshot the agent showed the user. Not implemented yet: migration
   // tooling tolerates re-resolve between preview and write, and we want to keep the API simple.
-  const resolved = await resolveFuehrungUpdate(input)
+  const resolved = await resolveSubsubsectionUpdate(input)
   if (!resolved.okToWrite) {
-    return { ...fuehrungPreviewPayload(resolved), written: false }
+    return { ...subsubsectionPreviewPayload(resolved), written: false }
   }
 
   const record = await db.subsubsection.update({
-    where: { id: resolved.fuehrungId },
+    where: { id: resolved.subsubsectionId },
     data: resolved.prismaData,
     select: { id: true, ...subsubsectionLogSnapshotSelect },
   })
@@ -64,7 +64,7 @@ export async function updateFuehrungForMcp(input: {
   })
 
   return {
-    ...fuehrungPreviewPayload(resolved),
+    ...subsubsectionPreviewPayload(resolved),
     written: true,
     slug: record.slug,
   }

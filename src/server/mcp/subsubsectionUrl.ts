@@ -1,4 +1,4 @@
-export function buildFuehrungUrl(
+export function buildSubsubsectionUrl(
   origin: string,
   projectSlug: string,
   subsectionSlug: string,

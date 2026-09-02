@@ -1,15 +1,15 @@
 import type { Prisma } from "@/src/prisma/generated/client"
 import db from "@/src/server/db.server"
+import { mcpEnvLabel } from "@/src/server/mcp/mcpCursorConfig"
+import { requireMcpEnabledProject } from "@/src/server/mcp/requireMcpEnabledProject.server"
 import {
   formatPreviewWarning,
   isEmptyCurrentValue,
   valuesEqual,
-  type FuehrungPreviewChange,
-} from "@/src/server/mcp/fuehrungUpdate/formatPreview"
-import type { FuehrungMcpPatch } from "@/src/server/mcp/fuehrungUpdate/patchSchema"
-import { buildFuehrungUrl } from "@/src/server/mcp/fuehrungUrl"
-import { mcpEnvLabel } from "@/src/server/mcp/mcpCursorConfig"
-import { requireMcpEnabledProject } from "@/src/server/mcp/requireMcpEnabledProject.server"
+  type SubsubsectionPreviewChange,
+} from "@/src/server/mcp/subsubsectionUpdate/formatPreview"
+import type { SubsubsectionMcpPatch } from "@/src/server/mcp/subsubsectionUpdate/patchSchema"
+import { buildSubsubsectionUrl } from "@/src/server/mcp/subsubsectionUrl"
 import {
   resolveSubsubsectionInfrastructureTypeSlugs,
   resolveSubsubsectionRelationSlugs,
@@ -51,7 +51,7 @@ const SCALAR_KEYS = [
   "contributionsThirdParties",
   "grantsOtherFunding",
   "ownFunds",
-] as const satisfies readonly (keyof FuehrungMcpPatch)[]
+] as const satisfies readonly (keyof SubsubsectionMcpPatch)[]
 
 const SLUG_FIELD_LABELS: Record<string, string> = {
   qualityLevelSlug: subsubsectionFieldTranslations.qualityLevelId,
@@ -73,7 +73,7 @@ function fieldLabel(field: string) {
 }
 
 function pushChange(
-  changes: FuehrungPreviewChange[],
+  changes: SubsubsectionPreviewChange[],
   field: string,
   current: unknown,
   proposed: unknown,
@@ -88,21 +88,21 @@ function pushChange(
   return true
 }
 
-export type ResolveFuehrungUpdateResult = {
+export type ResolveSubsubsectionUpdateResult = {
   environment: ReturnType<typeof mcpEnvLabel>
   url: string
   okToWrite: boolean
-  changes: FuehrungPreviewChange[]
+  changes: SubsubsectionPreviewChange[]
   errors: string[]
   warnings: string[]
   prismaData: Prisma.SubsubsectionUpdateInput
-  fuehrungId: number
+  subsubsectionId: number
   projectSlug: string
   slug: string
   previousSnapshot: ReturnType<typeof subsubsectionLogSnapshot> & { id: number }
 }
 
-export async function resolveFuehrungUpdate({
+export async function resolveSubsubsectionUpdate({
   projectSlug,
   subsectionSlug,
   slug,
@@ -112,14 +112,14 @@ export async function resolveFuehrungUpdate({
   projectSlug: string
   subsectionSlug: string
   slug: string
-  patch: FuehrungMcpPatch
+  patch: SubsubsectionMcpPatch
   origin: string
-}): Promise<ResolveFuehrungUpdateResult> {
+}): Promise<ResolveSubsubsectionUpdateResult> {
   const project = await requireMcpEnabledProject(projectSlug)
   const environment = mcpEnvLabel(process.env.VITE_APP_ENV)
   const errors: string[] = []
 
-  const fuehrung = await db.subsubsection.findFirst({
+  const subsubsection = await db.subsubsection.findFirst({
     where: {
       slug,
       subsection: { slug: subsectionSlug, projectId: project.id },
@@ -136,15 +136,20 @@ export async function resolveFuehrungUpdate({
     },
   })
 
-  if (!fuehrung) {
-    throw new Error(`Führung not found: ${projectSlug}/${subsectionSlug}/${slug}`)
+  if (!subsubsection) {
+    throw new Error(`Subsubsection (Maßnahme) not found: ${projectSlug}/${subsectionSlug}/${slug}`)
   }
 
-  const url = buildFuehrungUrl(origin, project.slug, fuehrung.subsection.slug, fuehrung.slug)
+  const url = buildSubsubsectionUrl(
+    origin,
+    project.slug,
+    subsubsection.subsection.slug,
+    subsubsection.slug,
+  )
   const definitions = parseDefinitions(project.subsubsectionExtraFieldDefinitions)
-  const currentExtraFields = parseExtraFields(fuehrung.extraFields)
+  const currentExtraFields = parseExtraFields(subsubsection.extraFields)
   const prismaData: Prisma.SubsubsectionUpdateInput = {}
-  const changes: FuehrungPreviewChange[] = []
+  const changes: SubsubsectionPreviewChange[] = []
 
   for (const key of SCALAR_KEYS) {
     if (!(key in patch) || patch[key] === undefined) continue
@@ -155,7 +160,8 @@ export async function resolveFuehrungUpdate({
       )
       continue
     }
-    if (!pushChange(changes, key, fuehrung[key as keyof typeof fuehrung], proposed)) continue
+    if (!pushChange(changes, key, subsubsection[key as keyof typeof subsubsection], proposed))
+      continue
     ;(prismaData as Record<string, unknown>)[key] = proposed
   }
 
@@ -177,7 +183,7 @@ export async function resolveFuehrungUpdate({
           pushChange(
             changes,
             "qualityLevelSlug",
-            fuehrung.qualityLevel?.slug ?? null,
+            subsubsection.qualityLevel?.slug ?? null,
             patch.qualityLevelSlug,
           )
         ) {
@@ -192,7 +198,7 @@ export async function resolveFuehrungUpdate({
           pushChange(
             changes,
             "subsubsectionStatusSlug",
-            fuehrung.SubsubsectionStatus?.slug ?? null,
+            subsubsection.SubsubsectionStatus?.slug ?? null,
             patch.subsubsectionStatusSlug,
           )
         ) {
@@ -204,7 +210,7 @@ export async function resolveFuehrungUpdate({
           pushChange(
             changes,
             "subsubsectionTaskSlug",
-            fuehrung.SubsubsectionTask?.slug ?? null,
+            subsubsection.SubsubsectionTask?.slug ?? null,
             patch.subsubsectionTaskSlug,
           )
         ) {
@@ -219,7 +225,7 @@ export async function resolveFuehrungUpdate({
           pushChange(
             changes,
             "subsubsectionInfraSlug",
-            fuehrung.SubsubsectionInfra?.slug ?? null,
+            subsubsection.SubsubsectionInfra?.slug ?? null,
             patch.subsubsectionInfraSlug,
           )
         ) {
@@ -238,7 +244,7 @@ export async function resolveFuehrungUpdate({
         slugs: patch.subsubsectionInfrastructureTypeSlugs,
         missing: "error",
       })
-      const currentSlugs = fuehrung.SubsubsectionInfrastructureTypes.map((row) => row.slug)
+      const currentSlugs = subsubsection.SubsubsectionInfrastructureTypes.map((row) => row.slug)
       if (
         pushChange(
           changes,
@@ -292,14 +298,14 @@ export async function resolveFuehrungUpdate({
     errors,
     warnings,
     prismaData,
-    fuehrungId: fuehrung.id,
+    subsubsectionId: subsubsection.id,
     projectSlug: project.slug,
-    slug: fuehrung.slug,
-    previousSnapshot: { id: fuehrung.id, ...subsubsectionLogSnapshot(fuehrung) },
+    slug: subsubsection.slug,
+    previousSnapshot: { id: subsubsection.id, ...subsubsectionLogSnapshot(subsubsection) },
   }
 }
 
-export function fuehrungPreviewPayload(result: ResolveFuehrungUpdateResult) {
+export function subsubsectionPreviewPayload(result: ResolveSubsubsectionUpdateResult) {
   return {
     environment: result.environment,
     url: result.url,

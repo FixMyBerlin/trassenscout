@@ -104,7 +104,7 @@ function schemaFields(): SchemaField[] {
   return fields
 }
 
-export async function getFuehrungenSchemaForMcp(projectSlug: string) {
+export async function getSubsubsectionsSchemaForMcp(projectSlug: string) {
   const project = await requireMcpEnabledProject(projectSlug)
 
   const extraFields = parseDefinitions(project.subsubsectionExtraFieldDefinitions).map(

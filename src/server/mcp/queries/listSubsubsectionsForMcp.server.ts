@@ -1,21 +1,21 @@
 import db from "@/src/server/db.server"
-import { buildFuehrungUrl } from "@/src/server/mcp/fuehrungUrl"
 import { mcpListResult, resolveMcpListLimit } from "@/src/server/mcp/mcpListLimit.const"
 import { requireMcpEnabledProject } from "@/src/server/mcp/requireMcpEnabledProject.server"
+import { buildSubsubsectionUrl } from "@/src/server/mcp/subsubsectionUrl"
 
-type ListFuehrungenForMcpInput = {
+type ListSubsubsectionsForMcpInput = {
   projectSlug: string
   subsectionSlug?: string
   origin: string
   limit?: number
 }
 
-export async function listFuehrungenForMcp({
+export async function listSubsubsectionsForMcp({
   projectSlug,
   subsectionSlug,
   origin,
   limit: limitInput,
-}: ListFuehrungenForMcpInput) {
+}: ListSubsubsectionsForMcpInput) {
   const limit = resolveMcpListLimit(limitInput)
   const project = await requireMcpEnabledProject(projectSlug)
 
@@ -40,11 +40,11 @@ export async function listFuehrungenForMcp({
     limit: appliedLimit,
     returned,
     truncated,
-    fuehrungen: items.map((subsubsection) => ({
+    subsubsections: items.map((subsubsection) => ({
       projectSlug: project.slug,
       subsectionSlug: subsubsection.subsection.slug,
       slug: subsubsection.slug,
-      url: buildFuehrungUrl(
+      url: buildSubsubsectionUrl(
         origin,
         project.slug,
         subsubsection.subsection.slug,

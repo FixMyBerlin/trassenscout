@@ -43,15 +43,15 @@ export function PageApiTokensMcpSetup({ envLabel, origin }: PageApiTokensMcpSetu
           </li>
           <li>
             Feld-Metadaten, Zusatzfelder und Enums pro aktiviertem Projekt (
-            <code>fuehrungen_schema</code>)
+            <code>subsubsections_schema</code>)
           </li>
           <li>
-            Führungen auflisten (<code>fuehrungen_list</code>) — Slugs und URLs
+            Maßnahmen auflisten (<code>subsubsections_list</code>) — Slugs und URLs
           </li>
           <li>
-            Änderungen Vorschau (<code>fuehrungen_update_preview</code>), dann Schreiben mit{" "}
-            <code>confirm: true</code> (<code>fuehrungen_update</code>) — kein Anlegen neuer
-            Führungen
+            Änderungen Vorschau (<code>subsubsections_update_preview</code>), dann Schreiben mit{" "}
+            <code>confirm: true</code> (<code>subsubsections_update</code>) — kein Anlegen neuer
+            Maßnahmen
           </li>
         </ul>
         <p>Bei Verlust oder Ende der Nutzung widerrufen.</p>
@@ -95,9 +95,9 @@ export function PageApiTokensMcpSetup({ envLabel, origin }: PageApiTokensMcpSetu
                 </li>
                 <li>MCP-Server neu laden bzw. Cursor neu starten.</li>
                 <li>
-                  Im Chat z. B. „Welche Projekte gibt es?“ oder „Führungen in rs23?“ fragen — Cursor
-                  ruft Tools wie <code>projects_list</code> / <code>fuehrungen_list</code> auf. Mit{" "}
-                  <code>env_info</code> prüfen, auf welche Umgebung der Server zeigt.
+                  Im Chat z. B. „Welche Projekte gibt es?“ oder „Maßnahmen in rs23?“ fragen — Cursor
+                  ruft Tools wie <code>projects_list</code> / <code>subsubsections_list</code> auf.
+                  Mit <code>env_info</code> prüfen, auf welche Umgebung der Server zeigt.
                 </li>
               </ol>
             </section>

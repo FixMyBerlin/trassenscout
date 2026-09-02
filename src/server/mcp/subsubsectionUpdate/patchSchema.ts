@@ -6,13 +6,13 @@ const nonEmptyString = z.string().min(1, {
   error: "MCP cannot clear fields with empty string. Omit the key to leave the value unchanged.",
 })
 
-const fuehrungMcpIdentitySchema = z.object({
+const subsubsectionMcpIdentitySchema = z.object({
   projectSlug: z.string().min(1),
-  subsectionSlug: z.string().min(1),
-  slug: z.string().min(1),
+  subsectionSlug: z.string().min(1).describe("Planungsabschnitt slug"),
+  slug: z.string().min(1).describe("Maßnahme slug"),
 })
 
-export const fuehrungMcpPatchSchema = z
+export const subsubsectionMcpPatchSchema = z
   .object({
     description: nonEmptyString.optional(),
     location: z.enum(LocationEnum).optional(),
@@ -56,12 +56,12 @@ export const fuehrungMcpPatchSchema = z
   })
   .strict()
 
-export type FuehrungMcpPatch = z.infer<typeof fuehrungMcpPatchSchema>
+export type SubsubsectionMcpPatch = z.infer<typeof subsubsectionMcpPatchSchema>
 
-export const fuehrungMcpPreviewInputSchema = fuehrungMcpIdentitySchema.extend({
-  patch: fuehrungMcpPatchSchema,
+export const subsubsectionMcpPreviewInputSchema = subsubsectionMcpIdentitySchema.extend({
+  patch: subsubsectionMcpPatchSchema,
 })
 
-export const fuehrungMcpUpdateInputSchema = fuehrungMcpPreviewInputSchema.extend({
+export const subsubsectionMcpUpdateInputSchema = subsubsectionMcpPreviewInputSchema.extend({
   confirm: z.boolean(),
 })

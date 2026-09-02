@@ -1,13 +1,13 @@
-type FuehrungPreviewChangeKind = "set" | "overwrite"
+type SubsubsectionPreviewChangeKind = "set" | "overwrite"
 
-export type FuehrungPreviewChange = {
+export type SubsubsectionPreviewChange = {
   field: string
   label: string
-  kind: FuehrungPreviewChangeKind
+  kind: SubsubsectionPreviewChangeKind
   proposed: unknown
 }
 
-export function formatPreviewWarning(change: FuehrungPreviewChange) {
+export function formatPreviewWarning(change: SubsubsectionPreviewChange) {
   return `${change.label} wird überschrieben.`
 }
 
