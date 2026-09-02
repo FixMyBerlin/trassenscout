@@ -158,53 +158,9 @@ describe("MCP read queries", () => {
     )
   })
 
-  test("fuehrungen_schema is static and marks geometry not writable", async () => {
+  test("fuehrungen_schema marks geometry not writable and includes extra fields and enums", async () => {
     const { getFuehrungenSchemaForMcp } =
-      await import("@/src/server/mcp/queries/getFuehrungenSchemaForMcp")
-
-    const schema = getFuehrungenSchemaForMcp()
-    expect(mockDb.project.findUnique).not.toHaveBeenCalled()
-    expect(schema.fields.find((field) => field.name === "geometry")?.writable).toBe(false)
-    expect(schema.fields.find((field) => field.name === "slug")?.writable).toBe(false)
-    expect(schema.fields.find((field) => field.name === "lengthM")?.writable).toBe(true)
-    expect(schema.fields.find((field) => field.name === "extraFields")).toMatchObject({
-      writable: true,
-      type: "Record<string,string>",
-    })
-  })
-
-  test("fuehrungen_extra_fields parses order and empty definitions", async () => {
-    const { getFuehrungenExtraFieldsForMcp } =
-      await import("@/src/server/mcp/queries/getFuehrungenExtraFieldsForMcp.server")
-
-    mockDb.project.findUnique.mockResolvedValue(enabledProject)
-    await expect(getFuehrungenExtraFieldsForMcp("frm9-ra3")).resolves.toEqual({
-      projectSlug: "frm9-ra3",
-      extraFields: [{ name: "klassifizierung", label: "Klassifizierung", order: 0 }],
-    })
-
-    mockDb.project.findUnique.mockResolvedValue({
-      ...enabledProject,
-      subsubsectionExtraFieldDefinitions: [],
-    })
-    await expect(getFuehrungenExtraFieldsForMcp("frm9-ra3")).resolves.toEqual({
-      projectSlug: "frm9-ra3",
-      extraFields: [],
-    })
-  })
-
-  test("fuehrungen_extra_fields does not load führungen when disabled", async () => {
-    const { getFuehrungenExtraFieldsForMcp } =
-      await import("@/src/server/mcp/queries/getFuehrungenExtraFieldsForMcp.server")
-
-    mockDb.project.findUnique.mockResolvedValue({ ...enabledProject, mcpEnabled: false })
-    await expect(getFuehrungenExtraFieldsForMcp("frm9-ra3")).rejects.toThrow("MCP is not enabled")
-    expect(mockDb.subsubsection.findFirst).not.toHaveBeenCalled()
-  })
-
-  test("fuehrungen_enums returns lookup rows and fixed enums", async () => {
-    const { getFuehrungenEnumsForMcp } =
-      await import("@/src/server/mcp/queries/getFuehrungenEnumsForMcp.server")
+      await import("@/src/server/mcp/queries/getFuehrungenSchemaForMcp.server")
 
     mockDb.project.findUnique.mockResolvedValue(enabledProject)
     mockDb.qualityLevel.findMany.mockResolvedValue([{ id: 1, slug: "ql", title: "QL" }])
@@ -213,15 +169,56 @@ describe("MCP read queries", () => {
     mockDb.subsubsectionInfra.findMany.mockResolvedValue([])
     mockDb.subsubsectionInfrastructureType.findMany.mockResolvedValue([])
 
-    const result = await getFuehrungenEnumsForMcp("frm9-ra3")
-    expect(result.qualityLevels).toEqual([{ id: 1, slug: "ql", title: "QL" }])
-    expect(result).not.toHaveProperty("managers")
-    expect(result).not.toHaveProperty("labelPos")
-    expect(result.location).toEqual(
+    const schema = await getFuehrungenSchemaForMcp("frm9-ra3")
+    expect(schema.projectSlug).toBe("frm9-ra3")
+    expect(schema.fields.find((field) => field.name === "geometry")?.writable).toBe(false)
+    expect(schema.fields.find((field) => field.name === "slug")?.writable).toBe(false)
+    expect(schema.fields.find((field) => field.name === "lengthM")?.writable).toBe(true)
+    expect(schema.fields.find((field) => field.name === "extraFields")).toMatchObject({
+      writable: true,
+      type: "Record<string,string>",
+    })
+    expect(schema.extraFields).toEqual([
+      { name: "klassifizierung", label: "Klassifizierung", order: 0 },
+    ])
+    expect(schema.qualityLevels).toEqual([{ id: 1, slug: "ql", title: "QL" }])
+    expect(schema).not.toHaveProperty("managers")
+    expect(schema).not.toHaveProperty("labelPos")
+    expect(schema.location).toEqual(
       expect.arrayContaining([
         { slug: "URBAN", title: "innerorts" },
         { slug: "RURAL", title: "außerorts" },
       ]),
     )
+  })
+
+  test("fuehrungen_schema parses empty extra field definitions", async () => {
+    const { getFuehrungenSchemaForMcp } =
+      await import("@/src/server/mcp/queries/getFuehrungenSchemaForMcp.server")
+
+    mockDb.project.findUnique.mockResolvedValue({
+      ...enabledProject,
+      subsubsectionExtraFieldDefinitions: [],
+    })
+    mockDb.qualityLevel.findMany.mockResolvedValue([])
+    mockDb.subsubsectionStatus.findMany.mockResolvedValue([])
+    mockDb.subsubsectionTask.findMany.mockResolvedValue([])
+    mockDb.subsubsectionInfra.findMany.mockResolvedValue([])
+    mockDb.subsubsectionInfrastructureType.findMany.mockResolvedValue([])
+
+    await expect(getFuehrungenSchemaForMcp("frm9-ra3")).resolves.toMatchObject({
+      projectSlug: "frm9-ra3",
+      extraFields: [],
+    })
+  })
+
+  test("fuehrungen_schema does not load lookups when MCP is disabled", async () => {
+    const { getFuehrungenSchemaForMcp } =
+      await import("@/src/server/mcp/queries/getFuehrungenSchemaForMcp.server")
+
+    mockDb.project.findUnique.mockResolvedValue({ ...enabledProject, mcpEnabled: false })
+    await expect(getFuehrungenSchemaForMcp("frm9-ra3")).rejects.toThrow("MCP is not enabled")
+    expect(mockDb.qualityLevel.findMany).not.toHaveBeenCalled()
+    expect(mockDb.subsubsection.findFirst).not.toHaveBeenCalled()
   })
 })

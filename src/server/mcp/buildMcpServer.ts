@@ -8,9 +8,7 @@ import {
 import { mcpEnvLabel } from "@/src/server/mcp/mcpCursorConfig"
 import { MCP_LIST_DEFAULT_LIMIT, MCP_LIST_MAX_LIMIT } from "@/src/server/mcp/mcpListLimit.const"
 import { mcpToolOk, runMcpTool } from "@/src/server/mcp/mcpToolHelpers"
-import { getFuehrungenEnumsForMcp } from "@/src/server/mcp/queries/getFuehrungenEnumsForMcp.server"
-import { getFuehrungenExtraFieldsForMcp } from "@/src/server/mcp/queries/getFuehrungenExtraFieldsForMcp.server"
-import { getFuehrungenSchemaForMcp } from "@/src/server/mcp/queries/getFuehrungenSchemaForMcp"
+import { getFuehrungenSchemaForMcp } from "@/src/server/mcp/queries/getFuehrungenSchemaForMcp.server"
 import { listFuehrungenForMcp } from "@/src/server/mcp/queries/listFuehrungenForMcp.server"
 import { listProjectsForMcp } from "@/src/server/mcp/queries/listProjectsForMcp.server"
 import {
@@ -45,7 +43,7 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
         `If the target project is disabled, stop and ask an admin to enable MCP in /admin/projects (column MCP). ` +
         `Do not call other project tools for a disabled slug. ` +
         `mcpEnabled does not replace preview or confirm. ` +
-        `After env_info and an enabled slug: fuehrungen_schema (ungated), then fuehrungen_extra_fields, fuehrungen_enums, fuehrungen_list. ` +
+        `After env_info and an enabled slug: fuehrungen_schema, then fuehrungen_list. ` +
         `To change a Führung: fuehrungen_update_preview, show the diff (including overwrite warnings) to the user, then fuehrungen_update with confirm: true. ` +
         `Identity is always projectSlug + subsectionSlug + slug; there is no create. ` +
         `${patchSemantics} ` +
@@ -86,38 +84,17 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
     "fuehrungen_schema",
     {
       description:
-        "Static field metadata for Führung updates (no projectSlug). " +
+        "Field metadata, extra field definitions, and lookup options for Führung updates. Requires mcpEnabled. " +
         "writable false for slug, geometry, type, subsectionId and other non-MCP fields. " +
-        "Relations use slugs (fuehrungen_enums), not IDs. extraFields is Record<string,string>; keys from fuehrungen_extra_fields. " +
-        patchSemantics,
-    },
-    () => mcpToolOk(getFuehrungenSchemaForMcp()),
-  )
-
-  server.registerTool(
-    "fuehrungen_extra_fields",
-    {
-      description:
-        "List extra field definitions for a project (name, label, order). Requires mcpEnabled. No Führung values.",
-      inputSchema: {
-        projectSlug: z.string(),
-      },
-    },
-    ({ projectSlug }) => runMcpTool(() => getFuehrungenExtraFieldsForMcp(projectSlug)),
-  )
-
-  server.registerTool(
-    "fuehrungen_enums",
-    {
-      description:
-        "Lookup options for Führung form fields. Requires mcpEnabled. " +
+        "Relations use slugs from this payload, not IDs. extraFields is Record<string,string>; keys are listed in extraFields. " +
         "Lookups return { id, slug, title }. Fixed enum location returns { slug, title } (no id). " +
-        "Does not include labelPos, managers, operators, tags, survey, acquisition, or subsubsectionSpecials.",
+        "Does not include labelPos, managers, operators, tags, survey, acquisition, or subsubsectionSpecials. " +
+        patchSemantics,
       inputSchema: {
         projectSlug: z.string(),
       },
     },
-    ({ projectSlug }) => runMcpTool(() => getFuehrungenEnumsForMcp(projectSlug)),
+    ({ projectSlug }) => runMcpTool(() => getFuehrungenSchemaForMcp(projectSlug)),
   )
 
   server.registerTool(

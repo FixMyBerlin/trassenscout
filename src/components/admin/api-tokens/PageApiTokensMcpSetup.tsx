@@ -42,11 +42,8 @@ export function PageApiTokensMcpSetup({ envLabel, origin }: PageApiTokensMcpSetu
             aktivierte Slugs für die folgenden Tools verwenden
           </li>
           <li>
-            Feld-Metadaten ohne Projekt (<code>fuehrungen_schema</code>)
-          </li>
-          <li>
-            Zusatzfelder und Enums pro aktiviertem Projekt (<code>fuehrungen_extra_fields</code>,{" "}
-            <code>fuehrungen_enums</code>)
+            Feld-Metadaten, Zusatzfelder und Enums pro aktiviertem Projekt (
+            <code>fuehrungen_schema</code>)
           </li>
           <li>
             Führungen auflisten (<code>fuehrungen_list</code>) — Slugs und URLs
