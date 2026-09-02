@@ -114,18 +114,16 @@ describe("Führung MCP patch", () => {
         expect.objectContaining({
           field: "lengthM",
           kind: "overwrite",
-          current: 120,
           proposed: 185.4,
         }),
         expect.objectContaining({
           field: "extraFields.klassifizierung",
           kind: "set",
-          current: null,
           proposed: "Landesstraße",
         }),
       ]),
     )
-    expect(result.warnings.some((warning) => warning.includes("Länge"))).toBe(true)
+    expect(result.warnings).toEqual(["Länge wird überschrieben."])
     expect(result.errors).toEqual([])
   })
 
@@ -228,7 +226,6 @@ describe("Führung MCP patch", () => {
         expect.objectContaining({
           field: "subsubsectionInfrastructureTypeSlugs",
           kind: "overwrite",
-          current: ["old"],
           proposed: ["new"],
         }),
       ]),

@@ -83,7 +83,6 @@ function pushChange(
     field,
     label: fieldLabel(field),
     kind: isEmptyCurrentValue(current) ? "set" : "overwrite",
-    current: isEmptyCurrentValue(current) ? null : current,
     proposed,
   })
   return true

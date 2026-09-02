@@ -4,18 +4,11 @@ export type FuehrungPreviewChange = {
   field: string
   label: string
   kind: FuehrungPreviewChangeKind
-  current: unknown
   proposed: unknown
 }
 
 export function formatPreviewWarning(change: FuehrungPreviewChange) {
-  return `${change.label} hat bereits den Wert ${formatPreviewValue(change.current)} und wird auf ${formatPreviewValue(change.proposed)} überschrieben.`
-}
-
-function formatPreviewValue(value: unknown) {
-  if (value instanceof Date) return value.toISOString()
-  if (typeof value === "string") return value
-  return JSON.stringify(value)
+  return `${change.label} wird überschrieben.`
 }
 
 export function isEmptyCurrentValue(value: unknown) {
