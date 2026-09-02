@@ -1,11 +1,22 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
 import { z } from "zod"
 import type { AdminApiAuth } from "@/src/server/api/admin/guardAdminApi.server"
+import {
+  fuehrungMcpPreviewInputSchema,
+  fuehrungMcpUpdateInputSchema,
+} from "@/src/server/mcp/fuehrungUpdate/patchSchema"
 import { mcpEnvLabel } from "@/src/server/mcp/mcpCursorConfig"
 import { MCP_LIST_DEFAULT_LIMIT, MCP_LIST_MAX_LIMIT } from "@/src/server/mcp/mcpListLimit.const"
 import { mcpToolOk, runMcpTool } from "@/src/server/mcp/mcpToolHelpers"
+import { getFuehrungenEnumsForMcp } from "@/src/server/mcp/queries/getFuehrungenEnumsForMcp.server"
+import { getFuehrungenExtraFieldsForMcp } from "@/src/server/mcp/queries/getFuehrungenExtraFieldsForMcp.server"
+import { getFuehrungenSchemaForMcp } from "@/src/server/mcp/queries/getFuehrungenSchemaForMcp"
 import { listFuehrungenForMcp } from "@/src/server/mcp/queries/listFuehrungenForMcp.server"
 import { listProjectsForMcp } from "@/src/server/mcp/queries/listProjectsForMcp.server"
+import {
+  previewFuehrungUpdateForMcp,
+  updateFuehrungForMcp,
+} from "@/src/server/mcp/queries/updateFuehrungForMcp.server"
 
 const mcpListLimitSchema = z
   .number()
@@ -15,7 +26,12 @@ const mcpListLimitSchema = z
   .optional()
   .describe(`Max rows to return (default ${MCP_LIST_DEFAULT_LIMIT}, max ${MCP_LIST_MAX_LIMIT})`)
 
-export function buildMcpServer({ auth: _auth, request }: { auth: AdminApiAuth; request: Request }) {
+const patchSemantics =
+  "MCP patch semantics differ from the form: omit a key to leave it unchanged. null and empty string do not clear values. " +
+  "Empty arrays are not allowed for subsubsectionInfrastructureTypeSlugs (omit the key instead). " +
+  "subsubsectionInfrastructureTypeSlugs replaces the whole set when present with at least one slug."
+
+export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request: Request }) {
   const envLabel = mcpEnvLabel(process.env.VITE_APP_ENV)
   const origin = process.env.VITE_APP_ORIGIN ?? new URL(request.url).origin
 
@@ -24,10 +40,19 @@ export function buildMcpServer({ auth: _auth, request }: { auth: AdminApiAuth; r
     {
       instructions:
         `Trassenscout admin tools bound to the ${envLabel} environment (${origin}). ` +
-        `Read-only — no write tools. Call env_info first to confirm the target environment. ` +
+        `Call env_info first to confirm the target environment. ` +
+        `Then projects_list — only continue with slugs where mcpEnabled is true. ` +
+        `If the target project is disabled, stop and ask an admin to enable MCP in /admin/projects (column MCP). ` +
+        `Do not call other project tools for a disabled slug. ` +
+        `mcpEnabled does not replace preview or confirm. ` +
+        `After env_info and an enabled slug: fuehrungen_schema (ungated), then fuehrungen_extra_fields, fuehrungen_enums, fuehrungen_list. ` +
+        `To change a Führung: fuehrungen_update_preview, show the diff (including overwrite warnings) to the user, then fuehrungen_update with confirm: true. ` +
+        `Identity is always projectSlug + subsectionSlug + slug; there is no create. ` +
+        `${patchSemantics} ` +
+        `After a migration, ask an admin to turn MCP off again. ` +
         `List tools default to ${MCP_LIST_DEFAULT_LIMIT} rows (max ${MCP_LIST_MAX_LIMIT}) and return ` +
         `limit, returned, and truncated when more rows exist. ` +
-        `projects_list returns slug, subTitle, shortTitle, url, paCount, fuehrungCount. ` +
+        `projects_list returns slug, subTitle, shortTitle, url, paCount, fuehrungCount, mcpEnabled. ` +
         `fuehrungen_list requires projectSlug; optional subsectionSlug filters to one Planungsabschnitt.`,
     },
   )
@@ -48,7 +73,8 @@ export function buildMcpServer({ auth: _auth, request }: { auth: AdminApiAuth; r
       description:
         `List projects (default limit ${MCP_LIST_DEFAULT_LIMIT}, max ${MCP_LIST_MAX_LIMIT}). ` +
         "Response includes limit, returned, truncated. Per project: slug, subTitle, shortTitle " +
-        "(uppercase slug), url, paCount (Planungsabschnitte), fuehrungCount (Führungen / Maßnahmen).",
+        "(uppercase slug), url, paCount (Planungsabschnitte), fuehrungCount (Führungen / Maßnahmen), mcpEnabled. " +
+        "Includes disabled projects so you can see the slug; only use slugs with mcpEnabled true for other project tools.",
       inputSchema: {
         limit: mcpListLimitSchema,
       },
@@ -57,11 +83,49 @@ export function buildMcpServer({ auth: _auth, request }: { auth: AdminApiAuth; r
   )
 
   server.registerTool(
+    "fuehrungen_schema",
+    {
+      description:
+        "Static field metadata for Führung updates (no projectSlug). " +
+        "writable false for slug, geometry, type, subsectionId and other non-MCP fields. " +
+        "Relations use slugs (fuehrungen_enums), not IDs. extraFields is Record<string,string>; keys from fuehrungen_extra_fields. " +
+        patchSemantics,
+    },
+    () => mcpToolOk(getFuehrungenSchemaForMcp()),
+  )
+
+  server.registerTool(
+    "fuehrungen_extra_fields",
+    {
+      description:
+        "List extra field definitions for a project (name, label, order). Requires mcpEnabled. No Führung values.",
+      inputSchema: {
+        projectSlug: z.string(),
+      },
+    },
+    ({ projectSlug }) => runMcpTool(() => getFuehrungenExtraFieldsForMcp(projectSlug)),
+  )
+
+  server.registerTool(
+    "fuehrungen_enums",
+    {
+      description:
+        "Lookup options for Führung form fields. Requires mcpEnabled. " +
+        "Lookups return { id, slug, title }. Fixed enum location returns { slug, title } (no id). " +
+        "Does not include labelPos, managers, operators, tags, survey, acquisition, or subsubsectionSpecials.",
+      inputSchema: {
+        projectSlug: z.string(),
+      },
+    },
+    ({ projectSlug }) => runMcpTool(() => getFuehrungenEnumsForMcp(projectSlug)),
+  )
+
+  server.registerTool(
     "fuehrungen_list",
     {
       description:
         `List Führungen (Maßnahmen) for a project (default limit ${MCP_LIST_DEFAULT_LIMIT}, ` +
-        `max ${MCP_LIST_MAX_LIMIT}). Response includes limit, returned, truncated. ` +
+        `max ${MCP_LIST_MAX_LIMIT}). Requires mcpEnabled. Response includes limit, returned, truncated. ` +
         "Requires projectSlug; optional subsectionSlug. Per row: projectSlug, subsectionSlug, slug, " +
         "url — no descriptions or geometry.",
       inputSchema: {
@@ -72,6 +136,42 @@ export function buildMcpServer({ auth: _auth, request }: { auth: AdminApiAuth; r
     },
     ({ projectSlug, subsectionSlug, limit }) =>
       runMcpTool(() => listFuehrungenForMcp({ projectSlug, subsectionSlug, origin, limit })),
+  )
+
+  server.registerTool(
+    "fuehrungen_update_preview",
+    {
+      description:
+        "Dry-run a Führung patch. Requires mcpEnabled. Loads the record internally (no fuehrungen_get). " +
+        "Returns changes (kind set|overwrite), overwrite warnings, errors. okToWrite is true when there are no errors and at least one change. " +
+        patchSemantics,
+      inputSchema: fuehrungMcpPreviewInputSchema.shape,
+    },
+    (input) =>
+      runMcpTool(() =>
+        previewFuehrungUpdateForMcp({
+          ...input,
+          origin,
+        }),
+      ),
+  )
+
+  server.registerTool(
+    "fuehrungen_update",
+    {
+      description:
+        "Apply a Führung patch. Requires mcpEnabled and confirm: true after preview. Does not create records. " +
+        patchSemantics,
+      inputSchema: fuehrungMcpUpdateInputSchema.shape,
+    },
+    (input) =>
+      runMcpTool(() =>
+        updateFuehrungForMcp({
+          ...input,
+          origin,
+          createdById: auth.createdById,
+        }),
+      ),
   )
 
   return server

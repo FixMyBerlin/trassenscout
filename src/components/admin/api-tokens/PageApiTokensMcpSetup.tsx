@@ -28,16 +28,33 @@ export function PageApiTokensMcpSetup({ envLabel, origin }: PageApiTokensMcpSetu
       <div className="space-y-2">
         <p>
           Bearer-Tokens autorisieren den Remote-MCP-Server unter <code>{origin}/mcp</code>. Der
-          Token-Wert wird nur einmal beim Erstellen angezeigt. Ein aktiver Token erlaubt:
+          Token-Wert wird nur einmal beim Erstellen angezeigt. Ein aktiver Token reicht nicht
+          allein: projektbezogene Tools brauchen zusätzlich das Flag MCP in{" "}
+          <Link to="/admin/projects">/admin/projects</Link> (Spalte MCP, kein Bulk-Toggle). Nach
+          einem Import das Flag wieder ausschalten. Ein aktiver Token erlaubt:
         </p>
         <ul className={mcpOperationsListClassName}>
           <li>
-            Projektliste lesen (<code>projects_list</code>) — Slug, Titel, URLs, Zähler für
-            Planungsabschnitte und Führungen
+            Umgebung prüfen (<code>env_info</code>)
           </li>
           <li>
-            Führungen (Maßnahmen) pro Projekt auflisten (<code>fuehrungen_list</code>) — Slugs und
-            URLs nach Planungsabschnitt
+            Projektliste lesen (<code>projects_list</code>) — inkl. <code>mcpEnabled</code>; nur
+            aktivierte Slugs für die folgenden Tools verwenden
+          </li>
+          <li>
+            Feld-Metadaten ohne Projekt (<code>fuehrungen_schema</code>)
+          </li>
+          <li>
+            Zusatzfelder und Enums pro aktiviertem Projekt (<code>fuehrungen_extra_fields</code>,{" "}
+            <code>fuehrungen_enums</code>)
+          </li>
+          <li>
+            Führungen auflisten (<code>fuehrungen_list</code>) — Slugs und URLs
+          </li>
+          <li>
+            Änderungen Vorschau (<code>fuehrungen_update_preview</code>), dann Schreiben mit{" "}
+            <code>confirm: true</code> (<code>fuehrungen_update</code>) — kein Anlegen neuer
+            Führungen
           </li>
         </ul>
         <p>Bei Verlust oder Ende der Nutzung widerrufen.</p>

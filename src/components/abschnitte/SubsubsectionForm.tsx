@@ -5,7 +5,6 @@ import { z } from "zod"
 import { LinkWithFormDirtyConfirm } from "@/src/components/abschnitte/LinkWithFormDirtyConfirm"
 import { SubsubsectionGeometryInput } from "@/src/components/abschnitte/SubsubsectionGeometryInput"
 import { lookupTableRows } from "@/src/components/abschnitte/utils/lookupTableRows"
-import { subsubsectionFieldTranslations } from "@/src/components/abschnitte/utils/subsubsectionFieldMappings"
 import { AdminBox } from "@/src/components/core/components/AdminBox/AdminBox"
 import { FieldLayoutRightColumn } from "@/src/components/core/components/forms/FieldLayout"
 import { FormDetailsSummary } from "@/src/components/core/components/forms/FormDetailsSummary"
@@ -34,6 +33,7 @@ import { subsectionsQueryOptions } from "@/src/server/subsections/subsectionsQue
 import { currentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
 import { parseDefinitions, sortByOrder } from "@/src/shared/subsubsections/extraFieldSchemas"
 import { subsubsectionFormDefaultValues } from "@/src/shared/subsubsections/schemas"
+import { subsubsectionFieldTranslations } from "@/src/shared/subsubsections/subsubsectionFieldMappings"
 
 const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
 

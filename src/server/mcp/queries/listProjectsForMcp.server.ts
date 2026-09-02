@@ -11,6 +11,7 @@ export async function listProjectsForMcp(origin: string, limitInput?: number) {
       id: true,
       slug: true,
       subTitle: true,
+      mcpEnabled: true,
       _count: {
         select: {
           subsections: true,
@@ -46,6 +47,7 @@ export async function listProjectsForMcp(origin: string, limitInput?: number) {
       subTitle: project.subTitle,
       shortTitle: shortTitle(project.slug),
       url: new URL(`/${project.slug}`, origin).href,
+      mcpEnabled: project.mcpEnabled,
       paCount: project._count.subsections,
       fuehrungCount: fuehrungCountByProjectId.get(project.id) ?? 0,
     })),
