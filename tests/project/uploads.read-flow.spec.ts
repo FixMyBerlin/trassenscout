@@ -37,6 +37,8 @@ test.describe("Uploads read flow", () => {
     if (fileName) {
       const modal = page.getByRole("dialog")
       await expect(modal.getByText(fileName).first()).toBeVisible({ timeout: 30_000 })
+      await expect(modal.getByText("Erstellt:")).toHaveCount(0)
+      await expect(modal.getByText("Aktualisiert:")).toHaveCount(0)
     }
 
     await page.locator('[aria-label="Schließen"]').click()

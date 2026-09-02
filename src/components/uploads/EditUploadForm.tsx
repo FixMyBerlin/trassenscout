@@ -24,6 +24,7 @@ import type { SubsubsectionsList } from "@/src/server/subsubsections/types"
 import { uploadQueryOptions } from "@/src/server/uploads/uploadQueryOptions"
 import { updateUploadFn } from "@/src/server/uploads/uploads.functions"
 import { uploadsQueryOptions } from "@/src/server/uploads/uploadsQueryOptions"
+import { resolvedToNavigateOptions } from "@/src/shared/routing/resolvedTo"
 import {
   uploadFormDefaultValues,
   UploadFormSchema,
@@ -208,7 +209,7 @@ export const EditUploadForm = ({
         if (onSuccess) {
           await onSuccess()
         } else {
-          void navigate({ to: returnPath })
+          void navigate({ ...resolvedToNavigateOptions(returnPath) })
         }
       } catch (error: unknown) {
         onSubmittingChange?.(false)

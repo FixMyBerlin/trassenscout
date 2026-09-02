@@ -10,7 +10,10 @@ import {
   ProjectRecordTemplatesByProjectSchema,
   UpdateProjectRecordTemplateSchema,
 } from "@/src/shared/projectRecordTemplates/schemas"
-import { validateTemplateTagScope } from "./_utils/validateTemplateTagScope"
+import {
+  validateTemplateFormTemplateScope,
+  validateTemplateTagScope,
+} from "./_utils/validateTemplateTagScope"
 
 export type ProjectRecordTemplatesByProjectInput = z.infer<
   typeof ProjectRecordTemplatesByProjectSchema
@@ -19,19 +22,21 @@ export type ProjectRecordTemplatesByProjectInput = z.infer<
 const projectRecordTemplateInclude = {
   projects: { select: { id: true, slug: true, subTitle: true } },
   tags: true,
+  formTemplates: { select: { id: true, title: true, slug: true, type: true } },
 } as const
 
 function templateData(
   input: z.infer<typeof ProjectRecordTemplateFormSchema>,
   setRelations = false,
 ) {
-  const { projectIds, tagIds, ...data } = input
+  const { projectIds, tagIds, formTemplateIds, ...data } = input
   const relationVerb = setRelations ? "set" : "connect"
 
   return {
     ...data,
     projects: { [relationVerb]: projectIds.map((id) => ({ id })) },
     tags: { [relationVerb]: tagIds.map((id) => ({ id })) },
+    formTemplates: { [relationVerb]: formTemplateIds.map((id) => ({ id })) },
   }
 }
 
@@ -79,10 +84,22 @@ export async function createProjectRecordTemplate(
 ) {
   await endpointAuth.admin(headers)
   await validateTemplateTagScope(input)
+  await validateTemplateFormTemplateScope(input)
 
   return db.projectRecordTemplate.create({
     data: templateData(input),
     include: projectRecordTemplateInclude,
+  })
+}
+
+/** Otherwise the record keeps inheriting the template's forms and fails its relation check. */
+async function pruneRecordsOutsideProjects(templateId: number, projectIds: number[]) {
+  await db.projectRecord.updateMany({
+    where: {
+      projectRecordTemplateId: templateId,
+      ...(projectIds.length ? { projectId: { notIn: projectIds } } : {}),
+    },
+    data: { projectRecordTemplateId: null },
   })
 }
 
@@ -93,12 +110,16 @@ export async function updateProjectRecordTemplate(
   await endpointAuth.admin(headers)
   const { id, ...data } = input
   await validateTemplateTagScope(data)
+  await validateTemplateFormTemplateScope(data)
 
-  return db.projectRecordTemplate.update({
+  const updated = await db.projectRecordTemplate.update({
     where: { id },
     data: templateData(data, true),
     include: projectRecordTemplateInclude,
   })
+  await pruneRecordsOutsideProjects(id, data.projectIds)
+
+  return updated
 }
 
 export async function deleteProjectRecordTemplate(

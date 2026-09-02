@@ -1,3 +1,4 @@
+import { frenchQuote } from "@/src/components/core/components/text/quote"
 import {
   ProjectRecordEditingState,
   ProjectRecordReviewState,
@@ -169,10 +170,22 @@ export async function processIncomingProjectRecordEmail({
 
     await createLogEntry({
       action: "CREATE",
-      message: `Neuer Protokolleintrag ${projectRecord.title} per KI aus Email mir ID ${projectRecordEmail.id} erstellt`,
+      message: `Neuer Protokolleintrag ${frenchQuote(projectRecord.title)} aus E-Mail #${projectRecordEmail.id} wurde erstellt.`,
       userId: null,
       projectId: projectRecord.projectId,
       projectRecordId: projectRecord.id,
+      updatedRecord: {
+        id: projectRecord.id,
+        title: projectRecord.title,
+        body: projectRecord.body,
+        date: projectRecord.date,
+        editingState: projectRecord.editingState,
+        reviewState: projectRecord.reviewState,
+        reviewNotes: projectRecord.reviewNotes,
+        projectRecordEmailId: projectRecord.projectRecordEmailId,
+        tagIds: combinedResult.tags,
+        uploadIds,
+      },
     })
 
     if (!isSenderApproved || !isAiEnabled) {

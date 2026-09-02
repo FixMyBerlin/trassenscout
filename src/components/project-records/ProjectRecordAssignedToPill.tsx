@@ -10,8 +10,14 @@ type Props = {
   onAssigneeClick?: (assigneeSearchText: string) => void
 }
 
-const assignedToPillShortLabel = (user: Props["assignedTo"]) =>
-  `${user.firstName.trim().charAt(0).toLocaleUpperCase()}.${user.lastName.trim()}`
+const assignedToPillShortLabel = (user: Props["assignedTo"]) => {
+  if (!("id" in user)) {
+    return getFullname(user)?.trim() ?? ""
+  }
+  const firstInitial = (user.firstName ?? "").trim().charAt(0).toLocaleUpperCase()
+  const lastName = (user.lastName ?? "").trim()
+  return lastName ? `${firstInitial}.${lastName}` : firstInitial
+}
 
 export const ProjectRecordAssignedToPill = ({
   assignedTo,

@@ -16,12 +16,12 @@ This project is built with [TanStack Start](https://tanstack.com/start), [React]
 
 For starting developing, the following steps could be helpful for getting started:
 
-- Use or nvm to install Node.js: `nvm use`
 - Install dependencies: `bun install`
-- Start the development environment: `bun run dev`
+- Start the development environment: `bun run dev` (opens **http://127.0.0.1:4000**)
+- Run `nvm use` for Prisma and Playwright (they spawn Node; `bun run dev` uses Bun)
 - Run all checks: `bun run check` (check migrations, check TypeScript, run linter, run formatter, run tests)
-- Use `bun run build` to test the build
-- Husky: We run our checks on push. Use `git push --no-verify` to force-skip them.
+- Use `bun run build` and `bun run start` to test the production bundle locally
+- Husky: We run our checks on push. Use `git push --no-verify` to force-skip them
 
 Local development uses a gitignored `.env` file (see [`.env.example`](.env.example)). Production servers get `.env` from the deploy workflow.
 
@@ -73,7 +73,7 @@ Market-share queries in [`package.json`](./package.json) `browserslist`; wired t
    bun run dev
    ```
 
-1. Open [http://localhost:3000](http://localhost:3000).
+1. Open [http://127.0.0.1:4000](http://127.0.0.1:4000).
 
 ## Tests
 

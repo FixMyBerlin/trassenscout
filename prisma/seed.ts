@@ -1,4 +1,5 @@
 import seedAdmin from "./seeds/admin"
+import seedAdminApiToken from "./seeds/adminApiToken"
 import seedContacts from "./seeds/contacts"
 import seedMemberships from "./seeds/memberships"
 import seedNetworkHierarchies from "./seeds/networkHierarchies"
@@ -42,6 +43,7 @@ const seed = async () => {
     await seedSubsubsectionTask()
     await seedSubsubsectionInfra()
     await seedSubsubsectionSpecial()
+    await seedAdminApiToken()
     await seedAdmin()
   }
 }

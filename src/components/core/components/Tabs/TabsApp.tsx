@@ -3,6 +3,7 @@ import { startTransition } from "react"
 import { twJoin } from "tailwind-merge"
 import { Link } from "@/src/components/core/components/links/Link"
 import { pillShellClasses } from "@/src/components/core/utils/pillClassNames"
+import { resolvedToNavigateOptions, splitResolvedTo } from "@/src/shared/routing/resolvedTo"
 
 type Tab = {
   name: string
@@ -13,9 +14,10 @@ type Tab = {
 }
 
 function isTabActive(pathname: string, tab: Tab) {
-  if (pathname === tab.to) return true
+  const tabPath = splitResolvedTo(tab.to).to
+  if (pathname === tabPath) return true
   if (!tab.activeForSubpaths) return false
-  return pathname.startsWith(`${tab.to}/`)
+  return pathname.startsWith(`${tabPath}/`)
 }
 
 type Props = {
@@ -44,7 +46,7 @@ export const TabsApp = ({ tabs, className, embedded = false }: Props) => {
             const tab = tabs.find((tab) => tab.name === event.target.value)
             if (tab?.to) {
               startTransition(() => {
-                void navigate({ to: tab.to })
+                void navigate({ ...resolvedToNavigateOptions(tab.to) })
               })
             }
           }}

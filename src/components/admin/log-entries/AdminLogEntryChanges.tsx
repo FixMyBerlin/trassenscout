@@ -1,5 +1,3 @@
-import { format } from "date-fns/format"
-import { de } from "date-fns/locale/de"
 import type { Diff } from "datum-diff"
 import { twJoin } from "tailwind-merge"
 import {
@@ -22,9 +20,6 @@ const diffTranslations = {
 
 const dateOrData = (path: string[], content: string) => {
   switch (path.at(0)) {
-    case "updatedAt":
-      return format(content, "Pp", { locale: de })
-
     case "geometry":
       return "(Koordinaten)"
 
@@ -34,7 +29,47 @@ const dateOrData = (path: string[], content: string) => {
   }
 }
 
+const formatDiffValue = (path: string[], value: unknown) => {
+  if (value == null) return null
+  if (typeof value === "object") {
+    return dateOrData(path, JSON.stringify(value))
+  }
+  return dateOrData(path, String(value))
+}
+
 export const AdminLogEntryChanges = ({ context }: Props) => {
+  if (context != null && typeof context === "object" && !Array.isArray(context)) {
+    const entries = Object.entries(context)
+    if (entries.length === 0) return null
+
+    return (
+      <table className={twJoin("mt-4", tableClassName)}>
+        <thead>
+          <tr className={tableHeadRowClassName}>
+            <th scope="col" className={tableHeadCellClassName}>
+              Feld
+            </th>
+            <th scope="col" className={tableHeadCellClassName}>
+              Wert
+            </th>
+          </tr>
+        </thead>
+        <tbody className={tableBodyClassName}>
+          {entries.map(([key, value]) => (
+            <tr key={key} className={tableRowClassName}>
+              <td className="px-1.5 py-1 text-sm text-gray-500">
+                <code className="text-xs font-semibold">{key}</code>
+              </td>
+              <td className="px-1.5 py-1 text-sm text-gray-500">
+                {dateOrData([key], typeof value === "string" ? value : JSON.stringify(value))}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    )
+  }
+
   if (!Array.isArray(context)) return null
 
   return (
@@ -65,10 +100,10 @@ export const AdminLogEntryChanges = ({ context }: Props) => {
                 <code className="text-xs font-semibold">{entry.path.join(" > ")}</code>
               </td>
               <td className="px-1.5 py-1 text-sm text-gray-500">
-                {"lhs" in entry ? dateOrData(entry.path, String(entry.lhs)) : null}
+                {"lhs" in entry ? formatDiffValue(entry.path, entry.lhs) : null}
               </td>
               <td className="px-1.5 py-1 text-sm text-gray-500">
-                {"rhs" in entry ? dateOrData(entry.path, String(entry.rhs)) : null}
+                {"rhs" in entry ? formatDiffValue(entry.path, entry.rhs) : null}
               </td>
             </tr>
           )

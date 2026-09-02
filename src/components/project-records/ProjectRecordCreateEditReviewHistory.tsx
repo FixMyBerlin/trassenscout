@@ -44,33 +44,39 @@ const formatAuthorWithTimestamp = ({
 
 const CreateEditReviewHistoryComponent = ({
   projectRecord,
+  showAuthors,
 }: {
   projectRecord: ProjectRecordAdmin | ProjectRecordListItem | ProjectRecord
+  showAuthors: boolean
 }) => {
-  const rows: { label: string; value: ReactNode }[] = [
-    {
-      label: "Erstellt:",
-      value: formatAuthorWithTimestamp({
-        label: getProjectRecordAuthorLabel({
-          type: projectRecord.projectRecordAuthorType,
-          author: projectRecord.author,
+  const rows: { label: string; value: ReactNode }[] = []
+
+  if (showAuthors) {
+    rows.push(
+      {
+        label: "Erstellt:",
+        value: formatAuthorWithTimestamp({
+          label: getProjectRecordAuthorLabel({
+            type: projectRecord.projectRecordAuthorType,
+            author: projectRecord.author,
+          }),
+          timestamp: projectRecord.createdAt,
         }),
-        timestamp: projectRecord.createdAt,
-      }),
-    },
-    {
-      label: "Zuletzt bearbeitet:",
-      value: projectRecord.projectRecordUpdatedByType
-        ? formatAuthorWithTimestamp({
-            label: getProjectRecordAuthorLabel({
-              type: projectRecord.projectRecordUpdatedByType,
-              author: projectRecord.updatedBy,
-            }),
-            timestamp: projectRecord.updatedAt,
-          })
-        : "—",
-    },
-  ]
+      },
+      {
+        label: "Zuletzt bearbeitet:",
+        value: projectRecord.projectRecordUpdatedByType
+          ? formatAuthorWithTimestamp({
+              label: getProjectRecordAuthorLabel({
+                type: projectRecord.projectRecordUpdatedByType,
+                author: projectRecord.updatedBy,
+              }),
+              timestamp: projectRecord.updatedAt,
+            })
+          : "—",
+      },
+    )
+  }
 
   if (
     projectRecord.projectRecordAuthorType === ProjectRecordType.SYSTEM &&
@@ -83,6 +89,7 @@ const CreateEditReviewHistoryComponent = ({
   }
 
   if (
+    showAuthors &&
     projectRecord.projectRecordAuthorType === ProjectRecordType.SYSTEM &&
     projectRecord.reviewState === ProjectRecordReviewState.APPROVED &&
     projectRecord.reviewedBy
@@ -106,6 +113,8 @@ const CreateEditReviewHistoryComponent = ({
     })
   }
 
+  if (!rows.length) return null
+
   return (
     <div className="mt-8 max-w-5xl space-y-4 border-y border-gray-200 px-4 py-4">
       {rows.map((row) => (
@@ -126,19 +135,16 @@ export const CreateEditReviewHistory = ({
   const user = useCurrentUser()
   const isUserAdmin = isAdmin(user)
   const aiEnabled = projectRecord.project.aiEnabled
-
-  if (!aiEnabled && !isUserAdmin) return null
-
-  if (aiEnabled)
-    return (
-      <IfUserCanEdit>
-        <CreateEditReviewHistoryComponent projectRecord={projectRecord} />
-      </IfUserCanEdit>
-    )
-
-  return (
-    <SuperAdminBox>
-      <CreateEditReviewHistoryComponent projectRecord={projectRecord} />
-    </SuperAdminBox>
+  const history = (
+    <CreateEditReviewHistoryComponent projectRecord={projectRecord} showAuthors={isUserAdmin} />
   )
+
+  if (isUserAdmin) {
+    if (aiEnabled) return history
+    return <SuperAdminBox>{history}</SuperAdminBox>
+  }
+
+  if (!aiEnabled) return null
+
+  return <IfUserCanEdit>{history}</IfUserCanEdit>
 }

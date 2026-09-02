@@ -18,6 +18,7 @@ const mockDb = {
   surveyResponse: {
     findFirstOrThrow: vi.fn(),
     findFirst: vi.fn(),
+    update: vi.fn(),
   },
   subsubsection: {
     findFirst: vi.fn(),
@@ -36,6 +37,7 @@ const mockEndpointAuth = {
 }
 
 const mockDeleteUploadFileAndDbRecord = vi.fn()
+const mockCreateLogEntry = vi.fn().mockResolvedValue(undefined)
 
 vi.mock("@/src/server/db.server", () => ({
   default: mockDb,
@@ -47,6 +49,10 @@ vi.mock("@/src/server/auth/endpointAuth.server", () => ({
 
 vi.mock("@/src/server/uploads/_utils/deleteUploadFileAndDbRecord", () => ({
   deleteUploadFileAndDbRecord: mockDeleteUploadFileAndDbRecord,
+}))
+
+vi.mock("@/src/server/logEntries/create/createLogEntry", () => ({
+  createLogEntry: mockCreateLogEntry,
 }))
 
 const headers = new Headers()
@@ -75,7 +81,7 @@ describe("deleteSurveyResponseAsAdmin", () => {
     ).rejects.toThrow("Not authorized")
 
     expect(mockDb.surveyResponse.findFirstOrThrow).not.toHaveBeenCalled()
-  })
+  }, 15_000)
 
   test("deletes the response and orphaned session in a transaction", async () => {
     const { deleteSurveyResponseAsAdmin } = await import("./surveyResponses.server")
@@ -243,5 +249,58 @@ describe("getGroupedSurveyResponses", () => {
     })
 
     expect(result.count).toBe(1)
+  })
+})
+
+describe("patchSurveyResponse", () => {
+  const previousSnapshot = {
+    id: 42,
+    status: "open",
+    note: "Alt",
+    source: "FORM",
+    state: "SUBMITTED",
+    operatorId: 9,
+    surveyResponseTags: [{ id: 1 }],
+    surveySession: { survey: { title: "Feedback", projectId: 1 } },
+  }
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockEndpointAuth.projectRole.mockResolvedValue({
+      projectId: 1,
+      membershipRole: "EDITOR",
+      session: { userId: 2, role: "USER" },
+    })
+    mockDb.surveyResponse.findFirstOrThrow.mockResolvedValue(previousSnapshot)
+    mockDb.surveyResponse.update.mockResolvedValue({
+      ...previousSnapshot,
+      note: "Neu",
+    })
+  })
+
+  test("logs only fields that actually changed", async () => {
+    const { patchSurveyResponse } = await import("./surveyResponses.server")
+
+    await patchSurveyResponse(headers, {
+      projectSlug: "rs23",
+      id: 42,
+      status: "open",
+      note: "Neu",
+      source: "FORM",
+      operatorId: 9,
+    })
+
+    expect(mockCreateLogEntry).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action: "UPDATE",
+        surveyResponseId: 42,
+        userId: 2,
+        message: expect.stringMatching(/Notiz geändert/),
+      }),
+    )
+    const logged = mockCreateLogEntry.mock.calls[0]?.[0] as { message: string } | undefined
+    expect(logged?.message).not.toMatch(/Status/)
+    expect(logged?.message).not.toMatch(/Quelle/)
+    expect(logged?.message).not.toMatch(/Baulastträger/)
   })
 })

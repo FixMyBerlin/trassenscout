@@ -76,6 +76,7 @@ export const isReplaceableUpload = (upload: { surveyResponseId: number | null })
 
 export const uploadForDeletionSelect = {
   id: true,
+  title: true,
   collaborationPath: true,
   collaborationUrl: true,
   externalUrl: true,

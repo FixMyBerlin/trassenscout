@@ -1,5 +1,7 @@
 import { length, lineString } from "@turf/turf"
 import { z } from "zod"
+import { frenchQuote } from "@/src/components/core/components/text/quote"
+import { shortTitle } from "@/src/components/core/components/text/titles"
 import type { Prisma } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
@@ -130,41 +132,141 @@ export async function createSubsection(
   headers: Headers,
   input: z.infer<typeof CreateSubsectionSchema>,
 ) {
-  const { projectId } = await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
+  const { projectId, session } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    editorRoles,
+  )
   const { projectSlug, ...data } = input
   await validateSubsectionRelations(projectSlug, data)
 
-  return db.subsection.create({
+  const record = await db.subsection.create({
     data: subsectionData(data, projectId),
   })
+
+  await createLogEntry({
+    action: "CREATE",
+    message: `Neuer Planungsabschnitt ${frenchQuote(shortTitle(record.slug))} wurde erstellt.`,
+    userId: Number(session.userId),
+    projectSlug,
+    subsectionId: record.id,
+    updatedRecord: {
+      id: record.id,
+      slug: record.slug,
+      order: record.order,
+      type: record.type,
+      geometry: record.geometry,
+      labelPos: record.labelPos,
+      description: record.description,
+      lengthM: record.lengthM,
+      managerId: record.managerId,
+      operatorId: record.operatorId,
+      networkHierarchyId: record.networkHierarchyId,
+      subsectionStatusId: record.subsectionStatusId,
+      estimatedCompletionDateString: record.estimatedCompletionDateString,
+    },
+  })
+
+  return record
 }
 
 export async function updateSubsection(
   headers: Headers,
   input: z.infer<typeof UpdateSubsectionSchema>,
 ) {
-  await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
+  const { session } = await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
   const { id, projectSlug, ...data } = input
   await validateSubsectionRelations(projectSlug, data)
   const previous = await db.subsection.findFirstOrThrow({
     where: subsectionInProjectWhere(projectSlug, id),
-    select: { id: true, projectId: true },
+    select: {
+      id: true,
+      projectId: true,
+      slug: true,
+      order: true,
+      type: true,
+      geometry: true,
+      labelPos: true,
+      description: true,
+      lengthM: true,
+      managerId: true,
+      operatorId: true,
+      networkHierarchyId: true,
+      subsectionStatusId: true,
+      estimatedCompletionDateString: true,
+    },
   })
 
-  return db.subsection.update({
+  const record = await db.subsection.update({
     where: { id: previous.id },
     data: subsectionData(data, previous.projectId),
   })
+
+  await createLogEntry({
+    action: "UPDATE",
+    message: `Planungsabschnitt ${frenchQuote(shortTitle(record.slug))} wurde bearbeitet.`,
+    userId: Number(session.userId),
+    projectSlug,
+    subsectionId: record.id,
+    previousRecord: {
+      id: previous.id,
+      slug: previous.slug,
+      order: previous.order,
+      type: previous.type,
+      geometry: previous.geometry,
+      labelPos: previous.labelPos,
+      description: previous.description,
+      lengthM: previous.lengthM,
+      managerId: previous.managerId,
+      operatorId: previous.operatorId,
+      networkHierarchyId: previous.networkHierarchyId,
+      subsectionStatusId: previous.subsectionStatusId,
+      estimatedCompletionDateString: previous.estimatedCompletionDateString,
+    },
+    updatedRecord: {
+      id: record.id,
+      slug: record.slug,
+      order: record.order,
+      type: record.type,
+      geometry: record.geometry,
+      labelPos: record.labelPos,
+      description: record.description,
+      lengthM: record.lengthM,
+      managerId: record.managerId,
+      operatorId: record.operatorId,
+      networkHierarchyId: record.networkHierarchyId,
+      subsectionStatusId: record.subsectionStatusId,
+      estimatedCompletionDateString: record.estimatedCompletionDateString,
+    },
+  })
+
+  return record
 }
 
 export async function deleteSubsection(
   headers: Headers,
   input: z.infer<typeof DeleteSubsectionSchema>,
 ) {
-  await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
-  return db.subsection.deleteMany({
+  const { session } = await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
+  const previous = await db.subsection.findFirst({
+    where: subsectionInProjectWhere(input.projectSlug, input.id),
+    select: { id: true, slug: true },
+  })
+  const result = await db.subsection.deleteMany({
     where: subsectionInProjectWhere(input.projectSlug, input.id),
   })
+
+  if (previous) {
+    await createLogEntry({
+      action: "DELETE",
+      message: `Planungsabschnitt ${frenchQuote(shortTitle(previous.slug))} wurde gelöscht.`,
+      userId: Number(session.userId),
+      projectSlug: input.projectSlug,
+      previousRecord: { id: previous.id },
+    })
+  }
+
+  return result
 }
 
 export async function createSubsections(
@@ -181,11 +283,23 @@ export async function createSubsections(
     })),
   })
 
+  const createdSubsections = await db.subsection.findMany({
+    where: {
+      project: { slug: projectSlug },
+      slug: { in: subsections.map((subsection) => subsection.slug) },
+    },
+    select: { id: true, slug: true },
+  })
+
   await createLogEntry({
     action: "CREATE",
-    message: `${subsections.length} Planungsabschnitte erstellt`,
+    message: `${subsections.length} Planungsabschnitte wurden erstellt.`,
     userId: Number(session.userId),
     projectSlug,
+    updatedRecord: {
+      subsectionIds: createdSubsections.map((subsection) => subsection.id),
+      slugs: createdSubsections.map((subsection) => subsection.slug),
+    },
   })
 
   return records
@@ -237,9 +351,11 @@ export async function updateSubsectionsWithPlacemark(
   if (updatedSubsectionIds.length > 0) {
     await createLogEntry({
       action: "UPDATE",
-      message: `Geometrien von ${updatedSubsectionIds.length} Planungsabschnitte aktualisiert`,
+      message: `Die Geometrien von ${updatedSubsectionIds.length} Planungsabschnitten wurden aktualisiert.`,
       userId: Number(session.userId),
       projectSlug,
+      previousRecord: { subsectionIds: [] },
+      updatedRecord: { subsectionIds: updatedSubsectionIds },
     })
   }
 

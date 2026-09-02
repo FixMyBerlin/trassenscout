@@ -1,0 +1,11 @@
+/*
+ * pdf.js writes an inline `font-size` on every widget, shrinking the field's own size to fit
+ * the box, and the app's form styling (Tailwind's forms plugin) adds padding that pushes the
+ * entry below its label. `!important` is what it takes to beat an inline style.
+ */
+.formPdfEditor .annotationLayer .textWidgetAnnotation :is(input, textarea) {
+  font-size: calc(var(--form-pdf-font-size) * var(--total-scale-factor)) !important;
+  font-family: Helvetica, Arial, sans-serif !important;
+  border-width: 1px !important;
+  padding: 0 2px !important;
+}

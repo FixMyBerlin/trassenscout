@@ -3,11 +3,20 @@ import type { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/uti
 import { AllowedSurveySlugsSchema } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
 import { getQuestionIdBySurveySlug } from "@/src/components/beteiligung/shared/utils/getQuestionIdBySurveySlug"
+import { frenchQuote } from "@/src/components/core/components/text/quote"
 import { getFlatSurveyFormFields } from "@/src/components/surveys/[surveyId]/responses/getFlatSurveyFormFields"
+import type { Prisma } from "@/src/prisma/generated/browser"
 import { SurveyResponseStateEnum } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
+import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
+import { changedRecordKeys, relationIds } from "@/src/server/logEntries/create/relationIds"
+import {
+  loadUserRedactionContext,
+  redactCommentAuthor,
+  redactUploadUsers,
+} from "@/src/server/memberships/redactFormerProjectMemberUser.server"
 import { deleteUploadFileAndDbRecord } from "@/src/server/uploads/_utils/deleteUploadFileAndDbRecord"
 import { connectIds, idsFromFormValue, setIds } from "@/src/shared/prisma/connectIds"
 import { m2mFields, type M2MFieldsType } from "./m2mFields"
@@ -38,6 +47,26 @@ type SurveyResponseJsonValue =
   | Array<string | number | boolean | null>
 type SurveyResponseJsonData = Record<string, SurveyResponseJsonValue>
 type SurveyResponseInput = z.infer<typeof SurveyResponseFormSchema>
+
+const PATCH_SURVEY_RESPONSE_FIELD_LABELS: Record<string, string> = {
+  status: "Status",
+  note: "Notiz",
+  operatorId: "Baulastträger",
+  state: "Zustand",
+  source: "Quelle",
+  surveyResponseTagIds: "Tags",
+}
+
+const surveyResponseLogSelect = {
+  id: true,
+  status: true,
+  note: true,
+  source: true,
+  state: true,
+  operatorId: true,
+  surveyResponseTags: { select: { id: true } },
+  surveySession: { select: { survey: { select: { title: true, projectId: true } } } },
+} as const
 
 function surveyResponseInProjectWhere(projectSlug: string, id: number) {
   return { id, surveySession: { survey: { project: { slug: projectSlug } } } }
@@ -229,12 +258,19 @@ export async function getSurveyResponses(
   headers: Headers,
   input: z.infer<typeof GetSurveyResponsesSchema>,
 ) {
-  await endpointAuth.projectRole(headers, input.projectSlug, viewerRoles)
+  const { projectId, session } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    viewerRoles,
+  )
 
-  return db.surveyResponse.findMany({
+  const responses = await db.surveyResponse.findMany({
     include: {
       operator: true,
-      surveyResponseComments: { include: { author: true }, orderBy: { id: "asc" } },
+      surveyResponseComments: {
+        include: { author: { select: { id: true, firstName: true, lastName: true } } },
+        orderBy: { id: "asc" },
+      },
       surveyResponseTags: true,
       uploads: true,
     },
@@ -249,23 +285,54 @@ export async function getSurveyResponses(
       },
     },
   })
+  const redactionContext = await loadUserRedactionContext(
+    projectId,
+    session.role,
+    Number(session.userId),
+  )
+  return responses.map((response) => ({
+    ...response,
+    surveyResponseComments: response.surveyResponseComments.map((comment) =>
+      redactCommentAuthor(comment, redactionContext),
+    ),
+    uploads: response.uploads.map((upload) => redactUploadUsers(upload, redactionContext)),
+  }))
 }
 
 export async function getSurveyResponse(
   headers: Headers,
   input: z.infer<typeof GetSurveyResponseSchema>,
 ) {
-  await endpointAuth.projectRole(headers, input.projectSlug, viewerRoles)
+  const { projectId, session } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    viewerRoles,
+  )
 
-  return db.surveyResponse.findFirstOrThrow({
+  const response = await db.surveyResponse.findFirstOrThrow({
     include: {
       operator: true,
-      surveyResponseComments: { include: { author: true }, orderBy: { id: "asc" } },
+      surveyResponseComments: {
+        include: { author: { select: { id: true, firstName: true, lastName: true } } },
+        orderBy: { id: "asc" },
+      },
       surveyResponseTags: true,
       uploads: true,
     },
     where: surveyResponseInProjectWhere(input.projectSlug, input.id),
   })
+  const redactionContext = await loadUserRedactionContext(
+    projectId,
+    session.role,
+    Number(session.userId),
+  )
+  return {
+    ...response,
+    surveyResponseComments: response.surveyResponseComments.map((comment) =>
+      redactCommentAuthor(comment, redactionContext),
+    ),
+    uploads: response.uploads.map((upload) => redactUploadUsers(upload, redactionContext)),
+  }
 }
 
 export async function createSurveyResponse(
@@ -317,13 +384,24 @@ export async function patchSurveyResponse(
   headers: Headers,
   input: z.infer<typeof PatchSurveyResponseSchema>,
 ) {
-  await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
+  const { session } = await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
   const { id, projectSlug, ...data } = input
 
-  await db.surveyResponse.findFirstOrThrow({
+  const previousResponse = await db.surveyResponse.findFirstOrThrow({
     where: surveyResponseInProjectWhere(projectSlug, id),
-    select: { id: true },
+    select: surveyResponseLogSelect,
   })
+  const surveyTitle = previousResponse.surveySession.survey.title
+  const projectId = previousResponse.surveySession.survey.projectId
+  const previous = {
+    id: previousResponse.id,
+    status: previousResponse.status,
+    note: previousResponse.note,
+    source: previousResponse.source,
+    state: previousResponse.state,
+    operatorId: previousResponse.operatorId,
+    surveyResponseTagIds: relationIds(previousResponse.surveyResponseTags),
+  }
 
   const disconnect: Partial<Record<M2MFieldsType, { set: [] }>> = {}
   const connect: Partial<Record<M2MFieldsType, { connect: { id: number }[] }>> = {}
@@ -347,18 +425,46 @@ export async function patchSurveyResponse(
     })
   }
 
-  return db.surveyResponse.update({
+  const updatedResponse = await db.surveyResponse.update({
     where: { id },
-    // @ts-expect-error m2m connect fields are validated at runtime
-    data: { ...data, ...connect },
+    data: { ...data, ...connect } as Prisma.SurveyResponseUpdateInput,
+    select: surveyResponseLogSelect,
   })
+  const updated = {
+    id: updatedResponse.id,
+    status: updatedResponse.status,
+    note: updatedResponse.note,
+    source: updatedResponse.source,
+    state: updatedResponse.state,
+    operatorId: updatedResponse.operatorId,
+    surveyResponseTagIds: relationIds(updatedResponse.surveyResponseTags),
+  }
+  const fieldList = changedRecordKeys(previous, updated)
+    .map((key) => PATCH_SURVEY_RESPONSE_FIELD_LABELS[key] ?? key)
+    .join(", ")
+
+  await createLogEntry({
+    action: "UPDATE",
+    message: `In der Eingabe #${id} von ${frenchQuote(surveyTitle)} wurde ${fieldList} geändert.`,
+    userId: Number(session.userId),
+    projectId,
+    surveyResponseId: id,
+    previousRecord: previous,
+    updatedRecord: updated,
+  })
+
+  return updatedResponse
 }
 
 export async function getFeedbackSurveyResponsesWithSurveyDataAndComments(
   headers: Headers,
   input: GetFeedbackSurveyResponsesInput,
 ) {
-  await endpointAuth.projectRole(headers, input.projectSlug, viewerRoles)
+  const { projectId, session } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    viewerRoles,
+  )
   const { projectSlug, surveyId } = input
 
   const rawSurveyResponsePart2 = await db.surveyResponse.findMany({
@@ -379,6 +485,7 @@ export async function getFeedbackSurveyResponsesWithSurveyDataAndComments(
         select: {
           id: true,
           surveyResponseId: true,
+          userId: true,
           createdAt: true,
           updatedAt: true,
           body: true,
@@ -509,8 +616,20 @@ export async function getFeedbackSurveyResponsesWithSurveyDataAndComments(
     return { ...question, options: uniqueSortedResponseOptions }
   })
 
+  const redactionContext = await loadUserRedactionContext(
+    projectId,
+    session.role,
+    Number(session.userId),
+  )
+  const feedbackSurveyResponses = parsedAndSorted.map((response) => ({
+    ...response,
+    surveyResponseComments: response.surveyResponseComments.map((comment) =>
+      redactCommentAuthor(comment, redactionContext),
+    ),
+  }))
+
   return {
-    feedbackSurveyResponses: parsedAndSorted,
+    feedbackSurveyResponses,
     additionalFilterQuestionsWithResponseOptions,
   }
 }

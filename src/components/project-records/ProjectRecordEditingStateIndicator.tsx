@@ -1,6 +1,7 @@
 import { CheckCircleIcon } from "@heroicons/react/24/outline"
 import { twJoin } from "tailwind-merge"
 import { ProjectRecordEditingState } from "@/src/prisma/generated/browser"
+import { projectRecordEditingStateLabel } from "@/src/shared/projectRecords/projectRecordEditingStateLabel"
 
 function PendingEditingIcon({ className }: { className?: string }) {
   return (
@@ -16,11 +17,6 @@ function PendingEditingIcon({ className }: { className?: string }) {
   )
 }
 
-const LABEL: Record<ProjectRecordEditingState, string> = {
-  [ProjectRecordEditingState.PENDING]: "In Bearbeitung",
-  [ProjectRecordEditingState.COMPLETED]: "Abgeschlossen",
-}
-
 type Props = {
   editingState: ProjectRecordEditingState
   variant: "detail" | "table"
@@ -32,13 +28,17 @@ export const ProjectRecordEditingStateIndicator = ({ editingState, variant }: Pr
       return (
         <CheckCircleIcon
           className="size-5 shrink-0 text-gray-400"
-          aria-label={LABEL[editingState]}
-          title={LABEL[editingState]}
+          aria-label={projectRecordEditingStateLabel[editingState]}
+          title={projectRecordEditingStateLabel[editingState]}
         />
       )
     }
     return (
-      <span className="inline-flex" title={LABEL[editingState]} aria-label={LABEL[editingState]}>
+      <span
+        className="inline-flex"
+        title={projectRecordEditingStateLabel[editingState]}
+        aria-label={projectRecordEditingStateLabel[editingState]}
+      >
         <PendingEditingIcon className="text-blue-600" />
       </span>
     )
@@ -52,7 +52,7 @@ export const ProjectRecordEditingStateIndicator = ({ editingState, variant }: Pr
         isPending ? "text-gray-600" : "text-gray-500",
       )}
     >
-      <span>{LABEL[editingState]}</span>
+      <span>{projectRecordEditingStateLabel[editingState]}</span>
     </span>
   )
 }

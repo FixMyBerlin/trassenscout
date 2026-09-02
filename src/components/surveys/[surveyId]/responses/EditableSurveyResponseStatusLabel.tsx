@@ -23,7 +23,7 @@ export const EditableSurveyResponseStatusLabel = ({ status, surveySlug, short }:
 
   return (
     <StatusLabel
-      className={short ? "w-[200px] truncate" : ""}
+      className={short ? "max-w-[200px]" : undefined}
       icon={statusConfig.icon}
       label={statusConfig.label}
       color={statusConfig.color}

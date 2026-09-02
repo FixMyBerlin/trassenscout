@@ -1,7 +1,9 @@
 import { z } from "zod"
+import { frenchQuote } from "@/src/components/core/components/text/quote"
 import { SurveyResponseStateEnum } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import db from "@/src/server/db.server"
+import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { generateSecureToken } from "@/src/server/utils/generateSecureToken.server"
 import { deleteUploadFileAndDbRecord } from "./_utils/deleteUploadFileAndDbRecord"
 import { isProjectUploadS3Url } from "./_utils/keys"
@@ -41,6 +43,7 @@ export async function createSurveyUploadPublic(
         select: {
           survey: {
             select: {
+              title: true,
               projectId: true,
               project: { select: { slug: true } },
             },
@@ -60,9 +63,10 @@ export async function createSurveyUploadPublic(
     throw new Error("Invalid upload URL")
   }
 
+  const surveyTitle = surveyResponse.surveySession.survey.title
   const publicDeleteToken = generateSecureToken()
 
-  return db.upload.create({
+  const upload = await db.upload.create({
     data: {
       projectId,
       surveyResponseId: input.surveyResponseId,
@@ -81,6 +85,25 @@ export async function createSurveyUploadPublic(
       collaborationPath: null,
     },
   })
+
+  await createLogEntry({
+    action: "CREATE",
+    message: `Zu der Eingabe #${input.surveyResponseId} von ${frenchQuote(surveyTitle)} wurde ein Dokument hinzugefügt.`,
+    userId: null,
+    projectId,
+    uploadId: upload.id,
+    surveyResponseId: input.surveyResponseId,
+    updatedRecord: {
+      id: upload.id,
+      title: upload.title,
+      externalUrl: upload.externalUrl,
+      mimeType: upload.mimeType,
+      fileSize: upload.fileSize,
+      surveyResponseId: upload.surveyResponseId,
+    },
+  })
+
+  return upload
 }
 
 export async function getUploadsMetaPublic(input: z.infer<typeof GetUploadsMetaPublicSchema>) {
@@ -122,9 +145,25 @@ export async function deleteSurveyUploadPublic(
     },
     select: {
       id: true,
+      title: true,
       externalUrl: true,
       collaborationUrl: true,
       collaborationPath: true,
+      surveyResponse: {
+        select: {
+          id: true,
+          surveySession: {
+            select: {
+              survey: {
+                select: {
+                  title: true,
+                  projectId: true,
+                },
+              },
+            },
+          },
+        },
+      },
     },
   })
 
@@ -132,6 +171,19 @@ export async function deleteSurveyUploadPublic(
     throw new Error("Upload not found or cannot be deleted in this context")
   }
 
+  const surveyTitle = upload.surveyResponse!.surveySession.survey.title
+  const projectId = upload.surveyResponse!.surveySession.survey.projectId
+
   await deleteUploadFileAndDbRecord(upload)
+
+  await createLogEntry({
+    action: "DELETE",
+    message: `Zu der Eingabe #${input.surveyResponseId} von ${frenchQuote(surveyTitle)} wurde ein Dokument gelöscht.`,
+    userId: null,
+    projectId,
+    surveyResponseId: input.surveyResponseId,
+    previousRecord: { id: upload.id },
+  })
+
   return { id: input.id }
 }

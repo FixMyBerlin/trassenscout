@@ -5,6 +5,7 @@ import { authorizeProjectMemberByProjectSlug } from "@/src/server/authorization/
 import { editorRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
+import { relationIds } from "@/src/server/logEntries/create/relationIds"
 import { getProjectIdBySlug } from "@/src/server/projects/queries/getProjectIdBySlug.server"
 import { AuthorizationError } from "@/src/shared/auth/errors"
 import {
@@ -47,10 +48,21 @@ export async function createContact(headers: Headers, input: z.infer<typeof Crea
 
   await createLogEntry({
     action: "CREATE",
-    message: `Neuer externer Kontakt ${record ? getFullname(record) : ""}`,
+    message: `Neuer externer Kontakt ${record ? getFullname(record) : ""} wurde erstellt.`,
     userId: Number(session.userId),
     projectId,
     contactId: record.id,
+    updatedRecord: {
+      id: record.id,
+      firstName: record.firstName,
+      lastName: record.lastName,
+      email: record.email,
+      note: record.note,
+      phone: record.phone,
+      role: record.role,
+      projectId: record.projectId,
+      tagIds,
+    },
   })
 
   return record
@@ -65,25 +77,59 @@ export async function updateContact(headers: Headers, input: z.infer<typeof Upda
   await validateContactTags(projectSlug, tagIds)
 
   const scopedWhere = contactInProjectWhere(projectSlug, id)
-  const previous = await db.contact.findFirst({ where: scopedWhere })
-  if (!previous) {
+  const previousRecord = await db.contact.findFirst({
+    where: scopedWhere,
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      email: true,
+      note: true,
+      phone: true,
+      role: true,
+      projectId: true,
+      tags: { select: { id: true } },
+    },
+  })
+  if (!previousRecord) {
     throw new AuthorizationError()
   }
   const record = await db.contact.update({
-    where: { id: previous.id },
+    where: { id: previousRecord.id },
     data: {
       ...data,
       tags: setIds(tagIds),
     },
+    include: { tags: { select: { id: true } } },
   })
 
   await createLogEntry({
     action: "UPDATE",
-    message: "Externen Kontakt geändert",
+    message: `Externer Kontakt ${getFullname(record)} wurde geändert.`,
     userId: Number(session.userId),
     projectSlug,
-    previousRecord: previous,
-    updatedRecord: record,
+    previousRecord: {
+      id: previousRecord.id,
+      firstName: previousRecord.firstName,
+      lastName: previousRecord.lastName,
+      email: previousRecord.email,
+      note: previousRecord.note,
+      phone: previousRecord.phone,
+      role: previousRecord.role,
+      projectId: previousRecord.projectId,
+      tagIds: relationIds(previousRecord.tags),
+    },
+    updatedRecord: {
+      id: record.id,
+      firstName: record.firstName,
+      lastName: record.lastName,
+      email: record.email,
+      note: record.note,
+      phone: record.phone,
+      role: record.role,
+      projectId: record.projectId,
+      tagIds: relationIds(record.tags),
+    },
     contactId: record.id,
   })
 
@@ -97,7 +143,7 @@ export async function deleteContact(headers: Headers, input: z.infer<typeof Dele
   const scopedWhere = contactInProjectWhere(input.projectSlug, input.id)
   const contact = await db.contact.findFirst({
     where: scopedWhere,
-    select: { firstName: true, lastName: true },
+    select: { id: true, firstName: true, lastName: true },
   })
   if (!contact) {
     throw new AuthorizationError()
@@ -106,9 +152,10 @@ export async function deleteContact(headers: Headers, input: z.infer<typeof Dele
 
   await createLogEntry({
     action: "DELETE",
-    message: `Externen Kontakt ${contact ? getFullname(contact) : ""} gelöscht`,
+    message: `Externer Kontakt ${contact ? getFullname(contact) : ""} wurde gelöscht.`,
     userId: Number(session.userId),
     projectSlug: input.projectSlug,
+    previousRecord: { id: contact.id },
   })
 
   return record

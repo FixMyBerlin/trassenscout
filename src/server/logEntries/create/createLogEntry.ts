@@ -1,5 +1,5 @@
 import { diff } from "datum-diff"
-import { LogLevelActionEnum } from "@/src/prisma/generated/browser"
+import { LogLevelActionEnum, type Prisma } from "@/src/prisma/generated/browser"
 import db from "@/src/server/db.server"
 import { getProjectIdBySlug } from "../../projects/queries/getProjectIdBySlug.server"
 
@@ -17,10 +17,15 @@ type LogEntryCreate = {
   projectRecordId?: number
   operatorId?: number
   subsectionId?: number
+  subsubsectionId?: number
+  acquisitionAreaId?: number
   networkhierarchyId?: number
   qualitylevelId?: number
   uploadId?: number
   surveyResponseId?: number
+  surveyId?: number
+  projectRecordCommentId?: number
+  surveyResponseCommentId?: number
   supportDocumentId?: number
   // To compute the `changes`
   previousRecord?: Record<string, any> | null
@@ -39,17 +44,25 @@ const replaceGeometryIfPresent = (
     : record
 }
 
+const hasStoredChanges = (changes: unknown) => {
+  if (changes == null) return false
+  if (Array.isArray(changes)) return changes.length > 0
+  if (typeof changes === "object") return Object.keys(changes).length > 0
+  return true
+}
+
 export const createLogEntry = async (input: LogEntryCreate) => {
   const { previousRecord, updatedRecord, ...data } = input
 
-  const changes = diff(
-    replaceGeometryIfPresent(previousRecord),
-    replaceGeometryIfPresent(updatedRecord),
-  )
+  const hashedUpdated = replaceGeometryIfPresent(updatedRecord)
+  const changes =
+    input.action === "CREATE"
+      ? hashedUpdated
+      : (diff(replaceGeometryIfPresent(previousRecord), hashedUpdated) ?? []).filter(
+          (entry) => entry.path.join("") !== "updatedAt",
+        )
 
-  // We skip the logs for updates if the update only changes the "updatedAt"
-  const onlyUpdatedAtChanged = changes?.filter((e) => e.path.join("") !== "updatedAt").length === 0
-  if (input.action === "UPDATE" && onlyUpdatedAtChanged) {
+  if (input.action === "UPDATE" && !hasStoredChanges(changes)) {
     return
   }
 
@@ -61,17 +74,25 @@ export const createLogEntry = async (input: LogEntryCreate) => {
       userId: data.userId || undefined,
       message: data.message,
       projectId: projectId || undefined,
-      changes: changes,
+      changes:
+        hasStoredChanges(changes) && changes != null
+          ? (changes as Prisma.InputJsonValue)
+          : undefined,
       //
       inviteId: data.inviteId,
       membershipId: data.membershipId,
       contactId: data.contactId,
       operatorId: data.operatorId,
       subsectionId: data.subsectionId,
+      subsubsectionId: data.subsubsectionId,
+      acquisitionAreaId: data.acquisitionAreaId,
       networkhierarchyId: data.networkhierarchyId,
       qualitylevelId: data.qualitylevelId,
       uploadId: data.uploadId,
       surveyResponseId: data.surveyResponseId,
+      surveyId: data.surveyId,
+      projectRecordCommentId: data.projectRecordCommentId,
+      surveyResponseCommentId: data.surveyResponseCommentId,
       projectRecordId: data.projectRecordId,
       supportDocumentId: data.supportDocumentId,
     },

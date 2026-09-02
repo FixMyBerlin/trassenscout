@@ -1,6 +1,5 @@
 import { getRouteApi, useNavigate } from "@tanstack/react-router"
 import { twJoin } from "tailwind-merge"
-import { Link } from "@/src/components/core/components/links/Link"
 import { LegendIcon } from "@/src/components/core/components/Map/Icons/LegendIcon"
 import { SubsectionIcon } from "@/src/components/core/components/Map/Icons/SubsectionIcon"
 import { getIconIdForSubsection } from "@/src/components/core/components/Map/legendIconRegistry"
@@ -16,16 +15,14 @@ import { TableWrapper } from "@/src/components/core/components/Table/TableWrappe
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { Tooltip } from "@/src/components/core/components/Tooltip/Tooltip"
-import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import type { SubsectionsList } from "@/src/server/subsections/types"
 
 const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
 
 type Props = {
   subsections: SubsectionsList
-  createButton?: boolean
   /**
-   * When false, table is readable only (map-mode screen-reader list): no row navigation / create actions,
+   * When false, table is readable only (map-mode screen-reader list): no row navigation,
    * and TableWrapper scroll is off so Firefox does not Tab into the hidden table. Default true.
    */
   interactive?: boolean
@@ -33,14 +30,9 @@ type Props = {
 
 const tableHeadClasses = tableHeadCellClassName
 
-export const SubsectionTable = ({
-  subsections,
-  createButton = true,
-  interactive = true,
-}: Props) => {
+export const SubsectionTable = ({ subsections, interactive = true }: Props) => {
   const navigate = useNavigate()
   const { projectSlug } = loggedInProjectRouteApi.useParams()
-  const hasAnySubsubsections = subsections.some((s) => (s.subsubsectionCount ?? 0) > 0)
 
   return (
     <section>
@@ -139,18 +131,6 @@ export const SubsectionTable = ({
         </table>
         {!subsections.length && <ZeroCase visible name="Planungsabschnitte" />}
       </TableWrapper>
-
-      {interactive && createButton && (
-        <IfUserCanEdit>
-          <div className="mt-4 flex flex-wrap gap-3">
-            {hasAnySubsubsections && (
-              <Link button="white" icon="download" href={`/api/${projectSlug}/subsections/export`}>
-                Alle Maßnahmen herunterladen (CSV)
-              </Link>
-            )}
-          </div>
-        </IfUserCanEdit>
-      )}
     </section>
   )
 }

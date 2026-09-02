@@ -2,16 +2,13 @@ import dompurify from "dompurify"
 import { twJoin } from "tailwind-merge"
 import { Markdown } from "@/src/components/core/components/Markdown/Markdown"
 import { proseClasses } from "@/src/components/core/components/text/prose"
-import type { ProjectRecord } from "@/src/server/projectRecords/types"
-import type { FeedbackSurveyResponse } from "@/src/server/survey-responses/surveyResponsesQueryOptions"
+import type { RedactedCommentView } from "./commentTypes"
 import { EditCommentForm } from "./EditCommentForm"
 import { localDateTime } from "./utils/localDateTime"
 import { wasUpdated } from "./utils/wasUpdated"
 
 type Props = {
-  comment:
-    | NonNullable<FeedbackSurveyResponse["surveyResponseComments"][number]>
-    | NonNullable<ProjectRecord["projectRecordComments"][number]>
+  comment: RedactedCommentView
   commentLabel: string
   mutateComment: {
     update: (body: string) => void
@@ -34,7 +31,7 @@ export const CommentField = ({ comment, commentLabel, mutateComment }: Props) =>
         <div>
           <strong>
             <span className="inline-flex items-center gap-1">
-              {author.firstName} {author.lastName}
+              {author?.firstName} {author?.lastName}
             </span>
           </strong>
           {wasUpdated(comment) ? <br /> : ", "}

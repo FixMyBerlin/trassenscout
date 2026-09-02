@@ -12,6 +12,7 @@ import {
   ProjectRecordEmailSourceDisclosure,
   type ProjectRecordEmailSourceValue,
 } from "@/src/components/project-records/ProjectRecordEmailSource"
+import { ProjectRecordFormTemplatesField } from "@/src/components/project-records/ProjectRecordFormTemplatesField"
 import { getUserComboboxItems } from "@/src/components/shared/app/users/utils/getUserSelectOptions"
 import { TagsFormSection } from "@/src/components/tags/TagsFormSection"
 import { ProjectUploadDropzone } from "@/src/components/uploads/ProjectUploadDropzone"
@@ -23,6 +24,8 @@ import { uploadsQueryOptions } from "@/src/server/uploads/uploadsQueryOptions"
 
 type Props = {
   formMode?: "create" | "edit"
+  /** Forms inherited from the record's template — listed read-only next to the admin field. */
+  inheritedFormTemplates?: { id: number; title: string }[]
   relationContext?: "project" | "subsubsection" | "acquisitionArea"
   splitView?: boolean
   projectSlug: string
@@ -38,6 +41,7 @@ export const ProjectRecordFormFields = ({
   emailSource,
   splitView,
   landAcquisitionModuleEnabled = false,
+  inheritedFormTemplates,
   disableSuspenseQueries: _disableSuspenseQueries = false,
 }: Props) => {
   const form = useCoreAppFormContext()
@@ -142,6 +146,10 @@ export const ProjectRecordFormFields = ({
             {(field) => <field.TextareaField label="Notizen" rows={20} />}
           </form.AppField>
           <TagsFormSection projectSlug={projectSlug} showManageLink />
+          <ProjectRecordFormTemplatesField
+            projectSlug={projectSlug}
+            inheritedFormTemplates={inheritedFormTemplates}
+          />
         </div>
 
         {emailSource && splitView && <ProjectRecordEmailSource email={emailSource} />}

@@ -9,6 +9,10 @@ import { SurveyResponseStateEnum } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
+import {
+  loadUserRedactionContext,
+  serializeProjectUser,
+} from "@/src/server/memberships/redactFormerProjectMemberUser.server"
 import { getSurveyResponseTagsByProject } from "@/src/server/surveyResponseTags/surveyResponseTags.server"
 import { coordinatesToWkt } from "./coordinatesToWkt.server"
 import { getSurveyForExport } from "./getSurveyForExport.server"
@@ -21,7 +25,12 @@ export async function exportPart2ResultsCsv(
   projectSlug: string,
   surveyId: number,
 ) {
-  await endpointAuth.projectRole(headers, projectSlug, viewerRoles)
+  const { projectId, session } = await endpointAuth.projectRole(headers, projectSlug, viewerRoles)
+  const redactionContext = await loadUserRedactionContext(
+    projectId,
+    session.role,
+    Number(session.userId),
+  )
 
   const survey = await getSurveyForExport(projectSlug, surveyId)
 
@@ -45,7 +54,9 @@ export async function exportPart2ResultsCsv(
           where: { state: SurveyResponseStateEnum.SUBMITTED },
           include: {
             surveyResponseTags: true,
-            surveyResponseComments: { include: { author: true } },
+            surveyResponseComments: {
+              include: { author: { select: { id: true, firstName: true, lastName: true } } },
+            },
           },
         },
       },
@@ -142,14 +153,16 @@ export async function exportPart2ResultsCsv(
             note: note || undefined,
             operator: operatorId ? operators.find((o) => o.id === operatorId)?.title : undefined,
             comments: surveyResponseComments
-              .map(
-                (c) =>
-                  getFullname(c.author) +
+              .map((c) => {
+                const author = serializeProjectUser(c.author, redactionContext)
+                return (
+                  getFullname(author) +
                   " (" +
                   c.createdAt.toLocaleDateString("de-DE") +
                   "): " +
-                  c.body,
-              )
+                  c.body
+                )
+              })
               .join(", \n"),
           }
 

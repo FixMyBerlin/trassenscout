@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { frenchQuote } from "@/src/components/core/components/text/quote"
 import {
   ProjectRecordEditingState,
   ProjectRecordReviewState,
@@ -207,10 +208,22 @@ export async function processProjectRecordEmail(
 
   await createLogEntry({
     action: "CREATE",
-    message: `Neuer Protokolleintrag aus Admin-Interface ${projectRecord.title} per KI aus E-Mail #${projectRecordEmailId} erstellt`,
+    message: `Neuer Protokolleintrag ${frenchQuote(projectRecord.title)} aus E-Mail #${projectRecordEmailId} wurde erstellt.`,
     userId: Number(session.userId),
     projectId: projectRecord.projectId,
     projectRecordId: projectRecord.id,
+    updatedRecord: {
+      id: projectRecord.id,
+      title: projectRecord.title,
+      body: projectRecord.body,
+      date: projectRecord.date,
+      editingState: projectRecord.editingState,
+      reviewState: projectRecord.reviewState,
+      reviewNotes: projectRecord.reviewNotes,
+      projectRecordEmailId: projectRecord.projectRecordEmailId,
+      tagIds: (finalResult.topics ?? []).map((id) => Number(id)),
+      uploadIds,
+    },
   })
 
   await flushLangfuseSpans()

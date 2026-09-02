@@ -1,15 +1,29 @@
 import { z } from "zod"
 import { projectRecordAssignedNotificationToUser } from "@/emails/mailers/projectRecordAssignedNotificationToUser"
+import { frenchQuote } from "@/src/components/core/components/text/quote"
 import { shortTitle } from "@/src/components/core/components/text/titles"
-import { ProjectRecordReviewState, ProjectRecordType } from "@/src/prisma/generated/browser"
+import { getFullname } from "@/src/components/core/users/getFullname"
+import {
+  ProjectRecordReviewState,
+  ProjectRecordType,
+  UserRoleEnum,
+} from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
+import { relationIds } from "@/src/server/logEntries/create/relationIds"
+import {
+  getUserRedactionContext,
+  loadUserRedactionContext,
+  loadUserRedactionContexts,
+  redactProjectRecordUsers,
+} from "@/src/server/memberships/redactFormerProjectMemberUser.server"
 import { deleteUploadFileAndDbRecord } from "@/src/server/uploads/_utils/deleteUploadFileAndDbRecord"
 import { AuthorizationError, NotFoundError } from "@/src/shared/auth/errors"
 import { ProjectSlugRequiredSchema } from "@/src/shared/authorization/projectSlugSchema"
 import { connectIds, idsFromFormValue, setIds } from "@/src/shared/prisma/connectIds"
+import { projectRecordEditingStateLabel } from "@/src/shared/projectRecords/projectRecordEditingStateLabel"
 import {
   DeleteProjectRecordSchema,
   NewProjectRecordFormSchema,
@@ -66,11 +80,32 @@ function projectRecordOverviewWhere(projectId: number, aiEnabled: boolean) {
   }
 }
 
-async function validateProjectRecordRelations(projectSlug: string, input: ProjectRecordInput) {
+/**
+ * Which forms a record offers is admin-only, so the server has to hold that line against a
+ * hand-crafted payload. Only an authorization failure means "not an admin" — anything else
+ * must propagate, or an admin's change would vanish from an otherwise successful save.
+ */
+async function isAdminRequest(headers: Headers) {
+  try {
+    await endpointAuth.admin(headers)
+    return true
+  } catch (error) {
+    if (error instanceof AuthorizationError) return false
+    throw error
+  }
+}
+
+async function validateProjectRecordRelations(
+  projectSlug: string,
+  input: ProjectRecordInput,
+  /** Whether this request writes `projectRecordTemplateId`; see the call below. */
+  validatesOriginTemplate: boolean,
+) {
   const tagIds = idsFromFormValue(input.tags)
   const uploadIds = idsFromFormValue(input.uploads)
   const subsubsectionIds = idsFromFormValue(input.subsubsections)
   const acquisitionAreaIds = idsFromFormValue(input.acquisitionAreas)
+  const formTemplateIds = idsFromFormValue(input.formTemplates)
 
   await Promise.all([
     input.subsubsectionId
@@ -132,6 +167,27 @@ async function validateProjectRecordRelations(projectSlug: string, input: Projec
               throw new Error("Invalid acquisition area")
           })
       : undefined,
+    formTemplateIds.length
+      ? db.formTemplate
+          .findMany({
+            where: { id: { in: formTemplateIds }, projects: { some: { slug: projectSlug } } },
+            select: { id: true },
+          })
+          .then((records) => {
+            if (records.length !== formTemplateIds.length) throw new Error("Invalid form template")
+          })
+      : undefined,
+    // Skipped on a non-admin update: the value is dropped from the write anyway, and checking
+    // a link the request is not changing would make such a record unsaveable.
+    validatesOriginTemplate && input.projectRecordTemplateId
+      ? db.projectRecordTemplate.findFirstOrThrow({
+          where: {
+            id: input.projectRecordTemplateId,
+            projects: { some: { slug: projectSlug } },
+          },
+          select: { id: true },
+        })
+      : undefined,
   ])
 }
 
@@ -139,8 +195,9 @@ function createProjectRecordData(
   input: CreateProjectRecordInput,
   projectId: number,
   userId: number,
+  allowFormTemplates: boolean,
 ) {
-  const { acquisitionAreas, tags, subsubsections, uploads, ...data } = input
+  const { acquisitionAreas, tags, subsubsections, uploads, formTemplates, ...data } = input
 
   return {
     ...data,
@@ -155,11 +212,26 @@ function createProjectRecordData(
     tags: connectIds(idsFromFormValue(tags)),
     subsubsections: connectIds(idsFromFormValue(subsubsections)),
     uploads: connectIds(idsFromFormValue(uploads)),
+    // Omitted for a non-admin so Prisma leaves the relation alone. `projectRecordTemplateId`
+    // is not gated on create: it records the template the author picked.
+    ...(allowFormTemplates ? { formTemplates: connectIds(idsFromFormValue(formTemplates)) } : {}),
   }
 }
 
-function updateProjectRecordData(input: UpdateProjectRecordInput, userId: number) {
-  const { acquisitionAreas, tags, subsubsections, uploads, ...data } = input
+function updateProjectRecordData(
+  input: UpdateProjectRecordInput,
+  userId: number,
+  allowAdminFields: boolean,
+) {
+  const {
+    acquisitionAreas,
+    tags,
+    subsubsections,
+    uploads,
+    formTemplates,
+    projectRecordTemplateId,
+    ...data
+  } = input
 
   return {
     ...data,
@@ -170,6 +242,10 @@ function updateProjectRecordData(input: UpdateProjectRecordInput, userId: number
     tags: setIds(idsFromFormValue(tags)),
     subsubsections: setIds(idsFromFormValue(subsubsections)),
     uploads: setIds(idsFromFormValue(uploads)),
+    // The origin template belongs here too: repointing it also changes the forms offered.
+    ...(allowAdminFields
+      ? { projectRecordTemplateId, formTemplates: setIds(idsFromFormValue(formTemplates)) }
+      : {}),
   }
 }
 
@@ -220,9 +296,9 @@ async function sendProjectRecordAssignmentNotification({
 }
 
 export async function getAllProjectRecordsAdmin(headers: Headers) {
-  await endpointAuth.admin(headers)
+  const adminSession = await endpointAuth.admin(headers)
 
-  return db.projectRecord.findMany({
+  const records = await db.projectRecord.findMany({
     orderBy: { createdAt: "desc" },
     include: {
       project: { select: { id: true, slug: true } },
@@ -231,13 +307,24 @@ export async function getAllProjectRecordsAdmin(headers: Headers) {
       updatedBy: { select: { id: true, firstName: true, lastName: true } },
     },
   })
+
+  const projectIds = [...new Set(records.map((record) => record.project.id))]
+  const contexts = await loadUserRedactionContexts(
+    projectIds,
+    UserRoleEnum.ADMIN,
+    Number(adminSession.userId),
+  )
+
+  return records.map((record) =>
+    redactProjectRecordUsers(record, getUserRedactionContext(contexts, record.project.id)),
+  )
 }
 
 export async function getProjectRecordAdmin(
   headers: Headers,
   input: z.infer<typeof GetProjectRecordAdminSchema>,
 ) {
-  await endpointAuth.admin(headers)
+  const adminSession = await endpointAuth.admin(headers)
 
   const projectRecord = await db.projectRecord.findFirst({
     where: { id: input.id },
@@ -250,6 +337,18 @@ export async function getProjectRecordAdmin(
         },
       },
       tags: true,
+      // Every `m2mFields` entry must be here: the edit form resubmits what this returns, so a
+      // missing relation arrives back as [] and the save wipes it.
+      formTemplates: {
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          type: true,
+          projects: { select: { slug: true } },
+        },
+        orderBy: { title: "asc" },
+      },
       subsubsection: {
         include: {
           subsection: {
@@ -319,14 +418,23 @@ export async function getProjectRecordAdmin(
 
   if (!projectRecord) throw new NotFoundError()
 
-  return projectRecord
+  const redactionContext = await loadUserRedactionContext(
+    projectRecord.project.id,
+    UserRoleEnum.ADMIN,
+    Number(adminSession.userId),
+  )
+  return redactProjectRecordUsers(projectRecord, redactionContext)
 }
 
 export async function getProjectRecords(
   headers: Headers,
   input: z.infer<typeof GetProjectRecordsSchema>,
 ) {
-  await endpointAuth.projectRole(headers, input.projectSlug, viewerRoles)
+  const { projectId, session } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    viewerRoles,
+  )
 
   const project = await db.project.findUnique({
     where: { slug: input.projectSlug },
@@ -335,18 +443,24 @@ export async function getProjectRecords(
 
   if (!project) return []
 
-  return db.projectRecord.findMany({
+  const records = await db.projectRecord.findMany({
     include: projectRecordInclude,
     orderBy: { date: "desc" },
     where: projectRecordOverviewWhere(project.id, project.aiEnabled),
   })
+  const redactionContext = await loadUserRedactionContext(
+    projectId,
+    session.role,
+    Number(session.userId),
+  )
+  return records.map((record) => redactProjectRecordUsers(record, redactionContext))
 }
 
 export async function getProjectRecord(
   headers: Headers,
   input: z.infer<typeof GetProjectRecordSchema>,
 ) {
-  const { projectId, membershipRole } = await endpointAuth.projectRole(
+  const { projectId, membershipRole, session } = await endpointAuth.projectRole(
     headers,
     input.projectSlug,
     viewerRoles,
@@ -365,7 +479,7 @@ export async function getProjectRecord(
 
   const aiEnabled = project.aiEnabled ?? false
 
-  return db.projectRecord.findFirstOrThrow({
+  const record = await db.projectRecord.findFirstOrThrow({
     include: projectRecordInclude,
     where: {
       id: input.id,
@@ -373,6 +487,12 @@ export async function getProjectRecord(
       ...projectRecordDetailVisibilityWhere(aiEnabled, canEdit),
     },
   })
+  const redactionContext = await loadUserRedactionContext(
+    projectId,
+    session.role,
+    Number(session.userId),
+  )
+  return redactProjectRecordUsers(record, redactionContext)
 }
 
 export async function createProjectRecord(
@@ -385,11 +505,12 @@ export async function createProjectRecord(
     editorRoles,
   )
   const { projectSlug, ...data } = input
-  await validateProjectRecordRelations(projectSlug, data)
+  const allowFormTemplates = await isAdminRequest(headers)
+  await validateProjectRecordRelations(projectSlug, data, true)
   const userId = Number(session.userId)
 
   const record = await db.projectRecord.create({
-    data: createProjectRecordData(data, projectId, userId),
+    data: createProjectRecordData(data, projectId, userId, allowFormTemplates),
     include: projectRecordInclude,
   })
 
@@ -403,30 +524,75 @@ export async function createProjectRecord(
     })
   }
 
-  return record
+  await createLogEntry({
+    action: "CREATE",
+    message: `Neuer Protokolleintrag ${frenchQuote(record.title)} wurde erstellt.`,
+    userId,
+    projectSlug,
+    projectRecordId: record.id,
+    updatedRecord: {
+      id: record.id,
+      title: record.title,
+      body: record.body,
+      date: record.date,
+      editingState: record.editingState,
+      subsubsectionId: record.subsubsectionId,
+      acquisitionAreaId: record.acquisitionAreaId,
+      assignedToId: record.assignedToId,
+      reviewState: record.reviewState,
+      reviewNotes: record.reviewNotes,
+      tagIds: relationIds(record.tags),
+      subsubsectionIds: relationIds(record.subsubsections),
+      acquisitionAreaIds: relationIds(record.acquisitionAreas),
+      uploadIds: relationIds(record.uploads),
+    },
+  })
+
+  const redactionContext = await loadUserRedactionContext(projectId, session.role, userId)
+  return redactProjectRecordUsers(record, redactionContext)
 }
 
 export async function updateProjectRecord(
   headers: Headers,
   input: z.infer<typeof UpdateProjectRecordBySlugSchema>,
 ) {
-  const { session } = await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
+  const { projectId, session } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    editorRoles,
+  )
   const { id, projectSlug, ...data } = input
-  await validateProjectRecordRelations(projectSlug, data)
+  const allowAdminFields = await isAdminRequest(headers)
+  await validateProjectRecordRelations(projectSlug, data, allowAdminFields)
   const userId = Number(session.userId)
-  const previous = await db.projectRecord.findFirstOrThrow({
+  const previousRecord = await db.projectRecord.findFirstOrThrow({
     where: projectRecordInProjectWhere(projectSlug, id),
-    select: { id: true, assignedToId: true },
+    select: {
+      id: true,
+      title: true,
+      body: true,
+      date: true,
+      editingState: true,
+      subsubsectionId: true,
+      acquisitionAreaId: true,
+      assignedToId: true,
+      reviewState: true,
+      reviewNotes: true,
+      tags: { select: { id: true } },
+      subsubsections: { select: { id: true } },
+      acquisitionAreas: { select: { id: true } },
+      uploads: { select: { id: true } },
+    },
   })
 
   const record = await db.projectRecord.update({
-    where: { id: previous.id },
-    data: updateProjectRecordData(data, userId),
+    where: { id: previousRecord.id },
+    data: updateProjectRecordData(data, userId, allowAdminFields),
     include: projectRecordInclude,
   })
 
   const newAssigneeId = record.assignedToId
-  const previousAssigneeId = previous.assignedToId ?? null
+  const previousAssigneeId = previousRecord.assignedToId ?? null
   const isNewAssignment = newAssigneeId !== null && newAssigneeId !== previousAssigneeId
 
   if (isNewAssignment) {
@@ -439,7 +605,48 @@ export async function updateProjectRecord(
     })
   }
 
-  return record
+  await createLogEntry({
+    action: "UPDATE",
+    message: `Protokolleintrag ${frenchQuote(record.title)} wurde bearbeitet.`,
+    userId,
+    projectSlug,
+    projectRecordId: record.id,
+    previousRecord: {
+      id: previousRecord.id,
+      title: previousRecord.title,
+      body: previousRecord.body,
+      date: previousRecord.date,
+      editingState: previousRecord.editingState,
+      subsubsectionId: previousRecord.subsubsectionId,
+      acquisitionAreaId: previousRecord.acquisitionAreaId,
+      assignedToId: previousRecord.assignedToId,
+      reviewState: previousRecord.reviewState,
+      reviewNotes: previousRecord.reviewNotes,
+      tagIds: relationIds(previousRecord.tags),
+      subsubsectionIds: relationIds(previousRecord.subsubsections),
+      acquisitionAreaIds: relationIds(previousRecord.acquisitionAreas),
+      uploadIds: relationIds(previousRecord.uploads),
+    },
+    updatedRecord: {
+      id: record.id,
+      title: record.title,
+      body: record.body,
+      date: record.date,
+      editingState: record.editingState,
+      subsubsectionId: record.subsubsectionId,
+      acquisitionAreaId: record.acquisitionAreaId,
+      assignedToId: record.assignedToId,
+      reviewState: record.reviewState,
+      reviewNotes: record.reviewNotes,
+      tagIds: relationIds(record.tags),
+      subsubsectionIds: relationIds(record.subsubsections),
+      acquisitionAreaIds: relationIds(record.acquisitionAreas),
+      uploadIds: relationIds(record.uploads),
+    },
+  })
+
+  const redactionContext = await loadUserRedactionContext(projectId, session.role, userId)
+  return redactProjectRecordUsers(record, redactionContext)
 }
 
 export async function patchProjectRecordAssignment(
@@ -482,10 +689,15 @@ export async function patchProjectRecordAssignment(
       projectId,
       ...projectRecordDetailVisibilityWhere(aiEnabled, canEdit),
     },
+    select: {
+      title: true,
+      assignedToId: true,
+      editingState: true,
+    },
   })
 
   const record = await db.projectRecord.update({
-    where: { id: previous.id },
+    where: { id },
     data: {
       assignedToId,
       editingState,
@@ -505,39 +717,95 @@ export async function patchProjectRecordAssignment(
       actorUserId: userId,
       recordTitle: record.title,
       projectSlug,
-      recordId: record.id,
+      recordId: id,
     })
   }
 
-  await createLogEntry({
-    action: "UPDATE",
-    message: "Protokoll-Eintrag Zuweisung oder Status geändert",
-    userId,
-    projectSlug,
-    projectRecordId: record.id,
-    previousRecord: previous,
-    updatedRecord: record,
-  })
+  if (previousAssigneeId !== newAssigneeId) {
+    let assignmentMessage: string
+    if (newAssigneeId !== null) {
+      const assignee = await db.user.findUnique({
+        where: { id: newAssigneeId },
+        select: { firstName: true, lastName: true, email: true },
+      })
+      const assigneeName = assignee ? getFullname(assignee) || assignee.email : ""
+      assignmentMessage = `Protokolleintrag ${frenchQuote(record.title)} wurde an ${assigneeName} zugewiesen.`
+      await createLogEntry({
+        action: "UPDATE",
+        message: assignmentMessage,
+        userId,
+        projectSlug,
+        projectRecordId: id,
+        previousRecord: { assignedToId: previousAssigneeId },
+        updatedRecord: { assignedToId: newAssigneeId, assignedToName: assigneeName },
+      })
+    } else {
+      assignmentMessage = `Die Zuweisung für Protokolleintrag ${frenchQuote(record.title)} wurde entfernt.`
+      await createLogEntry({
+        action: "UPDATE",
+        message: assignmentMessage,
+        userId,
+        projectSlug,
+        projectRecordId: id,
+        previousRecord: { assignedToId: previousAssigneeId },
+        updatedRecord: { assignedToId: null },
+      })
+    }
+  }
 
-  return record
+  if (previous.editingState !== record.editingState) {
+    await createLogEntry({
+      action: "UPDATE",
+      message: `Der Bearbeitungsstatus von Protokolleintrag ${frenchQuote(record.title)} wurde auf ${frenchQuote(projectRecordEditingStateLabel[record.editingState])} geändert.`,
+      userId,
+      projectSlug,
+      projectRecordId: id,
+      previousRecord: { editingState: previous.editingState },
+      updatedRecord: { editingState: record.editingState },
+    })
+  }
+
+  const redactionContext = await loadUserRedactionContext(projectId, session.role, userId)
+  return redactProjectRecordUsers(record, redactionContext)
 }
 
 export async function deleteProjectRecord(
   headers: Headers,
   input: z.infer<typeof DeleteProjectRecordBySlugSchema>,
 ) {
-  await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
+  const { session } = await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
+  const projectRecord = await db.projectRecord.findFirst({
+    where: projectRecordInProjectWhere(input.projectSlug, input.id),
+    select: { id: true, title: true },
+  })
+  if (!projectRecord) {
+    throw new NotFoundError()
+  }
 
-  return db.projectRecord.deleteMany({
+  const record = await db.projectRecord.deleteMany({
     where: projectRecordInProjectWhere(input.projectSlug, input.id),
   })
+
+  await createLogEntry({
+    action: "DELETE",
+    message: `Protokolleintrag ${frenchQuote(projectRecord.title)} wurde gelöscht.`,
+    userId: Number(session.userId),
+    projectSlug: input.projectSlug,
+    previousRecord: { id: projectRecord.id },
+  })
+
+  return record
 }
 
 export async function getProjectRecordsNeedsReview(
   headers: Headers,
   input: z.infer<typeof GetProjectRecordsSchema>,
 ) {
-  await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
+  const { projectId, session } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    editorRoles,
+  )
 
   const rows = await db.projectRecord.findMany({
     where: {
@@ -552,12 +820,20 @@ export async function getProjectRecordsNeedsReview(
       assignedTo: { select: { id: true, firstName: true, lastName: true } },
     },
   })
+  const redactionContext = await loadUserRedactionContext(
+    projectId,
+    session.role,
+    Number(session.userId),
+  )
 
-  return rows.map(({ _count, ...rest }) => ({
-    ...rest,
-    commentCount: _count.projectRecordComments,
-    uploadCount: _count.uploads,
-  }))
+  return rows.map(({ _count, ...rest }) => {
+    const redacted = redactProjectRecordUsers(rest, redactionContext)
+    return {
+      ...redacted,
+      commentCount: _count.projectRecordComments,
+      uploadCount: _count.uploads,
+    }
+  })
 }
 
 export async function getProjectRecordsTabCounts(
@@ -757,9 +1033,13 @@ export async function deleteProjectRecordWithUploadsDecision(
 
   await createLogEntry({
     action: "DELETE",
-    message: `Protokoll-Eintrag ${input.id} ${uploadsToDelete.length > 0 ? ` und ${uploadsToDelete.length} verknüpfte Dokumente` : ""} gelöscht`,
+    message:
+      uploadsToDelete.length > 0
+        ? `Protokolleintrag ${frenchQuote(projectRecord.title)} und ${uploadsToDelete.length} verknüpfte Dokumente wurden gelöscht.`
+        : `Protokolleintrag ${frenchQuote(projectRecord.title)} wurde gelöscht.`,
     userId: Number(session.userId),
     projectSlug: input.projectSlug,
+    previousRecord: { id: projectRecord.id },
   })
 
   return {
@@ -801,19 +1081,27 @@ function mapProjectRecordListRows(
       _count: { projectRecordComments: number; uploads: number }
     }
   >,
+  redactionContext: Awaited<ReturnType<typeof loadUserRedactionContext>>,
 ) {
-  return projectRecords.map(({ _count, ...rest }) => ({
-    ...rest,
-    commentCount: _count.projectRecordComments,
-    uploadCount: _count.uploads,
-  }))
+  return projectRecords.map(({ _count, ...rest }) => {
+    const redacted = redactProjectRecordUsers(rest, redactionContext)
+    return {
+      ...redacted,
+      commentCount: _count.projectRecordComments,
+      uploadCount: _count.uploads,
+    }
+  })
 }
 
 export async function getProjectRecordsBySubsubsection(
   headers: Headers,
   input: z.infer<typeof GetProjectRecordsBySubsubsectionSchema>,
 ) {
-  await endpointAuth.projectRole(headers, input.projectSlug, viewerRoles)
+  const { projectId, session } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    viewerRoles,
+  )
 
   const projectRecords = await db.projectRecord.findMany({
     where: {
@@ -827,15 +1115,24 @@ export async function getProjectRecordsBySubsubsection(
     orderBy: { date: "desc" },
     include: projectRecordListInclude,
   })
+  const redactionContext = await loadUserRedactionContext(
+    projectId,
+    session.role,
+    Number(session.userId),
+  )
 
-  return mapProjectRecordListRows(projectRecords)
+  return mapProjectRecordListRows(projectRecords, redactionContext)
 }
 
 export async function getProjectRecordsByAcquisitionArea(
   headers: Headers,
   input: z.infer<typeof GetProjectRecordsByAcquisitionAreaSchema>,
 ) {
-  await endpointAuth.projectRole(headers, input.projectSlug, viewerRoles)
+  const { projectId, session } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    viewerRoles,
+  )
 
   const projectRecords = await db.projectRecord.findMany({
     where: {
@@ -849,6 +1146,11 @@ export async function getProjectRecordsByAcquisitionArea(
     orderBy: { date: "desc" },
     include: projectRecordListInclude,
   })
+  const redactionContext = await loadUserRedactionContext(
+    projectId,
+    session.role,
+    Number(session.userId),
+  )
 
-  return mapProjectRecordListRows(projectRecords)
+  return mapProjectRecordListRows(projectRecords, redactionContext)
 }

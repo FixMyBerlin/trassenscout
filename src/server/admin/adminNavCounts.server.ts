@@ -15,6 +15,7 @@ export async function getAdminNavCounts(headers: Headers) {
     supportDocuments,
     surveys,
     projectRecordTemplates,
+    formTemplates,
   ] = await Promise.all([
     db.project.count(),
     db.user.count(),
@@ -36,6 +37,7 @@ export async function getAdminNavCounts(headers: Headers) {
     db.supportDocument.count(),
     db.survey.count(),
     db.projectRecordTemplate.count(),
+    db.formTemplate.count(),
   ])
 
   return {
@@ -48,5 +50,6 @@ export async function getAdminNavCounts(headers: Headers) {
     supportDocuments,
     surveys,
     projectRecordTemplates,
+    formTemplates,
   }
 }

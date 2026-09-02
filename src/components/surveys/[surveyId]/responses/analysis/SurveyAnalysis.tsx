@@ -9,6 +9,7 @@ import { Link } from "@/src/components/core/components/links/Link"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { H2 } from "@/src/components/core/components/text/Headings"
+import { frenchQuote } from "@/src/components/core/components/text/quote"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
 import { SurveyChartAndCsvDownloadSection } from "@/src/components/surveys/[surveyId]/responses/analysis/SurveyChartAndCsvDownloadSection"
 import { getFormatDistanceInDays } from "@/src/components/surveys/[surveyId]/responses/getFormatDistanceInDays"
@@ -114,7 +115,7 @@ export function SurveyAnalysis({ projectSlug, surveyId: _surveyId, survey, tabs 
         <div className="mt-12 space-y-4">
           {!surveyDefinition ? (
             <SuperAdminBox>
-              <p>In der Beteiligung {survey.slug.toUpperCase()} gibt es keinen Umfrageteil 1. </p>
+              <p>In {frenchQuote(survey.slug.toUpperCase())} gibt es keinen Umfrageteil 1. </p>
             </SuperAdminBox>
           ) : (
             <>

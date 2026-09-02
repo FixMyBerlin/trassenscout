@@ -7,6 +7,7 @@ import { getSessionForRouteFn, routeProjectFn } from "@/src/server/auth/auth.fun
 import { projectsForCurrentUserQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 import { currentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
 import { loggedInProjectModalSearchSchema } from "@/src/shared/projectModals/searchSchemas"
+import { viewModeSearchMiddlewares, withViewModeSearch } from "@/src/shared/routing/viewModeSearch"
 
 function isProjectEditorRoute(pathname: string) {
   return /\/new\/?$/.test(pathname) || /\/edit\/?$/.test(pathname)
@@ -16,7 +17,8 @@ export const Route = createFileRoute("/_loggedInProjects/$projectSlug")({
   ssr: true,
   head: () => privateLayoutHead(),
   notFoundComponent: RouteScopedNotFoundPage,
-  validateSearch: loggedInProjectModalSearchSchema,
+  validateSearch: withViewModeSearch(loggedInProjectModalSearchSchema),
+  search: { middlewares: viewModeSearchMiddlewares },
   beforeLoad: async ({ params, location }) => {
     const authorization = await routeProjectFn({
       data: { location, projectSlug: params.projectSlug },

@@ -1,9 +1,11 @@
 import { PutObjectCommand } from "@aws-sdk/client-s3"
 import { getObject } from "@better-upload/server/helpers"
 import type { z } from "zod"
+import { frenchQuote } from "@/src/components/core/components/text/quote"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { editorRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
+import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { getLuckyCloudArchivePath } from "@/src/server/luckycloud/_utils/folders"
 import { createShareLink } from "@/src/server/luckycloud/api/createShareLink"
 import { deleteShares } from "@/src/server/luckycloud/api/deleteShares"
@@ -55,7 +57,11 @@ export async function copyToLuckyCloud(
   const luckyCloudPath = await uploadFileToLuckyCloud(fileBuffer, uniqueFilename, input.projectSlug)
   const shareResult = await createShareLink(luckyCloudPath)
 
-  return db.upload.update({
+  const previous = {
+    collaborationUrl: upload.collaborationUrl,
+    collaborationPath: upload.collaborationPath,
+  }
+  const record = await db.upload.update({
     where: { id: upload.id },
     data: {
       collaborationUrl: shareResult.shareLink,
@@ -63,6 +69,21 @@ export async function copyToLuckyCloud(
       updatedById: Number(session.userId),
     },
   })
+
+  await createLogEntry({
+    action: "UPDATE",
+    message: `Dokument ${frenchQuote(upload.title)} kann jetzt kollaborativ bearbeitet werden.`,
+    userId: Number(session.userId),
+    projectSlug: input.projectSlug,
+    previousRecord: previous,
+    updatedRecord: {
+      collaborationUrl: record.collaborationUrl,
+      collaborationPath: record.collaborationPath,
+    },
+    uploadId: record.id,
+  })
+
+  return record
 }
 
 export async function endCollaboration(
@@ -78,6 +99,7 @@ export async function endCollaboration(
     where: { id: input.id, projectId },
     select: {
       id: true,
+      title: true,
       externalUrl: true,
       collaborationUrl: true,
       collaborationPath: true,
@@ -118,7 +140,11 @@ export async function endCollaboration(
     console.warn("Failed to delete shares or move file to ARCHIVE:", error)
   }
 
-  return db.upload.update({
+  const previous = {
+    collaborationUrl: upload.collaborationUrl,
+    collaborationPath: upload.collaborationPath,
+  }
+  const record = await db.upload.update({
     where: { id: upload.id },
     data: {
       collaborationUrl: null,
@@ -126,4 +152,19 @@ export async function endCollaboration(
       updatedById: Number(session.userId),
     },
   })
+
+  await createLogEntry({
+    action: "UPDATE",
+    message: `Die kollaborative Bearbeitung von Dokument ${frenchQuote(upload.title)} wurde beendet.`,
+    userId: Number(session.userId),
+    projectSlug: input.projectSlug,
+    previousRecord: previous,
+    updatedRecord: {
+      collaborationUrl: record.collaborationUrl,
+      collaborationPath: record.collaborationPath,
+    },
+    uploadId: record.id,
+  })
+
+  return record
 }

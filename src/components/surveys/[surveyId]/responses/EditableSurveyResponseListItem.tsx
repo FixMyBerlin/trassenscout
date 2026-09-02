@@ -147,11 +147,13 @@ const EditableSurveyResponseListItem = ({
             markdown={typeof userTextPreview === "string" ? userTextPreview : null}
           />
 
-          <ProjectRecordTagsList
-            tags={responseTags}
-            isInteractive={Boolean(onTagClick)}
-            onTagClick={onTagClick}
-          />
+          <div className="min-w-0">
+            <ProjectRecordTagsList
+              tags={responseTags}
+              isInteractive={Boolean(onTagClick)}
+              onTagClick={onTagClick}
+            />
+          </div>
 
           <div className="flex items-center justify-end gap-2 text-gray-600">
             <ChatBubbleBottomCenterTextIcon className="size-5 shrink-0" aria-hidden="true" />

@@ -51,6 +51,32 @@ export const projectRecordInclude = {
       },
     },
   },
+  formTemplates: {
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      type: true,
+      projects: { select: { slug: true } },
+    },
+    orderBy: { title: "asc" },
+  },
+  projectRecordTemplate: {
+    select: {
+      id: true,
+      templateTitle: true,
+      formTemplates: {
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          type: true,
+          projects: { select: { slug: true } },
+        },
+        orderBy: { title: "asc" },
+      },
+    },
+  },
   uploads: {
     orderBy: { id: "desc" },
     select: {
@@ -91,6 +117,7 @@ export const projectRecordInclude = {
     select: {
       id: true,
       projectRecordId: true,
+      userId: true,
       createdAt: true,
       updatedAt: true,
       body: true,

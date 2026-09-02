@@ -4,6 +4,193 @@ export type TNewsItem = (typeof newsItems)[number]
 
 export const newsItems = [
   {
+    slug: "redesign-mobile-nutzung",
+    title: "Neues Design und bessere mobile Nutzung",
+    date: "2026-08-12",
+    body: (
+      <>
+        <p>
+          Der Trassenscout ist kompakter und aufgeräumter geworden, sodass wichtige Informationen
+          schneller erreichbar sind und weniger gescrollt werden muss. Tabellen, Formulare und
+          Bedienelemente wurden außerdem für kleinere Bildschirme und Tablets optimiert.
+        </p>
+      </>
+    ),
+  },
+  {
+    slug: "karten-listenansichten",
+    title: "Karten und Listen arbeiten jetzt zusammen",
+    date: "2026-08-12",
+    body: (
+      <>
+        <p>
+          Auf Übersichtsseiten kann flexibel zwischen Karten-, Listen- und geteilten Ansichten
+          gewechselt werden. Die Karte zentriert sich automatisch auf ausgewählte Inhalte und fasst
+          bei vielen Einträgen nah beieinander Markierungen übersichtlich zusammen.
+        </p>
+      </>
+    ),
+  },
+  {
+    slug: "umfragen-auswerten",
+    title: "Umfragen einfacher auswerten und zugänglicher gestalten",
+    date: "2026-08-12",
+    body: (
+      <>
+        <p>
+          Rückmeldungen aus Beteiligungen lassen sich jetzt gezielter filtern, nach Schlagworten
+          sortieren und direkt als CSV exportieren. Verbesserte Kontraste und optimierte
+          Formularfelder erleichtern außerdem die Teilnahme an Online-Beteiligungen.
+        </p>
+      </>
+    ),
+  },
+  {
+    slug: "dokumente-einfacher-hochladen-verwalten",
+    title: "Dokumente einfacher hochladen und verwalten",
+    date: "2026-08-12",
+    body: (
+      <>
+        <p>
+          Dateien können jetzt per Drag-and-drop direkt in die Dokumentenübersicht hochgeladen
+          werden. Beim erneuten Hochladen gleichnamiger Dateien ergänzt der Trassenscout automatisch
+          eine Nummerierung – für eine einfachere und übersichtlichere Dateiverwaltung.
+        </p>
+      </>
+    ),
+  },
+  {
+    slug: "pdf-viewer",
+    title: "PDFs direkt im Trassenscout ansehen",
+    date: "2026-06-01",
+    body: (
+      <>
+        <p>
+          Hochgeladene PDFs können jetzt direkt im Trassenscout in einer Vollbildansicht geöffnet
+          werden. Mit einem Zoom von bis zu 500 Prozent lassen sich auch Details in Plänen,
+          Verträgen und anderen umfangreichen Dokumenten prüfen.
+        </p>
+      </>
+    ),
+  },
+  {
+    slug: "protokollvorlagen-dokumente-verknuepfen",
+    title: "Vorlagen für Protokolle und flexiblere Dokumentverknüpfungen",
+    date: "2026-05-27",
+    body: (
+      <>
+        <p>
+          Für wiederkehrende Dokumentationsprozesse können jetzt Vorlagen für Protokolleinträge
+          hinterlegt werden. Dokumente lassen sich außerdem mehreren Verhandlungsflächen und
+          Einträgen zuordnen – für eine einheitlichere und besser verknüpfte Projektdokumentation.
+        </p>
+      </>
+    ),
+  },
+  {
+    slug: "planungsdaten-importieren",
+    title: "Planungsdaten gesammelt importieren",
+    date: "2026-05-06",
+    body: (
+      <>
+        <p>
+          Planungsräume und Planungsabschnitte können jetzt gesammelt in den Trassenscout importiert
+          werden. Besonders bei größeren Projekten reduziert das den Aufwand für die erstmalige
+          Einrichtung und erleichtert die Übernahme vorhandener Planungsdaten.
+        </p>
+      </>
+    ),
+  },
+  {
+    slug: "grunderwerb-verhandlungsflaechen",
+    title: "Grunderwerb digital organisieren",
+    date: "2026-04-21",
+    body: (
+      <>
+        <p>
+          Mit dem neuen Modul für den Grunderwerb können Verhandlungsflächen auf Basis von
+          ALKIS-Flurstücksdaten angelegt und verwaltet werden. Statusfarben machen den aktuellen
+          Stand sichtbar und Dokumente sowie Protokolle können direkt den jeweiligen Flächen
+          zugeordnet werden.
+        </p>
+      </>
+    ),
+  },
+  {
+    slug: "meldungen-verwalten-auswerten",
+    title: "Maßnahmen einfacher melden, verwalten und auswerten",
+    date: "2026-03-31",
+    body: (
+      <>
+        <p>
+          Meldeverfahren können jetzt mehrere Fördergegenstände pro Maßnahme abbilden und vergeben
+          automatisch eindeutige Referenznummern. Für die weitere Bearbeitung lassen sich alle
+          gemeldeten Maßnahmen gesammelt als CSV exportieren und nach Kategorien filtern.
+        </p>
+      </>
+    ),
+  },
+  {
+    slug: "karten-zeichenwerkzeuge",
+    title: "Verbesserte Karten- und Zeichenwerkzeuge",
+    date: "2026-02-17",
+    body: (
+      <>
+        <p>
+          Die Karten- und Zeichenwerkzeuge wurden umfassend überarbeitet. Verbesserte
+          Zeichenhinweise und zusätzliche Mittelpunkte erleichtern insbesondere das Erfassen und
+          Bearbeiten von Linien und Trassen. Auch die Darstellung von Planungsabschnitten und
+          Einträgen wurde vereinheitlicht.
+        </p>
+      </>
+    ),
+  },
+  {
+    slug: "projektprotokolle-uebersichtlicher",
+    title: "Projektprotokolle übersichtlicher prüfen und bearbeiten",
+    date: "2026-01-21",
+    body: (
+      <>
+        <p>
+          Projektprotokolle sind jetzt klarer nach ihrem Bearbeitungsstand gegliedert. Noch zu
+          bestätigende Einträge werden von bereits bestätigten Protokolleinträgen getrennt und
+          Protokolle können komfortabler direkt aus der jeweiligen Ansicht erstellt und bearbeitet
+          werden.
+        </p>
+      </>
+    ),
+  },
+  {
+    slug: "ki-dokumente-emails",
+    title: "KI unterstützt bei Dokumenten und E-Mails",
+    date: "2025-12-19",
+    body: (
+      <>
+        <p>
+          Neue KI-Funktionen unterstützen bei der Verarbeitung von Projektinformationen. Dokumente
+          können automatisch zusammengefasst und E-Mails inklusive Anhängen für die
+          Projektdokumentation aufbereitet werden. Die Funktionen befinden sich aktuell noch in
+          einer Alpha-Phase.
+        </p>
+      </>
+    ),
+  },
+  {
+    slug: "dokumente-gemeinsam-bearbeiten",
+    title: "Dokumente gemeinsam bearbeiten und einfacher hochladen",
+    date: "2025-12-18",
+    body: (
+      <>
+        <p>
+          Dokumente können jetzt für die gemeinsame Bearbeitung freigegeben werden. Gleichzeitig
+          wurde der Datei-Upload verbessert: Bis zu zehn Dateien lassen sich gemeinsam hochladen,
+          Ladezustände und Fehlermeldungen sind übersichtlicher und auch die mobile Nutzung wurde
+          optimiert.
+        </p>
+      </>
+    ),
+  },
+  {
     slug: "release-2025-09-16",
     title: "Neue Funktionen im Trassenscout",
     date: "2025-09-16",

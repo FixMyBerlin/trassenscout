@@ -1,6 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
-import { useState } from "react"
 import { MapProvider } from "react-map-gl/maplibre"
 import { twJoin } from "tailwind-merge"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
@@ -13,7 +12,9 @@ import {
   MAP_VIEWPORT_SHELL_CLASS,
 } from "@/src/components/core/components/PageHeader/MapListViewLayout"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
+import { PageHeaderToolbarLink } from "@/src/components/core/components/PageHeader/PageHeaderToolbarLink"
 import { shortTitle } from "@/src/components/core/components/text/titles"
+import { useViewMode } from "@/src/components/core/routes/useViewMode"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { projectBySlugQueryOptions } from "@/src/server/projects/projectsQueryOptions"
@@ -26,7 +27,7 @@ const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/")
 export const ProjectDashboardClient = () => {
   const { projectSlug } = routeApi.useParams()
   const { operator: operatorParam } = routeApi.useSearch()
-  const [viewMode, setViewMode] = useState<"map" | "list">("map")
+  const { viewMode, setViewMode } = useViewMode()
   const isMapMode = viewMode === "map"
 
   const { data: project } = useSuspenseQuery(projectBySlugQueryOptions(projectSlug))
@@ -36,6 +37,7 @@ export const ProjectDashboardClient = () => {
   const filteredSubsections = operatorParam
     ? subsections.filter((sec) => sec.operator?.slug === operatorParam)
     : subsections
+  const hasAnySubsubsections = subsections.some((s) => (s.subsubsectionCount ?? 0) > 0)
 
   const renderMap = (classHeight: string) => {
     if (subsections.length) {
@@ -75,15 +77,25 @@ export const ProjectDashboardClient = () => {
         }
         primaryAction={
           <IfUserCanEdit>
-            <Link
-              button
-              buttonSize="sm"
-              icon="plus"
-              to="/$projectSlug/abschnitte/new"
-              params={{ projectSlug }}
-            >
-              Neuer Planungsabschnitt
-            </Link>
+            <>
+              {hasAnySubsubsections ? (
+                <PageHeaderToolbarLink
+                  href={`/api/${projectSlug}/subsections/export`}
+                  label="Alle Maßnahmen als .csv herunterladen"
+                >
+                  CSV
+                </PageHeaderToolbarLink>
+              ) : null}
+              <Link
+                button
+                buttonSize="sm"
+                icon="plus"
+                to="/$projectSlug/abschnitte/new"
+                params={{ projectSlug }}
+              >
+                Neuer Planungsabschnitt
+              </Link>
+            </>
           </IfUserCanEdit>
         }
       />

@@ -15,17 +15,14 @@ import { Modal, ModalCloseButton } from "@/src/components/core/components/Modal"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { useCurrentUser } from "@/src/components/user/useCurrentUser"
-import type { ProjectRecord } from "@/src/server/projectRecords/types"
-import type { FeedbackSurveyResponse } from "@/src/server/survey-responses/surveyResponsesQueryOptions"
 import {
   CommentBodyFormSchema,
   commentBodyFormDefaultValues,
 } from "@/src/shared/survey-response-comments/schemas"
+import type { RedactedCommentView } from "./commentTypes"
 
 type Props = {
-  comment:
-    | NonNullable<FeedbackSurveyResponse["surveyResponseComments"][number]>
-    | NonNullable<ProjectRecord["projectRecordComments"][number]>
+  comment: RedactedCommentView & { body: string | null }
   commentLabel: string
   mutateComment: {
     update: (body: string) => void
@@ -64,7 +61,9 @@ export const EditCommentForm = ({ comment, commentLabel, mutateComment }: Props)
   }
 
   const isAdmin = user?.role === "ADMIN"
-  const isAuthor = comment.author.id === user?.id
+  const isAuthor =
+    comment.isOwnComment === true ||
+    (!!comment.author && "id" in comment.author && comment.author.id === user?.id)
   const canUpdateComment = userCanEditProject || isAuthor || isAdmin
   const canRemoveComment = userCanEditProject || isAuthor || isAdmin
 
