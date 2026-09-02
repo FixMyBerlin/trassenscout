@@ -30,6 +30,7 @@ export async function listSubsubsectionsForMcp({
     take: limit + 1,
     select: {
       slug: true,
+      description: true,
       subsection: { select: { slug: true } },
     },
   })
@@ -40,10 +41,12 @@ export async function listSubsubsectionsForMcp({
     limit: appliedLimit,
     returned,
     truncated,
+    disambiguationRequired: Boolean(subsectionSlug) && returned > 1,
     subsubsections: items.map((subsubsection) => ({
       projectSlug: project.slug,
       subsectionSlug: subsubsection.subsection.slug,
       slug: subsubsection.slug,
+      description: subsubsection.description,
       url: buildSubsubsectionUrl(
         origin,
         project.slug,

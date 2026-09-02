@@ -9,16 +9,11 @@ const mockDb = {
   subsubsectionTask: { findFirst: vi.fn() },
   subsubsectionInfra: { findFirst: vi.fn() },
   subsubsectionInfrastructureType: { findFirst: vi.fn() },
+  mcpDraft: { upsert: vi.fn(), deleteMany: vi.fn() },
 }
-
-const createLogEntry = vi.fn()
 
 vi.mock("@/src/server/db.server", () => ({
   default: mockDb,
-}))
-
-vi.mock("@/src/server/logEntries/create/createLogEntry", () => ({
-  createLogEntry,
 }))
 
 const enabledProject = {
@@ -86,7 +81,10 @@ const identity = {
   projectSlug: "frm9-ra3",
   subsectionSlug: "pa8",
   slug: "dre34",
-  origin: "http://127.0.0.1:4000",
+}
+
+function item(patch: Record<string, unknown>, slug = "dre34") {
+  return { ...identity, slug, patch }
 }
 
 describe("Subsubsection MCP patch", () => {
@@ -94,22 +92,26 @@ describe("Subsubsection MCP patch", () => {
     vi.clearAllMocks()
     mockDb.project.findUnique.mockResolvedValue(enabledProject)
     mockDb.subsubsection.findFirst.mockResolvedValue(mockSubsubsection())
+    mockDb.mcpDraft.upsert.mockResolvedValue({ id: 1 })
   })
 
-  test("preview diffs set vs overwrite and warns only for overwrite", async () => {
-    const { previewSubsubsectionUpdateForMcp } =
+  test("draft response diffs set vs overwrite and warns only for overwrite", async () => {
+    const { updateSubsubsectionForMcp } =
       await import("@/src/server/mcp/queries/updateSubsubsectionForMcp.server")
 
-    const result = await previewSubsubsectionUpdateForMcp({
-      ...identity,
-      patch: {
-        lengthM: 185.4,
-        extraFields: { klassifizierung: "Landesstraße" },
-      },
+    const result = await updateSubsubsectionForMcp({
+      origin: "http://127.0.0.1:4000",
+      createdById: 42,
+      items: [
+        item({
+          lengthM: 185.4,
+          extraFields: { klassifizierung: "Landesstraße" },
+        }),
+      ],
     })
 
-    expect(result.okToWrite).toBe(true)
-    expect(result.changes).toEqual(
+    expect(result.items[0]?.drafted).toBe(true)
+    expect(result.items[0]?.changes).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           field: "lengthM",
@@ -123,53 +125,53 @@ describe("Subsubsection MCP patch", () => {
         }),
       ]),
     )
-    expect(result.warnings).toEqual(["Länge wird überschrieben."])
-    expect(result.errors).toEqual([])
+    expect(result.items[0]?.warnings).toEqual(["Länge wird überschrieben."])
+    expect(result.items[0]?.errors).toEqual([])
   })
 
   test("unknown extra field key and empty string are errors", async () => {
-    const { previewSubsubsectionUpdateForMcp } =
+    const { updateSubsubsectionForMcp } =
       await import("@/src/server/mcp/queries/updateSubsubsectionForMcp.server")
 
-    const unknown = await previewSubsubsectionUpdateForMcp({
-      ...identity,
-      patch: { extraFields: { unknown: "x" } },
+    const unknown = await updateSubsubsectionForMcp({
+      origin: "http://127.0.0.1:4000",
+      createdById: 42,
+      items: [item({ extraFields: { unknown: "x" } })],
     })
-    expect(unknown.okToWrite).toBe(false)
-    expect(unknown.errors[0]).toContain("Unknown extraFields key")
+    expect(unknown.items[0]?.drafted).toBe(false)
+    expect(unknown.items[0]?.errors[0]).toContain("Unknown extraFields key")
 
-    const empty = await previewSubsubsectionUpdateForMcp({
-      ...identity,
-      patch: { extraFields: { klassifizierung: "" } },
+    const empty = await updateSubsubsectionForMcp({
+      origin: "http://127.0.0.1:4000",
+      createdById: 42,
+      items: [item({ extraFields: { klassifizierung: "" } })],
     })
-    expect(empty.okToWrite).toBe(false)
-    expect(empty.errors[0]).toContain("empty string")
+    expect(empty.items[0]?.drafted).toBe(false)
+    expect(empty.items[0]?.errors[0]).toContain("empty string")
   })
 
-  test("empty or unchanged patch is not okToWrite and does not update", async () => {
-    const { previewSubsubsectionUpdateForMcp, updateSubsubsectionForMcp } =
+  test("empty or unchanged patch is not drafted", async () => {
+    const { updateSubsubsectionForMcp } =
       await import("@/src/server/mcp/queries/updateSubsubsectionForMcp.server")
 
-    const empty = await previewSubsubsectionUpdateForMcp({ ...identity, patch: {} })
-    expect(empty.okToWrite).toBe(false)
-    expect(empty.changes).toEqual([])
-
-    const unchanged = await previewSubsubsectionUpdateForMcp({
-      ...identity,
-      patch: { lengthM: 120 },
-    })
-    expect(unchanged.okToWrite).toBe(false)
-    expect(unchanged.changes).toEqual([])
-
-    const noWrite = await updateSubsubsectionForMcp({
-      ...identity,
-      patch: { lengthM: 120 },
-      confirm: true,
+    const empty = await updateSubsubsectionForMcp({
+      origin: "http://127.0.0.1:4000",
       createdById: 42,
+      items: [item({})],
     })
-    expect(noWrite.written).toBe(false)
+    expect(empty.items[0]?.drafted).toBe(false)
+    expect(empty.items[0]?.changes).toEqual([])
+
+    const unchanged = await updateSubsubsectionForMcp({
+      origin: "http://127.0.0.1:4000",
+      createdById: 42,
+      items: [item({ lengthM: 120 })],
+    })
+    expect(unchanged.items[0]?.drafted).toBe(false)
+    expect(unchanged.items[0]?.changes).toEqual([])
+
+    expect(mockDb.mcpDraft.upsert).not.toHaveBeenCalled()
     expect(mockDb.subsubsection.update).not.toHaveBeenCalled()
-    expect(createLogEntry).not.toHaveBeenCalled()
   })
 
   test("null is rejected by the patch schema", async () => {
@@ -190,29 +192,34 @@ describe("Subsubsection MCP patch", () => {
     ).toBe(false)
   })
 
-  test("missing subsubsection throws before write", async () => {
-    const { previewSubsubsectionUpdateForMcp } =
+  test("missing subsubsection is a per-item error", async () => {
+    const { updateSubsubsectionForMcp } =
       await import("@/src/server/mcp/queries/updateSubsubsectionForMcp.server")
     mockDb.subsubsection.findFirst.mockResolvedValue(null)
-    await expect(
-      previewSubsubsectionUpdateForMcp({ ...identity, patch: { lengthM: 1 } }),
-    ).rejects.toThrow("Subsubsection (Maßnahme) not found")
+    const result = await updateSubsubsectionForMcp({
+      origin: "http://127.0.0.1:4000",
+      createdById: 42,
+      items: [item({ lengthM: 1 })],
+    })
+    expect(result.items[0]?.drafted).toBe(false)
+    expect(result.items[0]?.errors[0]).toContain("Subsubsection (Maßnahme) not found")
   })
 
   test("unknown relation slug returns an error instead of throwing", async () => {
-    const { previewSubsubsectionUpdateForMcp } =
+    const { updateSubsubsectionForMcp } =
       await import("@/src/server/mcp/queries/updateSubsubsectionForMcp.server")
     mockDb.qualityLevel.findFirst.mockResolvedValue(null)
-    const result = await previewSubsubsectionUpdateForMcp({
-      ...identity,
-      patch: { qualityLevelSlug: "missing" },
+    const result = await updateSubsubsectionForMcp({
+      origin: "http://127.0.0.1:4000",
+      createdById: 42,
+      items: [item({ qualityLevelSlug: "missing" })],
     })
-    expect(result.okToWrite).toBe(false)
-    expect(result.errors[0]).toContain("Unknown qualityLevelSlug")
+    expect(result.items[0]?.drafted).toBe(false)
+    expect(result.items[0]?.errors[0]).toContain("Unknown qualityLevelSlug")
   })
 
   test("M2M slugs full-replace", async () => {
-    const { previewSubsubsectionUpdateForMcp } =
+    const { updateSubsubsectionForMcp } =
       await import("@/src/server/mcp/queries/updateSubsubsectionForMcp.server")
     mockDb.subsubsection.findFirst.mockResolvedValue(
       mockSubsubsection({
@@ -221,11 +228,13 @@ describe("Subsubsection MCP patch", () => {
     )
     mockDb.subsubsectionInfrastructureType.findFirst.mockResolvedValue({ id: 2 })
 
-    const result = await previewSubsubsectionUpdateForMcp({
-      ...identity,
-      patch: { subsubsectionInfrastructureTypeSlugs: ["new"] },
+    const result = await updateSubsubsectionForMcp({
+      origin: "http://127.0.0.1:4000",
+      createdById: 42,
+      items: [item({ subsubsectionInfrastructureTypeSlugs: ["new"] })],
     })
-    expect(result.changes).toEqual(
+    expect(result.items[0]?.drafted).toBe(true)
+    expect(result.items[0]?.changes).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           field: "subsubsectionInfrastructureTypeSlugs",
@@ -237,62 +246,106 @@ describe("Subsubsection MCP patch", () => {
   })
 
   test("disabled project does not load subsubsections", async () => {
-    const { previewSubsubsectionUpdateForMcp } =
+    const { updateSubsubsectionForMcp } =
       await import("@/src/server/mcp/queries/updateSubsubsectionForMcp.server")
     mockDb.project.findUnique.mockResolvedValue({ ...enabledProject, mcpEnabled: false })
-    await expect(
-      previewSubsubsectionUpdateForMcp({ ...identity, patch: { lengthM: 1 } }),
-    ).rejects.toThrow("MCP is not enabled")
+    const result = await updateSubsubsectionForMcp({
+      origin: "http://127.0.0.1:4000",
+      createdById: 42,
+      items: [item({ lengthM: 1 })],
+    })
+    expect(result.items[0]?.errors[0]).toContain("MCP is not enabled")
     expect(mockDb.subsubsection.findFirst).not.toHaveBeenCalled()
   })
 
-  test("update requires confirm, merges extraFields, logs createdById, does not create", async () => {
+  test("update upserts drafts, does not write the measure, returns url and proposed", async () => {
     const { updateSubsubsectionForMcp } =
       await import("@/src/server/mcp/queries/updateSubsubsectionForMcp.server")
 
-    await expect(
-      updateSubsubsectionForMcp({
-        ...identity,
-        patch: { lengthM: 185.4 },
-        confirm: false,
-        createdById: 42,
-      }),
-    ).rejects.toThrow("confirm: true")
-    expect(mockDb.subsubsection.findFirst).not.toHaveBeenCalled()
-    expect(mockDb.subsubsection.update).not.toHaveBeenCalled()
-
-    mockDb.subsubsection.findFirst.mockResolvedValue(
-      mockSubsubsection({ extraFields: { klassifizierung: "Kreisstraße" } }),
-    )
-    mockDb.subsubsection.update.mockResolvedValue(mockSubsubsection({ lengthM: 185.4 }))
-
     const written = await updateSubsubsectionForMcp({
-      ...identity,
-      patch: {
-        lengthM: 185.4,
-        extraFields: { klassifizierung: "Landesstraße" },
-      },
-      confirm: true,
+      origin: "http://127.0.0.1:4000",
       createdById: 42,
-    })
-
-    expect(written.written).toBe(true)
-    expect(mockDb.subsubsection.update).toHaveBeenCalledWith(
-      expect.objectContaining({
-        where: { id: 10 },
-        data: expect.objectContaining({
+      items: [
+        item({
           lengthM: 185.4,
           extraFields: { klassifizierung: "Landesstraße" },
         }),
-      }),
+      ],
+    })
+
+    expect(written.draftedCount).toBe(1)
+    expect(written.items[0]).toMatchObject({
+      drafted: true,
+      slug: "dre34",
+      url: "http://127.0.0.1:4000/frm9-ra3/abschnitte/pa8/fuehrung/dre34",
+    })
+    expect(written.items[0]?.changes).toEqual(
+      expect.arrayContaining([expect.objectContaining({ field: "lengthM", proposed: 185.4 })]),
     )
-    expect(createLogEntry).toHaveBeenCalledWith(
+    expect(mockDb.mcpDraft.upsert).toHaveBeenCalledWith(
       expect.objectContaining({
-        action: "UPDATE",
-        userId: 42,
-        subsubsectionId: 10,
+        where: { subsubsectionId: 10 },
+        create: expect.objectContaining({
+          createdById: 42,
+          projectId: 1,
+          subsubsectionId: 10,
+          patch: expect.objectContaining({ lengthM: 185.4 }),
+        }),
       }),
     )
-    expect(mockDb.subsubsection.findFirst).toHaveBeenCalled()
+    expect(mockDb.subsubsection.update).not.toHaveBeenCalled()
+  })
+
+  test("second call on the same identity replaces the patch", async () => {
+    const { updateSubsubsectionForMcp } =
+      await import("@/src/server/mcp/queries/updateSubsubsectionForMcp.server")
+
+    await updateSubsubsectionForMcp({
+      origin: "http://127.0.0.1:4000",
+      createdById: 42,
+      items: [item({ lengthM: 1 })],
+    })
+    await updateSubsubsectionForMcp({
+      origin: "http://127.0.0.1:4000",
+      createdById: 42,
+      items: [item({ lengthM: 2 })],
+    })
+
+    expect(mockDb.mcpDraft.upsert).toHaveBeenCalledTimes(2)
+    expect(mockDb.mcpDraft.upsert.mock.calls[1]?.[0].update.patch).toEqual({ lengthM: 2 })
+  })
+
+  test("one failed item does not block another", async () => {
+    const { updateSubsubsectionForMcp } =
+      await import("@/src/server/mcp/queries/updateSubsubsectionForMcp.server")
+
+    mockDb.subsubsection.findFirst
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce(mockSubsubsection({ id: 11, slug: "ok" }))
+
+    const result = await updateSubsubsectionForMcp({
+      origin: "http://127.0.0.1:4000",
+      createdById: 42,
+      items: [item({ lengthM: 1 }, "missing"), item({ lengthM: 200 }, "ok")],
+    })
+
+    expect(result.draftedCount).toBe(1)
+    expect(result.items[0]?.drafted).toBe(false)
+    expect(result.items[1]?.drafted).toBe(true)
+    expect(result.items[1]?.slug).toBe("ok")
+  })
+
+  test("last duplicate identity in one call wins", async () => {
+    const { updateSubsubsectionForMcp } =
+      await import("@/src/server/mcp/queries/updateSubsubsectionForMcp.server")
+
+    await updateSubsubsectionForMcp({
+      origin: "http://127.0.0.1:4000",
+      createdById: 42,
+      items: [item({ lengthM: 1 }), item({ lengthM: 99 })],
+    })
+
+    expect(mockDb.mcpDraft.upsert).toHaveBeenCalledTimes(1)
+    expect(mockDb.mcpDraft.upsert.mock.calls[0]?.[0].create.patch).toEqual({ lengthM: 99 })
   })
 })

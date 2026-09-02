@@ -46,12 +46,14 @@ export function PageApiTokensMcpSetup({ envLabel, origin }: PageApiTokensMcpSetu
             <code>subsubsections_schema</code>)
           </li>
           <li>
-            Maßnahmen auflisten (<code>subsubsections_list</code>) — Slugs und URLs
+            Maßnahmen auflisten (<code>subsubsections_list</code>) — Slugs, Beschreibungen und URLs
           </li>
           <li>
-            Änderungen Vorschau (<code>subsubsections_update_preview</code>), dann Schreiben mit{" "}
-            <code>confirm: true</code> (<code>subsubsections_update</code>) — kein Anlegen neuer
-            Maßnahmen
+            Drafts anlegen (<code>subsubsections_update</code> mit einem oder mehreren{" "}
+            <code>items</code>) — die Maßnahme selbst wird nicht geschrieben. Übernehmen nur in der
+            App (Admin: Einsetzen → Formular → Speichern). Die Antwort enthält URLs, vorgeschlagene
+            neue Feldwerte (<code>proposed</code>) und Überschreib-Hinweise (<code>warnings</code>
+            ), keine Ist-Werte. Kein Anlegen neuer Maßnahmen.
           </li>
         </ul>
         <p>Bei Verlust oder Ende der Nutzung widerrufen.</p>

@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { getRouteApi, useNavigate, useRouter } from "@tanstack/react-router"
 import { z } from "zod"
 import { SubsubsectionForm } from "@/src/components/abschnitte/SubsubsectionForm"
@@ -7,8 +7,14 @@ import { DeleteActionBar } from "@/src/components/core/components/forms/DeleteAc
 import { parseUniqueConstraintError } from "@/src/components/core/components/forms/errorMessageTranslations"
 import { improveErrorMessage } from "@/src/components/core/components/forms/improveErrorMessage"
 import { FORM_ERROR } from "@/src/components/core/components/forms/utils/formSubmitResult"
+import { Spinner } from "@/src/components/core/components/Spinner"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { getDate } from "@/src/components/project-records/utils/splitStartAt"
+import { deleteSubsubsectionMcpDraftFn } from "@/src/server/mcp/mcpDrafts/mcpDrafts.functions"
+import {
+  invalidateMcpDraftQueries,
+  subsubsectionMcpDraftQueryOptions,
+} from "@/src/server/mcp/mcpDrafts/mcpDraftsQueryOptions"
 import {
   m2mFields,
   m2mFieldRelationNames,
@@ -28,14 +34,22 @@ const subsubsectionEditRouteApi = getRouteApi(
 
 type Props = {
   subsubsection: SubsubsectionWithPosition
+  applyMcpDraft?: boolean
 }
 
-export const EditSubsubsectionForm = ({ subsubsection }: Props) => {
+export const EditSubsubsectionForm = ({ subsubsection, applyMcpDraft = false }: Props) => {
   const navigate = useNavigate()
   const router = useRouter()
+  const queryClient = useQueryClient()
   const { projectSlug, subsectionSlug, subsubsectionSlug } = subsubsectionEditRouteApi.useParams()
+  const mcpDraftQuery = useQuery({
+    ...subsubsectionMcpDraftQueryOptions({ projectSlug, subsectionSlug, subsubsectionSlug }),
+    enabled: applyMcpDraft,
+  })
+  const mcpDraft = mcpDraftQuery.data
   const updateSubsubsectionMutation = useMutation({ mutationFn: updateSubsubsectionFn })
   const deleteSubsubsectionMutation = useMutation({ mutationFn: deleteSubsubsectionFn })
+  const deleteMcpDraftMutation = useMutation({ mutationFn: deleteSubsubsectionMcpDraftFn })
 
   const indexPath = router.buildLocation({
     to: "/$projectSlug/abschnitte/$subsectionSlug",
@@ -67,7 +81,12 @@ export const EditSubsubsectionForm = ({ subsubsection }: Props) => {
             values.estimatedCompletionDate === "" ? null : new Date(values.estimatedCompletionDate),
         } as Parameters<typeof updateSubsubsectionMutation.mutateAsync>[0]["data"],
       })
-      // The Maßnahme may have been moved to another Planungsabschnitt (admin feature)
+      if (applyMcpDraft && mcpDraft) {
+        await deleteMcpDraftMutation.mutateAsync({
+          data: { projectSlug, subsubsectionId: subsubsection.id },
+        })
+        await invalidateMcpDraftQueries(queryClient)
+      }
       void navigate({
         to: "/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug",
         params: {
@@ -90,9 +109,20 @@ export const EditSubsubsectionForm = ({ subsubsection }: Props) => {
     }
   }
 
+  const overlay = applyMcpDraft ? (mcpDraft?.formOverlay ?? {}) : {}
+  const extraFields = {
+    ...parseExtraFields(subsubsection.extraFields),
+    ...overlay.extraFields,
+  }
+
+  if (applyMcpDraft && mcpDraftQuery.isPending) {
+    return <Spinner />
+  }
+
   return (
     <>
       <SubsubsectionForm
+        key={applyMcpDraft ? `mcp-draft-${mcpDraft?.id ?? "pending"}` : "current"}
         submitText="Speichern"
         schema={SubsubsectionFormSchema}
         initialValues={
@@ -106,7 +136,8 @@ export const EditSubsubsectionForm = ({ subsubsection }: Props) => {
             estimatedCompletionDate: subsubsection.estimatedCompletionDate
               ? getDate(subsubsection.estimatedCompletionDate)
               : "",
-            extraFields: parseExtraFields(subsubsection.extraFields),
+            ...overlay,
+            extraFields,
           } as unknown as z.infer<typeof SubsubsectionFormSchema>
         }
         onSubmit={handleSubmit}

@@ -8,6 +8,7 @@ import {
   valuesEqual,
   type SubsubsectionPreviewChange,
 } from "@/src/server/mcp/subsubsectionUpdate/formatPreview"
+import { subsubsectionMcpFieldLabel } from "@/src/server/mcp/subsubsectionUpdate/patchFieldLabel"
 import type { SubsubsectionMcpPatch } from "@/src/server/mcp/subsubsectionUpdate/patchSchema"
 import { buildSubsubsectionUrl } from "@/src/server/mcp/subsubsectionUrl"
 import {
@@ -24,8 +25,6 @@ import {
   parseExtraFields,
   sanitizeExtraFieldsForSave,
 } from "@/src/shared/subsubsections/extraFieldSchemas"
-import { subsubsectionFieldTranslations } from "@/src/shared/subsubsections/subsubsectionFieldMappings"
-
 const SCALAR_KEYS = [
   "description",
   "location",
@@ -53,23 +52,8 @@ const SCALAR_KEYS = [
   "ownFunds",
 ] as const satisfies readonly (keyof SubsubsectionMcpPatch)[]
 
-const SLUG_FIELD_LABELS: Record<string, string> = {
-  qualityLevelSlug: subsubsectionFieldTranslations.qualityLevelId,
-  subsubsectionStatusSlug: subsubsectionFieldTranslations.subsubsectionStatusId,
-  subsubsectionTaskSlug: subsubsectionFieldTranslations.subsubsectionTaskId,
-  subsubsectionInfraSlug: subsubsectionFieldTranslations.subsubsectionInfraId,
-  subsubsectionInfrastructureTypeSlugs:
-    subsubsectionFieldTranslations.subsubsectionInfrastructureTypeIds,
-}
-
 function fieldLabel(field: string) {
-  if (field.startsWith("extraFields.")) {
-    return field.slice("extraFields.".length)
-  }
-  if (field in subsubsectionFieldTranslations) {
-    return subsubsectionFieldTranslations[field as keyof typeof subsubsectionFieldTranslations]
-  }
-  return SLUG_FIELD_LABELS[field] ?? field
+  return subsubsectionMcpFieldLabel(field)
 }
 
 function pushChange(
@@ -98,8 +82,10 @@ export type ResolveSubsubsectionUpdateResult = {
   prismaData: Prisma.SubsubsectionUpdateInput
   subsubsectionId: number
   projectSlug: string
+  subsectionSlug: string
   slug: string
   previousSnapshot: ReturnType<typeof subsubsectionLogSnapshot> & { id: number }
+  projectId: number
 }
 
 export async function resolveSubsubsectionUpdate({
@@ -300,8 +286,10 @@ export async function resolveSubsubsectionUpdate({
     prismaData,
     subsubsectionId: subsubsection.id,
     projectSlug: project.slug,
+    subsectionSlug: subsubsection.subsection.slug,
     slug: subsubsection.slug,
     previousSnapshot: { id: subsubsection.id, ...subsubsectionLogSnapshot(subsubsection) },
+    projectId: project.id,
   }
 }
 
@@ -309,6 +297,9 @@ export function subsubsectionPreviewPayload(result: ResolveSubsubsectionUpdateRe
   return {
     environment: result.environment,
     url: result.url,
+    projectSlug: result.projectSlug,
+    subsectionSlug: result.subsectionSlug,
+    slug: result.slug,
     okToWrite: result.okToWrite,
     changes: result.changes,
     errors: result.errors,

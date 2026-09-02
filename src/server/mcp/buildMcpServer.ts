@@ -7,14 +7,8 @@ import { mcpToolOk, runMcpTool } from "@/src/server/mcp/mcpToolHelpers"
 import { getSubsubsectionsSchemaForMcp } from "@/src/server/mcp/queries/getSubsubsectionsSchemaForMcp.server"
 import { listProjectsForMcp } from "@/src/server/mcp/queries/listProjectsForMcp.server"
 import { listSubsubsectionsForMcp } from "@/src/server/mcp/queries/listSubsubsectionsForMcp.server"
-import {
-  previewSubsubsectionUpdateForMcp,
-  updateSubsubsectionForMcp,
-} from "@/src/server/mcp/queries/updateSubsubsectionForMcp.server"
-import {
-  subsubsectionMcpPreviewInputSchema,
-  subsubsectionMcpUpdateInputSchema,
-} from "@/src/server/mcp/subsubsectionUpdate/patchSchema"
+import { updateSubsubsectionForMcp } from "@/src/server/mcp/queries/updateSubsubsectionForMcp.server"
+import { subsubsectionMcpUpdateInputSchema } from "@/src/server/mcp/subsubsectionUpdate/patchSchema"
 
 const mcpListLimitSchema = z
   .number()
@@ -42,17 +36,20 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
         `Then projects_list — only continue with slugs where mcpEnabled is true. ` +
         `If the target project is disabled, stop and ask an admin to enable MCP in /admin/projects (column MCP). ` +
         `Do not call other project tools for a disabled slug. ` +
-        `mcpEnabled does not replace preview or confirm. ` +
+        `mcpEnabled does not replace applying the draft in the app. ` +
         `User-facing terms: subsection = Planungsabschnitt, subsubsection = Maßnahme. ` +
         `After env_info and an enabled slug: subsubsections_schema, then subsubsections_list. ` +
-        `To change a Maßnahme: subsubsections_update_preview, show the diff (including overwrite warnings) to the user, then subsubsections_update with confirm: true. ` +
+        `To change Maßnahmen: subsubsections_update with items (1–${MCP_LIST_MAX_LIMIT}). ` +
+        `subsubsections_update creates drafts only and does not write Subsubsection. ` +
+        `Show the user each item url and changes[].proposed. An admin applies drafts in the app (Einsetzen → form → Speichern). ` +
         `Identity is always projectSlug + subsectionSlug + slug; there is no create. ` +
         `${patchSemantics} ` +
         `After a migration, ask an admin to turn MCP off again. ` +
         `List tools default to ${MCP_LIST_DEFAULT_LIMIT} rows (max ${MCP_LIST_MAX_LIMIT}) and return ` +
         `limit, returned, and truncated when more rows exist. ` +
         `projects_list returns slug, subTitle, shortTitle, url, paCount, subsubsectionCount, mcpEnabled. ` +
-        `subsubsections_list requires projectSlug; optional subsectionSlug filters to one Planungsabschnitt.`,
+        `subsubsections_list requires projectSlug; optional subsectionSlug filters to one Planungsabschnitt. ` +
+        `It returns slug, description, and url per Maßnahme.`,
     },
   )
 
@@ -105,7 +102,7 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
         `List subsubsections (Maßnahmen) for a project (default limit ${MCP_LIST_DEFAULT_LIMIT}, ` +
         `max ${MCP_LIST_MAX_LIMIT}). Requires mcpEnabled. Response includes limit, returned, truncated. ` +
         "Requires projectSlug; optional subsectionSlug (Planungsabschnitt). Per row: projectSlug, subsectionSlug, slug (Maßnahme), " +
-        "url — no descriptions or geometry.",
+        "description, url — no extraFields or geometry. When subsectionSlug is set and returned > 1, disambiguationRequired is true.",
       inputSchema: {
         projectSlug: z.string(),
         subsectionSlug: z.string().optional().describe("Planungsabschnitt slug"),
@@ -117,28 +114,12 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
   )
 
   server.registerTool(
-    "subsubsections_update_preview",
-    {
-      description:
-        "Dry-run a subsubsection (Maßnahme) patch. Requires mcpEnabled. Loads the record internally (no get tool). " +
-        "Returns changes (kind set|overwrite), overwrite warnings, errors. okToWrite is true when there are no errors and at least one change. " +
-        patchSemantics,
-      inputSchema: subsubsectionMcpPreviewInputSchema.shape,
-    },
-    (input) =>
-      runMcpTool(() =>
-        previewSubsubsectionUpdateForMcp({
-          ...input,
-          origin,
-        }),
-      ),
-  )
-
-  server.registerTool(
     "subsubsections_update",
     {
       description:
-        "Apply a subsubsection (Maßnahme) patch. Requires mcpEnabled and confirm: true after preview. Does not create records. " +
+        `Create drafts for one or more subsubsection (Maßnahme) patches. Requires mcpEnabled. Pass items (1–${MCP_LIST_MAX_LIMIT}). ` +
+        "Does not write Subsubsection or create records. Response lists url, changes[].proposed, and overwrite warnings per item. " +
+        "An admin applies each draft in the app. " +
         patchSemantics,
       inputSchema: subsubsectionMcpUpdateInputSchema.shape,
     },

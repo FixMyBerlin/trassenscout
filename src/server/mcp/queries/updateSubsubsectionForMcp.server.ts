@@ -1,71 +1,99 @@
-import { frenchQuote } from "@/src/components/core/components/text/quote"
-import { shortTitle } from "@/src/components/core/components/text/titles"
-import db from "@/src/server/db.server"
-import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
+import { mcpEnvLabel } from "@/src/server/mcp/mcpCursorConfig"
+import { upsertSubsubsectionMcpDraft } from "@/src/server/mcp/mcpDrafts/mcpDrafts.server"
 import type { SubsubsectionMcpPatch } from "@/src/server/mcp/subsubsectionUpdate/patchSchema"
 import {
   resolveSubsubsectionUpdate,
   subsubsectionPreviewPayload,
 } from "@/src/server/mcp/subsubsectionUpdate/resolveSubsubsectionUpdate.server"
-import {
-  subsubsectionLogSnapshot,
-  subsubsectionLogSnapshotSelect,
-} from "@/src/server/subsubsections/subsubsectionLogSnapshot"
 
-export async function previewSubsubsectionUpdateForMcp(input: {
+type SubsubsectionMcpIdentityItem = {
   projectSlug: string
   subsectionSlug: string
   slug: string
   patch: SubsubsectionMcpPatch
-  origin: string
-}) {
-  const resolved = await resolveSubsubsectionUpdate(input)
-  return subsubsectionPreviewPayload(resolved)
+}
+
+function lastWinsItems(items: SubsubsectionMcpIdentityItem[]) {
+  const map = new Map<string, SubsubsectionMcpIdentityItem>()
+  for (const item of items) {
+    const key = `${item.projectSlug}\0${item.subsectionSlug}\0${item.slug}`
+    map.delete(key)
+    map.set(key, item)
+  }
+  return [...map.values()]
+}
+
+function identityFromItem(item: SubsubsectionMcpIdentityItem) {
+  return {
+    projectSlug: item.projectSlug,
+    subsectionSlug: item.subsectionSlug,
+    slug: item.slug,
+  }
+}
+
+async function resolveItem(item: SubsubsectionMcpIdentityItem, origin: string) {
+  try {
+    return await resolveSubsubsectionUpdate({ ...item, origin })
+  } catch (error) {
+    return {
+      error: error instanceof Error ? error.message : String(error),
+    }
+  }
 }
 
 export async function updateSubsubsectionForMcp(input: {
-  projectSlug: string
-  subsectionSlug: string
-  slug: string
-  patch: SubsubsectionMcpPatch
+  items: SubsubsectionMcpIdentityItem[]
   origin: string
-  confirm: boolean
   createdById: number
 }) {
-  if (input.confirm !== true) {
-    throw new Error(
-      "subsubsections_update requires confirm: true after subsubsections_update_preview. MCP does not write without explicit confirmation.",
-    )
+  const items = lastWinsItems(input.items)
+  const results = []
+  let draftedCount = 0
+
+  for (const item of items) {
+    const resolved = await resolveItem(item, input.origin)
+    if ("error" in resolved) {
+      results.push({
+        ...identityFromItem(item),
+        url: null,
+        drafted: false,
+        changes: [],
+        errors: [resolved.error],
+        warnings: [],
+      })
+      continue
+    }
+
+    if (!resolved.okToWrite) {
+      results.push({
+        ...identityFromItem(item),
+        ...subsubsectionPreviewPayload(resolved),
+        drafted: false,
+        errors: resolved.errors.length > 0 ? resolved.errors : ["Patch is empty or unchanged."],
+      })
+      continue
+    }
+
+    await upsertSubsubsectionMcpDraft({
+      createdById: input.createdById,
+      projectId: resolved.projectId,
+      subsubsectionId: resolved.subsubsectionId,
+      patch: item.patch,
+    })
+
+    draftedCount += 1
+    results.push({
+      ...identityFromItem(item),
+      ...subsubsectionPreviewPayload(resolved),
+      drafted: true,
+      errors: [],
+    })
   }
-
-  // Preview and update each resolve the record independently (no preview token or etag).
-  // A future improvement could require a hash or updatedAt from preview on write, so confirm
-  // applies against the same snapshot the agent showed the user. Not implemented yet: migration
-  // tooling tolerates re-resolve between preview and write, and we want to keep the API simple.
-  const resolved = await resolveSubsubsectionUpdate(input)
-  if (!resolved.okToWrite) {
-    return { ...subsubsectionPreviewPayload(resolved), written: false }
-  }
-
-  const record = await db.subsubsection.update({
-    where: { id: resolved.subsubsectionId },
-    data: resolved.prismaData,
-    select: { id: true, ...subsubsectionLogSnapshotSelect },
-  })
-
-  await createLogEntry({
-    action: "UPDATE",
-    message: `Maßnahme ${frenchQuote(shortTitle(record.slug))} wurde bearbeitet.`,
-    userId: input.createdById,
-    projectSlug: resolved.projectSlug,
-    subsubsectionId: record.id,
-    previousRecord: resolved.previousSnapshot,
-    updatedRecord: { id: record.id, ...subsubsectionLogSnapshot(record) },
-  })
 
   return {
-    ...subsubsectionPreviewPayload(resolved),
-    written: true,
-    slug: record.slug,
+    environment: mcpEnvLabel(process.env.VITE_APP_ENV),
+    returned: results.length,
+    draftedCount,
+    items: results,
   }
 }

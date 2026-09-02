@@ -20,7 +20,13 @@ export function adminLookupRowsQueryOptions(input: GetLookupRowsInput) {
 export function adminLookupRowsWithCountQueryOptions(input: GetLookupRowsInput) {
   return queryOptions({
     queryKey: ["adminLookupRowsWithCount", input],
-    queryFn: () => getLookupRowsWithCountFn({ data: input }),
+    queryFn: async () => {
+      const data = await getLookupRowsWithCountFn({ data: input })
+      if (data === undefined) {
+        throw new Error(`adminLookupRowsWithCount returned no data for ${input.table}`)
+      }
+      return data
+    },
   })
 }
 

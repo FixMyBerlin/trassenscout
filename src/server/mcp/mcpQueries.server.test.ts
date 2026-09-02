@@ -99,7 +99,7 @@ describe("MCP read queries", () => {
     expect(result.projects).toHaveLength(2)
   })
 
-  test("subsubsections_list returns slugs and urls only", async () => {
+  test("subsubsections_list returns slugs, descriptions, and urls", async () => {
     const { listSubsubsectionsForMcp } =
       await import("@/src/server/mcp/queries/listSubsubsectionsForMcp.server")
 
@@ -107,6 +107,7 @@ describe("MCP read queries", () => {
     mockDb.subsubsection.findMany.mockResolvedValue([
       {
         slug: "dre34",
+        description: "Radweg entlang der Bahn",
         subsection: { slug: "pa8" },
       },
     ])
@@ -122,12 +123,33 @@ describe("MCP read queries", () => {
         projectSlug: "frm9-ra3",
         subsectionSlug: "pa8",
         slug: "dre34",
+        description: "Radweg entlang der Bahn",
         url: "http://127.0.0.1:4000/frm9-ra3/abschnitte/pa8/fuehrung/dre34",
       },
     ])
-    expect(JSON.stringify(result)).not.toContain("description")
+    expect(result.disambiguationRequired).toBe(false)
     expect(JSON.stringify(result)).not.toContain("extraFields")
     expect(JSON.stringify(result)).not.toContain("geometry")
+  })
+
+  test("subsubsections_list sets disambiguationRequired when subsectionSlug matches several", async () => {
+    const { listSubsubsectionsForMcp } =
+      await import("@/src/server/mcp/queries/listSubsubsectionsForMcp.server")
+
+    mockDb.project.findUnique.mockResolvedValue(enabledProject)
+    mockDb.subsubsection.findMany.mockResolvedValue([
+      { slug: "a", description: null, subsection: { slug: "pa8" } },
+      { slug: "b", description: "Zweite Maßnahme", subsection: { slug: "pa8" } },
+    ])
+
+    const result = await listSubsubsectionsForMcp({
+      projectSlug: "frm9-ra3",
+      subsectionSlug: "pa8",
+      origin: "http://127.0.0.1:4000",
+    })
+
+    expect(result.returned).toBe(2)
+    expect(result.disambiguationRequired).toBe(true)
   })
 
   test("subsubsections_list does not load subsubsections when MCP is disabled", async () => {
