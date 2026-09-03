@@ -146,9 +146,13 @@ export async function resolveSubsubsectionUpdate({
       )
       continue
     }
-    if (!pushChange(changes, key, subsubsection[key as keyof typeof subsubsection], proposed))
+    const proposedValue =
+      key === "trafficLoadDate" || key === "estimatedCompletionDate"
+        ? new Date(proposed as string)
+        : proposed
+    if (!pushChange(changes, key, subsubsection[key as keyof typeof subsubsection], proposedValue))
       continue
-    ;(prismaData as Record<string, unknown>)[key] = proposed
+    ;(prismaData as Record<string, unknown>)[key] = proposedValue
   }
 
   const relationSlugs = {

@@ -7,6 +7,14 @@ const nonEmptyString = z.string().min(1, {
   error: "MCP cannot clear fields with empty string. Omit the key to leave the value unchanged.",
 })
 
+/** ISO calendar date as a string so MCP `tools/list` can emit JSON Schema (Zod Date cannot). */
+const mcpIsoDate = z
+  .string()
+  .regex(/^\d{4}-\d{2}-\d{2}([Tt].*)?$/, {
+    error: "Use an ISO date (YYYY-MM-DD).",
+  })
+  .describe("ISO date YYYY-MM-DD")
+
 const subsubsectionMcpIdentitySchema = z.object({
   projectSlug: z.string().min(1),
   subsectionSlug: z.string().min(1).describe("Planungsabschnitt slug"),
@@ -22,10 +30,10 @@ const subsubsectionMcpPatchObjectSchema = z.object({
   isExistingInfra: z.boolean().optional(),
   maxSpeed: z.number().optional(),
   trafficLoad: z.number().optional(),
-  trafficLoadDate: z.coerce.date().optional(),
+  trafficLoadDate: mcpIsoDate.optional(),
   planningPeriod: z.number().optional(),
   constructionPeriod: z.number().optional(),
-  estimatedCompletionDate: z.coerce.date().optional(),
+  estimatedCompletionDate: mcpIsoDate.optional(),
   estimatedConstructionDateString: z
     .string()
     .regex(/^(\d{4})$/, { error: "Datum im Format JJJJ" })
