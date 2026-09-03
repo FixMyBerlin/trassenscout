@@ -78,7 +78,7 @@ export function SubsubsectionMcpDraftAdminBox({
             buttonSize="sm"
             to={`/${projectSlug}/abschnitte/${subsectionSlug}/fuehrung/${subsubsectionSlug}/edit?mcpDraft=true`}
           >
-            Einsetzen
+            Formular öffnen und Werte einsetzen
           </Link>
         )}
         <button
