@@ -49,11 +49,12 @@ export function PageApiTokensMcpSetup({ envLabel, origin }: PageApiTokensMcpSetu
             Maßnahmen auflisten (<code>subsubsections_list</code>) — Slugs, Beschreibungen und URLs
           </li>
           <li>
-            Drafts anlegen (<code>subsubsections_update</code> mit einem oder mehreren{" "}
-            <code>items</code>) — die Maßnahme selbst wird nicht geschrieben. Übernehmen nur in der
-            App (Admin: Einsetzen → Formular → Speichern). Die Antwort enthält URLs, vorgeschlagene
-            neue Feldwerte (<code>proposed</code>) und Überschreib-Hinweise (<code>warnings</code>
-            ), keine Ist-Werte. Kein Anlegen neuer Maßnahmen.
+            Drafts anlegen (<code>subsubsections_update</code> / <code>subsubsections_create</code>{" "}
+            mit einem oder mehreren <code>items</code>) — die Maßnahme selbst wird nicht
+            geschrieben. Übernehmen nur in der App (Admin: Einsetzen → Formular → Speichern). Die
+            Antwort enthält URLs, vorgeschlagene neue Feldwerte (<code>proposed</code>) und Hinweise
+            (<code>warnings</code>), keine Ist-Werte. Create verlangt <code>type</code> und GeoJSON-
+            <code>geometry</code>.
           </li>
         </ul>
         <p>Bei Verlust oder Ende der Nutzung widerrufen.</p>

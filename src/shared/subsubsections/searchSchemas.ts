@@ -5,6 +5,10 @@ export const subsubsectionEditSearchSchema = z.object({
   mcpDraft: z.union([z.literal(true), z.literal("true")]).optional(),
 })
 
+export const subsubsectionNewSearchSchema = subsubsectionEditSearchSchema.extend({
+  slug: z.string().min(1).optional(),
+})
+
 export function isSubsubsectionMcpDraftSearch(mcpDraft: true | "true" | undefined) {
   return mcpDraft === true || mcpDraft === "true"
 }

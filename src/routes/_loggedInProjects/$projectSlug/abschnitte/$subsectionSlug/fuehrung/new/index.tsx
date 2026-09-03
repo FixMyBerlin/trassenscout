@@ -4,6 +4,7 @@ import { PageAbschnitteFuehrungNew } from "@/src/components/pages/abschnitte/Pag
 import { absoluteTitleHead } from "@/src/routeHead"
 import { adminLookupRowsWithCountQueryOptions } from "@/src/server/adminLookupTables/adminLookupTablesQueryOptions"
 import { subsectionBySlugQueryOptions } from "@/src/server/subsections/subsectionQueryOptions"
+import { subsubsectionNewSearchSchema } from "@/src/shared/subsubsections/searchSchemas"
 
 const subsubsectionFormLookupTables = [
   "qualityLevels",
@@ -18,6 +19,7 @@ export const Route = createFileRoute(
 )({
   head: () => absoluteTitleHead(seoNewTitle("Maßnahme ")),
   ssr: true,
+  validateSearch: subsubsectionNewSearchSchema,
   loader: async ({ context, params }) => {
     const subsection = await context.queryClient.ensureQueryData(
       subsectionBySlugQueryOptions({

@@ -2,6 +2,7 @@ import { describe, expect, test } from "vitest"
 import {
   isSubsubsectionMcpDraftSearch,
   subsubsectionEditSearchSchema,
+  subsubsectionNewSearchSchema,
 } from "@/src/shared/subsubsections/searchSchemas"
 
 describe("subsubsectionEditSearchSchema", () => {
@@ -19,5 +20,14 @@ describe("subsubsectionEditSearchSchema", () => {
     expect(subsubsectionEditSearchSchema.parse({})).toEqual({})
     expect(isSubsubsectionMcpDraftSearch(undefined)).toBe(false)
     expect(subsubsectionEditSearchSchema.safeParse({ mcpDraft: false }).success).toBe(false)
+  })
+})
+
+describe("subsubsectionNewSearchSchema", () => {
+  test("accepts mcpDraft and slug", () => {
+    expect(subsubsectionNewSearchSchema.parse({ mcpDraft: true, slug: "dre34" })).toEqual({
+      mcpDraft: true,
+      slug: "dre34",
+    })
   })
 })

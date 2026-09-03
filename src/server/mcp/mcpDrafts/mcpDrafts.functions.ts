@@ -3,11 +3,13 @@ import { getRequestHeaders } from "@tanstack/react-start/server"
 import {
   DeleteSubsubsectionMcpDraftSchema,
   GetSubsubsectionMcpDraftSchema,
+  ListSubsectionMcpCreateDraftsSchema,
 } from "./mcpDrafts.inputSchemas"
 import {
   deleteSubsubsectionMcpDraft,
   getSubsubsectionMcpDraft,
   listMcpDraftsGrouped,
+  listSubsectionMcpCreateDrafts,
 } from "./mcpDrafts.server"
 
 export const getSubsubsectionMcpDraftFn = createServerFn({ method: "GET" })
@@ -17,6 +19,10 @@ export const getSubsubsectionMcpDraftFn = createServerFn({ method: "GET" })
 export const deleteSubsubsectionMcpDraftFn = createServerFn({ method: "POST" })
   .validator(DeleteSubsubsectionMcpDraftSchema)
   .handler(({ data }) => deleteSubsubsectionMcpDraft(getRequestHeaders(), data))
+
+export const listSubsectionMcpCreateDraftsFn = createServerFn({ method: "GET" })
+  .validator(ListSubsectionMcpCreateDraftsSchema)
+  .handler(({ data }) => listSubsectionMcpCreateDrafts(getRequestHeaders(), data))
 
 export const listMcpDraftsGroupedFn = createServerFn({ method: "GET" }).handler(() =>
   listMcpDraftsGrouped(getRequestHeaders()),

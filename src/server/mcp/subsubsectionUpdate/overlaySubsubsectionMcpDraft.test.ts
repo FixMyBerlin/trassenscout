@@ -113,4 +113,38 @@ describe("overlaySubsubsectionMcpDraft", () => {
       trafficLoadDate: "2026-03-01",
     })
   })
+
+  test("overlays type and geometry for create drafts", async () => {
+    const { overlaySubsubsectionMcpDraft } =
+      await import("@/src/server/mcp/subsubsectionUpdate/overlaySubsubsectionMcpDraft")
+
+    const overlay = await overlaySubsubsectionMcpDraft({
+      projectId: 1,
+      extraFieldDefinitions: [],
+      currentExtraFields: {},
+      patch: {
+        type: "LINE",
+        geometry: {
+          type: "LineString",
+          coordinates: [
+            [9.1943, 48.8932],
+            [9.2043, 48.8933],
+          ],
+        },
+        description: "Neu",
+      },
+    })
+
+    expect(overlay).toEqual({
+      type: "LINE",
+      geometry: {
+        type: "LineString",
+        coordinates: [
+          [9.1943, 48.8932],
+          [9.2043, 48.8933],
+        ],
+      },
+      description: "Neu",
+    })
+  })
 })

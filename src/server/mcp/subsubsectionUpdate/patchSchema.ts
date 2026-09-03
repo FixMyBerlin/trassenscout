@@ -1,6 +1,7 @@
 import { z } from "zod"
-import { LocationEnum } from "@/src/prisma/generated/browser"
+import { GeometryTypeEnum, LocationEnum } from "@/src/prisma/generated/browser"
 import { MCP_LIST_MAX_LIMIT } from "@/src/server/mcp/mcpListLimit.const"
+import { SupportedGeometrySchema } from "@/src/shared/geometry/geometrySchemas"
 import { SubsubsectionExtraFieldsValuesSchema } from "@/src/shared/subsubsections/extraFieldSchemas"
 
 const nonEmptyString = z.string().min(1, {
@@ -65,10 +66,18 @@ const subsubsectionMcpPatchObjectSchema = z.object({
 
 export const subsubsectionMcpPatchSchema = subsubsectionMcpPatchObjectSchema.strict()
 
+const subsubsectionMcpCreatePatchObjectSchema = subsubsectionMcpPatchObjectSchema.extend({
+  type: z.enum(GeometryTypeEnum).optional(),
+  geometry: SupportedGeometrySchema.optional(),
+})
+
+const subsubsectionMcpCreatePatchSchema = subsubsectionMcpCreatePatchObjectSchema.strict()
+
 /** Overlay drops unknown keys instead of rejecting the whole patch. */
-export const subsubsectionMcpPatchOverlaySchema = subsubsectionMcpPatchObjectSchema
+export const subsubsectionMcpPatchOverlaySchema = subsubsectionMcpCreatePatchObjectSchema
 
 export type SubsubsectionMcpPatch = z.infer<typeof subsubsectionMcpPatchSchema>
+export type SubsubsectionMcpCreatePatch = z.infer<typeof subsubsectionMcpCreatePatchSchema>
 
 const subsubsectionMcpUpdateItemSchema = subsubsectionMcpIdentitySchema.extend({
   patch: subsubsectionMcpPatchSchema,
@@ -76,4 +85,12 @@ const subsubsectionMcpUpdateItemSchema = subsubsectionMcpIdentitySchema.extend({
 
 export const subsubsectionMcpUpdateInputSchema = z.object({
   items: z.array(subsubsectionMcpUpdateItemSchema).min(1).max(MCP_LIST_MAX_LIMIT),
+})
+
+const subsubsectionMcpCreateItemSchema = subsubsectionMcpIdentitySchema.extend({
+  patch: subsubsectionMcpCreatePatchSchema,
+})
+
+export const subsubsectionMcpCreateInputSchema = z.object({
+  items: z.array(subsubsectionMcpCreateItemSchema).min(1).max(MCP_LIST_MAX_LIMIT),
 })

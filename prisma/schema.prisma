@@ -252,11 +252,16 @@ model McpDraft {
   project     Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId   Int
 
-  // Optional unique FKs, one per target type (LogEntry-style). Add e.g. subsectionId later.
+  // Update drafts: subsubsectionId set, subsectionId/slug null.
+  // Create drafts: subsubsectionId null, subsectionId + slug set (last-wins upsert).
   subsubsection   Subsubsection? @relation(fields: [subsubsectionId], references: [id], onDelete: Cascade)
   subsubsectionId Int?           @unique
+  subsection      Subsection?    @relation(fields: [subsectionId], references: [id], onDelete: Cascade)
+  subsectionId    Int?
+  slug            String?
   patch           Json
 
+  @@unique([subsectionId, slug])
   @@index([projectId])
   @@index([updatedAt])
 }
@@ -379,6 +384,7 @@ model Subsection {
   subsectionStatusId            Int?
   //
   subsubsections                Subsubsection[]
+  mcpDrafts                     McpDraft[]
   LogEntry                      LogEntry[]
 
   @@unique([projectId, slug])

@@ -1,13 +1,19 @@
-import { useSuspenseQuery } from "@tanstack/react-query"
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
 import { AdminPageHeader } from "@/src/components/admin/AdminPageHeader"
 import { Link } from "@/src/components/core/components/links/Link"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { getFullname } from "@/src/components/core/users/getFullname"
 import { formatBerlinTime } from "@/src/components/core/utils/formatBerlinTime"
-import { mcpDraftsGroupedQueryOptions } from "@/src/server/mcp/mcpDrafts/mcpDraftsQueryOptions"
+import { deleteSubsubsectionMcpDraftFn } from "@/src/server/mcp/mcpDrafts/mcpDrafts.functions"
+import {
+  invalidateMcpDraftQueries,
+  mcpDraftsGroupedQueryOptions,
+} from "@/src/server/mcp/mcpDrafts/mcpDraftsQueryOptions"
 
 export function PageAdminMcpDrafts() {
+  const queryClient = useQueryClient()
+  const discardMutation = useMutation({ mutationFn: deleteSubsubsectionMcpDraftFn })
   const { data } = useSuspenseQuery(mcpDraftsGroupedQueryOptions())
 
   return (
@@ -34,24 +40,53 @@ export function PageAdminMcpDrafts() {
 
                     return (
                       <li key={draft.id} className="text-sm">
-                        {subsectionSlug && subsubsectionSlug ? (
-                          <Link
-                            to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug"
-                            params={{
-                              projectSlug: group.projectSlug,
-                              subsectionSlug,
-                              subsubsectionSlug,
+                        <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                          {subsectionSlug && subsubsectionSlug && draft.kind === "create" ? (
+                            <Link
+                              to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new"
+                              params={{
+                                projectSlug: group.projectSlug,
+                                subsectionSlug,
+                              }}
+                              search={{ mcpDraft: "true", slug: subsubsectionSlug }}
+                            >
+                              Neu: {shortTitle(subsubsectionSlug)}
+                            </Link>
+                          ) : subsectionSlug && subsubsectionSlug ? (
+                            <Link
+                              to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/edit"
+                              params={{
+                                projectSlug: group.projectSlug,
+                                subsectionSlug,
+                                subsubsectionSlug,
+                              }}
+                              search={{ mcpDraft: "true" }}
+                            >
+                              Update: {shortTitle(subsubsectionSlug)}
+                            </Link>
+                          ) : (
+                            <span className="text-gray-500">Maßnahme nicht gefunden</span>
+                          )}
+                          <span className="text-gray-500">
+                            {subsectionSlug ? ` · ${shortTitle(subsectionSlug)}` : null}
+                            {` · ${when} · ${createdByLabel}`}
+                          </span>
+                          <button
+                            type="button"
+                            className="cursor-pointer text-purple-800 underline underline-offset-2"
+                            disabled={discardMutation.isPending}
+                            onClick={() => {
+                              void (async () => {
+                                await discardMutation.mutateAsync({
+                                  data: { projectSlug: group.projectSlug, id: draft.id },
+                                })
+                                await invalidateMcpDraftQueries(queryClient)
+                              })()
                             }}
                           >
-                            {shortTitle(subsubsectionSlug)}
-                          </Link>
-                        ) : (
-                          <span className="text-gray-500">Maßnahme nicht gefunden</span>
-                        )}
-                        <span className="text-gray-500">
-                          {subsectionSlug ? ` · ${shortTitle(subsectionSlug)}` : null}
-                          {` · ${when} · ${createdByLabel}`}
-                        </span>
+                            Verwerfen
+                          </button>
+                        </div>
                       </li>
                     )
                   })}

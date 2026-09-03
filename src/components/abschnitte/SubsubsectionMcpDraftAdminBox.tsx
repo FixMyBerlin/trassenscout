@@ -17,8 +17,9 @@ type Props = {
   projectSlug: string
   subsectionSlug: string
   subsubsectionSlug: string
-  subsubsectionId: number
+  subsubsectionId?: number
   overlayApplied?: boolean
+  createDraft?: boolean
   className?: string
 }
 
@@ -28,6 +29,7 @@ export function SubsubsectionMcpDraftAdminBox({
   subsubsectionSlug,
   subsubsectionId,
   overlayApplied = false,
+  createDraft = false,
   className,
 }: Props) {
   const navigate = useNavigate()
@@ -47,21 +49,32 @@ export function SubsubsectionMcpDraftAdminBox({
 
   const handleDiscard = async () => {
     await discardMutation.mutateAsync({
-      data: { projectSlug, subsubsectionId },
+      data:
+        createDraft || subsubsectionId === undefined
+          ? { projectSlug, id: draft.id }
+          : { projectSlug, subsubsectionId },
     })
     await invalidateMcpDraftQueries(queryClient)
     if (overlayApplied) {
-      void navigate({
-        to: "/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/edit",
-        params: { projectSlug, subsectionSlug, subsubsectionSlug },
-        search: {},
-      })
+      if (createDraft) {
+        void navigate({
+          to: "/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new",
+          params: { projectSlug, subsectionSlug },
+          search: {},
+        })
+      } else {
+        void navigate({
+          to: "/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/edit",
+          params: { projectSlug, subsectionSlug, subsubsectionSlug },
+          search: {},
+        })
+      }
     }
   }
 
   return (
     <SuperAdminBox className={className}>
-      <p className="font-semibold">MCP-Vorschlag</p>
+      <p className="font-semibold">{createDraft ? "MCP-Vorschlag (neu)" : "MCP-Vorschlag"}</p>
       <p>
         Von {createdByLabel}, {ageLabel}.
       </p>
@@ -72,7 +85,17 @@ export function SubsubsectionMcpDraftAdminBox({
         <p>MCP-Werte im Formular — Speichern übernimmt, Verwerfen löscht den Vorschlag.</p>
       ) : null}
       <div className="mt-2 flex flex-wrap gap-2">
-        {overlayApplied ? null : (
+        {overlayApplied ? null : createDraft ? (
+          <Link
+            button="blue"
+            buttonSize="sm"
+            to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new"
+            params={{ projectSlug, subsectionSlug }}
+            search={{ mcpDraft: "true", slug: subsubsectionSlug }}
+          >
+            Formular öffnen und Werte einsetzen
+          </Link>
+        ) : (
           <Link
             button="blue"
             buttonSize="sm"

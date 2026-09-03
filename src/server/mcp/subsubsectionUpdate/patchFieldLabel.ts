@@ -1,4 +1,7 @@
-import type { SubsubsectionMcpPatch } from "@/src/server/mcp/subsubsectionUpdate/patchSchema"
+import type {
+  SubsubsectionMcpCreatePatch,
+  SubsubsectionMcpPatch,
+} from "@/src/server/mcp/subsubsectionUpdate/patchSchema"
 import { subsubsectionFieldTranslations } from "@/src/shared/subsubsections/subsubsectionFieldMappings"
 
 const SLUG_FIELD_LABELS: Record<string, string> = {
@@ -20,7 +23,9 @@ export function subsubsectionMcpFieldLabel(field: string) {
   return SLUG_FIELD_LABELS[field] ?? field
 }
 
-export function subsubsectionMcpPatchFieldLabels(patch: SubsubsectionMcpPatch) {
+export function subsubsectionMcpPatchFieldLabels(
+  patch: SubsubsectionMcpPatch | SubsubsectionMcpCreatePatch,
+) {
   const labels: string[] = []
   for (const [key, value] of Object.entries(patch)) {
     if (value === undefined) continue

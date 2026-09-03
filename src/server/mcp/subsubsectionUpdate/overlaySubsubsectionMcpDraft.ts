@@ -1,8 +1,9 @@
-import type { LocationEnum } from "@/src/prisma/generated/browser"
+import type { GeometryTypeEnum, LocationEnum } from "@/src/prisma/generated/browser"
 import {
   resolveSubsubsectionInfrastructureTypeSlugs,
   resolveSubsubsectionRelationSlugs,
 } from "@/src/server/subsubsections/resolveSubsubsectionRelationSlugs.server"
+import type { SupportedGeometry } from "@/src/shared/geometry/geometrySchemas"
 import {
   parseDefinitions,
   sanitizeExtraFieldsForSave,
@@ -36,6 +37,9 @@ const SCALAR_FORM_KEYS = [
 ] as const satisfies readonly (keyof SubsubsectionMcpPatch)[]
 
 export type SubsubsectionMcpFormOverlay = {
+  slug?: string
+  type?: GeometryTypeEnum
+  geometry?: SupportedGeometry
   description?: string
   location?: LocationEnum | ""
   lengthM?: number
@@ -90,6 +94,9 @@ export async function overlaySubsubsectionMcpDraft({
   const overlayPatch = parsed.data
   const overlay: SubsubsectionMcpFormOverlay = {}
   const definitions = parseDefinitions(extraFieldDefinitions)
+
+  if (overlayPatch.type !== undefined) overlay.type = overlayPatch.type
+  if (overlayPatch.geometry !== undefined) overlay.geometry = overlayPatch.geometry
 
   for (const key of SCALAR_FORM_KEYS) {
     if (!(key in overlayPatch) || overlayPatch[key] === undefined) continue
