@@ -128,7 +128,7 @@ export async function resolveSubsubsectionCreate({
     select: { slug: true },
   })
   const existingCreateDraft = await db.mcpDraft.findUnique({
-    where: { subsectionId_slug: { subsectionId: subsection.id, slug } },
+    where: { parentSubsectionId_slug: { parentSubsectionId: subsection.id, slug } },
     select: { id: true },
   })
 

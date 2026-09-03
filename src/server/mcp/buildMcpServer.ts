@@ -4,11 +4,19 @@ import type { AdminApiAuth } from "@/src/server/api/admin/guardAdminApi.server"
 import { mcpEnvLabel } from "@/src/server/mcp/mcpCursorConfig"
 import { MCP_LIST_DEFAULT_LIMIT, MCP_LIST_MAX_LIMIT } from "@/src/server/mcp/mcpListLimit.const"
 import { mcpToolOk, runMcpTool } from "@/src/server/mcp/mcpToolHelpers"
+import { createSubsectionForMcp } from "@/src/server/mcp/queries/createSubsectionForMcp.server"
 import { createSubsubsectionForMcp } from "@/src/server/mcp/queries/createSubsubsectionForMcp.server"
+import { getSubsectionsSchemaForMcp } from "@/src/server/mcp/queries/getSubsectionsSchemaForMcp.server"
 import { getSubsubsectionsSchemaForMcp } from "@/src/server/mcp/queries/getSubsubsectionsSchemaForMcp.server"
 import { listProjectsForMcp } from "@/src/server/mcp/queries/listProjectsForMcp.server"
+import { listSubsectionsForMcp } from "@/src/server/mcp/queries/listSubsectionsForMcp.server"
 import { listSubsubsectionsForMcp } from "@/src/server/mcp/queries/listSubsubsectionsForMcp.server"
+import { updateSubsectionForMcp } from "@/src/server/mcp/queries/updateSubsectionForMcp.server"
 import { updateSubsubsectionForMcp } from "@/src/server/mcp/queries/updateSubsubsectionForMcp.server"
+import {
+  subsectionMcpCreateInputSchema,
+  subsectionMcpUpdateInputSchema,
+} from "@/src/server/mcp/subsectionUpdate/patchSchema"
 import {
   subsubsectionMcpCreateInputSchema,
   subsubsectionMcpUpdateInputSchema,
@@ -42,18 +50,21 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
         `Do not call other project tools for a disabled slug. ` +
         `mcpEnabled does not replace applying the draft in the app. ` +
         `User-facing terms: subsection = Planungsabschnitt, subsubsection = Maßnahme. ` +
-        `After env_info and an enabled slug: subsubsections_schema, then subsubsections_list. ` +
+        `After env_info and an enabled slug: subsections_schema then subsections_list, and/or subsubsections_schema then subsubsections_list. ` +
+        `To change Planungsabschnitte: subsections_update with items (1–${MCP_LIST_MAX_LIMIT}). Identity is projectSlug + slug (PA Kürzel). ` +
+        `To add Planungsabschnitte: subsections_create with items (1–${MCP_LIST_MAX_LIMIT}); patch must include type (LINE|POLYGON) and GeoJSON geometry (WGS84 [lng, lat]). ` +
         `To change Maßnahmen: subsubsections_update with items (1–${MCP_LIST_MAX_LIMIT}). ` +
         `To add Maßnahmen: subsubsections_create with items (1–${MCP_LIST_MAX_LIMIT}); patch must include type and GeoJSON geometry (WGS84 [lng, lat]). ` +
-        `Both tools create drafts only and do not write Subsubsection. ` +
+        `These tools create drafts only and do not write Subsection or Subsubsection. ` +
         `Show the user each item url and changes[].proposed. Geometry in the response is a short summary, not coordinates. ` +
-        `Simplify lines before sending; max 5000 vertices; split large batches. An admin applies drafts in the app (Einsetzen → form → Speichern). ` +
-        `Identity is always projectSlug + subsectionSlug + slug. ` +
+        `Simplify lines before sending; max 5000 vertices; split large batches. An admin applies drafts in the app (Einsetzen → form → Speichern / Erstellen). ` +
+        `Maßnahme identity is projectSlug + subsectionSlug + slug. Planungsabschnitt identity is projectSlug + slug. ` +
         `${patchSemantics} ` +
         `After a migration, ask an admin to turn MCP off again. ` +
         `List tools default to ${MCP_LIST_DEFAULT_LIMIT} rows (max ${MCP_LIST_MAX_LIMIT}) and return ` +
         `limit, returned, and truncated when more rows exist. ` +
         `projects_list returns slug, subTitle, shortTitle, url, paCount, subsubsectionCount, mcpEnabled. ` +
+        `subsections_list requires projectSlug and returns slug, description, and url per Planungsabschnitt. ` +
         `subsubsections_list requires projectSlug; optional subsectionSlug filters to one Planungsabschnitt. ` +
         `It returns slug, description, and url per Maßnahme.`,
     },
@@ -82,6 +93,81 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
       },
     },
     ({ limit }) => runMcpTool(() => listProjectsForMcp(origin, limit)),
+  )
+
+  server.registerTool(
+    "subsections_schema",
+    {
+      description:
+        "Field metadata and lookup options for subsection (Planungsabschnitt) updates and creates. Requires mcpEnabled. " +
+        "Lookups as { id, slug, title }: operators, networkHierarchies, subsectionStatuses. " +
+        "For updates, writable false for slug, geometry, type. For creates, slug is identity; type (LINE|POLYGON) and GeoJSON geometry are required. " +
+        "labelPos defaults to bottom and is not MCP-writable. order is assigned on apply. " +
+        "Relations use slugs from this payload, not IDs. " +
+        patchSemantics,
+      inputSchema: {
+        projectSlug: z.string(),
+      },
+    },
+    ({ projectSlug }) => runMcpTool(() => getSubsectionsSchemaForMcp(projectSlug)),
+  )
+
+  server.registerTool(
+    "subsections_list",
+    {
+      description:
+        `List subsections (Planungsabschnitte) for a project (default limit ${MCP_LIST_DEFAULT_LIMIT}, ` +
+        `max ${MCP_LIST_MAX_LIMIT}). Requires mcpEnabled. Response includes limit, returned, truncated. ` +
+        "Requires projectSlug. Per row: projectSlug, slug, description, url — no geometry.",
+      inputSchema: {
+        projectSlug: z.string(),
+        limit: mcpListLimitSchema,
+      },
+    },
+    ({ projectSlug, limit }) =>
+      runMcpTool(() => listSubsectionsForMcp({ projectSlug, origin, limit })),
+  )
+
+  server.registerTool(
+    "subsections_update",
+    {
+      description:
+        `Create drafts for one or more subsection (Planungsabschnitt) patches. Requires mcpEnabled. Pass items (1–${MCP_LIST_MAX_LIMIT}). ` +
+        "Does not write Subsection. Identity is projectSlug + slug (PA Kürzel). " +
+        "An admin applies each draft in the app. " +
+        patchSemantics,
+      inputSchema: subsectionMcpUpdateInputSchema.shape,
+    },
+    (input) =>
+      runMcpTool(() =>
+        updateSubsectionForMcp({
+          ...input,
+          origin,
+          createdById: auth.createdById,
+        }),
+      ),
+  )
+
+  server.registerTool(
+    "subsections_create",
+    {
+      description:
+        `Create drafts for new subsection (Planungsabschnitt) records. Requires mcpEnabled. Pass items (1–${MCP_LIST_MAX_LIMIT}). ` +
+        "Does not write Subsection. Each patch must include type (LINE|POLYGON) and matching GeoJSON geometry (WGS84 [lng, lat]). POINT is not allowed. " +
+        "Incomplete items or slugs that already exist as a Planungsabschnitt are not drafted. " +
+        "An existing create-draft for the same slug is last-wins upsert. Geometry in changes[].proposed is { type, vertexCount, bbox }, not coordinates. " +
+        "Simplify geometries over 1000 vertices; more than 5000 is rejected. An admin applies each draft in the app. " +
+        patchSemantics,
+      inputSchema: subsectionMcpCreateInputSchema.shape,
+    },
+    (input) =>
+      runMcpTool(() =>
+        createSubsectionForMcp({
+          ...input,
+          origin,
+          createdById: auth.createdById,
+        }),
+      ),
   )
 
   server.registerTool(

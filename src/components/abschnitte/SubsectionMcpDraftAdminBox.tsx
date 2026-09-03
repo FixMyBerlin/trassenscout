@@ -9,25 +9,21 @@ import { UserRoleEnum } from "@/src/prisma/generated/browser"
 import { deleteMcpDraftFn } from "@/src/server/mcp/mcpDrafts/mcpDrafts.functions"
 import {
   invalidateMcpDraftQueries,
-  subsubsectionMcpDraftQueryOptions,
+  subsectionMcpDraftQueryOptions,
 } from "@/src/server/mcp/mcpDrafts/mcpDraftsQueryOptions"
 import { currentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
 
 type Props = {
   projectSlug: string
-  subsectionSlug: string
-  subsubsectionSlug: string
-  subsubsectionId?: number
+  slug: string
   overlayApplied?: boolean
   createDraft?: boolean
   className?: string
 }
 
-export function SubsubsectionMcpDraftAdminBox({
+export function SubsectionMcpDraftAdminBox({
   projectSlug,
-  subsectionSlug,
-  subsubsectionSlug,
-  subsubsectionId,
+  slug,
   overlayApplied = false,
   createDraft = false,
   className,
@@ -36,7 +32,7 @@ export function SubsubsectionMcpDraftAdminBox({
   const queryClient = useQueryClient()
   const { data: user } = useQuery(currentUserQueryOptions())
   const draftQuery = useQuery({
-    ...subsubsectionMcpDraftQueryOptions({ projectSlug, subsectionSlug, subsubsectionSlug }),
+    ...subsectionMcpDraftQueryOptions({ projectSlug, slug }),
     enabled: user?.role === UserRoleEnum.ADMIN,
   })
   const discardMutation = useMutation({ mutationFn: deleteMcpDraftFn })
@@ -49,23 +45,20 @@ export function SubsubsectionMcpDraftAdminBox({
 
   const handleDiscard = async () => {
     await discardMutation.mutateAsync({
-      data:
-        createDraft || subsubsectionId === undefined
-          ? { projectSlug, id: draft.id }
-          : { projectSlug, subsubsectionId },
+      data: { projectSlug, id: draft.id },
     })
     await invalidateMcpDraftQueries(queryClient)
     if (overlayApplied) {
       if (createDraft) {
         void navigate({
-          to: "/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new",
-          params: { projectSlug, subsectionSlug },
+          to: "/$projectSlug/abschnitte/new",
+          params: { projectSlug },
           search: {},
         })
       } else {
         void navigate({
-          to: "/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/edit",
-          params: { projectSlug, subsectionSlug, subsubsectionSlug },
+          to: "/$projectSlug/abschnitte/$subsectionSlug/edit",
+          params: { projectSlug, subsectionSlug: slug },
           search: {},
         })
       }
@@ -89,9 +82,9 @@ export function SubsubsectionMcpDraftAdminBox({
           <Link
             button="blue"
             buttonSize="sm"
-            to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new"
-            params={{ projectSlug, subsectionSlug }}
-            search={{ mcpDraft: "true", slug: subsubsectionSlug }}
+            to="/$projectSlug/abschnitte/new"
+            params={{ projectSlug }}
+            search={{ mcpDraft: "true", slug }}
           >
             Formular öffnen und Werte einsetzen
           </Link>
@@ -99,7 +92,9 @@ export function SubsubsectionMcpDraftAdminBox({
           <Link
             button="blue"
             buttonSize="sm"
-            to={`/${projectSlug}/abschnitte/${subsectionSlug}/fuehrung/${subsubsectionSlug}/edit?mcpDraft=true`}
+            to="/$projectSlug/abschnitte/$subsectionSlug/edit"
+            params={{ projectSlug, subsectionSlug: slug }}
+            search={{ mcpDraft: "true" }}
           >
             Formular öffnen und Werte einsetzen
           </Link>

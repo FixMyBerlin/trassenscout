@@ -7,6 +7,7 @@ import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
+import { deleteSubsectionMcpCreateDraftBySlug } from "@/src/server/mcp/mcpDrafts/mcpDrafts.server"
 import { NotFoundError } from "@/src/shared/auth/errors"
 import {
   CreateSubsectionSchema,
@@ -143,6 +144,8 @@ export async function createSubsection(
   const record = await db.subsection.create({
     data: subsectionData(data, projectId),
   })
+
+  await deleteSubsectionMcpCreateDraftBySlug(projectId, record.slug)
 
   await createLogEntry({
     action: "CREATE",

@@ -1,39 +1,37 @@
 import { mcpEnvLabel } from "@/src/server/mcp/mcpCursorConfig"
-import { upsertSubsubsectionMcpCreateDraft } from "@/src/server/mcp/mcpDrafts/mcpDrafts.server"
-import type { SubsubsectionMcpCreatePatch } from "@/src/server/mcp/subsubsectionUpdate/patchSchema"
+import { upsertSubsectionMcpCreateDraft } from "@/src/server/mcp/mcpDrafts/mcpDrafts.server"
+import type { SubsectionMcpCreatePatch } from "@/src/server/mcp/subsectionUpdate/patchSchema"
 import {
-  resolveSubsubsectionCreate,
-  subsubsectionCreatePreviewPayload,
-} from "@/src/server/mcp/subsubsectionUpdate/resolveSubsubsectionCreate.server"
+  resolveSubsectionCreate,
+  subsectionCreatePreviewPayload,
+} from "@/src/server/mcp/subsectionUpdate/resolveSubsectionCreate.server"
 
-type SubsubsectionMcpCreateItem = {
+type SubsectionMcpCreateItem = {
   projectSlug: string
-  subsectionSlug: string
   slug: string
-  patch: SubsubsectionMcpCreatePatch
+  patch: SubsectionMcpCreatePatch
 }
 
-function lastWinsItems(items: SubsubsectionMcpCreateItem[]) {
-  const map = new Map<string, SubsubsectionMcpCreateItem>()
+function lastWinsItems(items: SubsectionMcpCreateItem[]) {
+  const map = new Map<string, SubsectionMcpCreateItem>()
   for (const item of items) {
-    const key = `${item.projectSlug}\0${item.subsectionSlug}\0${item.slug}`
+    const key = `${item.projectSlug}\0${item.slug}`
     map.delete(key)
     map.set(key, item)
   }
   return [...map.values()]
 }
 
-function identityFromItem(item: SubsubsectionMcpCreateItem) {
+function identityFromItem(item: SubsectionMcpCreateItem) {
   return {
     projectSlug: item.projectSlug,
-    subsectionSlug: item.subsectionSlug,
     slug: item.slug,
   }
 }
 
-async function resolveItem(item: SubsubsectionMcpCreateItem, origin: string) {
+async function resolveItem(item: SubsectionMcpCreateItem, origin: string) {
   try {
-    return await resolveSubsubsectionCreate({ ...item, origin })
+    return await resolveSubsectionCreate({ ...item, origin })
   } catch (error) {
     return {
       error: error instanceof Error ? error.message : String(error),
@@ -41,8 +39,8 @@ async function resolveItem(item: SubsubsectionMcpCreateItem, origin: string) {
   }
 }
 
-export async function createSubsubsectionForMcp(input: {
-  items: SubsubsectionMcpCreateItem[]
+export async function createSubsectionForMcp(input: {
+  items: SubsectionMcpCreateItem[]
   origin: string
   createdById: number
 }) {
@@ -69,16 +67,15 @@ export async function createSubsubsectionForMcp(input: {
     if (!resolved.okToWrite) {
       results.push({
         ...identityFromItem(item),
-        ...subsubsectionCreatePreviewPayload(resolved),
+        ...subsectionCreatePreviewPayload(resolved),
         drafted: false,
       })
       continue
     }
 
-    await upsertSubsubsectionMcpCreateDraft({
+    await upsertSubsectionMcpCreateDraft({
       createdById: input.createdById,
       projectId: resolved.projectId,
-      parentSubsectionId: resolved.subsectionId,
       slug: resolved.slug,
       patch: item.patch,
     })
@@ -86,7 +83,7 @@ export async function createSubsubsectionForMcp(input: {
     draftedCount += 1
     results.push({
       ...identityFromItem(item),
-      ...subsubsectionCreatePreviewPayload(resolved),
+      ...subsectionCreatePreviewPayload(resolved),
       drafted: true,
       errors: [],
     })

@@ -5,15 +5,71 @@ import { pageContentPaddingClassName } from "@/src/components/core/components/Pa
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { getFullname } from "@/src/components/core/users/getFullname"
 import { formatBerlinTime } from "@/src/components/core/utils/formatBerlinTime"
-import { deleteSubsubsectionMcpDraftFn } from "@/src/server/mcp/mcpDrafts/mcpDrafts.functions"
+import { McpDraftKind } from "@/src/prisma/generated/browser"
+import { deleteMcpDraftFn } from "@/src/server/mcp/mcpDrafts/mcpDrafts.functions"
 import {
   invalidateMcpDraftQueries,
   mcpDraftsGroupedQueryOptions,
 } from "@/src/server/mcp/mcpDrafts/mcpDraftsQueryOptions"
 
+function draftLink(draft: {
+  kind: McpDraftKind
+  subsectionSlug: string | null
+  subsubsectionSlug: string | null
+  projectSlug: string
+}) {
+  const { kind, subsectionSlug, subsubsectionSlug, projectSlug } = draft
+
+  if (kind === McpDraftKind.SUBSUBSECTION_CREATE && subsectionSlug && subsubsectionSlug) {
+    return (
+      <Link
+        to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new"
+        params={{ projectSlug, subsectionSlug }}
+        search={{ mcpDraft: "true", slug: subsubsectionSlug }}
+      >
+        Neu (Maßnahme): {shortTitle(subsubsectionSlug)}
+      </Link>
+    )
+  }
+  if (kind === McpDraftKind.SUBSUBSECTION_UPDATE && subsectionSlug && subsubsectionSlug) {
+    return (
+      <Link
+        to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/edit"
+        params={{ projectSlug, subsectionSlug, subsubsectionSlug }}
+        search={{ mcpDraft: "true" }}
+      >
+        Update (Maßnahme): {shortTitle(subsubsectionSlug)}
+      </Link>
+    )
+  }
+  if (kind === McpDraftKind.SUBSECTION_CREATE && subsectionSlug) {
+    return (
+      <Link
+        to="/$projectSlug/abschnitte/new"
+        params={{ projectSlug }}
+        search={{ mcpDraft: "true", slug: subsectionSlug }}
+      >
+        Neu (PA): {shortTitle(subsectionSlug)}
+      </Link>
+    )
+  }
+  if (kind === McpDraftKind.SUBSECTION_UPDATE && subsectionSlug) {
+    return (
+      <Link
+        to="/$projectSlug/abschnitte/$subsectionSlug/edit"
+        params={{ projectSlug, subsectionSlug }}
+        search={{ mcpDraft: "true" }}
+      >
+        Update (PA): {shortTitle(subsectionSlug)}
+      </Link>
+    )
+  }
+  return <span className="text-gray-500">Datensatz nicht gefunden</span>
+}
+
 export function PageAdminMcpDrafts() {
   const queryClient = useQueryClient()
-  const discardMutation = useMutation({ mutationFn: deleteSubsubsectionMcpDraftFn })
+  const discardMutation = useMutation({ mutationFn: deleteMcpDraftFn })
   const { data } = useSuspenseQuery(mcpDraftsGroupedQueryOptions())
 
   return (
@@ -36,39 +92,23 @@ export function PageAdminMcpDrafts() {
                   {group.drafts.map((draft) => {
                     const createdByLabel = getFullname(draft.createdBy) ?? draft.createdBy.email
                     const when = formatBerlinTime(draft.updatedAt, "dd.MM.yyyy HH:mm")
-                    const { subsectionSlug, subsubsectionSlug } = draft
+                    const { subsectionSlug } = draft
 
                     return (
                       <li key={draft.id} className="text-sm">
                         <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-                          {subsectionSlug && subsubsectionSlug && draft.kind === "create" ? (
-                            <Link
-                              to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new"
-                              params={{
-                                projectSlug: group.projectSlug,
-                                subsectionSlug,
-                              }}
-                              search={{ mcpDraft: "true", slug: subsubsectionSlug }}
-                            >
-                              Neu: {shortTitle(subsubsectionSlug)}
-                            </Link>
-                          ) : subsectionSlug && subsubsectionSlug ? (
-                            <Link
-                              to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/edit"
-                              params={{
-                                projectSlug: group.projectSlug,
-                                subsectionSlug,
-                                subsubsectionSlug,
-                              }}
-                              search={{ mcpDraft: "true" }}
-                            >
-                              Update: {shortTitle(subsubsectionSlug)}
-                            </Link>
-                          ) : (
-                            <span className="text-gray-500">Maßnahme nicht gefunden</span>
-                          )}
+                          {draftLink({
+                            kind: draft.kind,
+                            subsectionSlug: draft.subsectionSlug,
+                            subsubsectionSlug: draft.subsubsectionSlug,
+                            projectSlug: group.projectSlug,
+                          })}
                           <span className="text-gray-500">
-                            {subsectionSlug ? ` · ${shortTitle(subsectionSlug)}` : null}
+                            {subsectionSlug &&
+                            draft.kind !== McpDraftKind.SUBSECTION_CREATE &&
+                            draft.kind !== McpDraftKind.SUBSECTION_UPDATE
+                              ? ` · ${shortTitle(subsectionSlug)}`
+                              : null}
                             {` · ${when} · ${createdByLabel}`}
                           </span>
                           <button

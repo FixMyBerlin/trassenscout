@@ -19,6 +19,9 @@ const mockDb = {
   subsubsectionTask: { findMany: vi.fn(), findFirst: vi.fn() },
   subsubsectionInfra: { findMany: vi.fn(), findFirst: vi.fn() },
   subsubsectionInfrastructureType: { findMany: vi.fn(), findFirst: vi.fn() },
+  operator: { findMany: vi.fn(), findFirst: vi.fn() },
+  networkHierarchy: { findMany: vi.fn(), findFirst: vi.fn() },
+  subsectionStatus: { findMany: vi.fn(), findFirst: vi.fn() },
   user: { findMany: vi.fn() },
 }
 
@@ -242,5 +245,70 @@ describe("MCP read queries", () => {
     await expect(getSubsubsectionsSchemaForMcp("frm9-ra3")).rejects.toThrow("MCP is not enabled")
     expect(mockDb.qualityLevel.findMany).not.toHaveBeenCalled()
     expect(mockDb.subsubsection.findFirst).not.toHaveBeenCalled()
+  })
+
+  test("subsections_list returns slugs, descriptions, and urls", async () => {
+    const { listSubsectionsForMcp } =
+      await import("@/src/server/mcp/queries/listSubsectionsForMcp.server")
+
+    mockDb.project.findUnique.mockResolvedValue(enabledProject)
+    mockDb.subsection.findMany.mockResolvedValue([{ slug: "pa8", description: "Abschnitt 8" }])
+
+    const result = await listSubsectionsForMcp({
+      projectSlug: "frm9-ra3",
+      origin: "http://127.0.0.1:4000",
+    })
+
+    expect(result.subsections).toEqual([
+      {
+        projectSlug: "frm9-ra3",
+        slug: "pa8",
+        description: "Abschnitt 8",
+        url: "http://127.0.0.1:4000/frm9-ra3/abschnitte/pa8",
+      },
+    ])
+    expect(JSON.stringify(result)).not.toContain("geometry")
+  })
+
+  test("subsections_list does not load subsections when MCP is disabled", async () => {
+    const { listSubsectionsForMcp } =
+      await import("@/src/server/mcp/queries/listSubsectionsForMcp.server")
+
+    mockDb.project.findUnique.mockResolvedValue({ ...enabledProject, mcpEnabled: false })
+
+    await expect(
+      listSubsectionsForMcp({
+        projectSlug: "frm9-ra3",
+        origin: "http://127.0.0.1:4000",
+      }),
+    ).rejects.toThrow('MCP is not enabled for project "frm9-ra3"')
+    expect(mockDb.subsection.findMany).not.toHaveBeenCalled()
+  })
+
+  test("subsections_schema marks geometry not writable and includes lookups", async () => {
+    const { getSubsectionsSchemaForMcp } =
+      await import("@/src/server/mcp/queries/getSubsectionsSchemaForMcp.server")
+
+    mockDb.project.findUnique.mockResolvedValue(enabledProject)
+    mockDb.operator.findMany.mockResolvedValue([{ id: 1, slug: "stadt", title: "Stadt" }])
+    mockDb.networkHierarchy.findMany.mockResolvedValue([])
+    mockDb.subsectionStatus.findMany.mockResolvedValue([])
+
+    const schema = await getSubsectionsSchemaForMcp("frm9-ra3")
+    expect(schema.projectSlug).toBe("frm9-ra3")
+    expect(schema.fields.find((field) => field.name === "geometry")?.writable).toBe(false)
+    expect(schema.fields.find((field) => field.name === "slug")?.writable).toBe(false)
+    expect(schema.fields.find((field) => field.name === "lengthM")?.writable).toBe(true)
+    expect(schema.operators).toEqual([{ id: 1, slug: "stadt", title: "Stadt" }])
+    expect(schema).not.toHaveProperty("managers")
+  })
+
+  test("subsections_schema does not load lookups when MCP is disabled", async () => {
+    const { getSubsectionsSchemaForMcp } =
+      await import("@/src/server/mcp/queries/getSubsectionsSchemaForMcp.server")
+
+    mockDb.project.findUnique.mockResolvedValue({ ...enabledProject, mcpEnabled: false })
+    await expect(getSubsectionsSchemaForMcp("frm9-ra3")).rejects.toThrow("MCP is not enabled")
+    expect(mockDb.operator.findMany).not.toHaveBeenCalled()
   })
 })

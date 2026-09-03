@@ -242,26 +242,40 @@ model Project {
   mcpDrafts                          McpDraft[]
 }
 
+enum McpDraftKind {
+  SUBSUBSECTION_UPDATE
+  SUBSUBSECTION_CREATE
+  SUBSECTION_UPDATE
+  SUBSECTION_CREATE
+}
+
 model McpDraft {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  createdBy   User    @relation(fields: [createdById], references: [id], onDelete: Restrict)
+  createdBy   User         @relation(fields: [createdById], references: [id], onDelete: Restrict)
   createdById Int
-  project     Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  project     Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId   Int
+  kind        McpDraftKind
 
-  // Update drafts: subsubsectionId set, subsectionId/slug null.
-  // Create drafts: subsubsectionId null, subsectionId + slug set (last-wins upsert).
+  // Maßnahme update: live Subsubsection row (1:1).
   subsubsection   Subsubsection? @relation(fields: [subsubsectionId], references: [id], onDelete: Cascade)
   subsubsectionId Int?           @unique
-  subsection      Subsection?    @relation(fields: [subsectionId], references: [id], onDelete: Cascade)
-  subsectionId    Int?
-  slug            String?
-  patch           Json
 
-  @@unique([subsectionId, slug])
+  // Maßnahme create: parent Planungsabschnitt + proposed Kürzel.
+  parentSubsection   Subsection? @relation("McpDraftCreateParent", fields: [parentSubsectionId], references: [id], onDelete: Cascade)
+  parentSubsectionId Int?
+  slug               String?
+
+  // Planungsabschnitt update: live Subsection row (1:1).
+  subsection   Subsection? @relation("McpDraftSubsectionUpdate", fields: [subsectionId], references: [id], onDelete: Cascade)
+  subsectionId Int?        @unique
+
+  patch Json
+
+  @@unique([parentSubsectionId, slug])
   @@index([projectId])
   @@index([updatedAt])
 }
@@ -384,7 +398,8 @@ model Subsection {
   subsectionStatusId            Int?
   //
   subsubsections                Subsubsection[]
-  mcpDrafts                     McpDraft[]
+  mcpCreateDrafts               McpDraft[]        @relation("McpDraftCreateParent")
+  mcpDraft                      McpDraft?         @relation("McpDraftSubsectionUpdate")
   LogEntry                      LogEntry[]
 
   @@unique([projectId, slug])

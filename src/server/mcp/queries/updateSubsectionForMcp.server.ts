@@ -1,39 +1,37 @@
 import { mcpEnvLabel } from "@/src/server/mcp/mcpCursorConfig"
-import { upsertSubsubsectionMcpCreateDraft } from "@/src/server/mcp/mcpDrafts/mcpDrafts.server"
-import type { SubsubsectionMcpCreatePatch } from "@/src/server/mcp/subsubsectionUpdate/patchSchema"
+import { upsertSubsectionMcpDraft } from "@/src/server/mcp/mcpDrafts/mcpDrafts.server"
+import type { SubsectionMcpPatch } from "@/src/server/mcp/subsectionUpdate/patchSchema"
 import {
-  resolveSubsubsectionCreate,
-  subsubsectionCreatePreviewPayload,
-} from "@/src/server/mcp/subsubsectionUpdate/resolveSubsubsectionCreate.server"
+  resolveSubsectionUpdate,
+  subsectionPreviewPayload,
+} from "@/src/server/mcp/subsectionUpdate/resolveSubsectionUpdate.server"
 
-type SubsubsectionMcpCreateItem = {
+type SubsectionMcpIdentityItem = {
   projectSlug: string
-  subsectionSlug: string
   slug: string
-  patch: SubsubsectionMcpCreatePatch
+  patch: SubsectionMcpPatch
 }
 
-function lastWinsItems(items: SubsubsectionMcpCreateItem[]) {
-  const map = new Map<string, SubsubsectionMcpCreateItem>()
+function lastWinsItems(items: SubsectionMcpIdentityItem[]) {
+  const map = new Map<string, SubsectionMcpIdentityItem>()
   for (const item of items) {
-    const key = `${item.projectSlug}\0${item.subsectionSlug}\0${item.slug}`
+    const key = `${item.projectSlug}\0${item.slug}`
     map.delete(key)
     map.set(key, item)
   }
   return [...map.values()]
 }
 
-function identityFromItem(item: SubsubsectionMcpCreateItem) {
+function identityFromItem(item: SubsectionMcpIdentityItem) {
   return {
     projectSlug: item.projectSlug,
-    subsectionSlug: item.subsectionSlug,
     slug: item.slug,
   }
 }
 
-async function resolveItem(item: SubsubsectionMcpCreateItem, origin: string) {
+async function resolveItem(item: SubsectionMcpIdentityItem, origin: string) {
   try {
-    return await resolveSubsubsectionCreate({ ...item, origin })
+    return await resolveSubsectionUpdate({ ...item, origin })
   } catch (error) {
     return {
       error: error instanceof Error ? error.message : String(error),
@@ -41,8 +39,8 @@ async function resolveItem(item: SubsubsectionMcpCreateItem, origin: string) {
   }
 }
 
-export async function createSubsubsectionForMcp(input: {
-  items: SubsubsectionMcpCreateItem[]
+export async function updateSubsectionForMcp(input: {
+  items: SubsectionMcpIdentityItem[]
   origin: string
   createdById: number
 }) {
@@ -60,8 +58,6 @@ export async function createSubsubsectionForMcp(input: {
         changes: [],
         errors: [resolved.error],
         warnings: [],
-        missingRequired: [],
-        slugConflict: null,
       })
       continue
     }
@@ -69,24 +65,24 @@ export async function createSubsubsectionForMcp(input: {
     if (!resolved.okToWrite) {
       results.push({
         ...identityFromItem(item),
-        ...subsubsectionCreatePreviewPayload(resolved),
+        ...subsectionPreviewPayload(resolved),
         drafted: false,
+        errors: resolved.errors.length > 0 ? resolved.errors : ["Patch is empty or unchanged."],
       })
       continue
     }
 
-    await upsertSubsubsectionMcpCreateDraft({
+    await upsertSubsectionMcpDraft({
       createdById: input.createdById,
       projectId: resolved.projectId,
-      parentSubsectionId: resolved.subsectionId,
-      slug: resolved.slug,
+      subsectionId: resolved.subsectionId,
       patch: item.patch,
     })
 
     draftedCount += 1
     results.push({
       ...identityFromItem(item),
-      ...subsubsectionCreatePreviewPayload(resolved),
+      ...subsectionPreviewPayload(resolved),
       drafted: true,
       errors: [],
     })

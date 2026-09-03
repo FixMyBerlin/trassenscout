@@ -10,7 +10,7 @@ import { FORM_ERROR } from "@/src/components/core/components/forms/utils/formSub
 import { Spinner } from "@/src/components/core/components/Spinner"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { getDate } from "@/src/components/project-records/utils/splitStartAt"
-import { deleteSubsubsectionMcpDraftFn } from "@/src/server/mcp/mcpDrafts/mcpDrafts.functions"
+import { deleteMcpDraftFn } from "@/src/server/mcp/mcpDrafts/mcpDrafts.functions"
 import {
   invalidateMcpDraftQueries,
   subsubsectionMcpDraftQueryOptions,
@@ -49,7 +49,7 @@ export const EditSubsubsectionForm = ({ subsubsection, applyMcpDraft = false }: 
   const mcpDraft = mcpDraftQuery.data
   const updateSubsubsectionMutation = useMutation({ mutationFn: updateSubsubsectionFn })
   const deleteSubsubsectionMutation = useMutation({ mutationFn: deleteSubsubsectionFn })
-  const deleteMcpDraftMutation = useMutation({ mutationFn: deleteSubsubsectionMcpDraftFn })
+  const deleteMcpDraftMutation = useMutation({ mutationFn: deleteMcpDraftFn })
 
   const indexPath = router.buildLocation({
     to: "/$projectSlug/abschnitte/$subsectionSlug",

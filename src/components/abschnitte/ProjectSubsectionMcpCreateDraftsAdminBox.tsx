@@ -8,25 +8,20 @@ import { UserRoleEnum } from "@/src/prisma/generated/browser"
 import { deleteMcpDraftFn } from "@/src/server/mcp/mcpDrafts/mcpDrafts.functions"
 import {
   invalidateMcpDraftQueries,
-  subsectionMcpCreateDraftsQueryOptions,
+  projectSubsectionMcpCreateDraftsQueryOptions,
 } from "@/src/server/mcp/mcpDrafts/mcpDraftsQueryOptions"
 import { currentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
 
 type Props = {
   projectSlug: string
-  subsectionSlug: string
   className?: string
 }
 
-export function SubsectionMcpCreateDraftsAdminBox({
-  projectSlug,
-  subsectionSlug,
-  className,
-}: Props) {
+export function ProjectSubsectionMcpCreateDraftsAdminBox({ projectSlug, className }: Props) {
   const queryClient = useQueryClient()
   const { data: user } = useQuery(currentUserQueryOptions())
   const draftsQuery = useQuery({
-    ...subsectionMcpCreateDraftsQueryOptions({ projectSlug, subsectionSlug }),
+    ...projectSubsectionMcpCreateDraftsQueryOptions({ projectSlug }),
     enabled: user?.role === UserRoleEnum.ADMIN,
   })
   const discardMutation = useMutation({ mutationFn: deleteMcpDraftFn })
@@ -36,7 +31,7 @@ export function SubsectionMcpCreateDraftsAdminBox({
 
   return (
     <SuperAdminBox className={className}>
-      <p className="font-semibold">MCP-Vorschläge (neu)</p>
+      <p className="font-semibold">MCP-Vorschläge (neue Planungsabschnitte)</p>
       <ul className="mt-2 list-none space-y-3 pl-0">
         {drafts.map((draft) => {
           const createdByLabel = getFullname(draft.createdBy) ?? draft.createdBy.email
@@ -53,8 +48,8 @@ export function SubsectionMcpCreateDraftsAdminBox({
                   <Link
                     button="blue"
                     buttonSize="sm"
-                    to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new"
-                    params={{ projectSlug, subsectionSlug }}
+                    to="/$projectSlug/abschnitte/new"
+                    params={{ projectSlug }}
                     search={{ mcpDraft: "true", slug }}
                   >
                     Formular öffnen und Werte einsetzen

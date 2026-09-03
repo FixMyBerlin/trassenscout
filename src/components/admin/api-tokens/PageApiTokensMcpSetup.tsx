@@ -42,19 +42,21 @@ export function PageApiTokensMcpSetup({ envLabel, origin }: PageApiTokensMcpSetu
             aktivierte Slugs für die folgenden Tools verwenden
           </li>
           <li>
-            Feld-Metadaten, Zusatzfelder und Enums pro aktiviertem Projekt (
+            Feld-Metadaten und Enums pro aktiviertem Projekt (<code>subsections_schema</code>,{" "}
             <code>subsubsections_schema</code>)
           </li>
           <li>
-            Maßnahmen auflisten (<code>subsubsections_list</code>) — Slugs, Beschreibungen und URLs
+            Planungsabschnitte auflisten (<code>subsections_list</code>) und Maßnahmen auflisten (
+            <code>subsubsections_list</code>) — Slugs, Beschreibungen und URLs
           </li>
           <li>
-            Drafts anlegen (<code>subsubsections_update</code> / <code>subsubsections_create</code>{" "}
-            mit einem oder mehreren <code>items</code>) — die Maßnahme selbst wird nicht
-            geschrieben. Übernehmen nur in der App (Admin: Einsetzen → Formular → Speichern). Die
-            Antwort enthält URLs, vorgeschlagene neue Feldwerte (<code>proposed</code>) und Hinweise
-            (<code>warnings</code>), keine Ist-Werte. Create verlangt <code>type</code> und GeoJSON-
-            <code>geometry</code>.
+            Drafts anlegen (<code>subsections_update</code> / <code>subsections_create</code> /{" "}
+            <code>subsubsections_update</code> / <code>subsubsections_create</code> mit einem oder
+            mehreren <code>items</code>) — der Datensatz selbst wird nicht geschrieben. Übernehmen
+            nur in der App (Admin: Einsetzen → Formular → Speichern / Erstellen). Die Antwort
+            enthält URLs, vorgeschlagene neue Feldwerte (<code>proposed</code>) und Hinweise (
+            <code>warnings</code>), keine Ist-Werte. Create verlangt <code>type</code> und GeoJSON-
+            <code>geometry</code>. Planungsabschnitte: LINE oder POLYGON, keine POINT.
           </li>
         </ul>
         <p>Bei Verlust oder Ende der Nutzung widerrufen.</p>
@@ -98,9 +100,10 @@ export function PageApiTokensMcpSetup({ envLabel, origin }: PageApiTokensMcpSetu
                 </li>
                 <li>MCP-Server neu laden bzw. Cursor neu starten.</li>
                 <li>
-                  Im Chat z. B. „Welche Projekte gibt es?“ oder „Maßnahmen in rs23?“ fragen — Cursor
-                  ruft Tools wie <code>projects_list</code> / <code>subsubsections_list</code> auf.
-                  Mit <code>env_info</code> prüfen, auf welche Umgebung der Server zeigt.
+                  Im Chat z. B. „Welche Projekte gibt es?“ oder „Planungsabschnitte in rs23?“ oder
+                  „Maßnahmen in rs23?“ fragen — Cursor ruft Tools wie <code>projects_list</code> /{" "}
+                  <code>subsections_list</code> / <code>subsubsections_list</code> auf. Mit{" "}
+                  <code>env_info</code> prüfen, auf welche Umgebung der Server zeigt.
                 </li>
               </ol>
             </section>

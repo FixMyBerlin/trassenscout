@@ -9,7 +9,7 @@ import { improveErrorMessage } from "@/src/components/core/components/forms/impr
 import { FORM_ERROR } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { Spinner } from "@/src/components/core/components/Spinner"
 import { LocationEnum } from "@/src/prisma/generated/browser"
-import { deleteSubsubsectionMcpDraftFn } from "@/src/server/mcp/mcpDrafts/mcpDrafts.functions"
+import { deleteMcpDraftFn } from "@/src/server/mcp/mcpDrafts/mcpDrafts.functions"
 import {
   invalidateMcpDraftQueries,
   subsubsectionMcpDraftQueryOptions,
@@ -38,7 +38,7 @@ export const NewSubsubsectionForm = ({ subsection }: Props) => {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const createSubsubsectionMutation = useMutation({ mutationFn: createSubsubsectionFn })
-  const deleteMcpDraftMutation = useMutation({ mutationFn: deleteSubsubsectionMcpDraftFn })
+  const deleteMcpDraftMutation = useMutation({ mutationFn: deleteMcpDraftFn })
   const { projectSlug, subsectionSlug } = fuehrungNewRouteApi.useParams()
   const { mcpDraft: mcpDraftSearch, slug: slugSearch } = fuehrungNewRouteApi.useSearch()
   const applyMcpDraft = isSubsubsectionMcpDraftSearch(mcpDraftSearch) && Boolean(slugSearch)
