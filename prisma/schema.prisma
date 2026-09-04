@@ -58,6 +58,7 @@ model User {
   evaluationsPagesUpdated  EvaluationsPage[]       @relation("EvaluationsPageUpdatedBy")
   formTemplatesUpdated     FormTemplate[]          @relation("FormTemplateUpdatedBy")
   adminApiTokens           AdminApiToken[]
+  mcpDrafts                McpDraft[]
 }
 
 model AdminApiToken {
@@ -209,6 +210,7 @@ model Project {
   landAcquisitionModuleEnabled       Boolean                           @default(false)
   showLogEntries                     Boolean                           @default(false) // When true, non-admins see this project's log entries ("Änderungen in …") on the "Meine Projekte" dashboard. Admins always see all projects.
   evaluationsEnabled                 Boolean                           @default(false)
+  mcpEnabled                         Boolean                           @default(false)
   alkisStateKey                      StateKeyEnum                      @default(DISABLED)
   //
   surveyResponseTags                 SurveyResponseTag[]
@@ -237,6 +239,45 @@ model Project {
   acquisitionAreaStatuses            AcquisitionAreaStatus[]
   evaluationsPage                    EvaluationsPage?
   subsubsectionExtraFieldDefinitions Json                              @default("[]")
+  mcpDrafts                          McpDraft[]
+}
+
+enum McpDraftKind {
+  SUBSUBSECTION_UPDATE
+  SUBSUBSECTION_CREATE
+  SUBSECTION_UPDATE
+  SUBSECTION_CREATE
+}
+
+model McpDraft {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  createdBy   User         @relation(fields: [createdById], references: [id], onDelete: Restrict)
+  createdById Int
+  project     Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId   Int
+  kind        McpDraftKind
+
+  // Maßnahme update: live Subsubsection row (1:1).
+  subsubsection   Subsubsection? @relation(fields: [subsubsectionId], references: [id], onDelete: Cascade)
+  subsubsectionId Int?           @unique
+
+  // Maßnahme create: parent Planungsabschnitt + proposed Kürzel.
+  parentSubsection   Subsection? @relation("McpDraftCreateParent", fields: [parentSubsectionId], references: [id], onDelete: Cascade)
+  parentSubsectionId Int?
+  slug               String?
+
+  // Planungsabschnitt update: live Subsection row (1:1).
+  subsection   Subsection? @relation("McpDraftSubsectionUpdate", fields: [subsectionId], references: [id], onDelete: Cascade)
+  subsectionId Int?        @unique
+
+  patch Json
+
+  @@unique([parentSubsectionId, slug])
+  @@index([projectId])
+  @@index([updatedAt])
 }
 
 enum StateKeyEnum {
@@ -357,6 +398,8 @@ model Subsection {
   subsectionStatusId            Int?
   //
   subsubsections                Subsubsection[]
+  mcpCreateDrafts               McpDraft[]        @relation("McpDraftCreateParent")
+  mcpDraft                      McpDraft?         @relation("McpDraftSubsectionUpdate")
   LogEntry                      LogEntry[]
 
   @@unique([projectId, slug])
@@ -459,6 +502,7 @@ model Subsubsection {
   specialFeatures SubsubsectionSpecial[] // - UNUSED
   extraFields     Json                   @default("{}")
   logEntries      LogEntry[]
+  mcpDraft        McpDraft?
 
   @@unique([subsectionId, slug])
 }

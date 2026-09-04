@@ -129,6 +129,10 @@ export async function getLookupRows(headers: Headers, input: z.infer<typeof GetL
         orderBy: { title: "asc" },
         where: { ...where, archivedAt: null },
       })
+    default: {
+      const exhaustive: never = input.table
+      throw new Error(`Unknown lookup table: ${String(exhaustive)}`)
+    }
   }
 }
 

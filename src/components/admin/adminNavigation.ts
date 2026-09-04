@@ -390,6 +390,11 @@ export function buildAdminNavigation() {
         },
         { name: "API-Tokens (MCP)", link: { to: "/admin/api-tokens" } },
         {
+          name: "MCP-Drafts",
+          link: { to: "/admin/mcp-drafts" },
+          countKey: "mcpDrafts",
+        },
+        {
           name: "Vorlagen Formulare",
           link: { to: "/admin/form-templates" },
           countKey: "formTemplates",

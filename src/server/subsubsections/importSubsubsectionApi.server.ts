@@ -10,6 +10,7 @@ import { PointGeometrySchema } from "@/src/shared/geometry/geojsonSchemas"
 import { subsubsectionGeometryTypeValidationRefine } from "@/src/shared/geometry/geometryTypeValidation"
 import { ImportSubsubsectionDataSchema } from "./importSchema"
 import { m2mFieldRelationNames, m2mFields, type M2MFieldsType } from "./m2mFields"
+import { resolveSubsubsectionRelationSlugs } from "./resolveSubsubsectionRelationSlugs.server"
 import {
   subsubsectionLogSnapshot,
   subsubsectionLogSnapshotSelect,
@@ -78,61 +79,32 @@ export async function importSubsubsectionFromApi(request: Request) {
     const typedSubsection = typeSubsectionGeometry(subsection)
     const subsectionGeometry = typedSubsection.geometry
 
-    if (data.qualityLevelSlug) {
-      const qualityLevel = await db.qualityLevel.findFirst({
-        where: {
-          slug: data.qualityLevelSlug,
-          projectId: project.id,
-        },
-        select: { id: true },
-      })
-      if (qualityLevel) {
-        data.qualityLevelId = qualityLevel.id
-      }
-      delete data.qualityLevelSlug
+    const resolvedRelationIds = await resolveSubsubsectionRelationSlugs({
+      projectId: project.id,
+      slugs: {
+        qualityLevelSlug: data.qualityLevelSlug,
+        subsubsectionStatusSlug: data.subsubsectionStatusSlug,
+        subsubsectionInfraSlug: data.subsubsectionInfraSlug,
+        subsubsectionTaskSlug: data.subsubsectionTaskSlug,
+      },
+      missing: "skip",
+    })
+    if (resolvedRelationIds.qualityLevelId !== undefined) {
+      data.qualityLevelId = resolvedRelationIds.qualityLevelId
     }
-
-    if (data.subsubsectionStatusSlug) {
-      const subsubsectionStatus = await db.subsubsectionStatus.findFirst({
-        where: {
-          slug: data.subsubsectionStatusSlug,
-          projectId: project.id,
-        },
-        select: { id: true },
-      })
-      if (subsubsectionStatus) {
-        data.subsubsectionStatusId = subsubsectionStatus.id
-      }
-      delete data.subsubsectionStatusSlug
+    if (resolvedRelationIds.subsubsectionStatusId !== undefined) {
+      data.subsubsectionStatusId = resolvedRelationIds.subsubsectionStatusId
     }
-
-    if (data.subsubsectionInfraSlug) {
-      const subsubsectionInfra = await db.subsubsectionInfra.findFirst({
-        where: {
-          slug: data.subsubsectionInfraSlug,
-          projectId: project.id,
-        },
-        select: { id: true },
-      })
-      if (subsubsectionInfra) {
-        data.subsubsectionInfraId = subsubsectionInfra.id
-      }
-      delete data.subsubsectionInfraSlug
+    if (resolvedRelationIds.subsubsectionInfraId !== undefined) {
+      data.subsubsectionInfraId = resolvedRelationIds.subsubsectionInfraId
     }
-
-    if (data.subsubsectionTaskSlug) {
-      const subsubsectionTask = await db.subsubsectionTask.findFirst({
-        where: {
-          slug: data.subsubsectionTaskSlug,
-          projectId: project.id,
-        },
-        select: { id: true },
-      })
-      if (subsubsectionTask) {
-        data.subsubsectionTaskId = subsubsectionTask.id
-      }
-      delete data.subsubsectionTaskSlug
+    if (resolvedRelationIds.subsubsectionTaskId !== undefined) {
+      data.subsubsectionTaskId = resolvedRelationIds.subsubsectionTaskId
     }
+    delete data.qualityLevelSlug
+    delete data.subsubsectionStatusSlug
+    delete data.subsubsectionInfraSlug
+    delete data.subsubsectionTaskSlug
 
     const existing = await db.subsubsection.findFirst({
       where: {

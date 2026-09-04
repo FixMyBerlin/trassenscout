@@ -2,6 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { twJoin } from "tailwind-merge"
 import { AbschnitteBreadcrumb } from "@/src/components/abschnitte/AbschnitteBreadcrumb"
+import { SubsectionMcpCreateDraftsAdminBox } from "@/src/components/abschnitte/SubsectionMcpCreateDraftsAdminBox"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "@/src/components/core/components/links/Link"
 import { SubsubsectionMapWithProvider } from "@/src/components/core/components/Map/SubsubsectionMapWithProvider"
@@ -83,6 +84,12 @@ function SubsectionDashboardContent({
             </>
           </IfUserCanEdit>
         }
+      />
+
+      <SubsectionMcpCreateDraftsAdminBox
+        className="mx-4 mb-2"
+        projectSlug={projectSlug}
+        subsectionSlug={subsectionSlug}
       />
 
       <MapListViewLayout

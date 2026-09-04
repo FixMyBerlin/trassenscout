@@ -1,6 +1,7 @@
 import {
   ArrowDownTrayIcon,
   ChartBarIcon,
+  CommandLineIcon,
   DocumentTextIcon,
   MapIcon,
   SparklesIcon,
@@ -48,6 +49,7 @@ type ProjectFeatureColumn = {
   header: string
   icon: React.ReactNode
   label: (enabled: boolean) => string
+  bulkToggle?: boolean
 }
 
 const projectFeatureColumns: ProjectFeatureColumn[] = [
@@ -85,6 +87,16 @@ const projectFeatureColumns: ProjectFeatureColumn[] = [
     header: "Auswertungen",
     icon: <ChartBarIcon className="size-4" aria-hidden />,
     label: (enabled) => (enabled ? "Auswertungen ausschalten" : "Auswertungen einschalten"),
+  },
+  {
+    key: "mcpEnabled",
+    header: "MCP",
+    icon: <CommandLineIcon className="size-4" aria-hidden />,
+    bulkToggle: false,
+    label: (enabled) =>
+      enabled
+        ? "MCP ausschalten (nach Import wieder deaktivieren)"
+        : "MCP für Imports/Migrationen einschalten",
   },
 ]
 
@@ -139,24 +151,27 @@ export const AdminProjectsTable = ({ projects, isFiltering, hasActiveFilter }: P
                 const someEnabled = projects.some((project) => project[column.key])
                 const scope = hasActiveFilter ? "alle gefilterten Projekte" : "alle Projekte"
                 const isLastColumn = columnIndex === projectFeatureColumns.length - 1
+                const showBulkToggle = column.bulkToggle !== false
                 return (
                   <th key={column.key} className={adminTableHeaderClassName}>
                     <div className="flex min-w-18 flex-col gap-1 leading-snug">
                       {column.header}
-                      <AdminTableFeatureCheckbox
-                        checked={allEnabled}
-                        indeterminate={someEnabled && !allEnabled}
-                        disabled={isPending}
-                        tooltipPlacement={isLastColumn ? "bottom-end" : "bottom"}
-                        label={`${column.header} für ${scope} ${allEnabled ? "ausschalten" : "einschalten"}`}
-                        onChange={() =>
-                          void handleUpdate(
-                            projects.map((project) => project.slug),
-                            column.key,
-                            !allEnabled,
-                          )
-                        }
-                      />
+                      {showBulkToggle && (
+                        <AdminTableFeatureCheckbox
+                          checked={allEnabled}
+                          indeterminate={someEnabled && !allEnabled}
+                          disabled={isPending}
+                          tooltipPlacement={isLastColumn ? "bottom-end" : "bottom"}
+                          label={`${column.header} für ${scope} ${allEnabled ? "ausschalten" : "einschalten"}`}
+                          onChange={() =>
+                            void handleUpdate(
+                              projects.map((project) => project.slug),
+                              column.key,
+                              !allEnabled,
+                            )
+                          }
+                        />
+                      )}
                     </div>
                   </th>
                 )

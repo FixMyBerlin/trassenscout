@@ -3,10 +3,12 @@ import { seoNewTitle } from "@/src/components/core/components/text/titles"
 import { PageAbschnitteNew } from "@/src/components/pages/abschnitte/PageAbschnitteNew"
 import { absoluteTitleHead } from "@/src/routeHead"
 import { subsectionMaxOrderQueryOptions } from "@/src/server/subsections/subsectionMaxOrderQueryOptions"
+import { subsectionNewSearchSchema } from "@/src/shared/subsections/searchSchemas"
 
 export const Route = createFileRoute("/_loggedInProjects/$projectSlug/abschnitte/new/")({
   head: () => absoluteTitleHead(seoNewTitle("Planungsabschnitt")),
   ssr: true,
+  validateSearch: subsectionNewSearchSchema,
   loader: ({ context, params }) =>
     context.queryClient.ensureQueryData(subsectionMaxOrderQueryOptions(params.projectSlug)),
   component: PageAbschnitteNew,

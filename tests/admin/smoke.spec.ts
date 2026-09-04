@@ -108,6 +108,10 @@ const adminPages = [
     path: "/admin/projects/rs23/subsections/multiple-new",
     visibleText: "Präfix-Id",
   },
+  {
+    path: "/admin/mcp-drafts",
+    visibleText: "MCP-Drafts",
+  },
 ] as const
 
 test.describe("Admin page renders", () => {

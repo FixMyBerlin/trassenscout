@@ -2,6 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { MapProvider } from "react-map-gl/maplibre"
 import { twJoin } from "tailwind-merge"
+import { ProjectSubsectionMcpCreateDraftsAdminBox } from "@/src/components/abschnitte/ProjectSubsectionMcpCreateDraftsAdminBox"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "@/src/components/core/components/links/Link"
@@ -107,6 +108,7 @@ export const ProjectDashboardClient = () => {
           <SubsectionTable subsections={filteredSubsections} interactive={interactive} />
         )}
       >
+        <ProjectSubsectionMcpCreateDraftsAdminBox projectSlug={projectSlug} />
         <SuperAdminBox className="flex flex-col items-start gap-4">
           <Link button icon="plus" to={`/admin/projects/${projectSlug}/subsections/multiple-new`}>
             Mehrere Planungsabschnitte erstellen

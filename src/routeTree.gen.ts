@@ -35,6 +35,7 @@ import { Route as BeteiligungSurveySlugIndexRouteImport } from './routes/beteili
 import { Route as ApiSurveyUploadIndexRouteImport } from './routes/api/survey-upload/index'
 import { Route as ApiProcessProjectRecordEmailIndexRouteImport } from './routes/api/process-project-record-email/index'
 import { Route as ApiCronSurveyResponsesCleanupIndexRouteImport } from './routes/api/cron-surveyResponses-cleanup/index'
+import { Route as ApiCronMcpDraftsCleanupIndexRouteImport } from './routes/api/cron-mcpDrafts-cleanup/index'
 import { Route as ApiCronLogEntriesCleanupIndexRouteImport } from './routes/api/cron-logEntries-cleanup/index'
 import { Route as ApiCronInvitesCleanupIndexRouteImport } from './routes/api/cron-invites-cleanup/index'
 import { Route as AdminSystemLogEntriesIndexRouteImport } from './routes/admin/system-log-entries/index'
@@ -46,6 +47,7 @@ import { Route as AdminProjectRecordsIndexRouteImport } from './routes/admin/pro
 import { Route as AdminProjectRecordTemplatesIndexRouteImport } from './routes/admin/project-record-templates/index'
 import { Route as AdminProjectRecordEmailsIndexRouteImport } from './routes/admin/project-record-emails/index'
 import { Route as AdminMembershipsIndexRouteImport } from './routes/admin/memberships/index'
+import { Route as AdminMcpDraftsIndexRouteImport } from './routes/admin/mcp-drafts/index'
 import { Route as AdminLogEntriesIndexRouteImport } from './routes/admin/log-entries/index'
 import { Route as AdminFormTemplatesIndexRouteImport } from './routes/admin/form-templates/index'
 import { Route as AdminEvaluationsIndexRouteImport } from './routes/admin/evaluations/index'
@@ -307,6 +309,12 @@ const ApiCronSurveyResponsesCleanupIndexRoute =
     path: '/api/cron-surveyResponses-cleanup/',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiCronMcpDraftsCleanupIndexRoute =
+  ApiCronMcpDraftsCleanupIndexRouteImport.update({
+    id: '/api/cron-mcpDrafts-cleanup/',
+    path: '/api/cron-mcpDrafts-cleanup/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiCronLogEntriesCleanupIndexRoute =
   ApiCronLogEntriesCleanupIndexRouteImport.update({
     id: '/api/cron-logEntries-cleanup/',
@@ -368,6 +376,11 @@ const AdminProjectRecordEmailsIndexRoute =
 const AdminMembershipsIndexRoute = AdminMembershipsIndexRouteImport.update({
   id: '/memberships/',
   path: '/memberships/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMcpDraftsIndexRoute = AdminMcpDraftsIndexRouteImport.update({
+  id: '/mcp-drafts/',
+  path: '/mcp-drafts/',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminLogEntriesIndexRoute = AdminLogEntriesIndexRouteImport.update({
@@ -1230,6 +1243,7 @@ export interface FileRoutesByFullPath {
   '/admin/evaluations/': typeof AdminEvaluationsIndexRoute
   '/admin/form-templates/': typeof AdminFormTemplatesIndexRoute
   '/admin/log-entries/': typeof AdminLogEntriesIndexRoute
+  '/admin/mcp-drafts/': typeof AdminMcpDraftsIndexRoute
   '/admin/memberships/': typeof AdminMembershipsIndexRoute
   '/admin/project-record-emails/': typeof AdminProjectRecordEmailsIndexRoute
   '/admin/project-record-templates/': typeof AdminProjectRecordTemplatesIndexRoute
@@ -1241,6 +1255,7 @@ export interface FileRoutesByFullPath {
   '/admin/system-log-entries/': typeof AdminSystemLogEntriesIndexRoute
   '/api/cron-invites-cleanup/': typeof ApiCronInvitesCleanupIndexRoute
   '/api/cron-logEntries-cleanup/': typeof ApiCronLogEntriesCleanupIndexRoute
+  '/api/cron-mcpDrafts-cleanup/': typeof ApiCronMcpDraftsCleanupIndexRoute
   '/api/cron-surveyResponses-cleanup/': typeof ApiCronSurveyResponsesCleanupIndexRoute
   '/api/process-project-record-email/': typeof ApiProcessProjectRecordEmailIndexRoute
   '/api/survey-upload/': typeof ApiSurveyUploadIndexRoute
@@ -1389,6 +1404,7 @@ export interface FileRoutesByTo {
   '/admin/evaluations': typeof AdminEvaluationsIndexRoute
   '/admin/form-templates': typeof AdminFormTemplatesIndexRoute
   '/admin/log-entries': typeof AdminLogEntriesIndexRoute
+  '/admin/mcp-drafts': typeof AdminMcpDraftsIndexRoute
   '/admin/memberships': typeof AdminMembershipsIndexRoute
   '/admin/project-record-emails': typeof AdminProjectRecordEmailsIndexRoute
   '/admin/project-record-templates': typeof AdminProjectRecordTemplatesIndexRoute
@@ -1400,6 +1416,7 @@ export interface FileRoutesByTo {
   '/admin/system-log-entries': typeof AdminSystemLogEntriesIndexRoute
   '/api/cron-invites-cleanup': typeof ApiCronInvitesCleanupIndexRoute
   '/api/cron-logEntries-cleanup': typeof ApiCronLogEntriesCleanupIndexRoute
+  '/api/cron-mcpDrafts-cleanup': typeof ApiCronMcpDraftsCleanupIndexRoute
   '/api/cron-surveyResponses-cleanup': typeof ApiCronSurveyResponsesCleanupIndexRoute
   '/api/process-project-record-email': typeof ApiProcessProjectRecordEmailIndexRoute
   '/api/survey-upload': typeof ApiSurveyUploadIndexRoute
@@ -1557,6 +1574,7 @@ export interface FileRoutesById {
   '/admin/evaluations/': typeof AdminEvaluationsIndexRoute
   '/admin/form-templates/': typeof AdminFormTemplatesIndexRoute
   '/admin/log-entries/': typeof AdminLogEntriesIndexRoute
+  '/admin/mcp-drafts/': typeof AdminMcpDraftsIndexRoute
   '/admin/memberships/': typeof AdminMembershipsIndexRoute
   '/admin/project-record-emails/': typeof AdminProjectRecordEmailsIndexRoute
   '/admin/project-record-templates/': typeof AdminProjectRecordTemplatesIndexRoute
@@ -1568,6 +1586,7 @@ export interface FileRoutesById {
   '/admin/system-log-entries/': typeof AdminSystemLogEntriesIndexRoute
   '/api/cron-invites-cleanup/': typeof ApiCronInvitesCleanupIndexRoute
   '/api/cron-logEntries-cleanup/': typeof ApiCronLogEntriesCleanupIndexRoute
+  '/api/cron-mcpDrafts-cleanup/': typeof ApiCronMcpDraftsCleanupIndexRoute
   '/api/cron-surveyResponses-cleanup/': typeof ApiCronSurveyResponsesCleanupIndexRoute
   '/api/process-project-record-email/': typeof ApiProcessProjectRecordEmailIndexRoute
   '/api/survey-upload/': typeof ApiSurveyUploadIndexRoute
@@ -1722,6 +1741,7 @@ export interface FileRouteTypes {
     | '/admin/evaluations/'
     | '/admin/form-templates/'
     | '/admin/log-entries/'
+    | '/admin/mcp-drafts/'
     | '/admin/memberships/'
     | '/admin/project-record-emails/'
     | '/admin/project-record-templates/'
@@ -1733,6 +1753,7 @@ export interface FileRouteTypes {
     | '/admin/system-log-entries/'
     | '/api/cron-invites-cleanup/'
     | '/api/cron-logEntries-cleanup/'
+    | '/api/cron-mcpDrafts-cleanup/'
     | '/api/cron-surveyResponses-cleanup/'
     | '/api/process-project-record-email/'
     | '/api/survey-upload/'
@@ -1881,6 +1902,7 @@ export interface FileRouteTypes {
     | '/admin/evaluations'
     | '/admin/form-templates'
     | '/admin/log-entries'
+    | '/admin/mcp-drafts'
     | '/admin/memberships'
     | '/admin/project-record-emails'
     | '/admin/project-record-templates'
@@ -1892,6 +1914,7 @@ export interface FileRouteTypes {
     | '/admin/system-log-entries'
     | '/api/cron-invites-cleanup'
     | '/api/cron-logEntries-cleanup'
+    | '/api/cron-mcpDrafts-cleanup'
     | '/api/cron-surveyResponses-cleanup'
     | '/api/process-project-record-email'
     | '/api/survey-upload'
@@ -2048,6 +2071,7 @@ export interface FileRouteTypes {
     | '/admin/evaluations/'
     | '/admin/form-templates/'
     | '/admin/log-entries/'
+    | '/admin/mcp-drafts/'
     | '/admin/memberships/'
     | '/admin/project-record-emails/'
     | '/admin/project-record-templates/'
@@ -2059,6 +2083,7 @@ export interface FileRouteTypes {
     | '/admin/system-log-entries/'
     | '/api/cron-invites-cleanup/'
     | '/api/cron-logEntries-cleanup/'
+    | '/api/cron-mcpDrafts-cleanup/'
     | '/api/cron-surveyResponses-cleanup/'
     | '/api/process-project-record-email/'
     | '/api/survey-upload/'
@@ -2196,6 +2221,7 @@ export interface RootRouteChildren {
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiCronInvitesCleanupIndexRoute: typeof ApiCronInvitesCleanupIndexRoute
   ApiCronLogEntriesCleanupIndexRoute: typeof ApiCronLogEntriesCleanupIndexRoute
+  ApiCronMcpDraftsCleanupIndexRoute: typeof ApiCronMcpDraftsCleanupIndexRoute
   ApiCronSurveyResponsesCleanupIndexRoute: typeof ApiCronSurveyResponsesCleanupIndexRoute
   ApiProcessProjectRecordEmailIndexRoute: typeof ApiProcessProjectRecordEmailIndexRoute
   ApiSurveyUploadIndexRoute: typeof ApiSurveyUploadIndexRoute
@@ -2401,6 +2427,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiCronSurveyResponsesCleanupIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/cron-mcpDrafts-cleanup/': {
+      id: '/api/cron-mcpDrafts-cleanup/'
+      path: '/api/cron-mcpDrafts-cleanup'
+      fullPath: '/api/cron-mcpDrafts-cleanup/'
+      preLoaderRoute: typeof ApiCronMcpDraftsCleanupIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/cron-logEntries-cleanup/': {
       id: '/api/cron-logEntries-cleanup/'
       path: '/api/cron-logEntries-cleanup'
@@ -2476,6 +2509,13 @@ declare module '@tanstack/react-router' {
       path: '/memberships'
       fullPath: '/admin/memberships/'
       preLoaderRoute: typeof AdminMembershipsIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/mcp-drafts/': {
+      id: '/admin/mcp-drafts/'
+      path: '/mcp-drafts'
+      fullPath: '/admin/mcp-drafts/'
+      preLoaderRoute: typeof AdminMcpDraftsIndexRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/log-entries/': {
@@ -3792,6 +3832,7 @@ interface AdminRouteChildren {
   AdminEvaluationsIndexRoute: typeof AdminEvaluationsIndexRoute
   AdminFormTemplatesIndexRoute: typeof AdminFormTemplatesIndexRoute
   AdminLogEntriesIndexRoute: typeof AdminLogEntriesIndexRoute
+  AdminMcpDraftsIndexRoute: typeof AdminMcpDraftsIndexRoute
   AdminMembershipsIndexRoute: typeof AdminMembershipsIndexRoute
   AdminProjectRecordEmailsIndexRoute: typeof AdminProjectRecordEmailsIndexRoute
   AdminProjectRecordTemplatesIndexRoute: typeof AdminProjectRecordTemplatesIndexRoute
@@ -3831,6 +3872,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminEvaluationsIndexRoute: AdminEvaluationsIndexRoute,
   AdminFormTemplatesIndexRoute: AdminFormTemplatesIndexRoute,
   AdminLogEntriesIndexRoute: AdminLogEntriesIndexRoute,
+  AdminMcpDraftsIndexRoute: AdminMcpDraftsIndexRoute,
   AdminMembershipsIndexRoute: AdminMembershipsIndexRoute,
   AdminProjectRecordEmailsIndexRoute: AdminProjectRecordEmailsIndexRoute,
   AdminProjectRecordTemplatesIndexRoute: AdminProjectRecordTemplatesIndexRoute,
@@ -3932,6 +3974,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiCronInvitesCleanupIndexRoute: ApiCronInvitesCleanupIndexRoute,
   ApiCronLogEntriesCleanupIndexRoute: ApiCronLogEntriesCleanupIndexRoute,
+  ApiCronMcpDraftsCleanupIndexRoute: ApiCronMcpDraftsCleanupIndexRoute,
   ApiCronSurveyResponsesCleanupIndexRoute:
     ApiCronSurveyResponsesCleanupIndexRoute,
   ApiProcessProjectRecordEmailIndexRoute:
