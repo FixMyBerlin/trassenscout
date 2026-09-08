@@ -6,17 +6,21 @@ Derived from [tilda-geo](https://github.com/FixMyBerlin/tilda-geo) and [trassens
 
 ## Commonly tuned per project
 
-Most FMC apps share the same core (plugins, type-aware lint, switch exhaustiveness, React Compiler + hooks on `**/*.tsx`, Prettier-style options). These are the usual intentional divergences:
+Most FMC apps share the same core (plugins, type-aware lint, switch exhaustiveness, React Compiler via the native `react` plugin, Prettier-style options). These are the usual intentional divergences:
 
 - **`singleQuote`** — template defaults to `true`; flip to match an existing codebase.
 - **`ignorePatterns`** — keep oxlint and oxfmt in sync; add generated paths or tool folders for your repo layout.
 - **`sortTailwindcss.stylesheet`** — point at your global CSS entry.
 - **Custom oxlint `jsPlugins`** — e.g. TanStack Start auth-boundary rules; see skill `tanstack-start-auth` → [endpoint-auth-lint.md](../../tanstack-start-auth/references/endpoint-auth-lint.md).
 - **`eslint-plugin-compat`** — `compat/compat` on client-shipped paths; scoped override in [browser-target.md](browser-target.md). JS-plugin load issues under Bun `globalStore`: [bun-install.md](bun-install.md).
+- **`eslint/no-unused-vars`** — configuring the rule with an object clears oxlint’s defaults, so the template restates the `^_` patterns (oxlint ignores `_foo` but not bare `_`).
 
 ## React Compiler
 
-Use oxlint's native **`react/react-compiler`** on `**/*.tsx` — not `eslint-plugin-react-compiler`. Hooks via `eslint-plugin-react-hooks` jsPlugin; see [examples/oxlint.config.mjs](../examples/oxlint.config.mjs). Component conventions: skill `react-dev`.
+- **Lint:** oxlint `react` plugin — correctness compiler rules are on by default; add `'react/unsupported-syntax': 'error'` (restriction). No `react/react-compiler`, no `eslint-plugin-react-hooks` jsPlugin.
+- **Build:** `@vitejs/plugin-react` ≥ 6.1 with `viteReact({ compiler: true })` + peer `oxc-transform-react` — not Babel.
+
+[Oxc React Compiler Support](https://oxc.rs/blog/2026-08-18-react-compiler-support) · [examples/oxlint.config.mjs](../examples/oxlint.config.mjs) · component conventions: skill `react-dev`.
 
 ## Type-aware linting
 
@@ -32,10 +36,10 @@ Pin together across apps:
 ```json
 {
   "devDependencies": {
-    "eslint-plugin-react-hooks": "^7.1.1",
-    "oxfmt": "0.56.0",
-    "oxlint": "1.70.0",
-    "oxlint-config-react-hooks-js": "^1.1.3",
+    "@vitejs/plugin-react": "6.1.0",
+    "oxc-transform-react": "^0.145.0",
+    "oxfmt": "0.60.0",
+    "oxlint": "1.79.0",
     "oxlint-tsgolint": "7.0.2001"
   }
 }
