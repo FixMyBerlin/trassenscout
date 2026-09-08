@@ -311,6 +311,7 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           defaultValue: null,
           props: {
             label: "Kostenschätzung",
+            unit: "EUR",
             description:
               "Bitte tragen Sie hier ausschließlich die förderfähigen Baukosten ein. Nicht förderfähig sind u. a. Verwaltungskosten, Planungsleistungen (HOAI) sowie Grunderwerb.",
           },
