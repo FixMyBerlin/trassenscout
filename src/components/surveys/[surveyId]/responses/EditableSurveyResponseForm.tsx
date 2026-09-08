@@ -376,7 +376,10 @@ export function EditableSurveyResponseForm({
           {userCanEdit ? (
             <form className="flex" onSubmit={handleNoteFormSubmit}>
               <fieldset className="max-w-3xl">
-                <FormElementWrapper label={labels.note?.sg || defaultBackendConfig.labels.note.sg}>
+                <FormElementWrapper
+                  label={labels.note?.sg || defaultBackendConfig.labels.note.sg}
+                  help={labels.note?.help || defaultBackendConfig.labels.note.help}
+                >
                   <LabeledTextarea
                     name="note"
                     value={responseNote || ""}
@@ -390,10 +393,7 @@ export function EditableSurveyResponseForm({
                     )}
                   />
                 </FormElementWrapper>
-                <div className="my-2 text-sm text-gray-500">
-                  {labels.note?.help || defaultBackendConfig.labels.note.help}
-                </div>
-                <div className="flex items-end justify-between">
+                <div className="mt-2 flex items-end justify-between">
                   <button
                     type="submit"
                     disabled={!userCanEdit}
