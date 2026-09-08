@@ -33,6 +33,8 @@ import { mergeFeatureCollections } from "./utils/mergeFeatureCollections"
 
 const MAP_ID = "mainMap"
 
+const FIT_BOUNDS_MAX_ZOOM = 17
+
 const canClusterSubsubsections = (subsubsections: SubsubsectionWithPosition[]) =>
   subsubsections.length > 0 &&
   subsubsections.every((subsubsection) => subsubsection.type === "POINT")
@@ -221,7 +223,12 @@ export const SubsubsectionMap = ({
 
   const flyToSelectedSubsubsection = useEffectEvent(function flyToSelectedSubsubsection() {
     if (!mainMap || !mapLoaded) return
-    mainMap.fitBounds(mapBbox, { padding: 60, duration: 1000, linear: false })
+    mainMap.fitBounds(mapBbox, {
+      padding: 60,
+      maxZoom: FIT_BOUNDS_MAX_ZOOM,
+      duration: 1000,
+      linear: false,
+    })
   })
 
   // pan/zoom whenever the target bounds change (subsection change, subsubsection
@@ -331,7 +338,7 @@ export const SubsubsectionMap = ({
         id={MAP_ID}
         initialViewState={{
           bounds: mapBbox,
-          fitBoundsOptions: { padding: 60, maxZoom: 16 },
+          fitBoundsOptions: { padding: 60, maxZoom: FIT_BOUNDS_MAX_ZOOM },
         }}
         onClick={handleClickMap}
         interactiveLayerIds={[
