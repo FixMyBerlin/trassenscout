@@ -257,12 +257,14 @@ async function sendProjectRecordAssignmentNotification({
   assigneeId,
   actorUserId,
   recordTitle,
+  recordText,
   projectSlug,
   recordId,
 }: {
   assigneeId: number
   actorUserId: number
   recordTitle: string
+  recordText: string | null
   projectSlug: string
   recordId: number
 }) {
@@ -289,6 +291,7 @@ async function sendProjectRecordAssignmentNotification({
       assigneeName,
       actorName,
       recordTitle,
+      recordText,
       projectName: shortTitle(projectSlug),
       recordPath: projectRecordDetailPath(projectSlug, recordId),
     })
@@ -519,6 +522,7 @@ export async function createProjectRecord(
       assigneeId: record.assignedToId,
       actorUserId: userId,
       recordTitle: record.title,
+      recordText: record.body,
       projectSlug,
       recordId: record.id,
     })
@@ -600,6 +604,7 @@ export async function updateProjectRecord(
       assigneeId: newAssigneeId,
       actorUserId: userId,
       recordTitle: record.title,
+      recordText: record.body,
       projectSlug,
       recordId: record.id,
     })
@@ -716,6 +721,7 @@ export async function patchProjectRecordAssignment(
       assigneeId: newAssigneeId,
       actorUserId: userId,
       recordTitle: record.title,
+      recordText: record.body,
       projectSlug,
       recordId: id,
     })

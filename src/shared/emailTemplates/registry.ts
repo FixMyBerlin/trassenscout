@@ -124,11 +124,13 @@ Alle Teammitglieder finden Sie unter {{teamUrl}}.`,
     description:
       "Benachrichtigung an zugewiesene Personen, dass ihnen ein Protokolleintrag zugewiesen wurde.",
     supportsCta: true,
-    allowedVariables: ["assigneeName", "actorName", "recordTitle", "projectName"],
+    allowedVariables: ["assigneeName", "actorName", "recordTitle", "recordText", "projectName"],
     sampleContext: {
       assigneeName: "Name Beispiel",
       actorName: "Name Beispiel",
       recordTitle: "Protokolleintrag #00 – Neue Beispiel Record",
+      recordText:
+        "Die Ausführungsplanung für den Knotenpunkt wurde besprochen. Die offenen Punkte werden bis zum nächsten Termin geklärt.",
       projectName: "Radschnellweg Nord",
     },
     defaults: {
