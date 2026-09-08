@@ -6,8 +6,7 @@ export const compactButtonBase =
 
 export type CompactButtonSize = "md" | "sm" | "icon"
 
-/** Default compact padding. */
-const compactPadding = "px-4 py-2.5"
+const compactPadding = "border border-transparent px-4 py-2"
 
 /** Smaller text button — PageHeader primary actions ("Neu …"). */
 export const compactPaddingSm = "px-3 py-1.5"

@@ -11,11 +11,10 @@ import {
 
 type Props = {
   commentLabel: string
-  commentHelp: string
   createComment: (body: string) => void
 }
 
-export const NewCommentForm = ({ commentLabel, commentHelp, createComment }: Props) => {
+export const NewCommentForm = ({ commentLabel, createComment }: Props) => {
   const isHydrated = useIsHydrated()
 
   const form = useAppForm({
@@ -33,15 +32,14 @@ export const NewCommentForm = ({ commentLabel, commentHelp, createComment }: Pro
       form={form}
       formError={null}
       submitText={`${commentLabel} hinzufügen`}
-      submitClassName={twJoin(primaryButtonClassName, "px-3! py-2.5!")}
+      submitClassName={twJoin(primaryButtonClassName, "px-3!")}
       submitDisabled={!isHydrated}
       className="p-0"
+      actionBarClassName="border-0 bg-transparent px-0"
       backLink={null}
     >
       <form.AppField name="body">
-        {(field) => (
-          <field.TextareaField label="" help={commentHelp} disabled={!isHydrated} required />
-        )}
+        {(field) => <field.TextareaField label="" disabled={!isHydrated} required />}
       </form.AppField>
     </FormShell>
   )

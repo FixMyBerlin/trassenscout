@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 import { useEffect, useRef } from "react"
-import { twJoin } from "tailwind-merge"
+import { twJoin, twMerge } from "tailwind-merge"
 import {
   allowedSurveySlugs,
   type AllowedSurveySlugs,
@@ -12,6 +12,7 @@ import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAd
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { PageHeaderToolbarLink } from "@/src/components/core/components/PageHeader/PageHeaderToolbarLink"
+import { tableHeadCellClassName } from "@/src/components/core/components/Table/tableClasses"
 import { frenchQuote } from "@/src/components/core/components/text/quote"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
@@ -182,9 +183,10 @@ function SurveyResponsesConfigured({ projectSlug, survey, tabs, surveySlug }: Co
       <section>
         <div className="border-y border-gray-200 bg-gray-50">
           <div
-            className={twJoin(
+            className={twMerge(
               surveyResponseListGridClassName,
-              "px-6 py-4 text-sm font-medium text-gray-900",
+              tableHeadCellClassName,
+              "px-6 py-4 text-sm text-gray-900",
             )}
           >
             <div aria-hidden="true" />

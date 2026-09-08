@@ -261,7 +261,7 @@ export function EditableSurveyResponseForm({
               </FormElementWrapper>
               {/* STATUS */}
               <FormElementWrapper
-                label={labels.status?.sg || defaultBackendConfig.labels.category.sg}
+                label={labels.status?.sg || defaultBackendConfig.labels.status.sg}
               >
                 {statusOptions.map((item) => (
                   <LabeledInputRadioCheckbox
@@ -283,7 +283,7 @@ export function EditableSurveyResponseForm({
               <ReadOnlyField label={labels.operator?.sg || defaultBackendConfig.labels.operator.sg}>
                 <ReadOnlyPill label={responseOperatorLabel} />
               </ReadOnlyField>
-              <ReadOnlyField label={labels.status?.sg || defaultBackendConfig.labels.category.sg}>
+              <ReadOnlyField label={labels.status?.sg || defaultBackendConfig.labels.status.sg}>
                 <ReadOnlyPill
                   label={responseStatusOption?.label || response.status || "Kein Status"}
                   color={responseStatusOption?.color}
@@ -344,27 +344,27 @@ export function EditableSurveyResponseForm({
             </SuperAdminBox>
           </div>
           {userCanEdit && (
-            <form onSubmit={handleNewTopicFormSubmit} className="min-w-[300px] space-y-2">
+            <form
+              onSubmit={handleNewTopicFormSubmit}
+              className="flex min-w-[300px] items-center gap-2"
+            >
               <input
                 onChange={(e) => setNewTopic(e.target.value)}
                 type="text"
                 value={newTopic}
                 maxLength={35}
                 name="newTopic"
-                placeholder={`${
-                  labels.topics?.sg || defaultBackendConfig.labels.topics.sg
-                } hinzufügen`}
                 className={
-                  "block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-xs focus:border-blue-500 focus:ring-blue-500 focus:outline-none sm:text-sm"
+                  "block w-full grow appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-xs focus:border-blue-500 focus:ring-blue-500 focus:outline-none sm:text-sm"
                 }
                 disabled={!userCanEdit}
               />
               <button
                 type="submit"
                 disabled={!userCanEdit}
-                className={twJoin(primaryButtonClassName, "px-3! py-2.5!")}
+                className={twJoin(primaryButtonClassName, "shrink-0 px-3!")}
               >
-                Hinzufügen
+                Tag hinzufügen
               </button>
             </form>
           )}
@@ -397,7 +397,7 @@ export function EditableSurveyResponseForm({
                   <button
                     type="submit"
                     disabled={!userCanEdit}
-                    className={twJoin(primaryButtonClassName, "px-3! py-2.5!")}
+                    className={twJoin(primaryButtonClassName, "px-3!")}
                   >
                     {labels.note?.sg || defaultBackendConfig.labels.note.sg} speichern
                   </button>

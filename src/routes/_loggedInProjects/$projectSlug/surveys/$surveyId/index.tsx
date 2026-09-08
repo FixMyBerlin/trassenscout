@@ -3,7 +3,7 @@ import { absoluteTitleHead } from "@/src/routeHead"
 import { endpointAuth } from "@/src/server/auth/endpointAuthBoundary"
 
 export const Route = createFileRoute("/_loggedInProjects/$projectSlug/surveys/$surveyId/")({
-  head: () => absoluteTitleHead("Beteiligung"),
+  head: () => absoluteTitleHead("Eingaben"),
   ssr: true,
   beforeLoad: ({ params }) => {
     endpointAuth.inherited("auth enforced by _loggedInProjects layout")
