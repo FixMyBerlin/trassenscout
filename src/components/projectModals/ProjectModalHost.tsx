@@ -13,7 +13,6 @@ import { Notice } from "@/src/components/core/components/Notice/Notice"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { Spinner } from "@/src/components/core/components/Spinner"
-import { getFullname } from "@/src/components/core/users/getFullname"
 import { MultiProjectInviteForm } from "@/src/components/invites/MultiProjectInviteForm"
 import { EditProjectRecordForm } from "@/src/components/project-records/EditProjectRecordForm"
 import { ProjectRecordDetailClient } from "@/src/components/project-records/ProjectRecordDetailClient"
@@ -28,6 +27,7 @@ import { isDeletedUploadMarker } from "@/src/components/uploads/uploadTypes"
 import { contactQueryOptions } from "@/src/server/contacts/contactQueryOptions"
 import { projectRecordQueryOptions } from "@/src/server/projectRecords/projectRecordsQueryOptions"
 import { uploadQueryOptions } from "@/src/server/uploads/uploadQueryOptions"
+import { getContactName } from "@/src/shared/contacts/getContactName"
 import { getProjectModalPreview } from "@/src/shared/projectModals/historyState"
 
 const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
@@ -370,9 +370,9 @@ export function ProjectModalHost() {
           : hasContactError || isContactUnavailable
             ? "Kontakt"
             : contact
-              ? getFullname(contact) || "Kontakt"
+              ? getContactName(contact)
               : previewContact
-                ? getFullname(previewContact) || "Kontakt"
+                ? getContactName(previewContact)
                 : "Kontakt wird geladen …"
 
     return (
@@ -442,7 +442,7 @@ export function ProjectModalHost() {
               <ContactDeleteActionBar
                 contactId={contact.id}
                 projectSlug={projectSlug}
-                contactTitle={getFullname(contact) || "Kontakt"}
+                contactTitle={getContactName(contact)}
                 returnPath={backgroundHref}
                 onDeleted={closeModal}
                 variant="linkWithIcon"

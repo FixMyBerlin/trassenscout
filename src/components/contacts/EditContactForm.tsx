@@ -6,10 +6,10 @@ import { BackLink } from "@/src/components/core/components/forms/BackLink"
 import { DeleteActionBar } from "@/src/components/core/components/forms/DeleteActionBar"
 import { improveErrorMessage } from "@/src/components/core/components/forms/improveErrorMessage"
 import { FORM_ERROR } from "@/src/components/core/components/forms/utils/formSubmitResult"
-import { getFullname } from "@/src/components/core/users/getFullname"
 import { getM2MInitialValues } from "@/src/components/project-records/utils/getM2MInitialValues"
 import { deleteContactFn, updateContactFn } from "@/src/server/contacts/contacts.functions"
 import type { Contact } from "@/src/server/contacts/types"
+import { getContactName } from "@/src/shared/contacts/getContactName"
 import { ContactSchema } from "@/src/shared/contacts/schemas"
 import { ContactForm } from "./ContactForm"
 
@@ -82,7 +82,7 @@ export const EditContactForm = ({
         layout={layout}
         actionBarRight={
           <DeleteActionBar
-            itemTitle={getFullname(contact) || "Kontakt"}
+            itemTitle={getContactName(contact)}
             onDelete={async () => {
               await deleteContactMutation.mutateAsync({ data: { id: contact.id, projectSlug } })
               await queryClient.invalidateQueries({ queryKey: ["contacts", { projectSlug }] })

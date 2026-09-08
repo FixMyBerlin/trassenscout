@@ -17,8 +17,8 @@ export const useFilteredContacts = (contacts: Contact[]) => {
     return (
       fullname.includes(cleanedSearchterm) ||
       contact.firstName?.toLowerCase().includes(cleanedSearchterm) ||
-      contact.lastName.toLowerCase().includes(cleanedSearchterm) ||
-      contact.email.toLowerCase().includes(cleanedSearchterm) ||
+      contact.lastName?.toLowerCase().includes(cleanedSearchterm) ||
+      contact.email?.toLowerCase().includes(cleanedSearchterm) ||
       contact.phone?.toLowerCase().includes(cleanedSearchterm) ||
       contact.role?.toLowerCase().includes(cleanedSearchterm) ||
       contact.note?.toLowerCase().includes(cleanedSearchterm) ||

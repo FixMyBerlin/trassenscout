@@ -67,8 +67,8 @@ export const ContactsTable = () => {
   const columns: Column<Row>[] = [
     { ...keyColumn<Row, "id">("id", textColumn), title: "ID", disabled: true, maxWidth: 60 },
     { ...keyColumn<Row, "firstName">("firstName", textColumn), title: "Vorname" },
-    { ...keyColumn<Row, "lastName">("lastName", textColumn), title: "Nachname (Pflicht)" },
-    { ...keyColumn<Row, "email">("email", textColumn), title: "E-Mail-Adresse (Pflicht)" },
+    { ...keyColumn<Row, "lastName">("lastName", textColumn), title: "Nachname" },
+    { ...keyColumn<Row, "email">("email", textColumn), title: "E-Mail-Adresse" },
     { ...keyColumn<Row, "phone">("phone", textColumn), title: "Telefonnummer" },
     { ...keyColumn<Row, "note">("note", textColumn), title: "Notizen" },
     { ...keyColumn<Row, "role">("role", textColumn), title: "Position" },
@@ -79,14 +79,6 @@ export const ContactsTable = () => {
     let refetchData = false
 
     for (const { id, lastName, email, tags, ...value } of data) {
-      if (!lastName || !email) {
-        setErrors((prev) => [
-          ...prev,
-          [String(id || NEW_ID_VALUE), "Nachname und E-Mail-Adresse sind Pflichtfelder."],
-        ])
-        continue
-      }
-
       try {
         if (!id || id === NEW_ID_VALUE) {
           await createContactMutation.mutateAsync({

@@ -328,8 +328,8 @@ model Contact {
   updatedAt DateTime @updatedAt
   //
   firstName String?
-  lastName  String
-  email     String
+  lastName  String?
+  email     String?
   note      String?
   phone     String?
   role      String?

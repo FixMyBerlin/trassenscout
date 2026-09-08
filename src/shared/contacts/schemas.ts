@@ -1,23 +1,32 @@
 import { z } from "zod"
+import { blankToNull, InputStringOrNullSchema } from "@/src/components/core/utils/schema-shared"
 import { ProjectSlugRequiredSchema } from "@/src/shared/authorization/projectSlugSchema"
+
+const phonePattern = /^(?=.*\d)[\d+()/\s-]+$/
 
 const m2mFormFields = {
   tags: z.union([z.undefined(), z.boolean(), z.array(z.coerce.number())]).transform((v) => v || []),
 }
 
 export const ContactSchema = z.object({
-  lastName: z.string().min(2, { error: "Pflichtfeld. Mindestens 2 Zeichen." }),
-  firstName: z.string().nullish(),
-  email: z.email({ error: "Ungültige E-Mail-Adresse." }),
-  note: z.string().nullish(),
-  phone: z.string().nullish(),
-  role: z.string().nullish(),
+  lastName: InputStringOrNullSchema,
+  firstName: InputStringOrNullSchema,
+  email: z.preprocess(blankToNull, z.email({ error: "Ungültige E-Mail-Adresse." }).nullable()),
+  note: InputStringOrNullSchema,
+  phone: z.preprocess(
+    blankToNull,
+    z
+      .string()
+      .regex(phonePattern, { error: "Nur Ziffern und die Zeichen + - / ( ) sind erlaubt." })
+      .nullable(),
+  ),
+  role: InputStringOrNullSchema,
   tags: z.union([z.literal(false), z.array(z.coerce.number())]).optional(),
 })
 
 export const contactFormDefaultValues: z.infer<typeof ContactSchema> = {
-  lastName: "",
-  email: "",
+  lastName: null,
+  email: null,
   firstName: null,
   note: null,
   phone: null,

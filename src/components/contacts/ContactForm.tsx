@@ -70,7 +70,7 @@ export function ContactForm<S extends z.ZodType>({
         className={twJoin("grid gap-6", isDrawerLayout ? "lg:grid-cols-2 lg:gap-x-8" : undefined)}
       >
         <form.AppField name="firstName">
-          {(field) => <field.TextField type="text" label="Vorname" optional placeholder="" />}
+          {(field) => <field.TextField type="text" label="Vorname" placeholder="" />}
         </form.AppField>
         <form.AppField name="lastName">
           {(field) => <field.TextField type="text" label="Nachname" placeholder="" />}
@@ -79,11 +79,11 @@ export function ContactForm<S extends z.ZodType>({
           {(field) => <field.TextField type="text" label="E-Mail-Adresse" placeholder="" />}
         </form.AppField>
         <form.AppField name="phone">
-          {(field) => <field.TextField type="text" label="Telefonnummer" optional placeholder="" />}
+          {(field) => <field.TextField type="tel" label="Telefonnummer" placeholder="" />}
         </form.AppField>
         <div className={isDrawerLayout ? "lg:col-span-2" : undefined}>
           <form.AppField name="role">
-            {(field) => <field.TextField type="text" label="Position" optional placeholder="" />}
+            {(field) => <field.TextField type="text" label="Position" placeholder="" />}
           </form.AppField>
         </div>
         <div className={isDrawerLayout ? "lg:col-span-2" : undefined}>
@@ -91,7 +91,6 @@ export function ContactForm<S extends z.ZodType>({
             {(field) => (
               <field.TextareaField
                 label="Notizen"
-                optional
                 placeholder=""
                 rows={isDrawerLayout ? 5 : undefined}
               />

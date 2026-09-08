@@ -18,10 +18,10 @@ import {
 } from "@/src/components/core/components/Table/tableClasses"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/components/core/components/text/titles"
-import { getFullname } from "@/src/components/core/users/getFullname"
 import { ProjectRecordTagsList } from "@/src/components/project-records/ProjectRecordTagsList"
 import type { Contact } from "@/src/server/contacts/types"
 import { projectBySlugQueryOptions } from "@/src/server/projects/projectsQueryOptions"
+import { getContactName } from "@/src/shared/contacts/getContactName"
 import {
   ContactTableFormSchema,
   contactTableFormDefaultValues,
@@ -59,8 +59,8 @@ export const ContactTable = ({ contacts, currentUserEmail, onTagClick, projectSl
       const selectedContactIds = value.selectedContacts.map(Number)
 
       const contactMailString = contacts
-        .filter((contact) => selectedContactIds.includes(contact.id))
-        .map((contact) => `"${getFullname(contact)}" <${contact.email}>`)
+        .filter((contact) => selectedContactIds.includes(contact.id) && contact.email)
+        .map((contact) => `"${getContactName(contact)}" <${contact.email}>`)
         .join(",")
 
       const mailtoUrl = `mailto:${currentUserEmail || ""}?bcc=${contactMailString}&subject=Infos zu ${shortTitle(project.slug)}`
@@ -130,14 +130,14 @@ export const ContactTable = ({ contacts, currentUserEmail, onTagClick, projectSl
 
                   <tbody className={tableBodyClassName}>
                     {contacts.map((contact) => (
-                      <tr key={contact.email} className={tableRowClassName}>
+                      <tr key={contact.id} className={tableRowClassName}>
                         <td className={twJoin(tableCellClassName, "align-middle")}>
                           <Link
                             className="w-full"
                             to={contactsModal.getContactDetailHref({ contactId: contact.id })}
                             resetScroll={false}
                           >
-                            {getFullname(contact)}
+                            {getContactName(contact)}
                           </Link>
                         </td>
                         <td
@@ -159,7 +159,11 @@ export const ContactTable = ({ contacts, currentUserEmail, onTagClick, projectSl
                             tableCellClassName,
                           )}
                         >
-                          <LinkMail subject="Abstimmung zum RS 8">{contact.email}</LinkMail>
+                          {contact.email ? (
+                            <LinkMail subject="Abstimmung zum RS 8">{contact.email}</LinkMail>
+                          ) : (
+                            "—"
+                          )}
                         </td>
                         <td
                           className={twJoin(
@@ -188,7 +192,7 @@ export const ContactTable = ({ contacts, currentUserEmail, onTagClick, projectSl
                             <ContactTableDelete
                               contactId={contact.id}
                               projectSlug={projectSlug}
-                              contactTitle={getFullname(contact) || "Kontakt"}
+                              contactTitle={getContactName(contact)}
                             />
                           </div>
                         </td>
