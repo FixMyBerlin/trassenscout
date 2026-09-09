@@ -206,14 +206,14 @@ export const ProjectRecordNewModal = ({
 
         <div className={`space-y-4 ${pageContentPaddingClassName}`}>
           <p className="text-gray-600">
-            Möchten Sie eine Vorlage nutzen oder mit einem leeren Formular starten?
+            Möchten Sie eine Vorlage nutzen oder ohne Vorlage starten?
           </p>
           <button
             type="button"
             onClick={() => switchToForm(null)}
             className={pickerOptionButtonClassName}
           >
-            <span>Leeres Formular</span>
+            <span>Ohne Vorlage</span>
             <span>→</span>
           </button>
 
