@@ -388,16 +388,16 @@ export function buildAdminNavigation() {
           link: { to: "/admin/project-record-templates" },
           countKey: "projectRecordTemplates",
         },
+        {
+          name: "Vorlagen Formulare",
+          link: { to: "/admin/form-templates" },
+          countKey: "formTemplates",
+        },
         { name: "API-Tokens (MCP)", link: { to: "/admin/api-tokens" } },
         {
           name: "MCP-Drafts",
           link: { to: "/admin/mcp-drafts" },
           countKey: "mcpDrafts",
-        },
-        {
-          name: "Vorlagen Formulare",
-          link: { to: "/admin/form-templates" },
-          countKey: "formTemplates",
         },
       ],
     },

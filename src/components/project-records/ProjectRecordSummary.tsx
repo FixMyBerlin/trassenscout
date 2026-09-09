@@ -17,7 +17,6 @@ type Props = {
   projectRecord: ProjectRecord & {
     projectRecordEmail?: ProjectRecordEmailSourceValue | null
   }
-  onFormSaved?: () => void
 }
 export const metadataItemClassName = "flex flex-wrap items-center gap-3 text-sm text-gray-600"
 export const projectRecordSectionClassName =
@@ -25,7 +24,7 @@ export const projectRecordSectionClassName =
 export const projectRecordSectionLabelClassName = "text-sm font-medium text-gray-700"
 export const projectRecordSectionValueClassName = "text-sm text-gray-700"
 
-export const ProjectRecordSummary = ({ projectRecord, onFormSaved }: Props) => {
+export const ProjectRecordSummary = ({ projectRecord }: Props) => {
   const projectSlug = projectRecord.project.slug
   const formTemplates = getEffectiveFormTemplates(projectRecord, {
     projectSlug,
@@ -133,7 +132,6 @@ export const ProjectRecordSummary = ({ projectRecord, onFormSaved }: Props) => {
             projectSlug={projectSlug}
             projectRecord={projectRecord}
             formTemplates={formTemplates}
-            onUploadSaved={onFormSaved}
           />
         </div>
       )}

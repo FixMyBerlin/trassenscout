@@ -1,18 +1,19 @@
-import { uploadFile } from "@better-upload/client"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import type { PDFDocumentProxy } from "pdfjs-dist"
 import { useCallback, useState } from "react"
+import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { ActionBar } from "@/src/components/core/components/forms/ActionBar"
 import {
-  primaryButtonClassName,
-  secondaryButtonClassName,
-} from "@/src/components/core/components/buttons/buttonStyles"
+  checkboxInputClassName,
+  checkboxLabelClassName,
+  checkboxRowClassName,
+} from "@/src/components/core/components/forms/styles/checkboxFieldStyles"
 import { Modal, ModalCloseButton } from "@/src/components/core/components/Modal"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { Spinner } from "@/src/components/core/components/Spinner"
 import { FormPdfEditor } from "@/src/components/project-records/FormPdfEditor"
 import { readPdfFormValues } from "@/src/components/project-records/readPdfFormValues"
-import { useUploadRecordCreation } from "@/src/components/uploads/useUploadRecordCreation"
 import {
   formFieldValuesQueryOptions,
   formTemplatesByProjectQueryOptions,
@@ -27,7 +28,6 @@ type Props = {
   filenameContext?: string | null
   formTemplateId: number | null
   onClose: () => void
-  onSaved?: () => void
 }
 
 const triggerBrowserDownload = (blob: Blob, filename: string) => {
@@ -47,22 +47,17 @@ export const FormTemplateFillModal = ({
   filenameContext,
   formTemplateId,
   onClose,
-  onSaved,
 }: Props) => {
   const [pdfDocument, setPdfDocument] = useState<PDFDocumentProxy | null>(null)
-  const [busy, setBusy] = useState<null | "download" | "flatten" | "save">(null)
+  const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [savedFilename, setSavedFilename] = useState<string | null>(null)
+  // Off by default: the download is the print version unless someone wants to keep filling it in.
+  const [keepFieldsEditable, setKeepFieldsEditable] = useState(false)
   const queryClient = useQueryClient()
 
   const { data: formTemplates, isPending } = useQuery({
     ...formTemplatesByProjectQueryOptions({ projectSlug }),
     enabled: formTemplateId !== null,
-  })
-
-  const createUploadRecord = useUploadRecordCreation({
-    projectSlug,
-    relations: { projectRecords: projectRecordId ? [projectRecordId] : undefined },
   })
 
   const formTemplate = formTemplates?.find((candidate) => candidate.id === formTemplateId)
@@ -126,8 +121,7 @@ export const FormTemplateFillModal = ({
   const handleClose = () => {
     setPdfDocument(null)
     setError(null)
-    setSavedFilename(null)
-    setBusy(null)
+    setBusy(false)
     onClose()
   }
 
@@ -150,42 +144,24 @@ export const FormTemplateFillModal = ({
     })
   }
 
-  const run = async (
-    mode: "download" | "flatten" | "save",
-    action: () => Promise<{ blob: Blob; filename: string }>,
-  ) => {
-    setBusy(mode)
+  const download = async () => {
+    setBusy(true)
     setError(null)
-    setSavedFilename(null)
     try {
-      const { blob, filename } = await action()
-      if (mode === "save") {
-        if (!projectRecordId) throw new Error("Protokolleintrag noch nicht gespeichert.")
-        const result = await uploadFile({
-          api: `/api/${projectSlug}/upload`,
-          route: "upload",
-          file: new File([blob], filename, { type: "application/pdf" }),
-          metadata: { projectRecordId },
-        })
-        await createUploadRecord(result.file)
-        setSavedFilename(filename)
-        onSaved?.()
-      } else {
-        triggerBrowserDownload(blob, filename)
-      }
+      const blob = keepFieldsEditable ? await exportFilled() : await exportFlattened()
+      triggerBrowserDownload(
+        blob,
+        buildFilename(keepFieldsEditable ? "ausfuellbar" : "ausgefuellt"),
+      )
     } catch (caught) {
       console.error("Form PDF action failed:", caught)
-      setError(
-        mode === "save"
-          ? "Das PDF konnte nicht am Protokolleintrag gespeichert werden."
-          : "Das PDF konnte nicht erzeugt werden.",
-      )
+      setError("Das PDF konnte nicht erzeugt werden.")
     } finally {
-      setBusy(null)
+      setBusy(false)
     }
   }
 
-  const ready = Boolean(pdfDocument) && busy === null && !isGenerating
+  const ready = Boolean(pdfDocument) && !busy && !isGenerating
 
   return (
     <Modal
@@ -199,7 +175,7 @@ export const FormTemplateFillModal = ({
         action={<ModalCloseButton onClose={handleClose} />}
       />
 
-      <div className={`${pageContentPaddingClassName} space-y-4 pb-6`}>
+      <div className={`${pageContentPaddingClassName} space-y-4`}>
         {isPending && <Spinner />}
 
         {!isPending && !formTemplate && (
@@ -223,64 +199,45 @@ export const FormTemplateFillModal = ({
             )}
 
             {error && <p className="text-sm text-red-700">{error}</p>}
-            {savedFilename && (
-              <p className="text-sm text-green-700">
-                Als „{savedFilename}“ am Protokolleintrag gespeichert.
-              </p>
-            )}
-
-            <div className="flex flex-wrap gap-2">
-              <button
-                type="button"
-                className={primaryButtonClassName}
-                disabled={!ready}
-                onClick={() =>
-                  run("download", async () => ({
-                    blob: await exportFilled(),
-                    filename: buildFilename("ausfuellbar"),
-                  }))
-                }
-              >
-                {busy === "download" ? "PDF wird erstellt …" : "Ausgefülltes PDF herunterladen"}
-              </button>
-              <button
-                type="button"
-                className={secondaryButtonClassName}
-                disabled={!ready}
-                onClick={() =>
-                  run("flatten", async () => ({
-                    blob: await exportFlattened(),
-                    filename: buildFilename("ausgefuellt"),
-                  }))
-                }
-              >
-                {busy === "flatten" ? "PDF wird erstellt …" : "Druckversion (nicht änderbar)"}
-              </button>
-              {projectRecordId ? (
-                <button
-                  type="button"
-                  className={secondaryButtonClassName}
-                  disabled={!ready}
-                  onClick={() =>
-                    run("save", async () => ({
-                      blob: await exportFilled(),
-                      filename: buildFilename("ausfuellbar"),
-                    }))
-                  }
-                >
-                  {busy === "save" ? "Wird gespeichert …" : "Am Protokolleintrag speichern"}
-                </button>
-              ) : null}
-            </div>
 
             <p className="text-sm text-gray-500">
-              {projectRecordId
-                ? "Das gespeicherte PDF bleibt ausfüllbar und kann später weiterbearbeitet werden."
-                : "Sobald der Protokolleintrag gespeichert ist, kann das Formular hier ausgefüllt und am Eintrag abgelegt werden."}
+              Ohne Haken wird eine Druckversion erzeugt: die Eintragungen stehen dann als fester
+              Text im PDF und lassen sich nicht mehr ändern.
             </p>
           </>
         )}
       </div>
+
+      {formTemplate && (
+        <ActionBar
+          left={
+            <div className={checkboxRowClassName}>
+              <div className="flex h-5 items-center">
+                <input
+                  type="checkbox"
+                  id="keepFieldsEditable"
+                  checked={keepFieldsEditable}
+                  onChange={(event) => setKeepFieldsEditable(event.target.checked)}
+                  className={checkboxInputClassName({ hasError: false })}
+                />
+              </div>
+              <label htmlFor="keepFieldsEditable" className={checkboxLabelClassName({})}>
+                Formularfelder editierbar lassen
+              </label>
+            </div>
+          }
+          right={
+            <button
+              type="button"
+              className={primaryButtonClassName}
+              disabled={!ready}
+              onClick={() => void download()}
+            >
+              {busy ? "PDF wird erstellt …" : "Ausgefülltes PDF herunterladen"}
+            </button>
+          }
+        />
+      )}
     </Modal>
   )
 }

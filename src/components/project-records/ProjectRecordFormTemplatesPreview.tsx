@@ -54,7 +54,6 @@ export const ProjectRecordFormTemplatesPreview = ({
     hasAcquisitionArea,
   })
 
-  
   const candidates = getEffectiveFormTemplates(source, {
     projectSlug,
     hasSubsubsection: true,
