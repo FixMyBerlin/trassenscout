@@ -4,6 +4,7 @@ import { FieldLayout } from "@/src/components/core/components/forms/FieldLayout"
 import { useCoreAppFormContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { useFormValue } from "@/src/components/core/components/forms/hooks/useFormValue"
 import { shortTitle } from "@/src/components/core/components/text/titles"
+import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { NumberArraySchema } from "@/src/components/core/utils/schema-shared"
 import { useSessionUploadCleanup } from "@/src/components/project-records/hooks/useSessionUploadCleanup"
 import { ProjectRecordAssignmentFields } from "@/src/components/project-records/ProjectRecordAssignmentFields"
@@ -13,6 +14,7 @@ import {
   type ProjectRecordEmailSourceValue,
 } from "@/src/components/project-records/ProjectRecordEmailSource"
 import { ProjectRecordFormTemplatesField } from "@/src/components/project-records/ProjectRecordFormTemplatesField"
+import { ProjectRecordFormTemplatesPreview } from "@/src/components/project-records/ProjectRecordFormTemplatesPreview"
 import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { getUserComboboxItems } from "@/src/components/shared/app/users/utils/getUserSelectOptions"
 import { TagsFormSection } from "@/src/components/tags/TagsFormSection"
@@ -22,11 +24,10 @@ import { acquisitionAreasQueryOptions } from "@/src/server/acquisitionAreas/acqu
 import { projectUsersQueryOptions } from "@/src/server/memberships/projectUsersQueryOptions"
 import { subsubsectionsQueryOptions } from "@/src/server/subsubsections/subsubsectionsQueryOptions"
 import { uploadsQueryOptions } from "@/src/server/uploads/uploadsQueryOptions"
+import { currentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
 
 type Props = {
   formMode?: "create" | "edit"
-  /** Forms inherited from the record's template — listed read-only next to the admin field. */
-  inheritedFormTemplates?: { id: number; title: string }[]
   relationContext?: "project" | "subsubsection" | "acquisitionArea"
   splitView?: boolean
   projectSlug: string
@@ -42,7 +43,6 @@ export const ProjectRecordFormFields = ({
   emailSource,
   splitView,
   landAcquisitionModuleEnabled = false,
-  inheritedFormTemplates,
   disableSuspenseQueries: _disableSuspenseQueries = false,
 }: Props) => {
   const form = useCoreAppFormContext()
@@ -65,6 +65,7 @@ export const ProjectRecordFormFields = ({
     ...projectUsersQueryOptions({ projectSlug }),
     ...queryBehavior,
   })
+  const { data: currentUser } = useQuery({ ...currentUserQueryOptions(), ...queryBehavior })
   const { trackSessionUploads } = useSessionUploadCleanup({ projectSlug })
   const uploadsValue = useFormValue("uploads")
   const uploadIds = NumberArraySchema.parse(uploadsValue)
@@ -82,12 +83,12 @@ export const ProjectRecordFormFields = ({
     .sort((a, b) => a.subsection.slug.localeCompare(b.subsection.slug))
     .map((subsubsection) => ({
       value: String(subsubsection.id),
-      label: shortTitle(`${subsubsection.slug} (${subsubsection.subsection.slug})`),
+      label: `Maßnahme: ${shortTitle(`${subsubsection.slug} (${subsubsection.subsection.slug})`)}`,
     }))
 
   const acquisitionAreaItems = acquisitionAreas.map((acquisitionArea) => ({
     value: String(acquisitionArea.id),
-    label: `${acquisitionArea.id} - Flurstücknr. ${acquisitionArea.parcel.alkisParcelId} (${shortTitle(
+    label: `Verhandlungsfläche: ${acquisitionArea.id} - Flurstücknr. ${acquisitionArea.parcel.alkisParcelId} (${shortTitle(
       acquisitionArea.subsubsection.slug,
     )})`,
   }))
@@ -99,10 +100,13 @@ export const ProjectRecordFormFields = ({
 
   const dateLabel = isCreateMode ? "am/bis *" : "am/bis"
   const titleLabel = isCreateMode ? "Titel *" : "Titel"
-  const subsubsectionLabel = "Verknüpfungen mit Eintrag"
-  const acquisitionAreaLabel = "Verknüpfungen mit Verhandlungsflächen"
   const assignmentAndStatusFields = (
-    <ProjectRecordAssignmentFields assignedToItems={assignedToItems} />
+    <ProjectRecordAssignmentFields
+      assignedToItems={assignedToItems}
+      fromLabel={
+        isCreateMode ? (getFullnameWithInstitution(currentUser) ?? currentUser?.email) : null
+      }
+    />
   )
 
   return (
@@ -115,42 +119,43 @@ export const ProjectRecordFormFields = ({
             <ProjectRecordEmailSourceDisclosure email={emailSource} withHelp={false} />
           )}
 
-          <form.AppField name="date">
-            {(field) => <field.TextField type="date" label={dateLabel} placeholder="" />}
-          </form.AppField>
           <form.AppField name="title">
             {(field) => <field.TextField label={titleLabel} />}
           </form.AppField>
-
-          {showSubsubsectionField && (
-            <form.AppField name="subsubsections">
-              {(field) => (
-                <field.Combobox
-                  items={subsubsectionItems}
-                  label={subsubsectionLabel}
-                  placeholder="Eintrag suchen"
-                />
-              )}
-            </form.AppField>
-          )}
-          {showAcquisitionAreaField && (
-            <form.AppField name="acquisitionAreas">
-              {(field) => (
-                <field.Combobox
-                  items={acquisitionAreaItems}
-                  label={acquisitionAreaLabel}
-                  placeholder="Verhandlungsfläche suchen"
-                />
-              )}
-            </form.AppField>
-          )}
           <form.AppField name="body">
-            {(field) => <field.TextareaField label="Notizen" rows={20} />}
+            {(field) => <field.TextareaField label="Nachricht" rows={20} />}
           </form.AppField>
-          <TagsFormSection projectSlug={projectSlug} showManageLink />
-          <ProjectRecordFormTemplatesField
+          <form.AppField name="date">
+            {(field) => <field.TextField type="date" label={dateLabel} placeholder="" />}
+          </form.AppField>
+
+          {(showSubsubsectionField || showAcquisitionAreaField) && (
+            <FieldLayout label="Verknüpfungen">
+              <div className="flex flex-col gap-3">
+                {showSubsubsectionField && (
+                  <form.AppField name="subsubsections">
+                    {(field) => (
+                      <field.Combobox items={subsubsectionItems} placeholder="Maßnahme suchen" />
+                    )}
+                  </form.AppField>
+                )}
+                {showAcquisitionAreaField && (
+                  <form.AppField name="acquisitionAreas">
+                    {(field) => (
+                      <field.Combobox
+                        items={acquisitionAreaItems}
+                        placeholder="Verhandlungsfläche suchen"
+                      />
+                    )}
+                  </form.AppField>
+                )}
+              </div>
+            </FieldLayout>
+          )}
+          <TagsFormSection
             projectSlug={projectSlug}
-            inheritedFormTemplates={inheritedFormTemplates}
+            showManageLink
+            classNameItemWrapper="grid grid-cols-2 gap-1.5 w-full"
           />
         </div>
 
@@ -187,6 +192,13 @@ export const ProjectRecordFormFields = ({
           </p>
         )}
       </FieldLayout>
+      {isCreateMode && (
+        <ProjectRecordFormTemplatesPreview
+          projectSlug={projectSlug}
+          landAcquisitionModuleEnabled={landAcquisitionModuleEnabled}
+        />
+      )}
+      <ProjectRecordFormTemplatesField projectSlug={projectSlug} />
 
       <SuperAdminLogData data={{ uploadsValue, uploadIds }} />
     </>

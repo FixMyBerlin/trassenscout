@@ -78,6 +78,13 @@ export function Combobox({
     .map((selectedValue) => items.find((item) => item.value === selectedValue)?.label)
     .filter((itemLabel): itemLabel is string => typeof itemLabel === "string" && itemLabel !== "")
 
+  const inputPlaceholder =
+    items.length === 0
+      ? label
+        ? `keine ${label} zur Auswahl`
+        : "keine Einträge zur Auswahl"
+      : (placeholder ?? (label ? `${label} suchen` : "Suchen"))
+
   const control = (
     <>
       {value.length > 0 && (
@@ -129,11 +136,7 @@ export function Combobox({
               autoComplete="off"
               value={query}
               onBlur={field.handleBlur}
-              placeholder={
-                items.length === 0
-                  ? `keine ${label} zur Auswahl`
-                  : (placeholder ?? `${label} suchen`)
-              }
+              placeholder={inputPlaceholder}
               onChange={(e) => setQuery(e.target.value)}
               className={twJoin(
                 "block w-full appearance-none rounded-md border border-gray-200 px-3 py-2 pr-10 placeholder-gray-400 shadow-xs focus:outline-hidden sm:text-sm",

@@ -169,7 +169,10 @@ export const ProjectRecordNewModal = ({
       title: selectedTemplate.entryTitle,
       body: selectedTemplate.body || "",
       tags: selectedTemplate.tags.map((tag) => String(tag.id)),
-      // Stored so the record keeps inheriting this template's forms, including later additions.
+      // The entry gets its own copy of the template's forms; the server does the same for
+      // non-admins, whose payload it does not trust.
+      formTemplates: selectedTemplate.formTemplates.map((formTemplate) => String(formTemplate.id)),
+      // Provenance: which template this entry was started from.
       projectRecordTemplateId: selectedTemplate.id,
     }),
   }

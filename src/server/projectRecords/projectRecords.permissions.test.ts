@@ -10,6 +10,10 @@ const mockDb = {
   formTemplate: {
     findMany: vi.fn(),
   },
+  projectRecordTemplate: {
+    findFirst: vi.fn(),
+    findFirstOrThrow: vi.fn(),
+  },
   membership: {
     findFirst: vi.fn(),
     findMany: vi.fn().mockResolvedValue([]),
@@ -85,6 +89,8 @@ describe("viewer project record permissions", () => {
     })
     mockEndpointAuth.admin.mockRejectedValue(new AuthorizationError())
     mockDb.formTemplate.findMany.mockResolvedValue([{ id: 7 }])
+    mockDb.projectRecordTemplate.findFirst.mockResolvedValue({ formTemplates: [{ id: 7 }] })
+    mockDb.projectRecordTemplate.findFirstOrThrow.mockResolvedValue({ id: 3 })
     mockDb.membership.findFirst.mockResolvedValue({ id: 99 })
     mockDb.membership.findMany.mockResolvedValue([])
     mockDb.projectRecord.create.mockResolvedValue(createdRecord)
@@ -114,14 +120,36 @@ describe("viewer project record permissions", () => {
     )
   })
 
-  test("does not let a non-admin attach form templates", async () => {
+  test("ignores form templates a non-admin submits", async () => {
     const { createProjectRecord } = await import("./projectRecords.server")
 
     await createProjectRecord(headers, { ...newRecordInput, formTemplates: [7] })
 
+    expect(mockDb.projectRecordTemplate.findFirst).not.toHaveBeenCalled()
     expect(mockDb.projectRecord.create).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: expect.not.objectContaining({ formTemplates: expect.anything() }),
+        data: expect.objectContaining({ formTemplates: { connect: [] } }),
+      }),
+    )
+  })
+
+  test("seeds a non-admin's entry from the picked Vorlage", async () => {
+    const { createProjectRecord } = await import("./projectRecords.server")
+
+    await createProjectRecord(headers, {
+      ...newRecordInput,
+      projectRecordTemplateId: 3,
+      formTemplates: [99],
+    })
+
+    expect(mockDb.projectRecordTemplate.findFirst).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: 3, projects: { some: { slug: "rs8" } } },
+      }),
+    )
+    expect(mockDb.projectRecord.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ formTemplates: { connect: [{ id: 7 }] } }),
       }),
     )
   })

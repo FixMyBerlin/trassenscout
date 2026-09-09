@@ -61,22 +61,7 @@ export const projectRecordInclude = {
     },
     orderBy: { title: "asc" },
   },
-  projectRecordTemplate: {
-    select: {
-      id: true,
-      templateTitle: true,
-      formTemplates: {
-        select: {
-          id: true,
-          title: true,
-          slug: true,
-          type: true,
-          projects: { select: { slug: true } },
-        },
-        orderBy: { title: "asc" },
-      },
-    },
-  },
+  projectRecordTemplate: { select: { id: true, templateTitle: true } },
   uploads: {
     orderBy: { id: "desc" },
     select: {

@@ -22,7 +22,7 @@ import { buildFormPdfFilename } from "@/src/shared/formTemplates/pdfFilename"
 
 type Props = {
   projectSlug: string
-  projectRecordId: number
+  projectRecordId?: number | null
   /** Part of the download filename. */
   filenameContext?: string | null
   formTemplateId: number | null
@@ -62,7 +62,7 @@ export const FormTemplateFillModal = ({
 
   const createUploadRecord = useUploadRecordCreation({
     projectSlug,
-    relations: { projectRecords: [projectRecordId] },
+    relations: { projectRecords: projectRecordId ? [projectRecordId] : undefined },
   })
 
   const formTemplate = formTemplates?.find((candidate) => candidate.id === formTemplateId)
@@ -85,18 +85,20 @@ export const FormTemplateFillModal = ({
     queryFn: async () => {
       if (!formTemplate) throw new Error("Kein Formular geladen.")
 
-      const values = await queryClient
-        .fetchQuery(
-          formFieldValuesQueryOptions({
-            projectSlug,
-            projectRecordId,
-            formTemplateId: formTemplate.id,
-          }),
-        )
-        .catch((caught) => {
-          console.error("Form prefill failed:", caught)
-          return {} as Record<string, string>
-        })
+      const values = projectRecordId
+        ? await queryClient
+            .fetchQuery(
+              formFieldValuesQueryOptions({
+                projectSlug,
+                projectRecordId,
+                formTemplateId: formTemplate.id,
+              }),
+            )
+            .catch((caught) => {
+              console.error("Form prefill failed:", caught)
+              return {} as Record<string, string>
+            })
+        : {}
 
       const { renderFormTemplatePdf } = await import("./formTemplatePdf")
       const blob = await renderFormTemplatePdf({
@@ -158,6 +160,7 @@ export const FormTemplateFillModal = ({
     try {
       const { blob, filename } = await action()
       if (mode === "save") {
+        if (!projectRecordId) throw new Error("Protokolleintrag noch nicht gespeichert.")
         const result = await uploadFile({
           api: `/api/${projectSlug}/upload`,
           route: "upload",
@@ -253,23 +256,27 @@ export const FormTemplateFillModal = ({
               >
                 {busy === "flatten" ? "PDF wird erstellt …" : "Druckversion (nicht änderbar)"}
               </button>
-              <button
-                type="button"
-                className={secondaryButtonClassName}
-                disabled={!ready}
-                onClick={() =>
-                  run("save", async () => ({
-                    blob: await exportFilled(),
-                    filename: buildFilename("ausfuellbar"),
-                  }))
-                }
-              >
-                {busy === "save" ? "Wird gespeichert …" : "Am Protokolleintrag speichern"}
-              </button>
+              {projectRecordId ? (
+                <button
+                  type="button"
+                  className={secondaryButtonClassName}
+                  disabled={!ready}
+                  onClick={() =>
+                    run("save", async () => ({
+                      blob: await exportFilled(),
+                      filename: buildFilename("ausfuellbar"),
+                    }))
+                  }
+                >
+                  {busy === "save" ? "Wird gespeichert …" : "Am Protokolleintrag speichern"}
+                </button>
+              ) : null}
             </div>
 
             <p className="text-sm text-gray-500">
-              Das gespeicherte PDF bleibt ausfüllbar und kann später weiterbearbeitet werden.
+              {projectRecordId
+                ? "Das gespeicherte PDF bleibt ausfüllbar und kann später weiterbearbeitet werden."
+                : "Sobald der Protokolleintrag gespeichert ist, kann das Formular hier ausgefüllt und am Eintrag abgelegt werden."}
             </p>
           </>
         )}

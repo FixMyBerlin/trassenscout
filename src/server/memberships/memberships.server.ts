@@ -187,6 +187,7 @@ export async function getProjectUsers(
       firstName: true,
       lastName: true,
       email: true,
+      institution: true,
       phone: true,
       ...selectUserFieldsForSession,
     },

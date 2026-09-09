@@ -15,6 +15,7 @@ type CheckboxGroupItem = {
   label: string | React.ReactNode
   help?: string
   labelProps?: ComponentPropsWithoutRef<"label">
+  trailing?: ReactNode
 }
 
 export type CheckboxGroupProps = {
@@ -75,6 +76,7 @@ export function CheckboxGroup({
               {item.label}
               {item.help && <div className="m-0 text-gray-500">{item.help}</div>}
             </label>
+            {item.trailing && <div className="pl-2">{item.trailing}</div>}
           </div>
         )
       })}

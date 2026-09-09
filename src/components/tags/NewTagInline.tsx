@@ -34,7 +34,7 @@ export function NewTagInline({
   }
 
   return (
-    <div className="flex w-full items-end gap-2 self-stretch">
+    <div className="flex w-full items-end gap-2 sm:w-1/2">
       <div className="grow">
         <label htmlFor={inputId} className="sr-only">
           {placeholder}
@@ -62,7 +62,7 @@ export function NewTagInline({
         disabled={disabled || isSubmitting}
         className={twJoin(primaryButtonClassName, "shrink-0 px-3! py-2!")}
       >
-        Hinzufügen
+        Tag hinzufügen
       </button>
     </div>
   )

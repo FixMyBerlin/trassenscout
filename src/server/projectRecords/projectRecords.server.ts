@@ -205,9 +205,9 @@ function createProjectRecordData(
   input: CreateProjectRecordInput,
   projectId: number,
   userId: number,
-  allowFormTemplates: boolean,
+  formTemplateIds: number[],
 ) {
-  const { acquisitionAreas, tags, subsubsections, uploads, formTemplates, ...data } = input
+  const { acquisitionAreas, tags, subsubsections, uploads, formTemplates: _, ...data } = input
 
   return {
     ...data,
@@ -222,10 +222,32 @@ function createProjectRecordData(
     tags: connectIds(idsFromFormValue(tags)),
     subsubsections: connectIds(idsFromFormValue(subsubsections)),
     uploads: connectIds(idsFromFormValue(uploads)),
-    // Omitted for a non-admin so Prisma leaves the relation alone. `projectRecordTemplateId`
-    // is not gated on create: it records the template the author picked.
-    ...(allowFormTemplates ? { formTemplates: connectIds(idsFromFormValue(formTemplates)) } : {}),
+    formTemplates: connectIds(formTemplateIds),
   }
+}
+
+async function resolveCreateFormTemplateIds(
+  projectSlug: string,
+  input: CreateProjectRecordInput,
+  isAdmin: boolean,
+) {
+  if (isAdmin) return idsFromFormValue(input.formTemplates)
+  if (!input.projectRecordTemplateId) return []
+
+  const template = await db.projectRecordTemplate.findFirst({
+    where: {
+      id: input.projectRecordTemplateId,
+      projects: { some: { slug: projectSlug } },
+    },
+    select: {
+      formTemplates: {
+        where: { projects: { some: { slug: projectSlug } } },
+        select: { id: true },
+      },
+    },
+  })
+
+  return (template?.formTemplates ?? []).map(({ id }) => id)
 }
 
 function updateProjectRecordData(
@@ -529,12 +551,13 @@ export async function createProjectRecord(
     await assertAssigneeIsProjectMember(projectSlug, data.assignedToId)
   }
 
-  const allowFormTemplates = await isAdminRequest(headers)
+  const isAdmin = await isAdminRequest(headers)
+  const formTemplateIds = await resolveCreateFormTemplateIds(projectSlug, data, isAdmin)
   await validateProjectRecordRelations(projectSlug, data, true)
   const userId = Number(session.userId)
 
   const record = await db.projectRecord.create({
-    data: createProjectRecordData(data, projectId, userId, allowFormTemplates),
+    data: createProjectRecordData(data, projectId, userId, formTemplateIds),
     include: projectRecordInclude,
   })
 

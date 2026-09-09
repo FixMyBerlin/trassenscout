@@ -9,9 +9,11 @@ export type FormTemplateRef = {
 }
 
 export type FormTemplateRecordSource = {
+  /**
+   * The record's own, complete set. A Protokollvorlage seeds it once at create; afterwards the
+   * record owns it, so an admin can drop a form here without touching the Template.
+   */
   formTemplates: FormTemplateRef[]
-  /** Read live, so template changes reach existing records. */
-  projectRecordTemplate?: { formTemplates: FormTemplateRef[] } | null
 }
 
 export type FormTemplateRecordContext = {
@@ -21,8 +23,8 @@ export type FormTemplateRecordContext = {
 }
 
 /**
- * Inherited plus directly attached, reduced to the relation the record has and to this
- * project: a shared protocol template can carry a form only some of its projects have.
+ * The record's forms, reduced to the relation it actually has and to this project: a form can
+ * be shared across projects, and a record only offers the ones its own project can open.
  */
 export function getEffectiveFormTemplates(
   record: FormTemplateRecordSource,
@@ -33,15 +35,10 @@ export function getEffectiveFormTemplates(
   if (context.hasAcquisitionArea) allowedTypes.add("ACQUISITIONAREA")
   if (allowedTypes.size === 0) return []
 
-  const byId = new Map<number, FormTemplateRef>()
-  for (const formTemplate of [
-    ...(record.projectRecordTemplate?.formTemplates ?? []),
-    ...record.formTemplates,
-  ]) {
-    if (!allowedTypes.has(formTemplate.type)) continue
-    if (!formTemplate.projects.some((project) => project.slug === context.projectSlug)) continue
-    byId.set(formTemplate.id, formTemplate)
-  }
-
-  return Array.from(byId.values()).sort((a, b) => a.title.localeCompare(b.title, "de"))
+  return record.formTemplates
+    .filter((formTemplate) => allowedTypes.has(formTemplate.type))
+    .filter((formTemplate) =>
+      formTemplate.projects.some((project) => project.slug === context.projectSlug),
+    )
+    .sort((a, b) => a.title.localeCompare(b.title, "de"))
 }

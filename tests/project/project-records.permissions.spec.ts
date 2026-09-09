@@ -220,7 +220,7 @@ test.describe("Project records permissions", () => {
         })
 
         const titleField = page.getByLabel("Titel")
-        const bodyField = page.getByRole("textbox", { name: /Notizen/ })
+        const bodyField = page.getByRole("textbox", { name: /Nachricht/ })
         await expect(titleField).toBeEnabled({ timeout: 60_000 })
         await expect(bodyField).toBeVisible({ timeout: 60_000 })
         await titleField.clear()

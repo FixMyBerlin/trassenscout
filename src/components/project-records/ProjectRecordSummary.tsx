@@ -48,7 +48,6 @@ export const ProjectRecordSummary = ({ projectRecord, onFormSaved }: Props) => {
 
       {projectRecord.body && (
         <section className="rounded-md bg-blue-50 p-4">
-          <h2 className="mb-4 text-sm font-semibold text-gray-800">Zusammenfassung</h2>
           <Markdown
             className="prose prose-sm max-w-none text-gray-700 prose-p:my-2 prose-p:text-sm prose-ol:my-2 prose-ol:pl-4 prose-ol:leading-tight prose-ul:my-2 prose-ul:list-disc prose-ul:pl-4 prose-ul:leading-tight"
             markdown={projectRecord.body}
