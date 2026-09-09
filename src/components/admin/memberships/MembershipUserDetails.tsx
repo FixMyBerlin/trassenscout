@@ -83,7 +83,7 @@ export function MembershipUserDetails({ user }: Props) {
             <DetailRow label="Name" value={displayValue(fullName)} />
             <DetailRow label="E-Mail" value={user.email} />
             <DetailRow label="Telefon" value={displayValue(user.phone)} />
-            <DetailRow label="Organisation" value={displayValue(user.institution)} />
+            <DetailRow label="Institution" value={displayValue(user.institution)} />
             <DetailRow label="Rolle" value={roleLabel} />
             <DetailRow label="E-Mail verifiziert" value={user.emailVerified ? "Ja" : "Nein"} />
             <DetailRow label="Registriert am" value={formatCreatedAt(user.createdAt)} />

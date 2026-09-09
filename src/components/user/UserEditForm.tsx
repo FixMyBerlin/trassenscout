@@ -69,7 +69,7 @@ export const UserEditForm = () => {
           )}
         </form.AppField>
         <form.AppField name="institution">
-          {(field) => <field.TextField label="Organisation / Kommune" placeholder="" optional />}
+          {(field) => <field.TextField label="Institution / Kommune" placeholder="" optional />}
         </form.AppField>
         <form.AppField name="phone">
           {(field) => (

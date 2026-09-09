@@ -103,8 +103,10 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord, needsReviewEdi
         />
       )}
       <div className={pageContentPaddingClassName}>
-        <ProjectRecordSummary projectRecord={projectRecord} />
-        {projectRecordUploadsSection}
+        <ProjectRecordSummary
+          projectRecord={projectRecord}
+          uploadsSection={projectRecordUploadsSection}
+        />
       </div>
       <CreateEditReviewHistory projectRecord={projectRecord} />
       <ProjectRecordCommentsSection projectRecord={projectRecord} />

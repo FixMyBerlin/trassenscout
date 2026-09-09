@@ -83,7 +83,7 @@ export const ProjectRecordFormFields = ({
     .sort((a, b) => a.subsection.slug.localeCompare(b.subsection.slug))
     .map((subsubsection) => ({
       value: String(subsubsection.id),
-      label: `Maßnahme: ${shortTitle(`${subsubsection.slug} (${subsubsection.subsection.slug})`)}`,
+      label: `Maßnahme: ${shortTitle(subsubsection.slug)}`,
     }))
 
   const acquisitionAreaItems = acquisitionAreas.map((acquisitionArea) => ({

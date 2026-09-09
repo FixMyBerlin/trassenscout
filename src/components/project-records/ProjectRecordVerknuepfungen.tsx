@@ -111,7 +111,7 @@ export const ProjectRecordVerknuepfungen = ({
         {hasSubsubsection &&
           (effectiveSubsubsections.length === 1 ? (
             <li>
-              <strong className="font-medium">Maßnahme : </strong>
+              <strong className="font-medium">Maßnahme: </strong>
               <Link
                 to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug"
                 params={{
@@ -124,7 +124,7 @@ export const ProjectRecordVerknuepfungen = ({
               </Link>
             </li>
           ) : (
-            <li className="flex flex-wrap items-baseline gap-x-2">
+            <li className="flex flex-wrap items-baseline gap-x-1">
               <strong className="font-medium">Maßnahmen: </strong>
               <ul className="mt-0.5 flex list-none flex-wrap gap-x-2 pl-0">
                 {effectiveSubsubsections.map((subsub, index) => (
@@ -163,7 +163,7 @@ export const ProjectRecordVerknuepfungen = ({
               </Link>
             </li>
           ) : (
-            <li className="flex flex-wrap items-baseline gap-x-2">
+            <li className="flex flex-wrap items-baseline gap-x-1">
               <strong className="font-medium">Verhandlungsflächen: </strong>
               <ul className="mt-0.5 flex list-none flex-wrap gap-x-2 pl-0">
                 {effectiveAcquisitionAreas.map((area, index) => (

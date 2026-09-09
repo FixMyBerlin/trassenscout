@@ -23,11 +23,12 @@ import { TeamTableEditMembershipModal } from "./TeamTableEditMembershipModal"
  * Column width classes for `table-fixed` layout. Adjust percentages here only.
  */
 const teamTableColWidths = {
-  name: "min-w-0 w-[32%] @xl:w-[24%]",
-  phone: "w-[24%] @xl:w-[16%]",
-  email: "hidden @xl:table-column @xl:w-[28%]",
-  rights: "w-[22%] @xl:w-[14%]",
-  actions: "w-[22%] @xl:w-[18%]",
+  name: "min-w-0 w-[32%] @xl:w-[22%]",
+  institution: "hidden @xl:table-column @xl:w-[18%]",
+  phone: "w-[24%] @xl:w-[14%]",
+  email: "hidden @xl:table-column @xl:w-[20%]",
+  rights: "w-[22%] @xl:w-[12%]",
+  actions: "w-[22%] @xl:w-[14%]",
 } as const
 
 type Props = {
@@ -53,6 +54,7 @@ export const TeamTable = ({ users }: Props) => {
           <table className={tableFixedClassName}>
             <colgroup>
               <col className={teamTableColWidths.name} />
+              <col className={teamTableColWidths.institution} />
               <col className={teamTableColWidths.phone} />
               <col className={teamTableColWidths.email} />
               <col className={teamTableColWidths.rights} />
@@ -62,6 +64,9 @@ export const TeamTable = ({ users }: Props) => {
               <tr className={tableHeadRowClassName}>
                 <th scope="col" className={tableHeadCellClassName}>
                   Name
+                </th>
+                <th scope="col" className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}>
+                  Institution
                 </th>
                 <th scope="col" className={tableHeadCellClassName}>
                   Telefon
@@ -87,6 +92,11 @@ export const TeamTable = ({ users }: Props) => {
                   <tr key={user.email} className={tableRowClassName}>
                     <td className={twJoin(tableCellClassName, "align-middle")}>
                       {getFullname(user) || "—"}
+                    </td>
+                    <td
+                      className={twJoin("hidden align-middle @xl:table-cell", tableCellClassName)}
+                    >
+                      {user.institution || "—"}
                     </td>
                     <td className={twJoin(tableCellClassName, "align-middle whitespace-nowrap")}>
                       {user.phone ? <LinkTel>{user.phone}</LinkTel> : "—"}
