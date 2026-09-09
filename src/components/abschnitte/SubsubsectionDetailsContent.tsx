@@ -313,16 +313,14 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
       <section className="mt-6 space-y-3">
         <div className="flex items-center justify-between gap-3">
           <H2 className="text-lg font-semibold text-gray-700 sm:text-lg">Protokolleinträge</H2>
-          <IfUserCanEdit>
-            <button
-              type="button"
-              onClick={() => setIsProjectRecordModalOpen(true)}
-              className={twJoin("inline-flex cursor-pointer items-center gap-1", linkStyles)}
-            >
-              {linkIcons.plus}
-              Neuer Protokolleintrag
-            </button>
-          </IfUserCanEdit>
+          <button
+            type="button"
+            onClick={() => setIsProjectRecordModalOpen(true)}
+            className={twJoin("inline-flex cursor-pointer items-center gap-1", linkStyles)}
+          >
+            {linkIcons.plus}
+            Neuer Protokolleintrag
+          </button>
         </div>
         <div className="space-y-3">
           {showSuccess && (

@@ -11,7 +11,6 @@ import { FilteredProjectRecords } from "@/src/components/project-records/Filtere
 import { ProjectRecordNewModal } from "@/src/components/project-records/ProjectRecordNewModal"
 import { useProjectRecordsListHeader } from "@/src/components/project-records/useProjectRecordsListHeader"
 import { useProjectRecordFilters } from "@/src/components/project-records/utils/useProjectRecordFilters"
-import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import {
   projectRecordsQueryOptions,
   projectRecordsTabCountsQueryOptions,
@@ -23,7 +22,6 @@ export const ProjectRecordsFormAndTable = () => {
   const { projectSlug } = loggedInProjectRouteApi.useParams()
   const { breadcrumb, tabs } = useProjectRecordsListHeader()
   const { filter, setFilter } = useProjectRecordFilters()
-  const canEdit = useUserCan().edit
   const queryClient = useQueryClient()
   const { data: projectRecords } = useSuspenseQuery(projectRecordsQueryOptions({ projectSlug }))
   const [showSuccess, setShowSuccess] = useState(false)
@@ -31,12 +29,9 @@ export const ProjectRecordsFormAndTable = () => {
   const [isProjectRecordModalOpen, setIsProjectRecordModalOpen] = useState(false)
   const createRecordButtonRef = useRef<HTMLButtonElement>(null)
 
-  useEffect(
-    function markCreateRecordButtonReadyAfterHydration() {
-      createRecordButtonRef.current?.setAttribute("data-create-record-ready", "true")
-    },
-    [canEdit],
-  )
+  useEffect(function markCreateRecordButtonReadyAfterHydration() {
+    createRecordButtonRef.current?.setAttribute("data-create-record-ready", "true")
+  }, [])
   useEffect(() => {
     if (showSuccess) {
       const timeout = setTimeout(() => {
@@ -65,16 +60,14 @@ export const ProjectRecordsFormAndTable = () => {
           />
         }
         primaryAction={
-          canEdit ? (
-            <button
-              ref={createRecordButtonRef}
-              type="button"
-              onClick={() => setIsProjectRecordModalOpen(true)}
-              className={twJoin(primaryButtonSmClassName, "items-center justify-center gap-1")}
-            >
-              <PlusIcon className="size-3.5" /> Neuer Protokolleintrag
-            </button>
-          ) : undefined
+          <button
+            ref={createRecordButtonRef}
+            type="button"
+            onClick={() => setIsProjectRecordModalOpen(true)}
+            className={twJoin(primaryButtonSmClassName, "items-center justify-center gap-1")}
+          >
+            <PlusIcon className="size-3.5" /> Neuer Protokolleintrag
+          </button>
         }
       />
       <div className="relative flex flex-col gap-8">

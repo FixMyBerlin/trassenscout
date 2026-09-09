@@ -16,8 +16,6 @@ import { pageContentPaddingClassName } from "@/src/components/core/components/Pa
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { ProjectRecordFormFields } from "@/src/components/project-records/ProjectRecordFormFields"
 import { getDate } from "@/src/components/project-records/utils/splitStartAt"
-import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
-import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { ProjectRecordEditingState } from "@/src/prisma/generated/browser"
 import { createProjectRecordFn } from "@/src/server/projectRecords/projectRecords.functions"
 import { projectRecordTemplatesByProjectQueryOptions } from "@/src/server/projectRecordTemplates/projectRecordTemplatesQueryOptions"
@@ -104,11 +102,9 @@ export const ProjectRecordNewModal = ({
   initialValues,
 }: Props) => {
   const createProjectRecordMutation = useMutation({ mutationFn: createProjectRecordFn })
-  const userCanEdit = useUserCan().edit
-  const { data: templates = [] } = useQuery({
-    ...projectRecordTemplatesByProjectQueryOptions({ projectSlug }),
-    enabled: userCanEdit,
-  })
+  const { data: templates = [] } = useQuery(
+    projectRecordTemplatesByProjectQueryOptions({ projectSlug }),
+  )
   const [isDirty, setIsDirty] = useState(false)
   const [modalStep, setModalStep] = useState<"picker" | "form">("picker")
   const [isSwitchingStep, setIsSwitchingStep] = useState(false)
@@ -197,7 +193,7 @@ export const ProjectRecordNewModal = ({
   }
 
   return (
-    <IfUserCanEdit>
+    <>
       <Modal open={pickerOpen} handleClose={resetAndClose} align="center" className="sm:max-w-2xl">
         <PageHeader
           title="Neuer Protokolleintrag"
@@ -250,6 +246,6 @@ export const ProjectRecordNewModal = ({
           onSubmit={handleSubmit}
         />
       </FormModal>
-    </IfUserCanEdit>
+    </>
   )
 }

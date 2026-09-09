@@ -95,6 +95,16 @@ async function isAdminRequest(headers: Headers) {
   }
 }
 
+async function assertAssigneeIsProjectMember(projectSlug: string, assignedToId: number) {
+  const assigneeMembership = await db.membership.findFirst({
+    where: { userId: assignedToId, project: { slug: projectSlug } },
+    select: { id: true },
+  })
+  if (!assigneeMembership) {
+    throw new AuthorizationError()
+  }
+}
+
 async function validateProjectRecordRelations(
   projectSlug: string,
   input: ProjectRecordInput,
@@ -502,12 +512,23 @@ export async function createProjectRecord(
   headers: Headers,
   input: z.infer<typeof CreateProjectRecordBySlugSchema>,
 ) {
-  const { projectId, session } = await endpointAuth.projectRole(
+  const { projectId, membershipRole, session } = await endpointAuth.projectRole(
     headers,
     input.projectSlug,
-    editorRoles,
+    viewerRoles,
   )
   const { projectSlug, ...data } = input
+  const canEdit = membershipRole === null || editorRoles.includes(membershipRole)
+
+  // A viewer attaches documents from the saved record (see `createUpload`), never on create.
+  if (!canEdit && idsFromFormValue(data.uploads).length > 0) {
+    throw new AuthorizationError()
+  }
+
+  if (data.assignedToId != null) {
+    await assertAssigneeIsProjectMember(projectSlug, data.assignedToId)
+  }
+
   const allowFormTemplates = await isAdminRequest(headers)
   await validateProjectRecordRelations(projectSlug, data, true)
   const userId = Number(session.userId)
@@ -668,13 +689,7 @@ export async function patchProjectRecordAssignment(
   const canEdit = membershipRole === null || editorRoles.includes(membershipRole)
 
   if (assignedToId != null) {
-    const assigneeMembership = await db.membership.findFirst({
-      where: { userId: assignedToId, project: { slug: projectSlug } },
-      select: { id: true },
-    })
-    if (!assigneeMembership) {
-      throw new AuthorizationError()
-    }
+    await assertAssigneeIsProjectMember(projectSlug, assignedToId)
   }
 
   const project = await db.project.findUnique({

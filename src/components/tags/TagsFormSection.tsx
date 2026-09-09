@@ -3,6 +3,7 @@ import { LinkWithFormDirtyConfirm } from "@/src/components/abschnitte/LinkWithFo
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
 import { useCoreAppFormContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { useFormValue } from "@/src/components/core/components/forms/hooks/useFormValue"
+import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { createTagFn } from "@/src/server/tags/tags.functions"
 import { tagsQueryOptions } from "@/src/server/tags/tagsQueryOptions"
 import { buildTagCheckboxItems } from "./buildTagCheckboxItems"
@@ -25,6 +26,7 @@ export function TagsFormSection({
 }: Props) {
   const form = useCoreAppFormContext()
   const queryClient = useQueryClient()
+  const canCreateTag = useUserCan().edit
   const assignedIds = (useFormValue<string[]>(fieldName) ?? []).map(String)
   const tagsQuery = tagsQueryOptions({ projectSlug, includeArchived: true })
   const { data: tagsResult } = useQuery({
@@ -66,7 +68,7 @@ export function TagsFormSection({
                   </LinkWithFormDirtyConfirm>
                 </SuperAdminBox>
               ) : null}
-              <NewTagInline onCreate={handleCreateTag} />
+              {canCreateTag ? <NewTagInline onCreate={handleCreateTag} /> : null}
             </>
           }
         />

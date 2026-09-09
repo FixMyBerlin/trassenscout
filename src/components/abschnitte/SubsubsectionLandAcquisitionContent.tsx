@@ -266,19 +266,14 @@ export const SubsubsectionLandAcquisitionContent = ({
                   <h2 className="text-lg font-semibold text-gray-700 sm:text-lg">
                     Protokolleinträge
                   </h2>
-                  <IfUserCanEdit>
-                    <button
-                      type="button"
-                      onClick={() => setIsProjectRecordModalOpen(true)}
-                      className={twJoin(
-                        "inline-flex cursor-pointer items-center gap-1",
-                        linkStyles,
-                      )}
-                    >
-                      {linkIcons.plus}
-                      Neuer Protokolleintrag
-                    </button>
-                  </IfUserCanEdit>
+                  <button
+                    type="button"
+                    onClick={() => setIsProjectRecordModalOpen(true)}
+                    className={twJoin("inline-flex cursor-pointer items-center gap-1", linkStyles)}
+                  >
+                    {linkIcons.plus}
+                    Neuer Protokolleintrag
+                  </button>
                 </div>
                 {showSuccess && (
                   <FormSuccess message="Protokolleintrag erfolgreich erstellt" show={showSuccess} />
