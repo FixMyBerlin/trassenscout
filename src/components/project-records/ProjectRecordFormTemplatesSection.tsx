@@ -29,7 +29,7 @@ export const ProjectRecordFormTemplatesSection = ({
 
   return (
     <>
-      <div className="flex flex-wrap gap-x-3 gap-y-1">
+      <div className="flex flex-col items-start gap-1 text-sm">
         {formTemplates.map((formTemplate) => (
           <button
             key={formTemplate.id}
