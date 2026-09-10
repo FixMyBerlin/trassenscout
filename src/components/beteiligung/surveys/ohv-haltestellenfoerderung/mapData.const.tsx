@@ -136,7 +136,7 @@ export const mapData: MapData = {
             "text-anchor": "top",
             "text-font": ["Red Hat Text Regular", "Arial Unicode MS Regular"],
             "text-size": 12,
-            "text-field": ["get", "GEM_NAME"],
+            "text-field": ["get", "gem_name"],
             "text-padding": 20,
           },
           paint: { "text-color": "hsla(0, 0%, 0%, 0.38)" },
