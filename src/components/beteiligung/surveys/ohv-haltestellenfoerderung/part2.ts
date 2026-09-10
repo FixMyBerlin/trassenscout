@@ -278,12 +278,6 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           props: { label: "Name der ausgewählten Haltestelle" },
         },
         {
-          name: "routeIds",
-          componentType: "form",
-          component: "hidden",
-          props: { label: "IDs der Routen" },
-        },
-        {
           name: "feedbackText",
           component: "SurveyTextarea",
           componentType: "form",
