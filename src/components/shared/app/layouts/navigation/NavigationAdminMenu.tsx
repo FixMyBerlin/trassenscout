@@ -1,4 +1,4 @@
-import { Menu, MenuButton, MenuItem, MenuItems, Transition } from "@headlessui/react"
+import { Menu, MenuButton, MenuItem, MenuItems, Switch, Transition } from "@headlessui/react"
 import { ArrowTopRightOnSquareIcon, EllipsisHorizontalIcon } from "@heroicons/react/20/solid"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
@@ -10,6 +10,11 @@ import {
   buildAdminQuickNavMenu,
   type AdminQuickNavLink,
 } from "@/src/components/admin/adminNavigation"
+import {
+  adminDebugButtonsAvailable,
+  setAdminDebugButtonsEnabled,
+  useAdminDebugButtonsEnabled,
+} from "@/src/components/core/components/AdminBox/useAdminDebugButtons"
 import { Link } from "@/src/components/core/components/links/Link"
 import { useTryRouteParam } from "@/src/components/core/routes/useTryRouteParam"
 import { isAdmin } from "@/src/components/shared/app/users/utils/isAdmin"
@@ -79,6 +84,35 @@ function NavigationAdminMenuSection({
   )
 }
 
+function NavigationAdminDebugToggle() {
+  const adminDebugButtonsEnabled = useAdminDebugButtonsEnabled()
+
+  return (
+    <div className="px-3 py-2">
+      <div className="flex items-center justify-between gap-3 text-sm">
+        <span className="min-w-0 font-medium text-purple-950/90">Debug-Buttons</span>
+        <Switch
+          checked={adminDebugButtonsEnabled}
+          onChange={setAdminDebugButtonsEnabled}
+          className={twJoin(
+            "relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full shadow-xs transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-500",
+            adminDebugButtonsEnabled ? "bg-purple-700" : "bg-purple-200",
+          )}
+        >
+          <span className="sr-only">Debug-Buttons anzeigen</span>
+          <span
+            aria-hidden
+            className={twJoin(
+              "pointer-events-none inline-block size-4 rounded-full bg-white shadow-sm transition-transform",
+              adminDebugButtonsEnabled ? "translate-x-6" : "translate-x-1",
+            )}
+          />
+        </Switch>
+      </div>
+    </div>
+  )
+}
+
 export const NavigationAdminMenu = () => {
   const { data: user } = useSuspenseQuery(currentUserQueryOptions())
   const projectSlug = useTryRouteParam("projectSlug")
@@ -116,6 +150,12 @@ export const NavigationAdminMenu = () => {
                     title={`Projekt: ${adminMenu.project.title}`}
                     links={adminMenu.project.links}
                   />
+                </>
+              ) : null}
+              {adminDebugButtonsAvailable ? (
+                <>
+                  <NavigationMenuSeparator className="bg-purple-200/70" />
+                  <NavigationAdminDebugToggle />
                 </>
               ) : null}
             </MenuItems>
