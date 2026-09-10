@@ -36,7 +36,7 @@ export const FormPdfEditor = ({ data, onDocumentReady }: Props) => {
   return (
     <div
       ref={containerRef}
-      className="formPdfEditor max-h-[60vh] overflow-y-auto rounded-md bg-gray-100 p-2"
+      className="formPdfEditor max-h-[46vh] overflow-y-auto rounded-md bg-gray-100 p-2 supports-[height:100dvh]:max-h-[46dvh]"
       style={{ "--form-pdf-font-size": `${FORM_PDF_FONT_SIZE}px` } as CSSProperties}
     >
       <Document

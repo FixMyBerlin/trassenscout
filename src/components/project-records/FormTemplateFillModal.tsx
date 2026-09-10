@@ -168,14 +168,15 @@ export const FormTemplateFillModal = ({
       open={formTemplateId !== null}
       handleClose={handleClose}
       align="center"
-      className="sm:max-w-4xl"
+      className="flex max-h-[calc(100vh-2rem)] flex-col overflow-hidden supports-[height:100dvh]:max-h-[calc(100dvh-2rem)] sm:max-h-[calc(100vh-4rem)] sm:max-w-4xl sm:supports-[height:100dvh]:max-h-[calc(100dvh-4rem)]"
     >
       <PageHeader
         title={formTemplate ? `Formular: ${formTemplate.title}` : "Formular"}
         action={<ModalCloseButton onClose={handleClose} />}
+        className="shrink-0"
       />
 
-      <div className={`${pageContentPaddingClassName} space-y-4`}>
+      <div className={`${pageContentPaddingClassName} min-h-0 flex-1 space-y-4 overflow-y-auto`}>
         {isPending && <Spinner />}
 
         {!isPending && !formTemplate && (
@@ -210,6 +211,7 @@ export const FormTemplateFillModal = ({
 
       {formTemplate && (
         <ActionBar
+          className="shrink-0"
           left={
             <div className={checkboxRowClassName}>
               <div className="flex h-5 items-center">
