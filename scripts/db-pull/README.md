@@ -87,6 +87,6 @@ restored data. The restored data is **not** anonymized – keep the container lo
 1. **Verify environment**: Checks `_Meta` table to ensure connected to correct database (prevents accidental production modification)
 2. **Reset database**: Use `pre-restore.sql` to reset target database
 3. **Restore data**: Restore dump to target database
-4. **Anonymize data**: Use `post-restore.sql` to anonymize emails
+4. **Anonymize data** (see [`pseudonymizeUser.ts`](./pseudonymizeUser.ts) and `anonymizeData` in [`db-helpers.ts`](./db-helpers.ts)): non-FixMyCity users get deterministic Faker pseudonyms (first/last name, `name`, email), with `phone`/`image` cleared and `hashedPassword` nulled; Invite emails are scrubbed the same way (reusing the matching user's new pseudonym email where possible); every `Account` row has its OAuth tokens (`accessToken`/`refreshToken`/`idToken`) cleared, and non-FMC accounts also have their `password` cleared; all `Session`, `AuthSession`, `Verification`, `Token`, and `AdminApiToken` rows are deleted outright. FixMyCity (`@fixmycity.de`) users keep their real name, email, and password so staging stays loginable with prod credentials. This runs **before** migrations on local (step 5), against the schema the dump was taken from.
 5. Local: **Run migrations**: Execute `bun prisma migrate deploy`
 6. Local: **Seed users**: Execute `SEED_ONLY_USERS=1 bun prisma db seed`

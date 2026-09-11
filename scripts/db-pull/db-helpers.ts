@@ -4,6 +4,7 @@
 import path from "node:path"
 import { styleText } from "node:util"
 import { $, SQL } from "bun"
+import { buildPseudonymEmail, buildPseudonymForUser, isFixMyCityEmail } from "./pseudonymizeUser"
 
 export type RemoteDatabaseTarget = "production" | "staging"
 
@@ -176,7 +177,11 @@ export async function restoreDump(
   }
 }
 
-// Function to anonymize data using Bun's native SQL API
+// Function to anonymize data using Bun's native SQL API.
+// Pseudonymizes non-FixMyCity users (name/email/phone/image/password), matches Invite emails
+// to their inviter's new pseudonym where possible, and scrubs all standing credentials
+// (sessions, verifications, tokens, admin API tokens, OAuth tokens). FixMyCity users keep
+// their real name/email/password so staging stays loginable with prod credentials.
 export async function anonymizeData(targetDbUrl: string, expectedEnv: "development" | "staging") {
   console.log(styleText("inverse", "🔒 Anonymizing data..."))
 
@@ -184,31 +189,125 @@ export async function anonymizeData(targetDbUrl: string, expectedEnv: "developme
   const db = new SQL(normalizedUrl)
 
   try {
-    // Update _Meta.ENV to match the target environment (critical for verification)
-    await db`
-      INSERT INTO "_Meta" (key, value)
-      VALUES ('ENV', ${expectedEnv})
-      ON CONFLICT (key) DO UPDATE SET value = ${expectedEnv}
-    `
+    const summary = await db.begin(async (tx) => {
+      // Update _Meta.ENV to match the target environment (critical for verification)
+      await tx`
+        INSERT INTO "_Meta" (key, value)
+        VALUES ('ENV', ${expectedEnv})
+        ON CONFLICT (key) DO UPDATE SET value = ${expectedEnv}
+      `
 
-    await db`
-      UPDATE public."User"
-      SET email = email || '.invalid'
-      WHERE
-        email NOT LIKE '%.invalid' AND
-        email NOT LIKE '%@fixmycity.de'
-    `
+      // Snapshot original emails before rewriting them, so Invite rows can still be matched
+      // to the User they belong to (and reuse that user's new pseudonym email).
+      const originalUsers = await tx<{ id: number; email: string }[]>`
+        SELECT id, email FROM public."User"
+      `
+      const originalEmailToUserId = new Map<string, number>()
+      for (const row of originalUsers) {
+        originalEmailToUserId.set(row.email.toLowerCase(), row.id)
+      }
 
-    await db`
-      UPDATE public."Invite"
-      SET email = email || '.invalid'
-      WHERE
-        email NOT LIKE '%.invalid' AND
-        email NOT LIKE '%@fixmycity.de'
-    `
+      const nonFmcUsers = originalUsers.filter((row) => !isFixMyCityEmail(row.email))
+      const nonFmcUserIds = nonFmcUsers.map((row) => row.id)
+      const pseudonymByUserId = new Map(
+        nonFmcUsers.map((row) => [row.id, buildPseudonymForUser(row.id)] as const),
+      )
+
+      for (const [userId, pseudo] of pseudonymByUserId) {
+        await tx`
+          UPDATE public."User"
+          SET
+            "firstName" = ${pseudo.firstName},
+            "lastName" = ${pseudo.lastName},
+            "name" = ${`${pseudo.firstName} ${pseudo.lastName}`},
+            "email" = ${pseudo.email},
+            "phone" = NULL,
+            "image" = NULL,
+            "hashedPassword" = NULL
+          WHERE id = ${userId}
+        `
+      }
+
+      // Invites with a non-FMC email: reuse the matching user's new pseudonym email when the
+      // (pre-update) email matches a User row, otherwise derive a standalone pseudonym email.
+      const invites = await tx<{ id: number; email: string }[]>`
+        SELECT id, email FROM public."Invite"
+      `
+      let invitesScrubbed = 0
+      for (const invite of invites) {
+        if (isFixMyCityEmail(invite.email)) continue
+        const matchedUserId = originalEmailToUserId.get(invite.email.toLowerCase())
+        const matchedPseudonym =
+          matchedUserId !== undefined ? pseudonymByUserId.get(matchedUserId) : undefined
+        const pseudoEmail = matchedPseudonym
+          ? matchedPseudonym.email
+          : buildPseudonymEmail(invite.email)
+        await tx`UPDATE public."Invite" SET email = ${pseudoEmail} WHERE id = ${invite.id}`
+        invitesScrubbed += 1
+      }
+
+      // Account: OAuth tokens are cleared for everyone; the login password is only cleared
+      // for non-FMC users so FMC staff keep staging access with their prod password.
+      const oauthCleared = await tx<{ id: number }[]>`
+        UPDATE public."Account"
+        SET
+          "accessToken" = NULL,
+          "refreshToken" = NULL,
+          "idToken" = NULL,
+          "accessTokenExpiresAt" = NULL,
+          "refreshTokenExpiresAt" = NULL
+        RETURNING id
+      `
+      let passwordsCleared = 0
+      if (nonFmcUserIds.length > 0) {
+        const cleared = await tx<{ id: number }[]>`
+          UPDATE public."Account"
+          SET "password" = NULL
+          WHERE "userId" IN ${tx(nonFmcUserIds)}
+          RETURNING id
+        `
+        passwordsCleared = cleared.length
+      }
+
+      // Credential scrub: every standing session/verification/token is dropped outright.
+      // (No MCP token reseeding here - that's an app-level concern, not this scrub's job.)
+      const deletedSessions = await tx<{ id: number }[]>`DELETE FROM public."Session" RETURNING id`
+      const deletedAuthSessions = await tx<{ id: number }[]>`
+        DELETE FROM public."AuthSession" RETURNING id
+      `
+      const deletedVerifications = await tx<{ id: number }[]>`
+        DELETE FROM public."Verification" RETURNING id
+      `
+      const deletedTokens = await tx<{ id: number }[]>`DELETE FROM public."Token" RETURNING id`
+      const deletedAdminApiTokens = await tx<{ id: string }[]>`
+        DELETE FROM public."AdminApiToken" RETURNING id
+      `
+
+      return {
+        usersPseudonymized: nonFmcUsers.length,
+        invitesScrubbed,
+        accountsOauthCleared: oauthCleared.length,
+        accountsPasswordCleared: passwordsCleared,
+        sessionsDeleted: deletedSessions.length,
+        authSessionsDeleted: deletedAuthSessions.length,
+        verificationsDeleted: deletedVerifications.length,
+        tokensDeleted: deletedTokens.length,
+        adminApiTokensDeleted: deletedAdminApiTokens.length,
+      }
+    })
 
     console.log("✅ Data anonymization completed")
     console.log(`✅ Updated _Meta.ENV to: ${expectedEnv}`)
+    console.log(`   Users pseudonymized: ${summary.usersPseudonymized}`)
+    console.log(`   Invites scrubbed: ${summary.invitesScrubbed}`)
+    console.log(
+      `   Account OAuth tokens cleared: ${summary.accountsOauthCleared} (passwords cleared: ${summary.accountsPasswordCleared})`,
+    )
+    console.log(`   Session rows deleted: ${summary.sessionsDeleted}`)
+    console.log(`   AuthSession rows deleted: ${summary.authSessionsDeleted}`)
+    console.log(`   Verification rows deleted: ${summary.verificationsDeleted}`)
+    console.log(`   Token rows deleted: ${summary.tokensDeleted}`)
+    console.log(`   AdminApiToken rows deleted: ${summary.adminApiTokensDeleted}`)
   } finally {
     db.close()
   }
