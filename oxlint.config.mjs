@@ -28,6 +28,17 @@ export default defineConfig({
     "typescript/no-misused-spread": "off",
     "typescript/require-array-sort-compare": "off",
     "typescript/no-array-delete": "off",
+    // Restriction; compiler correctness rules come from the oxlint `react` plugin (oxlint 1.82+)
+    "react/unsupported-syntax": "error",
+    "eslint/no-unused-vars": [
+      "warn",
+      {
+        argsIgnorePattern: "^_",
+        varsIgnorePattern: "^_",
+        destructuredArrayIgnorePattern: "^_",
+        caughtErrorsIgnorePattern: "^_",
+      },
+    ],
   },
   overrides: [
     {
@@ -114,7 +125,6 @@ export default defineConfig({
       jsPlugins: [{ name: "react-hooks-js", specifier: "eslint-plugin-react-hooks" }],
       rules: {
         ...reactHooksJs.rules,
-        "react/react-compiler": "error",
       },
     },
     {
