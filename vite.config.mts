@@ -1,10 +1,9 @@
 import { homedir } from "node:os"
 import { fileURLToPath, URL } from "node:url"
-import babel from "@rolldown/plugin-babel"
 import tailwindcss from "@tailwindcss/vite"
 import { devtools } from "@tanstack/devtools-vite"
 import { tanstackStart } from "@tanstack/react-start/plugin/vite"
-import viteReact, { reactCompilerPreset } from "@vitejs/plugin-react"
+import viteReact from "@vitejs/plugin-react"
 import browserslistToEsbuild from "browserslist-to-esbuild"
 import { nitro } from "nitro/vite"
 import { defineConfig } from "vite"
@@ -67,9 +66,6 @@ export default defineConfig({
     }),
     tailwindcss(),
     tanstackStart({}),
-    viteReact(),
-    babel({
-      presets: [reactCompilerPreset()],
-    }),
+    viteReact({ compiler: true }),
   ],
 })
