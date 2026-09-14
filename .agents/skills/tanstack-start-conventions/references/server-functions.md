@@ -4,7 +4,7 @@ Server functions run on the server and are callable from routes and components l
 
 **Official docs:** [Server Functions](https://tanstack.com/start/latest/docs/framework/react/guide/server-functions)
 
-**Related:** [execution-model.md](execution-model.md) · [client-server-boundaries.md](client-server-boundaries.md) (file suffixes) · `tanstack-start-auth` (auth inside handlers)
+**Related:** [execution-model.md](execution-model.md) · [client-server-boundaries.md](client-server-boundaries.md) (file suffixes) · `tanstack-start-auth` (auth inside handlers) · client mutation wrappers: `tanstack-router-conventions` → [router-and-query.md](../../tanstack-router-conventions/references/router-and-query.md#client-mutations)
 
 ---
 
@@ -40,6 +40,8 @@ await updateNameFn({ data: { name: "Jane" } })
 - **validator:** Validate before handler; handler receives `{ data }`.
 - **handler:** Async; DB, external APIs, fs. Return serializable value.
 
+That is the RPC shape. Loaders call `*Fn` directly. In components, wrap non-form calls in `useMutation` and form submits in Form `onSubmit` — `tanstack-router-conventions` → [router-and-query.md](../../tanstack-router-conventions/references/router-and-query.md#client-mutations). On Start, `mutationFn` is `await deleteItemFn({ data: { id } })` (throw if `{ success: false }`).
+
 ## FMC file conventions
 
 | Suffix           | Purpose                                                                                             |
@@ -74,7 +76,7 @@ export const submitFormFn = createServerFn({ method: "POST" })
 
 ## Form submit (no formAction)
 
-Use `onSubmit` → server fn → invalidate/redirect. Optional `useTransition` for pending state.
+**Forms only** — not delete/revoke/import buttons (those use `useMutation`). `onSubmit` → server fn → invalidate/redirect. Optional `useTransition` for pending on a native `<form>`; with TanStack Form, use `isSubmitting` instead.
 
 ```tsx
 import { useTransition } from "react"
@@ -118,7 +120,7 @@ After a mutation that changes loader/Query data:
 - **React Query:** `queryClient.invalidateQueries({ queryKey: [...] })`
 - **Router:** `router.invalidate()` for loader-only routes
 
-Call invalidation after `await serverFn(...)` in the same event handler.
+Where to call these (Form `onSubmit` vs `useMutation` `onSuccess`) is in [router-and-query.md](../../tanstack-router-conventions/references/router-and-query.md#client-mutations).
 
 ## Auth note
 

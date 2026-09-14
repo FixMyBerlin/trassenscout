@@ -54,7 +54,7 @@ Prefer installed skill names when present; otherwise fetch from git.
 
 ## Runtime and build
 
-- **Runtime / package manager:** [Bun](https://bun.sh) — install policy [bun-install.md](references/bun-install.md) (≥ 1.3.14, global store, `bun --bun` for Vite, `.nvmrc` for Prisma/Playwright)
+- **Runtime / package manager:** [Bun](https://bun.sh) — install policy [bun-install.md](references/bun-install.md) (≥ 1.3.14, global store, `bun --bun` for Vite, `.nvmrc` for Prisma/Playwright; Docker image install and Netlify function packaging)
 - **Build:** latest Vite (8+)
 - **Lint / format:** oxlint and oxfmt with fix flags; Prettier-compatible defaults:
   - class sorting, import sorting, `package.json` sorting
@@ -92,6 +92,14 @@ Use **two profiles** — do not merge app and scripts into one config.
 | App (DOM, TanStack Start) | [examples/tsconfig.app.json](examples/tsconfig.app.json)         | total-typescript `bundler/dom`    |
 | Scripts (CLI, no DOM)     | [examples/tsconfig.scripts.json](examples/tsconfig.scripts.json) | total-typescript `bundler/no-dom` |
 
+**Required type packages** whenever `compilerOptions.types` includes `bun-types` / `web` — these names are npm packages, not built-in. Install as **direct** `devDependencies` (Knip and `globalStore` will not treat a transitive dep as yours — [knip.md](references/knip.md) / [bun-install.md](references/bun-install.md)):
+
+- `@types/bun` pinned to the Bun floor (`1.3.14`)
+- `bun-types` as a **direct** dep (`^` that floor) — `types` looks up the package name `bun-types`; `@types/bun` alone is not enough
+- `@types/web` if the config lists `"web"` — setting `types` turns off automatic `@types/*` inclusion, so DOM globals disappear unless `web` is installed and listed
+
+Scripts profile (`types: ["bun-types"]`) still needs both `@types/bun` and `bun-types` even with no DOM. Bun scripts should use `Glob` / `Bun.file()`; that is only type-safe after these deps — otherwise agents fall back to `node:fs`.
+
 Copy and adapt on scaffold. Adjust `paths` to project layout (`./src/*` vs `./*`). Add `allowJs: true` only when the repo still has `.js` files.
 
 **TanStack Start (app only):** `verbatimModuleSyntax: false` — type-only imports can become empty runtime imports and leak server code into client bundles. See header comments in `tsconfig.app.json`.
@@ -105,6 +113,8 @@ tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.scripts.json
 ```
 
 Single-config repos (e.g. one root `tsconfig.json` covering app + scripts) are acceptable; greenfield TanStack Start apps should prefer split configs.
+
+**Astro / single-config:** keep `extends: astro/tsconfigs/strict`. Set `types` to `["bun-types", "web"]`. Do **not** add `vite/client` (Astro client types come from `.astro/types.d.ts`). Scripts in the same tsconfig still need Bun types (same packages as above).
 
 Optional root `tsconfig.json` with `"references"` to both child configs.
 

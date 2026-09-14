@@ -61,6 +61,7 @@ Knip / husky / verify scripts: [package-json-scripts.md](package-json-scripts.md
 ## Commonly tuned per project
 
 - **`browserslist` stack** — keep `browserslist`, `browserslist-to-esbuild`, and `eslint-plugin-compat` as direct `devDependencies` so scheduled Bun PRs refresh `caniuse-lite`; Dependabot does not edit query strings — [browser-target.md](browser-target.md).
+- **`bun-types`** — not `@types/*`, so without an explicit pattern it falls into the catch-all patch group. The template lists it in `app-dev-minor-patch` and `security-dev-tools` so it updates with `@types/bun`.
 - **`directories`** — single-package apps use `/`. Monorepos list each Bun workspace root (tilda-geo: `/app`, `/processing`).
 - **`groups`** — add patterns for project-specific packages; split or merge groups if PRs become too large or too fragmented.
 - **`ignore`** — tilda-geo pins `nitro` (TanStack Start stack); drop or adjust if your deploy target changes.
