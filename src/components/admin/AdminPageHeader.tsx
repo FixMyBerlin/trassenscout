@@ -16,27 +16,29 @@ export function AdminPageHeader({ title, parent, action }: Props) {
   if (!title && !action) return null
 
   return (
-    <header className="mb-5 flex h-16 shrink-0 items-center justify-between gap-4 px-4">
+    <header className="mb-5 flex min-h-16 shrink-0 items-center justify-between gap-4 px-4 py-3">
       {title ? (
-        <h1 className="flex min-w-0 items-center gap-2.5 text-3xl font-semibold text-gray-900">
+        <h1 className="flex min-w-0 flex-1 flex-wrap items-center gap-x-2.5 gap-y-1 text-3xl leading-tight font-semibold text-gray-900">
           {parent ? (
             <>
               {parent.href ? (
                 <Link
                   to={parent.href}
-                  className="truncate font-medium text-gray-500 hover:text-gray-700"
+                  className="min-w-0 font-medium break-words text-gray-500 hover:text-gray-700"
                 >
                   {parent.title}
                 </Link>
               ) : (
-                <span className="truncate font-medium text-gray-500">{parent.title}</span>
+                <span className="min-w-0 font-medium break-words text-gray-500">
+                  {parent.title}
+                </span>
               )}
               <span className="shrink-0 font-normal text-gray-400" aria-hidden="true">
                 &gt;
               </span>
             </>
           ) : null}
-          <span className="truncate">{title}</span>
+          <span className="min-w-0 break-words">{title}</span>
         </h1>
       ) : (
         <div />

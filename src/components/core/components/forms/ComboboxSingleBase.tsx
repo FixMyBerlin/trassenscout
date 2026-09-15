@@ -49,6 +49,15 @@ function itemSearchText(item: ComboboxSingleItem) {
   return item.searchText ?? String(item.label)
 }
 
+/**
+ * Tooltip for a truncated option. Mirrors what is rendered, so it stays undefined for
+ * non-text labels — `searchText` may differ from the label, and `String(ReactNode)` would
+ * render "[object Object]".
+ */
+function itemLabelText(item: ComboboxSingleItem) {
+  return typeof item.label === "string" ? item.label : undefined
+}
+
 function selectedTriggerText(item: ComboboxSingleItem) {
   return (
     item.triggerText ??
@@ -74,6 +83,7 @@ export function ComboboxSingleBase({
   const [query, setQuery] = useState("")
   const disabledOrEmpty = Boolean(disabled || items.length === 0)
   const selectedItem = items.find((item) => item.value === value) ?? null
+  const selectedText = selectedItem ? selectedTriggerText(selectedItem) : "Auswählen"
 
   const filteredItems =
     query === ""
@@ -104,8 +114,8 @@ export function ComboboxSingleBase({
         <div className="relative">
           <ComboboxButton id={id} onBlur={onBlur} className={triggerClassName}>
             {buttonSrLabel && <span className="sr-only">{buttonSrLabel}</span>}
-            <span className="truncate">
-              {selectedItem ? selectedTriggerText(selectedItem) : "Auswählen"}
+            <span className="truncate" title={selectedText}>
+              {selectedText}
             </span>
             <ChevronDownIcon className="size-5 shrink-0 text-current" aria-hidden="true" />
           </ComboboxButton>
@@ -144,7 +154,9 @@ export function ComboboxSingleBase({
                       disabled={item.disabled}
                       className={listboxOptionClassName(optionUi, "data-disabled:opacity-50")}
                     >
-                      <ListboxOptionLabel ui={optionUi}>{item.label}</ListboxOptionLabel>
+                      <ListboxOptionLabel ui={optionUi} title={itemLabelText(item)}>
+                        {item.label}
+                      </ListboxOptionLabel>
                     </ComboboxOption>
                   ))}
                 </ComboboxOptions>

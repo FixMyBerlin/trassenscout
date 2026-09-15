@@ -27,6 +27,10 @@ type ComboboxItem = {
   disabled?: boolean
 }
 
+function itemLabelText(item: ComboboxItem) {
+  return typeof item.label === "string" ? item.label : undefined
+}
+
 export type ComboboxProps = {
   label?: string
   help?: string
@@ -175,7 +179,9 @@ export function Combobox({
                       disabled={item.disabled}
                       className={listboxOptionClassName(optionUi, "data-disabled:opacity-50")}
                     >
-                      <ListboxOptionLabel ui={optionUi}>{item.label}</ListboxOptionLabel>
+                      <ListboxOptionLabel ui={optionUi} title={itemLabelText(item)}>
+                        {item.label}
+                      </ListboxOptionLabel>
                     </ComboboxOption>
                   ))}
                 </ComboboxOptions>

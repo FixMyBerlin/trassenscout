@@ -56,7 +56,9 @@ export const PageHeader = ({
 
   const row3Left =
     title && !titleVisuallyHidden ? (
-      <h1 className="text-base font-semibold text-gray-900 sm:truncate">{title}</h1>
+      <h1 className="text-base font-semibold text-gray-900 sm:truncate" title={title}>
+        {title}
+      </h1>
     ) : undefined
 
   return (

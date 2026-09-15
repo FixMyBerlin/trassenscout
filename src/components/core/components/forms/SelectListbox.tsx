@@ -35,13 +35,16 @@ export function SelectListbox<T extends string | number>({
   className,
 }: Props<T>) {
   const selectedOption = options.find((option) => option.value === value)
+  const selectedLabel = selectedOption?.label ?? placeholder
 
   return (
     <Listbox value={value} onChange={onChange}>
       {({ open }) => (
         <div className={twJoin("relative", className)}>
           <ListboxButton className="relative w-full cursor-default rounded-md border border-gray-300 bg-white px-3 py-2.5 pr-10 text-left text-sm font-medium text-gray-900 shadow-xs focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-hidden focus:ring-inset">
-            <span className="block truncate">{selectedOption?.label ?? placeholder}</span>
+            <span className="block truncate" title={selectedLabel}>
+              {selectedLabel}
+            </span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
               <ChevronDownIcon className="size-5 text-gray-400" aria-hidden="true" />
             </span>
@@ -57,7 +60,9 @@ export function SelectListbox<T extends string | number>({
             <div className="absolute z-10 mt-1 w-full">
               <ListboxOptions static className={checkmarkListboxOptionsPanelClassName}>
                 <ListboxOption value={null} className={checkmarkListboxOptionClassName}>
-                  <CheckmarkListboxOptionLabel>{placeholder}</CheckmarkListboxOptionLabel>
+                  <CheckmarkListboxOptionLabel title={placeholder}>
+                    {placeholder}
+                  </CheckmarkListboxOptionLabel>
                 </ListboxOption>
 
                 {options.map((option) => (
@@ -66,7 +71,9 @@ export function SelectListbox<T extends string | number>({
                     value={option.value}
                     className={checkmarkListboxOptionClassName}
                   >
-                    <CheckmarkListboxOptionLabel>{option.label}</CheckmarkListboxOptionLabel>
+                    <CheckmarkListboxOptionLabel title={option.label}>
+                      {option.label}
+                    </CheckmarkListboxOptionLabel>
                   </ListboxOption>
                 ))}
               </ListboxOptions>
