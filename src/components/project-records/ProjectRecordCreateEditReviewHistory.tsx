@@ -1,7 +1,7 @@
 import type { ReactNode } from "react"
 import { ProjectRecordReviewStatePill } from "@/src/components/admin/project-records/AdminProjectRecordTable"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
-import { getFullname } from "@/src/components/core/users/getFullname"
+import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { formatBerlinTime } from "@/src/components/core/utils/formatBerlinTime"
 import {
   projectRecordSectionClassName,
@@ -27,7 +27,7 @@ const getProjectRecordAuthorLabel = ({
 }) => {
   if (type === ProjectRecordType.SYSTEM) return "KI"
 
-  return getFullname(author ?? null) || "Nutzer*in"
+  return getFullnameWithInstitution(author ?? null) || "Nutzer*in"
 }
 
 const formatAuthorWithTimestamp = ({
@@ -97,7 +97,7 @@ const CreateEditReviewHistoryComponent = ({
     rows.push({
       label: "Bestätigung durch:",
       value: formatAuthorWithTimestamp({
-        label: getFullname(projectRecord.reviewedBy) || "Nutzer*in",
+        label: getFullnameWithInstitution(projectRecord.reviewedBy) || "Nutzer*in",
         timestamp: projectRecord.reviewedAt,
       }),
     })

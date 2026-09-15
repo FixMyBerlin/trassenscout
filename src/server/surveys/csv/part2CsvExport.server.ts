@@ -3,7 +3,7 @@ import { backendConfig as backendConfigDefault } from "@/src/components/beteilig
 import type { SurveyFieldRadioOrCheckboxGroupConfig } from "@/src/components/beteiligung/shared/types"
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
 import { getQuestionIdBySurveySlug } from "@/src/components/beteiligung/shared/utils/getQuestionIdBySurveySlug"
-import { getFullname } from "@/src/components/core/users/getFullname"
+import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { getFlatSurveyFormFields } from "@/src/components/surveys/[surveyId]/responses/getFlatSurveyFormFields"
 import { SurveyResponseStateEnum } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
@@ -55,7 +55,11 @@ export async function exportPart2ResultsCsv(
           include: {
             surveyResponseTags: true,
             surveyResponseComments: {
-              include: { author: { select: { id: true, firstName: true, lastName: true } } },
+              include: {
+                author: {
+                  select: { id: true, firstName: true, institution: true, lastName: true },
+                },
+              },
             },
           },
         },
@@ -155,13 +159,8 @@ export async function exportPart2ResultsCsv(
             comments: surveyResponseComments
               .map((c) => {
                 const author = serializeProjectUser(c.author, redactionContext)
-                return (
-                  getFullname(author) +
-                  " (" +
-                  c.createdAt.toLocaleDateString("de-DE") +
-                  "): " +
-                  c.body
-                )
+                const authorLabel = getFullnameWithInstitution(author) ?? "Nutzer*in"
+                return authorLabel + " (" + c.createdAt.toLocaleDateString("de-DE") + "): " + c.body
               })
               .join(", \n"),
           }

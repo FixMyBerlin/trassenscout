@@ -26,6 +26,7 @@ export const DeleteSurveyResponseCommentSchema = ProjectSlugRequiredSchema.exten
 const commentAuthorSelect = {
   id: true,
   firstName: true,
+  institution: true,
   lastName: true,
 } as const
 

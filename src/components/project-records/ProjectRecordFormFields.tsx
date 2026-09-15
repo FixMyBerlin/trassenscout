@@ -3,7 +3,6 @@ import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/Sup
 import { FieldLayout } from "@/src/components/core/components/forms/FieldLayout"
 import { useCoreAppFormContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { useFormValue } from "@/src/components/core/components/forms/hooks/useFormValue"
-import { shortTitle } from "@/src/components/core/components/text/titles"
 import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { NumberArraySchema } from "@/src/components/core/utils/schema-shared"
 import { useSessionUploadCleanup } from "@/src/components/project-records/hooks/useSessionUploadCleanup"
@@ -15,6 +14,10 @@ import {
 } from "@/src/components/project-records/ProjectRecordEmailSource"
 import { ProjectRecordFormTemplatesField } from "@/src/components/project-records/ProjectRecordFormTemplatesField"
 import { ProjectRecordFormTemplatesPreview } from "@/src/components/project-records/ProjectRecordFormTemplatesPreview"
+import {
+  formatAcquisitionAreaRelationOptionLabel,
+  formatSubsubsectionRelationOptionLabel,
+} from "@/src/components/project-records/ProjectRelationLinks"
 import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { getUserComboboxItems } from "@/src/components/shared/app/users/utils/getUserSelectOptions"
 import { TagsFormSection } from "@/src/components/tags/TagsFormSection"
@@ -83,14 +86,12 @@ export const ProjectRecordFormFields = ({
     .sort((a, b) => a.subsection.slug.localeCompare(b.subsection.slug))
     .map((subsubsection) => ({
       value: String(subsubsection.id),
-      label: `Maßnahme: ${shortTitle(subsubsection.slug)}`,
+      label: formatSubsubsectionRelationOptionLabel(subsubsection),
     }))
 
   const acquisitionAreaItems = acquisitionAreas.map((acquisitionArea) => ({
     value: String(acquisitionArea.id),
-    label: `Verhandlungsfläche: ${acquisitionArea.id} - Flurstücknr. ${acquisitionArea.parcel.alkisParcelId} (${shortTitle(
-      acquisitionArea.subsubsection.slug,
-    )})`,
+    label: formatAcquisitionAreaRelationOptionLabel(acquisitionArea),
   }))
 
   const showSubsubsectionField = !(formMode === "create" && relationContext === "acquisitionArea")

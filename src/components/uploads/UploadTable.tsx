@@ -15,7 +15,7 @@ import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { Tooltip } from "@/src/components/core/components/Tooltip/Tooltip"
 import { useCurrentReturnTo } from "@/src/components/core/routes/useCurrentPathWithSearch"
 import { Prettify } from "@/src/components/core/types"
-import { getFullname } from "@/src/components/core/users/getFullname"
+import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { formatBerlinTime } from "@/src/components/core/utils/formatBerlinTime"
 import { ProjectRecordTagsList } from "@/src/components/project-records/ProjectRecordTagsList"
 import { isAdmin } from "@/src/components/shared/app/users/utils/isAdmin"
@@ -201,6 +201,9 @@ const UploadTableRow = ({
     : undefined
   const filename = getFilenameFromS3(upload.externalUrl)
   const isUploadPdf = isPdf(upload)
+  const authorLabel = upload.createdBy
+    ? (getFullnameWithInstitution(upload.createdBy) ?? "Unbekannt")
+    : null
   return (
     <tr className={tableRowClassName}>
       <td className={twJoin(tableCellClassName, "align-top")}>
@@ -247,11 +250,8 @@ const UploadTableRow = ({
           {formatBerlinTime(upload.createdAt, "dd.MM.yyyy, HH:mm")}
         </div>
         {showCreatedBy && upload.createdBy && (
-          <span
-            className="inline-block max-w-[150px] truncate"
-            title={getFullname(upload.createdBy) || undefined}
-          >
-            {getFullname(upload.createdBy)}
+          <span className="inline-block max-w-[150px] truncate" title={authorLabel || undefined}>
+            {authorLabel}
           </span>
         )}
       </td>

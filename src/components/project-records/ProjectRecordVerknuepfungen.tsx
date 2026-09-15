@@ -1,32 +1,19 @@
-import { Link } from "@/src/components/core/components/links/Link"
+import {
+  AcquisitionAreaRelationLink,
+  acquisitionAreaRelationKey,
+  type AcquisitionAreaRelation,
+  SubsubsectionRelationLink,
+  subsubsectionRelationKey,
+  type SubsubsectionRelation,
+} from "@/src/components/project-records/ProjectRelationLinks"
 
 type Props = {
   projectSlug: string
   landAcquisitionModuleEnabled?: boolean
-  subsubsection?: {
-    slug: string
-    subsection: { slug: string }
-  } | null
-  acquisitionArea?: {
-    id: number
-    subsubsection: {
-      slug: string
-      subsection: { slug: string }
-    }
-    parcel: { alkisParcelId: string }
-  } | null
-  subsubsections?: {
-    slug: string
-    subsection: { slug: string }
-  }[]
-  acquisitionAreas?: {
-    id: number
-    subsubsection: {
-      slug: string
-      subsection: { slug: string }
-    }
-    parcel: { alkisParcelId: string }
-  }[]
+  subsubsection?: SubsubsectionRelation | null
+  acquisitionArea?: AcquisitionAreaRelation | null
+  subsubsections?: SubsubsectionRelation[]
+  acquisitionAreas?: AcquisitionAreaRelation[]
   className?: string
   variant?: "default" | "valuesOnly"
   relationType?: "all" | "subsubsections" | "acquisitionAreas"
@@ -67,17 +54,11 @@ export const ProjectRecordVerknuepfungen = ({
         {hasSubsubsection && (
           <div className="flex flex-col gap-1">
             {effectiveSubsubsections.map((subsubsection) => (
-              <span key={`${subsubsection.subsection.slug}-${subsubsection.slug}`}>
-                <Link
-                  to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug"
-                  params={{
-                    projectSlug,
-                    subsectionSlug: subsubsection.subsection.slug,
-                    subsubsectionSlug: subsubsection.slug,
-                  }}
-                >
-                  {subsubsection.slug}
-                </Link>
+              <span key={subsubsectionRelationKey(subsubsection)}>
+                <SubsubsectionRelationLink
+                  projectSlug={projectSlug}
+                  subsubsection={subsubsection}
+                />
               </span>
             ))}
           </div>
@@ -85,18 +66,8 @@ export const ProjectRecordVerknuepfungen = ({
         {hasAcquisitionArea && (
           <div className="flex flex-col gap-1">
             {effectiveAcquisitionAreas.map((area) => (
-              <span key={area.id}>
-                <Link
-                  to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition"
-                  params={{
-                    projectSlug,
-                    subsectionSlug: area.subsubsection.subsection.slug,
-                    subsubsectionSlug: area.subsubsection.slug,
-                  }}
-                  search={{ acquisitionAreaId: String(area.id) }}
-                >
-                  {area.id} ({area.parcel.alkisParcelId})
-                </Link>
+              <span key={acquisitionAreaRelationKey(area)}>
+                <AcquisitionAreaRelationLink projectSlug={projectSlug} acquisitionArea={area} />
               </span>
             ))}
           </div>
@@ -112,33 +83,18 @@ export const ProjectRecordVerknuepfungen = ({
           (effectiveSubsubsections.length === 1 ? (
             <li>
               <strong className="font-medium">Maßnahme: </strong>
-              <Link
-                to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug"
-                params={{
-                  projectSlug,
-                  subsectionSlug: effectiveSubsubsections[0]!.subsection.slug,
-                  subsubsectionSlug: effectiveSubsubsections[0]!.slug,
-                }}
-              >
-                {effectiveSubsubsections[0]!.slug}
-              </Link>
+              <SubsubsectionRelationLink
+                projectSlug={projectSlug}
+                subsubsection={effectiveSubsubsections[0]!}
+              />
             </li>
           ) : (
             <li className="flex flex-wrap items-baseline gap-x-1">
               <strong className="font-medium">Maßnahmen: </strong>
               <ul className="mt-0.5 flex list-none flex-wrap gap-x-2 pl-0">
                 {effectiveSubsubsections.map((subsub, index) => (
-                  <li key={`${subsub.subsection.slug}-${subsub.slug}`} className="inline-flex">
-                    <Link
-                      to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug"
-                      params={{
-                        projectSlug,
-                        subsectionSlug: subsub.subsection.slug,
-                        subsubsectionSlug: subsub.slug,
-                      }}
-                    >
-                      {subsub.slug}
-                    </Link>
+                  <li key={subsubsectionRelationKey(subsub)} className="inline-flex">
+                    <SubsubsectionRelationLink projectSlug={projectSlug} subsubsection={subsub} />
                     {index < effectiveSubsubsections.length - 1 ? <span>,</span> : null}
                   </li>
                 ))}
@@ -149,36 +105,18 @@ export const ProjectRecordVerknuepfungen = ({
           (effectiveAcquisitionAreas.length === 1 ? (
             <li>
               <strong className="font-medium">Verhandlungsfläche: </strong>
-              <Link
-                to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition"
-                params={{
-                  projectSlug,
-                  subsectionSlug: effectiveAcquisitionAreas[0]!.subsubsection.subsection.slug,
-                  subsubsectionSlug: effectiveAcquisitionAreas[0]!.subsubsection.slug,
-                }}
-                search={{ acquisitionAreaId: String(effectiveAcquisitionAreas[0]!.id) }}
-              >
-                {effectiveAcquisitionAreas[0]!.id} (
-                {effectiveAcquisitionAreas[0]!.parcel.alkisParcelId})
-              </Link>
+              <AcquisitionAreaRelationLink
+                projectSlug={projectSlug}
+                acquisitionArea={effectiveAcquisitionAreas[0]!}
+              />
             </li>
           ) : (
             <li className="flex flex-wrap items-baseline gap-x-1">
               <strong className="font-medium">Verhandlungsflächen: </strong>
               <ul className="mt-0.5 flex list-none flex-wrap gap-x-2 pl-0">
                 {effectiveAcquisitionAreas.map((area, index) => (
-                  <li key={area.id} className="inline-flex">
-                    <Link
-                      to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition"
-                      params={{
-                        projectSlug,
-                        subsectionSlug: area.subsubsection.subsection.slug,
-                        subsubsectionSlug: area.subsubsection.slug,
-                      }}
-                      search={{ acquisitionAreaId: String(area.id) }}
-                    >
-                      {area.id} ({area.parcel.alkisParcelId})
-                    </Link>
+                  <li key={acquisitionAreaRelationKey(area)} className="inline-flex">
+                    <AcquisitionAreaRelationLink projectSlug={projectSlug} acquisitionArea={area} />
                     {index < effectiveAcquisitionAreas.length - 1 ? <span>,</span> : null}
                   </li>
                 ))}

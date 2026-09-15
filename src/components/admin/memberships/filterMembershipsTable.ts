@@ -1,4 +1,4 @@
-import { getFullname } from "@/src/components/core/users/getFullname"
+import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 
 type ProjectLike = {
   id: number
@@ -8,6 +8,7 @@ type ProjectLike = {
 type UserLike = {
   id: number
   firstName: string | null
+  institution: string | null
   lastName: string | null
   email: string
   role: string
@@ -37,7 +38,7 @@ export function filterMembershipsTable({
 
   const filteredUsers = normalizedUserQuery
     ? users.filter((user) => {
-        const fullName = getFullname(user)?.toLowerCase() ?? ""
+        const fullName = getFullnameWithInstitution(user)?.toLowerCase() ?? ""
         return (
           fullName.includes(normalizedUserQuery) ||
           user.email.toLowerCase().includes(normalizedUserQuery)

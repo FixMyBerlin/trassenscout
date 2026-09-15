@@ -13,7 +13,7 @@ import {
 } from "@/src/components/core/components/Table/tableClasses"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
-import { getFullname } from "@/src/components/core/users/getFullname"
+import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { UserCanIcon } from "@/src/components/shared/app/memberships/UserCanIcon"
 import type { ProjectUsersList } from "@/src/server/memberships/types"
 import { TeamTableEditMembershipDelete } from "./TeamTableEditMembershipDelete"
@@ -23,8 +23,7 @@ import { TeamTableEditMembershipModal } from "./TeamTableEditMembershipModal"
  * Column width classes for `table-fixed` layout. Adjust percentages here only.
  */
 const teamTableColWidths = {
-  name: "min-w-0 w-[32%] @xl:w-[22%]",
-  institution: "hidden @xl:table-column @xl:w-[18%]",
+  name: "min-w-0 w-[32%] @xl:w-[40%]",
   phone: "w-[24%] @xl:w-[14%]",
   email: "hidden @xl:table-column @xl:w-[20%]",
   rights: "w-[22%] @xl:w-[12%]",
@@ -54,7 +53,6 @@ export const TeamTable = ({ users }: Props) => {
           <table className={tableFixedClassName}>
             <colgroup>
               <col className={teamTableColWidths.name} />
-              <col className={teamTableColWidths.institution} />
               <col className={teamTableColWidths.phone} />
               <col className={teamTableColWidths.email} />
               <col className={teamTableColWidths.rights} />
@@ -64,9 +62,6 @@ export const TeamTable = ({ users }: Props) => {
               <tr className={tableHeadRowClassName}>
                 <th scope="col" className={tableHeadCellClassName}>
                   Name
-                </th>
-                <th scope="col" className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}>
-                  Institution
                 </th>
                 <th scope="col" className={tableHeadCellClassName}>
                   Telefon
@@ -87,16 +82,17 @@ export const TeamTable = ({ users }: Props) => {
                 const canEditMembership = editableMembershipRoles.includes(
                   user.currentMembershipRole,
                 )
+                const userLabel = getFullnameWithInstitution(user) || "—"
 
                 return (
                   <tr key={user.email} className={tableRowClassName}>
-                    <td className={twJoin(tableCellClassName, "align-middle")}>
-                      {getFullname(user) || "—"}
-                    </td>
-                    <td
-                      className={twJoin("hidden align-middle @xl:table-cell", tableCellClassName)}
-                    >
-                      {user.institution || "—"}
+                    <td className={twJoin(tableCellClassName, "min-w-0 align-middle")}>
+                      <span
+                        className="line-clamp-2 min-w-0 leading-snug break-words"
+                        title={userLabel}
+                      >
+                        {userLabel}
+                      </span>
                     </td>
                     <td className={twJoin(tableCellClassName, "align-middle whitespace-nowrap")}>
                       {user.phone ? <LinkTel>{user.phone}</LinkTel> : "—"}

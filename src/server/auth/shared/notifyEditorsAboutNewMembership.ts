@@ -1,5 +1,5 @@
 import { membershipCreatedNotificationToEditors } from "@/emails/mailers/membershipCreatedNotificationToEditors"
-import { getFullname } from "@/src/components/core/users/getFullname"
+import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { Invite, Project, User } from "@/src/prisma/generated/browser"
 import db from "@/src/server/db.server"
 import {
@@ -12,7 +12,7 @@ type InviteWithProject = Invite & {
 }
 
 type Props = {
-  invitee: Pick<User, "firstName" | "lastName" | "email">
+  invitee: Pick<User, "firstName" | "institution" | "lastName" | "email">
   invites: InviteWithProject[]
 }
 
@@ -29,7 +29,12 @@ export const notifyEditorsAboutNewMembership = async ({ invites, invitee }: Prop
     number,
     {
       invites: InviteWithProject[]
-      user: { email: string; firstName: string | null; lastName: string | null }
+      user: {
+        email: string
+        firstName: string | null
+        institution: string | null
+        lastName: string | null
+      }
     }
   >()
 
@@ -56,10 +61,10 @@ export const notifyEditorsAboutNewMembership = async ({ invites, invitee }: Prop
       await membershipCreatedNotificationToEditors({
         user: {
           email: notification.user.email,
-          name: getFullname(notification.user) ?? notification.user.email,
+          name: getFullnameWithInstitution(notification.user) ?? notification.user.email,
         },
         projectName: formatInviteProjects(projectRoles),
-        invinteeName: getFullname(invitee) ?? invitee.email,
+        invinteeName: getFullnameWithInstitution(invitee) ?? invitee.email,
         projectRoles: formatInviteProjectRoles(projectRoles),
         teamPath:
           projectRoles.length > 1 ? "/dashboard" : `/${projectRoles[0]!.slug}/contacts/team`,

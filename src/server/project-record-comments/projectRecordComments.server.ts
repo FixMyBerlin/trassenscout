@@ -19,6 +19,7 @@ import {
 const commentAuthorSelect = {
   id: true,
   firstName: true,
+  institution: true,
   lastName: true,
 } as const
 

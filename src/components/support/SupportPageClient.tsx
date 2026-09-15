@@ -3,6 +3,7 @@ import { useSuspenseQuery, useQueryClient } from "@tanstack/react-query"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
 import { Link, linkIcons } from "@/src/components/core/components/links/Link"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
+import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { SupportUploadDropzone } from "@/src/components/pages/support/SupportUploadDropzone"
 import { supportDocumentsQueryOptions } from "@/src/server/supportDocuments/supportDocumentsQueryOptions"
 import { getFilenameFromS3 } from "@/src/shared/uploads/url"
@@ -47,7 +48,7 @@ export const SupportPageClient = () => {
                         </span>
                         {doc.createdBy && (
                           <span>
-                            von {doc.createdBy.firstName} {doc.createdBy.lastName}
+                            von {getFullnameWithInstitution(doc.createdBy) || "Unbekannt"}
                           </span>
                         )}
                         <span>Reihenfolge: {doc.order}</span>

@@ -74,6 +74,7 @@ export const projectRecordInclude = {
     select: {
       id: true,
       firstName: true,
+      institution: true,
       lastName: true,
     },
   },
@@ -81,6 +82,7 @@ export const projectRecordInclude = {
     select: {
       id: true,
       firstName: true,
+      institution: true,
       lastName: true,
     },
   },
@@ -88,6 +90,7 @@ export const projectRecordInclude = {
     select: {
       id: true,
       firstName: true,
+      institution: true,
       lastName: true,
     },
   },
@@ -95,6 +98,7 @@ export const projectRecordInclude = {
     select: {
       id: true,
       firstName: true,
+      institution: true,
       lastName: true,
     },
   },
@@ -111,6 +115,7 @@ export const projectRecordInclude = {
           id: true,
           role: true,
           firstName: true,
+          institution: true,
           lastName: true,
         },
       },

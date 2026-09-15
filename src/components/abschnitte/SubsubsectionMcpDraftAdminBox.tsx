@@ -4,7 +4,7 @@ import { formatDistanceToNow } from "date-fns"
 import { de } from "date-fns/locale/de"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
 import { Link } from "@/src/components/core/components/links/Link"
-import { getFullname } from "@/src/components/core/users/getFullname"
+import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { UserRoleEnum } from "@/src/prisma/generated/browser"
 import { deleteMcpDraftFn } from "@/src/server/mcp/mcpDrafts/mcpDrafts.functions"
 import {
@@ -44,7 +44,7 @@ export function SubsubsectionMcpDraftAdminBox({
   const draft = draftQuery.data
   if (!draft) return null
 
-  const createdByLabel = getFullname(draft.createdBy) ?? draft.createdBy.email
+  const createdByLabel = getFullnameWithInstitution(draft.createdBy) ?? draft.createdBy.email
   const ageLabel = formatDistanceToNow(draft.updatedAt, { addSuffix: true, locale: de })
 
   const handleDiscard = async () => {

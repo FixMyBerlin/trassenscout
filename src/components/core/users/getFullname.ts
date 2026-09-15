@@ -1,12 +1,20 @@
-type Props = {
-  firstName?: string | null
-  lastName?: string | null
-} | null
+type Props =
+  | {
+      firstName?: string | null
+      lastName?: string | null
+    }
+  | null
+  | undefined
 
 export const getFullname = (user: Props) => {
   if (!user) return null
 
-  return [user.firstName, user.lastName].filter(Boolean).join(" ")
+  const fullname = [user.firstName, user.lastName]
+    .map((part) => part?.trim())
+    .filter(Boolean)
+    .join(" ")
+
+  return fullname || null
 }
 
 type PropsWithInstitution =
@@ -22,5 +30,6 @@ export const getFullnameWithInstitution = (user: PropsWithInstitution) => {
   const fullname = getFullname(user ?? null)
   if (!fullname) return null
 
-  return user?.institution ? `${fullname} (${user.institution})` : fullname
+  const institution = user?.institution?.trim()
+  return institution ? `${fullname} (${institution})` : fullname
 }

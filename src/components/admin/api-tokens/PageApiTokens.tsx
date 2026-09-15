@@ -15,6 +15,7 @@ import { primaryButtonClassName } from "@/src/components/core/components/buttons
 import { translateServerError } from "@/src/components/core/components/forms/errorMessageTranslations"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
+import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { formatBerlinTime } from "@/src/components/core/utils/formatBerlinTime"
 import {
   createAdminApiTokenFn,
@@ -36,6 +37,7 @@ type TokenRow = {
   createdBy: {
     id: number
     firstName: string
+    institution: string | null
     lastName: string
     email: string
   }
@@ -171,9 +173,7 @@ export function PageApiTokens({ tokens }: Props) {
                   {token.name}
                 </th>
                 <td className={adminTableCellClassName}>
-                  {[token.createdBy.firstName, token.createdBy.lastName]
-                    .filter(Boolean)
-                    .join(" ") || token.createdBy.email}
+                  {getFullnameWithInstitution(token.createdBy) || token.createdBy.email}
                 </td>
                 <td className={adminTableCellClassName}>
                   {formatBerlinTime(token.createdAt, "dd.MM.yyyy, HH:mm")}

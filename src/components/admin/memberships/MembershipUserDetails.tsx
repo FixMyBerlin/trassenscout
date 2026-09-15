@@ -7,7 +7,7 @@ import {
   tableRowClassName,
 } from "@/src/components/core/components/Table/tableClasses"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
-import { getFullname } from "@/src/components/core/users/getFullname"
+import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { formatTableDateTime } from "@/src/components/core/utils/formatTableDateTime"
 import { UserRoleEnum } from "@/src/prisma/generated/browser"
 
@@ -58,7 +58,7 @@ function formatCreatedAt(value: Date | string) {
 }
 
 export function MembershipUserDetails({ user }: Props) {
-  const fullName = getFullname(user)
+  const fullName = getFullnameWithInstitution(user)
   const roleLabel =
     user.role in userRoleLabels ? userRoleLabels[user.role as UserRoleEnum] : user.role
 

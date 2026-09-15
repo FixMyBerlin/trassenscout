@@ -2,7 +2,7 @@ import { z } from "zod"
 import { projectRecordAssignedNotificationToUser } from "@/emails/mailers/projectRecordAssignedNotificationToUser"
 import { frenchQuote } from "@/src/components/core/components/text/quote"
 import { shortTitle } from "@/src/components/core/components/text/titles"
-import { getFullname } from "@/src/components/core/users/getFullname"
+import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import {
   ProjectRecordReviewState,
   ProjectRecordType,
@@ -303,19 +303,18 @@ async function sendProjectRecordAssignmentNotification({
   const [assignee, actor] = await Promise.all([
     db.user.findUnique({
       where: { id: assigneeId },
-      select: { email: true, firstName: true, lastName: true },
+      select: { email: true, firstName: true, institution: true, lastName: true },
     }),
     db.user.findUnique({
       where: { id: actorUserId },
-      select: { firstName: true, lastName: true },
+      select: { firstName: true, institution: true, lastName: true },
     }),
   ])
 
   if (!assignee || !actor) return
 
-  const assigneeName =
-    [assignee.firstName, assignee.lastName].filter(Boolean).join(" ") || assignee.email
-  const actorName = [actor.firstName, actor.lastName].filter(Boolean).join(" ") || "Unbekannt"
+  const assigneeName = getFullnameWithInstitution(assignee) || assignee.email
+  const actorName = getFullnameWithInstitution(actor) || "Unbekannt"
 
   await (
     await projectRecordAssignedNotificationToUser({
@@ -338,8 +337,8 @@ export async function getAllProjectRecordsAdmin(headers: Headers) {
     include: {
       project: { select: { id: true, slug: true } },
       tags: true,
-      author: { select: { id: true, firstName: true, lastName: true } },
-      updatedBy: { select: { id: true, firstName: true, lastName: true } },
+      author: { select: { id: true, firstName: true, institution: true, lastName: true } },
+      updatedBy: { select: { id: true, firstName: true, institution: true, lastName: true } },
     },
   })
 
@@ -421,6 +420,7 @@ export async function getProjectRecordAdmin(
         select: {
           id: true,
           firstName: true,
+          institution: true,
           lastName: true,
         },
       },
@@ -428,6 +428,7 @@ export async function getProjectRecordAdmin(
         select: {
           id: true,
           firstName: true,
+          institution: true,
           lastName: true,
         },
       },
@@ -435,6 +436,7 @@ export async function getProjectRecordAdmin(
         select: {
           id: true,
           firstName: true,
+          institution: true,
           lastName: true,
         },
       },
@@ -770,9 +772,9 @@ export async function patchProjectRecordAssignment(
     if (newAssigneeId !== null) {
       const assignee = await db.user.findUnique({
         where: { id: newAssigneeId },
-        select: { firstName: true, lastName: true, email: true },
+        select: { firstName: true, institution: true, lastName: true, email: true },
       })
-      const assigneeName = assignee ? getFullname(assignee) || assignee.email : ""
+      const assigneeName = assignee ? getFullnameWithInstitution(assignee) || assignee.email : ""
       assignmentMessage = `Protokolleintrag ${frenchQuote(record.title)} wurde an ${assigneeName} zugewiesen.`
       await createLogEntry({
         action: "UPDATE",
@@ -861,7 +863,7 @@ export async function getProjectRecordsNeedsReview(
       tags: true,
       acquisitionArea: { select: { id: true } },
       _count: { select: { projectRecordComments: true, uploads: true } },
-      assignedTo: { select: { id: true, firstName: true, lastName: true } },
+      assignedTo: { select: { id: true, firstName: true, institution: true, lastName: true } },
     },
   })
   const redactionContext = await loadUserRedactionContext(
@@ -928,7 +930,18 @@ export async function getProjectRecordDeleteInfo(
               subsection: { select: { slug: true } },
             },
           },
-          acquisitionAreas: { select: { id: true } },
+          acquisitionAreas: {
+            select: {
+              id: true,
+              subsubsection: {
+                select: {
+                  slug: true,
+                  subsection: { select: { slug: true } },
+                },
+              },
+              parcel: { select: { alkisParcelId: true } },
+            },
+          },
           projectRecords: { select: { id: true, title: true } },
           projectRecordEmail: {
             select: {
@@ -948,21 +961,31 @@ export async function getProjectRecordDeleteInfo(
   const uploadsWithInfo = projectRecord.uploads.map((upload) => {
     const protectionReasons: {
       subsubsection?: number
+      acquisitionAreas?: number[]
       otherProjectRecords?: number[]
       projectRecordEmail?: number
     } = {}
     const displayData: {
-      subsubsections?: Array<{ id: number; slug: string; subsectionSlug: string }>
+      subsubsections?: Array<{ slug: string; subsection: { slug: string } }>
+      acquisitionAreas?: Array<{
+        id: number
+        subsubsection: { slug: string; subsection: { slug: string } }
+        parcel: { alkisParcelId: string }
+      }>
       otherProjectRecords?: Array<{ id: number; title: string }>
     } = {}
 
     if (upload.subsubsections.length > 0) {
       protectionReasons.subsubsection = upload.subsubsections[0]!.id
       displayData.subsubsections = upload.subsubsections.map((subsub) => ({
-        id: subsub.id,
         slug: subsub.slug,
-        subsectionSlug: subsub.subsection.slug,
+        subsection: { slug: subsub.subsection.slug },
       }))
+    }
+
+    if (upload.acquisitionAreas.length > 0) {
+      protectionReasons.acquisitionAreas = upload.acquisitionAreas.map((area) => area.id)
+      displayData.acquisitionAreas = upload.acquisitionAreas
     }
 
     const otherProjectRecords = upload.projectRecords.filter((pr) => pr.id !== input.id)
@@ -1113,10 +1136,10 @@ const projectRecordListInclude = {
   },
   uploads: { select: { id: true, title: true, createdAt: true } },
   _count: { select: { projectRecordComments: true, uploads: true } },
-  author: { select: { id: true, firstName: true, lastName: true } },
-  updatedBy: { select: { id: true, firstName: true, lastName: true } },
-  reviewedBy: { select: { id: true, firstName: true, lastName: true } },
-  assignedTo: { select: { id: true, firstName: true, lastName: true } },
+  author: { select: { id: true, firstName: true, institution: true, lastName: true } },
+  updatedBy: { select: { id: true, firstName: true, institution: true, lastName: true } },
+  reviewedBy: { select: { id: true, firstName: true, institution: true, lastName: true } },
+  assignedTo: { select: { id: true, firstName: true, institution: true, lastName: true } },
 } as const
 
 function mapProjectRecordListRows(

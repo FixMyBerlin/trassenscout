@@ -1,7 +1,7 @@
 import { z } from "zod"
 import { frenchQuote } from "@/src/components/core/components/text/quote"
 import { shortTitle } from "@/src/components/core/components/text/titles"
-import { getFullname } from "@/src/components/core/users/getFullname"
+import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { roleTranslation } from "@/src/components/core/users/roleTranslation.const"
 import { MembershipRoleEnum } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
@@ -59,7 +59,7 @@ const membershipInclude = {
 
 const membershipForLogInclude = {
   project: { select: { slug: true } },
-  user: { select: { firstName: true, lastName: true, email: true } },
+  user: { select: { firstName: true, institution: true, lastName: true, email: true } },
 } as const
 
 export async function createMembership(headers: Headers, input: z.infer<typeof MembershipSchema>) {
@@ -68,7 +68,7 @@ export async function createMembership(headers: Headers, input: z.infer<typeof M
     data: input,
     include: membershipInclude,
   })
-  const userName = getFullname(record.user) ?? record.user.email
+  const userName = getFullnameWithInstitution(record.user) ?? record.user.email
 
   await createLogEntry({
     action: "CREATE",
@@ -104,7 +104,7 @@ export async function updateMembershipRole(
     data: { role: input.role },
     include: membershipInclude,
   })
-  const userName = getFullname(previous.user) ?? previous.user.email
+  const userName = getFullnameWithInstitution(previous.user) ?? previous.user.email
 
   await createLogEntry({
     action: "UPDATE",
@@ -157,7 +157,7 @@ export async function deleteMembership(
     })
   })
 
-  const userName = getFullname(previous.user) ?? previous.user.email
+  const userName = getFullnameWithInstitution(previous.user) ?? previous.user.email
 
   await createLogEntry({
     action: "DELETE",
@@ -233,7 +233,7 @@ export async function deleteProjectMembership(
     })
   })
 
-  const userName = getFullname(previous.user) ?? previous.user.email
+  const userName = getFullnameWithInstitution(previous.user) ?? previous.user.email
 
   await createLogEntry({
     action: "DELETE",
@@ -262,7 +262,7 @@ export async function updateProjectMembershipRole(
   })
   await membershipUpdateSession(updated.userId)
 
-  const userName = getFullname(previous.user) ?? previous.user.email
+  const userName = getFullnameWithInstitution(previous.user) ?? previous.user.email
 
   await createLogEntry({
     action: "UPDATE",
@@ -301,9 +301,9 @@ export async function saveUserMemberships(
 
   const targetUser = await db.user.findUniqueOrThrow({
     where: { id: input.userId },
-    select: { id: true, firstName: true, lastName: true, email: true },
+    select: { id: true, firstName: true, institution: true, lastName: true, email: true },
   })
-  const displayName = getFullname(targetUser) ?? targetUser.email
+  const displayName = getFullnameWithInstitution(targetUser) ?? targetUser.email
 
   const projectIds = [...new Set(input.projectRoles.map(({ projectId }) => projectId))]
   const projects = await db.project.findMany({

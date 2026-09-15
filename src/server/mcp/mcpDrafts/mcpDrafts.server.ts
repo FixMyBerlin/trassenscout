@@ -205,7 +205,7 @@ type SubsubsectionMcpDraftPayload = {
   id: number
   kind: "update" | "create"
   updatedAt: Date
-  createdBy: { firstName: string; lastName: string; email: string }
+  createdBy: { firstName: string; institution: string | null; lastName: string; email: string }
   slug: string
   fieldLabels: string[]
   patch: Prisma.JsonValue
@@ -216,7 +216,7 @@ type SubsectionMcpDraftPayload = {
   id: number
   kind: "update" | "create"
   updatedAt: Date
-  createdBy: { firstName: string; lastName: string; email: string }
+  createdBy: { firstName: string; institution: string | null; lastName: string; email: string }
   slug: string
   fieldLabels: string[]
   patch: Prisma.JsonValue
@@ -224,7 +224,12 @@ type SubsectionMcpDraftPayload = {
   overlayErrors: string[]
 }
 
-const draftAuthorSelect = { firstName: true, lastName: true, email: true } as const
+const draftAuthorSelect = {
+  firstName: true,
+  institution: true,
+  lastName: true,
+  email: true,
+} as const
 
 export async function getSubsubsectionMcpDraft(
   headers: Headers,
@@ -501,7 +506,7 @@ export async function listMcpDraftsGrouped(headers: Headers) {
     drafts: {
       id: number
       updatedAt: Date
-      createdBy: { firstName: string; lastName: string; email: string }
+      createdBy: { firstName: string; institution: string | null; lastName: string; email: string }
       kind: McpDraftKind
       subsectionSlug: string | null
       subsubsectionSlug: string | null

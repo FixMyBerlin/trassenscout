@@ -3,7 +3,7 @@ import { AdminPageHeader } from "@/src/components/admin/AdminPageHeader"
 import { Link } from "@/src/components/core/components/links/Link"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { shortTitle } from "@/src/components/core/components/text/titles"
-import { getFullname } from "@/src/components/core/users/getFullname"
+import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { formatBerlinTime } from "@/src/components/core/utils/formatBerlinTime"
 import { McpDraftKind } from "@/src/prisma/generated/browser"
 import { deleteMcpDraftFn } from "@/src/server/mcp/mcpDrafts/mcpDrafts.functions"
@@ -90,7 +90,8 @@ export function PageAdminMcpDrafts() {
                 </h2>
                 <ul className="mt-2 list-none space-y-2 pl-0">
                   {group.drafts.map((draft) => {
-                    const createdByLabel = getFullname(draft.createdBy) ?? draft.createdBy.email
+                    const createdByLabel =
+                      getFullnameWithInstitution(draft.createdBy) ?? draft.createdBy.email
                     const when = formatBerlinTime(draft.updatedAt, "dd.MM.yyyy HH:mm")
                     const { subsectionSlug } = draft
 
