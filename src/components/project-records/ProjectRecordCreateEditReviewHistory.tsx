@@ -51,32 +51,28 @@ const CreateEditReviewHistoryComponent = ({
 }) => {
   const rows: { label: string; value: ReactNode }[] = []
 
-  if (showAuthors) {
-    rows.push(
-      {
-        label: "Erstellt:",
-        value: formatAuthorWithTimestamp({
+  const systemNote = showAuthors
+    ? [
+        `Erstellt: ${formatAuthorWithTimestamp({
           label: getProjectRecordAuthorLabel({
             type: projectRecord.projectRecordAuthorType,
             author: projectRecord.author,
           }),
           timestamp: projectRecord.createdAt,
-        }),
-      },
-      {
-        label: "Zuletzt bearbeitet:",
-        value: projectRecord.projectRecordUpdatedByType
-          ? formatAuthorWithTimestamp({
-              label: getProjectRecordAuthorLabel({
-                type: projectRecord.projectRecordUpdatedByType,
-                author: projectRecord.updatedBy,
-              }),
-              timestamp: projectRecord.updatedAt,
-            })
-          : "—",
-      },
-    )
-  }
+        })}`,
+        `Zuletzt bearbeitet: ${
+          projectRecord.projectRecordUpdatedByType
+            ? formatAuthorWithTimestamp({
+                label: getProjectRecordAuthorLabel({
+                  type: projectRecord.projectRecordUpdatedByType,
+                  author: projectRecord.updatedBy,
+                }),
+                timestamp: projectRecord.updatedAt,
+              })
+            : "—"
+        }`,
+      ]
+    : []
 
   if (
     projectRecord.projectRecordAuthorType === ProjectRecordType.SYSTEM &&
@@ -113,16 +109,27 @@ const CreateEditReviewHistoryComponent = ({
     })
   }
 
-  if (!rows.length) return null
+  if (!rows.length && !systemNote.length) return null
 
   return (
-    <div className="mt-8 max-w-5xl space-y-4 border-y border-gray-200 px-4 py-4">
-      {rows.map((row) => (
-        <div key={row.label} className={projectRecordSectionClassName}>
-          <p className={projectRecordSectionLabelClassName}>{row.label}</p>
-          <div className={projectRecordSectionValueClassName}>{row.value}</div>
+    <div className="mt-8 max-w-5xl px-4">
+      {rows.length > 0 && (
+        <div className="space-y-4 border-y border-gray-200 py-4">
+          {rows.map((row) => (
+            <div key={row.label} className={projectRecordSectionClassName}>
+              <p className={projectRecordSectionLabelClassName}>{row.label}</p>
+              <div className={projectRecordSectionValueClassName}>{row.value}</div>
+            </div>
+          ))}
         </div>
-      ))}
+      )}
+      {systemNote.length > 0 && (
+        <p className="mt-4 flex flex-wrap gap-x-6 gap-y-1 text-xs text-gray-400">
+          {systemNote.map((entry) => (
+            <span key={entry}>{entry}</span>
+          ))}
+        </p>
+      )}
     </div>
   )
 }

@@ -56,9 +56,9 @@ export const ProjectRecordCommentsSection = ({ projectRecord }: Props) => {
     <>
       {(hasComments || userCanComment) && (
         <div className={pageContentPaddingClassName}>
-          <h4 className="font-semibold">Kommentare</h4>
+          <h4 className="font-semibold">Anmerkungen</h4>
           <p className="mt-1 mb-3 text-sm text-gray-500">
-            Hier können Sie einen Kommentar zum Protokolleintrag hinzufügen.
+            Hier können Sie eine Anmerkung zum Protokolleintrag hinzufügen.
           </p>
           <ul className="flex max-w-3xl flex-col gap-4">
             {projectRecord.projectRecordComments?.map((comment) => {
@@ -66,7 +66,7 @@ export const ProjectRecordCommentsSection = ({ projectRecord }: Props) => {
                 <li key={comment.id}>
                   <CommentField
                     comment={comment}
-                    commentLabel="Kommentar"
+                    commentLabel="Anmerkung"
                     mutateComment={{
                       update: async (body) => {
                         await updateProjectRecordCommentMutation.mutateAsync({
@@ -95,7 +95,7 @@ export const ProjectRecordCommentsSection = ({ projectRecord }: Props) => {
             {userCanComment && (
               <li>
                 <NewCommentForm
-                  commentLabel="Kommentar"
+                  commentLabel="Anmerkung"
                   createComment={async (body) => {
                     await createProjectRecordCommentMutation.mutateAsync({
                       data: {
