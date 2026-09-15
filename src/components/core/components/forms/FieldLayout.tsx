@@ -58,12 +58,14 @@ export function FieldLayout({
 export function FieldLayoutRightColumn({
   children,
   className,
+  outerProps,
 }: {
   children: ReactNode
   className?: string
+  outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
 }) {
   return (
-    <div className={fieldLayoutRootClassName}>
+    <div {...outerProps} className={twMerge(fieldLayoutRootClassName, outerProps?.className)}>
       <div
         className={twJoin(
           fieldLayoutControlClassName,

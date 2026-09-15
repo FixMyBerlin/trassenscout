@@ -7,6 +7,7 @@ export async function getProjectsWithGeometryWithMembershipRole(headers: Headers
   const session = await endpointAuth.session(headers)
 
   const projectsWithGeometryWithMembershipRole = await db.project.findMany({
+    orderBy: { slug: "asc" },
     // Note: We don't have a "ADMIN" sees all here, because that would fill the Dashboard with a map of all projects
     where: { memberships: { some: { userId: Number(session.userId) } } },
     select: {
@@ -30,9 +31,20 @@ export async function getProjectsWithGeometryWithMembershipRole(headers: Headers
 
   return projectsWithGeometryWithMembershipRole.map((project) => {
     const firstSubsection = project.subsections[0]
-    const previewPoint = firstSubsection
-      ? getLabelPosition(typeSubsectionGeometry(firstSubsection).geometry, firstSubsection.labelPos)
-      : null
+    let previewPoint: ReturnType<typeof getLabelPosition> | null = null
+
+    if (firstSubsection) {
+      try {
+        previewPoint = getLabelPosition(
+          typeSubsectionGeometry(firstSubsection).geometry,
+          firstSubsection.labelPos,
+        )
+      } catch (error) {
+        // Skip malformed legacy/imported geometries so one bad project does not break the
+        // dashboard — but log it, otherwise the corrupt row stays invisible.
+        console.error(`Invalid geometry on project "${project.slug}":`, error)
+      }
+    }
 
     const { subsections: _subsections, _count, ...rest } = project
 

@@ -1,5 +1,5 @@
 import { ChevronDownIcon } from "@heroicons/react/20/solid"
-import { useNavigate } from "@tanstack/react-router"
+import { useLocation, useNavigate } from "@tanstack/react-router"
 import { useState } from "react"
 import { twJoin } from "tailwind-merge"
 import {
@@ -14,12 +14,32 @@ import type { ProjectsForCurrentUser } from "@/src/server/projects/types"
 const DASHBOARD_VALUE = "__dashboard__"
 
 type Props = { projects: ProjectsForCurrentUser }
+type ProjectSwitchState = {
+  open: boolean
+  pathname: string
+  query: string
+}
 
 export const ProjectsSwitch = ({ projects }: Props) => {
   const projectSlug = useTryRouteParam("projectSlug")
+  const pathname = useLocation({ select: (location) => location.pathname })
   const navigate = useNavigate()
-  const [open, setOpen] = useState(false)
-  const [query, setQuery] = useState("")
+  const [menuState, setMenuState] = useState<ProjectSwitchState>({
+    open: false,
+    pathname,
+    query: "",
+  })
+
+  const closeMenu = () => {
+    setMenuState({ open: false, pathname, query: "" })
+  }
+
+  const routeChanged = menuState.pathname !== pathname
+  if (routeChanged) {
+    closeMenu()
+  }
+  const open = routeChanged ? false : menuState.open
+  const query = routeChanged ? "" : menuState.query
 
   if (!projectSlug || !projects?.length || projects.length === 1) return null
 
@@ -46,8 +66,7 @@ export const ProjectsSwitch = ({ projects }: Props) => {
       : items.filter((item) => item.searchText.toLowerCase().includes(query.toLowerCase()))
 
   const selectItem = (value: string) => {
-    setOpen(false)
-    setQuery("")
+    closeMenu()
 
     if (!value || value === projectSlug) return
     navigate({ to: value === DASHBOARD_VALUE ? "/dashboard" : `/${value}` })
@@ -65,7 +84,7 @@ export const ProjectsSwitch = ({ projects }: Props) => {
           "focus:ring-2 focus:ring-white/30 focus:outline-hidden",
           open ? "bg-yellow-400" : "",
         )}
-        onClick={() => setOpen((current) => !current)}
+        onClick={() => setMenuState((current) => ({ ...current, open: !current.open }))}
       >
         <span className="sr-only">Projektwechsel</span>
         <span className="truncate">{selectedItem?.searchText ?? shortTitle(projectSlug)}</span>
@@ -80,11 +99,12 @@ export const ProjectsSwitch = ({ projects }: Props) => {
                 autoFocus
                 autoComplete="off"
                 value={query}
-                onChange={(event) => setQuery(event.target.value)}
+                onChange={(event) =>
+                  setMenuState({ open: true, pathname, query: event.target.value })
+                }
                 onKeyDown={(event) => {
                   if (event.key === "Escape") {
-                    setOpen(false)
-                    setQuery("")
+                    closeMenu()
                   }
                 }}
                 placeholder="Suchen"
