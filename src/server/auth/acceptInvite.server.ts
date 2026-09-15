@@ -53,7 +53,7 @@ export async function acceptInviteForSession(inviteToken: string | undefined, se
 
   const invitee = await db.user.findUniqueOrThrow({
     where: { id: userId },
-    select: { email: true, firstName: true, id: true, lastName: true },
+    select: { email: true, firstName: true, id: true, institution: true, lastName: true },
   })
   for (const invite of result.acceptedInvites) {
     await createInviteLogEntry({ invite, invitee })

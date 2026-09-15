@@ -1,7 +1,7 @@
 import { createObjectCsvStringifier } from "csv-writer"
 import { format } from "date-fns"
 import { getPrdOrStgDomain } from "@/src/components/core/components/links/getDomain"
-import { getFullname } from "@/src/components/core/users/getFullname"
+import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { subsubsectionLocationLabelMap } from "@/src/components/core/utils/subsubsectionLocationLabelMap"
 import type { Prisma } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
@@ -14,7 +14,7 @@ import {
 } from "@/src/server/memberships/redactFormerProjectMemberUser.server"
 
 const subsubsectionExportInclude = {
-  manager: { select: { id: true, firstName: true, lastName: true } },
+  manager: { select: { id: true, firstName: true, institution: true, lastName: true } },
   subsection: {
     select: {
       slug: true,
@@ -53,7 +53,9 @@ function getExportColumns(projectSlug: string, redactionContext: UserRedactionCo
     ansprechpartner: {
       title: "Ansprechpartner:in",
       value: (s: SubsubsectionExportRow) =>
-        s.manager ? (getFullname(serializeProjectUser(s.manager, redactionContext)) ?? "") : "",
+        s.manager
+          ? (getFullnameWithInstitution(serializeProjectUser(s.manager, redactionContext)) ?? "")
+          : "",
     },
     kostenschaetzung_euro: {
       title: "Kostenschätzung (Euro)",

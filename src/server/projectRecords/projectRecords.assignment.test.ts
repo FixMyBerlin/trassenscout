@@ -155,6 +155,35 @@ describe("patchProjectRecordAssignment", () => {
     )
   })
 
+  test("passes the record title and text to the assignment notification", async () => {
+    mockDb.projectRecord.findFirstOrThrow.mockResolvedValueOnce(previousRecord)
+    mockDb.projectRecord.update.mockResolvedValueOnce({
+      id: 12,
+      title: "Protokoll",
+      body: "Bitte die <b>Ausführungsplanung</b> prüfen.",
+      assignedToId: 3,
+      editingState: ProjectRecordEditingState.COMPLETED,
+    })
+    const { projectRecordAssignedNotificationToUser } =
+      await import("@/emails/mailers/projectRecordAssignedNotificationToUser")
+    const { patchProjectRecordAssignment } = await import("./projectRecords.server")
+
+    await patchProjectRecordAssignment(headers, {
+      projectSlug: "rs23",
+      id: 12,
+      assignedToId: 3,
+      editingState: ProjectRecordEditingState.COMPLETED,
+    })
+
+    expect(projectRecordAssignedNotificationToUser).toHaveBeenCalledWith(
+      expect.objectContaining({
+        recordTitle: "Protokoll",
+        recordText: "Bitte die <b>Ausführungsplanung</b> prüfen.",
+      }),
+    )
+    expect(mockSend).toHaveBeenCalledTimes(1)
+  })
+
   test("rejects assignees who are not project members", async () => {
     const { patchProjectRecordAssignment } = await import("./projectRecords.server")
     mockDb.membership.findFirst.mockResolvedValueOnce(null)

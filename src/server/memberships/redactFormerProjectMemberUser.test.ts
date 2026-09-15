@@ -24,6 +24,26 @@ describe("serializeProjectUser", () => {
     expect(result).toEqual({ id: 1, firstName: "Ada", lastName: "Lovelace" })
   })
 
+  test("keeps institutions for visible current members", () => {
+    const user = {
+      id: 1,
+      firstName: "Ada",
+      institution: "Analytical Engine Lab",
+      lastName: "Lovelace",
+    }
+    const result = serializeProjectUser(user, {
+      memberUserIds,
+      isAdmin: false,
+      sessionUserId,
+    })
+    expect(result).toEqual({
+      id: 1,
+      firstName: "Ada",
+      institution: "Analytical Engine Lab",
+      lastName: "Lovelace",
+    })
+  })
+
   test("omits id for former members and uses placeholder for non-admins", () => {
     const user = { id: 9, firstName: "Former", lastName: "Member", email: "former@example.com" }
     const result = serializeProjectUser(user, {

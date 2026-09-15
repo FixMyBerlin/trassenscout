@@ -3,11 +3,13 @@ import { getRouteApi } from "@tanstack/react-router"
 import { Suspense } from "react"
 import { AbschnitteBreadcrumb } from "@/src/components/abschnitte/AbschnitteBreadcrumb"
 import { EditSubsubsectionForm } from "@/src/components/abschnitte/EditSubsubsectionForm"
+import { SubsubsectionMcpDraftAdminBox } from "@/src/components/abschnitte/SubsubsectionMcpDraftAdminBox"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { Spinner } from "@/src/components/core/components/Spinner"
 import { subsubsectionBySlugQueryOptions } from "@/src/server/subsubsections/subsubsectionQueryOptions"
+import { isSubsubsectionMcpDraftSearch } from "@/src/shared/subsubsections/searchSchemas"
 
 const routeApi = getRouteApi(
   "/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/edit/",
@@ -15,6 +17,8 @@ const routeApi = getRouteApi(
 
 export function PageAbschnitteSubsubsectionEdit() {
   const { projectSlug, subsectionSlug, subsubsectionSlug } = routeApi.useParams()
+  const { mcpDraft } = routeApi.useSearch()
+  const applyMcpDraft = isSubsubsectionMcpDraftSearch(mcpDraft)
   const { data: subsubsection } = useSuspenseQuery(
     subsubsectionBySlugQueryOptions({ projectSlug, subsectionSlug, subsubsectionSlug }),
   )
@@ -22,7 +26,16 @@ export function PageAbschnitteSubsubsectionEdit() {
     <>
       <PageHeader breadcrumb={<AbschnitteBreadcrumb current="bearbeiten" />} />
       <Suspense fallback={<Spinner />}>
-        <EditSubsubsectionForm subsubsection={subsubsection} />
+        <div className={pageContentPaddingClassName}>
+          <SubsubsectionMcpDraftAdminBox
+            projectSlug={projectSlug}
+            subsectionSlug={subsectionSlug}
+            subsubsectionSlug={subsubsectionSlug}
+            subsubsectionId={subsubsection.id}
+            overlayApplied={applyMcpDraft}
+          />
+        </div>
+        <EditSubsubsectionForm subsubsection={subsubsection} applyMcpDraft={applyMcpDraft} />
       </Suspense>
       <div className={pageContentPaddingClassName}>
         <SuperAdminLogData data={subsubsection} />

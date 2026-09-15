@@ -237,6 +237,7 @@ export async function getAcquisitionAreasWithProjectRecordCountBySubsubsection(
     },
     select: {
       id: true,
+      parcel: { select: { alkisParcelId: true } },
       _count: {
         select: {
           projectRecords: {
@@ -254,6 +255,7 @@ export async function getAcquisitionAreasWithProjectRecordCountBySubsubsection(
 
   return acquisitionAreas.map((acquisitionArea) => ({
     id: acquisitionArea.id,
+    parcel: acquisitionArea.parcel,
     projectRecordCount: acquisitionArea._count.projectRecords,
   }))
 }

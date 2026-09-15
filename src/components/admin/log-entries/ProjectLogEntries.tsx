@@ -13,7 +13,7 @@ import {
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { frenchQuote } from "@/src/components/core/components/text/quote"
 import { longTitle } from "@/src/components/core/components/text/titles"
-import { getFullname } from "@/src/components/core/users/getFullname"
+import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { type LogLevelActionEnum } from "@/src/prisma/generated/browser"
 import { projectLogEntriesQueryOptions } from "@/src/server/logEntries/logEntriesQueryOptions"
 import { AdminLogEntryChanges } from "./AdminLogEntryChanges"
@@ -119,7 +119,7 @@ export const ProjectLogEntries = ({ projectId, projectSlug, hideWhenEmpty = true
                     </td>
                     {isAdmin ? (
                       <td className="py-4 pr-4 pl-3 align-top text-sm sm:pr-6">
-                        {entry.user ? getFullname(entry.user) : null}
+                        {entry.user ? getFullnameWithInstitution(entry.user) : null}
                       </td>
                     ) : null}
                   </tr>

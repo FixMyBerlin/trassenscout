@@ -19,6 +19,7 @@ import {
 const commentAuthorSelect = {
   id: true,
   firstName: true,
+  institution: true,
   lastName: true,
 } as const
 
@@ -76,7 +77,7 @@ export async function createProjectRecordComment(
 
   await createLogEntry({
     action: "CREATE",
-    message: `Neuer Kommentar im Protokolleintrag ${frenchQuote(projectRecord.title)} wurde erstellt.`,
+    message: `Neuer Anmerkung im Protokolleintrag ${frenchQuote(projectRecord.title)} wurde erstellt.`,
     userId: Number(session.userId),
     projectId: projectRecord.projectId,
     projectRecordId: projectRecord.id,
@@ -129,7 +130,7 @@ export async function updateProjectRecordComment(
 
   await createLogEntry({
     action: "UPDATE",
-    message: `Kommentar im Protokolleintrag ${frenchQuote(previous.projectRecord.title)} wurde bearbeitet.`,
+    message: `Anmerkung im Protokolleintrag ${frenchQuote(previous.projectRecord.title)} wurde bearbeitet.`,
     userId: Number(session.userId),
     projectId: previous.projectRecord.projectId,
     projectRecordId: previous.projectRecord.id,
@@ -175,7 +176,7 @@ export async function deleteProjectRecordComment(
 
   await createLogEntry({
     action: "DELETE",
-    message: `Kommentar im Protokolleintrag ${frenchQuote(previous.projectRecord.title)} wurde gelöscht.`,
+    message: `Anmerkung im Protokolleintrag ${frenchQuote(previous.projectRecord.title)} wurde gelöscht.`,
     userId: Number(session.userId),
     projectId: previous.projectRecord.projectId,
     projectRecordId: previous.projectRecord.id,

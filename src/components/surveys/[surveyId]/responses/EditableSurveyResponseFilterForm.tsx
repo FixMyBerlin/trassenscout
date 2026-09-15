@@ -98,14 +98,14 @@ export function EditableSurveyResponseFilterForm({
           value={effectiveFilter.searchterm}
           onChange={(searchterm) => void handleSearchtermChange(searchterm)}
           onReset={() => void handleStandardFilterReset()}
-          placeholder='Beiträge nach Suchwort filtern oder nach "tag:Name" für Tag suchen'
+          placeholder='Beiträge nach Suchwort filtern oder nach "tag:Name" für Tag filtern'
         >
           <div className="w-[300px] max-w-full">
             <ComboboxMultiBase
               value={effectiveFilter.status}
               onChange={(value) => void handleStatusChange(value)}
               items={statusOptions}
-              placeholder="Status suchen"
+              placeholder="Status filtern"
               buttonSrLabel={labels.status?.sg || defaultBackendConfig.labels.status.sg}
               allSelectedLabel="Alle Status"
               selectedCountLabel={(count) => `${count} Status ausgewählt`}
@@ -148,7 +148,7 @@ export function EditableSurveyResponseFilterForm({
                         triggerText:
                           value === "ALL" ? `Nach ${advancedFilter.label} filtern` : undefined,
                       }))}
-                      placeholder={`${advancedFilter.label} suchen`}
+                      placeholder={`${advancedFilter.label} filtern`}
                       buttonSrLabel={advancedFilter.label}
                     />
                   </div>

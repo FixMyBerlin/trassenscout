@@ -1,5 +1,6 @@
 import { resolveAndRenderEmailTemplate } from "@/src/server/emailTemplates/render"
 import { emailTemplateKeys } from "@/src/shared/emailTemplates/registry"
+import { toTemplateText } from "@/src/shared/templates/templateText"
 import { addressNoreply } from "./utils/addresses"
 import { mailUrl } from "./utils/mailUrl"
 import { sendMail } from "./utils/sendMail"
@@ -10,6 +11,7 @@ type Props = {
   assigneeName: string
   actorName: string
   recordTitle: string
+  recordText: string | null
   projectName: string
   recordPath: string
 }
@@ -21,6 +23,7 @@ export async function projectRecordAssignedNotificationToUser(props: Props) {
       assigneeName: props.assigneeName,
       actorName: props.actorName,
       recordTitle: props.recordTitle,
+      recordText: toTemplateText(props.recordText),
       projectName: props.projectName,
     },
   )

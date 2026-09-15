@@ -11,7 +11,7 @@ import {
   tableRowClassName,
 } from "@/src/components/core/components/Table/tableClasses"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
-import { getFullname } from "@/src/components/core/users/getFullname"
+import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { generalLogEntriesQueryOptions } from "@/src/server/logEntries/logEntriesQueryOptions"
 
 const actionName = {
@@ -88,7 +88,7 @@ export const GeneralLogEntries = ({ hideWhenEmpty = true }: Props) => {
                   </td>
                   <td className="px-3 py-4 align-top text-sm text-gray-500">{entry.message}</td>
                   <td className="py-4 pr-4 pl-3 align-top text-sm sm:pr-6">
-                    {entry.user ? getFullname(entry.user) : null}
+                    {entry.user ? getFullnameWithInstitution(entry.user) : null}
                   </td>
                 </tr>
               ))}

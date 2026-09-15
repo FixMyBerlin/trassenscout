@@ -1,7 +1,7 @@
 import { z } from "zod"
 import { invitationCreatedMailToUser } from "@/emails/mailers/invitationCreatedMailToUser"
 import { invitationCreatedNotificationToEditors } from "@/emails/mailers/invitationCreatedNotificationToEditors"
-import { getFullname } from "@/src/components/core/users/getFullname"
+import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { MembershipRoleEnum } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import type { AppSession } from "@/src/server/auth/session.server"
@@ -73,7 +73,12 @@ async function notifyEditorsAboutInviteCreated({
     number,
     {
       projects: SelectedInviteProject[]
-      user: { email: string; firstName: string | null; lastName: string | null }
+      user: {
+        email: string
+        firstName: string | null
+        institution: string | null
+        lastName: string | null
+      }
     }
   >()
 
@@ -95,7 +100,7 @@ async function notifyEditorsAboutInviteCreated({
       await invitationCreatedNotificationToEditors({
         user: {
           email: notification.user.email,
-          name: getFullname(notification.user) ?? notification.user.email,
+          name: getFullnameWithInstitution(notification.user) ?? notification.user.email,
         },
         projectName,
         projectRoles: formatInviteProjectRoles(notification.projects),
@@ -161,7 +166,7 @@ async function createInvitesForSession({
       }),
       tx.user.findUniqueOrThrow({
         where: { id: inviterId },
-        select: { email: true, firstName: true, lastName: true },
+        select: { email: true, firstName: true, institution: true, lastName: true },
       }),
     ])
 
@@ -186,7 +191,7 @@ async function createInvitesForSession({
     return { email, inviter, projects: selectedProjects, token }
   })
 
-  const inviterName = getFullname(result.inviter) ?? result.inviter.email
+  const inviterName = getFullnameWithInstitution(result.inviter) ?? result.inviter.email
   const projectName = formatInviteProjects(result.projects)
   const createdInvites = await db.invite.findMany({
     where: {
@@ -270,7 +275,7 @@ export async function getInvites(headers: Headers, input: GetInvitesInput) {
           email: true,
           role: true,
           updatedAt: true,
-          inviter: { select: { id: true, firstName: true, lastName: true } },
+          inviter: { select: { id: true, firstName: true, institution: true, lastName: true } },
         },
       }),
   })

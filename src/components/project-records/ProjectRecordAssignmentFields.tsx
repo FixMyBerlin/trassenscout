@@ -1,16 +1,18 @@
 import type { ComboboxSingleItem } from "@/src/components/core/components/forms/ComboboxSingleBase"
+import { fieldLayoutLabelClassName } from "@/src/components/core/components/forms/fieldLayoutStyles"
 import { useCoreAppFormContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { ProjectRecordEditingState } from "@/src/prisma/generated/browser"
 
 type Props = {
   assignedToItems: ComboboxSingleItem[]
+  fromLabel?: string | null
 }
 
-export const ProjectRecordAssignmentFields = ({ assignedToItems }: Props) => {
+export const ProjectRecordAssignmentFields = ({ assignedToItems, fromLabel }: Props) => {
   const form = useCoreAppFormContext()
 
   return (
-    <div className="grid gap-6 sm:grid-cols-2 sm:items-start">
+    <div className={`grid gap-6 sm:items-start ${fromLabel ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}>
       <form.AppField name="assignedToId">
         {(field) => (
           <field.ComboboxSingle
@@ -40,6 +42,12 @@ export const ProjectRecordAssignmentFields = ({ assignedToItems }: Props) => {
           />
         )}
       </form.AppField>
+      {fromLabel && (
+        <div>
+          <p className={fieldLayoutLabelClassName}>Von</p>
+          <p className="pt-2 text-sm text-gray-700">{fromLabel}</p>
+        </div>
+      )}
     </div>
   )
 }

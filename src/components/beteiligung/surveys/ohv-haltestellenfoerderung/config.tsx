@@ -50,9 +50,9 @@ Nach Erstellung des Maßnahmenprogramms wird dieses per E-Mail an die Kommunen �
         sg: "Gegenstand der Förderung",
       },
       comment: {
-        sg: "Gesprächsnotiz",
-        pl: "Gesprächsnotizen",
-        help: "Hier können Sie ein Anmeldegespräch vermerken. Erfassen Sie das Gesprächsdatum, notieren Sie einen Ansprechpartner und speichern Sie eine kurze Gesprächsnotiz. Bitte starten Sie immer mit ihrem Namen oder Kürzel.",
+        sg: "Anmerkung",
+        pl: "Anmerkungen",
+        help: "Hier können Sie Notizen aus Telefonaten und offene Rückfragen speichern.",
       },
     },
     additionalFilters: [
@@ -73,17 +73,17 @@ Nach Erstellung des Maßnahmenprogramms wird dieses per E-Mail an die Kommunen �
       },
       {
         value: "REJECTED_HOUSEHOLD_RESERVATION",
-        label: "Maßnahme abgelehnt (Haushaltsvorbehalt)",
+        label: "Eingabe abgelehnt (Haushaltsvorbehalt)",
         color: "#FEE2E2",
         icon: "XMARK",
       },
       {
         value: "REJECTED",
-        label: "Maßnahme abgelehnt",
+        label: "Eingabe abgelehnt",
         color: "#FECACA",
         icon: "XMARK",
       },
-      { value: "ACCEPTED", label: "Maßnahme freigegeben", color: "#D1FAE5", icon: "CHECKMARK" },
+      { value: "ACCEPTED", label: "Eingabe freigegeben", color: "#D1FAE5", icon: "CHECKMARK" },
     ],
   },
   email: {

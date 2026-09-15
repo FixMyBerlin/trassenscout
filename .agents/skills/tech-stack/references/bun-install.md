@@ -1,16 +1,42 @@
 # Bun install
 
-Load for global store setup, Vite dev with globalStore, or phantom deps.
+Load for global store setup, Vite dev with globalStore, phantom deps, Docker image install, or Netlify SSR / `Cannot find package` under `/var/task`.
 
-**Templates:** [bunfig.toml](../examples/bunfig.toml.template)
+**Templates:** [bunfig.toml](../examples/bunfig.toml.template) (local/dev) · [bunfig.netlify.toml](../examples/bunfig.netlify.toml.template) (Netlify `bun install`)
 
 ## Decisions (not in templates)
 
 - Bun [≥ 1.3.14](https://bun.com/blog/bun-v1.3.14) — `rm -rf node_modules && bun install` after Bun or bunfig changes
+- **Bun / DOM type packages** (`@types/bun`, `bun-types`, `@types/web`): declare as direct `devDependencies` whenever tsconfig `compilerOptions.types` lists them — [SKILL.md tsconfig templates](../SKILL.md#tsconfig-templates)
 - Commit `bunfig.toml` per repo ([template](../examples/bunfig.toml.template)); overrides `~/.bunfig.toml`
-- Vite dev: extend [server.fs.allow](https://vite.dev/config/server-options.html#server-fs-allow) with `~/.bun/install/cache/links` (extend defaults — do not replace the project root) — do **not** disable globalStore first
+- Force Bun for CLIs that ship a Node shebang (notably Vite): [`bun --bun`](https://bun.sh/docs/cli/run) — e.g. `FORCE_COLOR=1 bun --bun vite dev …`. Without `--bun`, `bun run` can still end up on Node via the binary’s shebang
+- Keep a root [`.nvmrc`](https://github.com/nvm-sh/nvm#nvmrc). Document `nvm use` for tools that still spawn Node (Prisma, Playwright). App `dev` under Bun is separate from that Node toolchain
+- Vite + globalStore: extend [server.fs.allow](https://vite.dev/config/server-options.html#server-fs-allow) with `~/.bun/install/cache/links` (extend defaults — do not replace the project root) — do **not** disable globalStore first
 - Explicit dep enforcement (your imports): [knip.md](knip.md)
 - **Docker images:** Do **not** `COPY` `bunfig.toml` before image `bun install` — `globalStore` links into `/root/.bun/…` and breaks non-root `USER` (`EACCES`). Install from `package.json` + lockfile only (or `BUN_INSTALL_GLOBAL_STORE=0`)
+- **Netlify SSR / functions:** Netlify’s `bun install` must not use the local `bunfig.toml` — see [below](#netlify-ssr-and-function-packaging)
+- **TanStack Start** (Nitro `start` / `preview`, matching production `preset: bun`): skill `tanstack-start-conventions` → [local-runtime.md](../../tanstack-start-conventions/references/local-runtime.md)
+
+## Netlify SSR and function packaging
+
+**Setup:** commit [bunfig.netlify.toml](../examples/bunfig.netlify.toml.template) (empty) and point install at it:
+
+```toml
+# netlify.toml
+[build.environment]
+  BUN_FLAGS = "--frozen-lockfile --config=bunfig.netlify.toml"
+```
+
+`--config` replaces the project `bunfig.toml` instead of merging, so Netlify gets a project-local tree while `bunfig.toml` keeps `globalStore` for local/dev. No `--linker=hoisted` needed.
+
+**Why:** `globalStore` realpaths packages outside the repo, and Netlify’s tracer ([`@vercel/nft`](https://github.com/vercel/nft)) only zips project files — the build stays green and the SSR function then fails with `Cannot find package '…'` under `/var/task`. `.netlifyignore` cannot help: Git-connected builds clone the whole repo and `bun install` runs **before** the build command. CI that only runs scripts is unaffected.
+
+**Verify:** `~/.bunfig.toml` still merges, so use a clean `HOME` like Netlify’s:
+
+```bash
+HOME=$(mktemp -d) bun install --frozen-lockfile --config=bunfig.netlify.toml
+realpath node_modules/<pkg>   # project node_modules, not ~/.bun/install/cache/links
+```
 
 ## Phantom dependencies under `globalStore`
 
@@ -51,6 +77,8 @@ Verify: `realpath node_modules/<pkg>` should be under the **project** `node_modu
   **See:** [bun-install-verify.md](bun-install-verify.md)
 - **Question:** `EACCES` / `permission denied` on `node_modules/…` in Docker as non-root  
   **See:** Decisions — Docker images (above)
+- **Question:** Netlify SSR / function `Cannot find package '…'` under `/var/task`  
+  **See:** [Netlify SSR and function packaging](#netlify-ssr-and-function-packaging)
 - **Question:** `ERR_LOAD_URL` / `cache/links`  
   **See:** [vitejs/vite#22662](https://github.com/vitejs/vite/issues/22662) · [server.fs.allow](https://vite.dev/config/server-options.html#server-fs-allow) (above)
 - **Question:** compat / `caniuse-lite`  

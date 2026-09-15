@@ -60,6 +60,10 @@ export async function getProjectRecordTemplatesByProject(
       tags: {
         where: { project: { slug: input.projectSlug } },
       },
+      formTemplates: {
+        where: { projects: { some: { slug: input.projectSlug } } },
+        select: { id: true, title: true, slug: true, type: true },
+      },
     },
     orderBy: { templateTitle: "asc" },
     where: { projects: { some: { slug: input.projectSlug } } },

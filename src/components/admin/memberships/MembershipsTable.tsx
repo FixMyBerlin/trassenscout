@@ -25,6 +25,7 @@ type ProjectLike = {
 type UserLike = {
   id: number
   firstName: string | null
+  institution: string | null
   lastName: string | null
   email: string
   role: string

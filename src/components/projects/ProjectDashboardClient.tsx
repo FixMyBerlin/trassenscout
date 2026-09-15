@@ -2,15 +2,18 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { MapProvider } from "react-map-gl/maplibre"
 import { twJoin } from "tailwind-merge"
+import { ProjectSubsectionMcpCreateDraftsAdminBox } from "@/src/components/abschnitte/ProjectSubsectionMcpCreateDraftsAdminBox"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "@/src/components/core/components/links/Link"
 import { ProjectMap } from "@/src/components/core/components/Map/ProjectMap"
 import { ProjectMapFallback } from "@/src/components/core/components/Map/ProjectMapFallback"
+import { GeometryErrorNotice } from "@/src/components/core/components/Notice/GeometryErrorNotice"
 import {
   MapListViewLayout,
   MAP_VIEWPORT_SHELL_CLASS,
 } from "@/src/components/core/components/PageHeader/MapListViewLayout"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { PageHeaderToolbarLink } from "@/src/components/core/components/PageHeader/PageHeaderToolbarLink"
 import { shortTitle } from "@/src/components/core/components/text/titles"
@@ -19,6 +22,7 @@ import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBrea
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { projectBySlugQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 import { subsectionsQueryOptions } from "@/src/server/subsections/subsectionsQueryOptions"
+import { brokenGeometryItems } from "@/src/shared/geometry/brokenGeometryItems"
 import { OperatorFilter } from "./OperatorFilter"
 import { SubsectionTable } from "./SubsectionTable"
 
@@ -100,6 +104,14 @@ export const ProjectDashboardClient = () => {
         }
       />
 
+      <div className={pageContentPaddingClassName}>
+        <GeometryErrorNotice
+          items={brokenGeometryItems(subsections)}
+          labelSingular="Planungsabschnitt"
+          labelPlural="Planungsabschnitte"
+        />
+      </div>
+
       <MapListViewLayout
         mode={viewMode}
         map={renderMap}
@@ -107,6 +119,7 @@ export const ProjectDashboardClient = () => {
           <SubsectionTable subsections={filteredSubsections} interactive={interactive} />
         )}
       >
+        <ProjectSubsectionMcpCreateDraftsAdminBox projectSlug={projectSlug} />
         <SuperAdminBox className="flex flex-col items-start gap-4">
           <Link button icon="plus" to={`/admin/projects/${projectSlug}/subsections/multiple-new`}>
             Mehrere Planungsabschnitte erstellen

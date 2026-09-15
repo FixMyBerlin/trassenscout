@@ -239,7 +239,7 @@ function SignupForm({
         {(field) => <field.TextField label="Nachname" placeholder="" autoComplete="family-name" />}
       </form.AppField>
       <form.AppField name="institution">
-        {(field) => <field.TextField label="Organisation / Kommune" placeholder="" optional />}
+        {(field) => <field.TextField label="Institution / Kommune" placeholder="" optional />}
       </form.AppField>
       <form.AppField name="phone">
         {(field) => (

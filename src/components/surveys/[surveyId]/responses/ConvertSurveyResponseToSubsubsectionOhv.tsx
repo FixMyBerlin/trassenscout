@@ -214,10 +214,7 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
           </div>
 
           <p className="text-sm text-gray-700">
-            Aus dieser Eingabe wurde ein Eintrag in der Maßnahmenplanung erstellt.
-          </p>
-
-          <p className="mt-4">
+            Diese Eingabe wurde in eine Maßnahme überführt:{" "}
             <Link
               to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug"
               params={{
@@ -227,7 +224,7 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
               }}
               className={linkStyles}
             >
-              Geplante Maßnahme öffnen
+              Maßnahme öffnen
             </Link>
           </p>
         </div>
@@ -245,9 +242,7 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
             className={primaryButtonClassName}
             disabled={createSubsubsectionMutation.isPending || !hasCheckedExistingEntry}
           >
-            {createSubsubsectionMutation.isPending
-              ? "Wird erstellt..."
-              : "In Maßnahmenplanung überführen"}
+            {createSubsubsectionMutation.isPending ? "Wird erstellt..." : "In Maßnahme überführen"}
           </button>
         </div>
       )}

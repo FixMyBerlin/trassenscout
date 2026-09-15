@@ -11,6 +11,7 @@ const logEntryInclude = {
     select: {
       id: true,
       firstName: true,
+      institution: true,
       lastName: true,
     },
   },

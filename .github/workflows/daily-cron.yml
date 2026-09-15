@@ -28,6 +28,11 @@ jobs:
           curl --fail -s -S \
             -H "Authorization: Bearer ${{ secrets.TS_API_KEY }}" \
             -X GET "https://staging.trassenscout.de/api/cron-logEntries-cleanup"
+      - name: Cleanup MCP drafts STAGING
+        run: |
+          curl --fail -s -S \
+            -H "Authorization: Bearer ${{ secrets.TS_API_KEY }}" \
+            -X GET "https://staging.trassenscout.de/api/cron-mcpDrafts-cleanup"
       - name: Cleanup created surveyResponses STAGING
         run: |
           curl --fail -s -S \
@@ -49,6 +54,11 @@ jobs:
           curl --fail -s -S \
             -H "Authorization: Bearer ${{ secrets.TS_API_KEY }}" \
             -X GET "https://trassenscout.de/api/cron-logEntries-cleanup"
+      - name: Cleanup MCP drafts PRODUCTION
+        run: |
+          curl --fail -s -S \
+            -H "Authorization: Bearer ${{ secrets.TS_API_KEY }}" \
+            -X GET "https://trassenscout.de/api/cron-mcpDrafts-cleanup"
       - name: Cleanup created surveyResponses PRODUCTION
         run: |
           curl --fail -s -S \

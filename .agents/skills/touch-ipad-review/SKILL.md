@@ -6,6 +6,7 @@ description: >-
   (Headless UI data-focus, Radix data-highlighted, inline rows), Safari/iPadOS
   quirks, layout fluidity, and FMC cursor conventions. Use when the user asks to
   review an app for touch, iPad, tablet, or touchscreen-optimized usage.
+disable-model-invocation: true
 ---
 
 # Touch & iPad review

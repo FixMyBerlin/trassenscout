@@ -10,7 +10,6 @@ type Props = {
   projectRecord: ProjectRecord
   /** Computed by the caller so it can hide the row when empty. */
   formTemplates: FormTemplateRef[]
-  onUploadSaved?: () => void
 }
 
 /** Open to every role: viewers may fill a form in, they just cannot change which are attached. */
@@ -18,7 +17,6 @@ export const ProjectRecordFormTemplatesSection = ({
   projectSlug,
   projectRecord,
   formTemplates,
-  onUploadSaved,
 }: Props) => {
   const [openFormTemplateId, setOpenFormTemplateId] = useState<number | null>(null)
 
@@ -31,7 +29,7 @@ export const ProjectRecordFormTemplatesSection = ({
 
   return (
     <>
-      <div className="flex flex-wrap gap-x-3 gap-y-1">
+      <div className="flex flex-col items-start gap-1 text-sm">
         {formTemplates.map((formTemplate) => (
           <button
             key={formTemplate.id}
@@ -51,7 +49,6 @@ export const ProjectRecordFormTemplatesSection = ({
         filenameContext={filenameContext}
         formTemplateId={openFormTemplateId}
         onClose={() => setOpenFormTemplateId(null)}
-        onSaved={onUploadSaved}
       />
     </>
   )

@@ -2,9 +2,11 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { twJoin } from "tailwind-merge"
 import { AbschnitteBreadcrumb } from "@/src/components/abschnitte/AbschnitteBreadcrumb"
+import { SubsectionMcpCreateDraftsAdminBox } from "@/src/components/abschnitte/SubsectionMcpCreateDraftsAdminBox"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "@/src/components/core/components/links/Link"
 import { SubsubsectionMapWithProvider } from "@/src/components/core/components/Map/SubsubsectionMapWithProvider"
+import { GeometryErrorNotice } from "@/src/components/core/components/Notice/GeometryErrorNotice"
 import {
   MapListViewLayout,
   MAP_VIEWPORT_SHELL_CLASS,
@@ -16,6 +18,7 @@ import { IfUserCanEdit } from "@/src/components/shared/memberships/IfUserCan"
 import { subsectionsQueryOptions } from "@/src/server/subsections/subsectionsQueryOptions"
 import type { SubsectionsList } from "@/src/server/subsections/types"
 import { subsubsectionsQueryOptions } from "@/src/server/subsubsections/subsubsectionsQueryOptions"
+import { brokenGeometryItems } from "@/src/shared/geometry/brokenGeometryItems"
 import { SubsubsectionTable } from "./SubsubsectionTable"
 
 const subsectionRouteApi = getRouteApi(
@@ -84,6 +87,25 @@ function SubsectionDashboardContent({
           </IfUserCanEdit>
         }
       />
+
+      <SubsectionMcpCreateDraftsAdminBox
+        className="mx-4 mb-2"
+        projectSlug={projectSlug}
+        subsectionSlug={subsectionSlug}
+      />
+
+      <div className="mx-4 shrink-0">
+        <GeometryErrorNotice
+          items={brokenGeometryItems(subsections)}
+          labelSingular="Planungsabschnitt"
+          labelPlural="Planungsabschnitte"
+        />
+        <GeometryErrorNotice
+          items={brokenGeometryItems(subsubsections)}
+          labelSingular="Maßnahme"
+          labelPlural="Maßnahmen"
+        />
+      </div>
 
       <MapListViewLayout
         mode={viewMode}

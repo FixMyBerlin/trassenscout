@@ -101,6 +101,7 @@ const EditableSurveyResponseListItem = ({
 
   const userTextPreview = response.data[text1Id] || response.data[text2Id]
   const commentLabel = labels.comment?.sg || defaultBackendConfig.labels.comment.sg
+  const commentLabelPlural = labels.comment?.pl || defaultBackendConfig.labels.comment.pl
   const commentHelp = labels.comment?.help || defaultBackendConfig.labels.comment.help
   const responseTags = topics.filter((topic) => response.surveyResponseTags.includes(topic.id))
   const handleHeaderKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
@@ -195,7 +196,8 @@ const EditableSurveyResponseListItem = ({
             refetchResponsesAndTopics={refetchResponsesAndTopics}
           />
           <div>
-            <h4 className="mb-3 font-semibold">{commentLabel}</h4>
+            <h4 className="font-semibold">{commentLabelPlural}</h4>
+            <p className="mt-1 mb-3 text-sm text-gray-500">{commentHelp}</p>
             <ul className="flex max-w-3xl flex-col gap-4">
               {response.surveyResponseComments?.map((comment) => {
                 return (
@@ -231,7 +233,6 @@ const EditableSurveyResponseListItem = ({
               <li>
                 <NewCommentForm
                   commentLabel={commentLabel}
-                  commentHelp={commentHelp}
                   createComment={async (body) => {
                     await createSurveyResponseCommentMutation.mutateAsync({
                       data: {

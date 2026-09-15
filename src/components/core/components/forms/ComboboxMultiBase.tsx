@@ -44,6 +44,15 @@ function itemSearchText(item: ComboboxMultiItem) {
   return item.searchText ?? String(item.label)
 }
 
+/**
+ * Tooltip for a truncated option. Mirrors what is rendered, so it stays undefined for
+ * non-text labels — `searchText` may differ from the label, and `String(ReactNode)` would
+ * render "[object Object]".
+ */
+function itemLabelText(item: ComboboxMultiItem) {
+  return typeof item.label === "string" ? item.label : undefined
+}
+
 function selectedTriggerText(item: ComboboxMultiItem) {
   return item.searchText ?? (typeof item.label === "string" ? item.label : String(item.label))
 }
@@ -118,7 +127,9 @@ export function ComboboxMultiBase({
         <div className="relative">
           <ComboboxButton id={id} onBlur={onBlur} className={triggerClassName}>
             {buttonSrLabel && <span className="sr-only">{buttonSrLabel}</span>}
-            <span className="truncate">{buttonText}</span>
+            <span className="truncate" title={buttonText}>
+              {buttonText}
+            </span>
             <ChevronDownIcon className="size-5 shrink-0 text-gray-400" aria-hidden="true" />
           </ComboboxButton>
 
@@ -156,7 +167,9 @@ export function ComboboxMultiBase({
                       disabled={item.disabled}
                       className={listboxOptionClassName(optionUi, "data-disabled:opacity-50")}
                     >
-                      <ListboxOptionLabel ui={optionUi}>{item.label}</ListboxOptionLabel>
+                      <ListboxOptionLabel ui={optionUi} title={itemLabelText(item)}>
+                        {item.label}
+                      </ListboxOptionLabel>
                     </ComboboxOption>
                   ))}
                 </ComboboxOptions>

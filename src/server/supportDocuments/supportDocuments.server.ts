@@ -18,7 +18,7 @@ export async function getSupportDocuments(headers: Headers) {
   return db.supportDocument.findMany({
     include: {
       upload: true,
-      createdBy: { select: { id: true, firstName: true, lastName: true } },
+      createdBy: { select: { id: true, firstName: true, institution: true, lastName: true } },
     },
     orderBy: { order: "asc" },
   })

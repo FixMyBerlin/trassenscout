@@ -55,6 +55,7 @@ export function alkisLandAcquisitionDemoProjects(): Prisma.ProjectUncheckedCreat
     landAcquisitionModuleEnabled: true,
     showLogEntries: false,
     evaluationsEnabled: false,
+    mcpEnabled: false,
     alkisStateKey: d.alkisStateKey,
     subsubsectionExtraFieldDefinitions: [],
   }))

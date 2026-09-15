@@ -61,22 +61,7 @@ export const projectRecordInclude = {
     },
     orderBy: { title: "asc" },
   },
-  projectRecordTemplate: {
-    select: {
-      id: true,
-      templateTitle: true,
-      formTemplates: {
-        select: {
-          id: true,
-          title: true,
-          slug: true,
-          type: true,
-          projects: { select: { slug: true } },
-        },
-        orderBy: { title: "asc" },
-      },
-    },
-  },
+  projectRecordTemplate: { select: { id: true, templateTitle: true } },
   uploads: {
     orderBy: { id: "desc" },
     select: {
@@ -89,6 +74,7 @@ export const projectRecordInclude = {
     select: {
       id: true,
       firstName: true,
+      institution: true,
       lastName: true,
     },
   },
@@ -96,6 +82,7 @@ export const projectRecordInclude = {
     select: {
       id: true,
       firstName: true,
+      institution: true,
       lastName: true,
     },
   },
@@ -103,6 +90,7 @@ export const projectRecordInclude = {
     select: {
       id: true,
       firstName: true,
+      institution: true,
       lastName: true,
     },
   },
@@ -110,6 +98,7 @@ export const projectRecordInclude = {
     select: {
       id: true,
       firstName: true,
+      institution: true,
       lastName: true,
     },
   },
@@ -126,6 +115,7 @@ export const projectRecordInclude = {
           id: true,
           role: true,
           firstName: true,
+          institution: true,
           lastName: true,
         },
       },

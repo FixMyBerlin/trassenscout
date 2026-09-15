@@ -1,4 +1,4 @@
-import { useMutation, useSuspenseQuery } from "@tanstack/react-query"
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 import type { z } from "zod"
 import { improveErrorMessage } from "@/src/components/core/components/forms/improveErrorMessage"
@@ -14,6 +14,7 @@ import {
 
 export const AdminProjectsNewForm = () => {
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const { data: usersResult } = useSuspenseQuery(usersAdminQueryOptions())
   const createProjectMutation = useMutation({ mutationFn: createProjectFn })
 
@@ -24,8 +25,9 @@ export const AdminProjectsNewForm = () => {
       partnerLogoSrcs: partnerLogoSrcsArray,
     }
     try {
-      await createProjectMutation.mutateAsync({ data: input })
-      navigate({ to: "/dashboard" })
+      const project = await createProjectMutation.mutateAsync({ data: input })
+      queryClient.removeQueries({ queryKey: ["projects"] })
+      navigate({ to: "/$projectSlug", params: { projectSlug: project.slug } })
     } catch (error: unknown) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }

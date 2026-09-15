@@ -229,10 +229,6 @@ export const EditProjectRecordForm = ({
           splitView={needsReview}
           emailSource={projectRecord.projectRecordEmail ?? undefined}
           landAcquisitionModuleEnabled={projectRecord.project.landAcquisitionModuleEnabled}
-          inheritedFormTemplates={projectRecord.projectRecordTemplate?.formTemplates.filter(
-            // Same project filter the detail view applies.
-            (formTemplate) => formTemplate.projects.some((project) => project.slug === projectSlug),
-          )}
         />
       </FormShell>
       <CreateEditReviewHistory projectRecord={projectRecord} />

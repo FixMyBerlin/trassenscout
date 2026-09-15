@@ -1,6 +1,6 @@
 import { twJoin } from "tailwind-merge"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
-import { getFullname } from "@/src/components/core/users/getFullname"
+import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { formatBerlinTime } from "@/src/components/core/utils/formatBerlinTime"
 import { isAdmin } from "@/src/components/shared/app/users/utils/isAdmin"
 import {
@@ -10,7 +10,11 @@ import {
 } from "@/src/components/uploads/uploadAlignedFieldStyles"
 import { useCurrentUser } from "@/src/components/user/useCurrentUser"
 
-type User = { firstName: string | null; lastName: string | null } | null
+type User = {
+  firstName: string | null
+  institution?: string | null
+  lastName: string | null
+} | null
 
 type Props = {
   createdBy: User
@@ -22,7 +26,7 @@ type Props = {
 }
 
 const formatAuthorWithTimestamp = (user: User, timestamp: Date) => {
-  const authorLabel = getFullname(user) || "Unbekannt"
+  const authorLabel = getFullnameWithInstitution(user) || "Unbekannt"
   return `${authorLabel} am ${formatBerlinTime(timestamp, "dd.MM.yyyy, HH:mm")}`
 }
 
@@ -64,18 +68,17 @@ export const UploadAuthorAndDates = ({
     )
   }
 
+  const createdByLabel = getFullnameWithInstitution(createdBy) || "Unbekannt"
+  const updatedByLabel = getFullnameWithInstitution(updatedBy) || "Unbekannt"
+
   return (
     <section className={sectionClassName}>
       <p className="text-sm">
-        Erstellt
-        {createdBy ? <> von {getFullname(createdBy)}</> : " von Unbekannt"} am{" "}
-        {formatBerlinTime(createdAt, "dd.MM.yyyy, HH:mm")}
+        Erstellt von {createdByLabel} am {formatBerlinTime(createdAt, "dd.MM.yyyy, HH:mm")}
       </p>
       {updatedBy && updatedAt && (
         <p className="mt-1 text-sm">
-          Aktualisiert
-          {updatedBy ? <> von {getFullname(updatedBy)}</> : " von Unbekannt"} am{" "}
-          {formatBerlinTime(updatedAt, "dd.MM.yyyy, HH:mm")}
+          Aktualisiert von {updatedByLabel} am {formatBerlinTime(updatedAt, "dd.MM.yyyy, HH:mm")}
         </p>
       )}
     </section>

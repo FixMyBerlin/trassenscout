@@ -268,7 +268,9 @@ export async function getSurveyResponses(
     include: {
       operator: true,
       surveyResponseComments: {
-        include: { author: { select: { id: true, firstName: true, lastName: true } } },
+        include: {
+          author: { select: { id: true, firstName: true, institution: true, lastName: true } },
+        },
         orderBy: { id: "asc" },
       },
       surveyResponseTags: true,
@@ -313,7 +315,9 @@ export async function getSurveyResponse(
     include: {
       operator: true,
       surveyResponseComments: {
-        include: { author: { select: { id: true, firstName: true, lastName: true } } },
+        include: {
+          author: { select: { id: true, firstName: true, institution: true, lastName: true } },
+        },
         orderBy: { id: "asc" },
       },
       surveyResponseTags: true,
@@ -494,6 +498,7 @@ export async function getFeedbackSurveyResponsesWithSurveyDataAndComments(
               id: true,
               role: true,
               firstName: true,
+              institution: true,
               lastName: true,
             },
           },

@@ -23,10 +23,10 @@ import {
   tableHeadRowClassName,
   tableRowClassName,
 } from "@/src/components/core/components/Table/tableClasses"
-import { shortTitle } from "@/src/components/core/components/text/titles"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { ProjectRecordNewModal } from "@/src/components/project-records/ProjectRecordNewModal"
 import { ProjectRecordsTable } from "@/src/components/project-records/ProjectRecordTable"
+import { formatAcquisitionAreaRelationOptionLabel } from "@/src/components/project-records/ProjectRelationLinks"
 import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { ProjectUploadDropzone } from "@/src/components/uploads/ProjectUploadDropzone"
@@ -179,7 +179,14 @@ export const SubsubsectionLandAcquisitionContent = ({
             placeholder="Verhandlungsfläche auswählen"
             options={acquisitionAreas.map((acquisitionArea) => ({
               value: acquisitionArea.id,
-              label: `${acquisitionArea.id} - Flurstücknr. ${acquisitionArea.parcel.alkisParcelId} (${shortTitle(subsubsectionSlug!)})`,
+              label: formatAcquisitionAreaRelationOptionLabel({
+                id: acquisitionArea.id,
+                parcel: acquisitionArea.parcel,
+                subsubsection: {
+                  slug: subsubsectionSlug!,
+                  subsection: { slug: subsectionSlug! },
+                },
+              }),
             }))}
           />
         )}
@@ -266,19 +273,14 @@ export const SubsubsectionLandAcquisitionContent = ({
                   <h2 className="text-lg font-semibold text-gray-700 sm:text-lg">
                     Protokolleinträge
                   </h2>
-                  <IfUserCanEdit>
-                    <button
-                      type="button"
-                      onClick={() => setIsProjectRecordModalOpen(true)}
-                      className={twJoin(
-                        "inline-flex cursor-pointer items-center gap-1",
-                        linkStyles,
-                      )}
-                    >
-                      {linkIcons.plus}
-                      Neuer Protokolleintrag
-                    </button>
-                  </IfUserCanEdit>
+                  <button
+                    type="button"
+                    onClick={() => setIsProjectRecordModalOpen(true)}
+                    className={twJoin("inline-flex cursor-pointer items-center gap-1", linkStyles)}
+                  >
+                    {linkIcons.plus}
+                    Neuer Protokolleintrag
+                  </button>
                 </div>
                 {showSuccess && (
                   <FormSuccess message="Protokolleintrag erfolgreich erstellt" show={showSuccess} />

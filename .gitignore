@@ -33,6 +33,7 @@ lib-cov
 
 # IDE
 .idea
+.claude
 
 # local scratch
 tmp/

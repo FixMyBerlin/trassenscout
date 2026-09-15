@@ -48,17 +48,6 @@ function generateOsmLink(fieldName: string, value: string): string {
       }
     }
 
-    // Handle location fields
-    if (fieldName === "location") {
-      const locationData =
-        typeof value === "string"
-          ? (JSON.parse(value) as { lat: number; lng: number })
-          : (value as unknown as { lat: number; lng: number })
-      if (locationData.lat && locationData.lng) {
-        return `https://www.openstreetmap.org/?mlat=${locationData.lat}&mlon=${locationData.lng}&zoom=16`
-      }
-    }
-
     // Return original value if no OSM link generation applies
     return value
   } catch (error) {
@@ -89,9 +78,7 @@ export async function surveyEntryCreatedNotificationToUser({
 
     // Generate OSM link if applicable, otherwise use original value
     const processedValue =
-      (fieldName === "geometryCategory" || fieldName === "location") && value
-        ? generateOsmLink(fieldName, value)
-        : value
+      fieldName === "geometryCategory" && value ? generateOsmLink(fieldName, value) : value
 
     // default case for other fields
     emailMarkdown = emailMarkdown.replace(

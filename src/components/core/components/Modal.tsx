@@ -200,7 +200,7 @@ export const Modal = ({ children, open, handleClose, className, align = "center"
                     className={twMerge(
                       isRightAligned
                         ? "relative ml-auto h-dvh w-full max-w-none overflow-y-auto bg-white text-left shadow-xl transition-all sm:w-[clamp(960px,80vw,1280px)] sm:max-w-[calc(100vw-2rem)]"
-                        : "relative overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm",
+                        : "relative max-h-[calc(100vh-2rem)] overflow-y-auto rounded-lg bg-white text-left shadow-xl transition-all supports-[height:100dvh]:max-h-[calc(100dvh-2rem)] sm:my-8 sm:max-h-[calc(100vh-4rem)] sm:w-full sm:max-w-sm sm:supports-[height:100dvh]:max-h-[calc(100dvh-4rem)]",
                       className,
                     )}
                   >

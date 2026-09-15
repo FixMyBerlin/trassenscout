@@ -220,7 +220,7 @@ test.describe("Project records permissions", () => {
         })
 
         const titleField = page.getByLabel("Titel")
-        const bodyField = page.getByRole("textbox", { name: /Notizen/ })
+        const bodyField = page.getByRole("textbox", { name: /Nachricht/ })
         await expect(titleField).toBeEnabled({ timeout: 60_000 })
         await expect(bodyField).toBeVisible({ timeout: 60_000 })
         await titleField.clear()
@@ -347,16 +347,13 @@ test.describe("Project records permissions", () => {
       test.use({ storageState: authFile("viewer") })
       test.use({ allowedConsoleErrors: pageNoise })
 
-      test("do not see create button", async ({ page }) => {
+      test("can open create modal", async ({ page }) => {
         await page.goto(listPath)
-        await expect(
-          page.getByRole("heading", { name: "Projektprotokoll", exact: true }),
-        ).toBeVisible({
+        await page.waitForSelector('[data-create-record-ready="true"]', { timeout: 30_000 })
+        await page.getByRole("button", { name: "Neuer Protokolleintrag", exact: true }).click()
+        await expect(page.getByRole("button", { name: /Ohne Vorlage/ })).toBeVisible({
           timeout: 30_000,
         })
-        await expect(
-          page.getByRole("button", { name: "Neuer Protokolleintrag", exact: true }),
-        ).toBeHidden()
       })
     })
 
@@ -368,7 +365,7 @@ test.describe("Project records permissions", () => {
         await page.goto(listPath)
         await page.waitForSelector('[data-create-record-ready="true"]', { timeout: 30_000 })
         await page.getByRole("button", { name: "Neuer Protokolleintrag", exact: true }).click()
-        await expect(page.getByRole("button", { name: /Leeres Formular/ })).toBeVisible({
+        await expect(page.getByRole("button", { name: /Ohne Vorlage/ })).toBeVisible({
           timeout: 30_000,
         })
       })

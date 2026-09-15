@@ -35,4 +35,14 @@ test.describe("Public and auth smoke", () => {
       await expect(page.locator('meta[name="robots"][content="noindex"]')).toHaveCount(1)
     }
   })
+
+  test("signup shows privacy policy acceptance label once", async ({ page }) => {
+    await page.goto("/auth/signup")
+
+    await expect(
+      page.locator("label").filter({
+        hasText: "Ich habe die Datenschutzerklärung gelesen und akzeptiere sie.",
+      }),
+    ).toHaveCount(1, { timeout: 30_000 })
+  })
 })

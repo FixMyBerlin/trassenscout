@@ -11,7 +11,13 @@ export function useSessionUploadCleanup({ projectSlug }: Props) {
   const queryClient = useQueryClient()
   const sessionUploadIdsRef = useRef(new Set<number>())
   const contextRef = useRef({ projectSlug, queryClient })
-  contextRef.current = { projectSlug, queryClient }
+
+  useEffect(
+    function syncCleanupContextRef() {
+      contextRef.current = { projectSlug, queryClient }
+    },
+    [projectSlug, queryClient],
+  )
 
   useEffect(function cleanupSessionUploadsOnUnmount() {
     const sessionUploadIds = sessionUploadIdsRef

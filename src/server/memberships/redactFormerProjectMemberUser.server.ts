@@ -9,14 +9,26 @@ export const ANONYMOUS_AUTHOR_PLACEHOLDER = "Projektmitglied"
 type UserToRedact = {
   id: number
   firstName?: string | null
+  institution?: string | null
   lastName?: string | null
   email?: string | null
   role?: string | null
 }
 
 export type ProjectUserDto =
-  | { id: number; firstName: string | null; lastName: string | null; role?: string | null }
-  | { firstName: string | null; lastName: string | null; role?: string | null }
+  | {
+      id: number
+      firstName: string | null
+      institution?: string | null
+      lastName: string | null
+      role?: string | null
+    }
+  | {
+      firstName: string | null
+      institution?: string | null
+      lastName: string | null
+      role?: string | null
+    }
 
 type UserRelationKeys =
   | "author"
@@ -128,11 +140,14 @@ export function serializeProjectUser(
   const { memberUserIds, isAdmin, sessionUserId } = context
   const role = "role" in user ? user.role : undefined
   const roleField = role !== undefined ? { role } : {}
+  const institutionField =
+    "institution" in user && user.institution ? { institution: user.institution } : {}
 
   if (user.id === sessionUserId || memberUserIds.has(user.id)) {
     return {
       id: user.id,
       firstName: user.firstName ?? null,
+      ...institutionField,
       lastName: user.lastName ?? null,
       ...roleField,
     }
@@ -144,6 +159,7 @@ export function serializeProjectUser(
       : FORMER_MEMBER_ADMIN_SUFFIX.trim()
     return {
       firstName: user.firstName ?? null,
+      ...institutionField,
       lastName: lastNameSuffix,
       ...roleField,
     }

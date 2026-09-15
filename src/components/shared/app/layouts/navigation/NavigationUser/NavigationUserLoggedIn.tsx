@@ -2,7 +2,7 @@ import { Menu, MenuButton, MenuItem, MenuItems, Transition } from "@headlessui/r
 import { Fragment } from "react"
 import { twJoin } from "tailwind-merge"
 import { Link } from "@/src/components/core/components/links/Link"
-import { getFullname } from "@/src/components/core/users/getFullname"
+import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { getInitials } from "@/src/components/shared/app/users/utils/getInitials"
 import type { CurrentUser } from "@/src/server/users/types"
 import {
@@ -16,6 +16,8 @@ type Props = {
 }
 
 export const NavigationUserLoggedIn = ({ user }: Props) => {
+  const userLabel = getFullnameWithInstitution(user) || "-"
+
   return (
     <Menu as="div" className="relative">
       {({ open }) => (
@@ -39,15 +41,12 @@ export const NavigationUserLoggedIn = ({ user }: Props) => {
             <Transition as={Fragment} {...navigationMenuTransitionProps}>
               <MenuItems
                 modal={false}
-                className="absolute right-0 z-10 mt-2 w-64 origin-top-right rounded-md bg-gray-50 py-1 shadow-lg ring-1 ring-gray-200/5 focus:outline-hidden"
+                className="absolute right-0 z-10 mt-2 w-80 max-w-[calc(100vw-1rem)] origin-top-right rounded-md bg-gray-50 py-1 shadow-lg ring-1 ring-gray-200/5 focus:outline-hidden"
               >
                 <div className="px-4 py-2 leading-6 text-gray-700">
                   <p className="mb-2 text-xs text-gray-400">Angemeldet als</p>
-                  <p className="truncate font-semibold">{getFullname(user) || "-"}</p>
-                  <p className="mb-2 truncate">{user.email}</p>
-                  {user.institution && (
-                    <p className="mb-2 truncate text-xs text-gray-400">{user.institution}</p>
-                  )}
+                  <p className="font-semibold break-words">{userLabel}</p>
+                  <p className="mb-2 break-all">{user.email}</p>
                 </div>
                 <NavigationMenuSeparator />
                 <div className="p-1.5 text-gray-700">

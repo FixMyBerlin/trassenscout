@@ -46,8 +46,8 @@ export function FieldLayout({
         {optional && <> (optional)</>}
       </label>
       <div className={fieldLayoutControlClassName}>
+        {Boolean(help) && <p className="mb-2 text-sm text-gray-500">{help}</p>}
         {children}
-        {Boolean(help) && <p className="mt-2 text-sm text-gray-500">{help}</p>}
         {errors && errors.length > 0 && <FieldErrors errors={errors} />}
       </div>
     </div>
@@ -58,12 +58,14 @@ export function FieldLayout({
 export function FieldLayoutRightColumn({
   children,
   className,
+  outerProps,
 }: {
   children: ReactNode
   className?: string
+  outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
 }) {
   return (
-    <div className={fieldLayoutRootClassName}>
+    <div {...outerProps} className={twMerge(fieldLayoutRootClassName, outerProps?.className)}>
       <div
         className={twJoin(
           fieldLayoutControlClassName,

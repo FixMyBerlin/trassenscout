@@ -18,7 +18,7 @@ import {
 } from "@/src/components/core/components/Table/tableClasses"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
-import { getFullname } from "@/src/components/core/users/getFullname"
+import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { roleTranslation } from "@/src/components/core/users/roleTranslation.const"
 import {
   inviteStatusClassNames,
@@ -124,7 +124,7 @@ export const TeamInvitesTable = ({ canEdit, invites, projectSlug }: Props) => {
                     {roleTranslation[invite.role]}
                   </td>
                   <td className={twJoin("hidden align-middle @xl:table-cell", tableCellClassName)}>
-                    {getFullname(invite.inviter)}
+                    {getFullnameWithInstitution(invite.inviter) || "—"}
                   </td>
                   <td className={twJoin("hidden align-middle @xl:table-cell", tableCellClassName)}>
                     {format(new Date(invite.updatedAt), "Pp", { locale: de })}

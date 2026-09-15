@@ -1,5 +1,4 @@
 import { defineConfig } from "oxlint"
-import reactHooksJs from "oxlint-config-react-hooks-js/configs/recommended-latest.json" with { type: "json" }
 
 export default defineConfig({
   plugins: ["eslint", "typescript", "unicorn", "oxc", "react"],
@@ -28,6 +27,17 @@ export default defineConfig({
     "typescript/no-misused-spread": "off",
     "typescript/require-array-sort-compare": "off",
     "typescript/no-array-delete": "off",
+    // Restriction category — keep ESLint recommended coverage (off by default in oxlint)
+    "react/unsupported-syntax": "error",
+    "eslint/no-unused-vars": [
+      "warn",
+      {
+        argsIgnorePattern: "^_",
+        varsIgnorePattern: "^_",
+        destructuredArrayIgnorePattern: "^_",
+        caughtErrorsIgnorePattern: "^_",
+      },
+    ],
   },
   overrides: [
     {
@@ -107,14 +117,6 @@ export default defineConfig({
       ],
       rules: {
         "trassenscout-require-endpoint-auth/require-endpoint-auth": "error",
-      },
-    },
-    {
-      files: ["**/*.tsx"],
-      jsPlugins: [{ name: "react-hooks-js", specifier: "eslint-plugin-react-hooks" }],
-      rules: {
-        ...reactHooksJs.rules,
-        "react/react-compiler": "error",
       },
     },
     {
