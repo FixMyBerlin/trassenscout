@@ -5,15 +5,20 @@ import { typeGeometry } from "@/src/shared/geometry/typeGeometry"
 
 /**
  * Transforms a subsection by typing its geometry based on its type field.
- * Returns a discriminated union where the geometry type is narrowed based on the type field.
  *
- * Type assertion is safe: typeGeometry validates at runtime that the geometry matches the type field,
- * ensuring the discriminated union is correctly formed even though TypeScript can't verify this narrowing.
+ * **Never throws.** A geometry that fails validation is bad stored data, not a programming error,
+ * so it is passed through untouched rather than failing the whole query. That makes the returned
+ * geometry optimistically typed: call `isRenderableGeometry` before handing it to a map helper.
  */
 export const typeSubsectionGeometry = <T extends Pick<Subsection, "geometry" | "type">>(
   subsection: T,
 ) => {
-  const typedGeometry = typeGeometry(subsection.geometry, ["LINE", "POLYGON"])
+  let typedGeometry: unknown = subsection.geometry
+  try {
+    typedGeometry = typeGeometry(subsection.geometry, ["LINE", "POLYGON"])
+  } catch {
+    // Keep the raw value; `isRenderableGeometry` is what decides whether it may be drawn.
+  }
 
   if (subsection.type === GeometryTypeEnum.LINE) {
     return {
@@ -31,5 +36,11 @@ export const typeSubsectionGeometry = <T extends Pick<Subsection, "geometry" | "
     }
   }
 
-  throw new Error(`Unsupported geometry type: ${subsection.type}`)
+  // A subsection typed POINT has no map representation; hand it back as-is so the caller's
+  // `isRenderableGeometry` check keeps it off the map.
+  return {
+    ...subsection,
+    type: subsection.type as typeof GeometryTypeEnum.LINE,
+    geometry: typedGeometry as GeometryByGeometryType<"LINE">,
+  }
 }

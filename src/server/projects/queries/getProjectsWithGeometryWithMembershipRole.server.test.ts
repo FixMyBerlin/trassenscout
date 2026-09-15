@@ -53,14 +53,17 @@ describe("getProjectsWithGeometryWithMembershipRole", () => {
     expect(result[0]?.subsectionCount).toBe(1)
   })
 
-  // Regression: a malformed geometry used to throw out of the whole query, which failed the
-  // dashboard with "Ein Fehler ist aufgetreten" instead of dropping one project's preview point.
+  // Regression: unusable geodata used to throw out of the whole query, which failed the dashboard
+  // with "Ein Fehler ist aufgetreten" instead of dropping one project's preview point.
   test.each([
     [
       "geometry that matches no allowed schema",
       { geometry: { type: "LineString", coordinates: [[13.4]] }, type: "LINE" },
     ],
-    ["a subsection type that has no geometry mapping", { geometry: lineGeometry, type: "POINT" }],
+    [
+      "a geometry that disagrees with the subsection type",
+      { geometry: { type: "Point", coordinates: [13.4, 52.5] }, type: "LINE" },
+    ],
   ])("keeps the project and returns no preview point for %s", async (_name, subsection) => {
     mockFindMany.mockResolvedValue([project([{ ...subsection, labelPos: null }])])
 

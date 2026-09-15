@@ -54,8 +54,7 @@ export function setAdminDebugButtonsEnabled(enabled: boolean) {
     } else {
       window.localStorage.removeItem(adminDebugButtonsStorageKey)
     }
-  } catch {
-  }
+  } catch {}
 
   window.dispatchEvent(new Event(adminDebugButtonsChangeEvent))
 }

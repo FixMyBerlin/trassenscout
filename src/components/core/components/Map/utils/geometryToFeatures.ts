@@ -9,6 +9,9 @@ import { polygonToGeoJSON } from "./polygonToGeoJSON"
  * Handles all supported geometry types: Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon.
  */
 export const geometryToFeatures = (geometry: SupportedGeometry) => {
+
+  if (!geometry || typeof geometry !== "object") return []
+
   switch (geometry.type) {
     case "Point":
     case "MultiPoint": {
@@ -22,5 +25,7 @@ export const geometryToFeatures = (geometry: SupportedGeometry) => {
     case "MultiPolygon": {
       return polygonToGeoJSON(geometry) satisfies Feature<Polygon>[]
     }
+    default:
+      return []
   }
 }

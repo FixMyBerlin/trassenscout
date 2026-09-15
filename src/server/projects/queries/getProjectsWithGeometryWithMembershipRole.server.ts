@@ -2,6 +2,7 @@ import { getLabelPosition } from "@/src/components/core/components/Map/utils/get
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import db from "@/src/server/db.server"
 import { typeSubsectionGeometry } from "@/src/server/subsections/utils/typeSubsectionGeometry"
+import { isRenderableEntry } from "@/src/shared/geometry/brokenGeometryItems"
 
 export async function getProjectsWithGeometryWithMembershipRole(headers: Headers) {
   const session = await endpointAuth.session(headers)
@@ -30,21 +31,16 @@ export async function getProjectsWithGeometryWithMembershipRole(headers: Headers
   })
 
   return projectsWithGeometryWithMembershipRole.map((project) => {
+    // Same gate the pages use: a project whose first subsection has unusable geodata simply gets
+    // no map marker, instead of one bad row failing the whole dashboard.
     const firstSubsection = project.subsections[0]
-    let previewPoint: ReturnType<typeof getLabelPosition> | null = null
-
-    if (firstSubsection) {
-      try {
-        previewPoint = getLabelPosition(
-          typeSubsectionGeometry(firstSubsection).geometry,
-          firstSubsection.labelPos,
-        )
-      } catch (error) {
-        // Skip malformed legacy/imported geometries so one bad project does not break the
-        // dashboard — but log it, otherwise the corrupt row stays invisible.
-        console.error(`Invalid geometry on project "${project.slug}":`, error)
-      }
-    }
+    const previewPoint =
+      firstSubsection && isRenderableEntry(firstSubsection)
+        ? getLabelPosition(
+            typeSubsectionGeometry(firstSubsection).geometry,
+            firstSubsection.labelPos,
+          )
+        : null
 
     const { subsections: _subsections, _count, ...rest } = project
 

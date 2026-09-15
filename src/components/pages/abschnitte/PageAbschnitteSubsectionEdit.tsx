@@ -4,9 +4,11 @@ import { AbschnitteBreadcrumb } from "@/src/components/abschnitte/AbschnitteBrea
 import { EditSubsectionForm } from "@/src/components/abschnitte/EditSubsectionForm"
 import { SubsectionMcpDraftAdminBox } from "@/src/components/abschnitte/SubsectionMcpDraftAdminBox"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
+import { GeometryErrorNotice } from "@/src/components/core/components/Notice/GeometryErrorNotice"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { subsectionBySlugQueryOptions } from "@/src/server/subsections/subsectionQueryOptions"
+import { brokenGeometryItems } from "@/src/shared/geometry/brokenGeometryItems"
 import { isSubsectionMcpDraftSearch } from "@/src/shared/subsections/searchSchemas"
 
 const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/edit/")
@@ -26,6 +28,13 @@ export function PageAbschnitteSubsectionEdit() {
           projectSlug={projectSlug}
           slug={subsectionSlug}
           overlayApplied={applyMcpDraft}
+        />
+      </div>
+      <div className={pageContentPaddingClassName}>
+        <GeometryErrorNotice
+          items={brokenGeometryItems([subsection])}
+          labelSingular="Planungsabschnitt"
+          labelPlural="Planungsabschnitte"
         />
       </div>
       <EditSubsectionForm
