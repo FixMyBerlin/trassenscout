@@ -213,30 +213,30 @@ export const FormTemplateFillModal = ({
         <ActionBar
           className="shrink-0"
           left={
-            <div className={checkboxRowClassName}>
-              <div className="flex h-5 items-center">
-                <input
-                  type="checkbox"
-                  id="keepFieldsEditable"
-                  checked={keepFieldsEditable}
-                  onChange={(event) => setKeepFieldsEditable(event.target.checked)}
-                  className={checkboxInputClassName({ hasError: false })}
-                />
+            <>
+              <button
+                type="button"
+                className={primaryButtonClassName}
+                disabled={!ready}
+                onClick={() => void download()}
+              >
+                {busy ? "PDF wird erstellt …" : "Ausgefülltes PDF herunterladen"}
+              </button>
+              <div className={checkboxRowClassName}>
+                <div className="flex h-5 items-center">
+                  <input
+                    type="checkbox"
+                    id="keepFieldsEditable"
+                    checked={keepFieldsEditable}
+                    onChange={(event) => setKeepFieldsEditable(event.target.checked)}
+                    className={checkboxInputClassName({ hasError: false })}
+                  />
+                </div>
+                <label htmlFor="keepFieldsEditable" className={checkboxLabelClassName({})}>
+                  Formularfelder editierbar lassen
+                </label>
               </div>
-              <label htmlFor="keepFieldsEditable" className={checkboxLabelClassName({})}>
-                Formularfelder editierbar lassen
-              </label>
-            </div>
-          }
-          right={
-            <button
-              type="button"
-              className={primaryButtonClassName}
-              disabled={!ready}
-              onClick={() => void download()}
-            >
-              {busy ? "PDF wird erstellt …" : "Ausgefülltes PDF herunterladen"}
-            </button>
+            </>
           }
         />
       )}
