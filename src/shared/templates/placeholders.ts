@@ -1,7 +1,6 @@
 export type PlaceholderContext = Record<string, string | number | null | undefined>
 
-/** Fresh per call: a shared `/g` regex carries `lastIndex` between callers. */
-const createPlaceholderRegex = () => /{{\s*([a-zA-Z0-9_]+)\s*}}/g
+const createPlaceholderRegex = () => /\{\{\s*([\p{L}\p{N}_]+)\s*\}\}/gu
 
 /** Deduplicated, in first-seen order. */
 export const extractPlaceholders = (value: string | null | undefined) => {

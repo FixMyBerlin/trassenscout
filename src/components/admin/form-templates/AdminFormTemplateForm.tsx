@@ -1,4 +1,4 @@
-import { useSuspenseQuery } from "@tanstack/react-query"
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query"
 import { type ReactNode, useEffect, useMemo, useState } from "react"
 import { twJoin } from "tailwind-merge"
 import { z } from "zod"
@@ -10,11 +10,12 @@ import {
   applyFormSubmitResult,
   type OnSubmitResult,
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
-import { Markdown } from "@/src/components/core/components/Markdown/Markdown"
+import { FormPdfEditor } from "@/src/components/project-records/FormPdfEditor"
 import type { FormTemplateTypeEnum } from "@/src/prisma/generated/browser"
 import { projectsAdminQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 import {
   convertBlanksToPlaceholders,
+  findUnusablePlaceholders,
   type FormTemplateFieldDefinition,
   formTemplateFieldTypeLabels,
   formTemplateFieldTypes,
@@ -51,16 +52,44 @@ const tabClassName = (active: boolean) =>
       : "border-transparent text-gray-500 hover:text-gray-700",
   )
 
+/**
+ * The preview is the real PDF, not an HTML approximation: the document has its own markdown
+ * reader (`parseMarkdownBlocks`), so anything rendered by a second parser would drift from
+ * what people actually get — links, placeholders and checkboxes all did.
+ */
 const MarkdownField = () => {
   const [showPreview, setShowPreview] = useState(false)
   const bodyMarkdown = useFormValue<string>("bodyMarkdown")
+  const storedFields = useFormValue<FormTemplateFieldDefinition[]>("fields")
+  const title = useFormValue<string>("title")
   const form = useCoreAppFormContext()
 
-  // Placeholders render as inline code so the admin can see where the fields will sit.
-  const preview = (bodyMarkdown || "").replace(
-    /{{\s*([a-zA-Z0-9_]+)\s*}}/g,
-    (_, name: string) => `\`{{${name}}}\``,
-  )
+  const hasMarkdown = Boolean(bodyMarkdown?.trim())
+  const fields = resolveFormTemplateFields(bodyMarkdown, storedFields)
+
+  const {
+    data: previewPdf,
+    isPending,
+    isError,
+  } = useQuery({
+    // Keyed on the content, so switching back to the preview re-renders only what changed.
+    queryKey: ["formTemplatePreviewPdf", bodyMarkdown, fields],
+    enabled: showPreview && hasMarkdown,
+    staleTime: Infinity,
+    gcTime: 0,
+    queryFn: async () => {
+      const { renderFormTemplatePdf } =
+        await import("@/src/components/project-records/formTemplatePdf")
+      const blob = await renderFormTemplatePdf({
+        markdown: bodyMarkdown ?? "",
+        title: title || "Formular",
+        fields,
+        values: {},
+        fillable: true,
+      })
+      return new Uint8Array(await blob.arrayBuffer())
+    },
+  })
 
   return (
     <div>
@@ -85,11 +114,15 @@ const MarkdownField = () => {
       </div>
 
       {showPreview ? (
-        <div className="min-h-[20rem] rounded-b-md border border-t-0 border-gray-300 bg-white p-4">
-          {bodyMarkdown?.trim() ? (
-            <Markdown markdown={preview} />
-          ) : (
+        <div className="rounded-b-md border border-t-0 border-gray-300 bg-white p-4">
+          {!hasMarkdown ? (
             <p className="text-sm text-gray-500">Noch kein Formulartext.</p>
+          ) : isError ? (
+            <p className="text-sm text-red-700">Die Vorschau konnte nicht erzeugt werden.</p>
+          ) : isPending || !previewPdf ? (
+            <p className="text-sm text-gray-500">Vorschau wird erzeugt …</p>
+          ) : (
+            <FormPdfEditor data={previewPdf} />
           )}
         </div>
       ) : (
@@ -99,7 +132,7 @@ const MarkdownField = () => {
               label="Formulartext (Markdown)"
               labelProps={{ className: "sr-only" }}
               rows={20}
-              help="Platzhalter für auszufüllende Werte in doppelten geschweiften Klammern, z. B. {{ort}}."
+              help="Platzhalter für auszufüllende Werte in doppelten geschweiften Klammern, z. B. {{ort}}. Eine Checkbox schreiben Sie als [] – der Text daneben ist ihre Beschriftung, [x] ist vorab angekreuzt."
             />
           )}
         </form.AppField>
@@ -141,16 +174,28 @@ const PlaceholderFields = () => {
   }
 
   const blankCount = (bodyMarkdown?.match(/(?:\\?_){4,}/g) || []).length
+  const unusablePlaceholders = findUnusablePlaceholders(bodyMarkdown)
 
   return (
     <div className="space-y-3">
       <p className="mb-0 block text-sm font-medium text-gray-700">Felder im Formular</p>
       <p className="mt-0 text-sm text-gray-500">
         Jeder Platzhalter <code>{"{{feldname}}"}</code> im Formulartext wird zu einem Eingabefeld.
-        Die Reihenfolge ergibt sich aus dem Text. Der Feldtyp bestimmt Breite und Zeilenzahl des
-        Feldes – die Eingabe wird nicht geprüft. Mit einer Vorbelegung wird das Feld beim Öffnen aus
-        der Maßnahme bzw. Verhandlungsfläche gefüllt und bleibt änderbar.
+        Erlaubt sind Buchstaben (auch Umlaute), Ziffern und Unterstrich. Die Reihenfolge ergibt sich
+        aus dem Text. Der Feldtyp bestimmt Breite und Zeilenzahl des Feldes – die Eingabe wird nicht
+        geprüft. Mit einer Vorbelegung wird das Feld beim Öffnen aus der Maßnahme bzw.
+        Verhandlungsfläche gefüllt und bleibt änderbar.
       </p>
+
+      {unusablePlaceholders.length > 0 && (
+        <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-900">
+          <p className="m-0">
+            Diese Platzhalter werden nicht zu Feldern und stehen unverändert im fertigen Dokument:{" "}
+            {unusablePlaceholders.map((name) => `{{${name}}}`).join(", ")}. Erlaubt sind nur
+            Buchstaben, Ziffern und Unterstrich – kein Bindestrich, Punkt oder Leerzeichen.
+          </p>
+        </div>
+      )}
 
       {blankCount > 0 && (
         <div className="rounded-md border border-blue-200 bg-blue-50 p-3 text-sm text-blue-900">

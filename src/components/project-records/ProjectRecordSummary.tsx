@@ -1,3 +1,4 @@
+import { DocumentTextIcon } from "@heroicons/react/24/outline"
 import { format } from "date-fns"
 import { de } from "date-fns/locale"
 import type { ReactNode } from "react"
@@ -30,12 +31,19 @@ export const projectRecordSectionValueClassName = "text-sm text-gray-700"
 
 export const ProjectRecordSummary = ({ projectRecord, uploadsSection }: Props) => {
   const projectSlug = projectRecord.project.slug
+  const landAcquisitionModuleEnabled = projectRecord.project.landAcquisitionModuleEnabled
   const formTemplates = getEffectiveFormTemplates(projectRecord, {
     projectSlug,
     hasSubsubsection:
       projectRecord.subsubsections.length > 0 || Boolean(projectRecord.subsubsection),
     hasAcquisitionArea:
       projectRecord.acquisitionAreas.length > 0 || Boolean(projectRecord.acquisitionArea),
+  })
+  
+  const attachedFormTemplates = getEffectiveFormTemplates(projectRecord, {
+    projectSlug,
+    hasSubsubsection: true,
+    hasAcquisitionArea: landAcquisitionModuleEnabled,
   })
 
   return (
@@ -105,14 +113,29 @@ export const ProjectRecordSummary = ({ projectRecord, uploadsSection }: Props) =
         {uploadsSection}
       </div>
 
-      {formTemplates.length > 0 && (
+      {attachedFormTemplates.length > 0 && (
         <div className={projectRecordSectionClassName}>
           <p className={projectRecordSectionLabelClassName}>Formulare:</p>
-          <ProjectRecordFormTemplatesSection
-            projectSlug={projectSlug}
-            projectRecord={projectRecord}
-            formTemplates={formTemplates}
-          />
+          {formTemplates.length === 0 ? (
+            <div className="flex flex-col gap-1 text-sm">
+              {attachedFormTemplates.map((formTemplate) => (
+                <p key={formTemplate.id} className="flex items-center gap-1 text-gray-500">
+                  <DocumentTextIcon className="size-4 shrink-0" aria-hidden />
+                  {formTemplate.title}
+                </p>
+              ))}
+              <p className="text-sm text-gray-500">
+                Zum Ausfüllen muss der Eintrag mit einer Maßnahme
+                {landAcquisitionModuleEnabled ? " oder Verhandlungsfläche" : ""} verknüpft sein.
+              </p>
+            </div>
+          ) : (
+            <ProjectRecordFormTemplatesSection
+              projectSlug={projectSlug}
+              projectRecord={projectRecord}
+              formTemplates={formTemplates}
+            />
+          )}
         </div>
       )}
     </div>

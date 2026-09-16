@@ -71,6 +71,10 @@ export const ProjectRecordFormFields = ({
   const { data: currentUser } = useQuery({ ...currentUserQueryOptions(), ...queryBehavior })
   const { trackSessionUploads } = useSessionUploadCleanup({ projectSlug })
   const uploadsValue = useFormValue("uploads")
+ 
+  const attachedFormTemplates = useFormValue<string[]>("formTemplates")
+  const oneRelationOnly = Array.isArray(attachedFormTemplates) && attachedFormTemplates.length > 0
+  const maxRelations = oneRelationOnly ? 1 : undefined
   const uploadIds = NumberArraySchema.parse(uploadsValue)
 
   const { data: allUploads = [] } = useQuery({
@@ -136,7 +140,11 @@ export const ProjectRecordFormFields = ({
                 {showSubsubsectionField && (
                   <form.AppField name="subsubsections">
                     {(field) => (
-                      <field.Combobox items={subsubsectionItems} placeholder="Maßnahme suchen" />
+                      <field.Combobox
+                        items={subsubsectionItems}
+                        placeholder="Maßnahme suchen"
+                        maxSelected={maxRelations}
+                      />
                     )}
                   </form.AppField>
                 )}
@@ -146,9 +154,16 @@ export const ProjectRecordFormFields = ({
                       <field.Combobox
                         items={acquisitionAreaItems}
                         placeholder="Verhandlungsfläche suchen"
+                        maxSelected={maxRelations}
                       />
                     )}
                   </form.AppField>
+                )}
+                {oneRelationOnly && (
+                  <p className="text-sm text-gray-500">
+                    Solange ein Formular am Eintrag hängt, ist eine Verknüpfung je Art möglich – das
+                    Formular wird aus genau dieser vorbelegt.
+                  </p>
                 )}
               </div>
             </FieldLayout>

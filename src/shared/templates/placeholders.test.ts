@@ -14,6 +14,13 @@ describe("extractPlaceholders", () => {
     ).toEqual(["antragsteller", "ort"])
   })
 
+  it("accepts umlauts and ß in a name", () => {
+    expect(extractPlaceholders("{{Zuwendungsempfänger}} und {{maßnahme}}")).toEqual([
+      "Zuwendungsempfänger",
+      "maßnahme",
+    ])
+  })
+
   it("ignores malformed placeholders", () => {
     expect(extractPlaceholders("{einfach} {{mit-strich}} {{ }}")).toEqual([])
   })

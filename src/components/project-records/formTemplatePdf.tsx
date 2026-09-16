@@ -1,7 +1,24 @@
-import { Document, Page, pdf, StyleSheet, Text, TextInput, View } from "@react-pdf/renderer"
+import {
+  Checkbox,
+  Document,
+  Page,
+  pdf,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "@react-pdf/renderer"
 import type { ResolvedFormTemplateField } from "@/src/shared/formTemplates/fieldSchemas"
-import type { InlineRun, MarkdownBlock } from "@/src/shared/formTemplates/markdownBlocks"
-import { isPlaceholderRun, parseMarkdownBlocks } from "@/src/shared/formTemplates/markdownBlocks"
+import type {
+  InlineRun,
+  MarkdownBlock,
+  MarkdownTableAlign,
+} from "@/src/shared/formTemplates/markdownBlocks"
+import {
+  isCheckboxRun,
+  isPlaceholderRun,
+  parseMarkdownBlocks,
+} from "@/src/shared/formTemplates/markdownBlocks"
 import { FORM_PDF_FONT_SIZE as FONT_SIZE } from "@/src/shared/formTemplates/pdfLayout"
 
 /**
@@ -9,19 +26,27 @@ import { FORM_PDF_FONT_SIZE as FONT_SIZE } from "@/src/shared/formTemplates/pdfL
  * because that pattern is blocked in the server graph, which would reject the dynamic import.
  */
 
-const FIELD_HEIGHT = 14
+const FIELD_HEIGHT = 12
 /** Measured: baseline alignment drops the widget 8.55pt below the label. */
 const FIELD_BASELINE_LIFT = 4
 const MULTILINE_FIELD_HEIGHT = 56
+const TABLE_BORDER = "0.7pt solid #9aa5b1"
 
-/** Keeps an unfilled blank writable on paper. */
+const TABLE_KEEP_TOGETHER_MAX_ROWS = 12
+const CHECKBOX_SIZE = 9
+/** Measured like the text field's: baseline alignment drops the box below the line. */
+const CHECKBOX_BASELINE_LIFT = 9
+
+/** Keeps an unfilled blank writable on paper — a table cell is already one, so it gets none. */
 const EMPTY_VALUE_MARKER = "__________"
+const emptyValue = (inTableCell: boolean | undefined) => (inTableCell ? "" : EMPTY_VALUE_MARKER)
 
 const styles = StyleSheet.create({
   page: { paddingTop: 48, paddingBottom: 56, paddingHorizontal: 52, fontSize: FONT_SIZE },
-  heading: { marginBottom: 8, marginTop: 12, fontFamily: "Helvetica-Bold" },
-  paragraph: { marginBottom: 8, lineHeight: 1.4 },
-  listItem: { marginBottom: 4, flexDirection: "row", lineHeight: 1.4 },
+  heading: { marginBottom: 4, marginTop: 10, fontFamily: "Helvetica-Bold" },
+  
+  paragraph: { marginBottom: 7 },
+  listItem: { marginBottom: 1, flexDirection: "row" },
   listMarker: { width: 18 },
   listContent: { flex: 1 },
   // `lineHeight: 1`: inherited leading moves the text baseline down and drags the widget with it.
@@ -38,6 +63,32 @@ const styles = StyleSheet.create({
     backgroundColor: "#f2f6fb",
     borderBottom: "1pt solid #7b8794",
   },
+  checkbox: { width: CHECKBOX_SIZE - 2, height: CHECKBOX_SIZE - 2 },
+  checkboxBox: {
+    width: CHECKBOX_SIZE,
+    height: CHECKBOX_SIZE,
+    marginRight: 3,
+    border: "0.7pt solid #7b8794",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  table: {
+    marginBottom: 5,
+    borderTop: TABLE_BORDER,
+    borderLeft: TABLE_BORDER,
+  },
+  tableRow: { flexDirection: "row" },
+  tableHeaderRow: { backgroundColor: "#f4f5f7" },
+  tableCell: {
+    flex: 1,
+    minHeight: FONT_SIZE + 5,
+    paddingVertical: 2,
+    paddingHorizontal: 3,
+    borderRight: TABLE_BORDER,
+    borderBottom: TABLE_BORDER,
+  },
+  checkboxLifted: { position: "relative", top: -CHECKBOX_BASELINE_LIFT },
+  checkboxMark: { fontSize: CHECKBOX_SIZE - 2, lineHeight: 1, fontFamily: "Helvetica-Bold" },
   pageNumber: {
     position: "absolute",
     bottom: 28,
@@ -78,7 +129,16 @@ type RenderContext = {
   values: Record<string, string>
 }
 
-function PlaceholderField({ name, context }: { name: string; context: RenderContext }) {
+function PlaceholderField({
+  name,
+  context,
+  fullWidth,
+}: {
+  name: string
+  context: RenderContext
+  /** In a table cell the column decides the width, not the field type. */
+  fullWidth?: boolean
+}) {
   const field = context.fieldsByName.get(name)
   const type = field?.type ?? "text"
   const value = context.values[name] ?? ""
@@ -91,23 +151,60 @@ function PlaceholderField({ name, context }: { name: string; context: RenderCont
       multiline={type === "textarea"}
       style={[
         styles.field,
-        {
-          width: fieldWidth(type),
-          ...(type === "textarea" ? { height: MULTILINE_FIELD_HEIGHT } : {}),
-        },
+        fullWidth
+          ? { width: "100%", minWidth: 0, marginHorizontal: 0 }
+          : {
+              width: fieldWidth(type),
+            },
+        type === "textarea" ? { height: MULTILINE_FIELD_HEIGHT } : {},
       ]}
     />
   )
 }
 
+const isCheckedValue = (value: string | undefined) =>
+  value !== undefined && value !== "" && value.toLowerCase() !== "off"
+
+
+function CheckboxField({
+  checkbox,
+  context,
+  lifted,
+}: {
+  checkbox: { name: string; checked: boolean }
+  context: RenderContext
+  lifted: boolean
+}) {
+  const stored = context.values[checkbox.name]
+  const checked = stored === undefined ? checkbox.checked : isCheckedValue(stored)
+
+  return (
+    <View style={[styles.checkboxBox, lifted ? styles.checkboxLifted : {}]}>
+      {context.fillable ? (
+        <Checkbox name={checkbox.name} checked={checked} style={styles.checkbox} />
+      ) : checked ? (
+        <Text style={styles.checkboxMark}>X</Text>
+      ) : null}
+    </View>
+  )
+}
+
 /** No widget on this line, so placeholders are baked in as their value. */
-function TextLine({ runs, context }: { runs: InlineRun[]; context: RenderContext }) {
+function TextLine({
+  runs,
+  context,
+  inTableCell,
+}: {
+  runs: InlineRun[]
+  context: RenderContext
+  inTableCell?: boolean
+}) {
   return (
     <Text>
       {runs.map((run, index) =>
-        isPlaceholderRun(run) ? (
+        isCheckboxRun(run) ? null : isPlaceholderRun(run) ? (
           // eslint-disable-next-line react/no-array-index-key -- runs have no stable identity
-          <Text key={index}>{context.values[run.placeholder] || EMPTY_VALUE_MARKER}</Text>
+          <Text key={index}>{context.values[run.placeholder] || emptyValue(inTableCell)}</Text>
         ) : (
           // eslint-disable-next-line react/no-array-index-key -- runs have no stable identity
           <Text key={index} style={{ fontFamily: runFontFamily(run) }}>
@@ -119,26 +216,64 @@ function TextLine({ runs, context }: { runs: InlineRun[]; context: RenderContext
   )
 }
 
-function Line({ runs, context }: { runs: InlineRun[]; context: RenderContext }) {
-  const hasField = context.fillable && runs.some(isPlaceholderRun)
-  if (!hasField) return <TextLine runs={runs} context={context} />
+function LineRun({
+  run,
+  context,
+  inTableCell,
+  lifted,
+}: {
+  run: InlineRun
+  context: RenderContext
+  inTableCell?: boolean
+  lifted: boolean
+}) {
+  if (isCheckboxRun(run)) {
+    return <CheckboxField checkbox={run.checkbox} context={context} lifted={lifted} />
+  }
+
+  if (isPlaceholderRun(run)) {
+    if (context.fillable) {
+      return <PlaceholderField name={run.placeholder} context={context} fullWidth={inTableCell} />
+    }
+
+    return (
+      <Text style={styles.fieldLineText}>
+        {context.values[run.placeholder] || emptyValue(inTableCell)}
+      </Text>
+    )
+  }
+
+  return <Text style={[styles.fieldLineText, { fontFamily: runFontFamily(run) }]}>{run.text}</Text>
+}
+
+function Line({
+  runs,
+  context,
+  inTableCell,
+}: {
+  runs: InlineRun[]
+  context: RenderContext
+  inTableCell?: boolean
+}) {
+  const hasField = runs.some(isCheckboxRun) || (context.fillable && runs.some(isPlaceholderRun))
+  if (!hasField) return <TextLine runs={runs} context={context} inTableCell={inTableCell} />
+
+  const hasText = runs.some(
+    (run) => !isCheckboxRun(run) && !isPlaceholderRun(run) && run.text.trim(),
+  )
 
   return (
     <View style={styles.fieldLine}>
-      {runs.map((run, index) =>
-        isPlaceholderRun(run) ? (
+      {runs.map((run, index) => (
+        <LineRun
           // eslint-disable-next-line react/no-array-index-key -- runs have no stable identity
-          <PlaceholderField key={index} name={run.placeholder} context={context} />
-        ) : (
-          <Text
-            // eslint-disable-next-line react/no-array-index-key -- runs have no stable identity
-            key={index}
-            style={[styles.fieldLineText, { fontFamily: runFontFamily(run) }]}
-          >
-            {run.text}
-          </Text>
-        ),
-      )}
+          key={index}
+          run={run}
+          context={context}
+          inTableCell={inTableCell}
+          lifted={Boolean(hasText)}
+        />
+      ))}
     </View>
   )
 }
@@ -154,7 +289,47 @@ function Lines({ lines, context }: { lines: InlineRun[][]; context: RenderContex
   )
 }
 
+const cellAlignStyle = (align: MarkdownTableAlign | undefined) => {
+  if (align === "right") return { textAlign: "right" as const, alignItems: "flex-end" as const }
+  if (align === "center") return { textAlign: "center" as const, alignItems: "center" as const }
+  return {}
+}
+
+function Table({ block, context }: { block: MarkdownBlock; context: RenderContext }) {
+  const rows = block.rows ?? []
+  const columnCount = block.align?.length ?? rows[0]?.cells.length ?? 0
+  if (!columnCount) return null
+
+  const keepTogether = rows.length <= TABLE_KEEP_TOGETHER_MAX_ROWS
+
+  return (
+    <View style={styles.table} wrap={!keepTogether}>
+      {rows.map((row, rowIndex) => (
+        <View
+          // eslint-disable-next-line react/no-array-index-key -- rows have no stable identity
+          key={rowIndex}
+          style={[styles.tableRow, row.header ? styles.tableHeaderRow : {}]}
+          wrap={false}
+          fixed={!keepTogether && row.header}
+        >
+          {Array.from({ length: columnCount }, (_, cellIndex) => (
+            <View
+              // eslint-disable-next-line react/no-array-index-key -- cells have no stable identity
+              key={cellIndex}
+              style={[styles.tableCell, cellAlignStyle(block.align?.[cellIndex])]}
+            >
+              <Line runs={row.cells[cellIndex] ?? []} context={context} inTableCell />
+            </View>
+          ))}
+        </View>
+      ))}
+    </View>
+  )
+}
+
 function Block({ block, context }: { block: MarkdownBlock; context: RenderContext }) {
+  if (block.type === "table") return <Table block={block} context={context} />
+
   if (block.type === "heading") {
     return (
       <View style={[styles.heading, { fontSize: headingSize(block.level ?? 1) }]} wrap={false}>

@@ -17,9 +17,9 @@ export const formTemplateFieldTypeLabels: Record<FormTemplateFieldType, string> 
   date: "Datum – schmales Feld",
 }
 
-/** Must accept exactly what `extractPlaceholders` recognises, uppercase included. */
-const FormTemplateFieldNameSchema = z.string().regex(/^[a-zA-Z0-9_]+$/, {
-  error: "Erlaubte Zeichen: a-z, A-Z, 0-9 und _ (Unterstrich).",
+/** Must accept exactly what `extractPlaceholders` recognises, uppercase and umlauts included. */
+const FormTemplateFieldNameSchema = z.string().regex(/^[\p{L}\p{N}_]+$/u, {
+  error: "Erlaubte Zeichen: Buchstaben (inkl. Umlaute), Ziffern und _ (Unterstrich).",
 })
 
 const FormTemplateFieldDefinitionSchema = z.object({
@@ -61,6 +61,18 @@ export function sanitizeFieldsForSave(
 ) {
   const used = new Set(extractPlaceholders(bodyMarkdown))
   return definitions.filter((definition) => used.has(definition.name))
+}
+
+export function findUnusablePlaceholders(markdown: string | null | undefined) {
+  const usable = new Set(extractPlaceholders(markdown))
+  const names = new Set<string>()
+
+  for (const match of (markdown ?? "").matchAll(/\{\{([^{}]*)\}\}/g)) {
+    const name = match[1]!.trim()
+    if (name && !usable.has(name)) names.add(name)
+  }
+
+  return Array.from(names)
 }
 
 /** Word exports arrive with underscores where the fields belong. */
