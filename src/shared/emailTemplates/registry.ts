@@ -13,6 +13,10 @@ export const emailTemplateKeys = {
 
 export type EmailTemplateKey = (typeof emailTemplateKeys)[keyof typeof emailTemplateKeys]
 
+const signatureMarkdown = `Mit freundlichen Grüßen
+
+i.A. das Team vom Trassenscout`
+
 export type EmailTemplateDefinition = {
   key: EmailTemplateKey
   name: string
@@ -28,8 +32,9 @@ export type EmailTemplateDefinition = {
   }
 }
 
-// Survey emails are intentionally excluded for now because they are already
-// configured via survey-specific config and are out of scope for the first MVP.
+// Survey emails are deliberately not in this registry: they are per survey (own wording, own
+// {{variables}}, own recipients) while a template key exists once per installation. They stay in
+// the survey config — `emails/README.md` lists where every mail text lives.
 const emailTemplateRegistry: Record<EmailTemplateKey, EmailTemplateDefinition> = {
   [emailTemplateKeys.forgotPassword]: {
     key: emailTemplateKeys.forgotPassword,
@@ -41,6 +46,7 @@ const emailTemplateRegistry: Record<EmailTemplateKey, EmailTemplateDefinition> =
     defaults: {
       subject: "Trassenscout: Setzen Sie ihr Passwort zurück",
       introMarkdown: "# Setzen Sie ihr Passwort zurück.",
+      outroMarkdown: signatureMarkdown,
       ctaText: "Ein neues Passwort vergeben",
     },
   },
@@ -62,7 +68,9 @@ const emailTemplateRegistry: Record<EmailTemplateKey, EmailTemplateDefinition> =
 # {{inviterName}} hat Sie soeben eingeladen, bei {{projectName}} mitzuwirken.
 
 Bitte registrieren Sie sich, um die Einladung anzunehmen.`,
-      outroMarkdown: `Falls Sie schon einen Trassenscout-Account unter dieser E-Mail-Adresse besitzen, [melden Sie sich bitte damit an]({{loginUrl}}), um die Einladung anzunehmen.`,
+      outroMarkdown: `Falls Sie schon einen Trassenscout-Account unter dieser E-Mail-Adresse besitzen, [melden Sie sich bitte damit an]({{loginUrl}}), um die Einladung anzunehmen.
+
+${signatureMarkdown}`,
       ctaText: "Einladung annehmen und registrieren",
     },
   },
@@ -89,6 +97,7 @@ Diese E-Mail dient zur Information aller Personen mit der Rolle "Editor" bei {{p
 Geplante Rechte: {{projectRoles}}
 
 Die Liste aller offenen Einladungen finden Sie unter {{invitesUrl}}.`,
+      outroMarkdown: signatureMarkdown,
     },
   },
   [emailTemplateKeys.membershipCreatedEditorsNotification]: {
@@ -116,6 +125,7 @@ Diese E-Mail dient zur Information aller Personen mit der Rolle "Editor" bei {{p
 Neue Rechte: {{projectRoles}}
 
 Alle Teammitglieder finden Sie unter {{teamUrl}}.`,
+      outroMarkdown: signatureMarkdown,
     },
   },
   [emailTemplateKeys.projectRecordAssignedUser]: {
@@ -141,6 +151,7 @@ Alle Teammitglieder finden Sie unter {{teamUrl}}.`,
 # Neue Zuweisung: {{recordTitle}}
 
 **{{actorName}}** hat Ihnen einen Protokolleintrag im Projekt **{{projectName}}** zugewiesen.`,
+      outroMarkdown: signatureMarkdown,
       ctaText: "Protokolleintrag öffnen",
     },
   },
@@ -176,6 +187,7 @@ Alle Teammitglieder finden Sie unter {{teamUrl}}.`,
 **Absenderadresse:** {{senderEmail}}
 **Betreff:** {{emailSubject}}
 {{usedSubaddressLine}}`,
+      outroMarkdown: signatureMarkdown,
       ctaText: "E-Mail im Admin-Interface anzeigen",
     },
   },
@@ -192,6 +204,7 @@ Alle Teammitglieder finden Sie unter {{teamUrl}}.`,
 
 Bitte senden Sie zukünftige KI-Protokoll-E-Mails an:
 - \`protokoll@trassenscout.de\``,
+      outroMarkdown: signatureMarkdown,
     },
   },
   [emailTemplateKeys.projectRecordNeedsReviewAdmin]: {
@@ -231,6 +244,7 @@ Die E-Mail wurde automatisch als Protokolleintrag erfasst, benötigt jedoch eine
 
 Bitte prüfen Sie den erstellten Protokolleintrag und entscheiden Sie, ob:
 {{actionItemsMarkdown}}`,
+      outroMarkdown: signatureMarkdown,
       ctaText: "Protokolleintrag prüfen",
     },
   },
@@ -256,6 +270,7 @@ Bitte prüfe den Account und ordne ihn einem Projekt zu.
 * Name: {{userName}}
 * E-Mail: {{userMail}}
 * {{membershipStatusText}}`,
+      outroMarkdown: signatureMarkdown,
       ctaText: "Rechte vergeben",
     },
   },
@@ -273,6 +288,7 @@ Bitte prüfe den Account und ordne ihn einem Projekt zu.
       introMarkdown: `Guten Tag {{userName}}!
 
 Herzlich Willkommen im Trassenscout! Diese E-Mail dient zur Information, dass Sie soeben erfolgreich einen Account erstellt haben.`,
+      outroMarkdown: signatureMarkdown,
       ctaText: "Trassenscout öffnen",
     },
   },
