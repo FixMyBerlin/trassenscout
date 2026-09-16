@@ -2,7 +2,7 @@ import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/16/solid"
 import { ChatBubbleBottomCenterTextIcon } from "@heroicons/react/24/outline"
 import { useMutation } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { twJoin } from "tailwind-merge"
 import { backendConfig as defaultBackendConfig } from "@/src/components/beteiligung/shared/backend-types"
 import { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
@@ -67,6 +67,14 @@ const EditableSurveyResponseListItem = ({
     mutationFn: deleteSurveyResponseCommentFn,
   })
   const open = !isAccordion ? true : parseInt(String(responseDetails)) === response.id
+
+  const articleRef = useRef<HTMLElement>(null)
+  const openedFromLinkRef = useRef(open && isAccordion)
+
+  useEffect(function scrollLinkedResponseIntoView() {
+    if (!openedFromLinkRef.current) return
+    articleRef.current?.scrollIntoView({ block: "start", behavior: "smooth" })
+  }, [])
   const surveySlug = response.surveySession.survey.slug as AllowedSurveySlugs
 
   const metaDefinition = getConfigBySurveySlug(surveySlug, "meta")
@@ -118,7 +126,7 @@ const EditableSurveyResponseListItem = ({
   }
 
   return (
-    <article data-open={open} className="bg-white">
+    <article ref={articleRef} data-open={open} className="bg-white">
       <div
         role={isAccordion ? "button" : undefined}
         tabIndex={isAccordion ? 0 : undefined}

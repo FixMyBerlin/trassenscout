@@ -17,7 +17,9 @@ import { Link } from "@/src/components/core/components/links/Link"
 import { linkStyles } from "@/src/components/core/components/links/styles"
 import { Prettify } from "@/src/components/core/types"
 import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
+import { ProjectRecordEditingState } from "@/src/prisma/generated/browser"
 import { adminLookupRowsQueryOptions } from "@/src/server/adminLookupTables/adminLookupTablesQueryOptions"
+import { createProjectRecordFn } from "@/src/server/projectRecords/projectRecords.functions"
 import { getSubsectionBySlugFn } from "@/src/server/subsections/subsections.functions"
 import {
   createSubsubsectionFn,
@@ -58,6 +60,7 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
   const [convertError, setConvertError] = useState<string | null>(null)
   const [convertedSubsubsectionSlug, setConvertedSubsubsectionSlug] = useState<string | null>(null)
   const createSubsubsectionMutation = useMutation({ mutationFn: createSubsubsectionFn })
+  const createProjectRecordMutation = useMutation({ mutationFn: createProjectRecordFn })
 
   const existingSubsubsectionLookup = useQuery({
     queryKey: [
@@ -198,6 +201,34 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
       })
 
       setConvertedSubsubsectionSlug(result.slug)
+      try {
+        await createProjectRecordMutation.mutateAsync({
+          data: {
+            projectSlug,
+            title: "Maßnahme aus Eingabe erstellt",
+            body: `Maßnahme wurde aus [Eingabe ${response.id}](/${projectSlug}/surveys/${response.surveySession.survey.id}/responses?responseDetails=${response.id}) erstellt.`,
+            subsubsections: [result.id],
+            editingState: ProjectRecordEditingState.COMPLETED,
+            // The conversion happened today; the form uses "" for "no date", which would leave
+            // the entry unsorted in the date-ordered Protokoll list.
+            date: new Date().toISOString().slice(0, 10),
+            subsubsectionId: null,
+            acquisitionAreaId: null,
+            assignedToId: null,
+            acquisitionAreas: [],
+            formTemplates: [],
+            tags: [],
+            uploads: [],
+            projectRecordTemplateId: null,
+          },
+        })
+        await queryClient.invalidateQueries({ queryKey: ["projectRecords"] })
+      } catch (error: unknown) {
+        console.error("Failed to create the project record for the converted Maßnahme:", error)
+        setConvertError(
+          "Die Maßnahme wurde erstellt, der automatische Protokolleintrag konnte aber nicht angelegt werden.",
+        )
+      }
     } catch (error: unknown) {
       console.error("Error converting survey response to subsubsection:", error)
       setConvertError(error instanceof Error ? error.message : "Ein Fehler ist aufgetreten")
