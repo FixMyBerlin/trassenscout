@@ -8,12 +8,10 @@ import {
 export const EvaluationsPageByProjectSlugSchema = ProjectSlugRequiredSchema
 
 export const EvaluationsPageContentSchema = z.object({
-  title: z.string().min(1, "Pflichtfeld"),
   config: EvaluationsPageConfigSchema,
 })
 
 export const evaluationsPageFormDefaultValues: z.infer<typeof EvaluationsPageContentSchema> = {
-  title: "",
   config: emptyEvaluationsPageConfig(),
 }
 

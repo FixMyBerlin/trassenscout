@@ -36,7 +36,6 @@ export async function getEvaluationsPage(
   ) as EvaluationChartType[]
 
   return {
-    title: page.title,
     config,
     chartData: await getEvaluationChartData(input.projectSlug, charts),
   }
@@ -54,7 +53,6 @@ export async function getEvaluationsPageAdmin(
 
   if (!page) {
     return {
-      title: "",
       config: emptyEvaluationsPageConfig(),
       updatedAt: null,
       updatedById: null,
@@ -62,7 +60,6 @@ export async function getEvaluationsPageAdmin(
   }
 
   return {
-    title: page.title,
     config: parseEvaluationsPageConfig(page.config),
     updatedAt: page.updatedAt,
     updatedById: page.updatedById,
@@ -74,7 +71,7 @@ export async function upsertEvaluationsPage(
   input: z.infer<typeof UpsertEvaluationsPageSchema>,
 ) {
   const session = await endpointAuth.admin(headers)
-  const { projectSlug, title, config } = input
+  const { projectSlug, config } = input
 
   const project = await db.project.findUniqueOrThrow({
     where: { slug: projectSlug },
@@ -85,12 +82,10 @@ export async function upsertEvaluationsPage(
     where: { projectId: project.id },
     create: {
       projectId: project.id,
-      title,
       config: config as Prisma.InputJsonValue,
       updatedById: Number(session.userId),
     },
     update: {
-      title,
       config: config as Prisma.InputJsonValue,
       updatedById: Number(session.userId),
     },

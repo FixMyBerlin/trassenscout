@@ -848,7 +848,6 @@ model EvaluationsPage {
   id          Int      @id @default(autoincrement())
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  title       String
   config      Json     @default("{\"version\":1,\"sections\":[]}")
   project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId   Int      @unique
