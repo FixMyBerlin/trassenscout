@@ -1,3 +1,4 @@
+import type { getMyAssignedRecords } from "./myAssignedRecords.server"
 import type {
   getAllProjectRecordsAdmin,
   getProjectRecord,
@@ -24,3 +25,5 @@ export type ProjectRecordsByAcquisitionArea = Awaited<
 >
 export type ProjectRecordsNeedsReviewList = Awaited<ReturnType<typeof getProjectRecordsNeedsReview>>
 export type ProjectRecordDeleteInfo = Awaited<ReturnType<typeof getProjectRecordDeleteInfo>>
+
+export type MyAssignedRecord = Awaited<ReturnType<typeof getMyAssignedRecords>>[number]

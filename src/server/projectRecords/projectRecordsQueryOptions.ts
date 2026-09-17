@@ -1,7 +1,9 @@
 import { queryOptions } from "@tanstack/react-query"
 import type { z } from "zod"
 import {
+  countMyAssignedRecordsFn,
   getAllProjectRecordsAdminFn,
+  getMyAssignedRecordsFn,
   getProjectRecordAdminFn,
   getProjectRecordDeleteInfoFn,
   getProjectRecordFn,
@@ -9,6 +11,7 @@ import {
   getProjectRecordsNeedsReviewFn,
   getProjectRecordsTabCountsFn,
 } from "./projectRecords.functions"
+import type { GetMyAssignedRecordsSchema } from "./projectRecords.inputSchemas"
 import type { GetProjectRecordsInput } from "./projectRecords.server"
 import { GetProjectRecordSchema } from "./projectRecords.server"
 
@@ -58,5 +61,19 @@ export function projectRecordDeleteInfoQueryOptions(input: z.infer<typeof GetPro
   return queryOptions({
     queryKey: ["projectRecordDeleteInfo", input],
     queryFn: () => getProjectRecordDeleteInfoFn({ data: input }),
+  })
+}
+
+export function myAssignedRecordsCountQueryOptions() {
+  return queryOptions({
+    queryKey: ["projectRecords", "assignedToMe", "count"],
+    queryFn: () => countMyAssignedRecordsFn(),
+  })
+}
+
+export function myAssignedRecordsQueryOptions(input: z.infer<typeof GetMyAssignedRecordsSchema>) {
+  return queryOptions({
+    queryKey: ["projectRecords", "assignedToMe", input],
+    queryFn: () => getMyAssignedRecordsFn({ data: input }),
   })
 }
