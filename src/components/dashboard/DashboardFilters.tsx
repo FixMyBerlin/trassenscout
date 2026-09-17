@@ -15,6 +15,8 @@ type Props = DashboardSearch & {
   projects: { slug: string }[]
   onChange: (value: DashboardSearch) => void
   showTimeRange?: boolean
+  hasAdditionalFilters?: boolean
+  onReset?: () => void
   children?: ReactNode
 }
 
@@ -31,9 +33,14 @@ export const DashboardFilters = ({
   projects,
   onChange,
   showTimeRange = false,
+  hasAdditionalFilters = false,
+  onReset,
   children,
 }: Props) => {
-  const hasFilter = projectSlug !== DASHBOARD_ALL_PROJECTS || months !== DASHBOARD_ALL_MONTHS
+  const hasFilter =
+    projectSlug !== DASHBOARD_ALL_PROJECTS ||
+    months !== DASHBOARD_ALL_MONTHS ||
+    hasAdditionalFilters
 
   // Same shape as the project switch in the header.
   const projectItems = [
@@ -69,25 +76,27 @@ export const DashboardFilters = ({
           className="w-56"
           value={months}
           options={monthOptions}
-          placeholder="Zeitraum"
           onChange={(next) => onChange({ projectSlug, months: next ?? DASHBOARD_ALL_MONTHS })}
         />
       ) : null}
 
+      {children}
+
+      {/* Last, so it clears everything to its left rather than only what comes before it. */}
       {hasFilter ? (
         <button
           type="button"
           className={twJoin(linkStyles, "flex items-center gap-2")}
           onClick={() =>
-            onChange({ projectSlug: DASHBOARD_ALL_PROJECTS, months: DASHBOARD_ALL_MONTHS })
+            onReset
+              ? onReset()
+              : onChange({ projectSlug: DASHBOARD_ALL_PROJECTS, months: DASHBOARD_ALL_MONTHS })
           }
         >
           <XMarkIcon className="size-4" />
           <span>Filter zurücksetzen</span>
         </button>
       ) : null}
-
-      {children}
     </div>
   )
 }

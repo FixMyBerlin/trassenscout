@@ -98,7 +98,7 @@ export function EditableSurveyResponseFilterForm({
           value={effectiveFilter.searchterm}
           onChange={(searchterm) => void handleSearchtermChange(searchterm)}
           onReset={() => void handleStandardFilterReset()}
-          placeholder='Beiträge nach Suchwort filtern oder nach "tag:Name" für Tag filtern'
+          placeholder="Eingaben filtern"
         >
           <div className="w-[300px] max-w-full">
             <ComboboxMultiBase

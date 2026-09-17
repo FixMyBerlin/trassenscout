@@ -23,7 +23,7 @@ type Props<T extends string | number> = {
   value: T | null
   onChange: (value: T | null) => void
   options: SelectListboxOption<T>[]
-  placeholder: string
+  placeholder?: string
   className?: string
 }
 
@@ -35,7 +35,7 @@ export function SelectListbox<T extends string | number>({
   className,
 }: Props<T>) {
   const selectedOption = options.find((option) => option.value === value)
-  const selectedLabel = selectedOption?.label ?? placeholder
+  const selectedLabel = selectedOption?.label ?? placeholder ?? ""
 
   return (
     <Listbox value={value} onChange={onChange}>
@@ -59,11 +59,13 @@ export function SelectListbox<T extends string | number>({
           >
             <div className="absolute z-10 mt-1 w-full">
               <ListboxOptions static className={checkmarkListboxOptionsPanelClassName}>
-                <ListboxOption value={null} className={checkmarkListboxOptionClassName}>
-                  <CheckmarkListboxOptionLabel title={placeholder}>
-                    {placeholder}
-                  </CheckmarkListboxOptionLabel>
-                </ListboxOption>
+                {placeholder ? (
+                  <ListboxOption value={null} className={checkmarkListboxOptionClassName}>
+                    <CheckmarkListboxOptionLabel title={placeholder}>
+                      {placeholder}
+                    </CheckmarkListboxOptionLabel>
+                  </ListboxOption>
+                ) : null}
 
                 {options.map((option) => (
                   <ListboxOption

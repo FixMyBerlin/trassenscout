@@ -29,9 +29,17 @@ export const dashboardFilterValues = (search: DashboardSearch) => ({
   months: search.months || undefined,
 })
 
+export const ASSIGNMENTS_DEFAULTS = { status: "PENDING", direction: "all" } as const
+
 export const assignmentsSearchSchema = z.object({
-  status: z.enum(["all", "PENDING", "COMPLETED"]).default("PENDING").catch("PENDING"),
-  direction: z.enum(["all", "byMe", "toMe"]).default("all").catch("all"),
+  status: z
+    .enum(["all", "PENDING", "COMPLETED"])
+    .default(ASSIGNMENTS_DEFAULTS.status)
+    .catch(ASSIGNMENTS_DEFAULTS.status),
+  direction: z
+    .enum(["all", "byMe", "toMe"])
+    .default(ASSIGNMENTS_DEFAULTS.direction)
+    .catch(ASSIGNMENTS_DEFAULTS.direction),
 })
 
 export type AssignmentsSearch = z.infer<typeof assignmentsSearchSchema>

@@ -13,14 +13,19 @@ import { myAssignedRecordsQueryOptions } from "@/src/server/projectRecords/proje
 import { projectsWithGeometryWithMembershipRoleQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 import { mergeDashboardSearch } from "@/src/shared/dashboard/mergeDashboardSearch"
 import type { AssignmentsSearch } from "@/src/shared/dashboard/searchSchemas"
-import { dashboardFilterValues } from "@/src/shared/dashboard/searchSchemas"
+import {
+  ASSIGNMENTS_DEFAULTS,
+  DASHBOARD_ALL_MONTHS,
+  DASHBOARD_ALL_PROJECTS,
+  dashboardFilterValues,
+} from "@/src/shared/dashboard/searchSchemas"
 
 const routeApi = getRouteApi("/_loggedInGeneral/dashboard/assignments/")
 
 const statusOptions: { value: AssignmentsSearch["status"]; label: string }[] = [
   { value: "PENDING", label: "In Bearbeitung" },
   { value: "COMPLETED", label: "Abgeschlossen" },
-  { value: "all", label: "Alle" },
+  { value: "all", label: "Status: Alle" },
 ]
 
 const directionOptions: { value: AssignmentsSearch["direction"]; label: string }[] = [
@@ -65,19 +70,34 @@ export function PageDashboardAssignments() {
                 ...preserveScrollNavigateOptions,
               })
             }
+            hasAdditionalFilters={
+              search.status !== ASSIGNMENTS_DEFAULTS.status ||
+              search.direction !== ASSIGNMENTS_DEFAULTS.direction
+            }
+            // One navigation, so the status and the project cannot undo each other.
+            onReset={() =>
+              void navigate({
+                search: (prev) => ({
+                  ...mergeDashboardSearch(prev, {
+                    projectSlug: DASHBOARD_ALL_PROJECTS,
+                    months: DASHBOARD_ALL_MONTHS,
+                  }),
+                  ...ASSIGNMENTS_DEFAULTS,
+                }),
+                ...preserveScrollNavigateOptions,
+              })
+            }
           >
             <SelectListbox
               className="w-48"
               value={search.status}
               options={statusOptions}
-              placeholder="Status"
               onChange={(next) => updateSearch({ status: next ?? "all" })}
             />
             <SelectListbox
               className="w-56"
               value={search.direction}
               options={directionOptions}
-              placeholder="Zuweisung"
               onChange={(next) => updateSearch({ direction: next ?? "all" })}
             />
           </DashboardFilters>

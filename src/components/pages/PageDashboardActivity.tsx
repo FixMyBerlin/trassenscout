@@ -77,7 +77,8 @@ function ActivityList({ projectSlug, months }: { projectSlug?: string; months?: 
         entries={data.logEntries}
         isAdmin={data.isAdmin}
         showProject
-        emptyText="Keine Änderungen für diese Auswahl."
+        emptyText="Kein Zugriff auf das Aktivitätenlog
+Du hast in diesem Projekt Leserechte. Das Aktivitätenlog ist nur für Mitglieder mit Bearbeitungsrechten (Editor-Rolle) sichtbar."
       />
     </div>
   )

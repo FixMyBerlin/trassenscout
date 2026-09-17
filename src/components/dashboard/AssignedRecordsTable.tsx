@@ -106,7 +106,7 @@ export const AssignedRecordsTable = ({ records }: Props) => {
                   <br />
                   <span className="text-xs text-gray-500">
                     {record.assignedAt ? (
-                      <>zugewiesen {format(record.assignedAt, "P", { locale: de })}</>
+                      <>zugewiesen am {format(record.assignedAt, "P", { locale: de })}</>
                     ) : (
                       "Zuweisung unbekannt"
                     )}
