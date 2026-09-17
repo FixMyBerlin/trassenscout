@@ -16,6 +16,7 @@ import {
   AdminTableEditLink,
 } from "@/src/components/admin/AdminTableActions"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
+import { shortTitle } from "@/src/components/core/components/text/titles"
 import { deleteFormTemplateFn } from "@/src/server/formTemplates/formTemplates.functions"
 import { formTemplatesQueryOptions } from "@/src/server/formTemplates/formTemplatesQueryOptions"
 import type { FormTemplatesList } from "@/src/server/formTemplates/types"
@@ -68,7 +69,7 @@ export const AdminFormTemplatesTable = ({ templates }: Props) => {
                   {template.projects.length ? (
                     template.projects.map((project) => (
                       <AdminBadge key={project.id} variant="blue">
-                        {project.slug}
+                        {shortTitle(project.slug)}
                       </AdminBadge>
                     ))
                   ) : (

@@ -10,6 +10,7 @@ import {
   applyFormSubmitResult,
   type OnSubmitResult,
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
+import { shortTitle } from "@/src/components/core/components/text/titles"
 import { formTemplatesQueryOptions } from "@/src/server/formTemplates/formTemplatesQueryOptions"
 import { tagsAdminQueryOptions } from "@/src/server/projectRecordTemplates/projectRecordTemplatesQueryOptions"
 import { projectsAdminQueryOptions } from "@/src/server/projects/projectsQueryOptions"
@@ -160,7 +161,7 @@ const ProjectAndTagFields = () => {
 
           return (
             <div key={project.id} className="rounded-md border border-gray-200 p-3">
-              <p className="mb-3 text-sm font-semibold text-gray-700">{project.slug}</p>
+              <p className="mb-3 text-sm font-semibold text-gray-700">{shortTitle(project.slug)}</p>
               {tagsForProject.length ? (
                 <form.AppField name="tagIds">
                   {(field) => (
