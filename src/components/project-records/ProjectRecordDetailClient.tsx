@@ -1,5 +1,4 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { getRouteApi } from "@tanstack/react-router"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { ProjectRecordCommentsSection } from "@/src/components/project-records/ProjectRecordCommentsSection"
 import { CreateEditReviewHistory } from "@/src/components/project-records/ProjectRecordCreateEditReviewHistory"
@@ -12,8 +11,6 @@ import { ProjectRecordReviewState } from "@/src/prisma/generated/browser"
 import { projectRecordQueryOptions } from "@/src/server/projectRecords/projectRecordsQueryOptions"
 import type { ProjectRecord } from "@/src/server/projectRecords/types"
 import { uploadsWithSubsectionsQueryOptions } from "@/src/server/uploads/uploadsWithSubsectionsQueryOptions"
-
-const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
 
 type Props = {
   initialProjectRecord: ProjectRecord
@@ -49,7 +46,8 @@ const ProjectRecordQuickUpload = ({
 }
 
 export const ProjectRecordDetailClient = ({ initialProjectRecord, needsReviewEditHref }: Props) => {
-  const { projectSlug } = loggedInProjectRouteApi.useParams()
+  // From the entry, not the path: the dashboard shows this too, with no project in its URL.
+  const projectSlug = initialProjectRecord.project.slug
   const queryClient = useQueryClient()
   const { data: projectRecord = initialProjectRecord } = useQuery({
     ...projectRecordQueryOptions({ projectSlug, id: initialProjectRecord.id }),

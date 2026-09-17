@@ -19,9 +19,10 @@ const userHasRole = (
   )
 }
 
-export const useUserCan = () => {
+export const useUserCan = (forProjectSlug?: string) => {
   const { data: user } = useQuery(currentUserQueryOptions())
-  const projectSlug = useTryRouteParam("projectSlug")
+  const routeProjectSlug = useTryRouteParam("projectSlug")
+  const projectSlug = forProjectSlug ?? routeProjectSlug
 
   return {
     view: userHasRole(user, projectSlug, viewerRoles),

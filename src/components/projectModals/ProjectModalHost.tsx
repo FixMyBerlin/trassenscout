@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { getRouteApi, useLocation } from "@tanstack/react-router"
+import { useLocation, useNavigate } from "@tanstack/react-router"
 import { useEffect, useRef, useState } from "react"
 import { twJoin } from "tailwind-merge"
 import { ContactDeleteActionBar } from "@/src/components/contacts/ContactDeleteActionBar"
@@ -21,6 +21,8 @@ import { getProjectRecordEditSuccessNavigateOptions } from "@/src/components/pro
 import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { useProjectModalNavigation } from "@/src/components/shared/projectModals/useProjectModalNavigation"
+import { useProjectModalSearch } from "@/src/components/shared/projectModals/useProjectModalSearch"
+import { useProjectModalSlug } from "@/src/components/shared/projectModals/useProjectModalSlug"
 import { useProjectUploadModal } from "@/src/components/uploads/ProjectUploadModalHost"
 import { UploadModalContent } from "@/src/components/uploads/UploadModalContent"
 import { isDeletedUploadMarker } from "@/src/components/uploads/uploadTypes"
@@ -30,15 +32,23 @@ import { uploadQueryOptions } from "@/src/server/uploads/uploadQueryOptions"
 import { getContactName } from "@/src/shared/contacts/getContactName"
 import { getProjectModalPreview } from "@/src/shared/projectModals/historyState"
 
-const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
 const MODAL_CLOSE_ANIMATION_MS = 200
 
+/** Mounted by the project layout and by the dashboard, so an entry opens in place in both. */
 export function ProjectModalHost() {
-  const navigate = loggedInProjectRouteApi.useNavigate()
-  const { projectSlug } = loggedInProjectRouteApi.useParams()
-  const modalSearch = loggedInProjectRouteApi.useSearch()
+  const projectSlug = useProjectModalSlug()
+
+  // The queries need the project up front, so without a slug there is nothing to open.
+  if (projectSlug === undefined) return null
+
+  return <ProjectModalContent projectSlug={projectSlug} />
+}
+
+function ProjectModalContent({ projectSlug }: { projectSlug: string }) {
+  const navigate = useNavigate()
+  const modalSearch = useProjectModalSearch()
   const location = useLocation()
-  const userCanEdit = useUserCan().edit
+  const userCanEdit = useUserCan(projectSlug).edit
   const contactsModal = useContactsModal()
   const projectRecordModal = useProjectRecordModal()
   const projectUploadModal = useProjectUploadModal()

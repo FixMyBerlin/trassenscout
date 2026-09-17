@@ -1,5 +1,4 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { getRouteApi } from "@tanstack/react-router"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { CommentField } from "@/src/components/surveys/[surveyId]/responses/comments/CommentField"
@@ -16,16 +15,14 @@ import {
 } from "@/src/server/projectRecords/projectRecordsQueryOptions"
 import type { ProjectRecord } from "@/src/server/projectRecords/types"
 
-const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
-
 type Props = {
-  projectRecord: Pick<ProjectRecord, "id" | "projectRecordComments">
+  projectRecord: Pick<ProjectRecord, "id" | "project" | "projectRecordComments">
 }
 
 export const ProjectRecordCommentsSection = ({ projectRecord }: Props) => {
-  const { projectSlug } = loggedInProjectRouteApi.useParams()
+  const projectSlug = projectRecord.project.slug
   const queryClient = useQueryClient()
-  const userCanComment = useUserCan().view
+  const userCanComment = useUserCan(projectSlug).view
   const createProjectRecordCommentMutation = useMutation({
     mutationFn: createProjectRecordCommentFn,
   })

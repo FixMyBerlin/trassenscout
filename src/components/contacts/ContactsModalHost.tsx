@@ -1,19 +1,18 @@
 import { useQueryClient } from "@tanstack/react-query"
-import { getRouteApi } from "@tanstack/react-router"
 import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { useProjectModalNavigation } from "@/src/components/shared/projectModals/useProjectModalNavigation"
+import { useProjectModalSearch } from "@/src/components/shared/projectModals/useProjectModalSearch"
+import { useProjectModalSlug } from "@/src/components/shared/projectModals/useProjectModalSlug"
 import { contactQueryOptions } from "@/src/server/contacts/contactQueryOptions"
 import type { Contact } from "@/src/server/contacts/types"
-
-const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
 
 type PreviewContact = Pick<Contact, "id" | "firstName" | "lastName">
 
 export function useContactsModal() {
   const queryClient = useQueryClient()
-  const { projectSlug } = loggedInProjectRouteApi.useParams()
-  const modalSearch = loggedInProjectRouteApi.useSearch()
-  const userCanEdit = useUserCan().edit
+  const projectSlug = useProjectModalSlug()
+  const modalSearch = useProjectModalSearch()
+  const userCanEdit = useUserCan(projectSlug).edit
   const { buildModalHref, updateModalSearch } = useProjectModalNavigation()
 
   const getContactDetailHref = ({ contactId }: { contactId: number }) =>
@@ -40,7 +39,9 @@ export function useContactsModal() {
     })
 
   const openContactDetail = (input: { contactId: number; previewContact?: PreviewContact }) => {
-    void queryClient.ensureQueryData(contactQueryOptions({ projectSlug, id: input.contactId }))
+    if (projectSlug) {
+      void queryClient.ensureQueryData(contactQueryOptions({ projectSlug, id: input.contactId }))
+    }
     void updateModalSearch(
       {
         modalContactId: input.contactId,
@@ -60,7 +61,9 @@ export function useContactsModal() {
   const openContactEdit = (input: { contactId: number }) => {
     if (!userCanEdit) return
 
-    void queryClient.ensureQueryData(contactQueryOptions({ projectSlug, id: input.contactId }))
+    if (projectSlug) {
+      void queryClient.ensureQueryData(contactQueryOptions({ projectSlug, id: input.contactId }))
+    }
     void updateModalSearch(
       {
         modalContactId: input.contactId,

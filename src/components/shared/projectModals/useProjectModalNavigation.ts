@@ -1,9 +1,9 @@
-import { getRouteApi, useLocation, useRouter, useSearch } from "@tanstack/react-router"
+import { useLocation, useNavigate, useRouter, useSearch } from "@tanstack/react-router"
+import { useTryRouteParam } from "@/src/components/core/routes/useTryRouteParam"
+import { useProjectModalSlug } from "@/src/components/shared/projectModals/useProjectModalSlug"
 import type { ProjectModalPreview } from "@/src/shared/projectModals/historyState"
 import { clearAllProjectModalSearch } from "@/src/shared/projectModals/searchSchemas"
 import type { LoggedInProjectModalSearch } from "@/src/shared/projectModals/searchSchemas"
-
-const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
 
 type ModalSearchPatch = Partial<LoggedInProjectModalSearch>
 
@@ -27,22 +27,31 @@ function stringifyModalSearchPatch(searchPatch: ModalSearchPatch) {
 }
 
 export function useProjectModalNavigation() {
-  const navigate = loggedInProjectRouteApi.useNavigate()
+  const navigate = useNavigate()
   const location = useLocation()
   const router = useRouter()
   const activeSearch = useSearch({
     strict: false,
     shouldThrow: false,
   })
+  const routeProjectSlug = useTryRouteParam("projectSlug")
+  const projectSlug = useProjectModalSlug()
   const currentSearch = activeSearch ?? {}
   const backgroundSearch = clearAllProjectModalSearch(currentSearch)
+  const modalProjectSlug = routeProjectSlug ? undefined : projectSlug
+
+  const withProjectScope = (searchPatch: ModalSearchPatch) =>
+    stringifyModalSearchPatch({
+      ...searchPatch,
+      modalProjectSlug: searchPatch.modalProjectSlug ?? modalProjectSlug,
+    })
 
   const buildModalHref = (searchPatch: ModalSearchPatch) =>
     router.buildLocation({
       to: location.pathname,
       search: {
         ...backgroundSearch,
-        ...stringifyModalSearchPatch(searchPatch),
+        ...withProjectScope(searchPatch),
       },
     }).href
 
@@ -57,7 +66,7 @@ export function useProjectModalNavigation() {
       search: searchPatch
         ? {
             ...backgroundSearch,
-            ...searchPatch,
+            ...withProjectScope(searchPatch),
           }
         : backgroundSearch,
       state: (previousState) => ({
