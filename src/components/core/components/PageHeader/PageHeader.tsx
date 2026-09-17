@@ -16,6 +16,7 @@ type Props = {
   titleVisuallyHidden?: boolean
   action?: React.ReactNode
   filters?: React.ReactNode
+  filtersAction?: React.ReactNode
   /** Row 2 actions next to the view switch (e.g. CSV download, create buttons). */
   primaryAction?: React.ReactNode
   className?: string
@@ -31,6 +32,7 @@ export const PageHeader = ({
   titleVisuallyHidden = false,
   action,
   filters,
+  filtersAction,
   primaryAction,
   className,
 }: Props) => {
@@ -69,7 +71,7 @@ export const PageHeader = ({
         row1={{ left: breadcrumb, right: row1Right }}
         row2={{ left: tabs, right: row2Right }}
         row3={{ left: row3Left }}
-        row4={{ left: filters }}
+        row4={{ left: filters, right: filtersAction }}
       />
     </>
   )

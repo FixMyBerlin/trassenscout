@@ -13,18 +13,10 @@ import {
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { generalLogEntriesQueryOptions } from "@/src/server/logEntries/logEntriesQueryOptions"
-
-const actionName = {
-  CREATE: "Erstellt",
-  UPDATE: "Aktualisiert",
-  DELETE: "Gelöscht",
-} as const
-
-const actionColorClasses = {
-  CREATE: "bg-teal-50  text-teal-800  ring-teal-600/20",
-  UPDATE: "bg-purple-50  text-purple-800  ring-purple-600/20",
-  DELETE: "bg-amber-50  text-amber-800  ring-amber-600/20",
-} as const
+import {
+  logEntryActionColorClasses,
+  logEntryActionLabel,
+} from "@/src/shared/logEntries/logEntryAction"
 
 type Props = {
   /** When true (default), hide the section if there are no entries. */
@@ -61,7 +53,7 @@ export const GeneralLogEntries = ({ hideWhenEmpty = true }: Props) => {
                   Details
                 </th>
                 <th scope="col" className={tableHeadCellClassName}>
-                  Benutzer
+                  Name
                 </th>
               </tr>
             </thead>
@@ -80,10 +72,10 @@ export const GeneralLogEntries = ({ hideWhenEmpty = true }: Props) => {
                     <span
                       className={twJoin(
                         "inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset",
-                        actionColorClasses[entry.action],
+                        logEntryActionColorClasses[entry.action],
                       )}
                     >
-                      {actionName[entry.action]}
+                      {logEntryActionLabel[entry.action]}
                     </span>
                   </td>
                   <td className="px-3 py-4 align-top text-sm text-gray-500">{entry.message}</td>

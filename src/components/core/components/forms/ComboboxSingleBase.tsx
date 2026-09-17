@@ -32,6 +32,8 @@ export type ComboboxSingleBaseProps = {
   items: ComboboxSingleItem[]
   /** Placeholder for the search field inside the dropdown. */
   placeholder?: string
+  /** What the closed trigger reads while nothing is picked. Defaults to "Auswählen". */
+  emptyLabel?: string
   disabled?: boolean
   /** Custom trigger button styling. Defaults to form-field select styling. */
   classNameButton?: string
@@ -71,6 +73,7 @@ export function ComboboxSingleBase({
   onChange,
   items,
   placeholder,
+  emptyLabel,
   disabled,
   classNameButton,
   classNameDropdown = "w-full min-w-full",
@@ -83,7 +86,9 @@ export function ComboboxSingleBase({
   const [query, setQuery] = useState("")
   const disabledOrEmpty = Boolean(disabled || items.length === 0)
   const selectedItem = items.find((item) => item.value === value) ?? null
-  const selectedText = selectedItem ? selectedTriggerText(selectedItem) : "Auswählen"
+  const selectedText = selectedItem
+    ? selectedTriggerText(selectedItem)
+    : (emptyLabel ?? "Auswählen")
 
   const filteredItems =
     query === ""

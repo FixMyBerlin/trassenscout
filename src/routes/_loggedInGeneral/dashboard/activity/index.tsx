@@ -1,20 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { PageDashboard } from "@/src/components/pages/PageDashboard"
-import { RouteMapShellPending } from "@/src/components/pages/RouteMapShellPending"
+import { PageDashboardActivity } from "@/src/components/pages/PageDashboardActivity"
 import { privateTitleHead } from "@/src/routeHead"
 import { projectsWithGeometryWithMembershipRoleQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 import { currentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
-import { fromBackLinkSearchSchema } from "@/src/shared/routing/fromBackLinkSearch"
 
-export const Route = createFileRoute("/_loggedInGeneral/dashboard/")({
-  head: () => privateTitleHead("Meine Projekte (Dashboard)"),
+export const Route = createFileRoute("/_loggedInGeneral/dashboard/activity/")({
+  head: () => privateTitleHead("Aktivitäten (Dashboard)"),
   ssr: "data-only",
-  validateSearch: fromBackLinkSearchSchema,
   loader: ({ context }) =>
     Promise.all([
       context.queryClient.ensureQueryData(currentUserQueryOptions()),
       context.queryClient.ensureQueryData(projectsWithGeometryWithMembershipRoleQueryOptions()),
     ]),
-  pendingComponent: RouteMapShellPending,
-  component: PageDashboard,
+  component: PageDashboardActivity,
 })
