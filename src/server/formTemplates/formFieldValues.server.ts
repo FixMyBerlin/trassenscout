@@ -57,8 +57,9 @@ const recordInclude = {
 } as const
 
 /**
- * A record can link several Maßnahmen; the first wins, since a form has one set of fields.
- * Fields without a source, or with no data behind it, come back absent and stay empty.
+ * A form has one set of fields, so it is only prefilled from a single link. Several Maßnahmen —
+ * or several Verhandlungsflächen — leave those fields empty rather than silently picking one.
+ * Fields without a source, or with no data behind it, stay empty too.
  */
 export async function getFormFieldValues(
   headers: Headers,
@@ -77,8 +78,13 @@ export async function getFormFieldValues(
     }),
   ])
 
-  const subsubsection = record.subsubsections[0] ?? record.subsubsection
-  const acquisitionArea = record.acquisitionAreas[0] ?? record.acquisitionArea
+  const onlyOne = <T>(many: T[], legacySingle: T | null) => {
+    const all = many.length > 0 ? many : legacySingle ? [legacySingle] : []
+    return all.length === 1 ? all[0]! : null
+  }
+
+  const subsubsection = onlyOne(record.subsubsections, record.subsubsection)
+  const acquisitionArea = onlyOne(record.acquisitionAreas, record.acquisitionArea)
 
   const context: FormFieldSourceContext = {
     project: record.project,

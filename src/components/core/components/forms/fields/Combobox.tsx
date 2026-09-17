@@ -42,7 +42,6 @@ export type ComboboxProps = {
   trailingControl?: ReactNode
   /** Dropdown option layout. Defaults to left checkmarks. */
   optionUi?: ListboxOptionUi
-  maxSelected?: number
 }
 
 export function Combobox({
@@ -55,7 +54,6 @@ export function Combobox({
   classLabelOverwrite,
   trailingControl,
   optionUi = "checkmark",
-  maxSelected,
 }: ComboboxProps) {
   const field = useFieldContext<string[]>()
   const fieldDisabled = useFieldDisabled(disabled)
@@ -127,7 +125,7 @@ export function Combobox({
         immediate
         multiple
         value={value}
-        onChange={(next) => field.handleChange(maxSelected ? next.slice(-maxSelected) : next)}
+        onChange={(next) => field.handleChange(next)}
         onClose={() => {
           setQuery("")
           setPinnedSelected(value)
