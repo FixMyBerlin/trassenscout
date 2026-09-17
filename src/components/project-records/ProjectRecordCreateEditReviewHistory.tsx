@@ -8,6 +8,7 @@ import {
   projectRecordSectionLabelClassName,
   projectRecordSectionValueClassName,
 } from "@/src/components/project-records/ProjectRecordSummary"
+import { getProjectRecordAuthorLabel } from "@/src/components/project-records/utils/getProjectRecordAuthorLabel"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { isAdmin } from "@/src/components/shared/app/users/utils/isAdmin"
 import { useCurrentUser } from "@/src/components/user/useCurrentUser"
@@ -17,18 +18,6 @@ import type {
   ProjectRecordAdmin,
   ProjectRecordListItem,
 } from "@/src/server/projectRecords/types"
-
-const getProjectRecordAuthorLabel = ({
-  type,
-  author,
-}: {
-  type: ProjectRecordType
-  author?: ProjectRecord["author"] | null
-}) => {
-  if (type === ProjectRecordType.SYSTEM) return "KI"
-
-  return getFullnameWithInstitution(author ?? null) || "Nutzer*in"
-}
 
 const formatAuthorWithTimestamp = ({
   label,

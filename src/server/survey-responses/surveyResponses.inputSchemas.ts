@@ -27,6 +27,3 @@ export const GetTestSurveyResponsesSchema = AllowedSurveySlugsSchema
 export const DeleteTestSurveyResponsesSchema = AllowedSurveySlugsSchema.extend({
   deleteIds: z.array(z.number()),
 })
-export const GetLinkedSurveyResponseForSubsubsectionSchema = ProjectSlugRequiredSchema.extend({
-  subsubsectionSlug: z.string(),
-})

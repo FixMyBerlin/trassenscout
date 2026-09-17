@@ -233,7 +233,7 @@ export function redactProjectRecordUsers<
 
   const serialized = {
     ...rest,
-    author: serializeProjectAuthor(record.author, context),
+    author: serializeProjectUser(record.author, context),
     updatedBy: serializeProjectAuthor(record.updatedBy, context),
     reviewedBy: serializeProjectAuthor(record.reviewedBy, context),
     assignedTo: serializeProjectUser(record.assignedTo, context),

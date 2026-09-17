@@ -37,7 +37,6 @@ import { UploadTable } from "@/src/components/uploads/UploadTable"
 import { acquisitionAreasWithProjectRecordCountQueryOptions } from "@/src/server/acquisitionAreas/acquisitionAreasAbschnitteQueryOptions"
 import { projectRecordsBySubsubsectionQueryOptions } from "@/src/server/projectRecords/projectRecordsAbschnitteQueryOptions"
 import type { SubsubsectionWithPosition } from "@/src/server/subsubsections/types"
-import { linkedSurveyResponseForSubsubsectionQueryOptions } from "@/src/server/survey-responses/surveyResponsesQueryOptions"
 import { uploadsWithSubsectionsQueryOptions } from "@/src/server/uploads/uploadsWithSubsectionsQueryOptions"
 import {
   parseDefinitions,
@@ -116,13 +115,6 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
   )
   const acquisitionAreasWithProjectRecords = acquisitionAreaProjectRecordCounts.filter(
     (acquisitionArea) => acquisitionArea.projectRecordCount > 0,
-  )
-
-  const { data: linkedSurveyResponse } = useQuery(
-    linkedSurveyResponseForSubsubsectionQueryOptions({
-      projectSlug,
-      subsubsectionSlug: subsubsection.slug,
-    }),
   )
 
   return (

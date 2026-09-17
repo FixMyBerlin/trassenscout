@@ -37,6 +37,7 @@ type Props = {
   landAcquisitionModuleEnabled?: boolean
   disableSuspenseQueries?: boolean
   emailSource?: ProjectRecordEmailSourceValue | null
+  authorLabel?: string | null
 }
 
 export const ProjectRecordFormFields = ({
@@ -44,6 +45,7 @@ export const ProjectRecordFormFields = ({
   relationContext = "project",
   projectSlug,
   emailSource,
+  authorLabel,
   splitView,
   landAcquisitionModuleEnabled = false,
   disableSuspenseQueries: _disableSuspenseQueries = false,
@@ -109,7 +111,7 @@ export const ProjectRecordFormFields = ({
     <ProjectRecordAssignmentFields
       assignedToItems={assignedToItems}
       fromLabel={
-        isCreateMode ? (getFullnameWithInstitution(currentUser) ?? currentUser?.email) : null
+        isCreateMode ? (getFullnameWithInstitution(currentUser) ?? currentUser?.email) : authorLabel
       }
     />
   )

@@ -7,7 +7,6 @@ import {
   GetCreatedSurveyResponsesSchema,
   GetFeedbackSurveyResponsesSchema,
   GetGroupedSurveyResponsesSchema,
-  GetLinkedSurveyResponseForSubsubsectionSchema,
   GetSurveyResponseSchema,
   GetSurveyResponsesSchema,
   GetTestSurveyResponsesSchema,
@@ -21,7 +20,6 @@ import {
   getCreatedSurveyResponses,
   getFeedbackSurveyResponsesWithSurveyDataAndComments,
   getGroupedSurveyResponses,
-  getLinkedSurveyResponseForSubsubsection,
   getSurveyResponse,
   getSurveyResponses,
   getTestSurveyResponses,
@@ -47,10 +45,6 @@ export const getFeedbackSurveyResponsesWithSurveyDataAndCommentsFn = createServe
 export const getGroupedSurveyResponsesFn = createServerFn({ method: "GET" })
   .validator(GetGroupedSurveyResponsesSchema)
   .handler(({ data }) => getGroupedSurveyResponses(getRequestHeaders(), data))
-
-export const getLinkedSurveyResponseForSubsubsectionFn = createServerFn({ method: "GET" })
-  .validator(GetLinkedSurveyResponseForSubsubsectionSchema)
-  .handler(({ data }) => getLinkedSurveyResponseForSubsubsection(getRequestHeaders(), data))
 
 const _createSurveyResponseFn = createServerFn({ method: "POST" })
   .validator(CreateSurveyResponseBySlugSchema)

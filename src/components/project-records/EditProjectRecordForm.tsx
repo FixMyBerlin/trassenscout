@@ -23,6 +23,7 @@ import { ProjectRecordFormFields } from "@/src/components/project-records/Projec
 import { ProjectRecordNeedsReviewBanner } from "@/src/components/project-records/ProjectRecordNeedsReviewBanner"
 import { ReviewProjectRecordForm } from "@/src/components/project-records/ReviewProjectRecordForm"
 import { getM2MInitialValues } from "@/src/components/project-records/utils/getM2MInitialValues"
+import { getProjectRecordAuthorLabel } from "@/src/components/project-records/utils/getProjectRecordAuthorLabel"
 import { getProjectRecordEditSuccessNavigateOptions } from "@/src/components/project-records/utils/getProjectRecordEditSuccessRoute"
 import { getDate } from "@/src/components/project-records/utils/splitStartAt"
 import { ProjectRecordReviewState } from "@/src/prisma/generated/browser"
@@ -228,6 +229,10 @@ export const EditProjectRecordForm = ({
           projectSlug={projectSlug}
           splitView={needsReview}
           emailSource={projectRecord.projectRecordEmail ?? undefined}
+          authorLabel={getProjectRecordAuthorLabel({
+            type: projectRecord.projectRecordAuthorType,
+            author: projectRecord.author,
+          })}
           landAcquisitionModuleEnabled={projectRecord.project.landAcquisitionModuleEnabled}
         />
       </FormShell>
