@@ -2,7 +2,6 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { getRouteApi, useNavigate } from "@tanstack/react-router"
 import { LogEntriesTable } from "@/src/components/admin/log-entries/LogEntriesTable"
 import { Breadcrumb, BreadcrumbStep } from "@/src/components/core/components/PageHeader/Breadcrumb"
-import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { PageHeaderToolbarLink } from "@/src/components/core/components/PageHeader/PageHeaderToolbarLink"
 import { Spinner } from "@/src/components/core/components/Spinner"
@@ -59,9 +58,7 @@ export function PageDashboardActivity() {
           />
         }
       />
-      <div className={pageContentPaddingClassName}>
-        <ActivityList {...dashboardFilterValues(search)} />
-      </div>
+      <ActivityList {...dashboardFilterValues(search)} />
     </>
   )
 }

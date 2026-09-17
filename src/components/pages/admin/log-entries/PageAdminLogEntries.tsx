@@ -88,6 +88,7 @@ function ProjectLogEntriesTable({
         entries={data.logEntries}
         isAdmin={data.isAdmin}
         showProject
+        withTopBorder
         emptyText="Keine Einträge für diese Auswahl."
       />
     </div>

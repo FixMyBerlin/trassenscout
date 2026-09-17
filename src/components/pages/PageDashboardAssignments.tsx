@@ -2,7 +2,6 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { getRouteApi, useNavigate } from "@tanstack/react-router"
 import { SelectListbox } from "@/src/components/core/components/forms/SelectListbox"
 import { Breadcrumb, BreadcrumbStep } from "@/src/components/core/components/PageHeader/Breadcrumb"
-import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { Spinner } from "@/src/components/core/components/Spinner"
 import { TabsApp } from "@/src/components/core/components/Tabs/TabsApp"
@@ -84,14 +83,11 @@ export function PageDashboardAssignments() {
           </DashboardFilters>
         }
       />
-      <div className={pageContentPaddingClassName}>
-        <AssignmentsList
-          projectSlug={filter.projectSlug}
-          status={search.status}
-          direction={search.direction}
-          showProject={projects.length > 1}
-        />
-      </div>
+      <AssignmentsList
+        projectSlug={filter.projectSlug}
+        status={search.status}
+        direction={search.direction}
+      />
     </>
   )
 }
@@ -101,12 +97,10 @@ function AssignmentsList({
   projectSlug,
   status,
   direction,
-  showProject,
 }: {
   projectSlug?: string
   status: AssignmentsSearch["status"]
   direction: AssignmentsSearch["direction"]
-  showProject: boolean
 }) {
   const { data: records, isPlaceholderData } = useQuery({
     ...myAssignedRecordsQueryOptions({
@@ -121,7 +115,7 @@ function AssignmentsList({
 
   return (
     <div className={isPlaceholderData ? "opacity-50 transition-opacity" : undefined}>
-      <AssignedRecordsTable records={records} showProject={showProject} />
+      <AssignedRecordsTable records={records} />
     </div>
   )
 }
