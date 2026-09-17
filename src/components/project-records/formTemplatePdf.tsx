@@ -44,7 +44,7 @@ const emptyValue = (inTableCell: boolean | undefined) => (inTableCell ? "" : EMP
 const styles = StyleSheet.create({
   page: { paddingTop: 48, paddingBottom: 56, paddingHorizontal: 52, fontSize: FONT_SIZE },
   heading: { marginBottom: 4, marginTop: 10, fontFamily: "Helvetica-Bold" },
-  
+
   paragraph: { marginBottom: 7 },
   listItem: { marginBottom: 1, flexDirection: "row" },
   listMarker: { width: 18 },
@@ -164,7 +164,6 @@ function PlaceholderField({
 
 const isCheckedValue = (value: string | undefined) =>
   value !== undefined && value !== "" && value.toLowerCase() !== "off"
-
 
 function CheckboxField({
   checkbox,

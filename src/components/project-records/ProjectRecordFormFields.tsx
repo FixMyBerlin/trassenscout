@@ -71,7 +71,7 @@ export const ProjectRecordFormFields = ({
   const { data: currentUser } = useQuery({ ...currentUserQueryOptions(), ...queryBehavior })
   const { trackSessionUploads } = useSessionUploadCleanup({ projectSlug })
   const uploadsValue = useFormValue("uploads")
- 
+
   const attachedFormTemplates = useFormValue<string[]>("formTemplates")
   const oneRelationOnly = Array.isArray(attachedFormTemplates) && attachedFormTemplates.length > 0
   const maxRelations = oneRelationOnly ? 1 : undefined

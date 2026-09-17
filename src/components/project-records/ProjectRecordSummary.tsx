@@ -39,7 +39,7 @@ export const ProjectRecordSummary = ({ projectRecord, uploadsSection }: Props) =
     hasAcquisitionArea:
       projectRecord.acquisitionAreas.length > 0 || Boolean(projectRecord.acquisitionArea),
   })
-  
+
   const attachedFormTemplates = getEffectiveFormTemplates(projectRecord, {
     projectSlug,
     hasSubsubsection: true,
