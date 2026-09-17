@@ -173,7 +173,7 @@ Das Formular erreichen Sie unter folgendem Link:
 
 Mit freundlichen Grüßen
 
-Trassenscout
+das Team vom Trassenscout
 `,
     fields: [
       "referenceId",
