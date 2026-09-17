@@ -80,21 +80,6 @@ function projectRecordOverviewWhere(projectId: number, aiEnabled: boolean) {
   }
 }
 
-/**
- * Which forms a record offers is admin-only, so the server has to hold that line against a
- * hand-crafted payload. Only an authorization failure means "not an admin" — anything else
- * must propagate, or an admin's change would vanish from an otherwise successful save.
- */
-async function isAdminRequest(headers: Headers) {
-  try {
-    await endpointAuth.admin(headers)
-    return true
-  } catch (error) {
-    if (error instanceof AuthorizationError) return false
-    throw error
-  }
-}
-
 async function assertAssigneeIsProjectMember(projectSlug: string, assignedToId: number) {
   const assigneeMembership = await db.membership.findFirst({
     where: { userId: assignedToId, project: { slug: projectSlug } },
@@ -201,6 +186,18 @@ async function validateProjectRecordRelations(
   ])
 }
 
+function assignmentMetadata(
+  previousAssigneeId: number | null,
+  nextAssigneeId: number | null,
+  actorUserId: number,
+) {
+  if (previousAssigneeId === nextAssigneeId) return {}
+
+  return nextAssigneeId === null
+    ? { assignedById: null, assignedAt: null }
+    : { assignedById: actorUserId, assignedAt: new Date() }
+}
+
 function createProjectRecordData(
   input: CreateProjectRecordInput,
   projectId: number,
@@ -211,6 +208,7 @@ function createProjectRecordData(
 
   return {
     ...data,
+    ...assignmentMetadata(null, data.assignedToId ?? null, userId),
     date: normalizeDate(data.date),
     projectId,
     projectRecordAuthorType: ProjectRecordType.USER,
@@ -250,10 +248,21 @@ async function resolveCreateFormTemplateIds(
   return (template?.formTemplates ?? []).map(({ id }) => id)
 }
 
+async function isAdminRequest(headers: Headers) {
+  try {
+    await endpointAuth.admin(headers)
+    return true
+  } catch (error) {
+    if (error instanceof AuthorizationError) return false
+    throw error
+  }
+}
+
 function updateProjectRecordData(
   input: UpdateProjectRecordInput,
   userId: number,
   allowAdminFields: boolean,
+  previousAssigneeId: number | null,
 ) {
   const {
     acquisitionAreas,
@@ -265,8 +274,12 @@ function updateProjectRecordData(
     ...data
   } = input
 
+  const nextAssigneeId =
+    data.assignedToId === undefined ? previousAssigneeId : (data.assignedToId ?? null)
+
   return {
     ...data,
+    ...assignmentMetadata(previousAssigneeId, nextAssigneeId, userId),
     date: normalizeDate(data.date),
     projectRecordUpdatedByType: ProjectRecordType.USER,
     updatedById: userId,
@@ -637,7 +650,7 @@ export async function updateProjectRecord(
 
   const record = await db.projectRecord.update({
     where: { id: previousRecord.id },
-    data: updateProjectRecordData(data, userId, allowAdminFields),
+    data: updateProjectRecordData(data, userId, allowAdminFields, previousRecord.assignedToId),
     include: projectRecordInclude,
   })
 
@@ -745,6 +758,7 @@ export async function patchProjectRecordAssignment(
     where: { id },
     data: {
       assignedToId,
+      ...assignmentMetadata(previous.assignedToId ?? null, assignedToId ?? null, userId),
       editingState,
       updatedById: userId,
       projectRecordUpdatedByType: ProjectRecordType.USER,

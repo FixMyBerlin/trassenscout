@@ -49,6 +49,7 @@ model User {
   projectRecordsUpdated    ProjectRecord[]         @relation("ProjectRecordUpdatedBy")
   projectRecordsReviewed   ProjectRecord[]         @relation("ProjectRecordReviewedBy")
   projectRecordsAssignedTo ProjectRecord[]         @relation("ProjectRecordAssignedTo")
+  projectRecordsAssignedBy ProjectRecord[]         @relation("ProjectRecordAssignedBy")
   uploadsCreated           Upload[]                @relation("UploadCreatedBy")
   uploadsUpdated           Upload[]                @relation("UploadUpdatedBy")
   //
@@ -977,6 +978,10 @@ model ProjectRecord {
   //
   assignedTo                 User?                     @relation("ProjectRecordAssignedTo", fields: [assignedToId], references: [id])
   assignedToId               Int?
+  // On the record, not read from the log: log entries are pruned after a year.
+  assignedBy                 User?                     @relation("ProjectRecordAssignedBy", fields: [assignedById], references: [id])
+  assignedById               Int?
+  assignedAt                 DateTime?
   //
   updatedBy                  User?                     @relation("ProjectRecordUpdatedBy", fields: [updatedById], references: [id])
   updatedById                Int?
@@ -999,6 +1004,10 @@ model ProjectRecord {
   reviewedById               Int?
   reviewNotes                String?
   projectRecordComments      ProjectRecordComment[]
+
+  // The dashboard asks for "assigned to me or by me" across every project.
+  @@index([assignedToId])
+  @@index([assignedById])
 }
 
 enum ProjectRecordEditingState {
