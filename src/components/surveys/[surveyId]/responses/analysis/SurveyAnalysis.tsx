@@ -46,7 +46,7 @@ export function SurveyAnalysis({ projectSlug, surveyId: _surveyId, survey, tabs 
   const isSurveyPast = survey.endDate && isPast(survey.endDate)
   const isSurveyFuture = survey.startDate && isFuture(survey.startDate)
 
-  const showSurveyRuntime = !survey.active && Boolean(survey.startDate || survey.endDate)
+  const showSurveyRuntime = Boolean(survey.startDate || survey.endDate)
 
   const generalSurveyInformation: Array<Record<string, Record<string, number | string>>> = [
     {

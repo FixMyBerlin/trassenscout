@@ -5,7 +5,6 @@ import { withViewModeSearch } from "@/src/shared/routing/viewModeSearch"
 export const DASHBOARD_ALL_PROJECTS = ""
 export const DASHBOARD_ALL_MONTHS = 0
 
-
 const dashboardSearchSchema = z.object({
   projectSlug: z.string().default(DASHBOARD_ALL_PROJECTS).catch(DASHBOARD_ALL_PROJECTS),
   months: z.coerce

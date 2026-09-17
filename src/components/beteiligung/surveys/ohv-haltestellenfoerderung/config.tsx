@@ -120,7 +120,7 @@ Sollten Sie weitere Maßnahmen melden wollen, können Sie das Formular erneut au
 
 Mit freundlichen Grüßen
 
-i. A. Alexander Greifenberg
+Alexander Greifenberg
 im Auftrag des Landkreises Oberhavel
 `,
     fields: [
