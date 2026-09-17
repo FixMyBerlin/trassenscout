@@ -31,10 +31,12 @@ import { Route as LoggedInFullscreenProjectSlugRouteImport } from './routes/_log
 import { Route as ContentKontaktRouteImport } from './routes/_content/kontakt'
 import { Route as ContentDatenschutzRouteImport } from './routes/_content/datenschutz'
 import { Route as ContentBrowserVersionRouteImport } from './routes/_content/browser-version'
+import { Route as LoggedInGeneralDashboardRouteRouteImport } from './routes/_loggedInGeneral/dashboard/route'
 import { Route as BeteiligungSurveySlugIndexRouteImport } from './routes/beteiligung/$surveySlug/index'
 import { Route as ApiSurveyUploadIndexRouteImport } from './routes/api/survey-upload/index'
 import { Route as ApiProcessProjectRecordEmailIndexRouteImport } from './routes/api/process-project-record-email/index'
 import { Route as ApiCronSurveyResponsesCleanupIndexRouteImport } from './routes/api/cron-surveyResponses-cleanup/index'
+import { Route as ApiCronMcpDraftsCleanupIndexRouteImport } from './routes/api/cron-mcpDrafts-cleanup/index'
 import { Route as ApiCronLogEntriesCleanupIndexRouteImport } from './routes/api/cron-logEntries-cleanup/index'
 import { Route as ApiCronInvitesCleanupIndexRouteImport } from './routes/api/cron-invites-cleanup/index'
 import { Route as AdminSystemLogEntriesIndexRouteImport } from './routes/admin/system-log-entries/index'
@@ -46,6 +48,7 @@ import { Route as AdminProjectRecordsIndexRouteImport } from './routes/admin/pro
 import { Route as AdminProjectRecordTemplatesIndexRouteImport } from './routes/admin/project-record-templates/index'
 import { Route as AdminProjectRecordEmailsIndexRouteImport } from './routes/admin/project-record-emails/index'
 import { Route as AdminMembershipsIndexRouteImport } from './routes/admin/memberships/index'
+import { Route as AdminMcpDraftsIndexRouteImport } from './routes/admin/mcp-drafts/index'
 import { Route as AdminLogEntriesIndexRouteImport } from './routes/admin/log-entries/index'
 import { Route as AdminFormTemplatesIndexRouteImport } from './routes/admin/form-templates/index'
 import { Route as AdminEvaluationsIndexRouteImport } from './routes/admin/evaluations/index'
@@ -62,6 +65,7 @@ import { Route as ApiSurveyGeojsonSurveySlugIndexRouteImport } from './routes/ap
 import { Route as ApiSubsubsectionsImportIndexRouteImport } from './routes/api/subsubsections/import/index'
 import { Route as ApiSubsectionsImportIndexRouteImport } from './routes/api/subsections/import/index'
 import { Route as ApiProjectsSlugIndexRouteImport } from './routes/api/projects/$slug/index'
+import { Route as ApiLogEntriesExportIndexRouteImport } from './routes/api/log-entries/export/index'
 import { Route as ApiE2eServerEnvIndexRouteImport } from './routes/api/e2e/server-env/index'
 import { Route as ApiProjectSlugUploadIndexRouteImport } from './routes/api/$projectSlug/upload/index'
 import { Route as AdminSurveysNewIndexRouteImport } from './routes/admin/surveys/new/index'
@@ -91,6 +95,8 @@ import { Route as LoggedInProjectsProjectSlugEditIndexRouteImport } from './rout
 import { Route as LoggedInProjectsProjectSlugContactsIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/contacts/index'
 import { Route as LoggedInProjectsProjectSlugAcquisitionAreaStatusIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/acquisition-area-status/index'
 import { Route as LoggedInGeneralUserEditIndexRouteImport } from './routes/_loggedInGeneral/user/edit/index'
+import { Route as LoggedInGeneralDashboardAssignmentsIndexRouteImport } from './routes/_loggedInGeneral/dashboard/assignments/index'
+import { Route as LoggedInGeneralDashboardActivityIndexRouteImport } from './routes/_loggedInGeneral/dashboard/activity/index'
 import { Route as AdminSubsubsectionExtraFieldsProjectSlugEditRouteImport } from './routes/admin/subsubsection-extra-fields/$projectSlug/edit'
 import { Route as AdminEvaluationsProjectSlugEditRouteImport } from './routes/admin/evaluations/$projectSlug/edit'
 import { Route as ApiSupportDocumentsUploadIndexRouteImport } from './routes/api/support/documents/upload/index'
@@ -284,6 +290,12 @@ const ContentBrowserVersionRoute = ContentBrowserVersionRouteImport.update({
   path: '/browser-version',
   getParentRoute: () => ContentRoute,
 } as any)
+const LoggedInGeneralDashboardRouteRoute =
+  LoggedInGeneralDashboardRouteRouteImport.update({
+    id: '/dashboard',
+    path: '/dashboard',
+    getParentRoute: () => LoggedInGeneralRoute,
+  } as any)
 const BeteiligungSurveySlugIndexRoute =
   BeteiligungSurveySlugIndexRouteImport.update({
     id: '/',
@@ -305,6 +317,12 @@ const ApiCronSurveyResponsesCleanupIndexRoute =
   ApiCronSurveyResponsesCleanupIndexRouteImport.update({
     id: '/api/cron-surveyResponses-cleanup/',
     path: '/api/cron-surveyResponses-cleanup/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiCronMcpDraftsCleanupIndexRoute =
+  ApiCronMcpDraftsCleanupIndexRouteImport.update({
+    id: '/api/cron-mcpDrafts-cleanup/',
+    path: '/api/cron-mcpDrafts-cleanup/',
     getParentRoute: () => rootRouteImport,
   } as any)
 const ApiCronLogEntriesCleanupIndexRoute =
@@ -370,6 +388,11 @@ const AdminMembershipsIndexRoute = AdminMembershipsIndexRouteImport.update({
   path: '/memberships/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminMcpDraftsIndexRoute = AdminMcpDraftsIndexRouteImport.update({
+  id: '/mcp-drafts/',
+  path: '/mcp-drafts/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminLogEntriesIndexRoute = AdminLogEntriesIndexRouteImport.update({
   id: '/log-entries/',
   path: '/log-entries/',
@@ -410,9 +433,9 @@ const LoggedInGeneralSupportIndexRoute =
   } as any)
 const LoggedInGeneralDashboardIndexRoute =
   LoggedInGeneralDashboardIndexRouteImport.update({
-    id: '/dashboard/',
-    path: '/dashboard/',
-    getParentRoute: () => LoggedInGeneralRoute,
+    id: '/',
+    path: '/',
+    getParentRoute: () => LoggedInGeneralDashboardRouteRoute,
   } as any)
 const LoggedInGeneralAccessDeniedIndexRoute =
   LoggedInGeneralAccessDeniedIndexRouteImport.update({
@@ -460,6 +483,12 @@ const ApiProjectsSlugIndexRoute = ApiProjectsSlugIndexRouteImport.update({
   path: '/api/projects/$slug/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiLogEntriesExportIndexRoute =
+  ApiLogEntriesExportIndexRouteImport.update({
+    id: '/api/log-entries/export/',
+    path: '/api/log-entries/export/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiE2eServerEnvIndexRoute = ApiE2eServerEnvIndexRouteImport.update({
   id: '/api/e2e/server-env/',
   path: '/api/e2e/server-env/',
@@ -632,6 +661,18 @@ const LoggedInGeneralUserEditIndexRoute =
     id: '/user/edit/',
     path: '/user/edit/',
     getParentRoute: () => LoggedInGeneralRoute,
+  } as any)
+const LoggedInGeneralDashboardAssignmentsIndexRoute =
+  LoggedInGeneralDashboardAssignmentsIndexRouteImport.update({
+    id: '/assignments/',
+    path: '/assignments/',
+    getParentRoute: () => LoggedInGeneralDashboardRouteRoute,
+  } as any)
+const LoggedInGeneralDashboardActivityIndexRoute =
+  LoggedInGeneralDashboardActivityIndexRouteImport.update({
+    id: '/activity/',
+    path: '/activity/',
+    getParentRoute: () => LoggedInGeneralDashboardRouteRoute,
   } as any)
 const AdminSubsubsectionExtraFieldsProjectSlugEditRoute =
   AdminSubsubsectionExtraFieldsProjectSlugEditRouteImport.update({
@@ -1207,6 +1248,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRouteWithChildren
   '/beteiligung': typeof BeteiligungRouteWithChildren
   '/mcp': typeof McpRoute
+  '/dashboard': typeof LoggedInGeneralDashboardRouteRouteWithChildren
   '/browser-version': typeof ContentBrowserVersionRoute
   '/datenschutz': typeof ContentDatenschutzRoute
   '/kontakt': typeof ContentKontaktRoute
@@ -1230,6 +1272,7 @@ export interface FileRoutesByFullPath {
   '/admin/evaluations/': typeof AdminEvaluationsIndexRoute
   '/admin/form-templates/': typeof AdminFormTemplatesIndexRoute
   '/admin/log-entries/': typeof AdminLogEntriesIndexRoute
+  '/admin/mcp-drafts/': typeof AdminMcpDraftsIndexRoute
   '/admin/memberships/': typeof AdminMembershipsIndexRoute
   '/admin/project-record-emails/': typeof AdminProjectRecordEmailsIndexRoute
   '/admin/project-record-templates/': typeof AdminProjectRecordTemplatesIndexRoute
@@ -1241,12 +1284,15 @@ export interface FileRoutesByFullPath {
   '/admin/system-log-entries/': typeof AdminSystemLogEntriesIndexRoute
   '/api/cron-invites-cleanup/': typeof ApiCronInvitesCleanupIndexRoute
   '/api/cron-logEntries-cleanup/': typeof ApiCronLogEntriesCleanupIndexRoute
+  '/api/cron-mcpDrafts-cleanup/': typeof ApiCronMcpDraftsCleanupIndexRoute
   '/api/cron-surveyResponses-cleanup/': typeof ApiCronSurveyResponsesCleanupIndexRoute
   '/api/process-project-record-email/': typeof ApiProcessProjectRecordEmailIndexRoute
   '/api/survey-upload/': typeof ApiSurveyUploadIndexRoute
   '/beteiligung/$surveySlug/': typeof BeteiligungSurveySlugIndexRoute
   '/admin/evaluations/$projectSlug/edit': typeof AdminEvaluationsProjectSlugEditRoute
   '/admin/subsubsection-extra-fields/$projectSlug/edit': typeof AdminSubsubsectionExtraFieldsProjectSlugEditRoute
+  '/dashboard/activity/': typeof LoggedInGeneralDashboardActivityIndexRoute
+  '/dashboard/assignments/': typeof LoggedInGeneralDashboardAssignmentsIndexRoute
   '/user/edit/': typeof LoggedInGeneralUserEditIndexRoute
   '/$projectSlug/acquisition-area-status/': typeof LoggedInProjectsProjectSlugAcquisitionAreaStatusIndexRoute
   '/$projectSlug/contacts/': typeof LoggedInProjectsProjectSlugContactsIndexRoute
@@ -1276,6 +1322,7 @@ export interface FileRoutesByFullPath {
   '/admin/surveys/new/': typeof AdminSurveysNewIndexRoute
   '/api/$projectSlug/upload/': typeof ApiProjectSlugUploadIndexRoute
   '/api/e2e/server-env/': typeof ApiE2eServerEnvIndexRoute
+  '/api/log-entries/export/': typeof ApiLogEntriesExportIndexRoute
   '/api/projects/$slug/': typeof ApiProjectsSlugIndexRoute
   '/api/subsections/import/': typeof ApiSubsectionsImportIndexRoute
   '/api/subsubsections/import/': typeof ApiSubsubsectionsImportIndexRoute
@@ -1389,6 +1436,7 @@ export interface FileRoutesByTo {
   '/admin/evaluations': typeof AdminEvaluationsIndexRoute
   '/admin/form-templates': typeof AdminFormTemplatesIndexRoute
   '/admin/log-entries': typeof AdminLogEntriesIndexRoute
+  '/admin/mcp-drafts': typeof AdminMcpDraftsIndexRoute
   '/admin/memberships': typeof AdminMembershipsIndexRoute
   '/admin/project-record-emails': typeof AdminProjectRecordEmailsIndexRoute
   '/admin/project-record-templates': typeof AdminProjectRecordTemplatesIndexRoute
@@ -1400,12 +1448,15 @@ export interface FileRoutesByTo {
   '/admin/system-log-entries': typeof AdminSystemLogEntriesIndexRoute
   '/api/cron-invites-cleanup': typeof ApiCronInvitesCleanupIndexRoute
   '/api/cron-logEntries-cleanup': typeof ApiCronLogEntriesCleanupIndexRoute
+  '/api/cron-mcpDrafts-cleanup': typeof ApiCronMcpDraftsCleanupIndexRoute
   '/api/cron-surveyResponses-cleanup': typeof ApiCronSurveyResponsesCleanupIndexRoute
   '/api/process-project-record-email': typeof ApiProcessProjectRecordEmailIndexRoute
   '/api/survey-upload': typeof ApiSurveyUploadIndexRoute
   '/beteiligung/$surveySlug': typeof BeteiligungSurveySlugIndexRoute
   '/admin/evaluations/$projectSlug/edit': typeof AdminEvaluationsProjectSlugEditRoute
   '/admin/subsubsection-extra-fields/$projectSlug/edit': typeof AdminSubsubsectionExtraFieldsProjectSlugEditRoute
+  '/dashboard/activity': typeof LoggedInGeneralDashboardActivityIndexRoute
+  '/dashboard/assignments': typeof LoggedInGeneralDashboardAssignmentsIndexRoute
   '/user/edit': typeof LoggedInGeneralUserEditIndexRoute
   '/$projectSlug/acquisition-area-status': typeof LoggedInProjectsProjectSlugAcquisitionAreaStatusIndexRoute
   '/$projectSlug/contacts': typeof LoggedInProjectsProjectSlugContactsIndexRoute
@@ -1435,6 +1486,7 @@ export interface FileRoutesByTo {
   '/admin/surveys/new': typeof AdminSurveysNewIndexRoute
   '/api/$projectSlug/upload': typeof ApiProjectSlugUploadIndexRoute
   '/api/e2e/server-env': typeof ApiE2eServerEnvIndexRoute
+  '/api/log-entries/export': typeof ApiLogEntriesExportIndexRoute
   '/api/projects/$slug': typeof ApiProjectsSlugIndexRoute
   '/api/subsections/import': typeof ApiSubsectionsImportIndexRoute
   '/api/subsubsections/import': typeof ApiSubsubsectionsImportIndexRoute
@@ -1532,6 +1584,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRouteWithChildren
   '/beteiligung': typeof BeteiligungRouteWithChildren
   '/mcp': typeof McpRoute
+  '/_loggedInGeneral/dashboard': typeof LoggedInGeneralDashboardRouteRouteWithChildren
   '/_content/browser-version': typeof ContentBrowserVersionRoute
   '/_content/datenschutz': typeof ContentDatenschutzRoute
   '/_content/kontakt': typeof ContentKontaktRoute
@@ -1557,6 +1610,7 @@ export interface FileRoutesById {
   '/admin/evaluations/': typeof AdminEvaluationsIndexRoute
   '/admin/form-templates/': typeof AdminFormTemplatesIndexRoute
   '/admin/log-entries/': typeof AdminLogEntriesIndexRoute
+  '/admin/mcp-drafts/': typeof AdminMcpDraftsIndexRoute
   '/admin/memberships/': typeof AdminMembershipsIndexRoute
   '/admin/project-record-emails/': typeof AdminProjectRecordEmailsIndexRoute
   '/admin/project-record-templates/': typeof AdminProjectRecordTemplatesIndexRoute
@@ -1568,12 +1622,15 @@ export interface FileRoutesById {
   '/admin/system-log-entries/': typeof AdminSystemLogEntriesIndexRoute
   '/api/cron-invites-cleanup/': typeof ApiCronInvitesCleanupIndexRoute
   '/api/cron-logEntries-cleanup/': typeof ApiCronLogEntriesCleanupIndexRoute
+  '/api/cron-mcpDrafts-cleanup/': typeof ApiCronMcpDraftsCleanupIndexRoute
   '/api/cron-surveyResponses-cleanup/': typeof ApiCronSurveyResponsesCleanupIndexRoute
   '/api/process-project-record-email/': typeof ApiProcessProjectRecordEmailIndexRoute
   '/api/survey-upload/': typeof ApiSurveyUploadIndexRoute
   '/beteiligung/$surveySlug/': typeof BeteiligungSurveySlugIndexRoute
   '/admin/evaluations/$projectSlug/edit': typeof AdminEvaluationsProjectSlugEditRoute
   '/admin/subsubsection-extra-fields/$projectSlug/edit': typeof AdminSubsubsectionExtraFieldsProjectSlugEditRoute
+  '/_loggedInGeneral/dashboard/activity/': typeof LoggedInGeneralDashboardActivityIndexRoute
+  '/_loggedInGeneral/dashboard/assignments/': typeof LoggedInGeneralDashboardAssignmentsIndexRoute
   '/_loggedInGeneral/user/edit/': typeof LoggedInGeneralUserEditIndexRoute
   '/_loggedInProjects/$projectSlug/acquisition-area-status/': typeof LoggedInProjectsProjectSlugAcquisitionAreaStatusIndexRoute
   '/_loggedInProjects/$projectSlug/contacts/': typeof LoggedInProjectsProjectSlugContactsIndexRoute
@@ -1603,6 +1660,7 @@ export interface FileRoutesById {
   '/admin/surveys/new/': typeof AdminSurveysNewIndexRoute
   '/api/$projectSlug/upload/': typeof ApiProjectSlugUploadIndexRoute
   '/api/e2e/server-env/': typeof ApiE2eServerEnvIndexRoute
+  '/api/log-entries/export/': typeof ApiLogEntriesExportIndexRoute
   '/api/projects/$slug/': typeof ApiProjectsSlugIndexRoute
   '/api/subsections/import/': typeof ApiSubsectionsImportIndexRoute
   '/api/subsubsections/import/': typeof ApiSubsubsectionsImportIndexRoute
@@ -1699,6 +1757,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/beteiligung'
     | '/mcp'
+    | '/dashboard'
     | '/browser-version'
     | '/datenschutz'
     | '/kontakt'
@@ -1722,6 +1781,7 @@ export interface FileRouteTypes {
     | '/admin/evaluations/'
     | '/admin/form-templates/'
     | '/admin/log-entries/'
+    | '/admin/mcp-drafts/'
     | '/admin/memberships/'
     | '/admin/project-record-emails/'
     | '/admin/project-record-templates/'
@@ -1733,12 +1793,15 @@ export interface FileRouteTypes {
     | '/admin/system-log-entries/'
     | '/api/cron-invites-cleanup/'
     | '/api/cron-logEntries-cleanup/'
+    | '/api/cron-mcpDrafts-cleanup/'
     | '/api/cron-surveyResponses-cleanup/'
     | '/api/process-project-record-email/'
     | '/api/survey-upload/'
     | '/beteiligung/$surveySlug/'
     | '/admin/evaluations/$projectSlug/edit'
     | '/admin/subsubsection-extra-fields/$projectSlug/edit'
+    | '/dashboard/activity/'
+    | '/dashboard/assignments/'
     | '/user/edit/'
     | '/$projectSlug/acquisition-area-status/'
     | '/$projectSlug/contacts/'
@@ -1768,6 +1831,7 @@ export interface FileRouteTypes {
     | '/admin/surveys/new/'
     | '/api/$projectSlug/upload/'
     | '/api/e2e/server-env/'
+    | '/api/log-entries/export/'
     | '/api/projects/$slug/'
     | '/api/subsections/import/'
     | '/api/subsubsections/import/'
@@ -1881,6 +1945,7 @@ export interface FileRouteTypes {
     | '/admin/evaluations'
     | '/admin/form-templates'
     | '/admin/log-entries'
+    | '/admin/mcp-drafts'
     | '/admin/memberships'
     | '/admin/project-record-emails'
     | '/admin/project-record-templates'
@@ -1892,12 +1957,15 @@ export interface FileRouteTypes {
     | '/admin/system-log-entries'
     | '/api/cron-invites-cleanup'
     | '/api/cron-logEntries-cleanup'
+    | '/api/cron-mcpDrafts-cleanup'
     | '/api/cron-surveyResponses-cleanup'
     | '/api/process-project-record-email'
     | '/api/survey-upload'
     | '/beteiligung/$surveySlug'
     | '/admin/evaluations/$projectSlug/edit'
     | '/admin/subsubsection-extra-fields/$projectSlug/edit'
+    | '/dashboard/activity'
+    | '/dashboard/assignments'
     | '/user/edit'
     | '/$projectSlug/acquisition-area-status'
     | '/$projectSlug/contacts'
@@ -1927,6 +1995,7 @@ export interface FileRouteTypes {
     | '/admin/surveys/new'
     | '/api/$projectSlug/upload'
     | '/api/e2e/server-env'
+    | '/api/log-entries/export'
     | '/api/projects/$slug'
     | '/api/subsections/import'
     | '/api/subsubsections/import'
@@ -2023,6 +2092,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/beteiligung'
     | '/mcp'
+    | '/_loggedInGeneral/dashboard'
     | '/_content/browser-version'
     | '/_content/datenschutz'
     | '/_content/kontakt'
@@ -2048,6 +2118,7 @@ export interface FileRouteTypes {
     | '/admin/evaluations/'
     | '/admin/form-templates/'
     | '/admin/log-entries/'
+    | '/admin/mcp-drafts/'
     | '/admin/memberships/'
     | '/admin/project-record-emails/'
     | '/admin/project-record-templates/'
@@ -2059,12 +2130,15 @@ export interface FileRouteTypes {
     | '/admin/system-log-entries/'
     | '/api/cron-invites-cleanup/'
     | '/api/cron-logEntries-cleanup/'
+    | '/api/cron-mcpDrafts-cleanup/'
     | '/api/cron-surveyResponses-cleanup/'
     | '/api/process-project-record-email/'
     | '/api/survey-upload/'
     | '/beteiligung/$surveySlug/'
     | '/admin/evaluations/$projectSlug/edit'
     | '/admin/subsubsection-extra-fields/$projectSlug/edit'
+    | '/_loggedInGeneral/dashboard/activity/'
+    | '/_loggedInGeneral/dashboard/assignments/'
     | '/_loggedInGeneral/user/edit/'
     | '/_loggedInProjects/$projectSlug/acquisition-area-status/'
     | '/_loggedInProjects/$projectSlug/contacts/'
@@ -2094,6 +2168,7 @@ export interface FileRouteTypes {
     | '/admin/surveys/new/'
     | '/api/$projectSlug/upload/'
     | '/api/e2e/server-env/'
+    | '/api/log-entries/export/'
     | '/api/projects/$slug/'
     | '/api/subsections/import/'
     | '/api/subsubsections/import/'
@@ -2196,11 +2271,13 @@ export interface RootRouteChildren {
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiCronInvitesCleanupIndexRoute: typeof ApiCronInvitesCleanupIndexRoute
   ApiCronLogEntriesCleanupIndexRoute: typeof ApiCronLogEntriesCleanupIndexRoute
+  ApiCronMcpDraftsCleanupIndexRoute: typeof ApiCronMcpDraftsCleanupIndexRoute
   ApiCronSurveyResponsesCleanupIndexRoute: typeof ApiCronSurveyResponsesCleanupIndexRoute
   ApiProcessProjectRecordEmailIndexRoute: typeof ApiProcessProjectRecordEmailIndexRoute
   ApiSurveyUploadIndexRoute: typeof ApiSurveyUploadIndexRoute
   ApiProjectSlugUploadIndexRoute: typeof ApiProjectSlugUploadIndexRoute
   ApiE2eServerEnvIndexRoute: typeof ApiE2eServerEnvIndexRoute
+  ApiLogEntriesExportIndexRoute: typeof ApiLogEntriesExportIndexRoute
   ApiProjectsSlugIndexRoute: typeof ApiProjectsSlugIndexRoute
   ApiSubsectionsImportIndexRoute: typeof ApiSubsectionsImportIndexRoute
   ApiSubsubsectionsImportIndexRoute: typeof ApiSubsubsectionsImportIndexRoute
@@ -2373,6 +2450,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContentBrowserVersionRouteImport
       parentRoute: typeof ContentRoute
     }
+    '/_loggedInGeneral/dashboard': {
+      id: '/_loggedInGeneral/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof LoggedInGeneralDashboardRouteRouteImport
+      parentRoute: typeof LoggedInGeneralRoute
+    }
     '/beteiligung/$surveySlug/': {
       id: '/beteiligung/$surveySlug/'
       path: '/'
@@ -2399,6 +2483,13 @@ declare module '@tanstack/react-router' {
       path: '/api/cron-surveyResponses-cleanup'
       fullPath: '/api/cron-surveyResponses-cleanup/'
       preLoaderRoute: typeof ApiCronSurveyResponsesCleanupIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron-mcpDrafts-cleanup/': {
+      id: '/api/cron-mcpDrafts-cleanup/'
+      path: '/api/cron-mcpDrafts-cleanup'
+      fullPath: '/api/cron-mcpDrafts-cleanup/'
+      preLoaderRoute: typeof ApiCronMcpDraftsCleanupIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/cron-logEntries-cleanup/': {
@@ -2478,6 +2569,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminMembershipsIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/mcp-drafts/': {
+      id: '/admin/mcp-drafts/'
+      path: '/mcp-drafts'
+      fullPath: '/admin/mcp-drafts/'
+      preLoaderRoute: typeof AdminMcpDraftsIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/log-entries/': {
       id: '/admin/log-entries/'
       path: '/log-entries'
@@ -2529,10 +2627,10 @@ declare module '@tanstack/react-router' {
     }
     '/_loggedInGeneral/dashboard/': {
       id: '/_loggedInGeneral/dashboard/'
-      path: '/dashboard'
+      path: '/'
       fullPath: '/dashboard/'
       preLoaderRoute: typeof LoggedInGeneralDashboardIndexRouteImport
-      parentRoute: typeof LoggedInGeneralRoute
+      parentRoute: typeof LoggedInGeneralDashboardRouteRoute
     }
     '/_loggedInGeneral/access-denied/': {
       id: '/_loggedInGeneral/access-denied/'
@@ -2588,6 +2686,13 @@ declare module '@tanstack/react-router' {
       path: '/api/projects/$slug'
       fullPath: '/api/projects/$slug/'
       preLoaderRoute: typeof ApiProjectsSlugIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/log-entries/export/': {
+      id: '/api/log-entries/export/'
+      path: '/api/log-entries/export'
+      fullPath: '/api/log-entries/export/'
+      preLoaderRoute: typeof ApiLogEntriesExportIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/e2e/server-env/': {
@@ -2792,6 +2897,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/user/edit/'
       preLoaderRoute: typeof LoggedInGeneralUserEditIndexRouteImport
       parentRoute: typeof LoggedInGeneralRoute
+    }
+    '/_loggedInGeneral/dashboard/assignments/': {
+      id: '/_loggedInGeneral/dashboard/assignments/'
+      path: '/assignments'
+      fullPath: '/dashboard/assignments/'
+      preLoaderRoute: typeof LoggedInGeneralDashboardAssignmentsIndexRouteImport
+      parentRoute: typeof LoggedInGeneralDashboardRouteRoute
+    }
+    '/_loggedInGeneral/dashboard/activity/': {
+      id: '/_loggedInGeneral/dashboard/activity/'
+      path: '/activity'
+      fullPath: '/dashboard/activity/'
+      preLoaderRoute: typeof LoggedInGeneralDashboardActivityIndexRouteImport
+      parentRoute: typeof LoggedInGeneralDashboardRouteRoute
     }
     '/admin/subsubsection-extra-fields/$projectSlug/edit': {
       id: '/admin/subsubsection-extra-fields/$projectSlug/edit'
@@ -3433,16 +3552,37 @@ const LoggedInFullscreenRouteChildren: LoggedInFullscreenRouteChildren = {
 const LoggedInFullscreenRouteWithChildren =
   LoggedInFullscreenRoute._addFileChildren(LoggedInFullscreenRouteChildren)
 
-interface LoggedInGeneralRouteChildren {
-  LoggedInGeneralAccessDeniedIndexRoute: typeof LoggedInGeneralAccessDeniedIndexRoute
+interface LoggedInGeneralDashboardRouteRouteChildren {
   LoggedInGeneralDashboardIndexRoute: typeof LoggedInGeneralDashboardIndexRoute
+  LoggedInGeneralDashboardActivityIndexRoute: typeof LoggedInGeneralDashboardActivityIndexRoute
+  LoggedInGeneralDashboardAssignmentsIndexRoute: typeof LoggedInGeneralDashboardAssignmentsIndexRoute
+}
+
+const LoggedInGeneralDashboardRouteRouteChildren: LoggedInGeneralDashboardRouteRouteChildren =
+  {
+    LoggedInGeneralDashboardIndexRoute: LoggedInGeneralDashboardIndexRoute,
+    LoggedInGeneralDashboardActivityIndexRoute:
+      LoggedInGeneralDashboardActivityIndexRoute,
+    LoggedInGeneralDashboardAssignmentsIndexRoute:
+      LoggedInGeneralDashboardAssignmentsIndexRoute,
+  }
+
+const LoggedInGeneralDashboardRouteRouteWithChildren =
+  LoggedInGeneralDashboardRouteRoute._addFileChildren(
+    LoggedInGeneralDashboardRouteRouteChildren,
+  )
+
+interface LoggedInGeneralRouteChildren {
+  LoggedInGeneralDashboardRouteRoute: typeof LoggedInGeneralDashboardRouteRouteWithChildren
+  LoggedInGeneralAccessDeniedIndexRoute: typeof LoggedInGeneralAccessDeniedIndexRoute
   LoggedInGeneralSupportIndexRoute: typeof LoggedInGeneralSupportIndexRoute
   LoggedInGeneralUserEditIndexRoute: typeof LoggedInGeneralUserEditIndexRoute
 }
 
 const LoggedInGeneralRouteChildren: LoggedInGeneralRouteChildren = {
+  LoggedInGeneralDashboardRouteRoute:
+    LoggedInGeneralDashboardRouteRouteWithChildren,
   LoggedInGeneralAccessDeniedIndexRoute: LoggedInGeneralAccessDeniedIndexRoute,
-  LoggedInGeneralDashboardIndexRoute: LoggedInGeneralDashboardIndexRoute,
   LoggedInGeneralSupportIndexRoute: LoggedInGeneralSupportIndexRoute,
   LoggedInGeneralUserEditIndexRoute: LoggedInGeneralUserEditIndexRoute,
 }
@@ -3792,6 +3932,7 @@ interface AdminRouteChildren {
   AdminEvaluationsIndexRoute: typeof AdminEvaluationsIndexRoute
   AdminFormTemplatesIndexRoute: typeof AdminFormTemplatesIndexRoute
   AdminLogEntriesIndexRoute: typeof AdminLogEntriesIndexRoute
+  AdminMcpDraftsIndexRoute: typeof AdminMcpDraftsIndexRoute
   AdminMembershipsIndexRoute: typeof AdminMembershipsIndexRoute
   AdminProjectRecordEmailsIndexRoute: typeof AdminProjectRecordEmailsIndexRoute
   AdminProjectRecordTemplatesIndexRoute: typeof AdminProjectRecordTemplatesIndexRoute
@@ -3831,6 +3972,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminEvaluationsIndexRoute: AdminEvaluationsIndexRoute,
   AdminFormTemplatesIndexRoute: AdminFormTemplatesIndexRoute,
   AdminLogEntriesIndexRoute: AdminLogEntriesIndexRoute,
+  AdminMcpDraftsIndexRoute: AdminMcpDraftsIndexRoute,
   AdminMembershipsIndexRoute: AdminMembershipsIndexRoute,
   AdminProjectRecordEmailsIndexRoute: AdminProjectRecordEmailsIndexRoute,
   AdminProjectRecordTemplatesIndexRoute: AdminProjectRecordTemplatesIndexRoute,
@@ -3932,6 +4074,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiCronInvitesCleanupIndexRoute: ApiCronInvitesCleanupIndexRoute,
   ApiCronLogEntriesCleanupIndexRoute: ApiCronLogEntriesCleanupIndexRoute,
+  ApiCronMcpDraftsCleanupIndexRoute: ApiCronMcpDraftsCleanupIndexRoute,
   ApiCronSurveyResponsesCleanupIndexRoute:
     ApiCronSurveyResponsesCleanupIndexRoute,
   ApiProcessProjectRecordEmailIndexRoute:
@@ -3939,6 +4082,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiSurveyUploadIndexRoute: ApiSurveyUploadIndexRoute,
   ApiProjectSlugUploadIndexRoute: ApiProjectSlugUploadIndexRoute,
   ApiE2eServerEnvIndexRoute: ApiE2eServerEnvIndexRoute,
+  ApiLogEntriesExportIndexRoute: ApiLogEntriesExportIndexRoute,
   ApiProjectsSlugIndexRoute: ApiProjectsSlugIndexRoute,
   ApiSubsectionsImportIndexRoute: ApiSubsectionsImportIndexRoute,
   ApiSubsubsectionsImportIndexRoute: ApiSubsubsectionsImportIndexRoute,

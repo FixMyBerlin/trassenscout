@@ -4,11 +4,12 @@ import {
   membershipUserLineClassName,
 } from "@/src/components/admin/memberships/membershipRegionClasses"
 import { Link } from "@/src/components/core/components/links/Link"
-import { getFullname } from "@/src/components/core/users/getFullname"
+import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 
 type UserLike = {
   id?: number
   firstName: string | null
+  institution?: string | null
   lastName: string | null
   email: string
   role: string
@@ -20,7 +21,7 @@ type Props = {
 }
 
 function getUserTooltipContent(user: UserLike) {
-  const fullName = getFullname(user) || "(kein Name)"
+  const fullName = getFullnameWithInstitution(user) || "(kein Name)"
   const parts = [fullName, user.email]
   if (user.role === "ADMIN") {
     parts.push("(Admin)")
@@ -29,7 +30,7 @@ function getUserTooltipContent(user: UserLike) {
 }
 
 export function MembershipUserCell({ user, membershipDetailUserId }: Props) {
-  const fullName = getFullname(user) || "(kein Name)"
+  const fullName = getFullnameWithInstitution(user) || "(kein Name)"
   const secondaryLine = user.role === "ADMIN" ? `${user.email} · Admin` : user.email
 
   const content = (

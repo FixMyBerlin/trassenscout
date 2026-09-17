@@ -1,4 +1,4 @@
-import { getFullname } from "@/src/components/core/users/getFullname"
+import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import type { ProjectRecordsList } from "@/src/server/projectRecords/types"
 import { useProjectRecordFilters } from "../useProjectRecordFilters"
 
@@ -16,7 +16,7 @@ export const useFilteredProjectRecords = (projectRecords: ProjectRecordsList) =>
     const cleanedSearchterm = searchterm.trim().toLowerCase().replace(/#/g, "").trim()
 
     const assigneeName = projectRecord.assignedTo
-      ? (getFullname(projectRecord.assignedTo)?.trim().toLowerCase() ?? "")
+      ? (getFullnameWithInstitution(projectRecord.assignedTo)?.trim().toLowerCase() ?? "")
       : ""
 
     return (

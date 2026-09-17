@@ -2,6 +2,7 @@ import { CommandLineIcon } from "@heroicons/react/20/solid"
 import { authClient } from "@/src/components/shared/auth/auth-client"
 import { UserRoleEnum } from "@/src/prisma/generated/browser"
 import { AdminBoxIconButton } from "./AdminBoxIconButton"
+import { useAdminDebugButtonsEnabled } from "./useAdminDebugButtons"
 
 type Props = { data: unknown }
 
@@ -9,8 +10,9 @@ const adminDebugTooltip = "Gibt Debug-Daten in der Browser-Konsole aus (nur für
 
 export const SuperAdminLogData = ({ data }: Props) => {
   const { data: session } = authClient.useSession()
+  const adminDebugButtonsEnabled = useAdminDebugButtonsEnabled()
 
-  if (session?.role !== UserRoleEnum.ADMIN) {
+  if (session?.role !== UserRoleEnum.ADMIN || !adminDebugButtonsEnabled) {
     return null
   }
 

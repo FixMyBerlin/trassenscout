@@ -11,7 +11,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = getPdfWorkerSrc()
 
 type Props = {
   data: Uint8Array
-  onDocumentReady: (document: PDFDocumentProxy | null) => void
+  onDocumentReady?: (document: PDFDocumentProxy | null) => void
 }
 
 export const FormPdfEditor = ({ data, onDocumentReady }: Props) => {
@@ -36,7 +36,7 @@ export const FormPdfEditor = ({ data, onDocumentReady }: Props) => {
   return (
     <div
       ref={containerRef}
-      className="formPdfEditor max-h-[60vh] overflow-y-auto rounded-md bg-gray-100 p-2"
+      className="formPdfEditor max-h-[46vh] overflow-y-auto rounded-md bg-gray-100 p-2 supports-[height:100dvh]:max-h-[46dvh]"
       style={{ "--form-pdf-font-size": `${FORM_PDF_FONT_SIZE}px` } as CSSProperties}
     >
       <Document
@@ -45,9 +45,9 @@ export const FormPdfEditor = ({ data, onDocumentReady }: Props) => {
         error={<p className="p-4 text-sm text-red-700">Das PDF konnte nicht geladen werden.</p>}
         onLoadSuccess={(document) => {
           setNumPages(document.numPages)
-          onDocumentReady(document)
+          onDocumentReady?.(document)
         }}
-        onLoadError={() => onDocumentReady(null)}
+        onLoadError={() => onDocumentReady?.(null)}
       >
         {Array.from({ length: numPages }, (_, index) => (
           <Page

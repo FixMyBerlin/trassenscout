@@ -99,11 +99,7 @@ export const EditCommentForm = ({ comment, commentLabel, mutateComment }: Props)
                 type="button"
                 title={`${commentLabel} löschen`}
                 onClick={async () => {
-                  if (
-                    window.confirm(
-                      `Sind Sie sicher, dass Sie diesen ${commentLabel} löschen möchten?`,
-                    )
-                  ) {
+                  if (window.confirm(`${commentLabel} unwiderruflich löschen?`)) {
                     try {
                       setIsDirty(false)
                       setOpen(false)

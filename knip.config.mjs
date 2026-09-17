@@ -14,11 +14,13 @@ export default {
     "lint/lint.test.mjs",
     "src/server/instrumentation/**/*.ts",
   ],
-  ignoreDependencies: ["estree"],
+  ignoreDependencies: ["estree", "eslint"],
   ignore: ["imap-listener/**", ".agents/**"],
   ignoreIssues: {
     "src/server/**/*.ts": ["duplicates"],
     "src/shared/**/*.ts": ["duplicates"],
+    "emails/**": ["duplicates"],
+    "tests/_utils/testDb.ts": ["unresolved"],
   },
   paths: {
     "@/*": ["./*"],

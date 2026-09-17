@@ -21,7 +21,7 @@ export const fixmyCityLinks: FooterLink[] = [
     blank: true,
   },
   {
-    name: "TILDA - Offenes Verplanungs-Web-GIS",
+    name: "TILDA - Offenes Vorplanungs-Web-GIS",
     href: "https://tilda-geo.de",
     blank: true,
   },

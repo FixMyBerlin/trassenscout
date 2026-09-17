@@ -3,7 +3,6 @@ import {
   Button,
   Container,
   Head,
-  Hr,
   Html,
   Img,
   Markdown,
@@ -12,7 +11,6 @@ import {
 } from "@react-email/components"
 import { getPrdOrStgDomain } from "@/src/components/core/components/links/getDomain"
 import { footerTextMarkdown } from "./footerTextMarkdown"
-import { signatureTextMarkdown } from "./signatureTextMarkdown"
 
 const emailLogoPath = "/emails/trassenscout-logo-mail-white.png"
 
@@ -48,7 +46,7 @@ export const MarkdownMail = ({
                 />
               </center>
             </Section>
-            <Section className="px-4 py-2 sm:px-8">
+            <Section className="px-4 pt-2 pb-6 sm:px-8">
               <Markdown
                 markdownCustomStyles={{
                   h1,
@@ -84,18 +82,6 @@ export const MarkdownMail = ({
                   {outroMarkdown}
                 </Markdown>
               ) : null}
-            </Section>
-            <Hr />
-            <Section className="px-9 pt-4 pb-6">
-              <Markdown
-                markdownCustomStyles={{
-                  h1,
-                  p: { ...text, margin: "0px" },
-                  link,
-                }}
-              >
-                {signatureTextMarkdown}
-              </Markdown>
             </Section>
           </Container>
           <Container className="mx-auto py-6">

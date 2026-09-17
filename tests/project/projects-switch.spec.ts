@@ -54,4 +54,22 @@ test.describe("Projects switch", () => {
     await expect(page).toHaveURL(/\/dashboard$/)
     await expect(page.getByText("Meine Projekte", { exact: true })).toBeVisible()
   })
+
+  test("closes when another project navigation item is selected", async ({ page }) => {
+    await page.goto(`/${projectSlug}`)
+
+    const { projectSwitch, searchInput } = await openProjectSwitchSearch(page)
+    await page.getByRole("link", { name: "Dokumente" }).click()
+
+    await expect(page).toHaveURL(new RegExp(`/${projectSlug}/uploads$`))
+    // Assert on the switch button, not the dropdown: `toBeHidden` also passes for an element that
+    // has not rendered yet, so it could go green before the menu reappeared.
+    await expect(projectSwitch).toHaveAttribute("aria-expanded", "false")
+    await expect(searchInput).toBeHidden()
+
+    // Regression: the open state must not survive the navigation and reappear on the way back.
+    await page.goBack()
+    await expect(page).toHaveURL(new RegExp(`/${projectSlug}$`))
+    await expect(projectSwitch).toHaveAttribute("aria-expanded", "false")
+  })
 })

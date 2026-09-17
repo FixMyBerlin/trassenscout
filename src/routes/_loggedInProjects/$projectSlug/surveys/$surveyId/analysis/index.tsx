@@ -6,7 +6,7 @@ import { surveyTabsQueryOptions } from "@/src/server/surveys/surveyTabsQueryOpti
 
 export const Route = createFileRoute("/_loggedInProjects/$projectSlug/surveys/$surveyId/analysis/")(
   {
-    head: () => absoluteTitleHead("Beteiligung"),
+    head: () => absoluteTitleHead("Eingaben"),
     ssr: true,
     loader: async ({ context, params }) => {
       const surveyId = Number(params.surveyId)

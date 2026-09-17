@@ -2,7 +2,7 @@ import { z } from "zod"
 import { projectRecordAssignedNotificationToUser } from "@/emails/mailers/projectRecordAssignedNotificationToUser"
 import { frenchQuote } from "@/src/components/core/components/text/quote"
 import { shortTitle } from "@/src/components/core/components/text/titles"
-import { getFullname } from "@/src/components/core/users/getFullname"
+import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import {
   ProjectRecordReviewState,
   ProjectRecordType,
@@ -80,18 +80,13 @@ function projectRecordOverviewWhere(projectId: number, aiEnabled: boolean) {
   }
 }
 
-/**
- * Which forms a record offers is admin-only, so the server has to hold that line against a
- * hand-crafted payload. Only an authorization failure means "not an admin" — anything else
- * must propagate, or an admin's change would vanish from an otherwise successful save.
- */
-async function isAdminRequest(headers: Headers) {
-  try {
-    await endpointAuth.admin(headers)
-    return true
-  } catch (error) {
-    if (error instanceof AuthorizationError) return false
-    throw error
+async function assertAssigneeIsProjectMember(projectSlug: string, assignedToId: number) {
+  const assigneeMembership = await db.membership.findFirst({
+    where: { userId: assignedToId, project: { slug: projectSlug } },
+    select: { id: true },
+  })
+  if (!assigneeMembership) {
+    throw new AuthorizationError()
   }
 }
 
@@ -191,16 +186,29 @@ async function validateProjectRecordRelations(
   ])
 }
 
+function assignmentMetadata(
+  previousAssigneeId: number | null,
+  nextAssigneeId: number | null,
+  actorUserId: number,
+) {
+  if (previousAssigneeId === nextAssigneeId) return {}
+
+  return nextAssigneeId === null
+    ? { assignedById: null, assignedAt: null }
+    : { assignedById: actorUserId, assignedAt: new Date() }
+}
+
 function createProjectRecordData(
   input: CreateProjectRecordInput,
   projectId: number,
   userId: number,
-  allowFormTemplates: boolean,
+  formTemplateIds: number[],
 ) {
-  const { acquisitionAreas, tags, subsubsections, uploads, formTemplates, ...data } = input
+  const { acquisitionAreas, tags, subsubsections, uploads, formTemplates: _, ...data } = input
 
   return {
     ...data,
+    ...assignmentMetadata(null, data.assignedToId ?? null, userId),
     date: normalizeDate(data.date),
     projectId,
     projectRecordAuthorType: ProjectRecordType.USER,
@@ -212,9 +220,41 @@ function createProjectRecordData(
     tags: connectIds(idsFromFormValue(tags)),
     subsubsections: connectIds(idsFromFormValue(subsubsections)),
     uploads: connectIds(idsFromFormValue(uploads)),
-    // Omitted for a non-admin so Prisma leaves the relation alone. `projectRecordTemplateId`
-    // is not gated on create: it records the template the author picked.
-    ...(allowFormTemplates ? { formTemplates: connectIds(idsFromFormValue(formTemplates)) } : {}),
+    formTemplates: connectIds(formTemplateIds),
+  }
+}
+
+async function resolveCreateFormTemplateIds(
+  projectSlug: string,
+  input: CreateProjectRecordInput,
+  isAdmin: boolean,
+) {
+  if (isAdmin) return idsFromFormValue(input.formTemplates)
+  if (!input.projectRecordTemplateId) return []
+
+  const template = await db.projectRecordTemplate.findFirst({
+    where: {
+      id: input.projectRecordTemplateId,
+      projects: { some: { slug: projectSlug } },
+    },
+    select: {
+      formTemplates: {
+        where: { projects: { some: { slug: projectSlug } } },
+        select: { id: true },
+      },
+    },
+  })
+
+  return (template?.formTemplates ?? []).map(({ id }) => id)
+}
+
+async function isAdminRequest(headers: Headers) {
+  try {
+    await endpointAuth.admin(headers)
+    return true
+  } catch (error) {
+    if (error instanceof AuthorizationError) return false
+    throw error
   }
 }
 
@@ -222,6 +262,7 @@ function updateProjectRecordData(
   input: UpdateProjectRecordInput,
   userId: number,
   allowAdminFields: boolean,
+  previousAssigneeId: number | null,
 ) {
   const {
     acquisitionAreas,
@@ -233,8 +274,12 @@ function updateProjectRecordData(
     ...data
   } = input
 
+  const nextAssigneeId =
+    data.assignedToId === undefined ? previousAssigneeId : (data.assignedToId ?? null)
+
   return {
     ...data,
+    ...assignmentMetadata(previousAssigneeId, nextAssigneeId, userId),
     date: normalizeDate(data.date),
     projectRecordUpdatedByType: ProjectRecordType.USER,
     updatedById: userId,
@@ -257,31 +302,32 @@ async function sendProjectRecordAssignmentNotification({
   assigneeId,
   actorUserId,
   recordTitle,
+  recordText,
   projectSlug,
   recordId,
 }: {
   assigneeId: number
   actorUserId: number
   recordTitle: string
+  recordText: string | null
   projectSlug: string
   recordId: number
 }) {
   const [assignee, actor] = await Promise.all([
     db.user.findUnique({
       where: { id: assigneeId },
-      select: { email: true, firstName: true, lastName: true },
+      select: { email: true, firstName: true, institution: true, lastName: true },
     }),
     db.user.findUnique({
       where: { id: actorUserId },
-      select: { firstName: true, lastName: true },
+      select: { firstName: true, institution: true, lastName: true },
     }),
   ])
 
   if (!assignee || !actor) return
 
-  const assigneeName =
-    [assignee.firstName, assignee.lastName].filter(Boolean).join(" ") || assignee.email
-  const actorName = [actor.firstName, actor.lastName].filter(Boolean).join(" ") || "Unbekannt"
+  const assigneeName = getFullnameWithInstitution(assignee) || assignee.email
+  const actorName = getFullnameWithInstitution(actor) || "Unbekannt"
 
   await (
     await projectRecordAssignedNotificationToUser({
@@ -289,6 +335,7 @@ async function sendProjectRecordAssignmentNotification({
       assigneeName,
       actorName,
       recordTitle,
+      recordText,
       projectName: shortTitle(projectSlug),
       recordPath: projectRecordDetailPath(projectSlug, recordId),
     })
@@ -303,8 +350,8 @@ export async function getAllProjectRecordsAdmin(headers: Headers) {
     include: {
       project: { select: { id: true, slug: true } },
       tags: true,
-      author: { select: { id: true, firstName: true, lastName: true } },
-      updatedBy: { select: { id: true, firstName: true, lastName: true } },
+      author: { select: { id: true, firstName: true, institution: true, lastName: true } },
+      updatedBy: { select: { id: true, firstName: true, institution: true, lastName: true } },
     },
   })
 
@@ -386,6 +433,7 @@ export async function getProjectRecordAdmin(
         select: {
           id: true,
           firstName: true,
+          institution: true,
           lastName: true,
         },
       },
@@ -393,6 +441,7 @@ export async function getProjectRecordAdmin(
         select: {
           id: true,
           firstName: true,
+          institution: true,
           lastName: true,
         },
       },
@@ -400,6 +449,7 @@ export async function getProjectRecordAdmin(
         select: {
           id: true,
           firstName: true,
+          institution: true,
           lastName: true,
         },
       },
@@ -499,18 +549,30 @@ export async function createProjectRecord(
   headers: Headers,
   input: z.infer<typeof CreateProjectRecordBySlugSchema>,
 ) {
-  const { projectId, session } = await endpointAuth.projectRole(
+  const { projectId, membershipRole, session } = await endpointAuth.projectRole(
     headers,
     input.projectSlug,
-    editorRoles,
+    viewerRoles,
   )
   const { projectSlug, ...data } = input
-  const allowFormTemplates = await isAdminRequest(headers)
+  const canEdit = membershipRole === null || editorRoles.includes(membershipRole)
+
+  // A viewer attaches documents from the saved record (see `createUpload`), never on create.
+  if (!canEdit && idsFromFormValue(data.uploads).length > 0) {
+    throw new AuthorizationError()
+  }
+
+  if (data.assignedToId != null) {
+    await assertAssigneeIsProjectMember(projectSlug, data.assignedToId)
+  }
+
+  const isAdmin = await isAdminRequest(headers)
+  const formTemplateIds = await resolveCreateFormTemplateIds(projectSlug, data, isAdmin)
   await validateProjectRecordRelations(projectSlug, data, true)
   const userId = Number(session.userId)
 
   const record = await db.projectRecord.create({
-    data: createProjectRecordData(data, projectId, userId, allowFormTemplates),
+    data: createProjectRecordData(data, projectId, userId, formTemplateIds),
     include: projectRecordInclude,
   })
 
@@ -519,6 +581,7 @@ export async function createProjectRecord(
       assigneeId: record.assignedToId,
       actorUserId: userId,
       recordTitle: record.title,
+      recordText: record.body,
       projectSlug,
       recordId: record.id,
     })
@@ -587,7 +650,7 @@ export async function updateProjectRecord(
 
   const record = await db.projectRecord.update({
     where: { id: previousRecord.id },
-    data: updateProjectRecordData(data, userId, allowAdminFields),
+    data: updateProjectRecordData(data, userId, allowAdminFields, previousRecord.assignedToId),
     include: projectRecordInclude,
   })
 
@@ -600,6 +663,7 @@ export async function updateProjectRecord(
       assigneeId: newAssigneeId,
       actorUserId: userId,
       recordTitle: record.title,
+      recordText: record.body,
       projectSlug,
       recordId: record.id,
     })
@@ -663,13 +727,7 @@ export async function patchProjectRecordAssignment(
   const canEdit = membershipRole === null || editorRoles.includes(membershipRole)
 
   if (assignedToId != null) {
-    const assigneeMembership = await db.membership.findFirst({
-      where: { userId: assignedToId, project: { slug: projectSlug } },
-      select: { id: true },
-    })
-    if (!assigneeMembership) {
-      throw new AuthorizationError()
-    }
+    await assertAssigneeIsProjectMember(projectSlug, assignedToId)
   }
 
   const project = await db.project.findUnique({
@@ -700,6 +758,7 @@ export async function patchProjectRecordAssignment(
     where: { id },
     data: {
       assignedToId,
+      ...assignmentMetadata(previous.assignedToId ?? null, assignedToId ?? null, userId),
       editingState,
       updatedById: userId,
       projectRecordUpdatedByType: ProjectRecordType.USER,
@@ -716,6 +775,7 @@ export async function patchProjectRecordAssignment(
       assigneeId: newAssigneeId,
       actorUserId: userId,
       recordTitle: record.title,
+      recordText: record.body,
       projectSlug,
       recordId: id,
     })
@@ -726,9 +786,9 @@ export async function patchProjectRecordAssignment(
     if (newAssigneeId !== null) {
       const assignee = await db.user.findUnique({
         where: { id: newAssigneeId },
-        select: { firstName: true, lastName: true, email: true },
+        select: { firstName: true, institution: true, lastName: true, email: true },
       })
-      const assigneeName = assignee ? getFullname(assignee) || assignee.email : ""
+      const assigneeName = assignee ? getFullnameWithInstitution(assignee) || assignee.email : ""
       assignmentMessage = `Protokolleintrag ${frenchQuote(record.title)} wurde an ${assigneeName} zugewiesen.`
       await createLogEntry({
         action: "UPDATE",
@@ -817,7 +877,7 @@ export async function getProjectRecordsNeedsReview(
       tags: true,
       acquisitionArea: { select: { id: true } },
       _count: { select: { projectRecordComments: true, uploads: true } },
-      assignedTo: { select: { id: true, firstName: true, lastName: true } },
+      assignedTo: { select: { id: true, firstName: true, institution: true, lastName: true } },
     },
   })
   const redactionContext = await loadUserRedactionContext(
@@ -884,7 +944,18 @@ export async function getProjectRecordDeleteInfo(
               subsection: { select: { slug: true } },
             },
           },
-          acquisitionAreas: { select: { id: true } },
+          acquisitionAreas: {
+            select: {
+              id: true,
+              subsubsection: {
+                select: {
+                  slug: true,
+                  subsection: { select: { slug: true } },
+                },
+              },
+              parcel: { select: { alkisParcelId: true } },
+            },
+          },
           projectRecords: { select: { id: true, title: true } },
           projectRecordEmail: {
             select: {
@@ -904,21 +975,31 @@ export async function getProjectRecordDeleteInfo(
   const uploadsWithInfo = projectRecord.uploads.map((upload) => {
     const protectionReasons: {
       subsubsection?: number
+      acquisitionAreas?: number[]
       otherProjectRecords?: number[]
       projectRecordEmail?: number
     } = {}
     const displayData: {
-      subsubsections?: Array<{ id: number; slug: string; subsectionSlug: string }>
+      subsubsections?: Array<{ slug: string; subsection: { slug: string } }>
+      acquisitionAreas?: Array<{
+        id: number
+        subsubsection: { slug: string; subsection: { slug: string } }
+        parcel: { alkisParcelId: string }
+      }>
       otherProjectRecords?: Array<{ id: number; title: string }>
     } = {}
 
     if (upload.subsubsections.length > 0) {
       protectionReasons.subsubsection = upload.subsubsections[0]!.id
       displayData.subsubsections = upload.subsubsections.map((subsub) => ({
-        id: subsub.id,
         slug: subsub.slug,
-        subsectionSlug: subsub.subsection.slug,
+        subsection: { slug: subsub.subsection.slug },
       }))
+    }
+
+    if (upload.acquisitionAreas.length > 0) {
+      protectionReasons.acquisitionAreas = upload.acquisitionAreas.map((area) => area.id)
+      displayData.acquisitionAreas = upload.acquisitionAreas
     }
 
     const otherProjectRecords = upload.projectRecords.filter((pr) => pr.id !== input.id)
@@ -1069,10 +1150,10 @@ const projectRecordListInclude = {
   },
   uploads: { select: { id: true, title: true, createdAt: true } },
   _count: { select: { projectRecordComments: true, uploads: true } },
-  author: { select: { id: true, firstName: true, lastName: true } },
-  updatedBy: { select: { id: true, firstName: true, lastName: true } },
-  reviewedBy: { select: { id: true, firstName: true, lastName: true } },
-  assignedTo: { select: { id: true, firstName: true, lastName: true } },
+  author: { select: { id: true, firstName: true, institution: true, lastName: true } },
+  updatedBy: { select: { id: true, firstName: true, institution: true, lastName: true } },
+  reviewedBy: { select: { id: true, firstName: true, institution: true, lastName: true } },
+  assignedTo: { select: { id: true, firstName: true, institution: true, lastName: true } },
 } as const
 
 function mapProjectRecordListRows(

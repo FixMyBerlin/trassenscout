@@ -28,16 +28,35 @@ export function PageApiTokensMcpSetup({ envLabel, origin }: PageApiTokensMcpSetu
       <div className="space-y-2">
         <p>
           Bearer-Tokens autorisieren den Remote-MCP-Server unter <code>{origin}/mcp</code>. Der
-          Token-Wert wird nur einmal beim Erstellen angezeigt. Ein aktiver Token erlaubt:
+          Token-Wert wird nur einmal beim Erstellen angezeigt. Ein aktiver Token reicht nicht
+          allein: projektbezogene Tools brauchen zusätzlich das Flag MCP in{" "}
+          <Link to="/admin/projects">/admin/projects</Link> (Spalte MCP, kein Bulk-Toggle). Nach
+          einem Import das Flag wieder ausschalten. Ein aktiver Token erlaubt:
         </p>
         <ul className={mcpOperationsListClassName}>
           <li>
-            Projektliste lesen (<code>projects_list</code>) — Slug, Titel, URLs, Zähler für
-            Planungsabschnitte und Führungen
+            Umgebung prüfen (<code>env_info</code>)
           </li>
           <li>
-            Führungen (Maßnahmen) pro Projekt auflisten (<code>fuehrungen_list</code>) — Slugs und
-            URLs nach Planungsabschnitt
+            Projektliste lesen (<code>projects_list</code>) — inkl. <code>mcpEnabled</code>; nur
+            aktivierte Slugs für die folgenden Tools verwenden
+          </li>
+          <li>
+            Feld-Metadaten und Enums pro aktiviertem Projekt (<code>subsections_schema</code>,{" "}
+            <code>subsubsections_schema</code>)
+          </li>
+          <li>
+            Planungsabschnitte auflisten (<code>subsections_list</code>) und Maßnahmen auflisten (
+            <code>subsubsections_list</code>) — Slugs, Beschreibungen und URLs
+          </li>
+          <li>
+            Drafts anlegen (<code>subsections_update</code> / <code>subsections_create</code> /{" "}
+            <code>subsubsections_update</code> / <code>subsubsections_create</code> mit einem oder
+            mehreren <code>items</code>) — der Datensatz selbst wird nicht geschrieben. Übernehmen
+            nur in der App (Admin: Einsetzen → Formular → Speichern / Erstellen). Die Antwort
+            enthält URLs, vorgeschlagene neue Feldwerte (<code>proposed</code>) und Hinweise (
+            <code>warnings</code>), keine Ist-Werte. Create verlangt <code>type</code> und GeoJSON-
+            <code>geometry</code>. Planungsabschnitte: LINE oder POLYGON, keine POINT.
           </li>
         </ul>
         <p>Bei Verlust oder Ende der Nutzung widerrufen.</p>
@@ -81,8 +100,9 @@ export function PageApiTokensMcpSetup({ envLabel, origin }: PageApiTokensMcpSetu
                 </li>
                 <li>MCP-Server neu laden bzw. Cursor neu starten.</li>
                 <li>
-                  Im Chat z. B. „Welche Projekte gibt es?“ oder „Führungen in rs23?“ fragen — Cursor
-                  ruft Tools wie <code>projects_list</code> / <code>fuehrungen_list</code> auf. Mit{" "}
+                  Im Chat z. B. „Welche Projekte gibt es?“ oder „Planungsabschnitte in rs23?“ oder
+                  „Maßnahmen in rs23?“ fragen — Cursor ruft Tools wie <code>projects_list</code> /{" "}
+                  <code>subsections_list</code> / <code>subsubsections_list</code> auf. Mit{" "}
                   <code>env_info</code> prüfen, auf welche Umgebung der Server zeigt.
                 </li>
               </ol>

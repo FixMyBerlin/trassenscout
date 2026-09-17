@@ -65,7 +65,11 @@ describe("contacts.server project scoping", () => {
         projectSlug: "alpha",
         id: 9,
         lastName: "Muster",
+        firstName: null,
         email: "test@example.com",
+        phone: null,
+        note: null,
+        role: null,
         tags: [],
       }),
     ).rejects.toBeInstanceOf(AuthorizationError)

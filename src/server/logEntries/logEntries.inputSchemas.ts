@@ -1,7 +1,7 @@
 import { z } from "zod"
 
-export const GetProjectLogEntriesSchema = z.object({
-  projectSlug: z.string(),
-  projectId: z.number(),
-  take: z.number().optional(),
+export const GetLogEntriesSchema = z.object({
+  projectSlug: z.string().optional(),
+  months: z.number().int().positive().optional(),
+  take: z.number().int().positive().max(200).optional(),
 })

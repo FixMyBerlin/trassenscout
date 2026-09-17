@@ -4,6 +4,7 @@ import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppF
 import { FormHydratedProvider } from "@/src/components/core/components/forms/hooks/useFormHydrated"
 import { useIsHydrated } from "@/src/components/core/components/forms/hooks/useIsHydrated"
 import { ProjectRecordAssignmentFields } from "@/src/components/project-records/ProjectRecordAssignmentFields"
+import { getProjectRecordAuthorLabel } from "@/src/components/project-records/utils/getProjectRecordAuthorLabel"
 import { getUserComboboxItems } from "@/src/components/shared/app/users/utils/getUserSelectOptions"
 import { ProjectRecordEditingState } from "@/src/prisma/generated/browser"
 import { projectUsersQueryOptions } from "@/src/server/memberships/projectUsersQueryOptions"
@@ -124,7 +125,13 @@ export const ProjectRecordAssignmentForm = ({ projectRecord }: Props) => {
             event.stopPropagation()
           }}
         >
-          <ProjectRecordAssignmentFields assignedToItems={getUserComboboxItems(users)} />
+          <ProjectRecordAssignmentFields
+            assignedToItems={getUserComboboxItems(users)}
+            fromLabel={getProjectRecordAuthorLabel({
+              type: projectRecord.projectRecordAuthorType,
+              author: projectRecord.author,
+            })}
+          />
           {saveError ? (
             <div className="pt-2">
               <p role="alert" className="text-sm font-semibold text-red-800">

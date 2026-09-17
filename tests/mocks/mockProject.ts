@@ -16,6 +16,7 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
   landAcquisitionModuleEnabled: false,
   showLogEntries: false,
   evaluationsEnabled: false,
+  mcpEnabled: false,
   alkisStateKey: StateKeyEnum.DISABLED,
   subsubsectionExtraFieldDefinitions: [],
 }

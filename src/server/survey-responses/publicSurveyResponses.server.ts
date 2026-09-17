@@ -117,7 +117,19 @@ export async function updateSurveyResponsePublic(
   })
 }
 
-function buildFieldValues({
+const MAP_FIELD_COMPONENTS = ["SwitchableMap", "SurveySimpleMapWithLegend"]
+
+function mapFieldValue(value: unknown) {
+  if (!value || typeof value !== "object") return ""
+
+  const { lat, lng } = value as { lat?: unknown; lng?: unknown }
+  if (typeof lat !== "number" || typeof lng !== "number") return ""
+
+  const osmUrl = `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}&zoom=16`
+  return `[${lat.toFixed(6)}, ${lng.toFixed(6)}](${osmUrl})`
+}
+
+export function buildFieldValues({
   data,
   fields,
   part2Fields,
@@ -173,6 +185,11 @@ function buildFieldValues({
       } else {
         fieldValues[fieldName] = selectedValues.join(", ")
       }
+      continue
+    }
+
+    if (field && MAP_FIELD_COMPONENTS.includes(String(field.component))) {
+      fieldValues[fieldName] = mapFieldValue(value)
       continue
     }
 

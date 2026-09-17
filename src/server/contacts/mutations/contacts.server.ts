@@ -1,5 +1,4 @@
 import type { z } from "zod"
-import { getFullname } from "@/src/components/core/users/getFullname"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { authorizeProjectMemberByProjectSlug } from "@/src/server/authorization/authorizeProjectMember.server"
 import { editorRoles } from "@/src/server/authorization/constants"
@@ -8,6 +7,7 @@ import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { relationIds } from "@/src/server/logEntries/create/relationIds"
 import { getProjectIdBySlug } from "@/src/server/projects/queries/getProjectIdBySlug.server"
 import { AuthorizationError } from "@/src/shared/auth/errors"
+import { getContactName } from "@/src/shared/contacts/getContactName"
 import {
   CreateContactSchema,
   DeleteContactSchema,
@@ -48,7 +48,7 @@ export async function createContact(headers: Headers, input: z.infer<typeof Crea
 
   await createLogEntry({
     action: "CREATE",
-    message: `Neuer externer Kontakt ${record ? getFullname(record) : ""} wurde erstellt.`,
+    message: `Neuer externer Kontakt ${getContactName(record)} wurde erstellt.`,
     userId: Number(session.userId),
     projectId,
     contactId: record.id,
@@ -105,7 +105,7 @@ export async function updateContact(headers: Headers, input: z.infer<typeof Upda
 
   await createLogEntry({
     action: "UPDATE",
-    message: `Externer Kontakt ${getFullname(record)} wurde geändert.`,
+    message: `Externer Kontakt ${getContactName(record)} wurde geändert.`,
     userId: Number(session.userId),
     projectSlug,
     previousRecord: {
@@ -152,7 +152,7 @@ export async function deleteContact(headers: Headers, input: z.infer<typeof Dele
 
   await createLogEntry({
     action: "DELETE",
-    message: `Externer Kontakt ${contact ? getFullname(contact) : ""} wurde gelöscht.`,
+    message: `Externer Kontakt ${getContactName(contact)} wurde gelöscht.`,
     userId: Number(session.userId),
     projectSlug: input.projectSlug,
     previousRecord: { id: contact.id },

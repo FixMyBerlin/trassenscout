@@ -78,6 +78,7 @@ export const EditableSurveyResponseUploadsSection = ({
 
   return (
     <div className="space-y-3">
+      <h4 className="mb-3 font-semibold">Dokumente</h4>
       {uploadDescriptionSection}
 
       <div className="flex flex-col gap-2">

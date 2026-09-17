@@ -16,6 +16,7 @@ import {
   AdminTableEditLink,
 } from "@/src/components/admin/AdminTableActions"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
+import { shortTitle } from "@/src/components/core/components/text/titles"
 import { deleteProjectRecordTemplateFn } from "@/src/server/projectRecordTemplates/projectRecordTemplates.functions"
 import { projectRecordTemplatesQueryOptions } from "@/src/server/projectRecordTemplates/projectRecordTemplatesQueryOptions"
 import type { ProjectRecordTemplatesList } from "@/src/server/projectRecordTemplates/types"
@@ -61,7 +62,7 @@ export const AdminProjectRecordTemplatesTable = ({ templates }: Props) => {
                   {template.projects.length ? (
                     template.projects.map((project) => (
                       <AdminBadge key={project.id} variant="blue">
-                        {project.slug}
+                        {shortTitle(project.slug)}
                       </AdminBadge>
                     ))
                   ) : (

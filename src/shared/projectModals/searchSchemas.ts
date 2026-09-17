@@ -34,6 +34,7 @@ export const loggedInProjectModalSearchSchema = z
     modalUploadView: projectUploadModalViewSchema.optional(),
     modalProjectRecordId: z.coerce.number().int().positive().optional(),
     modalProjectRecordView: projectRecordModalViewSchema.optional(),
+    modalProjectSlug: z.string().optional(),
     modalContactId: z.coerce.number().int().positive().optional(),
     modalContactView: contactModalViewSchema.optional(),
     modalInviteView: inviteModalViewSchema.optional(),
@@ -71,3 +72,12 @@ export const loggedInProjectModalSearchSchema = z
   })
 
 export type LoggedInProjectModalSearch = z.infer<typeof loggedInProjectModalSearchSchema>
+
+const NO_PROJECT_MODAL_SEARCH = loggedInProjectModalSearchSchema.parse({})
+
+/** A search read across routes comes back as unvalidated strings, so the hosts parse it here. */
+export function parseProjectModalSearch(search: unknown): LoggedInProjectModalSearch {
+  const parsed = loggedInProjectModalSearchSchema.safeParse(search ?? {})
+
+  return parsed.success ? parsed.data : NO_PROJECT_MODAL_SEARCH
+}

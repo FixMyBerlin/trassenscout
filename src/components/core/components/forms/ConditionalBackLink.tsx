@@ -1,22 +1,10 @@
+import { internalFromPath } from "@/src/shared/routing/fromBackLinkSearch"
 import { BackLink } from "./BackLink"
 
 type Props = {
   /** The `from` search param value from URL, if present */
   fromPath?: string
   text?: string
-}
-
-/** Normalize `from` search values (pathname, full URL, or legacy relative paths) for RouterLink. */
-const normalizeFromPath = (fromPath: string) => {
-  if (fromPath.startsWith("http://") || fromPath.startsWith("https://")) {
-    try {
-      return new URL(fromPath).pathname
-    } catch {
-      return fromPath
-    }
-  }
-
-  return fromPath.startsWith("/") ? fromPath : `/${fromPath}`
 }
 
 /**
@@ -43,11 +31,11 @@ const getBackLinkText = (fromPath: string) => {
  * unless explicitly provided.
  */
 export const ConditionalBackLink = ({ fromPath, text }: Props) => {
-  if (!fromPath) {
+  const backTo = internalFromPath(fromPath)
+
+  if (!backTo) {
     return null
   }
-
-  const backTo = normalizeFromPath(fromPath)
 
   return <BackLink to={backTo} text={text ?? getBackLinkText(backTo)} />
 }

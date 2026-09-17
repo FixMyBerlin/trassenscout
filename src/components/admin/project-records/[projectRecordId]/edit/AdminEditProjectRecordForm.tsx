@@ -11,6 +11,7 @@ import {
   FORM_ERROR,
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
+import { shortTitle } from "@/src/components/core/components/text/titles"
 import { CreateEditReviewHistory } from "@/src/components/project-records/ProjectRecordCreateEditReviewHistory"
 import { ProjectRecordFormFields } from "@/src/components/project-records/ProjectRecordFormFields"
 import { ProjectRecordNeedsReviewBanner } from "@/src/components/project-records/ProjectRecordNeedsReviewBanner"
@@ -122,7 +123,7 @@ export const AdminEditProjectRecordForm = ({ projectRecordId }: Props) => {
         }
       >
         <p>
-          Projekt: <span className="font-medium uppercase">{projectSlug}</span>
+          Projekt: <span className="font-medium">{shortTitle(projectSlug)}</span>
         </p>
         <div className="space-y-6">
           <ProjectRecordFormFields

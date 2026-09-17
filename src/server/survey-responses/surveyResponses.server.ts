@@ -28,7 +28,6 @@ import {
   GetCreatedSurveyResponsesSchema,
   GetFeedbackSurveyResponsesSchema,
   GetGroupedSurveyResponsesSchema,
-  GetLinkedSurveyResponseForSubsubsectionSchema,
   GetSurveyResponseSchema,
   GetSurveyResponsesSchema,
   GetTestSurveyResponsesSchema,
@@ -268,7 +267,9 @@ export async function getSurveyResponses(
     include: {
       operator: true,
       surveyResponseComments: {
-        include: { author: { select: { id: true, firstName: true, lastName: true } } },
+        include: {
+          author: { select: { id: true, firstName: true, institution: true, lastName: true } },
+        },
         orderBy: { id: "asc" },
       },
       surveyResponseTags: true,
@@ -313,7 +314,9 @@ export async function getSurveyResponse(
     include: {
       operator: true,
       surveyResponseComments: {
-        include: { author: { select: { id: true, firstName: true, lastName: true } } },
+        include: {
+          author: { select: { id: true, firstName: true, institution: true, lastName: true } },
+        },
         orderBy: { id: "asc" },
       },
       surveyResponseTags: true,
@@ -494,6 +497,7 @@ export async function getFeedbackSurveyResponsesWithSurveyDataAndComments(
               id: true,
               role: true,
               firstName: true,
+              institution: true,
               lastName: true,
             },
           },
@@ -772,67 +776,4 @@ export async function deleteTestSurveyResponses(
   await endpointAuth.admin(headers)
 
   await deleteResponsesWithOrphanedRelations(input.deleteIds)
-}
-
-export type GetLinkedSurveyResponseForSubsubsectionInput = z.infer<
-  typeof GetLinkedSurveyResponseForSubsubsectionSchema
->
-
-export async function getLinkedSurveyResponseForSubsubsection(
-  headers: Headers,
-  input: GetLinkedSurveyResponseForSubsubsectionInput,
-) {
-  await endpointAuth.projectRole(headers, input.projectSlug, viewerRoles)
-
-  if (input.projectSlug !== "ohv") return null
-
-  const normalizedSubsubsectionSlug = input.subsubsectionSlug.toLowerCase()
-
-  const responses = await db.surveyResponse.findMany({
-    where: {
-      state: SurveyResponseStateEnum.SUBMITTED,
-      surveyPart: 2,
-      surveySession: {
-        survey: {
-          project: { slug: input.projectSlug },
-          slug: "ohv-haltestellenfoerderung",
-        },
-      },
-    },
-    select: {
-      id: true,
-      data: true,
-      surveySession: {
-        select: {
-          surveyId: true,
-          survey: {
-            select: {
-              slug: true,
-            },
-          },
-        },
-      },
-    },
-    orderBy: { id: "desc" },
-  })
-
-  for (const response of responses) {
-    try {
-      const data = JSON.parse(response.data) as { referenceId?: unknown }
-      if (
-        typeof data.referenceId === "string" &&
-        data.referenceId.toLowerCase() === normalizedSubsubsectionSlug
-      ) {
-        return {
-          surveyResponseId: response.id,
-          surveyId: response.surveySession.surveyId,
-          surveySlug: response.surveySession.survey.slug,
-        }
-      }
-    } catch {
-      // ignore invalid legacy JSON and keep scanning
-    }
-  }
-
-  return null
 }

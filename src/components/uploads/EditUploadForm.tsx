@@ -12,8 +12,11 @@ import {
   applyFormSubmitResult,
   FORM_ERROR,
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
-import { shortTitle } from "@/src/components/core/components/text/titles"
 import { formatFileSize } from "@/src/components/core/utils/formatFileSize"
+import {
+  formatAcquisitionAreaRelationOptionLabel,
+  formatSubsubsectionRelationOptionLabel,
+} from "@/src/components/project-records/ProjectRelationLinks"
 import { getM2MInitialValues } from "@/src/components/project-records/utils/getM2MInitialValues"
 import { TagsFormSection } from "@/src/components/tags/TagsFormSection"
 import { acquisitionAreasQueryOptions } from "@/src/server/acquisitionAreas/acquisitionAreasQueryOptions"
@@ -66,7 +69,7 @@ const UploadSubsectionFields = ({
     })
     .map((ss) => ({
       value: String(ss.id),
-      label: `${shortTitle(ss.slug)} (${shortTitle(ss.subsection.slug)})`,
+      label: formatSubsubsectionRelationOptionLabel(ss),
     }))
 
   const acquisitionAreaCheckboxItems = [...acquisitionAreas]
@@ -81,7 +84,7 @@ const UploadSubsectionFields = ({
     })
     .map((acquisitionArea) => ({
       value: String(acquisitionArea.id),
-      label: `${acquisitionArea.id} - Flurstücknr. ${acquisitionArea.parcel.alkisParcelId} (${shortTitle(acquisitionArea.subsubsection.slug)})`,
+      label: formatAcquisitionAreaRelationOptionLabel(acquisitionArea),
     }))
 
   return (

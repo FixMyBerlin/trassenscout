@@ -2,7 +2,6 @@ import { BrevoClient } from "@getbrevo/brevo"
 import { render } from "@react-email/render"
 import { footerTextMarkdown } from "@/emails/templats/footerTextMarkdown"
 import { MarkdownMail } from "@/emails/templats/MarkdownMail"
-import { signatureTextMarkdown } from "@/emails/templats/signatureTextMarkdown"
 import { isDev, isTest } from "@/src/components/core/utils/isEnv"
 import { guardedCreateSystemLogEntry } from "@/src/server/systemLogEntries/create/guardedCreateSystemLogEntry"
 import { formattedEmailAddress } from "./formattedEmailAddress"
@@ -14,8 +13,6 @@ import { Mail, MailMessage } from "./types"
  * Use this for emails triggered by API routes to avoid webpack bundling issues with preview-email.
  */
 export const sendMailWithoutPreview = async (message: Mail) => {
-  // Add standard signiture and footer to TextPart only
-  // (The HTMLPart puts this in separate layout groups.)
   const textPart = `
 ${message.introMarkdown}
 ${
@@ -28,8 +25,6 @@ ${message.ctaText}: ${message.ctaLink}
     : ""
 }
 ${message.outroMarkdown ? message.outroMarkdown : ""}
-
-${signatureTextMarkdown}
 
 ---
 ${footerTextMarkdown}

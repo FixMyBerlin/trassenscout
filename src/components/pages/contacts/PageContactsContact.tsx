@@ -9,10 +9,10 @@ import { BackLinkSection } from "@/src/components/core/components/forms/BackLink
 import { Link } from "@/src/components/core/components/links/Link"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
-import { getFullname } from "@/src/components/core/users/getFullname"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { contactQueryOptions } from "@/src/server/contacts/contactQueryOptions"
+import { getContactName } from "@/src/shared/contacts/getContactName"
 
 const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/contacts/$contactId/")
 
@@ -29,7 +29,7 @@ export function PageContactsContact() {
           <ProjectPageBreadcrumb
             section="Externe Kontakte"
             sectionTo="/$projectSlug/contacts"
-            current={`Kontakt von ${getFullname(contact)}`}
+            current={`Kontakt von ${getContactName(contact)}`}
           />
         }
       />
@@ -45,7 +45,7 @@ export function PageContactsContact() {
             <ContactDeleteActionBar
               contactId={contact.id}
               projectSlug={projectSlug}
-              contactTitle={getFullname(contact) || "Kontakt"}
+              contactTitle={getContactName(contact)}
               returnPath={`/${projectSlug}/contacts`}
             />
           }

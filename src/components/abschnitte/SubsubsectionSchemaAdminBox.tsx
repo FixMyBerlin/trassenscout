@@ -1,16 +1,17 @@
 import { useQuery } from "@tanstack/react-query"
 import { z } from "zod"
-import {
-  fieldDataTypes,
-  requiredFields,
-  subsubsectionFieldTranslations,
-} from "@/src/components/abschnitte/utils/subsubsectionFieldMappings"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
 import { quote } from "@/src/components/core/components/text/quote"
+import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { GeometryTypeEnum, LabelPositionEnum, LocationEnum } from "@/src/prisma/generated/browser"
 import { adminLookupRowsWithCountQueryOptions } from "@/src/server/adminLookupTables/adminLookupTablesQueryOptions"
 import { projectUsersQueryOptions } from "@/src/server/memberships/projectUsersQueryOptions"
 import { SubsubsectionBaseSchema } from "@/src/shared/subsubsections/schemas"
+import {
+  fieldDataTypes,
+  requiredFields,
+  subsubsectionFieldTranslations,
+} from "@/src/shared/subsubsections/subsubsectionFieldMappings"
 
 type Props = {
   projectSlug: string
@@ -86,11 +87,14 @@ export const SubsubsectionSchemaAdminBox = ({ projectSlug, className }: Props) =
               <div>
                 <strong>managerId (Project Users) - Relation:</strong>
                 <div className="ml-2">
-                  {users.map((user) => (
-                    <div key={user.id}>
-                      ID: {user.id} - {user.firstName} {user.lastName} ({user.email})
-                    </div>
-                  ))}
+                  {users.map((user) => {
+                    const userLabel = getFullnameWithInstitution(user)
+                    return (
+                      <div key={user.id}>
+                        ID: {user.id} - {userLabel ? `${userLabel} (${user.email})` : user.email}
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
 

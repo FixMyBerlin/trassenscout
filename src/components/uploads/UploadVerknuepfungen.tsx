@@ -1,30 +1,30 @@
 import { twJoin } from "tailwind-merge"
 import { Link } from "@/src/components/core/components/links/Link"
-import { shortTitle } from "@/src/components/core/components/text/titles"
 import { formatBerlinTime } from "@/src/components/core/utils/formatBerlinTime"
-import { useProjectRecordModal } from "@/src/components/project-records/ProjectRecordModalHost"
 import { ProjectRecordTagsList } from "@/src/components/project-records/ProjectRecordTagsList"
+import {
+  AcquisitionAreaRelationLink,
+  acquisitionAreaRelationKey,
+  type AcquisitionAreaRelation,
+  ProjectRecordRelationLink,
+  projectRecordRelationKey,
+  type ProjectRecordRelation,
+  SubsubsectionRelationLink,
+  subsubsectionRelationKey,
+  type SubsubsectionRelation,
+} from "@/src/components/project-records/ProjectRelationLinks"
 import {
   uploadAlignedLabelClassName,
   uploadAlignedRowClassName,
   uploadAlignedValueClassName,
 } from "@/src/components/uploads/uploadAlignedFieldStyles"
 
-type AcquisitionAreaLink = {
-  id: number
-  subsubsection: {
-    slug: string
-    subsection: { slug: string }
-  }
-  parcel: { alkisParcelId: string }
-}
-
 type Props = {
   projectSlug: string
   landAcquisitionModuleEnabled?: boolean
-  subsubsections: { slug: string; subsection: { slug: string } }[]
-  acquisitionAreas: AcquisitionAreaLink[]
-  projectRecords: { id: number; title: string; date: Date | null }[] | null
+  subsubsections: SubsubsectionRelation[]
+  acquisitionAreas: AcquisitionAreaRelation[]
+  projectRecords: ProjectRecordRelation[] | null
   projectRecordEmail: { createdAt: Date } | null
   surveyResponse: { id: number; surveySession: { survey: { id: number; slug: string } } } | null
   tags?: { id: number; title: string }[]
@@ -50,7 +50,6 @@ export const UploadVerknuepfungen = ({
   const hasProjectRecordEmail = projectRecordEmail !== null
   const hasSurveyResponse = surveyResponse !== null
   const hasTags = tags.length > 0
-  const projectRecordModal = useProjectRecordModal()
   const hasRelations =
     hasSubsubsection ||
     hasAcquisitionAreas ||
@@ -85,18 +84,12 @@ export const UploadVerknuepfungen = ({
             </p>
             <div className={`space-y-1 ${uploadAlignedValueClassName}`}>
               {subsubsections.map((subsub) => (
-                <Link
-                  key={`${subsub.subsection.slug}-${subsub.slug}`}
-                  to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug"
-                  params={{
-                    projectSlug,
-                    subsectionSlug: subsub.subsection.slug,
-                    subsubsectionSlug: subsub.slug,
-                  }}
+                <SubsubsectionRelationLink
+                  key={subsubsectionRelationKey(subsub)}
+                  projectSlug={projectSlug}
+                  subsubsection={subsub}
                   className="block w-fit"
-                >
-                  {shortTitle(subsub.slug)}
-                </Link>
+                />
               ))}
             </div>
           </div>
@@ -109,19 +102,12 @@ export const UploadVerknuepfungen = ({
             </p>
             <div className={`space-y-1 ${uploadAlignedValueClassName}`}>
               {sortedAcquisitionAreas.map((area) => (
-                <Link
-                  key={area.id}
-                  to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition"
-                  params={{
-                    projectSlug,
-                    subsectionSlug: area.subsubsection.subsection.slug,
-                    subsubsectionSlug: area.subsubsection.slug,
-                  }}
-                  search={{ acquisitionAreaId: String(area.id) }}
+                <AcquisitionAreaRelationLink
+                  key={acquisitionAreaRelationKey(area)}
+                  projectSlug={projectSlug}
+                  acquisitionArea={area}
                   className="block w-fit"
-                >
-                  {area.id} ({area.parcel.alkisParcelId})
-                </Link>
+                />
               ))}
             </div>
           </div>
@@ -168,35 +154,21 @@ export const UploadVerknuepfungen = ({
         <ul className="mt-1.5 list-none space-y-0.5 text-sm">
           {hasSubsubsection &&
             (subsubsections.length === 1 ? (
-              <li key={`${subsubsections[0]!.subsection.slug}-${subsubsections[0]!.slug}`}>
-                <strong className="font-medium">Maßnahme : </strong>
-                <Link
-                  to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug"
-                  params={{
-                    projectSlug,
-                    subsectionSlug: subsubsections[0]!.subsection.slug,
-                    subsubsectionSlug: subsubsections[0]!.slug,
-                  }}
-                >
-                  {shortTitle(subsubsections[0]!.slug)}
-                </Link>
+              <li key={subsubsectionRelationKey(subsubsections[0]!)}>
+                <strong className="font-medium">Maßnahme: </strong>
+                <SubsubsectionRelationLink
+                  projectSlug={projectSlug}
+                  subsubsection={subsubsections[0]!}
+                />
               </li>
             ) : (
-              <li className="flex flex-wrap items-baseline gap-x-2">
+              <li className="flex flex-wrap items-baseline gap-x-1">
                 <strong className="font-medium">Maßnahmen: </strong>
                 <ul className="mt-0.5 flex list-none flex-wrap gap-x-2 pl-0">
-                  {subsubsections.map((subsub) => (
-                    <li key={`${subsub.subsection.slug}-${subsub.slug}`}>
-                      <Link
-                        to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug"
-                        params={{
-                          projectSlug,
-                          subsectionSlug: subsub.subsection.slug,
-                          subsubsectionSlug: subsub.slug,
-                        }}
-                      >
-                        {shortTitle(subsub.slug)}
-                      </Link>
+                  {subsubsections.map((subsub, index) => (
+                    <li key={subsubsectionRelationKey(subsub)} className="inline-flex">
+                      <SubsubsectionRelationLink projectSlug={projectSlug} subsubsection={subsub} />
+                      {index < subsubsections.length - 1 ? <span>,</span> : null}
                     </li>
                   ))}
                 </ul>
@@ -204,38 +176,24 @@ export const UploadVerknuepfungen = ({
             ))}
           {hasAcquisitionAreas &&
             (sortedAcquisitionAreas.length === 1 ? (
-              <li key={sortedAcquisitionAreas[0]!.id}>
+              <li key={acquisitionAreaRelationKey(sortedAcquisitionAreas[0]!)}>
                 <strong className="font-medium">Verhandlungsfläche: </strong>
-                <Link
-                  to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition"
-                  params={{
-                    projectSlug,
-                    subsectionSlug: sortedAcquisitionAreas[0]!.subsubsection.subsection.slug,
-                    subsubsectionSlug: sortedAcquisitionAreas[0]!.subsubsection.slug,
-                  }}
-                  search={{ acquisitionAreaId: String(sortedAcquisitionAreas[0]!.id) }}
-                >
-                  {sortedAcquisitionAreas[0]!.id} ({sortedAcquisitionAreas[0]!.parcel.alkisParcelId}
-                  )
-                </Link>
+                <AcquisitionAreaRelationLink
+                  projectSlug={projectSlug}
+                  acquisitionArea={sortedAcquisitionAreas[0]!}
+                />
               </li>
             ) : (
-              <li className="flex flex-wrap items-baseline gap-x-2">
+              <li className="flex flex-wrap items-baseline gap-x-1">
                 <strong className="font-medium">Verhandlungsflächen: </strong>
                 <ul className="mt-0.5 flex list-none flex-wrap gap-x-2 pl-0">
-                  {sortedAcquisitionAreas.map((area) => (
-                    <li key={area.id}>
-                      <Link
-                        to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition"
-                        params={{
-                          projectSlug,
-                          subsectionSlug: area.subsubsection.subsection.slug,
-                          subsubsectionSlug: area.subsubsection.slug,
-                        }}
-                        search={{ acquisitionAreaId: String(area.id) }}
-                      >
-                        {area.id} ({area.parcel.alkisParcelId})
-                      </Link>
+                  {sortedAcquisitionAreas.map((area, index) => (
+                    <li key={acquisitionAreaRelationKey(area)} className="inline-flex">
+                      <AcquisitionAreaRelationLink
+                        projectSlug={projectSlug}
+                        acquisitionArea={area}
+                      />
+                      {index < sortedAcquisitionAreas.length - 1 ? <span>,</span> : null}
                     </li>
                   ))}
                 </ul>
@@ -246,29 +204,16 @@ export const UploadVerknuepfungen = ({
               {projectRecords!.length === 1 ? (
                 <>
                   <strong className="font-medium">Protokolleintrag: </strong>
-                  <Link
-                    to={projectRecordModal.getProjectRecordDetailHref({
-                      projectRecordId: projectRecords![0]!.id,
-                    })}
-                    resetScroll={false}
-                  >
-                    {projectRecords![0]!.title}
-                  </Link>
+                  <ProjectRecordRelationLink projectRecord={projectRecords![0]!} />
                 </>
               ) : (
                 <>
                   <strong className="font-medium">Protokolleinträge: </strong>
-                  <ul className="mt-0.5 list-inside list-disc space-y-0.5 pl-2">
-                    {projectRecords!.map((record) => (
-                      <li key={record.id}>
-                        <Link
-                          to={projectRecordModal.getProjectRecordDetailHref({
-                            projectRecordId: record.id,
-                          })}
-                          resetScroll={false}
-                        >
-                          {record.title}
-                        </Link>
+                  <ul className="mt-0.5 flex list-none flex-wrap gap-x-2 pl-0">
+                    {projectRecords!.map((record, index) => (
+                      <li key={projectRecordRelationKey(record)} className="inline-flex">
+                        <ProjectRecordRelationLink projectRecord={record} />
+                        {index < projectRecords!.length - 1 ? <span>,</span> : null}
                       </li>
                     ))}
                   </ul>

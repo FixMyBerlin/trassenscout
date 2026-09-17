@@ -1,5 +1,4 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { getRouteApi } from "@tanstack/react-router"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { CommentField } from "@/src/components/surveys/[surveyId]/responses/comments/CommentField"
@@ -16,16 +15,14 @@ import {
 } from "@/src/server/projectRecords/projectRecordsQueryOptions"
 import type { ProjectRecord } from "@/src/server/projectRecords/types"
 
-const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
-
 type Props = {
-  projectRecord: Pick<ProjectRecord, "id" | "projectRecordComments">
+  projectRecord: Pick<ProjectRecord, "id" | "project" | "projectRecordComments">
 }
 
 export const ProjectRecordCommentsSection = ({ projectRecord }: Props) => {
-  const { projectSlug } = loggedInProjectRouteApi.useParams()
+  const projectSlug = projectRecord.project.slug
   const queryClient = useQueryClient()
-  const userCanComment = useUserCan().view
+  const userCanComment = useUserCan(projectSlug).view
   const createProjectRecordCommentMutation = useMutation({
     mutationFn: createProjectRecordCommentFn,
   })
@@ -56,14 +53,17 @@ export const ProjectRecordCommentsSection = ({ projectRecord }: Props) => {
     <>
       {(hasComments || userCanComment) && (
         <div className={pageContentPaddingClassName}>
-          <h4 className="mb-3 font-semibold">Kommentare</h4>
+          <h4 className="font-semibold">Anmerkungen</h4>
+          <p className="mt-1 mb-3 text-sm text-gray-500">
+            Hier können Sie eine Anmerkung zum Protokolleintrag hinzufügen.
+          </p>
           <ul className="flex max-w-3xl flex-col gap-4">
             {projectRecord.projectRecordComments?.map((comment) => {
               return (
                 <li key={comment.id}>
                   <CommentField
                     comment={comment}
-                    commentLabel="Kommentar"
+                    commentLabel="Anmerkung"
                     mutateComment={{
                       update: async (body) => {
                         await updateProjectRecordCommentMutation.mutateAsync({
@@ -92,8 +92,7 @@ export const ProjectRecordCommentsSection = ({ projectRecord }: Props) => {
             {userCanComment && (
               <li>
                 <NewCommentForm
-                  commentLabel="Kommentar"
-                  commentHelp="Hier können Sie einen Kommentar zum Protokolleintrag hinzufügen."
+                  commentLabel="Anmerkung"
                   createComment={async (body) => {
                     await createProjectRecordCommentMutation.mutateAsync({
                       data: {

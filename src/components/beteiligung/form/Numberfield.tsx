@@ -13,6 +13,7 @@ type NumberfieldProps = {
   description?: string
   required: boolean
   label: string
+  unit?: "EUR"
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, "type" | "value" | "onChange">
 
 export const SurveyNumberfield = ({
@@ -20,6 +21,7 @@ export const SurveyNumberfield = ({
   label,
   placeholder,
   required,
+  unit,
   ...props
 }: NumberfieldProps) => {
   const field = useFieldContext<number | null>()
@@ -57,6 +59,7 @@ export const SurveyNumberfield = ({
             field.handleChange(value === "" ? null : Number(value))
           }}
           placeholder={placeholder}
+          aria-label={unit ? `${label} in ${unit}` : undefined}
           className={`block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-600 shadow-xs sm:text-sm ${formClasses.fieldFocus}`}
           {...getFieldA11yProps({ description, fieldName: field.name, hasError, required })}
           {...props}

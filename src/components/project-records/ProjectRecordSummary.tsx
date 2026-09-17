@@ -1,5 +1,8 @@
+import { DocumentTextIcon } from "@heroicons/react/24/outline"
 import { format } from "date-fns"
 import { de } from "date-fns/locale"
+import type { ReactNode } from "react"
+import { twJoin } from "tailwind-merge"
 import { Link } from "@/src/components/core/components/links/Link"
 import { Markdown } from "@/src/components/core/components/Markdown/Markdown"
 import { ProjectRecordAssignmentForm } from "@/src/components/project-records/ProjectRecordAssignmentForm"
@@ -17,7 +20,8 @@ type Props = {
   projectRecord: ProjectRecord & {
     projectRecordEmail?: ProjectRecordEmailSourceValue | null
   }
-  onFormSaved?: () => void
+  /** Rendered under "Dokumente", so this view keeps the reading order of the form. */
+  uploadsSection?: ReactNode
 }
 export const metadataItemClassName = "flex flex-wrap items-center gap-3 text-sm text-gray-600"
 export const projectRecordSectionClassName =
@@ -25,8 +29,9 @@ export const projectRecordSectionClassName =
 export const projectRecordSectionLabelClassName = "text-sm font-medium text-gray-700"
 export const projectRecordSectionValueClassName = "text-sm text-gray-700"
 
-export const ProjectRecordSummary = ({ projectRecord, onFormSaved }: Props) => {
+export const ProjectRecordSummary = ({ projectRecord, uploadsSection }: Props) => {
   const projectSlug = projectRecord.project.slug
+  const landAcquisitionModuleEnabled = projectRecord.project.landAcquisitionModuleEnabled
   const formTemplates = getEffectiveFormTemplates(projectRecord, {
     projectSlug,
     hasSubsubsection:
@@ -35,20 +40,18 @@ export const ProjectRecordSummary = ({ projectRecord, onFormSaved }: Props) => {
       projectRecord.acquisitionAreas.length > 0 || Boolean(projectRecord.acquisitionArea),
   })
 
+  const attachedFormTemplates = getEffectiveFormTemplates(projectRecord, {
+    projectSlug,
+    hasSubsubsection: true,
+    hasAcquisitionArea: landAcquisitionModuleEnabled,
+  })
+
   return (
     <div className="my-6 space-y-6">
-      <div className="flex flex-wrap items-center gap-x-10 gap-y-3">
-        <div className={metadataItemClassName}>
-          <span className={projectRecordSectionLabelClassName}>Am/bis:</span>
-          <span className="text-gray-600">
-            {format(new Date(projectRecord.date!), "P", { locale: de })}
-          </span>
-        </div>
-      </div>
+      <ProjectRecordAssignmentForm key={projectRecord.id} projectRecord={projectRecord} />
 
       {projectRecord.body && (
         <section className="rounded-md bg-blue-50 p-4">
-          <h2 className="mb-4 text-sm font-semibold text-gray-800">Zusammenfassung</h2>
           <Markdown
             className="prose prose-sm max-w-none text-gray-700 prose-p:my-2 prose-p:text-sm prose-ol:my-2 prose-ol:pl-4 prose-ol:leading-tight prose-ul:my-2 prose-ul:list-disc prose-ul:pl-4 prose-ul:leading-tight"
             markdown={projectRecord.body}
@@ -64,45 +67,25 @@ export const ProjectRecordSummary = ({ projectRecord, onFormSaved }: Props) => {
       )}
 
       <div className={projectRecordSectionClassName}>
-        <p className={projectRecordSectionLabelClassName}>Eintrag:</p>
-        {projectRecord.subsubsections.length > 0 || projectRecord.subsubsection ? (
-          <ProjectRecordVerknuepfungen
-            projectSlug={projectSlug}
-            landAcquisitionModuleEnabled={projectRecord.project.landAcquisitionModuleEnabled}
-            subsubsection={projectRecord.subsubsection}
-            subsubsections={projectRecord.subsubsections}
-            variant="valuesOnly"
-            relationType="subsubsections"
-            className={projectRecordSectionValueClassName}
-          />
-        ) : (
-          <span className="text-sm text-gray-500">Kein Eintrag zugeordnet</span>
-        )}
+        <p className={projectRecordSectionLabelClassName}>Am/bis:</p>
+        <p className={projectRecordSectionValueClassName}>
+          {format(new Date(projectRecord.date!), "P", { locale: de })}
+        </p>
       </div>
 
-      {(projectRecord.acquisitionAreas.length > 0 || projectRecord.acquisitionArea) &&
-        projectRecord.project.landAcquisitionModuleEnabled && (
-          <div className={projectRecordSectionClassName}>
-            <p className={projectRecordSectionLabelClassName}>
-              {(projectRecord.acquisitionAreas.length > 0
-                ? projectRecord.acquisitionAreas.length
-                : projectRecord.acquisitionArea
-                  ? 1
-                  : 0) === 1
-                ? "Verhandlungsfläche:"
-                : "Verhandlungsflächen:"}
-            </p>
-            <ProjectRecordVerknuepfungen
-              projectSlug={projectSlug}
-              landAcquisitionModuleEnabled={projectRecord.project.landAcquisitionModuleEnabled}
-              acquisitionArea={projectRecord.acquisitionArea}
-              acquisitionAreas={projectRecord.acquisitionAreas}
-              variant="valuesOnly"
-              relationType="acquisitionAreas"
-              className={projectRecordSectionValueClassName}
-            />
-          </div>
-        )}
+      {/* One row for both relation types, rendered by the same component the list uses. */}
+      <div className={projectRecordSectionClassName}>
+        <p className={projectRecordSectionLabelClassName}>Verknüpfungen:</p>
+        <ProjectRecordVerknuepfungen
+          projectSlug={projectSlug}
+          landAcquisitionModuleEnabled={projectRecord.project.landAcquisitionModuleEnabled}
+          subsubsection={projectRecord.subsubsection}
+          subsubsections={projectRecord.subsubsections}
+          acquisitionArea={projectRecord.acquisitionArea}
+          acquisitionAreas={projectRecord.acquisitionAreas}
+          className={twJoin(projectRecordSectionValueClassName, "[&>ul]:mt-0")}
+        />
+      </div>
 
       <div className={projectRecordSectionClassName}>
         <p className={projectRecordSectionLabelClassName}>Tags:</p>
@@ -125,23 +108,36 @@ export const ProjectRecordSummary = ({ projectRecord, onFormSaved }: Props) => {
         )}
       </div>
 
-      <ProjectRecordAssignmentForm key={projectRecord.id} projectRecord={projectRecord} />
-
-      {formTemplates.length > 0 && (
-        <div className={projectRecordSectionClassName}>
-          <p className={projectRecordSectionLabelClassName}>Formulare:</p>
-          <ProjectRecordFormTemplatesSection
-            projectSlug={projectSlug}
-            projectRecord={projectRecord}
-            formTemplates={formTemplates}
-            onUploadSaved={onFormSaved}
-          />
-        </div>
-      )}
-
       <div>
         <p className={projectRecordSectionLabelClassName}>Dokumente:</p>
+        {uploadsSection}
       </div>
+
+      {attachedFormTemplates.length > 0 && (
+        <div className={projectRecordSectionClassName}>
+          <p className={projectRecordSectionLabelClassName}>Formulare:</p>
+          {formTemplates.length === 0 ? (
+            <div className="flex flex-col gap-1 text-sm">
+              {attachedFormTemplates.map((formTemplate) => (
+                <p key={formTemplate.id} className="flex items-center gap-1 text-gray-500">
+                  <DocumentTextIcon className="size-4 shrink-0" aria-hidden />
+                  {formTemplate.title}
+                </p>
+              ))}
+              <p className="text-sm text-gray-500">
+                Zum Ausfüllen muss der Eintrag mit einer Maßnahme
+                {landAcquisitionModuleEnabled ? " oder Verhandlungsfläche" : ""} verknüpft sein.
+              </p>
+            </div>
+          ) : (
+            <ProjectRecordFormTemplatesSection
+              projectSlug={projectSlug}
+              projectRecord={projectRecord}
+              formTemplates={formTemplates}
+            />
+          )}
+        </div>
+      )}
     </div>
   )
 }

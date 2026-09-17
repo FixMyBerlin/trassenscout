@@ -2,11 +2,13 @@ import { getLabelPosition } from "@/src/components/core/components/Map/utils/get
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import db from "@/src/server/db.server"
 import { typeSubsectionGeometry } from "@/src/server/subsections/utils/typeSubsectionGeometry"
+import { isRenderableEntry } from "@/src/shared/geometry/brokenGeometryItems"
 
 export async function getProjectsWithGeometryWithMembershipRole(headers: Headers) {
   const session = await endpointAuth.session(headers)
 
   const projectsWithGeometryWithMembershipRole = await db.project.findMany({
+    orderBy: { slug: "asc" },
     // Note: We don't have a "ADMIN" sees all here, because that would fill the Dashboard with a map of all projects
     where: { memberships: { some: { userId: Number(session.userId) } } },
     select: {
@@ -29,10 +31,16 @@ export async function getProjectsWithGeometryWithMembershipRole(headers: Headers
   })
 
   return projectsWithGeometryWithMembershipRole.map((project) => {
+    // Same gate the pages use: a project whose first subsection has unusable geodata simply gets
+    // no map marker, instead of one bad row failing the whole dashboard.
     const firstSubsection = project.subsections[0]
-    const previewPoint = firstSubsection
-      ? getLabelPosition(typeSubsectionGeometry(firstSubsection).geometry, firstSubsection.labelPos)
-      : null
+    const previewPoint =
+      firstSubsection && isRenderableEntry(firstSubsection)
+        ? getLabelPosition(
+            typeSubsectionGeometry(firstSubsection).geometry,
+            firstSubsection.labelPos,
+          )
+        : null
 
     const { subsections: _subsections, _count, ...rest } = project
 

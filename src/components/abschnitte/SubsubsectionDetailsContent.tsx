@@ -23,17 +23,20 @@ import {
 import { H2 } from "@/src/components/core/components/text/Headings"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
-import { getFullname } from "@/src/components/core/users/getFullname"
+import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { subsubsectionLocationLabelMap } from "@/src/components/core/utils/subsubsectionLocationLabelMap"
 import { ProjectRecordNewModal } from "@/src/components/project-records/ProjectRecordNewModal"
 import { ProjectRecordsTable } from "@/src/components/project-records/ProjectRecordTable"
+import {
+  AcquisitionAreaRelationLink,
+  formatAcquisitionAreaRelationLinkText,
+} from "@/src/components/project-records/ProjectRelationLinks"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { ProjectUploadDropzone } from "@/src/components/uploads/ProjectUploadDropzone"
 import { UploadTable } from "@/src/components/uploads/UploadTable"
 import { acquisitionAreasWithProjectRecordCountQueryOptions } from "@/src/server/acquisitionAreas/acquisitionAreasAbschnitteQueryOptions"
 import { projectRecordsBySubsubsectionQueryOptions } from "@/src/server/projectRecords/projectRecordsAbschnitteQueryOptions"
 import type { SubsubsectionWithPosition } from "@/src/server/subsubsections/types"
-import { linkedSurveyResponseForSubsubsectionQueryOptions } from "@/src/server/survey-responses/surveyResponsesQueryOptions"
 import { uploadsWithSubsectionsQueryOptions } from "@/src/server/uploads/uploadsWithSubsectionsQueryOptions"
 import {
   parseDefinitions,
@@ -112,19 +115,6 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
   )
   const acquisitionAreasWithProjectRecords = acquisitionAreaProjectRecordCounts.filter(
     (acquisitionArea) => acquisitionArea.projectRecordCount > 0,
-  )
-
-  const subsubsectionParams = {
-    projectSlug,
-    subsectionSlug: subsectionSlug!,
-    subsubsectionSlug: subsubsectionSlug!,
-  }
-
-  const { data: linkedSurveyResponse } = useQuery(
-    linkedSurveyResponseForSubsubsectionQueryOptions({
-      projectSlug,
-      subsubsectionSlug: subsubsection.slug,
-    }),
   )
 
   return (
@@ -281,7 +271,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
                         Ansprechpartner:in
                       </th>
                       <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
-                        {getFullname(subsubsection.manager)}
+                        {getFullnameWithInstitution(subsubsection.manager)}
                       </td>
                     </tr>
                   )}
@@ -313,16 +303,14 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
       <section className="mt-6 space-y-3">
         <div className="flex items-center justify-between gap-3">
           <H2 className="text-lg font-semibold text-gray-700 sm:text-lg">Protokolleinträge</H2>
-          <IfUserCanEdit>
-            <button
-              type="button"
-              onClick={() => setIsProjectRecordModalOpen(true)}
-              className={twJoin("inline-flex cursor-pointer items-center gap-1", linkStyles)}
-            >
-              {linkIcons.plus}
-              Neuer Protokolleintrag
-            </button>
-          </IfUserCanEdit>
+          <button
+            type="button"
+            onClick={() => setIsProjectRecordModalOpen(true)}
+            className={twJoin("inline-flex cursor-pointer items-center gap-1", linkStyles)}
+          >
+            {linkIcons.plus}
+            Neuer Protokolleintrag
+          </button>
         </div>
         <div className="space-y-3">
           {showSuccess && (
@@ -346,18 +334,28 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
                 In untergeordneten Verhandlungsflächen gibt es zusätzliche Protokolleinträge:
               </p>
               <ul className="mt-2 list-inside list-disc space-y-1">
-                {acquisitionAreasWithProjectRecords.map((acquisitionArea) => (
-                  <li key={acquisitionArea.id}>
-                    <Link
-                      to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition"
-                      params={subsubsectionParams}
-                      search={{ acquisitionAreaId: String(acquisitionArea.id) }}
-                    >
-                      Verhandlungsfläche #{acquisitionArea.id} ({acquisitionArea.projectRecordCount}{" "}
-                      Protokolleinträge)
-                    </Link>
-                  </li>
-                ))}
+                {acquisitionAreasWithProjectRecords.map((acquisitionArea) => {
+                  const acquisitionAreaRelation = {
+                    id: acquisitionArea.id,
+                    parcel: acquisitionArea.parcel,
+                    subsubsection: {
+                      slug: subsubsectionSlug!,
+                      subsection: { slug: subsectionSlug! },
+                    },
+                  }
+
+                  return (
+                    <li key={acquisitionArea.id}>
+                      <AcquisitionAreaRelationLink
+                        projectSlug={projectSlug}
+                        acquisitionArea={acquisitionAreaRelation}
+                      >
+                        {formatAcquisitionAreaRelationLinkText(acquisitionAreaRelation)} (
+                        {acquisitionArea.projectRecordCount} Protokolleinträge)
+                      </AcquisitionAreaRelationLink>
+                    </li>
+                  )
+                })}
               </ul>
             </div>
           )}
@@ -385,19 +383,6 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
 
       <section className="mt-10 space-y-3">
         <H2 className="text-lg font-semibold text-gray-700 sm:text-lg">Dokumente</H2>
-        {linkedSurveyResponse && (
-          <div className="rounded-md border border-gray-200 bg-gray-50 p-4 text-sm text-gray-700">
-            <p>Diese Maßnahme wurde aus folgender Eingabe erstellt:</p>
-            <p className="mt-1">
-              <Link
-                to={`/${projectSlug}/surveys/${linkedSurveyResponse.surveyId}/responses?responseDetails=${linkedSurveyResponse.surveyResponseId}`}
-              >
-                Eingabe mit der ID {linkedSurveyResponse.surveyResponseId} - Formular{" "}
-                {linkedSurveyResponse.surveySlug}
-              </Link>
-            </p>
-          </div>
-        )}
         <div className="flex flex-col gap-2">
           <UploadTable
             projectSlug={projectSlug}

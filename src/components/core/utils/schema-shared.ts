@@ -29,3 +29,9 @@ export const NumberArraySchema = z
   .array(z.coerce.number())
   .transform((arr) => arr.filter((n) => !isNaN(n)))
   .catch([])
+
+export const blankToNull = (val: unknown) => {
+  if (typeof val !== "string") return val ?? null
+  return val.trim() || null
+}
+export const InputStringOrNullSchema = z.preprocess(blankToNull, z.string().nullable())

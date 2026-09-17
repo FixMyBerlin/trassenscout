@@ -2,7 +2,7 @@ import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/16/solid"
 import { ChatBubbleBottomCenterTextIcon } from "@heroicons/react/24/outline"
 import { useMutation } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { twJoin } from "tailwind-merge"
 import { backendConfig as defaultBackendConfig } from "@/src/components/beteiligung/shared/backend-types"
 import { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
@@ -67,6 +67,14 @@ const EditableSurveyResponseListItem = ({
     mutationFn: deleteSurveyResponseCommentFn,
   })
   const open = !isAccordion ? true : parseInt(String(responseDetails)) === response.id
+
+  const articleRef = useRef<HTMLElement>(null)
+  const openedFromLinkRef = useRef(open && isAccordion)
+
+  useEffect(function scrollLinkedResponseIntoView() {
+    if (!openedFromLinkRef.current) return
+    articleRef.current?.scrollIntoView({ block: "start", behavior: "smooth" })
+  }, [])
   const surveySlug = response.surveySession.survey.slug as AllowedSurveySlugs
 
   const metaDefinition = getConfigBySurveySlug(surveySlug, "meta")
@@ -101,6 +109,7 @@ const EditableSurveyResponseListItem = ({
 
   const userTextPreview = response.data[text1Id] || response.data[text2Id]
   const commentLabel = labels.comment?.sg || defaultBackendConfig.labels.comment.sg
+  const commentLabelPlural = labels.comment?.pl || defaultBackendConfig.labels.comment.pl
   const commentHelp = labels.comment?.help || defaultBackendConfig.labels.comment.help
   const responseTags = topics.filter((topic) => response.surveyResponseTags.includes(topic.id))
   const handleHeaderKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
@@ -117,7 +126,7 @@ const EditableSurveyResponseListItem = ({
   }
 
   return (
-    <article data-open={open} className="bg-white">
+    <article ref={articleRef} data-open={open} className="bg-white">
       <div
         role={isAccordion ? "button" : undefined}
         tabIndex={isAccordion ? 0 : undefined}
@@ -195,7 +204,8 @@ const EditableSurveyResponseListItem = ({
             refetchResponsesAndTopics={refetchResponsesAndTopics}
           />
           <div>
-            <h4 className="mb-3 font-semibold">{commentLabel}</h4>
+            <h4 className="font-semibold">{commentLabelPlural}</h4>
+            <p className="mt-1 mb-3 text-sm text-gray-500">{commentHelp}</p>
             <ul className="flex max-w-3xl flex-col gap-4">
               {response.surveyResponseComments?.map((comment) => {
                 return (
@@ -231,7 +241,6 @@ const EditableSurveyResponseListItem = ({
               <li>
                 <NewCommentForm
                   commentLabel={commentLabel}
-                  commentHelp={commentHelp}
                   createComment={async (body) => {
                     await createSurveyResponseCommentMutation.mutateAsync({
                       data: {

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 import {
   convertBlanksToPlaceholders,
+  findUnusablePlaceholders,
   parseFieldDefinitions,
   resolveFormTemplateFields,
   sanitizeFieldsForSave,
@@ -113,5 +114,18 @@ describe("field names match the placeholder syntax", () => {
 
   it("still rejects a name the placeholder parser would never produce", () => {
     expect(parseFieldDefinitions([{ name: "mit-strich", label: "X", type: "text" }])).toEqual([])
+  })
+})
+
+describe("findUnusablePlaceholders", () => {
+  it("reports only what cannot become a field", () => {
+    expect(
+      findUnusablePlaceholders("{{ort}} {{Zuwendungsempfänger}} {{ort-1}} {{mit punkt.}} {{}}"),
+    ).toEqual(["ort-1", "mit punkt."])
+  })
+
+  it("reports nothing without placeholders", () => {
+    expect(findUnusablePlaceholders("Nur Text")).toEqual([])
+    expect(findUnusablePlaceholders(null)).toEqual([])
   })
 })

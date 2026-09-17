@@ -11,10 +11,16 @@ export const checkmarkListboxOptionClassName =
   "group relative cursor-pointer py-2 pr-4 pl-8 text-gray-900 select-none data-disabled:cursor-not-allowed data-focus:bg-blue-600 data-focus:text-white data-focus:outline-hidden"
 
 /** Label + left checkmark children for {@link checkmarkListboxOptionClassName} options. */
-export function CheckmarkListboxOptionLabel({ children }: { children: ReactNode }) {
+export function CheckmarkListboxOptionLabel({
+  children,
+  title,
+}: {
+  children: ReactNode
+  title?: string
+}) {
   return (
     <>
-      <span className="block truncate font-normal group-data-selected:font-semibold">
+      <span className="block truncate font-normal group-data-selected:font-semibold" title={title}>
         {children}
       </span>
       <span
@@ -38,10 +44,12 @@ const classicListboxOptionClassName =
   "group relative cursor-pointer py-2 pr-9 pl-3 text-gray-900 select-none data-disabled:cursor-not-allowed data-focus:bg-blue-600 data-focus:text-white"
 
 /** Label + right checkmark children for {@link classicListboxOptionClassName} options. */
-function ClassicListboxOptionLabel({ children }: { children: ReactNode }) {
+function ClassicListboxOptionLabel({ children, title }: { children: ReactNode; title?: string }) {
   return (
     <>
-      <span className="block truncate group-data-selected:font-semibold">{children}</span>
+      <span className="block truncate group-data-selected:font-semibold" title={title}>
+        {children}
+      </span>
       <span className="absolute inset-y-0 right-0 flex items-center pr-4 text-blue-600 group-data-focus:text-white">
         <CheckIcon className="invisible size-5 group-data-selected:visible" aria-hidden="true" />
       </span>
@@ -58,10 +66,18 @@ export function listboxOptionClassName(ui: ListboxOptionUi, extra?: string) {
   )
 }
 
-export function ListboxOptionLabel({ ui, children }: { ui: ListboxOptionUi; children: ReactNode }) {
+export function ListboxOptionLabel({
+  ui,
+  children,
+  title,
+}: {
+  ui: ListboxOptionUi
+  children: ReactNode
+  title?: string
+}) {
   return ui === "checkmark" ? (
-    <CheckmarkListboxOptionLabel>{children}</CheckmarkListboxOptionLabel>
+    <CheckmarkListboxOptionLabel title={title}>{children}</CheckmarkListboxOptionLabel>
   ) : (
-    <ClassicListboxOptionLabel>{children}</ClassicListboxOptionLabel>
+    <ClassicListboxOptionLabel title={title}>{children}</ClassicListboxOptionLabel>
   )
 }

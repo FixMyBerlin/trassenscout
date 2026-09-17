@@ -38,9 +38,21 @@ const MdH6 = (props: any) => (
     <strong {...props} />
   </p>
 )
-const MdA = (props: any) => (
-  <Link className="block max-w-[40ch] truncate" blank to={props.href} {...props} />
-)
+const MdA = ({ href, children, ...props }: any) => {
+  const linkText = Array.isArray(children) ? children.join("") : children
+  const isBareUrl = typeof linkText === "string" && linkText === href
+
+  return (
+    <Link
+      className={isBareUrl ? "block max-w-[40ch] truncate" : undefined}
+      blank
+      to={href}
+      {...props}
+    >
+      {children}
+    </Link>
+  )
+}
 
 const components = {
   h1: MdH1,

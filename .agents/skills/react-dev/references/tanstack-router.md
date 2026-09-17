@@ -2,7 +2,7 @@
 
 **Canonical copy:** skill `tanstack-router-conventions` → [router-typescript.md](../../tanstack-router-conventions/references/router-typescript.md).
 
-**Routing behavior** (loaders, React Query, `validateSearch`, pretty search URLs) → `tanstack-router-conventions`.
+**Routing behavior** (loaders, React Query, `validateSearch`, pretty search URLs) → `tanstack-router-conventions`.  
 **Start-only** (SSR, server functions, API routes) → `tanstack-start-conventions`.
 
 Docs: [TanStack Router](https://tanstack.com/router/latest/docs/framework/react/overview) · [llms.txt](https://tanstack.com/llms.txt)

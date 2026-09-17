@@ -5,9 +5,15 @@ import { useState, type ReactElement } from "react"
 import { twJoin } from "tailwind-merge"
 import { ActionBar } from "@/src/components/core/components/forms/ActionBar"
 import { DeleteActionBar } from "@/src/components/core/components/forms/DeleteActionBar"
-import { Link } from "@/src/components/core/components/links/Link"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
-import { shortTitle } from "@/src/components/core/components/text/titles"
+import {
+  AcquisitionAreaRelationLink,
+  acquisitionAreaRelationKey,
+  ProjectRecordRelationLink,
+  projectRecordRelationKey,
+  SubsubsectionRelationLink,
+  subsubsectionRelationKey,
+} from "@/src/components/project-records/ProjectRelationLinks"
 import { UploadPreviewClickable } from "@/src/components/uploads/UploadPreviewClickable"
 import { ProjectRecordReviewState } from "@/src/prisma/generated/browser"
 import { deleteProjectRecordWithUploadsDecisionFn } from "@/src/server/projectRecords/projectRecords.functions"
@@ -100,24 +106,37 @@ export const DeleteProjectRecordWithUploadsClient = ({ deleteInfo, projectSlug }
   const renderProtectionReasons = (upload: DeleteInfo["uploads"][0]) => {
     const reasons: ReactElement[] = []
 
-    if (upload.displayData?.subsubsections && upload.displayData.subsubsections.length > 0) {
-      for (const subsubsection of upload.displayData.subsubsections) {
-        reasons.push(
-          <span key={`subsubsection-${subsubsection.id}`}>
-            Maßnahme :{" "}
-            <Link
-              to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug"
-              params={{
-                projectSlug,
-                subsectionSlug: subsubsection.subsectionSlug,
-                subsubsectionSlug: subsubsection.slug,
-              }}
-            >
-              {shortTitle(subsubsection.slug)}
-            </Link>
-          </span>,
-        )
-      }
+    const linkedSubsubsections = upload.displayData?.subsubsections ?? []
+    if (linkedSubsubsections.length > 0) {
+      reasons.push(
+        <span key="subsubsections">
+          {linkedSubsubsections.length === 1 ? "Maßnahme: " : "Maßnahmen: "}
+          {linkedSubsubsections.map((subsubsection, index) => (
+            <span key={subsubsectionRelationKey(subsubsection)}>
+              {index > 0 ? ", " : null}
+              <SubsubsectionRelationLink projectSlug={projectSlug} subsubsection={subsubsection} />
+            </span>
+          ))}
+        </span>,
+      )
+    }
+
+    const linkedAcquisitionAreas = upload.displayData?.acquisitionAreas ?? []
+    if (linkedAcquisitionAreas.length > 0) {
+      reasons.push(
+        <span key="acquisitionAreas">
+          {linkedAcquisitionAreas.length === 1 ? "Verhandlungsfläche: " : "Verhandlungsflächen: "}
+          {linkedAcquisitionAreas.map((acquisitionArea, index) => (
+            <span key={acquisitionAreaRelationKey(acquisitionArea)}>
+              {index > 0 ? ", " : null}
+              <AcquisitionAreaRelationLink
+                projectSlug={projectSlug}
+                acquisitionArea={acquisitionArea}
+              />
+            </span>
+          ))}
+        </span>,
+      )
     }
 
     if (
@@ -126,17 +145,13 @@ export const DeleteProjectRecordWithUploadsClient = ({ deleteInfo, projectSlug }
     ) {
       reasons.push(
         <span key="otherProjectRecords">
-          Protokolleinträge:{" "}
+          {upload.displayData.otherProjectRecords.length === 1
+            ? "Protokolleintrag: "
+            : "Protokolleinträge: "}
           {upload.displayData.otherProjectRecords.map((pr, idx) => (
-            <span key={pr.id}>
+            <span key={projectRecordRelationKey(pr)}>
               {idx > 0 && ", "}
-              <Link
-                to="/$projectSlug/project-records/$projectRecordId"
-                params={{ projectSlug, projectRecordId: String(pr.id) }}
-                resetScroll={false}
-              >
-                {pr.title}
-              </Link>
+              <ProjectRecordRelationLink projectRecord={pr} />
             </span>
           ))}
         </span>,

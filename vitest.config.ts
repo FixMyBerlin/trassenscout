@@ -1,7 +1,7 @@
 import { fileURLToPath } from "node:url"
 import react from "@vitejs/plugin-react"
 import { loadEnv } from "vite"
-import { defineConfig } from "vitest/config"
+import { configDefaults, defineConfig } from "vitest/config"
 
 const repoRootPath = fileURLToPath(new URL(".", import.meta.url))
 const testEnv = loadEnv("test", repoRootPath, "")
@@ -23,6 +23,7 @@ export default defineConfig({
     globals: true,
     setupFiles: "./tests/setup.ts",
     include: ["**/*.test.ts", "**/*.test.tsx"],
+    exclude: [...configDefaults.exclude, "**/.claude/**", "**/.agents/**"],
     coverage: {
       reporter: ["text", "json", "html"],
     },

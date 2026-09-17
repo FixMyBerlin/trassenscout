@@ -1,5 +1,4 @@
 import { ArrowUpRightIcon, EnvelopeIcon } from "@heroicons/react/20/solid"
-import { ArrowsPointingOutIcon } from "@heroicons/react/24/outline"
 import { getRouteApi } from "@tanstack/react-router"
 import { center } from "@turf/turf"
 import { LngLatBoundsLike, MapProvider } from "react-map-gl/maplibre"
@@ -203,10 +202,8 @@ const EditableSurveyResponseMapAndStaticData = ({ response, showMap, categoryLab
                     responseDetails: response.id,
                     selectedResponses: [response.id],
                   })}
-                  className="flex items-center gap-2"
                 >
-                  <ArrowsPointingOutIcon className="size-4" />
-                  In großer Karte öffnen
+                  In Übersichtskarte anzeigen
                 </Link>
               )}
               {tildaUrl && (

@@ -9,7 +9,7 @@ import { surveyTabsQueryOptions } from "@/src/server/surveys/surveyTabsQueryOpti
 export const Route = createFileRoute(
   "/_loggedInProjects/$projectSlug/surveys/$surveyId/responses/map/",
 )({
-  head: () => absoluteTitleHead("Beteiligung"),
+  head: () => absoluteTitleHead("Eingaben"),
   ssr: "data-only",
   pendingComponent: RouteMapShellPending,
   loader: async ({ context, params }) => {

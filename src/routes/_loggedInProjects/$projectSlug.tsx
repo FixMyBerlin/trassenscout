@@ -18,7 +18,7 @@ export const Route = createFileRoute("/_loggedInProjects/$projectSlug")({
   head: () => privateLayoutHead(),
   notFoundComponent: RouteScopedNotFoundPage,
   validateSearch: withViewModeSearch(loggedInProjectModalSearchSchema),
-  search: { middlewares: viewModeSearchMiddlewares },
+  search: { middlewares: viewModeSearchMiddlewares() },
   beforeLoad: async ({ params, location }) => {
     const authorization = await routeProjectFn({
       data: { location, projectSlug: params.projectSlug },

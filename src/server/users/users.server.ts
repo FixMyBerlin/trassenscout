@@ -76,6 +76,7 @@ export async function getUsersAdmin(headers: Headers) {
 const userWithMembershipsSelect = {
   id: true,
   firstName: true,
+  institution: true,
   lastName: true,
   email: true,
   role: true,

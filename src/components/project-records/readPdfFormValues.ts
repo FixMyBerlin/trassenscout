@@ -18,7 +18,8 @@ export async function readPdfFormValues(document: PDFDocumentProxy) {
         | undefined
       const value = stored?.value ?? field.fieldValue
 
-      if (typeof value === "string") values[field.fieldName] = value
+      if (typeof value === "boolean") values[field.fieldName] = value ? "on" : "Off"
+      else if (typeof value === "string") values[field.fieldName] = value
     }
   }
 

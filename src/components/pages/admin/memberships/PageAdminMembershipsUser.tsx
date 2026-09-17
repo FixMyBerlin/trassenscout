@@ -3,7 +3,7 @@ import { AdminPageHeader } from "@/src/components/admin/AdminPageHeader"
 import { MembershipUserDetails } from "@/src/components/admin/memberships/MembershipUserDetails"
 import { MembershipUserInvites } from "@/src/components/admin/memberships/MembershipUserInvites"
 import { UserMembershipsEditor } from "@/src/components/admin/memberships/UserMembershipsEditor"
-import { getFullname } from "@/src/components/core/users/getFullname"
+import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { userWithMembershipsQueryOptions } from "@/src/server/users/usersQueryOptions"
 
 type Props = {
@@ -17,7 +17,7 @@ export function PageAdminMembershipsUser({ userId }: Props) {
     <>
       <AdminPageHeader
         parent={{ title: "Nutzer & Rechte", href: "/admin/memberships" }}
-        title={getFullname(user) ?? user.email}
+        title={getFullnameWithInstitution(user) ?? user.email}
       />
       <div className="space-y-8">
         <MembershipUserDetails user={user} />

@@ -33,7 +33,7 @@ export const AdminEvaluationsPageEditForm = ({ projectSlug }: Props) => {
 
   return (
     <EvaluationsPageForm
-      key={`${projectSlug}:${evaluationsPage.title}:${JSON.stringify(evaluationsPage.config)}`}
+      key={`${projectSlug}:${JSON.stringify(evaluationsPage.config)}`}
       submitText="Speichern"
       schema={EvaluationsPageContentSchema}
       initialValues={evaluationsPage}

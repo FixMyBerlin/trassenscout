@@ -20,7 +20,8 @@ type ViewModeSearch = z.infer<typeof viewModeSearchSchema>
 export const withViewModeSearch = <TSchema extends z.ZodType>(schema: TSchema) =>
   z.intersection(schema, viewModeSearchSchema)
 
-export const viewModeSearchMiddlewares = [
-  retainSearchParams<ViewModeSearch>(["view"]),
-  stripSearchParams<ViewModeSearch>({ view: VIEW_MODE_DEFAULT }),
+/** A factory, not a constant: the middleware is typed for the whole search of its route. */
+export const viewModeSearchMiddlewares = <TSearch extends ViewModeSearch>() => [
+  retainSearchParams<TSearch>(["view"]),
+  stripSearchParams<TSearch>({ view: VIEW_MODE_DEFAULT } as Partial<TSearch>),
 ]

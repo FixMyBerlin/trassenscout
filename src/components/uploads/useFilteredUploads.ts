@@ -1,4 +1,4 @@
-import { getFullname } from "@/src/components/core/users/getFullname"
+import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { normalizeSearchterm } from "@/src/components/core/utils/normalizeSearchterm"
 import { isAdmin } from "@/src/components/shared/app/users/utils/isAdmin"
 import { useCurrentUser } from "@/src/components/user/useCurrentUser"
@@ -19,7 +19,7 @@ export const useFilteredUploads = (uploads: UploadTableUpload[]) => {
     const filename = getFilenameFromS3(upload.externalUrl).toLowerCase()
     const createdByName =
       includeCreatedBy && upload.createdBy
-        ? (getFullname(upload.createdBy)?.toLowerCase() ?? "")
+        ? (getFullnameWithInstitution(upload.createdBy)?.toLowerCase() ?? "")
         : ""
 
     return (

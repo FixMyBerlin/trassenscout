@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi, Outlet, useRouter } from "@tanstack/react-router"
 import { AbschnitteBreadcrumb } from "@/src/components/abschnitte/AbschnitteBreadcrumb"
+import { SubsubsectionMcpDraftAdminBox } from "@/src/components/abschnitte/SubsubsectionMcpDraftAdminBox"
 import { Link } from "@/src/components/core/components/links/Link"
 import { MAP_VIEWPORT_SHELL_CLASS } from "@/src/components/core/components/PageHeader/MapListViewLayout"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
@@ -60,6 +61,13 @@ export function LayoutSubsubsection() {
             </Link>
           </IfUserCanEdit>
         }
+      />
+      <SubsubsectionMcpDraftAdminBox
+        className="mx-4 my-2 shrink-0"
+        projectSlug={projectSlug}
+        subsectionSlug={subsectionSlug}
+        subsubsectionSlug={subsubsectionSlug}
+        subsubsectionId={subsubsection.id}
       />
       <div className="min-h-0 flex-1 overflow-hidden">
         <Outlet />

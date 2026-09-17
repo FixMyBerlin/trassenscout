@@ -2,7 +2,6 @@ import { queryOptions } from "@tanstack/react-query"
 import {
   getFeedbackSurveyResponsesWithSurveyDataAndCommentsFn,
   getGroupedSurveyResponsesFn,
-  getLinkedSurveyResponseForSubsubsectionFn,
   getCreatedSurveyResponsesFn,
   getSurveyResponsesFn,
   getTestSurveyResponsesFn,
@@ -11,7 +10,6 @@ import type {
   GetCreatedSurveyResponsesInput,
   GetFeedbackSurveyResponsesInput,
   GetGroupedSurveyResponsesInput,
-  GetLinkedSurveyResponseForSubsubsectionInput,
   GetSurveyResponsesInput,
   GetTestSurveyResponsesInput,
 } from "./surveyResponses.server"
@@ -48,15 +46,6 @@ export function groupedSurveyResponsesQueryOptions(input: GetGroupedSurveyRespon
   return queryOptions({
     queryKey: ["groupedSurveyResponses", input],
     queryFn: () => getGroupedSurveyResponsesFn({ data: input }),
-  })
-}
-
-export function linkedSurveyResponseForSubsubsectionQueryOptions(
-  input: GetLinkedSurveyResponseForSubsubsectionInput,
-) {
-  return queryOptions({
-    queryKey: ["linkedSurveyResponseForSubsubsection", input],
-    queryFn: () => getLinkedSurveyResponseForSubsubsectionFn({ data: input }),
   })
 }
 

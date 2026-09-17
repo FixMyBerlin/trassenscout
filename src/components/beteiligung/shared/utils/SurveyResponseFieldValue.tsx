@@ -1,8 +1,13 @@
+import { LinkMail } from "@/src/components/core/components/links/LinkMail"
+import { formattedEuro } from "@/src/components/core/components/text/formattedProperties"
+
 type FieldConfig = {
   component?: string
   props?: {
     options?: Array<{ key: string | number; label: string }>
     label?: string
+    type?: string
+    unit?: string
   }
 }
 
@@ -55,10 +60,18 @@ export const SurveyResponseFieldValue = ({
     case "SurveyResponseIdField":
     case "SurveyVorgangsIdField":
     case "SurveyTextarea":
+      if (field.props?.type === "email") {
+        return <LinkMail>{String(value)}</LinkMail>
+      }
       return <span>{String(value)}</span>
 
-    case "SurveyNumberfield":
+    case "SurveyNumberfield": {
+      const numericValue = typeof value === "number" ? value : Number(value)
+      if (field.props?.unit === "EUR" && Number.isFinite(numericValue)) {
+        return <span>{formattedEuro(numericValue)}</span>
+      }
       return <span>{typeof value === "number" ? value : String(value)}</span>
+    }
 
     case "SurveyCheckbox":
       return <span>{value ? "Ja" : "Nein"}</span>

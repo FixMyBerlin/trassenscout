@@ -1,5 +1,5 @@
 import { twJoin } from "tailwind-merge"
-import { getFullname } from "@/src/components/core/users/getFullname"
+import { getFullname, getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { pillShellWithGapClasses } from "@/src/components/core/utils/pillClassNames"
 import type { ProjectRecord } from "@/src/server/projectRecords/types"
 
@@ -10,13 +10,19 @@ type Props = {
   onAssigneeClick?: (assigneeSearchText: string) => void
 }
 
+const appendInstitution = (label: string, user: Props["assignedTo"]) => {
+  const institution = user.institution?.trim()
+  return label && institution ? `${label} (${institution})` : label
+}
+
 const assignedToPillShortLabel = (user: Props["assignedTo"]) => {
   if (!("id" in user)) {
-    return getFullname(user)?.trim() ?? ""
+    return getFullnameWithInstitution(user)?.trim() ?? ""
   }
   const firstInitial = (user.firstName ?? "").trim().charAt(0).toLocaleUpperCase()
   const lastName = (user.lastName ?? "").trim()
-  return lastName ? `${firstInitial}.${lastName}` : firstInitial
+  const shortName = lastName ? `${firstInitial}.${lastName}` : firstInitial
+  return appendInstitution(shortName, user)
 }
 
 export const ProjectRecordAssignedToPill = ({
@@ -25,8 +31,9 @@ export const ProjectRecordAssignedToPill = ({
   isInteractive = false,
   onAssigneeClick,
 }: Props) => {
-  const fullName = getFullname(assignedTo)!.trim()
-  const displayLabel = variant === "list" ? assignedToPillShortLabel(assignedTo) : fullName
+  const fullName = getFullname(assignedTo)?.trim() ?? ""
+  const fullLabel = getFullnameWithInstitution(assignedTo)?.trim() ?? fullName
+  const displayLabel = variant === "list" ? assignedToPillShortLabel(assignedTo) : fullLabel
   const filterSearchText = fullName
 
   const className = twJoin(
@@ -43,7 +50,11 @@ export const ProjectRecordAssignedToPill = ({
     onAssigneeClick?.(filterSearchText)
   }
 
-  const content = <span className="truncate">{displayLabel}</span>
+  const content = (
+    <span className="truncate" title={displayLabel || undefined}>
+      {displayLabel}
+    </span>
+  )
 
   if (isInteractive) {
     return (

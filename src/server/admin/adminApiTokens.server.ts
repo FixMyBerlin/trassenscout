@@ -35,7 +35,7 @@ export async function listAdminApiTokens() {
       lastUsedAt: true,
       revokedAt: true,
       createdBy: {
-        select: { id: true, firstName: true, lastName: true, email: true },
+        select: { id: true, firstName: true, institution: true, lastName: true, email: true },
       },
     },
   })

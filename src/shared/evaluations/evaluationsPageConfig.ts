@@ -60,7 +60,7 @@ export const evaluationChartOrientation: Record<EvaluationChartType, "columns" |
   deadlinesOverview: "bars",
 }
 
-export const textOnlyChartLabel = "Nur Text (kein Diagramm)"
+const textOnlyChartLabel = "Nur Text (kein Diagramm)"
 
 export const evaluationChartOptions: [EvaluationChartType | "", string][] = [
   ["", textOnlyChartLabel],

@@ -1,4 +1,6 @@
-# Copy to project bunfig.toml (local/dev). Do not COPY into Docker before bun install.
+# Copy to project bunfig.toml (local/dev).
+# Docker: Do not COPY this file before the image bun install.
+# Netlify: Install must use bunfig.netlify.toml via BUN_FLAGS instead.
 # @see references/bun-install.md
 
 # Supply-chain cooldown — only install versions published at least N seconds ago.

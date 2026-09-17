@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { getRouteApi, useLocation } from "@tanstack/react-router"
+import { useLocation, useNavigate } from "@tanstack/react-router"
 import { useEffect, useRef, useState } from "react"
 import { twJoin } from "tailwind-merge"
 import { ContactDeleteActionBar } from "@/src/components/contacts/ContactDeleteActionBar"
@@ -13,7 +13,6 @@ import { Notice } from "@/src/components/core/components/Notice/Notice"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { Spinner } from "@/src/components/core/components/Spinner"
-import { getFullname } from "@/src/components/core/users/getFullname"
 import { MultiProjectInviteForm } from "@/src/components/invites/MultiProjectInviteForm"
 import { EditProjectRecordForm } from "@/src/components/project-records/EditProjectRecordForm"
 import { ProjectRecordDetailClient } from "@/src/components/project-records/ProjectRecordDetailClient"
@@ -22,23 +21,34 @@ import { getProjectRecordEditSuccessNavigateOptions } from "@/src/components/pro
 import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { useProjectModalNavigation } from "@/src/components/shared/projectModals/useProjectModalNavigation"
+import { useProjectModalSearch } from "@/src/components/shared/projectModals/useProjectModalSearch"
+import { useProjectModalSlug } from "@/src/components/shared/projectModals/useProjectModalSlug"
 import { useProjectUploadModal } from "@/src/components/uploads/ProjectUploadModalHost"
 import { UploadModalContent } from "@/src/components/uploads/UploadModalContent"
 import { isDeletedUploadMarker } from "@/src/components/uploads/uploadTypes"
 import { contactQueryOptions } from "@/src/server/contacts/contactQueryOptions"
 import { projectRecordQueryOptions } from "@/src/server/projectRecords/projectRecordsQueryOptions"
 import { uploadQueryOptions } from "@/src/server/uploads/uploadQueryOptions"
+import { getContactName } from "@/src/shared/contacts/getContactName"
 import { getProjectModalPreview } from "@/src/shared/projectModals/historyState"
 
-const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
 const MODAL_CLOSE_ANIMATION_MS = 200
 
+/** Mounted by the project layout and by the dashboard, so an entry opens in place in both. */
 export function ProjectModalHost() {
-  const navigate = loggedInProjectRouteApi.useNavigate()
-  const { projectSlug } = loggedInProjectRouteApi.useParams()
-  const modalSearch = loggedInProjectRouteApi.useSearch()
+  const projectSlug = useProjectModalSlug()
+
+  // The queries need the project up front, so without a slug there is nothing to open.
+  if (projectSlug === undefined) return null
+
+  return <ProjectModalContent projectSlug={projectSlug} />
+}
+
+function ProjectModalContent({ projectSlug }: { projectSlug: string }) {
+  const navigate = useNavigate()
+  const modalSearch = useProjectModalSearch()
   const location = useLocation()
-  const userCanEdit = useUserCan().edit
+  const userCanEdit = useUserCan(projectSlug).edit
   const contactsModal = useContactsModal()
   const projectRecordModal = useProjectRecordModal()
   const projectUploadModal = useProjectUploadModal()
@@ -370,9 +380,9 @@ export function ProjectModalHost() {
           : hasContactError || isContactUnavailable
             ? "Kontakt"
             : contact
-              ? getFullname(contact) || "Kontakt"
+              ? getContactName(contact)
               : previewContact
-                ? getFullname(previewContact) || "Kontakt"
+                ? getContactName(previewContact)
                 : "Kontakt wird geladen …"
 
     return (
@@ -442,7 +452,7 @@ export function ProjectModalHost() {
               <ContactDeleteActionBar
                 contactId={contact.id}
                 projectSlug={projectSlug}
-                contactTitle={getFullname(contact) || "Kontakt"}
+                contactTitle={getContactName(contact)}
                 returnPath={backgroundHref}
                 onDeleted={closeModal}
                 variant="linkWithIcon"

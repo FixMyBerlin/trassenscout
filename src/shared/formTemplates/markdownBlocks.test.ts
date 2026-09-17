@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { formTemplateFieldTypes } from "./fieldSchemas"
-import { parseInlineRuns, parseMarkdownBlocks } from "./markdownBlocks"
+import { isCheckboxRun, parseInlineRuns, parseMarkdownBlocks } from "./markdownBlocks"
 
 describe("parseInlineRuns", () => {
   it("returns one plain run for plain text", () => {
@@ -31,8 +31,44 @@ describe("parseInlineRuns", () => {
     expect(parseInlineRuns("\\*kein Kursiv\\*")).toEqual([{ text: "*kein Kursiv*" }])
   })
 
+  it("reads a placeholder with umlauts as a field", () => {
+    expect(parseInlineRuns("Empfänger: {{Zuwendungsempfänger}}")).toEqual([
+      { text: "Empfänger: " },
+      { placeholder: "Zuwendungsempfänger" },
+    ])
+  })
+
   it("returns nothing for an empty line", () => {
     expect(parseInlineRuns("")).toEqual([])
+  })
+
+  it("reads `[]` as an unticked checkbox and `[x]` as a ticked one", () => {
+    expect(parseInlineRuns("[] Lageplan [x] Kostenschätzung")).toEqual([
+      { checkbox: { name: "checkbox_1", checked: false } },
+      { text: " Lageplan " },
+      { checkbox: { name: "checkbox_2", checked: true } },
+      { text: " Kostenschätzung" },
+    ])
+  })
+
+  it("accepts a space inside the box", () => {
+    expect(parseInlineRuns("[ ] Lageplan")).toEqual([
+      { checkbox: { name: "checkbox_1", checked: false } },
+      { text: " Lageplan" },
+    ])
+  })
+
+  it("leaves a link alone", () => {
+    expect(parseInlineRuns("[Impressum](https://example.org)")).toEqual([
+      { text: "[Impressum](https://example.org)" },
+    ])
+  })
+
+  it("keeps a checkbox unstyled inside bold text", () => {
+    expect(parseInlineRuns("**[] Pflichtfeld**")).toEqual([
+      { checkbox: { name: "checkbox_1", checked: false } },
+      { text: " Pflichtfeld", bold: true },
+    ])
   })
 })
 
@@ -122,5 +158,77 @@ describe("field types affect layout only", () => {
   it("keeps the type list to what the renderer can actually honour", () => {
     // Width and multiline are all a type controls; see `fieldWidth` in formTemplatePdf.tsx.
     expect([...formTemplateFieldTypes]).toEqual(["text", "textarea", "number", "date"])
+  })
+})
+
+describe("checkbox names", () => {
+  it("counts up across blocks so every box is its own field", () => {
+    const blocks = parseMarkdownBlocks(`# [] Titelbox
+
+- [] Lageplan
+- [x] Kostenschätzung
+
+Absatz mit [] am Ende`)
+
+    const names = blocks
+      .flatMap((block) => block.lines.flat())
+      .filter(isCheckboxRun)
+      .map((run) => run.checkbox.name)
+
+    expect(names).toEqual(["checkbox_1", "checkbox_2", "checkbox_3", "checkbox_4"])
+  })
+})
+
+describe("tables", () => {
+  const table = `| Kostenart | Betrag |
+| --- | ---: |
+| Planung | {{planung}} |
+| Bau | 120.000 € |`
+
+  it("reads a pipe table with its header, rows and alignment", () => {
+    const [block, ...rest] = parseMarkdownBlocks(table)
+
+    expect(rest).toEqual([])
+    expect(block?.type).toBe("table")
+    expect(block?.align).toEqual(["left", "right"])
+    expect(block?.rows?.map((row) => Boolean(row.header))).toEqual([true, false, false])
+  })
+
+  it("makes the header bold and keeps placeholders in cells", () => {
+    const [block] = parseMarkdownBlocks(table)
+
+    expect(block?.rows?.[0]?.cells).toEqual([
+      [{ text: "Kostenart", bold: true }],
+      [{ text: "Betrag", bold: true }],
+    ])
+    expect(block?.rows?.[1]?.cells[1]).toEqual([{ placeholder: "planung" }])
+  })
+
+  it("pads a short row so the grid stays rectangular", () => {
+    const [block] = parseMarkdownBlocks(`| A | B | C |
+| --- | --- | --- |
+| nur eins |`)
+
+    expect(block?.rows?.[1]?.cells).toEqual([[{ text: "nur eins" }], [], []])
+  })
+
+  it("ends the table at the first line without a pipe", () => {
+    const blocks = parseMarkdownBlocks(`${table}
+
+Ein Absatz danach.`)
+
+    expect(blocks.map((block) => block.type)).toEqual(["table", "paragraph"])
+  })
+
+  it("leaves a lone pipe line as a paragraph, without a delimiter row", () => {
+    expect(parseMarkdownBlocks("Betrag | Summe").map((block) => block.type)).toEqual(["paragraph"])
+  })
+
+  it("keeps an escaped pipe inside its cell", () => {
+    const [block] = parseMarkdownBlocks(`| A | B |
+| --- | --- |
+| eins \\| zwei | drei |`)
+
+    expect(block?.rows?.[1]?.cells).toEqual([[{ text: "eins | zwei" }], [{ text: "drei" }]])
   })
 })

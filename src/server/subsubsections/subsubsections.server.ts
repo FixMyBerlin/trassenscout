@@ -6,6 +6,7 @@ import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
+import { deleteSubsubsectionMcpCreateDraftBySlug } from "@/src/server/mcp/mcpDrafts/mcpDrafts.server"
 import {
   formerMemberFk,
   loadUserRedactionContext,
@@ -294,6 +295,8 @@ export async function createSubsubsection(
     data: subsubsectionData(data, extraFields),
     include: { manager: subsubsectionListInclude.manager },
   })
+
+  await deleteSubsubsectionMcpCreateDraftBySlug(record.subsectionId, record.slug)
 
   await createLogEntry({
     action: "CREATE",

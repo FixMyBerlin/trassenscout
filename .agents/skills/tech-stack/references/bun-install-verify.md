@@ -48,8 +48,8 @@ ls ~/.bun/install/cache/links/ | wc -l
   **Fix:** [bun upgrade](https://bun.sh); reinstall.
 - **Cause:** Install before config/Bun change  
   **Fix:** `rm -rf node_modules && bun install`.
-- **Cause:** `globalStore = false` or `linker = "hoisted"` in project bunfig  
-  **Fix:** [bunfig template](../examples/bunfig.toml.template) (local/dev only).
+- **Cause:** `globalStore = false` or `linker = "hoisted"` in **local/dev** `bunfig.toml`  
+  **Fix:** [bunfig template](../examples/bunfig.toml.template). [bunfig.netlify.toml](../examples/bunfig.netlify.toml.template) is empty on purpose — Bun defaults there are correct.
 - **Cause:** No `node_modules/.bun/`  
   **Fix:** Need isolated linker + reinstall.
 - **Cause:** `Cannot find module '…'` from a package under `cache/links/`  
@@ -58,6 +58,8 @@ ls ~/.bun/install/cache/links/ | wc -l
   **Fix:** Confirm `trustedDependencies` in the **same** package’s `package.json`; reinstall.
 - **Cause:** Docker/`USER bun` → `EACCES` opening `node_modules/<pkg>` (realpath under `/root/.bun/…`)  
   **Fix:** Omit bunfig from image install `COPY` (or `BUN_INSTALL_GLOBAL_STORE=0`). [bun-install.md](bun-install.md).
+- **Cause:** Netlify SSR / function `Cannot find package '…'` under `/var/task`  
+  **Fix:** Give Netlify its own install config — [bun-install.md](bun-install.md#netlify-ssr-and-function-packaging). Do **not** reach for the missing package or `--linker=hoisted` first.
 
 **Smoke test:** [bunfig.toml.template](../examples/bunfig.toml.template) + `slugify` in a temp dir → `readlink node_modules/.bun/slugify@…` should hit `cache/links/`.
 

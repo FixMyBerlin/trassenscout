@@ -41,11 +41,15 @@ export type ProjectRecordsSearch = z.infer<typeof projectRecordsSearchSchema>
 
 export const projectRecordModalViewSchema = z.enum(["detail", "edit"])
 
+/** `modalProjectSlug` is only written by links from outside a project. */
+export const projectRecordModalSearchShape = {
+  modalProjectRecordId: z.coerce.number().int().positive().optional(),
+  modalProjectRecordView: projectRecordModalViewSchema.optional(),
+  modalProjectSlug: z.string().optional(),
+}
+
 export const projectRecordModalSearchSchema = z
-  .object({
-    modalProjectRecordId: z.coerce.number().int().positive().optional(),
-    modalProjectRecordView: projectRecordModalViewSchema.optional(),
-  })
+  .object(projectRecordModalSearchShape)
   .transform((search) => {
     if (search.modalProjectRecordId && search.modalProjectRecordView) {
       return search
@@ -54,6 +58,7 @@ export const projectRecordModalSearchSchema = z
     return {
       modalProjectRecordId: undefined,
       modalProjectRecordView: undefined,
+      modalProjectSlug: undefined,
     }
   })
 
@@ -64,5 +69,6 @@ export function clearProjectRecordModalSearch<TSearch extends Record<string, unk
     ...search,
     modalProjectRecordId: undefined,
     modalProjectRecordView: undefined,
+    modalProjectSlug: undefined,
   }
 }

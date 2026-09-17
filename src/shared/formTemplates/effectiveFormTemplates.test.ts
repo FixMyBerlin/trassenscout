@@ -29,36 +29,28 @@ describe("getEffectiveFormTemplates", () => {
   it("offers nothing without a Maßnahme or Verhandlungsfläche", () => {
     expect(
       getEffectiveFormTemplates(
-        { formTemplates: [antrag], projectRecordTemplate: { formTemplates: [mittelabruf] } },
-        { projectSlug: "rs23", hasSubsubsection: false, hasAcquisitionArea: false },
+        { formTemplates: [antrag, mittelabruf] },
+        {
+          projectSlug: "rs23",
+          hasSubsubsection: false,
+          hasAcquisitionArea: false,
+        },
       ),
     ).toEqual([])
   })
 
-  it("inherits from the protocol template", () => {
-    expect(
-      getEffectiveFormTemplates(
-        { formTemplates: [], projectRecordTemplate: { formTemplates: [antrag] } },
-        inSubsubsection,
-      ),
-    ).toEqual([antrag])
+  it("offers the forms the record carries", () => {
+    expect(getEffectiveFormTemplates({ formTemplates: [antrag] }, inSubsubsection)).toEqual([
+      antrag,
+    ])
   })
 
-  it("merges inherited and directly attached forms", () => {
+  it("sorts by title", () => {
     const result = getEffectiveFormTemplates(
-      { formTemplates: [mittelabruf], projectRecordTemplate: { formTemplates: [antrag] } },
+      { formTemplates: [mittelabruf, antrag] },
       inSubsubsection,
     )
     expect(result.map((formTemplate) => formTemplate.id)).toEqual([1, 2])
-  })
-
-  it("lists a form attached both ways only once", () => {
-    expect(
-      getEffectiveFormTemplates(
-        { formTemplates: [antrag], projectRecordTemplate: { formTemplates: [antrag] } },
-        inSubsubsection,
-      ),
-    ).toHaveLength(1)
   })
 
   it("hides forms that do not match the record's relation", () => {
@@ -83,13 +75,8 @@ describe("getEffectiveFormTemplates", () => {
     ).toHaveLength(2)
   })
 
-  it("copes with a record that has no protocol template", () => {
-    expect(
-      getEffectiveFormTemplates(
-        { formTemplates: [antrag], projectRecordTemplate: null },
-        inSubsubsection,
-      ),
-    ).toEqual([antrag])
+  it("offers nothing when the record carries no forms", () => {
+    expect(getEffectiveFormTemplates({ formTemplates: [] }, inSubsubsection)).toEqual([])
   })
 })
 
@@ -105,15 +92,6 @@ describe("project scope", () => {
   it("hides a form the record's project cannot open", () => {
     expect(
       getEffectiveFormTemplates({ formTemplates: [otherProjectForm] }, inSubsubsection),
-    ).toEqual([])
-  })
-
-  it("hides an inherited form from a template shared with another project", () => {
-    expect(
-      getEffectiveFormTemplates(
-        { formTemplates: [], projectRecordTemplate: { formTemplates: [otherProjectForm] } },
-        inSubsubsection,
-      ),
     ).toEqual([])
   })
 

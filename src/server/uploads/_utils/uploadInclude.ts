@@ -24,6 +24,7 @@ export const uploadWithSubsectionsInclude = {
     select: {
       id: true,
       firstName: true,
+      institution: true,
       lastName: true,
     },
   },
@@ -31,6 +32,7 @@ export const uploadWithSubsectionsInclude = {
     select: {
       id: true,
       firstName: true,
+      institution: true,
       lastName: true,
     },
   },
