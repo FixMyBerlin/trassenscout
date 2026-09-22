@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { ProjectRecordCommentsSection } from "@/src/components/project-records/ProjectRecordCommentsSection"
 import { CreateEditReviewHistory } from "@/src/components/project-records/ProjectRecordCreateEditReviewHistory"
@@ -6,6 +6,7 @@ import { ProjectRecordNeedsReviewBanner } from "@/src/components/project-records
 import { ProjectRecordSummary } from "@/src/components/project-records/ProjectRecordSummary"
 import { ProjectUploadDropzone } from "@/src/components/uploads/ProjectUploadDropzone"
 import { UploadDropzoneContainer } from "@/src/components/uploads/UploadDropzoneContainer"
+import { invalidateAfterUploadChange } from "@/src/components/uploads/uploadQueryCache"
 import { UploadTable } from "@/src/components/uploads/UploadTable"
 import { ProjectRecordReviewState } from "@/src/prisma/generated/browser"
 import { projectRecordQueryOptions } from "@/src/server/projectRecords/projectRecordsQueryOptions"
@@ -54,9 +55,7 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord, needsReviewEdi
     initialData: initialProjectRecord,
   })
   const refreshProjectRecord = () => {
-    void queryClient.invalidateQueries({
-      queryKey: projectRecordQueryOptions({ projectSlug, id: initialProjectRecord.id }).queryKey,
-    })
+    void invalidateAfterUploadChange(queryClient, projectSlug)
   }
 
   const uploadIds = projectRecord.uploads.map((upload) => upload.id)
@@ -66,8 +65,11 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord, needsReviewEdi
       where: { id: { in: uploadIds } },
     }),
     enabled: uploadIds.length > 0,
+    placeholderData: keepPreviousData,
   })
-  const projectRecordUploads = uploadsData?.uploads ?? []
+  const projectRecordUploads = (uploadsData?.uploads ?? []).filter((upload) =>
+    uploadIds.includes(upload.id),
+  )
 
   const needsReview = projectRecord.reviewState !== ProjectRecordReviewState.APPROVED
 
@@ -78,9 +80,9 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord, needsReviewEdi
         withAction={false}
         withRelations={false}
         uploads={projectRecordUploads}
-        onDelete={async () => {
-          refreshProjectRecord()
-        }}
+        // Passing `onDelete` shows the delete action; the refresh itself is done by
+        // DeleteUploadButton via invalidateAfterUploadChange.
+        onDelete={async () => {}}
       />
       <ProjectRecordQuickUpload
         projectSlug={projectSlug}

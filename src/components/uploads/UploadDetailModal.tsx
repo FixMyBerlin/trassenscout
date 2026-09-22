@@ -17,6 +17,7 @@ type Props = {
   projectSlug: string
   open: boolean
   onClose: () => void
+  onDeleted?: () => void | Promise<void>
   editLink?: UploadEditLink
   previewUpload?: Pick<Upload, "id" | "title" | "mimeType" | "externalUrl" | "collaborationUrl">
   closeOnEditSuccess?: boolean
@@ -27,6 +28,7 @@ export const UploadDetailModal = ({
   projectSlug,
   open,
   onClose,
+  onDeleted,
   editLink,
   previewUpload,
   closeOnEditSuccess = false,
@@ -39,6 +41,7 @@ export const UploadDetailModal = ({
       uploadId={uploadId}
       projectSlug={projectSlug}
       onClose={onClose}
+      onDeleted={onDeleted}
       editLink={editLink}
       previewUpload={previewUpload}
       closeOnEditSuccess={closeOnEditSuccess}
@@ -54,6 +57,7 @@ function UploadDetailModalInner({
   uploadId,
   projectSlug,
   onClose,
+  onDeleted,
   editLink,
   previewUpload,
   closeOnEditSuccess,
@@ -158,6 +162,7 @@ function UploadDetailModalInner({
           isEditView={isEditView}
           returnPath={editLink?.search?.returnTo ?? `/${projectSlug}/uploads`}
           onClose={onClose}
+          onDeleted={onDeleted}
           onEditSuccess={async () => {
             if (closeOnEditSuccess) {
               onClose()

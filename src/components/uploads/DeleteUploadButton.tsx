@@ -5,7 +5,7 @@ import { linkIcons } from "@/src/components/core/components/links/Link"
 import { linkStyles } from "@/src/components/core/components/links/styles"
 import { frenchQuote } from "@/src/components/core/components/text/quote"
 import { deleteUploadFn } from "@/src/server/uploads/uploads.functions"
-import { invalidateUploadLists, markUploadDeletedInCache } from "./uploadQueryCache"
+import { invalidateAfterUploadChange, markUploadDeletedInCache } from "./uploadQueryCache"
 
 type Props = {
   projectSlug: string
@@ -38,7 +38,9 @@ export const DeleteUploadButton = ({
       try {
         await markUploadDeletedInCache(queryClient, projectSlug, uploadId)
         await deleteUploadMutation.mutateAsync({ data: { projectSlug, id: uploadId } })
-        invalidateUploadLists(queryClient, projectSlug)
+        // The caches were already patched optimistically above; do not hold the modal
+        // open until every linked list has refetched.
+        void invalidateAfterUploadChange(queryClient, projectSlug)
         await onDeleted()
       } catch (error) {
         console.error("Error deleting upload:", error)

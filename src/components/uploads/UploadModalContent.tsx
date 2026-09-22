@@ -29,6 +29,7 @@ type Props = {
   isEditView: boolean
   returnPath: string
   onClose: () => void
+  onDeleted?: () => void | Promise<void>
   onEditSuccess: () => void | Promise<void>
   onDirtyChange?: (isDirty: boolean) => void
   onSubmittingChange?: (isSubmitting: boolean) => void
@@ -41,11 +42,17 @@ export const UploadModalContent = ({
   isEditView,
   returnPath,
   onClose,
+  onDeleted,
   onEditSuccess,
   onDirtyChange,
   onSubmittingChange,
   deletedState = "message",
 }: Props) => {
+  const handleDeleted = async () => {
+    await onDeleted?.()
+    onClose()
+  }
+
   useEffect(() => {
     if (deletedState !== "close") return
     if (!upload || !isDeletedUploadMarker(upload)) return
@@ -70,7 +77,7 @@ export const UploadModalContent = ({
           returnPath={returnPath}
           returnText="Zurück"
           hideBackLink
-          onDeleted={onClose}
+          onDeleted={handleDeleted}
           onDirtyChange={onDirtyChange}
           onSubmittingChange={onSubmittingChange}
           onSuccess={async () => {
@@ -102,7 +109,7 @@ export const UploadModalContent = ({
             uploadId={upload.id}
             uploadTitle={upload.title}
             returnPath={returnPath}
-            onDeleted={onClose}
+            onDeleted={handleDeleted}
             variant="linkWithIcon"
           />
         </div>

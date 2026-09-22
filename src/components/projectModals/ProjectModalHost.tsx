@@ -23,7 +23,10 @@ import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan
 import { useProjectModalNavigation } from "@/src/components/shared/projectModals/useProjectModalNavigation"
 import { useProjectModalSearch } from "@/src/components/shared/projectModals/useProjectModalSearch"
 import { useProjectModalSlug } from "@/src/components/shared/projectModals/useProjectModalSlug"
-import { useProjectUploadModal } from "@/src/components/uploads/ProjectUploadModalHost"
+import {
+  takeHostedUploadDeletedHandler,
+  useProjectUploadModal,
+} from "@/src/components/uploads/ProjectUploadModalHost"
 import { UploadModalContent } from "@/src/components/uploads/UploadModalContent"
 import { isDeletedUploadMarker } from "@/src/components/uploads/uploadTypes"
 import { contactQueryOptions } from "@/src/server/contacts/contactQueryOptions"
@@ -111,6 +114,19 @@ function ProjectModalContent({ projectSlug }: { projectSlug: string }) {
     })
   }
 
+  // `closeModal` drops the parked handler itself, but the upload modal also leaves via
+  // browser back or a direct URL change. Clear it on that transition so a later delete
+  // never runs the callback of a row that is long gone.
+  const previousModalUploadIdRef = useRef(modalUploadId)
+  useEffect(
+    function dropHostedUploadDeletedHandlerWhenUploadModalLeavesUrl() {
+      const wasOpen = previousModalUploadIdRef.current !== undefined
+      previousModalUploadIdRef.current = modalUploadId
+      if (wasOpen && modalUploadId === undefined) takeHostedUploadDeletedHandler()
+    },
+    [modalUploadId],
+  )
+
   useEffect(function clearPendingProjectModalCloseTimerOnUnmount() {
     return function clearPendingProjectModalCloseTimer() {
       if (closeTimeoutRef.current === undefined) return
@@ -147,6 +163,7 @@ function ProjectModalContent({ projectSlug }: { projectSlug: string }) {
     }
 
     resetActiveModalFormState()
+    takeHostedUploadDeletedHandler()
     setClosingModalKey(activeModalKey)
     closeTimeoutRef.current = window.setTimeout(() => {
       setClosingModalKey(undefined)
@@ -236,6 +253,10 @@ function ProjectModalContent({ projectSlug }: { projectSlug: string }) {
             isEditView={isUploadEditView}
             returnPath={backgroundHref}
             onClose={closeModal}
+            onDeleted={async () => {
+              const handler = takeHostedUploadDeletedHandler()
+              await handler?.()
+            }}
             onEditSuccess={async () => {
               projectUploadModal.openUploadDetail({ uploadId: modalUploadId })
             }}

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { DeleteActionBar } from "@/src/components/core/components/forms/DeleteActionBar"
 import { deleteUploadFn } from "@/src/server/uploads/uploads.functions"
-import { invalidateUploadLists, markUploadDeletedInCache } from "./uploadQueryCache"
+import { invalidateAfterUploadChange, markUploadDeletedInCache } from "./uploadQueryCache"
 
 type Props = {
   projectSlug: string
@@ -28,8 +28,7 @@ export const DeleteUploadActionBar = ({
   const handleDelete = async () => {
     await markUploadDeletedInCache(queryClient, projectSlug, uploadId)
     await deleteUploadMutation.mutateAsync({ data: { projectSlug, id: uploadId } })
-    invalidateUploadLists(queryClient, projectSlug)
-    void queryClient.invalidateQueries({ queryKey: ["projectRecords"] })
+    void invalidateAfterUploadChange(queryClient, projectSlug)
   }
 
   return (

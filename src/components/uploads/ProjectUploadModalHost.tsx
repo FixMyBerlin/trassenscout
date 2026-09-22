@@ -8,6 +8,19 @@ import { subsubsectionsQueryOptions } from "@/src/server/subsubsections/subsubse
 import { uploadQueryOptions } from "@/src/server/uploads/uploadQueryOptions"
 
 type PreviewUpload = Pick<Upload, "id" | "title" | "mimeType" | "externalUrl" | "collaborationUrl">
+type HostedUploadDeletedHandler = () => void | Promise<void>
+
+// The URL-hosted upload modal lives in ProjectModalHost, far away from the table row
+// that opened it. Callbacks cannot travel through the URL, so the opener parks its
+// `onDeleted` here and the host takes it when the document is deleted or the modal
+// closes (see `takeHostedUploadDeletedHandler`). Only ever set from client event handlers.
+let hostedUploadDeletedHandler: HostedUploadDeletedHandler | undefined
+
+export function takeHostedUploadDeletedHandler() {
+  const handler = hostedUploadDeletedHandler
+  hostedUploadDeletedHandler = undefined
+  return handler
+}
 
 export function useProjectUploadModal() {
   const queryClient = useQueryClient()
@@ -21,7 +34,14 @@ export function useProjectUploadModal() {
       modalUploadView: "edit",
     })
 
-  const openUploadDetail = (input: { uploadId: number; previewUpload?: PreviewUpload }) => {
+  const openUploadDetail = (input: {
+    uploadId: number
+    previewUpload?: PreviewUpload
+    onDeleted?: HostedUploadDeletedHandler
+  }) => {
+    // Omitting `onDeleted` keeps the current handler: the edit view re-opens the detail
+    // view after saving and must not drop the callback of the row that opened it.
+    if ("onDeleted" in input) hostedUploadDeletedHandler = input.onDeleted
     if (projectSlug) {
       void queryClient.ensureQueryData(uploadQueryOptions({ projectSlug, id: input.uploadId }))
     }
