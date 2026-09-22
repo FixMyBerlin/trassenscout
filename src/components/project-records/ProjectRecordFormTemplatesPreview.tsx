@@ -82,8 +82,7 @@ export const ProjectRecordFormTemplatesPreview = ({
         </div>
         <p className="text-sm text-gray-500">
           {missingRelation
-            ? "Formulare zum Ansehen. Am Eintrag hängen sie, sobald er gespeichert und mit einer Maßnahme oder Verhandlungsfläche verknüpft ist."
-            : "Diese Formulare gehören zum Eintrag. Ausfüllen und ablegen geht, sobald der Eintrag gespeichert ist."}
+            && "Formulare zum Ansehen. Am Eintrag hängen sie, sobald er gespeichert und mit einer Maßnahme oder Verhandlungsfläche verknüpft ist."}
         </p>
       </div>
 
