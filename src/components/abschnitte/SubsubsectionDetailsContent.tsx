@@ -293,7 +293,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
           <section className="rounded-md border border-gray-200 bg-white p-4">
             <h3 className="text-base font-medium text-gray-700">Angaben fehlen.</h3>
             <p className="mt-1.5 text-base text-gray-700">
-              Erfassen Sie hier Eckdaten wie Typ, Status und Beschreibung. Über Bearbeiten (oben
+              Erfassen Sie hier Eckdaten wie Typ, Status und Beschreibung. Über bearbeiten (oben
               rechts) können Sie diese direkt hinzufügen.
             </p>
           </section>

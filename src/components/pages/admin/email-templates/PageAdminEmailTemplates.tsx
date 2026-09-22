@@ -31,7 +31,7 @@ export function PageAdminEmailTemplates() {
                 to="/admin/email-templates/$templateKey/edit"
                 params={{ templateKey: template.key }}
               >
-                Bearbeiten
+                bearbeiten
               </Link>
             </div>
           </li>

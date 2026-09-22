@@ -149,7 +149,7 @@ function buildAdminProjectNavigation(projectSlug: string) {
       link: projectNavLink("/admin/projects/$projectSlug/surveys", projectSlug),
     },
     {
-      name: adminProjectNavName("Projekt", "Bearbeiten"),
+      name: adminProjectNavName("Projekt", "bearbeiten"),
       link: projectNavLink("/$projectSlug/edit", projectSlug),
       external: true,
     },

@@ -39,7 +39,7 @@ export const ProjectRecordNeedsReviewBanner = ({
       {withAction &&
         (editHref ? (
           <Link href={editHref} className="text-sm">
-            Bearbeiten und bestätigen
+            bearbeiten und bestätigen
           </Link>
         ) : projectSlug && projectRecordId !== undefined ? (
           <Link
@@ -51,7 +51,7 @@ export const ProjectRecordNeedsReviewBanner = ({
             className="text-sm"
             resetScroll={false}
           >
-            Bearbeiten und bestätigen
+            bearbeiten und bestätigen
           </Link>
         ) : null)}
     </BannerShell>

@@ -72,7 +72,7 @@ export const defineSettingsRouteCrudSuite = ({
         timeout: 30_000,
       })
 
-      await initialRow.getByRole("link", { name: "Bearbeiten", exact: true }).click()
+      await initialRow.getByRole("link", { name: "bearbeiten", exact: true }).click()
       await expect(page.getByRole("heading", { name: editHeading, exact: true })).toBeVisible({
         timeout: 30_000,
       })

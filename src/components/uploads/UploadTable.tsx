@@ -319,7 +319,7 @@ const UploadTableRow = ({
                 preload="intent"
                 resetScroll={false}
               >
-                Bearbeiten
+                bearbeiten
               </Link>
               {handleDelete && (
                 <DeleteUploadButton

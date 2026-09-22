@@ -101,7 +101,7 @@ const MarkdownField = () => {
             className={tabClassName(!showPreview)}
             onClick={() => setShowPreview(false)}
           >
-            Bearbeiten
+            bearbeiten
           </button>
           <button
             type="button"

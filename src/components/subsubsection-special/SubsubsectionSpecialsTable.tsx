@@ -81,7 +81,7 @@ export const SubsubsectionSpecialsTable = ({ subsubsectionSpecials }: Props) => 
                     <IfUserCanEdit>
                       <ButtonWrapper className="justify-end">
                         <Link icon="edit" {...editLink(special.id)}>
-                          Bearbeiten
+                          bearbeiten
                         </Link>
                         <button
                           type="button"

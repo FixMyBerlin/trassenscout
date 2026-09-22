@@ -91,7 +91,7 @@ export const QualityLevelsTable = ({ qualityLevels }: Props) => {
                     <IfUserCanEdit>
                       <ButtonWrapper className="justify-end">
                         <Link icon="edit" {...editLink(qualityLevel.id)}>
-                          Bearbeiten
+                          bearbeiten
                         </Link>
                         <button
                           type="button"

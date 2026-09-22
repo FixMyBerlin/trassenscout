@@ -66,7 +66,7 @@ type AdminTableEditLinkProps = {
 
 export const AdminTableEditLink = ({
   to,
-  children = "Bearbeiten",
+  children = "bearbeiten",
   icon,
   className,
 }: AdminTableEditLinkProps) => (

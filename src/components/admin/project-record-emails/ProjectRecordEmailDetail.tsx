@@ -82,7 +82,7 @@ export const ProjectRecordEmailDetail = ({ projectRecordEmailId }: Props) => {
           params={{ projectRecordEmailId: String(projectRecordEmailId) }}
           className={adminTableEditButtonClassName}
         >
-          Bearbeiten
+          bearbeiten
         </Link>
       </div>
     </>

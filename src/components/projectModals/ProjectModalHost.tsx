@@ -208,7 +208,7 @@ function ProjectModalContent({ projectSlug }: { projectSlug: string }) {
               {!isUploadEditView && uploadEditHref ? (
                 <IfUserCanEdit>
                   <Link icon="edit" to={uploadEditHref} resetScroll={false}>
-                    Bearbeiten
+                    bearbeiten
                   </Link>
                 </IfUserCanEdit>
               ) : null}
@@ -277,7 +277,7 @@ function ProjectModalContent({ projectSlug }: { projectSlug: string }) {
                     })}
                     resetScroll={false}
                   >
-                    Bearbeiten
+                    bearbeiten
                   </Link>
                 </IfUserCanEdit>
               ) : null}
@@ -401,7 +401,7 @@ function ProjectModalContent({ projectSlug }: { projectSlug: string }) {
                     })}
                     resetScroll={false}
                   >
-                    Bearbeiten
+                    bearbeiten
                   </Link>
                 </IfUserCanEdit>
               ) : null}

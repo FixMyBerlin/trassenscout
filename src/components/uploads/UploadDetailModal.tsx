@@ -130,7 +130,7 @@ function UploadDetailModalInner({
                     setView("edit")
                   }}
                 >
-                  Bearbeiten
+                  bearbeiten
                 </Link>
               </IfUserCanEdit>
             ) : null}

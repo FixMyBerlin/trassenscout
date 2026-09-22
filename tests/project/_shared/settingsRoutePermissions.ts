@@ -41,7 +41,7 @@ export const defineSettingsRoutePermissionSuite = ({
           timeout: 30_000,
         })
         await expect(page.getByRole("link", { name: createLinkName }).first()).toBeHidden()
-        await expect(page.getByRole("link", { name: "Bearbeiten" }).first()).toBeHidden()
+        await expect(page.getByRole("link", { name: "bearbeiten" }).first()).toBeHidden()
         await expect(page.getByRole("button", { name: "Löschen" }).first()).toBeHidden()
       })
     })
@@ -61,14 +61,14 @@ export const defineSettingsRoutePermissionSuite = ({
         const editorContext = await browser.newContext({ storageState: authFile("editor") })
         const editorPage = await editorContext.newPage()
         await editorPage.goto(listPath)
-        const editLink = editorPage.getByRole("link", { name: "Bearbeiten", exact: true }).first()
+        const editLink = editorPage.getByRole("link", { name: "bearbeiten", exact: true }).first()
         const hasEditLink = await editLink.isVisible({ timeout: 5_000 }).catch(() => false)
         const editPath = hasEditLink ? await editLink.getAttribute("href") : null
         await editorContext.close()
 
         if (!editPath) {
           // No items in the list — seed data is missing; skip rather than give a misleading failure.
-          test.skip(true, `No "Bearbeiten" link found on ${listPath} — seed data may be missing`)
+          test.skip(true, `No "bearbeiten" link found on ${listPath} — seed data may be missing`)
           return
         }
 
