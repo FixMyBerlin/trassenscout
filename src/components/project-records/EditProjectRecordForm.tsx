@@ -16,7 +16,6 @@ import {
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { Link } from "@/src/components/core/components/links/Link"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
-import { ProjectRecordCommentsSection } from "@/src/components/project-records/ProjectRecordCommentsSection"
 import { CreateEditReviewHistory } from "@/src/components/project-records/ProjectRecordCreateEditReviewHistory"
 import { ProjectRecordDeleteActionBar } from "@/src/components/project-records/ProjectRecordDeleteActionBar"
 import { ProjectRecordFormFields } from "@/src/components/project-records/ProjectRecordFormFields"
@@ -237,7 +236,6 @@ export const EditProjectRecordForm = ({
         />
       </FormShell>
       <CreateEditReviewHistory projectRecord={projectRecord} />
-      <ProjectRecordCommentsSection projectRecord={projectRecord} />
       <SuperAdminLogData data={{ initialValues: projectRecord }} />
     </>
   )

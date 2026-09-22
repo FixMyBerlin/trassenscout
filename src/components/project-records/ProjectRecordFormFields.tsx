@@ -156,15 +156,18 @@ export const ProjectRecordFormFields = ({
               </div>
             </FieldLayout>
           )}
-          <TagsFormSection
-            projectSlug={projectSlug}
-            showManageLink
-            classNameItemWrapper="grid grid-cols-2 gap-1.5 w-full"
-          />
         </div>
 
         {emailSource && splitView && <ProjectRecordEmailSource email={emailSource} />}
       </div>
+
+      {isCreateMode && (
+        <ProjectRecordFormTemplatesPreview
+          projectSlug={projectSlug}
+          landAcquisitionModuleEnabled={landAcquisitionModuleEnabled}
+        />
+      )}
+      <ProjectRecordFormTemplatesField projectSlug={projectSlug} />
 
       <FieldLayout label="Dokumente">
         {canEditUploads ? (
@@ -196,13 +199,12 @@ export const ProjectRecordFormFields = ({
           </p>
         )}
       </FieldLayout>
-      {isCreateMode && (
-        <ProjectRecordFormTemplatesPreview
-          projectSlug={projectSlug}
-          landAcquisitionModuleEnabled={landAcquisitionModuleEnabled}
-        />
-      )}
-      <ProjectRecordFormTemplatesField projectSlug={projectSlug} />
+
+      <TagsFormSection
+        projectSlug={projectSlug}
+        showManageLink
+        classNameItemWrapper="grid grid-cols-2 gap-1.5 w-full"
+      />
 
       <SuperAdminLogData data={{ uploadsValue, uploadIds }} />
     </>

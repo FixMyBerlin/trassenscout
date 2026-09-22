@@ -1,7 +1,6 @@
-import { DocumentTextIcon } from "@heroicons/react/24/outline"
 import { useState } from "react"
-import { linkStyles } from "@/src/components/core/components/links/styles"
 import { FormTemplateFillModal } from "@/src/components/project-records/FormTemplateFillModal"
+import { FormTemplateOpenButton } from "@/src/components/project-records/FormTemplateOpenButton"
 import type { ProjectRecord } from "@/src/server/projectRecords/types"
 import type { FormTemplateRef } from "@/src/shared/formTemplates/effectiveFormTemplates"
 
@@ -29,17 +28,14 @@ export const ProjectRecordFormTemplatesSection = ({
 
   return (
     <>
-      <div className="flex flex-col items-start gap-1 text-sm">
+      <div className="flex flex-col items-start gap-2 text-sm">
         {formTemplates.map((formTemplate) => (
-          <button
+          <FormTemplateOpenButton
             key={formTemplate.id}
-            type="button"
             onClick={() => setOpenFormTemplateId(formTemplate.id)}
-            className={`inline-flex items-center gap-1 whitespace-nowrap ${linkStyles}`}
           >
-            <DocumentTextIcon className="size-4 shrink-0" aria-hidden />
             {formTemplate.title}
-          </button>
+          </FormTemplateOpenButton>
         ))}
       </div>
 
