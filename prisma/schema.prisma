@@ -926,6 +926,7 @@ model LogEntry {
   supportDocumentId       Int?
 
   @@index([projectId, createdAt])
+  @@index([createdAt, id])
 }
 
 enum LogLevelActionEnum {
