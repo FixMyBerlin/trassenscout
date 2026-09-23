@@ -39,7 +39,6 @@ export function useProjectPageTabs() {
   const project = projects.find((item) => item.slug === projectSlug)
   const tabs: { name: string; to: string }[] = []
 
-  tabs.push({ name: "Planungen", to: `/${projectSlug}/overview` })
   if (
     canSeeProjectActivity({
       role: user?.role,
@@ -52,6 +51,5 @@ export function useProjectPageTabs() {
   if (assignedCount > 0) {
     tabs.push({ name: "Aufgaben", to: `/${projectSlug}/assignments` })
   }
-
   return tabs
 }
