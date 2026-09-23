@@ -15,14 +15,14 @@ function readableProjectWhere(userId: number, role: string, projectSlug: string 
   }
 }
 
-export async function countMyAssignedRecords(headers: Headers) {
+export async function countMyAssignedRecords(headers: Headers, projectSlug?: string) {
   const session = await endpointAuth.session(headers)
   const userId = Number(session.userId)
 
   return db.projectRecord.count({
     where: {
       ...myAssignmentsWhere(userId),
-      project: readableProjectWhere(userId, session.role, undefined),
+      project: readableProjectWhere(userId, session.role, projectSlug),
     },
   })
 }

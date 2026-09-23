@@ -19,6 +19,8 @@ type Props = {
   homeLinkText: string
   menuItems?: ReturnType<typeof useMenuItems>
   projects?: ProjectsForCurrentUser
+  /** Round icon actions, left of the admin, meta, and user menus. */
+  actions?: React.ReactNode
   userVariant?: NavigationUserVariant
 }
 
@@ -27,6 +29,7 @@ export const NavigationMobile = ({
   homeLinkText,
   menuItems,
   projects,
+  actions,
   userVariant = "auto",
 }: Props) => {
   const pathname = useLocation().pathname
@@ -38,6 +41,7 @@ export const NavigationMobile = ({
           <div className="relative flex min-h-16 items-center justify-between sm:h-16">
             <div className="absolute inset-y-0 right-0 flex items-center space-x-2">
               {projects && <ProjectsSwitch projects={projects} />}
+              {actions}
 
               {userVariant === "loggedOut" ? (
                 <NavigationUserLoggedOut />

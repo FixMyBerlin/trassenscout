@@ -1,5 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { projectsForCurrentUserQueryOptions } from "@/src/server/projects/projectsQueryOptions"
+import { NavigationActivityLink } from "./NavigationActivityLink"
 import { ProjectsSwitch } from "./NavigationLoggedIn/ProjectsSwitch"
 import { LinksDesktop } from "./NavigationLoggedInProject/LinksDesktop"
 import { useMenuItems } from "./NavigationLoggedInProject/useMenuItems"
@@ -15,11 +16,16 @@ export const NavigationLoggedInProject = () => {
     <NavigationWrapper>
       <NavigationMobile
         homeLink="/dashboard"
-        homeLinkText="Meine Projete"
+        homeLinkText="Meine Projekte"
         menuItems={menuItems}
         projects={projects}
+        actions={<NavigationActivityLink />}
       />
-      <NavigationDesktop homeLink="/dashboard" homeLinkText="Meine Projekte">
+      <NavigationDesktop
+        homeLink="/dashboard"
+        homeLinkText="Meine Projekte"
+        actions={<NavigationActivityLink />}
+      >
         <ProjectsSwitch projects={projects} />
         <LinksDesktop menuItems={menuItems} />
       </NavigationDesktop>

@@ -5,6 +5,7 @@ import {
   CreateProjectRecordBySlugSchema,
   DeleteProjectRecordBySlugSchema,
   DeleteProjectRecordWithUploadsDecisionSchema,
+  CountMyAssignedRecordsSchema,
   GetMyAssignedRecordsSchema,
   GetProjectRecordAdminSchema,
   GetProjectRecordSchema,
@@ -87,9 +88,9 @@ export const getProjectRecordsByAcquisitionAreaFn = createServerFn({ method: "GE
   .validator(GetProjectRecordsByAcquisitionAreaSchema)
   .handler(({ data }) => getProjectRecordsByAcquisitionArea(getRequestHeaders(), data))
 
-export const countMyAssignedRecordsFn = createServerFn({ method: "GET" }).handler(() =>
-  countMyAssignedRecords(getRequestHeaders()),
-)
+export const countMyAssignedRecordsFn = createServerFn({ method: "GET" })
+  .validator(CountMyAssignedRecordsSchema)
+  .handler(({ data }) => countMyAssignedRecords(getRequestHeaders(), data.projectSlug))
 
 export const getMyAssignedRecordsFn = createServerFn({ method: "GET" })
   .validator(GetMyAssignedRecordsSchema)

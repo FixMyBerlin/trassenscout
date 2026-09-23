@@ -93,6 +93,8 @@ import { Route as LoggedInProjectsProjectSlugInvitesIndexRouteImport } from './r
 import { Route as LoggedInProjectsProjectSlugEvaluationsIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/evaluations/index'
 import { Route as LoggedInProjectsProjectSlugEditIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/edit/index'
 import { Route as LoggedInProjectsProjectSlugContactsIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/contacts/index'
+import { Route as LoggedInProjectsProjectSlugAssignmentsIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/assignments/index'
+import { Route as LoggedInProjectsProjectSlugActivityIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/activity/index'
 import { Route as LoggedInProjectsProjectSlugAcquisitionAreaStatusIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/acquisition-area-status/index'
 import { Route as LoggedInGeneralUserEditIndexRouteImport } from './routes/_loggedInGeneral/user/edit/index'
 import { Route as LoggedInGeneralDashboardAssignmentsIndexRouteImport } from './routes/_loggedInGeneral/dashboard/assignments/index'
@@ -648,6 +650,18 @@ const LoggedInProjectsProjectSlugContactsIndexRoute =
   LoggedInProjectsProjectSlugContactsIndexRouteImport.update({
     id: '/contacts/',
     path: '/contacts/',
+    getParentRoute: () => LoggedInProjectsProjectSlugRoute,
+  } as any)
+const LoggedInProjectsProjectSlugAssignmentsIndexRoute =
+  LoggedInProjectsProjectSlugAssignmentsIndexRouteImport.update({
+    id: '/assignments/',
+    path: '/assignments/',
+    getParentRoute: () => LoggedInProjectsProjectSlugRoute,
+  } as any)
+const LoggedInProjectsProjectSlugActivityIndexRoute =
+  LoggedInProjectsProjectSlugActivityIndexRouteImport.update({
+    id: '/activity/',
+    path: '/activity/',
     getParentRoute: () => LoggedInProjectsProjectSlugRoute,
   } as any)
 const LoggedInProjectsProjectSlugAcquisitionAreaStatusIndexRoute =
@@ -1295,6 +1309,8 @@ export interface FileRoutesByFullPath {
   '/dashboard/assignments/': typeof LoggedInGeneralDashboardAssignmentsIndexRoute
   '/user/edit/': typeof LoggedInGeneralUserEditIndexRoute
   '/$projectSlug/acquisition-area-status/': typeof LoggedInProjectsProjectSlugAcquisitionAreaStatusIndexRoute
+  '/$projectSlug/activity/': typeof LoggedInProjectsProjectSlugActivityIndexRoute
+  '/$projectSlug/assignments/': typeof LoggedInProjectsProjectSlugAssignmentsIndexRoute
   '/$projectSlug/contacts/': typeof LoggedInProjectsProjectSlugContactsIndexRoute
   '/$projectSlug/edit/': typeof LoggedInProjectsProjectSlugEditIndexRoute
   '/$projectSlug/evaluations/': typeof LoggedInProjectsProjectSlugEvaluationsIndexRoute
@@ -1459,6 +1475,8 @@ export interface FileRoutesByTo {
   '/dashboard/assignments': typeof LoggedInGeneralDashboardAssignmentsIndexRoute
   '/user/edit': typeof LoggedInGeneralUserEditIndexRoute
   '/$projectSlug/acquisition-area-status': typeof LoggedInProjectsProjectSlugAcquisitionAreaStatusIndexRoute
+  '/$projectSlug/activity': typeof LoggedInProjectsProjectSlugActivityIndexRoute
+  '/$projectSlug/assignments': typeof LoggedInProjectsProjectSlugAssignmentsIndexRoute
   '/$projectSlug/contacts': typeof LoggedInProjectsProjectSlugContactsIndexRoute
   '/$projectSlug/edit': typeof LoggedInProjectsProjectSlugEditIndexRoute
   '/$projectSlug/evaluations': typeof LoggedInProjectsProjectSlugEvaluationsIndexRoute
@@ -1633,6 +1651,8 @@ export interface FileRoutesById {
   '/_loggedInGeneral/dashboard/assignments/': typeof LoggedInGeneralDashboardAssignmentsIndexRoute
   '/_loggedInGeneral/user/edit/': typeof LoggedInGeneralUserEditIndexRoute
   '/_loggedInProjects/$projectSlug/acquisition-area-status/': typeof LoggedInProjectsProjectSlugAcquisitionAreaStatusIndexRoute
+  '/_loggedInProjects/$projectSlug/activity/': typeof LoggedInProjectsProjectSlugActivityIndexRoute
+  '/_loggedInProjects/$projectSlug/assignments/': typeof LoggedInProjectsProjectSlugAssignmentsIndexRoute
   '/_loggedInProjects/$projectSlug/contacts/': typeof LoggedInProjectsProjectSlugContactsIndexRoute
   '/_loggedInProjects/$projectSlug/edit/': typeof LoggedInProjectsProjectSlugEditIndexRoute
   '/_loggedInProjects/$projectSlug/evaluations/': typeof LoggedInProjectsProjectSlugEvaluationsIndexRoute
@@ -1804,6 +1824,8 @@ export interface FileRouteTypes {
     | '/dashboard/assignments/'
     | '/user/edit/'
     | '/$projectSlug/acquisition-area-status/'
+    | '/$projectSlug/activity/'
+    | '/$projectSlug/assignments/'
     | '/$projectSlug/contacts/'
     | '/$projectSlug/edit/'
     | '/$projectSlug/evaluations/'
@@ -1968,6 +1990,8 @@ export interface FileRouteTypes {
     | '/dashboard/assignments'
     | '/user/edit'
     | '/$projectSlug/acquisition-area-status'
+    | '/$projectSlug/activity'
+    | '/$projectSlug/assignments'
     | '/$projectSlug/contacts'
     | '/$projectSlug/edit'
     | '/$projectSlug/evaluations'
@@ -2141,6 +2165,8 @@ export interface FileRouteTypes {
     | '/_loggedInGeneral/dashboard/assignments/'
     | '/_loggedInGeneral/user/edit/'
     | '/_loggedInProjects/$projectSlug/acquisition-area-status/'
+    | '/_loggedInProjects/$projectSlug/activity/'
+    | '/_loggedInProjects/$projectSlug/assignments/'
     | '/_loggedInProjects/$projectSlug/contacts/'
     | '/_loggedInProjects/$projectSlug/edit/'
     | '/_loggedInProjects/$projectSlug/evaluations/'
@@ -2882,6 +2908,20 @@ declare module '@tanstack/react-router' {
       path: '/contacts'
       fullPath: '/$projectSlug/contacts/'
       preLoaderRoute: typeof LoggedInProjectsProjectSlugContactsIndexRouteImport
+      parentRoute: typeof LoggedInProjectsProjectSlugRoute
+    }
+    '/_loggedInProjects/$projectSlug/assignments/': {
+      id: '/_loggedInProjects/$projectSlug/assignments/'
+      path: '/assignments'
+      fullPath: '/$projectSlug/assignments/'
+      preLoaderRoute: typeof LoggedInProjectsProjectSlugAssignmentsIndexRouteImport
+      parentRoute: typeof LoggedInProjectsProjectSlugRoute
+    }
+    '/_loggedInProjects/$projectSlug/activity/': {
+      id: '/_loggedInProjects/$projectSlug/activity/'
+      path: '/activity'
+      fullPath: '/$projectSlug/activity/'
+      preLoaderRoute: typeof LoggedInProjectsProjectSlugActivityIndexRouteImport
       parentRoute: typeof LoggedInProjectsProjectSlugRoute
     }
     '/_loggedInProjects/$projectSlug/acquisition-area-status/': {
@@ -3661,6 +3701,8 @@ interface LoggedInProjectsProjectSlugRouteChildren {
   LoggedInProjectsProjectSlugProjectRecordsRouteRoute: typeof LoggedInProjectsProjectSlugProjectRecordsRouteRouteWithChildren
   LoggedInProjectsProjectSlugIndexRoute: typeof LoggedInProjectsProjectSlugIndexRoute
   LoggedInProjectsProjectSlugAcquisitionAreaStatusIndexRoute: typeof LoggedInProjectsProjectSlugAcquisitionAreaStatusIndexRoute
+  LoggedInProjectsProjectSlugActivityIndexRoute: typeof LoggedInProjectsProjectSlugActivityIndexRoute
+  LoggedInProjectsProjectSlugAssignmentsIndexRoute: typeof LoggedInProjectsProjectSlugAssignmentsIndexRoute
   LoggedInProjectsProjectSlugContactsIndexRoute: typeof LoggedInProjectsProjectSlugContactsIndexRoute
   LoggedInProjectsProjectSlugEditIndexRoute: typeof LoggedInProjectsProjectSlugEditIndexRoute
   LoggedInProjectsProjectSlugEvaluationsIndexRoute: typeof LoggedInProjectsProjectSlugEvaluationsIndexRoute
@@ -3730,6 +3772,10 @@ const LoggedInProjectsProjectSlugRouteChildren: LoggedInProjectsProjectSlugRoute
       LoggedInProjectsProjectSlugIndexRoute,
     LoggedInProjectsProjectSlugAcquisitionAreaStatusIndexRoute:
       LoggedInProjectsProjectSlugAcquisitionAreaStatusIndexRoute,
+    LoggedInProjectsProjectSlugActivityIndexRoute:
+      LoggedInProjectsProjectSlugActivityIndexRoute,
+    LoggedInProjectsProjectSlugAssignmentsIndexRoute:
+      LoggedInProjectsProjectSlugAssignmentsIndexRoute,
     LoggedInProjectsProjectSlugContactsIndexRoute:
       LoggedInProjectsProjectSlugContactsIndexRoute,
     LoggedInProjectsProjectSlugEditIndexRoute:
