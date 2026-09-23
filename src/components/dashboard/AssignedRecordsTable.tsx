@@ -13,6 +13,7 @@ import {
 } from "@/src/components/core/components/Table/tableClasses"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/components/core/components/text/titles"
+import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { ProjectRecordAssignedToPill } from "@/src/components/project-records/ProjectRecordAssignedToPill"
 import { ProjectRecordEditingStateIndicator } from "@/src/components/project-records/ProjectRecordEditingStateIndicator"
 import { useProjectRecordModal } from "@/src/components/project-records/ProjectRecordModalHost"
@@ -43,7 +44,7 @@ export const AssignedRecordsTable = ({ records }: Props) => {
   const { getProjectRecordDetailHref } = useProjectRecordModal()
 
   if (!records.length) {
-    return <p className="px-4 text-sm text-gray-500">Keine Aufgaben für diese Auswahl.</p>
+    return <ZeroCase visible text="Keine Aufgaben für diese Auswahl." />
   }
 
   return (

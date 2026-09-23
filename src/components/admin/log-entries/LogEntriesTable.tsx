@@ -14,6 +14,7 @@ import {
 } from "@/src/components/core/components/Table/tableClasses"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/components/core/components/text/titles"
+import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import type { LogEntryRow } from "@/src/server/logEntries/types"
 import {
@@ -56,7 +57,7 @@ export const LogEntriesTable = ({
 }: Props) => {
   const [expandedIds, setExpandedIds] = useState<number[]>([])
 
-  if (!entries.length) return <p className="px-4 text-sm text-gray-500">{emptyText}</p>
+  if (!entries.length) return <ZeroCase visible text={emptyText} />
 
   const toggle = (id: number) =>
     setExpandedIds((current) =>
