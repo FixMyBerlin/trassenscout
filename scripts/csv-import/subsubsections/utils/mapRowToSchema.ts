@@ -161,10 +161,13 @@ export function mapRowToSchema(row: CsvRow) {
       case "expensesOfficialOrders":
       case "expensesTechnicalVerification":
       case "nonEligibleExpenses":
+      case "grantAmount":
+      case "ownFunds":
+      case "grantsOtherFunding":
       case "revenuesEconomicIncome":
       case "contributionsThirdParties":
-      case "grantsOtherFunding":
-      case "ownFunds": {
+      case "remainingFunding":
+      case "disbursedFunding": {
         // Handle numeric fields - normalize comma/decimal separators and parse as numbers
         const normalized = normalizeNumericString(String(csvValue))
         const parsed = Number(normalized)

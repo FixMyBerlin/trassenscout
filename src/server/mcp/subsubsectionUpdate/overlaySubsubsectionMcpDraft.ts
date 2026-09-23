@@ -30,10 +30,13 @@ const SCALAR_FORM_KEYS = [
   "expensesOfficialOrders",
   "expensesTechnicalVerification",
   "nonEligibleExpenses",
+  "grantAmount",
+  "ownFunds",
+  "grantsOtherFunding",
   "revenuesEconomicIncome",
   "contributionsThirdParties",
-  "grantsOtherFunding",
-  "ownFunds",
+  "remainingFunding",
+  "disbursedFunding",
 ] as const satisfies readonly (keyof SubsubsectionMcpPatch)[]
 
 export type SubsubsectionMcpFormOverlay = {
@@ -60,10 +63,13 @@ export type SubsubsectionMcpFormOverlay = {
   expensesOfficialOrders?: number
   expensesTechnicalVerification?: number
   nonEligibleExpenses?: number
+  grantAmount?: number
+  ownFunds?: number
+  grantsOtherFunding?: number
   revenuesEconomicIncome?: number
   contributionsThirdParties?: number
-  grantsOtherFunding?: number
-  ownFunds?: number
+  remainingFunding?: number
+  disbursedFunding?: number
   qualityLevelId?: number
   subsubsectionStatusId?: number
   subsubsectionTaskId?: number

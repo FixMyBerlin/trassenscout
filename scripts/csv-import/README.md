@@ -125,10 +125,13 @@ Use these instead of the corresponding numeric ID columns.
 | `expensesOfficialOrders`        |
 | `expensesTechnicalVerification` |
 | `nonEligibleExpenses`           |
+| `grantAmount`                   |
+| `ownFunds`                      |
+| `grantsOtherFunding`            |
 | `revenuesEconomicIncome`        |
 | `contributionsThirdParties`     |
-| `grantsOtherFunding`            |
-| `ownFunds`                      |
+| `remainingFunding`              |
+| `disbursedFunding`              |
 
 ### Optional columns — many-to-many
 

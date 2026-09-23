@@ -39,10 +39,13 @@ const SCALAR_KEYS = [
   "expensesOfficialOrders",
   "expensesTechnicalVerification",
   "nonEligibleExpenses",
+  "grantAmount",
+  "ownFunds",
+  "grantsOtherFunding",
   "revenuesEconomicIncome",
   "contributionsThirdParties",
-  "grantsOtherFunding",
-  "ownFunds",
+  "remainingFunding",
+  "disbursedFunding",
 ] as const satisfies readonly (keyof SubsubsectionMcpCreatePatch)[]
 
 function fieldLabel(field: string) {

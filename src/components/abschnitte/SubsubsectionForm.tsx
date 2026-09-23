@@ -7,6 +7,11 @@ import { SubsubsectionGeometryInput } from "@/src/components/abschnitte/Subsubse
 import { lookupTableRows } from "@/src/components/abschnitte/utils/lookupTableRows"
 import { AdminBox } from "@/src/components/core/components/AdminBox/AdminBox"
 import { FieldLayoutRightColumn } from "@/src/components/core/components/forms/FieldLayout"
+import {
+  fieldLayoutControlClassName,
+  fieldLayoutLabelClassName,
+  fieldLayoutRootClassName,
+} from "@/src/components/core/components/forms/fieldLayoutStyles"
 import { FormDetailsSummary } from "@/src/components/core/components/forms/FormDetailsSummary"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
@@ -22,6 +27,7 @@ import {
   type OnSubmitResult,
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { Spinner } from "@/src/components/core/components/Spinner"
+import { formattedEuro } from "@/src/components/core/components/text/formattedProperties"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { subsubsectionLocationLabelMap } from "@/src/components/core/utils/subsubsectionLocationLabelMap"
 import { getUserSelectOptions } from "@/src/components/shared/app/users/utils/getUserSelectOptions"
@@ -36,6 +42,25 @@ import { subsubsectionFormDefaultValues } from "@/src/shared/subsubsections/sche
 import { subsubsectionFieldTranslations } from "@/src/shared/subsubsections/subsubsectionFieldMappings"
 
 const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
+
+const costStructureFieldNames = [
+  "planningCosts",
+  "constructionCosts",
+  "deliveryCosts",
+  "landAcquisitionCosts",
+  "expensesOfficialOrders",
+  "expensesTechnicalVerification",
+  "nonEligibleExpenses",
+] as const
+
+function enteredCost(raw: unknown) {
+  if (typeof raw === "number") return Number.isFinite(raw) ? raw : null
+  if (typeof raw === "string" && raw.trim() !== "") {
+    const value = Number(raw)
+    return Number.isFinite(value) ? value : null
+  }
+  return null
+}
 
 export type SubsubsectionFormProps<S extends z.ZodTypeAny> = {
   schema: S
@@ -494,6 +519,57 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
                 />
               )}
             </form.AppField>
+            <form.Subscribe
+              selector={(state) => {
+                const entered = costStructureFieldNames.flatMap((name) => {
+                  const value = enteredCost(state.values[name])
+                  return value === null ? [] : [value]
+                })
+                if (entered.length === 0) return null
+                return entered.reduce((sum, value) => sum + value, 0)
+              }}
+            >
+              {(sum) => (
+                <div className={fieldLayoutRootClassName}>
+                  <p className={fieldLayoutLabelClassName}>Summe</p>
+                  <p className={`${fieldLayoutControlClassName} py-2 font-semibold sm:text-sm`}>
+                    {formattedEuro(sum)}
+                  </p>
+                </div>
+              )}
+            </form.Subscribe>
+          </div>
+        </details>
+        <details className={formDetailsClassName}>
+          <FormDetailsSummary>Finanzierung</FormDetailsSummary>
+          <div className={formDetailsPanelClassName}>
+            <form.AppField name="grantAmount">
+              {(field) => (
+                <field.NumberField
+                  inlineLeadingAddon="€"
+                  label={subsubsectionFieldTranslations.grantAmount}
+                  optional
+                />
+              )}
+            </form.AppField>
+            <form.AppField name="ownFunds">
+              {(field) => (
+                <field.NumberField
+                  inlineLeadingAddon="€"
+                  label={subsubsectionFieldTranslations.ownFunds}
+                  optional
+                />
+              )}
+            </form.AppField>
+            <form.AppField name="grantsOtherFunding">
+              {(field) => (
+                <field.NumberField
+                  inlineLeadingAddon="€"
+                  label={subsubsectionFieldTranslations.grantsOtherFunding}
+                  optional
+                />
+              )}
+            </form.AppField>
             <form.AppField name="revenuesEconomicIncome">
               {(field) => (
                 <field.NumberField
@@ -512,20 +588,21 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
                 />
               )}
             </form.AppField>
-            <form.AppField name="grantsOtherFunding">
+            <hr className="border-gray-200" />
+            <form.AppField name="remainingFunding">
               {(field) => (
                 <field.NumberField
                   inlineLeadingAddon="€"
-                  label={subsubsectionFieldTranslations.grantsOtherFunding}
+                  label={subsubsectionFieldTranslations.remainingFunding}
                   optional
                 />
               )}
             </form.AppField>
-            <form.AppField name="ownFunds">
+            <form.AppField name="disbursedFunding">
               {(field) => (
                 <field.NumberField
                   inlineLeadingAddon="€"
-                  label={subsubsectionFieldTranslations.ownFunds}
+                  label={subsubsectionFieldTranslations.disbursedFunding}
                   optional
                 />
               )}

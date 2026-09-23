@@ -470,10 +470,13 @@ model Subsubsection {
   //
   nonEligibleExpenses           Float? //  Nicht zuwendungsfähige Ausgaben
   //
-  revenuesEconomicIncome        Float? //  Erlöse und wirtschafltiche Einnahmen
-  contributionsThirdParties     Float? //  Beiträge Dritter
-  grantsOtherFunding            Float? //  Zuwendungen aus anderen Förderprogrammen
+  grantAmount                   Float? //  Zuwendung
   ownFunds                      Float? //  Einsatz Eigenmittel
+  grantsOtherFunding            Float? //  Zuwendungen aus anderen Förderprogrammen
+  revenuesEconomicIncome        Float? //  Erlöse und wirtschaftliche Einnahmen
+  contributionsThirdParties     Float? //  Beiträge Dritter
+  remainingFunding              Float? //  Noch verfügbare Fördermittel
+  disbursedFunding              Float? //  Ausgezahlte Fördermittel
 
   qualityLevel                     QualityLevel?                     @relation(fields: [qualityLevelId], references: [id])
   qualityLevelId                   Int?
