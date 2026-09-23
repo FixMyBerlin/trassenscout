@@ -25,7 +25,7 @@ const routeApi = getRouteApi("/_loggedInGeneral/dashboard/assignments/")
 const statusOptions: { value: AssignmentsSearch["status"]; label: string }[] = [
   { value: "PENDING", label: "In Bearbeitung" },
   { value: "COMPLETED", label: "Abgeschlossen" },
-  { value: "all", label: "Status: Alle" },
+  { value: "all", label: "Alle Status" },
 ]
 
 const directionOptions: { value: AssignmentsSearch["direction"]; label: string }[] = [

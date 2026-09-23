@@ -1,11 +1,43 @@
 import { z } from "zod"
 import { jsonSearchParam } from "@/src/shared/routing/jsonSearchParam"
 
+export const PROJECT_RECORD_FILTER_DEFAULTS = {
+  searchterm: "",
+  status: "all",
+  direction: "all",
+} as const
+
 const projectRecordFilterSchema = z.object({
-  searchterm: z.string(),
+  searchterm: z.string().default(PROJECT_RECORD_FILTER_DEFAULTS.searchterm),
+  status: z
+    .enum(["all", "PENDING", "COMPLETED"])
+    .default(PROJECT_RECORD_FILTER_DEFAULTS.status)
+    .catch(PROJECT_RECORD_FILTER_DEFAULTS.status),
+  direction: z
+    .enum(["all", "byMe", "toMe"])
+    .default(PROJECT_RECORD_FILTER_DEFAULTS.direction)
+    .catch(PROJECT_RECORD_FILTER_DEFAULTS.direction),
 })
 
 export type ProjectRecordFilter = z.infer<typeof projectRecordFilterSchema>
+
+/** Drops default fields so a cleared filter is absent from the URL. */
+export function projectRecordFilterSearchValue(
+  filter: Partial<ProjectRecordFilter> | undefined,
+): Partial<ProjectRecordFilter> | undefined {
+  if (!filter) return undefined
+
+  const next: Partial<ProjectRecordFilter> = {}
+  if (filter.searchterm) next.searchterm = filter.searchterm
+  if (filter.status && filter.status !== PROJECT_RECORD_FILTER_DEFAULTS.status) {
+    next.status = filter.status
+  }
+  if (filter.direction && filter.direction !== PROJECT_RECORD_FILTER_DEFAULTS.direction) {
+    next.direction = filter.direction
+  }
+
+  return Object.keys(next).length === 0 ? undefined : next
+}
 
 const projectRecordInitialFormValuesSchema = z.object({
   subsubsectionId: z.number().optional(),

@@ -2,13 +2,14 @@ import { getRouteApi } from "@tanstack/react-router"
 import { preserveScrollNavigateOptions } from "@/src/components/core/routes/preserveScrollNavigateOptions"
 import {
   type ProjectRecordFilter,
+  projectRecordFilterSearchValue,
   type ProjectRecordsSearch,
 } from "@/src/shared/projectRecords/searchSchemas"
 
 const projectRecordsRouteApi = getRouteApi("/_loggedInProjects/$projectSlug/project-records")
 
 type FilterUpdater =
-  | ProjectRecordFilter
+  | Partial<ProjectRecordFilter>
   | undefined
   | ((previous: ProjectRecordFilter | undefined) => ProjectRecordFilter | undefined)
 
@@ -21,10 +22,15 @@ export function useProjectRecordFilters() {
     await navigate({
       to: ".",
       search: (previous: ProjectRecordsSearch) => {
-        const next = typeof updater === "function" ? updater(previous.filter) : updater
+        const next =
+          typeof updater === "function"
+            ? updater(previous.filter)
+            : updater === undefined
+              ? undefined
+              : { ...previous.filter, ...updater }
         return {
           ...previous,
-          filter: next,
+          filter: projectRecordFilterSearchValue(next),
         }
       },
       ...preserveScrollNavigateOptions,
