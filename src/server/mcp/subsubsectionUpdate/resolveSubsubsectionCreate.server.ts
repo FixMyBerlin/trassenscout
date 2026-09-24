@@ -1,4 +1,5 @@
 import { SlugSchema } from "@/src/components/core/utils/schema-shared"
+import { LabelPositionEnum, type Prisma } from "@/src/prisma/generated/client"
 import db from "@/src/server/db.server"
 import { mcpEnvLabel } from "@/src/server/mcp/mcpCursorConfig"
 import { requireMcpEnabledProject } from "@/src/server/mcp/requireMcpEnabledProject.server"
@@ -11,12 +12,16 @@ import {
 } from "@/src/server/mcp/subsubsectionUpdate/geometryPreview"
 import { subsubsectionMcpFieldLabel } from "@/src/server/mcp/subsubsectionUpdate/patchFieldLabel"
 import type { SubsubsectionMcpCreatePatch } from "@/src/server/mcp/subsubsectionUpdate/patchSchema"
+import { buildSubsubsectionUrl } from "@/src/server/mcp/subsubsectionUrl"
 import {
   resolveSubsubsectionInfrastructureTypeSlugs,
   resolveSubsubsectionRelationSlugs,
 } from "@/src/server/subsubsections/resolveSubsubsectionRelationSlugs.server"
 import { GeometryWithTypeSchema } from "@/src/shared/geometry/geometrySchemas"
-import { parseDefinitions } from "@/src/shared/subsubsections/extraFieldSchemas"
+import {
+  parseDefinitions,
+  sanitizeExtraFieldsForSave,
+} from "@/src/shared/subsubsections/extraFieldSchemas"
 
 const SCALAR_KEYS = [
   "description",
@@ -63,6 +68,7 @@ type SubsubsectionMcpSlugConflict = {
 
 export type ResolveSubsubsectionCreateResult = {
   environment: ReturnType<typeof mcpEnvLabel>
+  mcpMode: Awaited<ReturnType<typeof requireMcpEnabledProject>>["mcpMode"]
   url: string
   okToWrite: boolean
   changes: SubsubsectionPreviewChange[]
@@ -75,6 +81,7 @@ export type ResolveSubsubsectionCreateResult = {
   subsectionSlug: string
   slug: string
   projectId: number
+  prismaData: Prisma.SubsubsectionUncheckedCreateInput
 }
 
 function buildNewFormUrl(
@@ -124,7 +131,10 @@ export async function resolveSubsubsectionCreate({
     throw new Error(`Subsection (Planungsabschnitt) not found: ${projectSlug}/${subsectionSlug}`)
   }
 
-  const url = buildNewFormUrl(origin, project.slug, subsection.slug, slug)
+  const url =
+    project.mcpMode === "DIRECT"
+      ? buildSubsubsectionUrl(origin, project.slug, subsection.slug, slug)
+      : buildNewFormUrl(origin, project.slug, subsection.slug, slug)
 
   const existingMeasure = await db.subsubsection.findFirst({
     where: { slug, subsectionId: subsection.id },
@@ -198,6 +208,23 @@ export async function resolveSubsubsectionCreate({
     pushSet(changes, key, proposedValue)
   }
 
+  const prismaData: Prisma.SubsubsectionUncheckedCreateInput = {
+    slug,
+    subsectionId: subsection.id,
+    labelPos: LabelPositionEnum.bottom,
+    type: patch.type ?? "LINE",
+    geometry: (patch.geometry ?? null) as Prisma.InputJsonValue,
+  }
+
+  for (const key of SCALAR_KEYS) {
+    if (!(key in patch) || patch[key] === undefined || patch[key] === null) continue
+    const proposed = patch[key]
+    ;(prismaData as Record<string, unknown>)[key] =
+      key === "trafficLoadDate" || key === "estimatedCompletionDate"
+        ? new Date(proposed as string)
+        : proposed
+  }
+
   const relationSlugs = {
     qualityLevelSlug: patch.qualityLevelSlug,
     subsubsectionStatusSlug: patch.subsubsectionStatusSlug,
@@ -206,11 +233,21 @@ export async function resolveSubsubsectionCreate({
   }
   if (Object.values(relationSlugs).some((value) => value !== undefined)) {
     try {
-      await resolveSubsubsectionRelationSlugs({
+      const resolved = await resolveSubsubsectionRelationSlugs({
         projectId: project.id,
         slugs: relationSlugs,
         missing: "error",
       })
+      if (resolved.qualityLevelId !== undefined) prismaData.qualityLevelId = resolved.qualityLevelId
+      if (resolved.subsubsectionStatusId !== undefined) {
+        prismaData.subsubsectionStatusId = resolved.subsubsectionStatusId
+      }
+      if (resolved.subsubsectionTaskId !== undefined) {
+        prismaData.subsubsectionTaskId = resolved.subsubsectionTaskId
+      }
+      if (resolved.subsubsectionInfraId !== undefined) {
+        prismaData.subsubsectionInfraId = resolved.subsubsectionInfraId
+      }
       if (patch.qualityLevelSlug !== undefined) {
         pushSet(changes, "qualityLevelSlug", patch.qualityLevelSlug)
       }
@@ -230,11 +267,12 @@ export async function resolveSubsubsectionCreate({
 
   if (patch.subsubsectionInfrastructureTypeSlugs !== undefined) {
     try {
-      await resolveSubsubsectionInfrastructureTypeSlugs({
+      const ids = await resolveSubsubsectionInfrastructureTypeSlugs({
         projectId: project.id,
         slugs: patch.subsubsectionInfrastructureTypeSlugs,
         missing: "error",
       })
+      prismaData.SubsubsectionInfrastructureTypes = { connect: ids.map((id) => ({ id })) }
       pushSet(
         changes,
         "subsubsectionInfrastructureTypeSlugs",
@@ -260,6 +298,10 @@ export async function resolveSubsubsectionCreate({
       }
       pushSet(changes, `extraFields.${key}`, value)
     }
+    prismaData.extraFields = sanitizeExtraFieldsForSave(
+      patch.extraFields,
+      definitions,
+    ) as Prisma.InputJsonValue
   }
 
   const okToWrite =
@@ -267,6 +309,7 @@ export async function resolveSubsubsectionCreate({
 
   return {
     environment,
+    mcpMode: project.mcpMode,
     url,
     okToWrite,
     changes,
@@ -279,6 +322,7 @@ export async function resolveSubsubsectionCreate({
     subsectionSlug: subsection.slug,
     slug,
     projectId: project.id,
+    prismaData,
   }
 }
 

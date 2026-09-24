@@ -1,4 +1,4 @@
-import { Project, StateKeyEnum } from "@/src/prisma/generated/client"
+import { McpModeEnum, Project, StateKeyEnum } from "@/src/prisma/generated/client"
 
 export const mockProject: Project = {
   id: 1,
@@ -16,7 +16,8 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
   landAcquisitionModuleEnabled: false,
   showLogEntries: false,
   evaluationsEnabled: false,
-  mcpEnabled: false,
+  mcpMode: McpModeEnum.DISABLED,
+  mcpDirectUntil: null,
   alkisStateKey: StateKeyEnum.DISABLED,
   subsubsectionExtraFieldDefinitions: [],
 }

@@ -1,6 +1,8 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
 import { z } from "zod"
 import type { AdminApiAuth } from "@/src/server/api/admin/guardAdminApi.server"
+import { deleteSubsectionForMcp } from "@/src/server/mcp/direct/deleteSubsectionForMcp.server"
+import { deleteSubsubsectionForMcp } from "@/src/server/mcp/direct/deleteSubsubsectionForMcp.server"
 import { mcpEnvLabel } from "@/src/server/mcp/mcpCursorConfig"
 import { MCP_LIST_DEFAULT_LIMIT, MCP_LIST_MAX_LIMIT } from "@/src/server/mcp/mcpListLimit.const"
 import { mcpToolOk, runMcpTool } from "@/src/server/mcp/mcpToolHelpers"
@@ -15,10 +17,12 @@ import { updateSubsectionForMcp } from "@/src/server/mcp/queries/updateSubsectio
 import { updateSubsubsectionForMcp } from "@/src/server/mcp/queries/updateSubsubsectionForMcp.server"
 import {
   subsectionMcpCreateInputSchema,
+  subsectionMcpDeleteInputSchema,
   subsectionMcpUpdateInputSchema,
 } from "@/src/server/mcp/subsectionUpdate/patchSchema"
 import {
   subsubsectionMcpCreateInputSchema,
+  subsubsectionMcpDeleteInputSchema,
   subsubsectionMcpUpdateInputSchema,
 } from "@/src/server/mcp/subsubsectionUpdate/patchSchema"
 
@@ -45,25 +49,30 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
       instructions:
         `Trassenscout admin tools bound to the ${envLabel} environment (${origin}). ` +
         `Call env_info first to confirm the target environment. ` +
-        `Then projects_list — only continue with slugs where mcpEnabled is true. ` +
-        `If the target project is disabled, stop and ask an admin to enable MCP in /admin/projects (column MCP). ` +
+        `Then projects_list — only continue with slugs where mcpMode is "DRAFT" or "DIRECT". ` +
+        `If mcpMode is "DISABLED", stop and ask an admin to enable MCP in /admin/projects (column MCP). ` +
         `Do not call other project tools for a disabled slug. ` +
-        `mcpEnabled does not replace applying the draft in the app. ` +
+        `mcpMode is the effective mode. "DIRECT" applies only while mcpDirectUntil is in the future; after that the effective mode is "DRAFT" until an admin turns direct write on again. ` +
+        `In "DRAFT", create and update tools write McpDraft only. An admin applies drafts in the app (Einsetzen → form → Speichern / Erstellen). ` +
+        `In "DIRECT", the same create and update tools write Subsection / Subsubsection immediately. ` +
+        `Delete tools (subsections_delete, subsubsections_delete) exist only in "DIRECT". ` +
+        `Without confirm they preview and write nothing. Show the user the preview (counts of protocols, uploads, acquisition areas, and for a Planungsabschnitt the Maßnahme count). ` +
+        `Only then call again with confirm true. Confirm rejects a Maßnahme that still has protocols, uploads, or acquisition areas, and a Planungsabschnitt that still has Maßnahmen. ` +
         `User-facing terms: subsection = Planungsabschnitt, subsubsection = Maßnahme. ` +
         `After env_info and an enabled slug: subsections_schema then subsections_list, and/or subsubsections_schema then subsubsections_list. ` +
         `To change Planungsabschnitte: subsections_update with items (1–${MCP_LIST_MAX_LIMIT}). Identity is projectSlug + slug (PA Kürzel). ` +
         `To add Planungsabschnitte: subsections_create with items (1–${MCP_LIST_MAX_LIMIT}); patch must include type (LINE|POLYGON) and GeoJSON geometry (WGS84 [lng, lat]). ` +
         `To change Maßnahmen: subsubsections_update with items (1–${MCP_LIST_MAX_LIMIT}). ` +
         `To add Maßnahmen: subsubsections_create with items (1–${MCP_LIST_MAX_LIMIT}); patch must include type and GeoJSON geometry (WGS84 [lng, lat]). ` +
-        `These tools create drafts only and do not write Subsection or Subsubsection. ` +
+        `Each written item returns mode "drafted" or "applied" plus changes[].proposed. ` +
         `Show the user each item url and changes[].proposed. Geometry in the response is a short summary, not coordinates. ` +
-        `Simplify lines before sending; max 5000 vertices; split large batches. An admin applies drafts in the app (Einsetzen → form → Speichern / Erstellen). ` +
+        `Simplify lines before sending; max 5000 vertices; split large batches. ` +
         `Maßnahme identity is projectSlug + subsectionSlug + slug. Planungsabschnitt identity is projectSlug + slug. ` +
         `${patchSemantics} ` +
         `After a migration, ask an admin to turn MCP off again. ` +
         `List tools default to ${MCP_LIST_DEFAULT_LIMIT} rows (max ${MCP_LIST_MAX_LIMIT}) and return ` +
         `limit, returned, and truncated when more rows exist. ` +
-        `projects_list returns slug, subTitle, shortTitle, url, paCount, subsubsectionCount, mcpEnabled. ` +
+        `projects_list returns slug, subTitle, shortTitle, url, paCount, subsubsectionCount, mcpMode, mcpDirectUntil. ` +
         `subsections_list requires projectSlug and returns slug, description, and url per Planungsabschnitt. ` +
         `subsubsections_list requires projectSlug; optional subsectionSlug filters to one Planungsabschnitt. ` +
         `It returns slug, description, and url per Maßnahme.`,
@@ -86,8 +95,8 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
       description:
         `List projects (default limit ${MCP_LIST_DEFAULT_LIMIT}, max ${MCP_LIST_MAX_LIMIT}). ` +
         "Response includes limit, returned, truncated. Per project: slug, subTitle, shortTitle " +
-        "(uppercase slug), url, paCount (Planungsabschnitte), subsubsectionCount (Maßnahmen), mcpEnabled. " +
-        "Includes disabled projects so you can see the slug; only use slugs with mcpEnabled true for other project tools.",
+        "(uppercase slug), url, paCount (Planungsabschnitte), subsubsectionCount (Maßnahmen), mcpMode (DISABLED|DRAFT|DIRECT, effective), mcpDirectUntil. " +
+        "Includes disabled projects so you can see the slug; only use slugs with mcpMode DRAFT or DIRECT for other project tools.",
       inputSchema: {
         limit: mcpListLimitSchema,
       },
@@ -99,7 +108,7 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
     "subsections_schema",
     {
       description:
-        "Field metadata and lookup options for subsection (Planungsabschnitt) updates and creates. Requires mcpEnabled. " +
+        "Field metadata and lookup options for subsection (Planungsabschnitt) updates and creates. Requires mcpMode DRAFT or DIRECT. " +
         "Lookups as { id, slug, title }: operators, networkHierarchies, subsectionStatuses. " +
         "For updates, writable false for slug, geometry, type. For creates, slug is identity; type (LINE|POLYGON) and GeoJSON geometry are required. " +
         "labelPos defaults to bottom and is not MCP-writable. order is assigned on apply. " +
@@ -117,7 +126,7 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
     {
       description:
         `List subsections (Planungsabschnitte) for a project (default limit ${MCP_LIST_DEFAULT_LIMIT}, ` +
-        `max ${MCP_LIST_MAX_LIMIT}). Requires mcpEnabled. Response includes limit, returned, truncated. ` +
+        `max ${MCP_LIST_MAX_LIMIT}). Requires mcpMode DRAFT or DIRECT. Response includes limit, returned, truncated. ` +
         "Requires projectSlug. Per row: projectSlug, slug, description, url — no geometry.",
       inputSchema: {
         projectSlug: z.string(),
@@ -132,9 +141,9 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
     "subsections_update",
     {
       description:
-        `Create drafts for one or more subsection (Planungsabschnitt) patches. Requires mcpEnabled. Pass items (1–${MCP_LIST_MAX_LIMIT}). ` +
-        "Does not write Subsection. Identity is projectSlug + slug (PA Kürzel). " +
-        "An admin applies each draft in the app. " +
+        `Update one or more subsection (Planungsabschnitt) patches. Requires mcpMode DRAFT or DIRECT. Pass items (1–${MCP_LIST_MAX_LIMIT}). ` +
+        "DRAFT writes McpDraft only. DIRECT writes Subsection immediately and removes the draft for that identity. " +
+        "Identity is projectSlug + slug (PA Kürzel). Each item returns mode drafted or applied. " +
         patchSemantics,
       inputSchema: subsectionMcpUpdateInputSchema.shape,
     },
@@ -152,11 +161,13 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
     "subsections_create",
     {
       description:
-        `Create drafts for new subsection (Planungsabschnitt) records. Requires mcpEnabled. Pass items (1–${MCP_LIST_MAX_LIMIT}). ` +
-        "Does not write Subsection. Each patch must include type (LINE|POLYGON) and matching GeoJSON geometry (WGS84 [lng, lat]). POINT is not allowed. " +
-        "Incomplete items or slugs that already exist as a Planungsabschnitt are not drafted. " +
-        "An existing create-draft for the same slug is last-wins upsert. Geometry in changes[].proposed is { type, vertexCount, bbox }, not coordinates. " +
-        "Simplify geometries over 1000 vertices; more than 5000 is rejected. An admin applies each draft in the app. " +
+        `Create subsection (Planungsabschnitt) records. Requires mcpMode DRAFT or DIRECT. Pass items (1–${MCP_LIST_MAX_LIMIT}). ` +
+        "DRAFT writes McpDraft only. DIRECT writes Subsection immediately. " +
+        "Each patch must include type (LINE|POLYGON) and matching GeoJSON geometry (WGS84 [lng, lat]). POINT is not allowed. " +
+        "Incomplete items or slugs that already exist as a Planungsabschnitt are not written. " +
+        "An existing create-draft for the same slug is last-wins upsert in DRAFT and removed after a DIRECT create. " +
+        "Geometry in changes[].proposed is { type, vertexCount, bbox }, not coordinates. " +
+        "Simplify geometries over 1000 vertices; more than 5000 is rejected. Each item returns mode drafted or applied. " +
         patchSemantics,
       inputSchema: subsectionMcpCreateInputSchema.shape,
     },
@@ -174,7 +185,7 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
     "subsubsections_schema",
     {
       description:
-        "Field metadata, extra field definitions, and lookup options for subsubsection (Maßnahme) updates and creates. Requires mcpEnabled. " +
+        "Field metadata, extra field definitions, and lookup options for subsubsection (Maßnahme) updates and creates. Requires mcpMode DRAFT or DIRECT. " +
         "For updates, writable false for slug, geometry, type, subsectionId and other non-MCP fields. " +
         "For creates, slug is identity; type and GeoJSON geometry are required in the patch. labelPos defaults to bottom and is not MCP-writable. " +
         "Relations use slugs from this payload, not IDs. extraFields is Record<string,string>; keys are listed in extraFields. " +
@@ -193,7 +204,7 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
     {
       description:
         `List subsubsections (Maßnahmen) for a project (default limit ${MCP_LIST_DEFAULT_LIMIT}, ` +
-        `max ${MCP_LIST_MAX_LIMIT}). Requires mcpEnabled. Response includes limit, returned, truncated. ` +
+        `max ${MCP_LIST_MAX_LIMIT}). Requires mcpMode DRAFT or DIRECT. Response includes limit, returned, truncated. ` +
         "Requires projectSlug; optional subsectionSlug (Planungsabschnitt). Per row: projectSlug, subsectionSlug, slug (Maßnahme), " +
         "description, url — no extraFields or geometry. When subsectionSlug is set and returned > 1, disambiguationRequired is true.",
       inputSchema: {
@@ -210,9 +221,9 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
     "subsubsections_update",
     {
       description:
-        `Create drafts for one or more subsubsection (Maßnahme) patches. Requires mcpEnabled. Pass items (1–${MCP_LIST_MAX_LIMIT}). ` +
-        "Does not write Subsubsection or create records. Response lists url, changes[].proposed, and overwrite warnings per item. " +
-        "An admin applies each draft in the app. " +
+        `Update one or more subsubsection (Maßnahme) patches. Requires mcpMode DRAFT or DIRECT. Pass items (1–${MCP_LIST_MAX_LIMIT}). ` +
+        "DRAFT writes McpDraft only. DIRECT writes Subsubsection immediately and removes the draft for that identity. " +
+        "Response lists url, mode, changes[].proposed, and overwrite warnings per item. " +
         patchSemantics,
       inputSchema: subsubsectionMcpUpdateInputSchema.shape,
     },
@@ -230,17 +241,57 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
     "subsubsections_create",
     {
       description:
-        `Create drafts for new subsubsection (Maßnahme) records. Requires mcpEnabled. Pass items (1–${MCP_LIST_MAX_LIMIT}). ` +
-        "Does not write Subsubsection. Each patch must include type (POINT/LINE/POLYGON) and matching GeoJSON geometry (WGS84 [lng, lat]). " +
-        "Incomplete items or slugs that already exist as a Maßnahme are not drafted; the response lists missingRequired and slugConflict. " +
-        "An existing create-draft for the same slug is last-wins upsert. Geometry in changes[].proposed is { type, vertexCount, bbox }, not coordinates. " +
-        "Simplify geometries over 1000 vertices; more than 5000 is rejected. Split large batches. An admin applies each draft in the app. " +
+        `Create subsubsection (Maßnahme) records. Requires mcpMode DRAFT or DIRECT. Pass items (1–${MCP_LIST_MAX_LIMIT}). ` +
+        "DRAFT writes McpDraft only. DIRECT writes Subsubsection immediately. " +
+        "Each patch must include type (POINT/LINE/POLYGON) and matching GeoJSON geometry (WGS84 [lng, lat]). " +
+        "Incomplete items or slugs that already exist as a Maßnahme are not written; the response lists missingRequired and slugConflict. " +
+        "An existing create-draft for the same slug is last-wins upsert in DRAFT and removed after a DIRECT create. " +
+        "Geometry in changes[].proposed is { type, vertexCount, bbox }, not coordinates. " +
+        "Simplify geometries over 1000 vertices; more than 5000 is rejected. Split large batches. Each item returns mode drafted or applied. " +
         patchSemantics,
       inputSchema: subsubsectionMcpCreateInputSchema.shape,
     },
     (input) =>
       runMcpTool(() =>
         createSubsubsectionForMcp({
+          ...input,
+          origin,
+          createdById: auth.createdById,
+        }),
+      ),
+  )
+
+  server.registerTool(
+    "subsections_delete",
+    {
+      description:
+        `Delete subsections (Planungsabschnitte). Requires effective mcpMode DIRECT. Pass items (1–${MCP_LIST_MAX_LIMIT}). ` +
+        "Without confirm, writes nothing and returns identity, url, and dependency counts. " +
+        "With confirm true, deletes only when no Maßnahmen remain. Show the preview to the user before confirming.",
+      inputSchema: subsectionMcpDeleteInputSchema.shape,
+    },
+    (input) =>
+      runMcpTool(() =>
+        deleteSubsectionForMcp({
+          ...input,
+          origin,
+          createdById: auth.createdById,
+        }),
+      ),
+  )
+
+  server.registerTool(
+    "subsubsections_delete",
+    {
+      description:
+        `Delete subsubsections (Maßnahmen). Requires effective mcpMode DIRECT. Pass items (1–${MCP_LIST_MAX_LIMIT}). ` +
+        "Without confirm, writes nothing and returns identity, url, projectRecordCount, uploadCount, and acquisitionAreaCount. " +
+        "With confirm true, deletes only when those counts are zero. Show the preview to the user before confirming.",
+      inputSchema: subsubsectionMcpDeleteInputSchema.shape,
+    },
+    (input) =>
+      runMcpTool(() =>
+        deleteSubsubsectionForMcp({
           ...input,
           origin,
           createdById: auth.createdById,

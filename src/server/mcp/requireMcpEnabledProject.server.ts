@@ -1,15 +1,27 @@
 import db from "@/src/server/db.server"
+import { effectiveMcpMode } from "@/src/server/mcp/effectiveMcpMode"
 
-export async function requireMcpEnabledProject(projectSlug: string) {
+const mcpProjectSelect = {
+  id: true,
+  slug: true,
+  mcpMode: true,
+  mcpDirectUntil: true,
+  subsubsectionExtraFieldDefinitions: true,
+} as const
+
+export async function requireMcpEnabledProject(projectSlug: string, now = new Date()) {
   const project = await db.project.findUnique({
     where: { slug: projectSlug },
-    select: { id: true, slug: true, mcpEnabled: true, subsubsectionExtraFieldDefinitions: true },
+    select: mcpProjectSelect,
   })
   if (!project) throw new Error(`Project not found: ${projectSlug}`)
-  if (!project.mcpEnabled) {
+
+  const mcpMode = effectiveMcpMode(project, now)
+  if (mcpMode === "DISABLED") {
     throw new Error(
       `MCP is not enabled for project "${projectSlug}". An admin must enable it in /admin/projects (column MCP). Do not call other project tools for this slug until then.`,
     )
   }
-  return project
+
+  return { ...project, mcpMode, mcpDirectUntil: project.mcpDirectUntil }
 }

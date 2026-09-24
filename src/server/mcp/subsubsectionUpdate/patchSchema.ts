@@ -97,3 +97,13 @@ const subsubsectionMcpCreateItemSchema = subsubsectionMcpIdentitySchema.extend({
 export const subsubsectionMcpCreateInputSchema = z.object({
   items: z.array(subsubsectionMcpCreateItemSchema).min(1).max(MCP_LIST_MAX_LIMIT),
 })
+
+export const subsubsectionMcpDeleteInputSchema = z.object({
+  items: z.array(subsubsectionMcpIdentitySchema).min(1).max(MCP_LIST_MAX_LIMIT),
+  confirm: z
+    .boolean()
+    .optional()
+    .describe(
+      "Omit or false: preview only, writes nothing. true: delete items that have no protocols, uploads, or acquisition areas.",
+    ),
+})

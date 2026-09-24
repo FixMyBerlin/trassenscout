@@ -57,3 +57,13 @@ const subsectionMcpCreateItemSchema = subsectionMcpIdentitySchema.extend({
 export const subsectionMcpCreateInputSchema = z.object({
   items: z.array(subsectionMcpCreateItemSchema).min(1).max(MCP_LIST_MAX_LIMIT),
 })
+
+export const subsectionMcpDeleteInputSchema = z.object({
+  items: z.array(subsectionMcpIdentitySchema).min(1).max(MCP_LIST_MAX_LIMIT),
+  confirm: z
+    .boolean()
+    .optional()
+    .describe(
+      "Omit or false: preview only, writes nothing. true: delete items with no remaining Maßnahmen.",
+    ),
+})

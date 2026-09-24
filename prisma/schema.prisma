@@ -211,7 +211,8 @@ model Project {
   landAcquisitionModuleEnabled       Boolean                           @default(false)
   showLogEntries                     Boolean                           @default(false) // When true, non-admins see this project's log entries ("Änderungen in …") on the "Meine Projekte" dashboard. Admins always see all projects.
   evaluationsEnabled                 Boolean                           @default(false)
-  mcpEnabled                         Boolean                           @default(false)
+  mcpMode                            McpModeEnum                       @default(DISABLED)
+  mcpDirectUntil                     DateTime?
   alkisStateKey                      StateKeyEnum                      @default(DISABLED)
   //
   surveyResponseTags                 SurveyResponseTag[]
@@ -241,6 +242,12 @@ model Project {
   evaluationsPage                    EvaluationsPage?
   subsubsectionExtraFieldDefinitions Json                              @default("[]")
   mcpDrafts                          McpDraft[]
+}
+
+enum McpModeEnum {
+  DISABLED
+  DRAFT
+  DIRECT
 }
 
 enum McpDraftKind {

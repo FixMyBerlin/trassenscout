@@ -1,5 +1,5 @@
 import type { Prisma } from "@/src/prisma/generated/client"
-import { StateKeyEnum } from "@/src/prisma/generated/client"
+import { McpModeEnum, StateKeyEnum } from "@/src/prisma/generated/client"
 import { requireStateTestCoordinate } from "../../src/data/alkisStateTestCoordinates"
 
 /**
@@ -55,7 +55,7 @@ export function alkisLandAcquisitionDemoProjects(): Prisma.ProjectUncheckedCreat
     landAcquisitionModuleEnabled: true,
     showLogEntries: false,
     evaluationsEnabled: false,
-    mcpEnabled: false,
+    mcpMode: McpModeEnum.DISABLED,
     alkisStateKey: d.alkisStateKey,
     subsubsectionExtraFieldDefinitions: [],
   }))

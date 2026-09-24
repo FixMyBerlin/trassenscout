@@ -77,6 +77,7 @@ function pushChange(
 
 export type ResolveSubsubsectionUpdateResult = {
   environment: ReturnType<typeof mcpEnvLabel>
+  mcpMode: Awaited<ReturnType<typeof requireMcpEnabledProject>>["mcpMode"]
   url: string
   okToWrite: boolean
   changes: SubsubsectionPreviewChange[]
@@ -285,6 +286,7 @@ export async function resolveSubsubsectionUpdate({
 
   return {
     environment,
+    mcpMode: project.mcpMode,
     url,
     okToWrite: errors.length === 0 && changes.length > 0,
     changes,

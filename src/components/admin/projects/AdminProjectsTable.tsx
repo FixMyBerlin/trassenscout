@@ -28,7 +28,12 @@ import { TableWrapper } from "@/src/components/core/components/Table/TableWrappe
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { longTitle } from "@/src/components/core/components/text/titles"
 import { Tooltip } from "@/src/components/core/components/Tooltip/Tooltip"
-import { updateProjectsFeatureFlagFn } from "@/src/server/projects/projects.functions"
+import { McpModeEnum } from "@/src/prisma/generated/browser"
+import { effectiveMcpMode } from "@/src/server/mcp/effectiveMcpMode"
+import {
+  updateProjectMcpModeFn,
+  updateProjectsFeatureFlagFn,
+} from "@/src/server/projects/projects.functions"
 import type { ProjectFeatureFlagKey } from "@/src/server/projects/projects.inputSchemas"
 import { adminProjectsWithCountsQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 import type { AdminProjectWithCounts } from "@/src/server/projects/types"
@@ -88,23 +93,46 @@ const projectFeatureColumns: ProjectFeatureColumn[] = [
     icon: <ChartBarIcon className="size-4" aria-hidden />,
     label: (enabled) => (enabled ? "Auswertungen ausschalten" : "Auswertungen einschalten"),
   },
-  {
-    key: "mcpEnabled",
-    header: "MCP",
-    icon: <CommandLineIcon className="size-4" aria-hidden />,
-    bulkToggle: false,
-    label: (enabled) =>
-      enabled
-        ? "MCP ausschalten (nach Import wieder deaktivieren)"
-        : "MCP für Imports/Migrationen einschalten",
-  },
 ]
+
+const mcpModeOptions = [
+  { value: McpModeEnum.DISABLED, label: "Aus" },
+  { value: McpModeEnum.DRAFT, label: "Entwürfe" },
+  { value: McpModeEnum.DIRECT, label: "Direkt" },
+] as const
+
+function storedMcp(project: AdminProjectWithCounts) {
+  return {
+    mcpMode: project.mcpMode,
+    mcpDirectUntil: project.mcpDirectUntil ? new Date(project.mcpDirectUntil) : null,
+  }
+}
+
+function formatMcpDirectUntil(date: Date) {
+  return date.toLocaleString("de-DE", { dateStyle: "medium", timeStyle: "short" })
+}
+
+function mcpModeHint(project: AdminProjectWithCounts, now: Date) {
+  const stored = storedMcp(project)
+  const effective = effectiveMcpMode(stored, now)
+  if (effective === McpModeEnum.DIRECT && stored.mcpDirectUntil) {
+    return `Direkt bis ${formatMcpDirectUntil(stored.mcpDirectUntil)}, danach wieder Entwürfe.`
+  }
+  if (stored.mcpMode === McpModeEnum.DIRECT) {
+    return "Direkt-Fenster abgelaufen. Wirksam sind Entwürfe. Direkt erneut einschalten, um 24 Stunden zu öffnen."
+  }
+  if (effective === McpModeEnum.DRAFT) {
+    return "Änderungen werden als Entwurf gespeichert."
+  }
+  return "MCP ist aus."
+}
 
 export const AdminProjectsTable = ({ projects, isFiltering, hasActiveFilter }: Props) => {
   const queryClient = useQueryClient()
   const [formError, setFormError] = useState<string | null>(null)
   const updateMutation = useMutation({ mutationFn: updateProjectsFeatureFlagFn })
-  const isPending = updateMutation.isPending
+  const mcpModeMutation = useMutation({ mutationFn: updateProjectMcpModeFn })
+  const isPending = updateMutation.isPending || mcpModeMutation.isPending
 
   const handleUpdate = async (
     projectSlugs: string[],
@@ -114,6 +142,18 @@ export const AdminProjectsTable = ({ projects, isFiltering, hasActiveFilter }: P
     setFormError(null)
     try {
       await updateMutation.mutateAsync({ data: { projectSlugs, key, enabled } })
+      await queryClient.invalidateQueries({
+        queryKey: adminProjectsWithCountsQueryOptions().queryKey,
+      })
+    } catch (error: unknown) {
+      setFormError(error instanceof Error ? error.message : String(error))
+    }
+  }
+
+  const handleMcpMode = async (projectSlug: string, mcpMode: McpModeEnum) => {
+    setFormError(null)
+    try {
+      await mcpModeMutation.mutateAsync({ data: { projectSlug, mcpMode } })
       await queryClient.invalidateQueries({
         queryKey: adminProjectsWithCountsQueryOptions().queryKey,
       })
@@ -176,6 +216,9 @@ export const AdminProjectsTable = ({ projects, isFiltering, hasActiveFilter }: P
                   </th>
                 )
               })}
+              <th className={adminTableHeaderClassName}>
+                <div className="flex min-w-36 flex-col gap-1 leading-snug">MCP</div>
+              </th>
             </tr>
           </thead>
           <tbody className={adminTableBodyClassName}>
@@ -220,6 +263,31 @@ export const AdminProjectsTable = ({ projects, isFiltering, hasActiveFilter }: P
                     </div>
                   </td>
                 ))}
+                <td className={adminTableCellClassName}>
+                  <div className="flex items-start gap-1.5 text-gray-500">
+                    <CommandLineIcon className="mt-1 size-4 shrink-0" aria-hidden />
+                    <div className="flex min-w-36 flex-col gap-1">
+                      <select
+                        aria-label={`MCP-Modus für ${shortTitle(project.slug)}`}
+                        className="rounded-sm border border-gray-300 bg-white px-1 py-0.5 text-sm text-gray-900"
+                        disabled={isPending}
+                        value={effectiveMcpMode(storedMcp(project), new Date())}
+                        onChange={(event) =>
+                          void handleMcpMode(project.slug, event.target.value as McpModeEnum)
+                        }
+                      >
+                        {mcpModeOptions.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                      <span className="text-xs leading-tight text-gray-500">
+                        {mcpModeHint(project, new Date())}
+                      </span>
+                    </div>
+                  </div>
+                </td>
               </tr>
             ))}
           </tbody>

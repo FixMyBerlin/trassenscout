@@ -1,5 +1,7 @@
+import { applySubsectionUpdateForMcp } from "@/src/server/mcp/direct/applyMcpDirectWrite.server"
 import { mcpEnvLabel } from "@/src/server/mcp/mcpCursorConfig"
 import { upsertSubsectionMcpDraft } from "@/src/server/mcp/mcpDrafts/mcpDrafts.server"
+import { mcpWriteFields, writeResolvedItem } from "@/src/server/mcp/mcpWriteMode"
 import type { SubsectionMcpPatch } from "@/src/server/mcp/subsectionUpdate/patchSchema"
 import {
   resolveSubsectionUpdate,
@@ -47,6 +49,7 @@ export async function updateSubsectionForMcp(input: {
   const items = lastWinsItems(input.items)
   const results = []
   let draftedCount = 0
+  let appliedCount = 0
 
   for (const item of items) {
     const resolved = await resolveItem(item, input.origin)
@@ -54,7 +57,7 @@ export async function updateSubsectionForMcp(input: {
       results.push({
         ...identityFromItem(item),
         url: null,
-        drafted: false,
+        ...mcpWriteFields(null),
         changes: [],
         errors: [resolved.error],
         warnings: [],
@@ -66,24 +69,29 @@ export async function updateSubsectionForMcp(input: {
       results.push({
         ...identityFromItem(item),
         ...subsectionPreviewPayload(resolved),
-        drafted: false,
+        ...mcpWriteFields(null),
         errors: resolved.errors.length > 0 ? resolved.errors : ["Patch is empty or unchanged."],
       })
       continue
     }
 
-    await upsertSubsectionMcpDraft({
-      createdById: input.createdById,
-      projectId: resolved.projectId,
-      subsectionId: resolved.subsectionId,
-      patch: item.patch,
+    const mode = await writeResolvedItem(resolved, {
+      apply: () => applySubsectionUpdateForMcp(resolved, input.createdById),
+      draft: () =>
+        upsertSubsectionMcpDraft({
+          createdById: input.createdById,
+          projectId: resolved.projectId,
+          subsectionId: resolved.subsectionId,
+          patch: item.patch,
+        }),
     })
+    if (mode === "applied") appliedCount += 1
+    else draftedCount += 1
 
-    draftedCount += 1
     results.push({
       ...identityFromItem(item),
       ...subsectionPreviewPayload(resolved),
-      drafted: true,
+      ...mcpWriteFields(mode),
       errors: [],
     })
   }
@@ -92,6 +100,7 @@ export async function updateSubsectionForMcp(input: {
     environment: mcpEnvLabel(process.env.VITE_APP_ENV),
     returned: results.length,
     draftedCount,
+    appliedCount,
     items: results,
   }
 }

@@ -16,7 +16,8 @@ vi.mock("@/src/server/db.server", () => ({
 const enabledProject = {
   id: 1,
   slug: "frm9-ra3",
-  mcpEnabled: true,
+  mcpMode: "DRAFT" as const,
+  mcpDirectUntil: null,
 }
 
 function mockSubsection(overrides: Record<string, unknown> = {}) {
@@ -126,7 +127,11 @@ describe("Subsection MCP patch", () => {
   })
 
   test("disabled project does not load subsections", async () => {
-    mockDb.project.findUnique.mockResolvedValue({ ...enabledProject, mcpEnabled: false })
+    mockDb.project.findUnique.mockResolvedValue({
+      ...enabledProject,
+      mcpMode: "DISABLED",
+      mcpDirectUntil: null,
+    })
     const result = await updateSubsectionForMcp({
       origin: "http://127.0.0.1:4000",
       createdById: 42,

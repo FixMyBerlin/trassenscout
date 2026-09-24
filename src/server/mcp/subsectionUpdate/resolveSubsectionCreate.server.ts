@@ -1,11 +1,11 @@
 import { SlugSchema } from "@/src/components/core/utils/schema-shared"
-import { McpDraftKind } from "@/src/prisma/generated/client"
+import { LabelPositionEnum, McpDraftKind, type Prisma } from "@/src/prisma/generated/client"
 import db from "@/src/server/db.server"
 import { mcpEnvLabel } from "@/src/server/mcp/mcpCursorConfig"
 import { requireMcpEnabledProject } from "@/src/server/mcp/requireMcpEnabledProject.server"
 import { subsectionMcpFieldLabel } from "@/src/server/mcp/subsectionUpdate/patchFieldLabel"
 import type { SubsectionMcpCreatePatch } from "@/src/server/mcp/subsectionUpdate/patchSchema"
-import { buildSubsectionNewUrl } from "@/src/server/mcp/subsectionUrl"
+import { buildSubsectionNewUrl, buildSubsectionUrl } from "@/src/server/mcp/subsectionUrl"
 import type { SubsubsectionPreviewChange } from "@/src/server/mcp/subsubsectionUpdate/formatPreview"
 import {
   countGeometryVertices,
@@ -37,6 +37,7 @@ type SubsectionMcpSlugConflict = {
 
 export type ResolveSubsectionCreateResult = {
   environment: ReturnType<typeof mcpEnvLabel>
+  mcpMode: Awaited<ReturnType<typeof requireMcpEnabledProject>>["mcpMode"]
   url: string
   okToWrite: boolean
   changes: SubsubsectionPreviewChange[]
@@ -47,6 +48,7 @@ export type ResolveSubsectionCreateResult = {
   projectSlug: string
   slug: string
   projectId: number
+  prismaData: Prisma.SubsectionUncheckedCreateInput
 }
 
 export async function resolveSubsectionCreate({
@@ -74,7 +76,10 @@ export async function resolveSubsectionCreate({
     )
   }
 
-  const url = buildSubsectionNewUrl(origin, project.slug, slug)
+  const url =
+    project.mcpMode === "DIRECT"
+      ? buildSubsectionUrl(origin, project.slug, slug)
+      : buildSubsectionNewUrl(origin, project.slug, slug)
 
   const existingSubsection = await db.subsection.findFirst({
     where: { slug, projectId: project.id },
@@ -140,6 +145,18 @@ export async function resolveSubsectionCreate({
     pushSet(changes, key, proposed)
   }
 
+  const prismaData: Prisma.SubsectionUncheckedCreateInput = {
+    slug,
+    projectId: project.id,
+    labelPos: LabelPositionEnum.bottom,
+    type: patch.type ?? "LINE",
+    geometry: (patch.geometry ?? null) as Prisma.InputJsonValue,
+  }
+  for (const key of SCALAR_KEYS) {
+    if (!(key in patch) || patch[key] === undefined || patch[key] === null) continue
+    ;(prismaData as Record<string, unknown>)[key] = patch[key]
+  }
+
   const relationSlugs = {
     operatorSlug: patch.operatorSlug,
     networkHierarchySlug: patch.networkHierarchySlug,
@@ -147,11 +164,18 @@ export async function resolveSubsectionCreate({
   }
   if (Object.values(relationSlugs).some((value) => value !== undefined)) {
     try {
-      await resolveSubsectionRelationSlugs({
+      const resolved = await resolveSubsectionRelationSlugs({
         projectId: project.id,
         slugs: relationSlugs,
         missing: "error",
       })
+      if (resolved.operatorId !== undefined) prismaData.operatorId = resolved.operatorId
+      if (resolved.networkHierarchyId !== undefined) {
+        prismaData.networkHierarchyId = resolved.networkHierarchyId
+      }
+      if (resolved.subsectionStatusId !== undefined) {
+        prismaData.subsectionStatusId = resolved.subsectionStatusId
+      }
       if (patch.operatorSlug !== undefined) {
         pushSet(changes, "operatorSlug", patch.operatorSlug)
       }
@@ -171,6 +195,7 @@ export async function resolveSubsectionCreate({
 
   return {
     environment,
+    mcpMode: project.mcpMode,
     url,
     okToWrite,
     changes,
@@ -181,6 +206,7 @@ export async function resolveSubsectionCreate({
     projectSlug: project.slug,
     slug,
     projectId: project.id,
+    prismaData,
   }
 }
 
