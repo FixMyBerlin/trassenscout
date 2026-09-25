@@ -1,5 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
+import { format } from "date-fns"
+import { de } from "date-fns/locale"
 import { useState } from "react"
 import { twJoin } from "tailwind-merge"
 import { SubsubsectionPanel } from "@/src/components/abschnitte/SubsubsectionPanel"
@@ -39,14 +41,43 @@ import { projectRecordsBySubsubsectionQueryOptions } from "@/src/server/projectR
 import type { SubsubsectionWithPosition } from "@/src/server/subsubsections/types"
 import { uploadsWithSubsectionsQueryOptions } from "@/src/server/uploads/uploadsWithSubsectionsQueryOptions"
 import {
+  costStructureFieldNames,
+  durationFieldNames,
+  fundingFieldNames,
+  sumCostStructure,
+  trafficLoadFieldNames,
+} from "@/src/shared/subsubsections/costAndFundingFields"
+import {
   parseDefinitions,
   parseExtraFields,
   sortByOrder,
 } from "@/src/shared/subsubsections/extraFieldSchemas"
+import { subsubsectionFieldTranslations } from "@/src/shared/subsubsections/subsubsectionFieldMappings"
 
 const layoutRouteApi = getRouteApi(
   "/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard",
 )
+
+function formatDetailDate(value: Date | string) {
+  return format(new Date(value), "P", { locale: de })
+}
+
+function formatTrafficLoadValue(
+  name: (typeof trafficLoadFieldNames)[number],
+  value: number | Date,
+): string {
+  if (name === "maxSpeed") return `${value.toLocaleString("de-DE")} km/h`
+  if (name === "trafficLoad") return `${value.toLocaleString("de-DE")} Kfz/24h`
+  return formatDetailDate(value as Date)
+}
+
+function formatDurationValue(
+  name: (typeof durationFieldNames)[number],
+  value: number | Date,
+): string {
+  if (name === "estimatedCompletionDate") return formatDetailDate(value as Date)
+  return `${value.toLocaleString("de-DE")} Monate`
+}
 
 type Props = {
   subsubsection: SubsubsectionWithPosition
@@ -68,6 +99,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
   const hasLength = subsubsection.lengthM != null
   const hasWidth = subsubsection.width != null
   const hasCostEstimate = subsubsection.costEstimate != null
+  const isExistingInfra = Boolean(subsubsection.isExistingInfra)
   const extraFieldDefinitions = sortByOrder(
     parseDefinitions(subsubsection.subsection.project.subsubsectionExtraFieldDefinitions),
   )
@@ -78,19 +110,63 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
       value: extraFieldValues[definition.name],
     }))
     .filter((row) => row.value)
+
+  const trafficLoadRows = trafficLoadFieldNames.flatMap((name) => {
+    const value = subsubsection[name]
+    if (value == null) return []
+    return [
+      {
+        name,
+        label: subsubsectionFieldTranslations[name],
+        display: formatTrafficLoadValue(name, value),
+      },
+    ]
+  })
+  const durationRows = durationFieldNames.flatMap((name) => {
+    const value = subsubsection[name]
+    if (value == null) return []
+    return [
+      {
+        name,
+        label: subsubsectionFieldTranslations[name],
+        display: formatDurationValue(name, value),
+      },
+    ]
+  })
+  const costStructureRows = costStructureFieldNames.flatMap((name) => {
+    const value = subsubsection[name]
+    if (value == null) return []
+    return [{ name, label: subsubsectionFieldTranslations[name], value }]
+  })
+  const costStructureSum = sumCostStructure(subsubsection)
+  const fundingRows = fundingFieldNames.flatMap((name) => {
+    const value = subsubsection[name]
+    if (value == null) return []
+    return [{ name, label: subsubsectionFieldTranslations[name], value }]
+  })
+  const hasTrafficLoadSection = trafficLoadRows.length > 0
+  const hasDurationSection = durationRows.length > 0
+  const hasCostStructureSection = costStructureRows.length > 0
+  const hasFundingSection = fundingRows.length > 0
+
   const hasGeneralInfoRows = Boolean(
     subsubsection.SubsubsectionTask?.title ||
     locationLabel ||
     hasLength ||
     hasWidth ||
     hasCostEstimate ||
+    isExistingInfra ||
     infrastructureTypeTitles.length > 0 ||
     subsubsection.qualityLevel?.title ||
     subsubsection.SubsubsectionInfra?.title ||
     subsubsection.SubsubsectionStatus?.title ||
     subsubsection.estimatedConstructionDateString ||
     subsubsection.manager ||
-    extraFieldRows.length > 0,
+    extraFieldRows.length > 0 ||
+    hasTrafficLoadSection ||
+    hasDurationSection ||
+    hasCostStructureSection ||
+    hasFundingSection,
   )
 
   const { data: uploadsData, refetch: refetchUploads } = useQuery(
@@ -194,6 +270,14 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
                       </td>
                     </tr>
                   )}
+                  {isExistingInfra && (
+                    <tr className={tableRowClassName}>
+                      <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
+                        {subsubsectionFieldTranslations.isExistingInfra}
+                      </th>
+                      <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">Ja</td>
+                    </tr>
+                  )}
                   {infrastructureTypeTitles.length > 0 && (
                     <tr className={tableRowClassName}>
                       <th className="py-4 pr-3 pl-4 text-left align-top text-sm font-normal text-gray-700">
@@ -285,6 +369,104 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
                       </td>
                     </tr>
                   ))}
+                  {hasTrafficLoadSection && (
+                    <>
+                      <tr className={tableRowClassName}>
+                        <th
+                          colSpan={2}
+                          className="bg-gray-50 py-3 pr-3 pl-4 text-left text-sm font-semibold text-gray-700"
+                        >
+                          Verkehrsbelastung
+                        </th>
+                      </tr>
+                      {trafficLoadRows.map(({ name, label, display }) => (
+                        <tr key={name} className={tableRowClassName}>
+                          <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
+                            {label}
+                          </th>
+                          <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
+                            {display}
+                          </td>
+                        </tr>
+                      ))}
+                    </>
+                  )}
+                  {hasCostStructureSection && (
+                    <>
+                      <tr className={tableRowClassName}>
+                        <th
+                          colSpan={2}
+                          className="bg-gray-50 py-3 pr-3 pl-4 text-left text-sm font-semibold text-gray-700"
+                        >
+                          Kostenstruktur
+                        </th>
+                      </tr>
+                      {costStructureRows.map(({ name, label, value }) => (
+                        <tr key={name} className={tableRowClassName}>
+                          <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
+                            {label}
+                          </th>
+                          <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
+                            {formattedEuro(value)}
+                          </td>
+                        </tr>
+                      ))}
+                      {costStructureSum != null && (
+                        <tr className={tableRowClassName}>
+                          <th className="py-4 pr-3 pl-4 text-left text-sm font-semibold text-gray-700">
+                            Summe
+                          </th>
+                          <td className="px-4 py-4 text-sm font-semibold wrap-break-word text-gray-400">
+                            {formattedEuro(costStructureSum)}
+                          </td>
+                        </tr>
+                      )}
+                    </>
+                  )}
+                  {hasFundingSection && (
+                    <>
+                      <tr className={tableRowClassName}>
+                        <th
+                          colSpan={2}
+                          className="bg-gray-50 py-3 pr-3 pl-4 text-left text-sm font-semibold text-gray-700"
+                        >
+                          Finanzierung
+                        </th>
+                      </tr>
+                      {fundingRows.map(({ name, label, value }) => (
+                        <tr key={name} className={tableRowClassName}>
+                          <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
+                            {label}
+                          </th>
+                          <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
+                            {formattedEuro(value)}
+                          </td>
+                        </tr>
+                      ))}
+                    </>
+                  )}
+                  {hasDurationSection && (
+                    <>
+                      <tr className={tableRowClassName}>
+                        <th
+                          colSpan={2}
+                          className="bg-gray-50 py-3 pr-3 pl-4 text-left text-sm font-semibold text-gray-700"
+                        >
+                          Dauer
+                        </th>
+                      </tr>
+                      {durationRows.map(({ name, label, display }) => (
+                        <tr key={name} className={tableRowClassName}>
+                          <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
+                            {label}
+                          </th>
+                          <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
+                            {display}
+                          </td>
+                        </tr>
+                      ))}
+                    </>
+                  )}
                 </tbody>
               </table>
             </div>

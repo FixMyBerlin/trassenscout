@@ -1,11 +1,13 @@
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { ReactNode, Suspense, useState } from "react"
+import { twJoin } from "tailwind-merge"
 import { z } from "zod"
 import { LinkWithFormDirtyConfirm } from "@/src/components/abschnitte/LinkWithFormDirtyConfirm"
 import { SubsubsectionGeometryInput } from "@/src/components/abschnitte/SubsubsectionGeometryInput"
 import { lookupTableRows } from "@/src/components/abschnitte/utils/lookupTableRows"
 import { AdminBox } from "@/src/components/core/components/AdminBox/AdminBox"
+import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { FieldLayoutRightColumn } from "@/src/components/core/components/forms/FieldLayout"
 import {
   fieldLayoutControlClassName,
@@ -37,29 +39,27 @@ import { projectUsersQueryOptions } from "@/src/server/memberships/projectUsersQ
 import { projectBySlugQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 import { subsectionsQueryOptions } from "@/src/server/subsections/subsectionsQueryOptions"
 import { currentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
+import {
+  calculateOwnFunds,
+  costStructureFieldNames,
+  durationFieldNames,
+  fundingFieldNames,
+  hasEnteredValue,
+  sumCostStructure,
+  trafficLoadFieldNames,
+} from "@/src/shared/subsubsections/costAndFundingFields"
 import { parseDefinitions, sortByOrder } from "@/src/shared/subsubsections/extraFieldSchemas"
 import { subsubsectionFormDefaultValues } from "@/src/shared/subsubsections/schemas"
 import { subsubsectionFieldTranslations } from "@/src/shared/subsubsections/subsubsectionFieldMappings"
 
 const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
 
-const costStructureFieldNames = [
-  "planningCosts",
-  "constructionCosts",
-  "deliveryCosts",
-  "landAcquisitionCosts",
-  "expensesOfficialOrders",
-  "expensesTechnicalVerification",
-  "nonEligibleExpenses",
-] as const
-
-function enteredCost(raw: unknown) {
-  if (typeof raw === "number") return Number.isFinite(raw) ? raw : null
-  if (typeof raw === "string" && raw.trim() !== "") {
-    const value = Number(raw)
-    return Number.isFinite(value) ? value : null
-  }
-  return null
+function groupHasValues(
+  values: Record<string, unknown> | undefined,
+  fieldNames: readonly string[],
+) {
+  if (!values) return false
+  return fieldNames.some((name) => hasEnteredValue(values[name]))
 }
 
 export type SubsubsectionFormProps<S extends z.ZodTypeAny> = {
@@ -99,8 +99,9 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
   const { projectSlug } = loggedInProjectRouteApi.useParams()
   const [formError, setFormError] = useState<string | null>(null)
 
+  const defaultValues = { ...subsubsectionFormDefaultValues, ...initialValues }
   const form = useAppForm({
-    defaultValues: { ...subsubsectionFormDefaultValues, ...initialValues },
+    defaultValues,
     validators: { onSubmit: schema } as never,
     onSubmit: async ({ value }) => {
       const result = (await onSubmit(value as z.infer<S>)) || {}
@@ -111,6 +112,20 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
       }
     },
   })
+
+  const valuesForOpenGroups = defaultValues as Record<string, unknown>
+  const [trafficLoadOpen, setTrafficLoadOpen] = useState(() =>
+    groupHasValues(valuesForOpenGroups, trafficLoadFieldNames),
+  )
+  const [costStructureOpen, setCostStructureOpen] = useState(() =>
+    groupHasValues(valuesForOpenGroups, costStructureFieldNames),
+  )
+  const [fundingOpen, setFundingOpen] = useState(() =>
+    groupHasValues(valuesForOpenGroups, fundingFieldNames),
+  )
+  const [durationOpen, setDurationOpen] = useState(() =>
+    groupHasValues(valuesForOpenGroups, durationFieldNames),
+  )
 
   const { data: user } = useQuery(currentUserQueryOptions())
   const showSubsectionReassign = Boolean(enableSubsectionReassign) && isAdmin(user ?? null)
@@ -421,7 +436,11 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
             </div>
           </details>
         )}
-        <details className={formDetailsClassName}>
+        <details
+          open={trafficLoadOpen}
+          onToggle={(e) => setTrafficLoadOpen(e.currentTarget.open)}
+          className={formDetailsClassName}
+        >
           <FormDetailsSummary>Verkehrsbelastung</FormDetailsSummary>
           <div className={formDetailsPanelClassName}>
             <form.AppField name="maxSpeed">
@@ -453,7 +472,11 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
             </form.AppField>
           </div>
         </details>
-        <details className={formDetailsClassName}>
+        <details
+          open={costStructureOpen}
+          onToggle={(e) => setCostStructureOpen(e.currentTarget.open)}
+          className={formDetailsClassName}
+        >
           <FormDetailsSummary>Kostenstruktur</FormDetailsSummary>
           <div className={formDetailsPanelClassName}>
             <form.AppField name="planningCosts">
@@ -519,16 +542,7 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
                 />
               )}
             </form.AppField>
-            <form.Subscribe
-              selector={(state) => {
-                const entered = costStructureFieldNames.flatMap((name) => {
-                  const value = enteredCost(state.values[name])
-                  return value === null ? [] : [value]
-                })
-                if (entered.length === 0) return null
-                return entered.reduce((sum, value) => sum + value, 0)
-              }}
-            >
+            <form.Subscribe selector={(state) => sumCostStructure(state.values)}>
               {(sum) => (
                 <div className={fieldLayoutRootClassName}>
                   <p className={fieldLayoutLabelClassName}>Summe</p>
@@ -540,7 +554,11 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
             </form.Subscribe>
           </div>
         </details>
-        <details className={formDetailsClassName}>
+        <details
+          open={fundingOpen}
+          onToggle={(e) => setFundingOpen(e.currentTarget.open)}
+          className={formDetailsClassName}
+        >
           <FormDetailsSummary>Finanzierung</FormDetailsSummary>
           <div className={formDetailsPanelClassName}>
             <form.AppField name="grantAmount">
@@ -558,6 +576,19 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
                   inlineLeadingAddon="€"
                   label={subsubsectionFieldTranslations.ownFunds}
                   optional
+                  trailingControl={
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const ownFunds = calculateOwnFunds(field.form.state.values)
+                        if (ownFunds === null) return
+                        field.handleChange(ownFunds)
+                      }}
+                      className={twJoin(primaryButtonClassName, "px-2! py-1!")}
+                    >
+                      Eigenmittel berechnen
+                    </button>
+                  }
                 />
               )}
             </form.AppField>
@@ -609,7 +640,11 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
             </form.AppField>
           </div>
         </details>
-        <details className={formDetailsClassName}>
+        <details
+          open={durationOpen}
+          onToggle={(e) => setDurationOpen(e.currentTarget.open)}
+          className={formDetailsClassName}
+        >
           <FormDetailsSummary>Dauer</FormDetailsSummary>
           <div className={formDetailsPanelClassName}>
             <form.AppField name="planningPeriod">
