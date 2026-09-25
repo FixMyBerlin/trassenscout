@@ -34,6 +34,11 @@ type Props = {
   initialValues?: {
     subsubsectionId?: number
     acquisitionAreaId?: number
+    title?: string
+    body?: string
+    editingState?: ProjectRecordEditingState
+    assignedToId?: number
+    tags?: string[]
   }
 }
 
@@ -106,7 +111,9 @@ export const ProjectRecordNewModal = ({
     projectRecordTemplatesByProjectQueryOptions({ projectSlug }),
   )
   const [isDirty, setIsDirty] = useState(false)
-  const [modalStep, setModalStep] = useState<"picker" | "form">("picker")
+  const [modalStep, setModalStep] = useState<"picker" | "form">(
+    initialValues?.title ? "form" : "picker",
+  )
   const [isSwitchingStep, setIsSwitchingStep] = useState(false)
   const [selectedTemplate, setSelectedTemplate] = useState<ProjectRecordTemplateOption | null>(null)
 
@@ -158,7 +165,11 @@ export const ProjectRecordNewModal = ({
 
   const formInitialValues = {
     date: getDate(new Date()),
-    editingState: ProjectRecordEditingState.PENDING,
+    editingState: initialValues?.editingState ?? ProjectRecordEditingState.PENDING,
+    ...(initialValues?.title ? { title: initialValues.title } : {}),
+    ...(initialValues?.body != null ? { body: initialValues.body } : {}),
+    ...(initialValues?.assignedToId != null ? { assignedToId: initialValues.assignedToId } : {}),
+    ...(initialValues?.tags != null ? { tags: initialValues.tags } : {}),
     ...(initialValues?.subsubsectionId && {
       subsubsections: [String(initialValues.subsubsectionId)],
     }),

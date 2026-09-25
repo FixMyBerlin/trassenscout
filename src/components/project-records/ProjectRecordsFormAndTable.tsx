@@ -1,5 +1,5 @@
 import { PlusIcon } from "@heroicons/react/16/solid"
-import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { useEffect, useRef, useState } from "react"
 import { twJoin } from "tailwind-merge"
@@ -12,10 +12,16 @@ import { FilteredProjectRecords } from "@/src/components/project-records/Filtere
 import { ProjectRecordNewModal } from "@/src/components/project-records/ProjectRecordNewModal"
 import { useProjectRecordsListHeader } from "@/src/components/project-records/useProjectRecordsListHeader"
 import { useProjectRecordFilters } from "@/src/components/project-records/utils/useProjectRecordFilters"
+import { deleteMcpDraftFn } from "@/src/server/mcp/mcpDrafts/mcpDrafts.functions"
+import {
+  invalidateMcpDraftQueries,
+  projectRecordMcpDraftQueryOptions,
+} from "@/src/server/mcp/mcpDrafts/mcpDraftsQueryOptions"
 import {
   projectRecordsQueryOptions,
   projectRecordsTabCountsQueryOptions,
 } from "@/src/server/projectRecords/projectRecordsQueryOptions"
+import { isMcpDraftSearch } from "@/src/shared/mcp/catalogMcpSearch"
 import {
   PROJECT_RECORD_FILTER_DEFAULTS,
   type ProjectRecordFilter,
@@ -34,18 +40,28 @@ const directionOptions: { value: ProjectRecordFilter["direction"]; label: string
 ]
 
 const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
+const recordsRouteApi = getRouteApi("/_loggedInProjects/$projectSlug/project-records")
 
 export const ProjectRecordsFormAndTable = () => {
   const { projectSlug } = loggedInProjectRouteApi.useParams()
+  const { mcpDraft, ref } = recordsRouteApi.useSearch()
+  const applyMcpDraft = isMcpDraftSearch(mcpDraft) && Boolean(ref)
+  const mcpDraftQuery = useQuery({
+    ...projectRecordMcpDraftQueryOptions({ projectSlug, ref }),
+    enabled: applyMcpDraft,
+  })
+  const discardMcpDraft = useMutation({ mutationFn: deleteMcpDraftFn })
   const { breadcrumb, tabs } = useProjectRecordsListHeader()
   const { filter, setFilter } = useProjectRecordFilters()
   const queryClient = useQueryClient()
   const { data: projectRecords } = useSuspenseQuery(projectRecordsQueryOptions({ projectSlug }))
   const [showSuccess, setShowSuccess] = useState(false)
   const [createdProjectRecordId, setCreatedProjectRecordId] = useState<null | number>(null)
-  const [isProjectRecordModalOpen, setIsProjectRecordModalOpen] = useState(false)
+  const [manualModalOpen, setManualModalOpen] = useState(false)
+  const [mcpDraftDismissed, setMcpDraftDismissed] = useState(false)
+  const draftReady = applyMcpDraft && mcpDraftQuery.data != null
+  const isProjectRecordModalOpen = manualModalOpen || (draftReady && !mcpDraftDismissed)
   const createRecordButtonRef = useRef<HTMLButtonElement>(null)
-
   useEffect(function markCreateRecordButtonReadyAfterHydration() {
     createRecordButtonRef.current?.setAttribute("data-create-record-ready", "true")
   }, [])
@@ -93,7 +109,7 @@ export const ProjectRecordsFormAndTable = () => {
           <button
             ref={createRecordButtonRef}
             type="button"
-            onClick={() => setIsProjectRecordModalOpen(true)}
+            onClick={() => setManualModalOpen(true)}
             className={twJoin(primaryButtonSmClassName, "items-center justify-center gap-1")}
           >
             <PlusIcon className="size-3.5" /> Neuer Protokolleintrag
@@ -102,13 +118,35 @@ export const ProjectRecordsFormAndTable = () => {
       />
       <div className="relative flex flex-col gap-8">
         <ProjectRecordNewModal
+          key={mcpDraftQuery.data?.id ?? "manual"}
           projectSlug={projectSlug}
           landAcquisitionModuleEnabled={
             projectRecords[0]?.project?.landAcquisitionModuleEnabled ?? false
           }
           open={isProjectRecordModalOpen}
-          onClose={() => setIsProjectRecordModalOpen(false)}
+          initialValues={
+            mcpDraftQuery.data?.formOverlay
+              ? {
+                  title: mcpDraftQuery.data.formOverlay.title,
+                  body: mcpDraftQuery.data.formOverlay.body,
+                  editingState: mcpDraftQuery.data.formOverlay.editingState,
+                  subsubsectionId: mcpDraftQuery.data.formOverlay.subsubsectionId,
+                  assignedToId: mcpDraftQuery.data.formOverlay.assignedToId,
+                  tags: mcpDraftQuery.data.formOverlay.tags,
+                }
+              : undefined
+          }
+          onClose={() => {
+            setManualModalOpen(false)
+            setMcpDraftDismissed(true)
+          }}
           onSuccess={async (projectRecordId) => {
+            if (mcpDraftQuery.data) {
+              await discardMcpDraft.mutateAsync({
+                data: { projectSlug, id: mcpDraftQuery.data.id },
+              })
+              await invalidateMcpDraftQueries(queryClient)
+            }
             setCreatedProjectRecordId(projectRecordId)
             setShowSuccess(true)
             setTimeout(() => {

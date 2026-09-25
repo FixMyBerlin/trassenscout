@@ -6,10 +6,10 @@ import {
 } from "@/src/components/core/components/forms/styles/formDetailsStyles"
 import { Link } from "@/src/components/core/components/links/Link"
 import { buildMcpCursorConfigJson, type McpEnvLabel } from "@/src/server/mcp/mcpCursorConfig"
+import { McpCapabilitiesDetails, McpCapabilitiesOverview } from "./McpCapabilitiesOverview"
 import { McpCursorConfigPreview } from "./McpCursorConfigPreview"
 
 const stepListClassName = "list-decimal space-y-2 pl-5"
-const mcpOperationsListClassName = "list-disc space-y-1 pl-5"
 const cursorMcpDocsUrl = "https://cursor.com/docs/context/mcp"
 const mcpRemoteServersDocsUrl =
   "https://modelcontextprotocol.io/docs/develop/connect-remote-servers"
@@ -25,54 +25,17 @@ export function PageApiTokensMcpSetup({ envLabel, origin }: PageApiTokensMcpSetu
 
   return (
     <div className="mb-6 space-y-4 text-sm text-gray-600">
-      <div className="space-y-2">
-        <p>
-          Bearer-Tokens autorisieren den Remote-MCP-Server unter <code>{origin}/mcp</code>. Der
-          Token-Wert wird nur einmal beim Erstellen angezeigt. Ein aktiver Token reicht nicht
-          allein: projektbezogene Tools brauchen zusätzlich den MCP-Modus in{" "}
-          <Link to="/admin/projects">/admin/projects</Link> (Spalte MCP, kein Sammel-Schalter). Aus
-          sperrt die Tools. Entwürfe schreiben nur Entwürfe. Direkt schreibt 24 Stunden lang sofort
-          und erlaubt Löschen; danach gilt wieder Entwürfe, bis Direkt bewusst neu eingeschaltet
-          wird. Ein aktiver Token erlaubt:
-        </p>
-        <ul className={mcpOperationsListClassName}>
-          <li>
-            Umgebung prüfen (<code>env_info</code>)
-          </li>
-          <li>
-            Projektliste lesen (<code>projects_list</code>) — inkl. wirksamem <code>mcpMode</code>{" "}
-            und <code>mcpDirectUntil</code>; nur Slugs mit Entwürfe oder Direkt für die folgenden
-            Tools verwenden
-          </li>
-          <li>
-            Feld-Metadaten und Enums pro aktiviertem Projekt (<code>subsections_schema</code>,{" "}
-            <code>subsubsections_schema</code>)
-          </li>
-          <li>
-            Planungsabschnitte auflisten (<code>subsections_list</code>) und Maßnahmen auflisten (
-            <code>subsubsections_list</code>) — Slugs, Beschreibungen und URLs
-          </li>
-          <li>
-            Anlegen und Ändern (<code>subsections_update</code> / <code>subsections_create</code> /{" "}
-            <code>subsubsections_update</code> / <code>subsubsections_create</code>). Im Modus
-            Entwürfe entsteht nur ein Entwurf; übernehmen in der App (Einsetzen → Formular →
-            Speichern / Erstellen). Im Modus Direkt wird derselbe Datensatz sofort geschrieben. Die
-            Antwort enthält <code>mode</code> (<code>drafted</code> oder <code>applied</code>),
-            URLs, vorgeschlagene Feldwerte (<code>proposed</code>) und Hinweise (
-            <code>warnings</code>). Create verlangt <code>type</code> und GeoJSON-
-            <code>geometry</code>. Planungsabschnitte: LINE oder POLYGON, keine POINT.
-          </li>
-          <li>
-            Löschen nur bei wirksam Direkt (<code>subsections_delete</code> /{" "}
-            <code>subsubsections_delete</code>). Ohne <code>confirm</code> nur eine Vorschau.
-            Bestätigen löscht leere Datensätze und lehnt Maßnahmen mit Protokoll, Upload oder
-            Grunderwerb sowie Planungsabschnitte mit Maßnahmen ab.
-          </li>
-        </ul>
-        <p>Bei Verlust oder Ende der Nutzung widerrufen.</p>
-      </div>
+      <p>
+        Bearer-Tokens autorisieren den MCP-Server unter <code>{origin}/mcp</code>. Der Token-Wert
+        wird nur einmal beim Erstellen angezeigt; bei Verlust oder Ende der Nutzung widerrufen.
+        Projekt-Tools brauchen zusätzlich den MCP-Modus des jeweiligen Projekts in{" "}
+        <Link to="/admin/projects">/admin/projects</Link> (Spalte MCP, kein Sammel-Schalter).
+      </p>
+
+      <McpCapabilitiesOverview />
 
       <div className={formDetailsStackClassName}>
+        <McpCapabilitiesDetails />
         <details className={formDetailsClassName}>
           <FormDetailsSummary>MCP einrichten (Cursor, Claude &amp; Co.)</FormDetailsSummary>
           <div className={formDetailsPanelClassName}>

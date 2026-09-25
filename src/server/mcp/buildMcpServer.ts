@@ -1,11 +1,24 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
 import { z } from "zod"
 import type { AdminApiAuth } from "@/src/server/api/admin/guardAdminApi.server"
+import { catalogConfigs, type CatalogConfig } from "@/src/server/mcp/catalog/catalogMcp.config"
+import {
+  createCatalogForMcp,
+  deleteCatalogForMcp,
+  listCatalogForMcp,
+  updateCatalogForMcp,
+} from "@/src/server/mcp/catalog/catalogMcp.server"
 import { deleteSubsectionForMcp } from "@/src/server/mcp/direct/deleteSubsectionForMcp.server"
 import { deleteSubsubsectionForMcp } from "@/src/server/mcp/direct/deleteSubsubsectionForMcp.server"
 import { mcpEnvLabel } from "@/src/server/mcp/mcpCursorConfig"
 import { MCP_LIST_DEFAULT_LIMIT, MCP_LIST_MAX_LIMIT } from "@/src/server/mcp/mcpListLimit.const"
 import { mcpToolOk, runMcpTool } from "@/src/server/mcp/mcpToolHelpers"
+import {
+  createProjectRecordForMcp,
+  deleteProjectRecordForMcp,
+  listProjectRecordsForMcp,
+  updateProjectRecordForMcp,
+} from "@/src/server/mcp/projectRecords/projectRecordsMcp.server"
 import { createSubsectionForMcp } from "@/src/server/mcp/queries/createSubsectionForMcp.server"
 import { createSubsubsectionForMcp } from "@/src/server/mcp/queries/createSubsubsectionForMcp.server"
 import { getSubsectionsSchemaForMcp } from "@/src/server/mcp/queries/getSubsectionsSchemaForMcp.server"
@@ -53,8 +66,9 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
         `If mcpMode is "DISABLED", stop and ask an admin to enable MCP in /admin/projects (column MCP). ` +
         `Do not call other project tools for a disabled slug. ` +
         `mcpMode is the effective mode. "DIRECT" applies only while mcpDirectUntil is in the future; after that the effective mode is "DRAFT" until an admin turns direct write on again. ` +
-        `In "DRAFT", create and update tools write McpDraft only. An admin applies drafts in the app (Einsetzen → form → Speichern / Erstellen). ` +
-        `In "DIRECT", the same create and update tools write Subsection / Subsubsection immediately. ` +
+        `In "DRAFT", Planungsabschnitt, Maßnahme, and Protokolleintrag create and update tools write McpDraft only. An admin applies drafts in the app (Einsetzen → form → Speichern / Erstellen). ` +
+        `In "DIRECT", those tools write the live row immediately. ` +
+        `Catalog tools (Baulastträger, Führungsform/RVA, Phase, Maßnahmentyp) create, update, and delete only while mcpMode is "DIRECT". ` +
         `Delete tools (subsections_delete, subsubsections_delete) exist only in "DIRECT". ` +
         `Without confirm they preview and write nothing. Show the user the preview (counts of protocols, uploads, acquisition areas, and for a Planungsabschnitt the Maßnahme count). ` +
         `Only then call again with confirm true. Confirm rejects a Maßnahme that still has protocols, uploads, or acquisition areas, and a Planungsabschnitt that still has Maßnahmen. ` +
@@ -75,7 +89,18 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
         `projects_list returns slug, subTitle, shortTitle, url, paCount, subsubsectionCount, mcpMode, mcpDirectUntil. ` +
         `subsections_list requires projectSlug and returns slug, description, and url per Planungsabschnitt. ` +
         `subsubsections_list requires projectSlug; optional subsectionSlug filters to one Planungsabschnitt. ` +
-        `It returns slug, description, and url per Maßnahme.`,
+        `It returns slug, description, and url per Maßnahme. ` +
+        `Catalog tools (Baulastträger operators_*, Führungsform/RVA subsubsection_infras_*, Phase subsubsection_statuses_*, Maßnahmentyp subsubsection_tasks_*): ` +
+        `list returns slug, title, url, and style for Phasen and works in DRAFT or DIRECT. ` +
+        `create, update, and delete require DIRECT. create takes items (1–${MCP_LIST_MAX_LIMIT}) with projectSlug, slug, title (style REGULAR|GREEN for Phasen). ` +
+        `An existing slug is rejected. update is one object (projectSlug, slug, patch), not a batch. ` +
+        `delete is a batch plus confirm: without confirm, preview and write nothing; with confirm, refuse when a Planungsabschnitt or Maßnahme still references the row. ` +
+        `Protokolleinträge project_records_*: list returns id, title, editingState, and linked Maßnahme slugs. There is no user or tag directory. ` +
+        `create is one record (title required, editingState PENDING|COMPLETED default PENDING, body, optional subsectionSlug + subsubsectionSlug for exactly one Maßnahme, optional ref, optional assignedTo, optional tags). ` +
+        `assignedTo is only a name or numeric id the user already named. tags is titles and replaces the whole set; an empty array is rejected. ` +
+        `A repeated DRAFT create with the same ref upserts; without ref each call is a new draft. update is one record by numeric id. ` +
+        `Sending the Maßnahme pair replaces the link set with that one Maßnahme. delete is DIRECT only, preview then confirm, and refuses while comments or uploads are attached. ` +
+        `Slug is identity: required on catalog create and not renamed on update. order stays autoincrement.`,
     },
   )
 
@@ -296,6 +321,181 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
           origin,
           createdById: auth.createdById,
         }),
+      ),
+  )
+
+  const catalogCreateSchema = z.object({
+    items: z
+      .array(
+        z.object({
+          projectSlug: z.string(),
+          slug: z.string(),
+          title: z.string(),
+          style: z.enum(["REGULAR", "GREEN"]).optional(),
+        }),
+      )
+      .min(1)
+      .max(MCP_LIST_MAX_LIMIT),
+  })
+  const catalogUpdateSchema = z.object({
+    projectSlug: z.string(),
+    slug: z.string(),
+    patch: z.object({
+      title: z.string().nullish(),
+      style: z.enum(["REGULAR", "GREEN"]).nullish(),
+    }),
+  })
+  const catalogDeleteSchema = z.object({
+    items: z
+      .array(z.object({ projectSlug: z.string(), slug: z.string() }))
+      .min(1)
+      .max(MCP_LIST_MAX_LIMIT),
+    confirm: z.boolean().optional(),
+  })
+
+  const toolPrefix: Record<CatalogConfig["key"], string> = {
+    operators: "operators",
+    subsubsectionInfras: "subsubsection_infras",
+    subsubsectionStatuses: "subsubsection_statuses",
+    subsubsectionTasks: "subsubsection_tasks",
+  }
+
+  for (const config of Object.values(catalogConfigs)) {
+    const prefix = toolPrefix[config.key]
+    server.registerTool(
+      `${prefix}_list`,
+      {
+        description:
+          `List ${config.label} rows (default ${MCP_LIST_DEFAULT_LIMIT}, max ${MCP_LIST_MAX_LIMIT}). Requires mcpMode DRAFT or DIRECT. ` +
+          `Returns slug, title, url${config.hasStyle ? ", style" : ""}.`,
+        inputSchema: { projectSlug: z.string(), limit: mcpListLimitSchema },
+      },
+      ({ projectSlug, limit }) =>
+        runMcpTool(() => listCatalogForMcp(config, { projectSlug, origin, limit })),
+    )
+    server.registerTool(
+      `${prefix}_create`,
+      {
+        description:
+          `Create ${config.label} rows. Requires effective mcpMode DIRECT. items 1–${MCP_LIST_MAX_LIMIT}: projectSlug, slug, title` +
+          `${config.hasStyle ? ", style (REGULAR|GREEN)" : ""}. Existing slug is rejected. Writes the live row. ` +
+          patchSemantics,
+        inputSchema: catalogCreateSchema.shape,
+      },
+      (input) =>
+        runMcpTool(() =>
+          createCatalogForMcp(config, { ...input, origin, createdById: auth.createdById }),
+        ),
+    )
+    server.registerTool(
+      `${prefix}_update`,
+      {
+        description:
+          `Update one ${config.label}. Requires effective mcpMode DIRECT. projectSlug, slug, patch. Unknown slug is an error. ` +
+          patchSemantics,
+        inputSchema: catalogUpdateSchema.shape,
+      },
+      (input) =>
+        runMcpTool(() =>
+          updateCatalogForMcp(config, { ...input, origin, createdById: auth.createdById }),
+        ),
+    )
+    server.registerTool(
+      `${prefix}_delete`,
+      {
+        description: `Delete ${config.label} rows. DIRECT only. Without confirm, preview and write nothing. With confirm, refuse when a Planungsabschnitt or Maßnahme still references the row.`,
+        inputSchema: catalogDeleteSchema.shape,
+      },
+      (input) =>
+        runMcpTool(() =>
+          deleteCatalogForMcp(config, { ...input, origin, createdById: auth.createdById }),
+        ),
+    )
+  }
+
+  server.registerTool(
+    "project_records_list",
+    {
+      description:
+        `List Protokolleinträge (default ${MCP_LIST_DEFAULT_LIMIT}, max ${MCP_LIST_MAX_LIMIT}). Requires mcpMode DRAFT or DIRECT. ` +
+        "Returns id, title, editingState, linked Maßnahme slugs, url.",
+      inputSchema: { projectSlug: z.string(), limit: mcpListLimitSchema },
+    },
+    ({ projectSlug, limit }) =>
+      runMcpTool(() => listProjectRecordsForMcp({ projectSlug, origin, limit })),
+  )
+
+  server.registerTool(
+    "project_records_create",
+    {
+      description:
+        "Create one Protokolleintrag. title required. editingState PENDING|COMPLETED (default PENDING). body is the Nachricht. " +
+        "Optional subsectionSlug + subsubsectionSlug link exactly one Maßnahme; omit both to hang the entry on the project. " +
+        "Optional assignedTo: a display name or numeric user id the user already named. Optional tags: titles; a non-empty array replaces the set. " +
+        "No user or tag directory. Omit a key to leave it unchanged. null and empty string do not clear. An empty tags array is rejected. " +
+        "Optional ref: DRAFT repeats with the same ref upsert; without ref each call is a new draft. DIRECT inserts one ProjectRecord and does not persist ref.",
+      inputSchema: {
+        projectSlug: z.string(),
+        title: z.string(),
+        editingState: z.enum(["PENDING", "COMPLETED"]).optional(),
+        body: z.string().nullish(),
+        subsectionSlug: z.string().nullish(),
+        subsubsectionSlug: z.string().nullish(),
+        assignedTo: z.string().nullish(),
+        tags: z.array(z.string()).nullish(),
+        ref: z.string().nullish(),
+      },
+    },
+    (input) =>
+      runMcpTool(() =>
+        createProjectRecordForMcp({ ...input, origin, createdById: auth.createdById }),
+      ),
+  )
+
+  server.registerTool(
+    "project_records_update",
+    {
+      description:
+        "Update one Protokolleintrag by numeric id. Omit a key to leave it unchanged. " +
+        "Sending subsectionSlug + subsubsectionSlug replaces the Maßnahme link set with that one Maßnahme. " +
+        "assignedTo is a display name or numeric user id the user already named. tags titles replace the whole set; an empty array is rejected. " +
+        "No user or tag directory. " +
+        patchSemantics,
+      inputSchema: {
+        projectSlug: z.string(),
+        id: z.number().int(),
+        patch: z.object({
+          title: z.string().nullish(),
+          editingState: z.enum(["PENDING", "COMPLETED"]).nullish(),
+          body: z.string().nullish(),
+          subsectionSlug: z.string().nullish(),
+          subsubsectionSlug: z.string().nullish(),
+          assignedTo: z.string().nullish(),
+          tags: z.array(z.string()).nullish(),
+        }),
+      },
+    },
+    (input) =>
+      runMcpTool(() =>
+        updateProjectRecordForMcp({ ...input, origin, createdById: auth.createdById }),
+      ),
+  )
+
+  server.registerTool(
+    "project_records_delete",
+    {
+      description: `Delete Protokolleinträge. DIRECT only. Without confirm, preview and write nothing. With confirm, refuse while comments or uploads are attached.`,
+      inputSchema: {
+        items: z
+          .array(z.object({ projectSlug: z.string(), id: z.number().int() }))
+          .min(1)
+          .max(MCP_LIST_MAX_LIMIT),
+        confirm: z.boolean().optional(),
+      },
+    },
+    (input) =>
+      runMcpTool(() =>
+        deleteProjectRecordForMcp({ ...input, origin, createdById: auth.createdById }),
       ),
   )
 

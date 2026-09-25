@@ -255,6 +255,8 @@ enum McpDraftKind {
   SUBSUBSECTION_CREATE
   SUBSECTION_UPDATE
   SUBSECTION_CREATE
+  PROJECT_RECORD_UPDATE
+  PROJECT_RECORD_CREATE
 }
 
 model McpDraft {
@@ -280,6 +282,9 @@ model McpDraft {
   // Planungsabschnitt update: live Subsection row (1:1).
   subsection   Subsection? @relation("McpDraftSubsectionUpdate", fields: [subsectionId], references: [id], onDelete: Cascade)
   subsectionId Int?        @unique
+
+  projectRecord   ProjectRecord? @relation(fields: [projectRecordId], references: [id], onDelete: Cascade)
+  projectRecordId Int?           @unique
 
   patch Json
 
@@ -1015,6 +1020,7 @@ model ProjectRecord {
   reviewedById               Int?
   reviewNotes                String?
   projectRecordComments      ProjectRecordComment[]
+  mcpDraft                   McpDraft?
 
   // The dashboard asks for "assigned to me or by me" across every project.
   @@index([assignedToId])

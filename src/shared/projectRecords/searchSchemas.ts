@@ -67,6 +67,8 @@ export const projectRecordsSearchSchema = z.object({
     projectRecordInitialFormValuesSchema,
     parseProjectRecordInitialFormValuesParam,
   ),
+  mcpDraft: z.union([z.literal(true), z.literal("true")]).optional(),
+  ref: z.string().min(1).optional(),
 })
 
 export type ProjectRecordsSearch = z.infer<typeof projectRecordsSearchSchema>

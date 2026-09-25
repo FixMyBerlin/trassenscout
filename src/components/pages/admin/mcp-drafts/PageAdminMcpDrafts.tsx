@@ -16,6 +16,8 @@ function draftLink(draft: {
   kind: McpDraftKind
   subsectionSlug: string | null
   subsubsectionSlug: string | null
+  projectRecordId: number | null
+  ref: string | null
   projectSlug: string
 }) {
   const { kind, subsectionSlug, subsubsectionSlug, projectSlug } = draft
@@ -50,6 +52,28 @@ function draftLink(draft: {
         search={{ mcpDraft: "true", slug: subsectionSlug }}
       >
         Neu (PA): {shortTitle(subsectionSlug)}
+      </Link>
+    )
+  }
+  if (kind === McpDraftKind.PROJECT_RECORD_CREATE) {
+    return (
+      <Link
+        to="/$projectSlug/project-records"
+        params={{ projectSlug }}
+        search={{ mcpDraft: "true", ref: draft.ref ?? undefined }}
+      >
+        Neu (Protokolleintrag){draft.ref ? `: ${draft.ref}` : ""}
+      </Link>
+    )
+  }
+  if (kind === McpDraftKind.PROJECT_RECORD_UPDATE && draft.projectRecordId) {
+    return (
+      <Link
+        to="/$projectSlug/project-records/$projectRecordId/edit"
+        params={{ projectSlug, projectRecordId: String(draft.projectRecordId) }}
+        search={{ mcpDraft: "true" }}
+      >
+        Update (Protokolleintrag): {draft.projectRecordId}
       </Link>
     )
   }
@@ -102,6 +126,8 @@ export function PageAdminMcpDrafts() {
                             kind: draft.kind,
                             subsectionSlug: draft.subsectionSlug,
                             subsubsectionSlug: draft.subsubsectionSlug,
+                            projectRecordId: draft.projectRecordId,
+                            ref: draft.ref,
                             projectSlug: group.projectSlug,
                           })}
                           <span className="text-gray-500">

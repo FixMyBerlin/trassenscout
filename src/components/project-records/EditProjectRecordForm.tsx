@@ -26,6 +26,8 @@ import { getProjectRecordAuthorLabel } from "@/src/components/project-records/ut
 import { getProjectRecordEditSuccessNavigateOptions } from "@/src/components/project-records/utils/getProjectRecordEditSuccessRoute"
 import { getDate } from "@/src/components/project-records/utils/splitStartAt"
 import { ProjectRecordReviewState } from "@/src/prisma/generated/browser"
+import { deleteMcpDraftFn } from "@/src/server/mcp/mcpDrafts/mcpDrafts.functions"
+import { invalidateMcpDraftQueries } from "@/src/server/mcp/mcpDrafts/mcpDraftsQueryOptions"
 import { m2mFields, M2MFieldsType } from "@/src/server/projectRecords/m2mFields"
 import { updateProjectRecordFn } from "@/src/server/projectRecords/projectRecords.functions"
 import {
@@ -74,12 +76,24 @@ export const EditProjectRecordForm = ({
   onDirtyChange,
   onSuccess,
   onSubmittingChange,
+  mcpOverlay = null,
 }: {
   projectRecord: ProjectRecord
   hideBackLink?: boolean
   onDirtyChange?: (isDirty: boolean) => void
   onSuccess?: (reviewState: ProjectRecordReviewState) => void
   onSubmittingChange?: (isSubmitting: boolean) => void
+  mcpOverlay?: {
+    id: number
+    formOverlay: {
+      title?: string
+      body?: string
+      editingState?: ProjectRecord["editingState"]
+      subsubsectionId?: number
+      assignedToId?: number
+      tags?: string[]
+    }
+  } | null
 }) => {
   const navigate = useNavigate()
   const router = useRouter()
@@ -87,6 +101,8 @@ export const EditProjectRecordForm = ({
   const [formError, setFormError] = useState<string | null>(null)
   const needsReview = initialProjectRecord.reviewState !== ProjectRecordReviewState.APPROVED
   const updateProjectRecordMutation = useMutation({ mutationFn: updateProjectRecordFn })
+  const deleteMcpDraftMutation = useMutation({ mutationFn: deleteMcpDraftFn })
+  const overlay = mcpOverlay?.formOverlay
   const projectSlug = initialProjectRecord.project.slug
   const { data: projectRecord = initialProjectRecord } = useQuery({
     ...projectRecordQueryOptions({ projectSlug, id: initialProjectRecord.id }),
@@ -111,16 +127,20 @@ export const EditProjectRecordForm = ({
     defaultValues: {
       ...projectRecordFormDefaultValues,
       date: projectRecord.date ? getDate(projectRecord.date) : "",
-      title: projectRecord.title,
-      body: projectRecord.body ?? "",
-      subsubsectionId: projectRecord.subsubsectionId,
+      title: overlay?.title ?? projectRecord.title,
+      body: overlay?.body ?? projectRecord.body ?? "",
+      subsubsectionId: overlay?.subsubsectionId ?? projectRecord.subsubsectionId,
       acquisitionAreaId: projectRecord.acquisitionAreaId,
-      assignedToId: projectRecord.assignedToId,
-      editingState: projectRecord.editingState,
+      assignedToId: overlay?.assignedToId ?? projectRecord.assignedToId,
+      editingState: overlay?.editingState ?? projectRecord.editingState,
       reviewState: projectRecord.reviewState,
       reviewNotes: projectRecord.reviewNotes ?? "",
       projectRecordTemplateId: projectRecord.projectRecordTemplateId,
       ...m2mFieldsInitialValues,
+      ...(overlay?.subsubsectionId != null
+        ? { subsubsections: [String(overlay.subsubsectionId)] }
+        : {}),
+      ...(overlay?.tags != null ? { tags: overlay.tags } : {}),
     },
     validators: { onSubmit: ProjectRecordFormSchema } as never,
     onSubmit: async ({ value }) => {
@@ -140,6 +160,12 @@ export const EditProjectRecordForm = ({
             formTemplates: values.formTemplates === true ? false : values.formTemplates,
           },
         })
+        if (mcpOverlay) {
+          await deleteMcpDraftMutation.mutateAsync({
+            data: { projectSlug, id: mcpOverlay.id },
+          })
+          await invalidateMcpDraftQueries(queryClient)
+        }
         await Promise.all([
           queryClient.invalidateQueries({
             queryKey: projectRecordQueryOptions({ projectSlug, id: projectRecord.id }).queryKey,

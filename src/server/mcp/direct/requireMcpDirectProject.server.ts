@@ -1,11 +1,15 @@
 import { requireMcpEnabledProject } from "@/src/server/mcp/requireMcpEnabledProject.server"
 
 /** Like requireMcpEnabledProject, but also throws unless the effective mode is DIRECT. */
-export async function requireMcpDirectProject(projectSlug: string, now = new Date()) {
+export async function requireMcpDirectProject(
+  projectSlug: string,
+  now = new Date(),
+  action = "Delete",
+) {
   const project = await requireMcpEnabledProject(projectSlug, now)
   if (project.mcpMode !== "DIRECT") {
     throw new Error(
-      `Delete is only available while MCP direct write is active for "${projectSlug}". The effective mode is drafts.`,
+      `${action} is only available while MCP direct write is active for "${projectSlug}". The effective mode is drafts.`,
     )
   }
   return project

@@ -1,6 +1,7 @@
 import { type QueryClient, queryOptions } from "@tanstack/react-query"
 import type { z } from "zod"
 import {
+  getProjectRecordMcpDraftFn,
   getSubsectionMcpDraftFn,
   getSubsubsectionMcpDraftFn,
   listMcpDraftsGroupedFn,
@@ -8,6 +9,7 @@ import {
   listSubsectionMcpCreateDraftsFn,
 } from "./mcpDrafts.functions"
 import type {
+  GetProjectRecordMcpDraftSchema,
   GetSubsectionMcpDraftSchema,
   GetSubsubsectionMcpDraftSchema,
   ListProjectSubsectionMcpCreateDraftsSchema,
@@ -61,4 +63,14 @@ export async function invalidateMcpDraftQueries(queryClient: QueryClient) {
   await queryClient.invalidateQueries({ queryKey: ["subsectionMcpCreateDrafts"] })
   await queryClient.invalidateQueries({ queryKey: ["projectSubsectionMcpCreateDrafts"] })
   await queryClient.invalidateQueries({ queryKey: ["mcpDraftsGrouped"] })
+  await queryClient.invalidateQueries({ queryKey: ["projectRecordMcpDraft"] })
+}
+
+export function projectRecordMcpDraftQueryOptions(
+  input: z.infer<typeof GetProjectRecordMcpDraftSchema>,
+) {
+  return queryOptions({
+    queryKey: ["projectRecordMcpDraft", input],
+    queryFn: () => getProjectRecordMcpDraftFn({ data: input }),
+  })
 }
