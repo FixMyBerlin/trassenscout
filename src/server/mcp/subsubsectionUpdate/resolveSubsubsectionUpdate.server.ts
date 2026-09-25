@@ -8,6 +8,10 @@ import {
   valuesEqual,
   type SubsubsectionPreviewChange,
 } from "@/src/server/mcp/subsubsectionUpdate/formatPreview"
+import {
+  geometryPreview,
+  geometryVertexIssue,
+} from "@/src/server/mcp/subsubsectionUpdate/geometryPreview"
 import { subsubsectionMcpFieldLabel } from "@/src/server/mcp/subsubsectionUpdate/patchFieldLabel"
 import type { SubsubsectionMcpPatch } from "@/src/server/mcp/subsubsectionUpdate/patchSchema"
 import { buildSubsubsectionUrl } from "@/src/server/mcp/subsubsectionUrl"
@@ -19,6 +23,7 @@ import {
   subsubsectionLogSnapshot,
   subsubsectionLogSnapshotSelect,
 } from "@/src/server/subsubsections/subsubsectionLogSnapshot"
+import { GeometryWithTypeSchema } from "@/src/shared/geometry/geometrySchemas"
 import { setIds } from "@/src/shared/prisma/connectIds"
 import {
   parseDefinitions,
@@ -140,6 +145,28 @@ export async function resolveSubsubsectionUpdate({
   const currentExtraFields = parseExtraFields(subsubsection.extraFields)
   const prismaData: Prisma.SubsubsectionUpdateInput = {}
   const changes: SubsubsectionPreviewChange[] = []
+  const geometryWarnings: string[] = []
+
+  if (patch.geometry !== undefined) {
+    const matched = GeometryWithTypeSchema.safeParse({
+      type: subsubsection.type,
+      geometry: patch.geometry,
+    })
+    if (!matched.success) {
+      errors.push(
+        "geometry passt nicht zum gespeicherten Typ (POINT/LINE/POLYGON müssen zum GeoJSON-Typ passen).",
+      )
+    } else {
+      const vertexIssue = geometryVertexIssue(patch.geometry)
+      if (vertexIssue.error) {
+        errors.push(vertexIssue.error)
+      } else {
+        if (vertexIssue.warning) geometryWarnings.push(vertexIssue.warning)
+        pushChange(changes, "geometry", subsubsection.geometry, geometryPreview(patch.geometry))
+        prismaData.geometry = patch.geometry as Prisma.InputJsonValue
+      }
+    }
+  }
 
   for (const key of SCALAR_KEYS) {
     if (!(key in patch) || patch[key] === undefined) continue
@@ -282,7 +309,10 @@ export async function resolveSubsubsectionUpdate({
     }
   }
 
-  const warnings = changes.filter((change) => change.kind === "overwrite").map(formatPreviewWarning)
+  const warnings = [
+    ...changes.filter((change) => change.kind === "overwrite").map(formatPreviewWarning),
+    ...geometryWarnings,
+  ]
 
   return {
     environment,

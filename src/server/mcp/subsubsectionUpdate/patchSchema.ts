@@ -65,13 +65,13 @@ const subsubsectionMcpPatchObjectSchema = z.object({
     })
     .optional(),
   extraFields: SubsubsectionExtraFieldsValuesSchema.optional(),
+  geometry: SupportedGeometrySchema.optional(),
 })
 
 export const subsubsectionMcpPatchSchema = subsubsectionMcpPatchObjectSchema.strict()
 
 const subsubsectionMcpCreatePatchObjectSchema = subsubsectionMcpPatchObjectSchema.extend({
   type: z.enum(GeometryTypeEnum).optional(),
-  geometry: SupportedGeometrySchema.optional(),
 })
 
 const subsubsectionMcpCreatePatchSchema = subsubsectionMcpCreatePatchObjectSchema.strict()

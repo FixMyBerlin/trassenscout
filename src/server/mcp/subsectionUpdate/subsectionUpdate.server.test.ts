@@ -24,6 +24,14 @@ function mockSubsection(overrides: Record<string, unknown> = {}) {
   return {
     id: 10,
     slug: "pa8",
+    type: "LINE",
+    geometry: {
+      type: "LineString",
+      coordinates: [
+        [9.19, 48.89],
+        [9.2, 48.9],
+      ],
+    },
     description: null,
     lengthM: 120,
     estimatedCompletionDateString: null,
@@ -102,6 +110,65 @@ describe("Subsection MCP patch", () => {
     expect(subsectionMcpPatchSchema.safeParse({ description: "" }).success).toBe(false)
     expect(subsectionMcpPatchSchema.safeParse({ managerId: 1 }).success).toBe(false)
     expect(subsectionMcpPatchSchema.safeParse({ type: "LINE" }).success).toBe(false)
+    expect(
+      subsectionMcpPatchSchema.safeParse({
+        geometry: {
+          type: "LineString",
+          coordinates: [
+            [9.19, 48.89],
+            [9.21, 48.91],
+          ],
+        },
+      }).success,
+    ).toBe(true)
+  })
+
+  test("drafts a geometry overwrite as a preview without coordinates", async () => {
+    const geometry = {
+      type: "LineString" as const,
+      coordinates: [
+        [9.19, 48.89],
+        [9.21, 48.91],
+      ],
+    }
+    const result = await updateSubsectionForMcp({
+      origin: "http://127.0.0.1:4000",
+      createdById: 42,
+      items: [item({ geometry })],
+    })
+
+    expect(result.items[0]?.drafted).toBe(true)
+    expect(result.items[0]?.changes).toEqual([
+      expect.objectContaining({
+        field: "geometry",
+        kind: "overwrite",
+        proposed: { type: "LineString", vertexCount: 2, bbox: [9.19, 48.89, 9.21, 48.91] },
+      }),
+    ])
+    expect(mockDb.mcpDraft.upsert.mock.calls[0]?.[0].create.patch.geometry).toEqual(geometry)
+    expect(mockDb.subsection.update).not.toHaveBeenCalled()
+  })
+
+  test("a geometry type mismatch writes nothing", async () => {
+    const mismatch = await updateSubsectionForMcp({
+      origin: "http://127.0.0.1:4000",
+      createdById: 42,
+      items: [item({ geometry: { type: "Point", coordinates: [9.19, 48.89] } })],
+    })
+    expect(mismatch.items[0]?.drafted).toBe(false)
+    expect(mismatch.items[0]?.errors[0]).toContain("gespeicherten Typ")
+    expect(mockDb.mcpDraft.upsert).not.toHaveBeenCalled()
+  })
+
+  test("geometry over 5000 vertices is an error", async () => {
+    const coordinates = Array.from({ length: 5001 }, (_, index) => [9 + index * 0.0001, 48])
+    const result = await updateSubsectionForMcp({
+      origin: "http://127.0.0.1:4000",
+      createdById: 42,
+      items: [item({ geometry: { type: "LineString", coordinates } })],
+    })
+    expect(result.items[0]?.drafted).toBe(false)
+    expect(result.items[0]?.errors[0]).toContain("5000")
   })
 
   test("missing subsection is a per-item error", async () => {

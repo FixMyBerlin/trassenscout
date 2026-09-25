@@ -22,18 +22,18 @@ const subsectionMcpPatchObjectSchema = z.object({
   operatorSlug: nonEmptyString.optional(),
   networkHierarchySlug: nonEmptyString.optional(),
   subsectionStatusSlug: nonEmptyString.optional(),
+  geometry: SupportedGeometrySchema.optional(),
 })
 
 export const subsectionMcpPatchSchema = subsectionMcpPatchObjectSchema.strict()
 
 const subsectionMcpCreatePatchObjectSchema = subsectionMcpPatchObjectSchema.extend({
   type: z.enum([GeometryTypeEnum.LINE, GeometryTypeEnum.POLYGON]).optional(),
-  geometry: SupportedGeometrySchema.optional(),
 })
 
 const subsectionMcpCreatePatchSchema = subsectionMcpCreatePatchObjectSchema.strict()
 
-/** Update overlay: writable scalars/relations only (no geometry/type). */
+/** Update overlay: writable scalars, relations, and geometry (no type). */
 export const subsectionMcpPatchOverlaySchema = subsectionMcpPatchObjectSchema
 
 /** Create overlay: includes type and geometry. */

@@ -48,3 +48,27 @@ export function geometryPreview(geometry: { type: string; coordinates?: unknown 
       : ([minLng, minLat, maxLng, maxLat] as [number, number, number, number])
   return { type: geometry.type, vertexCount, bbox }
 }
+
+export function patchWithGeometryPreview(patch: unknown) {
+  if (!patch || typeof patch !== "object" || Array.isArray(patch)) return patch
+  const geometry = (patch as { geometry?: unknown }).geometry
+  if (!geometry || typeof geometry !== "object" || !("type" in geometry)) return patch
+  return { ...patch, geometry: geometryPreview(geometry as { type: string }) }
+}
+
+export function geometryVertexIssue(geometry: { coordinates?: unknown }) {
+  const vertexCount = countGeometryVertices(geometry)
+  if (vertexCount > MCP_GEOMETRY_MAX_VERTICES) {
+    return {
+      error: `Geometrie zu groß, bitte vereinfachen (max. ${MCP_GEOMETRY_MAX_VERTICES} Stützpunkte)`,
+      warning: null,
+    }
+  }
+  return {
+    error: null,
+    warning:
+      vertexCount >= MCP_GEOMETRY_WARN_VERTICES
+        ? `Geometrie hat ${vertexCount} Stützpunkte. Bitte vorher vereinfachen; große Batches splitten.`
+        : null,
+  }
+}

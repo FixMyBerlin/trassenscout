@@ -11,7 +11,12 @@ import {
   valuesEqual,
   type SubsubsectionPreviewChange,
 } from "@/src/server/mcp/subsubsectionUpdate/formatPreview"
+import {
+  geometryPreview,
+  geometryVertexIssue,
+} from "@/src/server/mcp/subsubsectionUpdate/geometryPreview"
 import { resolveSubsectionRelationSlugs } from "@/src/server/subsections/resolveSubsectionRelationSlugs.server"
+import { SubsectionGeometryWithTypeSchema } from "@/src/shared/geometry/geometrySchemas"
 
 const SCALAR_KEYS = [
   "description",
@@ -74,6 +79,8 @@ export async function resolveSubsectionUpdate({
     select: {
       id: true,
       slug: true,
+      type: true,
+      geometry: true,
       description: true,
       lengthM: true,
       estimatedCompletionDateString: true,
@@ -90,6 +97,28 @@ export async function resolveSubsectionUpdate({
   const url = buildSubsectionUrl(origin, project.slug, subsection.slug)
   const prismaData: Prisma.SubsectionUpdateInput = {}
   const changes: SubsubsectionPreviewChange[] = []
+  const geometryWarnings: string[] = []
+
+  if (patch.geometry !== undefined) {
+    const matched = SubsectionGeometryWithTypeSchema.safeParse({
+      type: subsection.type,
+      geometry: patch.geometry,
+    })
+    if (!matched.success) {
+      errors.push(
+        "geometry passt nicht zum gespeicherten Typ (LINE/POLYGON müssen zum GeoJSON-Typ passen; POINT ist für Planungsabschnitte nicht erlaubt).",
+      )
+    } else {
+      const vertexIssue = geometryVertexIssue(patch.geometry)
+      if (vertexIssue.error) {
+        errors.push(vertexIssue.error)
+      } else {
+        if (vertexIssue.warning) geometryWarnings.push(vertexIssue.warning)
+        pushChange(changes, "geometry", subsection.geometry, geometryPreview(patch.geometry))
+        prismaData.geometry = patch.geometry as Prisma.InputJsonValue
+      }
+    }
+  }
 
   for (const key of SCALAR_KEYS) {
     if (!(key in patch) || patch[key] === undefined) continue
@@ -152,7 +181,10 @@ export async function resolveSubsectionUpdate({
     }
   }
 
-  const warnings = changes.filter((change) => change.kind === "overwrite").map(formatPreviewWarning)
+  const warnings = [
+    ...changes.filter((change) => change.kind === "overwrite").map(formatPreviewWarning),
+    ...geometryWarnings,
+  ]
 
   return {
     environment,

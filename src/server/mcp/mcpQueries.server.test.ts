@@ -230,7 +230,7 @@ describe("MCP read queries", () => {
     )
   })
 
-  test("subsubsections_schema marks geometry not writable and includes extra fields and enums", async () => {
+  test("subsubsections_schema marks geometry writable and includes extra fields and enums", async () => {
     const { getSubsubsectionsSchemaForMcp } =
       await import("@/src/server/mcp/queries/getSubsubsectionsSchemaForMcp.server")
 
@@ -243,8 +243,9 @@ describe("MCP read queries", () => {
 
     const schema = await getSubsubsectionsSchemaForMcp("frm9-ra3")
     expect(schema.projectSlug).toBe("frm9-ra3")
-    expect(schema.fields.find((field) => field.name === "geometry")?.writable).toBe(false)
+    expect(schema.fields.find((field) => field.name === "geometry")?.writable).toBe(true)
     expect(schema.fields.find((field) => field.name === "slug")?.writable).toBe(false)
+    expect(schema.fields.find((field) => field.name === "type")?.writable).toBe(false)
     expect(schema.fields.find((field) => field.name === "lengthM")?.writable).toBe(true)
     expect(schema.fields.find((field) => field.name === "extraFields")).toMatchObject({
       writable: true,
@@ -340,7 +341,7 @@ describe("MCP read queries", () => {
     expect(mockDb.subsection.findMany).not.toHaveBeenCalled()
   })
 
-  test("subsections_schema marks geometry not writable and includes lookups", async () => {
+  test("subsections_schema marks geometry writable and includes lookups", async () => {
     const { getSubsectionsSchemaForMcp } =
       await import("@/src/server/mcp/queries/getSubsectionsSchemaForMcp.server")
 
@@ -351,8 +352,9 @@ describe("MCP read queries", () => {
 
     const schema = await getSubsectionsSchemaForMcp("frm9-ra3")
     expect(schema.projectSlug).toBe("frm9-ra3")
-    expect(schema.fields.find((field) => field.name === "geometry")?.writable).toBe(false)
+    expect(schema.fields.find((field) => field.name === "geometry")?.writable).toBe(true)
     expect(schema.fields.find((field) => field.name === "slug")?.writable).toBe(false)
+    expect(schema.fields.find((field) => field.name === "type")?.writable).toBe(false)
     expect(schema.fields.find((field) => field.name === "lengthM")?.writable).toBe(true)
     expect(schema.operators).toEqual([{ id: 1, slug: "stadt", title: "Stadt" }])
     expect(schema).not.toHaveProperty("managers")

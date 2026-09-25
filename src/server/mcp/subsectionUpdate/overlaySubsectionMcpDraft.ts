@@ -49,10 +49,11 @@ export async function overlaySubsectionMcpDraft({
   const overlay: SubsectionMcpFormOverlay = {}
   const overlayErrors: string[] = []
 
+  if (overlayPatch.geometry !== undefined) overlay.geometry = overlayPatch.geometry
+
   if (createDraft) {
     const createPatch = overlayPatch as SubsectionMcpCreatePatch
     if (createPatch.type !== undefined) overlay.type = createPatch.type
-    if (createPatch.geometry !== undefined) overlay.geometry = createPatch.geometry
   }
 
   for (const key of SCALAR_FORM_KEYS) {

@@ -16,7 +16,6 @@ const mockDb = {
 }
 
 vi.mock("@/src/server/db.server", () => ({ default: mockDb }))
-vi.mock("@/src/server/logEntries/create/createLogEntry", () => ({ createLogEntry: vi.fn() }))
 
 const draftProject = {
   id: 1,

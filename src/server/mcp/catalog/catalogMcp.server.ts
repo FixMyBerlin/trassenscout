@@ -1,9 +1,6 @@
-import { frenchQuote } from "@/src/components/core/components/text/quote"
-import { shortTitle } from "@/src/components/core/components/text/titles"
 import { SlugSchema } from "@/src/components/core/utils/schema-shared"
 import { Prisma, SubsubsectionStatusStyleEnum } from "@/src/prisma/generated/client"
 import db from "@/src/server/db.server"
-import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { type CatalogConfig, statusStyles } from "@/src/server/mcp/catalog/catalogMcp.config"
 import { requireMcpDirectProject } from "@/src/server/mcp/direct/requireMcpDirectProject.server"
 import { mcpEnvLabel } from "@/src/server/mcp/mcpCursorConfig"
@@ -167,16 +164,8 @@ export async function createCatalogForMcp(
       if (existing) throw new Error(`${config.label} existiert bereits: ${slug}`)
 
       const patch = { title, ...(style ? { style } : {}) }
-      const row = await delegate(config).create({
+      await delegate(config).create({
         data: { projectId: project.id, slug, title, ...(style ? { style } : {}) },
-      })
-      await createLogEntry({
-        action: "CREATE",
-        message: `${config.label} ${frenchQuote(shortTitle(row.slug))} wurde erstellt.`,
-        userId: input.createdById,
-        projectSlug: project.slug,
-        ...(config.model === "operator" ? { operatorId: row.id } : {}),
-        updatedRecord: { id: row.id, slug: row.slug, title: row.title },
       })
       results.push({
         projectSlug: project.slug,
@@ -224,15 +213,6 @@ export async function updateCatalogForMcp(
     if (!row) throw new Error(`${config.label} nicht gefunden: ${slug}`)
 
     await delegate(config).update({ where: { id: row.id }, data: patch })
-    await createLogEntry({
-      action: "UPDATE",
-      message: `${config.label} ${frenchQuote(shortTitle(row.slug))} wurde bearbeitet.`,
-      userId: input.createdById,
-      projectSlug: project.slug,
-      ...(config.model === "operator" ? { operatorId: row.id } : {}),
-      previousRecord: { id: row.id, slug: row.slug, title: row.title },
-      updatedRecord: { id: row.id, slug: row.slug, ...patch },
-    })
 
     return {
       environment: mcpEnvLabel(process.env.VITE_APP_ENV),
@@ -299,13 +279,6 @@ export async function deleteCatalogForMcp(
         continue
       }
       await delegate(config).delete({ where: { id: row.id } })
-      await createLogEntry({
-        action: "DELETE",
-        message: `${config.label} ${frenchQuote(shortTitle(row.slug))} wurde gelöscht.`,
-        userId: input.createdById,
-        projectSlug: project.slug,
-        previousRecord: { id: row.id, slug: row.slug, title: row.title },
-      })
       deletedCount += 1
       results.push({ ...item, url, ...counts, deleted: true, errors: [] as string[] })
     } catch (error) {
