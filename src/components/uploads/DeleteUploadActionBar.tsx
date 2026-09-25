@@ -37,6 +37,7 @@ export const DeleteUploadActionBar = ({
       onDelete={handleDelete}
       onDeleted={onDeleted}
       returnPath={returnPath}
+      projectSlug={projectSlug}
       variant={variant}
     />
   )

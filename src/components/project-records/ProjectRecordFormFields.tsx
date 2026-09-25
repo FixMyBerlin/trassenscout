@@ -51,7 +51,7 @@ export const ProjectRecordFormFields = ({
   disableSuspenseQueries: _disableSuspenseQueries = false,
 }: Props) => {
   const form = useCoreAppFormContext()
-  const canEditUploads = useUserCan().edit
+  const canEditUploads = useUserCan(projectSlug).edit
   const queryBehavior = {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,

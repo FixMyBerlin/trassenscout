@@ -13,6 +13,7 @@ import { Notice } from "@/src/components/core/components/Notice/Notice"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { Spinner } from "@/src/components/core/components/Spinner"
+import { useTryRouteParam } from "@/src/components/core/routes/useTryRouteParam"
 import { MultiProjectInviteForm } from "@/src/components/invites/MultiProjectInviteForm"
 import { EditProjectRecordForm } from "@/src/components/project-records/EditProjectRecordForm"
 import { ProjectRecordDetailClient } from "@/src/components/project-records/ProjectRecordDetailClient"
@@ -52,6 +53,9 @@ function ProjectModalContent({ projectSlug }: { projectSlug: string }) {
   const modalSearch = useProjectModalSearch()
   const location = useLocation()
   const userCanEdit = useUserCan(projectSlug).edit
+  // The hosted upload edit view renders EditUploadForm, which reads its params from the
+  // project route. On the dashboard that route is not matched, so edit on the project page.
+  const isOnProjectRoute = useTryRouteParam("projectSlug") !== undefined
   const contactsModal = useContactsModal()
   const projectRecordModal = useProjectRecordModal()
   const projectUploadModal = useProjectUploadModal()
@@ -150,6 +154,21 @@ function ProjectModalContent({ projectSlug }: { projectSlug: string }) {
 
   const isProjectRecordEditView = modalProjectRecordView === "edit"
   const isUploadEditView = modalUploadView === "edit"
+  const redirectUploadEditToProjectRoute =
+    isUploadEditView && modalUploadId !== undefined && !isOnProjectRoute
+
+  useEffect(
+    function redirectHostedUploadEditToProjectRouteWhenOffProjectRoute() {
+      if (!redirectUploadEditToProjectRoute) return
+
+      void navigate({
+        to: "/$projectSlug/uploads/$uploadId/edit",
+        params: { projectSlug, uploadId: String(modalUploadId) },
+        replace: true,
+      })
+    },
+    [modalUploadId, navigate, projectSlug, redirectUploadEditToProjectRoute],
+  )
 
   const closeModal = () => {
     if (isClosing) return
@@ -192,6 +211,8 @@ function ProjectModalContent({ projectSlug }: { projectSlug: string }) {
   const contact = contactQuery.data
 
   if (modalUploadId !== undefined && modalUploadView !== undefined) {
+    if (redirectUploadEditToProjectRoute) return null
+
     const hasUploadError = Boolean(uploadQuery.error)
     const isUploadUnavailable = !uploadQuery.isPending && !upload
     const previewUpload = preview?.type === "upload" ? preview.upload : undefined
@@ -203,13 +224,21 @@ function ProjectModalContent({ projectSlug }: { projectSlug: string }) {
           ? upload.title
           : (previewUpload?.title ?? "Dokument wird geladen …")
 
-    const uploadEditHref =
-      upload && !isDeletedUploadMarker(upload)
-        ? buildModalHref({
-            modalUploadId: upload.id,
-            modalUploadView: "edit",
-          })
-        : undefined
+    const editableUpload = upload && !isDeletedUploadMarker(upload) ? upload : undefined
+    const uploadEditLink = editableUpload
+      ? isOnProjectRoute
+        ? {
+            to: buildModalHref({
+              modalUploadId: editableUpload.id,
+              modalUploadView: "edit",
+            }),
+            params: undefined,
+          }
+        : {
+            to: "/$projectSlug/uploads/$uploadId/edit" as const,
+            params: { projectSlug, uploadId: String(editableUpload.id) },
+          }
+      : undefined
 
     return (
       <Modal
@@ -222,9 +251,14 @@ function ProjectModalContent({ projectSlug }: { projectSlug: string }) {
           title={modalTitle}
           action={
             <div className="flex items-center gap-4">
-              {!isUploadEditView && uploadEditHref ? (
-                <IfUserCanEdit>
-                  <Link icon="edit" to={uploadEditHref} resetScroll={false}>
+              {!isUploadEditView && uploadEditLink ? (
+                <IfUserCanEdit projectSlug={projectSlug}>
+                  <Link
+                    icon="edit"
+                    to={uploadEditLink.to}
+                    params={uploadEditLink.params}
+                    resetScroll={false}
+                  >
                     bearbeiten
                   </Link>
                 </IfUserCanEdit>
@@ -289,7 +323,7 @@ function ProjectModalContent({ projectSlug }: { projectSlug: string }) {
           action={
             <div className="flex items-center gap-4">
               {!isProjectRecordEditView && projectRecord ? (
-                <IfUserCanEdit>
+                <IfUserCanEdit projectSlug={projectSlug}>
                   <Link
                     icon="edit"
                     to={buildModalHref({
@@ -413,7 +447,7 @@ function ProjectModalContent({ projectSlug }: { projectSlug: string }) {
           action={
             <div className="flex items-center gap-4">
               {isContactDetailView && contact ? (
-                <IfUserCanEdit>
+                <IfUserCanEdit projectSlug={projectSlug}>
                   <Link
                     icon="edit"
                     to={buildModalHref({

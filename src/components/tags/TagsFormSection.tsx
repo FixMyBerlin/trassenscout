@@ -26,7 +26,7 @@ export function TagsFormSection({
 }: Props) {
   const form = useCoreAppFormContext()
   const queryClient = useQueryClient()
-  const canCreateTag = useUserCan().edit
+  const canCreateTag = useUserCan(projectSlug).edit
   const assignedIds = (useFormValue<string[]>(fieldName) ?? []).map(String)
   const tagsQuery = tagsQueryOptions({ projectSlug, includeArchived: true })
   const { data: tagsResult } = useQuery({

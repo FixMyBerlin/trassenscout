@@ -40,6 +40,7 @@ export const ProjectRecordDeleteActionBar = ({
       onDelete={uploadsCount > 0 ? undefined : handleDelete}
       onClick={uploadsCount > 0 ? handleCustomClick : undefined}
       returnPath={returnPath}
+      projectSlug={projectSlug}
     />
   )
 }
