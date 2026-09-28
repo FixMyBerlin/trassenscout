@@ -40,10 +40,14 @@ import { projectBySlugQueryOptions } from "@/src/server/projects/projectsQueryOp
 import { subsectionsQueryOptions } from "@/src/server/subsections/subsectionsQueryOptions"
 import { currentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
 import {
+  calculateGrantAmount,
   calculateOwnFunds,
   costStructureFieldNames,
+  deviatesFromCalculated,
   durationFieldNames,
+  expectedOwnFunds,
   fundingFieldNames,
+  GRANT_RATE,
   hasEnteredValue,
   sumCostStructure,
   trafficLoadFieldNames,
@@ -561,37 +565,63 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
         >
           <FormDetailsSummary>Finanzierung</FormDetailsSummary>
           <div className={formDetailsPanelClassName}>
-            <form.AppField name="grantAmount">
-              {(field) => (
-                <field.NumberField
-                  inlineLeadingAddon="€"
-                  label={subsubsectionFieldTranslations.grantAmount}
-                  optional
-                />
+            <form.Subscribe
+              selector={(state) =>
+                deviatesFromCalculated(
+                  state.values.grantAmount,
+                  calculateGrantAmount(state.values),
+                ) || deviatesFromCalculated(state.values.ownFunds, expectedOwnFunds(state.values))
+              }
+            >
+              {(valuesChanged) => (
+                <>
+                  <form.AppField name="grantAmount">
+                    {(field) => (
+                      <field.NumberField
+                        inlineLeadingAddon="€"
+                        label={subsubsectionFieldTranslations.grantAmount}
+                        optional
+                        attention={valuesChanged}
+                        help={`${Math.round(GRANT_RATE * 100)} % der zuwendungsfähigen Ausgaben (Summe Kostenstruktur abzüglich nicht zuwendungsfähiger Ausgaben, anderer Förderprogramme, Erlöse und Beiträge Dritter). Eigenmittel werden als Differenz zur Kostenstruktur mitgesetzt.`}
+                        trailingControl={
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const values = field.form.state.values
+                              const grant = calculateGrantAmount(values)
+                              const sum = sumCostStructure(values)
+                              if (grant === null || sum === null) return
+                              field.handleChange(grant)
+                              field.form.setFieldValue("ownFunds", calculateOwnFunds(sum, grant))
+                            }}
+                            className={twJoin(primaryButtonClassName, "px-2! py-1!")}
+                          >
+                            Zuwendung berechnen
+                          </button>
+                        }
+                      />
+                    )}
+                  </form.AppField>
+                  <form.AppField name="ownFunds">
+                    {(field) => (
+                      <field.NumberField
+                        inlineLeadingAddon="€"
+                        label={subsubsectionFieldTranslations.ownFunds}
+                        optional
+                        attention={valuesChanged}
+                        note={
+                          valuesChanged ? (
+                            <small className="mt-1 block text-yellow-500">
+                              Die Werte entsprechen nicht mehr der Berechnung.
+                            </small>
+                          ) : undefined
+                        }
+                      />
+                    )}
+                  </form.AppField>
+                </>
               )}
-            </form.AppField>
-            <form.AppField name="ownFunds">
-              {(field) => (
-                <field.NumberField
-                  inlineLeadingAddon="€"
-                  label={subsubsectionFieldTranslations.ownFunds}
-                  optional
-                  trailingControl={
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const ownFunds = calculateOwnFunds(field.form.state.values)
-                        if (ownFunds === null) return
-                        field.handleChange(ownFunds)
-                      }}
-                      className={twJoin(primaryButtonClassName, "px-2! py-1!")}
-                    >
-                      Eigenmittel berechnen
-                    </button>
-                  }
-                />
-              )}
-            </form.AppField>
+            </form.Subscribe>
             <form.AppField name="grantsOtherFunding">
               {(field) => (
                 <field.NumberField

@@ -9,9 +9,11 @@ export type NumberFieldProps = {
   label: string
   help?: string
   optional?: boolean
+  attention?: boolean
   disabled?: boolean
   inlineLeadingAddon?: string
   trailingControl?: ReactNode
+  note?: ReactNode
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
   labelProps?: ComponentPropsWithoutRef<"label">
 } & Omit<PropsWithoutRef<JSX.IntrinsicElements["input"]>, "type" | "value" | "onChange" | "onBlur">
@@ -20,9 +22,11 @@ export function NumberField({
   label,
   help,
   optional,
+  attention,
   disabled,
   inlineLeadingAddon,
   trailingControl,
+  note,
   outerProps,
   labelProps,
   onKeyDown,
@@ -60,9 +64,11 @@ export function NumberField({
           "block w-full appearance-none rounded-md border border-gray-200 px-3 py-2 placeholder-gray-400 shadow-xs focus:outline-hidden sm:text-sm",
           hasError
             ? "border-red-800 shadow-red-200 focus:border-red-800 focus:ring-red-800"
-            : props.readOnly || disabled
-              ? "bg-gray-50 text-gray-500 ring-gray-200"
-              : "border-gray-300 focus:border-blue-500 focus:ring-blue-500",
+            : attention
+              ? "border-yellow-500 ring-yellow-500 focus:border-yellow-500 focus:ring-yellow-500"
+              : props.readOnly || disabled
+                ? "bg-gray-50 text-gray-500 ring-gray-200"
+                : "border-gray-300 focus:border-blue-500 focus:ring-blue-500",
         )}
       />
     </div>
@@ -86,6 +92,7 @@ export function NumberField({
       ) : (
         input
       )}
+      {note}
     </FieldLayout>
   )
 }
