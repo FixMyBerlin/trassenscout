@@ -7,7 +7,7 @@ export type StoredMcpMode = {
   mcpDirectUntil: Date | null
 }
 
-/** Stored DIRECT is effective only while `mcpDirectUntil` is still in the future. */
+/** Stored DIRECT is effective only while `mcpDirectUntil` is still in the future. After that, MCP is drafts. */
 export function effectiveMcpMode(project: StoredMcpMode, now: Date): McpModeEnum {
   if (project.mcpMode !== "DIRECT") return project.mcpMode
   if (project.mcpDirectUntil != null && now < project.mcpDirectUntil) return "DIRECT"
