@@ -1,5 +1,7 @@
+import { applySubsectionCreateForMcp } from "@/src/server/mcp/direct/applyMcpDirectWrite.server"
 import { mcpEnvLabel } from "@/src/server/mcp/mcpCursorConfig"
 import { upsertSubsectionMcpCreateDraft } from "@/src/server/mcp/mcpDrafts/mcpDrafts.server"
+import { mcpWriteFields, writeResolvedItem } from "@/src/server/mcp/mcpWriteMode"
 import type { SubsectionMcpCreatePatch } from "@/src/server/mcp/subsectionUpdate/patchSchema"
 import {
   resolveSubsectionCreate,
@@ -47,6 +49,7 @@ export async function createSubsectionForMcp(input: {
   const items = lastWinsItems(input.items)
   const results = []
   let draftedCount = 0
+  let appliedCount = 0
 
   for (const item of items) {
     const resolved = await resolveItem(item, input.origin)
@@ -54,7 +57,7 @@ export async function createSubsectionForMcp(input: {
       results.push({
         ...identityFromItem(item),
         url: null,
-        drafted: false,
+        ...mcpWriteFields(null),
         changes: [],
         errors: [resolved.error],
         warnings: [],
@@ -68,23 +71,28 @@ export async function createSubsectionForMcp(input: {
       results.push({
         ...identityFromItem(item),
         ...subsectionCreatePreviewPayload(resolved),
-        drafted: false,
+        ...mcpWriteFields(null),
       })
       continue
     }
 
-    await upsertSubsectionMcpCreateDraft({
-      createdById: input.createdById,
-      projectId: resolved.projectId,
-      slug: resolved.slug,
-      patch: item.patch,
+    const mode = await writeResolvedItem(resolved, {
+      apply: () => applySubsectionCreateForMcp(resolved, input.createdById),
+      draft: () =>
+        upsertSubsectionMcpCreateDraft({
+          createdById: input.createdById,
+          projectId: resolved.projectId,
+          slug: resolved.slug,
+          patch: item.patch,
+        }),
     })
+    if (mode === "applied") appliedCount += 1
+    else draftedCount += 1
 
-    draftedCount += 1
     results.push({
       ...identityFromItem(item),
       ...subsectionCreatePreviewPayload(resolved),
-      drafted: true,
+      ...mcpWriteFields(mode),
       errors: [],
     })
   }
@@ -93,6 +101,7 @@ export async function createSubsectionForMcp(input: {
     environment: mcpEnvLabel(process.env.VITE_APP_ENV),
     returned: results.length,
     draftedCount,
+    appliedCount,
     items: results,
   }
 }

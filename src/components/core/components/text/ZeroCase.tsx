@@ -24,7 +24,9 @@ export const ZeroCase = ({ visible, name, small, text, verb = "eingetragen" }: P
       className={twJoin("relative my-10 flex items-center justify-center text-xl text-gray-500")}
     >
       <div className="absolute inset-x-0 h-px bg-gray-200" />
-      <p className={twJoin("relative inline-block bg-white px-4")}>{content}</p>
+      <p className="relative inline-block max-w-2xl bg-white px-4 text-center whitespace-pre-line">
+        {content}
+      </p>
     </div>
   )
 }

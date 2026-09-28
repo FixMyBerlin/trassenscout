@@ -12,6 +12,8 @@ type Props = {
   homeLink: string
   homeLinkText: string
   children?: React.ReactNode
+  /** Round icon actions, left of the admin, meta, and user menus. */
+  actions?: React.ReactNode
   userVariant?: NavigationUserVariant
 }
 
@@ -19,6 +21,7 @@ export const NavigationDesktop = ({
   homeLink,
   homeLinkText,
   children,
+  actions,
   userVariant = "auto",
 }: Props) => {
   const pathname = useLocation().pathname
@@ -42,6 +45,7 @@ export const NavigationDesktop = ({
         {children}
       </div>
       <div className="flex items-center gap-2">
+        {actions}
         {userVariant === "loggedOut" ? (
           <NavigationUserLoggedOut />
         ) : userVariant === "public" ? (

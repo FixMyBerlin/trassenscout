@@ -38,3 +38,7 @@ export const GetMyAssignedRecordsSchema = z.object({
   editingState: z.enum(ProjectRecordEditingState).optional(),
   direction: z.enum(assignmentDirections).default("all"),
 })
+
+export const CountMyAssignedRecordsSchema = z.object({
+  projectSlug: z.string().optional(),
+})

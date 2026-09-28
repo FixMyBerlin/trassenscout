@@ -58,7 +58,7 @@ export const SupportPageClient = () => {
                         to={`/admin/support-documents/${doc.id}/edit`}
                         icon={linkIcons.edit}
                       >
-                        Bearbeiten
+                        bearbeiten
                       </Link>
                     </SuperAdminBox>
                   </div>

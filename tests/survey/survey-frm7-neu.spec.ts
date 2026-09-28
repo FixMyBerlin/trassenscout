@@ -85,6 +85,9 @@ const testPart2FinishWithLocation = async ({ page }: { page: Page }) => {
 }
 const testEnd = async (page: Page) => {
   await expect(page.getByRole("heading", { name: "Vielen Dank für Ihre" })).toBeVisible()
+  await page.route("https://radschnellweg-frm7.de/**", (route) =>
+    route.fulfill({ status: 200, body: "", contentType: "text/html" }),
+  )
   await page.getByRole("link", { name: "Zurück zur Startseite" }).click()
   await expect(page).toHaveURL("https://radschnellweg-frm7.de/")
 }

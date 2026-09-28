@@ -298,7 +298,7 @@ function projectRecordDetailPath(projectSlug: string, recordId: number) {
   return `/${projectSlug}/project-records/${recordId}`
 }
 
-async function sendProjectRecordAssignmentNotification({
+export async function sendProjectRecordAssignmentNotification({
   assigneeId,
   actorUserId,
   recordTitle,

@@ -81,7 +81,7 @@ export const SubsubsectionInfrasTable = ({ subsubsectionInfras }: Props) => {
                     <IfUserCanEdit>
                       <ButtonWrapper className="justify-end">
                         <Link icon="edit" {...editLink(Infra.id)}>
-                          Bearbeiten
+                          bearbeiten
                         </Link>
                         <button
                           type="button"

@@ -52,7 +52,7 @@ export function PageAdminSurveys() {
                 to="/admin/projects/$projectSlug/surveys/$surveyId/edit"
                 params={{ projectSlug, surveyId: String(survey.id) }}
               >
-                Bearbeiten
+                bearbeiten
               </Link>
               <Link
                 className={adminTableEditButtonClassName}

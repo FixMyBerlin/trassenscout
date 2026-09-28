@@ -86,7 +86,7 @@ export const SubsubsectionInfrastructureTypesTable = ({
                     <IfUserCanEdit>
                       <ButtonWrapper className="justify-end">
                         <Link icon="edit" {...editLink(infrastructureType.id)}>
-                          Bearbeiten
+                          bearbeiten
                         </Link>
                         <button
                           type="button"

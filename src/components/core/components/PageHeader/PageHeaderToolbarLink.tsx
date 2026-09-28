@@ -29,7 +29,7 @@ export function PageHeaderToolbarLink({
   className,
 }: Props) {
   return (
-    <Tooltip content={label} variant="light" placement="top-start">
+    <Tooltip content={label} variant="light" placement="top-end">
       <a
         href={href}
         className={twJoin(

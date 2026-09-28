@@ -491,6 +491,7 @@ export async function listMcpDraftsGrouped(headers: Headers) {
       project: { select: { slug: true, subTitle: true } },
       parentSubsection: { select: { slug: true } },
       subsection: { select: { slug: true } },
+      projectRecord: { select: { id: true, title: true } },
       subsubsection: {
         select: {
           slug: true,
@@ -510,6 +511,8 @@ export async function listMcpDraftsGrouped(headers: Headers) {
       kind: McpDraftKind
       subsectionSlug: string | null
       subsubsectionSlug: string | null
+      projectRecordId: number | null
+      ref: string | null
     }[]
   }[] = []
   const groupIndexBySlug = new Map<string, number>()
@@ -545,6 +548,8 @@ export async function listMcpDraftsGrouped(headers: Headers) {
       kind: draft.kind,
       subsectionSlug,
       subsubsectionSlug,
+      projectRecordId: draft.projectRecord?.id ?? null,
+      ref: draft.kind === McpDraftKind.PROJECT_RECORD_CREATE ? draft.slug : null,
     })
   }
 

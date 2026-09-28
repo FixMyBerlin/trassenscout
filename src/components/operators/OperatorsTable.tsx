@@ -97,7 +97,7 @@ export const OperatorsTable = ({ operators, pagination }: Props) => {
                   <IfUserCanEdit>
                     <ButtonWrapper className="justify-end">
                       <Link icon="edit" {...editLink(operator.id)}>
-                        Bearbeiten
+                        bearbeiten
                       </Link>
                       <button
                         type="button"

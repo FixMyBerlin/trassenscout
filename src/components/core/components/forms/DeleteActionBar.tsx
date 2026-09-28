@@ -15,6 +15,7 @@ type Props = {
   onDeleted?: () => void | Promise<void>
   returnPath: string
   variant?: "text" | "icon" | "linkWithIcon"
+  projectSlug?: string
 }
 
 export const DeleteActionBar = ({
@@ -24,6 +25,7 @@ export const DeleteActionBar = ({
   onDeleted,
   returnPath,
   variant = "icon",
+  projectSlug,
 }: Props) => {
   const navigate = useNavigate()
 
@@ -61,7 +63,7 @@ export const DeleteActionBar = ({
 
   if (variant === "linkWithIcon") {
     return (
-      <IfUserCanEdit>
+      <IfUserCanEdit projectSlug={projectSlug}>
         <button
           type="button"
           onClick={handleDelete}
@@ -79,7 +81,7 @@ export const DeleteActionBar = ({
   }
 
   return (
-    <IfUserCanEdit>
+    <IfUserCanEdit projectSlug={projectSlug}>
       <button
         type="button"
         onClick={handleDelete}

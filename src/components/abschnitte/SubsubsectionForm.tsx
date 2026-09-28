@@ -1,12 +1,19 @@
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { ReactNode, Suspense, useState } from "react"
+import { twJoin } from "tailwind-merge"
 import { z } from "zod"
 import { LinkWithFormDirtyConfirm } from "@/src/components/abschnitte/LinkWithFormDirtyConfirm"
 import { SubsubsectionGeometryInput } from "@/src/components/abschnitte/SubsubsectionGeometryInput"
 import { lookupTableRows } from "@/src/components/abschnitte/utils/lookupTableRows"
 import { AdminBox } from "@/src/components/core/components/AdminBox/AdminBox"
+import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { FieldLayoutRightColumn } from "@/src/components/core/components/forms/FieldLayout"
+import {
+  fieldLayoutControlClassName,
+  fieldLayoutLabelClassName,
+  fieldLayoutRootClassName,
+} from "@/src/components/core/components/forms/fieldLayoutStyles"
 import { FormDetailsSummary } from "@/src/components/core/components/forms/FormDetailsSummary"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
@@ -22,6 +29,7 @@ import {
   type OnSubmitResult,
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { Spinner } from "@/src/components/core/components/Spinner"
+import { formattedEuro } from "@/src/components/core/components/text/formattedProperties"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { subsubsectionLocationLabelMap } from "@/src/components/core/utils/subsubsectionLocationLabelMap"
 import { getUserSelectOptions } from "@/src/components/shared/app/users/utils/getUserSelectOptions"
@@ -31,11 +39,32 @@ import { projectUsersQueryOptions } from "@/src/server/memberships/projectUsersQ
 import { projectBySlugQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 import { subsectionsQueryOptions } from "@/src/server/subsections/subsectionsQueryOptions"
 import { currentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
+import {
+  calculateGrantAmount,
+  calculateOwnFunds,
+  costStructureFieldNames,
+  deviatesFromCalculated,
+  durationFieldNames,
+  expectedOwnFunds,
+  fundingFieldNames,
+  GRANT_RATE,
+  hasEnteredValue,
+  sumCostStructure,
+  trafficLoadFieldNames,
+} from "@/src/shared/subsubsections/costAndFundingFields"
 import { parseDefinitions, sortByOrder } from "@/src/shared/subsubsections/extraFieldSchemas"
 import { subsubsectionFormDefaultValues } from "@/src/shared/subsubsections/schemas"
 import { subsubsectionFieldTranslations } from "@/src/shared/subsubsections/subsubsectionFieldMappings"
 
 const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
+
+function groupHasValues(
+  values: Record<string, unknown> | undefined,
+  fieldNames: readonly string[],
+) {
+  if (!values) return false
+  return fieldNames.some((name) => hasEnteredValue(values[name]))
+}
 
 export type SubsubsectionFormProps<S extends z.ZodTypeAny> = {
   schema: S
@@ -74,8 +103,9 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
   const { projectSlug } = loggedInProjectRouteApi.useParams()
   const [formError, setFormError] = useState<string | null>(null)
 
+  const defaultValues = { ...subsubsectionFormDefaultValues, ...initialValues }
   const form = useAppForm({
-    defaultValues: { ...subsubsectionFormDefaultValues, ...initialValues },
+    defaultValues,
     validators: { onSubmit: schema } as never,
     onSubmit: async ({ value }) => {
       const result = (await onSubmit(value as z.infer<S>)) || {}
@@ -86,6 +116,20 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
       }
     },
   })
+
+  const valuesForOpenGroups = defaultValues as Record<string, unknown>
+  const [trafficLoadOpen, setTrafficLoadOpen] = useState(() =>
+    groupHasValues(valuesForOpenGroups, trafficLoadFieldNames),
+  )
+  const [costStructureOpen, setCostStructureOpen] = useState(() =>
+    groupHasValues(valuesForOpenGroups, costStructureFieldNames),
+  )
+  const [fundingOpen, setFundingOpen] = useState(() =>
+    groupHasValues(valuesForOpenGroups, fundingFieldNames),
+  )
+  const [durationOpen, setDurationOpen] = useState(() =>
+    groupHasValues(valuesForOpenGroups, durationFieldNames),
+  )
 
   const { data: user } = useQuery(currentUserQueryOptions())
   const showSubsectionReassign = Boolean(enableSubsectionReassign) && isAdmin(user ?? null)
@@ -396,7 +440,11 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
             </div>
           </details>
         )}
-        <details className={formDetailsClassName}>
+        <details
+          open={trafficLoadOpen}
+          onToggle={(e) => setTrafficLoadOpen(e.currentTarget.open)}
+          className={formDetailsClassName}
+        >
           <FormDetailsSummary>Verkehrsbelastung</FormDetailsSummary>
           <div className={formDetailsPanelClassName}>
             <form.AppField name="maxSpeed">
@@ -428,7 +476,11 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
             </form.AppField>
           </div>
         </details>
-        <details className={formDetailsClassName}>
+        <details
+          open={costStructureOpen}
+          onToggle={(e) => setCostStructureOpen(e.currentTarget.open)}
+          className={formDetailsClassName}
+        >
           <FormDetailsSummary>Kostenstruktur</FormDetailsSummary>
           <div className={formDetailsPanelClassName}>
             <form.AppField name="planningCosts">
@@ -494,6 +546,91 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
                 />
               )}
             </form.AppField>
+            <form.Subscribe selector={(state) => sumCostStructure(state.values)}>
+              {(sum) => (
+                <div className={fieldLayoutRootClassName}>
+                  <p className={fieldLayoutLabelClassName}>Summe</p>
+                  <p className={`${fieldLayoutControlClassName} py-2 font-semibold sm:text-sm`}>
+                    {formattedEuro(sum)}
+                  </p>
+                </div>
+              )}
+            </form.Subscribe>
+          </div>
+        </details>
+        <details
+          open={fundingOpen}
+          onToggle={(e) => setFundingOpen(e.currentTarget.open)}
+          className={formDetailsClassName}
+        >
+          <FormDetailsSummary>Finanzierung</FormDetailsSummary>
+          <div className={formDetailsPanelClassName}>
+            <form.Subscribe
+              selector={(state) =>
+                deviatesFromCalculated(
+                  state.values.grantAmount,
+                  calculateGrantAmount(state.values),
+                ) || deviatesFromCalculated(state.values.ownFunds, expectedOwnFunds(state.values))
+              }
+            >
+              {(valuesChanged) => (
+                <>
+                  <form.AppField name="grantAmount">
+                    {(field) => (
+                      <field.NumberField
+                        inlineLeadingAddon="€"
+                        label={subsubsectionFieldTranslations.grantAmount}
+                        optional
+                        attention={valuesChanged}
+                        help={`${Math.round(GRANT_RATE * 100)} % der zuwendungsfähigen Kosten (Summe Kostenstruktur abzüglich nicht zuwendungsfähiger Ausgaben, anderer Förderprogramme, Erlöse und Beiträge Dritter). Eigenmittel werden als Differenz zur Kostenstruktur mitgesetzt.`}
+                        trailingControl={
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const values = field.form.state.values
+                              const grant = calculateGrantAmount(values)
+                              const sum = sumCostStructure(values)
+                              if (grant === null || sum === null) return
+                              field.handleChange(grant)
+                              field.form.setFieldValue("ownFunds", calculateOwnFunds(sum, grant))
+                            }}
+                            className={twJoin(primaryButtonClassName, "px-2! py-1!")}
+                          >
+                            Zuwendung berechnen
+                          </button>
+                        }
+                      />
+                    )}
+                  </form.AppField>
+                  <form.AppField name="ownFunds">
+                    {(field) => (
+                      <field.NumberField
+                        inlineLeadingAddon="€"
+                        label={subsubsectionFieldTranslations.ownFunds}
+                        optional
+                        attention={valuesChanged}
+                        note={
+                          valuesChanged ? (
+                            <small className="mt-1 block text-yellow-500">
+                              Die Werte entsprechen nicht mehr der Berechnung.
+                            </small>
+                          ) : undefined
+                        }
+                      />
+                    )}
+                  </form.AppField>
+                </>
+              )}
+            </form.Subscribe>
+            <form.AppField name="grantsOtherFunding">
+              {(field) => (
+                <field.NumberField
+                  inlineLeadingAddon="€"
+                  label={subsubsectionFieldTranslations.grantsOtherFunding}
+                  optional
+                />
+              )}
+            </form.AppField>
             <form.AppField name="revenuesEconomicIncome">
               {(field) => (
                 <field.NumberField
@@ -512,27 +649,32 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
                 />
               )}
             </form.AppField>
-            <form.AppField name="grantsOtherFunding">
+            <hr className="border-gray-200" />
+            <form.AppField name="remainingFunding">
               {(field) => (
                 <field.NumberField
                   inlineLeadingAddon="€"
-                  label={subsubsectionFieldTranslations.grantsOtherFunding}
+                  label={subsubsectionFieldTranslations.remainingFunding}
                   optional
                 />
               )}
             </form.AppField>
-            <form.AppField name="ownFunds">
+            <form.AppField name="disbursedFunding">
               {(field) => (
                 <field.NumberField
                   inlineLeadingAddon="€"
-                  label={subsubsectionFieldTranslations.ownFunds}
+                  label={subsubsectionFieldTranslations.disbursedFunding}
                   optional
                 />
               )}
             </form.AppField>
           </div>
         </details>
-        <details className={formDetailsClassName}>
+        <details
+          open={durationOpen}
+          onToggle={(e) => setDurationOpen(e.currentTarget.open)}
+          className={formDetailsClassName}
+        >
           <FormDetailsSummary>Dauer</FormDetailsSummary>
           <div className={formDetailsPanelClassName}>
             <form.AppField name="planningPeriod">

@@ -1,7 +1,9 @@
 import { createServerFn } from "@tanstack/react-start"
 import { getRequestHeaders } from "@tanstack/react-start/server"
+import { getProjectRecordMcpDraft } from "@/src/server/mcp/projectRecords/getProjectRecordMcpDraft.server"
 import {
   DeleteMcpDraftSchema,
+  GetProjectRecordMcpDraftSchema,
   GetSubsectionMcpDraftSchema,
   GetSubsubsectionMcpDraftSchema,
   ListProjectSubsectionMcpCreateDraftsSchema,
@@ -39,3 +41,7 @@ export const listProjectSubsectionMcpCreateDraftsFn = createServerFn({ method: "
 export const listMcpDraftsGroupedFn = createServerFn({ method: "GET" }).handler(() =>
   listMcpDraftsGrouped(getRequestHeaders()),
 )
+
+export const getProjectRecordMcpDraftFn = createServerFn({ method: "GET" })
+  .validator(GetProjectRecordMcpDraftSchema)
+  .handler(({ data }) => getProjectRecordMcpDraft(getRequestHeaders(), data))

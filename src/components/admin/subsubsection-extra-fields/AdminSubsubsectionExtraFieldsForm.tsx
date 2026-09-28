@@ -202,7 +202,7 @@ export function AdminSubsubsectionExtraFieldsForm({
                             onClick={() => setModalState({ mode: "edit", index })}
                             icon={<PencilIcon aria-hidden />}
                           >
-                            Bearbeiten
+                            bearbeiten
                           </AdminTablePrimaryButton>
                           <AdminTableDeleteButton
                             label="Feld entfernen"

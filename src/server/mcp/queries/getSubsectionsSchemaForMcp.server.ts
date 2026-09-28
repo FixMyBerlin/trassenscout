@@ -20,7 +20,7 @@ function schemaFields(): SchemaField[] {
       required: true,
       writable: false,
     },
-    { name: "geometry", label: "Geometrie", type: "GeoJSON", required: true, writable: false },
+    { name: "geometry", label: "Geometrie", type: "GeoJSON", required: true, writable: true },
     {
       name: "description",
       label: "Beschreibung",
@@ -92,7 +92,7 @@ export async function getSubsectionsSchemaForMcp(projectSlug: string) {
     notes: [
       "Relations use slugs, not IDs. Options are in this payload (operators, networkHierarchies, subsectionStatuses).",
       "MCP patch: omit a key to leave it unchanged. null and empty string do not clear values.",
-      `type is not writable on subsections_update. subsections_create requires type (${GeometryTypeEnum.LINE} | ${GeometryTypeEnum.POLYGON}) and matching GeoJSON geometry in the patch. POINT is not allowed.`,
+      `type is not writable on subsections_update. geometry is optional on update: omit it to leave the geometry unchanged; when present it replaces the stored geometry and must match the stored type (${GeometryTypeEnum.LINE} | ${GeometryTypeEnum.POLYGON}). subsections_create requires type and matching GeoJSON geometry in the patch. POINT is not allowed.`,
       "slug is identity on both tools; for create it is the proposed Kürzel and must be unique within the project.",
       "labelPos defaults to bottom on create and is not MCP-writable. order is assigned as maxOrder + 1 on apply.",
     ],

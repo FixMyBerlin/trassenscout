@@ -213,6 +213,7 @@ const UploadTableRow = ({
           projectSlug={projectSlug}
           size="table"
           editLink={editLink}
+          onDeleted={handleDelete}
         />
       </td>
       <td className={twJoin(tableCellClassName, "min-w-0 align-top")}>
@@ -319,7 +320,7 @@ const UploadTableRow = ({
                 preload="intent"
                 resetScroll={false}
               >
-                Bearbeiten
+                bearbeiten
               </Link>
               {handleDelete && (
                 <DeleteUploadButton

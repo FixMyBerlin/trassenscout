@@ -13,6 +13,7 @@ import {
 } from "@/src/components/core/components/Table/tableClasses"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/components/core/components/text/titles"
+import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { ProjectRecordAssignedToPill } from "@/src/components/project-records/ProjectRecordAssignedToPill"
 import { ProjectRecordEditingStateIndicator } from "@/src/components/project-records/ProjectRecordEditingStateIndicator"
 import { useProjectRecordModal } from "@/src/components/project-records/ProjectRecordModalHost"
@@ -23,6 +24,8 @@ import type { MyAssignedRecord } from "@/src/server/projectRecords/types"
 
 type Props = {
   records: MyAssignedRecord[]
+  /** Dashboard lists span projects. A project page already names the project. */
+  showProject?: boolean
 }
 
 /** Column widths for `table-fixed`; the title column takes what is left. */
@@ -39,11 +42,11 @@ const assignedRecordsTableColWidths = {
 const dateOrDash = (value: Date | null) =>
   value ? format(value, "P", { locale: de }) : <span className="text-gray-400">–</span>
 
-export const AssignedRecordsTable = ({ records }: Props) => {
+export const AssignedRecordsTable = ({ records, showProject = true }: Props) => {
   const { getProjectRecordDetailHref } = useProjectRecordModal()
 
   if (!records.length) {
-    return <p className="px-4 text-sm text-gray-500">Keine Aufgaben für diese Auswahl.</p>
+    return <ZeroCase visible text="Keine Aufgaben für diese Auswahl." />
   }
 
   return (
@@ -54,7 +57,7 @@ export const AssignedRecordsTable = ({ records }: Props) => {
             <col className={assignedRecordsTableColWidths.editingState} />
             <col className={assignedRecordsTableColWidths.date} />
             <col className={assignedRecordsTableColWidths.title} />
-            <col className={assignedRecordsTableColWidths.project} />
+            {showProject ? <col className={assignedRecordsTableColWidths.project} /> : null}
             <col className={assignedRecordsTableColWidths.tags} />
             <col className={assignedRecordsTableColWidths.assignedTo} />
             <col className={assignedRecordsTableColWidths.documents} />
@@ -70,9 +73,11 @@ export const AssignedRecordsTable = ({ records }: Props) => {
               <th scope="col" className={tableHeadCellClassName}>
                 Titel
               </th>
-              <th scope="col" className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}>
-                Projekt
-              </th>
+              {showProject ? (
+                <th scope="col" className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}>
+                  Projekt
+                </th>
+              ) : null}
               <th scope="col" className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}>
                 Tags
               </th>
@@ -126,11 +131,13 @@ export const AssignedRecordsTable = ({ records }: Props) => {
                     {record.title}
                   </Link>
                 </td>
-                <td className={twJoin(tableCellClassName, "hidden align-top @xl:table-cell")}>
-                  <Link to="/$projectSlug" params={{ projectSlug: record.project.slug }}>
-                    {shortTitle(record.project.slug)}
-                  </Link>
-                </td>
+                {showProject ? (
+                  <td className={twJoin(tableCellClassName, "hidden align-top @xl:table-cell")}>
+                    <Link to="/$projectSlug" params={{ projectSlug: record.project.slug }}>
+                      {shortTitle(record.project.slug)}
+                    </Link>
+                  </td>
+                ) : null}
                 <td className={twJoin(tableCellClassName, "hidden align-top @xl:table-cell")}>
                   <ProjectRecordTagsList
                     tags={record.tags}

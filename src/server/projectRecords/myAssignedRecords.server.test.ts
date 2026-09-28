@@ -91,4 +91,15 @@ describe("countMyAssignedRecords", () => {
     expect(countWhere().project).toEqual({ memberships: { some: { userId: 99 } } })
     expect(countWhere().OR).toEqual([{ assignedToId: 99 }, { assignedById: 99 }])
   })
+
+  test("can narrow the count to one project without dropping the membership check", async () => {
+    const { countMyAssignedRecords } = await import("./myAssignedRecords.server")
+
+    await countMyAssignedRecords(headers, "rs23")
+
+    expect(countWhere().project).toEqual({
+      slug: "rs23",
+      memberships: { some: { userId: 99 } },
+    })
+  })
 })

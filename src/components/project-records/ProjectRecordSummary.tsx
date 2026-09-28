@@ -20,7 +20,7 @@ type Props = {
   projectRecord: ProjectRecord & {
     projectRecordEmail?: ProjectRecordEmailSourceValue | null
   }
-  /** Rendered under "Dokumente", so this view keeps the reading order of the form. */
+  /** Rendered under "Dokumente" (between Formulare and Tags on this page). */
   uploadsSection?: ReactNode
 }
 export const metadataItemClassName = "flex flex-wrap items-center gap-3 text-sm text-gray-600"
@@ -87,32 +87,6 @@ export const ProjectRecordSummary = ({ projectRecord, uploadsSection }: Props) =
         />
       </div>
 
-      <div className={projectRecordSectionClassName}>
-        <p className={projectRecordSectionLabelClassName}>Tags:</p>
-        {projectRecord.tags.length ? (
-          <div className={`flex flex-wrap gap-x-3 gap-y-1 ${projectRecordSectionValueClassName}`}>
-            {projectRecord.tags.map((tag) => (
-              <span className="whitespace-nowrap" key={tag.id}>
-                <Link
-                  to={createProjectRecordFilterUrl(projectSlug, {
-                    searchterm: tag.title,
-                  })}
-                >
-                  #{tag.title}
-                </Link>
-              </span>
-            ))}
-          </div>
-        ) : (
-          <span className="text-sm text-gray-500">Keine Tags zugeordnet</span>
-        )}
-      </div>
-
-      <div>
-        <p className={projectRecordSectionLabelClassName}>Dokumente:</p>
-        {uploadsSection}
-      </div>
-
       {attachedFormTemplates.length > 0 && (
         <div className={projectRecordSectionClassName}>
           <p className={projectRecordSectionLabelClassName}>Formulare:</p>
@@ -138,6 +112,32 @@ export const ProjectRecordSummary = ({ projectRecord, uploadsSection }: Props) =
           )}
         </div>
       )}
+
+      <div>
+        <p className={projectRecordSectionLabelClassName}>Dokumente:</p>
+        {uploadsSection}
+      </div>
+
+      <div className={projectRecordSectionClassName}>
+        <p className={projectRecordSectionLabelClassName}>Tags:</p>
+        {projectRecord.tags.length ? (
+          <div className={`flex flex-wrap gap-x-3 gap-y-1 ${projectRecordSectionValueClassName}`}>
+            {projectRecord.tags.map((tag) => (
+              <span className="whitespace-nowrap" key={tag.id}>
+                <Link
+                  to={createProjectRecordFilterUrl(projectSlug, {
+                    searchterm: tag.title,
+                  })}
+                >
+                  #{tag.title}
+                </Link>
+              </span>
+            ))}
+          </div>
+        ) : (
+          <span className="text-sm text-gray-500">Keine Tags zugeordnet</span>
+        )}
+      </div>
     </div>
   )
 }

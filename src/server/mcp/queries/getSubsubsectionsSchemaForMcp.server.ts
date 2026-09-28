@@ -11,7 +11,6 @@ import {
 
 const NOT_WRITABLE = new Set([
   "slug",
-  "geometry",
   "type",
   "subsectionId",
   "subTitle",
@@ -156,7 +155,7 @@ export async function getSubsubsectionsSchemaForMcp(projectSlug: string) {
       "extraFields keys are listed in extraFields (project-specific).",
       "MCP patch: omit a key to leave it unchanged. null and empty string do not clear values.",
       "subsubsectionInfrastructureTypeSlugs: omit to leave unchanged; present with ≥1 slug = replace the whole set (empty array rejected).",
-      `type (GeometryTypeEnum) is not writable on subsubsections_update: ${Object.values(GeometryTypeEnum).join(", ")}. subsubsections_create requires type and matching GeoJSON geometry in the patch.`,
+      `type (GeometryTypeEnum) is not writable on subsubsections_update: ${Object.values(GeometryTypeEnum).join(", ")}. geometry is optional on update: omit it to leave the geometry unchanged; when present it replaces the stored geometry and must match the stored type. subsubsections_create requires type and matching GeoJSON geometry in the patch.`,
       "slug is identity on both tools; for create it is the proposed Kürzel and must be unique within the Planungsabschnitt.",
       "labelPos defaults to bottom on create and is not MCP-writable.",
     ],

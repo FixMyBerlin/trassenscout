@@ -22,3 +22,8 @@ export const ListSubsectionMcpCreateDraftsSchema = ProjectSlugRequiredSchema.ext
 })
 
 export const ListProjectSubsectionMcpCreateDraftsSchema = ProjectSlugRequiredSchema
+
+export const GetProjectRecordMcpDraftSchema = ProjectSlugRequiredSchema.extend({
+  id: z.number().int().optional(),
+  ref: z.string().optional(),
+})

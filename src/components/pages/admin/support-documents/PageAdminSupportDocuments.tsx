@@ -29,7 +29,7 @@ export function PageAdminSupportDocuments() {
                 to="/admin/support-documents/$supportDocumentId/edit"
                 params={{ supportDocumentId: String(document.id) }}
               >
-                Bearbeiten
+                bearbeiten
               </Link>
             </div>
           </li>

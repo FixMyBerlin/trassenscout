@@ -53,7 +53,7 @@ export function PageProjectRecordDetail() {
               params={{ projectSlug, projectRecordId: String(id) }}
               resetScroll={false}
             >
-              Bearbeiten
+              bearbeiten
             </Link>
           </IfUserCanEdit>
         }

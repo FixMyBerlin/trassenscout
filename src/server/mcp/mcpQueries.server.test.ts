@@ -32,7 +32,8 @@ vi.mock("@/src/server/db.server", () => ({
 const enabledProject = {
   id: 1,
   slug: "frm9-ra3",
-  mcpEnabled: true,
+  mcpMode: "DRAFT" as const,
+  mcpDirectUntil: null,
   subsubsectionExtraFieldDefinitions: [
     { name: "klassifizierung", label: "Klassifizierung", order: 0 },
   ],
@@ -43,13 +44,28 @@ describe("MCP read queries", () => {
     vi.clearAllMocks()
   })
 
-  test("projects_list returns mcpEnabled and includes disabled projects", async () => {
+  test("projects_list returns effective mcpMode and includes disabled projects", async () => {
     const { listProjectsForMcp } =
       await import("@/src/server/mcp/queries/listProjectsForMcp.server")
 
+    const until = new Date("2026-09-23T12:00:00.000Z")
     mockDb.project.findMany.mockResolvedValue([
-      { id: 1, slug: "rs23", subTitle: "Test", mcpEnabled: false, _count: { subsections: 2 } },
-      { id: 2, slug: "zz-on", subTitle: "On", mcpEnabled: true, _count: { subsections: 0 } },
+      {
+        id: 1,
+        slug: "rs23",
+        subTitle: "Test",
+        mcpMode: "DISABLED",
+        mcpDirectUntil: null,
+        _count: { subsections: 2 },
+      },
+      {
+        id: 2,
+        slug: "zz-on",
+        subTitle: "On",
+        mcpMode: "DIRECT",
+        mcpDirectUntil: until,
+        _count: { subsections: 0 },
+      },
     ])
     mockDb.subsection.findMany.mockResolvedValue([
       { projectId: 1, _count: { subsubsections: 3 } },
@@ -64,7 +80,8 @@ describe("MCP read queries", () => {
         subTitle: "Test",
         shortTitle: "RS23",
         url: "http://127.0.0.1:4000/rs23",
-        mcpEnabled: false,
+        mcpMode: "DISABLED",
+        mcpDirectUntil: null,
         paCount: 2,
         subsubsectionCount: 4,
       },
@@ -73,7 +90,8 @@ describe("MCP read queries", () => {
         subTitle: "On",
         shortTitle: "ZZ-ON",
         url: "http://127.0.0.1:4000/zz-on",
-        mcpEnabled: true,
+        mcpMode: "DRAFT",
+        mcpDirectUntil: until.toISOString(),
         paCount: 0,
         subsubsectionCount: 0,
       },
@@ -88,9 +106,30 @@ describe("MCP read queries", () => {
       await import("@/src/server/mcp/queries/listProjectsForMcp.server")
 
     mockDb.project.findMany.mockResolvedValue([
-      { id: 1, slug: "a", subTitle: "A", mcpEnabled: false, _count: { subsections: 0 } },
-      { id: 2, slug: "b", subTitle: "B", mcpEnabled: false, _count: { subsections: 0 } },
-      { id: 3, slug: "c", subTitle: "C", mcpEnabled: false, _count: { subsections: 0 } },
+      {
+        id: 1,
+        slug: "a",
+        subTitle: "A",
+        mcpMode: "DISABLED",
+        mcpDirectUntil: null,
+        _count: { subsections: 0 },
+      },
+      {
+        id: 2,
+        slug: "b",
+        subTitle: "B",
+        mcpMode: "DISABLED",
+        mcpDirectUntil: null,
+        _count: { subsections: 0 },
+      },
+      {
+        id: 3,
+        slug: "c",
+        subTitle: "C",
+        mcpMode: "DISABLED",
+        mcpDirectUntil: null,
+        _count: { subsections: 0 },
+      },
     ])
     mockDb.subsection.findMany.mockResolvedValue([])
 
@@ -159,7 +198,11 @@ describe("MCP read queries", () => {
     const { listSubsubsectionsForMcp } =
       await import("@/src/server/mcp/queries/listSubsubsectionsForMcp.server")
 
-    mockDb.project.findUnique.mockResolvedValue({ ...enabledProject, mcpEnabled: false })
+    mockDb.project.findUnique.mockResolvedValue({
+      ...enabledProject,
+      mcpMode: "DISABLED" as const,
+      mcpDirectUntil: null,
+    })
 
     await expect(
       listSubsubsectionsForMcp({
@@ -177,13 +220,17 @@ describe("MCP read queries", () => {
     mockDb.project.findUnique.mockResolvedValue(null)
     await expect(requireMcpEnabledProject("missing")).rejects.toThrow("Project not found: missing")
 
-    mockDb.project.findUnique.mockResolvedValue({ ...enabledProject, mcpEnabled: false })
+    mockDb.project.findUnique.mockResolvedValue({
+      ...enabledProject,
+      mcpMode: "DISABLED" as const,
+      mcpDirectUntil: null,
+    })
     await expect(requireMcpEnabledProject("frm9-ra3")).rejects.toThrow(
       'MCP is not enabled for project "frm9-ra3"',
     )
   })
 
-  test("subsubsections_schema marks geometry not writable and includes extra fields and enums", async () => {
+  test("subsubsections_schema marks geometry writable and includes extra fields and enums", async () => {
     const { getSubsubsectionsSchemaForMcp } =
       await import("@/src/server/mcp/queries/getSubsubsectionsSchemaForMcp.server")
 
@@ -196,8 +243,9 @@ describe("MCP read queries", () => {
 
     const schema = await getSubsubsectionsSchemaForMcp("frm9-ra3")
     expect(schema.projectSlug).toBe("frm9-ra3")
-    expect(schema.fields.find((field) => field.name === "geometry")?.writable).toBe(false)
+    expect(schema.fields.find((field) => field.name === "geometry")?.writable).toBe(true)
     expect(schema.fields.find((field) => field.name === "slug")?.writable).toBe(false)
+    expect(schema.fields.find((field) => field.name === "type")?.writable).toBe(false)
     expect(schema.fields.find((field) => field.name === "lengthM")?.writable).toBe(true)
     expect(schema.fields.find((field) => field.name === "extraFields")).toMatchObject({
       writable: true,
@@ -241,7 +289,11 @@ describe("MCP read queries", () => {
     const { getSubsubsectionsSchemaForMcp } =
       await import("@/src/server/mcp/queries/getSubsubsectionsSchemaForMcp.server")
 
-    mockDb.project.findUnique.mockResolvedValue({ ...enabledProject, mcpEnabled: false })
+    mockDb.project.findUnique.mockResolvedValue({
+      ...enabledProject,
+      mcpMode: "DISABLED" as const,
+      mcpDirectUntil: null,
+    })
     await expect(getSubsubsectionsSchemaForMcp("frm9-ra3")).rejects.toThrow("MCP is not enabled")
     expect(mockDb.qualityLevel.findMany).not.toHaveBeenCalled()
     expect(mockDb.subsubsection.findFirst).not.toHaveBeenCalled()
@@ -274,7 +326,11 @@ describe("MCP read queries", () => {
     const { listSubsectionsForMcp } =
       await import("@/src/server/mcp/queries/listSubsectionsForMcp.server")
 
-    mockDb.project.findUnique.mockResolvedValue({ ...enabledProject, mcpEnabled: false })
+    mockDb.project.findUnique.mockResolvedValue({
+      ...enabledProject,
+      mcpMode: "DISABLED" as const,
+      mcpDirectUntil: null,
+    })
 
     await expect(
       listSubsectionsForMcp({
@@ -285,7 +341,7 @@ describe("MCP read queries", () => {
     expect(mockDb.subsection.findMany).not.toHaveBeenCalled()
   })
 
-  test("subsections_schema marks geometry not writable and includes lookups", async () => {
+  test("subsections_schema marks geometry writable and includes lookups", async () => {
     const { getSubsectionsSchemaForMcp } =
       await import("@/src/server/mcp/queries/getSubsectionsSchemaForMcp.server")
 
@@ -296,8 +352,9 @@ describe("MCP read queries", () => {
 
     const schema = await getSubsectionsSchemaForMcp("frm9-ra3")
     expect(schema.projectSlug).toBe("frm9-ra3")
-    expect(schema.fields.find((field) => field.name === "geometry")?.writable).toBe(false)
+    expect(schema.fields.find((field) => field.name === "geometry")?.writable).toBe(true)
     expect(schema.fields.find((field) => field.name === "slug")?.writable).toBe(false)
+    expect(schema.fields.find((field) => field.name === "type")?.writable).toBe(false)
     expect(schema.fields.find((field) => field.name === "lengthM")?.writable).toBe(true)
     expect(schema.operators).toEqual([{ id: 1, slug: "stadt", title: "Stadt" }])
     expect(schema).not.toHaveProperty("managers")
@@ -307,7 +364,11 @@ describe("MCP read queries", () => {
     const { getSubsectionsSchemaForMcp } =
       await import("@/src/server/mcp/queries/getSubsectionsSchemaForMcp.server")
 
-    mockDb.project.findUnique.mockResolvedValue({ ...enabledProject, mcpEnabled: false })
+    mockDb.project.findUnique.mockResolvedValue({
+      ...enabledProject,
+      mcpMode: "DISABLED" as const,
+      mcpDirectUntil: null,
+    })
     await expect(getSubsectionsSchemaForMcp("frm9-ra3")).rejects.toThrow("MCP is not enabled")
     expect(mockDb.operator.findMany).not.toHaveBeenCalled()
   })

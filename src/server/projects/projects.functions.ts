@@ -5,6 +5,7 @@ import {
   CreateProjectSchema,
   GetProjectBySlugSchema,
   GetProjectsAdminSchema,
+  UpdateProjectMcpModeSchema,
   UpdateProjectsFeatureFlagSchema,
 } from "./projects.inputSchemas"
 import {
@@ -15,6 +16,7 @@ import {
   getProjectsForCurrentUser,
   getProjectsForInvite,
   updateProject,
+  updateProjectMcpMode,
   updateProjectsFeatureFlag,
 } from "./projects.server"
 import { getProjectDashboardGeometries } from "./queries/getProjectDashboardGeometries.server"
@@ -59,3 +61,7 @@ export const createProjectFn = createServerFn({ method: "POST" })
 export const updateProjectsFeatureFlagFn = createServerFn({ method: "POST" })
   .validator(UpdateProjectsFeatureFlagSchema)
   .handler(({ data }) => updateProjectsFeatureFlag(getRequestHeaders(), data))
+
+export const updateProjectMcpModeFn = createServerFn({ method: "POST" })
+  .validator(UpdateProjectMcpModeSchema)
+  .handler(({ data }) => updateProjectMcpMode(getRequestHeaders(), data))

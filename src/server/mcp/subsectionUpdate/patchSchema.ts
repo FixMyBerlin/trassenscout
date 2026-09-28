@@ -22,18 +22,18 @@ const subsectionMcpPatchObjectSchema = z.object({
   operatorSlug: nonEmptyString.optional(),
   networkHierarchySlug: nonEmptyString.optional(),
   subsectionStatusSlug: nonEmptyString.optional(),
+  geometry: SupportedGeometrySchema.optional(),
 })
 
 export const subsectionMcpPatchSchema = subsectionMcpPatchObjectSchema.strict()
 
 const subsectionMcpCreatePatchObjectSchema = subsectionMcpPatchObjectSchema.extend({
   type: z.enum([GeometryTypeEnum.LINE, GeometryTypeEnum.POLYGON]).optional(),
-  geometry: SupportedGeometrySchema.optional(),
 })
 
 const subsectionMcpCreatePatchSchema = subsectionMcpCreatePatchObjectSchema.strict()
 
-/** Update overlay: writable scalars/relations only (no geometry/type). */
+/** Update overlay: writable scalars, relations, and geometry (no type). */
 export const subsectionMcpPatchOverlaySchema = subsectionMcpPatchObjectSchema
 
 /** Create overlay: includes type and geometry. */
@@ -56,4 +56,14 @@ const subsectionMcpCreateItemSchema = subsectionMcpIdentitySchema.extend({
 
 export const subsectionMcpCreateInputSchema = z.object({
   items: z.array(subsectionMcpCreateItemSchema).min(1).max(MCP_LIST_MAX_LIMIT),
+})
+
+export const subsectionMcpDeleteInputSchema = z.object({
+  items: z.array(subsectionMcpIdentitySchema).min(1).max(MCP_LIST_MAX_LIMIT),
+  confirm: z
+    .boolean()
+    .optional()
+    .describe(
+      "Omit or false: preview only, writes nothing. true: delete items with no remaining Maßnahmen.",
+    ),
 })

@@ -34,10 +34,13 @@ export const subsubsectionLogSnapshotSelect = {
   expensesOfficialOrders: true,
   expensesTechnicalVerification: true,
   nonEligibleExpenses: true,
+  grantAmount: true,
+  ownFunds: true,
+  grantsOtherFunding: true,
   revenuesEconomicIncome: true,
   contributionsThirdParties: true,
-  grantsOtherFunding: true,
-  ownFunds: true,
+  remainingFunding: true,
+  disbursedFunding: true,
   qualityLevelId: true,
   managerId: true,
   subsectionId: true,
@@ -77,10 +80,13 @@ export function subsubsectionLogSnapshot(subsubsection: {
   expensesOfficialOrders: number | null
   expensesTechnicalVerification: number | null
   nonEligibleExpenses: number | null
+  grantAmount: number | null
+  ownFunds: number | null
+  grantsOtherFunding: number | null
   revenuesEconomicIncome: number | null
   contributionsThirdParties: number | null
-  grantsOtherFunding: number | null
-  ownFunds: number | null
+  remainingFunding: number | null
+  disbursedFunding: number | null
   qualityLevelId: number | null
   managerId: number | null
   subsectionId: number
@@ -119,10 +125,13 @@ export function subsubsectionLogSnapshot(subsubsection: {
     expensesOfficialOrders: subsubsection.expensesOfficialOrders,
     expensesTechnicalVerification: subsubsection.expensesTechnicalVerification,
     nonEligibleExpenses: subsubsection.nonEligibleExpenses,
+    grantAmount: subsubsection.grantAmount,
+    ownFunds: subsubsection.ownFunds,
+    grantsOtherFunding: subsubsection.grantsOtherFunding,
     revenuesEconomicIncome: subsubsection.revenuesEconomicIncome,
     contributionsThirdParties: subsubsection.contributionsThirdParties,
-    grantsOtherFunding: subsubsection.grantsOtherFunding,
-    ownFunds: subsubsection.ownFunds,
+    remainingFunding: subsubsection.remainingFunding,
+    disbursedFunding: subsubsection.disbursedFunding,
     qualityLevelId: subsubsection.qualityLevelId,
     managerId: subsubsection.managerId,
     subsectionId: subsubsection.subsectionId,

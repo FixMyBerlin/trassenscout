@@ -42,6 +42,12 @@ const surveyTests: Array<{
 test.describe("Survey demos", () => {
   test.use({ allowedConsoleErrors: surveyNoise })
 
+  test.beforeEach(async ({ page }) => {
+    await page.route("https://radschnellweg-frm7.de/**", (route) =>
+      route.fulfill({ status: 200, body: "", contentType: "text/plain" }),
+    )
+  })
+
   surveyTests.forEach(({ slug, parts, initialScreen }) => {
     test(`Basic navigation test for ${slug}`, async ({ page }) => {
       await page.goto(`/beteiligung/${slug}`)

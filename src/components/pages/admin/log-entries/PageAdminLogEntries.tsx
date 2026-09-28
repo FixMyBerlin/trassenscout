@@ -1,13 +1,12 @@
-import { keepPreviousData, useQuery } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import { getRouteApi, useNavigate } from "@tanstack/react-router"
 import { Suspense } from "react"
 import { AdminPageHeader } from "@/src/components/admin/AdminPageHeader"
 import { GeneralLogEntries } from "@/src/components/admin/log-entries/GeneralLogEntries"
-import { LogEntriesTable } from "@/src/components/admin/log-entries/LogEntriesTable"
+import { LogEntriesFeed } from "@/src/components/admin/log-entries/LogEntriesFeed"
 import { SpinnerIcon } from "@/src/components/core/components/Spinner"
 import { preserveScrollNavigateOptions } from "@/src/components/core/routes/preserveScrollNavigateOptions"
 import { DashboardFilters } from "@/src/components/dashboard/DashboardFilters"
-import { logEntriesQueryOptions } from "@/src/server/logEntries/logEntriesQueryOptions"
 import { projectsForCurrentUserQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 import { DASHBOARD_ALL_MONTHS, DASHBOARD_ALL_PROJECTS } from "@/src/shared/dashboard/searchSchemas"
 
@@ -63,34 +62,14 @@ function ProjectLogEntriesSection() {
           }
         />
       </div>
-      <ProjectLogEntriesTable projectSlug={search.projectSlug} months={search.months} />
-    </section>
-  )
-}
-
-function ProjectLogEntriesTable({
-  projectSlug,
-  months,
-}: {
-  projectSlug?: string
-  months?: number
-}) {
-  const { data, isPlaceholderData } = useQuery({
-    ...logEntriesQueryOptions({ projectSlug, months }),
-    placeholderData: keepPreviousData,
-  })
-
-  if (!data) return <LoadingHint>Projekt-Änderungen werden geladen…</LoadingHint>
-
-  return (
-    <div className={isPlaceholderData ? "opacity-50 transition-opacity" : undefined}>
-      <LogEntriesTable
-        entries={data.logEntries}
-        isAdmin={data.isAdmin}
+      <LogEntriesFeed
+        projectSlug={search.projectSlug}
+        months={search.months}
         showProject
         withTopBorder
+        fallback={<LoadingHint>Projekt-Änderungen werden geladen…</LoadingHint>}
         emptyText="Keine Einträge für diese Auswahl."
       />
-    </div>
+    </section>
   )
 }

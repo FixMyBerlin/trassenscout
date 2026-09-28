@@ -139,7 +139,7 @@ export const newsItems = [
         <p>
           Die Karten- und Zeichenwerkzeuge wurden umfassend überarbeitet. Verbesserte
           Zeichenhinweise und zusätzliche Mittelpunkte erleichtern insbesondere das Erfassen und
-          Bearbeiten von Linien und Trassen. Auch die Darstellung von Planungsabschnitten und
+          bearbeiten von Linien und Trassen. Auch die Darstellung von Planungsabschnitten und
           Einträgen wurde vereinheitlicht.
         </p>
       </>

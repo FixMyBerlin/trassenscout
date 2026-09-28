@@ -83,7 +83,7 @@ export const SubsubsectionTasksTable = ({ subsubsectionTasks }: Props) => {
                     <IfUserCanEdit>
                       <ButtonWrapper className="justify-end">
                         <Link icon="edit" {...editLink(Task.id)}>
-                          Bearbeiten
+                          bearbeiten
                         </Link>
                         <button
                           type="button"

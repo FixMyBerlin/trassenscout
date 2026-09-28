@@ -7,11 +7,13 @@ import { authorizeProjectMemberByProjectSlug } from "@/src/server/authorization/
 import { editorRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
+import { effectiveMcpMode, mcpDirectUntilFromNow } from "@/src/server/mcp/effectiveMcpMode"
 import { membershipUpdateSession } from "@/src/server/memberships/membershipUpdateSession"
 import { UpdateProjectSchema } from "@/src/shared/projects/schemas"
 import {
   CreateProjectSchema,
   GetProjectBySlugSchema,
+  UpdateProjectMcpModeSchema,
   UpdateProjectsFeatureFlagSchema,
 } from "./projects.inputSchemas"
 import { getEditableProjectsForInvite } from "./queries/getEditableProjectsForInvite.server"
@@ -227,4 +229,28 @@ export async function updateProjectsFeatureFlag(
     where: { slug: { in: projectSlugs } },
     data: { [key]: enabled },
   })
+}
+
+export async function updateProjectMcpMode(
+  headers: Headers,
+  input: z.infer<typeof UpdateProjectMcpModeSchema>,
+) {
+  await endpointAuth.admin(headers)
+  const now = new Date()
+  const mcpDirectUntil = input.mcpMode === "DIRECT" ? mcpDirectUntilFromNow(now) : null
+  const project = await db.project.update({
+    where: { slug: input.projectSlug },
+    data: { mcpMode: input.mcpMode, mcpDirectUntil },
+    select: { slug: true, mcpMode: true, mcpDirectUntil: true },
+  })
+
+  return {
+    slug: project.slug,
+    mcpMode: project.mcpMode,
+    mcpDirectUntil: project.mcpDirectUntil?.toISOString() ?? null,
+    effectiveMcpMode: effectiveMcpMode(
+      { mcpMode: project.mcpMode, mcpDirectUntil: project.mcpDirectUntil },
+      now,
+    ),
+  }
 }

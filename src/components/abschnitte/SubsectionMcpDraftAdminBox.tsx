@@ -11,6 +11,7 @@ import {
   invalidateMcpDraftQueries,
   subsectionMcpDraftQueryOptions,
 } from "@/src/server/mcp/mcpDrafts/mcpDraftsQueryOptions"
+import { patchWithGeometryPreview } from "@/src/server/mcp/subsubsectionUpdate/geometryPreview"
 import { currentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
 
 type Props = {
@@ -72,7 +73,7 @@ export function SubsectionMcpDraftAdminBox({
         Von {createdByLabel}, {ageLabel}.
       </p>
       <pre className="max-h-64 overflow-auto rounded bg-white/80 p-2 font-mono text-[11px] leading-snug whitespace-pre-wrap text-gray-800">
-        {JSON.stringify(draft.patch, null, 2)}
+        {JSON.stringify(patchWithGeometryPreview(draft.patch), null, 2)}
       </pre>
       {overlayApplied ? (
         <p>MCP-Werte im Formular — Speichern übernimmt, Verwerfen löscht den Vorschlag.</p>

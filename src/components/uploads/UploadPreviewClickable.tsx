@@ -17,6 +17,7 @@ type Props = {
   size: UploadSize
   editLink?: UploadEditLink
   closeOnEditSuccess?: boolean
+  onDeleted?: () => void | Promise<void>
 }
 
 export const UploadPreviewClickable = ({
@@ -26,6 +27,7 @@ export const UploadPreviewClickable = ({
   size,
   editLink,
   closeOnEditSuccess = false,
+  onDeleted,
 }: Props) => {
   const queryClient = useQueryClient()
   const projectUploadModal = useProjectUploadModal()
@@ -55,6 +57,7 @@ export const UploadPreviewClickable = ({
         projectUploadModal.openUploadDetail({
           uploadId: effectiveUploadId,
           previewUpload: upload,
+          onDeleted,
         })
       }
       return
@@ -84,6 +87,7 @@ export const UploadPreviewClickable = ({
         projectSlug={projectSlug}
         open={isPreviewOpen}
         onClose={() => setIsPreviewOpen(false)}
+        onDeleted={onDeleted}
         editLink={editLink}
         closeOnEditSuccess={closeOnEditSuccess}
       />

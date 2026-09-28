@@ -203,7 +203,7 @@ export const FormTemplateFillModal = ({
 
             <p className="text-sm text-gray-500">
               Ohne Haken wird eine Druckversion erzeugt: die Eintragungen stehen dann als fester
-              Text im PDF und lassen sich nicht mehr ändern.
+              Text.
             </p>
           </>
         )}

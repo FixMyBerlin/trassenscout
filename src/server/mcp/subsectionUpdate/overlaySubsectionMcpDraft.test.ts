@@ -67,7 +67,7 @@ describe("overlaySubsectionMcpDraft", () => {
     expect(result).toEqual({ overlay: {}, overlayErrors: [] })
   })
 
-  test("overlays type and geometry only for create drafts", async () => {
+  test("overlays geometry on update drafts and type only for create drafts", async () => {
     const { overlaySubsectionMcpDraft } =
       await import("@/src/server/mcp/subsectionUpdate/overlaySubsectionMcpDraft")
 
@@ -110,6 +110,7 @@ describe("overlaySubsectionMcpDraft", () => {
 
     expect(updateResult).toEqual({
       overlay: {
+        geometry,
         description: "Neu",
       },
       overlayErrors: [],

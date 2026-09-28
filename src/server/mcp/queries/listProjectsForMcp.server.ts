@@ -1,8 +1,9 @@
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import db from "@/src/server/db.server"
+import { effectiveMcpMode } from "@/src/server/mcp/effectiveMcpMode"
 import { mcpListResult, resolveMcpListLimit } from "@/src/server/mcp/mcpListLimit.const"
 
-export async function listProjectsForMcp(origin: string, limitInput?: number) {
+export async function listProjectsForMcp(origin: string, limitInput?: number, now = new Date()) {
   const limit = resolveMcpListLimit(limitInput)
   const projects = await db.project.findMany({
     orderBy: { slug: "asc" },
@@ -11,7 +12,8 @@ export async function listProjectsForMcp(origin: string, limitInput?: number) {
       id: true,
       slug: true,
       subTitle: true,
-      mcpEnabled: true,
+      mcpMode: true,
+      mcpDirectUntil: true,
       _count: {
         select: {
           subsections: true,
@@ -47,7 +49,8 @@ export async function listProjectsForMcp(origin: string, limitInput?: number) {
       subTitle: project.subTitle,
       shortTitle: shortTitle(project.slug),
       url: new URL(`/${project.slug}`, origin).href,
-      mcpEnabled: project.mcpEnabled,
+      mcpMode: effectiveMcpMode(project, now),
+      mcpDirectUntil: project.mcpDirectUntil?.toISOString() ?? null,
       paCount: project._count.subsections,
       subsubsectionCount: subsubsectionCountByProjectId.get(project.id) ?? 0,
     })),

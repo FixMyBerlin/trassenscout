@@ -211,7 +211,8 @@ model Project {
   landAcquisitionModuleEnabled       Boolean                           @default(false)
   showLogEntries                     Boolean                           @default(false) // When true, non-admins see this project's log entries ("Änderungen in …") on the "Meine Projekte" dashboard. Admins always see all projects.
   evaluationsEnabled                 Boolean                           @default(false)
-  mcpEnabled                         Boolean                           @default(false)
+  mcpMode                            McpModeEnum                       @default(DISABLED)
+  mcpDirectUntil                     DateTime?
   alkisStateKey                      StateKeyEnum                      @default(DISABLED)
   //
   surveyResponseTags                 SurveyResponseTag[]
@@ -243,11 +244,19 @@ model Project {
   mcpDrafts                          McpDraft[]
 }
 
+enum McpModeEnum {
+  DISABLED
+  DRAFT
+  DIRECT
+}
+
 enum McpDraftKind {
   SUBSUBSECTION_UPDATE
   SUBSUBSECTION_CREATE
   SUBSECTION_UPDATE
   SUBSECTION_CREATE
+  PROJECT_RECORD_UPDATE
+  PROJECT_RECORD_CREATE
 }
 
 model McpDraft {
@@ -273,6 +282,9 @@ model McpDraft {
   // Planungsabschnitt update: live Subsection row (1:1).
   subsection   Subsection? @relation("McpDraftSubsectionUpdate", fields: [subsectionId], references: [id], onDelete: Cascade)
   subsectionId Int?        @unique
+
+  projectRecord   ProjectRecord? @relation(fields: [projectRecordId], references: [id], onDelete: Cascade)
+  projectRecordId Int?           @unique
 
   patch Json
 
@@ -470,10 +482,13 @@ model Subsubsection {
   //
   nonEligibleExpenses           Float? //  Nicht zuwendungsfähige Ausgaben
   //
-  revenuesEconomicIncome        Float? //  Erlöse und wirtschafltiche Einnahmen
-  contributionsThirdParties     Float? //  Beiträge Dritter
-  grantsOtherFunding            Float? //  Zuwendungen aus anderen Förderprogrammen
+  grantAmount                   Float? //  Zuwendung
   ownFunds                      Float? //  Einsatz Eigenmittel
+  grantsOtherFunding            Float? //  Zuwendungen aus anderen Förderprogrammen
+  revenuesEconomicIncome        Float? //  Erlöse und wirtschaftliche Einnahmen
+  contributionsThirdParties     Float? //  Beiträge Dritter
+  remainingFunding              Float? //  Noch verfügbare Fördermittel
+  disbursedFunding              Float? //  Ausgezahlte Fördermittel
 
   qualityLevel                     QualityLevel?                     @relation(fields: [qualityLevelId], references: [id])
   qualityLevelId                   Int?
@@ -926,6 +941,7 @@ model LogEntry {
   supportDocumentId       Int?
 
   @@index([projectId, createdAt])
+  @@index([createdAt, id])
 }
 
 enum LogLevelActionEnum {
@@ -1004,6 +1020,7 @@ model ProjectRecord {
   reviewedById               Int?
   reviewNotes                String?
   projectRecordComments      ProjectRecordComment[]
+  mcpDraft                   McpDraft?
 
   // The dashboard asks for "assigned to me or by me" across every project.
   @@index([assignedToId])

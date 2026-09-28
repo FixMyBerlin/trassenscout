@@ -46,10 +46,13 @@ const subsubsectionMcpPatchObjectSchema = z.object({
   expensesOfficialOrders: z.number().optional(),
   expensesTechnicalVerification: z.number().optional(),
   nonEligibleExpenses: z.number().optional(),
+  grantAmount: z.number().optional(),
+  ownFunds: z.number().optional(),
+  grantsOtherFunding: z.number().optional(),
   revenuesEconomicIncome: z.number().optional(),
   contributionsThirdParties: z.number().optional(),
-  grantsOtherFunding: z.number().optional(),
-  ownFunds: z.number().optional(),
+  remainingFunding: z.number().optional(),
+  disbursedFunding: z.number().optional(),
   qualityLevelSlug: nonEmptyString.optional(),
   subsubsectionStatusSlug: nonEmptyString.optional(),
   subsubsectionTaskSlug: nonEmptyString.optional(),
@@ -62,13 +65,13 @@ const subsubsectionMcpPatchObjectSchema = z.object({
     })
     .optional(),
   extraFields: SubsubsectionExtraFieldsValuesSchema.optional(),
+  geometry: SupportedGeometrySchema.optional(),
 })
 
 export const subsubsectionMcpPatchSchema = subsubsectionMcpPatchObjectSchema.strict()
 
 const subsubsectionMcpCreatePatchObjectSchema = subsubsectionMcpPatchObjectSchema.extend({
   type: z.enum(GeometryTypeEnum).optional(),
-  geometry: SupportedGeometrySchema.optional(),
 })
 
 const subsubsectionMcpCreatePatchSchema = subsubsectionMcpCreatePatchObjectSchema.strict()
@@ -93,4 +96,14 @@ const subsubsectionMcpCreateItemSchema = subsubsectionMcpIdentitySchema.extend({
 
 export const subsubsectionMcpCreateInputSchema = z.object({
   items: z.array(subsubsectionMcpCreateItemSchema).min(1).max(MCP_LIST_MAX_LIMIT),
+})
+
+export const subsubsectionMcpDeleteInputSchema = z.object({
+  items: z.array(subsubsectionMcpIdentitySchema).min(1).max(MCP_LIST_MAX_LIMIT),
+  confirm: z
+    .boolean()
+    .optional()
+    .describe(
+      "Omit or false: preview only, writes nothing. true: delete items that have no protocols, uploads, or acquisition areas.",
+    ),
 })

@@ -64,10 +64,10 @@ export function projectRecordDeleteInfoQueryOptions(input: z.infer<typeof GetPro
   })
 }
 
-export function myAssignedRecordsCountQueryOptions() {
+export function myAssignedRecordsCountQueryOptions(projectSlug?: string) {
   return queryOptions({
-    queryKey: ["projectRecords", "assignedToMe", "count"],
-    queryFn: () => countMyAssignedRecordsFn(),
+    queryKey: ["projectRecords", "assignedToMe", "count", projectSlug ?? null],
+    queryFn: () => countMyAssignedRecordsFn({ data: { projectSlug } }),
   })
 }
 

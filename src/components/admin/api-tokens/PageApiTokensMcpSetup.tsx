@@ -6,10 +6,10 @@ import {
 } from "@/src/components/core/components/forms/styles/formDetailsStyles"
 import { Link } from "@/src/components/core/components/links/Link"
 import { buildMcpCursorConfigJson, type McpEnvLabel } from "@/src/server/mcp/mcpCursorConfig"
+import { McpCapabilitiesDetails, McpCapabilitiesOverview } from "./McpCapabilitiesOverview"
 import { McpCursorConfigPreview } from "./McpCursorConfigPreview"
 
 const stepListClassName = "list-decimal space-y-2 pl-5"
-const mcpOperationsListClassName = "list-disc space-y-1 pl-5"
 const cursorMcpDocsUrl = "https://cursor.com/docs/context/mcp"
 const mcpRemoteServersDocsUrl =
   "https://modelcontextprotocol.io/docs/develop/connect-remote-servers"
@@ -25,44 +25,17 @@ export function PageApiTokensMcpSetup({ envLabel, origin }: PageApiTokensMcpSetu
 
   return (
     <div className="mb-6 space-y-4 text-sm text-gray-600">
-      <div className="space-y-2">
-        <p>
-          Bearer-Tokens autorisieren den Remote-MCP-Server unter <code>{origin}/mcp</code>. Der
-          Token-Wert wird nur einmal beim Erstellen angezeigt. Ein aktiver Token reicht nicht
-          allein: projektbezogene Tools brauchen zusätzlich das Flag MCP in{" "}
-          <Link to="/admin/projects">/admin/projects</Link> (Spalte MCP, kein Bulk-Toggle). Nach
-          einem Import das Flag wieder ausschalten. Ein aktiver Token erlaubt:
-        </p>
-        <ul className={mcpOperationsListClassName}>
-          <li>
-            Umgebung prüfen (<code>env_info</code>)
-          </li>
-          <li>
-            Projektliste lesen (<code>projects_list</code>) — inkl. <code>mcpEnabled</code>; nur
-            aktivierte Slugs für die folgenden Tools verwenden
-          </li>
-          <li>
-            Feld-Metadaten und Enums pro aktiviertem Projekt (<code>subsections_schema</code>,{" "}
-            <code>subsubsections_schema</code>)
-          </li>
-          <li>
-            Planungsabschnitte auflisten (<code>subsections_list</code>) und Maßnahmen auflisten (
-            <code>subsubsections_list</code>) — Slugs, Beschreibungen und URLs
-          </li>
-          <li>
-            Drafts anlegen (<code>subsections_update</code> / <code>subsections_create</code> /{" "}
-            <code>subsubsections_update</code> / <code>subsubsections_create</code> mit einem oder
-            mehreren <code>items</code>) — der Datensatz selbst wird nicht geschrieben. Übernehmen
-            nur in der App (Admin: Einsetzen → Formular → Speichern / Erstellen). Die Antwort
-            enthält URLs, vorgeschlagene neue Feldwerte (<code>proposed</code>) und Hinweise (
-            <code>warnings</code>), keine Ist-Werte. Create verlangt <code>type</code> und GeoJSON-
-            <code>geometry</code>. Planungsabschnitte: LINE oder POLYGON, keine POINT.
-          </li>
-        </ul>
-        <p>Bei Verlust oder Ende der Nutzung widerrufen.</p>
-      </div>
+      <p>
+        Bearer-Tokens autorisieren den MCP-Server unter <code>{origin}/mcp</code>. Der Token-Wert
+        wird nur einmal beim Erstellen angezeigt; bei Verlust oder Ende der Nutzung widerrufen.
+        Projekt-Tools brauchen zusätzlich den MCP-Modus des jeweiligen Projekts in{" "}
+        <Link to="/admin/projects">/admin/projects</Link> (Spalte MCP, kein Sammel-Schalter).
+      </p>
+
+      <McpCapabilitiesOverview />
 
       <div className={formDetailsStackClassName}>
+        <McpCapabilitiesDetails />
         <details className={formDetailsClassName}>
           <FormDetailsSummary>MCP einrichten (Cursor, Claude &amp; Co.)</FormDetailsSummary>
           <div className={formDetailsPanelClassName}>

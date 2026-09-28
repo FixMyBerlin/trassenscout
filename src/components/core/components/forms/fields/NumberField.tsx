@@ -1,4 +1,4 @@
-import type { JSX } from "react"
+import type { JSX, ReactNode } from "react"
 import { ComponentPropsWithoutRef, PropsWithoutRef } from "react"
 import { twJoin } from "tailwind-merge"
 import { FieldLayout } from "@/src/components/core/components/forms/FieldLayout"
@@ -9,8 +9,11 @@ export type NumberFieldProps = {
   label: string
   help?: string
   optional?: boolean
+  attention?: boolean
   disabled?: boolean
   inlineLeadingAddon?: string
+  trailingControl?: ReactNode
+  note?: ReactNode
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
   labelProps?: ComponentPropsWithoutRef<"label">
 } & Omit<PropsWithoutRef<JSX.IntrinsicElements["input"]>, "type" | "value" | "onChange" | "onBlur">
@@ -19,8 +22,11 @@ export function NumberField({
   label,
   help,
   optional,
+  attention,
   disabled,
   inlineLeadingAddon,
+  trailingControl,
+  note,
   outerProps,
   labelProps,
   onKeyDown,
@@ -37,6 +43,37 @@ export function NumberField({
     onKeyDown?.(e)
   }
 
+  const input = (
+    <div className="relative grow">
+      {inlineLeadingAddon && (
+        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+          <span className="text-gray-500 sm:text-sm">{inlineLeadingAddon}</span>
+        </div>
+      )}
+      <input
+        type="number"
+        disabled={fieldDisabled}
+        id={field.name}
+        {...props}
+        value={field.state.value ?? ""}
+        onChange={(e) => field.handleChange(e.target.value)}
+        onBlur={field.handleBlur}
+        onKeyDown={handleKeyDown}
+        className={twJoin(
+          inlineLeadingAddon ? "pl-12" : "",
+          "block w-full appearance-none rounded-md border border-gray-200 px-3 py-2 placeholder-gray-400 shadow-xs focus:outline-hidden sm:text-sm",
+          hasError
+            ? "border-red-800 shadow-red-200 focus:border-red-800 focus:ring-red-800"
+            : attention
+              ? "border-yellow-500 ring-yellow-500 focus:border-yellow-500 focus:ring-yellow-500"
+              : props.readOnly || disabled
+                ? "bg-gray-50 text-gray-500 ring-gray-200"
+                : "border-gray-300 focus:border-blue-500 focus:ring-blue-500",
+        )}
+      />
+    </div>
+  )
+
   return (
     <FieldLayout
       label={label}
@@ -47,32 +84,15 @@ export function NumberField({
       labelProps={labelProps}
       outerProps={outerProps}
     >
-      <div className="relative">
-        {inlineLeadingAddon && (
-          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-            <span className="text-gray-500 sm:text-sm">{inlineLeadingAddon}</span>
-          </div>
-        )}
-        <input
-          type="number"
-          disabled={fieldDisabled}
-          id={field.name}
-          {...props}
-          value={field.state.value ?? ""}
-          onChange={(e) => field.handleChange(e.target.value)}
-          onBlur={field.handleBlur}
-          onKeyDown={handleKeyDown}
-          className={twJoin(
-            inlineLeadingAddon ? "pl-12" : "",
-            "block w-full appearance-none rounded-md border border-gray-200 px-3 py-2 placeholder-gray-400 shadow-xs focus:outline-hidden sm:text-sm",
-            hasError
-              ? "border-red-800 shadow-red-200 focus:border-red-800 focus:ring-red-800"
-              : props.readOnly || disabled
-                ? "bg-gray-50 text-gray-500 ring-gray-200"
-                : "border-gray-300 focus:border-blue-500 focus:ring-blue-500",
-          )}
-        />
-      </div>
+      {trailingControl ? (
+        <div className="flex flex-row gap-2">
+          {input}
+          {trailingControl}
+        </div>
+      ) : (
+        input
+      )}
+      {note}
     </FieldLayout>
   )
 }

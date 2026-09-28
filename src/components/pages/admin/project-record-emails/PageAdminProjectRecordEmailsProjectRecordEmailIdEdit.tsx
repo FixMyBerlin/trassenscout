@@ -15,7 +15,7 @@ export function PageAdminProjectRecordEmailsProjectRecordEmailIdEdit() {
           title: `Protokoll-E-Mail ${projectRecordEmailId}`,
           href: `/admin/project-record-emails/${projectRecordEmailId}`,
         }}
-        title="Bearbeiten"
+        title="bearbeiten"
       />
       <Suspense fallback={<Spinner page />}>
         <EditProjectRecordEmailForm projectRecordEmailId={Number(projectRecordEmailId)} />

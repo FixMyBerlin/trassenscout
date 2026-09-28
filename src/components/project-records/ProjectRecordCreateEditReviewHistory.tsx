@@ -142,5 +142,5 @@ export const CreateEditReviewHistory = ({
 
   if (!aiEnabled) return null
 
-  return <IfUserCanEdit>{history}</IfUserCanEdit>
+  return <IfUserCanEdit projectSlug={projectRecord.project.slug}>{history}</IfUserCanEdit>
 }

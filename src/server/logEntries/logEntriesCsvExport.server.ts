@@ -1,11 +1,9 @@
 import { createObjectCsvStringifier } from "csv-writer"
 import { format } from "date-fns"
-import type { z } from "zod"
 import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { logEntryActionLabel } from "@/src/shared/logEntries/logEntryAction"
-import type { GetLogEntriesSchema } from "./logEntries.inputSchemas"
-import { getLogEntries } from "./logEntries.server"
+import { getLogEntriesForExport } from "./logEntries.server"
 import type { LogEntryRow } from "./types"
 
 type ExportColumn = {
@@ -49,12 +47,12 @@ function exportFilename(projectSlug: string | undefined) {
 
 export async function exportLogEntriesCsv(
   headers: Headers,
-  input: z.infer<typeof GetLogEntriesSchema>,
+  input: { projectSlug?: string; months?: number },
 ) {
-  endpointAuth.inherited("auth enforced in getLogEntries")
+  endpointAuth.inherited("auth enforced in getLogEntriesForExport")
 
-  // Same query as the page, so the file holds exactly the rows the filter shows.
-  const { isAdmin, logEntries } = await getLogEntries(headers, input)
+  // Every row matching the filter, not only the pages loaded on screen.
+  const { isAdmin, logEntries } = await getLogEntriesForExport(headers, input)
 
   const columns = exportColumns(isAdmin)
   const csvStringifier = createObjectCsvStringifier({

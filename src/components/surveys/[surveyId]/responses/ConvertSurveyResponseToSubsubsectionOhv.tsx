@@ -142,7 +142,7 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
       const geometry = point([locationPoint.lng, locationPoint.lat]).geometry
 
       const description = response.data["stateOfConstruction"]
-        ? `${String(response.data["feedbackText"] ?? "")}\nStand der Bauvorbereitung: ${String(response.data["stateOfConstruction"])}`
+        ? `${String(response.data["feedbackText"] ?? "")}\n\nStand der Bauvorbereitung:\n${String(response.data["stateOfConstruction"])}`
         : String(response.data["feedbackText"] ?? "")
 
       const createInput: CreateSubsubsectionInput = {
@@ -178,10 +178,13 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
         expensesOfficialOrders: null,
         expensesTechnicalVerification: null,
         nonEligibleExpenses: null,
+        grantAmount: null,
+        ownFunds: null,
+        grantsOtherFunding: null,
         revenuesEconomicIncome: null,
         contributionsThirdParties: null,
-        grantsOtherFunding: null,
-        ownFunds: null,
+        remainingFunding: null,
+        disbursedFunding: null,
         qualityLevelId: null,
         managerId: null,
         subsubsectionStatusId: null,

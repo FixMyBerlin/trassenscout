@@ -6,7 +6,7 @@ const demoTextIntroMarkdown = `
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum. Cras venenatis euismod malesuada.
 `
 const demoTextCtaLink = "https://www.openstreetmap.org/"
-const demoTextCtaText = "Bearbeiten starten"
+const demoTextCtaText = "bearbeiten starten"
 const demoTextOutroMarkdown = `
 ## Features
 

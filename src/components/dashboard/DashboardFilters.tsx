@@ -14,6 +14,7 @@ import {
 type Props = DashboardSearch & {
   projects: { slug: string }[]
   onChange: (value: DashboardSearch) => void
+  showProjectFilter?: boolean
   showTimeRange?: boolean
   hasAdditionalFilters?: boolean
   onReset?: () => void
@@ -32,13 +33,14 @@ export const DashboardFilters = ({
   months,
   projects,
   onChange,
+  showProjectFilter = true,
   showTimeRange = false,
   hasAdditionalFilters = false,
   onReset,
   children,
 }: Props) => {
   const hasFilter =
-    projectSlug !== DASHBOARD_ALL_PROJECTS ||
+    (showProjectFilter && projectSlug !== DASHBOARD_ALL_PROJECTS) ||
     months !== DASHBOARD_ALL_MONTHS ||
     hasAdditionalFilters
 
@@ -60,16 +62,18 @@ export const DashboardFilters = ({
 
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <div className="w-[450px] max-w-full">
-        <ComboboxSingleBase
-          value={projectSlug}
-          onChange={(value) => onChange({ projectSlug: value ?? DASHBOARD_ALL_PROJECTS, months })}
-          items={projectItems}
-          emptyLabel="Nach Projekt filtern"
-          placeholder="Nach Projekt filtern"
-          buttonSrLabel="Projekt filtern"
-        />
-      </div>
+      {showProjectFilter ? (
+        <div className="w-[450px] max-w-full">
+          <ComboboxSingleBase
+            value={projectSlug}
+            onChange={(value) => onChange({ projectSlug: value ?? DASHBOARD_ALL_PROJECTS, months })}
+            items={projectItems}
+            emptyLabel="Nach Projekt filtern"
+            placeholder="Nach Projekt filtern"
+            buttonSrLabel="Projekt filtern"
+          />
+        </div>
+      ) : null}
 
       {showTimeRange ? (
         <SelectListbox
@@ -90,7 +94,10 @@ export const DashboardFilters = ({
           onClick={() =>
             onReset
               ? onReset()
-              : onChange({ projectSlug: DASHBOARD_ALL_PROJECTS, months: DASHBOARD_ALL_MONTHS })
+              : onChange({
+                  projectSlug: showProjectFilter ? DASHBOARD_ALL_PROJECTS : projectSlug,
+                  months: DASHBOARD_ALL_MONTHS,
+                })
           }
         >
           <XMarkIcon className="size-4" />

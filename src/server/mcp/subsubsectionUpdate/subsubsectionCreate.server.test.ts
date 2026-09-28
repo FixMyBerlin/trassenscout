@@ -20,7 +20,8 @@ vi.mock("@/src/server/db.server", () => ({
 const enabledProject = {
   id: 1,
   slug: "frm9-ra3",
-  mcpEnabled: true,
+  mcpMode: "DRAFT" as const,
+  mcpDirectUntil: null,
   subsubsectionExtraFieldDefinitions: [
     { name: "klassifizierung", label: "Klassifizierung", order: 0 },
   ],
