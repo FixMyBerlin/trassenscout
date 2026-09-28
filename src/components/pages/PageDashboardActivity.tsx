@@ -20,7 +20,10 @@ export function PageDashboardActivity() {
   const tabs = useDashboardTabs()
   const search = routeApi.useSearch()
   const navigate = useNavigate({ from: "/dashboard/activity/" })
-  const { data: projects = [] } = useQuery(projectsWithGeometryWithMembershipRoleQueryOptions())
+  const { data: allProjects = [] } = useQuery(projectsWithGeometryWithMembershipRoleQueryOptions())
+  const projects = allProjects.filter(
+    (project) => project.showLogEntries && project.memberships[0]?.role === "EDITOR",
+  )
 
   return (
     <>
@@ -61,8 +64,7 @@ export function PageDashboardActivity() {
         {...dashboardFilterValues(search)}
         showProject
         fallback={<Spinner page />}
-        emptyText="Kein Zugriff auf das Aktivitätenlog
-Du hast in diesem Projekt Leserechte. Das Aktivitätenlog ist nur für Mitglieder mit Bearbeitungsrechten (Editor-Rolle) sichtbar."
+        emptyText="Kein Zugriff auf das Aktivitätenlog"
       />
     </>
   )

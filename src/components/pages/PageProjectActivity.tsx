@@ -56,8 +56,7 @@ export function PageProjectActivity() {
         projectSlug={projectSlug}
         months={months}
         fallback={<Spinner page />}
-        emptyText="Kein Zugriff auf das Aktivitätenlog
-Du hast in diesem Projekt Leserechte. Das Aktivitätenlog ist nur für Mitglieder mit Bearbeitungsrechten (Editor-Rolle) sichtbar."
+        emptyText="Kein Zugriff auf das Aktivitätenlog"
       />
     </>
   )
