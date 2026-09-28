@@ -582,7 +582,7 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
                         label={subsubsectionFieldTranslations.grantAmount}
                         optional
                         attention={valuesChanged}
-                        help={`${Math.round(GRANT_RATE * 100)} % der zuwendungsfähigen Ausgaben (Summe Kostenstruktur abzüglich nicht zuwendungsfähiger Ausgaben, anderer Förderprogramme, Erlöse und Beiträge Dritter). Eigenmittel werden als Differenz zur Kostenstruktur mitgesetzt.`}
+                        help={`${Math.round(GRANT_RATE * 100)} % der zuwendungsfähigen Kosten (Summe Kostenstruktur abzüglich nicht zuwendungsfähiger Ausgaben, anderer Förderprogramme, Erlöse und Beiträge Dritter). Eigenmittel werden als Differenz zur Kostenstruktur mitgesetzt.`}
                         trailingControl={
                           <button
                             type="button"
