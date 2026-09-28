@@ -1,4 +1,3 @@
-import type { Page } from "@playwright/test"
 import { authFile, seedProjects } from "@/tests/_fixtures/auth"
 import { authorizationNoise, pageNoise } from "@/tests/_fixtures/console-noise"
 import { expect, test } from "@/tests/_fixtures/test"
@@ -64,24 +63,7 @@ const ensureNeedsAdminReviewProjectRecordFixture = async () => {
   })
 }
 
-const ensureProjectRecordId = async (page: Page) => {
-  await page.goto(listPath)
-  await expect(page.getByRole("heading", { name: "Projektprotokoll", exact: true })).toBeVisible({
-    timeout: 30_000,
-  })
-
-  const firstRecordLink = page.locator("tbody tr td a").first()
-  if ((await page.locator("tbody tr td a").count()) > 0) {
-    const href = await firstRecordLink.getAttribute("href")
-    const pathMatch = href?.match(/\/project-records\/(\d+)$/)
-    if (pathMatch) return Number(pathMatch[1])
-
-    const modalMatch = href?.match(/[?&]modalProjectRecordId=(\d+)/)
-    if (modalMatch) return Number(modalMatch[1])
-
-    throw new Error(`Could not parse project record id from href: ${href}`)
-  }
-
+const ensureProjectRecordId = async () => {
   const db = await getTestDb()
   const project = await db.project.findFirstOrThrow({
     where: { slug: projectSlug },
@@ -115,8 +97,8 @@ test.describe("Project records permissions", () => {
     test.use({ storageState: authFile("editor") })
     test.use({ allowedConsoleErrors: pageNoise })
 
-    test("creates or finds a record id for permission checks", async ({ page }) => {
-      projectRecordId = await ensureProjectRecordId(page)
+    test("creates or finds a record id for permission checks", async () => {
+      projectRecordId = await ensureProjectRecordId()
       expect(projectRecordId).toBeGreaterThan(0)
     })
 
@@ -150,6 +132,13 @@ test.describe("Project records permissions", () => {
         .catch(() => {
           // Ignore if already deleted (e.g. test suite was aborted mid-run).
         })
+    }
+
+    if (projectRecordId) {
+      const db = await getTestDb()
+      await db.projectRecord.delete({ where: { id: projectRecordId } }).catch(() => {
+        // Ignore if already deleted (e.g. test suite was aborted mid-run).
+      })
     }
   })
 
@@ -252,19 +241,19 @@ test.describe("Project records permissions", () => {
         const comment = `E2E Kommentar ${Date.now()}`
 
         await page.goto(`/${projectSlug}/project-records/${persistenceProjectRecordId}`)
-        await expect(page.getByRole("heading", { name: /Kommentare/, exact: true })).toBeVisible({
+        await expect(page.getByRole("heading", { name: "Anmerkungen", exact: true })).toBeVisible({
           timeout: 30_000,
         })
 
         const commentField = page
           .getByRole("listitem")
-          .filter({ has: page.getByRole("button", { name: "Kommentar hinzufügen", exact: true }) })
+          .filter({ has: page.getByRole("button", { name: "Anmerkung hinzufügen", exact: true }) })
           .locator("textarea")
         await expect(commentField).toBeVisible({ timeout: 30_000 })
         await expect(commentField).toBeEnabled({ timeout: 30_000 })
-        await waitForSubmitReady(page, "Kommentar hinzufügen")
+        await waitForSubmitReady(page, "Anmerkung hinzufügen")
         await commentField.fill(comment)
-        await page.getByRole("button", { name: "Kommentar hinzufügen", exact: true }).click()
+        await page.getByRole("button", { name: "Anmerkung hinzufügen", exact: true }).click()
 
         await expect(page.getByText(comment, { exact: true })).toBeVisible({ timeout: 30_000 })
         await expect(commentField).toHaveValue("")

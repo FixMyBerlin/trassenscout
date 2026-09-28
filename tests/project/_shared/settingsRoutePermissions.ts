@@ -72,7 +72,7 @@ export const defineSettingsRoutePermissionSuite = ({
           return
         }
 
-        expect(editPath).toMatch(new RegExp(`^${listPath}/\\d+/edit$`))
+        expect(editPath).toMatch(new RegExp(`^${listPath}/\\d+/edit(?:\\?.*)?$`))
 
         await page.goto(editPath)
 

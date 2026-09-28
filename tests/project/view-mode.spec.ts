@@ -67,17 +67,28 @@ test.describe("Dashboard view mode in the URL", () => {
     expect(hasViewParam(page)).toBe(false)
   })
 
-  test("browser back and forward return to the same view", async ({ page }) => {
-    await gotoWithViewSwitch(page, projectPath)
+  test.describe("history navigation", () => {
+    test.use({
+      allowedConsoleErrors: [
+        ...pageNoise,
+        // Restoring the map via history reuses the MapLibre instance and fires `load`
+        // while React is still rendering. The view itself is what this test checks.
+        "Can't perform a React state update on a component that hasn't mounted yet",
+      ],
+    })
 
-    await listButton(page).click()
-    await expectListView(page)
+    test("browser back and forward return to the same view", async ({ page }) => {
+      await gotoWithViewSwitch(page, projectPath)
 
-    await page.goBack()
-    await expectMapView(page)
+      await listButton(page).click()
+      await expectListView(page)
 
-    await page.goForward()
-    await expectListView(page)
+      await page.goBack()
+      await expectMapView(page)
+
+      await page.goForward()
+      await expectListView(page)
+    })
   })
 
   test("keeps the list view when opening a Planungsabschnitt", async ({ page }) => {

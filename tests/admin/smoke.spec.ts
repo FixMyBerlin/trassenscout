@@ -128,7 +128,14 @@ test.describe("Admin page renders", () => {
       }
       expect(response?.ok()).toBeTruthy()
 
-      await expect(page.getByText(adminPage.visibleText, { exact: false }).first()).toBeVisible({
+      const projectsTableHeader =
+        adminPage.path === "/admin/projects" &&
+        (adminPage.visibleText === "KI" || adminPage.visibleText === "Log-Einträge")
+      const locator = projectsTableHeader
+        ? page.getByRole("columnheader", { name: adminPage.visibleText }).first()
+        : page.getByText(adminPage.visibleText, { exact: false }).first()
+      await locator.scrollIntoViewIfNeeded()
+      await expect(locator).toBeVisible({
         timeout: 30_000,
       })
     })
@@ -175,7 +182,7 @@ test.describe("Admin writes and validation", () => {
       page,
       labels: ["Slug", "Titel"],
       submitButtonName: "Erstellen",
-      stayOnUrl: /\/admin\/surveys\/new$/,
+      stayOnUrl: /\/admin\/projects\/rs23\/surveys\/new$/,
     })
   })
 
