@@ -1,8 +1,5 @@
 /**
- * Component for converting a survey response to a subsubsection (Maßnahme).
- *
- * NOTE: This component currently only works for the `ohv-haltestellenfoerderung` survey
- * configuration and needs refinement for other surveys in the future.
+ * OHV-only: survey response → subsubsection for `ohv-haltestellenfoerderung` in project `ohv`.
  */
 
 import { LinkIcon } from "@heroicons/react/24/outline"
@@ -28,16 +25,17 @@ import {
 import type { CreateSubsubsectionInput } from "@/src/server/subsubsections/subsubsections.inputSchemas"
 import type { FeedbackSurveyResponse } from "@/src/server/survey-responses/surveyResponsesQueryOptions"
 
-export type ConvertSurveyResponseToSubsubsectionProps = {
+export type ConvertSurveyResponseToSubsubsectionOhvProps = {
   response: Prettify<FeedbackSurveyResponse>
   projectSlug: string
   surveySlug: AllowedSurveySlugs
 }
 
-type ConvertWithLookupProps = ConvertSurveyResponseToSubsubsectionProps & {
-  normalizedResponseSlug: string
-  normalizedResponseSubsectionSlug: string
-}
+type ConvertSurveyResponseToSubsubsectionOhvFormProps =
+  ConvertSurveyResponseToSubsubsectionOhvProps & {
+    subsubsectionSlug: string
+    subsectionSlug: string
+  }
 
 const isNotFoundError = (error: unknown) => {
   const candidate = error as { name?: string; code?: string; message?: string } | null
@@ -48,13 +46,13 @@ const isNotFoundError = (error: unknown) => {
   )
 }
 
-const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
+const ConvertSurveyResponseToSubsubsectionOhvForm = ({
   response,
   projectSlug,
   surveySlug,
-  normalizedResponseSlug,
-  normalizedResponseSubsectionSlug,
-}: ConvertWithLookupProps) => {
+  subsubsectionSlug,
+  subsectionSlug,
+}: ConvertSurveyResponseToSubsubsectionOhvFormProps) => {
   const queryClient = useQueryClient()
   const userCanEdit = useUserCan().edit
   const [convertError, setConvertError] = useState<string | null>(null)
@@ -63,19 +61,14 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
   const createProjectRecordMutation = useMutation({ mutationFn: createProjectRecordFn })
 
   const existingSubsubsectionLookup = useQuery({
-    queryKey: [
-      "subsubsectionBySlug",
-      projectSlug,
-      normalizedResponseSubsectionSlug,
-      normalizedResponseSlug,
-    ],
+    queryKey: ["subsubsectionBySlug", projectSlug, subsectionSlug, subsubsectionSlug],
     queryFn: async () => {
       try {
         return await getSubsubsectionBySlugFn({
           data: {
             projectSlug,
-            subsectionSlug: normalizedResponseSubsectionSlug,
-            subsubsectionSlug: normalizedResponseSlug,
+            subsectionSlug,
+            subsubsectionSlug,
           },
         })
       } catch (error) {
@@ -90,7 +83,7 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
     convertedSubsubsectionSlug ?? existingSubsubsectionLookup.data?.slug ?? null
   const hasCheckedExistingEntry = existingSubsubsectionLookup.isFetched
 
-  const handleConvertToMassnahme = async () => {
+  const handleConvertToSubsubsection = async () => {
     try {
       setConvertError(null)
       setConvertedSubsubsectionSlug(null)
@@ -100,13 +93,13 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
         subsection = await getSubsectionBySlugFn({
           data: {
             projectSlug,
-            subsectionSlug: normalizedResponseSubsectionSlug,
+            subsectionSlug,
           },
         })
       } catch (error) {
         if (isNotFoundError(error)) {
           throw new Error(
-            `Kein Abschnitt mit dem Slug "${normalizedResponseSubsectionSlug}" gefunden. Bitte stellen Sie sicher, dass ein Abschnitt mit diesem Slug im Projekt existiert.`,
+            `Kein Abschnitt mit dem Slug "${subsectionSlug}" gefunden. Bitte stellen Sie sicher, dass ein Abschnitt mit diesem Slug im Projekt existiert.`,
           )
         }
         throw error
@@ -147,7 +140,7 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
 
       const createInput: CreateSubsubsectionInput = {
         projectSlug,
-        slug: normalizedResponseSlug,
+        slug: subsubsectionSlug,
         type: "POINT" as const,
         geometry: geometry as { type: "Point"; coordinates: [number, number] },
         description,
@@ -227,7 +220,7 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
         })
         await queryClient.invalidateQueries({ queryKey: ["projectRecords"] })
       } catch (error: unknown) {
-        console.error("Failed to create the project record for the converted Maßnahme:", error)
+        console.error("Failed to create the project record for the converted subsubsection:", error)
         setConvertError(
           "Die Maßnahme wurde erstellt, der automatische Protokolleintrag konnte aber nicht angelegt werden.",
         )
@@ -253,7 +246,7 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
               to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug"
               params={{
                 projectSlug,
-                subsectionSlug: normalizedResponseSubsectionSlug,
+                subsectionSlug,
                 subsubsectionSlug: existingSubsubsectionSlug,
               }}
               className={linkStyles}
@@ -272,7 +265,7 @@ const ConvertSurveyResponseToSubsubsectionOhvWithLookup = ({
         <div className="flex justify-end">
           <button
             type="button"
-            onClick={handleConvertToMassnahme}
+            onClick={handleConvertToSubsubsection}
             className={primaryButtonClassName}
             disabled={createSubsubsectionMutation.isPending || !hasCheckedExistingEntry}
           >
@@ -288,13 +281,13 @@ export const ConvertSurveyResponseToSubsubsectionOhv = ({
   response,
   projectSlug,
   surveySlug,
-}: ConvertSurveyResponseToSubsubsectionProps) => {
-  const normalizedResponseSlug =
+}: ConvertSurveyResponseToSubsubsectionOhvProps) => {
+  const subsubsectionSlug =
     typeof response.data["referenceId"] === "string"
       ? response.data["referenceId"].toLowerCase()
       : null
 
-  const normalizedResponseSubsectionSlug = response.data["commune"]
+  const subsectionSlug = response.data["commune"]
     ? String(response.data["commune"]).toLowerCase()
     : null
 
@@ -302,17 +295,17 @@ export const ConvertSurveyResponseToSubsubsectionOhv = ({
     return null
   }
 
-  if (!normalizedResponseSlug || !normalizedResponseSubsectionSlug) {
+  if (!subsubsectionSlug || !subsectionSlug) {
     return null
   }
 
   return (
-    <ConvertSurveyResponseToSubsubsectionOhvWithLookup
+    <ConvertSurveyResponseToSubsubsectionOhvForm
       response={response}
       projectSlug={projectSlug}
       surveySlug={surveySlug}
-      normalizedResponseSlug={normalizedResponseSlug}
-      normalizedResponseSubsectionSlug={normalizedResponseSubsectionSlug}
+      subsubsectionSlug={subsubsectionSlug}
+      subsectionSlug={subsectionSlug}
     />
   )
 }

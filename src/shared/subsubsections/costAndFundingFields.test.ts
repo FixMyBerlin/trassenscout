@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 import {
+  calculateEligibleGrantCosts,
   calculateGrantAmount,
   calculateOwnFunds,
   deviatesFromCalculated,
@@ -22,6 +23,19 @@ describe("sumCostStructure", () => {
         nonEligibleExpenses: "",
       }),
     ).toBe(150.5)
+  })
+})
+
+describe("calculateEligibleGrantCosts", () => {
+  it("is the cost sum before the grant rate, with deductions removed", () => {
+    expect(
+      calculateEligibleGrantCosts({
+        planningCosts: 1000,
+        nonEligibleExpenses: 100,
+        revenuesEconomicIncome: 50,
+      }),
+    ).toBe(950)
+    expect(calculateEligibleGrantCosts({})).toBeNull()
   })
 })
 
