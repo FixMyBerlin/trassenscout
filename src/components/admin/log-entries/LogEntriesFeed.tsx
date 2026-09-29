@@ -10,6 +10,7 @@ type Props = {
   showProject?: boolean
   emptyText: string
   withTopBorder?: boolean
+  modalsInPlace?: boolean
   fallback: ReactNode
 }
 
@@ -19,6 +20,7 @@ export function LogEntriesFeed({
   showProject,
   emptyText,
   withTopBorder,
+  modalsInPlace,
   fallback,
 }: Props) {
   const { data, isPlaceholderData, hasNextPage, isFetchingNextPage, fetchNextPage } =
@@ -39,6 +41,7 @@ export function LogEntriesFeed({
         isAdmin={isAdmin}
         showProject={showProject}
         withTopBorder={withTopBorder}
+        modalsInPlace={modalsInPlace}
         emptyText={emptyText}
       />
       {entries.length > 0 ? (

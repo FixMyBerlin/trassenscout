@@ -22,6 +22,7 @@ import {
   logEntryActionLabel,
 } from "@/src/shared/logEntries/logEntryAction"
 import { AdminLogEntryChanges } from "./AdminLogEntryChanges"
+import { LogEntryMessage, useLogEntryModalHref } from "./LogEntryMessage"
 
 type Props = {
   entries: LogEntryRow[]
@@ -29,6 +30,7 @@ type Props = {
   showProject?: boolean
   emptyText?: string
   withTopBorder?: boolean
+  modalsInPlace?: boolean
 }
 
 /** Column widths for `table-fixed`; the message column takes what is left. */
@@ -54,8 +56,10 @@ export const LogEntriesTable = ({
   showProject = false,
   emptyText = "Noch keine Einträge.",
   withTopBorder = false,
+  modalsInPlace = true,
 }: Props) => {
   const [expandedIds, setExpandedIds] = useState<number[]>([])
+  const buildModalHref = useLogEntryModalHref(modalsInPlace)
 
   if (!entries.length) return <ZeroCase visible text={emptyText} />
 
@@ -145,7 +149,7 @@ export const LogEntriesTable = ({
                       </span>
                     </td>
                     <td className={twJoin(tableCellClassName, "align-top wrap-break-word")}>
-                      {entry.message}
+                      <LogEntryMessage entry={entry} buildModalHref={buildModalHref} />
                     </td>
                     {showProject ? (
                       <td className={twJoin(tableCellClassName, "hidden align-top @xl:table-cell")}>
