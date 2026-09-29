@@ -10,6 +10,7 @@ import "./healthcheck.js"
 import { config } from "./helpers/config.js"
 import { createImapClient } from "./helpers/imap.js"
 import { log } from "./helpers/logger.js"
+import { runRetention } from "./helpers/retention.js"
 
 type ServiceStatus = {
   isHealthy: boolean
@@ -29,6 +30,8 @@ const folderClients = new Map<string, ImapFlow>()
 const processingFolders = new Set<string>()
 // Interval for refreshing folder list
 let folderRefreshInterval: NodeJS.Timeout | null = null
+// Interval for the daily retention (deletion of old emails)
+let retentionInterval: NodeJS.Timeout | null = null
 
 /**
  * Fetch list of all folders from the email account
@@ -303,6 +306,10 @@ async function startImapListener() {
     await updateFolderMonitoring()
   }, 60 * 1000)
 
+  // Delete emails older than the retention period now and then every 24h
+  void runRetention()
+  retentionInterval = setInterval(() => void runRetention(), config.retention.intervalMs)
+
   serviceStatus.isHealthy = true
   serviceStatus.lastCheck = new Date().toISOString()
   serviceStatus.error = null
@@ -317,6 +324,11 @@ async function shutdown() {
   if (folderRefreshInterval) {
     clearInterval(folderRefreshInterval)
     folderRefreshInterval = null
+  }
+
+  if (retentionInterval) {
+    clearInterval(retentionInterval)
+    retentionInterval = null
   }
 
   // Close all folder connections
