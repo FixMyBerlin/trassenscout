@@ -64,10 +64,10 @@ export const EditCommentForm = ({ comment, commentLabel, mutateComment }: Props)
   const isAuthor =
     comment.isOwnComment === true ||
     (!!comment.author && "id" in comment.author && comment.author.id === user?.id)
-  const canUpdateComment = userCanEditProject || isAuthor || isAdmin
-  const canRemoveComment = userCanEditProject || isAuthor || isAdmin
+  const canModifyComment =
+    isAdmin || isAuthor || (userCanEditProject && comment.isFormerMemberComment === true)
 
-  if (!canUpdateComment) {
+  if (!canModifyComment) {
     return null
   }
 
@@ -94,27 +94,25 @@ export const EditCommentForm = ({ comment, commentLabel, mutateComment }: Props)
           submitText={`${commentLabel} speichern`}
           className="space-y-0"
           actionBarRight={
-            canRemoveComment ? (
-              <button
-                type="button"
-                title={`${commentLabel} löschen`}
-                onClick={async () => {
-                  if (window.confirm(`${commentLabel} unwiderruflich löschen?`)) {
-                    try {
-                      setIsDirty(false)
-                      setOpen(false)
-                      await mutateComment.remove()
-                    } catch (error: unknown) {
-                      window.alert(String(error))
-                      console.error(error)
-                    }
+            <button
+              type="button"
+              title={`${commentLabel} löschen`}
+              onClick={async () => {
+                if (window.confirm(`${commentLabel} unwiderruflich löschen?`)) {
+                  try {
+                    setIsDirty(false)
+                    setOpen(false)
+                    await mutateComment.remove()
+                  } catch (error: unknown) {
+                    window.alert(String(error))
+                    console.error(error)
                   }
-                }}
-                className={primaryButtonClassName}
-              >
-                <TrashIcon className="size-5" />
-              </button>
-            ) : undefined
+                }
+              }}
+              className={primaryButtonClassName}
+            >
+              <TrashIcon className="size-5" />
+            </button>
           }
           backLink={null}
         >

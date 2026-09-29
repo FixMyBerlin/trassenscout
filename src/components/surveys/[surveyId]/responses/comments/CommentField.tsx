@@ -29,7 +29,7 @@ export const CommentField = ({ comment, commentLabel, mutateComment }: Props) =>
           "prose-sm prose-a:underline hover:prose-a:text-teal-700 hover:prose-a:decoration-teal-700",
         )}
       />
-      <div className="relative mt-3 flex items-center justify-between gap-3 border-t border-gray-300 pt-2">
+      <div className="relative mt-3 flex items-center justify-between gap-3 border-t border-gray-300 pt-2 text-sm">
         <div className="min-w-0">
           <strong>
             <span className="inline-block max-w-full truncate align-bottom" title={authorLabel}>

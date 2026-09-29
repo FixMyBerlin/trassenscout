@@ -167,6 +167,7 @@ describe("redactCommentAuthor", () => {
 
     expect(result.userId).toBe(1)
     expect(result.isOwnComment).toBe(false)
+    expect(result.isFormerMemberComment).toBe(false)
     expect(result.author).toEqual({ id: 1, firstName: "Ada", lastName: "Lovelace" })
   })
 
@@ -198,6 +199,7 @@ describe("redactCommentAuthor", () => {
     )
 
     expect(result.userId).toBeNull()
+    expect(result.isFormerMemberComment).toBe(true)
     expect(result.author).toEqual({
       firstName: FORMER_MEMBER_PLACEHOLDER,
       lastName: "",
