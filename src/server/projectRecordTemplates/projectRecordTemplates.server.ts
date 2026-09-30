@@ -13,6 +13,7 @@ import {
 import {
   validateTemplateFormTemplateScope,
   validateTemplateTagScope,
+  validateTemplateUploadScope,
 } from "./_utils/validateTemplateTagScope"
 
 export type ProjectRecordTemplatesByProjectInput = z.infer<
@@ -23,13 +24,14 @@ const projectRecordTemplateInclude = {
   projects: { select: { id: true, slug: true, subTitle: true } },
   tags: true,
   formTemplates: { select: { id: true, title: true, slug: true, type: true } },
+  uploads: { select: { id: true, title: true, projectId: true }, orderBy: { title: "asc" } },
 } as const
 
 function templateData(
   input: z.infer<typeof ProjectRecordTemplateFormSchema>,
   setRelations = false,
 ) {
-  const { projectIds, tagIds, formTemplateIds, ...data } = input
+  const { projectIds, tagIds, formTemplateIds, uploadIds, ...data } = input
   const relationVerb = setRelations ? "set" : "connect"
 
   return {
@@ -37,6 +39,7 @@ function templateData(
     projects: { [relationVerb]: projectIds.map((id) => ({ id })) },
     tags: { [relationVerb]: tagIds.map((id) => ({ id })) },
     formTemplates: { [relationVerb]: formTemplateIds.map((id) => ({ id })) },
+    uploads: { [relationVerb]: uploadIds.map((id) => ({ id })) },
   }
 }
 
@@ -64,6 +67,11 @@ export async function getProjectRecordTemplatesByProject(
         where: { projects: { some: { slug: input.projectSlug } } },
         select: { id: true, title: true, slug: true, type: true },
       },
+      uploads: {
+        where: { project: { slug: input.projectSlug } },
+        select: { id: true, title: true, projectId: true, externalUrl: true },
+        orderBy: { title: "asc" },
+      },
     },
     orderBy: { templateTitle: "asc" },
     where: { projects: { some: { slug: input.projectSlug } } },
@@ -89,6 +97,7 @@ export async function createProjectRecordTemplate(
   await endpointAuth.admin(headers)
   await validateTemplateTagScope(input)
   await validateTemplateFormTemplateScope(input)
+  await validateTemplateUploadScope(input)
 
   return db.projectRecordTemplate.create({
     data: templateData(input),
@@ -115,6 +124,7 @@ export async function updateProjectRecordTemplate(
   const { id, ...data } = input
   await validateTemplateTagScope(data)
   await validateTemplateFormTemplateScope(data)
+  await validateTemplateUploadScope(data)
 
   const updated = await db.projectRecordTemplate.update({
     where: { id },
@@ -156,4 +166,17 @@ export async function getTagsAdmin(headers: Headers) {
   })
 
   return { tags }
+}
+
+export async function getUploadsAdmin(headers: Headers, input: { projectIds: number[] }) {
+  await endpointAuth.admin(headers)
+  if (!input.projectIds.length) return { uploads: [] }
+
+  const uploads = await db.upload.findMany({
+    where: { projectId: { in: input.projectIds } },
+    select: { id: true, title: true, projectId: true },
+    orderBy: [{ projectId: "asc" }, { title: "asc" }],
+  })
+
+  return { uploads }
 }

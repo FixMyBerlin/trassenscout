@@ -16,6 +16,7 @@ export const ProjectRecordTemplateFormSchema = z.object({
   projectIds: CheckboxNumberArraySchema,
   tagIds: CheckboxNumberArraySchema,
   formTemplateIds: CheckboxNumberArraySchema,
+  uploadIds: CheckboxNumberArraySchema,
 })
 
 export const ProjectRecordTemplateByIdSchema = z.object({
@@ -37,11 +38,12 @@ export type ProjectRecordTemplateFormValues = z.infer<typeof ProjectRecordTempla
 /** TanStack Form field values — checkbox groups store string ids until Zod coerces on submit. */
 export type ProjectRecordTemplateFormFieldValues = Omit<
   ProjectRecordTemplateFormValues,
-  "projectIds" | "tagIds" | "formTemplateIds"
+  "projectIds" | "tagIds" | "formTemplateIds" | "uploadIds"
 > & {
   projectIds: string[]
   tagIds: string[]
   formTemplateIds: string[]
+  uploadIds: string[]
 }
 
 export const projectRecordTemplateFormDefaultValues: ProjectRecordTemplateFormFieldValues = {
@@ -52,4 +54,5 @@ export const projectRecordTemplateFormDefaultValues: ProjectRecordTemplateFormFi
   projectIds: [],
   tagIds: [],
   formTemplateIds: [],
+  uploadIds: [],
 }

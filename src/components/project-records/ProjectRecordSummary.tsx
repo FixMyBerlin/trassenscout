@@ -11,10 +11,15 @@ import {
   type ProjectRecordEmailSourceValue,
 } from "@/src/components/project-records/ProjectRecordEmailSource"
 import { ProjectRecordFormTemplatesSection } from "@/src/components/project-records/ProjectRecordFormTemplatesSection"
+import {
+  ProjectRecordTemplateUploadsList,
+  useProjectRecordTemplateUploads,
+} from "@/src/components/project-records/ProjectRecordTemplateUploads"
 import { ProjectRecordVerknuepfungen } from "@/src/components/project-records/ProjectRecordVerknuepfungen"
 import { createProjectRecordFilterUrl } from "@/src/components/project-records/utils/filter/createFilterUrl"
 import type { ProjectRecord } from "@/src/server/projectRecords/types"
 import { getEffectiveFormTemplates } from "@/src/shared/formTemplates/effectiveFormTemplates"
+import { FORM_TEMPLATES_HIDDEN } from "@/src/shared/formTemplates/formTemplatesHidden"
 
 type Props = {
   projectRecord: ProjectRecord & {
@@ -32,6 +37,10 @@ export const projectRecordSectionValueClassName = "text-sm text-gray-700"
 export const ProjectRecordSummary = ({ projectRecord, uploadsSection }: Props) => {
   const projectSlug = projectRecord.project.slug
   const landAcquisitionModuleEnabled = projectRecord.project.landAcquisitionModuleEnabled
+  const templateUploads = useProjectRecordTemplateUploads(
+    projectSlug,
+    projectRecord.projectRecordTemplate?.id,
+  )
   const formTemplates = getEffectiveFormTemplates(projectRecord, {
     projectSlug,
     hasSubsubsection:
@@ -87,7 +96,16 @@ export const ProjectRecordSummary = ({ projectRecord, uploadsSection }: Props) =
         />
       </div>
 
-      {attachedFormTemplates.length > 0 && (
+      {templateUploads.length > 0 && (
+        <div className={projectRecordSectionClassName}>
+          <p className={projectRecordSectionLabelClassName}>Dokumente zum Herunterladen:</p>
+          <div className={projectRecordSectionValueClassName}>
+            <ProjectRecordTemplateUploadsList projectSlug={projectSlug} uploads={templateUploads} />
+          </div>
+        </div>
+      )}
+
+      {!FORM_TEMPLATES_HIDDEN && attachedFormTemplates.length > 0 && (
         <div className={projectRecordSectionClassName}>
           <p className={projectRecordSectionLabelClassName}>Formulare:</p>
           {formTemplates.length === 0 ? (

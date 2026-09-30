@@ -15,6 +15,10 @@ import {
 import { ProjectRecordFormTemplatesField } from "@/src/components/project-records/ProjectRecordFormTemplatesField"
 import { ProjectRecordFormTemplatesPreview } from "@/src/components/project-records/ProjectRecordFormTemplatesPreview"
 import {
+  ProjectRecordTemplateUploadsList,
+  useProjectRecordTemplateUploads,
+} from "@/src/components/project-records/ProjectRecordTemplateUploads"
+import {
   formatAcquisitionAreaRelationOptionLabel,
   formatSubsubsectionRelationOptionLabel,
 } from "@/src/components/project-records/ProjectRelationLinks"
@@ -27,6 +31,7 @@ import { projectUsersQueryOptions } from "@/src/server/memberships/projectUsersQ
 import { subsubsectionsQueryOptions } from "@/src/server/subsubsections/subsubsectionsQueryOptions"
 import { uploadsQueryOptions } from "@/src/server/uploads/uploadsQueryOptions"
 import { currentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
+import { FORM_TEMPLATES_HIDDEN } from "@/src/shared/formTemplates/formTemplatesHidden"
 
 type Props = {
   formMode?: "create" | "edit"
@@ -71,6 +76,8 @@ export const ProjectRecordFormFields = ({
   const { data: currentUser } = useQuery({ ...currentUserQueryOptions(), ...queryBehavior })
   const { trackSessionUploads } = useSessionUploadCleanup({ projectSlug })
   const uploadsValue = useFormValue("uploads")
+  const projectRecordTemplateId = Number(useFormValue("projectRecordTemplateId")) || null
+  const templateUploads = useProjectRecordTemplateUploads(projectSlug, projectRecordTemplateId)
 
   const uploadIds = NumberArraySchema.parse(uploadsValue)
 
@@ -159,13 +166,18 @@ export const ProjectRecordFormFields = ({
         {emailSource && splitView && <ProjectRecordEmailSource email={emailSource} />}
       </div>
 
-      {isCreateMode && (
+      {!FORM_TEMPLATES_HIDDEN && isCreateMode && (
         <ProjectRecordFormTemplatesPreview
           projectSlug={projectSlug}
           landAcquisitionModuleEnabled={landAcquisitionModuleEnabled}
         />
       )}
-      <ProjectRecordFormTemplatesField projectSlug={projectSlug} />
+      {!FORM_TEMPLATES_HIDDEN && <ProjectRecordFormTemplatesField projectSlug={projectSlug} />}
+      {templateUploads.length > 0 && (
+        <FieldLayout label="Dokumente zum Herunterladen">
+          <ProjectRecordTemplateUploadsList projectSlug={projectSlug} uploads={templateUploads} />
+        </FieldLayout>
+      )}
 
       <FieldLayout label="Dokumente">
         <div className="flex flex-col gap-2">

@@ -3,6 +3,7 @@ import { AdminPageHeader } from "@/src/components/admin/AdminPageHeader"
 import { AdminFormTemplatesTable } from "@/src/components/admin/form-templates/AdminFormTemplatesTable"
 import { adminHeaderActionButtonClassName } from "@/src/components/admin/HeaderWrapper"
 import { Link as CoreLink } from "@/src/components/core/components/links/Link"
+import { Notice } from "@/src/components/core/components/Notice/Notice"
 import { formTemplatesQueryOptions } from "@/src/server/formTemplates/formTemplatesQueryOptions"
 
 export function PageAdminFormTemplates() {
@@ -22,6 +23,10 @@ export function PageAdminFormTemplates() {
           </CoreLink>
         }
       />
+      <Notice type="warn" title="Vorübergehend ausgeblendet">
+        Formulare werden in Protokolleinträgen zurzeit nicht angezeigt. Stattdessen können an
+        Protokollvorlagen Dokumente zum Herunterladen hinterlegt werden.
+      </Notice>
       <AdminFormTemplatesTable templates={templates} />
     </>
   )

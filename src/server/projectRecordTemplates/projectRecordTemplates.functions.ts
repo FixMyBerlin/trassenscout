@@ -10,6 +10,7 @@ import {
 import {
   GetProjectRecordTemplatesSchema,
   GetTagsAdminSchema,
+  GetUploadsAdminSchema,
 } from "./projectRecordTemplates.inputSchemas"
 import {
   createProjectRecordTemplate,
@@ -18,6 +19,7 @@ import {
   getProjectRecordTemplates,
   getProjectRecordTemplatesByProject,
   getTagsAdmin,
+  getUploadsAdmin,
   updateProjectRecordTemplate,
 } from "./projectRecordTemplates.server"
 export const getProjectRecordTemplatesFn = createServerFn({ method: "GET" })
@@ -47,3 +49,7 @@ export const deleteProjectRecordTemplateFn = createServerFn({ method: "POST" })
 export const getTagsAdminFn = createServerFn({ method: "GET" })
   .validator(GetTagsAdminSchema)
   .handler(() => getTagsAdmin(getRequestHeaders()))
+
+export const getUploadsAdminFn = createServerFn({ method: "GET" })
+  .validator(GetUploadsAdminSchema)
+  .handler(({ data }) => getUploadsAdmin(getRequestHeaders(), data))

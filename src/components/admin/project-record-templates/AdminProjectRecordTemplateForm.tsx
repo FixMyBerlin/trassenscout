@@ -1,4 +1,4 @@
-import { useSuspenseQuery } from "@tanstack/react-query"
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query"
 import { useEffect, useMemo } from "react"
 import { ReactNode, useState } from "react"
 import { z } from "zod"
@@ -12,7 +12,10 @@ import {
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { formTemplatesQueryOptions } from "@/src/server/formTemplates/formTemplatesQueryOptions"
-import { tagsAdminQueryOptions } from "@/src/server/projectRecordTemplates/projectRecordTemplatesQueryOptions"
+import {
+  tagsAdminQueryOptions,
+  uploadsAdminQueryOptions,
+} from "@/src/server/projectRecordTemplates/projectRecordTemplatesQueryOptions"
 import { projectsAdminQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 import { formTemplateTypeLabels } from "@/src/shared/formTemplates/schemas"
 import {
@@ -74,6 +77,9 @@ const FormTemplateFields = () => {
         Protokolleinträge aus dieser Vorlage bieten die hier gewählten Formulare zum Ausfüllen an.
         Änderungen wirken auch auf bereits bestehende Protokolleinträge.
       </p>
+      <p className="mt-0 text-sm font-medium text-amber-700">
+        Vorübergehend ausgeblendet: Formulare werden in Protokolleinträgen zurzeit nicht angezeigt.
+      </p>
       {!selectedProjectIds.length ? (
         <p className="mt-0 text-sm text-gray-500">
           Wählen Sie zuerst ein oder mehrere Projekte aus.
@@ -97,6 +103,36 @@ const FormTemplateFields = () => {
         </form.AppField>
       )}
     </div>
+  )
+}
+
+/** Temporary (template documents): replaces the forms in the project UI until they are ready. */
+const UploadFields = () => {
+  const form = useCoreAppFormContext()
+  const { data: projectsResult } = useSuspenseQuery(projectsAdminQueryOptions())
+  const selectedProjectIds = toNumericIds(useFormValue<string[]>("projectIds"))
+  const { data } = useQuery(uploadsAdminQueryOptions(selectedProjectIds))
+
+  const projectSlugById = new Map(
+    (projectsResult.projects || []).map((project) => [project.id, project.slug]),
+  )
+  const items = (data?.uploads ?? []).map((upload) => ({
+    value: String(upload.id),
+    label: `${shortTitle(projectSlugById.get(upload.projectId ?? 0) ?? "")} · ${upload.title}`,
+  }))
+
+  return (
+    <form.AppField name="uploadIds">
+      {(field) => (
+        <field.Combobox
+          label="Dokumente (optional)"
+          optional
+          help="Werden in Protokolleinträgen aus dieser Vorlage zum Herunterladen angezeigt. Nur Dokumente der gewählten Projekte."
+          placeholder={selectedProjectIds.length ? "Dokument suchen…" : "Zuerst Projekte auswählen"}
+          items={items}
+        />
+      )}
+    </form.AppField>
   )
 }
 
@@ -232,6 +268,7 @@ export function AdminProjectRecordTemplateForm({
         {(field) => <field.TextareaField label="Notizen" optional rows={12} />}
       </form.AppField>
       <ProjectAndTagFields />
+      <UploadFields />
       <FormTemplateFields />
       <form.AppField name="purpose">
         {(field) => <field.TextareaField label="Verwendungszweck" optional rows={5} />}

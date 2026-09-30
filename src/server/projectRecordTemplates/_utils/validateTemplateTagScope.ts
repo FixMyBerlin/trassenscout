@@ -50,3 +50,21 @@ export const validateTemplateFormTemplateScope = async ({
     throw new Error("Ausgewählte Formulare müssen zu den ausgewählten Projekten gehören.")
   }
 }
+
+export const validateTemplateUploadScope = async ({
+  projectIds,
+  uploadIds,
+}: {
+  projectIds: number[]
+  uploadIds: number[]
+}) => {
+  if (!uploadIds.length) return
+
+  const count = await db.upload.count({
+    where: { id: { in: uploadIds }, projectId: { in: projectIds } },
+  })
+
+  if (count !== uploadIds.length) {
+    throw new Error("Ausgewählte Dokumente müssen zu den ausgewählten Projekten gehören.")
+  }
+}
