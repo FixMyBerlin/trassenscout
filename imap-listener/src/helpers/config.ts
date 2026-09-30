@@ -48,5 +48,6 @@ export const config = {
     delay: IMAP_LISTENER.processing.delayMs,
     maxRetries: IMAP_LISTENER.processing.maxRetries,
   },
+  retention: IMAP_LISTENER.retention,
   health: IMAP_LISTENER.health,
 } as const

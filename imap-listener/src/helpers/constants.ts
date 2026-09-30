@@ -17,6 +17,11 @@ export const IMAP_LISTENER = {
     delayMs: 10_000,
     maxRetries: 3,
   },
+  retention: {
+    months: 24,
+    intervalMs: 24 * 60 * 60 * 1000,
+    batchSize: 500,
+  },
   health: {
     port: 3100,
   },
