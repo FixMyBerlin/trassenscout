@@ -1,5 +1,5 @@
 import { ReactNode } from "react"
-import { twMerge } from "tailwind-merge"
+import { twJoin, twMerge } from "tailwind-merge"
 
 type Props = {
   className?: string
@@ -11,15 +11,21 @@ type Props = {
    * Default true keeps list-mode horizontal scroll (overflow-x-auto).
    */
   scrollable?: boolean
+  stickyFirstColumn?: boolean
   children: ReactNode
 }
 
-const tableChromeClassName = "not-prose overflow-hidden border border-gray-200"
+const stickyFirstColumnClassName = twJoin(
+  "[:where(&_tr)]:bg-inherit",
+  "[&_tr>:first-child]:sticky [&_tr>:first-child]:left-0 [&_tr>:first-child]:z-[1]",
+  "[&_tr>:first-child]:bg-inherit [&_tr>:first-child]:shadow-[inset_-1px_0_0_var(--color-gray-200)]",
+)
 
 export const TableWrapper = ({
   className,
   withTopBorder = false,
   scrollable = true,
+  stickyFirstColumn = true,
   children,
 }: Props) => {
   return (
@@ -27,7 +33,13 @@ export const TableWrapper = ({
       className={twMerge("w-full", scrollable ? "overflow-x-auto" : "overflow-hidden", className)}
       tabIndex={scrollable ? undefined : -1}
     >
-      <div className={twMerge(tableChromeClassName, !withTopBorder && "border-t-0")}>
+      <div
+        className={twMerge(
+          "not-prose w-fit min-w-full border border-gray-200",
+          !withTopBorder && "border-t-0",
+          scrollable && stickyFirstColumn && stickyFirstColumnClassName,
+        )}
+      >
         {children}
       </div>
     </div>
