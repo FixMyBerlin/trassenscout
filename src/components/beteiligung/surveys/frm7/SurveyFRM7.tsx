@@ -1,10 +1,5 @@
 import { SurveyLink } from "@/src/components/beteiligung/links/SurveyLink"
-import { SurveyMainPage } from "@/src/components/beteiligung/SurveyMainPage"
 import { SurveyH1, SurveyP } from "@/src/components/beteiligung/Text"
-type Props = {
-  surveyId: number
-}
-
 export function IntroPart1() {
   return (
     <>
@@ -42,8 +37,4 @@ export function IntroPart1() {
       </SurveyP>
     </>
   )
-}
-
-export const SurveyFRM7 = ({ surveyId }: Props) => {
-  return <SurveyMainPage surveyId={surveyId} />
 }
