@@ -88,18 +88,36 @@ export function calculateGrantAmount(values: GrantCostInput): number | null {
   return round2(eligible * GRANT_RATE)
 }
 
-/** Eigenmittel = Summe Kostenstruktur − Zuwendung. */
-export function calculateOwnFunds(sum: number, grant: number) {
-  return round2(sum - grant)
-}
+export const otherFundingFieldNames = [
+  "grantsOtherFunding",
+  "revenuesEconomicIncome",
+  "contributionsThirdParties",
+] as const
 
-/** Summe − eingetragene Zuwendung. Null without a cost structure; an empty grant counts as 0. */
-export function expectedOwnFunds(
-  values: { grantAmount?: unknown } & Partial<Record<CostStructureFieldName, unknown>>,
-) {
+/**
+ * Verbleibender Finanzierungsbedarf = Summe Kostenstruktur − andere Förderprogramme − Erlöse −
+ * Beiträge Dritter. Null without a cost structure; empty financing counts as 0.
+ */
+export function calculateRemainingFundingNeed(values: GrantCostInput): number | null {
   const sum = sumCostStructure(values)
   if (sum === null) return null
-  return calculateOwnFunds(sum, enteredCost(values.grantAmount) ?? 0)
+  const financing = otherFundingFieldNames.reduce(
+    (total, name) => total + (enteredCost(values[name]) ?? 0),
+    0,
+  )
+  return round2(sum - financing)
+}
+
+/** Eigenmittel = Verbleibender Finanzierungsbedarf − Zuwendung. */
+export function calculateOwnFunds(remainingFundingNeed: number, grant: number) {
+  return round2(remainingFundingNeed - grant)
+}
+
+export function calculateSuggestedFunding(values: GrantCostInput) {
+  const grantAmount = calculateGrantAmount(values)
+  const remainingFundingNeed = calculateRemainingFundingNeed(values)
+  if (grantAmount === null || remainingFundingNeed === null) return null
+  return { grantAmount, ownFunds: calculateOwnFunds(remainingFundingNeed, grantAmount) }
 }
 
 /** True when an entered amount differs from the calculated value by at least one cent. */

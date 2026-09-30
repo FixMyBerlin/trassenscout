@@ -1,6 +1,5 @@
 import type { ReactNode } from "react"
 import { ProjectRecordReviewStatePill } from "@/src/components/admin/project-records/AdminProjectRecordTable"
-import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
 import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { formatBerlinTime } from "@/src/components/core/utils/formatBerlinTime"
 import {
@@ -9,7 +8,7 @@ import {
   projectRecordSectionValueClassName,
 } from "@/src/components/project-records/ProjectRecordSummary"
 import { getProjectRecordAuthorLabel } from "@/src/components/project-records/utils/getProjectRecordAuthorLabel"
-import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
+import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { isAdmin } from "@/src/components/shared/app/users/utils/isAdmin"
 import { useCurrentUser } from "@/src/components/user/useCurrentUser"
 import { ProjectRecordReviewState, ProjectRecordType } from "@/src/prisma/generated/browser"
@@ -33,37 +32,36 @@ const formatAuthorWithTimestamp = ({
 
 const CreateEditReviewHistoryComponent = ({
   projectRecord,
-  showAuthors,
+  showReview,
 }: {
   projectRecord: ProjectRecordAdmin | ProjectRecordListItem | ProjectRecord
-  showAuthors: boolean
+  showReview: boolean
 }) => {
   const rows: { label: string; value: ReactNode }[] = []
 
-  const systemNote = showAuthors
-    ? [
-        `Erstellt: ${formatAuthorWithTimestamp({
-          label: getProjectRecordAuthorLabel({
-            type: projectRecord.projectRecordAuthorType,
-            author: projectRecord.author,
-          }),
-          timestamp: projectRecord.createdAt,
-        })}`,
-        `Zuletzt bearbeitet: ${
-          projectRecord.projectRecordUpdatedByType
-            ? formatAuthorWithTimestamp({
-                label: getProjectRecordAuthorLabel({
-                  type: projectRecord.projectRecordUpdatedByType,
-                  author: projectRecord.updatedBy,
-                }),
-                timestamp: projectRecord.updatedAt,
-              })
-            : "—"
-        }`,
-      ]
-    : []
+  const systemNote = [
+    `Erstellt: ${formatAuthorWithTimestamp({
+      label: getProjectRecordAuthorLabel({
+        type: projectRecord.projectRecordAuthorType,
+        author: projectRecord.author,
+      }),
+      timestamp: projectRecord.createdAt,
+    })}`,
+    `Zuletzt bearbeitet: ${
+      projectRecord.projectRecordUpdatedByType
+        ? formatAuthorWithTimestamp({
+            label: getProjectRecordAuthorLabel({
+              type: projectRecord.projectRecordUpdatedByType,
+              author: projectRecord.updatedBy,
+            }),
+            timestamp: projectRecord.updatedAt,
+          })
+        : "—"
+    }`,
+  ]
 
   if (
+    showReview &&
     projectRecord.projectRecordAuthorType === ProjectRecordType.SYSTEM &&
     projectRecord.reviewState !== ProjectRecordReviewState.APPROVED
   ) {
@@ -74,7 +72,7 @@ const CreateEditReviewHistoryComponent = ({
   }
 
   if (
-    showAuthors &&
+    showReview &&
     projectRecord.projectRecordAuthorType === ProjectRecordType.SYSTEM &&
     projectRecord.reviewState === ProjectRecordReviewState.APPROVED &&
     projectRecord.reviewedBy
@@ -89,6 +87,7 @@ const CreateEditReviewHistoryComponent = ({
   }
 
   if (
+    showReview &&
     projectRecord.projectRecordAuthorType === ProjectRecordType.SYSTEM &&
     projectRecord.reviewNotes
   ) {
@@ -97,8 +96,6 @@ const CreateEditReviewHistoryComponent = ({
       value: projectRecord.reviewNotes,
     })
   }
-
-  if (!rows.length && !systemNote.length) return null
 
   return (
     <div className="mt-8 max-w-5xl px-4">
@@ -112,13 +109,11 @@ const CreateEditReviewHistoryComponent = ({
           ))}
         </div>
       )}
-      {systemNote.length > 0 && (
-        <p className="mt-4 flex flex-wrap gap-x-6 gap-y-1 text-xs text-gray-400">
-          {systemNote.map((entry) => (
-            <span key={entry}>{entry}</span>
-          ))}
-        </p>
-      )}
+      <p className="mt-4 flex flex-wrap gap-x-6 gap-y-1 text-xs text-gray-400">
+        {systemNote.map((entry) => (
+          <span key={entry}>{entry}</span>
+        ))}
+      </p>
     </div>
   )
 }
@@ -128,19 +123,9 @@ export const CreateEditReviewHistory = ({
 }: {
   projectRecord: ProjectRecordAdmin | ProjectRecordListItem | ProjectRecord
 }) => {
-  const user = useCurrentUser()
-  const isUserAdmin = isAdmin(user)
-  const aiEnabled = projectRecord.project.aiEnabled
-  const history = (
-    <CreateEditReviewHistoryComponent projectRecord={projectRecord} showAuthors={isUserAdmin} />
-  )
+  const isUserAdmin = isAdmin(useCurrentUser())
+  const userCanEdit = useUserCan(projectRecord.project.slug).edit
+  const showReview = isUserAdmin || (projectRecord.project.aiEnabled && userCanEdit)
 
-  if (isUserAdmin) {
-    if (aiEnabled) return history
-    return <SuperAdminBox>{history}</SuperAdminBox>
-  }
-
-  if (!aiEnabled) return null
-
-  return <IfUserCanEdit projectSlug={projectRecord.project.slug}>{history}</IfUserCanEdit>
+  return <CreateEditReviewHistoryComponent projectRecord={projectRecord} showReview={showReview} />
 }

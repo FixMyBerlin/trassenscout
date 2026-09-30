@@ -2,13 +2,11 @@ import { twJoin } from "tailwind-merge"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { formatBerlinTime } from "@/src/components/core/utils/formatBerlinTime"
-import { isAdmin } from "@/src/components/shared/app/users/utils/isAdmin"
 import {
   uploadAlignedLabelClassName,
   uploadAlignedRowClassName,
   uploadAlignedValueClassName,
 } from "@/src/components/uploads/uploadAlignedFieldStyles"
-import { useCurrentUser } from "@/src/components/user/useCurrentUser"
 
 type User = {
   firstName: string | null
@@ -38,9 +36,6 @@ export const UploadAuthorAndDates = ({
   className,
   variant = "default",
 }: Props) => {
-  const user = useCurrentUser()
-  if (!isAdmin(user)) return null
-
   const sectionClassName = twJoin(
     "border-t border-gray-200",
     pageContentPaddingClassName,

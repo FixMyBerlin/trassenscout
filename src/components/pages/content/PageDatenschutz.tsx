@@ -1,5 +1,5 @@
+import type { ReactNode } from "react"
 import { twMerge } from "tailwind-merge"
-import { Link } from "@/src/components/core/components/links/Link"
 import { LinkMail } from "@/src/components/core/components/links/LinkMail"
 import { LinkTel } from "@/src/components/core/components/links/LinkTel"
 import { Breadcrumb, BreadcrumbStep } from "@/src/components/core/components/PageHeader/Breadcrumb"
@@ -7,15 +7,49 @@ import { pageContentPaddingClassName } from "@/src/components/core/components/Pa
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { proseClasses } from "@/src/components/core/components/text/prose"
 
-const MatomoIframe = () => {
-  return (
-    <iframe
-      title="Matomo Opt Out Tracking"
-      className="h-52 w-full border border-gray-200 bg-[#f0fdf4] p-2"
-      src="https://s.fixmycity.de/index.php?module=CoreAdminHome&action=optOut&language=de&backgroundColor=f0fdf4&fontColor=374151&fontSize=16px&fontFamily=Arial"
-    />
-  )
+const portalLegalBasis =
+  "Es gilt die im Abschnitt „Rechtsgrundlage“ unter „Bereitstellung des Portals“ beschriebene Rechtsgrundlage."
+
+type ServiceDetailsProps = {
+  data: ReactNode
+  purpose: ReactNode
+  legalBasis?: ReactNode
+  recipient: ReactNode
+  thirdCountry: ReactNode
+  storage: ReactNode
 }
+
+const ServiceDetails = ({
+  data,
+  purpose,
+  legalBasis = portalLegalBasis,
+  recipient,
+  thirdCountry,
+  storage,
+}: ServiceDetailsProps) => (
+  <dl className="[&_dd]:mt-1 [&_dd]:ps-0 [&_dt]:mt-4 [&_dt]:first:mt-0">
+    <dt>Allgemeine Informationen</dt>
+    <dd>{data}</dd>
+    <dt>Zweck der Verarbeitung</dt>
+    <dd>{purpose}</dd>
+    <dt>Rechtsgrundlage</dt>
+    <dd>{legalBasis}</dd>
+    <dt>Empfänger</dt>
+    <dd>{recipient}</dd>
+    <dt>Drittlandübermittlung und Garantien</dt>
+    <dd>{thirdCountry}</dd>
+    <dt>Speicherdauer</dt>
+    <dd>{storage}</dd>
+  </dl>
+)
+
+/** One service under "Eingesetzte Dienste und Empfänger". */
+const ServiceSection = ({ name, ...details }: { name: string } & ServiceDetailsProps) => (
+  <>
+    <h4 className="text-lg">{name}</h4>
+    <ServiceDetails {...details} />
+  </>
+)
 
 export function PageDatenschutz() {
   return (
@@ -40,23 +74,62 @@ export function PageDatenschutz() {
           Einklang mit der Datenschutzgrundverordnung (nachfolgend „DSGVO“ genannt) sowie allen
           geltenden landesspezifischen Datenschutzbestimmungen.
         </p>
+        <ul>
+          <li>
+            <a href="#intro">Einleitung</a>
+          </li>
+          <li>
+            <a href="#responsible">Verantwortlichkeit</a>
+          </li>
+          <li>
+            <a href="#hosting">Bereitstellung</a>
+          </li>
+          <li>
+            <a href="#cookies">Cookies</a>
+          </li>
+          <li>
+            <a href="#analytics">Webanalyse</a>
+          </li>
+          <li>
+            <a href="#contact">Kontaktmöglichkeiten</a>
+          </li>
+          <li>
+            <a href="#newsletter">Newsletter</a>
+          </li>
+          <li>
+            <a href="#rights">Ihre Rechte</a>
+          </li>
+          <li>
+            <a href="#updates">Aktualität &amp; Änderungen</a>
+          </li>
+        </ul>
+
         <h2 id="responsible">Verantwortlichkeit</h2>
         <h3>Verantwortlich im Sinne der DSGVO</h3>
         <p>
-          <strong>FixMyCity GmbH</strong> <br />
-          Oberlandstraße 26-35 <br />
-          12099 Berlin <br />
-          E-Mail: <LinkMail>hello@fixmycity.de</LinkMail> <br />
-          Telefon: <LinkTel>+40 30 549 08 665</LinkTel>
+          <strong>FixMyCity GmbH</strong>
+          <br />
+          Oberlandstraße 26-35
+          <br />
+          12099 Berlin
+          <br />
+          E-Mail: <LinkMail>hello@fixmycity.de</LinkMail>
+          <br />
+          Telefon: <LinkTel>+49 30 549 08 665</LinkTel>
         </p>
         <h3>Datenschutzbeauftragter</h3>
         <p>Unsere Datenschutzbeauftragten erreichen Sie wie folgt:</p>
         <p>
-          <strong>secjur GmbH</strong> <br />
-          Niklas Hanitsch <br />
-          Steinhöft 9<br />
-          20459 Hamburg <br />
-          E-Mail: <LinkMail>dsb@secjur.com</LinkMail> <br />
+          <strong>secjur GmbH</strong>
+          <br />
+          Niklas Hanitsch
+          <br />
+          Steinhöft 9
+          <br />
+          20459 Hamburg
+          <br />
+          E-Mail: <LinkMail>dsb@secjur.com</LinkMail>
+          <br />
           Telefon: <LinkTel>+49 40 228 599 520</LinkTel>
         </p>
         <p>
@@ -72,7 +145,7 @@ export function PageDatenschutz() {
         </p>
         <p>
           Teilweise setzen wir Dienstleister ein, die ihren Sitz in einem Drittland haben, also
-          außerhalb der EU. Wir übermitteln Daten nur in ein Drittland, in denen ein angemessenes
+          außerhalb der EU. Wir übermitteln Daten nur in Drittländer, in denen ein angemessenes
           Datenschutzniveau bzw. geeignete Garantien i. S. d. Art. 44-49 DSGVO vorliegen. Sie haben
           das Recht, eine Kopie der von uns getroffenen geeigneten Garantien anzufordern. Schreiben
           Sie uns dazu gerne eine E-Mail an die in diesen Datenschutzhinweisen genannte
@@ -111,12 +184,12 @@ export function PageDatenschutz() {
         <h3>Öffentlicher Bereich / Beteiligungsformulare</h3>
         <p>
           Wenn Sie eines unserer Beteiligungsformulare nutzen und Ihre Eingaben absenden,
-          verarbeiten wir zusätzliche folgende Datenkategorien:
+          verarbeiten wir zusätzlich folgende Datenkategorien:
         </p>
         <ul>
           <li>Angaben zur Nutzung des Trassenabschnitts</li>
           <li>Angabe zum betroffenen Streckenabschnitt</li>
-          <li>Inhalt von Freitextfelder</li>
+          <li>Inhalte von Freitextfeldern</li>
         </ul>
         <p>
           Die Daten werden umgehend anonymisiert und so gespeichert, dass diese zu einem späteren
@@ -128,9 +201,9 @@ export function PageDatenschutz() {
         <p>
           Im Rahmen unserer Beteiligungen führen wir teilweise außerordentliche
           Beteiligungsbefragungen durch. Dabei werden ausgewählte Kommunen mit dem Ersuchen zur
-          Teilnahme an der Beteiligungsbefragung kontaktiert. Wenn Sie als Teil dieser Befragung and
-          der Beteiligung teilnehmen, werden – zusätzlich zu den obig aufgeführten, anonymisierten
-          Daten, noch folgende personenbezogenen Daten von uns erhoben:
+          Teilnahme an der Beteiligungsbefragung kontaktiert. Wenn Sie als Teil dieser Befragung an
+          der Beteiligung teilnehmen, werden – zusätzlich zu den oben aufgeführten, anonymisierten
+          Daten – noch folgende personenbezogenen Daten von uns erhoben:
         </p>
         <ul>
           <li>E-Mail-Adresse</li>
@@ -140,17 +213,18 @@ export function PageDatenschutz() {
         <p>
           Die Speicherung dieser Daten ist für den ordnungsgemäßen Ablauf der Beteiligung notwendig,
           da Rückfragen zu den Befragungsergebnissen auftreten können. Die Verarbeitung dieser Daten
-          stützen wir auf Ihre ausdrückliche, uns im Rahmen der Befragung erteilte Einwilligung
-          gemäß Art. 6 Abs. 1 lit. a. DSGVO. Wir versenden die Einladungen zu der
-          Beteiligungsbefragung über E-Mail. Für den Versand der Einladungen nutzen wir einen
-          externen Anbieter, Mailjet (Alt-Moabit 2, 10557 Berlin, Deutschland). Dieser Dienstleister
-          erhält Ihre E-Mail-Adresse und andere erforderliche Daten, um die Einladung in unserem
-          Auftrag zu versenden. Rechtsgrundlage für den Versand des Newsletters ist der Art. 6 Abs.
-          1 S. 1 lit. a. DSGVO, Art. 6 Abs. 1 S. 1 lit. f. DSGVO). Mailjet gibt an, Webspace von
-          Google zu beziehen, spezifiziert aber nicht, ob es sich um Server innerhalb der EU
-          handelt. Es ist daher nicht auszuschließen, dass die personenbezogenen Daten jedenfalls
-          teilweise in die USA übermittelt werden. Mailjet ist nicht nach dem Data Privacy Framework
-          zertifiziert.
+          stützen wir auf Ihre ausdrückliche, im Rahmen der Befragung erteilte Einwilligung gemäß
+          Art. 6 Abs. 1 Satz 1 lit. a DSGVO. Die Einladungen zur Beteiligungsbefragung versenden wir
+          per E-Mail über den externen Dienstleister Brevo. Dabei werden Ihre E-Mail-Adresse und die
+          für den Versand erforderlichen Daten in unserem Auftrag verarbeitet. Weitere Informationen
+          zu Brevo, den verarbeiteten Daten, möglichen Drittlandübermittlungen und der Speicherdauer
+          finden Sie im Abschnitt „Eingesetzte Dienste und Empfänger“.
+        </p>
+        <p>
+          Die im Rahmen der Beteiligungsbefragung erhobenen Kontaktdaten löschen wir, sobald die
+          jeweilige Beteiligung abgeschlossen ist und mit Rückfragen nicht mehr zu rechnen ist,
+          spätestens jedoch 24 Monate nach Abschluss der Beteiligung. Widerrufen Sie Ihre
+          Einwilligung vorher, löschen wir die Daten unverzüglich.
         </p>
 
         <h3>Interner Bereich</h3>
@@ -165,12 +239,58 @@ export function PageDatenschutz() {
           <li>Rolle in der Organisation (optional)</li>
           <li>Liste Ihrer Projekte und Ihre Berechtigungen</li>
           <li>
-            Wenn als Projektmanager:in zugewiesen: Projektbeschreibungen (inkl. geologischer
+            Wenn als Projektmanager:in zugewiesen: Projektbeschreibungen (inkl. geographischer
             Angaben)
           </li>
           <li>Kontaktdaten und Termine</li>
-          <li>Notizen soweit diese personenbezogen Daten enthalten</li>
-          <li>Hochgeladene Dateien soweit diese personenbezogene Daten enthalten</li>
+          <li>Notizen, soweit diese personenbezogene Daten enthalten</li>
+          <li>Hochgeladene Dateien, soweit diese personenbezogene Daten enthalten</li>
+          <li>
+            Projektinterne Änderungsprotokolle zu Planungs- und Beteiligungsdaten, insbesondere
+            Zeitpunkt, betroffener Datensatz, Art der Änderung und verantwortlicher Account.
+          </li>
+          <li>
+            Kommentare zu Hinweisen, Prozessen mit Trägern öffentlicher Belange und Planungen
+            einschließlich Kommentarinhalt, Verfasser:in und Zeitstempel.
+          </li>
+        </ul>
+
+        <h3>Interkommunale Sichtbarkeit von Projektinformationen</h3>
+        <p>
+          Der Trassenscout ist als interkommunales Werkzeug konzipiert. Planungsunterlagen,
+          Projektbeschreibungen, hochgeladene Dateien, Notizen, Kommentare und sonstige
+          projektbezogene Informationen, die im internen Bereich bereitgestellt werden, können im
+          Rahmen der jeweils eingerichteten Rollen- und Zugriffsberechtigungen auch von anderen am
+          jeweiligen Projekt beteiligten Nutzer:innen eingesehen werden. Dazu können insbesondere
+          Beschäftigte anderer beteiligter Kommunen sowie weitere von den Projektverantwortlichen
+          berechtigte Projektbeteiligte gehören. Soweit diese Inhalte personenbezogene Daten
+          enthalten, umfasst die Verarbeitung auch deren Bereitstellung an diesen Nutzerkreis zum
+          Zweck der interkommunalen Planung, Abstimmung und Zusammenarbeit. Mit Aktivierung der
+          Checkbox im Registrierungsprozess bestätigt die registrierende Kommune, dass sie diese
+          Datenschutzerklärung zur Kenntnis genommen hat. Die projektbezogene Sichtbarkeit beruht
+          nicht auf einer Einwilligung, sondern auf der im Abschnitt „Rechtsgrundlage“ genannten
+          Grundlage. Es dürfen nur Informationen und Unterlagen bereitgestellt werden, die für
+          diesen Nutzerkreis bestimmt sind und zu deren Bereitstellung die jeweilige Kommune
+          berechtigt ist. Besondere Kategorien personenbezogener Daten im Sinne des Art. 9 DSGVO
+          dürfen nicht eingestellt werden.
+        </p>
+
+        <h3>Aufbereitung von Planungsinformationen</h3>
+        <p>
+          Zur Aufbereitung von Planungsinformationen setzen wir den KI-gestützten Dienst OpenAI ein.
+          Dieser verarbeitet die bereitgestellten Informationen für die Datenbank zur internen
+          Nutzung im Trassenscout. Eine automatisierte Entscheidungsfindung einschließlich Profiling
+          im Sinne des Art. 22 DSGVO findet nicht statt; die Ergebnisse der KI-gestützten
+          Aufbereitung werden ausschließlich zur Vorbereitung einer Bearbeitung durch unsere
+          Mitarbeitenden genutzt. Weitere Informationen finden Sie im Abschnitt „OpenAI Ireland
+          Ltd.“ unter „Eingesetzte Dienste und Empfänger“.
+        </p>
+        <ul>
+          <li>Betreff, Inhalt und Absenderangaben von E-Mails</li>
+          <li>
+            PDF-Dokumente einschließlich Metadaten und darin enthaltene personenbezogene Daten
+          </li>
+          <li>erzeugte Analyseergebnisse</li>
         </ul>
 
         <h3>Zweck der Verarbeitung</h3>
@@ -184,155 +304,240 @@ export function PageDatenschutz() {
             des Portals,
           </li>
           <li>Aufbereitung und Zusammenfassung der Beteiligungsbögen,</li>
+          <li>
+            die Dokumentation und Nachvollziehbarkeit von Änderungen an Planungs- und
+            Beteiligungsdaten,
+          </li>
+          <li>
+            die projektinterne Kommunikation und Zusammenarbeit zu Hinweisen, Prozessen mit Trägern
+            öffentlicher Belange und Planungen,
+          </li>
           <li>die Aufklärung von Missbrauchs- oder Betrugshandlungen,</li>
           <li>Problemanalysen im Netzwerk, sowie</li>
           <li>die Auswertung der Systemsicherheit und -stabilität.</li>
         </ul>
+
         <h3>Rechtsgrundlage</h3>
         <p>
           Die Rechtsgrundlage für die Datenverarbeitung ist unser berechtigtes Interesse im Sinne
           des Art. 6 Abs. 1 S. 1 lit. f DSGVO. Wir haben ein überwiegendes berechtigtes Interesse
-          daran, unser Angebot (technisch einwandfrei) anbieten zu können.
+          daran, unser Angebot (technisch einwandfrei) anbieten zu können. Unser berechtigtes
+          Interesse umfasst insbesondere die Nachvollziehbarkeit projektbezogener Änderungen, die
+          koordinierte Zusammenarbeit der Projektbeteiligten und die Dokumentation des
+          Planungsprozesses.
         </p>
+        <p>
+          Die projektbezogene Bereitstellung von Notizen, Kommentaren, Planungsunterlagen und
+          weiteren Informationen gegenüber berechtigten Projektbeteiligten stützen wir auf Art. 6
+          Abs. 1 Satz 1 lit. f DSGVO. Unser berechtigtes Interesse und das Interesse der beteiligten
+          Organisationen bestehen in der Durchführung einer koordinierten interkommunalen Planung,
+          der gemeinsamen Nutzung einer aktuellen Informationsgrundlage sowie der nachvollziehbaren
+          Dokumentation von Zuständigkeiten, Entscheidungen und Änderungen. Der Zugriff wird auf die
+          dem jeweiligen Projekt zugeordneten Nutzer:innen und deren erforderliche Berechtigungen
+          beschränkt. Sie können dieser Verarbeitung aus Gründen, die sich aus Ihrer besonderen
+          Situation ergeben, jederzeit widersprechen; Einzelheiten finden Sie im Abschnitt
+          „Widerspruch (Art. 21 DSGVO)“.
+        </p>
+        <p>
+          Soweit wir Ihre personenbezogenen Daten zur Einrichtung und Verwaltung Ihres Zugangs zum
+          internen Bereich sowie zur Erbringung der dort angebotenen Funktionen verarbeiten, ist
+          Rechtsgrundlage zusätzlich Art. 6 Abs. 1 S. 1 lit. b DSGVO. Die Verarbeitung ist zur
+          Begründung und Durchführung des zwischen Ihnen und uns bestehenden Nutzungsverhältnisses
+          erforderlich.
+        </p>
+
         <h3>Speicherdauer</h3>
         <p>
-          Die Logfiles werden aus Sicherheitsgründen durch den Auftragsverarbeiter (siehe unten,
-          z.B. zur Aufklärung von Missbrauchs- oder Betrugshandlungen) für die Dauer von maximal 30
+          Die Logfiles werden aus Sicherheitsgründen durch den Auftragsverarbeiter (siehe unten, z.
+          B. zur Aufklärung von Missbrauchs- oder Betrugshandlungen) für die Dauer von maximal 30
           Tagen gespeichert und danach gelöscht. Daten, deren weitere Aufbewahrung zu Beweiszwecken
           erforderlich ist, werden bis zur endgültigen Klärung der Angelegenheit aufbewahrt.
-          Registrierungsdaten werden gelöscht, sobald der Account und Inhalte werden in
-          personenbezogener Form bis zur Löschung des Accounts.
+          Registrierungsdaten und personenbezogene Inhalte werden bei Löschung des Accounts aus dem
+          Produktivsystem gelöscht. In Sicherungskopien bleiben sie noch für 90 Tage gespeichert und
+          werden anschließend automatisch überschrieben oder gelöscht. Projektinterne
+          Änderungsprotokolle werden für 24 Monate gespeichert und anschließend gelöscht. Kommentare
+          werden bis zu ihrer Löschung, der Löschung des zugehörigen Projekts oder dem Wegfall des
+          Verarbeitungszwecks gespeichert.
         </p>
-        <h3>Empfänger personenbezogener Daten</h3>
-        <p>Wir setzen folgende Dienstleister ein:</p>
-        <table>
-          <thead>
-            <tr>
-              <th>Anbieter</th>
-              <th>Anschrift</th>
-              <th>Drittland</th>
-              <th>Geeignete Garantie</th>
-              <th>Zweck</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th className="align-text-top">MapTiler AG</th>
-              <td>Hüfnerstrasse 98, Unterägeri, Zug 6314, Schweiz</td>
-              <td>Ja, Schweiz</td>
-              <td>
-                <Link
-                  blank
-                  href="https://eur-lex.europa.eu/legal-content/DE/TXT/HTML/?uri=CELEX:32000D0518&from=EN"
-                >
-                  Angemessenheitsbeschluss der EU-Kommission
-                </Link>
-              </td>
-              <td>Bereitstellung und Übermittlung von Kartenmaterial</td>
-            </tr>
-            <tr>
-              <th className="align-text-top">Amazon Web Services, Inc.</th>
-              <td>38 Avenue John F. Kennedy, L-1855 Luxembourg</td>
-              <td>
-                Serverstandort Frankfurt. Ein ausnahmsweiser Zugriff aus den USA kann nicht
-                ausgeschlossen werden (z.B. zu Wartungszwecken oder Fehlersuche).
-              </td>
-              <td>
-                Dennoch{" "}
-                <Link blank href="https://d1.awsstatic.com/legal/aws-gdpr/AWS_GDPR_DPA.pdf">
-                  Standard&shy;datenschutz&shy;klauseln abgeschlossen
-                </Link>
-              </td>
-              <td>Hosting der Website und Bereitstellung der Inhalte</td>
-            </tr>
-            <tr>
-              <th className="align-text-top">IONOS SE</th>
-              <td>Elgendorfer Str. 57, 56410 Montabaur, Deutschland</td>
-              <td>-</td>
-              <td>-</td>
-              <td>Hosting der Website und Bereitstellung der Inhalte</td>
-            </tr>
-            <tr>
-              <th className="align-text-top">Mailjet GmbH</th>
-              <td>Alt-Moabit 2, 10557 Berlin, Germany</td>
-              <td>
-                Serverstandorte Frankfurt und Saint-Ghislain (Belgien). Ein ausnahmsweiser Zugriff
-                aus den USA kann nicht ausgeschlossen werden (z.B. zu Wartungszwecken oder
-                Fehlersuche).
-              </td>
-              <td>
-                Dennoch{" "}
-                <Link blank href="https://www.mailjet.com/de/rechtliches/av-vertrag/">
-                  Standard&shy;datenschutz&shy;klauseln abgeschlossen
-                </Link>
-                .
-              </td>
-              <td>Bereitstellung von Registrierungslinks und Benachrichtigungen</td>
-            </tr>
-            <tr>
-              <th className="align-text-top">SCALEWAY</th>
-              <td>8 rue de la Ville l&lsquo;Ev&ecirc;que, 75008 Paris, Frankreich</td>
-              <td>-</td>
-              <td>-</td>
-              <td>Backup</td>
-            </tr>
-          </tbody>
-        </table>
-        <h2 id="analytics">Webanalyse</h2>
+
+        <h3>Eingesetzte Dienste und Empfänger</h3>
         <p>
-          Zusätzlich zu den oben genannten Datenverarbeitungen nutzen wir ein Statistiksystem, das{" "}
-          <strong>keine personenbezogenen Daten</strong> verarbeitet. Aus Fairness- und
-          Transparenzgründen haben wir uns dennoch entschieden, die entsprechenden Details dazu
-          offenzulegen:
+          Wir setzen für die Bereitstellung und den Betrieb des Portals folgende Dienstleister ein.
+          Die Dienste sind funktional geordnet: Karten (MapTiler); Hosting, Dateien und Backups
+          (IONOS, Amazon Web Services, SCALEWAY und luckycloud); E-Mail und Benachrichtigungen
+          (Brevo und Migadu); KI-Verarbeitung (OpenAI); Webanalyse (Matomo, von uns selbst gehostet,
+          siehe Abschnitt „Webanalyse“).
+        </p>
+
+        <ServiceSection
+          name="MapTiler AG"
+          data="Bei der Nutzung des Dienstes werden folgende Daten verarbeitet: IP-Adresse und technische Verbindungs- und Anfragedaten, insbesondere Zeitpunkt und angeforderte Kartenressourcen; keine Inhalte der Beteiligungsformulare"
+          purpose="Bereitstellung und Übermittlung von Kartenmaterial"
+          recipient="MapTiler AG, Hüfnerstrasse 98, 6314 Unterägeri, Schweiz"
+          thirdCountry="Ja, Schweiz. Angemessenheitsbeschluss der EU-Kommission gemäß Art. 45 DSGVO; zusätzlich Auftragsverarbeitungsvertrag gemäß Art. 28 DSGVO"
+          storage="IP-Adressen werden höchstens 20 Minuten zwischengespeichert und anschließend gelöscht."
+        />
+        <ServiceSection
+          name="IONOS SE"
+          data="Bei der Nutzung des Dienstes werden folgende Daten verarbeitet: Technische Verbindungs- und Protokolldaten, insbesondere IP-Adresse, Zugriffszeitpunkt, aufgerufene Ressource, Referrer, Browsertyp und Endgeräteinformationen"
+          purpose="Hosting der Website einschließlich des internen Bereichs sowie Bereitstellung ihrer Inhalte"
+          recipient="IONOS SE, Elgendorfer Straße 57, 56410 Montabaur, Deutschland"
+          thirdCountry="Nein; Verarbeitung in Deutschland beziehungsweise innerhalb der EU. Kein Drittlandtransfer; Auftragsverarbeitungsvertrag gemäß Art. 28 DSGVO"
+          storage="Hosting-Inhalte bis zur Löschung beziehungsweise Vertragsbeendigung; technische Protokolldaten gemäß der Konfiguration des eingesetzten IONOS-Produkts, längstens 30 Tage"
+        />
+        <ServiceSection
+          name="Amazon Web Services EMEA SARL"
+          data="Bei der Nutzung des Dienstes werden folgende Daten verarbeitet: Hochgeladene Planungsunterlagen und Dateien einschließlich darin enthaltener personenbezogener Daten und Metadaten sowie technische Zugriffs-, Nutzungs- und Protokolldaten"
+          purpose="Speicherung und Bereitstellung hochgeladener Dateien sowie Speicherung technischer Webanalyse- und Protokolldaten"
+          recipient="Amazon Web Services EMEA SARL, 38 Avenue John F. Kennedy, L-1855 Luxemburg"
+          thirdCountry="Ja, nicht auszuschließen; die Speicherung erfolgt in der AWS-Region Frankfurt, Zugriffe aus Drittländern, insbesondere aus den USA, können jedoch nicht vollständig ausgeschlossen werden. Auftragsverarbeitungsvertrag; bei Drittlandübermittlungen SCC gemäß Art. 46 DSGVO oder Angemessenheitsbeschluss gemäß Art. 45 DSGVO"
+          storage="Dateien bis zu ihrer Löschung, der Löschung des zugehörigen Projekts oder dem Wegfall des Verarbeitungszwecks; technische Protokolldaten höchstens 30 Tage"
+        />
+        <ServiceSection
+          name="SCALEWAY SAS"
+          data="Bei der Nutzung des Dienstes werden folgende Daten verarbeitet: Sicherungskopien der Registrierungs-, Kontakt-, Projekt-, Planungs- und Inhaltsdaten einschließlich hochgeladener Dateien und technischer Protokolldaten"
+          purpose="Erstellung und Speicherung von Sicherungskopien"
+          recipient="SCALEWAY SAS, 8 rue de la Ville-l’Évêque, 75008 Paris, Frankreich"
+          thirdCountry="Nein; Verarbeitung innerhalb der EU. Kein Drittlandtransfer; Auftragsverarbeitungsvertrag gemäß Art. 28 DSGVO"
+          storage="Sicherungskopien werden für 90 Tage aufbewahrt und anschließend automatisch überschrieben oder gelöscht."
+        />
+        <ServiceSection
+          name="luckycloud GmbH"
+          data="Bei der Nutzung des Dienstes werden folgende Daten verarbeitet: Hochgeladene Planungsunterlagen und Dateien einschließlich darin enthaltener personenbezogener Daten sowie Datei-, Freigabe- und Account-Metadaten"
+          purpose="Speicherung, Übermittlung und gemeinschaftliche Bearbeitung von Planungsunterlagen und projektbezogenen Dateien"
+          recipient="luckycloud GmbH, Solmsstraße 26, 10961 Berlin, Deutschland"
+          thirdCountry="Nein; Verarbeitung in Deutschland beziehungsweise innerhalb der EU. Kein Drittlandtransfer; Auftragsverarbeitungsvertrag gemäß Art. 28 DSGVO"
+          storage="Bis zur Löschung, zum Zweckwegfall oder zur Vertragsbeendigung; längere Speicherung nur aufgrund gesetzlicher Aufbewahrungspflichten"
+        />
+        <ServiceSection
+          name="Brevo GmbH"
+          data="Bei der Nutzung des Dienstes werden folgende Daten verarbeitet: E-Mail-Adresse der eingeladenen oder benachrichtigten Person, Name der einladenden Person, Nachrichteninhalt sowie Versand-, Zustell- und Ereignisdaten"
+          purpose="Versand von Registrierungslinks, Einladungen, Einladungen zur Beteiligungsbefragung und projektbezogenen Benachrichtigungen sowie Nachweis des Versands von Einladungen im Rahmen der Beteiligungsverfahren"
+          recipient="Brevo GmbH, Köpenicker Straße 126, 10179 Berlin, Deutschland"
+          thirdCountry="Ja, nicht auszuschließen; die Speicherung erfolgt innerhalb der EU, Drittlandzugriffe durch Unterauftragsverarbeiter können jedoch nicht vollständig ausgeschlossen werden. Auftragsverarbeitungsvertrag; bei Drittlandübermittlungen SCC gemäß Art. 46 DSGVO oder Angemessenheitsbeschluss gemäß Art. 45 DSGVO"
+          storage="Bis zum Wegfall des Versandzwecks oder zur Löschung; Versand-, Zustell- und Ereignisprotokolle 24 Monate"
+        />
+        <ServiceSection
+          name="Migadu-Mail GmbH"
+          data="Bei der Nutzung des Dienstes werden folgende Daten verarbeitet: E-Mail-Adressen, Absender- und Empfängerdaten, E-Mail-Inhalte, Betreffzeilen, Anhänge und technische Nachrichtenmetadaten"
+          purpose="Bereitstellung der E-Mail-Infrastruktur, Versand und Empfang von E-Mails, Betriebsabsicherung und Missbrauchsabwehr"
+          recipient="Migadu-Mail GmbH, Rohnen 587, CH-9414 Schachen, Schweiz"
+          thirdCountry="Ja, Schweiz. Angemessenheitsbeschluss der EU-Kommission gemäß Art. 45 DSGVO; zusätzlich Auftragsverarbeitungsvertrag gemäß Art. 28 DSGVO"
+          storage="Bis zur Löschung oder Vertragsbeendigung; nach Vertragsende grundsätzlich Löschung innerhalb von 30 Tagen, soweit keine gesetzlichen Aufbewahrungspflichten bestehen"
+        />
+        <ServiceSection
+          name="OpenAI Ireland Ltd."
+          data="Bei der Nutzung des Dienstes werden folgende Daten verarbeitet: Betreff, Inhalt und Absenderangaben von E-Mails, PDF-Dokumente einschließlich Metadaten und darin enthaltene personenbezogene Daten sowie erzeugte Analyseergebnisse"
+          purpose="Verarbeitung, Strukturierung und Analyse von E-Mail-Inhalten und Planungsunterlagen mithilfe von KI-Modellen; kein Modelltraining ohne ausdrückliche Zustimmung"
+          recipient="OpenAI Ireland Ltd., 1st Floor, The Liffey Trust Centre, 117–126 Sheriff Street Upper, Dublin 1, D01 YC43, Irland"
+          thirdCountry="Ja, nicht auszuschließen; eine Verarbeitung durch verbundene Unternehmen oder Unterauftragsverarbeiter außerhalb des EWR, insbesondere in den USA, kann nicht ausgeschlossen werden. Auftragsverarbeitungsvertrag; bei Drittlandübermittlungen SCC gemäß Art. 46 DSGVO oder Angemessenheitsbeschluss gemäß Art. 45 DSGVO"
+          storage="Missbrauchsprotokolle grundsätzlich bis zu 30 Tage; Eingaben und Modellantworten zusätzlich standardmäßig 30 Tage."
+        />
+        <ServiceSection
+          name="Inhalte der Domain fixmycity.de"
+          data="Beim Aufruf unseres Portals wird von der Domain fixmycity.de eine JavaScript-Datei unseres Webanalysedienstes Matomo nachgeladen (siehe Abschnitt „Webanalyse“). Diese Domain wird von uns selbst betrieben. Beim Nachladen übermittelt Ihr Browser die für den Abruf technisch erforderlichen Daten an den Server dieser Domain, insbesondere Ihre IP-Adresse, den Zeitpunkt des Abrufs, die angeforderte Ressource, die verweisende Seite sowie Browser- und Endgeräteinformationen."
+          purpose="Bereitstellung und Anzeige der auf diesen Unterseiten eingebundenen Inhalte."
+          legalBasis={`${portalLegalBasis} Eine Einwilligung nach § 25 Abs. 1 TDDDG ist nicht erforderlich, da hierbei keine Informationen auf Ihrem Endgerät gespeichert oder aus diesem ausgelesen werden.`}
+          recipient="FixMyCity GmbH, Oberlandstraße 26-35, 12099 Berlin, Deutschland. Empfänger ist damit dieselbe Verantwortliche, die auch dieses Portal betreibt; eine Übermittlung an einen Dritten findet nicht statt. Zu den beim Betrieb der Domain fixmycity.de eingesetzten Dienstleistern informieren wir in der Datenschutzerklärung dieser Website."
+          thirdCountry="Nein; Verarbeitung in Deutschland beziehungsweise innerhalb der EU."
+          storage="Technische Protokolldaten werden für die Dauer von maximal 30 Tagen gespeichert und danach gelöscht."
+        />
+
+        <h2 id="cookies">Cookies</h2>
+        <h3>Allgemeine Informationen</h3>
+        <p>
+          Beim Besuch unserer Website können Informationen auf Ihrem Endgerät gespeichert oder aus
+          diesem ausgelesen werden. Dazu zählen Cookies sowie vergleichbare Techniken wie der lokale
+          Speicher Ihres Browsers. Wir setzen solche Techniken nur ein, soweit sie für den Betrieb
+          der Website und des Portals unbedingt erforderlich sind.
         </p>
         <p>
-          Wir nutzen Matomo für statistische Zwecke, zur Verbesserung unserer Seite und zur
-          Erkennung und Unterbindung von Missbrauch. Das Hosting für das Tool übernehmen wir selbst.
-          Matomo ist so konfiguriert, dass nur die folgenden technische Daten erfasst werden: Die
-          Website, von der aus Sie uns besuchen, die Seiten unserer Website, die Sie besuchen, das
-          Datum und die Dauer Ihres Besuchs, Ihre anonymisierte (also gekürzte) IP-Adresse und
-          einzelne Informationen über das von Ihnen verwendete Endgeräte (Gerätetyp, Betriebssystem,
-          Bildschirmauflösung, Sprache, Land, in dem Sie sich befinden, und Webbrowser-Typ). Der
-          Datensatz, anhand dessen zusammengehörige Seitenaufrufe anonymisiert gruppiert werden,
-          wird 30 Minuten nach Ende des Besuchs gelöscht.
-        </p>
-        <p>
-          Die Kombination der oben aufgeführten Datenpunkte dürfte nicht genügen, um einen
-          eindeutigen Bezug zu einer bestimmten Person herzustellen. Sie können trotzdem die
-          Verwendung von Matomo während Ihres Besuchs durch Abwahl des folgenden Hakens unterbinden:
-        </p>
-        <MatomoIframe />
-        <h2 id="youtube">YouTube</h2>
-        <h3>Allgemeine Information</h3>
-        <p>
-          Wir binden Videos auf unserer Plattform ein, die bei YouTube gespeichert sind. Diese sind
-          jedoch nicht automatisch verfügbar, sondern müssen erst durch aktive Bestätigung durch Sie
-          freigegeben werden. Dabei können personenbezogene Daten an Google übertragen werden,
-          beispielsweise Ihre IP-Adresse und weitere Nutzungsdaten.
-        </p>
-        <h3>Zweck der Verarbeitung</h3>
-        <p>
-          Der Zweck der Verarbeitung ist die Anzeige von Videos, die zum einen über das Angebot
-          informieren und zum anderen die Nutzung des Angebots erklären sollen.
+          Unbedingt erforderlich sind im internen Bereich ein Anmeldecookie zur Aufrechterhaltung
+          Ihrer Anmeldung (Speicherdauer: 7 Tage) sowie ein kurzlebiges Cookie zur
+          Zwischenspeicherung der Sitzungsdaten (Speicherdauer: 5 Minuten). Unser Webanalysedienst
+          Matomo setzt keine Cookies und greift nicht auf Informationen in Ihrem Endgerät zu;
+          Einzelheiten finden Sie im Abschnitt „Webanalyse“.
         </p>
         <h3>Rechtsgrundlage</h3>
         <p>
-          Die Rechtsgrundlage für die Datenverarbeitung ist Ihre Einwilligung gem. Art. 6 Abs. 1 S.
-          1 lit. a DSGVO.
+          Für unbedingt erforderliche Speicher- und Zugriffsvorgänge stützen wir uns auf § 25 Abs. 2
+          Nr. 2 TDDDG; die damit verbundene Verarbeitung personenbezogener Daten erfolgt auf
+          Grundlage unseres berechtigten Interesses gemäß Art. 6 Abs. 1 S. 1 lit. f DSGVO an einem
+          sicheren und funktionsfähigen Angebot. Einwilligungsbedürftige Cookies oder vergleichbare
+          Techniken setzen wir nicht ein.
+        </p>
+
+        <h2 id="analytics">Webanalyse</h2>
+        <p>
+          Zusätzlich zu den oben genannten Datenverarbeitungen nutzen wir ein Statistiksystem, das{" "}
+          <strong>ohne Cookies betrieben wird</strong> und Nutzungsdaten ausschließlich in gekürzter
+          Form verarbeitet, sodass ein Bezug zu Ihrer Person nach unserer Einschätzung nicht
+          hergestellt werden kann. Aus Fairness- und Transparenzgründen legen wir die entsprechenden
+          Details dennoch offen:
+        </p>
+        <p>
+          Wir nutzen Matomo für statistische Zwecke, zur Verbesserung unserer Seite und zur
+          Erkennung und Unterbindung von Missbrauch. Das Hosting für das Tool übernehmen wir selbst;
+          die Auswertung erfolgt auf unserer eigenen Infrastruktur, eine Übermittlung an den
+          Anbieter Matomo findet nicht statt. Matomo ist so konfiguriert, dass keine Cookies gesetzt
+          und keine vergleichbaren Kennungen auf Ihrem Endgerät gespeichert oder ausgelesen werden.
+          Erfasst werden nur die folgenden technischen Daten: die Website, von der aus Sie uns
+          besuchen, die Seiten unserer Website, die Sie besuchen, das Datum und die Dauer Ihres
+          Besuchs, Ihre anonymisierte (also gekürzte) IP-Adresse sowie einzelne Informationen über
+          das von Ihnen verwendete Endgerät (Gerätetyp, Betriebssystem, Bildschirmauflösung,
+          Sprache, Land, in dem Sie sich befinden, und Webbrowser-Typ). Der Datensatz, anhand dessen
+          zusammengehörige Seitenaufrufe anonymisiert gruppiert werden, wird 30 Minuten nach Ende
+          des Besuchs gelöscht.
+        </p>
+        <p>
+          Die Kombination der oben aufgeführten Datenpunkte dürfte nicht genügen, um einen
+          eindeutigen Bezug zu einer bestimmten Person herzustellen. Sie können der Erfassung durch
+          Matomo dennoch jederzeit widersprechen; Einzelheiten finden Sie unten im Abschnitt
+          „Widerspruch“.
+        </p>
+        <h3>Zweck der Verarbeitung</h3>
+        <p>
+          Die Verarbeitung dient der Erstellung von Nutzungsstatistiken, der bedarfsgerechten
+          Gestaltung und Verbesserung unseres Angebots sowie der Erkennung und Unterbindung von
+          Missbrauch.
+        </p>
+        <h3>Rechtsgrundlage</h3>
+        <p>
+          Rechtsgrundlage ist unser berechtigtes Interesse gemäß Art. 6 Abs. 1 S. 1 lit. f DSGVO an
+          einer statistischen Auswertung der Nutzung unseres Angebots. Da Matomo ohne Cookies
+          betrieben wird und keine Informationen auf Ihrem Endgerät gespeichert oder aus diesem
+          ausgelesen werden, ist eine Einwilligung nach § 25 Abs. 1 TDDDG nicht erforderlich.
         </p>
         <h3>Empfänger</h3>
         <p>
-          Google Cloud EMEA Limited, 70 Sir John Rogerson&lsquo;s Quay, Dublin 2, Irland. Weiter
-          Informationen erhalten Sie in der Datenschutzerklärung von Google:{" "}
-          <Link blank href="https://policies.google.com/privacy?hl=de">
-            policies.google.com/privacy
-          </Link>
+          Ein Empfänger im Sinne des Art. 4 Nr. 9 DSGVO besteht nicht, da wir Matomo selbst
+          betreiben. Die zugrunde liegenden Daten werden im Rahmen des Hostings und der
+          Datenspeicherung bei den im Abschnitt „Eingesetzte Dienste und Empfänger“ genannten
+          Auftragsverarbeitern IONOS SE und Amazon Web Services EMEA SARL gespeichert.
+        </p>
+        <h3>Drittlandübermittlung und Garantien</h3>
+        <p>
+          Nein; die Verarbeitung erfolgt in Deutschland beziehungsweise innerhalb der EU. Eine
+          Übermittlung an den Anbieter Matomo oder in ein Drittland findet nicht statt.
+        </p>
+        <h3>Speicherdauer</h3>
+        <p>Der Sitzungsdatensatz wird 30 Minuten nach Ende Ihres Besuchs gelöscht.</p>
+        <p>
+          Die zugrunde liegenden Rohdaten der Besuchsprotokolle löschen wir nach sechs Monaten;
+          darüber hinaus bewahren wir ausschließlich aggregierte Statistiken ohne Personenbezug auf.
+        </p>
+        <h3>Widerspruch</h3>
+        <p>
+          Sie haben jederzeit das Recht, der Verarbeitung aus Gründen, die sich aus Ihrer besonderen
+          Situation ergeben, gemäß Art. 21 Abs. 1 DSGVO zu widersprechen. Unabhängig davon können
+          Sie die Erfassung durch Matomo für Ihren Besuch jederzeit über die nachfolgende Auswahl
+          deaktivieren:
         </p>
 
         <h2 id="contact">Kontaktmöglichkeiten</h2>
         <h3>Allgemeine Informationen</h3>
         <p>
-          Über unsere Website weisen wir auf die Möglichkeit hin, uns per E-Mail zu kontaktieren.Im
+          Über unsere Website weisen wir auf die Möglichkeit hin, uns per E-Mail zu kontaktieren. Im
           Rahmen der Kontaktaufnahme und Beantwortung Ihrer Anfrage verarbeiten wir folgende
           personenbezogene Daten von Ihnen:
         </p>
@@ -355,7 +560,16 @@ export function PageDatenschutz() {
           Wenn Ihre Anfrage unabhängig von vertraglichen oder vorvertraglichen Maßnahmen erfolgt,
           stellen unsere überwiegenden berechtigten Interessen gem. Art. 6 Abs. 1 S. 1 lit. f DSGVO
           die Rechtsgrundlage dar. Das überwiegende berechtigte Interesse liegt in der
-          Notwendigkeit, geschäftliche Korrespondenz zu beantworten.
+          Notwendigkeit, geschäftliche Korrespondenz zu beantworten. Steht Ihre Anfrage im
+          Zusammenhang mit einem Vertrag oder mit vorvertraglichen Maßnahmen, ist Rechtsgrundlage
+          Art. 6 Abs. 1 S. 1 lit. b DSGVO.
+        </p>
+        <h3>Empfänger</h3>
+        <p>
+          Für den Betrieb unserer E-Mail-Infrastruktur setzen wir die Migadu-Mail GmbH ein;
+          Einzelheiten finden Sie im Abschnitt „Eingesetzte Dienste und Empfänger“. Eine Weitergabe
+          an weitere Empfänger findet nicht statt, soweit sie nicht zur Bearbeitung Ihrer Anfrage
+          erforderlich ist.
         </p>
         <h3>Speicherdauer</h3>
         <p>
@@ -424,42 +638,25 @@ export function PageDatenschutz() {
           In jedem Newsletter befindet sich daher ein entsprechender Opt-Out-Link. Zusätzlich
           besteht die Möglichkeit, sich jederzeit auch auf unserer Internetseite vom
           Newsletterversand abzumelden oder uns dies auf andere Weise mitzuteilen. Eine Abmeldung
-          vom Erhalt des Newsletters deuten wir automatisch als Widerruf oder Widerruf.
+          vom Erhalt des Newsletters deuten wir automatisch als Widerruf Ihrer Einwilligung
+          beziehungsweise als Widerspruch gegen die Verarbeitung.
         </p>
-        <h3>Empfänger personenbezogener Daten</h3>
-        <p>Wir setzen folgenden Dienstleister ein:</p>
-        <table>
-          <thead>
-            <tr>
-              <th>Anbieter</th>
-              <th>Anschrift</th>
-              <th>Drittland</th>
-              <th>Geeignete Garantie</th>
-              <th>Zweck</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th className="align-text-top">Mailjet GmbH</th>
-              <td>Alt-Moabit 2, 10557 Berlin, Germany</td>
-              <td>
-                Serverstandorte Frankfurt und Saint-Ghislain (Belgien). Ein ausnahmsweiser Zugriff
-                aus den USA kann nicht ausgeschlossen werden (z.B. zu Wartungszwecken oder
-                Fehlersuche).
-              </td>
-              <td>
-                Dennoch{" "}
-                <Link blank href="https://www.mailjet.com/de/rechtliches/av-vertrag/">
-                  Standard&shy;datenschutz&shy;klauseln abgeschlossen
-                </Link>
-              </td>
-              <td>
-                Versand von Newslettern, Durchführung des Double-Opt-Ins, Auswertung der
-                Öffnungsrate
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <p>
+          Den Nachweis Ihrer Einwilligung, also das Protokoll der Anmeldung und der Bestätigung im
+          Double-Opt-In-Verfahren, bewahren wir zur Erfüllung unserer Nachweispflichten bis zum
+          Ablauf des dritten Kalenderjahres nach Ihrem Widerruf beziehungsweise Ihrer Abmeldung auf
+          und löschen ihn anschließend.
+        </p>
+        <h3>Brevo GmbH (vormals Sendinblue GmbH)</h3>
+        <ServiceDetails
+          data="Bei der Nutzung des Dienstes werden folgende Daten verarbeitet: E-Mail-Adresse, gegebenenfalls Name, Anmeldezeitpunkt und IP-Adresse sowie Versand-, Zustell-, Öffnungs-, Klick- und Abmeldedaten"
+          purpose="Newsletterversand, Double-Opt-in sowie Auswertung von Zustellung, Öffnungen und angeklickten Links"
+          legalBasis="Die Verarbeitung erfolgt auf Grundlage Ihrer Einwilligung gemäß Art. 6 Abs. 1 Satz 1 lit. a DSGVO."
+          recipient="Brevo GmbH (vormals Sendinblue GmbH), Köpenicker Straße 126, 10179 Berlin, Deutschland"
+          thirdCountry="Ja, nicht auszuschließen; die Speicherung erfolgt innerhalb der EU, Drittlandzugriffe durch Unterauftragsverarbeiter können jedoch nicht vollständig ausgeschlossen werden. Auftragsverarbeitungsvertrag; bei Drittlandübermittlungen SCC gemäß Art. 46 DSGVO oder Angemessenheitsbeschluss gemäß Art. 45 DSGVO"
+          storage="Kontaktdaten bis zum Widerruf beziehungsweise zur Abmeldung; Ereignisprotokolle 24 Monate"
+        />
+
         <h2 id="rights">Ihre Rechte</h2>
         <h3>Recht auf Bestätigung</h3>
         <p>
@@ -522,10 +719,31 @@ export function PageDatenschutz() {
           Ihre Interessen, Rechte und Freiheiten überwiegen, oder die Verarbeitung dient der
           Geltendmachung, Ausübung oder Verteidigung von Rechtsansprüchen.
         </p>
+        <p>
+          Verarbeiten wir Ihre personenbezogenen Daten zum Zwecke der Direktwerbung, insbesondere
+          für den Versand unseres Newsletters, haben Sie gemäß Art. 21 Abs. 2 DSGVO das Recht,
+          dieser Verarbeitung jederzeit und ohne Angabe von Gründen zu widersprechen; wir werden
+          Ihre personenbezogenen Daten dann für diese Zwecke nicht mehr verarbeiten.
+        </p>
         <h3>Widerruf einer datenschutzrechtlichen Einwilligung</h3>
         <p>
           Sie haben das Recht, Ihre Einwilligung zur Verarbeitung personenbezogener Daten jederzeit
           mit Wirkung für die Zukunft zu widerrufen.
+        </p>
+        <h3>Erforderlichkeit der Bereitstellung Ihrer Daten</h3>
+        <p>
+          Die Bereitstellung Ihrer personenbezogenen Daten ist grundsätzlich weder gesetzlich noch
+          vertraglich vorgeschrieben. Für die Einrichtung und Nutzung eines Zugangs zum internen
+          Bereich sind die als Pflichtfeld gekennzeichneten Angaben jedoch erforderlich; ohne diese
+          Angaben können wir Ihnen keinen Zugang einrichten. Für die Beantwortung einer Anfrage
+          benötigen wir die zur Kontaktaufnahme erforderlichen Angaben, für den Versand des
+          Newsletters Ihre E-Mail-Adresse. Im Übrigen ist die Bereitstellung freiwillig und eine
+          Nichtbereitstellung hat für Sie keine Nachteile.
+        </p>
+        <h3>Keine automatisierte Entscheidungsfindung</h3>
+        <p>
+          Eine automatisierte Entscheidungsfindung einschließlich Profiling im Sinne des Art. 22
+          DSGVO findet nicht statt.
         </p>
         <h3>Beschwerde bei einer Aufsichtsbehörde</h3>
         <p>
@@ -538,16 +756,19 @@ export function PageDatenschutz() {
           können:
         </p>
         <p>
-          <strong>Berliner Beauftragte für Datenschutz und Informationsfreiheit</strong> <br />
+          <strong>Berliner Beauftragte für Datenschutz und Informationsfreiheit</strong>
+          <br />
           Anschrift: Alt-Moabit 60, 10555 Berlin
           <br />
           Tel.: <LinkTel>+49 30 13889-0</LinkTel>
           <br />
           E-Mail: <LinkMail>mailbox@datenschutz-berlin.de</LinkMail>
         </p>
+
         <h2 id="updates">Aktualität und Änderungen der Datenschutzhinweise</h2>
         <p>
-          Diese Datenschutzhinweise sind aktuell gültig und haben den folgenden Stand: Februar 2023.
+          Diese Datenschutzhinweise sind aktuell gültig und haben den folgenden Stand: September
+          2026.
         </p>
         <p>
           Wenn wir unsere Website und unsere Angebote weiterentwickeln oder sich gesetzliche oder

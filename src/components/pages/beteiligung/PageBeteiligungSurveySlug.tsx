@@ -1,14 +1,8 @@
 import type { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import SurveyInactivePage from "@/src/components/beteiligung/SurveyInactivePage"
-import { SurveyFRM7 } from "@/src/components/beteiligung/surveys/frm7/SurveyFRM7"
+import { SurveyMainPage } from "@/src/components/beteiligung/SurveyMainPage"
 import { SurveyOhvHaltestellenfoerderung } from "@/src/components/beteiligung/surveys/ohv-haltestellenfoerderung/SurveyOhvHaltestellenfoerderung"
 import { SurveyBB } from "@/src/components/beteiligung/surveys/radnetz-brandenbrug/SurveyBB"
-import { SurveyRadschnellverbindungenInfoFeedback } from "@/src/components/beteiligung/surveys/radschnellverbindungen-info-feedback/SurveyRadschnellverbindungenInfoFeedback"
-import { SurveyRS8 } from "@/src/components/beteiligung/surveys/rs8/SurveyRS8"
-import { SurveyRsTest123 } from "@/src/components/beteiligung/surveys/rstest-1-2-3/SurveyRsTest123"
-import { SurveyRsTest1 } from "@/src/components/beteiligung/surveys/rstest-1/SurveyRsTest1"
-import { SurveyRsTest23 } from "@/src/components/beteiligung/surveys/rstest-2-3/SurveyRsTest23"
-import { SurveyRsTest2 } from "@/src/components/beteiligung/surveys/rstest-2/SurveyRsTest2"
 import { Route } from "@/src/routes/beteiligung/$surveySlug/index"
 
 function SurveyBySlug({
@@ -18,26 +12,12 @@ function SurveyBySlug({
   surveySlug: AllowedSurveySlugs
   surveyId: number
 }) {
-  switch (surveySlug) {
-    case "frm7":
-      return <SurveyFRM7 surveyId={surveyId} />
-    case "rs8":
-      return <SurveyRS8 surveyId={surveyId} />
-    case "radnetz-brandenburg":
-      return <SurveyBB surveyId={surveyId} />
-    case "rstest-1-2-3":
-      return <SurveyRsTest123 surveyId={surveyId} />
-    case "rstest-2-3":
-      return <SurveyRsTest23 surveyId={surveyId} />
-    case "rstest-2":
-      return <SurveyRsTest2 surveyId={surveyId} />
-    case "rstest-1":
-      return <SurveyRsTest1 surveyId={surveyId} />
-    case "ohv-haltestellenfoerderung":
-      return <SurveyOhvHaltestellenfoerderung surveyId={surveyId} />
-    case "radschnellverbindungen-info-feedback":
-      return <SurveyRadschnellverbindungenInfoFeedback surveyId={surveyId} />
+  // Only surveys with custom page logic need a branch here. All others use SurveyMainPage.
+  if (surveySlug === "radnetz-brandenburg") return <SurveyBB surveyId={surveyId} />
+  if (surveySlug === "ohv-haltestellenfoerderung") {
+    return <SurveyOhvHaltestellenfoerderung surveyId={surveyId} />
   }
+  return <SurveyMainPage surveyId={surveyId} />
 }
 
 export function PageBeteiligungSurveySlug() {

@@ -1,4 +1,4 @@
-import { twJoin } from "tailwind-merge"
+import { twJoin, twMerge } from "tailwind-merge"
 import { actionButtonBase } from "@/src/components/core/components/buttons/actionButtonClasses"
 import {
   tableBodyClassName,
@@ -48,9 +48,13 @@ export const adminTableEditButtonClassName = twJoin(
 export const adminTablePrimaryButtonIconClassName = "-ml-0.5 shrink-0 [&_svg]:size-4"
 
 /** Icon-only destructive action for admin table rows. */
-export const adminTableDeleteButtonClassName = twJoin(
+export const adminTableDeleteButtonClassName = twMerge(
   actionButtonBase,
-  "size-8 shrink-0 text-gray-600 ring-1 ring-gray-300 hover:bg-red-50 hover:text-red-700 hover:ring-red-200 disabled:cursor-not-allowed disabled:opacity-50",
+  "size-8 shrink-0 text-gray-600 ring-1 ring-gray-300 hover:bg-red-50 hover:text-red-700 hover:ring-red-200 disabled:cursor-not-allowed disabled:opacity-50 sm:size-8",
 )
 
 export const adminTableActionsClassName = "flex items-center justify-end gap-2"
+
+/** Stacked list of boxes (e-mail templates, support documents, surveys): one border, no gaps. */
+export const adminStackedListClassName =
+  "list-none divide-y divide-gray-200 border border-gray-200 bg-white pl-0 [&>li]:p-4 [&>li:nth-child(even)]:bg-gray-50"

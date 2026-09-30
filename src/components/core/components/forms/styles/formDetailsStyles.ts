@@ -1,5 +1,5 @@
 /** Cancel FormShell / page content `p-4` so details borders span the full content width. */
-const formDetailsBleedXClassName = "-mx-4"
+export const formDetailsBleedXClassName = "-mx-4"
 
 /** Groups consecutive details with no gap and a single shared border. */
 export const formDetailsStackClassName = `${formDetailsBleedXClassName} divide-y divide-gray-200 border-y border-gray-200`

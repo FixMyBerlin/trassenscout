@@ -3,7 +3,6 @@ import db from "@/src/server/db.server"
 
 export const FORMER_MEMBER_PLACEHOLDER = "Ehemalige:r Mitarbeiter:in"
 export const FORMER_MEMBER_ADMIN_SUFFIX = " (kein Projektmitglied mehr)"
-/** Generic label for current members in record/upload attribution (serializeProjectAuthor, non-admin viewers). */
 export const ANONYMOUS_AUTHOR_PLACEHOLDER = "Projektmitglied"
 
 type UserToRedact = {
@@ -241,8 +240,8 @@ export function redactProjectRecordUsers<
   const serialized = {
     ...rest,
     author: serializeProjectUser(record.author, context),
-    updatedBy: serializeProjectAuthor(record.updatedBy, context),
-    reviewedBy: serializeProjectAuthor(record.reviewedBy, context),
+    updatedBy: serializeProjectUser(record.updatedBy, context),
+    reviewedBy: serializeProjectUser(record.reviewedBy, context),
     assignedTo: serializeProjectUser(record.assignedTo, context),
     ...("userId" in record ? { userId: redactAuthorUserId(record.userId, context) } : {}),
     ...("updatedById" in record
@@ -276,8 +275,8 @@ export function redactUploadUsers<
 >(upload: T, context: UserRedactionContext): WithSerializedUsers<T> {
   return {
     ...upload,
-    createdBy: serializeProjectAuthor(upload.createdBy, context),
-    updatedBy: serializeProjectAuthor(upload.updatedBy, context),
+    createdBy: serializeProjectUser(upload.createdBy, context),
+    updatedBy: serializeProjectUser(upload.updatedBy, context),
     createdById: redactAuthorUserId(upload.createdById, context),
     updatedById: redactAuthorUserId(upload.updatedById, context),
   } as unknown as WithSerializedUsers<T>

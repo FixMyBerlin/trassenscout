@@ -24,6 +24,7 @@ type Props<T extends string | number> = {
   onChange: (value: T | null) => void
   options: SelectListboxOption<T>[]
   placeholder?: string
+  disabled?: boolean
   className?: string
 }
 
@@ -32,16 +33,17 @@ export function SelectListbox<T extends string | number>({
   onChange,
   options,
   placeholder,
+  disabled,
   className,
 }: Props<T>) {
   const selectedOption = options.find((option) => option.value === value)
   const selectedLabel = selectedOption?.label ?? placeholder ?? ""
 
   return (
-    <Listbox value={value} onChange={onChange}>
+    <Listbox value={value} onChange={onChange} disabled={disabled}>
       {({ open }) => (
         <div className={twJoin("relative", className)}>
-          <ListboxButton className="relative w-full cursor-pointer rounded-md border border-gray-300 bg-white px-3 py-2 pr-10 text-left text-gray-900 shadow-xs focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-hidden focus:ring-inset sm:text-sm">
+          <ListboxButton className="relative w-full cursor-pointer rounded-md border border-gray-300 bg-white px-3 py-2 pr-10 text-left text-gray-900 shadow-xs focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-hidden focus:ring-inset data-disabled:cursor-not-allowed data-disabled:bg-gray-100 data-disabled:text-gray-400 sm:text-sm">
             <span className="block truncate" title={selectedLabel}>
               {selectedLabel}
             </span>

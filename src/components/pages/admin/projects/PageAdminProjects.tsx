@@ -73,9 +73,7 @@ export function PageAdminProjects() {
         isFiltering={isFiltering}
         hasActiveFilter={deferredProjectQuery.trim().length > 0}
       />
-      <div className={pageContentPaddingClassName}>
-        <AdminAlkisLandAcquisitionDemoTools />
-      </div>
+      <AdminAlkisLandAcquisitionDemoTools />
     </>
   )
 }

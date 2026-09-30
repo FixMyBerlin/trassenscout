@@ -18,7 +18,6 @@ import { Prettify } from "@/src/components/core/types"
 import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { formatBerlinTime } from "@/src/components/core/utils/formatBerlinTime"
 import { ProjectRecordTagsList } from "@/src/components/project-records/ProjectRecordTagsList"
-import { isAdmin } from "@/src/components/shared/app/users/utils/isAdmin"
 import { IfUserCanEdit } from "@/src/components/shared/memberships/IfUserCan"
 import { DeleteUploadButton } from "@/src/components/uploads/DeleteUploadButton"
 import { useProjectUploadModal } from "@/src/components/uploads/ProjectUploadModalHost"
@@ -26,7 +25,6 @@ import { UploadPreviewClickable } from "@/src/components/uploads/UploadPreviewCl
 import { UploadVerknuepfungen } from "@/src/components/uploads/UploadVerknuepfungen"
 import { isPdf } from "@/src/components/uploads/utils/getFileType"
 import { uploadDownloadUrl, uploadUrl } from "@/src/components/uploads/utils/uploadUrl"
-import { useCurrentUser } from "@/src/components/user/useCurrentUser"
 import { getFilenameFromS3 } from "@/src/shared/uploads/url"
 import type { UploadEditLink, UploadTableUpload } from "./uploadTypes"
 
@@ -181,7 +179,6 @@ const UploadTableRow = ({
   onTagClick?: (tag: string) => void
 }) => {
   const hasLocation = upload.latitude !== null && upload.longitude !== null
-  const showCreatedBy = isAdmin(useCurrentUser())
   const projectUploadModal = useProjectUploadModal()
   const insideModal = useIsInsideModal()
   // When the table is nested in another modal we keep the whole upload flow
@@ -250,7 +247,7 @@ const UploadTableRow = ({
         <div className="whitespace-nowrap">
           {formatBerlinTime(upload.createdAt, "dd.MM.yyyy, HH:mm")}
         </div>
-        {showCreatedBy && upload.createdBy && (
+        {upload.createdBy && (
           <span className="inline-block max-w-[150px] truncate" title={authorLabel || undefined}>
             {authorLabel}
           </span>

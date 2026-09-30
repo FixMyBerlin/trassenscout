@@ -1,7 +1,10 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { Link } from "@tanstack/react-router"
 import { AdminBadge } from "@/src/components/admin/AdminBadge"
-import { adminTableEditButtonClassName } from "@/src/components/admin/adminListClasses"
+import {
+  adminStackedListClassName,
+  adminTableEditButtonClassName,
+} from "@/src/components/admin/adminListClasses"
 import { AdminPageHeader } from "@/src/components/admin/AdminPageHeader"
 import { emailTemplatesQueryOptions } from "@/src/server/emailTemplates/emailTemplatesQueryOptions"
 
@@ -11,12 +14,9 @@ export function PageAdminEmailTemplates() {
   return (
     <>
       <AdminPageHeader title="E-Mail-Templates" />
-      <ul className="list-none space-y-6 pl-0">
-        {templates.map((template, index) => (
-          <li
-            key={template.key}
-            className={`rounded-lg border border-gray-200 p-4 ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}
-          >
+      <ul className={adminStackedListClassName}>
+        {templates.map((template) => (
+          <li key={template.key}>
             <div className="flex items-start justify-between gap-4">
               <h2 className="mt-1 font-semibold">{template.name}</h2>
               <AdminBadge variant={template.source === "db" ? "blue" : "gray"}>

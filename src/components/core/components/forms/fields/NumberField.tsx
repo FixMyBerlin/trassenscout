@@ -6,7 +6,7 @@ import { useFieldContext } from "@/src/components/core/components/forms/hooks/fo
 import { useFieldDisabled } from "@/src/components/core/components/forms/hooks/useFormHydrated"
 
 export type NumberFieldProps = {
-  label: string
+  label: ReactNode
   help?: string
   optional?: boolean
   attention?: boolean
@@ -30,6 +30,7 @@ export function NumberField({
   outerProps,
   labelProps,
   onKeyDown,
+  onWheel,
   ...props
 }: NumberFieldProps) {
   const field = useFieldContext<string | number | null>()
@@ -41,6 +42,12 @@ export function NumberField({
       e.preventDefault()
     }
     onKeyDown?.(e)
+  }
+
+  // A focused number input turns the mouse wheel into value changes and swallows the page scroll.
+  const handleWheel = (e: React.WheelEvent<HTMLInputElement>) => {
+    if (document.activeElement === e.currentTarget) e.currentTarget.blur()
+    onWheel?.(e)
   }
 
   const input = (
@@ -59,6 +66,7 @@ export function NumberField({
         onChange={(e) => field.handleChange(e.target.value)}
         onBlur={field.handleBlur}
         onKeyDown={handleKeyDown}
+        onWheel={handleWheel}
         className={twJoin(
           inlineLeadingAddon ? "pl-12" : "",
           "block w-full appearance-none rounded-md border border-gray-200 px-3 py-2 placeholder-gray-400 shadow-xs focus:outline-hidden sm:text-sm",

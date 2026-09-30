@@ -154,10 +154,6 @@ function buildAdminProjectNavigation(projectSlug: string) {
       external: true,
     },
     {
-      name: adminProjectNavName("Projekt", "Planungsabschnitte"),
-      link: projectNavLink("/admin/projects/$projectSlug/subsections", projectSlug),
-    },
-    {
       name: adminProjectNavName("Projekt", "Protokolleinträge"),
       link: projectNavLink("/$projectSlug/project-records", projectSlug),
       external: true,

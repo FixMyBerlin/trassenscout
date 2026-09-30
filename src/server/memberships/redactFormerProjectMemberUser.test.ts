@@ -6,6 +6,8 @@ import {
   formerMemberFk,
   redactAuthorUserId,
   redactCommentAuthor,
+  redactProjectRecordUsers,
+  redactUploadUsers,
   serializeProjectAuthor,
   serializeProjectUser,
 } from "./redactFormerProjectMemberUser.server"
@@ -229,5 +231,30 @@ describe("redactCommentAuthor", () => {
     expect(result.userId).toBe(1)
     expect(result.isOwnComment).toBe(false)
     expect(result.author).toEqual({ id: 1, firstName: "Ada", lastName: "Lovelace" })
+  })
+})
+
+describe("record and upload attribution", () => {
+  const context = { memberUserIds, isAdmin: false, sessionUserId }
+  const member = { id: 1, firstName: "Ada", lastName: "Lovelace" }
+  const former = { id: 9, firstName: "Former", lastName: "Member" }
+
+  test("names current members and anonymises former ones for non-admins", () => {
+    const record = redactProjectRecordUsers({ updatedBy: member, reviewedBy: former }, context)
+    const upload = redactUploadUsers({ createdBy: member, updatedBy: former }, context)
+
+    expect(record.updatedBy).toEqual({ id: 1, firstName: "Ada", lastName: "Lovelace" })
+    expect(record.reviewedBy).toEqual({ firstName: FORMER_MEMBER_PLACEHOLDER, lastName: "" })
+    expect(upload.createdBy).toEqual({ id: 1, firstName: "Ada", lastName: "Lovelace" })
+    expect(upload.updatedBy).toEqual({ firstName: FORMER_MEMBER_PLACEHOLDER, lastName: "" })
+  })
+
+  test("shows admins the former member's name with the hint", () => {
+    const upload = redactUploadUsers({ createdBy: former }, { ...context, isAdmin: true })
+
+    expect(upload.createdBy).toEqual({
+      firstName: "Former",
+      lastName: `Member${FORMER_MEMBER_ADMIN_SUFFIX}`,
+    })
   })
 })
