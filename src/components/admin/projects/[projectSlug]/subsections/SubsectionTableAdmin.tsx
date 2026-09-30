@@ -8,8 +8,6 @@ import {
   AdminTableEditLink,
   AdminTableExternalLink,
 } from "@/src/components/admin/AdminTableActions"
-import { ButtonWrapper } from "@/src/components/core/components/links/ButtonWrapper"
-import { Link } from "@/src/components/core/components/links/Link"
 import { SubsectionIcon } from "@/src/components/core/components/Map/Icons/SubsectionIcon"
 import {
   tableBodyClassName,
@@ -71,7 +69,7 @@ export const SubsectionTableAdmin = ({ projectSlug }: Props) => {
         </p>
       )}
 
-      <TableWrapper withTopBorder>
+      <TableWrapper>
         <table className={tableClassName}>
           <thead>
             <tr className={tableHeadRowClassName}>
@@ -162,16 +160,6 @@ export const SubsectionTableAdmin = ({ projectSlug }: Props) => {
 
         {!subsections.length && <ZeroCase small visible name="Planungsabschnitte" />}
       </TableWrapper>
-
-      <ButtonWrapper className="mt-5">
-        <Link
-          icon="plus"
-          button="blue"
-          to={`/admin/projects/${projectSlug}/subsections/multiple-new`}
-        >
-          Mehrere Planungsabschnitte erstellen
-        </Link>
-      </ButtonWrapper>
     </section>
   )
 }

@@ -45,7 +45,7 @@ export const AdminAlkisLandAcquisitionDemoTools = () => {
   }
 
   return (
-    <section className="my-8 rounded-sm border border-amber-200 bg-amber-50 p-5">
+    <section className="border border-t-0 border-amber-200 bg-amber-50 p-5">
       <h2 className="text-lg font-semibold text-gray-900">ALKIS-Demoprojekte (Staging / Seed)</h2>
       <p className="mt-2 max-w-2xl text-sm text-gray-700">
         Legt die fünf Bundesland-Demo-Projekte idempotent an (Projekt, Abschnitt alkis-demo) oder

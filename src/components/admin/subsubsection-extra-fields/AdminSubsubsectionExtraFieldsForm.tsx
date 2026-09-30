@@ -1,3 +1,4 @@
+import { Field, Label } from "@headlessui/react"
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/16/solid"
 import { PencilIcon } from "@heroicons/react/24/outline"
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
@@ -23,6 +24,8 @@ import {
 } from "@/src/components/core/components/buttons/buttonStyles"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
+import { SelectListbox } from "@/src/components/core/components/forms/SelectListbox"
+import { formDetailsBleedXClassName } from "@/src/components/core/components/forms/styles/formDetailsStyles"
 import {
   applyFormSubmitResult,
   type OnSubmitResult,
@@ -67,12 +70,6 @@ type ModalState = { mode: "closed" } | { mode: "add" } | { mode: "edit"; index: 
 function normalizeOrders(definitions: SubsubsectionExtraFieldDefinition[]) {
   return definitions.map((definition, index) => ({ ...definition, order: index }))
 }
-
-const importSelectClassName = twJoin(
-  "rounded-md border border-gray-300 bg-white px-3 py-2.5 text-sm shadow-xs",
-  "focus:border-blue-500 focus:ring-blue-500 focus:outline-hidden",
-  "disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400",
-)
 
 function formatImportProjectLabel(project: {
   projectSlug: string
@@ -145,7 +142,7 @@ export function AdminSubsubsectionExtraFieldsForm({
       submitText={submitText}
       submitDisabled={submitDisabled}
       backLink={null}
-      className={className ?? "max-w-4xl"}
+      className={className}
     >
       <p className="text-sm text-gray-600">
         Definieren Sie optionale Textfelder für Maßnahmen in diesem Projekt. Die Reihenfolge
@@ -155,7 +152,7 @@ export function AdminSubsubsectionExtraFieldsForm({
       <form.Subscribe selector={(state) => state.values.definitions}>
         {(definitions) => (
           <>
-            <TableWrapper withTopBorder>
+            <TableWrapper withTopBorder className={twJoin(formDetailsBleedXClassName, "w-auto")}>
               <table className={adminTableClassName}>
                 <thead className="bg-gray-50">
                   <tr>
@@ -238,35 +235,31 @@ export function AdminSubsubsectionExtraFieldsForm({
                 {linkIcons.plus}
                 Feld hinzufügen
               </button>
-              <div className="flex flex-col gap-1">
-                <label htmlFor="import-extra-fields" className="text-sm font-medium text-gray-700">
+              <Field className="flex flex-col gap-1">
+                <Label className="text-sm font-medium text-gray-700">
                   Von anderem Projekt übernehmen
-                </label>
-                <select
-                  id="import-extra-fields"
-                  className={importSelectClassName}
-                  value={importSelectValue}
+                </Label>
+                <SelectListbox
+                  className="min-w-64"
+                  value={importSelectValue || null}
+                  placeholder="Projekt auswählen …"
                   disabled={importableProjects.length === 0}
-                  onChange={(event) => {
-                    const sourceSlug = event.target.value
-                    setImportSelectValue(sourceSlug)
+                  options={importableProjects.map((project) => ({
+                    value: project.projectSlug,
+                    label: formatImportProjectLabel(project),
+                  }))}
+                  onChange={(sourceSlug) => {
+                    setImportSelectValue(sourceSlug ?? "")
                     if (!sourceSlug) return
                     void handleImportFromProject(sourceSlug)
                   }}
-                >
-                  <option value="">Projekt auswählen …</option>
-                  {importableProjects.map((project) => (
-                    <option key={project.projectSlug} value={project.projectSlug}>
-                      {formatImportProjectLabel(project)}
-                    </option>
-                  ))}
-                </select>
+                />
                 {importableProjects.length === 0 && (
                   <p className="text-sm text-gray-500">
                     Kein anderes Projekt mit definierten Feldern vorhanden.
                   </p>
                 )}
-              </div>
+              </Field>
             </ButtonWrapper>
 
             {modalState.mode !== "closed" && (
