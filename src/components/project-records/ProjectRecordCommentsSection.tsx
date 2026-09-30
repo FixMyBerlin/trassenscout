@@ -61,6 +61,7 @@ export const ProjectRecordCommentsSection = ({ projectRecord }: Props) => {
                   <CommentField
                     comment={comment}
                     commentLabel="Anmerkung"
+                    projectSlug={projectSlug}
                     mutateComment={{
                       update: async (body) => {
                         await updateProjectRecordCommentMutation.mutateAsync({

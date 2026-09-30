@@ -545,6 +545,34 @@ export async function getProjectRecord(
   return redactProjectRecordUsers(record, redactionContext)
 }
 
+async function assertViewerOwnsUnattachedUploads({
+  projectId,
+  userId,
+  uploadIds,
+}: {
+  projectId: number
+  userId: number
+  uploadIds: number[]
+}) {
+  if (uploadIds.length === 0) return
+
+  const ownUnattachedCount = await db.upload.count({
+    where: {
+      id: { in: uploadIds },
+      projectId,
+      createdById: userId,
+      surveyResponseId: null,
+      projectRecordEmailId: null,
+      projectRecords: { none: {} },
+      subsubsections: { none: {} },
+      acquisitionAreas: { none: {} },
+    },
+  })
+  if (ownUnattachedCount !== new Set(uploadIds).size) {
+    throw new AuthorizationError()
+  }
+}
+
 export async function createProjectRecord(
   headers: Headers,
   input: z.infer<typeof CreateProjectRecordBySlugSchema>,
@@ -557,9 +585,12 @@ export async function createProjectRecord(
   const { projectSlug, ...data } = input
   const canEdit = membershipRole === null || editorRoles.includes(membershipRole)
 
-  // A viewer attaches documents from the saved record (see `createUpload`), never on create.
-  if (!canEdit && idsFromFormValue(data.uploads).length > 0) {
-    throw new AuthorizationError()
+  if (!canEdit) {
+    await assertViewerOwnsUnattachedUploads({
+      projectId,
+      userId: Number(session.userId),
+      uploadIds: idsFromFormValue(data.uploads),
+    })
   }
 
   if (data.assignedToId != null) {

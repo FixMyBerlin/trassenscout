@@ -4,6 +4,7 @@ import {
   getProjectRecordTemplatesByProjectFn,
   getProjectRecordTemplatesFn,
   getTagsAdminFn,
+  getUploadsAdminFn,
 } from "./projectRecordTemplates.functions"
 import type { ProjectRecordTemplatesByProjectInput } from "./projectRecordTemplates.server"
 
@@ -34,5 +35,12 @@ export function tagsAdminQueryOptions() {
   return queryOptions({
     queryKey: ["tags", "admin"],
     queryFn: () => getTagsAdminFn({ data: {} }),
+  })
+}
+
+export function uploadsAdminQueryOptions(projectIds: number[]) {
+  return queryOptions({
+    queryKey: ["uploads", "admin", projectIds],
+    queryFn: () => getUploadsAdminFn({ data: { projectIds } }),
   })
 }

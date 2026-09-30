@@ -268,7 +268,9 @@ export async function getSurveyResponses(
       operator: true,
       surveyResponseComments: {
         include: {
-          author: { select: { id: true, firstName: true, institution: true, lastName: true } },
+          author: {
+            select: { id: true, role: true, firstName: true, institution: true, lastName: true },
+          },
         },
         orderBy: { id: "asc" },
       },
@@ -315,7 +317,9 @@ export async function getSurveyResponse(
       operator: true,
       surveyResponseComments: {
         include: {
-          author: { select: { id: true, firstName: true, institution: true, lastName: true } },
+          author: {
+            select: { id: true, role: true, firstName: true, institution: true, lastName: true },
+          },
         },
         orderBy: { id: "asc" },
       },

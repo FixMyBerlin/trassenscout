@@ -24,6 +24,8 @@ import {
   inviteStatusClassNames,
   inviteStatusLabels,
 } from "@/src/components/invites/inviteStatusDisplay"
+import { isAdmin } from "@/src/components/shared/app/users/utils/isAdmin"
+import { useCurrentUser } from "@/src/components/user/useCurrentUser"
 import { InviteStatusEnum } from "@/src/prisma/generated/browser"
 import { revokeInviteFn } from "@/src/server/invites/invites.functions"
 import { INVITE_DAYS_TO_DELETION } from "@/src/server/invites/inviteSettings.const"
@@ -52,6 +54,8 @@ export const TeamInvitesTable = ({ canEdit, invites, projectSlug }: Props) => {
   const queryClient = useQueryClient()
   const revokeMutation = useMutation({ mutationFn: revokeInviteFn })
   const currentDate = endOfDay(new Date())
+  // Non-admins only get the placeholder "Projektmitglied" here, so the column tells them nothing.
+  const showInviter = isAdmin(useCurrentUser())
 
   const handleRevoke = async (inviteId: number) => {
     await revokeMutation.mutateAsync({ data: { inviteId, projectSlug } })
@@ -76,7 +80,7 @@ export const TeamInvitesTable = ({ canEdit, invites, projectSlug }: Props) => {
               <col className={teamInvitesTableColWidths.status} />
               <col className={teamInvitesTableColWidths.email} />
               <col className={teamInvitesTableColWidths.role} />
-              <col className={teamInvitesTableColWidths.inviter} />
+              {showInviter && <col className={teamInvitesTableColWidths.inviter} />}
               <col className={teamInvitesTableColWidths.date} />
               <col className={teamInvitesTableColWidths.validity} />
               {canEdit && <col className={teamInvitesTableColWidths.actions} />}
@@ -92,9 +96,14 @@ export const TeamInvitesTable = ({ canEdit, invites, projectSlug }: Props) => {
                 <th scope="col" className={tableHeadCellClassName}>
                   Rechte
                 </th>
-                <th scope="col" className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}>
-                  Einladung von
-                </th>
+                {showInviter && (
+                  <th
+                    scope="col"
+                    className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}
+                  >
+                    Einladung von
+                  </th>
+                )}
                 <th scope="col" className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}>
                   Datum
                 </th>
@@ -123,9 +132,13 @@ export const TeamInvitesTable = ({ canEdit, invites, projectSlug }: Props) => {
                   <td className={twJoin(tableCellClassName, "align-middle whitespace-nowrap")}>
                     {roleTranslation[invite.role]}
                   </td>
-                  <td className={twJoin("hidden align-middle @xl:table-cell", tableCellClassName)}>
-                    {getFullnameWithInstitution(invite.inviter) || "—"}
-                  </td>
+                  {showInviter && (
+                    <td
+                      className={twJoin("hidden align-middle @xl:table-cell", tableCellClassName)}
+                    >
+                      {getFullnameWithInstitution(invite.inviter) || "—"}
+                    </td>
+                  )}
                   <td className={twJoin("hidden align-middle @xl:table-cell", tableCellClassName)}>
                     {format(new Date(invite.updatedAt), "Pp", { locale: de })}
                   </td>

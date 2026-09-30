@@ -67,6 +67,7 @@ function ProjectLogEntriesSection() {
         months={search.months}
         showProject
         withTopBorder
+        modalsInPlace={false}
         fallback={<LoadingHint>Projekt-Änderungen werden geladen…</LoadingHint>}
         emptyText="Keine Einträge für diese Auswahl."
       />

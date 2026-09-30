@@ -213,6 +213,7 @@ const EditableSurveyResponseListItem = ({
                     <CommentField
                       comment={comment}
                       commentLabel={commentLabel}
+                      projectSlug={projectSlug}
                       mutateComment={{
                         update: async (body) => {
                           await updateSurveyResponseCommentMutation.mutateAsync({

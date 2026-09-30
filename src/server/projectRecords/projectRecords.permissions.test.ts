@@ -22,6 +22,10 @@ const mockDb = {
     create: vi.fn(),
     findFirstOrThrow: vi.fn(),
   },
+  upload: {
+    count: vi.fn(),
+    findMany: vi.fn().mockResolvedValue([]),
+  },
 }
 
 const mockEndpointAuth = {
@@ -154,11 +158,30 @@ describe("viewer project record permissions", () => {
     )
   })
 
-  test("rejects uploads a viewer attaches on create", async () => {
+  test("lets a viewer attach their own unattached uploads on create", async () => {
     const { createProjectRecord } = await import("./projectRecords.server")
+    mockDb.upload.count.mockResolvedValueOnce(2)
+    mockDb.upload.findMany.mockResolvedValueOnce([{ id: 7 }, { id: 8 }])
+
+    await createProjectRecord(headers, { ...newRecordInput, uploads: [7, 8] })
+
+    expect(mockDb.upload.count).toHaveBeenCalledWith({
+      where: expect.objectContaining({
+        id: { in: [7, 8] },
+        projectId: 1,
+        createdById: 2,
+        projectRecords: { none: {} },
+      }),
+    })
+    expect(mockDb.projectRecord.create).toHaveBeenCalled()
+  })
+
+  test("rejects uploads a viewer did not upload or that are already attached", async () => {
+    const { createProjectRecord } = await import("./projectRecords.server")
+    mockDb.upload.count.mockResolvedValueOnce(1)
 
     await expect(
-      createProjectRecord(headers, { ...newRecordInput, uploads: [7] }),
+      createProjectRecord(headers, { ...newRecordInput, uploads: [7, 8] }),
     ).rejects.toBeInstanceOf(AuthorizationError)
 
     expect(mockDb.projectRecord.create).not.toHaveBeenCalled()

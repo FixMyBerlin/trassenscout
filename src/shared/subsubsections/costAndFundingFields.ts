@@ -64,20 +64,28 @@ function round2(value: number) {
   return Math.round(value * 100) / 100
 }
 
+type GrantCostInput = Partial<Record<CostStructureFieldName | GrantDeductionFieldName, unknown>>
+
 /**
- * Zuwendung = max(0, Summe Kostenstruktur − Abzüge) × GRANT_RATE.
+ * Zuwendungsfähige Kosten = max(0, Summe Kostenstruktur − Abzüge).
  * Returns null when no cost structure is entered. Empty deductions count as 0.
+ * `nonEligibleExpenses` is in the sum and in the deductions, so it drops out of this base once.
  */
-export function calculateGrantAmount(
-  values: Partial<Record<CostStructureFieldName | GrantDeductionFieldName, unknown>>,
-): number | null {
+export function calculateEligibleGrantCosts(values: GrantCostInput): number | null {
   const sum = sumCostStructure(values)
   if (sum === null) return null
   const deductions = grantDeductionFieldNames.reduce(
     (total, name) => total + (enteredCost(values[name]) ?? 0),
     0,
   )
-  return round2(Math.max(0, sum - deductions) * GRANT_RATE)
+  return round2(Math.max(0, sum - deductions))
+}
+
+/** Zuwendung = zuwendungsfähige Kosten × GRANT_RATE. */
+export function calculateGrantAmount(values: GrantCostInput): number | null {
+  const eligible = calculateEligibleGrantCosts(values)
+  if (eligible === null) return null
+  return round2(eligible * GRANT_RATE)
 }
 
 /** Eigenmittel = Summe Kostenstruktur − Zuwendung. */

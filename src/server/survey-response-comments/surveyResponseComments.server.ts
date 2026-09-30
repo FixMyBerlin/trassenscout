@@ -1,6 +1,7 @@
 import { z } from "zod"
 import { frenchQuote } from "@/src/components/core/components/text/quote"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
+import { canModifyComment } from "@/src/server/authorization/canModifyComment.server"
 import { viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
@@ -25,6 +26,7 @@ export const DeleteSurveyResponseCommentSchema = ProjectSlugRequiredSchema.exten
 
 const commentAuthorSelect = {
   id: true,
+  role: true,
   firstName: true,
   institution: true,
   lastName: true,
@@ -97,7 +99,6 @@ export async function updateSurveyResponseComment(
     input.projectSlug,
     viewerRoles,
   )
-  const canEditAnyComment = membershipRole === null || membershipRole === "EDITOR"
   const previous = await db.surveyResponseComment.findFirstOrThrow({
     where: commentInProjectWhere(input.projectSlug, input.id),
     select: {
@@ -117,7 +118,13 @@ export async function updateSurveyResponseComment(
     },
   })
 
-  if (!canEditAnyComment && previous.userId !== Number(session.userId)) {
+  const canModify = await canModifyComment({
+    membershipRole,
+    sessionUserId: Number(session.userId),
+    commentUserId: previous.userId,
+    projectId: previous.surveyResponse.surveySession.survey.projectId,
+  })
+  if (!canModify) {
     throw new AuthorizationError()
   }
 
@@ -157,7 +164,6 @@ export async function deleteSurveyResponseComment(
     input.projectSlug,
     viewerRoles,
   )
-  const canDeleteAnyComment = membershipRole === null || membershipRole === "EDITOR"
   const previous = await db.surveyResponseComment.findFirstOrThrow({
     where: commentInProjectWhere(input.projectSlug, input.id),
     select: {
@@ -176,7 +182,13 @@ export async function deleteSurveyResponseComment(
     },
   })
 
-  if (!canDeleteAnyComment && previous.userId !== Number(session.userId)) {
+  const canModify = await canModifyComment({
+    membershipRole,
+    sessionUserId: Number(session.userId),
+    commentUserId: previous.userId,
+    projectId: previous.surveyResponse.surveySession.survey.projectId,
+  })
+  if (!canModify) {
     throw new AuthorizationError()
   }
 

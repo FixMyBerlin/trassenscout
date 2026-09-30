@@ -195,7 +195,10 @@ export function serializeProjectAuthor(
   }
 }
 
-export type RedactedComment<T> = WithSerializedUsers<T> & { isOwnComment: boolean }
+export type RedactedComment<T> = WithSerializedUsers<T> & {
+  isOwnComment: boolean
+  isFormerMemberComment: boolean
+}
 
 /** Comments use serializeProjectUser so project viewers see member names; record attribution stays anonymous. */
 export function redactCommentAuthor<
@@ -210,6 +213,10 @@ export function redactCommentAuthor<
     author: serializeProjectUser(comment.author, context),
     ...("userId" in comment ? { userId: formerMemberFk(userId, context) } : {}),
     isOwnComment: userId === context.sessionUserId,
+    isFormerMemberComment:
+      userId != null &&
+      isFormerProjectMember(userId, context) &&
+      comment.author?.role !== UserRoleEnum.ADMIN,
   } as unknown as RedactedComment<T>
 }
 

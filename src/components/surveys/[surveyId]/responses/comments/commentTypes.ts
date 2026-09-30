@@ -7,6 +7,7 @@ export type RedactedCommentView = {
   createdAt: Date
   updatedAt: Date
   isOwnComment?: boolean
+  isFormerMemberComment?: boolean
   author?: ProjectUserDto | null
   userId?: number | null
 }

@@ -5,6 +5,7 @@ import { editorRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
 import { toCursorPage } from "@/src/server/utils/cursorPage.server"
 import { GetLogEntriesSchema, type LogEntriesCursorSchema } from "./logEntries.inputSchemas"
+import { logEntryTarget, logEntryTargetSelect, type LogEntryTargetSource } from "./logEntryTarget"
 
 const logEntryInclude = {
   user: {
@@ -78,31 +79,35 @@ function olderThanCursor(cursor: LogEntriesCursor) {
 function logEntrySelect(isAdmin: boolean) {
   return {
     ...logEntryBaseSelect,
+    ...logEntryTargetSelect,
     project: { select: { slug: true } },
     ...(isAdmin ? { changes: true, user: logEntryInclude.user } : {}),
   }
 }
 
-function toLogEntryRow(entry: {
-  id: number
-  action: LogLevelActionEnum
-  message: string | null
-  createdAt: Date
-  project: { slug: string } | null
-  changes?: Prisma.JsonValue
-  user?: {
+function toLogEntryRow(
+  entry: LogEntryTargetSource & {
     id: number
-    firstName: string
-    lastName: string
-    institution: string | null
-  } | null
-}) {
+    action: LogLevelActionEnum
+    message: string | null
+    createdAt: Date
+    project: { slug: string } | null
+    changes?: Prisma.JsonValue
+    user?: {
+      id: number
+      firstName: string
+      lastName: string
+      institution: string | null
+    } | null
+  },
+) {
   return {
     id: entry.id,
     action: entry.action,
     message: entry.message,
     createdAt: entry.createdAt,
     projectSlug: entry.project?.slug ?? null,
+    target: logEntryTarget(entry),
     changes: "changes" in entry ? (entry.changes ?? null) : null,
     user: "user" in entry ? (entry.user ?? null) : null,
   }

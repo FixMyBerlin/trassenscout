@@ -5,6 +5,9 @@ const mockDb = {
   membership: {
     findMany: vi.fn().mockResolvedValue([{ userId: 2 }]),
   },
+  user: {
+    findUnique: vi.fn(),
+  },
   projectRecord: {
     findFirstOrThrow: vi.fn(),
   },
@@ -178,7 +181,12 @@ describe("viewer comment permissions", () => {
     expect(result).toEqual({ count: 1 })
     expect(mockEndpointAuth.projectRole).toHaveBeenCalledWith(headers, "rs8", ["VIEWER", "EDITOR"])
     expect(mockDb.surveyResponseComment.deleteMany).toHaveBeenCalledWith({
-      where: { id: 4, surveyResponse: { surveySession: { survey: { project: { slug: "rs8" } } } } },
+      where: {
+        id: 4,
+        surveyResponse: {
+          surveySession: { survey: { project: { slug: "rs8" } } },
+        },
+      },
     })
   })
 
@@ -201,7 +209,10 @@ describe("viewer comment permissions", () => {
   test("rejects viewer updates for comments from other users", async () => {
     const { updateSurveyResponseComment } =
       await import("./survey-response-comments/surveyResponseComments.server")
-    mockDb.surveyResponseComment.findFirstOrThrow.mockResolvedValueOnce({ id: 4, userId: 99 })
+    mockDb.surveyResponseComment.findFirstOrThrow.mockResolvedValueOnce({
+      ...ownSurveyResponseComment,
+      userId: 99,
+    })
 
     await expect(
       updateSurveyResponseComment(headers, {
@@ -219,8 +230,14 @@ describe("viewer comment permissions", () => {
       await import("./project-record-comments/projectRecordComments.server")
     const { deleteSurveyResponseComment } =
       await import("./survey-response-comments/surveyResponseComments.server")
-    mockDb.projectRecordComment.findFirstOrThrow.mockResolvedValueOnce({ id: 3, userId: 99 })
-    mockDb.surveyResponseComment.findFirstOrThrow.mockResolvedValueOnce({ id: 4, userId: 99 })
+    mockDb.projectRecordComment.findFirstOrThrow.mockResolvedValueOnce({
+      ...ownProjectRecordComment,
+      userId: 99,
+    })
+    mockDb.surveyResponseComment.findFirstOrThrow.mockResolvedValueOnce({
+      ...ownSurveyResponseComment,
+      userId: 99,
+    })
 
     await expect(
       deleteProjectRecordComment(headers, {
@@ -239,6 +256,25 @@ describe("viewer comment permissions", () => {
     expect(mockDb.surveyResponseComment.deleteMany).not.toHaveBeenCalled()
   })
 
+  test("rejects viewer updates for comments from former members", async () => {
+    const { updateProjectRecordComment } =
+      await import("./project-record-comments/projectRecordComments.server")
+    mockDb.projectRecordComment.findFirstOrThrow.mockResolvedValueOnce({
+      ...ownProjectRecordComment,
+      userId: 99,
+    })
+
+    await expect(
+      updateProjectRecordComment(headers, {
+        projectSlug: "rs8",
+        id: 3,
+        body: "Nicht erlaubt",
+      }),
+    ).rejects.toBeInstanceOf(AuthorizationError)
+    expect(mockDb.user.findUnique).not.toHaveBeenCalled()
+    expect(mockDb.projectRecordComment.update).not.toHaveBeenCalled()
+  })
+
   test("returns the deleteMany count for project record comments", async () => {
     const { deleteProjectRecordComment } =
       await import("./project-record-comments/projectRecordComments.server")
@@ -250,5 +286,138 @@ describe("viewer comment permissions", () => {
     })
 
     expect(result).toEqual({ count: 0 })
+  })
+})
+
+describe("editor and admin comment permissions", () => {
+  const otherUserProjectRecordComment = {
+    ...ownProjectRecordComment,
+    userId: 99,
+  }
+  const otherUserSurveyResponseComment = {
+    ...ownSurveyResponseComment,
+    userId: 99,
+  }
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockDb.user.findUnique.mockReset()
+    mockDb.projectRecordComment.findFirstOrThrow.mockReset()
+    mockDb.surveyResponseComment.findFirstOrThrow.mockReset()
+    mockEndpointAuth.projectRole.mockResolvedValue({
+      projectId: 1,
+      membershipRole: "EDITOR",
+      session: { userId: 2, role: "USER" },
+    })
+    mockDb.projectRecordComment.findFirstOrThrow.mockResolvedValue(otherUserProjectRecordComment)
+    mockDb.projectRecordComment.deleteMany.mockResolvedValue({ count: 1 })
+    mockDb.projectRecordComment.update.mockResolvedValue({
+      id: 3,
+      body: "Geändert",
+      userId: 99,
+    })
+    mockDb.surveyResponseComment.findFirstOrThrow.mockResolvedValue(otherUserSurveyResponseComment)
+    mockDb.surveyResponseComment.deleteMany.mockResolvedValue({ count: 1 })
+    mockDb.surveyResponseComment.update.mockResolvedValue({
+      id: 4,
+      body: "Geändert",
+      userId: 99,
+    })
+  })
+
+  test("rejects editor updates and deletes for comments of current members", async () => {
+    const { updateProjectRecordComment, deleteProjectRecordComment } =
+      await import("./project-record-comments/projectRecordComments.server")
+    const { updateSurveyResponseComment, deleteSurveyResponseComment } =
+      await import("./survey-response-comments/surveyResponseComments.server")
+    mockDb.user.findUnique.mockResolvedValue({ role: "USER", memberships: [{ id: 7 }] })
+
+    await expect(
+      updateProjectRecordComment(headers, {
+        projectSlug: "rs8",
+        id: 3,
+        body: "x",
+      }),
+    ).rejects.toBeInstanceOf(AuthorizationError)
+    await expect(
+      deleteProjectRecordComment(headers, { projectSlug: "rs8", id: 3 }),
+    ).rejects.toBeInstanceOf(AuthorizationError)
+    await expect(
+      updateSurveyResponseComment(headers, {
+        projectSlug: "rs8",
+        id: 4,
+        body: "x",
+      }),
+    ).rejects.toBeInstanceOf(AuthorizationError)
+    await expect(
+      deleteSurveyResponseComment(headers, { projectSlug: "rs8", id: 4 }),
+    ).rejects.toBeInstanceOf(AuthorizationError)
+
+    expect(mockDb.user.findUnique).toHaveBeenCalledWith({
+      where: { id: 99 },
+      select: { role: true, memberships: { where: { projectId: 1 }, select: { id: true } } },
+    })
+    expect(mockDb.projectRecordComment.update).not.toHaveBeenCalled()
+    expect(mockDb.projectRecordComment.deleteMany).not.toHaveBeenCalled()
+    expect(mockDb.surveyResponseComment.update).not.toHaveBeenCalled()
+    expect(mockDb.surveyResponseComment.deleteMany).not.toHaveBeenCalled()
+  })
+
+  test("allows editors to update and delete comments of former members", async () => {
+    const { updateProjectRecordComment, deleteProjectRecordComment } =
+      await import("./project-record-comments/projectRecordComments.server")
+    const { updateSurveyResponseComment, deleteSurveyResponseComment } =
+      await import("./survey-response-comments/surveyResponseComments.server")
+    mockDb.user.findUnique.mockResolvedValue({ role: "USER", memberships: [] })
+
+    await updateProjectRecordComment(headers, {
+      projectSlug: "rs8",
+      id: 3,
+      body: "Geändert",
+    })
+    await deleteProjectRecordComment(headers, { projectSlug: "rs8", id: 3 })
+    await updateSurveyResponseComment(headers, {
+      projectSlug: "rs8",
+      id: 4,
+      body: "Geändert",
+    })
+    await deleteSurveyResponseComment(headers, { projectSlug: "rs8", id: 4 })
+
+    expect(mockDb.projectRecordComment.update).toHaveBeenCalled()
+    expect(mockDb.projectRecordComment.deleteMany).toHaveBeenCalled()
+    expect(mockDb.surveyResponseComment.update).toHaveBeenCalled()
+    expect(mockDb.surveyResponseComment.deleteMany).toHaveBeenCalled()
+  })
+
+  test("rejects editor updates for comments of global admins without membership", async () => {
+    const { updateProjectRecordComment } =
+      await import("./project-record-comments/projectRecordComments.server")
+    mockDb.user.findUnique.mockResolvedValue({ role: "ADMIN", memberships: [] })
+
+    await expect(
+      updateProjectRecordComment(headers, { projectSlug: "rs8", id: 3, body: "x" }),
+    ).rejects.toBeInstanceOf(AuthorizationError)
+    expect(mockDb.projectRecordComment.update).not.toHaveBeenCalled()
+  })
+
+  test("allows admins to update and delete any comment without a membership lookup", async () => {
+    const { updateProjectRecordComment, deleteProjectRecordComment } =
+      await import("./project-record-comments/projectRecordComments.server")
+    mockEndpointAuth.projectRole.mockResolvedValue({
+      projectId: 1,
+      membershipRole: null,
+      session: { userId: 1, role: "ADMIN" },
+    })
+
+    await updateProjectRecordComment(headers, {
+      projectSlug: "rs8",
+      id: 3,
+      body: "Geändert",
+    })
+    await deleteProjectRecordComment(headers, { projectSlug: "rs8", id: 3 })
+
+    expect(mockDb.user.findUnique).not.toHaveBeenCalled()
+    expect(mockDb.projectRecordComment.update).toHaveBeenCalled()
+    expect(mockDb.projectRecordComment.deleteMany).toHaveBeenCalled()
   })
 })

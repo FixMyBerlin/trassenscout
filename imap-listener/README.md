@@ -19,6 +19,16 @@ Long-running Node.js Service, der ein IMAP-Postfach überwacht und neue E-Mails 
 - Fehlen diese Ordner, startet der Listener nicht korrekt (Startup-Check schlägt fehl).
 - Bei neuen Mailadressen/Postfächern (z.B. dev/staging/prod) die beiden Ordner immer zuerst anlegen.
 
+## Aufbewahrung (Retention)
+
+Aus Datenschutzgründen werden **alle** Mails, die älter als 24 Monate sind, endgültig gelöscht – in **jedem** Ordner des Postfachs (auch `DONE`, `ERROR`, `Trash`, `Junk`, `Sent`, `Archive`) und unabhängig davon, ob sie verarbeitet wurden.
+
+- Läuft beim Start und danach alle 24 Stunden ([`src/helpers/retention.ts`](./src/helpers/retention.ts)).
+- Maßgeblich ist das Ankunftsdatum auf dem Server (IMAP `BEFORE`), nicht der `Date:`-Header des Absenders.
+- Geloggt werden nur Ordnername und Anzahl, nie Inhalte.
+- Die Werte (24 Monate, Batchgröße) stehen in [`src/helpers/constants.ts`](./src/helpers/constants.ts).
+- Löscht nur im Postfach, nicht in der Datenbank (`ProjectRecordEmail`).
+
 ## Konfiguration
 
 **Deploy:** `IMAP_*` and `TS_API_KEY` come from GitHub (see [`.github/env/deploy.manifest.json`](../.github/env/deploy.manifest.json)) and land in the server root `.env` via the deploy workflow.

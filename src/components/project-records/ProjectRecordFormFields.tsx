@@ -15,10 +15,13 @@ import {
 import { ProjectRecordFormTemplatesField } from "@/src/components/project-records/ProjectRecordFormTemplatesField"
 import { ProjectRecordFormTemplatesPreview } from "@/src/components/project-records/ProjectRecordFormTemplatesPreview"
 import {
+  ProjectRecordTemplateUploadsList,
+  useProjectRecordTemplateUploads,
+} from "@/src/components/project-records/ProjectRecordTemplateUploads"
+import {
   formatAcquisitionAreaRelationOptionLabel,
   formatSubsubsectionRelationOptionLabel,
 } from "@/src/components/project-records/ProjectRelationLinks"
-import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { getUserComboboxItems } from "@/src/components/shared/app/users/utils/getUserSelectOptions"
 import { TagsFormSection } from "@/src/components/tags/TagsFormSection"
 import { ProjectUploadDropzone } from "@/src/components/uploads/ProjectUploadDropzone"
@@ -28,6 +31,7 @@ import { projectUsersQueryOptions } from "@/src/server/memberships/projectUsersQ
 import { subsubsectionsQueryOptions } from "@/src/server/subsubsections/subsubsectionsQueryOptions"
 import { uploadsQueryOptions } from "@/src/server/uploads/uploadsQueryOptions"
 import { currentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
+import { FORM_TEMPLATES_HIDDEN } from "@/src/shared/formTemplates/formTemplatesHidden"
 
 type Props = {
   formMode?: "create" | "edit"
@@ -51,7 +55,6 @@ export const ProjectRecordFormFields = ({
   disableSuspenseQueries: _disableSuspenseQueries = false,
 }: Props) => {
   const form = useCoreAppFormContext()
-  const canEditUploads = useUserCan(projectSlug).edit
   const queryBehavior = {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
@@ -73,6 +76,8 @@ export const ProjectRecordFormFields = ({
   const { data: currentUser } = useQuery({ ...currentUserQueryOptions(), ...queryBehavior })
   const { trackSessionUploads } = useSessionUploadCleanup({ projectSlug })
   const uploadsValue = useFormValue("uploads")
+  const projectRecordTemplateId = Number(useFormValue("projectRecordTemplateId")) || null
+  const templateUploads = useProjectRecordTemplateUploads(projectSlug, projectRecordTemplateId)
 
   const uploadIds = NumberArraySchema.parse(uploadsValue)
 
@@ -161,43 +166,43 @@ export const ProjectRecordFormFields = ({
         {emailSource && splitView && <ProjectRecordEmailSource email={emailSource} />}
       </div>
 
-      {isCreateMode && (
+      {!FORM_TEMPLATES_HIDDEN && isCreateMode && (
         <ProjectRecordFormTemplatesPreview
           projectSlug={projectSlug}
           landAcquisitionModuleEnabled={landAcquisitionModuleEnabled}
         />
       )}
-      <ProjectRecordFormTemplatesField projectSlug={projectSlug} />
+      {!FORM_TEMPLATES_HIDDEN && <ProjectRecordFormTemplatesField projectSlug={projectSlug} />}
+      {templateUploads.length > 0 && (
+        <FieldLayout label="Dokumente zum Herunterladen">
+          <ProjectRecordTemplateUploadsList projectSlug={projectSlug} uploads={templateUploads} />
+        </FieldLayout>
+      )}
 
       <FieldLayout label="Dokumente">
-        {canEditUploads ? (
-          <div className="flex flex-col gap-2">
-            <UploadTable
-              projectSlug={projectSlug}
-              withAction={false}
-              withRelations={false}
-              uploads={selectedUploads}
-              onDelete={async (uploadId) => {
-                const existingUploads = NumberArraySchema.parse(uploadsValue)
-                const newUploads = existingUploads.filter((id) => id !== uploadId)
-                form.setFieldValue("uploads", newUploads)
-              }}
-            />
-            <ProjectUploadDropzone
-              projectSlug={projectSlug}
-              onUploadComplete={async (newUploadIds: number[]) => {
-                trackSessionUploads(newUploadIds)
-                const existingUploads = NumberArraySchema.parse(uploadsValue)
-                const newUploads = [...new Set([...existingUploads, ...newUploadIds])]
-                form.setFieldValue("uploads", newUploads)
-              }}
-            />
-          </div>
-        ) : (
-          <p className="text-sm text-gray-500">
-            Dokumente können nach dem Speichern im Protokolleintrag ergänzt werden.
-          </p>
-        )}
+        <div className="flex flex-col gap-2">
+          <UploadTable
+            projectSlug={projectSlug}
+            withAction={false}
+            withRelations={false}
+            uploads={selectedUploads}
+            onDelete={async (uploadId) => {
+              const existingUploads = NumberArraySchema.parse(uploadsValue)
+              const newUploads = existingUploads.filter((id) => id !== uploadId)
+              form.setFieldValue("uploads", newUploads)
+            }}
+          />
+          <ProjectUploadDropzone
+            projectSlug={projectSlug}
+            forNewProjectRecord={formMode === "create"}
+            onUploadComplete={async (newUploadIds: number[]) => {
+              trackSessionUploads(newUploadIds)
+              const existingUploads = NumberArraySchema.parse(uploadsValue)
+              const newUploads = [...new Set([...existingUploads, ...newUploadIds])]
+              form.setFieldValue("uploads", newUploads)
+            }}
+          />
+        </div>
       </FieldLayout>
 
       <TagsFormSection

@@ -16,6 +16,7 @@ type ViewerUploadMetadata =
       surveySessionId: number
     }
   | { projectRecordId: number }
+  | { newProjectRecord: true }
 
 /** Payload for the optional public survey batch callback (Beteiligung only). */
 export type UploadDropzoneCompleteItem = {
