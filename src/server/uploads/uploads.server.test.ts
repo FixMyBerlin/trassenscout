@@ -229,7 +229,27 @@ describe("createUpload", () => {
     expect(mockDb.upload.create).not.toHaveBeenCalled()
   })
 
-  test("rejects viewer uploads with neither survey nor project record", async () => {
+  test("allows viewers to upload an unattached document for a new project record", async () => {
+    const { createUpload } = await import("./uploads.server")
+
+    await createUpload(headers, {
+      ...baseInput,
+      surveyResponseId: null,
+      projectRecords: [],
+    })
+
+    expect(mockDb.upload.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          projectId: 1,
+          surveyResponseId: null,
+          projectRecords: { connect: [] },
+        }),
+      }),
+    )
+  })
+
+  test("rejects unattached viewer uploads that set other relations", async () => {
     const { createUpload } = await import("./uploads.server")
 
     await expect(
@@ -237,6 +257,7 @@ describe("createUpload", () => {
         ...baseInput,
         surveyResponseId: null,
         projectRecords: [],
+        subsubsections: [5],
       }),
     ).rejects.toBeInstanceOf(AuthorizationError)
 

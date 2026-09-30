@@ -4,7 +4,9 @@ import { AuthorizationError } from "@/src/shared/auth/errors"
 const mockDb = {
   membership: {
     findMany: vi.fn().mockResolvedValue([{ userId: 2 }]),
-    findFirst: vi.fn(),
+  },
+  user: {
+    findUnique: vi.fn(),
   },
   projectRecord: {
     findFirstOrThrow: vi.fn(),
@@ -269,7 +271,7 @@ describe("viewer comment permissions", () => {
         body: "Nicht erlaubt",
       }),
     ).rejects.toBeInstanceOf(AuthorizationError)
-    expect(mockDb.membership.findFirst).not.toHaveBeenCalled()
+    expect(mockDb.user.findUnique).not.toHaveBeenCalled()
     expect(mockDb.projectRecordComment.update).not.toHaveBeenCalled()
   })
 
@@ -299,7 +301,7 @@ describe("editor and admin comment permissions", () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
-    mockDb.membership.findFirst.mockReset()
+    mockDb.user.findUnique.mockReset()
     mockDb.projectRecordComment.findFirstOrThrow.mockReset()
     mockDb.surveyResponseComment.findFirstOrThrow.mockReset()
     mockEndpointAuth.projectRole.mockResolvedValue({
@@ -328,7 +330,7 @@ describe("editor and admin comment permissions", () => {
       await import("./project-record-comments/projectRecordComments.server")
     const { updateSurveyResponseComment, deleteSurveyResponseComment } =
       await import("./survey-response-comments/surveyResponseComments.server")
-    mockDb.membership.findFirst.mockResolvedValue({ id: 7 })
+    mockDb.user.findUnique.mockResolvedValue({ role: "USER", memberships: [{ id: 7 }] })
 
     await expect(
       updateProjectRecordComment(headers, {
@@ -351,9 +353,9 @@ describe("editor and admin comment permissions", () => {
       deleteSurveyResponseComment(headers, { projectSlug: "rs8", id: 4 }),
     ).rejects.toBeInstanceOf(AuthorizationError)
 
-    expect(mockDb.membership.findFirst).toHaveBeenCalledWith({
-      where: { projectId: 1, userId: 99 },
-      select: { id: true },
+    expect(mockDb.user.findUnique).toHaveBeenCalledWith({
+      where: { id: 99 },
+      select: { role: true, memberships: { where: { projectId: 1 }, select: { id: true } } },
     })
     expect(mockDb.projectRecordComment.update).not.toHaveBeenCalled()
     expect(mockDb.projectRecordComment.deleteMany).not.toHaveBeenCalled()
@@ -366,7 +368,7 @@ describe("editor and admin comment permissions", () => {
       await import("./project-record-comments/projectRecordComments.server")
     const { updateSurveyResponseComment, deleteSurveyResponseComment } =
       await import("./survey-response-comments/surveyResponseComments.server")
-    mockDb.membership.findFirst.mockResolvedValue(null)
+    mockDb.user.findUnique.mockResolvedValue({ role: "USER", memberships: [] })
 
     await updateProjectRecordComment(headers, {
       projectSlug: "rs8",
@@ -387,6 +389,17 @@ describe("editor and admin comment permissions", () => {
     expect(mockDb.surveyResponseComment.deleteMany).toHaveBeenCalled()
   })
 
+  test("rejects editor updates for comments of global admins without membership", async () => {
+    const { updateProjectRecordComment } =
+      await import("./project-record-comments/projectRecordComments.server")
+    mockDb.user.findUnique.mockResolvedValue({ role: "ADMIN", memberships: [] })
+
+    await expect(
+      updateProjectRecordComment(headers, { projectSlug: "rs8", id: 3, body: "x" }),
+    ).rejects.toBeInstanceOf(AuthorizationError)
+    expect(mockDb.projectRecordComment.update).not.toHaveBeenCalled()
+  })
+
   test("allows admins to update and delete any comment without a membership lookup", async () => {
     const { updateProjectRecordComment, deleteProjectRecordComment } =
       await import("./project-record-comments/projectRecordComments.server")
@@ -403,7 +416,7 @@ describe("editor and admin comment permissions", () => {
     })
     await deleteProjectRecordComment(headers, { projectSlug: "rs8", id: 3 })
 
-    expect(mockDb.membership.findFirst).not.toHaveBeenCalled()
+    expect(mockDb.user.findUnique).not.toHaveBeenCalled()
     expect(mockDb.projectRecordComment.update).toHaveBeenCalled()
     expect(mockDb.projectRecordComment.deleteMany).toHaveBeenCalled()
   })

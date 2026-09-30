@@ -1,3 +1,4 @@
+import { UserRoleEnum } from "@/src/prisma/generated/browser"
 import db from "@/src/server/db.server"
 import type { MembershipRole } from "./types"
 
@@ -17,9 +18,11 @@ export async function canModifyComment({
   if (commentUserId === sessionUserId) return true
   if (membershipRole !== "EDITOR") return false
 
-  const authorMembership = await db.membership.findFirst({
-    where: { projectId, userId: commentUserId },
-    select: { id: true },
+  const author = await db.user.findUnique({
+    where: { id: commentUserId },
+    select: { role: true, memberships: { where: { projectId }, select: { id: true } } },
   })
-  return authorMembership === null
+  // Global admins may comment without a membership; they are not former members.
+  if (!author || author.role === UserRoleEnum.ADMIN) return false
+  return author.memberships.length === 0
 }

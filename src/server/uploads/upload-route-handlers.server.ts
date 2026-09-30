@@ -77,6 +77,7 @@ const ViewerUploadContextSchema = z.union([
     projectRecordId: z.coerce.number().int().positive(),
   }),
   ProjectSurveyResponseUploadParamsSchema,
+  z.object({ newProjectRecord: z.literal(true) }),
 ])
 
 async function verifyViewerUploadContext(
@@ -89,6 +90,8 @@ async function verifyViewerUploadContext(
   if (!params.success) {
     throw new RejectUpload("Missing or invalid viewer upload context")
   }
+
+  if ("newProjectRecord" in params.data) return
 
   if ("projectRecordId" in params.data) {
     const project = await db.project.findUnique({

@@ -15,6 +15,7 @@ import { FormModal } from "@/src/components/core/components/Modal/FormModal"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { ProjectRecordFormFields } from "@/src/components/project-records/ProjectRecordFormFields"
+import { useProjectRecordModal } from "@/src/components/project-records/ProjectRecordModalHost"
 import { getDate } from "@/src/components/project-records/utils/splitStartAt"
 import { ProjectRecordEditingState } from "@/src/prisma/generated/browser"
 import { createProjectRecordFn } from "@/src/server/projectRecords/projectRecords.functions"
@@ -107,6 +108,7 @@ export const ProjectRecordNewModal = ({
   initialValues,
 }: Props) => {
   const createProjectRecordMutation = useMutation({ mutationFn: createProjectRecordFn })
+  const { openProjectRecordDetail } = useProjectRecordModal()
   const { data: templates = [] } = useQuery(
     projectRecordTemplatesByProjectQueryOptions({ projectSlug }),
   )
@@ -158,6 +160,10 @@ export const ProjectRecordNewModal = ({
         await onSuccess(projectRecord.id)
       }
       resetAndClose()
+      openProjectRecordDetail({
+        projectRecordId: projectRecord.id,
+        previewProjectRecord: { id: projectRecord.id, title: projectRecord.title },
+      })
     } catch (error: unknown) {
       return improveErrorMessage(error, FORM_ERROR, [])
     }

@@ -211,8 +211,12 @@ function assertViewerCreateUploadAllowed(input: UploadInput) {
     projectRecordIds.length === 1 &&
     input.surveyResponseId == null &&
     viewerCreateUploadHasNoExtraFields(input)
+  const isUnattached =
+    projectRecordIds.length === 0 &&
+    input.surveyResponseId == null &&
+    viewerCreateUploadHasNoExtraFields(input)
 
-  if (!isSurveyOnly && !isProjectRecordOnly) {
+  if (!isSurveyOnly && !isProjectRecordOnly && !isUnattached) {
     throw new AuthorizationError()
   }
 }
@@ -698,12 +702,18 @@ export async function deleteUploadIfOrphan(
   headers: Headers,
   input: z.infer<typeof DeleteUploadSchema>,
 ) {
-  const { session } = await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
+  const { membershipRole, session } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    viewerRoles,
+  )
+  const canEdit = membershipRole === null || editorRoles.includes(membershipRole)
   const upload = await db.upload.findFirstOrThrow({
     where: uploadInProjectWhere(input.projectSlug, input.id),
     select: {
       id: true,
       title: true,
+      createdById: true,
       collaborationPath: true,
       collaborationUrl: true,
       externalUrl: true,
@@ -730,6 +740,10 @@ export async function deleteUploadIfOrphan(
 
   if (hasRelations) {
     return { deleted: false }
+  }
+
+  if (!canEdit && upload.createdById !== Number(session.userId)) {
+    throw new AuthorizationError()
   }
 
   await deleteUploadFileAndDbRecord(upload)

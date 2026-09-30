@@ -206,6 +206,20 @@ describe("redactCommentAuthor", () => {
     })
   })
 
+  test("does not flag comments of global admins without membership as former-member comments", () => {
+    const result = redactCommentAuthor(
+      {
+        id: 14,
+        body: "Admin note",
+        userId: 9,
+        author: { id: 9, firstName: "Admin", lastName: "User", role: "ADMIN" },
+      },
+      { memberUserIds, isAdmin: false, sessionUserId },
+    )
+
+    expect(result.isFormerMemberComment).toBe(false)
+  })
+
   test("keeps userId for admins", () => {
     const result = redactCommentAuthor(
       { id: 12, body: "Admin view", userId: 1, author },

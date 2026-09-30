@@ -11,13 +11,14 @@ import { wasUpdated } from "./utils/wasUpdated"
 type Props = {
   comment: RedactedCommentView
   commentLabel: string
+  projectSlug: string
   mutateComment: {
     update: (body: string) => void
     remove: () => void
   }
 }
 
-export const CommentField = ({ comment, commentLabel, mutateComment }: Props) => {
+export const CommentField = ({ comment, commentLabel, projectSlug, mutateComment }: Props) => {
   const { author } = comment
   const authorLabel = getFullnameWithInstitution(author) || "Nutzer*in"
   return (
@@ -43,6 +44,7 @@ export const CommentField = ({ comment, commentLabel, mutateComment }: Props) =>
         <EditCommentForm
           comment={comment}
           commentLabel={commentLabel}
+          projectSlug={projectSlug}
           mutateComment={mutateComment}
         />
       </div>

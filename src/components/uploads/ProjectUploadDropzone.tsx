@@ -15,6 +15,7 @@ type Props = {
   projectRecordIds?: number[]
   surveyResponseId?: number
   surveySessionId?: number
+  forNewProjectRecord?: boolean
   onUploadComplete?: (uploadIds: number[]) => Promise<void>
   onFileRecordResult?: (result: UploadFileRecordResult) => void
   onUploadFail?: (failedFiles: FileUploadInfo<"failed">[]) => void
@@ -28,6 +29,7 @@ export const ProjectUploadDropzone = ({
   projectRecordIds,
   surveyResponseId,
   surveySessionId,
+  forNewProjectRecord,
   onUploadComplete,
   onFileRecordResult,
   onUploadFail,
@@ -58,7 +60,9 @@ export const ProjectUploadDropzone = ({
             ? { surveyResponseId, surveySessionId }
             : projectRecordIds?.[0]
               ? { projectRecordId: projectRecordIds[0] }
-              : undefined
+              : forNewProjectRecord
+                ? { newProjectRecord: true }
+                : undefined
         }
         createUploadRecord={createUploadRecord}
         onUploadComplete={onUploadComplete}

@@ -24,18 +24,19 @@ import type { RedactedCommentView } from "./commentTypes"
 type Props = {
   comment: RedactedCommentView & { body: string | null }
   commentLabel: string
+  projectSlug: string
   mutateComment: {
     update: (body: string) => void
     remove: () => void
   }
 }
 
-export const EditCommentForm = ({ comment, commentLabel, mutateComment }: Props) => {
+export const EditCommentForm = ({ comment, commentLabel, projectSlug, mutateComment }: Props) => {
   const [open, setOpen] = useState(false)
   const [isDirty, setIsDirty] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
   const user = useCurrentUser()
-  const userCanEditProject = useUserCan().edit
+  const userCanEditProject = useUserCan(projectSlug).edit
 
   const form = useAppForm({
     defaultValues: { ...commentBodyFormDefaultValues, body: comment.body ?? "" },

@@ -213,7 +213,10 @@ export function redactCommentAuthor<
     author: serializeProjectUser(comment.author, context),
     ...("userId" in comment ? { userId: formerMemberFk(userId, context) } : {}),
     isOwnComment: userId === context.sessionUserId,
-    isFormerMemberComment: userId != null && isFormerProjectMember(userId, context),
+    isFormerMemberComment:
+      userId != null &&
+      isFormerProjectMember(userId, context) &&
+      comment.author?.role !== UserRoleEnum.ADMIN,
   } as unknown as RedactedComment<T>
 }
 
