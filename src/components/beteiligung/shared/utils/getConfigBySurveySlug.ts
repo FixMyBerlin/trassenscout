@@ -13,30 +13,25 @@ import { formConfig as Test1Config } from "@/src/components/beteiligung/surveys/
 import { formConfig as Test23Config } from "@/src/components/beteiligung/surveys/rstest-2-3/config"
 import { formConfig as Test2Config } from "@/src/components/beteiligung/surveys/rstest-2/config"
 
+// New surveys: add one line here (and the slug in `allowedSurveySlugs.ts`).
+// See `src/components/beteiligung/surveys/AGENTS.md`.
+const surveyConfigs: Record<AllowedSurveySlugs, FormConfig> = {
+  frm7: FRM7Config,
+  "rstest-1-2-3": TestConfig,
+  "rstest-2-3": Test23Config,
+  "rstest-2": Test2Config,
+  "rstest-1": Test1Config,
+  rs8: RS8Config,
+  "radnetz-brandenburg": BBConfig,
+  "ohv-haltestellenfoerderung": SurveyOhvHaltestellenfoerderungConfig,
+  "radschnellverbindungen-info-feedback": SurveyRadschnellverbindungenInfoFeedbackConfig,
+}
+
 export const getConfigBySurveySlug = <K extends keyof FormConfig>(
   slug: AllowedSurveySlugs,
   part: K,
 ) => {
-  switch (slug) {
-    case "frm7":
-      return FRM7Config[part]
-    case "rstest-1-2-3":
-      return TestConfig[part]
-    case "rstest-2-3":
-      return Test23Config[part]
-    case "rstest-2":
-      return Test2Config[part]
-    case "rstest-1":
-      return Test1Config[part]
-    case "rs8":
-      return RS8Config[part]
-    case "radnetz-brandenburg":
-      return BBConfig[part]
-    case "ohv-haltestellenfoerderung":
-      return SurveyOhvHaltestellenfoerderungConfig[part]
-    case "radschnellverbindungen-info-feedback":
-      return SurveyRadschnellverbindungenInfoFeedbackConfig[part]
-  }
+  return surveyConfigs[slug][part]
 }
 
 export const getprogressBarDefinitionBySurveySlug = (slug: AllowedSurveySlugs, part: Stage) => {
