@@ -39,6 +39,21 @@ export type AdminProjectRecordTemplateFormProps<S extends z.ZodType> = {
   submitClassName?: string
 }
 
+const FormSection = ({
+  title,
+  first = false,
+  children,
+}: {
+  title: string
+  first?: boolean
+  children: ReactNode
+}) => (
+  <section className={first ? "space-y-6" : "space-y-6 border-t border-gray-200 pt-6"}>
+    <h2 className="text-base font-semibold text-gray-900">{title}</h2>
+    {children}
+  </section>
+)
+
 const toNumericIds = (value: unknown) => {
   if (!Array.isArray(value)) return []
   return value.map((entry) => Number(entry)).filter((entry) => Number.isInteger(entry) && entry > 0)
@@ -125,7 +140,7 @@ const UploadFields = () => {
     <form.AppField name="uploadIds">
       {(field) => (
         <field.Combobox
-          label="Dokumente (optional)"
+          label="Dokumente"
           optional
           help="Werden in Protokolleinträgen aus dieser Vorlage zum Herunterladen angezeigt. Nur Dokumente der gewählten Projekte."
           placeholder={selectedProjectIds.length ? "Dokument suchen…" : "Zuerst Projekte auswählen"}
@@ -258,21 +273,27 @@ export function AdminProjectRecordTemplateForm({
       submitClassName={submitClassName}
       backLink={null}
     >
-      <form.AppField name="templateTitle">
-        {(field) => <field.TextField type="text" label="Titel der Vorlage" />}
-      </form.AppField>
-      <form.AppField name="entryTitle">
-        {(field) => <field.TextField type="text" label="Titel in der Maßnahme " />}
-      </form.AppField>
-      <form.AppField name="body">
-        {(field) => <field.TextareaField label="Notizen" optional rows={12} />}
-      </form.AppField>
-      <ProjectAndTagFields />
-      <UploadFields />
-      <FormTemplateFields />
-      <form.AppField name="purpose">
-        {(field) => <field.TextareaField label="Verwendungszweck" optional rows={5} />}
-      </form.AppField>
+      <FormSection title="Inhalt" first>
+        <form.AppField name="templateTitle">
+          {(field) => <field.TextField type="text" label="Titel der Vorlage" />}
+        </form.AppField>
+        <form.AppField name="entryTitle">
+          {(field) => <field.TextField type="text" label="Titel in der Maßnahme " />}
+        </form.AppField>
+        <form.AppField name="body">
+          {(field) => <field.TextareaField label="Notizen" optional rows={12} />}
+        </form.AppField>
+        <form.AppField name="purpose">
+          {(field) => <field.TextareaField label="Verwendungszweck" optional rows={5} />}
+        </form.AppField>
+      </FormSection>
+      <FormSection title="Projekte und Tags">
+        <ProjectAndTagFields />
+      </FormSection>
+      <FormSection title="Dokumente und Formulare">
+        <UploadFields />
+        <FormTemplateFields />
+      </FormSection>
     </FormShell>
   )
 }
