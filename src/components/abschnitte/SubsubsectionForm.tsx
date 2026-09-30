@@ -1,19 +1,18 @@
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { ReactNode, Suspense, useState } from "react"
-import { twJoin } from "tailwind-merge"
 import { z } from "zod"
 import { LinkWithFormDirtyConfirm } from "@/src/components/abschnitte/LinkWithFormDirtyConfirm"
+import {
+  FundingResultRow,
+  recalculateFundingOnBasisBlur,
+  SubsubsectionFundingCalculation,
+  useFundingBaseline,
+} from "@/src/components/abschnitte/SubsubsectionFundingCalculation"
 import { SubsubsectionGeometryInput } from "@/src/components/abschnitte/SubsubsectionGeometryInput"
 import { lookupTableRows } from "@/src/components/abschnitte/utils/lookupTableRows"
 import { AdminBox } from "@/src/components/core/components/AdminBox/AdminBox"
-import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { FieldLayoutRightColumn } from "@/src/components/core/components/forms/FieldLayout"
-import {
-  fieldLayoutControlClassName,
-  fieldLayoutLabelClassName,
-  fieldLayoutRootClassName,
-} from "@/src/components/core/components/forms/fieldLayoutStyles"
 import { FormDetailsSummary } from "@/src/components/core/components/forms/FormDetailsSummary"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
@@ -29,7 +28,6 @@ import {
   type OnSubmitResult,
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { Spinner } from "@/src/components/core/components/Spinner"
-import { formattedEuro } from "@/src/components/core/components/text/formattedProperties"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { subsubsectionLocationLabelMap } from "@/src/components/core/utils/subsubsectionLocationLabelMap"
 import { getUserSelectOptions } from "@/src/components/shared/app/users/utils/getUserSelectOptions"
@@ -40,14 +38,10 @@ import { projectBySlugQueryOptions } from "@/src/server/projects/projectsQueryOp
 import { subsectionsQueryOptions } from "@/src/server/subsections/subsectionsQueryOptions"
 import { currentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
 import {
-  calculateGrantAmount,
-  calculateOwnFunds,
+  calculateRemainingFundingNeed,
   costStructureFieldNames,
-  deviatesFromCalculated,
   durationFieldNames,
-  expectedOwnFunds,
   fundingFieldNames,
-  GRANT_RATE,
   hasEnteredValue,
   sumCostStructure,
   trafficLoadFieldNames,
@@ -104,9 +98,14 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
   const [formError, setFormError] = useState<string | null>(null)
 
   const defaultValues = { ...subsubsectionFormDefaultValues, ...initialValues }
+  const fundingBaseline = useFundingBaseline(defaultValues as Record<string, unknown>)
   const form = useAppForm({
     defaultValues,
     validators: { onSubmit: schema } as never,
+    listeners: {
+      onBlur: ({ formApi, fieldApi }) =>
+        recalculateFundingOnBasisBlur(formApi as never, fieldApi.name, fundingBaseline),
+    },
     onSubmit: async ({ value }) => {
       const result = (await onSubmit(value as z.infer<S>)) || {}
       applyFormSubmitResult(form, result, setFormError)
@@ -547,14 +546,7 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
               )}
             </form.AppField>
             <form.Subscribe selector={(state) => sumCostStructure(state.values)}>
-              {(sum) => (
-                <div className={fieldLayoutRootClassName}>
-                  <p className={fieldLayoutLabelClassName}>Summe</p>
-                  <p className={`${fieldLayoutControlClassName} py-2 font-semibold sm:text-sm`}>
-                    {formattedEuro(sum)}
-                  </p>
-                </div>
-              )}
+              {(sum) => <FundingResultRow label="Summe der Kostenstruktur" value={sum} />}
             </form.Subscribe>
           </div>
         </details>
@@ -565,63 +557,9 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
         >
           <FormDetailsSummary>Finanzierung</FormDetailsSummary>
           <div className={formDetailsPanelClassName}>
-            <form.Subscribe
-              selector={(state) =>
-                deviatesFromCalculated(
-                  state.values.grantAmount,
-                  calculateGrantAmount(state.values),
-                ) || deviatesFromCalculated(state.values.ownFunds, expectedOwnFunds(state.values))
-              }
-            >
-              {(valuesChanged) => (
-                <>
-                  <form.AppField name="grantAmount">
-                    {(field) => (
-                      <field.NumberField
-                        inlineLeadingAddon="€"
-                        label={subsubsectionFieldTranslations.grantAmount}
-                        optional
-                        attention={valuesChanged}
-                        help={`${Math.round(GRANT_RATE * 100)} % der zuwendungsfähigen Kosten (Summe Kostenstruktur abzüglich nicht zuwendungsfähiger Ausgaben, anderer Förderprogramme, Erlöse und Beiträge Dritter). Eigenmittel werden als Differenz zur Kostenstruktur mitgesetzt.`}
-                        trailingControl={
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const values = field.form.state.values
-                              const grant = calculateGrantAmount(values)
-                              const sum = sumCostStructure(values)
-                              if (grant === null || sum === null) return
-                              field.handleChange(grant)
-                              field.form.setFieldValue("ownFunds", calculateOwnFunds(sum, grant))
-                            }}
-                            className={twJoin(primaryButtonClassName, "px-2! py-1!")}
-                          >
-                            Zuwendung berechnen
-                          </button>
-                        }
-                      />
-                    )}
-                  </form.AppField>
-                  <form.AppField name="ownFunds">
-                    {(field) => (
-                      <field.NumberField
-                        inlineLeadingAddon="€"
-                        label={subsubsectionFieldTranslations.ownFunds}
-                        optional
-                        attention={valuesChanged}
-                        note={
-                          valuesChanged ? (
-                            <small className="mt-1 block text-yellow-500">
-                              Die Werte entsprechen nicht mehr der Berechnung.
-                            </small>
-                          ) : undefined
-                        }
-                      />
-                    )}
-                  </form.AppField>
-                </>
-              )}
-            </form.Subscribe>
+            <p className="text-sm font-semibold text-gray-700">
+              Diese drei Eingaben bestimmen den verbleibenden Finanzierungsbedarf.
+            </p>
             <form.AppField name="grantsOtherFunding">
               {(field) => (
                 <field.NumberField
@@ -649,6 +587,15 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
                 />
               )}
             </form.AppField>
+            <form.Subscribe selector={(state) => calculateRemainingFundingNeed(state.values)}>
+              {(remaining) => (
+                <FundingResultRow label="Verbleibender Finanzierungsbedarf" value={remaining} />
+              )}
+            </form.Subscribe>
+            <SubsubsectionFundingCalculation
+              baseline={fundingBaseline.baseline}
+              onApply={fundingBaseline.setBaseline}
+            />
             <hr className="border-gray-200" />
             <form.AppField name="remainingFunding">
               {(field) => (

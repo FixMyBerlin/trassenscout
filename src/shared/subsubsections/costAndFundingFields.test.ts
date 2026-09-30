@@ -3,8 +3,9 @@ import {
   calculateEligibleGrantCosts,
   calculateGrantAmount,
   calculateOwnFunds,
+  calculateRemainingFundingNeed,
+  calculateSuggestedFunding,
   deviatesFromCalculated,
-  expectedOwnFunds,
   hasEnteredValue,
   sumCostStructure,
 } from "@/src/shared/subsubsections/costAndFundingFields"
@@ -77,17 +78,38 @@ describe("calculateGrantAmount", () => {
 })
 
 describe("calculateOwnFunds", () => {
-  it("is the cost sum minus the grant, rounded to cents", () => {
+  it("is the remaining funding need minus the grant, rounded to cents", () => {
     expect(calculateOwnFunds(150.5, 75.25)).toBe(75.25)
     expect(calculateOwnFunds(10.115, 0.01)).toBe(10.11)
   })
 })
 
-describe("expectedOwnFunds", () => {
-  it("returns null without costs and treats an empty grant as 0", () => {
-    expect(expectedOwnFunds({})).toBeNull()
-    expect(expectedOwnFunds({ planningCosts: 200 })).toBe(200)
-    expect(expectedOwnFunds({ planningCosts: 200, grantAmount: 80 })).toBe(120)
+describe("calculateRemainingFundingNeed", () => {
+  it("subtracts other programmes, revenues and third-party contributions from the cost sum", () => {
+    expect(calculateRemainingFundingNeed({})).toBeNull()
+    expect(
+      calculateRemainingFundingNeed({
+        planningCosts: 29677,
+        grantsOtherFunding: 1000,
+        revenuesEconomicIncome: 2000,
+        contributionsThirdParties: 1000,
+      }),
+    ).toBe(25677)
+  })
+})
+
+describe("calculateSuggestedFunding", () => {
+  it("pairs the calculated grant with own funds from the remaining funding need", () => {
+    expect(calculateSuggestedFunding({ grantsOtherFunding: 10 })).toBeNull()
+    expect(
+      calculateSuggestedFunding({
+        planningCosts: 28177,
+        nonEligibleExpenses: 1500,
+        grantsOtherFunding: 1000,
+        revenuesEconomicIncome: 2000,
+        contributionsThirdParties: 1000,
+      }),
+    ).toEqual({ grantAmount: 12088.5, ownFunds: 13588.5 })
   })
 })
 
