@@ -270,17 +270,19 @@ export const SubsubsectionMap = ({
   // Set selected state via setFeatureState when selection changes
   useEffect(
     function synchronizeSelectedSubsubsectionFeatureState() {
-      if (!mainMap || !mapLoaded) return
+      if (!mainMap || !mapLoaded || clusterMode) return
 
       const map = mainMap.getMap()
       const suffix = "_subsubsection"
       const unifiedSourceId = getUnifiedLayerId(suffix)
       const endPointsSourceId = getLineEndPointsLayerId(suffix)
+      const hasUnifiedSource = Boolean(map.getSource(unifiedSourceId))
+      const hasEndPointsSource = Boolean(map.getSource(endPointsSourceId))
       const lineEndPointFeatures = subsubsectionLineEndPoints.features
 
       // Reset all selected states first
       // All features in BaseMap are subsubsections (subsection features are handled by hulls)
-      if (unifiedSubsubsectionFeatures) {
+      if (hasUnifiedSource && unifiedSubsubsectionFeatures) {
         unifiedSubsubsectionFeatures.features.forEach((f) => {
           const featureId = f.properties?.featureId
           if (featureId) {
@@ -288,7 +290,7 @@ export const SubsubsectionMap = ({
           }
         })
       }
-      if (lineEndPointFeatures.length) {
+      if (hasEndPointsSource && lineEndPointFeatures.length) {
         lineEndPointFeatures.forEach((f) => {
           const featureId = f.properties?.featureId
           if (featureId) {
@@ -298,7 +300,7 @@ export const SubsubsectionMap = ({
       }
 
       // Set selected state for current selection (subsubsectionSlug uniquely identifies the subsubsection)
-      if (selectedSubsubsectionSlug && unifiedSubsubsectionFeatures) {
+      if (selectedSubsubsectionSlug && hasUnifiedSource && unifiedSubsubsectionFeatures) {
         const slug = selectedSubsubsectionSlug
 
         // Set selected on all unified features matching the slug
@@ -313,19 +315,22 @@ export const SubsubsectionMap = ({
         })
 
         // Set selected on line endpoints for this line
-        lineEndPointFeatures
-          .filter((ep) => ep.properties?.subsubsectionSlug === slug)
-          .forEach((ep) => {
-            const id = ep.properties?.featureId
-            if (id) {
-              map.setFeatureState({ source: endPointsSourceId, id }, { selected: true })
-            }
-          })
+        if (hasEndPointsSource) {
+          lineEndPointFeatures
+            .filter((ep) => ep.properties?.subsubsectionSlug === slug)
+            .forEach((ep) => {
+              const id = ep.properties?.featureId
+              if (id) {
+                map.setFeatureState({ source: endPointsSourceId, id }, { selected: true })
+              }
+            })
+        }
       }
     },
     [
       mainMap,
       mapLoaded,
+      clusterMode,
       selectedSubsubsectionSlug,
       unifiedSubsubsectionFeatures,
       subsubsectionLineEndPoints,

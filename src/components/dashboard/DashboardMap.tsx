@@ -15,16 +15,13 @@ import { projectDashboardGeometriesQueryOptions } from "@/src/server/projects/pr
 import type { ProjectsWithGeometryWithMembershipRole } from "@/src/server/projects/types"
 
 const DASHBOARD_LABEL_MIN_ZOOM = 5
-/** Overview of every project. maxZoom keeps a tight cluster of preview points from filling the map. */
-const DASHBOARD_FIT_BOUNDS_OPTIONS = { padding: 60, maxZoom: 8 }
+
+const DASHBOARD_FIT_PADDING = 60
+/** Overview only: keeps a tight cluster of preview points from filling the map. */
+const DASHBOARD_OVERVIEW_MAX_ZOOM = 8
 /**
- * Single-project focus. The project page fits an operator filter with 60px of padding;
- * the dashboard leaves about four times that around the project.
- */
-const DASHBOARD_PROJECT_FIT_PADDING = 60 * 4
-/**
- * Padding is capped at the shorter side divided by this. Clamping only against the viewport
- * itself leaves a sliver to fit the project into, and the map answers by showing the world.
+ * Safety net for a very short map: padding is capped at the shorter side divided by this.
+ * Clamping only against the viewport leaves a sliver to fit into, and maplibre shows the world.
  */
 const DASHBOARD_FIT_MAX_PADDING_DIVISOR = 5
 
@@ -143,9 +140,10 @@ export const DashboardMap = ({ projects, classHeight }: Props) => {
   const geometryBoundingBox = geometryBoundingBoxForProjects(projects, dashboardGeometries)
   const fitBoundingBox = geometryBoundingBox ?? boundingBox
   const framesOneProject = geometryBoundingBox != null && projects.length === 1
-  const fitBoundsOptions = framesOneProject
-    ? { padding: DASHBOARD_PROJECT_FIT_PADDING }
-    : DASHBOARD_FIT_BOUNDS_OPTIONS
+  const fitBoundsOptions = {
+    padding: DASHBOARD_FIT_PADDING,
+    ...(framesOneProject ? {} : { maxZoom: DASHBOARD_OVERVIEW_MAX_ZOOM }),
+  }
   const projectFilterKey = projects.map((project) => project.slug).join("\0")
   const lines = dashboardGeometries.lines.features.length ? dashboardGeometries.lines : undefined
   const polygons = dashboardGeometries.polygons.features.length
@@ -185,7 +183,7 @@ export const DashboardMap = ({ projects, classHeight }: Props) => {
         id="mainMap"
         initialViewState={{
           bounds: fitBoundingBox ?? boundingBox,
-          fitBoundsOptions: DASHBOARD_FIT_BOUNDS_OPTIONS,
+          fitBoundsOptions,
         }}
         onClick={handleClickMap}
         onLoad={handleLoad}
@@ -202,7 +200,7 @@ export const DashboardMap = ({ projects, classHeight }: Props) => {
           boundingBox={fitBoundingBox}
           projectFilterKey={projectFilterKey}
           padding={fitBoundsOptions.padding}
-          maxZoom={framesOneProject ? undefined : DASHBOARD_FIT_BOUNDS_OPTIONS.maxZoom}
+          maxZoom={fitBoundsOptions.maxZoom}
           userInteractedRef={userInteractedRef}
         />
         <ProjectMarkers projects={projects} dotMode={dotMode} onSelect={handleSelect} />
