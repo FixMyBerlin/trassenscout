@@ -1,4 +1,4 @@
-import type { ReactNode } from "react"
+import { Fragment, type ReactNode } from "react"
 import { twMerge } from "tailwind-merge"
 import { LinkMail } from "@/src/components/core/components/links/LinkMail"
 import { LinkTel } from "@/src/components/core/components/links/LinkTel"
@@ -17,7 +17,10 @@ type ServiceDetailsProps = {
   recipient: ReactNode
   thirdCountry: ReactNode
   storage: ReactNode
+  headingLevel?: 4 | 5
 }
+
+const serviceDetailLabelClassName = "mt-4 mb-0 text-base font-semibold first:mt-0"
 
 const ServiceDetails = ({
   data,
@@ -26,22 +29,29 @@ const ServiceDetails = ({
   recipient,
   thirdCountry,
   storage,
-}: ServiceDetailsProps) => (
-  <dl className="[&_dd]:mt-1 [&_dd]:ps-0 [&_dt]:mt-4 [&_dt]:first:mt-0">
-    <dt>Allgemeine Informationen</dt>
-    <dd>{data}</dd>
-    <dt>Zweck der Verarbeitung</dt>
-    <dd>{purpose}</dd>
-    <dt>Rechtsgrundlage</dt>
-    <dd>{legalBasis}</dd>
-    <dt>Empfänger</dt>
-    <dd>{recipient}</dd>
-    <dt>Drittlandübermittlung und Garantien</dt>
-    <dd>{thirdCountry}</dd>
-    <dt>Speicherdauer</dt>
-    <dd>{storage}</dd>
-  </dl>
-)
+  headingLevel = 5,
+}: ServiceDetailsProps) => {
+  const Label = headingLevel === 4 ? "h4" : "h5"
+  const details = [
+    ["Allgemeine Informationen", data],
+    ["Zweck der Verarbeitung", purpose],
+    ["Rechtsgrundlage", legalBasis],
+    ["Empfänger", recipient],
+    ["Drittlandübermittlung und Garantien", thirdCountry],
+    ["Speicherdauer", storage],
+  ] as const
+
+  return (
+    <div>
+      {details.map(([label, value]) => (
+        <Fragment key={label}>
+          <Label className={serviceDetailLabelClassName}>{label}</Label>
+          <p className="mt-1">{value}</p>
+        </Fragment>
+      ))}
+    </div>
+  )
+}
 
 /** One service under "Eingesetzte Dienste und Empfänger". */
 const ServiceSection = ({ name, ...details }: { name: string } & ServiceDetailsProps) => (
@@ -649,6 +659,7 @@ export function PageDatenschutz() {
         </p>
         <h3>Brevo GmbH (vormals Sendinblue GmbH)</h3>
         <ServiceDetails
+          headingLevel={4}
           data="Bei der Nutzung des Dienstes werden folgende Daten verarbeitet: E-Mail-Adresse, gegebenenfalls Name, Anmeldezeitpunkt und IP-Adresse sowie Versand-, Zustell-, Öffnungs-, Klick- und Abmeldedaten"
           purpose="Newsletterversand, Double-Opt-in sowie Auswertung von Zustellung, Öffnungen und angeklickten Links"
           legalBasis="Die Verarbeitung erfolgt auf Grundlage Ihrer Einwilligung gemäß Art. 6 Abs. 1 Satz 1 lit. a DSGVO."
