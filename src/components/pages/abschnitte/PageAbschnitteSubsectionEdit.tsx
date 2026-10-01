@@ -5,7 +5,7 @@ import { EditSubsectionForm } from "@/src/components/abschnitte/EditSubsectionFo
 import { SubsectionMcpDraftAdminBox } from "@/src/components/abschnitte/SubsectionMcpDraftAdminBox"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { GeometryErrorNotice } from "@/src/components/core/components/Notice/GeometryErrorNotice"
-import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
+import { optionalPageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { subsectionBySlugQueryOptions } from "@/src/server/subsections/subsectionQueryOptions"
 import { brokenGeometryItems } from "@/src/shared/geometry/brokenGeometryItems"
@@ -23,14 +23,14 @@ export function PageAbschnitteSubsectionEdit() {
   return (
     <>
       <PageHeader breadcrumb={<AbschnitteBreadcrumb current="bearbeiten" />} />
-      <div className={pageContentPaddingClassName}>
+      <div className={optionalPageContentPaddingClassName}>
         <SubsectionMcpDraftAdminBox
           projectSlug={projectSlug}
           slug={subsectionSlug}
           overlayApplied={applyMcpDraft}
         />
       </div>
-      <div className={pageContentPaddingClassName}>
+      <div className={optionalPageContentPaddingClassName}>
         <GeometryErrorNotice
           items={brokenGeometryItems([subsection])}
           labelSingular="Planungsabschnitt"
@@ -42,7 +42,7 @@ export function PageAbschnitteSubsectionEdit() {
         projectSlug={projectSlug}
         applyMcpDraft={applyMcpDraft}
       />
-      <div className={pageContentPaddingClassName}>
+      <div className={optionalPageContentPaddingClassName}>
         <SuperAdminLogData data={subsection} />
       </div>
     </>

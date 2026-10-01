@@ -15,7 +15,7 @@ import {
   FORM_ERROR,
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { Link } from "@/src/components/core/components/links/Link"
-import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
+import { optionalPageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { CreateEditReviewHistory } from "@/src/components/project-records/ProjectRecordCreateEditReviewHistory"
 import { ProjectRecordDeleteActionBar } from "@/src/components/project-records/ProjectRecordDeleteActionBar"
 import { ProjectRecordFormFields } from "@/src/components/project-records/ProjectRecordFormFields"
@@ -212,7 +212,7 @@ export const EditProjectRecordForm = ({
     <>
       {needsReview && <ProjectRecordNeedsReviewBanner />}
       {projectRecord.projectRecordAuthorType === "SYSTEM" && (
-        <div className={pageContentPaddingClassName}>
+        <div className={optionalPageContentPaddingClassName}>
           <SuperAdminBox className="mb-6">
             In die{" "}
             <Link

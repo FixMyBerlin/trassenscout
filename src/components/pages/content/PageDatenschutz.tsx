@@ -7,6 +7,16 @@ import { pageContentPaddingClassName } from "@/src/components/core/components/Pa
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { proseClasses } from "@/src/components/core/components/text/prose"
 
+const MatomoIframe = () => {
+  return (
+    <iframe
+      title="Matomo Opt Out Tracking"
+      className="h-52 w-full border border-gray-200 bg-[#f0fdf4] p-2"
+      src="/api/matomo-opt-out"
+    />
+  )
+}
+
 const portalLegalBasis =
   "Es gilt die im Abschnitt „Rechtsgrundlage“ unter „Bereitstellung des Portals“ beschriebene Rechtsgrundlage."
 
@@ -543,6 +553,7 @@ export function PageDatenschutz() {
           Sie die Erfassung durch Matomo für Ihren Besuch jederzeit über die nachfolgende Auswahl
           deaktivieren:
         </p>
+        <MatomoIframe />
 
         <h2 id="contact">Kontaktmöglichkeiten</h2>
         <h3>Allgemeine Informationen</h3>

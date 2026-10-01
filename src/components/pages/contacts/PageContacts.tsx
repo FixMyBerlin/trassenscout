@@ -7,7 +7,10 @@ import { useContactsTabs } from "@/src/components/contacts/useContactsTabs"
 import { useFilteredContacts } from "@/src/components/contacts/useFilteredContacts"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "@/src/components/core/components/links/Link"
-import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
+import {
+  optionalPageContentPaddingClassName,
+  pageContentPaddingClassName,
+} from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { PageHeaderSearchFilter } from "@/src/components/core/components/PageHeader/PageHeaderSearchFilter"
 import { TabsApp } from "@/src/components/core/components/Tabs/TabsApp"
@@ -80,7 +83,7 @@ export function PageContacts() {
           projectSlug={projectSlug}
         />
       )}
-      <div className={pageContentPaddingClassName}>
+      <div className={optionalPageContentPaddingClassName}>
         <SuperAdminLogData data={contacts} />
       </div>
     </>

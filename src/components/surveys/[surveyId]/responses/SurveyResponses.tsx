@@ -9,7 +9,10 @@ import {
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
 import { getQuestionIdBySurveySlug } from "@/src/components/beteiligung/shared/utils/getQuestionIdBySurveySlug"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
-import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
+import {
+  optionalPageContentPaddingClassName,
+  pageContentPaddingClassName,
+} from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { PageHeaderToolbarLink } from "@/src/components/core/components/PageHeader/PageHeaderToolbarLink"
 import { tableHeadCellClassName } from "@/src/components/core/components/Table/tableClasses"
@@ -64,7 +67,7 @@ function SurveyResponsesWithoutPart2({ survey, tabs }: Pick<Props, "survey" | "t
         info={`Tabellarische Übersicht aller eingegangenen Rückmeldungen der Eingabe ${survey.title}.`}
         tabs={<SurveyTabs tabs={tabs} embedded />}
       />
-      <div className={pageContentPaddingClassName}>
+      <div className={optionalPageContentPaddingClassName}>
         <SuperAdminBox>
           <p>In {frenchQuote(survey.slug.toUpperCase())} gibt es keinen Umfrageteil 2. </p>
         </SuperAdminBox>
