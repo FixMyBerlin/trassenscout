@@ -1,4 +1,5 @@
 import type { RegisteredRouter } from "@tanstack/react-router"
+import { MATOMO_OPT_OUT_COOKIE } from "@/src/shared/analytics/matomoConfig"
 
 declare global {
   interface Window {
@@ -6,11 +7,15 @@ declare global {
   }
 }
 
+const hasOptedOut = () => document.cookie.includes(`${MATOMO_OPT_OUT_COOKIE}=`)
+
 export function setupMatomoRouterTracking(router: RegisteredRouter) {
   // Client-only: TanStack emits onRendered after route content is in the DOM (not during SSR).
   router.subscribe("onRendered", (event) => {
     const origin = import.meta.env.VITE_APP_ORIGIN
     if (!origin) return
+
+    if (hasOptedOut()) return
 
     const url = `${origin}${event.toLocation.href}`
     const title = document.title
