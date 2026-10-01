@@ -5,6 +5,7 @@ import {
 } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { formConfig as FRM7Config } from "@/src/components/beteiligung/surveys/frm7/config"
 import { formConfig as SurveyOhvHaltestellenfoerderungConfig } from "@/src/components/beteiligung/surveys/ohv-haltestellenfoerderung/config"
+import { formConfig as SurveyOhvRadverkehrConfig } from "@/src/components/beteiligung/surveys/ohv-radverkehr/config"
 import { formConfig as BBConfig } from "@/src/components/beteiligung/surveys/radnetz-brandenbrug/config"
 import { formConfig as SurveyRadschnellverbindungenInfoFeedbackConfig } from "@/src/components/beteiligung/surveys/radschnellverbindungen-info-feedback/config"
 import { formConfig as RS8Config } from "@/src/components/beteiligung/surveys/rs8/config"
@@ -24,6 +25,7 @@ const surveyConfigs: Record<AllowedSurveySlugs, FormConfig> = {
   rs8: RS8Config,
   "radnetz-brandenburg": BBConfig,
   "ohv-haltestellenfoerderung": SurveyOhvHaltestellenfoerderungConfig,
+  "ohv-radverkehr": SurveyOhvRadverkehrConfig,
   "radschnellverbindungen-info-feedback": SurveyRadschnellverbindungenInfoFeedbackConfig,
 }
 
