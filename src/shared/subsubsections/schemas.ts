@@ -1,5 +1,9 @@
 import { z } from "zod"
-import { InputNumberOrNullSchema, SlugSchema } from "@/src/components/core/utils/schema-shared"
+import {
+  InputNonNegativeNumberOrNullSchema,
+  InputNumberOrNullSchema,
+  SlugSchema,
+} from "@/src/components/core/utils/schema-shared"
 import { GeometryTypeEnum, LabelPositionEnum, LocationEnum } from "@/src/prisma/generated/browser"
 import { SupportedGeometrySchema } from "@/src/shared/geometry/geometrySchemas"
 import { geometryTypeValidationRefine } from "@/src/shared/geometry/geometryTypeValidation"
@@ -51,20 +55,20 @@ export const SubsubsectionBaseSchema = z.object({
     .string()
     .regex(/^(\d{4}|)$/, { error: "Datum im Format JJJJ" })
     .nullish(),
-  planningCosts: InputNumberOrNullSchema,
-  deliveryCosts: InputNumberOrNullSchema,
-  constructionCosts: InputNumberOrNullSchema,
-  landAcquisitionCosts: InputNumberOrNullSchema,
-  expensesOfficialOrders: InputNumberOrNullSchema,
-  expensesTechnicalVerification: InputNumberOrNullSchema,
-  nonEligibleExpenses: InputNumberOrNullSchema,
-  grantAmount: InputNumberOrNullSchema,
-  ownFunds: InputNumberOrNullSchema,
-  grantsOtherFunding: InputNumberOrNullSchema,
-  revenuesEconomicIncome: InputNumberOrNullSchema,
-  contributionsThirdParties: InputNumberOrNullSchema,
-  remainingFunding: InputNumberOrNullSchema,
-  disbursedFunding: InputNumberOrNullSchema,
+  planningCosts: InputNonNegativeNumberOrNullSchema,
+  deliveryCosts: InputNonNegativeNumberOrNullSchema,
+  constructionCosts: InputNonNegativeNumberOrNullSchema,
+  landAcquisitionCosts: InputNonNegativeNumberOrNullSchema,
+  expensesOfficialOrders: InputNonNegativeNumberOrNullSchema,
+  expensesTechnicalVerification: InputNonNegativeNumberOrNullSchema,
+  nonEligibleExpenses: InputNonNegativeNumberOrNullSchema,
+  grantAmount: InputNonNegativeNumberOrNullSchema,
+  ownFunds: InputNonNegativeNumberOrNullSchema,
+  grantsOtherFunding: InputNonNegativeNumberOrNullSchema,
+  revenuesEconomicIncome: InputNonNegativeNumberOrNullSchema,
+  contributionsThirdParties: InputNonNegativeNumberOrNullSchema,
+  remainingFunding: InputNonNegativeNumberOrNullSchema,
+  disbursedFunding: InputNonNegativeNumberOrNullSchema,
   // LIST ALL m2mFields HERE
   // We need to do this manually, since dynamic zod types don't work
   subsubsectionInfrastructureTypeIds: z

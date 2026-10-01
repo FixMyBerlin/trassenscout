@@ -64,6 +64,11 @@ const calculationBasisFieldNames: readonly string[] = [
 ]
 
 type SuggestedFunding = NonNullable<ReturnType<typeof calculateSuggestedFunding>>
+
+const calculateApplicableFunding = (values: Record<string, unknown>) => {
+  const suggested = calculateSuggestedFunding(values)
+  return suggested && suggested.grantAmount >= 0 && suggested.ownFunds >= 0 ? suggested : null
+}
 type FundingBaseline = SuggestedFunding | null
 
 const isManualValue = (value: unknown, baselineValue: number | undefined) =>
@@ -72,7 +77,7 @@ const isManualValue = (value: unknown, baselineValue: number | undefined) =>
 
 export const useFundingBaseline = (initialValues: Record<string, unknown>) => {
   const [baseline, setBaselineState] = useState<FundingBaseline>(() =>
-    calculateSuggestedFunding(initialValues),
+    calculateApplicableFunding(initialValues),
   )
   const baselineRef = useRef(baseline)
   const setBaseline = (next: FundingBaseline) => {
@@ -104,7 +109,7 @@ export const recalculateFundingOnBasisBlur = (
   ) {
     return
   }
-  const suggested = calculateSuggestedFunding(values)
+  const suggested = calculateApplicableFunding(values)
   if (!suggested) return
   formApi.setFieldValue("grantAmount" as never, suggested.grantAmount as never)
   formApi.setFieldValue("ownFunds" as never, suggested.ownFunds as never)
@@ -128,7 +133,7 @@ export const SubsubsectionFundingCalculation = ({ baseline, onApply }: Props) =>
       selector={(state) => ({
         grantAmount: state.values.grantAmount as unknown,
         ownFunds: state.values.ownFunds as unknown,
-        suggested: calculateSuggestedFunding(state.values),
+        suggested: calculateApplicableFunding(state.values),
       })}
     >
       {({ grantAmount, ownFunds, suggested }) => {
