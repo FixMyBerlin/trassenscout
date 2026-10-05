@@ -44,7 +44,7 @@ export const ProjectRecordAssignmentFields = ({ assignedToItems, fromLabel }: Pr
       </form.AppField>
       {fromLabel && (
         <div>
-          <p className={fieldLayoutLabelClassName}>Von</p>
+          <p className={fieldLayoutLabelClassName}>Erstellt von</p>
           <p className="pt-2 text-sm text-gray-700">{fromLabel}</p>
         </div>
       )}
