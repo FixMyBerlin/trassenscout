@@ -6,6 +6,7 @@ import { twJoin } from "tailwind-merge"
 import { ActionBar } from "@/src/components/core/components/forms/ActionBar"
 import { DeleteActionBar } from "@/src/components/core/components/forms/DeleteActionBar"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
+import { invalidateAfterProjectRecordChange } from "@/src/components/project-records/projectRecordQueryCache"
 import {
   AcquisitionAreaRelationLink,
   acquisitionAreaRelationKey,
@@ -17,11 +18,6 @@ import {
 import { UploadPreviewClickable } from "@/src/components/uploads/UploadPreviewClickable"
 import { ProjectRecordReviewState } from "@/src/prisma/generated/browser"
 import { deleteProjectRecordWithUploadsDecisionFn } from "@/src/server/projectRecords/projectRecords.functions"
-import {
-  projectRecordsNeedsReviewQueryOptions,
-  projectRecordsQueryOptions,
-  projectRecordsTabCountsQueryOptions,
-} from "@/src/server/projectRecords/projectRecordsQueryOptions"
 import type { ProjectRecordDeleteInfo } from "@/src/server/projectRecords/types"
 import { resolvedToNavigateOptions } from "@/src/shared/routing/resolvedTo"
 
@@ -35,7 +31,10 @@ type Props = {
 export const DeleteProjectRecordWithUploadsClient = ({ deleteInfo, projectSlug }: Props) => {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
-  const deleteMutation = useMutation({ mutationFn: deleteProjectRecordWithUploadsDecisionFn })
+  const deleteMutation = useMutation({
+    mutationFn: deleteProjectRecordWithUploadsDecisionFn,
+    onSuccess: () => invalidateAfterProjectRecordChange(queryClient, projectSlug),
+  })
 
   const [uploadActions, setUploadActions] = useState<Record<number, "save" | "delete">>(() => {
     const actions: Record<number, "save" | "delete"> = {}
@@ -85,17 +84,6 @@ export const DeleteProjectRecordWithUploadsClient = ({ deleteInfo, projectSlug }
           keepUploadIds,
         },
       })
-      await Promise.all([
-        queryClient.invalidateQueries({
-          queryKey: projectRecordsQueryOptions({ projectSlug }).queryKey,
-        }),
-        queryClient.invalidateQueries({
-          queryKey: projectRecordsNeedsReviewQueryOptions({ projectSlug }).queryKey,
-        }),
-        queryClient.invalidateQueries({
-          queryKey: projectRecordsTabCountsQueryOptions({ projectSlug }).queryKey,
-        }),
-      ])
       navigate({ ...resolvedToNavigateOptions(returnPath) })
     } catch (error) {
       console.error("Error deleting project record:", error)

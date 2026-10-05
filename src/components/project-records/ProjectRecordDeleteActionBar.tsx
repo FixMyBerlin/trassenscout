@@ -1,6 +1,7 @@
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 import { DeleteActionBar } from "@/src/components/core/components/forms/DeleteActionBar"
+import { invalidateAfterProjectRecordChange } from "@/src/components/project-records/projectRecordQueryCache"
 import { deleteProjectRecordFn } from "@/src/server/projectRecords/projectRecords.functions"
 
 type Props = {
@@ -19,7 +20,11 @@ export const ProjectRecordDeleteActionBar = ({
   uploadsCount,
 }: Props) => {
   const navigate = useNavigate()
-  const deleteProjectRecordMutation = useMutation({ mutationFn: deleteProjectRecordFn })
+  const queryClient = useQueryClient()
+  const deleteProjectRecordMutation = useMutation({
+    mutationFn: deleteProjectRecordFn,
+    onSuccess: () => invalidateAfterProjectRecordChange(queryClient, projectSlug),
+  })
 
   const handleDelete = async () => {
     await deleteProjectRecordMutation.mutateAsync({
