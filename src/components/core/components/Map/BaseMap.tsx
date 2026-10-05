@@ -30,6 +30,7 @@ import { useMapLoadedActions } from "./map-loaded-store"
 import { MapHighlightContext } from "./mapHighlightContext"
 import { applyMapHighlight, CLEAR_MAP_HIGHLIGHT, type MapHighlightState } from "./mapHighlightState"
 import { getMapStyle } from "./mapStyleConfig"
+import { MapViewportRepair } from "./MapViewportRepair"
 import { usePmtilesProtocol } from "./pmtilesProtocol"
 import { StaticOverlay } from "./staticOverlay/StaticOverlay"
 import type { StaticOverlayConfig } from "./staticOverlay/staticOverlay.types"
@@ -282,6 +283,7 @@ export const BaseMap = ({
             hash={hash || false}
             attributionControl={false}
           >
+            <MapViewportRepair initialViewState={initialViewState} />
             <AttributionControl compact={true} position="bottom-right" />
             <NavigationControl showCompass={false} />
             {showScaleControl && <ScaleControl />}
