@@ -13,6 +13,7 @@ type Props = {
   onDelete?: () => Promise<unknown>
   onClick?: () => Promise<unknown> | void
   onDeleted?: () => void | Promise<void>
+  confirmDelete?: () => boolean
   returnPath: string
   variant?: "text" | "icon" | "linkWithIcon"
   projectSlug?: string
@@ -23,6 +24,7 @@ export const DeleteActionBar = ({
   onDelete,
   onClick,
   onDeleted,
+  confirmDelete,
   returnPath,
   variant = "icon",
   projectSlug,
@@ -44,20 +46,21 @@ export const DeleteActionBar = ({
 
     if (!onDelete) return
 
-    if (window.confirm(`Möchten Sie ${frenchQuote(itemTitle)} wirklich unwiderruflich löschen?`)) {
-      try {
-        await onDelete()
-        if (onDeleted) {
-          await onDeleted()
-        } else {
-          void navigate({ ...resolvedToNavigateOptions(returnPath), replace: true })
-        }
-      } catch (error) {
-        console.error(`Error deleting ${itemTitle}:`, error)
-        alert(
-          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
-        )
+    const confirmed = confirmDelete
+      ? confirmDelete()
+      : window.confirm(`Möchten Sie ${frenchQuote(itemTitle)} wirklich unwiderruflich löschen?`)
+    if (!confirmed) return
+
+    try {
+      await onDelete()
+      if (onDeleted) {
+        await onDeleted()
+      } else {
+        void navigate({ ...resolvedToNavigateOptions(returnPath), replace: true })
       }
+    } catch (error) {
+      console.error(`Error deleting ${itemTitle}:`, error)
+      alert("Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.")
     }
   }
 

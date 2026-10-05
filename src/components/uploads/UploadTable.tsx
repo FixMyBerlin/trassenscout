@@ -324,6 +324,7 @@ const UploadTableRow = ({
                   projectSlug={projectSlug}
                   uploadId={upload.id}
                   uploadTitle={upload.title}
+                  uploadLinks={upload}
                   onDeleted={handleDelete}
                 />
               )}

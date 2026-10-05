@@ -1,12 +1,14 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { DeleteActionBar } from "@/src/components/core/components/forms/DeleteActionBar"
 import { deleteUploadFn } from "@/src/server/uploads/uploads.functions"
+import { type UploadLinks, uploadDeletionConfirmMessage } from "./uploadDeletionConfirmMessage"
 import { invalidateAfterUploadChange, markUploadDeletedInCache } from "./uploadQueryCache"
 
 type Props = {
   projectSlug: string
   uploadId: number
   uploadTitle: string
+  uploadLinks: UploadLinks
   returnPath: string
   onDeleted?: () => void | Promise<void>
   variant?: "text" | "icon" | "linkWithIcon"
@@ -16,6 +18,7 @@ export const DeleteUploadActionBar = ({
   projectSlug,
   uploadId,
   uploadTitle,
+  uploadLinks,
   returnPath,
   onDeleted,
   variant = "icon",
@@ -36,6 +39,7 @@ export const DeleteUploadActionBar = ({
       itemTitle={uploadTitle}
       onDelete={handleDelete}
       onDeleted={onDeleted}
+      confirmDelete={() => window.confirm(uploadDeletionConfirmMessage(uploadTitle, uploadLinks))}
       returnPath={returnPath}
       projectSlug={projectSlug}
       variant={variant}
