@@ -1,6 +1,7 @@
 import { z } from "zod"
 import { ProjectRecordEditingState } from "@/src/prisma/generated/browser"
 import { ProjectSlugRequiredSchema } from "@/src/shared/authorization/projectSlugSchema"
+import { ASSIGNMENT_DIRECTIONS } from "@/src/shared/projectRecords/assignmentDirection"
 import {
   DeleteProjectRecordSchema,
   NewProjectRecordFormSchema,
@@ -31,12 +32,10 @@ export const DeleteProjectRecordWithUploadsDecisionSchema = ProjectSlugRequiredS
 })
 export { PatchProjectRecordAssignmentSchema }
 
-const assignmentDirections = ["all", "byMe", "toMe"] as const
-
 export const GetMyAssignedRecordsSchema = z.object({
   projectSlug: z.string().optional(),
   editingState: z.enum(ProjectRecordEditingState).optional(),
-  direction: z.enum(assignmentDirections).default("all"),
+  direction: z.enum(ASSIGNMENT_DIRECTIONS).default("mine"),
 })
 
 export const CountMyAssignedRecordsSchema = z.object({

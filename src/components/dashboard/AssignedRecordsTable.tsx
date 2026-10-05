@@ -39,6 +39,11 @@ const assignedRecordsTableColWidths = {
   documents: "w-[20%] @xl:w-[10%]",
 } as const
 
+const assignmentNote = (record: MyAssignedRecord) => {
+  if (record.assignedAt) return `zugewiesen am ${format(record.assignedAt, "P", { locale: de })}`
+  return record.assignedTo ? "Zuweisung unbekannt" : "nicht zugewiesen"
+}
+
 const dateOrDash = (value: Date | null) =>
   value ? format(value, "P", { locale: de }) : <span className="text-gray-400">–</span>
 
@@ -109,13 +114,7 @@ export const AssignedRecordsTable = ({ records, showProject = true }: Props) => 
                 <td className={twJoin(tableCellClassName, "align-top leading-tight")}>
                   {dateOrDash(record.date)}
                   <br />
-                  <span className="text-xs text-gray-500">
-                    {record.assignedAt ? (
-                      <>zugewiesen am {format(record.assignedAt, "P", { locale: de })}</>
-                    ) : (
-                      "Zuweisung unbekannt"
-                    )}
-                  </span>
+                  <span className="text-xs text-gray-500">{assignmentNote(record)}</span>
                 </td>
                 <td className={twJoin(tableCellClassName, "align-top")}>
                   {/* Opens over the list, the same way an entry opens from a Maßnahme. */}

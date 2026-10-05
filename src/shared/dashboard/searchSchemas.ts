@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { ASSIGNMENT_DIRECTIONS } from "@/src/shared/projectRecords/assignmentDirection"
 import { projectRecordModalSearchShape } from "@/src/shared/projectRecords/searchSchemas"
 import { withViewModeSearch } from "@/src/shared/routing/viewModeSearch"
 
@@ -29,7 +30,7 @@ export const dashboardFilterValues = (search: DashboardSearch) => ({
   months: search.months || undefined,
 })
 
-export const ASSIGNMENTS_DEFAULTS = { status: "PENDING", direction: "all" } as const
+export const ASSIGNMENTS_DEFAULTS = { status: "PENDING", direction: "mine" } as const
 
 export const assignmentsSearchSchema = z.object({
   status: z
@@ -37,7 +38,7 @@ export const assignmentsSearchSchema = z.object({
     .default(ASSIGNMENTS_DEFAULTS.status)
     .catch(ASSIGNMENTS_DEFAULTS.status),
   direction: z
-    .enum(["all", "byMe", "toMe"])
+    .enum(ASSIGNMENT_DIRECTIONS)
     .default(ASSIGNMENTS_DEFAULTS.direction)
     .catch(ASSIGNMENTS_DEFAULTS.direction),
 })

@@ -20,6 +20,7 @@ import {
 } from "@/src/server/mcp/mcpDrafts/mcpDraftsQueryOptions"
 import { projectRecordsQueryOptions } from "@/src/server/projectRecords/projectRecordsQueryOptions"
 import { isMcpDraftSearch } from "@/src/shared/mcp/catalogMcpSearch"
+import { assignmentDirectionOptions } from "@/src/shared/projectRecords/assignmentDirection"
 import {
   PROJECT_RECORD_FILTER_DEFAULTS,
   type ProjectRecordFilter,
@@ -29,12 +30,6 @@ const statusOptions: { value: ProjectRecordFilter["status"]; label: string }[] =
   { value: "PENDING", label: "In Bearbeitung" },
   { value: "COMPLETED", label: "Abgeschlossen" },
   { value: "all", label: "Alle Status" },
-]
-
-const directionOptions: { value: ProjectRecordFilter["direction"]; label: string }[] = [
-  { value: "all", label: "Alle Zuweisungen" },
-  { value: "byMe", label: "Von mir zugewiesen" },
-  { value: "toMe", label: "An mich zugewiesen" },
 ]
 
 const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
@@ -98,8 +93,10 @@ export const ProjectRecordsFormAndTable = () => {
             <SelectListbox
               className="w-56"
               value={filter?.direction ?? PROJECT_RECORD_FILTER_DEFAULTS.direction}
-              options={directionOptions}
-              onChange={(next) => void setFilter({ direction: next ?? "all" })}
+              options={assignmentDirectionOptions}
+              onChange={(next) =>
+                void setFilter({ direction: next ?? PROJECT_RECORD_FILTER_DEFAULTS.direction })
+              }
             />
           </PageHeaderSearchFilter>
         }

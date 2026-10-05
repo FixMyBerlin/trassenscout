@@ -8,6 +8,23 @@ function myAssignmentsWhere(userId: number) {
   return { OR: [{ assignedToId: userId }, { assignedById: userId }] }
 }
 
+function myRecordsWhere(userId: number) {
+  return { OR: [{ assignedToId: userId }, { assignedById: userId }, { userId }] }
+}
+
+function directionWhere(
+  direction: z.infer<typeof GetMyAssignedRecordsSchema>["direction"],
+  userId: number,
+) {
+  if (direction === "mine") return myAssignmentsWhere(userId)
+  if (direction === "byMe") return { assignedById: userId }
+  if (direction === "toMe") return { assignedToId: userId }
+  // Authorship survives a reassignment, assignedById does not: it moves to whoever reassigned last.
+  if (direction === "createdByMe") return { userId }
+  // "all": every open task in reach, which readableProjectWhere alone is left to bound.
+  return {}
+}
+
 function readableProjectWhere(userId: number, role: string, projectSlug: string | undefined) {
   return {
     ...(projectSlug ? { slug: projectSlug } : {}),
@@ -21,7 +38,7 @@ export async function countMyAssignedRecords(headers: Headers, projectSlug?: str
 
   return db.projectRecord.count({
     where: {
-      ...myAssignmentsWhere(userId),
+      ...myRecordsWhere(userId),
       project: readableProjectWhere(userId, session.role, projectSlug),
     },
   })
@@ -34,16 +51,9 @@ export async function getMyAssignedRecords(
   const session = await endpointAuth.session(headers)
   const userId = Number(session.userId)
 
-  const direction =
-    input.direction === "byMe"
-      ? { assignedById: userId }
-      : input.direction === "toMe"
-        ? { assignedToId: userId }
-        : myAssignmentsWhere(userId)
-
   const records = await db.projectRecord.findMany({
     where: {
-      ...direction,
+      ...directionWhere(input.direction, userId),
       ...(input.editingState ? { editingState: input.editingState } : {}),
       project: readableProjectWhere(userId, session.role, input.projectSlug),
     },

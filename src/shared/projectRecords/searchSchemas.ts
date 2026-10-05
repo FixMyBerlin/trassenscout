@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { ASSIGNMENT_DIRECTIONS } from "@/src/shared/projectRecords/assignmentDirection"
 import { jsonSearchParam } from "@/src/shared/routing/jsonSearchParam"
 
 export const PROJECT_RECORD_FILTER_DEFAULTS = {
@@ -14,7 +15,7 @@ const projectRecordFilterSchema = z.object({
     .default(PROJECT_RECORD_FILTER_DEFAULTS.status)
     .catch(PROJECT_RECORD_FILTER_DEFAULTS.status),
   direction: z
-    .enum(["all", "byMe", "toMe"])
+    .enum(ASSIGNMENT_DIRECTIONS)
     .default(PROJECT_RECORD_FILTER_DEFAULTS.direction)
     .catch(PROJECT_RECORD_FILTER_DEFAULTS.direction),
 })

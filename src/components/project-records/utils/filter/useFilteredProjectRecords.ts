@@ -29,7 +29,11 @@ function matchesDirection(
   userId: number | undefined,
 ) {
   if (direction === "all" || userId == null) return true
+  if (direction === "mine") {
+    return projectRecord.assignedToId === userId || projectRecord.assignedById === userId
+  }
   if (direction === "toMe") return projectRecord.assignedToId === userId
+  if (direction === "createdByMe") return projectRecord.userId === userId
   return projectRecord.assignedById === userId
 }
 

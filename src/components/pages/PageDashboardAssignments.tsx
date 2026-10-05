@@ -19,6 +19,7 @@ import {
   DASHBOARD_ALL_PROJECTS,
   dashboardFilterValues,
 } from "@/src/shared/dashboard/searchSchemas"
+import { assignmentDirectionOptions } from "@/src/shared/projectRecords/assignmentDirection"
 
 const routeApi = getRouteApi("/_loggedInGeneral/dashboard/assignments/")
 
@@ -26,12 +27,6 @@ const statusOptions: { value: AssignmentsSearch["status"]; label: string }[] = [
   { value: "PENDING", label: "In Bearbeitung" },
   { value: "COMPLETED", label: "Abgeschlossen" },
   { value: "all", label: "Alle Status" },
-]
-
-const directionOptions: { value: AssignmentsSearch["direction"]; label: string }[] = [
-  { value: "all", label: "Alle Zuweisungen" },
-  { value: "byMe", label: "Von mir zugewiesen" },
-  { value: "toMe", label: "An mich zugewiesen" },
 ]
 
 export function PageDashboardAssignments() {
@@ -97,8 +92,10 @@ export function PageDashboardAssignments() {
             <SelectListbox
               className="w-56"
               value={search.direction}
-              options={directionOptions}
-              onChange={(next) => updateSearch({ direction: next ?? "all" })}
+              options={assignmentDirectionOptions}
+              onChange={(next) =>
+                updateSearch({ direction: next ?? ASSIGNMENTS_DEFAULTS.direction })
+              }
             />
           </DashboardFilters>
         }
