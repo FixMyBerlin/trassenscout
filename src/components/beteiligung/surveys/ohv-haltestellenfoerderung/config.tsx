@@ -39,7 +39,7 @@ Nach Erstellung des Ma√ünahmenprogramms wird dieses per E-Mail an die Kommunen √
     ],
     homeUrl: "https://www.oberhavel.de/",
     buttonLink: {
-      label: "Zur Website des Lankreis Oberhavel",
+      label: "Zur Website des Landkreises Oberhavel",
       color: "primaryColor",
     },
   },
@@ -188,6 +188,7 @@ das Team vom Trassenscout
       "location",
       "surveyUrl",
     ],
-    recipients: ["lk@dummy.de", "ohbv@dummy.de"],
+    // TODO: add correct recipients lk and ohbv
+    recipients: ["noreply@trassenscout.de"],
   },
 }
