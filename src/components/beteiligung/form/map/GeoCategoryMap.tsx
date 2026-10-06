@@ -31,6 +31,7 @@ import { useAllowedSurveySlug } from "@/src/components/beteiligung/shared/utils/
 import { AllLayers, generateLayers } from "@/src/components/core/components/Map/AllLayers"
 import { AllSources } from "@/src/components/core/components/Map/AllSources"
 import { usePmtilesProtocol } from "@/src/components/core/components/Map/pmtilesProtocol"
+import { exposeMainMapForDebugging } from "@/src/components/shared/utils/playwright"
 
 export type GeoCategoryMapProps = {
   description?: string
@@ -215,6 +216,7 @@ export const SurveyGeoCategoryMap = ({
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         onLoad={(event) => {
+          exposeMainMapForDebugging(event.target)
           notifyPlaywrightMapLoaded()
           installMapGrabIfTest(event.target, "mainMap")
         }}
