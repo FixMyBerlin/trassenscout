@@ -45,7 +45,6 @@ Nach Erstellung des Maßnahmenprogramms wird dieses per E-Mail an die Kommunen �
   },
   backend: {
     disableNote: true,
-    listTitleDataKey: "hsName",
     labels: {
       category: {
         sg: "Gegenstand der Förderung",

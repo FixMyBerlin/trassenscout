@@ -33,7 +33,6 @@ export type TBackendConfig = {
   additionalFilters?: [TAdditionalFiltersItem, ...TAdditionalFiltersItem[]]
   disableExternalSurveyResponseForm?: boolean
   disableNote?: boolean
-  listTitleDataKey?: string
 }
 
 export type TBackendConfigDefaults = {

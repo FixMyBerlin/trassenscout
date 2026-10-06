@@ -108,10 +108,6 @@ const EditableSurveyResponseListItem = ({
   const text2Id = getQuestionIdBySurveySlug(surveySlug, "feedbackText_2")
 
   const userTextPreview = response.data[text1Id] || response.data[text2Id]
-  const listTitle = backendConfig.listTitleDataKey
-    ? response.data[backendConfig.listTitleDataKey]
-    : undefined
-  const hasListTitle = typeof listTitle === "string" && listTitle !== ""
   const commentLabel = labels.comment?.sg || defaultBackendConfig.labels.comment.sg
   const commentLabelPlural = labels.comment?.pl || defaultBackendConfig.labels.comment.pl
   const commentHelp = labels.comment?.help || defaultBackendConfig.labels.comment.help
@@ -155,16 +151,10 @@ const EditableSurveyResponseListItem = ({
             status={response.status}
           />
 
-          <div className="min-w-0">
-            {hasListTitle && <p className="truncate font-medium text-gray-700">{listTitle}</p>}
-            <Markdown
-              className={twJoin(
-                "min-w-0 shrink break-all",
-                hasListTitle ? "line-clamp-1" : "line-clamp-2",
-              )}
-              markdown={typeof userTextPreview === "string" ? userTextPreview : null}
-            />
-          </div>
+          <Markdown
+            className="line-clamp-2 min-w-0 shrink break-all"
+            markdown={typeof userTextPreview === "string" ? userTextPreview : null}
+          />
 
           <div className="min-w-0">
             <ProjectRecordTagsList
