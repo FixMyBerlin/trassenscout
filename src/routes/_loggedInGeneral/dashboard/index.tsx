@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router"
 import { PageDashboard } from "@/src/components/pages/PageDashboard"
 import { RouteMapShellPending } from "@/src/components/pages/RouteMapShellPending"
 import { privateTitleHead } from "@/src/routeHead"
+import { myAssignedRecordsCountQueryOptions } from "@/src/server/projectRecords/projectRecordsQueryOptions"
 import {
   projectDashboardGeometriesQueryOptions,
   projectsWithGeometryWithMembershipRoleQueryOptions,
@@ -18,6 +19,7 @@ export const Route = createFileRoute("/_loggedInGeneral/dashboard/")({
       context.queryClient.ensureQueryData(currentUserQueryOptions()),
       context.queryClient.ensureQueryData(projectsWithGeometryWithMembershipRoleQueryOptions()),
       context.queryClient.ensureQueryData(projectDashboardGeometriesQueryOptions()),
+      context.queryClient.ensureQueryData(myAssignedRecordsCountQueryOptions()),
     ]),
   pendingComponent: RouteMapShellPending,
   component: PageDashboard,

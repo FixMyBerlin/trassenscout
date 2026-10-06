@@ -30,7 +30,7 @@ export const dashboardFilterValues = (search: DashboardSearch) => ({
   months: search.months || undefined,
 })
 
-export const ASSIGNMENTS_DEFAULTS = { status: "PENDING", direction: "mine" } as const
+export const ASSIGNMENTS_DEFAULTS = { status: "PENDING", direction: "toMe" } as const
 
 export const assignmentsSearchSchema = z.object({
   status: z

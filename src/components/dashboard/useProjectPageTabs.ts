@@ -25,19 +25,16 @@ export function canSeeProjectActivity({
   return membershipRole === "EDITOR" && showLogEntries === true
 }
 
-/**
- * Aktivitäten follows the log rule. Aufgaben counts every status in this project, so the tab
- * does not vanish the moment someone finishes their last task.
- */
+/** Aktivitäten follows the log rule. Aufgaben is always there, counting my open tasks in this project. */
 export function useProjectPageTabs() {
   const { projectSlug } = loggedInProjectRouteApi.useParams()
   const { membershipRole } = useRouteContext({ from: "/_loggedInProjects/$projectSlug" })
   const { data: user } = useQuery(currentUserQueryOptions())
   const { data: projects = [] } = useQuery(projectsForCurrentUserQueryOptions())
-  const { data: assignedCount = 0 } = useQuery(myAssignedRecordsCountQueryOptions(projectSlug))
+  const { data: openTaskCount } = useQuery(myAssignedRecordsCountQueryOptions(projectSlug))
 
   const project = projects.find((item) => item.slug === projectSlug)
-  const tabs: { name: string; to: string }[] = []
+  const tabs: { name: string; to: string; count?: number }[] = []
 
   if (
     canSeeProjectActivity({
@@ -48,8 +45,6 @@ export function useProjectPageTabs() {
   ) {
     tabs.push({ name: "Aktivitäten", to: `/${projectSlug}/activity` })
   }
-  if (assignedCount > 0) {
-    tabs.push({ name: "Aufgaben", to: `/${projectSlug}/assignments` })
-  }
+  tabs.push({ name: "Aufgaben", count: openTaskCount, to: `/${projectSlug}/assignments` })
   return tabs
 }

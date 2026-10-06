@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { PageDashboardActivity } from "@/src/components/pages/PageDashboardActivity"
 import { privateTitleHead } from "@/src/routeHead"
+import { myAssignedRecordsCountQueryOptions } from "@/src/server/projectRecords/projectRecordsQueryOptions"
 import { projectsWithGeometryWithMembershipRoleQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 import { currentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
 
@@ -11,6 +12,7 @@ export const Route = createFileRoute("/_loggedInGeneral/dashboard/activity/")({
     Promise.all([
       context.queryClient.ensureQueryData(currentUserQueryOptions()),
       context.queryClient.ensureQueryData(projectsWithGeometryWithMembershipRoleQueryOptions()),
+      context.queryClient.ensureQueryData(myAssignedRecordsCountQueryOptions()),
     ]),
   component: PageDashboardActivity,
 })

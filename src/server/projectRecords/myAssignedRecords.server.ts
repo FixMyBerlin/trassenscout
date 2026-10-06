@@ -1,22 +1,13 @@
 import type { z } from "zod"
-import { UserRoleEnum } from "@/src/prisma/generated/browser"
+import { ProjectRecordEditingState, UserRoleEnum } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import db from "@/src/server/db.server"
 import type { GetMyAssignedRecordsSchema } from "./projectRecords.inputSchemas"
-
-function myAssignmentsWhere(userId: number) {
-  return { OR: [{ assignedToId: userId }, { assignedById: userId }] }
-}
-
-function myRecordsWhere(userId: number) {
-  return { OR: [{ assignedToId: userId }, { assignedById: userId }, { userId }] }
-}
 
 function directionWhere(
   direction: z.infer<typeof GetMyAssignedRecordsSchema>["direction"],
   userId: number,
 ) {
-  if (direction === "mine") return myAssignmentsWhere(userId)
   if (direction === "byMe") return { assignedById: userId }
   if (direction === "toMe") return { assignedToId: userId }
   // Authorship survives a reassignment, assignedById does not: it moves to whoever reassigned last.
@@ -38,7 +29,8 @@ export async function countMyAssignedRecords(headers: Headers, projectSlug?: str
 
   return db.projectRecord.count({
     where: {
-      ...myRecordsWhere(userId),
+      assignedToId: userId,
+      editingState: ProjectRecordEditingState.PENDING,
       project: readableProjectWhere(userId, session.role, projectSlug),
     },
   })

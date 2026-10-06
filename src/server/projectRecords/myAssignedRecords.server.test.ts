@@ -70,14 +70,6 @@ describe("getMyAssignedRecords", () => {
     })
   })
 
-  test("reads both sides of an assignment on mine", async () => {
-    const { getMyAssignedRecords } = await import("./myAssignedRecords.server")
-
-    await getMyAssignedRecords(headers, { direction: "mine" })
-
-    expect(listWhere().OR).toEqual([{ assignedToId: 99 }, { assignedById: 99 }])
-  })
-
   test("narrows to one side on request", async () => {
     const { getMyAssignedRecords } = await import("./myAssignedRecords.server")
 
@@ -121,12 +113,16 @@ describe("countMyAssignedRecords", () => {
     expect(countWhere().project).toEqual({ memberships: { some: { userId: 99 } } })
   })
 
-  test("counts authored records too, so the tab holding that option is reachable", async () => {
+  test("counts only open tasks assigned to me, the work waiting on me", async () => {
     const { countMyAssignedRecords } = await import("./myAssignedRecords.server")
 
     await countMyAssignedRecords(headers)
 
-    expect(countWhere().OR).toEqual([{ assignedToId: 99 }, { assignedById: 99 }, { userId: 99 }])
+    expect(countWhere()).toEqual({
+      assignedToId: 99,
+      editingState: "PENDING",
+      project: { memberships: { some: { userId: 99 } } },
+    })
   })
 
   test("can narrow the count to one project without dropping the membership check", async () => {
@@ -142,9 +138,9 @@ describe("countMyAssignedRecords", () => {
 })
 
 describe("GetMyAssignedRecordsSchema", () => {
-  test("defaults to the caller's own assignments, never the unfiltered list", async () => {
+  test("defaults to tasks assigned to me, never the unfiltered list", async () => {
     const { GetMyAssignedRecordsSchema } = await import("./projectRecords.inputSchemas")
 
-    expect(GetMyAssignedRecordsSchema.parse({}).direction).toBe("mine")
+    expect(GetMyAssignedRecordsSchema.parse({}).direction).toBe("toMe")
   })
 })

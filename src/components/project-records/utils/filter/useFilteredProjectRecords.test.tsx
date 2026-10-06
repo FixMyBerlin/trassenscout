@@ -84,11 +84,6 @@ describe("useFilteredProjectRecords", () => {
     expect(filteredIds()).toEqual([1, 2, 3])
   })
 
-  test("narrows to the user's own assignments on mine", () => {
-    filterState.filter = { searchterm: "", status: "all", direction: "mine" }
-    expect(filteredIds()).toEqual([1, 2])
-  })
-
   test("filters assignments to the current user", () => {
     filterState.filter = { searchterm: "", status: "all", direction: "toMe" }
     expect(filteredIds()).toEqual([1])

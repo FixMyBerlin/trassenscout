@@ -35,7 +35,7 @@ export { PatchProjectRecordAssignmentSchema }
 export const GetMyAssignedRecordsSchema = z.object({
   projectSlug: z.string().optional(),
   editingState: z.enum(ProjectRecordEditingState).optional(),
-  direction: z.enum(ASSIGNMENT_DIRECTIONS).default("mine"),
+  direction: z.enum(ASSIGNMENT_DIRECTIONS).default("toMe"),
 })
 
 export const CountMyAssignedRecordsSchema = z.object({
