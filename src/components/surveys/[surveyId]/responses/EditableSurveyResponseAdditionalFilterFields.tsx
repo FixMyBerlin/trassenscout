@@ -1,3 +1,4 @@
+import { locationModeResponseField } from "@/src/components/beteiligung/form/map/utils"
 import { TBackendConfig } from "@/src/components/beteiligung/shared/backend-types"
 import { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
@@ -111,7 +112,9 @@ const EditableSurveyResponseAdditionalFilterFields = ({
               )
             })}
           {filteredPart2Responses.map(([key, value]) => {
-            const field = part2Fields.find((f) => f.name === key)
+            const field =
+              part2Fields.find((f) => f.name === key) ??
+              (key === locationModeResponseField.name ? locationModeResponseField : undefined)
             return (
               <tr key={key}>
                 <td className="px-6 py-4 text-sm font-medium text-gray-900">

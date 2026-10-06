@@ -7,6 +7,20 @@ import { geometryAnchorPoint } from "@/src/components/core/components/Map/utils/
 import { PositionArraySchema, PositionSchema } from "@/src/shared/geometry/geojsonSchemas"
 import type { SupportedGeometry } from "@/src/shared/geometry/geometrySchemas"
 
+/** Admin display for the `locationMode` value SwitchableMap writes into form state. */
+export const locationModeResponseField = {
+  name: "locationMode",
+  component: "SurveyRadiobuttonGroup" as const,
+  props: {
+    label: "Art Maßnahmenverortung",
+    options: [
+      { key: "existing", label: "Haltestelle" },
+      { key: "pin", label: "Pin" },
+      { key: "none", label: "Keine" },
+    ],
+  },
+}
+
 /** `location` value for SwitchableMap (GeoJSON Point → `{ lng, lat }`). */
 const SwitchableMapLocationPointSchema = z.object({
   lng: z.number(),
