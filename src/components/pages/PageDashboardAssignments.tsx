@@ -19,7 +19,7 @@ import {
   DASHBOARD_ALL_PROJECTS,
   dashboardFilterValues,
 } from "@/src/shared/dashboard/searchSchemas"
-import { assignmentDirectionOptions } from "@/src/shared/projectRecords/assignmentDirection"
+import { taskDirectionOptions } from "@/src/shared/projectRecords/assignmentDirection"
 
 const routeApi = getRouteApi("/_loggedInGeneral/dashboard/assignments/")
 
@@ -92,7 +92,7 @@ export function PageDashboardAssignments() {
             <SelectListbox
               className="w-56"
               value={search.direction}
-              options={assignmentDirectionOptions}
+              options={taskDirectionOptions}
               onChange={(next) =>
                 updateSearch({ direction: next ?? ASSIGNMENTS_DEFAULTS.direction })
               }

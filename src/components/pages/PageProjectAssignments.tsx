@@ -16,7 +16,7 @@ import {
   DASHBOARD_ALL_MONTHS,
   DASHBOARD_ALL_PROJECTS,
 } from "@/src/shared/dashboard/searchSchemas"
-import { assignmentDirectionOptions } from "@/src/shared/projectRecords/assignmentDirection"
+import { taskDirectionOptions } from "@/src/shared/projectRecords/assignmentDirection"
 
 const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/assignments/")
 
@@ -76,7 +76,7 @@ export function PageProjectAssignments() {
             <SelectListbox
               className="w-56"
               value={search.direction}
-              options={assignmentDirectionOptions}
+              options={taskDirectionOptions}
               onChange={(next) =>
                 updateSearch({ direction: next ?? ASSIGNMENTS_DEFAULTS.direction })
               }

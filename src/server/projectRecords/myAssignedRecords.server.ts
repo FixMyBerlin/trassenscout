@@ -12,7 +12,6 @@ function directionWhere(
   if (direction === "toMe") return { assignedToId: userId }
   // Authorship survives a reassignment, assignedById does not: it moves to whoever reassigned last.
   if (direction === "createdByMe") return { userId }
-  // "all": every open task in reach, which readableProjectWhere alone is left to bound.
   return {}
 }
 
@@ -45,6 +44,8 @@ export async function getMyAssignedRecords(
 
   const records = await db.projectRecord.findMany({
     where: {
+      // A task is a record with an assignee, whichever direction is picked.
+      assignedToId: { not: null },
       ...directionWhere(input.direction, userId),
       ...(input.editingState ? { editingState: input.editingState } : {}),
       project: readableProjectWhere(userId, session.role, input.projectSlug),

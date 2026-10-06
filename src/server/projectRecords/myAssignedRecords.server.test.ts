@@ -38,14 +38,14 @@ describe("getMyAssignedRecords", () => {
     expect(listWhere().project).toEqual({ memberships: { some: { userId: 99 } } })
   })
 
-  test("drops the involvement filter on all, leaving project access as the only bound", async () => {
+  test("limits all to records that have an assignee", async () => {
     const { getMyAssignedRecords } = await import("./myAssignedRecords.server")
 
     await getMyAssignedRecords(headers, { direction: "all" })
 
     expect(listWhere()).not.toHaveProperty("OR")
     expect(listWhere()).not.toHaveProperty("userId")
-    expect(listWhere()).not.toHaveProperty("assignedToId")
+    expect(listWhere().assignedToId).toEqual({ not: null })
     expect(listWhere()).not.toHaveProperty("assignedById")
     expect(listWhere().project).toEqual({ memberships: { some: { userId: 99 } } })
   })
@@ -85,6 +85,7 @@ describe("getMyAssignedRecords", () => {
     await getMyAssignedRecords(headers, { direction: "createdByMe" })
 
     expect(listWhere().userId).toBe(99)
+    expect(listWhere().assignedToId).toEqual({ not: null })
     expect(listWhere()).not.toHaveProperty("assignedById")
     expect(listWhere()).not.toHaveProperty("OR")
   })
