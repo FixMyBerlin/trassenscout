@@ -42,7 +42,6 @@ Mit dem Aufrufen des Formulars stimme ich der Datenschutzerklärung zu. Die Date
     next: "Weiter",
     back: "Zurück",
     submit: "Stellungnahme absenden",
-    again: "Weitere Stellungnahme abgeben",
   },
   pages: [
     {
@@ -111,12 +110,11 @@ Mit dem Aufrufen des Formulars stimme ich der Datenschutzerklärung zu. Die Date
             description:
               "Wählen Sie aus, worauf sich Ihre Stellungnahme bezieht. Für einen Trassenabschnitt oder eine Punktsetzung können Sie anschließend einen Ort auf der Karte markieren.",
             options: [
-              { key: "trassenabschnitt", label: "Trassenabschnitt / Maßnahme auf der Karte" },
-              { key: "punktsetzung", label: "Punktsetzung auf der Karte" },
+              { key: "trassenabschnitt", label: "Planungsabschnitt/ Maßnahme auf der Karte" },
+              { key: "punktsetzung", label: "Pinsetzung auf der Karte" },
               {
                 key: "gesamtes_netz",
-                label:
-                  "Gesamtes Netzkonzept / netzübergreifend (ohne spezifische Geolokalisierung)",
+                label: "Kein Ortsbezug, allgemeiner Hinweis",
               },
             ],
           },
