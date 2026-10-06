@@ -88,9 +88,21 @@ function pageHead(title: string, options?: RouteHeadOptions) {
   }
 }
 
+function faviconMimeType(url: string) {
+  const path = url.split("?")[0]?.toLowerCase() ?? ""
+  if (path.endsWith(".svg")) return "image/svg+xml"
+  if (path.endsWith(".png")) return "image/png"
+  if (path.endsWith(".webp")) return "image/webp"
+  if (path.endsWith(".jpg") || path.endsWith(".jpeg")) return "image/jpeg"
+  if (path.endsWith(".gif")) return "image/gif"
+  if (path.endsWith(".ico")) return "image/x-icon"
+  return undefined
+}
+
 /** Public survey participation layout – per-survey icon, canonical URL, and noindex. */
 export function surveyLayoutHead(surveySlug: AllowedSurveySlugs) {
   const { logoUrl, canonicalUrl, title } = getConfigBySurveySlug(surveySlug, "meta")
+  const iconType = faviconMimeType(logoUrl)
   return {
     meta: [
       { title: `${title} ${surveySlug.toUpperCase()}` },
@@ -100,7 +112,7 @@ export function surveyLayoutHead(surveySlug: AllowedSurveySlugs) {
     ],
     links: [
       { rel: "canonical", href: canonicalUrl },
-      { rel: "icon", href: logoUrl },
+      { rel: "icon", href: logoUrl, ...(iconType ? { type: iconType } : {}) },
     ],
   }
 }
