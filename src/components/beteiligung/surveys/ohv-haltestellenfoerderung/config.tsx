@@ -72,12 +72,6 @@ Nach Erstellung des Ma√ünahmenprogramms wird dieses per E-Mail an die Kommunen √
         icon: "DOCUMENT",
       },
       {
-        value: "REJECTED_HOUSEHOLD_RESERVATION",
-        label: "Eingabe abgelehnt (Haushaltsvorbehalt)",
-        color: "#FEE2E2",
-        icon: "XMARK",
-      },
-      {
         value: "REJECTED",
         label: "Eingabe abgelehnt",
         color: "#FECACA",
