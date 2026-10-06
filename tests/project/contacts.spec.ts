@@ -8,7 +8,7 @@ const newContactPath = `${contactsPath}/new`
 defineSettingsRoutePermissionSuite({
   suiteName: "Contacts permissions",
   listPath: contactsPath,
-  listHeading: "Externe Kontakte",
+  listHeading: "Weitere Kontakte",
   createPath: newContactPath,
   createHeading: "Kontakt hinzufügen",
   editHeading: "Kontakt bearbeiten",

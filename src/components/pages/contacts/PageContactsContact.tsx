@@ -27,7 +27,7 @@ export function PageContactsContact() {
       <PageHeader
         breadcrumb={
           <ProjectPageBreadcrumb
-            section="Externe Kontakte"
+            section="Weitere Kontakte"
             sectionTo="/$projectSlug/contacts"
             current={`Kontakt von ${getContactName(contact)}`}
           />
