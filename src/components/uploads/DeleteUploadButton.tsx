@@ -3,14 +3,15 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { twJoin } from "tailwind-merge"
 import { linkIcons } from "@/src/components/core/components/links/Link"
 import { linkStyles } from "@/src/components/core/components/links/styles"
-import { frenchQuote } from "@/src/components/core/components/text/quote"
 import { deleteUploadFn } from "@/src/server/uploads/uploads.functions"
+import { type UploadLinks, uploadDeletionConfirmMessage } from "./uploadDeletionConfirmMessage"
 import { invalidateAfterUploadChange, markUploadDeletedInCache } from "./uploadQueryCache"
 
 type Props = {
   projectSlug: string
   uploadId: number
   uploadTitle: string
+  uploadLinks: UploadLinks
   onDeleted: () => Promise<void> | void
   variant?: "link" | "icon" | "linkWithIcon"
   className?: string
@@ -20,6 +21,7 @@ export const DeleteUploadButton = ({
   projectSlug,
   uploadId,
   uploadTitle,
+  uploadLinks,
   onDeleted,
   variant = "linkWithIcon",
   className,
@@ -30,24 +32,18 @@ export const DeleteUploadButton = ({
   })
 
   const handleDelete = async () => {
-    if (
-      window.confirm(
-        `Möchten Sie das Dokument ${frenchQuote(uploadTitle)} wirklich unwiderruflich löschen?`,
-      )
-    ) {
-      try {
-        await markUploadDeletedInCache(queryClient, projectSlug, uploadId)
-        await deleteUploadMutation.mutateAsync({ data: { projectSlug, id: uploadId } })
-        // The caches were already patched optimistically above; do not hold the modal
-        // open until every linked list has refetched.
-        void invalidateAfterUploadChange(queryClient, projectSlug)
-        await onDeleted()
-      } catch (error) {
-        console.error("Error deleting upload:", error)
-        alert(
-          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
-        )
-      }
+    if (!window.confirm(uploadDeletionConfirmMessage(uploadTitle, uploadLinks))) return
+
+    try {
+      await markUploadDeletedInCache(queryClient, projectSlug, uploadId)
+      await deleteUploadMutation.mutateAsync({ data: { projectSlug, id: uploadId } })
+      // The caches were already patched optimistically above; do not hold the modal
+      // open until every linked list has refetched.
+      void invalidateAfterUploadChange(queryClient, projectSlug)
+      await onDeleted()
+    } catch (error) {
+      console.error("Error deleting upload:", error)
+      alert("Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.")
     }
   }
 

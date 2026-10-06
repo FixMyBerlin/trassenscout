@@ -4,7 +4,6 @@ import { expect, test } from "@/tests/_fixtures/test"
 import { cleanupNoProjectMemberships } from "@/tests/_utils/cleanupNoProjectMemberships"
 import { expectAccessDeniedRedirect } from "@/tests/_utils/pageAssertions"
 import { getTestDb } from "@/tests/_utils/testDb"
-import { waitForSubmitReady } from "@/tests/_utils/waitForFormReady"
 
 const projectSlug = seedProjects.richProject
 const listPath = `/${projectSlug}/project-records`
@@ -245,18 +244,23 @@ test.describe("Project records permissions", () => {
           timeout: 30_000,
         })
 
+        // The only list item with a text field is the new-comment form.
         const commentField = page
           .getByRole("listitem")
-          .filter({ has: page.getByRole("button", { name: "Anmerkung hinzufügen", exact: true }) })
-          .locator("textarea")
+          .filter({ has: page.getByRole("textbox") })
+          .getByRole("textbox")
+        const submitButton = page.getByRole("button", { name: "Anmerkung hinzufügen", exact: true })
         await expect(commentField).toBeVisible({ timeout: 30_000 })
+        // Disabled until hydrated, so this is also the hydration wait.
         await expect(commentField).toBeEnabled({ timeout: 30_000 })
-        await waitForSubmitReady(page, "Anmerkung hinzufügen")
+        await expect(submitButton).toBeHidden()
         await commentField.fill(comment)
-        await page.getByRole("button", { name: "Anmerkung hinzufügen", exact: true }).click()
+        await expect(submitButton).toBeEnabled({ timeout: 30_000 })
+        await submitButton.click()
 
         await expect(page.getByText(comment, { exact: true })).toBeVisible({ timeout: 30_000 })
         await expect(commentField).toHaveValue("")
+        await expect(submitButton).toBeHidden()
         await page
           .waitForResponse((r) => r.url().includes("/api/rpc/") && r.status() === 200, {
             timeout: 15_000,

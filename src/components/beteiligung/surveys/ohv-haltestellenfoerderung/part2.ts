@@ -34,7 +34,7 @@ export const part2Config: SurveyPart2 = {
   intro: {
     type: "standard",
     title:
-      "Maßnahmenmeldung für die Vergabe von Zuschüssen für Bau- und Ausbaumaßnahmen- an Verknüpfungs- und Zugangsanlagen im Bereich des übrigen ÖPNV im Landkreis Oberhavel",
+      "Maßnahmenmeldung für die Vergabe von Zuschüssen für Bau- und Ausbaumaßnahmen an Verknüpfungs- und Zugangsanlagen im Bereich des übrigen ÖPNV im Landkreis Oberhavel",
     description: `Der Landkreis Oberhavel gewährt nach Maßgabe des Gesetzes über den öffentlichen Personennahverkehr des Landes Brandenburg (ÖPNVG) und in entsprechender Anwendung der Verwaltungsvorschriften (VV) zu §§ 23 und 44 der Landeshaushaltsordnung (LHO) Zuwendungen für Investitionen zur Verbesserung der kommunalen Infrastruktur im Bereich des übrigen ÖPNV (Vorhaben).
 
 Im Fokus der Investitionsförderung stehen kommunale Maßnahmen, die zur Attraktivitätssteigerung und besseren Nutzbarkeit des übrigen ÖPNV beitragen sollen. Die gezielte Förderung von Mobilitätsmaßnahmen stärkt den übrigen ÖPNV in den Regionen, kann bedarfsgerechte Mobilitätsangebote aufrechterhalten oder ausbauen und damit die Erreichbarkeit besonders im ländlichen Raum sichern.
@@ -51,7 +51,7 @@ Bitte beachten Sie: Die Maßnahmenmeldung über dieses Formular stellt noch kein
 
 Voraussetzung für eine Förderung ist die nachvollziehbare Begründung des Bedarfs, eine Einordnung in kommunale oder regionale Planungen sowie die Einhaltung technischer und qualitativer Standards.
 
-Alle Städte, Gemeinden und Ämter des Landkreises Oberhavel sowie öffentlich oder privatrechtlich organisierte Verkehrsunternehmen des ÖPNV, soweit sie gemeinwirtschaftliche Leistungen oder förderfähige Verkehrsleistungen im Landkreises Oberhavel erbringen, können Maßnahmenvorschläge zu Bau-, Ausbau- und Modernisierungsvorhaben folgender Maßnahmenbereiche einreichen:
+Alle Städte, Gemeinden und Ämter des Landkreises Oberhavel sowie öffentlich oder privatrechtlich organisierte Verkehrsunternehmen des ÖPNV, soweit sie gemeinwirtschaftliche Leistungen oder förderfähige Verkehrsleistungen im Landkreis Oberhavel erbringen, können Maßnahmenvorschläge zu Bau-, Ausbau- und Modernisierungsvorhaben folgender Maßnahmenbereiche einreichen:
 - Haltestelleneinrichtungen;
 - Zentrale Omnibusbahnhöfe (ZOB);
 - Buswendeschleifen / Bahnhofsvorplätze als Verknüpfungs- und Umsteigeanlagen unterschiedlicher Verkehrsträger (sofern sie nicht bereits im Zusammenhang mit Straßenbaumaßnahmen gefördert werden);
@@ -71,7 +71,7 @@ Die Plattform ist für das Anmelde- und Antragsverfahren grundsätzlich immer ge
 
 Nach dem Stichtag des Anmeldeverfahrens werden die eingegangenen Meldungen durch die OHBV gesichtet und in Rücksprache mit dem Landkreis geprüft. Die Entscheidungen über die Aufnahme in das 5-Jahresprogramm sowie eine etwaige Konsultation anderer Fachbereiche der Verwaltung liegen beim Landkreis.
 
-Nach Erstellung des 5-Jahresprogramms wird dieses digital an alle Angemeldeten übermittelt. Die Benachrichtigung enthält als Anlage die Zusammenstellung der aufgenommenen Maßnahmen mit einem 5-Jahres-Horizont - für das jeweils folgende Kalenderjahr in Form eines bestätigen Finanzierungsplans, für die darauffolgenden vier Kalenderjahre als nicht bestätigte strukturelle Bedarfserfassung. Die im Finanzierungsplan enthaltenen angemeldeten Vorhaben erhalten auf dieser Grundlage in einem gesonderten Schritt die Aufforderung zur Antragstellung.
+Nach Erstellung des 5-Jahresprogramms wird dieses digital an alle Angemeldeten übermittelt. Die Benachrichtigung enthält als Anlage die Zusammenstellung der aufgenommenen Maßnahmen mit einem 5-Jahres-Horizont - für das jeweils folgende Kalenderjahr in Form eines bestätigten Finanzierungsplans, für die darauffolgenden vier Kalenderjahre als nicht bestätigte strukturelle Bedarfserfassung. Die im Finanzierungsplan enthaltenen angemeldeten Vorhaben erhalten auf dieser Grundlage in einem gesonderten Schritt die Aufforderung zur Antragstellung.
 
 ## Kontakt
 
@@ -95,7 +95,7 @@ Die Maßnahmenmeldung wird nicht zwischengespeichert, d.h. bei Verlassen der Sei
 - Abfrage ob Gemeinschaftsbauwerk
 - Stand der Bauvorbereitung (optional)
 - Vereinfachte Kostenberechnung (€)
-- Upload für Dokumente (optional) gemäß 7.3 der Förderrichtlinie, mindestens
+- Upload für Dokumente (optional) gemäß 7.3 der Förderrichtlinie
 - Planungsunterlagen gemäß HOAI, Leistungsphase 2;
 - Finanzierungsmodell;
 - Beschreibung der Dokumente (optional)

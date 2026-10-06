@@ -1,3 +1,4 @@
+import { useStore } from "@tanstack/react-form"
 import type { GeoCategoryMapProps } from "@/src/components/beteiligung/form/map/GeoCategoryMap"
 import { SurveyMapPanelContainer } from "@/src/components/beteiligung/form/map/MapPanelContainer"
 import { useFieldContext } from "@/src/components/beteiligung/shared/hooks/form-context"
@@ -10,6 +11,19 @@ type Props = {
   geoCategoryIdDefinition: GeoCategoryMapProps["geoCategoryIdDefinition"]
 }
 
+const sameValues = (a: unknown[], b: unknown[]) =>
+  a.length === b.length && a.every((value, index) => value === b[index])
+
+const toDisplayValue = (value: unknown) => {
+  try {
+    const parsed = JSON.parse(value as string)
+    if (Array.isArray(parsed)) return parsed.join(", ") || "Keine Auswahl"
+  } catch {
+    // not JSON: shown as is
+  }
+  return (value as string | undefined) || "Keine Auswahl"
+}
+
 export const SurveyMapGeoCategoryInfoPanel = ({
   description,
   infoPanelText,
@@ -17,71 +31,48 @@ export const SurveyMapGeoCategoryInfoPanel = ({
   geoCategoryIdDefinition,
 }: Props) => {
   const field = useFieldContext<object>()
+  // Subscribed, not read via getFieldValue: the compiler memoizes this panel, so a read never refreshes.
+  const geoCategoryId = useStore(
+    field.form.store,
+    (state) => state.values[geoCategoryIdDefinition.dataKey],
+  )
+  const additionalValues = useStore(
+    field.form.store,
+    (state) => additionalData.map(({ dataKey }) => state.values[dataKey]),
+    sameValues,
+  )
 
-  // Use infoPanelText if provided, otherwise use description, otherwise use default text
-  const displayText = infoPanelText || description || "Bitte treffen Sie eine Auswahl."
+  if (!geoCategoryId) {
+    return (
+      <SurveyMapPanelContainer>
+        {infoPanelText || description || "Bitte treffen Sie eine Auswahl."}
+      </SurveyMapPanelContainer>
+    )
+  }
 
   return (
-    <>
-      {field.form.getFieldValue(geoCategoryIdDefinition.dataKey) ? (
-        <SurveyMapPanelContainer>
-          <ul className="text-left">
-            {
-              <SuperAdminBox>
-                <li>
-                  <strong>ID:</strong>{" "}
-                  {field.form.getFieldValue(geoCategoryIdDefinition.dataKey) || "Keine Auswahl"} (
-                  {geoCategoryIdDefinition.propertyName})
-                </li>
-                {additionalData.map((data) => {
-                  const { label, dataKey, propertyName } = data
-                  const value = field.form.getFieldValue(dataKey)
-
-                  // Check if value is a stringified array and parse it
-                  let displayValue: string
-                  try {
-                    const parsedValue = JSON.parse(value)
-                    displayValue = Array.isArray(parsedValue) ? parsedValue.join(", ") : value
-                  } catch {
-                    displayValue = value
-                  }
-                  displayValue = displayValue || "Keine Auswahl"
-
-                  return (
-                    <li key={dataKey} className="text-black">
-                      <strong>{label}: </strong>
-                      {displayValue} ({propertyName})
-                    </li>
-                  )
-                })}
-              </SuperAdminBox>
-            }
-            {additionalData.map((data) => {
-              const { label, dataKey, propertyName: _propertyName } = data
-              const value = field.form.getFieldValue(dataKey)
-
-              // Check if value is a stringified array and parse it
-              let displayValue: string
-              try {
-                const parsedValue = JSON.parse(value)
-                displayValue = Array.isArray(parsedValue) ? parsedValue.join(", ") : value
-              } catch {
-                displayValue = value
-              }
-              displayValue = displayValue || "Keine Auswahl"
-
-              return (
-                <li key={dataKey} className="text-black">
-                  <strong>{label}: </strong>
-                  {displayValue}
-                </li>
-              )
-            })}
-          </ul>
-        </SurveyMapPanelContainer>
-      ) : (
-        <SurveyMapPanelContainer>{displayText}</SurveyMapPanelContainer>
-      )}
-    </>
+    <SurveyMapPanelContainer>
+      <SuperAdminBox>
+        <ul className="text-left">
+          <li>
+            <strong>ID:</strong> {geoCategoryId} ({geoCategoryIdDefinition.propertyName})
+          </li>
+          {additionalData.map(({ label, dataKey, propertyName }, index) => (
+            <li key={dataKey} className="text-black">
+              <strong>{label}: </strong>
+              {toDisplayValue(additionalValues[index])} ({propertyName})
+            </li>
+          ))}
+        </ul>
+      </SuperAdminBox>
+      <ul className="text-left">
+        {additionalData.map(({ label, dataKey }, index) => (
+          <li key={dataKey} className="text-black">
+            <strong>{label}: </strong>
+            {toDisplayValue(additionalValues[index])}
+          </li>
+        ))}
+      </ul>
+    </SurveyMapPanelContainer>
   )
 }

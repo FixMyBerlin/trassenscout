@@ -5,7 +5,10 @@ import { AbschnitteBreadcrumb } from "@/src/components/abschnitte/AbschnitteBrea
 import { EditSubsubsectionForm } from "@/src/components/abschnitte/EditSubsubsectionForm"
 import { SubsubsectionMcpDraftAdminBox } from "@/src/components/abschnitte/SubsubsectionMcpDraftAdminBox"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
-import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
+import {
+  optionalPageContentPaddingClassName,
+  pageContentPaddingClassName,
+} from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { Spinner } from "@/src/components/core/components/Spinner"
 import { subsubsectionBySlugQueryOptions } from "@/src/server/subsubsections/subsubsectionQueryOptions"
@@ -37,7 +40,7 @@ export function PageAbschnitteSubsubsectionEdit() {
         </div>
         <EditSubsubsectionForm subsubsection={subsubsection} applyMcpDraft={applyMcpDraft} />
       </Suspense>
-      <div className={pageContentPaddingClassName}>
+      <div className={optionalPageContentPaddingClassName}>
         <SuperAdminLogData data={subsubsection} />
       </div>
     </>

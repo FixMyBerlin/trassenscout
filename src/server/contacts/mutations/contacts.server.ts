@@ -48,7 +48,7 @@ export async function createContact(headers: Headers, input: z.infer<typeof Crea
 
   await createLogEntry({
     action: "CREATE",
-    message: `Neuer externer Kontakt ${getContactName(record)} wurde erstellt.`,
+    message: `Neuer weiterer Kontakt ${getContactName(record)} wurde erstellt.`,
     userId: Number(session.userId),
     projectId,
     contactId: record.id,
@@ -105,7 +105,7 @@ export async function updateContact(headers: Headers, input: z.infer<typeof Upda
 
   await createLogEntry({
     action: "UPDATE",
-    message: `Externer Kontakt ${getContactName(record)} wurde geändert.`,
+    message: `Weiterer Kontakt ${getContactName(record)} wurde geändert.`,
     userId: Number(session.userId),
     projectSlug,
     previousRecord: {
@@ -152,7 +152,7 @@ export async function deleteContact(headers: Headers, input: z.infer<typeof Dele
 
   await createLogEntry({
     action: "DELETE",
-    message: `Externer Kontakt ${getContactName(contact)} wurde gelöscht.`,
+    message: `Weiterer Kontakt ${getContactName(contact)} wurde gelöscht.`,
     userId: Number(session.userId),
     projectSlug: input.projectSlug,
     previousRecord: { id: contact.id },

@@ -38,6 +38,18 @@ describe("getMyAssignedRecords", () => {
     expect(listWhere().project).toEqual({ memberships: { some: { userId: 99 } } })
   })
 
+  test("limits all to records that have an assignee", async () => {
+    const { getMyAssignedRecords } = await import("./myAssignedRecords.server")
+
+    await getMyAssignedRecords(headers, { direction: "all" })
+
+    expect(listWhere()).not.toHaveProperty("OR")
+    expect(listWhere()).not.toHaveProperty("userId")
+    expect(listWhere().assignedToId).toEqual({ not: null })
+    expect(listWhere()).not.toHaveProperty("assignedById")
+    expect(listWhere().project).toEqual({ memberships: { some: { userId: 99 } } })
+  })
+
   test("leaves an admin every project", async () => {
     mockSession.mockResolvedValue({ userId: 99, role: UserRoleEnum.ADMIN })
     const { getMyAssignedRecords } = await import("./myAssignedRecords.server")
@@ -58,14 +70,6 @@ describe("getMyAssignedRecords", () => {
     })
   })
 
-  test("reads both sides of an assignment by default", async () => {
-    const { getMyAssignedRecords } = await import("./myAssignedRecords.server")
-
-    await getMyAssignedRecords(headers, { direction: "all" })
-
-    expect(listWhere().OR).toEqual([{ assignedToId: 99 }, { assignedById: 99 }])
-  })
-
   test("narrows to one side on request", async () => {
     const { getMyAssignedRecords } = await import("./myAssignedRecords.server")
 
@@ -73,6 +77,25 @@ describe("getMyAssignedRecords", () => {
 
     expect(listWhere().assignedById).toBe(99)
     expect(listWhere()).not.toHaveProperty("OR")
+  })
+
+  test("follows authored records past a reassignment, which byMe cannot", async () => {
+    const { getMyAssignedRecords } = await import("./myAssignedRecords.server")
+
+    await getMyAssignedRecords(headers, { direction: "createdByMe" })
+
+    expect(listWhere().userId).toBe(99)
+    expect(listWhere().assignedToId).toEqual({ not: null })
+    expect(listWhere()).not.toHaveProperty("assignedById")
+    expect(listWhere()).not.toHaveProperty("OR")
+  })
+
+  test("still hides an authored record in a project the user has left", async () => {
+    const { getMyAssignedRecords } = await import("./myAssignedRecords.server")
+
+    await getMyAssignedRecords(headers, { direction: "createdByMe" })
+
+    expect(listWhere().project).toEqual({ memberships: { some: { userId: 99 } } })
   })
 })
 
@@ -89,7 +112,18 @@ describe("countMyAssignedRecords", () => {
     await countMyAssignedRecords(headers)
 
     expect(countWhere().project).toEqual({ memberships: { some: { userId: 99 } } })
-    expect(countWhere().OR).toEqual([{ assignedToId: 99 }, { assignedById: 99 }])
+  })
+
+  test("counts only open tasks assigned to me, the work waiting on me", async () => {
+    const { countMyAssignedRecords } = await import("./myAssignedRecords.server")
+
+    await countMyAssignedRecords(headers)
+
+    expect(countWhere()).toEqual({
+      assignedToId: 99,
+      editingState: "PENDING",
+      project: { memberships: { some: { userId: 99 } } },
+    })
   })
 
   test("can narrow the count to one project without dropping the membership check", async () => {
@@ -101,5 +135,13 @@ describe("countMyAssignedRecords", () => {
       slug: "rs23",
       memberships: { some: { userId: 99 } },
     })
+  })
+})
+
+describe("GetMyAssignedRecordsSchema", () => {
+  test("defaults to tasks assigned to me, never the unfiltered list", async () => {
+    const { GetMyAssignedRecordsSchema } = await import("./projectRecords.inputSchemas")
+
+    expect(GetMyAssignedRecordsSchema.parse({}).direction).toBe("toMe")
   })
 })

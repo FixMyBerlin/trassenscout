@@ -122,6 +122,8 @@ export function redactAuthorUserId(
   context: UserRedactionContext,
 ) {
   if (userId == null) return null
+
+  if (userId === context.sessionUserId) return userId
   if (!context.isAdmin) return null
   return formerMemberFk(userId, context)
 }

@@ -18,7 +18,7 @@ type Props = {
 const stickyFirstColumnClassName = twJoin(
   "[:where(&_tr)]:bg-inherit",
   "[&_tr>:first-child]:sticky [&_tr>:first-child]:left-0 [&_tr>:first-child]:z-[1]",
-  "[&_tr>:first-child]:bg-inherit [&_tr>:first-child]:shadow-[inset_-1px_0_0_var(--color-gray-200)]",
+  "[&_tr>:first-child]:bg-inherit",
 )
 
 export const TableWrapper = ({

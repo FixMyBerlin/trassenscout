@@ -14,6 +14,13 @@ export const InputNumberOrNullSchema = z.preprocess(
   (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
   z.number().nullable(),
 )
+
+export const NON_NEGATIVE_AMOUNT_ERROR = "Der Betrag darf nicht negativ sein."
+
+export const InputNonNegativeNumberOrNullSchema = z.preprocess(
+  (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
+  z.number().min(0, { error: NON_NEGATIVE_AMOUNT_ERROR }).nullable(),
+)
 export const InputNumberSchema = z.preprocess(
   (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
   z.number({

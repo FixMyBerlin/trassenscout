@@ -24,7 +24,7 @@ export const formConfig: FormConfig = {
 
 ## Wie geht es weiter?
 
-Das digitale Meldeverfahren läuft noch bis zum 30.09.2025. Bis dahin können Sie auf dem gleichen Wege noch weitere Maßnahmen melden. Nach Abschluss des Meldeverfahrens werden die eingegangenen Meldungen durch die OHBV gesichtet und in Rücksprache mit dem Landkreis geprüft. Die Entscheidung über die Aufnahme in das 5-Jahresprogramm liegt beim Landkreis. Der Landkreis zieht ggf. intern weitere Abteilungen hinzu, wie z. B. für Schulwegsicherheit.
+Die Plattform ist für das Anmelde- und Antragsverfahren grundsätzlich immer geöffnet. Sie können daher jederzeit Vorhaben melden bzw. Anträge stellen und Unterlagen hochladen. Die eingegangenen Meldungen werden durch die OHBV gesichtet und in Rücksprache mit dem Landkreis geprüft. Die Entscheidung über die Aufnahme in das 5-Jahresprogramm liegt beim Landkreis. Der Landkreis zieht ggf. intern weitere Abteilungen hinzu, wie z. B. für Schulwegsicherheit.
 
 Nach Erstellung des Maßnahmenprogramms wird dieses per E-Mail an die Kommunen übermittelt. Die E-Mail enthält als Anlage die Zusammenstellung der aufgenommenen Maßnahmen. Die Kommunen erhalten auf dieser Grundlage in einem gesonderten Schritt die Aufforderung zur Antragstellung.
 `,
@@ -39,7 +39,7 @@ Nach Erstellung des Maßnahmenprogramms wird dieses per E-Mail an die Kommunen �
     ],
     homeUrl: "https://www.oberhavel.de/",
     buttonLink: {
-      label: "Zur Website des Lankreis Oberhavel",
+      label: "Zur Website des Landkreises Oberhavel",
       color: "primaryColor",
     },
   },
@@ -70,12 +70,6 @@ Nach Erstellung des Maßnahmenprogramms wird dieses per E-Mail an die Kommunen �
         label: "Unterlagen nachzureichen",
         color: "#FEF3C7",
         icon: "DOCUMENT",
-      },
-      {
-        value: "REJECTED_HOUSEHOLD_RESERVATION",
-        label: "Eingabe abgelehnt (Haushaltsvorbehalt)",
-        color: "#FEE2E2",
-        icon: "XMARK",
       },
       {
         value: "REJECTED",
@@ -194,6 +188,7 @@ das Team vom Trassenscout
       "location",
       "surveyUrl",
     ],
-    recipients: ["lk@dummy.de", "ohbv@dummy.de"],
+    // TODO: add correct recipients lk and ohbv
+    recipients: ["noreply@trassenscout.de"],
   },
 }

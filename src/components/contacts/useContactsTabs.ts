@@ -13,6 +13,6 @@ export function useContactsTabs() {
   if (edit) {
     tabs.push({ name: "Einladungen", to: `/${projectSlug}/invites` })
   }
-  tabs.push({ name: "Externe Kontakte", to: `/${projectSlug}/contacts` })
+  tabs.push({ name: "Weitere Kontakte", to: `/${projectSlug}/contacts` })
   return tabs
 }

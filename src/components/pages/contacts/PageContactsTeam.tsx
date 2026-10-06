@@ -5,7 +5,7 @@ import { TeamTable } from "@/src/components/contacts/team/TeamTable"
 import { useContactsTabs } from "@/src/components/contacts/useContactsTabs"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
 import { Link } from "@/src/components/core/components/links/Link"
-import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
+import { optionalPageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { TabsApp } from "@/src/components/core/components/Tabs/TabsApp"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
@@ -42,7 +42,7 @@ export function PageContactsTeam() {
         }
       />
       <TeamTable users={users} />
-      <div className={pageContentPaddingClassName}>
+      <div className={optionalPageContentPaddingClassName}>
         <SuperAdminBox>
           <Link button="blue" to="/admin/memberships">
             Rechte verwalten

@@ -13,7 +13,7 @@ import {
   MapListViewLayout,
   MAP_VIEWPORT_SHELL_CLASS,
 } from "@/src/components/core/components/PageHeader/MapListViewLayout"
-import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
+import { optionalPageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { PageHeaderToolbarLink } from "@/src/components/core/components/PageHeader/PageHeaderToolbarLink"
 import { shortTitle } from "@/src/components/core/components/text/titles"
@@ -104,7 +104,7 @@ export const ProjectDashboardClient = () => {
         }
       />
 
-      <div className={pageContentPaddingClassName}>
+      <div className={optionalPageContentPaddingClassName}>
         <GeometryErrorNotice
           items={brokenGeometryItems(subsections)}
           labelSingular="Planungsabschnitt"

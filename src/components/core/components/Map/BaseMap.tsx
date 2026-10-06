@@ -2,6 +2,7 @@ import type { FeatureCollection, LineString, Point, Polygon } from "geojson"
 import type { MapLibreEvent } from "maplibre-gl"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import "maplibre-gl/dist/maplibre-gl.css"
+import "./maplibreWorker"
 import MapComponent, {
   AttributionControl,
   MapLayerMouseEvent,
@@ -30,6 +31,7 @@ import { useMapLoadedActions } from "./map-loaded-store"
 import { MapHighlightContext } from "./mapHighlightContext"
 import { applyMapHighlight, CLEAR_MAP_HIGHLIGHT, type MapHighlightState } from "./mapHighlightState"
 import { getMapStyle } from "./mapStyleConfig"
+import { MapViewportRepair } from "./MapViewportRepair"
 import { usePmtilesProtocol } from "./pmtilesProtocol"
 import { StaticOverlay } from "./staticOverlay/StaticOverlay"
 import type { StaticOverlayConfig } from "./staticOverlay/staticOverlay.types"
@@ -45,6 +47,8 @@ export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
       | "onMouseLeave"
       | "onClick"
       | "onContextMenu"
+      | "onMoveStart"
+      | "onMoveEnd"
       | "onZoomEnd"
       | "onLoad"
       | "onIdle"
@@ -77,6 +81,8 @@ export const BaseMap = ({
   onMouseLeave,
   onClick,
   onContextMenu,
+  onMoveStart,
+  onMoveEnd,
   onZoomEnd,
   onLoad,
   onIdle,
@@ -260,6 +266,8 @@ export const BaseMap = ({
             onMouseLeave={handleMouseLeaveInternal}
             onClick={handleClickInternal}
             onContextMenu={onContextMenu}
+            onMoveStart={onMoveStart}
+            onMoveEnd={onMoveEnd}
             onZoomEnd={onZoomEnd}
             onLoad={handleLoadInternal}
             onIdle={onIdle}
@@ -276,6 +284,7 @@ export const BaseMap = ({
             hash={hash || false}
             attributionControl={false}
           >
+            <MapViewportRepair initialViewState={initialViewState} />
             <AttributionControl compact={true} position="bottom-right" />
             <NavigationControl showCompass={false} />
             {showScaleControl && <ScaleControl />}

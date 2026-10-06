@@ -145,10 +145,14 @@ describe("formerMemberFk", () => {
 })
 
 describe("redactAuthorUserId", () => {
-  test("returns null for non-admins even for current members", () => {
+  test("hides other people's ids from non-admins, including current members", () => {
     const context = { memberUserIds, isAdmin: false, sessionUserId }
     expect(redactAuthorUserId(1, context)).toBeNull()
-    expect(redactAuthorUserId(sessionUserId, context)).toBeNull()
+  })
+
+  test("keeps the session user's own id, which the lists filter on", () => {
+    const context = { memberUserIds, isAdmin: false, sessionUserId }
+    expect(redactAuthorUserId(sessionUserId, context)).toBe(sessionUserId)
   })
 
   test("keeps current member ids for admins", () => {

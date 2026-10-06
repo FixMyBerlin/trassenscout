@@ -14,7 +14,7 @@ export function PageContactsNew() {
         titleVisuallyHidden
         breadcrumb={
           <ProjectPageBreadcrumb
-            section="Externe Kontakte"
+            section="Weitere Kontakte"
             sectionTo="/$projectSlug/contacts"
             current="neu"
           />

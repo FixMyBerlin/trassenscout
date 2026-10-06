@@ -589,7 +589,15 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
             </form.AppField>
             <form.Subscribe selector={(state) => calculateRemainingFundingNeed(state.values)}>
               {(remaining) => (
-                <FundingResultRow label="Verbleibender Finanzierungsbedarf" value={remaining} />
+                <div>
+                  <FundingResultRow label="Verbleibender Finanzierungsbedarf" value={remaining} />
+                  {remaining !== null && remaining < 0 && (
+                    <p role="alert" className="mt-1 text-sm text-red-800">
+                      Eingaben prüfen: Die errechnete Fördersumme ist negativ. Bitte kontrollieren
+                      Sie die Beträge in den Feldern Finanzierung sowie in der Kostenstruktur.
+                    </p>
+                  )}
+                </div>
               )}
             </form.Subscribe>
             <SubsubsectionFundingCalculation

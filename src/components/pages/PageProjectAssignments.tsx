@@ -16,6 +16,7 @@ import {
   DASHBOARD_ALL_MONTHS,
   DASHBOARD_ALL_PROJECTS,
 } from "@/src/shared/dashboard/searchSchemas"
+import { taskDirectionOptions } from "@/src/shared/projectRecords/assignmentDirection"
 
 const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/assignments/")
 
@@ -23,12 +24,6 @@ const statusOptions: { value: AssignmentsSearch["status"]; label: string }[] = [
   { value: "PENDING", label: "In Bearbeitung" },
   { value: "COMPLETED", label: "Abgeschlossen" },
   { value: "all", label: "Status: Alle" },
-]
-
-const directionOptions: { value: AssignmentsSearch["direction"]; label: string }[] = [
-  { value: "all", label: "Alle Zuweisungen" },
-  { value: "byMe", label: "Von mir zugewiesen" },
-  { value: "toMe", label: "An mich zugewiesen" },
 ]
 
 export function PageProjectAssignments() {
@@ -81,8 +76,10 @@ export function PageProjectAssignments() {
             <SelectListbox
               className="w-56"
               value={search.direction}
-              options={directionOptions}
-              onChange={(next) => updateSearch({ direction: next ?? "all" })}
+              options={taskDirectionOptions}
+              onChange={(next) =>
+                updateSearch({ direction: next ?? ASSIGNMENTS_DEFAULTS.direction })
+              }
             />
           </DashboardFilters>
         }

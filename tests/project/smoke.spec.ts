@@ -6,7 +6,7 @@ const projectSlug = seedProjects.richProject
 
 const projectPages = [
   { path: `/${projectSlug}`, heading: "RS23" },
-  { path: `/${projectSlug}/contacts`, heading: "Externe Kontakte" },
+  { path: `/${projectSlug}/contacts`, heading: "Weitere Kontakte" },
   { path: `/${projectSlug}/uploads`, heading: "Dokumente" },
   { path: `/${projectSlug}/project-records`, heading: "Projektprotokoll" },
   { path: `/${projectSlug}/surveys`, heading: "Beteiligungen" },

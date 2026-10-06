@@ -15,11 +15,12 @@ import {
   FORM_ERROR,
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { Link } from "@/src/components/core/components/links/Link"
-import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
+import { optionalPageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { CreateEditReviewHistory } from "@/src/components/project-records/ProjectRecordCreateEditReviewHistory"
 import { ProjectRecordDeleteActionBar } from "@/src/components/project-records/ProjectRecordDeleteActionBar"
 import { ProjectRecordFormFields } from "@/src/components/project-records/ProjectRecordFormFields"
 import { ProjectRecordNeedsReviewBanner } from "@/src/components/project-records/ProjectRecordNeedsReviewBanner"
+import { invalidateAfterProjectRecordChange } from "@/src/components/project-records/projectRecordQueryCache"
 import { ReviewProjectRecordForm } from "@/src/components/project-records/ReviewProjectRecordForm"
 import { getM2MInitialValues } from "@/src/components/project-records/utils/getM2MInitialValues"
 import { getProjectRecordAuthorLabel } from "@/src/components/project-records/utils/getProjectRecordAuthorLabel"
@@ -30,12 +31,7 @@ import { deleteMcpDraftFn } from "@/src/server/mcp/mcpDrafts/mcpDrafts.functions
 import { invalidateMcpDraftQueries } from "@/src/server/mcp/mcpDrafts/mcpDraftsQueryOptions"
 import { m2mFields, M2MFieldsType } from "@/src/server/projectRecords/m2mFields"
 import { updateProjectRecordFn } from "@/src/server/projectRecords/projectRecords.functions"
-import {
-  projectRecordQueryOptions,
-  projectRecordsNeedsReviewQueryOptions,
-  projectRecordsQueryOptions,
-  projectRecordsTabCountsQueryOptions,
-} from "@/src/server/projectRecords/projectRecordsQueryOptions"
+import { projectRecordQueryOptions } from "@/src/server/projectRecords/projectRecordsQueryOptions"
 import type { ProjectRecord } from "@/src/server/projectRecords/types"
 import {
   projectRecordFormDefaultValues,
@@ -170,15 +166,7 @@ export const EditProjectRecordForm = ({
           queryClient.invalidateQueries({
             queryKey: projectRecordQueryOptions({ projectSlug, id: projectRecord.id }).queryKey,
           }),
-          queryClient.invalidateQueries({
-            queryKey: projectRecordsQueryOptions({ projectSlug }).queryKey,
-          }),
-          queryClient.invalidateQueries({
-            queryKey: projectRecordsNeedsReviewQueryOptions({ projectSlug }).queryKey,
-          }),
-          queryClient.invalidateQueries({
-            queryKey: projectRecordsTabCountsQueryOptions({ projectSlug }).queryKey,
-          }),
+          invalidateAfterProjectRecordChange(queryClient, projectSlug),
         ])
         if (onSuccess) {
           onSuccess(values.reviewState)
@@ -212,7 +200,7 @@ export const EditProjectRecordForm = ({
     <>
       {needsReview && <ProjectRecordNeedsReviewBanner />}
       {projectRecord.projectRecordAuthorType === "SYSTEM" && (
-        <div className={pageContentPaddingClassName}>
+        <div className={optionalPageContentPaddingClassName}>
           <SuperAdminBox className="mb-6">
             In die{" "}
             <Link

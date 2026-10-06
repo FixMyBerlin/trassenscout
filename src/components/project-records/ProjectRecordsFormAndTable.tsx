@@ -10,6 +10,7 @@ import { PageHeader } from "@/src/components/core/components/PageHeader/PageHead
 import { PageHeaderSearchFilter } from "@/src/components/core/components/PageHeader/PageHeaderSearchFilter"
 import { FilteredProjectRecords } from "@/src/components/project-records/FilteredProjectRecords"
 import { ProjectRecordNewModal } from "@/src/components/project-records/ProjectRecordNewModal"
+import { invalidateAfterProjectRecordChange } from "@/src/components/project-records/projectRecordQueryCache"
 import { useProjectRecordsListHeader } from "@/src/components/project-records/useProjectRecordsListHeader"
 import { useProjectRecordFilters } from "@/src/components/project-records/utils/useProjectRecordFilters"
 import { deleteMcpDraftFn } from "@/src/server/mcp/mcpDrafts/mcpDrafts.functions"
@@ -17,11 +18,9 @@ import {
   invalidateMcpDraftQueries,
   projectRecordMcpDraftQueryOptions,
 } from "@/src/server/mcp/mcpDrafts/mcpDraftsQueryOptions"
-import {
-  projectRecordsQueryOptions,
-  projectRecordsTabCountsQueryOptions,
-} from "@/src/server/projectRecords/projectRecordsQueryOptions"
+import { projectRecordsQueryOptions } from "@/src/server/projectRecords/projectRecordsQueryOptions"
 import { isMcpDraftSearch } from "@/src/shared/mcp/catalogMcpSearch"
+import { assignmentDirectionOptions } from "@/src/shared/projectRecords/assignmentDirection"
 import {
   PROJECT_RECORD_FILTER_DEFAULTS,
   type ProjectRecordFilter,
@@ -31,12 +30,6 @@ const statusOptions: { value: ProjectRecordFilter["status"]; label: string }[] =
   { value: "PENDING", label: "In Bearbeitung" },
   { value: "COMPLETED", label: "Abgeschlossen" },
   { value: "all", label: "Alle Status" },
-]
-
-const directionOptions: { value: ProjectRecordFilter["direction"]; label: string }[] = [
-  { value: "all", label: "Alle Zuweisungen" },
-  { value: "byMe", label: "Von mir zugewiesen" },
-  { value: "toMe", label: "An mich zugewiesen" },
 ]
 
 const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
@@ -100,8 +93,10 @@ export const ProjectRecordsFormAndTable = () => {
             <SelectListbox
               className="w-56"
               value={filter?.direction ?? PROJECT_RECORD_FILTER_DEFAULTS.direction}
-              options={directionOptions}
-              onChange={(next) => void setFilter({ direction: next ?? "all" })}
+              options={assignmentDirectionOptions}
+              onChange={(next) =>
+                void setFilter({ direction: next ?? PROJECT_RECORD_FILTER_DEFAULTS.direction })
+              }
             />
           </PageHeaderSearchFilter>
         }
@@ -153,14 +148,7 @@ export const ProjectRecordsFormAndTable = () => {
               setShowSuccess(false)
               setCreatedProjectRecordId(null)
             }, 3000)
-            await Promise.all([
-              queryClient.invalidateQueries({
-                queryKey: projectRecordsQueryOptions({ projectSlug }).queryKey,
-              }),
-              queryClient.invalidateQueries({
-                queryKey: projectRecordsTabCountsQueryOptions({ projectSlug }).queryKey,
-              }),
-            ])
+            await invalidateAfterProjectRecordChange(queryClient, projectSlug)
           }}
         />
         <div className="absolute top-0 right-0">

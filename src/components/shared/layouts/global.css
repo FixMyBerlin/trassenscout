@@ -86,6 +86,11 @@
 @layer base {
 }
 
+/** Markers, popups and controls keep their z-index inside the map, so menus and dialogs always overlay it. */
+.maplibregl-map {
+  isolation: isolate;
+}
+
 .maplibregl-ctrl-attrib.maplibregl-compact {
   @apply bg-white/20! leading-tight;
 }

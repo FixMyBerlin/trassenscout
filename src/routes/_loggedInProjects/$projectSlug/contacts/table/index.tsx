@@ -4,7 +4,7 @@ import { privateTitleHead } from "@/src/routeHead"
 import { contactsQueryOptions } from "@/src/server/contacts/contactsQueryOptions"
 
 export const Route = createFileRoute("/_loggedInProjects/$projectSlug/contacts/table/")({
-  head: () => privateTitleHead("Externe Kontakte bearbeiten & importieren"),
+  head: () => privateTitleHead("Weitere Kontakte bearbeiten & importieren"),
   ssr: true,
   loader: ({ context, params }) =>
     context.queryClient.ensureQueryData(contactsQueryOptions({ projectSlug: params.projectSlug })),

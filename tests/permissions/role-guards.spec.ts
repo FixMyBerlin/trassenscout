@@ -39,7 +39,7 @@ test.describe("Role guards", () => {
     test("are rejected from project pages", async ({ page }) => {
       await page.goto(contactsPath)
       await expectAccessDeniedRedirect(page)
-      await expect(page.getByRole("heading", { name: "Externe Kontakte" })).toBeHidden()
+      await expect(page.getByRole("heading", { name: "Weitere Kontakte" })).toBeHidden()
     })
   })
 

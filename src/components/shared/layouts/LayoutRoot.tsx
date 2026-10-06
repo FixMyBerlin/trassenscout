@@ -2,9 +2,10 @@ import "@fontsource/red-hat-text/400.css"
 import "@fontsource/red-hat-text/500.css"
 import "@fontsource/red-hat-text/600.css"
 import "@fontsource/red-hat-text/700.css"
-import { HeadContent, Outlet, Scripts, useRouteContext } from "@tanstack/react-router"
+import { Outlet, Scripts, useRouteContext } from "@tanstack/react-router"
 import { StrictMode, Suspense } from "react"
 import { TanStackAppDevtools } from "@/src/components/shared/devtools/TanStackAppDevtools"
+import { DocumentHead } from "@/src/components/shared/layouts/DocumentHead"
 import { Provider as TanStackQueryProvider } from "@/src/components/shared/providers/tanstack-query/root-provider"
 
 export function LayoutRoot() {
@@ -13,7 +14,7 @@ export function LayoutRoot() {
   return (
     <html lang="de" className="h-full scroll-smooth motion-reduce:scroll-auto">
       <head>
-        <HeadContent />
+        <DocumentHead />
       </head>
       <body className="flex min-h-dvh w-full flex-col bg-white text-gray-800 antialiased">
         <StrictMode>

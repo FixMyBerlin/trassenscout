@@ -108,6 +108,7 @@ export const UploadModalContent = ({
             projectSlug={projectSlug}
             uploadId={upload.id}
             uploadTitle={upload.title}
+            uploadLinks={upload}
             returnPath={returnPath}
             onDeleted={handleDeleted}
             variant="linkWithIcon"

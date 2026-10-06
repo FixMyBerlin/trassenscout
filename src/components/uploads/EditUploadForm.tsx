@@ -243,6 +243,7 @@ export const EditUploadForm = ({
                 projectSlug={projectSlug}
                 uploadId={upload.id}
                 uploadTitle={upload.title}
+                uploadLinks={upload}
                 returnPath={returnPath}
                 onDeleted={onDeleted}
               />

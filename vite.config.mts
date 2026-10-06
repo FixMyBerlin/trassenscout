@@ -12,6 +12,9 @@ import { forwardApiRequestsPastViteAssetMiddleware } from "./vite/forwardApiRequ
 const appRoot = fileURLToPath(new URL(".", import.meta.url))
 
 export default defineConfig({
+  // MapLibre v6 is ESM-only; keep it in the SSR bundle so Vite does not resolve a stale CJS path.
+  // @see https://maplibre.org/maplibre-gl-js/docs/#installation
+  ssr: { noExternal: ["maplibre-gl"] },
   environments: {
     client: {
       build: {

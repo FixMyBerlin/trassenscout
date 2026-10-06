@@ -1,6 +1,6 @@
 import { Radio, RadioGroup } from "@headlessui/react"
 import { useSearch } from "@tanstack/react-router"
-import { useEffect, useState, type ComponentProps } from "react"
+import { useState, type ComponentProps } from "react"
 import Map, {
   MapGeoJSONFeature,
   MapLayerMouseEvent,
@@ -40,9 +40,11 @@ import { useFieldContext } from "@/src/components/beteiligung/shared/hooks/form-
 import { MapData } from "@/src/components/beteiligung/shared/types"
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
 import "maplibre-gl/dist/maplibre-gl.css"
+import "@/src/components/core/components/Map/maplibreWorker"
 import { useAllowedSurveySlug } from "@/src/components/beteiligung/shared/utils/useAllowedSurveySlug"
 import { AllLayers, generateLayers } from "@/src/components/core/components/Map/AllLayers"
 import { AllSources } from "@/src/components/core/components/Map/AllSources"
+import { MapViewportRepair } from "@/src/components/core/components/Map/MapViewportRepair"
 import { usePmtilesProtocol } from "@/src/components/core/components/Map/pmtilesProtocol"
 import { geometryAnchorPoint } from "@/src/components/core/components/Map/utils/geometryAnchorPoint"
 import type { SupportedGeometry } from "@/src/shared/geometry/geometrySchemas"
@@ -184,12 +186,6 @@ const SwitchableMapContent = ({
   const surveySlug = useAllowedSurveySlug()
 
   usePmtilesProtocol()
-
-  // the map stays mounted (to avoid re-initialization issues), but is hidden in "none" mode
-  // when it becomes visible again we need to tell maplibre to recompute its size
-  useEffect(() => {
-    if (mode !== "none") mainMap?.getMap().resize()
-  }, [mode, mainMap])
 
   const initialBoundsMatch = setInitialBounds?.initialBoundsDefinition.find(
     (d) => d[setInitialBounds.queryParameter] === search[setInitialBounds.queryParameter],
@@ -408,6 +404,8 @@ const SwitchableMapContent = ({
             )
           }}
         >
+          {/* The map stays mounted but hidden in "none" mode; a map that mounted hidden is reframed once it shows. */}
+          <MapViewportRepair initialViewState={initialViewState} />
           <NavigationControl showCompass={false} />
           <AllSources mapData={mapData} />
           <AllLayers layers={[...generateLayers(mapData)]} />

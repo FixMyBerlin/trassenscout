@@ -1,3 +1,10 @@
+/**
+ * Matomo's own opt-out cookie, and the one it still writes under `disableCookies`. The opt-out
+ * iframe posts the choice to this page, where the tracker writes the cookie first-party; its
+ * mere presence means opted out.
+ */
+export const MATOMO_OPT_OUT_COOKIE = "mtm_consent_removed"
+
 export type MatomoConfig = {
   trackerUrl: string
   scriptSrc: string

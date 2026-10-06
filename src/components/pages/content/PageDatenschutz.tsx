@@ -1,4 +1,4 @@
-import type { ReactNode } from "react"
+import { Fragment, type ReactNode } from "react"
 import { twMerge } from "tailwind-merge"
 import { LinkMail } from "@/src/components/core/components/links/LinkMail"
 import { LinkTel } from "@/src/components/core/components/links/LinkTel"
@@ -6,6 +6,16 @@ import { Breadcrumb, BreadcrumbStep } from "@/src/components/core/components/Pag
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { proseClasses } from "@/src/components/core/components/text/prose"
+
+const MatomoIframe = () => {
+  return (
+    <iframe
+      title="Matomo Opt Out Tracking"
+      className="h-52 w-full border border-gray-200 bg-[#f0fdf4] p-2"
+      src="https://s.fixmycity.de/index.php?module=CoreAdminHome&action=optOut&language=de&backgroundColor=f0fdf4&fontColor=374151&fontSize=16px&fontFamily=Arial"
+    />
+  )
+}
 
 const portalLegalBasis =
   "Es gilt die im Abschnitt „Rechtsgrundlage“ unter „Bereitstellung des Portals“ beschriebene Rechtsgrundlage."
@@ -17,7 +27,10 @@ type ServiceDetailsProps = {
   recipient: ReactNode
   thirdCountry: ReactNode
   storage: ReactNode
+  headingLevel?: 4 | 5
 }
+
+const serviceDetailLabelClassName = "mt-4 mb-0 text-base font-semibold first:mt-0"
 
 const ServiceDetails = ({
   data,
@@ -26,22 +39,29 @@ const ServiceDetails = ({
   recipient,
   thirdCountry,
   storage,
-}: ServiceDetailsProps) => (
-  <dl className="[&_dd]:mt-1 [&_dd]:ps-0 [&_dt]:mt-4 [&_dt]:first:mt-0">
-    <dt>Allgemeine Informationen</dt>
-    <dd>{data}</dd>
-    <dt>Zweck der Verarbeitung</dt>
-    <dd>{purpose}</dd>
-    <dt>Rechtsgrundlage</dt>
-    <dd>{legalBasis}</dd>
-    <dt>Empfänger</dt>
-    <dd>{recipient}</dd>
-    <dt>Drittlandübermittlung und Garantien</dt>
-    <dd>{thirdCountry}</dd>
-    <dt>Speicherdauer</dt>
-    <dd>{storage}</dd>
-  </dl>
-)
+  headingLevel = 5,
+}: ServiceDetailsProps) => {
+  const Label = headingLevel === 4 ? "h4" : "h5"
+  const details = [
+    ["Allgemeine Informationen", data],
+    ["Zweck der Verarbeitung", purpose],
+    ["Rechtsgrundlage", legalBasis],
+    ["Empfänger", recipient],
+    ["Drittlandübermittlung und Garantien", thirdCountry],
+    ["Speicherdauer", storage],
+  ] as const
+
+  return (
+    <div>
+      {details.map(([label, value]) => (
+        <Fragment key={label}>
+          <Label className={serviceDetailLabelClassName}>{label}</Label>
+          <p className="mt-1">{value}</p>
+        </Fragment>
+      ))}
+    </div>
+  )
+}
 
 /** One service under "Eingesetzte Dienste und Empfänger". */
 const ServiceSection = ({ name, ...details }: { name: string } & ServiceDetailsProps) => (
@@ -455,8 +475,15 @@ export function PageDatenschutz() {
           Unbedingt erforderlich sind im internen Bereich ein Anmeldecookie zur Aufrechterhaltung
           Ihrer Anmeldung (Speicherdauer: 7 Tage) sowie ein kurzlebiges Cookie zur
           Zwischenspeicherung der Sitzungsdaten (Speicherdauer: 5 Minuten). Unser Webanalysedienst
-          Matomo setzt keine Cookies und greift nicht auf Informationen in Ihrem Endgerät zu;
-          Einzelheiten finden Sie im Abschnitt „Webanalyse“.
+          Matomo setzt für die Analyse selbst keine Cookies und greift nicht auf Informationen in
+          Ihrem Endgerät zu; Einzelheiten finden Sie im Abschnitt „Webanalyse“.
+        </p>
+        <p>
+          Widersprechen Sie der Webanalyse durch Matomo, speichern wir in Ihrem Browser das Cookie
+          „mtm_consent_removed“, damit Ihr Widerspruch bei weiteren Besuchen beachtet wird. Es
+          enthält ausschließlich den Vermerk über Ihren Widerspruch und bleibt gespeichert, bis Sie
+          es löschen, längstens 30 Jahre; viele Browser löschen es bereits früher automatisch.
+          Löschen Sie Ihre Cookies, müssen Sie den Widerspruch erneut erklären.
         </p>
         <h3>Rechtsgrundlage</h3>
         <p>
@@ -470,24 +497,24 @@ export function PageDatenschutz() {
         <h2 id="analytics">Webanalyse</h2>
         <p>
           Zusätzlich zu den oben genannten Datenverarbeitungen nutzen wir ein Statistiksystem, das{" "}
-          <strong>ohne Cookies betrieben wird</strong> und Nutzungsdaten ausschließlich in gekürzter
-          Form verarbeitet, sodass ein Bezug zu Ihrer Person nach unserer Einschätzung nicht
-          hergestellt werden kann. Aus Fairness- und Transparenzgründen legen wir die entsprechenden
-          Details dennoch offen:
+          <strong>für die Analyse selbst ohne Cookies betrieben wird</strong> und Nutzungsdaten
+          ausschließlich in gekürzter Form verarbeitet, sodass ein Bezug zu Ihrer Person nach
+          unserer Einschätzung nicht hergestellt werden kann. Aus Fairness- und Transparenzgründen
+          legen wir die entsprechenden Details dennoch offen:
         </p>
         <p>
           Wir nutzen Matomo für statistische Zwecke, zur Verbesserung unserer Seite und zur
           Erkennung und Unterbindung von Missbrauch. Das Hosting für das Tool übernehmen wir selbst;
           die Auswertung erfolgt auf unserer eigenen Infrastruktur, eine Übermittlung an den
-          Anbieter Matomo findet nicht statt. Matomo ist so konfiguriert, dass keine Cookies gesetzt
-          und keine vergleichbaren Kennungen auf Ihrem Endgerät gespeichert oder ausgelesen werden.
-          Erfasst werden nur die folgenden technischen Daten: die Website, von der aus Sie uns
-          besuchen, die Seiten unserer Website, die Sie besuchen, das Datum und die Dauer Ihres
-          Besuchs, Ihre anonymisierte (also gekürzte) IP-Adresse sowie einzelne Informationen über
-          das von Ihnen verwendete Endgerät (Gerätetyp, Betriebssystem, Bildschirmauflösung,
-          Sprache, Land, in dem Sie sich befinden, und Webbrowser-Typ). Der Datensatz, anhand dessen
-          zusammengehörige Seitenaufrufe anonymisiert gruppiert werden, wird 30 Minuten nach Ende
-          des Besuchs gelöscht.
+          Anbieter Matomo findet nicht statt. Matomo ist so konfiguriert, dass für die Analyse
+          selbst keine Cookies gesetzt und keine vergleichbaren Kennungen auf Ihrem Endgerät
+          gespeichert oder ausgelesen werden. Erfasst werden nur die folgenden technischen Daten:
+          die Website, von der aus Sie uns besuchen, die Seiten unserer Website, die Sie besuchen,
+          das Datum und die Dauer Ihres Besuchs, Ihre anonymisierte (also gekürzte) IP-Adresse sowie
+          einzelne Informationen über das von Ihnen verwendete Endgerät (Gerätetyp, Betriebssystem,
+          Bildschirmauflösung, Sprache, Land, in dem Sie sich befinden, und Webbrowser-Typ). Der
+          Datensatz, anhand dessen zusammengehörige Seitenaufrufe anonymisiert gruppiert werden,
+          wird 30 Minuten nach Ende des Besuchs gelöscht.
         </p>
         <p>
           Die Kombination der oben aufgeführten Datenpunkte dürfte nicht genügen, um einen
@@ -506,7 +533,10 @@ export function PageDatenschutz() {
           Rechtsgrundlage ist unser berechtigtes Interesse gemäß Art. 6 Abs. 1 S. 1 lit. f DSGVO an
           einer statistischen Auswertung der Nutzung unseres Angebots. Da Matomo ohne Cookies
           betrieben wird und keine Informationen auf Ihrem Endgerät gespeichert oder aus diesem
-          ausgelesen werden, ist eine Einwilligung nach § 25 Abs. 1 TDDDG nicht erforderlich.
+          ausgelesen werden, ist eine Einwilligung nach § 25 Abs. 1 TDDDG nicht erforderlich. Eine
+          Ausnahme bildet allein das Widerspruchs-Cookie, das gesetzt wird, wenn Sie der Erfassung
+          widersprechen (siehe Abschnitt „Cookies“). Auch hierfür ist nach § 25 Abs. 2 Nr. 2 TDDDG
+          keine Einwilligung erforderlich, da es auf Ihren ausdrücklichen Wunsch gesetzt wird.
         </p>
         <h3>Empfänger</h3>
         <p>
@@ -532,6 +562,11 @@ export function PageDatenschutz() {
           Situation ergeben, gemäß Art. 21 Abs. 1 DSGVO zu widersprechen. Unabhängig davon können
           Sie die Erfassung durch Matomo für Ihren Besuch jederzeit über die nachfolgende Auswahl
           deaktivieren:
+        </p>
+        <MatomoIframe />
+        <p>
+          Ihre Auswahl wird in einem Cookie gespeichert; Einzelheiten finden Sie im Abschnitt
+          „Cookies“.
         </p>
 
         <h2 id="contact">Kontaktmöglichkeiten</h2>
@@ -649,6 +684,7 @@ export function PageDatenschutz() {
         </p>
         <h3>Brevo GmbH (vormals Sendinblue GmbH)</h3>
         <ServiceDetails
+          headingLevel={4}
           data="Bei der Nutzung des Dienstes werden folgende Daten verarbeitet: E-Mail-Adresse, gegebenenfalls Name, Anmeldezeitpunkt und IP-Adresse sowie Versand-, Zustell-, Öffnungs-, Klick- und Abmeldedaten"
           purpose="Newsletterversand, Double-Opt-in sowie Auswertung von Zustellung, Öffnungen und angeklickten Links"
           legalBasis="Die Verarbeitung erfolgt auf Grundlage Ihrer Einwilligung gemäß Art. 6 Abs. 1 Satz 1 lit. a DSGVO."

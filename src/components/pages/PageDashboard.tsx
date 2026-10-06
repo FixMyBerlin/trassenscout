@@ -7,7 +7,10 @@ import {
   MapListViewLayout,
   MAP_VIEWPORT_SHELL_CLASS,
 } from "@/src/components/core/components/PageHeader/MapListViewLayout"
-import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
+import {
+  optionalPageContentPaddingClassName,
+  pageContentPaddingClassName,
+} from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { TabsApp } from "@/src/components/core/components/Tabs/TabsApp"
 import { useViewMode } from "@/src/components/core/routes/useViewMode"
@@ -88,7 +91,7 @@ export function PageDashboard() {
         )}
         list={({ interactive }) => <ProjectsTable projects={projects} interactive={interactive} />}
       >
-        <div className={pageContentPaddingClassName}>
+        <div className={optionalPageContentPaddingClassName}>
           <SuperAdminLogData data={projects} />
         </div>
       </MapListViewLayout>

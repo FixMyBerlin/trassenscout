@@ -46,6 +46,14 @@ describe("recalculateFundingOnBasisBlur", () => {
     expect(baseline.setBaseline).not.toHaveBeenCalled()
   })
 
+  it("does not fill in a negative calculation", () => {
+    const form = fakeForm({ planningCosts: 10000, contributionsThirdParties: 50000 })
+
+    recalculateFundingOnBasisBlur(form, "contributionsThirdParties", fakeBaseline(null))
+
+    expect(form.setFieldValue).not.toHaveBeenCalled()
+  })
+
   it("ignores fields outside the calculation basis", () => {
     const form = fakeForm({ planningCosts: 10000 })
 

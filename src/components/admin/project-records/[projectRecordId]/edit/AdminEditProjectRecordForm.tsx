@@ -1,4 +1,4 @@
-import { useMutation, useSuspenseQuery } from "@tanstack/react-query"
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 import { useState } from "react"
 import { z } from "zod"
@@ -15,6 +15,7 @@ import { shortTitle } from "@/src/components/core/components/text/titles"
 import { CreateEditReviewHistory } from "@/src/components/project-records/ProjectRecordCreateEditReviewHistory"
 import { ProjectRecordFormFields } from "@/src/components/project-records/ProjectRecordFormFields"
 import { ProjectRecordNeedsReviewBanner } from "@/src/components/project-records/ProjectRecordNeedsReviewBanner"
+import { invalidateAfterProjectRecordChange } from "@/src/components/project-records/projectRecordQueryCache"
 import { ReviewProjectRecordForm } from "@/src/components/project-records/ReviewProjectRecordForm"
 import { getM2MInitialValues } from "@/src/components/project-records/utils/getM2MInitialValues"
 import { getDate } from "@/src/components/project-records/utils/splitStartAt"
@@ -38,8 +39,12 @@ export const AdminEditProjectRecordForm = ({ projectRecordId }: Props) => {
   const navigate = useNavigate()
   const { data: projectRecord } = useSuspenseQuery(projectRecordAdminQueryOptions(projectRecordId))
   const needsReview = projectRecord.reviewState !== ProjectRecordReviewState.APPROVED
+  const queryClient = useQueryClient()
   const updateProjectRecordMutation = useMutation({ mutationFn: updateProjectRecordFn })
-  const deleteProjectRecordMutation = useMutation({ mutationFn: deleteProjectRecordFn })
+  const deleteProjectRecordMutation = useMutation({
+    mutationFn: deleteProjectRecordFn,
+    onSuccess: () => invalidateAfterProjectRecordChange(queryClient, projectRecord.project.slug),
+  })
   const [formError, setFormError] = useState<string | null>(null)
 
   const projectSlug = projectRecord.project.slug
@@ -83,6 +88,7 @@ export const AdminEditProjectRecordForm = ({ projectRecordId }: Props) => {
             formTemplates: values.formTemplates === true ? false : values.formTemplates,
           },
         })
+        await invalidateAfterProjectRecordChange(queryClient, projectSlug)
         navigate({ to: `/admin/project-records` })
       } catch (error: unknown) {
         applyFormSubmitResult(form, improveErrorMessage(error, FORM_ERROR, ["slug"]), setFormError)

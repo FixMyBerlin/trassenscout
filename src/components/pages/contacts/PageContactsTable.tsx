@@ -10,7 +10,7 @@ export function PageContactsTable() {
       <PageHeader
         breadcrumb={
           <ProjectPageBreadcrumb
-            section="Externe Kontakte"
+            section="Weitere Kontakte"
             sectionTo="/$projectSlug/contacts"
             current="Tabelle"
           />

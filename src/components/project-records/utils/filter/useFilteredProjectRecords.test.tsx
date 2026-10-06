@@ -28,6 +28,7 @@ const records = [
     title: "Offen an mich",
     body: "",
     editingState: "PENDING",
+    userId: 3,
     assignedToId: 7,
     assignedById: 3,
     tags: [],
@@ -38,8 +39,20 @@ const records = [
     title: "Fertig von mir",
     body: "",
     editingState: "COMPLETED",
+    userId: 4,
     assignedToId: 4,
     assignedById: 7,
+    tags: [],
+    assignedTo: null,
+  },
+  {
+    id: 3,
+    title: "Von mir erstellt, inzwischen weitergegeben",
+    body: "",
+    editingState: "PENDING",
+    userId: 7,
+    assignedToId: 4,
+    assignedById: 3,
     tags: [],
     assignedTo: null,
   },
@@ -58,12 +71,17 @@ describe("useFilteredProjectRecords", () => {
   })
 
   test("returns every record when no filter is set", () => {
-    expect(filteredIds()).toEqual([1, 2])
+    expect(filteredIds()).toEqual([1, 2, 3])
   })
 
   test("filters by editing state", () => {
     filterState.filter = { searchterm: "", status: "COMPLETED", direction: "all" }
     expect(filteredIds()).toEqual([2])
+  })
+
+  test("keeps every record on all, including ones the user has no part in", () => {
+    filterState.filter = { searchterm: "", status: "all", direction: "all" }
+    expect(filteredIds()).toEqual([1, 2, 3])
   })
 
   test("filters assignments to the current user", () => {
@@ -76,9 +94,14 @@ describe("useFilteredProjectRecords", () => {
     expect(filteredIds()).toEqual([2])
   })
 
+  test("finds records the current user wrote after they were assigned on", () => {
+    filterState.filter = { searchterm: "", status: "all", direction: "createdByMe" }
+    expect(filteredIds()).toEqual([3])
+  })
+
   test("keeps the list while the current user is still loading", () => {
     filterState.userId = undefined
     filterState.filter = { searchterm: "", status: "PENDING", direction: "toMe" }
-    expect(filteredIds()).toEqual([1])
+    expect(filteredIds()).toEqual([1, 3])
   })
 })

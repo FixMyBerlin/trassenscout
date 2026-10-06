@@ -30,6 +30,7 @@ function matchesDirection(
 ) {
   if (direction === "all" || userId == null) return true
   if (direction === "toMe") return projectRecord.assignedToId === userId
+  if (direction === "createdByMe") return projectRecord.userId === userId
   return projectRecord.assignedById === userId
 }
 

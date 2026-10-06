@@ -1,11 +1,18 @@
 import type { z } from "zod"
-import { UserRoleEnum } from "@/src/prisma/generated/browser"
+import { ProjectRecordEditingState, UserRoleEnum } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import db from "@/src/server/db.server"
 import type { GetMyAssignedRecordsSchema } from "./projectRecords.inputSchemas"
 
-function myAssignmentsWhere(userId: number) {
-  return { OR: [{ assignedToId: userId }, { assignedById: userId }] }
+function directionWhere(
+  direction: z.infer<typeof GetMyAssignedRecordsSchema>["direction"],
+  userId: number,
+) {
+  if (direction === "byMe") return { assignedById: userId }
+  if (direction === "toMe") return { assignedToId: userId }
+  // Authorship survives a reassignment, assignedById does not: it moves to whoever reassigned last.
+  if (direction === "createdByMe") return { userId }
+  return {}
 }
 
 function readableProjectWhere(userId: number, role: string, projectSlug: string | undefined) {
@@ -21,7 +28,8 @@ export async function countMyAssignedRecords(headers: Headers, projectSlug?: str
 
   return db.projectRecord.count({
     where: {
-      ...myAssignmentsWhere(userId),
+      assignedToId: userId,
+      editingState: ProjectRecordEditingState.PENDING,
       project: readableProjectWhere(userId, session.role, projectSlug),
     },
   })
@@ -34,16 +42,11 @@ export async function getMyAssignedRecords(
   const session = await endpointAuth.session(headers)
   const userId = Number(session.userId)
 
-  const direction =
-    input.direction === "byMe"
-      ? { assignedById: userId }
-      : input.direction === "toMe"
-        ? { assignedToId: userId }
-        : myAssignmentsWhere(userId)
-
   const records = await db.projectRecord.findMany({
     where: {
-      ...direction,
+      // A task is a record with an assignee, whichever direction is picked.
+      assignedToId: { not: null },
+      ...directionWhere(input.direction, userId),
       ...(input.editingState ? { editingState: input.editingState } : {}),
       project: readableProjectWhere(userId, session.role, input.projectSlug),
     },

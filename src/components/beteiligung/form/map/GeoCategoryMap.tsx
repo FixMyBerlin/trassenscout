@@ -24,12 +24,14 @@ import {
 } from "@/src/components/beteiligung/form/map/utils"
 import { useFieldContext } from "@/src/components/beteiligung/shared/hooks/form-context"
 import "maplibre-gl/dist/maplibre-gl.css"
+import "@/src/components/core/components/Map/maplibreWorker"
 import { MapData } from "@/src/components/beteiligung/shared/types"
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
 import { useAllowedSurveySlug } from "@/src/components/beteiligung/shared/utils/useAllowedSurveySlug"
 import { AllLayers, generateLayers } from "@/src/components/core/components/Map/AllLayers"
 import { AllSources } from "@/src/components/core/components/Map/AllSources"
 import { usePmtilesProtocol } from "@/src/components/core/components/Map/pmtilesProtocol"
+import { exposeMainMapForDebugging } from "@/src/components/shared/utils/playwright"
 
 export type GeoCategoryMapProps = {
   description?: string
@@ -214,6 +216,7 @@ export const SurveyGeoCategoryMap = ({
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         onLoad={(event) => {
+          exposeMainMapForDebugging(event.target)
           notifyPlaywrightMapLoaded()
           installMapGrabIfTest(event.target, "mainMap")
         }}

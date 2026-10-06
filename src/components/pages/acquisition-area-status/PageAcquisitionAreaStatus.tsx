@@ -6,7 +6,7 @@ import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/Sup
 import { BackLinkSection } from "@/src/components/core/components/forms/BackLinkSection"
 import { ConditionalBackLink } from "@/src/components/core/components/forms/ConditionalBackLink"
 import { Link } from "@/src/components/core/components/links/Link"
-import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
+import { optionalPageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { useTryRouteSearchKey } from "@/src/components/core/routes/useTryRouteSearch"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
@@ -51,7 +51,7 @@ export function PageAcquisitionAreaStatus() {
           </BackLinkSection>
         ) : null}
       </IfUserCanEdit>
-      <div className={pageContentPaddingClassName}>
+      <div className={optionalPageContentPaddingClassName}>
         <SuperAdminLogData data={{ acquisitionAreaStatuses: rows }} />
       </div>
     </>
