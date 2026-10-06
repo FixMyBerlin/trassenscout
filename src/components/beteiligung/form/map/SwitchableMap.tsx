@@ -40,6 +40,7 @@ import { useFieldContext } from "@/src/components/beteiligung/shared/hooks/form-
 import { MapData } from "@/src/components/beteiligung/shared/types"
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
 import "maplibre-gl/dist/maplibre-gl.css"
+import "@/src/components/core/components/Map/maplibreWorker"
 import { useAllowedSurveySlug } from "@/src/components/beteiligung/shared/utils/useAllowedSurveySlug"
 import { AllLayers, generateLayers } from "@/src/components/core/components/Map/AllLayers"
 import { AllSources } from "@/src/components/core/components/Map/AllSources"

@@ -8,6 +8,7 @@ import Map, {
   Source,
 } from "react-map-gl/maplibre"
 import { twJoin } from "tailwind-merge"
+import "@/src/components/core/components/Map/maplibreWorker"
 import { useFieldContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { Link } from "@/src/components/core/components/links/Link"
 import { getMapStyle } from "@/src/components/core/components/Map/mapStyleConfig"

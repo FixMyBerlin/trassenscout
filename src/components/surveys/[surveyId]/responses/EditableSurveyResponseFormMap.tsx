@@ -1,5 +1,5 @@
 import { getRouteApi } from "@tanstack/react-router"
-import maplibregl from "maplibre-gl"
+import type { MapLibreEvent } from "maplibre-gl"
 import { useState } from "react"
 import Map, { Layer, Marker, NavigationControl, Source } from "react-map-gl/maplibre"
 import {
@@ -17,6 +17,7 @@ import {
 } from "@/src/components/core/components/Map/BackgroundSwitcher/BackgroundSwitcher"
 import { getMapStyle, getVectorStyleUrl } from "@/src/components/core/components/Map/mapStyleConfig"
 import "maplibre-gl/dist/maplibre-gl.css"
+import "@/src/components/core/components/Map/maplibreWorker"
 import { usePmtilesProtocol } from "@/src/components/core/components/Map/pmtilesProtocol"
 import { getStaticOverlayForProject } from "@/src/components/core/components/Map/staticOverlay/getStaticOverlayForProject"
 import { StaticOverlay } from "@/src/components/core/components/Map/staticOverlay/StaticOverlay"
@@ -59,7 +60,7 @@ export const EditableSurveyResponseFormMap = ({
 
   const mapData = geoCategoryQuestion ? geoCategoryQuestion.props.mapProps.mapData : undefined
 
-  const handleMapLoad = (_: maplibregl.MapLibreEvent) => {
+  const handleMapLoad = (_: MapLibreEvent) => {
     setMapLoading(true)
   }
 
