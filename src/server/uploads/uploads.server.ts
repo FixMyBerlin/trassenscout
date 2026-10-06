@@ -195,6 +195,7 @@ function viewerCreateUploadHasNoExtraFields(input: UploadInput) {
     input.longitude == null &&
     input.collaborationUrl == null &&
     input.collaborationPath == null &&
+    input.externalShareEnabled !== true &&
     idsFromFormValue(input.subsubsections).length === 0 &&
     idsFromFormValue(input.acquisitionAreas).length === 0 &&
     idsFromFormValue(input.tags).length === 0
@@ -450,6 +451,7 @@ export async function updateUpload(headers: Headers, input: z.infer<typeof Updat
       longitude: true,
       collaborationUrl: true,
       collaborationPath: true,
+      externalShareEnabled: true,
       projectRecordEmailId: true,
       surveyResponseId: true,
       projectRecords: { select: { id: true } },
@@ -480,6 +482,7 @@ export async function updateUpload(headers: Headers, input: z.infer<typeof Updat
       longitude: previousUpload.longitude,
       collaborationUrl: previousUpload.collaborationUrl,
       collaborationPath: previousUpload.collaborationPath,
+      externalShareEnabled: previousUpload.externalShareEnabled,
       projectRecordEmailId: previousUpload.projectRecordEmailId,
       surveyResponseId: previousUpload.surveyResponseId,
       projectRecordIds: relationIds(previousUpload.projectRecords),
@@ -498,6 +501,7 @@ export async function updateUpload(headers: Headers, input: z.infer<typeof Updat
       longitude: upload.longitude,
       collaborationUrl: upload.collaborationUrl,
       collaborationPath: upload.collaborationPath,
+      externalShareEnabled: upload.externalShareEnabled,
       projectRecordEmailId: upload.projectRecordEmailId,
       surveyResponseId: upload.surveyResponseId,
       projectRecordIds: relationIds(upload.projectRecords),

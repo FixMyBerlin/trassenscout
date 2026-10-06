@@ -264,6 +264,21 @@ describe("createUpload", () => {
     expect(mockDb.upload.create).not.toHaveBeenCalled()
   })
 
+  test("rejects viewer uploads that would share the document externally", async () => {
+    const { createUpload } = await import("./uploads.server")
+
+    await expect(
+      createUpload(headers, {
+        ...baseInput,
+        surveyResponseId: null,
+        projectRecords: [],
+        externalShareEnabled: true,
+      }),
+    ).rejects.toBeInstanceOf(AuthorizationError)
+
+    expect(mockDb.upload.create).not.toHaveBeenCalled()
+  })
+
   test("includes Maßnahme and Protokolleintrag in the CREATE log message", async () => {
     const { createUpload } = await import("./uploads.server")
     mockEndpointAuth.projectRole.mockResolvedValueOnce({

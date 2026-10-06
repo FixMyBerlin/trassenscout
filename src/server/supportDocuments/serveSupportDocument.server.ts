@@ -1,9 +1,7 @@
-import { getObject } from "@better-upload/server/helpers"
 import { z } from "zod"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import db from "@/src/server/db.server"
-import { getConfiguredS3Client } from "@/src/server/uploads/_utils/s3Client.server"
-import { S3_BUCKET } from "@/src/shared/uploads/config"
+import { getS3Object } from "@/src/server/uploads/_utils/getS3Object.server"
 import { getUploadServeHeaders } from "@/src/shared/uploads/serveHeaders"
 import { getS3KeyFromUrl } from "@/src/shared/uploads/url"
 
@@ -38,13 +36,7 @@ export async function serveSupportDocumentObject(headers: Headers, params: { doc
     return new Response("Not Found", { status: 404 })
   }
 
-  const key = getS3KeyFromUrl(document.upload.externalUrl)
-  const s3Client = getConfiguredS3Client()
-
-  const object = await getObject(s3Client, {
-    bucket: S3_BUCKET,
-    key,
-  })
+  const object = await getS3Object(getS3KeyFromUrl(document.upload.externalUrl))
 
   return new Response(object.blob, {
     headers: {

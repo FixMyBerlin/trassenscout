@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ShareRouteImport } from './routes/share'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as BeteiligungRouteImport } from './routes/beteiligung'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -20,6 +21,7 @@ import { Route as LoggedInFullscreenRouteImport } from './routes/_loggedInFullsc
 import { Route as ContentRouteImport } from './routes/_content'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as MarketingIndexRouteImport } from './routes/_marketing/index'
+import { Route as ShareTokenRouteImport } from './routes/share/$token'
 import { Route as BeteiligungSurveySlugRouteImport } from './routes/beteiligung/$surveySlug'
 import { Route as AuthSignupRouteImport } from './routes/auth/signup'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-password'
@@ -90,6 +92,7 @@ import { Route as LoggedInProjectsProjectSlugProjectRecordsIndexRouteImport } fr
 import { Route as LoggedInProjectsProjectSlugOperatorsIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/operators/index'
 import { Route as LoggedInProjectsProjectSlugNetworkHierarchyIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/network-hierarchy/index'
 import { Route as LoggedInProjectsProjectSlugInvitesIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/invites/index'
+import { Route as LoggedInProjectsProjectSlugExternalShareIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/external-share/index'
 import { Route as LoggedInProjectsProjectSlugEvaluationsIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/evaluations/index'
 import { Route as LoggedInProjectsProjectSlugEditIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/edit/index'
 import { Route as LoggedInProjectsProjectSlugContactsIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/contacts/index'
@@ -102,6 +105,7 @@ import { Route as LoggedInGeneralDashboardActivityIndexRouteImport } from './rou
 import { Route as AdminSubsubsectionExtraFieldsProjectSlugEditRouteImport } from './routes/admin/subsubsection-extra-fields/$projectSlug/edit'
 import { Route as AdminEvaluationsProjectSlugEditRouteImport } from './routes/admin/evaluations/$projectSlug/edit'
 import { Route as ApiSupportDocumentsUploadIndexRouteImport } from './routes/api/support/documents/upload/index'
+import { Route as ApiShareTokenSubsubsectionsIndexRouteImport } from './routes/api/share/$token/subsubsections/index'
 import { Route as ApiProjectSlugUploadsUploadIdIndexRouteImport } from './routes/api/$projectSlug/uploads/$uploadId/index'
 import { Route as ApiProjectSlugSubsectionsExportIndexRouteImport } from './routes/api/$projectSlug/subsections/export/index'
 import { Route as AdminSurveysSurveyIdResponsesIndexRouteImport } from './routes/admin/surveys/$surveyId/responses/index'
@@ -140,6 +144,7 @@ import { Route as LoggedInProjectsProjectSlugAbschnitteNewIndexRouteImport } fro
 import { Route as LoggedInProjectsProjectSlugAbschnitteSubsectionSlugIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/index'
 import { Route as LoggedInProjectsProjectSlugSurveysSurveyIdResponsesRouteRouteImport } from './routes/_loggedInProjects/$projectSlug/surveys/$surveyId/responses/route'
 import { Route as ApiSupportDocumentsDocumentIdSplatIndexRouteImport } from './routes/api/support/documents/$documentId/$/index'
+import { Route as ApiShareTokenUploadsUploadIdIndexRouteImport } from './routes/api/share/$token/uploads/$uploadId/index'
 import { Route as ApiProjectSlugUploadsUploadIdSplatIndexRouteImport } from './routes/api/$projectSlug/uploads/$uploadId/$/index'
 import { Route as AdminSurveysSurveyIdResponsesTestIndexRouteImport } from './routes/admin/surveys/$surveyId/responses/test/index'
 import { Route as AdminSurveysSurveyIdResponsesCreatedIndexRouteImport } from './routes/admin/surveys/$surveyId/responses/created/index'
@@ -185,6 +190,11 @@ import { Route as LoggedInProjectsProjectSlugSurveysSurveyIdResponsesSurveyRespo
 import { Route as LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugLandAcquisitionAcquisitionAreasNewIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/acquisition-areas/new/index'
 import { Route as LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugLandAcquisitionAcquisitionAreasAcquisitionAreaIdEditIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/land-acquisition/acquisition-areas/$acquisitionAreaId/edit/index'
 
+const ShareRoute = ShareRouteImport.update({
+  id: '/share',
+  path: '/share',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const McpRoute = McpRouteImport.update({
   id: '/mcp',
   path: '/mcp',
@@ -234,6 +244,11 @@ const MarketingIndexRoute = MarketingIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => MarketingRoute,
+} as any)
+const ShareTokenRoute = ShareTokenRouteImport.update({
+  id: '/$token',
+  path: '/$token',
+  getParentRoute: () => ShareRoute,
 } as any)
 const BeteiligungSurveySlugRoute = BeteiligungSurveySlugRouteImport.update({
   id: '/$surveySlug',
@@ -634,6 +649,12 @@ const LoggedInProjectsProjectSlugInvitesIndexRoute =
     path: '/invites/',
     getParentRoute: () => LoggedInProjectsProjectSlugRoute,
   } as any)
+const LoggedInProjectsProjectSlugExternalShareIndexRoute =
+  LoggedInProjectsProjectSlugExternalShareIndexRouteImport.update({
+    id: '/external-share/',
+    path: '/external-share/',
+    getParentRoute: () => LoggedInProjectsProjectSlugRoute,
+  } as any)
 const LoggedInProjectsProjectSlugEvaluationsIndexRoute =
   LoggedInProjectsProjectSlugEvaluationsIndexRouteImport.update({
     id: '/evaluations/',
@@ -704,6 +725,12 @@ const ApiSupportDocumentsUploadIndexRoute =
   ApiSupportDocumentsUploadIndexRouteImport.update({
     id: '/api/support/documents/upload/',
     path: '/api/support/documents/upload/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiShareTokenSubsubsectionsIndexRoute =
+  ApiShareTokenSubsubsectionsIndexRouteImport.update({
+    id: '/api/share/$token/subsubsections/',
+    path: '/api/share/$token/subsubsections/',
     getParentRoute: () => rootRouteImport,
   } as any)
 const ApiProjectSlugUploadsUploadIdIndexRoute =
@@ -936,6 +963,12 @@ const ApiSupportDocumentsDocumentIdSplatIndexRoute =
   ApiSupportDocumentsDocumentIdSplatIndexRouteImport.update({
     id: '/api/support/documents/$documentId/$/',
     path: '/api/support/documents/$documentId/$/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiShareTokenUploadsUploadIdIndexRoute =
+  ApiShareTokenUploadsUploadIdIndexRouteImport.update({
+    id: '/api/share/$token/uploads/$uploadId/',
+    path: '/api/share/$token/uploads/$uploadId/',
     getParentRoute: () => rootRouteImport,
   } as any)
 const ApiProjectSlugUploadsUploadIdSplatIndexRoute =
@@ -1262,6 +1295,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRouteWithChildren
   '/beteiligung': typeof BeteiligungRouteWithChildren
   '/mcp': typeof McpRoute
+  '/share': typeof ShareRouteWithChildren
   '/dashboard': typeof LoggedInGeneralDashboardRouteRouteWithChildren
   '/browser-version': typeof ContentBrowserVersionRoute
   '/datenschutz': typeof ContentDatenschutzRoute
@@ -1273,6 +1307,7 @@ export interface FileRoutesByFullPath {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/signup': typeof AuthSignupRoute
   '/beteiligung/$surveySlug': typeof BeteiligungSurveySlugRouteWithChildren
+  '/share/$token': typeof ShareTokenRoute
   '/admin/': typeof AdminIndexRoute
   '/$projectSlug/project-records': typeof LoggedInProjectsProjectSlugProjectRecordsRouteRouteWithChildren
   '/admin/projects/$projectSlug': typeof AdminProjectsProjectSlugRouteRouteWithChildren
@@ -1314,6 +1349,7 @@ export interface FileRoutesByFullPath {
   '/$projectSlug/contacts/': typeof LoggedInProjectsProjectSlugContactsIndexRoute
   '/$projectSlug/edit/': typeof LoggedInProjectsProjectSlugEditIndexRoute
   '/$projectSlug/evaluations/': typeof LoggedInProjectsProjectSlugEvaluationsIndexRoute
+  '/$projectSlug/external-share/': typeof LoggedInProjectsProjectSlugExternalShareIndexRoute
   '/$projectSlug/invites/': typeof LoggedInProjectsProjectSlugInvitesIndexRoute
   '/$projectSlug/network-hierarchy/': typeof LoggedInProjectsProjectSlugNetworkHierarchyIndexRoute
   '/$projectSlug/operators/': typeof LoggedInProjectsProjectSlugOperatorsIndexRoute
@@ -1380,6 +1416,7 @@ export interface FileRoutesByFullPath {
   '/admin/surveys/$surveyId/responses/': typeof AdminSurveysSurveyIdResponsesIndexRoute
   '/api/$projectSlug/subsections/export/': typeof ApiProjectSlugSubsectionsExportIndexRoute
   '/api/$projectSlug/uploads/$uploadId/': typeof ApiProjectSlugUploadsUploadIdIndexRoute
+  '/api/share/$token/subsubsections/': typeof ApiShareTokenSubsubsectionsIndexRoute
   '/api/support/documents/upload/': typeof ApiSupportDocumentsUploadIndexRoute
   '/$projectSlug/uploads/$uploadId/view/': typeof LoggedInFullscreenProjectSlugUploadsUploadIdViewIndexRoute
   '/$projectSlug/abschnitte/$subsectionSlug/edit/': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugEditIndexRoute
@@ -1407,6 +1444,7 @@ export interface FileRoutesByFullPath {
   '/admin/surveys/$surveyId/responses/created/': typeof AdminSurveysSurveyIdResponsesCreatedIndexRoute
   '/admin/surveys/$surveyId/responses/test/': typeof AdminSurveysSurveyIdResponsesTestIndexRoute
   '/api/$projectSlug/uploads/$uploadId/$/': typeof ApiProjectSlugUploadsUploadIdSplatIndexRoute
+  '/api/share/$token/uploads/$uploadId/': typeof ApiShareTokenUploadsUploadIdIndexRoute
   '/api/support/documents/$documentId/$/': typeof ApiSupportDocumentsDocumentIdSplatIndexRoute
   '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardRouteRouteWithChildren
   '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new/': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungNewIndexRoute
@@ -1432,6 +1470,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRouteWithChildren
   '/beteiligung': typeof BeteiligungRouteWithChildren
   '/mcp': typeof McpRoute
+  '/share': typeof ShareRouteWithChildren
   '/browser-version': typeof ContentBrowserVersionRoute
   '/datenschutz': typeof ContentDatenschutzRoute
   '/kontakt': typeof ContentKontaktRoute
@@ -1441,6 +1480,7 @@ export interface FileRoutesByTo {
   '/auth/logout': typeof AuthLogoutRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/signup': typeof AuthSignupRoute
+  '/share/$token': typeof ShareTokenRoute
   '/admin': typeof AdminIndexRoute
   '/admin/projects/$projectSlug': typeof AdminProjectsProjectSlugRouteRouteWithChildren
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -1480,6 +1520,7 @@ export interface FileRoutesByTo {
   '/$projectSlug/contacts': typeof LoggedInProjectsProjectSlugContactsIndexRoute
   '/$projectSlug/edit': typeof LoggedInProjectsProjectSlugEditIndexRoute
   '/$projectSlug/evaluations': typeof LoggedInProjectsProjectSlugEvaluationsIndexRoute
+  '/$projectSlug/external-share': typeof LoggedInProjectsProjectSlugExternalShareIndexRoute
   '/$projectSlug/invites': typeof LoggedInProjectsProjectSlugInvitesIndexRoute
   '/$projectSlug/network-hierarchy': typeof LoggedInProjectsProjectSlugNetworkHierarchyIndexRoute
   '/$projectSlug/operators': typeof LoggedInProjectsProjectSlugOperatorsIndexRoute
@@ -1545,6 +1586,7 @@ export interface FileRoutesByTo {
   '/admin/surveys/$surveyId/responses': typeof AdminSurveysSurveyIdResponsesIndexRoute
   '/api/$projectSlug/subsections/export': typeof ApiProjectSlugSubsectionsExportIndexRoute
   '/api/$projectSlug/uploads/$uploadId': typeof ApiProjectSlugUploadsUploadIdIndexRoute
+  '/api/share/$token/subsubsections': typeof ApiShareTokenSubsubsectionsIndexRoute
   '/api/support/documents/upload': typeof ApiSupportDocumentsUploadIndexRoute
   '/$projectSlug/uploads/$uploadId/view': typeof LoggedInFullscreenProjectSlugUploadsUploadIdViewIndexRoute
   '/$projectSlug/abschnitte/$subsectionSlug/edit': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugEditIndexRoute
@@ -1572,6 +1614,7 @@ export interface FileRoutesByTo {
   '/admin/surveys/$surveyId/responses/created': typeof AdminSurveysSurveyIdResponsesCreatedIndexRoute
   '/admin/surveys/$surveyId/responses/test': typeof AdminSurveysSurveyIdResponsesTestIndexRoute
   '/api/$projectSlug/uploads/$uploadId/$': typeof ApiProjectSlugUploadsUploadIdSplatIndexRoute
+  '/api/share/$token/uploads/$uploadId': typeof ApiShareTokenUploadsUploadIdIndexRoute
   '/api/support/documents/$documentId/$': typeof ApiSupportDocumentsDocumentIdSplatIndexRoute
   '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungNewIndexRoute
   '/$projectSlug/surveys/$surveyId/responses/map': typeof LoggedInProjectsProjectSlugSurveysSurveyIdResponsesMapIndexRoute
@@ -1602,6 +1645,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRouteWithChildren
   '/beteiligung': typeof BeteiligungRouteWithChildren
   '/mcp': typeof McpRoute
+  '/share': typeof ShareRouteWithChildren
   '/_loggedInGeneral/dashboard': typeof LoggedInGeneralDashboardRouteRouteWithChildren
   '/_content/browser-version': typeof ContentBrowserVersionRoute
   '/_content/datenschutz': typeof ContentDatenschutzRoute
@@ -1614,6 +1658,7 @@ export interface FileRoutesById {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/signup': typeof AuthSignupRoute
   '/beteiligung/$surveySlug': typeof BeteiligungSurveySlugRouteWithChildren
+  '/share/$token': typeof ShareTokenRoute
   '/_marketing/': typeof MarketingIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/_loggedInProjects/$projectSlug/project-records': typeof LoggedInProjectsProjectSlugProjectRecordsRouteRouteWithChildren
@@ -1656,6 +1701,7 @@ export interface FileRoutesById {
   '/_loggedInProjects/$projectSlug/contacts/': typeof LoggedInProjectsProjectSlugContactsIndexRoute
   '/_loggedInProjects/$projectSlug/edit/': typeof LoggedInProjectsProjectSlugEditIndexRoute
   '/_loggedInProjects/$projectSlug/evaluations/': typeof LoggedInProjectsProjectSlugEvaluationsIndexRoute
+  '/_loggedInProjects/$projectSlug/external-share/': typeof LoggedInProjectsProjectSlugExternalShareIndexRoute
   '/_loggedInProjects/$projectSlug/invites/': typeof LoggedInProjectsProjectSlugInvitesIndexRoute
   '/_loggedInProjects/$projectSlug/network-hierarchy/': typeof LoggedInProjectsProjectSlugNetworkHierarchyIndexRoute
   '/_loggedInProjects/$projectSlug/operators/': typeof LoggedInProjectsProjectSlugOperatorsIndexRoute
@@ -1722,6 +1768,7 @@ export interface FileRoutesById {
   '/admin/surveys/$surveyId/responses/': typeof AdminSurveysSurveyIdResponsesIndexRoute
   '/api/$projectSlug/subsections/export/': typeof ApiProjectSlugSubsectionsExportIndexRoute
   '/api/$projectSlug/uploads/$uploadId/': typeof ApiProjectSlugUploadsUploadIdIndexRoute
+  '/api/share/$token/subsubsections/': typeof ApiShareTokenSubsubsectionsIndexRoute
   '/api/support/documents/upload/': typeof ApiSupportDocumentsUploadIndexRoute
   '/_loggedInFullscreen/$projectSlug/uploads/$uploadId/view/': typeof LoggedInFullscreenProjectSlugUploadsUploadIdViewIndexRoute
   '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/edit/': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugEditIndexRoute
@@ -1749,6 +1796,7 @@ export interface FileRoutesById {
   '/admin/surveys/$surveyId/responses/created/': typeof AdminSurveysSurveyIdResponsesCreatedIndexRoute
   '/admin/surveys/$surveyId/responses/test/': typeof AdminSurveysSurveyIdResponsesTestIndexRoute
   '/api/$projectSlug/uploads/$uploadId/$/': typeof ApiProjectSlugUploadsUploadIdSplatIndexRoute
+  '/api/share/$token/uploads/$uploadId/': typeof ApiShareTokenUploadsUploadIdIndexRoute
   '/api/support/documents/$documentId/$/': typeof ApiSupportDocumentsDocumentIdSplatIndexRoute
   '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungSubsubsectionSlugDashboardRouteRouteWithChildren
   '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new/': typeof LoggedInProjectsProjectSlugAbschnitteSubsectionSlugFuehrungNewIndexRoute
@@ -1777,6 +1825,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/beteiligung'
     | '/mcp'
+    | '/share'
     | '/dashboard'
     | '/browser-version'
     | '/datenschutz'
@@ -1788,6 +1837,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/auth/signup'
     | '/beteiligung/$surveySlug'
+    | '/share/$token'
     | '/admin/'
     | '/$projectSlug/project-records'
     | '/admin/projects/$projectSlug'
@@ -1829,6 +1879,7 @@ export interface FileRouteTypes {
     | '/$projectSlug/contacts/'
     | '/$projectSlug/edit/'
     | '/$projectSlug/evaluations/'
+    | '/$projectSlug/external-share/'
     | '/$projectSlug/invites/'
     | '/$projectSlug/network-hierarchy/'
     | '/$projectSlug/operators/'
@@ -1895,6 +1946,7 @@ export interface FileRouteTypes {
     | '/admin/surveys/$surveyId/responses/'
     | '/api/$projectSlug/subsections/export/'
     | '/api/$projectSlug/uploads/$uploadId/'
+    | '/api/share/$token/subsubsections/'
     | '/api/support/documents/upload/'
     | '/$projectSlug/uploads/$uploadId/view/'
     | '/$projectSlug/abschnitte/$subsectionSlug/edit/'
@@ -1922,6 +1974,7 @@ export interface FileRouteTypes {
     | '/admin/surveys/$surveyId/responses/created/'
     | '/admin/surveys/$surveyId/responses/test/'
     | '/api/$projectSlug/uploads/$uploadId/$/'
+    | '/api/share/$token/uploads/$uploadId/'
     | '/api/support/documents/$documentId/$/'
     | '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug'
     | '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new/'
@@ -1947,6 +2000,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/beteiligung'
     | '/mcp'
+    | '/share'
     | '/browser-version'
     | '/datenschutz'
     | '/kontakt'
@@ -1956,6 +2010,7 @@ export interface FileRouteTypes {
     | '/auth/logout'
     | '/auth/reset-password'
     | '/auth/signup'
+    | '/share/$token'
     | '/admin'
     | '/admin/projects/$projectSlug'
     | '/api/auth/$'
@@ -1995,6 +2050,7 @@ export interface FileRouteTypes {
     | '/$projectSlug/contacts'
     | '/$projectSlug/edit'
     | '/$projectSlug/evaluations'
+    | '/$projectSlug/external-share'
     | '/$projectSlug/invites'
     | '/$projectSlug/network-hierarchy'
     | '/$projectSlug/operators'
@@ -2060,6 +2116,7 @@ export interface FileRouteTypes {
     | '/admin/surveys/$surveyId/responses'
     | '/api/$projectSlug/subsections/export'
     | '/api/$projectSlug/uploads/$uploadId'
+    | '/api/share/$token/subsubsections'
     | '/api/support/documents/upload'
     | '/$projectSlug/uploads/$uploadId/view'
     | '/$projectSlug/abschnitte/$subsectionSlug/edit'
@@ -2087,6 +2144,7 @@ export interface FileRouteTypes {
     | '/admin/surveys/$surveyId/responses/created'
     | '/admin/surveys/$surveyId/responses/test'
     | '/api/$projectSlug/uploads/$uploadId/$'
+    | '/api/share/$token/uploads/$uploadId'
     | '/api/support/documents/$documentId/$'
     | '/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new'
     | '/$projectSlug/surveys/$surveyId/responses/map'
@@ -2116,6 +2174,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/beteiligung'
     | '/mcp'
+    | '/share'
     | '/_loggedInGeneral/dashboard'
     | '/_content/browser-version'
     | '/_content/datenschutz'
@@ -2128,6 +2187,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/auth/signup'
     | '/beteiligung/$surveySlug'
+    | '/share/$token'
     | '/_marketing/'
     | '/admin/'
     | '/_loggedInProjects/$projectSlug/project-records'
@@ -2170,6 +2230,7 @@ export interface FileRouteTypes {
     | '/_loggedInProjects/$projectSlug/contacts/'
     | '/_loggedInProjects/$projectSlug/edit/'
     | '/_loggedInProjects/$projectSlug/evaluations/'
+    | '/_loggedInProjects/$projectSlug/external-share/'
     | '/_loggedInProjects/$projectSlug/invites/'
     | '/_loggedInProjects/$projectSlug/network-hierarchy/'
     | '/_loggedInProjects/$projectSlug/operators/'
@@ -2236,6 +2297,7 @@ export interface FileRouteTypes {
     | '/admin/surveys/$surveyId/responses/'
     | '/api/$projectSlug/subsections/export/'
     | '/api/$projectSlug/uploads/$uploadId/'
+    | '/api/share/$token/subsubsections/'
     | '/api/support/documents/upload/'
     | '/_loggedInFullscreen/$projectSlug/uploads/$uploadId/view/'
     | '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/edit/'
@@ -2263,6 +2325,7 @@ export interface FileRouteTypes {
     | '/admin/surveys/$surveyId/responses/created/'
     | '/admin/surveys/$surveyId/responses/test/'
     | '/api/$projectSlug/uploads/$uploadId/$/'
+    | '/api/share/$token/uploads/$uploadId/'
     | '/api/support/documents/$documentId/$/'
     | '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard'
     | '/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/new/'
@@ -2294,6 +2357,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   BeteiligungRoute: typeof BeteiligungRouteWithChildren
   McpRoute: typeof McpRoute
+  ShareRoute: typeof ShareRouteWithChildren
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiCronInvitesCleanupIndexRoute: typeof ApiCronInvitesCleanupIndexRoute
   ApiCronLogEntriesCleanupIndexRoute: typeof ApiCronLogEntriesCleanupIndexRoute
@@ -2310,8 +2374,10 @@ export interface RootRouteChildren {
   ApiSurveyGeojsonSurveySlugIndexRoute: typeof ApiSurveyGeojsonSurveySlugIndexRoute
   ApiProjectSlugSubsectionsExportIndexRoute: typeof ApiProjectSlugSubsectionsExportIndexRoute
   ApiProjectSlugUploadsUploadIdIndexRoute: typeof ApiProjectSlugUploadsUploadIdIndexRoute
+  ApiShareTokenSubsubsectionsIndexRoute: typeof ApiShareTokenSubsubsectionsIndexRoute
   ApiSupportDocumentsUploadIndexRoute: typeof ApiSupportDocumentsUploadIndexRoute
   ApiProjectSlugUploadsUploadIdSplatIndexRoute: typeof ApiProjectSlugUploadsUploadIdSplatIndexRoute
+  ApiShareTokenUploadsUploadIdIndexRoute: typeof ApiShareTokenUploadsUploadIdIndexRoute
   ApiSupportDocumentsDocumentIdSplatIndexRoute: typeof ApiSupportDocumentsDocumentIdSplatIndexRoute
   ApiProjectSlugSubsectionsSubsectionSlugSubsubsectionsExportIndexRoute: typeof ApiProjectSlugSubsectionsSubsectionSlugSubsubsectionsExportIndexRoute
   ApiProjectSlugSurveysSurveyIdPart1AnswersIndexRoute: typeof ApiProjectSlugSurveysSurveyIdPart1AnswersIndexRoute
@@ -2322,6 +2388,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/share': {
+      id: '/share'
+      path: '/share'
+      fullPath: '/share'
+      preLoaderRoute: typeof ShareRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/mcp': {
       id: '/mcp'
       path: '/mcp'
@@ -2398,6 +2471,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof MarketingIndexRouteImport
       parentRoute: typeof MarketingRoute
+    }
+    '/share/$token': {
+      id: '/share/$token'
+      path: '/$token'
+      fullPath: '/share/$token'
+      preLoaderRoute: typeof ShareTokenRouteImport
+      parentRoute: typeof ShareRoute
     }
     '/beteiligung/$surveySlug': {
       id: '/beteiligung/$surveySlug'
@@ -2889,6 +2969,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoggedInProjectsProjectSlugInvitesIndexRouteImport
       parentRoute: typeof LoggedInProjectsProjectSlugRoute
     }
+    '/_loggedInProjects/$projectSlug/external-share/': {
+      id: '/_loggedInProjects/$projectSlug/external-share/'
+      path: '/external-share'
+      fullPath: '/$projectSlug/external-share/'
+      preLoaderRoute: typeof LoggedInProjectsProjectSlugExternalShareIndexRouteImport
+      parentRoute: typeof LoggedInProjectsProjectSlugRoute
+    }
     '/_loggedInProjects/$projectSlug/evaluations/': {
       id: '/_loggedInProjects/$projectSlug/evaluations/'
       path: '/evaluations'
@@ -2971,6 +3058,13 @@ declare module '@tanstack/react-router' {
       path: '/api/support/documents/upload'
       fullPath: '/api/support/documents/upload/'
       preLoaderRoute: typeof ApiSupportDocumentsUploadIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/share/$token/subsubsections/': {
+      id: '/api/share/$token/subsubsections/'
+      path: '/api/share/$token/subsubsections'
+      fullPath: '/api/share/$token/subsubsections/'
+      preLoaderRoute: typeof ApiShareTokenSubsubsectionsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/$projectSlug/uploads/$uploadId/': {
@@ -3237,6 +3331,13 @@ declare module '@tanstack/react-router' {
       path: '/api/support/documents/$documentId/$'
       fullPath: '/api/support/documents/$documentId/$/'
       preLoaderRoute: typeof ApiSupportDocumentsDocumentIdSplatIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/share/$token/uploads/$uploadId/': {
+      id: '/api/share/$token/uploads/$uploadId/'
+      path: '/api/share/$token/uploads/$uploadId'
+      fullPath: '/api/share/$token/uploads/$uploadId/'
+      preLoaderRoute: typeof ApiShareTokenUploadsUploadIdIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/$projectSlug/uploads/$uploadId/$/': {
@@ -3706,6 +3807,7 @@ interface LoggedInProjectsProjectSlugRouteChildren {
   LoggedInProjectsProjectSlugContactsIndexRoute: typeof LoggedInProjectsProjectSlugContactsIndexRoute
   LoggedInProjectsProjectSlugEditIndexRoute: typeof LoggedInProjectsProjectSlugEditIndexRoute
   LoggedInProjectsProjectSlugEvaluationsIndexRoute: typeof LoggedInProjectsProjectSlugEvaluationsIndexRoute
+  LoggedInProjectsProjectSlugExternalShareIndexRoute: typeof LoggedInProjectsProjectSlugExternalShareIndexRoute
   LoggedInProjectsProjectSlugInvitesIndexRoute: typeof LoggedInProjectsProjectSlugInvitesIndexRoute
   LoggedInProjectsProjectSlugNetworkHierarchyIndexRoute: typeof LoggedInProjectsProjectSlugNetworkHierarchyIndexRoute
   LoggedInProjectsProjectSlugOperatorsIndexRoute: typeof LoggedInProjectsProjectSlugOperatorsIndexRoute
@@ -3782,6 +3884,8 @@ const LoggedInProjectsProjectSlugRouteChildren: LoggedInProjectsProjectSlugRoute
       LoggedInProjectsProjectSlugEditIndexRoute,
     LoggedInProjectsProjectSlugEvaluationsIndexRoute:
       LoggedInProjectsProjectSlugEvaluationsIndexRoute,
+    LoggedInProjectsProjectSlugExternalShareIndexRoute:
+      LoggedInProjectsProjectSlugExternalShareIndexRoute,
     LoggedInProjectsProjectSlugInvitesIndexRoute:
       LoggedInProjectsProjectSlugInvitesIndexRoute,
     LoggedInProjectsProjectSlugNetworkHierarchyIndexRoute:
@@ -4107,6 +4211,16 @@ const BeteiligungRouteWithChildren = BeteiligungRoute._addFileChildren(
   BeteiligungRouteChildren,
 )
 
+interface ShareRouteChildren {
+  ShareTokenRoute: typeof ShareTokenRoute
+}
+
+const ShareRouteChildren: ShareRouteChildren = {
+  ShareTokenRoute: ShareTokenRoute,
+}
+
+const ShareRouteWithChildren = ShareRoute._addFileChildren(ShareRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   ContentRoute: ContentRouteWithChildren,
   LoggedInFullscreenRoute: LoggedInFullscreenRouteWithChildren,
@@ -4117,6 +4231,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   BeteiligungRoute: BeteiligungRouteWithChildren,
   McpRoute: McpRoute,
+  ShareRoute: ShareRouteWithChildren,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiCronInvitesCleanupIndexRoute: ApiCronInvitesCleanupIndexRoute,
   ApiCronLogEntriesCleanupIndexRoute: ApiCronLogEntriesCleanupIndexRoute,
@@ -4137,9 +4252,12 @@ const rootRouteChildren: RootRouteChildren = {
     ApiProjectSlugSubsectionsExportIndexRoute,
   ApiProjectSlugUploadsUploadIdIndexRoute:
     ApiProjectSlugUploadsUploadIdIndexRoute,
+  ApiShareTokenSubsubsectionsIndexRoute: ApiShareTokenSubsubsectionsIndexRoute,
   ApiSupportDocumentsUploadIndexRoute: ApiSupportDocumentsUploadIndexRoute,
   ApiProjectSlugUploadsUploadIdSplatIndexRoute:
     ApiProjectSlugUploadsUploadIdSplatIndexRoute,
+  ApiShareTokenUploadsUploadIdIndexRoute:
+    ApiShareTokenUploadsUploadIdIndexRoute,
   ApiSupportDocumentsDocumentIdSplatIndexRoute:
     ApiSupportDocumentsDocumentIdSplatIndexRoute,
   ApiProjectSlugSubsectionsSubsectionSlugSubsubsectionsExportIndexRoute:

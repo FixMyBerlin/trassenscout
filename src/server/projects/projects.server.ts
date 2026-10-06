@@ -6,6 +6,7 @@ import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { authorizeProjectMemberByProjectSlug } from "@/src/server/authorization/authorizeProjectMember.server"
 import { editorRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
+import { setExternalShareEnabled } from "@/src/server/externalShare/_utils/externalShareToken.server"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { effectiveMcpMode, mcpDirectUntilFromNow } from "@/src/server/mcp/effectiveMcpMode"
 import { membershipUpdateSession } from "@/src/server/memberships/membershipUpdateSession"
@@ -25,6 +26,7 @@ const projectSelect = {
   description: true,
   evaluationsEnabled: true,
   exportEnabled: true,
+  externalShareEnabled: true,
   landAcquisitionModuleEnabled: true,
   logoSrc: true,
   partnerLogoSrcs: true,
@@ -222,8 +224,12 @@ export async function updateProjectsFeatureFlag(
   headers: Headers,
   input: z.infer<typeof UpdateProjectsFeatureFlagSchema>,
 ) {
-  await endpointAuth.admin(headers)
+  const adminSession = await endpointAuth.admin(headers)
   const { projectSlugs, key, enabled } = input
+
+  if (key === "externalShareEnabled") {
+    return setExternalShareEnabled({ projectSlugs, enabled, userId: Number(adminSession.userId) })
+  }
 
   return db.project.updateMany({
     where: { slug: { in: projectSlugs } },
