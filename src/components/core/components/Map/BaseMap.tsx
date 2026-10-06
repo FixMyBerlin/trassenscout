@@ -2,6 +2,7 @@ import type { FeatureCollection, LineString, Point, Polygon } from "geojson"
 import type { MapLibreEvent } from "maplibre-gl"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import "maplibre-gl/dist/maplibre-gl.css"
+import "./maplibreWorker"
 import MapComponent, {
   AttributionControl,
   MapLayerMouseEvent,

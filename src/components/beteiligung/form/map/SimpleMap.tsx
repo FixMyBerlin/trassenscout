@@ -24,6 +24,7 @@ import {
   getInitialViewStateFromGeometryString,
 } from "@/src/components/beteiligung/form/map/utils"
 import "maplibre-gl/dist/maplibre-gl.css"
+import "@/src/components/core/components/Map/maplibreWorker"
 import { useFieldContext } from "@/src/components/beteiligung/shared/hooks/form-context"
 import type { MapData } from "@/src/components/beteiligung/shared/types"
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"

@@ -19,6 +19,7 @@ import {
   LayerType,
 } from "@/src/components/core/components/Map/BackgroundSwitcher/BackgroundSwitcher"
 import "maplibre-gl/dist/maplibre-gl.css"
+import "@/src/components/core/components/Map/maplibreWorker"
 import { getMapStyle, getVectorStyleUrl } from "@/src/components/core/components/Map/mapStyleConfig"
 import { MapTooltipPopup } from "@/src/components/core/components/Map/MapTooltipPopup"
 import { usePmtilesProtocol } from "@/src/components/core/components/Map/pmtilesProtocol"

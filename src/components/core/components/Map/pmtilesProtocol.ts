@@ -1,4 +1,4 @@
-import maplibregl from "maplibre-gl"
+import { addProtocol } from "maplibre-gl"
 import * as pmtiles from "pmtiles"
 import { useEffect } from "react"
 
@@ -6,6 +6,6 @@ import { useEffect } from "react"
 export function usePmtilesProtocol() {
   useEffect(function registerPmtilesProtocol() {
     const protocol = new pmtiles.Protocol()
-    maplibregl.addProtocol("pmtiles", protocol.tile)
+    addProtocol("pmtiles", protocol.tile)
   }, [])
 }

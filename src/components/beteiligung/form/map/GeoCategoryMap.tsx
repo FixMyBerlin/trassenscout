@@ -24,6 +24,7 @@ import {
 } from "@/src/components/beteiligung/form/map/utils"
 import { useFieldContext } from "@/src/components/beteiligung/shared/hooks/form-context"
 import "maplibre-gl/dist/maplibre-gl.css"
+import "@/src/components/core/components/Map/maplibreWorker"
 import { MapData } from "@/src/components/beteiligung/shared/types"
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
 import { useAllowedSurveySlug } from "@/src/components/beteiligung/shared/utils/useAllowedSurveySlug"
