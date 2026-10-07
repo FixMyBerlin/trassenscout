@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, test, vi } from "vitest"
+import { Prisma } from "@/src/prisma/generated/browser"
 
 const mockDb = {
   subsubsection: { findMany: vi.fn() },
@@ -19,6 +20,8 @@ const row = {
   slug: "rs8-1",
   subTitle: "Brücke",
   costEstimate: 1000,
+  widthExisting: 2.5,
+  estimatedConstructionDateString: "",
   extraFields: { foerderung: "ja" },
   geometry: { type: "Point", coordinates: [13.4, 52.5] },
   subsection: { slug: "pa1", networkHierarchy: { title: "Radschnellweg" } },
@@ -28,6 +31,7 @@ const row = {
   SubsubsectionTask: { title: "Neubau" },
   SubsubsectionInfra: null,
   SubsubsectionInfrastructureTypes: [{ title: "Radweg" }, { title: "Beleuchtung" }],
+  specialFeatures: [{ title: "Denkmalschutz" }],
 }
 
 describe("buildExternalShareGeojson", () => {
@@ -52,6 +56,43 @@ describe("buildExternalShareGeojson", () => {
     }
   })
 
+  test("exports every Maßnahme field except internal ids and map settings", async () => {
+    const { buildExternalShareGeojson } = await import("./externalShareContent.server")
+
+    await buildExternalShareGeojson(1)
+
+    const select = mockDb.subsubsection.findMany.mock.calls[0]?.[0]?.select
+    const internal = [
+      "type",
+      "labelPos",
+      "managerId",
+      "subsectionId",
+      "qualityLevelId",
+      "subsubsectionStatusId",
+      "subsubsectionTaskId",
+      "subsubsectionInfraId",
+    ]
+    const exported = Object.values(Prisma.SubsubsectionScalarFieldEnum).filter(
+      (field) => !internal.includes(field),
+    )
+    expect(Object.keys(select)).toEqual(expect.arrayContaining(exported))
+  })
+
+  test("keeps every column on a Maßnahme without values", async () => {
+    mockDb.subsubsection.findMany.mockResolvedValue([
+      { ...row, SubsubsectionInfrastructureTypes: [], specialFeatures: [], widthExisting: null },
+    ])
+    const { buildExternalShareGeojson } = await import("./externalShareContent.server")
+
+    const { features } = await buildExternalShareGeojson(1)
+
+    expect(features[0]?.properties).toMatchObject({
+      widthExisting: null,
+      infrastructureTypes: null,
+      specialFeatures: null,
+    })
+  })
+
   test("resolves relations to names and keeps the stored geometry", async () => {
     const { buildExternalShareGeojson } = await import("./externalShareContent.server")
 
@@ -66,6 +107,8 @@ describe("buildExternalShareGeojson", () => {
         slug: "rs8-1",
         subTitle: "Brücke",
         costEstimate: 1000,
+        widthExisting: 2.5,
+        estimatedConstructionDateString: null,
         extraFields: { foerderung: "ja" },
         subsection: "pa1",
         networkHierarchy: "Radschnellweg",
@@ -74,6 +117,7 @@ describe("buildExternalShareGeojson", () => {
         task: "Neubau",
         infra: null,
         infrastructureTypes: "Radweg, Beleuchtung",
+        specialFeatures: "Denkmalschutz",
         manager: "Ada Lovelace",
       },
     })

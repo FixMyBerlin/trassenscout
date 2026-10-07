@@ -27,6 +27,7 @@ const externalShareSubsubsectionSelect = {
   description: true,
   lengthM: true,
   width: true,
+  widthExisting: true,
   isExistingInfra: true,
   maxSpeed: true,
   trafficLoad: true,
@@ -62,6 +63,7 @@ const externalShareSubsubsectionSelect = {
   SubsubsectionTask: { select: { title: true } },
   SubsubsectionInfra: { select: { title: true } },
   SubsubsectionInfrastructureTypes: { select: { title: true } },
+  specialFeatures: { select: { title: true } },
 } satisfies Prisma.SubsubsectionSelect
 
 type ExternalShareSubsubsection = Prisma.SubsubsectionGetPayload<{
@@ -80,6 +82,11 @@ export async function loadExternalShareContent(projectId: number) {
   return { uploads, subsubsectionCount }
 }
 
+const emptyStringToNull = (record: Record<string, unknown>) =>
+  Object.fromEntries(
+    Object.entries(record).map(([key, value]) => [key, value === "" ? null : value]),
+  )
+
 function toFeature(
   subsubsection: ExternalShareSubsubsection,
   redactionContext: UserRedactionContext,
@@ -93,6 +100,7 @@ function toFeature(
     SubsubsectionTask,
     SubsubsectionInfra,
     SubsubsectionInfrastructureTypes,
+    specialFeatures,
     ...fields
   } = subsubsection
   const parsedGeometry = SupportedGeoJsonGeometrySchema.safeParse(geometry)
@@ -102,7 +110,7 @@ function toFeature(
     id: subsubsection.id,
     geometry: parsedGeometry.success ? parsedGeometry.data : null,
     properties: {
-      ...fields,
+      ...emptyStringToNull(fields),
       subsection: subsection.slug,
       networkHierarchy: subsection.networkHierarchy?.title ?? null,
       qualityLevel: qualityLevel?.title ?? null,
@@ -111,6 +119,7 @@ function toFeature(
       infra: SubsubsectionInfra?.title ?? null,
       infrastructureTypes:
         SubsubsectionInfrastructureTypes.map((type) => type.title).join(", ") || null,
+      specialFeatures: specialFeatures.map((special) => special.title).join(", ") || null,
       manager: getFullnameWithInstitution(serializeProjectUser(manager, redactionContext)) ?? null,
     },
   }
