@@ -15,7 +15,7 @@ react-map-gl exposes the map instance to **any descendant of `<MapProvider>`** v
 
 ```tsx
 // tilda-geo: MapInterface.tsx
-import { MapProvider } from 'react-map-gl/maplibre'
+import { MapProvider } from "react-map-gl/maplibre"
 
 export const MapInterface = () => (
   <MapProvider>
@@ -50,10 +50,10 @@ const { mainMap: map } = useMap()
 ## Minimal template (copy for new apps)
 
 ```tsx
-import 'maplibre-gl/dist/maplibre-gl.css'
-import { MapProvider, Map, useMap } from 'react-map-gl/maplibre'
+import "maplibre-gl/dist/maplibre-gl.css"
+import { MapProvider, Map, useMap } from "react-map-gl/maplibre"
 
-const MAP_ID = 'mainMap'
+const MAP_ID = "mainMap"
 
 function MapCanvas() {
   return (
@@ -61,7 +61,7 @@ function MapCanvas() {
       id={MAP_ID}
       initialViewState={{ longitude: 13.4, latitude: 52.5, zoom: 12 }}
       mapStyle="/api/map-style"
-      style={{ width: '100%', height: '100%' }}
+      style={{ width: "100%", height: "100%" }}
       attributionControl={false}
     >
       {/* Source/Layer children */}

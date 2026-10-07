@@ -103,13 +103,13 @@ Selection is toggled in React, **painted** via feature state:
   type="fill"
   source="potential-areas-source"
   paint={{
-    'fill-color': [
+    "fill-color": [
       // case: [condition, if-true, if-false]
-      'case',
+      "case",
       // type-check: use value if boolean, else fallback (false)
-      ['boolean', ['feature-state', 'selected'], false],
-      '#2563eb', // selected
-      '#94a3b8', // not selected
+      ["boolean", ["feature-state", "selected"], false],
+      "#2563eb", // selected
+      "#94a3b8", // not selected
     ],
   }}
 />
@@ -117,7 +117,7 @@ Selection is toggled in React, **painted** via feature state:
 
 ```tsx
 // Sync React selection → map (AcquisitionAreaMap.tsx)
-map.setFeatureState({ source: 'potential-areas-source', id: area.id }, { selected: area.selected })
+map.setFeatureState({ source: "potential-areas-source", id: area.id }, { selected: area.selected })
 ```
 
 **When you also need hover:** change paint on the **same** layer for one key (`selected`) does not scale — you need **two keys** and often a **duplicate layer** so the base style stays untouched. Tilda **LayerHighlight** clones a layer and uses a **multi-branch** `case` (first true condition wins):
@@ -130,14 +130,18 @@ map.setFeatureState({ source: 'potential-areas-source', id: area.id }, { selecte
 ```tsx
 // tilda-geo: LayerHighlight.tsx — one paint property on the duplicate layer
 ;[
-  'case',
-  ['all', ['boolean', ['feature-state', 'hover'], false], ['boolean', ['feature-state', 'selected'], false]],
-  '#a855f7', // hover + selected
-  ['boolean', ['feature-state', 'hover'], false],
-  '#eab308', // hover only
-  ['boolean', ['feature-state', 'selected'], false],
-  '#2563eb', // selected only
-  '#94a3b8', // default
+  "case",
+  [
+    "all",
+    ["boolean", ["feature-state", "hover"], false],
+    ["boolean", ["feature-state", "selected"], false],
+  ],
+  "#a855f7", // hover + selected
+  ["boolean", ["feature-state", "hover"], false],
+  "#eab308", // hover only
+  ["boolean", ["feature-state", "selected"], false],
+  "#2563eb", // selected only
+  "#94a3b8", // default
 ]
 ```
 
@@ -153,8 +157,8 @@ Track previous selection in a **ref**; on each run compare ref (previous) to cur
 
 ```tsx
 // tilda-geo: UpdateFeatureState.tsx
-import { differenceBy } from 'es-toolkit/compat'
-import { useEffect, useRef } from 'react'
+import { differenceBy } from "es-toolkit/compat"
+import { useEffect, useRef } from "react"
 
 const key = (f: MapGeoJSONFeature) => `${f.id}:::${f.layer.id}`
 
@@ -193,17 +197,17 @@ const handleClick = (event: MapLayerMouseEvent) => {
 
   // 1. clear entire source
   geojson.features.forEach((f) => {
-    map.setFeatureState({ source: 'features', id: f.properties.id }, { selected: false })
+    map.setFeatureState({ source: "features", id: f.properties.id }, { selected: false })
   })
 
   // 2. highlight every feature in the same group as the click
   const groupId = clicked.properties.groupId
   idsByGroup.get(groupId)?.forEach((id) => {
-    map.setFeatureState({ source: 'features', id }, { selected: true })
+    map.setFeatureState({ source: "features", id }, { selected: true })
   })
 }
 
-;<Map onClick={handleClick} interactiveLayerIds={['features-fill']} />
+;<Map onClick={handleClick} interactiveLayerIds={["features-fill"]} />
 ```
 
 Contrast with **UpdateFeatureState** above: selection there changes from React/URL without a map click, so an effect diffs `previous.current` vs `current`.
@@ -218,23 +222,25 @@ const handleMapClick = (event: MapLayerMouseEvent) => {
   const feature = event.features?.[0]
   if (!feature || feature.id == null) return
 
-  const previousId = form.getFieldValue('featureId')
-  const previousSource = form.getFieldValue('sourceId')
+  const previousId = form.getFieldValue("featureId")
+  const previousSource = form.getFieldValue("sourceId")
 
   // 1. clear previous — only stored ids, not a feature object (see note below)
   if (previousId && previousSource && mainMap) {
-    mainMap.getMap().setFeatureState({ source: previousSource, id: previousId }, { selected: false })
+    mainMap
+      .getMap()
+      .setFeatureState({ source: previousSource, id: previousId }, { selected: false })
   }
 
   // 2. highlight clicked — pass feature; MapLibre gets sourceLayer from the event
   mainMap.setFeatureState(feature, { selected: true })
 
   // 3. persist for the next click
-  form.setFieldValue('sourceId', feature.source)
-  form.setFieldValue('featureId', feature.id)
+  form.setFieldValue("sourceId", feature.source)
+  form.setFieldValue("featureId", feature.id)
 }
 
-;<Map onClick={handleMapClick} interactiveLayerIds={['areas-fill']} />
+;<Map onClick={handleMapClick} interactiveLayerIds={["areas-fill"]} />
 ```
 
 Contrast with **BaseMap** above: that resets **every** feature in the source; here you only clear the one id you stored last time.

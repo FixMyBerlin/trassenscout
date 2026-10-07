@@ -10,9 +10,9 @@ Use **`styleimagemissing`** instead when icon ids are **dynamic or unbounded** (
 
 ```tsx
 // vzk-bw-workspace: useMapImages.ts — adapted (mainMap from useMap)
-import { useMap } from 'react-map-gl/maplibre'
-import type { StyleImageMetadata } from 'maplibre-gl'
-import { useEffect } from 'react'
+import { useMap } from "react-map-gl/maplibre"
+import type { StyleImageMetadata } from "maplibre-gl"
+import { useEffect } from "react"
 
 type MapImage = {
   name: string
@@ -32,7 +32,7 @@ export function useMapImages({ images }: { images: MapImage[] }) {
       for (const { name, url, width, height, options } of images) {
         if (mainMap.hasImage(name)) continue
 
-        const isSvg = url.split('.').pop() === 'svg' || url.startsWith('data:image/svg+xml;')
+        const isSvg = url.split(".").pop() === "svg" || url.startsWith("data:image/svg+xml;")
 
         if (isSvg) {
           // MapLibre loadImage does not handle SVG — rasterize via Image + pixelRatio

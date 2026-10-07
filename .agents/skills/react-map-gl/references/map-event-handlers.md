@@ -61,9 +61,9 @@ useEffect(() => {
     const c = map.getCenter()
     setMapParam({ lat: c.lat, lng: c.lng, zoom: map.getZoom() })
   }
-  map.on('moveend', onMoveEnd)
+  map.on("moveend", onMoveEnd)
   return () => {
-    map.off('moveend', onMoveEnd)
+    map.off("moveend", onMoveEnd)
   }
 }, [mainMap])
 ```
@@ -73,7 +73,7 @@ useEffect(() => {
 <Map
   onMoveEnd={(e) => {
     const { latitude, longitude, zoom } = e.viewState
-    void setMapParam({ lat: latitude, lng: longitude, zoom }, { history: 'replace' })
+    void setMapParam({ lat: latitude, lng: longitude, zoom }, { history: "replace" })
   }}
 />
 ```

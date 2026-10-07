@@ -51,7 +51,7 @@ Agents (agent-browser MCP) via `agent_browser_eval`, or Playwright `page.evaluat
 ```js
 window.__mainMap?.getZoom()
 window.__mainMap?.getStyle().layers.map((layer) => layer.id)
-window.__mainMap?.queryRenderedFeatures({ layers: ['my-layer-id'] })
+window.__mainMap?.queryRenderedFeatures({ layers: ["my-layer-id"] })
 ```
 
 In app code after load: `useMap().mainMap.getMap()` for MapLibre APIs (see [map-provider-wrapper.md](map-provider-wrapper.md)).

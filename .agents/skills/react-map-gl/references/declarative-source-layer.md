@@ -29,13 +29,13 @@ MapLibre’s own guides show `map.addSource` / `map.addLayer` for vanilla JS. In
 // ❌ Imperative — bypasses react-map-gl; duplicates lifecycle; hard to sync with URL/toggles
 const handleLoad = () => {
   const map = mainMap.getMap()
-  map.addSource('regions', { type: 'vector', url: pmtilesUrl })
+  map.addSource("regions", { type: "vector", url: pmtilesUrl })
   map.addLayer({
-    id: 'regions-fill',
-    type: 'fill',
-    source: 'regions',
-    'source-layer': 'default',
-    paint: { 'fill-color': '#3b82f6' },
+    id: "regions-fill",
+    type: "fill",
+    source: "regions",
+    "source-layer": "default",
+    paint: { "fill-color": "#3b82f6" },
   })
 }
 ```

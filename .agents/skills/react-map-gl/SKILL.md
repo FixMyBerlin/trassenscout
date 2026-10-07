@@ -65,6 +65,6 @@ Pair with: skill `tanstack-router-conventions` (`?map=` URL contract), skill `nu
 ## Quick import
 
 ```tsx
-import 'maplibre-gl/dist/maplibre-gl.css'
-import { MapProvider, Map, Source, Layer, useMap } from 'react-map-gl/maplibre'
+import "maplibre-gl/dist/maplibre-gl.css"
+import { MapProvider, Map, Source, Layer, useMap } from "react-map-gl/maplibre"
 ```
