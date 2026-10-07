@@ -61,8 +61,8 @@ Use **`replace: true`** on viewport drags; use default push semantics when the u
 Next.js, Pages Router, or existing nuqs trees (tilda wraps `PageRegionSlug` with `NuqsAdapter`). Same parse/serialize util; nuqs owns the query string.
 
 ```tsx
-import { createParser, useQueryState } from "nuqs"
-import { parseMapParam, serializeMapParam } from "./utils/mapParam"
+import { createParser, useQueryState } from 'nuqs'
+import { parseMapParam, serializeMapParam } from './utils/mapParam'
 
 const mapParamParser = createParser({
   parse: (query) => parseMapParam(query),
@@ -70,7 +70,7 @@ const mapParamParser = createParser({
 }).withDefault(mapParamFallback)
 
 export const useMapParam = () => {
-  const [mapParam, setMapParam] = useQueryState("map", mapParamParser)
+  const [mapParam, setMapParam] = useQueryState('map', mapParamParser)
   return { mapParam, setMapParam }
 }
 ```

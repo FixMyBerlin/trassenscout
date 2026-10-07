@@ -1,32 +1,32 @@
-import { defineConfig } from "oxlint"
+import { defineConfig } from 'oxlint'
 
 // FMC default — shared tilda-geo / trassenscout base (no app-specific jsPlugins).
 // Add custom jsPlugins per app (e.g. Trassenscout auth-boundary rules — see references/oxc-config.md).
 // ignorePatterns: keep in sync with oxfmt.config.mjs.
 export default defineConfig({
-  plugins: ["eslint", "typescript", "unicorn", "oxc", "react"],
+  plugins: ['eslint', 'typescript', 'unicorn', 'oxc', 'react'],
   options: { typeAware: true },
   ignorePatterns: [
-    ".agents/**",
-    ".cursor/**",
-    ".output/**",
-    "playwright-report/**",
-    "test-results/**",
-    "src/routeTree.gen.ts",
-    "src/prisma/generated/**",
+    '.agents/**',
+    '.cursor/**',
+    '.output/**',
+    'playwright-report/**',
+    'test-results/**',
+    'src/routeTree.gen.ts',
+    'src/prisma/generated/**',
   ],
   rules: {
-    "typescript/switch-exhaustiveness-check": "error",
+    'typescript/switch-exhaustiveness-check': 'error',
     // Restriction category — keep ESLint recommended coverage (off by default in oxlint)
-    "react/unsupported-syntax": "error",
+    'react/unsupported-syntax': 'error',
     // Allow bare `_` (oxlint default ignores `_foo` but not `_`); object config clears defaults
-    "eslint/no-unused-vars": [
-      "warn",
+    'eslint/no-unused-vars': [
+      'warn',
       {
-        argsIgnorePattern: "^_",
-        varsIgnorePattern: "^_",
-        destructuredArrayIgnorePattern: "^_",
-        caughtErrorsIgnorePattern: "^_",
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+        destructuredArrayIgnorePattern: '^_',
+        caughtErrorsIgnorePattern: '^_',
       },
     ],
     // Type-aware rules that are noisy in FMC apps — keep off unless you tighten deliberately.
@@ -45,10 +45,10 @@ export default defineConfig({
   },
   overrides: [
     {
-      files: ["**/*.test.ts", "**/*.test.tsx"],
+      files: ['**/*.test.ts', '**/*.test.tsx'],
       rules: {
-        "typescript/no-non-null-assertion": "off",
-        "react/rules-of-hooks": "off",
+        'typescript/no-non-null-assertion': 'off',
+        'react/rules-of-hooks': 'off',
       },
     },
   ],

@@ -46,7 +46,7 @@ const handleMouseLeave = (_e: MapLayerMouseEvent) => {
 - Apply the same feature filtering as click handlers (e.g. `extractInteractiveFeatures`) so cursor matches what is actually pickable at the current zoom.
 - Reset on **`onMouseLeave`** — otherwise cursor can stick at `pointer` when leaving the map canvas.
 - Use the Map **`cursor`** prop, not a wrapper div — it applies correctly to the canvas during drag.
-- For drawing tools (MapboxDraw, calculator), temporarily override cursor while the tool is active.
+- While drawing with [`@osm-editor-kit/react-map-gl-draw`](https://github.com/osm-editor-kit/react-map-gl-draw/tree/main/packages/react-map-gl-draw), `draw.mapProps` carries a `cursor` only when drawing wants a specific one. Put your own `cursor` prop before the `{...draw.mapProps}` spread so drawing wins while it is active.
 
 ## Minimal template
 

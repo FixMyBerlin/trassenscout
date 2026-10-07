@@ -55,7 +55,7 @@ Browserslist has **no per-platform threshold** (e.g. “30% of iOS users”). St
 ### `vite.config.ts` — client build target only
 
 ```ts
-import browserslistToEsbuild from "browserslist-to-esbuild"
+import browserslistToEsbuild from 'browserslist-to-esbuild'
 
 export default defineConfig({
   environments: {

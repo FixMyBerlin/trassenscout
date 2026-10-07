@@ -22,7 +22,7 @@ FixMyCity (already in the template):
 schedule:
   interval: weekly
   day: monday
-  time: "07:00"
+  time: '07:00'
   timezone: Europe/Berlin
 ```
 
@@ -31,7 +31,7 @@ Private OSS and Astro — replace that block with:
 ```yaml
 schedule:
   interval: cron
-  cronjob: "0 7 * * FRI#1"
+  cronjob: '0 7 * * FRI#1'
   timezone: Europe/Berlin
 ```
 
@@ -76,11 +76,11 @@ When a repo has a separate Bun package for geo/scripts work (tilda-geo `processi
 processing-deps:
   applies-to: version-updates
   patterns:
-    - "@date-fns/*"
-    - "@turf/*"
-    - "date-fns"
-    - "geojson"
-    - "zod"
+    - '@date-fns/*'
+    - '@turf/*'
+    - 'date-fns'
+    - 'geojson'
+    - 'zod'
   update-types:
     - minor
     - patch
