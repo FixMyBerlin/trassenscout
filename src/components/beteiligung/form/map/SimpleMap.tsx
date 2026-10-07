@@ -136,6 +136,8 @@ export const SurveySimpleMap = ({ config, description, mapData }: Props) => {
         <Map
           key={geometryKey || "bounds"}
           id="mainMap"
+          // See BaseMap: v6 default of 4 draws a tile grid on overzoomed PMTiles line layers.
+          zoomLevelsToOverscale={undefined}
           onMove={handleMapMove}
           onZoom={handleMapZoom}
           onClick={handleMapClick}

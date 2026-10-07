@@ -381,6 +381,8 @@ const SwitchableMapContent = ({
       <div className={twJoin("relative mt-4 h-125", mode === "none" ? "hidden" : "")}>
         <Map
           id="mainMap"
+          // See BaseMap: v6 default of 4 draws a tile grid on overzoomed PMTiles line layers.
+          zoomLevelsToOverscale={undefined}
           scrollZoom={false}
           initialViewState={initialViewState}
           mapStyle={getSurveyMapStyle({ selectedLayer, maptilerUrl })}
