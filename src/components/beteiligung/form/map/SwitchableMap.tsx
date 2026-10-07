@@ -61,6 +61,10 @@ type SwitchableMapContentProps = {
   // the property name in the geojson that we strore as the id for the geometry category
   geoCategoryIdDefinition: { dataKey: string; propertyName: string }
   infoPanelText?: string
+  // optional form field (e.g. `geometryCategory`, declared as hidden field in the survey config) that
+  // receives the coordinates of the clicked feature as JSON string, like SurveyGeoCategoryMap.
+  // When set, an existing feature is stored ONLY there (`location` stays empty, it is reserved for the pin).
+  geometryDataKey?: string
   // when true, the user gets a third option that allows submitting without choosing a location on the map
   // in that case the location field value is not required anymore (handled via a custom field validator in the survey config)
   allowNoMapOption?: boolean
@@ -158,6 +162,7 @@ const SwitchableMapContent = ({
     setInitialBounds,
     mapData,
     infoPanelText,
+    geometryDataKey,
     allowNoMapOption = false,
   },
   description,
@@ -250,13 +255,19 @@ const SwitchableMapContent = ({
     // geometry and id are always set here
     // tbd we always want to stroe and id and a geometry maybe it makes more sense to store it as an object {id: string, geometry: string}
     field.form.setFieldValue(geoCategoryIdDefinition.dataKey, geoCategoryId)
-    const anchor = geometryAnchorPoint(geometry as SupportedGeometry)
-    // Fallback is for TS only — clickable features always yield a valid anchor in practice.
-    field.handleChange(
-      anchor
-        ? { lng: anchor.longitude, lat: anchor.latitude }
-        : { lng: event.lngLat.lng, lat: event.lngLat.lat },
-    )
+    // like SurveyGeoCategoryMap: with `geometryDataKey` the feature is stored only as geometry, `location` stays untouched
+    if (geometryDataKey) {
+      // @ts-expect-error GeoJSON coordinates → survey stores bare coordinate JSON
+      field.form.setFieldValue(geometryDataKey, JSON.stringify(geometry.coordinates))
+    } else {
+      const anchor = geometryAnchorPoint(geometry as SupportedGeometry)
+      // Fallback is for TS only — clickable features always yield a valid anchor in practice.
+      field.handleChange(
+        anchor
+          ? { lng: anchor.longitude, lat: anchor.latitude }
+          : { lng: event.lngLat.lng, lat: event.lngLat.lat },
+      )
+    }
     // read additional properties and set values in from context
     for (const { dataKey, propertyName } of additionalData) {
       field.form.setFieldValue(dataKey, feature.properties[propertyName])
@@ -297,6 +308,7 @@ const SwitchableMapContent = ({
     field.form.setFieldValue("geometryCategorySourceId", undefined)
     field.form.setFieldValue("geometryCategoryFeatureId", undefined)
     field.form.setFieldValue(geoCategoryIdDefinition.dataKey, undefined)
+    if (geometryDataKey) field.form.setFieldValue(geometryDataKey, undefined)
     for (const { dataKey } of additionalData) {
       field.form.setFieldValue(dataKey, undefined)
     }

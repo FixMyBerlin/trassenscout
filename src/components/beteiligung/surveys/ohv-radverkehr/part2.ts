@@ -1,6 +1,7 @@
 import { AnyFieldApi } from "@tanstack/react-form"
 import { fieldValidationEnum } from "@/src/components/beteiligung/shared/fieldvalidationEnum"
 import { SurveyPart2 } from "@/src/components/beteiligung/shared/types"
+import { mapData } from "@/src/components/beteiligung/surveys/ohv-radverkehr/mapData.const"
 
 export const part2Config: SurveyPart2 = {
   progressBarDefinition: 1,
@@ -100,51 +101,50 @@ Mit dem Aufrufen des Formulars stimme ich der Datenschutzerklärung zu. Die Date
           },
         },
         {
-          name: "enableLocation",
-          componentType: "form",
-          component: "SurveyRadiobuttonGroup",
-          validation: fieldValidationEnum["requiredString"],
-          defaultValue: "",
-          props: {
-            label: "Raumbezug & fachliche Zuordnung",
-            description:
-              "Wählen Sie aus, worauf sich Ihre Stellungnahme bezieht. Für einen Trassenabschnitt oder eine Punktsetzung können Sie anschließend einen Ort auf der Karte markieren.",
-            options: [
-              { key: "trassenabschnitt", label: "Planungsabschnitt/ Maßnahme auf der Karte" },
-              { key: "punktsetzung", label: "Pinsetzung auf der Karte" },
-              {
-                key: "gesamtes_netz",
-                label: "Kein Ortsbezug, allgemeiner Hinweis",
-              },
-            ],
-          },
-        },
-        {
           name: "location",
           componentType: "form",
-          component: "SurveySimpleMapWithLegend",
-          condition: {
-            fieldName: "enableLocation",
-            conditionFn: (fieldValue) => fieldValue !== "gesamtes_netz",
-          },
-          validators: {
-            onSubmit: ({ fieldApi }: { fieldApi: AnyFieldApi }) => {
-              if (
-                fieldApi.form.getFieldValue("enableLocation") !== "gesamtes_netz" &&
-                fieldApi.state.value == null
-              ) {
-                return "Bitte markieren Sie einen Ort auf der Karte."
-              }
-              return undefined
-            },
-          },
+          component: "SwitchableMap",
+          // `location` only holds the pin. An existing Planungsabschnitt is stored in `geometryCategory`.
+          // We therefore allow null at the zod level (conditionalRequiredLatLng) and enforce the
+          // requiredness in the custom validator below, which reads the `locationMode` set by the map component
           validation: fieldValidationEnum["conditionalRequiredLatLng"],
           defaultValue: null,
+          validators: {
+            onSubmit: ({ fieldApi }: { fieldApi: AnyFieldApi }) => {
+              const mode = fieldApi.form.getFieldValue("locationMode") ?? "existing"
+              if (mode === "none") return undefined
+              if (mode === "existing") {
+                return fieldApi.form.getFieldValue("geometryCategory")
+                  ? undefined
+                  : "Bitte wählen Sie einen Planungsabschnitt auf der Karte aus."
+              }
+              return fieldApi.state.value == null
+                ? "Bitte markieren Sie einen Ort auf der Karte."
+                : undefined
+            },
+          },
           props: {
             label: "Verortung auf der Karte",
             description:
-              "Die Karte ist ein Platzhalter, bis die Trassendaten ergänzt werden. Bitte markieren Sie hier den betreffenden Ort durch einen Klick auf die Karte oder verschieben Sie den Pin.",
+              "Klicken Sie auf einen Planungsabschnitt, um ihn auszuwählen, oder setzen Sie einen Pin. Die Karte kann bei Bedarf verschoben oder über die Schaltflächen „+/-“ verkleinert oder vergrößert werden.",
+            modeSelector: {
+              question: "Raumbezug & fachliche Zuordnung",
+              description:
+                "Wählen Sie aus, worauf sich Ihre Stellungnahme bezieht. Für einen Planungsabschnitt oder eine Punktsetzung können Sie anschließend einen Ort auf der Karte markieren.",
+              existingLabel: "Planungsabschnitt/ Maßnahme auf der Karte",
+              pinLabel: "Pinsetzung auf der Karte",
+              noneLabel: "Kein Ortsbezug, allgemeiner Hinweis",
+            },
             mapProps: {
+              mapData,
+              allowNoMapOption: true,
+              additionalData: [],
+              geometryDataKey: "geometryCategory",
+              geoCategoryIdDefinition: {
+                dataKey: "geometryCategoryId",
+                propertyName: "subsectionSlug",
+              },
+              infoPanelText: "Wählen Sie einen Planungsabschnitt aus, zu dem Sie Stellung nehmen.",
               config: {
                 bounds: [12.824965, 52.586742, 13.520948, 53.251088],
                 minZoom: 7,
@@ -152,15 +152,32 @@ Mit dem Aufrufen des Formulars stimme ich der Datenschutzerklärung zu. Die Date
               },
             },
             legendProps: {
-              Markierung: {
-                pin: {
-                  label: "Verortung Ihrer Stellungnahme",
+              Legende: {
+                pa: {
+                  label: "Auswählbare Planungsabschnitte",
                   color: "bg-[#02558e]",
-                  className: "size-3 rounded-full",
+                  className: "h-[5px]",
+                },
+                pin: {
+                  label: "Ihr Pin",
+                  color: "bg-[#02558e]",
+                  className: "size-2! rounded-full",
                 },
               },
             },
           },
+        },
+        {
+          name: "geometryCategory",
+          componentType: "form",
+          component: "hidden",
+          props: { label: "Geometrie des ausgewählten Planungsabschnitts" },
+        },
+        {
+          name: "geometryCategoryId",
+          componentType: "form",
+          component: "hidden",
+          props: { label: "Kürzel des ausgewählten Planungsabschnitts" },
         },
         {
           name: "topics",

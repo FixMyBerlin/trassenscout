@@ -61,7 +61,6 @@ Folgende Angaben wurden übermittelt:
 - **Institution / Organisation**: {{institution}}
 - **Fachbereich / Abteilung**: {{department}}
 - **Formelle Haltung**: {{category}}
-- **Raumbezug**: {{enableLocation}}
 - **Themenbereich**: {{topics}}
 - **Stellungnahme**: {{feedbackText}}
 - **Beschreibung der Dokumente**: {{uploadsDescription}}
@@ -80,7 +79,6 @@ im Auftrag des Landkreises Oberhavel`,
       "institution",
       "department",
       "category",
-      "enableLocation",
       "topics",
       "feedbackText",
       "uploadsDescription",
@@ -103,7 +101,6 @@ Folgende Angaben wurden übermittelt:
 - **Institution / Organisation**: {{institution}}
 - **Fachbereich / Abteilung**: {{department}}
 - **Formelle Haltung**: {{category}}
-- **Raumbezug**: {{enableLocation}}
 - **Themenbereich**: {{topics}}
 - **Stellungnahme**: {{feedbackText}}
 - **Beschreibung der Dokumente**: {{uploadsDescription}}
@@ -123,7 +120,6 @@ das Team vom Trassenscout`,
       "institution",
       "department",
       "category",
-      "enableLocation",
       "topics",
       "feedbackText",
       "uploadsDescription",
