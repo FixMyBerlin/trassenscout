@@ -258,6 +258,9 @@ export const BaseMap = ({
           <MapComponent
             id={mapId}
             reuseMaps={reuseMaps}
+            // MapLibre v6 defaults to 4, which re-cuts overzoomed vector tiles (> maxzoom) and draws
+            // the cut edges of polygon PMTiles (e.g. OHV Gemeindegrenzen) as a grid in line layers.
+            zoomLevelsToOverscale={undefined}
             initialViewState={initialViewState}
             mapStyle={getMapStyle(selectedLayer)}
             scrollZoom={scrollZoom ?? true}
