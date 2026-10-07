@@ -168,10 +168,6 @@ Dann klicken Sie bitte auf den untenstehenden Button, um eine Maßnahme zu melde
           name: "location",
           componentType: "form",
           component: "SurveySimpleMapWithLegend",
-          condition: {
-            fieldName: "enableLocation",
-            conditionFn: (fieldValue) => fieldValue === "ja",
-          },
           validators: {
             onSubmit: ({ fieldApi }: { fieldApi: AnyFieldApi }) => {
               if (
@@ -188,7 +184,7 @@ Dann klicken Sie bitte auf den untenstehenden Button, um eine Maßnahme zu melde
           props: {
             label: "Verortung auf der Karte",
             description:
-              "Die Karte ist ein Platzhalter, bis die Trassendaten und die Kommunen-Konfiguration ergänzt werden. Bitte markieren Sie hier den betreffenden Ort durch einen Klick auf die Karte oder verschieben Sie den Pin.",
+              "Die Karte ist ein Platzhalter, bis die Trassendaten und die Kommunen-Konfiguration ergänzt werden. Wenn Sie einen Ort mit einem Pin markieren möchten, klicken Sie auf die Karte oder verschieben Sie den Pin.",
             mapProps: {
               config: {
                 bounds: [12.824965, 52.586742, 13.520948, 53.251088],
