@@ -53,7 +53,6 @@ Blöcke `email` und optional `adminEmail`. Inhalte erfragen und bestätigen lass
 
 - Teilnehmende (`email`): `subject`, `markdown` (Fließtext, Grußformel), welche Felder in der Zusammenfassung; pro Zeile `{{feldname}}` (nur Felder aus `part1`/`part2`/`part3`, plus `surveyUrl` vom System); `fields` muss zur Markdown-Liste passen (`surveyConfigs.test.ts`)
 - Team (`adminEmail`): gewünscht? Betreff und Text analog; `recipients` im Agent-PR als Dummy (`…@dummy.de`) — echte Adressen → „Offen für Dev“
-- Danke-Seite: `end.mailjetWidgetUrl` — URL oder `null`
 
 Struktur-Vorlagen: `ohv-haltestellenfoerderung/config.tsx` oder kürzer `rstest-2-3/config.tsx`.
 

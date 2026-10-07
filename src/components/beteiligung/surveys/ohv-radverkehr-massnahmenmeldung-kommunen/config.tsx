@@ -26,7 +26,6 @@ export const formConfig: FormConfig = {
 Das digitale Meldeverfahren läuft noch bis zum 30.09.2027. Bis dahin können Sie auf dem gleichen Wege noch weitere Maßnahmen melden. Nach Abschluss des Meldeverfahrens werden die eingegangenen Meldungen durch den Landkreis geprüft.
 
 Nach Erstellung des Maßnahmenprogramms wird dieses per E-Mail an die Kommunen übermittelt. Die E-Mail enthält als Anlage die Zusammenstellung der aufgenommenen Maßnahmen. Die Kommunen erhalten auf dieser Grundlage in einem gesonderten Schritt die Aufforderung zur Antragstellung.`,
-    mailjetWidgetUrl: null,
     buttons: [
       {
         action: "part2",

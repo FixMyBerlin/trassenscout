@@ -358,7 +358,6 @@ export type FormConfig = {
     progressBarDefinition: number
     title: string
     description?: string
-    mailjetWidgetUrl: string | null
     homeUrl: string
     buttons: EndButton[] | null
     buttonLink: {

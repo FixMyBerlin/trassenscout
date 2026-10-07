@@ -28,7 +28,6 @@ Die Plattform ist für das Anmelde- und Antragsverfahren grundsätzlich immer ge
 
 Nach Erstellung des Maßnahmenprogramms wird dieses per E-Mail an die Kommunen übermittelt. Die E-Mail enthält als Anlage die Zusammenstellung der aufgenommenen Maßnahmen. Die Kommunen erhalten auf dieser Grundlage in einem gesonderten Schritt die Aufforderung zur Antragstellung.
 `,
-    mailjetWidgetUrl: null,
     buttons: [
       {
         action: "part2",

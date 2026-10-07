@@ -33,7 +33,6 @@ export const SurveyEnd = ({ setStage }: Props) => {
     title,
     homeUrl,
     buttons,
-    mailjetWidgetUrl,
   } = getConfigBySurveySlug(surveySlug, "end")
   const buttonsLeft = buttons?.filter((button) => button.position === "left")
   const buttonsRight = buttons?.filter((button) => button.position === "right")
@@ -41,13 +40,7 @@ export const SurveyEnd = ({ setStage }: Props) => {
   return (
     <section>
       <SurveyScreenHeader title={title} description={description} />
-      {mailjetWidgetUrl && (
-        <iframe
-          title="Newsletter-Anmeldung"
-          className="my-6 mt-10 h-[500px] w-full rounded border border-gray-300"
-          src={mailjetWidgetUrl}
-        />
-      )}
+      {/* Newsletter sign-up, if needed again: embed a Brevo subscription form (iframe) here */}
       <div>
         <SurveyButtonGrid
           buttonLeft1={<EndButtonWithAction button={buttonsLeft?.[0]} setStage={setStage} />}

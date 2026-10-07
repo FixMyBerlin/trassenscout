@@ -30,7 +30,6 @@ Das digitale Anhörungsverfahren läuft bis zum 01.10.2026. Bis zum Ablauf der F
 Nach Abschluss der Anhörung werden alle eingegangenen Bedenken, Hinweise und Anregungen durch den Landkreis Oberhavel fachlich geprüft, ausgewertet und in die finale Abwägung übernommen.
 
 Nach Fertigstellung der Abwägung und Fortschreibung des Radnetzkonzepts werden die Beteiligten über das Ergebnis sowie die nächsten Schritte zur Priorisierung und Umsetzung informiert.`,
-    mailjetWidgetUrl: null,
     buttons: [
       {
         action: "part2",

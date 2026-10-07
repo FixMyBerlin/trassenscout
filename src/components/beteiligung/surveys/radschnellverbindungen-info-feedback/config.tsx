@@ -19,7 +19,6 @@ export const formConfig: FormConfig = {
     progressBarDefinition: 3,
     title: "Vielen Dank!",
     description: `Danke für die Hinweise, wir melden uns bei Rückfragen und werden zeitnah ein Update veröffentlichen. Rückfragen gerne an [trassenscout@fixmycity.de](mailto:trassenscout@fixmycity.de).`,
-    mailjetWidgetUrl: null,
     buttons: [
       {
         action: "part2",
