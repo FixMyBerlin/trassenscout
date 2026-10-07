@@ -14,7 +14,6 @@ import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { formatBerlinTime } from "@/src/components/core/utils/formatBerlinTime"
 import { Img } from "@/src/components/shared/Img"
 import { FileTypeIcon } from "@/src/components/uploads/utils/FileTypeIcon"
-import { isImageUpload } from "@/src/components/uploads/utils/getFileType"
 import type { ExternalShareUpload } from "@/src/server/externalShare/types"
 import { ExternalSharePreviewModal } from "./ExternalSharePreviewModal"
 
@@ -30,6 +29,21 @@ type Props = {
   fileUrl: (uploadId: number) => string
   downloadUrl: (uploadId: number) => string
   renderAction: (upload: ExternalShareUpload) => React.ReactNode
+}
+
+const ShareThumbnail = ({ upload, src }: { upload: ExternalShareUpload; src: string }) => {
+  const [failed, setFailed] = useState(false)
+  if (upload.previewKind !== "image" || failed) {
+    return <FileTypeIcon mimeType={upload.mimeType} className="size-8 text-gray-400" />
+  }
+  return (
+    <Img
+      src={src}
+      alt=""
+      className="pointer-events-none size-full object-contain"
+      onError={() => setFailed(true)}
+    />
+  )
 }
 
 /** One table for the internal page and the public page, so the editor sees what goes out. */
@@ -85,15 +99,7 @@ export const ExternalShareUploadsTable = ({
                     className="inline-flex size-12 cursor-pointer items-center justify-center overflow-hidden rounded-md border border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50"
                     title={`Vorschau: ${upload.title}`}
                   >
-                    {isImageUpload({ mimeType: upload.mimeType }) ? (
-                      <Img
-                        src={fileUrl(upload.id)}
-                        alt=""
-                        className="pointer-events-none size-full object-contain"
-                      />
-                    ) : (
-                      <FileTypeIcon mimeType={upload.mimeType} className="size-8 text-gray-400" />
-                    )}
+                    <ShareThumbnail upload={upload} src={fileUrl(upload.id)} />
                   </button>
                 </td>
                 <td className={twJoin(tableCellClassName, "min-w-0 align-top")}>
@@ -124,6 +130,7 @@ export const ExternalShareUploadsTable = ({
         </table>
       </TableWrapper>
       <ExternalSharePreviewModal
+        key={previewUpload?.id}
         upload={previewUpload}
         fileUrl={previewUpload ? fileUrl(previewUpload.id) : ""}
         downloadUrl={previewUpload ? downloadUrl(previewUpload.id) : ""}

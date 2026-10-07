@@ -19,6 +19,7 @@ import { Route as LoggedInProjectsRouteImport } from './routes/_loggedInProjects
 import { Route as LoggedInGeneralRouteImport } from './routes/_loggedInGeneral'
 import { Route as LoggedInFullscreenRouteImport } from './routes/_loggedInFullscreen'
 import { Route as ContentRouteImport } from './routes/_content'
+import { Route as ShareIndexRouteImport } from './routes/share/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as MarketingIndexRouteImport } from './routes/_marketing/index'
 import { Route as ShareTokenRouteImport } from './routes/share/$token'
@@ -234,6 +235,11 @@ const LoggedInFullscreenRoute = LoggedInFullscreenRouteImport.update({
 const ContentRoute = ContentRouteImport.update({
   id: '/_content',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ShareIndexRoute = ShareIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ShareRoute,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
@@ -1309,6 +1315,7 @@ export interface FileRoutesByFullPath {
   '/beteiligung/$surveySlug': typeof BeteiligungSurveySlugRouteWithChildren
   '/share/$token': typeof ShareTokenRoute
   '/admin/': typeof AdminIndexRoute
+  '/share/': typeof ShareIndexRoute
   '/$projectSlug/project-records': typeof LoggedInProjectsProjectSlugProjectRecordsRouteRouteWithChildren
   '/admin/projects/$projectSlug': typeof AdminProjectsProjectSlugRouteRouteWithChildren
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -1470,7 +1477,6 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRouteWithChildren
   '/beteiligung': typeof BeteiligungRouteWithChildren
   '/mcp': typeof McpRoute
-  '/share': typeof ShareRouteWithChildren
   '/browser-version': typeof ContentBrowserVersionRoute
   '/datenschutz': typeof ContentDatenschutzRoute
   '/kontakt': typeof ContentKontaktRoute
@@ -1482,6 +1488,7 @@ export interface FileRoutesByTo {
   '/auth/signup': typeof AuthSignupRoute
   '/share/$token': typeof ShareTokenRoute
   '/admin': typeof AdminIndexRoute
+  '/share': typeof ShareIndexRoute
   '/admin/projects/$projectSlug': typeof AdminProjectsProjectSlugRouteRouteWithChildren
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/access-denied': typeof LoggedInGeneralAccessDeniedIndexRoute
@@ -1661,6 +1668,7 @@ export interface FileRoutesById {
   '/share/$token': typeof ShareTokenRoute
   '/_marketing/': typeof MarketingIndexRoute
   '/admin/': typeof AdminIndexRoute
+  '/share/': typeof ShareIndexRoute
   '/_loggedInProjects/$projectSlug/project-records': typeof LoggedInProjectsProjectSlugProjectRecordsRouteRouteWithChildren
   '/admin/projects/$projectSlug': typeof AdminProjectsProjectSlugRouteRouteWithChildren
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -1839,6 +1847,7 @@ export interface FileRouteTypes {
     | '/beteiligung/$surveySlug'
     | '/share/$token'
     | '/admin/'
+    | '/share/'
     | '/$projectSlug/project-records'
     | '/admin/projects/$projectSlug'
     | '/api/auth/$'
@@ -2000,7 +2009,6 @@ export interface FileRouteTypes {
     | '/auth'
     | '/beteiligung'
     | '/mcp'
-    | '/share'
     | '/browser-version'
     | '/datenschutz'
     | '/kontakt'
@@ -2012,6 +2020,7 @@ export interface FileRouteTypes {
     | '/auth/signup'
     | '/share/$token'
     | '/admin'
+    | '/share'
     | '/admin/projects/$projectSlug'
     | '/api/auth/$'
     | '/access-denied'
@@ -2190,6 +2199,7 @@ export interface FileRouteTypes {
     | '/share/$token'
     | '/_marketing/'
     | '/admin/'
+    | '/share/'
     | '/_loggedInProjects/$projectSlug/project-records'
     | '/admin/projects/$projectSlug'
     | '/api/auth/$'
@@ -2457,6 +2467,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof ContentRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/share/': {
+      id: '/share/'
+      path: '/'
+      fullPath: '/share/'
+      preLoaderRoute: typeof ShareIndexRouteImport
+      parentRoute: typeof ShareRoute
     }
     '/admin/': {
       id: '/admin/'
@@ -4213,10 +4230,12 @@ const BeteiligungRouteWithChildren = BeteiligungRoute._addFileChildren(
 
 interface ShareRouteChildren {
   ShareTokenRoute: typeof ShareTokenRoute
+  ShareIndexRoute: typeof ShareIndexRoute
 }
 
 const ShareRouteChildren: ShareRouteChildren = {
   ShareTokenRoute: ShareTokenRoute,
+  ShareIndexRoute: ShareIndexRoute,
 }
 
 const ShareRouteWithChildren = ShareRoute._addFileChildren(ShareRouteChildren)

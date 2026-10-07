@@ -1,9 +1,14 @@
+import { lazy, Suspense, useState } from "react"
 import { Link } from "@/src/components/core/components/links/Link"
 import { Modal, ModalCloseButton } from "@/src/components/core/components/Modal"
 import { Img } from "@/src/components/shared/Img"
-import { UploadPdfViewer } from "@/src/components/uploads/UploadPdfViewer"
-import { isImageUpload, isPdfByMimeType } from "@/src/components/uploads/utils/getFileType"
 import type { ExternalShareUpload } from "@/src/server/externalShare/types"
+
+const UploadPdfViewer = lazy(() =>
+  import("@/src/components/uploads/UploadPdfViewer").then((module) => ({
+    default: module.UploadPdfViewer,
+  })),
+)
 
 type Props = {
   upload: ExternalShareUpload | null
@@ -13,6 +18,7 @@ type Props = {
 }
 
 export const ExternalSharePreviewModal = ({ upload, fileUrl, downloadUrl, onClose }: Props) => {
+  const [imageFailed, setImageFailed] = useState(false)
   if (!upload) return null
 
   return (
@@ -22,10 +28,17 @@ export const ExternalSharePreviewModal = ({ upload, fileUrl, downloadUrl, onClos
         <ModalCloseButton onClose={onClose} />
       </div>
       <div className="p-4">
-        {isImageUpload({ mimeType: upload.mimeType }) ? (
-          <Img src={fileUrl} alt={upload.title} className="mx-auto max-h-[70vh] object-contain" />
-        ) : isPdfByMimeType(upload.mimeType) ? (
-          <UploadPdfViewer fileUrl={fileUrl} toolbar={{ zoom: true }} />
+        {upload.previewKind === "image" && !imageFailed ? (
+          <Img
+            src={fileUrl}
+            alt={upload.title}
+            className="mx-auto max-h-[70vh] object-contain"
+            onError={() => setImageFailed(true)}
+          />
+        ) : upload.previewKind === "pdf" ? (
+          <Suspense fallback={<p className="text-sm text-gray-600">Vorschau wird geladen …</p>}>
+            <UploadPdfViewer fileUrl={fileUrl} toolbar={{ zoom: true }} />
+          </Suspense>
         ) : (
           <p className="text-sm text-gray-600">Für diesen Dateityp gibt es keine Vorschau.</p>
         )}

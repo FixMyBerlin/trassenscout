@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, test, vi } from "vitest"
+import { ExternalShareTokenSchema } from "../publicExternalShare.inputSchemas"
 
 const mockDb = {
   project: { findMany: vi.fn(), update: vi.fn() },
@@ -35,7 +36,7 @@ describe("setExternalShareEnabled", () => {
 
     const data = mockDb.project.update.mock.calls[0]?.[0]?.data
     expect(data.externalShareEnabled).toBe(true)
-    expect(data.externalShareToken).toMatch(/^[\w-]{43}$/)
+    expect(ExternalShareTokenSchema.safeParse(data.externalShareToken).success).toBe(true)
     expect(mockCreateLogEntry).toHaveBeenCalledWith(
       expect.objectContaining({
         projectId: 3,

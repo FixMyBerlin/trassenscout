@@ -6,6 +6,7 @@ const mockDb = {
   upload: { findFirst: vi.fn() },
 }
 const mockStreamUploadObject = vi.fn()
+const mockEnforceRateLimit = vi.fn()
 const mockLoadContent = vi.fn()
 const mockBuildGeojson = vi.fn()
 
@@ -13,8 +14,9 @@ vi.mock("@/src/server/db.server", () => ({ default: mockDb }))
 vi.mock("@/src/server/auth/endpointAuth.server", () => ({
   endpointAuth: { public: vi.fn() },
 }))
-vi.mock("@/src/server/auth/publicEndpointRateLimit.server", () => ({
-  enforcePublicEndpointRateLimit: vi.fn(),
+vi.mock("@/src/server/auth/publicEndpointRateLimit.server", async (importOriginal) => ({
+  ...(await importOriginal<object>()),
+  enforcePublicEndpointRateLimit: mockEnforceRateLimit,
 }))
 vi.mock("@/src/server/uploads/_utils/streamUploadObject.server", () => ({
   streamUploadObject: mockStreamUploadObject,
@@ -94,6 +96,39 @@ describe("public external share", () => {
 
     expect(response.status).toBe(404)
     expect(mockDb.upload.findFirst).not.toHaveBeenCalled()
+  })
+
+  test("rejects an upload id beyond the database range before querying", async () => {
+    const { serveExternalShareUpload } = await import("./publicExternalShare.server")
+
+    const response = await serveExternalShareUpload(headers, { token, uploadId: "99999999999" })
+
+    expect(response.status).toBe(404)
+    expect(mockDb.upload.findFirst).not.toHaveBeenCalled()
+  })
+
+  test("counts file requests in their own rate-limit bucket", async () => {
+    mockDb.upload.findFirst.mockResolvedValue({ externalUrl: "https://s3/upload/rs23/a.pdf" })
+    const { serveExternalShareUpload } = await import("./publicExternalShare.server")
+
+    await serveExternalShareUpload(headers, { token, uploadId: "7" })
+
+    expect(mockEnforceRateLimit).toHaveBeenCalledWith(
+      headers,
+      "externalShareFiles",
+      expect.any(Object),
+    )
+  })
+
+  test("answers a rate-limited request with 429 and the private headers", async () => {
+    const { RateLimitError } = await import("@/src/server/auth/publicEndpointRateLimit.server")
+    const { publicShareErrorResponse } = await import("./publicExternalShare.server")
+
+    const response = publicShareErrorResponse(new RateLimitError(), "label")
+
+    expect(response.status).toBe(429)
+    expect(response.headers.get("Cache-Control")).toBe("private, no-store")
+    expect(response.headers.get("X-Robots-Tag")).toBe("noindex")
   })
 
   test("delivers the Maßnahmen as a GeoJSON download", async () => {

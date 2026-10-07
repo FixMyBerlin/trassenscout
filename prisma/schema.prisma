@@ -741,6 +741,8 @@ model Upload {
   createdById            Int?
   updatedBy              User?                   @relation("UploadUpdatedBy", fields: [updatedById], references: [id])
   updatedById            Int?
+
+  @@index([projectId])
 }
 
 model SupportDocument {

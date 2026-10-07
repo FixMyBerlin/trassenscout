@@ -1,9 +1,7 @@
 import { z } from "zod"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import db from "@/src/server/db.server"
-import { getS3Object } from "@/src/server/uploads/_utils/getS3Object.server"
-import { getUploadServeHeaders } from "@/src/shared/uploads/serveHeaders"
-import { getS3KeyFromUrl } from "@/src/shared/uploads/url"
+import { streamUploadObject } from "@/src/server/uploads/_utils/streamUploadObject.server"
 
 const ParamsSchema = z.object({
   documentId: z.coerce.number().int().positive(),
@@ -36,15 +34,5 @@ export async function serveSupportDocumentObject(headers: Headers, params: { doc
     return new Response("Not Found", { status: 404 })
   }
 
-  const object = await getS3Object(getS3KeyFromUrl(document.upload.externalUrl))
-
-  return new Response(object.blob, {
-    headers: {
-      "Content-Type": object.contentType,
-      "Content-Length": String(object.contentLength),
-      ETag: object.eTag,
-      "Cache-Control": "no-cache",
-      ...getUploadServeHeaders(object.contentType),
-    },
-  })
+  return streamUploadObject(document.upload.externalUrl)
 }

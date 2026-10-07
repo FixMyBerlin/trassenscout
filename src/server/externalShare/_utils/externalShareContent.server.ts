@@ -1,5 +1,6 @@
 import type { Feature, FeatureCollection, Geometry } from "geojson"
 import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
+import { isImageUpload, isPdf } from "@/src/components/uploads/utils/getFileType"
 import type { Prisma } from "@/src/prisma/generated/browser"
 import { UserRoleEnum } from "@/src/prisma/generated/browser"
 import db from "@/src/server/db.server"
@@ -10,13 +11,27 @@ import {
 } from "@/src/server/memberships/redactFormerProjectMemberUser.server"
 import { SupportedGeoJsonGeometrySchema } from "@/src/shared/geometry/geojsonSchemas"
 
-/** The allowlist: nothing outside these fields reaches an external person. */
+/** The allowlist; externalUrl is only read to pick the preview and never sent out. */
 const externalShareUploadSelect = {
   id: true,
   title: true,
   mimeType: true,
   createdAt: true,
+  externalUrl: true,
 } satisfies Prisma.UploadSelect
+
+function toSharedUpload({
+  externalUrl,
+  ...upload
+}: Prisma.UploadGetPayload<{ select: typeof externalShareUploadSelect }>) {
+  const file = { mimeType: upload.mimeType, externalUrl }
+  const previewKind: "image" | "pdf" | "other" = isImageUpload(file)
+    ? "image"
+    : isPdf(file)
+      ? "pdf"
+      : "other"
+  return { ...upload, previewKind }
+}
 
 /** Every Maßnahme field, minus internal ids (resolved to names) and map-display settings. */
 const externalShareSubsubsectionSelect = {
@@ -79,7 +94,7 @@ export async function loadExternalShareContent(projectId: number) {
     }),
     db.subsubsection.count({ where: { subsection: { projectId } } }),
   ])
-  return { uploads, subsubsectionCount }
+  return { uploads: uploads.map(toSharedUpload), subsubsectionCount }
 }
 
 const emptyStringToNull = (record: Record<string, unknown>) =>

@@ -1,6 +1,9 @@
 import { format } from "date-fns"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
-import { enforcePublicEndpointRateLimit } from "@/src/server/auth/publicEndpointRateLimit.server"
+import {
+  enforcePublicEndpointRateLimit,
+  isRateLimitError,
+} from "@/src/server/auth/publicEndpointRateLimit.server"
 import db from "@/src/server/db.server"
 import { streamUploadObject } from "@/src/server/uploads/_utils/streamUploadObject.server"
 import { NotFoundError } from "@/src/shared/auth/errors"
@@ -8,10 +11,14 @@ import {
   buildExternalShareGeojson,
   loadExternalShareContent,
 } from "./_utils/externalShareContent.server"
+import {
+  ExternalShareTokenSchema,
+  ExternalShareUploadParamsSchema,
+} from "./publicExternalShare.inputSchemas"
 
-// generateSecureToken: 32 bytes as base64url
-const TOKEN_PATTERN = /^[\w-]{43}$/
 const RATE_LIMIT = { max: 120, windowMs: 60_000 }
+// Thumbnails, previews and downloads: one request per file, so a separate, larger budget.
+const FILE_RATE_LIMIT = { max: 600, windowMs: 60_000 }
 const PUBLIC_RESPONSE_HEADERS = { "Cache-Control": "private, no-store", "X-Robots-Tag": "noindex" }
 
 const notFound = () => new Response("Not Found", { status: 404, headers: PUBLIC_RESPONSE_HEADERS })
@@ -23,7 +30,7 @@ const sharedProjectWhere = (token: string) => ({
 })
 
 async function findSharedProject(token: string) {
-  if (!TOKEN_PATTERN.test(token)) return null
+  if (!ExternalShareTokenSchema.safeParse(token).success) return null
   return db.project.findFirst({
     where: sharedProjectWhere(token),
     select: { id: true, slug: true, subTitle: true },
@@ -52,15 +59,14 @@ export async function serveExternalShareUpload(
   options: { download?: boolean } = {},
 ) {
   endpointAuth.public("the secret token is the credential, matched against an enabled project")
-  enforcePublicEndpointRateLimit(headers, "externalShare", RATE_LIMIT)
+  enforcePublicEndpointRateLimit(headers, "externalShareFiles", FILE_RATE_LIMIT)
 
-  const uploadId = Number(params.uploadId)
-  if (!TOKEN_PATTERN.test(params.token) || !Number.isInteger(uploadId) || uploadId <= 0) {
-    return notFound()
-  }
+  const parsed = ExternalShareUploadParamsSchema.safeParse(params)
+  if (!parsed.success) return notFound()
+  const { token, uploadId } = parsed.data
 
   const upload = await db.upload.findFirst({
-    where: { id: uploadId, externalShareEnabled: true, project: sharedProjectWhere(params.token) },
+    where: { id: uploadId, externalShareEnabled: true, project: sharedProjectWhere(token) },
     select: { externalUrl: true },
   })
   if (!upload) return notFound()
@@ -86,4 +92,12 @@ export async function serveExternalShareGeojson(headers: Headers, params: { toke
       ...PUBLIC_RESPONSE_HEADERS,
     },
   })
+}
+
+export function publicShareErrorResponse(error: unknown, logLabel: string) {
+  if (isRateLimitError(error)) {
+    return new Response("Too Many Requests", { status: 429, headers: PUBLIC_RESPONSE_HEADERS })
+  }
+  console.error(logLabel, error)
+  return new Response("Internal Server Error", { status: 500, headers: PUBLIC_RESPONSE_HEADERS })
 }

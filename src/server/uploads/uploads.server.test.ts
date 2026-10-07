@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, test, vi } from "vitest"
 import { ProjectRecordReviewState } from "@/src/prisma/generated/browser"
 import { AuthorizationError } from "@/src/shared/auth/errors"
+import { GetUploadsWithSubsectionsSchema } from "./uploads.inputSchemas"
 
 const mockDeleteObject = vi.fn()
 const mockS3Client = { client: "s3" }
@@ -34,6 +35,7 @@ const mockDb = {
     findMany: vi.fn(),
     findFirstOrThrow: vi.fn(),
     update: vi.fn(),
+    count: vi.fn(),
   },
 }
 
@@ -507,5 +509,138 @@ describe("createUpload", () => {
       }),
     ).rejects.toBeInstanceOf(AuthorizationError)
     expect(mockDb.upload.update).not.toHaveBeenCalled()
+  })
+})
+
+describe("deleteUploadIfOrphan", () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockEndpointAuth.projectRole.mockResolvedValue({
+      projectId: 1,
+      membershipRole: "EDITOR",
+      session: { userId: "7", role: "USER" },
+    })
+  })
+
+  test("keeps an externally shared document that has no links", async () => {
+    mockDb.upload.findFirstOrThrow.mockResolvedValue({
+      id: 42,
+      title: "Lageplan.pdf",
+      createdById: 7,
+      collaborationPath: null,
+      collaborationUrl: null,
+      externalUrl: projectExternalUrl,
+      projectRecordEmailId: null,
+      surveyResponseId: null,
+      externalShareEnabled: true,
+      _count: { projectRecords: 0, subsubsections: 0, acquisitionAreas: 0, tags: 0 },
+    })
+    const { deleteUploadIfOrphan } = await import("./uploads.server")
+
+    await expect(deleteUploadIfOrphan(headers, { projectSlug: "rs23", id: 42 })).resolves.toEqual({
+      deleted: false,
+    })
+    expect(mockDeleteObject).not.toHaveBeenCalled()
+  })
+})
+
+describe("getUploadsWithSubsections", () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockEndpointAuth.projectRole.mockResolvedValue({
+      projectId: 1,
+      membershipRole: "VIEWER",
+      session: { userId: "7", role: "USER" },
+    })
+    mockDb.upload.findMany.mockResolvedValue([])
+    mockDb.upload.count.mockResolvedValue(0)
+    mockDb.membership.findMany.mockResolvedValue([])
+  })
+
+  test("drops a client-built Prisma filter, so other projects stay out of reach", async () => {
+    const { getUploadsWithSubsections } = await import("./uploads.server")
+    const input = GetUploadsWithSubsectionsSchema.parse({
+      projectSlug: "rs23",
+      where: { project: { slug: "other-project", externalShareToken: { startsWith: "a" } } },
+    })
+
+    await getUploadsWithSubsections(headers, input)
+
+    const where = mockDb.upload.findMany.mock.calls[0]?.[0]?.where
+    expect(where?.project).toEqual({ slug: "rs23" })
+    expect(JSON.stringify(where)).not.toContain("externalShareToken")
+  })
+
+  test("turns each fixed filter into a relation filter inside the project", async () => {
+    const { getUploadsWithSubsections } = await import("./uploads.server")
+
+    await getUploadsWithSubsections(headers, {
+      projectSlug: "rs23",
+      subsubsectionId: 5,
+      acquisitionAreaId: 8,
+      uploadIds: [10, 11],
+    })
+
+    expect(mockDb.upload.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          project: { slug: "rs23" },
+          subsubsections: { some: { id: 5 } },
+          acquisitionAreas: { some: { id: 8 } },
+          id: { in: [10, 11] },
+        }),
+      }),
+    )
+  })
+})
+
+describe("updateUpload", () => {
+  const previousUpload = {
+    id: 77,
+    title: "document.pdf",
+    externalShareEnabled: false,
+    projectRecords: [],
+    subsubsections: [],
+    acquisitionAreas: [],
+    tags: [],
+  }
+  const input = { ...baseInput, id: 77, surveyResponseId: null, externalShareEnabled: true }
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockEndpointAuth.projectRole.mockResolvedValue({
+      projectId: 1,
+      membershipRole: "EDITOR",
+      session: { userId: "7", role: "USER" },
+    })
+    mockDb.upload.findFirstOrThrow.mockResolvedValue(previousUpload)
+    mockDb.upload.update.mockResolvedValue({ ...previousUpload, externalShareEnabled: true })
+    mockDb.membership.findMany.mockResolvedValue([])
+  })
+
+  test("refuses viewers, so they can't share a document through the edit form", async () => {
+    const { updateUpload } = await import("./uploads.server")
+    mockEndpointAuth.projectRole.mockImplementation(async (_headers, _slug, roles: string[]) => {
+      if (!roles.includes("VIEWER")) throw new AuthorizationError()
+    })
+
+    await expect(updateUpload(headers, input)).rejects.toBeInstanceOf(AuthorizationError)
+    expect(mockDb.upload.update).not.toHaveBeenCalled()
+  })
+
+  test("saves and logs a change of the external share flag", async () => {
+    const { updateUpload } = await import("./uploads.server")
+
+    await updateUpload(headers, input)
+
+    expect(mockDb.upload.update).toHaveBeenCalledWith(
+      expect.objectContaining({ data: expect.objectContaining({ externalShareEnabled: true }) }),
+    )
+    expect(mockCreateLogEntry).toHaveBeenCalledWith(
+      expect.objectContaining({
+        previousRecord: expect.objectContaining({ externalShareEnabled: false }),
+        updatedRecord: expect.objectContaining({ externalShareEnabled: true }),
+      }),
+    )
   })
 })

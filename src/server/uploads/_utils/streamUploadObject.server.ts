@@ -1,7 +1,7 @@
 import { isPlaywright } from "@/src/components/core/utils/isEnv"
 import { getUploadServeHeaders } from "@/src/shared/uploads/serveHeaders"
 import { getFilenameFromS3, getS3KeyFromUrl } from "@/src/shared/uploads/url"
-import { getS3Object } from "./getS3Object.server"
+import { getS3ObjectStream } from "./getS3Object.server"
 
 const TEST_FIXTURE_JPEG_BASE64 =
   "/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/2wBDAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAARCAABAAEDASIAAhEBAxEB/8QAFAABAAAAAAAAAAAAAAAAAAAACv/EABQQAQAAAAAAAAAAAAAAAAAAAAD/xAAUAQEAAAAAAAAAAAAAAAAAAAAA/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8AfwD/2Q=="
@@ -31,9 +31,9 @@ export async function streamUploadObject(externalUrl: string, options: StreamOpt
     return serveTestFixtureImage(headers)
   }
 
-  const object = await getS3Object(getS3KeyFromUrl(externalUrl))
+  const object = await getS3ObjectStream(getS3KeyFromUrl(externalUrl))
 
-  return new Response(object.blob, {
+  return new Response(object.stream, {
     headers: {
       "Content-Type": object.contentType,
       "Content-Length": String(object.contentLength),

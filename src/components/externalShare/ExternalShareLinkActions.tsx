@@ -14,35 +14,46 @@ const actionClassName = twJoin(linkStyles, "inline-flex items-center gap-1 text-
 
 type Props = {
   projectSlug: string
-  token: string | null
+  token: string
 }
 
 export const ExternalShareLinkActions = ({ projectSlug, token }: Props) => {
   const queryClient = useQueryClient()
   const { data: user } = useQuery(currentUserQueryOptions())
-  const [copied, setCopied] = useState(false)
+  const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">("idle")
+  const [rotated, setRotated] = useState(false)
   const rotateMutation = useMutation({ mutationFn: rotateExternalShareTokenFn })
 
   const copyLink = async () => {
-    if (!token) return
-    await navigator.clipboard.writeText(
-      new URL(externalSharePagePath(token), window.location.origin).toString(),
-    )
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    try {
+      await navigator.clipboard.writeText(
+        new URL(externalSharePagePath(token), window.location.origin).toString(),
+      )
+      setCopyState("copied")
+    } catch {
+      setCopyState("failed")
+    }
+    setTimeout(() => setCopyState("idle"), 2000)
   }
 
   const rotateLink = async () => {
     const confirmed = window.confirm(
-      token
-        ? "Geheimlink erneuern? Der bisherige Link funktioniert danach nicht mehr – alle externen Personen benötigen den neuen Link."
-        : "Geheimlink erstellen?",
+      "Geheimlink erneuern? Der bisherige Link funktioniert danach nicht mehr – alle externen Personen benötigen den neuen Link.",
     )
     if (!confirmed) return
-    await rotateMutation.mutateAsync({ data: { projectSlug } })
+    try {
+      await rotateMutation.mutateAsync({ data: { projectSlug } })
+    } catch {
+      window.alert(
+        "Der Geheimlink konnte nicht erneuert werden. Der bisherige Link ist weiterhin gültig.",
+      )
+      return
+    }
     await queryClient.invalidateQueries({
       queryKey: externalShareQueryOptions({ projectSlug }).queryKey,
     })
+    setRotated(true)
+    setTimeout(() => setRotated(false), 2000)
   }
 
   return (
@@ -57,27 +68,27 @@ export const ExternalShareLinkActions = ({ projectSlug, token }: Props) => {
             className={actionClassName}
           >
             <ArrowPathIcon className="size-4" aria-hidden />
-            {token ? "Geheimlink erneuern" : "Geheimlink erstellen"}
+            {rotated ? "Erneuert" : "Geheimlink erneuern"}
           </button>
         </span>
       )}
-      {token && (
-        <>
-          <a
-            href={externalSharePagePath(token)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={actionClassName}
-          >
-            <EyeIcon className="size-4" aria-hidden />
-            Vorschau
-          </a>
-          <button type="button" onClick={() => void copyLink()} className={actionClassName}>
-            <DocumentDuplicateIcon className="size-4" aria-hidden />
-            {copied ? "Kopiert" : "Geheimlink kopieren"}
-          </button>
-        </>
-      )}
+      <a
+        href={externalSharePagePath(token)}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={actionClassName}
+      >
+        <EyeIcon className="size-4" aria-hidden />
+        Vorschau
+      </a>
+      <button type="button" onClick={() => void copyLink()} className={actionClassName}>
+        <DocumentDuplicateIcon className="size-4" aria-hidden />
+        {copyState === "copied"
+          ? "Kopiert"
+          : copyState === "failed"
+            ? "Kopieren nicht möglich"
+            : "Geheimlink kopieren"}
+      </button>
     </div>
   )
 }

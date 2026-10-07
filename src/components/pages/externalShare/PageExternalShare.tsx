@@ -9,10 +9,11 @@ import { ExternalShareLinkActions } from "@/src/components/externalShare/Externa
 import { ExternalShareSectionRow } from "@/src/components/externalShare/ExternalShareSectionRow"
 import { ExternalShareUploadsTable } from "@/src/components/externalShare/ExternalShareUploadsTable"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
+import { invalidateUploadLists } from "@/src/components/uploads/uploadQueryCache"
 import { uploadDownloadUrl, uploadUrl } from "@/src/components/uploads/utils/uploadUrl"
 import { removeUploadFromExternalShareFn } from "@/src/server/externalShare/externalShare.functions"
 import { externalShareQueryOptions } from "@/src/server/externalShare/externalShareQueryOptions"
-import { uploadsQueryOptions } from "@/src/server/uploads/uploadsQueryOptions"
+import { uploadQueryOptions } from "@/src/server/uploads/uploadQueryOptions"
 import { externalShareGeojsonUrl } from "@/src/shared/externalShare/externalShareUrls"
 
 const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/external-share/")
@@ -27,12 +28,21 @@ export function PageExternalShare() {
   const removeMutation = useMutation({ mutationFn: removeUploadFromExternalShareFn })
 
   const removeUpload = async (id: number) => {
-    await removeMutation.mutateAsync({ data: { projectSlug, id } })
+    try {
+      await removeMutation.mutateAsync({ data: { projectSlug, id } })
+    } catch {
+      window.alert(
+        "Das Dokument konnte nicht aus der Freigabe entfernt werden. Bitte erneut versuchen.",
+      )
+      return
+    }
+    // The single-upload entry never goes stale on its own; a stale flag would re-share on the next save.
     await Promise.all([
       queryClient.invalidateQueries({
         queryKey: externalShareQueryOptions({ projectSlug }).queryKey,
       }),
-      queryClient.invalidateQueries({ queryKey: uploadsQueryOptions({ projectSlug }).queryKey }),
+      queryClient.invalidateQueries({ queryKey: uploadQueryOptions({ projectSlug, id }).queryKey }),
+      invalidateUploadLists(queryClient, projectSlug),
     ])
   }
 
@@ -49,14 +59,12 @@ export function PageExternalShare() {
         title="Maßnahmen"
         count={share.subsubsectionCount}
         action={
-          share.token && (
-            <PageHeaderToolbarLink
-              href={externalShareGeojsonUrl(share.token)}
-              label="Alle Maßnahmen als GeoJSON herunterladen"
-            >
-              GeoJSON
-            </PageHeaderToolbarLink>
-          )
+          <PageHeaderToolbarLink
+            href={externalShareGeojsonUrl(share.token)}
+            label="Alle Maßnahmen als GeoJSON herunterladen"
+          >
+            GeoJSON
+          </PageHeaderToolbarLink>
         }
       />
       <ExternalShareSectionRow title="Freigegebene Dokumente" count={share.uploads.length} />

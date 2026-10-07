@@ -23,7 +23,7 @@ export async function getExternalShare(
     where: { id: projectId },
     select: { externalShareEnabled: true, externalShareToken: true },
   })
-  if (!project.externalShareEnabled) {
+  if (!project.externalShareEnabled || !project.externalShareToken) {
     throw new NotFoundError()
   }
 

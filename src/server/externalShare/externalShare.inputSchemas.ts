@@ -6,4 +6,3 @@ export const RotateExternalShareTokenSchema = ProjectSlugRequiredSchema
 export const RemoveUploadFromExternalShareSchema = ProjectSlugRequiredSchema.extend({
   id: z.number().int().positive(),
 })
-export const GetPublicExternalShareSchema = z.object({ token: z.string() })

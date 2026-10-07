@@ -4,13 +4,7 @@ import db from "@/src/server/db.server"
 const seedUploads = async () => {
   type SeedUploadRow = Omit<
     Upload,
-    | "id"
-    | "createdAt"
-    | "updatedAt"
-    | "createdById"
-    | "updatedById"
-    | "subsubsectionId"
-    | "externalShareEnabled"
+    "id" | "createdAt" | "updatedAt" | "createdById" | "updatedById" | "externalShareEnabled"
   > & {
     subsubsectionIds?: number[]
   }
