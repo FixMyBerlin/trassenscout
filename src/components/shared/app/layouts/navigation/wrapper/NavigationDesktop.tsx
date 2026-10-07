@@ -28,8 +28,8 @@ export const NavigationDesktop = ({
 
   return (
     <div className="relative hidden nav:flex nav:flex-row nav:items-center nav:justify-between">
-      <div className="relative flex min-h-16 items-center justify-between gap-4 nav:h-16">
-        <div className="flex flex-1 items-center justify-start nav:items-stretch">
+      <div className="relative flex min-h-16 min-w-0 items-center justify-between gap-4 nav:h-16">
+        <div className="flex shrink-0 items-center justify-start nav:items-stretch">
           <div className="flex shrink-0 items-center justify-center">
             {pathname === homeLink ? (
               <NavigationGeneralLogo beta={false} />
