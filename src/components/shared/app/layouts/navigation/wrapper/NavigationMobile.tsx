@@ -35,10 +35,10 @@ export const NavigationMobile = ({
   const pathname = useLocation().pathname
 
   return (
-    <Disclosure as="div" className="relative flex flex-col sm:hidden">
+    <Disclosure as="div" className="relative flex flex-col nav:hidden">
       {({ open }) => (
         <>
-          <div className="relative flex min-h-16 items-center justify-between sm:h-16">
+          <div className="relative flex min-h-16 items-center justify-between nav:h-16">
             <div className="absolute inset-y-0 right-0 flex items-center space-x-2">
               {projects && <ProjectsSwitch projects={projects} />}
               {actions}
@@ -66,7 +66,7 @@ export const NavigationMobile = ({
                 </DisclosureButton>
               )}
             </div>
-            <div className="flex flex-1 items-center justify-start sm:items-stretch">
+            <div className="flex flex-1 items-center justify-start nav:items-stretch">
               <div className="flex shrink-0 items-center">
                 {pathname === homeLink ? (
                   <NavigationGeneralLogo beta={false} />

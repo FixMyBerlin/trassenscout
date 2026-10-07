@@ -17,6 +17,8 @@
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
+  /* Below this width the main navigation switches to the mobile menu */
+  --breakpoint-nav: 68.75rem; /* 1100px */
   /* Custom colors */
   /* overwrite the default theme variables */
   --color-blue-50: #dfe9f7;
