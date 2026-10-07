@@ -100,7 +100,7 @@ const projectFeatureColumns: ProjectFeatureColumn[] = [
     icon: <ShareIcon className="size-4" aria-hidden />,
     label: (enabled) =>
       enabled
-        ? "Externe Freigabe ausschalten (der Geheimlink funktioniert dann nicht mehr)"
+        ? "Externe Freigabe ausschalten (der Geheimlink funktioniert nicht mehr, bis die Freigabe wieder eingeschaltet wird)"
         : "Externe Freigabe einschalten (erstellt einen Geheimlink für Externe)",
     // A public link per project should be a deliberate, single decision.
     bulkToggle: false,
