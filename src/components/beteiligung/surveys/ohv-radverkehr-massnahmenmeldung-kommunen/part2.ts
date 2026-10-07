@@ -34,7 +34,7 @@ Bitte füllen Sie das Formular vollständig aus. Nach dem Absenden wird Ihre Mel
 
 Mit dem Aufrufen des Formulars stimme ich der Datenschutzerklärung zu. Die Daten werden gemäß DSGVO verarbeitet und nur für die Durchführung dieses digitalen Meldeverfahrens gespeichert.
 
-Sind Sie eine Kommune im Landkreis Oberhavel?
+Sind Sie eine **Kommune** im **Landkreis Oberhavel**?
 
 Dann klicken Sie bitte auf den untenstehenden Button, um eine Maßnahme zu melden.`,
     buttons: [
