@@ -137,6 +137,7 @@ const createUploadFormValues = (upload: UploadWithRelations) => ({
   longitude: upload.longitude,
   collaborationUrl: upload.collaborationUrl,
   collaborationPath: upload.collaborationPath,
+  externalShareEnabled: upload.externalShareEnabled,
   surveyResponseId: upload.surveyResponseId,
   projectRecords: upload.projectRecords?.map((projectRecord) => projectRecord.id) ?? [],
 })
@@ -301,11 +302,26 @@ export const EditUploadForm = ({
               </div>
             </div>
           </div>
-          <UploadProjectRecordLinks
-            projectSlug={projectSlug}
-            projectRecords={linkedProjectRecords}
-            className="space-y-1"
-          />
+          <div className="grid gap-5 sm:grid-cols-2">
+            <UploadProjectRecordLinks
+              projectSlug={projectSlug}
+              projectRecords={linkedProjectRecords}
+              className="space-y-1"
+              emptyText="Keine Verknüpfung"
+            />
+            {upload.project?.externalShareEnabled && (
+              <form.AppField name="externalShareEnabled">
+                {(field) => (
+                  <field.Switch
+                    label="Externe Freigabe"
+                    help="Freigegebene Dokumente sieht jede Person mit dem Geheimlink der Externen Freigabe."
+                    stateLabels={{ off: "Nicht freigegeben", on: "Extern freigegeben" }}
+                    trackClassNames={{ off: "bg-gray-200", on: "bg-orange-500" }}
+                  />
+                )}
+              </form.AppField>
+            )}
+          </div>
           <UploadSubsectionFields
             acquisitionAreas={acquisitionAreasData}
             landAcquisitionModuleEnabled={upload.project?.landAcquisitionModuleEnabled ?? false}

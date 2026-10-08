@@ -14,6 +14,7 @@ export const allowedSurveySlugs = [
   "rstest-2",
   "ohv-haltestellenfoerderung",
   "ohv-radverkehr",
+  "ohv-radverkehr-massnahmenmeldung-kommunen",
   "radschnellverbindungen-info-feedback",
 ] as const
 export type AllowedSurveySlugs = (typeof allowedSurveySlugs)[number]

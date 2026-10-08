@@ -1,10 +1,11 @@
 import { queryOptions } from "@tanstack/react-query"
-import type { Prisma } from "@/src/prisma/generated/browser"
 import { getUploadsWithSubsectionsFn } from "./uploads.functions"
 
 export function uploadsWithSubsectionsQueryOptions(input: {
   projectSlug: string
-  where?: Prisma.UploadWhereInput
+  subsubsectionId?: number
+  acquisitionAreaId?: number
+  uploadIds?: number[]
 }) {
   return queryOptions({
     queryKey: ["uploadsWithSubsections", input],

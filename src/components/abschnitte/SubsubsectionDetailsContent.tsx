@@ -172,7 +172,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
   const { data: uploadsData, refetch: refetchUploads } = useQuery(
     uploadsWithSubsectionsQueryOptions({
       projectSlug,
-      where: { subsubsections: { some: { id: subsubsection.id } } },
+      subsubsectionId: subsubsection.id,
     }),
   )
   const uploads = uploadsData?.uploads ?? []

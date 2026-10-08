@@ -195,6 +195,7 @@ function viewerCreateUploadHasNoExtraFields(input: UploadInput) {
     input.longitude == null &&
     input.collaborationUrl == null &&
     input.collaborationPath == null &&
+    input.externalShareEnabled !== true &&
     idsFromFormValue(input.subsubsections).length === 0 &&
     idsFromFormValue(input.acquisitionAreas).length === 0 &&
     idsFromFormValue(input.tags).length === 0
@@ -255,7 +256,7 @@ export async function getUploadsWithSubsections(
     input.projectSlug,
     viewerRoles,
   )
-  const { projectSlug, where, orderBy = { id: "desc" }, skip = 0, take = 100 } = input
+  const { projectSlug, subsubsectionId, acquisitionAreaId, uploadIds, skip = 0, take = 100 } = input
   const safeWhere: Prisma.UploadWhereInput = {
     project: { slug: projectSlug },
     OR: [
@@ -270,13 +271,15 @@ export async function getUploadsWithSubsections(
         },
       },
     ],
-    ...where,
+    ...(subsubsectionId ? { subsubsections: { some: { id: subsubsectionId } } } : {}),
+    ...(acquisitionAreaId ? { acquisitionAreas: { some: { id: acquisitionAreaId } } } : {}),
+    ...(uploadIds ? { id: { in: uploadIds } } : {}),
   }
 
   const [uploads, count] = await Promise.all([
     db.upload.findMany({
       where: safeWhere,
-      orderBy,
+      orderBy: { id: "desc" },
       skip,
       take,
       include: uploadWithSubsectionsInclude,
@@ -450,6 +453,7 @@ export async function updateUpload(headers: Headers, input: z.infer<typeof Updat
       longitude: true,
       collaborationUrl: true,
       collaborationPath: true,
+      externalShareEnabled: true,
       projectRecordEmailId: true,
       surveyResponseId: true,
       projectRecords: { select: { id: true } },
@@ -480,6 +484,7 @@ export async function updateUpload(headers: Headers, input: z.infer<typeof Updat
       longitude: previousUpload.longitude,
       collaborationUrl: previousUpload.collaborationUrl,
       collaborationPath: previousUpload.collaborationPath,
+      externalShareEnabled: previousUpload.externalShareEnabled,
       projectRecordEmailId: previousUpload.projectRecordEmailId,
       surveyResponseId: previousUpload.surveyResponseId,
       projectRecordIds: relationIds(previousUpload.projectRecords),
@@ -498,6 +503,7 @@ export async function updateUpload(headers: Headers, input: z.infer<typeof Updat
       longitude: upload.longitude,
       collaborationUrl: upload.collaborationUrl,
       collaborationPath: upload.collaborationPath,
+      externalShareEnabled: upload.externalShareEnabled,
       projectRecordEmailId: upload.projectRecordEmailId,
       surveyResponseId: upload.surveyResponseId,
       projectRecordIds: relationIds(upload.projectRecords),
@@ -719,6 +725,7 @@ export async function deleteUploadIfOrphan(
       externalUrl: true,
       projectRecordEmailId: true,
       surveyResponseId: true,
+      externalShareEnabled: true,
       _count: {
         select: {
           projectRecords: true,
@@ -736,7 +743,8 @@ export async function deleteUploadIfOrphan(
     upload._count.acquisitionAreas > 0 ||
     upload._count.tags > 0 ||
     upload.projectRecordEmailId != null ||
-    upload.surveyResponseId != null
+    upload.surveyResponseId != null ||
+    upload.externalShareEnabled
 
   if (hasRelations) {
     return { deleted: false }

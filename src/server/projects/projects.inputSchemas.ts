@@ -15,6 +15,7 @@ const projectFeatureFlagKeys = [
   "landAcquisitionModuleEnabled",
   "showLogEntries",
   "evaluationsEnabled",
+  "externalShareEnabled",
 ] as const
 
 export type ProjectFeatureFlagKey = (typeof projectFeatureFlagKeys)[number]

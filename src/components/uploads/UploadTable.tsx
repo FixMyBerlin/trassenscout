@@ -233,6 +233,11 @@ const UploadTableRow = ({
             {filename || "-"}
           </Link>
         )}
+        {upload.externalShareEnabled && upload.project?.externalShareEnabled && (
+          <span className="mt-0.5 block text-xs font-medium text-orange-600">
+            Extern freigegeben
+          </span>
+        )}
       </td>
       <td className={twJoin("hidden align-top @xl:table-cell", tableCellClassName)}>
         {hasLocation && (
