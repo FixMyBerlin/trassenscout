@@ -30,6 +30,7 @@ Copy and track:
 
 ```
 - [ ] List open Dependabot PRs in this repo
+- [ ] List open security alerts — Bun repos get no PR for them (see below)
 - [ ] Identify PR type (security / grouped patch / major / actions / docker)
 - [ ] Read release notes from the PR body (primary changelog source)
 - [ ] Classify risk (see below)
@@ -58,6 +59,13 @@ In grouped PRs, each package has its own section — scan all of them; one risky
 
 Note **group name** in the title (e.g. `app-framework-minor-patch`).
 
+Also list the open security alerts — an empty PR list does not mean nothing is open:
+
+```bash
+gh api repos/{owner}/{repo}/dependabot/alerts \
+  --jq '.[] | select(.state=="open") | "\(.dependency.package.name) \(.security_advisory.severity) \(.dependency.manifest_path) fixed in \(.security_vulnerability.first_patched_version.identifier)"'
+```
+
 ### 2. Classify risk
 
 | Tier                  | Examples                                                                                                                  | Action                                                                                                                                             |
@@ -84,7 +92,19 @@ When PR-body release notes or tier say investigate:
 
 **Docker** bumps: monthly base images — check OS/package changes; rebuild locally if the app ships containers.
 
-### 4. When to use AskQuestion
+### 4. Security alerts without a PR (Bun)
+
+In Bun repos Dependabot **cannot open security-update PRs**. GitHub files the alert under the `npm` ecosystem, so the security job runs as `npm_and_yarn`, ignores the `package-ecosystem: bun` entry and aborts on `bun.lock`. On the default branch this shows as a failed run named `npm_and_yarn in /<dir> for <packages> - Update #…`, repeated on every push while the alert is open.
+
+This is not fixable in `dependabot.yml` or a workflow — do not try. **We keep the failed run as the signal to bump by hand:**
+
+1. Take package, directory and fixed version from the alert list above.
+2. Direct dependency: set the fixed version in `package.json`, then `bun install` in that directory. Transitive (`bun why <package>`): bump the parent, or use **AskQuestion** before adding an `overrides` entry.
+3. Risk tier is **medium** minimum, as for any security update; read the advisory (`gh api repos/{owner}/{repo}/dependabot/alerts/<number>`) since there is no PR body.
+4. Run the project check, commit as `chore(deps): bump <package> to <version>` with a line saying it is a security fix, and push the way the repo normally takes changes.
+5. Confirm the alert list is empty and the next push has no failed `npm_and_yarn` run.
+
+### 5. When to use AskQuestion
 
 Use Cursor **AskQuestion** when the agent cannot safely decide alone:
 
@@ -99,7 +119,7 @@ Use Cursor **AskQuestion** when the agent cannot safely decide alone:
 
 Present concrete options, e.g. merge after local build, close and add `ignore`, or defer until next week.
 
-### 5. Merge
+### 6. Merge
 
 Requirements:
 
@@ -119,7 +139,7 @@ Do **not** squash Dependabot PRs — preserve one commit per dependency bump for
 
 After merge on `develop`, no further action unless CI on the base branch fails (then treat as a hotfix follow-up).
 
-### 6. Defer instead of merging
+### 7. Defer instead of merging
 
 Close without merging when:
 
@@ -159,6 +179,7 @@ flowchart TD
 - Do not merge with failing required checks “to unblock the queue”
 - Do not refactor app code in the same session as a routine Dependabot merge unless the bump **requires** it
 - Do not change CI workflows to make a bad bump pass — flag instead
+- Do not report "all Dependabot work done" while a security alert is open, and do not try to silence the failed `npm_and_yarn` security run
 - Do not batch-merge multiple open Dependabot PRs without reviewing each (limit should be 1 per ecosystem anyway)
 
 ## Related skills

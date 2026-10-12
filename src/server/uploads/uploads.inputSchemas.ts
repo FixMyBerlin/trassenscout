@@ -1,13 +1,13 @@
 import { z } from "zod"
-import type { Prisma } from "@/src/prisma/generated/browser"
 import { ProjectSlugRequiredSchema } from "@/src/shared/authorization/projectSlugSchema"
 import { S3_MAX_FILES_PROJECT } from "@/src/shared/uploads/config"
 import { UploadSchema } from "@/src/shared/uploads/schemas"
 
 export const GetUploadsSchema = ProjectSlugRequiredSchema
 export const GetUploadsWithSubsectionsSchema = ProjectSlugRequiredSchema.extend({
-  where: z.custom<Prisma.UploadWhereInput>().optional(),
-  orderBy: z.custom<Prisma.UploadOrderByWithRelationInput>().optional(),
+  subsubsectionId: z.number().int().positive().optional(),
+  acquisitionAreaId: z.number().int().positive().optional(),
+  uploadIds: z.array(z.number().int().positive()).optional(),
   skip: z.number().int().optional(),
   take: z.number().int().optional(),
 })

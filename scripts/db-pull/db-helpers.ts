@@ -207,6 +207,19 @@ export async function anonymizeData(targetDbUrl: string, expectedEnv: "developme
         email NOT LIKE '%@fixmycity.de'
     `
 
+    // Production share links must not work on copies; enabling the share again mints a new link.
+    const [shareColumn] = await db`
+      SELECT 1 FROM information_schema.columns
+      WHERE table_name = 'Project' AND column_name = 'externalShareToken'
+    `
+    if (shareColumn) {
+      await db`
+        UPDATE public."Project"
+        SET "externalShareToken" = NULL, "externalShareEnabled" = false
+        WHERE "externalShareToken" IS NOT NULL OR "externalShareEnabled"
+      `
+    }
+
     console.log("✅ Data anonymization completed")
     console.log(`✅ Updated _Meta.ENV to: ${expectedEnv}`)
   } finally {

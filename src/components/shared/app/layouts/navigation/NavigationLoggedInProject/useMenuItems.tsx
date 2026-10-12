@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { useTryRouteParam } from "@/src/components/core/routes/useTryRouteParam"
+import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { projectBySlugQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 
 function countSubstringOccurrences(str: string, substring: string) {
@@ -29,6 +30,7 @@ export const useMenuItems = () => {
     ...projectBySlugQueryOptions(projectSlug ?? ""),
     enabled: !!projectSlug,
   })
+  const userCan = useUserCan()
 
   if (!projectSlug) return []
 
@@ -48,6 +50,9 @@ export const useMenuItems = () => {
       href: `/${projectSlug}/uploads`,
       alsoHighlightPaths: [`/${projectSlug}/uploads/`],
     },
+    ...(project?.externalShareEnabled && userCan.edit
+      ? [{ name: "Externe Freigabe", href: `/${projectSlug}/external-share` }]
+      : []),
     {
       name: "Kontakte",
       href: `/${projectSlug}/contacts/team`,

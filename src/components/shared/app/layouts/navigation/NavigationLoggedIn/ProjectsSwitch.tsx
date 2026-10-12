@@ -73,13 +73,13 @@ export const ProjectsSwitch = ({ projects }: Props) => {
   }
 
   return (
-    <div className="relative ml-3">
+    <div className="relative ml-3 min-w-20">
       <button
         type="button"
         aria-expanded={open}
         aria-haspopup="listbox"
         className={twJoin(
-          "flex cursor-pointer rounded-md bg-yellow-500 px-3 py-2 text-sm font-medium text-gray-800",
+          "flex max-w-full cursor-pointer rounded-md bg-yellow-500 px-3 py-2 text-sm font-medium text-gray-800",
           "hover:bg-yellow-400 focus:bg-yellow-400",
           "focus:ring-2 focus:ring-white/30 focus:outline-hidden",
           open ? "bg-yellow-400" : "",
@@ -92,7 +92,7 @@ export const ProjectsSwitch = ({ projects }: Props) => {
       </button>
 
       {open && (
-        <div className="absolute right-0 z-10 mt-1 w-64 max-w-[calc(100vw-1rem)] sm:right-auto sm:left-0 sm:max-w-none">
+        <div className="absolute right-0 z-10 mt-1 w-64 max-w-[calc(100vw-1rem)] nav:right-auto nav:left-0 nav:max-w-none">
           <div className="rounded-md bg-white shadow-lg ring-1 ring-black/5">
             <div className="p-1.5">
               <input

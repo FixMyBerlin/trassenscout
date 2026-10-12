@@ -6,7 +6,7 @@ function getClientKey(headers: Headers, endpoint: string) {
   return `${endpoint}:${ip}`
 }
 
-class RateLimitError extends Error {
+export class RateLimitError extends Error {
   readonly statusCode = 429
 
   constructor(message = "Too many requests") {
@@ -14,6 +14,9 @@ class RateLimitError extends Error {
     this.name = "RateLimitError"
   }
 }
+
+export const isRateLimitError = (error: unknown) =>
+  error instanceof RateLimitError || (error instanceof Error && error.name === "RateLimitError")
 
 export function enforcePublicEndpointRateLimit(
   headers: Headers,

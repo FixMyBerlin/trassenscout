@@ -95,7 +95,7 @@ Die Maßnahmenmeldung wird nicht zwischengespeichert, d.h. bei Verlassen der Sei
 - Abfrage ob Gemeinschaftsbauwerk
 - Stand der Bauvorbereitung (optional)
 - Vereinfachte Kostenberechnung (€)
-- Upload für Dokumente (optional) gemäß 7.3 der Förderrichtlinie
+- Upload für Dokumente (optional) gemäß 7.3 der Förderrichtlinie, mindestens
 - Planungsunterlagen gemäß HOAI, Leistungsphase 2;
 - Finanzierungsmodell;
 - Beschreibung der Dokumente (optional)

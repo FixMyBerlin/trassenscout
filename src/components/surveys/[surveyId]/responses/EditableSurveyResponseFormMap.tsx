@@ -58,7 +58,8 @@ export const EditableSurveyResponseFormMap = ({
     setSelectedLayer(layer)
   }
 
-  const mapData = geoCategoryQuestion ? geoCategoryQuestion.props.mapProps.mapData : undefined
+  // Surveys with SwitchableMap only declare `geometryCategory` as hidden field (no mapProps)
+  const mapData = geoCategoryQuestion?.props?.mapProps?.mapData
 
   const handleMapLoad = (_: MapLibreEvent) => {
     setMapLoading(true)

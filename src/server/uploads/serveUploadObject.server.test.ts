@@ -1,4 +1,4 @@
-import { getObject } from "@better-upload/server/helpers"
+import { getObjectStream } from "@better-upload/server/helpers"
 import { beforeEach, describe, expect, test, vi } from "vitest"
 
 const mockDb = {
@@ -35,7 +35,7 @@ vi.mock("@/src/components/core/utils/isEnv", () => ({
 }))
 
 vi.mock("@better-upload/server/helpers", () => ({
-  getObject: vi.fn(),
+  getObjectStream: vi.fn(),
 }))
 
 describe("serveProjectUploadObject", () => {
@@ -45,12 +45,12 @@ describe("serveProjectUploadObject", () => {
     mockEndpointAuth.projectMember.mockResolvedValue({ userId: 2, role: "USER" })
     mockGetProjectIdBySlug.mockResolvedValue(1)
     mockGetConfiguredS3Client.mockReturnValue({ client: "s3" })
-    vi.mocked(getObject).mockResolvedValue({
-      blob: new Blob(["legacy file"]),
+    vi.mocked(getObjectStream).mockResolvedValue({
+      stream: new Blob(["legacy file"]).stream(),
       contentType: "application/pdf",
       contentLength: 11,
       eTag: "etag",
-    } as Awaited<ReturnType<typeof getObject>>)
+    } as Awaited<ReturnType<typeof getObjectStream>>)
   })
 
   test("streams the project-scoped upload without revalidating legacy URL shape", async () => {
@@ -65,7 +65,8 @@ describe("serveProjectUploadObject", () => {
     })
 
     expect(response.status).toBe(200)
-    expect(getObject).toHaveBeenCalledWith(
+    expect(await response.text()).toBe("legacy file")
+    expect(getObjectStream).toHaveBeenCalledWith(
       { client: "s3" },
       { bucket: "trassenscout", key: "legacy-document.pdf" },
     )

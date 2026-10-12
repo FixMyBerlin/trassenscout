@@ -1,5 +1,6 @@
 import type { RegisteredRouter } from "@tanstack/react-router"
 import { MATOMO_OPT_OUT_COOKIE } from "@/src/shared/analytics/matomoConfig"
+import { sanitizeTrackedHref } from "@/src/shared/analytics/trackedUrl"
 
 declare global {
   interface Window {
@@ -17,7 +18,7 @@ export function setupMatomoRouterTracking(router: RegisteredRouter) {
 
     if (hasOptedOut()) return
 
-    const url = `${origin}${event.toLocation.href}`
+    const url = `${origin}${sanitizeTrackedHref(event.toLocation.href)}`
     const title = document.title
 
     window._paq = window._paq ?? []

@@ -62,7 +62,7 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord, needsReviewEdi
   const { data: uploadsData } = useQuery({
     ...uploadsWithSubsectionsQueryOptions({
       projectSlug,
-      where: { id: { in: uploadIds } },
+      uploadIds,
     }),
     enabled: uploadIds.length > 0,
     placeholderData: keepPreviousData,

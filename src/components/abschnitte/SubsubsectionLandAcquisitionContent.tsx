@@ -94,9 +94,7 @@ export const SubsubsectionLandAcquisitionContent = ({
   const { data: uploadsData, refetch: refetchUploads } = useQuery({
     ...uploadsWithSubsectionsQueryOptions({
       projectSlug,
-      where: selectedAcquisitionArea
-        ? { acquisitionAreas: { some: { id: selectedAcquisitionArea.id } } }
-        : {},
+      acquisitionAreaId: selectedAcquisitionArea?.id,
     }),
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,

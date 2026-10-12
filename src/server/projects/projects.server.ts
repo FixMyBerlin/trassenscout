@@ -6,6 +6,7 @@ import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { authorizeProjectMemberByProjectSlug } from "@/src/server/authorization/authorizeProjectMember.server"
 import { editorRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
+import { setExternalShareEnabled } from "@/src/server/externalShare/_utils/externalShareToken.server"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { effectiveMcpMode, mcpDirectUntilFromNow } from "@/src/server/mcp/effectiveMcpMode"
 import { membershipUpdateSession } from "@/src/server/memberships/membershipUpdateSession"
@@ -25,6 +26,7 @@ const projectSelect = {
   description: true,
   evaluationsEnabled: true,
   exportEnabled: true,
+  externalShareEnabled: true,
   landAcquisitionModuleEnabled: true,
   logoSrc: true,
   partnerLogoSrcs: true,
@@ -83,6 +85,19 @@ export async function getProjectBySlug(
   })
 }
 
+const updateProjectSelect = {
+  id: true,
+  slug: true,
+  subTitle: true,
+  description: true,
+  logoSrc: true,
+  partnerLogoSrcs: true,
+  exportEnabled: true,
+  aiEnabled: true,
+  alkisStateKey: true,
+  landAcquisitionModuleEnabled: true,
+} as const
+
 export async function updateProject(headers: Headers, input: z.infer<typeof UpdateProjectSchema>) {
   const session = await endpointAuth.session(headers)
   await authorizeProjectMemberByProjectSlug(session, input.projectSlug, editorRoles)
@@ -90,23 +105,14 @@ export async function updateProject(headers: Headers, input: z.infer<typeof Upda
   const { projectSlug, partnerLogoSrcs, ...data } = input
   const previous = await db.project.findFirstOrThrow({
     where: { slug: projectSlug },
-    select: {
-      id: true,
-      slug: true,
-      subTitle: true,
-      description: true,
-      logoSrc: true,
-      partnerLogoSrcs: true,
-      exportEnabled: true,
-      aiEnabled: true,
-      alkisStateKey: true,
-      landAcquisitionModuleEnabled: true,
-    },
+    select: updateProjectSelect,
   })
 
+  // Explicit select: editors get this row back, and it must not carry the share token.
   const project = await db.project.update({
     where: { slug: projectSlug },
     data: { ...data, partnerLogoSrcs: partnerLogoSrcs || undefined },
+    select: updateProjectSelect,
   })
 
   await createLogEntry({
@@ -222,8 +228,12 @@ export async function updateProjectsFeatureFlag(
   headers: Headers,
   input: z.infer<typeof UpdateProjectsFeatureFlagSchema>,
 ) {
-  await endpointAuth.admin(headers)
+  const adminSession = await endpointAuth.admin(headers)
   const { projectSlugs, key, enabled } = input
+
+  if (key === "externalShareEnabled") {
+    return setExternalShareEnabled({ projectSlugs, enabled, userId: Number(adminSession.userId) })
+  }
 
   return db.project.updateMany({
     where: { slug: { in: projectSlugs } },

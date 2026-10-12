@@ -1,5 +1,4 @@
 import { PutObjectCommand } from "@aws-sdk/client-s3"
-import { getObject } from "@better-upload/server/helpers"
 import type { z } from "zod"
 import { frenchQuote } from "@/src/components/core/components/text/quote"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
@@ -14,8 +13,9 @@ import { moveFile } from "@/src/server/luckycloud/api/moveFile"
 import { uploadFileToLuckyCloud } from "@/src/server/luckycloud/api/uploadFile"
 import { S3_BUCKET } from "@/src/shared/uploads/config"
 import { getFilenameFromS3, getS3KeyFromUrl } from "@/src/shared/uploads/url"
+import { getS3Object } from "./_utils/getS3Object.server"
 import { generateUniqueFilename } from "./_utils/keys"
-import { getAwsSdkS3Client, getConfiguredS3Client } from "./_utils/s3Client.server"
+import { getAwsSdkS3Client } from "./_utils/s3Client.server"
 import { CopyToLuckyCloudSchema, EndCollaborationSchema } from "./uploads.inputSchemas"
 
 export { CopyToLuckyCloudSchema, EndCollaborationSchema }
@@ -48,9 +48,7 @@ export async function copyToLuckyCloud(
     throw new Error("Upload already has a Kollaborations-URL")
   }
 
-  const s3Key = getS3KeyFromUrl(upload.externalUrl)
-  const s3Client = getConfiguredS3Client()
-  const s3Object = await getObject(s3Client, { bucket: S3_BUCKET, key: s3Key })
+  const s3Object = await getS3Object(getS3KeyFromUrl(upload.externalUrl))
   const fileBuffer = Buffer.from(await s3Object.blob.arrayBuffer())
   const originalFilename = getFilenameFromS3(upload.externalUrl)
   const uniqueFilename = generateUniqueFilename(originalFilename)

@@ -39,6 +39,7 @@ export const uploadWithSubsectionsInclude = {
   project: {
     select: {
       aiEnabled: true,
+      externalShareEnabled: true,
       slug: true,
       landAcquisitionModuleEnabled: true,
     },

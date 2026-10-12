@@ -18,7 +18,7 @@ describe("uploadQueryCache", () => {
     const projectRecordKey = projectRecordQueryOptions({ projectSlug, id: 1 }).queryKey
     const uploadsWithSubsectionsKey = uploadsWithSubsectionsQueryOptions({
       projectSlug,
-      where: { id: { in: [10] } },
+      uploadIds: [10],
     }).queryKey
 
     queryClient.setQueryData(projectRecordKey, { uploads: [{ id: 10 }] } as never)
@@ -35,7 +35,7 @@ describe("uploadQueryCache", () => {
     const uploadsKey = uploadsQueryOptions({ projectSlug }).queryKey
     const uploadsWithSubsectionsKey = uploadsWithSubsectionsQueryOptions({
       projectSlug,
-      where: { id: { in: [10, 11] } },
+      uploadIds: [10, 11],
     }).queryKey
     const projectRecordKey = projectRecordQueryOptions({ projectSlug, id: 1 }).queryKey
 

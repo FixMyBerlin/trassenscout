@@ -139,7 +139,7 @@ export function AdminSurveyForm({
           <field.NumberField
             optional
             label="Anzahl der an Updates interessierten Teilnehmenden"
-            help="Workflow: Wenn Beteiligung beendet, dann einmalig die Anzahl der angemeldeten und bestätigten E-Mail-Adressen von Mailjet übernehmen, bspw. https://app.mailjet.com/contacts/lists/show/GQcr"
+            help="Workflow: Wenn Beteiligung beendet, dann einmalig die Anzahl der angemeldeten und bestätigten E-Mail-Adressen übernehmen"
           />
         )}
       </form.AppField>

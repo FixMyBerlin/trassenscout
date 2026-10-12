@@ -4,6 +4,7 @@ import {
   CommandLineIcon,
   DocumentTextIcon,
   MapIcon,
+  ShareIcon,
   SparklesIcon,
 } from "@heroicons/react/20/solid"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
@@ -92,6 +93,17 @@ const projectFeatureColumns: ProjectFeatureColumn[] = [
     header: "Auswertungen",
     icon: <ChartBarIcon className="size-4" aria-hidden />,
     label: (enabled) => (enabled ? "Auswertungen ausschalten" : "Auswertungen einschalten"),
+  },
+  {
+    key: "externalShareEnabled",
+    header: "Externe Freigabe",
+    icon: <ShareIcon className="size-4" aria-hidden />,
+    label: (enabled) =>
+      enabled
+        ? "Externe Freigabe ausschalten (der Geheimlink funktioniert nicht mehr, bis die Freigabe wieder eingeschaltet wird)"
+        : "Externe Freigabe einschalten (erstellt einen Geheimlink für Externe)",
+    // A public link per project should be a deliberate, single decision.
+    bulkToggle: false,
   },
 ]
 
