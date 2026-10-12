@@ -20,6 +20,7 @@ import { formatBerlinTime } from "@/src/components/core/utils/formatBerlinTime"
 import { ProjectRecordTagsList } from "@/src/components/project-records/ProjectRecordTagsList"
 import { IfUserCanEdit } from "@/src/components/shared/memberships/IfUserCan"
 import { DeleteUploadButton } from "@/src/components/uploads/DeleteUploadButton"
+import { ExternalShareBadge } from "@/src/components/uploads/ExternalShareBadge"
 import { useProjectUploadModal } from "@/src/components/uploads/ProjectUploadModalHost"
 import { UploadPreviewClickable } from "@/src/components/uploads/UploadPreviewClickable"
 import { UploadVerknuepfungen } from "@/src/components/uploads/UploadVerknuepfungen"
@@ -233,11 +234,7 @@ const UploadTableRow = ({
             {filename || "-"}
           </Link>
         )}
-        {upload.externalShareEnabled && upload.project?.externalShareEnabled && (
-          <span className="mt-0.5 block text-xs font-medium text-orange-600">
-            Extern freigegeben
-          </span>
-        )}
+        <ExternalShareBadge upload={upload} className="mt-0.5 block" />
       </td>
       <td className={twJoin("hidden align-top @xl:table-cell", tableCellClassName)}>
         {hasLocation && (

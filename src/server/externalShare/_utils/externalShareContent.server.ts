@@ -10,6 +10,7 @@ import {
   type UserRedactionContext,
 } from "@/src/server/memberships/redactFormerProjectMemberUser.server"
 import { SupportedGeoJsonGeometrySchema } from "@/src/shared/geometry/geojsonSchemas"
+import { externalShareUploadWhere } from "@/src/shared/uploads/externalShare"
 
 /** The allowlist; externalUrl is only read to pick the preview and never sent out. */
 const externalShareUploadSelect = {
@@ -88,7 +89,7 @@ type ExternalShareSubsubsection = Prisma.SubsubsectionGetPayload<{
 export async function loadExternalShareContent(projectId: number) {
   const [uploads, subsubsectionCount] = await Promise.all([
     db.upload.findMany({
-      where: { projectId, externalShareEnabled: true },
+      where: { projectId, externalShareEnabled: true, ...externalShareUploadWhere },
       select: externalShareUploadSelect,
       orderBy: { id: "desc" },
     }),

@@ -161,7 +161,11 @@ describe("loadExternalShareContent", () => {
     const content = await loadExternalShareContent(1)
 
     const query = mockDb.upload.findMany.mock.calls[0]?.[0]
-    expect(query?.where).toEqual({ projectId: 1, externalShareEnabled: true })
+    expect(query?.where).toEqual({
+      projectId: 1,
+      externalShareEnabled: true,
+      collaborationUrl: null,
+    })
     // Every selected field except externalUrl goes public, so adding one must be deliberate.
     expect(Object.keys(query?.select).sort()).toEqual([
       "createdAt",

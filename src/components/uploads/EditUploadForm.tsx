@@ -28,6 +28,7 @@ import { uploadQueryOptions } from "@/src/server/uploads/uploadQueryOptions"
 import { updateUploadFn } from "@/src/server/uploads/uploads.functions"
 import { uploadsQueryOptions } from "@/src/server/uploads/uploadsQueryOptions"
 import { resolvedToNavigateOptions } from "@/src/shared/routing/resolvedTo"
+import { canExternallyShareUpload } from "@/src/shared/uploads/externalShare"
 import {
   uploadFormDefaultValues,
   UploadFormSchema,
@@ -309,18 +310,24 @@ export const EditUploadForm = ({
               className="space-y-1"
               emptyText="Keine Verknüpfung"
             />
-            {upload.project?.externalShareEnabled && (
-              <form.AppField name="externalShareEnabled">
-                {(field) => (
-                  <field.Switch
-                    label="Externe Freigabe"
-                    help="Freigegebene Dokumente sieht jede Person mit dem Geheimlink der Externen Freigabe."
-                    stateLabels={{ off: "Nicht freigegeben", on: "Extern freigegeben" }}
-                    trackClassNames={{ off: "bg-gray-200", on: "bg-orange-500" }}
-                  />
-                )}
-              </form.AppField>
-            )}
+            {upload.project?.externalShareEnabled &&
+              (canExternallyShareUpload(upload) ? (
+                <form.AppField name="externalShareEnabled">
+                  {(field) => (
+                    <field.Switch
+                      label="Externe Freigabe"
+                      help="Bei externer Freigabe können alle Personen mit dem geheimen Link dieses Dokument sehen."
+                      stateLabels={{ off: "Nicht freigegeben", on: "Extern freigegeben" }}
+                      trackClassNames={{ off: "bg-gray-200", on: "bg-orange-500" }}
+                    />
+                  )}
+                </form.AppField>
+              ) : (
+                <div className="space-y-1">
+                  <h4 className="text-sm font-medium text-gray-700">Externe Freigabe</h4>
+                  <p className="text-sm text-gray-500">Während der Kollaboration nicht möglich</p>
+                </div>
+              ))}
           </div>
           <UploadSubsectionFields
             acquisitionAreas={acquisitionAreasData}

@@ -7,6 +7,7 @@ import {
 import db from "@/src/server/db.server"
 import { streamUploadObject } from "@/src/server/uploads/_utils/streamUploadObject.server"
 import { NotFoundError } from "@/src/shared/auth/errors"
+import { externalShareUploadWhere } from "@/src/shared/uploads/externalShare"
 import {
   buildExternalShareGeojson,
   loadExternalShareContent,
@@ -66,7 +67,12 @@ export async function serveExternalShareUpload(
   const { token, uploadId } = parsed.data
 
   const upload = await db.upload.findFirst({
-    where: { id: uploadId, externalShareEnabled: true, project: sharedProjectWhere(token) },
+    where: {
+      id: uploadId,
+      externalShareEnabled: true,
+      ...externalShareUploadWhere,
+      project: sharedProjectWhere(token),
+    },
     select: { externalUrl: true },
   })
   if (!upload) return notFound()

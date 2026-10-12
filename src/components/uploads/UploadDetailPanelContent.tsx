@@ -2,6 +2,7 @@ import { twJoin } from "tailwind-merge"
 import { Link } from "@/src/components/core/components/links/Link"
 import { Markdown } from "@/src/components/core/components/Markdown/Markdown"
 import { formatFileSize } from "@/src/components/core/utils/formatFileSize"
+import { ExternalShareBadge } from "@/src/components/uploads/ExternalShareBadge"
 import { LuckyCloudDocumentLink } from "@/src/components/uploads/LuckyCloudDocumentLink"
 import { UploadPdfViewer } from "@/src/components/uploads/UploadPdfViewer"
 import { UploadPreview } from "@/src/components/uploads/UploadPreview"
@@ -40,6 +41,7 @@ export const UploadDetailPanelContent = ({ upload, projectSlug }: Props) => {
               {getFilenameFromS3(upload.externalUrl)}
               {upload.fileSize && ` (${formatFileSize(upload.fileSize)})`}
             </p>
+            <ExternalShareBadge upload={upload} className="mt-1 block" />
           </div>
 
           {upload.collaborationUrl ? (

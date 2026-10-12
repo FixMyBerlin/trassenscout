@@ -68,6 +68,7 @@ describe("public external share", () => {
         where: {
           id: 7,
           externalShareEnabled: true,
+          collaborationUrl: null,
           project: { externalShareToken: token, externalShareEnabled: true },
         },
       }),
