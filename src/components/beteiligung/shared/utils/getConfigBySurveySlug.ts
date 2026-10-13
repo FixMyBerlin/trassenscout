@@ -9,12 +9,12 @@ import { formConfig as SurveyOhvRadverkehrConfig } from "@/src/components/beteil
 import { formConfig as SurveyOhvRadMeldungConfig } from "@/src/components/beteiligung/surveys/ohv-rad-meldung/config"
 import { formConfig as BBConfig } from "@/src/components/beteiligung/surveys/radnetz-brandenbrug/config"
 import { formConfig as SurveyRadschnellverbindungenInfoFeedbackConfig } from "@/src/components/beteiligung/surveys/radschnellverbindungen-info-feedback/config"
-import { formConfig as SurveyRadschnellverbindungenMassnahmenmeldungenConfig } from "@/src/components/beteiligung/surveys/radschnellverbindungen-massnahmenmeldungen/config"
 import { formConfig as RS8Config } from "@/src/components/beteiligung/surveys/rs8/config"
 import { formConfig as TestConfig } from "@/src/components/beteiligung/surveys/rstest-1-2-3/config"
 import { formConfig as Test1Config } from "@/src/components/beteiligung/surveys/rstest-1/config"
 import { formConfig as Test23Config } from "@/src/components/beteiligung/surveys/rstest-2-3/config"
 import { formConfig as Test2Config } from "@/src/components/beteiligung/surveys/rstest-2/config"
+import { formConfig as SurveyRsvMassnahmenmeldungConfig } from "@/src/components/beteiligung/surveys/rsv-massnahmenmeldung/config"
 
 // New surveys: add one line here (and the slug in `allowedSurveySlugs.ts`).
 // See `src/components/beteiligung/surveys/AGENTS.md`.
@@ -30,8 +30,7 @@ const surveyConfigs: Record<AllowedSurveySlugs, FormConfig> = {
   "ohv-rad-anhoerung": SurveyOhvRadverkehrConfig,
   "ohv-rad-meldung": SurveyOhvRadMeldungConfig,
   "radschnellverbindungen-info-feedback": SurveyRadschnellverbindungenInfoFeedbackConfig,
-  "radschnellverbindungen-massnahmenmeldungen":
-    SurveyRadschnellverbindungenMassnahmenmeldungenConfig,
+  "rsv-massnahmenmeldung": SurveyRsvMassnahmenmeldungConfig,
 }
 
 export const getConfigBySurveySlug = <K extends keyof FormConfig>(
