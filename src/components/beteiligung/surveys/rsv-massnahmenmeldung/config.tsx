@@ -1,13 +1,13 @@
 import { backendConfig } from "@/src/components/beteiligung/shared/backend-types"
 import { FormConfig } from "@/src/components/beteiligung/shared/types"
-import { part2Config } from "@/src/components/beteiligung/surveys/radschnellverbindungen-massnahmenmeldungen/part2"
+import { part2Config } from "@/src/components/beteiligung/surveys/rsv-massnahmenmeldung/part2"
 
 export const formConfig: FormConfig = {
   meta: {
     version: 1,
     title: "Maßnahmenmeldung Radschnellverbindungen",
     logoUrl: "https://radschnellverbindungen.info/favicon.svg",
-    canonicalUrl: "https://trassenscout.de/beteiligung/radschnellverbindungen-massnahmenmeldungen",
+    canonicalUrl: "https://trassenscout.de/beteiligung/rsv-massnahmenmeldung",
     maptilerUrl: "https://api.maptiler.com/maps/positron/style.json",
     primaryColor: "#059669",
     darkColor: "#047857",
