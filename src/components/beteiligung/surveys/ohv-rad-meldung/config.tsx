@@ -1,13 +1,13 @@
 import { backendConfig } from "@/src/components/beteiligung/shared/backend-types"
 import { FormConfig } from "@/src/components/beteiligung/shared/types"
-import { part2Config } from "@/src/components/beteiligung/surveys/ohv-radverkehr-massnahmenmeldung-kommunen/part2"
+import { part2Config } from "@/src/components/beteiligung/surveys/ohv-rad-meldung/part2"
 
 export const formConfig: FormConfig = {
   meta: {
     version: 1,
     title: "Maßnahmenmeldung im Rahmen der kommunalen Beteiligung zum Radnetzkonzept",
     logoUrl: "https://www.oberhavel.de/media/custom/2244_71430_1_g.PNG?1606723864",
-    canonicalUrl: "https://www.oberhavel.de/",
+    canonicalUrl: "https://trassenscout.de/beteiligung/ohv-rad-meldung",
     maptilerUrl: "https://api.maptiler.com/maps/b09268b1-91d0-42e2-9518-321a1a94738f/style.json",
     primaryColor: "#02558e",
     darkColor: "#00375D",
