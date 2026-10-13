@@ -9,6 +9,7 @@ import { formConfig as SurveyOhvRadverkehrMassnahmenmeldungKommunenConfig } from
 import { formConfig as SurveyOhvRadverkehrConfig } from "@/src/components/beteiligung/surveys/ohv-radverkehr/config"
 import { formConfig as BBConfig } from "@/src/components/beteiligung/surveys/radnetz-brandenbrug/config"
 import { formConfig as SurveyRadschnellverbindungenInfoFeedbackConfig } from "@/src/components/beteiligung/surveys/radschnellverbindungen-info-feedback/config"
+import { formConfig as SurveyRadschnellverbindungenMassnahmenmeldungenConfig } from "@/src/components/beteiligung/surveys/radschnellverbindungen-massnahmenmeldungen/config"
 import { formConfig as RS8Config } from "@/src/components/beteiligung/surveys/rs8/config"
 import { formConfig as TestConfig } from "@/src/components/beteiligung/surveys/rstest-1-2-3/config"
 import { formConfig as Test1Config } from "@/src/components/beteiligung/surveys/rstest-1/config"
@@ -29,6 +30,8 @@ const surveyConfigs: Record<AllowedSurveySlugs, FormConfig> = {
   "ohv-radverkehr": SurveyOhvRadverkehrConfig,
   "ohv-radverkehr-massnahmenmeldung-kommunen": SurveyOhvRadverkehrMassnahmenmeldungKommunenConfig,
   "radschnellverbindungen-info-feedback": SurveyRadschnellverbindungenInfoFeedbackConfig,
+  "radschnellverbindungen-massnahmenmeldungen":
+    SurveyRadschnellverbindungenMassnahmenmeldungenConfig,
 }
 
 export const getConfigBySurveySlug = <K extends keyof FormConfig>(
