@@ -1,7 +1,7 @@
 import { AnyFieldApi } from "@tanstack/react-form"
 import { fieldValidationEnum } from "@/src/components/beteiligung/shared/fieldvalidationEnum"
 import { SurveyPart2 } from "@/src/components/beteiligung/shared/types"
-import { mapData } from "@/src/components/beteiligung/surveys/ohv-radverkehr/mapData.const"
+import { mapData } from "@/src/components/beteiligung/surveys/ohv-rad-anhoerung/mapData.const"
 
 export const part2Config: SurveyPart2 = {
   progressBarDefinition: 1,
