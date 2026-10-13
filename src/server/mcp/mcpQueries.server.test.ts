@@ -150,6 +150,7 @@ describe("MCP read queries", () => {
       {
         slug: "dre34",
         description: "Radweg entlang der Bahn",
+        type: "LINE",
         subsection: { slug: "pa8" },
       },
     ])
@@ -166,12 +167,30 @@ describe("MCP read queries", () => {
         subsectionSlug: "pa8",
         slug: "dre34",
         description: "Radweg entlang der Bahn",
+        hasGeometry: true,
         url: "http://127.0.0.1:4000/frm9-ra3/abschnitte/pa8/fuehrung/dre34",
       },
     ])
     expect(result.disambiguationRequired).toBe(false)
     expect(JSON.stringify(result)).not.toContain("extraFields")
     expect(JSON.stringify(result)).not.toContain("geometry")
+  })
+
+  test("subsubsections_list marks a Maßnahme ohne Geometrie", async () => {
+    const { listSubsubsectionsForMcp } =
+      await import("@/src/server/mcp/queries/listSubsubsectionsForMcp.server")
+
+    mockDb.project.findUnique.mockResolvedValue(enabledProject)
+    mockDb.subsubsection.findMany.mockResolvedValue([
+      { slug: "kmp-1.1.1", description: null, type: null, subsection: { slug: "pa8" } },
+    ])
+
+    const result = await listSubsubsectionsForMcp({
+      projectSlug: "frm9-ra3",
+      origin: "http://127.0.0.1:4000",
+    })
+
+    expect(result.subsubsections[0]?.hasGeometry).toBe(false)
   })
 
   test("subsubsections_list sets disambiguationRequired when subsectionSlug matches several", async () => {

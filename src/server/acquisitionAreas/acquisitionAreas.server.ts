@@ -10,7 +10,10 @@ import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { AcquisitionAreaSchema } from "@/src/shared/acquisitionAreas/schemas"
 import { NotFoundError } from "@/src/shared/auth/errors"
 import { deleteAcquisitionAreasAndOrphanParcels } from "./_utils/deleteAcquisitionAreasAndOrphanParcels"
-import { validateAcquisitionAreaInput } from "./_utils/validateAcquisitionAreaInput"
+import {
+  assertSubsubsectionHasGeometry,
+  validateAcquisitionAreaInput,
+} from "./_utils/validateAcquisitionAreaInput"
 import {
   CreateAcquisitionAreaSchema,
   CreateAcquisitionAreasFromSelectionSchema,
@@ -295,8 +298,9 @@ export async function createAcquisitionAreasFromSelection(
       id: subsubsectionId,
       subsection: { project: { slug: projectSlug } },
     },
-    select: { id: true, slug: true },
+    select: { id: true, slug: true, type: true },
   })
+  assertSubsubsectionHasGeometry(subsubsection)
 
   const acquisitionAreaStatusIds = Array.from(
     new Set(

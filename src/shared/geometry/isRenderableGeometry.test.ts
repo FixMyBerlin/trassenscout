@@ -149,6 +149,10 @@ describe("brokenGeometryItems", () => {
     expect(brokenGeometryItems([mismatch])).toHaveLength(1)
   })
 
+  test("does not name a Maßnahme without geometry, which is intentional", () => {
+    expect(brokenGeometryItems([{ id: 2, slug: "ohne-1", type: null, geometry: null }])).toEqual([])
+  })
+
   test("falls back to the geometry alone when there is no type column", () => {
     const withoutType = {
       id: 1,

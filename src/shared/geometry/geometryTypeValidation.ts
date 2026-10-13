@@ -2,6 +2,7 @@ import { z } from "zod"
 import {
   GeometryWithTypeSchema,
   SubsectionGeometryWithTypeSchema,
+  SubsubsectionGeometryWithTypeSchema,
 } from "@/src/shared/geometry/geometrySchemas"
 
 /**
@@ -20,7 +21,7 @@ export const subsectionGeometryTypeValidationRefine = <T extends z.ZodTypeAny>(s
 
 /**
  * Validation refinement for subsubsections
- * Allows POINT, LINE, and POLYGON types
+ * Allows POINT, LINE, and POLYGON types, or no geometry at all (both null)
  */
 export const subsubsectionGeometryTypeValidationRefine = <T extends z.ZodTypeAny>(schema: T) =>
-  schema.and(GeometryWithTypeSchema)
+  schema.and(SubsubsectionGeometryWithTypeSchema)

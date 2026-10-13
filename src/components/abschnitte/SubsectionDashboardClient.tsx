@@ -19,6 +19,7 @@ import { subsectionsQueryOptions } from "@/src/server/subsections/subsectionsQue
 import type { SubsectionsList } from "@/src/server/subsections/types"
 import { subsubsectionsQueryOptions } from "@/src/server/subsubsections/subsubsectionsQueryOptions"
 import { brokenGeometryItems } from "@/src/shared/geometry/brokenGeometryItems"
+import { hasGeometry } from "@/src/shared/geometry/hasGeometry"
 import { SubsubsectionTable } from "./SubsubsectionTable"
 
 const subsectionRouteApi = getRouteApi(
@@ -116,7 +117,7 @@ function SubsectionDashboardContent({
             subsectionSlug={subsectionSlug}
             subsections={subsections}
             selectedSubsection={subsection}
-            subsubsections={subsubsections}
+            subsubsections={subsubsections.filter(hasGeometry)}
             clusterSubsubsections
             classHeight={classHeight}
           />

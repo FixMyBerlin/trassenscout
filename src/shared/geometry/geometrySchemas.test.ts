@@ -4,7 +4,9 @@ import { SupportedGeoJsonGeometrySchema } from "@/src/shared/geometry/geojsonSch
 import {
   GeometryWithTypeSchema,
   SubsectionGeometryWithTypeSchema,
+  SubsubsectionGeometryWithTypeSchema,
 } from "@/src/shared/geometry/geometrySchemas"
+import { hasGeometry } from "@/src/shared/geometry/hasGeometry"
 import { validateGeometryByType } from "@/src/shared/geometry/validateGeometryByType"
 
 const point = { type: "Point" as const, coordinates: [9.19, 48.89] }
@@ -90,6 +92,46 @@ describe("GeometryWithTypeSchema", () => {
       geometry: lineString,
     })
     expect(result.success).toBe(false)
+  })
+})
+
+describe("SubsubsectionGeometryWithTypeSchema", () => {
+  test("accepts a Maßnahme without geometry when type and geometry are both null", () => {
+    expect(
+      SubsubsectionGeometryWithTypeSchema.safeParse({ type: null, geometry: null }).success,
+    ).toBe(true)
+  })
+
+  test("rejects a geometry without type and a type without geometry", () => {
+    expect(
+      SubsubsectionGeometryWithTypeSchema.safeParse({ type: null, geometry: point }).success,
+    ).toBe(false)
+    expect(
+      SubsubsectionGeometryWithTypeSchema.safeParse({
+        type: GeometryTypeEnum.POINT,
+        geometry: null,
+      }).success,
+    ).toBe(false)
+  })
+
+  test("still checks that type and geometry match", () => {
+    expect(
+      SubsubsectionGeometryWithTypeSchema.safeParse({
+        type: GeometryTypeEnum.POINT,
+        geometry: lineString,
+      }).success,
+    ).toBe(false)
+  })
+})
+
+describe("hasGeometry", () => {
+  test("keeps entries with geometry and drops Maßnahmen without", () => {
+    const entries = [
+      { slug: "a", type: GeometryTypeEnum.POINT, geometry: point },
+      { slug: "b", type: null, geometry: null },
+    ]
+
+    expect(entries.filter(hasGeometry).map((entry) => entry.slug)).toEqual(["a"])
   })
 })
 

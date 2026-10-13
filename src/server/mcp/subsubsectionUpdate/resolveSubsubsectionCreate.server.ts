@@ -1,5 +1,5 @@
 import { SlugSchema } from "@/src/components/core/utils/schema-shared"
-import { LabelPositionEnum, type Prisma } from "@/src/prisma/generated/client"
+import { LabelPositionEnum, Prisma } from "@/src/prisma/generated/client"
 import db from "@/src/server/db.server"
 import { mcpEnvLabel } from "@/src/server/mcp/mcpCursorConfig"
 import { requireMcpEnabledProject } from "@/src/server/mcp/requireMcpEnabledProject.server"
@@ -160,10 +160,19 @@ export async function resolveSubsubsectionCreate({
     warnings.push(`Bestehenden Create-Draft für „${slug}“ überschrieben.`)
   }
 
-  if (patch.type === undefined) missingRequired.push("type")
-  if (patch.geometry === undefined) missingRequired.push("geometry")
+  const withoutGeometry = patch.withoutGeometry === true
+  if (withoutGeometry) {
+    if (patch.type !== undefined || patch.geometry !== undefined) {
+      errors.push("withoutGeometry kann nicht zusammen mit type oder geometry gesendet werden.")
+    } else {
+      pushSet(changes, "withoutGeometry", true)
+    }
+  } else {
+    if (patch.type === undefined) missingRequired.push("type")
+    if (patch.geometry === undefined) missingRequired.push("geometry")
+  }
 
-  if (patch.type !== undefined && patch.geometry !== undefined) {
+  if (!withoutGeometry && patch.type !== undefined && patch.geometry !== undefined) {
     const matched = GeometryWithTypeSchema.safeParse({
       type: patch.type,
       geometry: patch.geometry,
@@ -212,8 +221,12 @@ export async function resolveSubsubsectionCreate({
     slug,
     subsectionId: subsection.id,
     labelPos: LabelPositionEnum.bottom,
-    type: patch.type ?? "LINE",
-    geometry: (patch.geometry ?? null) as Prisma.InputJsonValue,
+    ...(withoutGeometry
+      ? { type: null, geometry: Prisma.DbNull }
+      : {
+          type: patch.type ?? "LINE",
+          geometry: (patch.geometry ?? null) as Prisma.InputJsonValue,
+        }),
   }
 
   for (const key of SCALAR_KEYS) {

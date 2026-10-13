@@ -137,6 +137,7 @@ export const EditSubsubsectionForm = ({ subsubsection, applyMcpDraft = false }: 
               ? getDate(subsubsection.estimatedCompletionDate)
               : "",
             ...overlay,
+            withoutGeometry: (overlay.geometry ?? subsubsection.geometry) === null,
             extraFields,
           } as unknown as z.infer<typeof SubsubsectionFormSchema>
         }

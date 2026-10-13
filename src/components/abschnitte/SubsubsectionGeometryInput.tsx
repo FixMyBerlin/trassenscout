@@ -5,6 +5,7 @@ import { GeometryDrawingSubsubsectionContextLayers } from "@/src/components/core
 import { subsectionBySlugQueryOptions } from "@/src/server/subsections/subsectionQueryOptions"
 import { subsectionsQueryOptions } from "@/src/server/subsections/subsectionsQueryOptions"
 import { subsubsectionsQueryOptions } from "@/src/server/subsubsections/subsubsectionsQueryOptions"
+import { hasGeometry } from "@/src/shared/geometry/hasGeometry"
 
 type Props = {
   projectSlug: string
@@ -41,7 +42,7 @@ export const SubsubsectionGeometryInput = ({
         <GeometryDrawingSubsubsectionContextLayers
           subsections={subsections}
           selectedSubsectionSlug={subsectionSlug}
-          subsubsections={subsubsections}
+          subsubsections={subsubsections.filter(hasGeometry)}
           selectedSubsubsectionSlug={selectedSubsubsectionSlug}
         />
       </GeometryDrawingMap>

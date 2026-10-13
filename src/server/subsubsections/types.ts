@@ -5,11 +5,11 @@ import type {
   SubsubsectionStatusStyleEnum,
 } from "@/src/prisma/generated/browser"
 import type { ProjectUserDto } from "@/src/server/memberships/redactFormerProjectMemberUser.server"
-import type { GeometryWithTypeDiscriminated } from "@/src/shared/geometry/geometrySchemas"
+import type { SubsubsectionGeometryWithType } from "@/src/shared/geometry/geometrySchemas"
 import type { getSubsubsections } from "./subsubsections.server"
 
 export type SubsubsectionWithPosition = Omit<Subsubsection, "geometry" | "type"> &
-  GeometryWithTypeDiscriminated & {
+  SubsubsectionGeometryWithType & {
     manager: ProjectUserDto | null
   } & {
     subsection: {
@@ -32,5 +32,7 @@ export type SubsubsectionWithPosition = Omit<Subsubsection, "geometry" | "type">
   } & {
     SubsubsectionInfra?: { title: string; slug: string } | null
   } & { specialFeatures: { id: number; title: string }[] }
+
+export type SubsubsectionWithGeometry = Exclude<SubsubsectionWithPosition, { type: null }>
 
 export type SubsubsectionsList = Awaited<ReturnType<typeof getSubsubsections>>

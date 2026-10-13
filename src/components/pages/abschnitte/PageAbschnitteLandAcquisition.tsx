@@ -5,12 +5,14 @@ import { SubsubsectionDeleteAllAcquisitionAreasAdmin } from "@/src/components/ab
 import { SubsubsectionLandAcquisitionContent } from "@/src/components/abschnitte/SubsubsectionLandAcquisitionContent"
 import { SubsubsectionLandAcquisitionMap } from "@/src/components/abschnitte/SubsubsectionLandAcquisitionMap"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
+import { Notice } from "@/src/components/core/components/Notice/Notice"
 import {
   MAP_FULLSCREEN_HEIGHT_CLASS,
   MapAsideSplitLayout,
 } from "@/src/components/core/components/PageHeader/MapListViewLayout"
 import { subsectionBySlugQueryOptions } from "@/src/server/subsections/subsectionQueryOptions"
 import { subsubsectionBySlugQueryOptions } from "@/src/server/subsubsections/subsubsectionQueryOptions"
+import { hasGeometry } from "@/src/shared/geometry/hasGeometry"
 import { MapPageSuspense } from "./_components/MapPageSuspense"
 
 const layoutRouteApi = getRouteApi(
@@ -25,6 +27,17 @@ export function PageAbschnitteLandAcquisition() {
   const { data: subsubsection } = useSuspenseQuery(
     subsubsectionBySlugQueryOptions({ projectSlug, subsectionSlug, subsubsectionSlug }),
   )
+
+  if (!hasGeometry(subsubsection)) {
+    return (
+      <div className="p-4">
+        <Notice type="info" title="Diese Maßnahme hat keine Geometrie.">
+          Für den Grunderwerb braucht die Maßnahme eine Geometrie. Zeichnen Sie sie unter
+          „bearbeiten“ ein.
+        </Notice>
+      </div>
+    )
+  }
 
   return (
     <MapPageSuspense>

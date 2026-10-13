@@ -21,11 +21,11 @@ import { ModalCloseButton } from "@/src/components/core/components/Modal"
 import { Spinner } from "@/src/components/core/components/Spinner"
 import { HeadingWithAction } from "@/src/components/core/components/text/HeadingWithAction"
 import type { AlkisWfsParcelFeatureCollection } from "@/src/server/alkis/alkisWfsParcelGeoJsonTypes"
-import type { SubsubsectionWithPosition } from "@/src/server/subsubsections/types"
+import type { SubsubsectionWithGeometry } from "@/src/server/subsubsections/types"
 import { formatPropertyValue, sortedPropertyEntries } from "./parcelFeatureProperties"
 
 type Props = {
-  subsubsection: SubsubsectionWithPosition
+  subsubsection: SubsubsectionWithGeometry
   bufferPolygonFeature: Feature<Polygon | MultiPolygon> | null
   parcels: AlkisWfsParcelFeatureCollection
   isLoading: boolean

@@ -77,7 +77,7 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
         `To change Planungsabschnitte: subsections_update with items (1–${MCP_LIST_MAX_LIMIT}). Identity is projectSlug + slug (PA Kürzel). ` +
         `To add Planungsabschnitte: subsections_create with items (1–${MCP_LIST_MAX_LIMIT}); patch must include type (LINE|POLYGON) and GeoJSON geometry (WGS84 [lng, lat]). ` +
         `To change Maßnahmen: subsubsections_update with items (1–${MCP_LIST_MAX_LIMIT}). ` +
-        `To add Maßnahmen: subsubsections_create with items (1–${MCP_LIST_MAX_LIMIT}); patch must include type and GeoJSON geometry (WGS84 [lng, lat]). ` +
+        `To add Maßnahmen: subsubsections_create with items (1–${MCP_LIST_MAX_LIMIT}); patch must include type and GeoJSON geometry (WGS84 [lng, lat]), or withoutGeometry: true. ` +
         `Each written item returns mode "drafted" or "applied" plus changes[].proposed. ` +
         `Show the user each item url and changes[].proposed. Geometry in the response is a short summary, not coordinates. ` +
         `Simplify lines before sending; max 5000 vertices; split large batches. ` +
@@ -216,7 +216,7 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
       description:
         "Field metadata, extra field definitions, and lookup options for subsubsection (Maßnahme) updates and creates. Requires mcpMode DRAFT or DIRECT. " +
         "For updates, writable false for slug, type, subsectionId and other non-MCP fields. geometry is optional on update and must match the stored type; it replaces the stored geometry. " +
-        "For creates, slug is identity; type and GeoJSON geometry are required in the patch. labelPos defaults to bottom and is not MCP-writable. " +
+        "For creates, slug is identity; type and GeoJSON geometry are required in the patch unless withoutGeometry is true. labelPos defaults to bottom and is not MCP-writable. " +
         "Relations use slugs from this payload, not IDs. extraFields is Record<string,string>; keys are listed in extraFields. " +
         "Lookups return { id, slug, title }. Fixed enum location returns { slug, title } (no id). " +
         "Does not include labelPos, managers, operators, tags, survey, acquisition, or subsubsectionSpecials. " +
@@ -235,7 +235,7 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
         `List subsubsections (Maßnahmen) for a project (default limit ${MCP_LIST_DEFAULT_LIMIT}, ` +
         `max ${MCP_LIST_MAX_LIMIT}). Requires mcpMode DRAFT or DIRECT. Response includes limit, returned, truncated. ` +
         "Requires projectSlug; optional subsectionSlug (Planungsabschnitt). Per row: projectSlug, subsectionSlug, slug (Maßnahme), " +
-        "description, url — no extraFields or geometry. When subsectionSlug is set and returned > 1, disambiguationRequired is true.",
+        "description, hasGeometry, url — no extraFields or geometry. When subsectionSlug is set and returned > 1, disambiguationRequired is true.",
       inputSchema: {
         projectSlug: z.string(),
         subsectionSlug: z.string().optional().describe("Planungsabschnitt slug"),
@@ -252,7 +252,7 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
       description:
         `Update one or more subsubsection (Maßnahme) patches. Requires mcpMode DRAFT or DIRECT. Pass items (1–${MCP_LIST_MAX_LIMIT}). ` +
         "DRAFT writes McpDraft only. DIRECT writes Subsubsection immediately and removes the draft for that identity. " +
-        "Optional patch.geometry replaces the stored geometry and must match the stored type; type is not writable. " +
+        "Optional patch.geometry replaces the stored geometry and must match the stored type; type is not writable. A Maßnahme without geometry takes the type of its first geometry. " +
         "Geometry in changes[].proposed is { type, vertexCount, bbox }, not coordinates. " +
         "Simplify geometries over 1000 vertices; more than 5000 is rejected. " +
         "Send geometry and field changes for one Maßnahme in the same item: in DRAFT a later call replaces the whole draft patch. " +
@@ -276,7 +276,7 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
       description:
         `Create subsubsection (Maßnahme) records. Requires mcpMode DRAFT or DIRECT. Pass items (1–${MCP_LIST_MAX_LIMIT}). ` +
         "DRAFT writes McpDraft only. DIRECT writes Subsubsection immediately. " +
-        "Each patch must include type (POINT/LINE/POLYGON) and matching GeoJSON geometry (WGS84 [lng, lat]). " +
+        "Each patch must include type (POINT/LINE/POLYGON) and matching GeoJSON geometry (WGS84 [lng, lat]), or withoutGeometry: true for a Maßnahme ohne Geometrie. " +
         "Incomplete items or slugs that already exist as a Maßnahme are not written; the response lists missingRequired and slugConflict. " +
         "An existing create-draft for the same slug is last-wins upsert in DRAFT and removed after a DIRECT create. " +
         "Geometry in changes[].proposed is { type, vertexCount, bbox }, not coordinates. " +

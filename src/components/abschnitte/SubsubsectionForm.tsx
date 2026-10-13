@@ -1,6 +1,6 @@
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
-import { ReactNode, Suspense, useState } from "react"
+import { ReactNode, Suspense, useRef, useState } from "react"
 import { z } from "zod"
 import { LinkWithFormDirtyConfirm } from "@/src/components/abschnitte/LinkWithFormDirtyConfirm"
 import {
@@ -115,6 +115,9 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
       }
     },
   })
+
+  // Unticking "ohne Geometrie" brings back what was drawn before ticking
+  const stashedGeometry = useRef<{ geometry: unknown; type: unknown } | null>(null)
 
   const valuesForOpenGroups = defaultValues as Record<string, unknown>
   const [trafficLoadOpen, setTrafficLoadOpen] = useState(() =>
@@ -293,21 +296,59 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
           />
         )}
       </form.AppField>
-      <SubsubsectionGeometryInput
-        projectSlug={projectSlug}
-        subsectionSlug={subsectionSlug}
-        selectedSubsubsectionSlug={selectedSubsubsectionSlug}
-      />
-      <FieldLayoutRightColumn>
-        <details className="space-y-6 text-sm">
-          <summary className="cursor-pointer">Anzeige-Optionen für Karten-Label</summary>
-          <form.AppField name="labelPos">
-            {(field) => (
-              <field.RadiobuttonGroup label="" classNameItemWrapper="space-y-6 sm:columns-2 pt-2" />
-            )}
-          </form.AppField>
-        </details>
-      </FieldLayoutRightColumn>
+      <form.AppField
+        name="withoutGeometry"
+        listeners={{
+          onChange: ({ value }) => {
+            if (value) {
+              stashedGeometry.current = {
+                geometry: form.getFieldValue("geometry"),
+                type: form.getFieldValue("type"),
+              }
+              form.setFieldValue("geometry", null)
+              form.setFieldValue("type", null)
+            } else {
+              form.setFieldValue("geometry", stashedGeometry.current?.geometry as never)
+              form.setFieldValue("type", stashedGeometry.current?.type as never)
+            }
+            clearImperativeFieldSubmitErrors(form, "geometry")
+            clearImperativeFieldSubmitErrors(form, "type")
+          },
+        }}
+      >
+        {(field) => (
+          <field.Checkbox
+            label="Maßnahme ohne Geometrie"
+            help="Für Vorhaben, die sich nicht räumlich verorten lassen. Eine vorhandene Geometrie wird beim Speichern entfernt."
+          />
+        )}
+      </form.AppField>
+      <form.Subscribe selector={(state) => state.values.withoutGeometry}>
+        {(withoutGeometry) =>
+          withoutGeometry ? null : (
+            <>
+              <SubsubsectionGeometryInput
+                projectSlug={projectSlug}
+                subsectionSlug={subsectionSlug}
+                selectedSubsubsectionSlug={selectedSubsubsectionSlug}
+              />
+              <FieldLayoutRightColumn>
+                <details className="space-y-6 text-sm">
+                  <summary className="cursor-pointer">Anzeige-Optionen für Karten-Label</summary>
+                  <form.AppField name="labelPos">
+                    {(field) => (
+                      <field.RadiobuttonGroup
+                        label=""
+                        classNameItemWrapper="space-y-6 sm:columns-2 pt-2"
+                      />
+                    )}
+                  </form.AppField>
+                </details>
+              </FieldLayoutRightColumn>
+            </>
+          )
+        }
+      </form.Subscribe>
       <form.AppField name="isExistingInfra">
         {(field) => <field.Checkbox label={subsubsectionFieldTranslations.isExistingInfra} />}
       </form.AppField>

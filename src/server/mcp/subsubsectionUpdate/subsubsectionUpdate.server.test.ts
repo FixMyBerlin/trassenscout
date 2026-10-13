@@ -232,6 +232,35 @@ describe("Subsubsection MCP patch", () => {
     expect(mockDb.mcpDraft.upsert.mock.calls[0]?.[0].create.patch.geometry).toEqual(geometry)
   })
 
+  test("the first geometry of a Maßnahme ohne Geometrie also sets its type", async () => {
+    mockDb.subsubsection.findFirst.mockResolvedValue(
+      mockSubsubsection({ type: null, geometry: null }),
+    )
+
+    const result = await updateSubsubsectionForMcp({
+      origin: "http://127.0.0.1:4000",
+      createdById: 42,
+      items: [item({ geometry: { type: "Point", coordinates: [9.19, 48.89] } })],
+    })
+
+    expect(result.items[0]?.drafted).toBe(true)
+    expect(result.items[0]?.changes).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ field: "type", proposed: "POINT" }),
+        expect.objectContaining({ field: "geometry" }),
+      ]),
+    )
+
+    const { resolveSubsubsectionUpdate } =
+      await import("@/src/server/mcp/subsubsectionUpdate/resolveSubsubsectionUpdate.server")
+    const resolved = await resolveSubsubsectionUpdate({
+      ...identity,
+      patch: { geometry: { type: "Point", coordinates: [9.19, 48.89] } },
+      origin: "http://127.0.0.1:4000",
+    })
+    expect(resolved.prismaData.type).toBe("POINT")
+  })
+
   test("a geometry type mismatch writes nothing", async () => {
     const mismatch = await updateSubsubsectionForMcp({
       origin: "http://127.0.0.1:4000",

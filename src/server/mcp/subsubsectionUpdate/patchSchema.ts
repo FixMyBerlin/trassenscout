@@ -72,6 +72,10 @@ export const subsubsectionMcpPatchSchema = subsubsectionMcpPatchObjectSchema.str
 
 const subsubsectionMcpCreatePatchObjectSchema = subsubsectionMcpPatchObjectSchema.extend({
   type: z.enum(GeometryTypeEnum).optional(),
+  withoutGeometry: z
+    .literal(true)
+    .optional()
+    .describe("Create the Maßnahme without geometry. Do not send type or geometry with it."),
 })
 
 const subsubsectionMcpCreatePatchSchema = subsubsectionMcpCreatePatchObjectSchema.strict()

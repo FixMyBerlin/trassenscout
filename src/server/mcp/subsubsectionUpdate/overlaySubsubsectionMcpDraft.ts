@@ -4,6 +4,7 @@ import {
   resolveSubsubsectionRelationSlugs,
 } from "@/src/server/subsubsections/resolveSubsubsectionRelationSlugs.server"
 import type { SupportedGeometry } from "@/src/shared/geometry/geometrySchemas"
+import { mapGeoTypeToEnum } from "@/src/shared/geometry/mapGeoTypeToEnum"
 import {
   parseDefinitions,
   sanitizeExtraFieldsForSave,
@@ -41,8 +42,9 @@ const SCALAR_FORM_KEYS = [
 
 export type SubsubsectionMcpFormOverlay = {
   slug?: string
-  type?: GeometryTypeEnum
-  geometry?: SupportedGeometry
+  withoutGeometry?: boolean
+  type?: GeometryTypeEnum | null
+  geometry?: SupportedGeometry | null
   description?: string
   location?: LocationEnum | ""
   lengthM?: number
@@ -101,8 +103,17 @@ export async function overlaySubsubsectionMcpDraft({
   const overlay: SubsubsectionMcpFormOverlay = {}
   const definitions = parseDefinitions(extraFieldDefinitions)
 
+  if (overlayPatch.withoutGeometry) {
+    overlay.withoutGeometry = true
+    overlay.type = null
+    overlay.geometry = null
+  }
   if (overlayPatch.type !== undefined) overlay.type = overlayPatch.type
-  if (overlayPatch.geometry !== undefined) overlay.geometry = overlayPatch.geometry
+  if (overlayPatch.geometry !== undefined) {
+    overlay.geometry = overlayPatch.geometry
+    // Update drafts carry no type; a Maßnahme ohne Geometrie needs one for its first geometry
+    overlay.type ??= mapGeoTypeToEnum(overlayPatch.geometry.type)
+  }
 
   for (const key of SCALAR_FORM_KEYS) {
     if (!(key in overlayPatch) || overlayPatch[key] === undefined) continue

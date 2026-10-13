@@ -103,14 +103,20 @@ export const SubsubsectionTable = ({ subsubsections, compact, interactive = true
                 </td>
                 <td className="px-1.5 py-2 text-sm">
                   <div className="flex items-center justify-center">
-                    <Tooltip content={GEOMETRY_TYPE_TOOLTIPS[subsubsection.type]}>
-                      <LegendIcon
-                        iconId={getIconIdForSubsubsection(
-                          subsubsection.type,
-                          subsubsection.SubsubsectionStatus?.style,
-                        )}
-                      />
-                    </Tooltip>
+                    {subsubsection.type ? (
+                      <Tooltip content={GEOMETRY_TYPE_TOOLTIPS[subsubsection.type]}>
+                        <LegendIcon
+                          iconId={getIconIdForSubsubsection(
+                            subsubsection.type,
+                            subsubsection.SubsubsectionStatus?.style,
+                          )}
+                        />
+                      </Tooltip>
+                    ) : (
+                      <Tooltip content="Ohne Geometrie">
+                        <span className="text-gray-400">—</span>
+                      </Tooltip>
+                    )}
                   </div>
                 </td>
                 <td

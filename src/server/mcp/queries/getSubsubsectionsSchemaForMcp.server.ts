@@ -156,6 +156,7 @@ export async function getSubsubsectionsSchemaForMcp(projectSlug: string) {
       "MCP patch: omit a key to leave it unchanged. null and empty string do not clear values.",
       "subsubsectionInfrastructureTypeSlugs: omit to leave unchanged; present with ≥1 slug = replace the whole set (empty array rejected).",
       `type (GeometryTypeEnum) is not writable on subsubsections_update: ${Object.values(GeometryTypeEnum).join(", ")}. geometry is optional on update: omit it to leave the geometry unchanged; when present it replaces the stored geometry and must match the stored type. subsubsections_create requires type and matching GeoJSON geometry in the patch.`,
+      "Maßnahme ohne Geometrie: send withoutGeometry: true on subsubsections_create instead of type and geometry. A later subsubsections_update with geometry adds one; its type is taken from the GeoJSON type.",
       "slug is identity on both tools; for create it is the proposed Kürzel and must be unique within the Planungsabschnitt.",
       "labelPos defaults to bottom on create and is not MCP-writable.",
     ],

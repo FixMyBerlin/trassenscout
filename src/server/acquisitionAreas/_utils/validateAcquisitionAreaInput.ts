@@ -8,13 +8,20 @@ type ValidateAcquisitionAreaInput = Pick<
   projectSlug: string
 }
 
+/** Verhandlungsflächen are derived from the Maßnahme geometry. */
+export const assertSubsubsectionHasGeometry = (subsubsection: { type: unknown }) => {
+  if (subsubsection.type === null) {
+    throw new Error("Für Verhandlungsflächen braucht die Maßnahme eine Geometrie.")
+  }
+}
+
 export const validateAcquisitionAreaInput = async ({
   projectSlug,
   subsubsectionId,
   parcelId,
   acquisitionAreaStatusId,
 }: ValidateAcquisitionAreaInput) => {
-  await db.subsubsection.findFirstOrThrow({
+  const subsubsection = await db.subsubsection.findFirstOrThrow({
     where: {
       id: subsubsectionId,
       subsection: {
@@ -23,8 +30,9 @@ export const validateAcquisitionAreaInput = async ({
         },
       },
     },
-    select: { id: true },
+    select: { id: true, type: true },
   })
+  assertSubsubsectionHasGeometry(subsubsection)
 
   await db.parcel.findFirstOrThrow({
     where: { id: parcelId },

@@ -6,7 +6,7 @@ import {
 } from "@/src/components/core/utils/schema-shared"
 import { GeometryTypeEnum, LabelPositionEnum, LocationEnum } from "@/src/prisma/generated/browser"
 import { SupportedGeometrySchema } from "@/src/shared/geometry/geometrySchemas"
-import { geometryTypeValidationRefine } from "@/src/shared/geometry/geometryTypeValidation"
+import { subsubsectionGeometryTypeValidationRefine } from "@/src/shared/geometry/geometryTypeValidation"
 import { SubsubsectionExtraFieldsValuesSchema } from "@/src/shared/subsubsections/extraFieldSchemas"
 
 export const NullableDateSchema = z.union([
@@ -24,13 +24,20 @@ export const NullableDateSchemaForm = z.union([
   z.literal(""),
 ])
 
+const GeometryOrNullSchema = z
+  .unknown()
+  .refine((value) => value !== undefined, {
+    error: "Bitte eine Geometrie zeichnen oder „Maßnahme ohne Geometrie“ wählen.",
+  })
+  .pipe(SupportedGeometrySchema.nullable())
+
 // Base schema without refinement (for use with .omit())
 export const SubsubsectionBaseSchema = z.object({
   slug: SlugSchema,
   subTitle: z.string().nullish(),
-  type: z.enum(GeometryTypeEnum),
+  type: z.enum(GeometryTypeEnum).nullable(),
   location: z.union([z.enum(LocationEnum), z.null()]),
-  geometry: SupportedGeometrySchema,
+  geometry: GeometryOrNullSchema,
   labelPos: z.enum(LabelPositionEnum),
   lengthM: InputNumberOrNullSchema, // m
   width: InputNumberOrNullSchema, // m
@@ -79,10 +86,12 @@ export const SubsubsectionBaseSchema = z.object({
 })
 
 // Refined schema with geometry type validation
-export const SubsubsectionSchema = geometryTypeValidationRefine(SubsubsectionBaseSchema)
+export const SubsubsectionSchema =
+  subsubsectionGeometryTypeValidationRefine(SubsubsectionBaseSchema)
 
 /** Form-only overrides for fields that differ from persisted SubsubsectionBaseSchema. */
 type SubsubsectionFormExtraFields = {
+  withoutGeometry: boolean
   location: LocationEnum | ""
   trafficLoadDate: string
   estimatedCompletionDate: string
@@ -99,6 +108,7 @@ export const subsubsectionFormDefaultValues: Omit<
   SubsubsectionFormExtraFields = {
   slug: "",
   subTitle: null,
+  withoutGeometry: false,
   type: GeometryTypeEnum.LINE,
   location: "",
   geometry: undefined as unknown as z.infer<typeof SubsubsectionBaseSchema>["geometry"],

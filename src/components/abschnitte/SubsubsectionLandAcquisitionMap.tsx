@@ -45,7 +45,7 @@ import { polygonToGeoJSON } from "@/src/components/core/components/Map/utils/pol
 import { acquisitionAreasBySubsubsectionQueryOptions } from "@/src/server/acquisitionAreas/acquisitionAreasAbschnitteQueryOptions"
 import type { AcquisitionAreaWithTypedGeometry } from "@/src/server/acquisitionAreas/types"
 import { adminLookupRowsWithCountQueryOptions } from "@/src/server/adminLookupTables/adminLookupTablesQueryOptions"
-import type { SubsubsectionWithPosition } from "@/src/server/subsubsections/types"
+import type { SubsubsectionWithGeometry } from "@/src/server/subsubsections/types"
 import type { TAcquisitionAreaGeometrySchema } from "@/src/shared/acquisitionAreas/schemas"
 import type { SupportedGeometry } from "@/src/shared/geometry/geometrySchemas"
 
@@ -77,7 +77,7 @@ const selectedAcquisitionAreaHoverColorExpression = hoverColorExpression(
 )
 
 type Props = {
-  subsubsection: SubsubsectionWithPosition
+  subsubsection: SubsubsectionWithGeometry
   classHeight?: string
 }
 
@@ -130,7 +130,7 @@ export const SubsubsectionLandAcquisitionMap = ({ subsubsection, classHeight }: 
   } = useMemo(
     () =>
       getSubsubsectionFeatures({
-        subsubsections: [subsubsection as SubsubsectionWithPosition],
+        subsubsections: [subsubsection],
         selectedSubsubsectionSlug: subsubsection.slug,
       }),
     [subsubsection],

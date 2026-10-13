@@ -55,7 +55,7 @@ export const subsubsectionLogSnapshotSelect = {
 export function subsubsectionLogSnapshot(subsubsection: {
   slug: string
   subTitle: string | null
-  type: GeometryTypeEnum
+  type: GeometryTypeEnum | null
   location: LocationEnum | null
   geometry: Prisma.JsonValue
   labelPos: LabelPositionEnum

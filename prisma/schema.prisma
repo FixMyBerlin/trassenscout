@@ -452,9 +452,9 @@ model Subsubsection {
   //
   slug            String // shortTitle and URL Slug
   subTitle        String?
-  type            GeometryTypeEnum  @default(LINE) // Maßnahmen Geometrietyp - fka Führungsform - UNUSED
+  type            GeometryTypeEnum? @default(LINE) // Geometrietyp; null together with geometry = Maßnahme ohne Geometrie
   location        LocationEnum? // Lage: innerorts/außerorts
-  geometry        Json
+  geometry        Json?
   labelPos        LabelPositionEnum @default(top)
   lengthM         Float? // Meter
   width           Float? // Meter
