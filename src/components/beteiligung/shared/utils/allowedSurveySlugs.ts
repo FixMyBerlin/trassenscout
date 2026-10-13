@@ -13,7 +13,7 @@ export const allowedSurveySlugs = [
   "rstest-1",
   "rstest-2",
   "ohv-haltestellenfoerderung",
-  "ohv-radverkehr",
+  "ohv-rad-anhoerung",
   "ohv-rad-meldung",
   "radschnellverbindungen-info-feedback",
   "radschnellverbindungen-massnahmenmeldungen",

@@ -1,6 +1,6 @@
 import { backendConfig } from "@/src/components/beteiligung/shared/backend-types"
 import { FormConfig } from "@/src/components/beteiligung/shared/types"
-import { part2Config } from "@/src/components/beteiligung/surveys/ohv-radverkehr/part2"
+import { part2Config } from "@/src/components/beteiligung/surveys/ohv-rad-anhoerung/part2"
 
 export const formConfig: FormConfig = {
   meta: {
