@@ -78,7 +78,7 @@ export const ProjectRecordSummary = ({ projectRecord, uploadsSection }: Props) =
       <div className={projectRecordSectionClassName}>
         <p className={projectRecordSectionLabelClassName}>Am/bis:</p>
         <p className={projectRecordSectionValueClassName}>
-          {format(new Date(projectRecord.date!), "P", { locale: de })}
+          {projectRecord.date ? format(new Date(projectRecord.date), "P", { locale: de }) : "—"}
         </p>
       </div>
 

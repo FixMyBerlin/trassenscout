@@ -3,6 +3,7 @@ import { projectRecordAssignedNotificationToUser } from "@/emails/mailers/projec
 import { frenchQuote } from "@/src/components/core/components/text/quote"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
+import type { Prisma } from "@/src/prisma/generated/browser"
 import {
   ProjectRecordReviewState,
   ProjectRecordType,
@@ -36,6 +37,12 @@ import {
   projectRecordDetailVisibilityWhere,
   projectRecordOverviewVisibilityWhere,
 } from "./projectRecordVisibility.server"
+
+// Undated records go below dated ones instead of above them (Postgres sorts NULL first on DESC)
+const projectRecordListOrder = [
+  { date: { sort: "desc", nulls: "last" } },
+  { id: "desc" },
+] satisfies Prisma.ProjectRecordOrderByWithRelationInput[]
 
 export { GetProjectRecordAdminSchema }
 
@@ -495,7 +502,7 @@ export async function getProjectRecords(
 
   const records = await db.projectRecord.findMany({
     include: projectRecordInclude,
-    orderBy: { date: "desc" },
+    orderBy: projectRecordListOrder,
     where: projectRecordOverviewWhere(project.id, project.aiEnabled),
   })
   const redactionContext = await loadUserRedactionContext(
@@ -903,7 +910,7 @@ export async function getProjectRecordsNeedsReview(
       project: { slug: input.projectSlug },
       reviewState: ProjectRecordReviewState.NEEDSREVIEW,
     },
-    orderBy: { date: "desc" },
+    orderBy: projectRecordListOrder,
     include: {
       tags: true,
       acquisitionArea: { select: { id: true } },
@@ -1224,7 +1231,7 @@ export async function getProjectRecordsBySubsubsection(
         { subsubsections: { some: { id: input.subsubsectionId } } },
       ],
     },
-    orderBy: { date: "desc" },
+    orderBy: projectRecordListOrder,
     include: projectRecordListInclude,
   })
   const redactionContext = await loadUserRedactionContext(
@@ -1255,7 +1262,7 @@ export async function getProjectRecordsByAcquisitionArea(
         { acquisitionAreas: { some: { id: input.acquisitionAreaId } } },
       ],
     },
-    orderBy: { date: "desc" },
+    orderBy: projectRecordListOrder,
     include: projectRecordListInclude,
   })
   const redactionContext = await loadUserRedactionContext(
