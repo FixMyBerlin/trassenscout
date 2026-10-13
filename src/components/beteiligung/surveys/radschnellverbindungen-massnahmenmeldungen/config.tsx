@@ -26,7 +26,6 @@ export const formConfig: FormConfig = {
 Das digitale Meldeverfahren läuft noch bis zum 30.09.2027. Bis dahin können Sie auf dem gleichen Weg noch weitere Maßnahmen melden. Nach Abschluss des Meldeverfahrens werden die eingegangenen Meldungen durch FixMyCity geprüft.
 
 Sie können jetzt direkt einen Einführungstermin zum Trassenscout buchen. In dem Termin zeigen wir Ihnen die wesentlichen Funktionen und besprechen, wie die Plattform für Ihre Radschnellverbindung eingesetzt werden kann.`,
-    mailjetWidgetUrl: null,
     buttons: [
       {
         action: "part2",
