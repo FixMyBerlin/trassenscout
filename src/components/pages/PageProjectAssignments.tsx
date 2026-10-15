@@ -1,20 +1,21 @@
-import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { getRouteApi, useNavigate } from "@tanstack/react-router"
 import { SelectListbox } from "@/src/components/core/components/forms/SelectListbox"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
-import { Spinner } from "@/src/components/core/components/Spinner"
 import { TabsApp } from "@/src/components/core/components/Tabs/TabsApp"
 import { preserveScrollNavigateOptions } from "@/src/components/core/routes/preserveScrollNavigateOptions"
-import { AssignedRecordsTable } from "@/src/components/dashboard/AssignedRecordsTable"
+import { AssignmentsList } from "@/src/components/dashboard/AssignmentsList"
 import { DashboardFilters } from "@/src/components/dashboard/DashboardFilters"
+import { useAssignedRecords } from "@/src/components/dashboard/useAssignedRecords"
 import { useProjectPageTabs } from "@/src/components/dashboard/useProjectPageTabs"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
-import { myAssignedRecordsQueryOptions } from "@/src/server/projectRecords/projectRecordsQueryOptions"
+import { TagFilterCombobox } from "@/src/components/tags/TagFilterCombobox"
 import type { AssignmentsSearch } from "@/src/shared/dashboard/searchSchemas"
 import {
   ASSIGNMENTS_DEFAULTS,
+  ASSIGNMENTS_RESET,
   DASHBOARD_ALL_MONTHS,
   DASHBOARD_ALL_PROJECTS,
+  hasAssignmentsFilter,
 } from "@/src/shared/dashboard/searchSchemas"
 import { taskDirectionOptions } from "@/src/shared/projectRecords/assignmentDirection"
 
@@ -31,6 +32,7 @@ export function PageProjectAssignments() {
   const tabs = useProjectPageTabs()
   const search = routeApi.useSearch()
   const navigate = useNavigate({ from: "/$projectSlug/assignments/" })
+  const { records, isPlaceholderData, tagOptions } = useAssignedRecords(projectSlug, search)
 
   const updateSearch = (updates: Partial<AssignmentsSearch>) =>
     void navigate({
@@ -52,21 +54,23 @@ export function PageProjectAssignments() {
             months={DASHBOARD_ALL_MONTHS}
             projects={[]}
             showProjectFilter={false}
-            hasAdditionalFilters={
-              search.status !== ASSIGNMENTS_DEFAULTS.status ||
-              search.direction !== ASSIGNMENTS_DEFAULTS.direction
-            }
+            hasAdditionalFilters={hasAssignmentsFilter(search)}
             onChange={() => {}}
             onReset={() =>
               void navigate({
                 search: (prev) => ({
                   ...prev,
-                  ...ASSIGNMENTS_DEFAULTS,
+                  ...ASSIGNMENTS_RESET,
                 }),
                 ...preserveScrollNavigateOptions,
               })
             }
           >
+            <TagFilterCombobox
+              tags={tagOptions}
+              value={search.tag}
+              onChange={(tag) => updateSearch({ tag })}
+            />
             <SelectListbox
               className="w-48"
               value={search.status}
@@ -85,37 +89,11 @@ export function PageProjectAssignments() {
         }
       />
       <AssignmentsList
-        projectSlug={projectSlug}
-        status={search.status}
-        direction={search.direction}
+        records={records}
+        isPlaceholderData={isPlaceholderData}
+        showProject={false}
+        onTagClick={(tag) => updateSearch({ tag })}
       />
     </>
-  )
-}
-
-function AssignmentsList({
-  projectSlug,
-  status,
-  direction,
-}: {
-  projectSlug: string
-  status: AssignmentsSearch["status"]
-  direction: AssignmentsSearch["direction"]
-}) {
-  const { data: records, isPlaceholderData } = useQuery({
-    ...myAssignedRecordsQueryOptions({
-      projectSlug,
-      direction,
-      editingState: status === "all" ? undefined : status,
-    }),
-    placeholderData: keepPreviousData,
-  })
-
-  if (!records) return <Spinner page />
-
-  return (
-    <div className={isPlaceholderData ? "opacity-50 transition-opacity" : undefined}>
-      <AssignedRecordsTable records={records} showProject={false} />
-    </div>
   )
 }

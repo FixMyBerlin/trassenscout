@@ -7,6 +7,7 @@ type Props = {
   value: string
   onChange: (value: string) => void
   onReset: () => void
+  hasFilter: boolean
   placeholder?: string
   hint?: string
   name?: string
@@ -20,6 +21,7 @@ export function PageHeaderSearchFilter({
   value,
   onChange,
   onReset,
+  hasFilter,
   placeholder = "Nach Suchwort filtern",
   hint,
   name = "searchterm",
@@ -29,6 +31,7 @@ export function PageHeaderSearchFilter({
   debounceMs = 300,
 }: Props) {
   const [draft, setDraft] = useState<{ baseValue: string; value: string } | null>(null)
+  if (draft && draft.baseValue !== value) setDraft(null)
   const draftValue = draft?.baseValue === value ? draft.value : value
 
   useEffect(
@@ -64,14 +67,16 @@ export function PageHeaderSearchFilter({
           />
         </div>
         {children}
-        <button
-          type="button"
-          className={twJoin(linkStyles, "flex items-center gap-2")}
-          onClick={handleReset}
-        >
-          <XMarkIcon className="size-4" />
-          <span>Filter zurücksetzen</span>
-        </button>
+        {hasFilter || draftValue ? (
+          <button
+            type="button"
+            className={twJoin(linkStyles, "flex items-center gap-2")}
+            onClick={handleReset}
+          >
+            <XMarkIcon className="size-4" />
+            <span>Filter zurücksetzen</span>
+          </button>
+        ) : null}
         {actions}
       </form>
       {hint ? <p className="mt-2 text-sm text-gray-500">{hint}</p> : null}

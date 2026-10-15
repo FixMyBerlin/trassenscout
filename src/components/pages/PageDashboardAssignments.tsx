@@ -1,23 +1,25 @@
-import { keepPreviousData, useQuery } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import { getRouteApi, useNavigate } from "@tanstack/react-router"
 import { SelectListbox } from "@/src/components/core/components/forms/SelectListbox"
 import { Breadcrumb, BreadcrumbStep } from "@/src/components/core/components/PageHeader/Breadcrumb"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
-import { Spinner } from "@/src/components/core/components/Spinner"
 import { TabsApp } from "@/src/components/core/components/Tabs/TabsApp"
 import { preserveScrollNavigateOptions } from "@/src/components/core/routes/preserveScrollNavigateOptions"
-import { AssignedRecordsTable } from "@/src/components/dashboard/AssignedRecordsTable"
+import { AssignmentsList } from "@/src/components/dashboard/AssignmentsList"
 import { DashboardFilters } from "@/src/components/dashboard/DashboardFilters"
+import { useAssignedRecords } from "@/src/components/dashboard/useAssignedRecords"
 import { useDashboardTabs } from "@/src/components/dashboard/useDashboardTabs"
-import { myAssignedRecordsQueryOptions } from "@/src/server/projectRecords/projectRecordsQueryOptions"
+import { TagFilterCombobox } from "@/src/components/tags/TagFilterCombobox"
 import { projectsWithGeometryWithMembershipRoleQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 import { mergeDashboardSearch } from "@/src/shared/dashboard/mergeDashboardSearch"
 import type { AssignmentsSearch } from "@/src/shared/dashboard/searchSchemas"
 import {
   ASSIGNMENTS_DEFAULTS,
+  ASSIGNMENTS_RESET,
   DASHBOARD_ALL_MONTHS,
   DASHBOARD_ALL_PROJECTS,
   dashboardFilterValues,
+  hasAssignmentsFilter,
 } from "@/src/shared/dashboard/searchSchemas"
 import { taskDirectionOptions } from "@/src/shared/projectRecords/assignmentDirection"
 
@@ -35,6 +37,7 @@ export function PageDashboardAssignments() {
   const navigate = useNavigate({ from: "/dashboard/assignments/" })
   const { data: projects = [] } = useQuery(projectsWithGeometryWithMembershipRoleQueryOptions())
   const filter = dashboardFilterValues(search)
+  const { records, isPlaceholderData, tagOptions } = useAssignedRecords(filter.projectSlug, search)
 
   const updateSearch = (updates: Partial<AssignmentsSearch>) =>
     void navigate({
@@ -65,10 +68,7 @@ export function PageDashboardAssignments() {
                 ...preserveScrollNavigateOptions,
               })
             }
-            hasAdditionalFilters={
-              search.status !== ASSIGNMENTS_DEFAULTS.status ||
-              search.direction !== ASSIGNMENTS_DEFAULTS.direction
-            }
+            hasAdditionalFilters={hasAssignmentsFilter(search)}
             // One navigation, so the status and the project cannot undo each other.
             onReset={() =>
               void navigate({
@@ -77,12 +77,17 @@ export function PageDashboardAssignments() {
                     projectSlug: DASHBOARD_ALL_PROJECTS,
                     months: DASHBOARD_ALL_MONTHS,
                   }),
-                  ...ASSIGNMENTS_DEFAULTS,
+                  ...ASSIGNMENTS_RESET,
                 }),
                 ...preserveScrollNavigateOptions,
               })
             }
           >
+            <TagFilterCombobox
+              tags={tagOptions}
+              value={search.tag}
+              onChange={(tag) => updateSearch({ tag })}
+            />
             <SelectListbox
               className="w-48"
               value={search.status}
@@ -101,38 +106,10 @@ export function PageDashboardAssignments() {
         }
       />
       <AssignmentsList
-        projectSlug={filter.projectSlug}
-        status={search.status}
-        direction={search.direction}
+        records={records}
+        isPlaceholderData={isPlaceholderData}
+        onTagClick={(tag) => updateSearch({ tag })}
       />
     </>
-  )
-}
-
-/** Holds its rows while the next filter loads — see `PageAdminLogEntries`. */
-function AssignmentsList({
-  projectSlug,
-  status,
-  direction,
-}: {
-  projectSlug?: string
-  status: AssignmentsSearch["status"]
-  direction: AssignmentsSearch["direction"]
-}) {
-  const { data: records, isPlaceholderData } = useQuery({
-    ...myAssignedRecordsQueryOptions({
-      projectSlug,
-      direction,
-      editingState: status === "all" ? undefined : status,
-    }),
-    placeholderData: keepPreviousData,
-  })
-
-  if (!records) return <Spinner page />
-
-  return (
-    <div className={isPlaceholderData ? "opacity-50 transition-opacity" : undefined}>
-      <AssignedRecordsTable records={records} />
-    </div>
   )
 }

@@ -14,9 +14,12 @@ import {
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { PageHeaderSearchFilter } from "@/src/components/core/components/PageHeader/PageHeaderSearchFilter"
 import { TabsApp } from "@/src/components/core/components/Tabs/TabsApp"
+import { FilteredZeroCase } from "@/src/components/core/components/text/FilteredZeroCase"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
 import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
+import { TagFilterCombobox } from "@/src/components/tags/TagFilterCombobox"
+import { useTagFilterOptions } from "@/src/components/tags/useTagFilterOptions"
 import { contactsQueryOptions } from "@/src/server/contacts/contactsQueryOptions"
 import { currentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
 
@@ -32,9 +35,8 @@ export function PageContacts() {
   const contacts = data.contacts
   const filteredContacts = useFilteredContacts(contacts)
   const { filter, setFilter } = useContactFilters()
-  const handleTagClick = (tag: string) => {
-    if (tag) void setFilter({ ...filter, searchterm: tag })
-  }
+  const tagOptions = useTagFilterOptions(contacts, projectSlug)
+  const resetFilter = () => void setFilter(undefined)
 
   return (
     <>
@@ -47,10 +49,17 @@ export function PageContacts() {
         filters={
           <PageHeaderSearchFilter
             value={filter?.searchterm ?? ""}
-            onChange={(searchterm) => setFilter({ searchterm })}
-            onReset={() => void setFilter({ searchterm: "" })}
-            placeholder="Tags, Namen, E-Mail, Telefonnummern und Positionen durchsuchen"
-          />
+            onChange={(searchterm) => void setFilter({ searchterm })}
+            onReset={resetFilter}
+            hasFilter={Boolean(filter?.searchterm || filter?.tag)}
+            placeholder="Namen, E-Mail, Telefonnummern und Positionen durchsuchen"
+          >
+            <TagFilterCombobox
+              tags={tagOptions}
+              value={filter?.tag}
+              onChange={(tag) => void setFilter({ tag })}
+            />
+          </PageHeaderSearchFilter>
         }
         primaryAction={
           canEdit ? (
@@ -75,11 +84,13 @@ export function PageContacts() {
         <div className={pageContentPaddingClassName}>
           <ZeroCase visible={contacts.length} name="Kontakte" />
         </div>
+      ) : filteredContacts.length === 0 ? (
+        <FilteredZeroCase name="Kontakte" onReset={resetFilter} />
       ) : (
         <ContactTable
           contacts={filteredContacts}
           currentUserEmail={currentUser?.email}
-          onTagClick={handleTagClick}
+          onTagClick={(tag) => void setFilter({ tag })}
           projectSlug={projectSlug}
         />
       )}

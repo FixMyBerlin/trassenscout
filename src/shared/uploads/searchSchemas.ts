@@ -1,10 +1,9 @@
 import { z } from "zod"
 import { jsonSearchParam } from "@/src/shared/routing/jsonSearchParam"
 import { sanitizeInternalReturnPath } from "@/src/shared/routing/sanitizeReturnTo"
+import { searchtermTagFilterSchema } from "@/src/shared/tags/tagFilter"
 
-const uploadFilterSchema = z.object({
-  searchterm: z.string(),
-})
+const uploadFilterSchema = searchtermTagFilterSchema
 
 export type UploadFilter = z.infer<typeof uploadFilterSchema>
 

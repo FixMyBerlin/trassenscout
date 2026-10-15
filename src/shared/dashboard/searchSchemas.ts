@@ -2,6 +2,7 @@ import { z } from "zod"
 import { ASSIGNMENT_DIRECTIONS } from "@/src/shared/projectRecords/assignmentDirection"
 import { projectRecordModalSearchShape } from "@/src/shared/projectRecords/searchSchemas"
 import { withViewModeSearch } from "@/src/shared/routing/viewModeSearch"
+import { tagFilterSchema } from "@/src/shared/tags/tagFilter"
 
 export const DASHBOARD_ALL_PROJECTS = ""
 export const DASHBOARD_ALL_MONTHS = 0
@@ -41,6 +42,14 @@ export const assignmentsSearchSchema = z.object({
     .enum(ASSIGNMENT_DIRECTIONS)
     .default(ASSIGNMENTS_DEFAULTS.direction)
     .catch(ASSIGNMENTS_DEFAULTS.direction),
+  tag: tagFilterSchema,
 })
 
 export type AssignmentsSearch = z.infer<typeof assignmentsSearchSchema>
+
+export const ASSIGNMENTS_RESET = { ...ASSIGNMENTS_DEFAULTS, tag: undefined }
+
+export const hasAssignmentsFilter = (search: AssignmentsSearch) =>
+  search.status !== ASSIGNMENTS_DEFAULTS.status ||
+  search.direction !== ASSIGNMENTS_DEFAULTS.direction ||
+  search.tag !== undefined

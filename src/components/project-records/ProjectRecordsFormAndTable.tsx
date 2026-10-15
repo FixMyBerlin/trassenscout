@@ -13,6 +13,8 @@ import { ProjectRecordNewModal } from "@/src/components/project-records/ProjectR
 import { invalidateAfterProjectRecordChange } from "@/src/components/project-records/projectRecordQueryCache"
 import { useProjectRecordsListHeader } from "@/src/components/project-records/useProjectRecordsListHeader"
 import { useProjectRecordFilters } from "@/src/components/project-records/utils/useProjectRecordFilters"
+import { TagFilterCombobox } from "@/src/components/tags/TagFilterCombobox"
+import { useTagFilterOptions } from "@/src/components/tags/useTagFilterOptions"
 import { deleteMcpDraftFn } from "@/src/server/mcp/mcpDrafts/mcpDrafts.functions"
 import {
   invalidateMcpDraftQueries,
@@ -24,6 +26,7 @@ import { assignmentDirectionOptions } from "@/src/shared/projectRecords/assignme
 import {
   PROJECT_RECORD_FILTER_DEFAULTS,
   type ProjectRecordFilter,
+  projectRecordFilterSearchValue,
 } from "@/src/shared/projectRecords/searchSchemas"
 
 const statusOptions: { value: ProjectRecordFilter["status"]; label: string }[] = [
@@ -48,6 +51,7 @@ export const ProjectRecordsFormAndTable = () => {
   const { filter, setFilter } = useProjectRecordFilters()
   const queryClient = useQueryClient()
   const { data: projectRecords } = useSuspenseQuery(projectRecordsQueryOptions({ projectSlug }))
+  const tagOptions = useTagFilterOptions(projectRecords, projectSlug)
   const [showSuccess, setShowSuccess] = useState(false)
   const [createdProjectRecordId, setCreatedProjectRecordId] = useState<null | number>(null)
   const [manualModalOpen, setManualModalOpen] = useState(false)
@@ -82,8 +86,14 @@ export const ProjectRecordsFormAndTable = () => {
             value={filter?.searchterm ?? ""}
             onChange={(searchterm) => void setFilter({ searchterm })}
             onReset={() => void setFilter(undefined)}
-            placeholder="Tags, Titel, Inhalte, Maßnahmen und Zugewiesene durchsuchen"
+            hasFilter={projectRecordFilterSearchValue(filter) !== undefined}
+            placeholder="Titel, Inhalte, Maßnahmen und Zugewiesene durchsuchen"
           >
+            <TagFilterCombobox
+              tags={tagOptions}
+              value={filter?.tag}
+              onChange={(tag) => void setFilter({ tag })}
+            />
             <SelectListbox
               className="w-48"
               value={filter?.status ?? PROJECT_RECORD_FILTER_DEFAULTS.status}

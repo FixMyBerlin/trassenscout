@@ -142,11 +142,7 @@ export const ProjectRecordSummary = ({ projectRecord, uploadsSection }: Props) =
           <div className={`flex flex-wrap gap-x-3 gap-y-1 ${projectRecordSectionValueClassName}`}>
             {projectRecord.tags.map((tag) => (
               <span className="whitespace-nowrap" key={tag.id}>
-                <Link
-                  to={createProjectRecordFilterUrl(projectSlug, {
-                    searchterm: tag.title,
-                  })}
-                >
+                <Link to={createProjectRecordFilterUrl(projectSlug, { tag: tag.title })}>
                   #{tag.title}
                 </Link>
               </span>

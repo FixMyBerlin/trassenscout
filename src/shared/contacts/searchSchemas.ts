@@ -1,9 +1,8 @@
 import { z } from "zod"
 import { jsonSearchParam } from "@/src/shared/routing/jsonSearchParam"
+import { searchtermTagFilterSchema } from "@/src/shared/tags/tagFilter"
 
-const contactFilterSchema = z.object({
-  searchterm: z.string(),
-})
+const contactFilterSchema = searchtermTagFilterSchema
 
 export type ContactFilter = z.infer<typeof contactFilterSchema>
 
