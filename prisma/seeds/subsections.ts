@@ -313,7 +313,7 @@ const seedSubsections = async () => {
     })
   }
 
-  // Demo Strecken for radschnellverbindungen-info-feedback (/api/projects/rsv-d.json).
+  // Demo Strecken for rsv-hinweis (/api/projects/rsv-d.json).
   // Two distant lines (Berlin + Leipzig) so Germany-bounds zoom shows far-apart features.
   if (rsvDProject) {
     seedData.push(

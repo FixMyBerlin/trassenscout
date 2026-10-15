@@ -64,11 +64,11 @@ Im PR vermerken: „Karte = Dummy, Dev muss nacharbeiten“.
 
 ### Karten-Komponente wählen
 
-| Nutzer soll                                                        | Komponente                                                                 | Vorlage                                                                      |
-| ------------------------------------------------------------------ | -------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| Nur einen Pin setzen (ohne Netz zum Anklicken)                     | `SurveySimpleMapWithLegend`, Feld `location`                               | `rstest-2-3/part2.ts`                                                        |
-| Strecke, Linie oder Planungsabschnitt auf dem Netz anklicken       | `SurveyGeoCategoryMapWithLegend`, Felder `geometryCategory` (+ Hidden-IDs) | `radschnellverbindungen-info-feedback` oder `rstest-2` + `mapData.const.tsx` |
-| Bestandsobjekt auf der Karte oder freier Pin (optional ohne Karte) | `SwitchableMap`, Feld `location`                                           | `ohv-haltestellenfoerderung` + `mapData.const.tsx`                           |
+| Nutzer soll                                                        | Komponente                                                                 | Vorlage                                             |
+| ------------------------------------------------------------------ | -------------------------------------------------------------------------- | --------------------------------------------------- |
+| Nur einen Pin setzen (ohne Netz zum Anklicken)                     | `SurveySimpleMapWithLegend`, Feld `location`                               | `rstest-2-3/part2.ts`                               |
+| Strecke, Linie oder Planungsabschnitt auf dem Netz anklicken       | `SurveyGeoCategoryMapWithLegend`, Felder `geometryCategory` (+ Hidden-IDs) | `rsv-hinweis` oder `rstest-2` + `mapData.const.tsx` |
+| Bestandsobjekt auf der Karte oder freier Pin (optional ohne Karte) | `SwitchableMap`, Feld `location`                                           | `ohv-haltestellenfoerderung` + `mapData.const.tsx`  |
 
 Verlangt der Fragentext Trassenabschnitt und Punktsetzung, reicht ein einfacher Pin-Dummy nicht → „Offen für Dev“ (GeoCategory + Pin mit `mapData` oder getrennte Bedingungen).
 

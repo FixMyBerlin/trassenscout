@@ -1,7 +1,7 @@
 import { AnyFieldApi } from "@tanstack/react-form"
 import { fieldValidationEnum } from "@/src/components/beteiligung/shared/fieldvalidationEnum"
 import { SurveyPart2 } from "@/src/components/beteiligung/shared/types"
-import { mapData } from "@/src/components/beteiligung/surveys/radschnellverbindungen-info-feedback/mapData.const"
+import { mapData } from "@/src/components/beteiligung/surveys/rsv-hinweis/mapData.const"
 
 /** Default map bounds: Germany (steckbrief deep links can override via `?mapStart=zoom/lat/lng`) */
 const germanyBounds: [number, number, number, number] = [5.8, 47.2, 15.1, 55.1]
@@ -13,22 +13,41 @@ const germanyMaxZoomPin = 13
 export const part2Config: SurveyPart2 = {
   progressBarDefinition: 1,
   intro: {
-    title: "Hinweise zu Radschnellverbindungen",
-    description: `Vielen Dank, dass Sie sich beteiligen. Mit Ihrem Hinweis helfen Sie, die Informationen zu den geplanten Radschnellverbindungen auf [radschnellverbindungen.info](https://radschnellverbindungen.info/steckbriefe/) zu verbessern.
-
-## So geht's:
-1. Wählen Sie auf der Karte die Strecke aus, zu der Ihr Hinweis gehört.
-2. Optional können Sie zusätzlich einen Pin setzen, wenn sich Ihr Hinweis auf eine konkrete Stelle bezieht — oder ohne genaue Ortsangabe fortfahren.
-3. Schreiben Sie Ihren Hinweis und laden Sie bei Bedarf eine Datei hoch.
-4. Hinterlassen Sie Ihren Namen, Ihre Rolle und Ihre E-Mail-Adresse für Rückfragen.
-`,
     type: "standard",
+    title: "Hinweis zu Radschnellverbindungen",
+    description: `Willkommen beim digitalen Beteiligungsportal für Radschnellverbindungen in Deutschland. Über dieses Formular können Sie als Projektleitung Hinweise mit räumlichem Bezug auf Grundlage des vorliegenden Radschnellverbindungsnetzes zügig, systematisch und transparent an FixMyCity übermitteln.
+
+## Zweck und Ziel
+
+Dieses Formular ergänzt die Plattform [radschnellverbindungen.info](https://radschnellverbindungen.info/steckbriefe/), auf der Sie eine Übersicht der aktuell geplanten Radschnellverbindungen sowie deren Trassenverläufe beziehungsweise -korridore in Form von Steckbriefen vorfinden.
+
+Ziel dieses Formulars im Trassenscout ist eine möglichst effiziente Kommunikation und Steuerung der Planung.
+
+## Was können Sie mitteilen?
+
+Sie können unter anderem Hinweise übermitteln zu:
+
+- dem aktuellen Projektstand oder geplanten nächsten Schritten,
+- Trassenverläufen, Korridoren und räumlichen Besonderheiten,
+- fachlichen, organisatorischen oder technischen Anforderungen.
+
+## Hinweise zur Übermittlung
+
+Bitte füllen Sie das Formular vollständig aus. Nach dem Absenden wird Ihr Hinweis direkt im System erfasst und FixMyCity zur Auswertung bereitgestellt.
+
+[Datenschutzhinweis](https://radschnellverbindungen.info/datenschutz): Alle angegebenen personenbezogenen Daten werden ausschließlich für die Durchführung und Nachbereitung dieses Hinweisverfahrens gemäß DSGVO verarbeitet.
+
+Mit dem Aufrufen des Formulars stimme ich der Datenschutzerklärung zu. Die Daten werden gemäß DSGVO verarbeitet und nur für die Durchführung dieses digitalen Hinweisverfahrens gespeichert.
+
+Sind Sie eine **Projektleitung** einer **Radschnellverbindung**?
+
+Dann klicken Sie bitte auf den untenstehenden Button, um einen Hinweis abzugeben.`,
     buttons: [{ action: "next", label: "Weiter", position: "right", color: "primaryColor" }],
   },
   buttonLabels: {
     next: "Weiter",
     back: "Zurück",
-    submit: "Absenden",
+    submit: "Hinweis absenden",
     again: "Ich möchte noch einen Hinweis abgeben",
   },
   pages: [
@@ -39,7 +58,7 @@ export const part2Config: SurveyPart2 = {
           name: "titleLocation",
           componentType: "content",
           component: "SurveyPageTitle",
-          props: { title: "Verorten Sie Ihren Hinweis" },
+          props: { title: "Hinweis zur Radschnellverbindung" },
         },
         {
           name: "descriptionLocation",
@@ -173,17 +192,6 @@ export const part2Config: SurveyPart2 = {
             },
           },
         },
-      ],
-    },
-    {
-      id: "2",
-      fields: [
-        {
-          name: "titleFeedback",
-          componentType: "content",
-          component: "SurveyPageTitle",
-          props: { title: "Was möchten Sie uns mitteilen?" },
-        },
         {
           name: "feedbackText",
           component: "SurveyTextarea",
@@ -201,13 +209,21 @@ export const part2Config: SurveyPart2 = {
           validation: fieldValidationEnum["optionalArrayOfNumber"],
           defaultValue: [],
           props: {
-            label: "Datei hochladen",
+            label: "Dokumente hochladen",
           },
+        },
+        {
+          name: "uploadsDescription",
+          componentType: "form",
+          component: "SurveyTextarea",
+          validation: fieldValidationEnum["optionalString"],
+          defaultValue: "",
+          props: { label: "Beschreibung der Dokumente" },
         },
       ],
     },
     {
-      id: "3",
+      id: "2",
       fields: [
         {
           name: "titleContact",
@@ -216,46 +232,55 @@ export const part2Config: SurveyPart2 = {
           props: { title: "Ihre Kontaktdaten" },
         },
         {
-          name: "descriptionContact",
-          componentType: "content",
-          component: "SurveyMarkdown",
-          props: {
-            markdown:
-              "Damit wir bei Rückfragen nachfragen können, benötigen wir Ihren vollständigen Namen, Ihre Rolle und Ihre E-Mail-Adresse.",
-          },
-        },
-        {
           name: "contact",
-          component: "SurveyTextfield",
           componentType: "form",
+          component: "SurveyTextfield",
           validation: fieldValidationEnum["requiredString"],
           defaultValue: "",
-          props: {
-            label: "Vollständiger Name",
-            autoComplete: "name",
-          },
+          props: { label: "Name einer zuständigen Kontaktperson", autoComplete: "name" },
         },
         {
-          name: "role",
-          component: "SurveyTextfield",
+          name: "phone",
           componentType: "form",
-          validation: fieldValidationEnum["requiredString"],
+          component: "SurveyTextfield",
+          validation: fieldValidationEnum["optionalString"],
           defaultValue: "",
           props: {
-            label: "Rolle",
-            description: "z. B. Anwohner:in, Verwaltung, Planung, Interessensvertretung",
+            label: "Telefonnummer für Rückfragen",
+            type: "tel",
+            autoComplete: "tel",
           },
         },
         {
           name: "email",
-          component: "SurveyTextfield",
           componentType: "form",
+          component: "SurveyTextfield",
           validation: fieldValidationEnum["requiredEmailString"],
           defaultValue: "",
           props: {
             label: "E-Mail-Adresse",
             type: "email",
             autoComplete: "email",
+          },
+        },
+        {
+          name: "personalMessage",
+          componentType: "form",
+          component: "SurveyTextarea",
+          validation: fieldValidationEnum["optionalString"],
+          defaultValue: "",
+          props: { label: "Persönliche Nachricht" },
+        },
+        {
+          name: "declaration",
+          componentType: "form",
+          component: "SurveyCheckbox",
+          validation: fieldValidationEnum["requiredTrueBoolean"],
+          defaultValue: false,
+          props: {
+            label: "Erklärung",
+            itemLabel:
+              "Ich bestätige, dass ich zur Abgabe dieses Hinweises im Namen der angegebenen Stelle/Behörde berechtigt bin.",
           },
         },
       ],

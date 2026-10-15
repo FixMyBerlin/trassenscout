@@ -73,7 +73,7 @@ const seedSurveys = async () => {
     },
     {
       projectId: rsvDProject?.id ?? 1,
-      slug: "radschnellverbindungen-info-feedback",
+      slug: "rsv-hinweis",
       title: "Hinweise zu Radschnellverbindungen",
       active: true,
     },
