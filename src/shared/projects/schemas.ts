@@ -1,13 +1,18 @@
 import { z } from "zod"
-import { SlugSchema } from "@/src/components/core/utils/schema-shared"
+import { blankToNull, SlugSchema } from "@/src/components/core/utils/schema-shared"
 import { StateKeyEnum } from "@/src/prisma/generated/browser"
 import { ProjectSlugRequiredSchema } from "@/src/shared/authorization/projectSlugSchema"
 
 const ProjectSlugSchema = SlugSchema.max(15, { error: "Pflichtfeld. Maximal 15 Zeichen." })
 
+const PartOfSchema = z
+  .preprocess(blankToNull, z.string().max(20, { error: "Maximal 20 Zeichen." }).nullable())
+  .optional()
+
 export const ProjectSchema = z.object({
   slug: ProjectSlugSchema,
   subTitle: z.string().nullish(),
+  partOf: PartOfSchema,
   description: z.string().nullish(),
   logoSrc: z.string().nullish(),
   partnerLogoSrcs: z.array(z.string()).nullish(),
@@ -30,6 +35,7 @@ export type ProjectFormType = z.infer<typeof ProjectFormSchema>
 export const projectFormDefaultValues: ProjectFormType = {
   slug: "",
   subTitle: null,
+  partOf: null,
   description: null,
   logoSrc: null,
   partnerLogoSrcs: "",

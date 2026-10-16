@@ -203,6 +203,7 @@ model Project {
   //
   slug                               String                            @unique // shortTitle and URL Slug
   subTitle                           String?
+  partOf                             String? // "Teilprojekt von", e.g. "FRM9"; label next to the line on the dashboard map
   description                        String?
   logoSrc                            String? // - UNUSED
   partnerLogoSrcs                    String[] // - UNUSED

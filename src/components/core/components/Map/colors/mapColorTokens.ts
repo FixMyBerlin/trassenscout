@@ -12,6 +12,7 @@ export const mapColorTokens = {
   gray600: "#4b5563",
   slate900: "#0f172a",
   black: "#000000",
+  white: "#ffffff",
   blue500Alpha20: "#2c62a933",
   subsubsectionStatusGreen: "#4bc556",
   terraDrawSelectionPink: "#ec407a",

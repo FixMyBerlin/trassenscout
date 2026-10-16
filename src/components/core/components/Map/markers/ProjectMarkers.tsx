@@ -16,6 +16,7 @@ const markerStyles = {
 type Props = {
   projects: ProjectsWithGeometryWithMembershipRole
   dotMode: boolean | null
+  hoverOnlySlugs: Set<string>
   onSelect: (projectSlug: string) => void
 }
 
@@ -23,10 +24,17 @@ type ProjectMarkerProps = {
   project: ProjectsWithGeometryWithMembershipRole[number]
   previewPoint: ProjectsWithGeometryWithMembershipRole[number]["previewPoint"]
   dotMode: boolean
+  hoverOnly: boolean
   onSelect: (projectSlug: string) => void
 }
 
-const ProjectMarker = ({ project, previewPoint, dotMode, onSelect }: ProjectMarkerProps) => {
+const ProjectMarker = ({
+  project,
+  previewPoint,
+  dotMode,
+  hoverOnly,
+  onSelect,
+}: ProjectMarkerProps) => {
   const { isHighlighted, handleMouseEnter, handleMouseLeave } = useMarkerHighlight(
     "project",
     project.slug,
@@ -64,11 +72,14 @@ const ProjectMarker = ({ project, previewPoint, dotMode, onSelect }: ProjectMark
       onClick={() => onSelect(project.slug)}
     >
       <div
-        className={twJoin("group relative cursor-pointer", dotMode && dotModeMarkerSizeClass)}
+        className={twJoin(
+          "group relative cursor-pointer",
+          dotMode && !hoverOnly && dotModeMarkerSizeClass,
+        )}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        {dotMode
+        {dotMode || hoverOnly
           ? isHighlighted && <div className="absolute top-1/2 left-1/2">{label}</div>
           : label}
       </div>
@@ -76,7 +87,7 @@ const ProjectMarker = ({ project, previewPoint, dotMode, onSelect }: ProjectMark
   )
 }
 
-export const ProjectMarkers = ({ projects, dotMode, onSelect }: Props) => {
+export const ProjectMarkers = ({ projects, dotMode, hoverOnlySlugs, onSelect }: Props) => {
   if (dotMode === null) return null
 
   return (
@@ -87,6 +98,7 @@ export const ProjectMarkers = ({ projects, dotMode, onSelect }: Props) => {
           project={project}
           previewPoint={project.previewPoint}
           dotMode={dotMode}
+          hoverOnly={hoverOnlySlugs.has(project.slug)}
           onSelect={onSelect}
         />
       ))}
