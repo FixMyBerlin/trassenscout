@@ -11,9 +11,9 @@ const pillClassName = (tag: TagPill) =>
     tagPillColorClassName(tag.color),
   )
 
-// Coloured tags keep their own text colour; neutral ones stay link-blue.
+// Coloured tags darken their text on hover like links do; neutral ones stay link-blue.
 const clickablePillClassName = (tag: TagPill) =>
-  twJoin(pillClassName(tag), "cursor-pointer", !tag.color && linkStyles)
+  twJoin(pillClassName(tag), "cursor-pointer", tag.color ? "hover:text-gray-900" : linkStyles)
 
 export const ProjectRecordTagsList = ({
   tags,
