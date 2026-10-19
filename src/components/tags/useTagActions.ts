@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "@tanstack/react-router"
 import type { z } from "zod"
 import { useTryRouteSearch } from "@/src/components/core/routes/useTryRouteSearch"
+import type { TagColorEnum } from "@/src/prisma/generated/browser"
 import {
   archiveTagFn,
   createTagFn,
@@ -81,8 +82,11 @@ export function useTagMutations(projectSlug: string, search: TagListSearch = {})
     void router.navigate(listNavigateOptions)
   }
 
-  const updateTag = async (id: number, title: string) => {
-    await updateTagMutation.mutateAsync({ data: { projectSlug, id, title } })
+  const updateTag = async (
+    id: number,
+    values: { title: string; description?: string | null; color?: TagColorEnum },
+  ) => {
+    await updateTagMutation.mutateAsync({ data: { projectSlug, id, ...values } })
     invalidateTags()
     void router.navigate(listNavigateOptions)
   }

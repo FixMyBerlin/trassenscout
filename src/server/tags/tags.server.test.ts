@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from "vitest"
 import { Prisma } from "@/src/prisma/generated/client"
+import { AuthorizationError } from "@/src/shared/auth/errors"
 import { createTag, TAG_TITLE_TAKEN, updateTag } from "./tags.server"
 
 const { mockDb, mockEndpointAuth } = vi.hoisted(() => ({
@@ -81,9 +82,12 @@ describe("createTag", () => {
 })
 
 describe("updateTag", () => {
+  const asRole = (role: "ADMIN" | "USER") =>
+    mockEndpointAuth.projectRole.mockResolvedValue({ projectId: 1, session: { role } })
+
   beforeEach(() => {
     vi.clearAllMocks()
-    mockEndpointAuth.projectRole.mockResolvedValue({ projectId: 1 })
+    asRole("USER")
     mockDb.tag.findFirstOrThrow.mockResolvedValue({ id: 3, title: "Fuss", projectId: 1 })
   })
 
@@ -107,5 +111,40 @@ describe("updateTag", () => {
     await updateTag(headers, { projectSlug: "lb", id: 3, title: "FUSS" })
 
     expect(mockDb.tag.update).toHaveBeenCalledWith({ where: { id: 3 }, data: { title: "FUSS" } })
+  })
+
+  test("lets editors rename but not change colour or description", async () => {
+    mockDb.tag.findFirst.mockResolvedValue(null)
+
+    await updateTag(headers, { projectSlug: "lb", id: 3, title: "Fußverkehr" })
+    expect(mockDb.tag.update).toHaveBeenCalledWith({
+      where: { id: 3 },
+      data: { title: "Fußverkehr" },
+    })
+
+    await expect(
+      updateTag(headers, { projectSlug: "lb", id: 3, title: "Fußverkehr", color: "PINK" }),
+    ).rejects.toThrow(AuthorizationError)
+    await expect(
+      updateTag(headers, { projectSlug: "lb", id: 3, title: "Fußverkehr", description: "Info" }),
+    ).rejects.toThrow(AuthorizationError)
+  })
+
+  test("lets admins set colour and description; an empty description is stored as null", async () => {
+    asRole("ADMIN")
+    mockDb.tag.findFirst.mockResolvedValue(null)
+
+    await updateTag(headers, {
+      projectSlug: "lb",
+      id: 3,
+      title: "Fuss",
+      color: "PINK",
+      description: "",
+    })
+
+    expect(mockDb.tag.update).toHaveBeenCalledWith({
+      where: { id: 3 },
+      data: { title: "Fuss", color: "PINK", description: null },
+    })
   })
 })

@@ -14,6 +14,11 @@ const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/tags/")
 
 export function PageTags() {
   const { projectSlug } = routeApi.useParams()
+
+  return <TagsOverview projectSlug={projectSlug} />
+}
+
+export function TagsOverview({ projectSlug }: { projectSlug: string }) {
   const canEdit = useUserCan().edit
   const { newLink } = useTagRouteLinks(projectSlug)
   const { data } = useSuspenseQuery(

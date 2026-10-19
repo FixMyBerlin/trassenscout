@@ -12,12 +12,15 @@ import {
 } from "@/src/components/core/components/Table/tableClasses"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
+import { ProjectRecordTagsList } from "@/src/components/project-records/ProjectRecordTagsList"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
+import type { TagColor } from "./tagColors"
 
 export type TagManagementRow = {
   id: number
   title: string
   description?: string | null
+  color?: TagColor | null
   archivedAt: Date | string | null
   usageCount: number
 }
@@ -75,7 +78,11 @@ export const TagsManagementTable = ({
               )}
             >
               <td className="py-4 pr-3 pl-4 text-sm whitespace-nowrap sm:pl-6">
-                <strong className="font-semibold">{tag.title}</strong>
+                {tag.color ? (
+                  <ProjectRecordTagsList tags={[tag]} />
+                ) : (
+                  <strong className="font-semibold">{tag.title}</strong>
+                )}
               </td>
               {showDescription && (
                 <td className="max-w-md px-3 py-4 text-sm wrap-break-word text-gray-500">

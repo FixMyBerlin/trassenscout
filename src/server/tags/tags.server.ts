@@ -1,8 +1,9 @@
 import type { z } from "zod"
-import { Prisma } from "@/src/prisma/generated/client"
+import { Prisma, UserRoleEnum } from "@/src/prisma/generated/client"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
+import { AuthorizationError, authMessages } from "@/src/shared/auth/errors"
 import { CreateTagSchema, GetTagsSchema, TagIdSchema, UpdateTagSchema } from "./tags.inputSchemas"
 import { getTagUsageCount } from "./tagUsageCount"
 
@@ -74,8 +75,12 @@ export async function createTag(headers: Headers, input: z.infer<typeof CreateTa
 }
 
 export async function updateTag(headers: Headers, input: z.infer<typeof UpdateTagSchema>) {
-  await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
-  const { id, projectSlug, title } = input
+  const { session } = await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
+  const { id, projectSlug, title, description, color } = input
+  const changesAdminFields = description !== undefined || color !== undefined
+  if (changesAdminFields && session.role !== UserRoleEnum.ADMIN) {
+    throw new AuthorizationError(authMessages.adminAccessRequired)
+  }
 
   const tag = await db.tag.findFirstOrThrow({
     where: tagInProjectWhere(projectSlug, id),
@@ -88,7 +93,11 @@ export async function updateTag(headers: Headers, input: z.infer<typeof UpdateTa
 
   return db.tag.update({
     where: { id: tag.id },
-    data: { title },
+    data: {
+      title,
+      ...(description !== undefined ? { description: description || null } : {}),
+      ...(color !== undefined ? { color } : {}),
+    },
   })
 }
 

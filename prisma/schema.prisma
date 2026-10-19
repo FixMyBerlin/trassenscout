@@ -1066,11 +1066,26 @@ enum ProjectRecordReviewState {
   APPROVED // User-created project records that are automatically approved (no review needed)
 }
 
+enum TagColorEnum {
+  LIGHT_BLUE
+  BLUE
+  VIOLET
+  PINK
+  RED
+  ORANGE
+  YELLOW
+  LIME
+  MINT
+  CYAN
+}
+
 model Tag {
   id                     Int                     @id @default(autoincrement())
   createdAt              DateTime                @default(now())
   updatedAt              DateTime                @updatedAt
   title                  String
+  description            String? // Beschreibung, set by admins
+  color                  TagColorEnum            @default(LIGHT_BLUE) // set by admins
   archivedAt             DateTime?
   //
   project                Project                 @relation(fields: [projectId], references: [id], onDelete: Cascade)
