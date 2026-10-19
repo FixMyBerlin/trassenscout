@@ -13,6 +13,7 @@ import {
 import { tagsWithUsageCountQueryOptions } from "@/src/server/tags/tagsQueryOptions"
 import { fromBackLinkSearchSchema } from "@/src/shared/routing/fromBackLinkSearch"
 import { preserveFromSearch } from "@/src/shared/routing/preserveListSearch"
+import { removeTagFromCache, setTagArchivedInCache } from "./tagQueryCache"
 
 export type TagListSearch = z.infer<typeof fromBackLinkSearchSchema>
 
@@ -96,19 +97,23 @@ export function useTagMutations(projectSlug: string, search: TagListSearch = {})
   }
 
   const archiveTag = async (id: number) => {
-    await archiveTagMutation.mutateAsync({ data: { projectSlug, id } })
+    const tag = await archiveTagMutation.mutateAsync({ data: { projectSlug, id } })
+    await setTagArchivedInCache(queryClient, id, tag.archivedAt)
     invalidateTags()
   }
 
   const unarchiveTag = async (id: number) => {
     await unarchiveTagMutation.mutateAsync({ data: { projectSlug, id } })
+    await setTagArchivedInCache(queryClient, id, null)
     invalidateTags()
   }
 
   const deleteTag = async (id: number) => {
     await deleteTagMutation.mutateAsync({ data: { projectSlug, id } })
+    // Leave the edit modal first; it throws once its tag is gone from the cached list.
+    await router.navigate(listNavigateOptions)
+    await removeTagFromCache(queryClient, id)
     invalidateTags()
-    void router.navigate(listNavigateOptions)
   }
 
   return {

@@ -1,17 +1,25 @@
 import { beforeEach, describe, expect, test, vi } from "vitest"
 import { Prisma } from "@/src/prisma/generated/client"
 import { AuthorizationError } from "@/src/shared/auth/errors"
-import { createTag, TAG_TITLE_TAKEN, updateTag } from "./tags.server"
+import { createTag, deleteTag, TAG_TITLE_TAKEN, updateTag } from "./tags.server"
 
-const { mockDb, mockEndpointAuth } = vi.hoisted(() => ({
+const { mockDb, mockEndpointAuth, mockGetTagUsageCount } = vi.hoisted(() => ({
   mockDb: {
-    tag: { findFirst: vi.fn(), findFirstOrThrow: vi.fn(), create: vi.fn(), update: vi.fn() },
+    tag: {
+      findFirst: vi.fn(),
+      findFirstOrThrow: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
+    },
   },
   mockEndpointAuth: { projectRole: vi.fn() },
+  mockGetTagUsageCount: vi.fn(),
 }))
 
 vi.mock("@/src/server/db.server", () => ({ default: mockDb }))
 vi.mock("@/src/server/auth/endpointAuth.server", () => ({ endpointAuth: mockEndpointAuth }))
+vi.mock("./tagUsageCount", () => ({ getTagUsageCount: mockGetTagUsageCount }))
 
 const headers = new Headers()
 
@@ -187,5 +195,33 @@ describe("updateTag", () => {
       where: { id: 3 },
       data: { title: "Fuss", color: "PINK", description: null },
     })
+  })
+})
+
+describe("deleteTag", () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockEndpointAuth.projectRole.mockResolvedValue({ projectId: 1, session: { role: "USER" } })
+  })
+
+  test("treats a tag that is already gone as deleted", async () => {
+    mockDb.tag.findFirst.mockResolvedValue(null)
+
+    await expect(deleteTag(headers, { projectSlug: "lb", id: 3 })).resolves.toBeNull()
+    expect(mockDb.tag.delete).not.toHaveBeenCalled()
+  })
+
+  test("deletes an unused tag but refuses one that is still in use", async () => {
+    mockDb.tag.findFirst.mockResolvedValue({ id: 3 })
+    mockGetTagUsageCount.mockResolvedValue(2)
+
+    await expect(deleteTag(headers, { projectSlug: "lb", id: 3 })).rejects.toThrow(
+      "Tag kann nicht gelöscht werden, solange es noch verwendet wird.",
+    )
+    expect(mockDb.tag.delete).not.toHaveBeenCalled()
+
+    mockGetTagUsageCount.mockResolvedValue(0)
+    await deleteTag(headers, { projectSlug: "lb", id: 3 })
+    expect(mockDb.tag.delete).toHaveBeenCalledWith({ where: { id: 3 } })
   })
 })

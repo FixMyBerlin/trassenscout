@@ -145,9 +145,10 @@ export async function deleteTag(headers: Headers, input: z.infer<typeof TagIdSch
   await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
   const { id, projectSlug } = input
 
-  const tag = await db.tag.findFirstOrThrow({
+  const tag = await db.tag.findFirst({
     where: tagInProjectWhere(projectSlug, id),
   })
+  if (!tag) return null
 
   const usageCount = await getTagUsageCount(projectSlug, tag.id)
   if (usageCount > 0) {

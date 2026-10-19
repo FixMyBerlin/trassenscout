@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { twJoin } from "tailwind-merge"
 import { ButtonWrapper } from "@/src/components/core/components/links/ButtonWrapper"
 import { Link, linkIcons, type LinkProps } from "@/src/components/core/components/links/Link"
@@ -44,6 +45,16 @@ export const TagsManagementTable = ({
   zeroCaseName = "Tags",
   showDescription = false,
 }: Props) => {
+  const [isPending, setIsPending] = useState(false)
+  const runAction = async (action: () => Promise<void>) => {
+    setIsPending(true)
+    try {
+      await action()
+    } finally {
+      setIsPending(false)
+    }
+  }
+
   return (
     <TableWrapper>
       <table className={tableClassName}>
@@ -103,7 +114,8 @@ export const TagsManagementTable = ({
                     </Link>
                     <button
                       type="button"
-                      onClick={() => onArchive(tag)}
+                      onClick={() => runAction(() => onArchive(tag))}
+                      disabled={isPending}
                       className={twJoin(
                         linkStyles,
                         "inline-flex items-center justify-center gap-1",
@@ -113,8 +125,8 @@ export const TagsManagementTable = ({
                     </button>
                     <button
                       type="button"
-                      onClick={() => onDelete(tag)}
-                      disabled={tag.usageCount > 0}
+                      onClick={() => runAction(() => onDelete(tag))}
+                      disabled={isPending || tag.usageCount > 0}
                       title={
                         tag.usageCount > 0
                           ? "Tag wird noch verwendet und kann nicht gelöscht werden."
