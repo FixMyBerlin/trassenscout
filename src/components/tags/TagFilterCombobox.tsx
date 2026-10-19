@@ -12,7 +12,7 @@ type Props = {
 export function TagFilterCombobox({ tags, value, onChange }: Props) {
   const { selected, titles } = getTagFilterSelection(tags, value)
   const items = [
-    { value: ALL_TAGS, searchText: "Alle Tags", label: <strong>Alle Tags</strong> },
+    { value: ALL_TAGS, searchText: "Alle Tags", label: "Alle Tags" },
     ...titles.map((title) => ({ value: title, searchText: `#${title}`, label: `#${title}` })),
   ]
 
