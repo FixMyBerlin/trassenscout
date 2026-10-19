@@ -16,6 +16,7 @@ import {
   formattedEuro,
   formattedLength,
 } from "@/src/components/core/components/text/formattedProperties"
+import { compareSlugs } from "@/src/components/core/components/text/titles"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { Tooltip } from "@/src/components/core/components/Tooltip/Tooltip"
 import { useTryRouteParam } from "@/src/components/core/routes/useTryRouteParam"
@@ -39,6 +40,7 @@ export const SubsubsectionTable = ({ subsubsections, compact, interactive = true
   const navigate = useNavigate()
   const { projectSlug, subsectionSlug } = subsectionRouteApi.useParams()
   const subsubsectionSlug = useTryRouteParam("subsubsectionSlug")
+  const sortedSubsubsections = [...subsubsections].sort((a, b) => compareSlugs(a.slug, b.slug))
 
   return (
     <section>
@@ -67,7 +69,7 @@ export const SubsubsectionTable = ({ subsubsections, compact, interactive = true
             </tr>
           </thead>
           <tbody className={tableBodyClassName}>
-            {subsubsections.map((subsubsection) => (
+            {sortedSubsubsections.map((subsubsection) => (
               <tr
                 key={subsubsection.id}
                 className={twJoin(
