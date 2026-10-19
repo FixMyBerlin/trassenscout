@@ -66,6 +66,12 @@ jobs:
       - name: Install Playwright browsers
         run: bunx playwright install --with-deps chromium
 
+      - name: Reset and seed test database
+        run: bun scripts/test/docker.ts reset
+
+      - name: Build app for E2E
+        run: bun tests/buildForE2e.ts
+
       - name: E2E smoke tests
         run: bun run e2e -- tests/smoke
         env:

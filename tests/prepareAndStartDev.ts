@@ -7,12 +7,15 @@ async function main() {
   await ensureTestDbRunning()
   await resetAndSeedTestDb()
 
-  const child = Bun.spawn(["bun", "vite", "dev", "--host", "127.0.0.1", "--port", "4000"], {
-    env,
-    stdin: "inherit",
-    stdout: "inherit",
-    stderr: "inherit",
-  })
+  const child = Bun.spawn(
+    ["bun", "--bun", "vite", "dev", "--host", "127.0.0.1", "--port", "4000"],
+    {
+      env,
+      stdin: "inherit",
+      stdout: "inherit",
+      stderr: "inherit",
+    },
+  )
 
   const forwardSignal = (signal: NodeJS.Signals) => {
     if (!child.killed) {
