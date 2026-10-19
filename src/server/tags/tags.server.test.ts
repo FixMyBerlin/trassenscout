@@ -1,11 +1,19 @@
 import { beforeEach, describe, expect, test, vi } from "vitest"
 import { Prisma } from "@/src/prisma/generated/client"
 import { AuthorizationError } from "@/src/shared/auth/errors"
-import { createTag, deleteTag, TAG_TITLE_TAKEN, updateTag } from "./tags.server"
+import {
+  createTag,
+  deleteTag,
+  getTagsByProject,
+  getTagsWithUsageCount,
+  TAG_TITLE_TAKEN,
+  updateTag,
+} from "./tags.server"
 
 const { mockDb, mockEndpointAuth, mockGetTagUsageCount } = vi.hoisted(() => ({
   mockDb: {
     tag: {
+      findMany: vi.fn(),
       findFirst: vi.fn(),
       findFirstOrThrow: vi.fn(),
       create: vi.fn(),
@@ -223,5 +231,26 @@ describe("deleteTag", () => {
     mockGetTagUsageCount.mockResolvedValue(0)
     await deleteTag(headers, { projectSlug: "lb", id: 3 })
     expect(mockDb.tag.delete).toHaveBeenCalledWith({ where: { id: 3 } })
+  })
+})
+
+describe("tag lists", () => {
+  test("are sorted alphabetically in German order, ignoring case and umlauts", async () => {
+    vi.clearAllMocks()
+    mockEndpointAuth.projectRole.mockResolvedValue({ projectId: 1, session: { role: "USER" } })
+    mockGetTagUsageCount.mockResolvedValue(0)
+    mockDb.tag.findMany.mockImplementation(async () =>
+      ["Vergabe", "djsk", "Änderung", "Antrag", "9032748-2", "Bewilligung"].map((title, id) => ({
+        id,
+        title,
+      })),
+    )
+    const expected = ["9032748-2", "Änderung", "Antrag", "Bewilligung", "djsk", "Vergabe"]
+
+    const { tags } = await getTagsByProject(headers, { projectSlug: "lb" })
+    expect(tags.map((tag) => tag.title)).toEqual(expected)
+
+    const withUsage = await getTagsWithUsageCount(headers, { projectSlug: "lb" })
+    expect(withUsage.tags.map((tag) => tag.title)).toEqual(expected)
   })
 })

@@ -25,6 +25,8 @@ function adminTagData(
   }
 }
 
+const byTitle = (a: { title: string }, b: { title: string }) => a.title.localeCompare(b.title, "de")
+
 function tagInProjectWhere(projectSlug: string, id?: number) {
   return {
     ...(id !== undefined ? { id } : {}),
@@ -40,10 +42,9 @@ export async function getTagsByProject(headers: Headers, input: z.infer<typeof G
       project: { slug: input.projectSlug },
       ...(input.includeArchived ? {} : { archivedAt: null }),
     },
-    orderBy: { title: "asc" },
   })
 
-  return { tags }
+  return { tags: tags.sort(byTitle) }
 }
 
 export async function getTagsWithUsageCount(
@@ -54,7 +55,6 @@ export async function getTagsWithUsageCount(
 
   const tags = await db.tag.findMany({
     where: tagInProjectWhere(input.projectSlug),
-    orderBy: { title: "asc" },
   })
 
   const tagsWithUsageCount = await Promise.all(
@@ -64,7 +64,7 @@ export async function getTagsWithUsageCount(
     })),
   )
 
-  return { tags: tagsWithUsageCount }
+  return { tags: tagsWithUsageCount.sort(byTitle) }
 }
 
 export async function createTag(headers: Headers, input: z.infer<typeof CreateTagSchema>) {
