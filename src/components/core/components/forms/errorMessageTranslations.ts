@@ -68,6 +68,9 @@ export function translateUniqueConstraintError(info: UniqueConstraintErrorInfo) 
 }
 
 const errorMessageTranslations: TranslatedMessages = {
+  // TAGS (key matches TAG_TITLE_TAKEN in server/tags/tags.server.ts)
+  "Tag title already exists":
+    "Ein Tag mit diesem Namen existiert bereits (Groß-/Kleinschreibung wird nicht unterschieden).",
   // NETWORK / SERVER ERRORS (e.g. 502 Bad Gateway from staging)
   Error: "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
   "Bad Gateway":

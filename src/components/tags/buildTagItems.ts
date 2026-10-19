@@ -4,7 +4,7 @@ type TagLike = {
   archivedAt?: Date | string | null
 }
 
-export function buildTagCheckboxItems(tags: TagLike[], assignedIds: string[]) {
+export function buildTagItems(tags: TagLike[], assignedIds: string[]) {
   const assignedIdSet = new Set(assignedIds.map(String))
 
   return tags
@@ -12,5 +12,6 @@ export function buildTagCheckboxItems(tags: TagLike[], assignedIds: string[]) {
     .map((tag) => ({
       value: String(tag.id),
       label: tag.archivedAt ? `${tag.title} (archiviert)` : tag.title,
+      searchText: tag.title,
     }))
 }

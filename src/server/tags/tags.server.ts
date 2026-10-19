@@ -1,9 +1,16 @@
 import type { z } from "zod"
+import { Prisma } from "@/src/prisma/generated/client"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
 import { CreateTagSchema, GetTagsSchema, TagIdSchema, UpdateTagSchema } from "./tags.inputSchemas"
 import { getTagUsageCount } from "./tagUsageCount"
+
+export const TAG_TITLE_TAKEN = "Tag title already exists"
+
+function sameTitleWhere(projectId: number, title: string) {
+  return { projectId, title: { equals: title, mode: "insensitive" as const } }
+}
 
 function tagInProjectWhere(projectSlug: string, id?: number) {
   return {
@@ -49,21 +56,21 @@ export async function getTagsWithUsageCount(
 
 export async function createTag(headers: Headers, input: z.infer<typeof CreateTagSchema>) {
   const { projectId } = await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
-  const { projectSlug: _projectSlug, title } = input
+  const { title } = input
 
-  return db.tag.upsert({
-    where: {
-      title_projectId: {
-        title,
-        projectId,
-      },
-    },
-    update: { archivedAt: null },
-    create: {
-      title,
-      projectId,
-    },
-  })
+  const existing = await db.tag.findFirst({ where: sameTitleWhere(projectId, title) })
+  if (existing) {
+    if (!existing.archivedAt) return existing
+    return db.tag.update({ where: { id: existing.id }, data: { archivedAt: null } })
+  }
+
+  try {
+    return await db.tag.create({ data: { title, projectId } })
+  } catch (error) {
+    if (!(error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002"))
+      throw error
+    return db.tag.findFirstOrThrow({ where: sameTitleWhere(projectId, title) })
+  }
 }
 
 export async function updateTag(headers: Headers, input: z.infer<typeof UpdateTagSchema>) {
@@ -73,6 +80,11 @@ export async function updateTag(headers: Headers, input: z.infer<typeof UpdateTa
   const tag = await db.tag.findFirstOrThrow({
     where: tagInProjectWhere(projectSlug, id),
   })
+  const duplicate = await db.tag.findFirst({
+    where: { ...sameTitleWhere(tag.projectId, title), id: { not: tag.id } },
+    select: { id: true },
+  })
+  if (duplicate) throw new Error(TAG_TITLE_TAKEN)
 
   return db.tag.update({
     where: { id: tag.id },
