@@ -1,7 +1,7 @@
 import { twJoin } from "tailwind-merge"
 import { linkStyles } from "@/src/components/core/components/links/styles"
 
-const tagPillClassName = "inline-block rounded-sm bg-gray-100 px-2 py-1 text-xs"
+const tagPillClassName = "inline-block rounded-sm bg-gray-100 px-2 py-1 text-left text-xs"
 
 export const ProjectRecordTagsList = ({
   tags,
