@@ -6,14 +6,12 @@ import { useFormValue } from "@/src/components/core/components/forms/hooks/useFo
 import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { createTagFn } from "@/src/server/tags/tags.functions"
 import { tagsQueryOptions } from "@/src/server/tags/tagsQueryOptions"
-import { buildTagCheckboxItems } from "./buildTagCheckboxItems"
-import { NewTagInline } from "./NewTagInline"
+import { buildTagItems } from "./buildTagItems"
 
 type Props = {
   projectSlug: string
   fieldName?: string
   label?: string
-  classNameItemWrapper?: string
   showManageLink?: boolean
 }
 
@@ -21,7 +19,6 @@ export function TagsFormSection({
   projectSlug,
   fieldName = "tags",
   label = "Tags",
-  classNameItemWrapper = "grid grid-cols-4 gap-1.5 w-full",
   showManageLink = false,
 }: Props) {
   const form = useCoreAppFormContext()
@@ -35,7 +32,7 @@ export function TagsFormSection({
   })
   const createTagMutation = useMutation({ mutationFn: createTagFn })
 
-  const tagItems = buildTagCheckboxItems(tagsResult?.tags ?? [], assignedIds)
+  const tagItems = buildTagItems(tagsResult?.tags ?? [], assignedIds)
 
   const handleCreateTag = async (title: string) => {
     const createdTag = await createTagMutation.mutateAsync({
@@ -55,21 +52,20 @@ export function TagsFormSection({
   return (
     <form.AppField name={fieldName}>
       {(field) => (
-        <field.CheckboxGroup
-          classNameItemWrapper={classNameItemWrapper}
-          items={tagItems}
+        <field.Combobox
           label={label}
+          items={tagItems}
+          chips
+          placeholder={canCreateTag ? "Tag suchen oder neu anlegen" : "Tag suchen"}
+          onCreate={canCreateTag ? handleCreateTag : undefined}
           trailingControl={
-            <>
-              {showManageLink ? (
-                <SuperAdminBox>
-                  <LinkWithFormDirtyConfirm to={`/${projectSlug}/tags`} blank>
-                    Tags verwalten…
-                  </LinkWithFormDirtyConfirm>
-                </SuperAdminBox>
-              ) : null}
-              {canCreateTag ? <NewTagInline onCreate={handleCreateTag} /> : null}
-            </>
+            showManageLink ? (
+              <SuperAdminBox>
+                <LinkWithFormDirtyConfirm to={`/${projectSlug}/tags`} blank>
+                  Tags verwalten…
+                </LinkWithFormDirtyConfirm>
+              </SuperAdminBox>
+            ) : undefined
           }
         />
       )}

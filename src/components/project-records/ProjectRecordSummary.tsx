@@ -3,7 +3,6 @@ import { format } from "date-fns"
 import { de } from "date-fns/locale"
 import type { ReactNode } from "react"
 import { twJoin } from "tailwind-merge"
-import { Link } from "@/src/components/core/components/links/Link"
 import { Markdown } from "@/src/components/core/components/Markdown/Markdown"
 import { ProjectRecordAssignmentForm } from "@/src/components/project-records/ProjectRecordAssignmentForm"
 import {
@@ -11,6 +10,7 @@ import {
   type ProjectRecordEmailSourceValue,
 } from "@/src/components/project-records/ProjectRecordEmailSource"
 import { ProjectRecordFormTemplatesSection } from "@/src/components/project-records/ProjectRecordFormTemplatesSection"
+import { ProjectRecordTagsList } from "@/src/components/project-records/ProjectRecordTagsList"
 import {
   ProjectRecordTemplateUploadsList,
   useProjectRecordTemplateUploads,
@@ -78,7 +78,7 @@ export const ProjectRecordSummary = ({ projectRecord, uploadsSection }: Props) =
       <div className={projectRecordSectionClassName}>
         <p className={projectRecordSectionLabelClassName}>Am/bis:</p>
         <p className={projectRecordSectionValueClassName}>
-          {format(new Date(projectRecord.date!), "P", { locale: de })}
+          {projectRecord.date ? format(new Date(projectRecord.date), "P", { locale: de }) : "—"}
         </p>
       </div>
 
@@ -139,18 +139,11 @@ export const ProjectRecordSummary = ({ projectRecord, uploadsSection }: Props) =
       <div className={projectRecordSectionClassName}>
         <p className={projectRecordSectionLabelClassName}>Tags:</p>
         {projectRecord.tags.length ? (
-          <div className={`flex flex-wrap gap-x-3 gap-y-1 ${projectRecordSectionValueClassName}`}>
-            {projectRecord.tags.map((tag) => (
-              <span className="whitespace-nowrap" key={tag.id}>
-                <Link
-                  to={createProjectRecordFilterUrl(projectSlug, {
-                    searchterm: tag.title,
-                  })}
-                >
-                  #{tag.title}
-                </Link>
-              </span>
-            ))}
+          <div className={projectRecordSectionValueClassName}>
+            <ProjectRecordTagsList
+              tags={projectRecord.tags}
+              getTagHref={(tag) => createProjectRecordFilterUrl(projectSlug, { tag })}
+            />
           </div>
         ) : (
           <span className="text-sm text-gray-500">Keine Tags zugeordnet</span>

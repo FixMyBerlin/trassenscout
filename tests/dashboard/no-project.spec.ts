@@ -14,7 +14,7 @@ test.describe("Dashboard no-project variant", () => {
 
     await expect(page).toHaveURL(dashboardUrl)
     await expect(
-      page.getByRole("heading", { name: "Noch keiner Trasse zugeordnet", exact: true }),
+      page.getByRole("heading", { name: "Noch Keinem Projekt zugeordnet", exact: true }),
     ).toBeVisible({
       timeout: 30_000,
     })

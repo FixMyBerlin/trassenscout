@@ -48,6 +48,7 @@ export const TagsTable = ({ tags }: Props) => {
       editLink={editLink}
       onArchive={handleArchive}
       onDelete={handleDelete}
+      showDescription
     />
   )
 }

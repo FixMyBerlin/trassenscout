@@ -18,7 +18,6 @@ import { ProjectRecordAssignedToPill } from "@/src/components/project-records/Pr
 import { ProjectRecordEditingStateIndicator } from "@/src/components/project-records/ProjectRecordEditingStateIndicator"
 import { useProjectRecordModal } from "@/src/components/project-records/ProjectRecordModalHost"
 import { ProjectRecordTagsList } from "@/src/components/project-records/ProjectRecordTagsList"
-import { createProjectRecordFilterUrl } from "@/src/components/project-records/utils/filter/createFilterUrl"
 import { ProjectRecordEditingState } from "@/src/prisma/generated/browser"
 import type { MyAssignedRecord } from "@/src/server/projectRecords/types"
 
@@ -26,6 +25,7 @@ type Props = {
   records: MyAssignedRecord[]
   /** Dashboard lists span projects. A project page already names the project. */
   showProject?: boolean
+  onTagClick?: (tag: string) => void
 }
 
 /** Column widths for `table-fixed`; the title column takes what is left. */
@@ -47,7 +47,7 @@ const assignmentNote = (record: MyAssignedRecord) => {
 const dateOrDash = (value: Date | null) =>
   value ? format(value, "P", { locale: de }) : <span className="text-gray-400">–</span>
 
-export const AssignedRecordsTable = ({ records, showProject = true }: Props) => {
+export const AssignedRecordsTable = ({ records, showProject = true, onTagClick }: Props) => {
   const { getProjectRecordDetailHref } = useProjectRecordModal()
 
   if (!records.length) {
@@ -140,9 +140,8 @@ export const AssignedRecordsTable = ({ records, showProject = true }: Props) => 
                 <td className={twJoin(tableCellClassName, "hidden align-top @xl:table-cell")}>
                   <ProjectRecordTagsList
                     tags={record.tags}
-                    getTagHref={(tag) =>
-                      createProjectRecordFilterUrl(record.project.slug, { searchterm: tag })
-                    }
+                    isInteractive={Boolean(onTagClick)}
+                    onTagClick={onTagClick}
                   />
                 </td>
                 <td

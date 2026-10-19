@@ -203,6 +203,7 @@ model Project {
   //
   slug                               String                            @unique // shortTitle and URL Slug
   subTitle                           String?
+  partOf                             String? // "Teilprojekt von", e.g. "FRM9"; label next to the line on the dashboard map
   description                        String?
   logoSrc                            String? // - UNUSED
   partnerLogoSrcs                    String[] // - UNUSED
@@ -452,9 +453,9 @@ model Subsubsection {
   //
   slug            String // shortTitle and URL Slug
   subTitle        String?
-  type            GeometryTypeEnum  @default(LINE) // Maßnahmen Geometrietyp - fka Führungsform - UNUSED
+  type            GeometryTypeEnum? @default(LINE) // Geometrietyp; null together with geometry = Maßnahme ohne Geometrie
   location        LocationEnum? // Lage: innerorts/außerorts
-  geometry        Json
+  geometry        Json?
   labelPos        LabelPositionEnum @default(top)
   lengthM         Float? // Meter
   width           Float? // Meter
@@ -1065,11 +1066,26 @@ enum ProjectRecordReviewState {
   APPROVED // User-created project records that are automatically approved (no review needed)
 }
 
+enum TagColorEnum {
+  LIGHT_BLUE
+  BLUE
+  VIOLET
+  PINK
+  RED
+  ORANGE
+  YELLOW
+  LIME
+  MINT
+  CYAN
+}
+
 model Tag {
   id                     Int                     @id @default(autoincrement())
   createdAt              DateTime                @default(now())
   updatedAt              DateTime                @updatedAt
   title                  String
+  description            String? // Beschreibung, set by admins
+  color                  TagColorEnum            @default(LIGHT_BLUE) // set by admins
   archivedAt             DateTime?
   //
   project                Project                 @relation(fields: [projectId], references: [id], onDelete: Cascade)

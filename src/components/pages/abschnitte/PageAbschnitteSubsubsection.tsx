@@ -13,6 +13,7 @@ import { subsectionsQueryOptions } from "@/src/server/subsections/subsectionsQue
 import { subsubsectionBySlugQueryOptions } from "@/src/server/subsubsections/subsubsectionQueryOptions"
 import { subsubsectionsQueryOptions } from "@/src/server/subsubsections/subsubsectionsQueryOptions"
 import { brokenGeometryItems } from "@/src/shared/geometry/brokenGeometryItems"
+import { hasGeometry } from "@/src/shared/geometry/hasGeometry"
 import { MapPageSuspense } from "./_components/MapPageSuspense"
 
 const layoutRouteApi = getRouteApi(
@@ -56,7 +57,7 @@ export function PageAbschnitteSubsubsection() {
             subsectionSlug={subsectionSlug}
             subsections={subsections}
             selectedSubsection={subsection}
-            subsubsections={subsubsections}
+            subsubsections={subsubsections.filter(hasGeometry)}
             selectedSubsubsectionSlug={subsubsectionSlug}
             classHeight={MAP_FULLSCREEN_HEIGHT_CLASS}
           />

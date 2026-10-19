@@ -31,6 +31,7 @@ export async function listSubsubsectionsForMcp({
     select: {
       slug: true,
       description: true,
+      type: true,
       subsection: { select: { slug: true } },
     },
   })
@@ -47,6 +48,7 @@ export async function listSubsubsectionsForMcp({
       subsectionSlug: subsubsection.subsection.slug,
       slug: subsubsection.slug,
       description: subsubsection.description,
+      hasGeometry: subsubsection.type !== null,
       url: buildSubsubsectionUrl(
         origin,
         project.slug,

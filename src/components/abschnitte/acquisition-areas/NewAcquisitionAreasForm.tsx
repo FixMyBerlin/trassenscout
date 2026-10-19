@@ -8,7 +8,7 @@ import { MAP_FULLSCREEN_HEIGHT_CLASS } from "@/src/components/core/components/Pa
 import { acquisitionAreasBySubsubsectionQueryOptions } from "@/src/server/acquisitionAreas/acquisitionAreasAbschnitteQueryOptions"
 import { getAlkisWfsParcelsFn } from "@/src/server/alkis/alkis.functions"
 import type { AlkisWfsParcelFeatureCollection } from "@/src/server/alkis/alkisWfsParcelGeoJsonTypes"
-import type { SubsubsectionWithPosition } from "@/src/server/subsubsections/types"
+import type { SubsubsectionWithGeometry } from "@/src/server/subsubsections/types"
 import { AcquisitionAreasWorkspace } from "./AcquisitionAreasWorkspace"
 import { computePotentialAcquisitionAreas } from "./computePotentialAcquisitionAreas"
 
@@ -17,7 +17,7 @@ const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
 const EMPTY_PARCELS: AlkisWfsParcelFeatureCollection = featureCollection([])
 
 type Props = {
-  initialSubsubsection: SubsubsectionWithPosition
+  initialSubsubsection: SubsubsectionWithGeometry
 }
 
 export function NewAcquisitionAreasForm({ initialSubsubsection }: Props) {

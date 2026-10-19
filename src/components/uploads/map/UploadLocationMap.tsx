@@ -14,6 +14,7 @@ import { getStaticOverlayForProject } from "@/src/components/core/components/Map
 import { geometriesBbox } from "@/src/components/core/components/Map/utils/bboxHelpers"
 import { subsectionsQueryOptions } from "@/src/server/subsections/subsectionsQueryOptions"
 import { subsubsectionsQueryOptions } from "@/src/server/subsubsections/subsubsectionsQueryOptions"
+import { hasGeometry } from "@/src/shared/geometry/hasGeometry"
 import { UploadPin } from "./UploadPin"
 
 const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
@@ -101,7 +102,7 @@ export const UploadLocationMap = ({ excludeUploadId }: { excludeUploadId?: numbe
               >[0]["subsections"]
             }
             subsubsections={
-              filteredSubsubsections as unknown as Parameters<
+              filteredSubsubsections.filter(hasGeometry) as unknown as Parameters<
                 typeof BackgroundGeometryLayers
               >[0]["subsubsections"]
             }

@@ -1,9 +1,31 @@
 import type { z } from "zod"
+import { Prisma, type TagColorEnum, UserRoleEnum } from "@/src/prisma/generated/client"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
+import { AuthorizationError, authMessages } from "@/src/shared/auth/errors"
 import { CreateTagSchema, GetTagsSchema, TagIdSchema, UpdateTagSchema } from "./tags.inputSchemas"
 import { getTagUsageCount } from "./tagUsageCount"
+
+export const TAG_TITLE_TAKEN = "Tag title already exists"
+
+function sameTitleWhere(projectId: number, title: string) {
+  return { projectId, title: { equals: title, mode: "insensitive" as const } }
+}
+
+function adminTagData(
+  role: string,
+  { description, color }: { description?: string | null; color?: TagColorEnum },
+) {
+  if (description === undefined && color === undefined) return null
+  if (role !== UserRoleEnum.ADMIN) throw new AuthorizationError(authMessages.adminAccessRequired)
+  return {
+    ...(description !== undefined ? { description: description || null } : {}),
+    ...(color !== undefined ? { color } : {}),
+  }
+}
+
+const byTitle = (a: { title: string }, b: { title: string }) => a.title.localeCompare(b.title, "de")
 
 function tagInProjectWhere(projectSlug: string, id?: number) {
   return {
@@ -20,10 +42,9 @@ export async function getTagsByProject(headers: Headers, input: z.infer<typeof G
       project: { slug: input.projectSlug },
       ...(input.includeArchived ? {} : { archivedAt: null }),
     },
-    orderBy: { title: "asc" },
   })
 
-  return { tags }
+  return { tags: tags.sort(byTitle) }
 }
 
 export async function getTagsWithUsageCount(
@@ -34,7 +55,6 @@ export async function getTagsWithUsageCount(
 
   const tags = await db.tag.findMany({
     where: tagInProjectWhere(input.projectSlug),
-    orderBy: { title: "asc" },
   })
 
   const tagsWithUsageCount = await Promise.all(
@@ -44,39 +64,52 @@ export async function getTagsWithUsageCount(
     })),
   )
 
-  return { tags: tagsWithUsageCount }
+  return { tags: tagsWithUsageCount.sort(byTitle) }
 }
 
 export async function createTag(headers: Headers, input: z.infer<typeof CreateTagSchema>) {
-  const { projectId } = await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
-  const { projectSlug: _projectSlug, title } = input
+  const { projectId, session } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    editorRoles,
+  )
+  const { title } = input
+  const adminData = adminTagData(session.role, input)
 
-  return db.tag.upsert({
-    where: {
-      title_projectId: {
-        title,
-        projectId,
-      },
-    },
-    update: { archivedAt: null },
-    create: {
-      title,
-      projectId,
-    },
-  })
+  const existing = await db.tag.findFirst({ where: sameTitleWhere(projectId, title) })
+  if (existing) {
+    if (adminData) throw new Error(TAG_TITLE_TAKEN)
+    if (!existing.archivedAt) return existing
+    return db.tag.update({ where: { id: existing.id }, data: { archivedAt: null } })
+  }
+
+  try {
+    return await db.tag.create({ data: { title, projectId, ...adminData } })
+  } catch (error) {
+    if (!(error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002"))
+      throw error
+    if (adminData) throw new Error(TAG_TITLE_TAKEN)
+    return db.tag.findFirstOrThrow({ where: sameTitleWhere(projectId, title) })
+  }
 }
 
 export async function updateTag(headers: Headers, input: z.infer<typeof UpdateTagSchema>) {
-  await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
+  const { session } = await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
   const { id, projectSlug, title } = input
+  const adminData = adminTagData(session.role, input)
 
   const tag = await db.tag.findFirstOrThrow({
     where: tagInProjectWhere(projectSlug, id),
   })
+  const duplicate = await db.tag.findFirst({
+    where: { ...sameTitleWhere(tag.projectId, title), id: { not: tag.id } },
+    select: { id: true },
+  })
+  if (duplicate) throw new Error(TAG_TITLE_TAKEN)
 
   return db.tag.update({
     where: { id: tag.id },
-    data: { title },
+    data: { title, ...adminData },
   })
 }
 
@@ -112,9 +145,10 @@ export async function deleteTag(headers: Headers, input: z.infer<typeof TagIdSch
   await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
   const { id, projectSlug } = input
 
-  const tag = await db.tag.findFirstOrThrow({
+  const tag = await db.tag.findFirst({
     where: tagInProjectWhere(projectSlug, id),
   })
+  if (!tag) return null
 
   const usageCount = await getTagUsageCount(projectSlug, tag.id)
   if (usageCount > 0) {

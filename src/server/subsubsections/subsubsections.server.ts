@@ -1,7 +1,7 @@
 import { z } from "zod"
 import { frenchQuote } from "@/src/components/core/components/text/quote"
 import { shortTitle } from "@/src/components/core/components/text/titles"
-import type { Prisma } from "@/src/prisma/generated/browser"
+import { Prisma } from "@/src/prisma/generated/client"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
@@ -147,6 +147,13 @@ async function validateSubsubsectionRelations(projectSlug: string, input: Subsub
   ])
 }
 
+// No geometry is stored as SQL NULL; JSON null would fail the type/geometry check
+function geometryData({ type, geometry }: Pick<SubsubsectionInput, "type" | "geometry">) {
+  return geometry === null
+    ? { type: null, geometry: Prisma.DbNull }
+    : { type, geometry: geometry as Prisma.InputJsonValue }
+}
+
 function subsubsectionData(input: SubsubsectionInput, extraFields: Prisma.InputJsonValue) {
   const {
     specialFeatures,
@@ -157,7 +164,7 @@ function subsubsectionData(input: SubsubsectionInput, extraFields: Prisma.InputJ
 
   return {
     ...data,
-    geometry: data.geometry as Prisma.InputJsonValue,
+    ...geometryData(data),
     extraFields,
     specialFeatures: connectIds(idsFromFormValue(specialFeatures)),
     SubsubsectionInfrastructureTypes: connectIds(
@@ -176,7 +183,7 @@ function subsubsectionUpdateData(input: SubsubsectionInput, extraFields: Prisma.
 
   return {
     ...data,
-    geometry: data.geometry as Prisma.InputJsonValue,
+    ...geometryData(data),
     extraFields,
     specialFeatures: setIds(idsFromFormValue(specialFeatures)),
     SubsubsectionInfrastructureTypes: setIds(idsFromFormValue(subsubsectionInfrastructureTypeIds)),
@@ -382,6 +389,17 @@ export async function updateSubsubsection(
 
   if (data.subsectionId !== previous.subsectionId) {
     await endpointAuth.admin(headers)
+  }
+
+  if (data.geometry === null && previous.geometry !== null) {
+    const acquisitionAreaCount = await db.acquisitionArea.count({
+      where: { subsubsectionId: previous.id },
+    })
+    if (acquisitionAreaCount > 0) {
+      throw new Error(
+        "Die Geometrie kann nicht entfernt werden, solange die Maßnahme Verhandlungsflächen hat.",
+      )
+    }
   }
 
   const extraFields = await subsubsectionExtraFieldsData(projectSlug, data.extraFields)

@@ -67,7 +67,7 @@ Alle Städte, Gemeinden und Ämter des Landkreises Oberhavel sowie öffentlich o
 - 31.05. Versand des bestätigten Programms sowie der strukturellen Bedarfserfassung durch den Landkreis
 - 30.09. Ende Antragstellung für Vorhaben mit Umsetzung im folgenden Kalenderjahr
 
-Die Plattform ist für das Anmelde- und Antragsverfahren grundsätzlich immer geöffnet. Sie können daher jederzeit Vorhaben melden bzw. Anträge stellen und Unterlagen hochladen. Für die Erstellung des 5-Jahresprogramms sind jedoch die oben genannten Fristen zwingend zu beachten. Eintragungen, die nach den genannten Stichtagen getätigt werden, können für das jeweils nächste 5-Jahresprogramm nicht berücksichtigt werden.
+Die Plattform ist für das Anmelde- und Antragsverfahren grundsätzlich immer geöffnet. Sie können daher jederzeit Vorhaben melden und Unterlagen hochladen. Für die Erstellung des 5-Jahresprogramms sind jedoch die oben genannten Fristen zwingend zu beachten. Eintragungen, die nach den genannten Stichtagen getätigt werden, können für das jeweils nächste 5-Jahresprogramm nicht berücksichtigt werden.
 
 Nach dem Stichtag des Anmeldeverfahrens werden die eingegangenen Meldungen durch die OHBV gesichtet und in Rücksprache mit dem Landkreis geprüft. Die Entscheidungen über die Aufnahme in das 5-Jahresprogramm sowie eine etwaige Konsultation anderer Fachbereiche der Verwaltung liegen beim Landkreis.
 

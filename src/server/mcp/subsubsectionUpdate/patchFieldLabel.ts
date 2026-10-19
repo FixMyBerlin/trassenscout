@@ -5,6 +5,7 @@ import type {
 import { subsubsectionFieldTranslations } from "@/src/shared/subsubsections/subsubsectionFieldMappings"
 
 const SLUG_FIELD_LABELS: Record<string, string> = {
+  withoutGeometry: "Maßnahme ohne Geometrie",
   qualityLevelSlug: subsubsectionFieldTranslations.qualityLevelId,
   subsubsectionStatusSlug: subsubsectionFieldTranslations.subsubsectionStatusId,
   subsubsectionTaskSlug: subsubsectionFieldTranslations.subsubsectionTaskId,

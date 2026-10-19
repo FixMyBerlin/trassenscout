@@ -70,7 +70,7 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
       slug: "rsv-d",
       subTitle: "Radschnellverbindungen.info – Demo-Strecken",
       description:
-        "Seed project for the public radschnellverbindungen-info-feedback survey. Export enabled so /api/projects/rsv-d.json serves Planungsabschnitte.",
+        "Seed project for the public rsv-hinweis survey. Export enabled so /api/projects/rsv-d.json serves Planungsabschnitte.",
       logoSrc: null,
       partnerLogoSrcs: [],
       exportEnabled: true,

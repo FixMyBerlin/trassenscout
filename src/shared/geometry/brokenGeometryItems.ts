@@ -12,9 +12,12 @@ export const isRenderableEntry = (entry: { geometry: unknown; type?: unknown }) 
     ? isRenderableGeometry(entry.geometry)
     : GeometryWithTypeSchema.safeParse({ type: entry.type, geometry: entry.geometry }).success
 
+const isWithoutGeometry = (entry: { geometry: unknown; type?: unknown }) =>
+  entry.type === null && entry.geometry === null
+
 /** The entries a page must keep off its map — pass the result straight to the notice. */
 export const brokenGeometryItems = <
   T extends { id: number; slug: string; geometry: unknown; type?: unknown },
 >(
   items: T[],
-) => items.filter((item) => !isRenderableEntry(item))
+) => items.filter((item) => !isWithoutGeometry(item) && !isRenderableEntry(item))

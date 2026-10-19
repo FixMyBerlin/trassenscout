@@ -8,6 +8,7 @@ import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { typeSubsectionGeometry } from "@/src/server/subsections/utils/typeSubsectionGeometry"
 import { PointGeometrySchema } from "@/src/shared/geometry/geojsonSchemas"
 import { subsubsectionGeometryTypeValidationRefine } from "@/src/shared/geometry/geometryTypeValidation"
+import { mapGeoTypeToEnum } from "@/src/shared/geometry/mapGeoTypeToEnum"
 import { ImportSubsubsectionDataSchema } from "./importSchema"
 import { m2mFieldRelationNames, m2mFields, type M2MFieldsType } from "./m2mFields"
 import { resolveSubsubsectionRelationSlugs } from "./resolveSubsubsectionRelationSlugs.server"
@@ -128,6 +129,10 @@ export async function importSubsubsectionFromApi(request: Request) {
       data.geometry = calculateFallbackGeometry()
       data.description = ["‼️ Platzhalter-Geometrie", data.description].filter(Boolean).join("\n\n")
     }
+
+    // type and geometry are stored together: infer a missing type, drop a type without geometry
+    if (data.geometry && !data.type) data.type = mapGeoTypeToEnum(data.geometry.type)
+    if (data.type && !data.geometry && existing?.type === null) delete data.type
 
     const subsubsectionData: Record<string, unknown> = {
       ...data,

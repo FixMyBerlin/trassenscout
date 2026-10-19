@@ -16,6 +16,7 @@ import {
   formattedEuro,
   formattedLength,
 } from "@/src/components/core/components/text/formattedProperties"
+import { compareSlugs } from "@/src/components/core/components/text/titles"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { Tooltip } from "@/src/components/core/components/Tooltip/Tooltip"
 import { useTryRouteParam } from "@/src/components/core/routes/useTryRouteParam"
@@ -39,6 +40,7 @@ export const SubsubsectionTable = ({ subsubsections, compact, interactive = true
   const navigate = useNavigate()
   const { projectSlug, subsectionSlug } = subsectionRouteApi.useParams()
   const subsubsectionSlug = useTryRouteParam("subsubsectionSlug")
+  const sortedSubsubsections = [...subsubsections].sort((a, b) => compareSlugs(a.slug, b.slug))
 
   return (
     <section>
@@ -67,7 +69,7 @@ export const SubsubsectionTable = ({ subsubsections, compact, interactive = true
             </tr>
           </thead>
           <tbody className={tableBodyClassName}>
-            {subsubsections.map((subsubsection) => (
+            {sortedSubsubsections.map((subsubsection) => (
               <tr
                 key={subsubsection.id}
                 className={twJoin(
@@ -103,14 +105,20 @@ export const SubsubsectionTable = ({ subsubsections, compact, interactive = true
                 </td>
                 <td className="px-1.5 py-2 text-sm">
                   <div className="flex items-center justify-center">
-                    <Tooltip content={GEOMETRY_TYPE_TOOLTIPS[subsubsection.type]}>
-                      <LegendIcon
-                        iconId={getIconIdForSubsubsection(
-                          subsubsection.type,
-                          subsubsection.SubsubsectionStatus?.style,
-                        )}
-                      />
-                    </Tooltip>
+                    {subsubsection.type ? (
+                      <Tooltip content={GEOMETRY_TYPE_TOOLTIPS[subsubsection.type]}>
+                        <LegendIcon
+                          iconId={getIconIdForSubsubsection(
+                            subsubsection.type,
+                            subsubsection.SubsubsectionStatus?.style,
+                          )}
+                        />
+                      </Tooltip>
+                    ) : (
+                      <Tooltip content="Ohne Geometrie">
+                        <span className="text-gray-400">—</span>
+                      </Tooltip>
+                    )}
                   </div>
                 </td>
                 <td

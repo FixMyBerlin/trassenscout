@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "@tanstack/react-router"
 import type { z } from "zod"
 import { useTryRouteSearch } from "@/src/components/core/routes/useTryRouteSearch"
+import type { TagColorEnum } from "@/src/prisma/generated/browser"
 import {
   archiveTagFn,
   createTagFn,
@@ -12,6 +13,7 @@ import {
 import { tagsWithUsageCountQueryOptions } from "@/src/server/tags/tagsQueryOptions"
 import { fromBackLinkSearchSchema } from "@/src/shared/routing/fromBackLinkSearch"
 import { preserveFromSearch } from "@/src/shared/routing/preserveListSearch"
+import { removeTagFromCache, setTagArchivedInCache } from "./tagQueryCache"
 
 export type TagListSearch = z.infer<typeof fromBackLinkSearchSchema>
 
@@ -75,32 +77,43 @@ export function useTagMutations(projectSlug: string, search: TagListSearch = {})
   const unarchiveTagMutation = useMutation({ mutationFn: unarchiveTagFn })
   const deleteTagMutation = useMutation({ mutationFn: deleteTagFn })
 
-  const createTag = async (title: string) => {
-    await createTagMutation.mutateAsync({ data: { projectSlug, title } })
+  const createTag = async (values: {
+    title: string
+    description?: string | null
+    color?: TagColorEnum
+  }) => {
+    await createTagMutation.mutateAsync({ data: { projectSlug, ...values } })
     invalidateTags()
     void router.navigate(listNavigateOptions)
   }
 
-  const updateTag = async (id: number, title: string) => {
-    await updateTagMutation.mutateAsync({ data: { projectSlug, id, title } })
+  const updateTag = async (
+    id: number,
+    values: { title: string; description?: string | null; color?: TagColorEnum },
+  ) => {
+    await updateTagMutation.mutateAsync({ data: { projectSlug, id, ...values } })
     invalidateTags()
     void router.navigate(listNavigateOptions)
   }
 
   const archiveTag = async (id: number) => {
-    await archiveTagMutation.mutateAsync({ data: { projectSlug, id } })
+    const tag = await archiveTagMutation.mutateAsync({ data: { projectSlug, id } })
+    await setTagArchivedInCache(queryClient, id, tag.archivedAt)
     invalidateTags()
   }
 
   const unarchiveTag = async (id: number) => {
     await unarchiveTagMutation.mutateAsync({ data: { projectSlug, id } })
+    await setTagArchivedInCache(queryClient, id, null)
     invalidateTags()
   }
 
   const deleteTag = async (id: number) => {
     await deleteTagMutation.mutateAsync({ data: { projectSlug, id } })
+    // Leave the edit modal first; it throws once its tag is gone from the cached list.
+    await router.navigate(listNavigateOptions)
+    await removeTagFromCache(queryClient, id)
     invalidateTags()
-    void router.navigate(listNavigateOptions)
   }
 
   return {

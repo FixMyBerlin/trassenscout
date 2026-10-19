@@ -2,9 +2,11 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { AbschnitteBreadcrumb } from "@/src/components/abschnitte/AbschnitteBreadcrumb"
 import { NewAcquisitionAreasForm } from "@/src/components/abschnitte/acquisition-areas/NewAcquisitionAreasForm"
+import { Notice } from "@/src/components/core/components/Notice/Notice"
 import { MAP_VIEWPORT_SHELL_CLASS } from "@/src/components/core/components/PageHeader/MapListViewLayout"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { subsubsectionBySlugQueryOptions } from "@/src/server/subsubsections/subsubsectionQueryOptions"
+import { hasGeometry } from "@/src/shared/geometry/hasGeometry"
 import { MapPageSuspense } from "./_components/MapPageSuspense"
 
 const routeApi = getRouteApi(
@@ -16,6 +18,17 @@ export function PageAbschnitteAcquisitionAreaNew() {
   const { data: subsubsection } = useSuspenseQuery(
     subsubsectionBySlugQueryOptions({ projectSlug, subsectionSlug, subsubsectionSlug }),
   )
+  if (!hasGeometry(subsubsection)) {
+    return (
+      <div className="p-4">
+        <Notice type="info" title="Diese Maßnahme hat keine Geometrie.">
+          Für den Grunderwerb braucht die Maßnahme eine Geometrie. Zeichnen Sie sie unter
+          „bearbeiten“ ein.
+        </Notice>
+      </div>
+    )
+  }
+
   return (
     <div className={MAP_VIEWPORT_SHELL_CLASS}>
       <PageHeader

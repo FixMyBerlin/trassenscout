@@ -98,13 +98,7 @@ export function ContactForm<S extends z.ZodType>({
           </form.AppField>
         </div>
       </div>
-      <TagsFormSection
-        projectSlug={projectSlug}
-        showManageLink
-        classNameItemWrapper={
-          isDrawerLayout ? "grid w-full gap-x-8 gap-y-3 sm:grid-cols-2 lg:grid-cols-3" : undefined
-        }
-      />
+      <TagsFormSection projectSlug={projectSlug} showManageLink />
     </FormShell>
   )
 }

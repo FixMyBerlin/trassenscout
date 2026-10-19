@@ -1,5 +1,6 @@
 import { beforeAll, beforeEach, describe, expect, test, vi } from "vitest"
 import { GeometryTypeEnum } from "@/src/prisma/generated/browser"
+import { Prisma } from "@/src/prisma/generated/client"
 
 const mockDb = {
   project: { findUnique: vi.fn() },
@@ -165,6 +166,44 @@ describe("Subsubsection MCP create", () => {
     expect(result.items[0]?.slugConflict).toEqual(expect.objectContaining({ kind: "createDraft" }))
     expect(result.items[0]?.warnings[0]).toContain("überschrieben")
     expect(mockDb.mcpDraft.upsert).toHaveBeenCalled()
+  })
+
+  test("withoutGeometry drafts a Maßnahme ohne Geometrie and writes NULL type and geometry", async () => {
+    const result = await createSubsubsectionForMcp({
+      origin: "http://127.0.0.1:4000",
+      createdById: 42,
+      items: [item({ withoutGeometry: true, description: "Kommunale Maßnahme" })],
+    })
+
+    expect(result.items[0]?.drafted).toBe(true)
+    expect(result.items[0]?.missingRequired).toEqual([])
+    expect(result.items[0]?.changes).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ field: "withoutGeometry", proposed: true }),
+      ]),
+    )
+
+    const { resolveSubsubsectionCreate } =
+      await import("@/src/server/mcp/subsubsectionUpdate/resolveSubsubsectionCreate.server")
+    const resolved = await resolveSubsubsectionCreate({
+      ...identity,
+      patch: { withoutGeometry: true },
+      origin: "http://127.0.0.1:4000",
+    })
+    expect(resolved.prismaData.type).toBeNull()
+    expect(resolved.prismaData.geometry).toBe(Prisma.DbNull)
+  })
+
+  test("withoutGeometry together with type or geometry is an error", async () => {
+    const result = await createSubsubsectionForMcp({
+      origin: "http://127.0.0.1:4000",
+      createdById: 42,
+      items: [item({ withoutGeometry: true, type: GeometryTypeEnum.LINE, geometry: lineGeometry })],
+    })
+
+    expect(result.items[0]?.drafted).toBe(false)
+    expect(result.items[0]?.errors[0]).toContain("withoutGeometry")
+    expect(mockDb.mcpDraft.upsert).not.toHaveBeenCalled()
   })
 
   test("geometry over 5000 vertices is rejected", async () => {

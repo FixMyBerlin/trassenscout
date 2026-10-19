@@ -13,7 +13,7 @@ import { MapAsideSplitLayout } from "@/src/components/core/components/PageHeader
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { createAcquisitionAreasFromSelectionFn } from "@/src/server/acquisitionAreas/acquisitionAreas.functions"
 import type { AlkisWfsParcelFeatureCollection } from "@/src/server/alkis/alkisWfsParcelGeoJsonTypes"
-import type { SubsubsectionWithPosition } from "@/src/server/subsubsections/types"
+import type { SubsubsectionWithGeometry } from "@/src/server/subsubsections/types"
 import { AcquisitionAreaMap } from "./AcquisitionAreaMap"
 import { AcquisitionAreasList } from "./AcquisitionAreasList"
 import type { PotentialAcquisitionArea } from "./potentialAcquisitionAreaTypes"
@@ -68,7 +68,7 @@ function BufferRadiusControls({ onApplyRadius }: { onApplyRadius: (radius: numbe
 }
 
 type Props = {
-  initialSubsubsection: SubsubsectionWithPosition
+  initialSubsubsection: SubsubsectionWithGeometry
   projectSlug: string
   bufferRadius: number
   onApplyRadius: (radius: number) => void

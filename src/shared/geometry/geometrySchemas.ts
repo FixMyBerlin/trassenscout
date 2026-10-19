@@ -58,6 +58,12 @@ export const GeometryWithTypeSchema = z.discriminatedUnion("type", [
   }),
 ])
 
+/** Maßnahmen may also have no geometry: type and geometry are then both null. */
+export const SubsubsectionGeometryWithTypeSchema = z.discriminatedUnion("type", [
+  ...GeometryWithTypeSchema.options,
+  z.object({ type: z.null(), geometry: z.null() }),
+])
+
 /**
  * Subsection geometry: LINE and POLYGON enum types only (no POINT).
  */
@@ -72,8 +78,4 @@ export const SubsectionGeometryWithTypeSchema = z.discriminatedUnion("type", [
   }),
 ])
 
-/**
- * Discriminated union type helper: creates a union of { type, geometry } pairs
- * where type matches the corresponding geometry type from GeometryByGeometryType
- */
-export type GeometryWithTypeDiscriminated = z.infer<typeof GeometryWithTypeSchema>
+export type SubsubsectionGeometryWithType = z.infer<typeof SubsubsectionGeometryWithTypeSchema>

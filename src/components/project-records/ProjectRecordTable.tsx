@@ -26,6 +26,7 @@ import { ProjectRecordEditingStateIndicator } from "./ProjectRecordEditingStateI
 import { useProjectRecordModal } from "./ProjectRecordModalHost"
 import { ProjectRecordTagsList } from "./ProjectRecordTagsList"
 import { ProjectRecordVerknuepfungen } from "./ProjectRecordVerknuepfungen"
+import { createProjectRecordFilterUrl } from "./utils/filter/createFilterUrl"
 
 const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
 
@@ -243,6 +244,7 @@ export const ProjectRecordsTable = ({
                           tags={projectRecordTags}
                           isInteractive={isTopicFilter}
                           onTagClick={onTopicClick}
+                          getTagHref={(tag) => createProjectRecordFilterUrl(projectSlug, { tag })}
                         />
                       </div>
                     </td>

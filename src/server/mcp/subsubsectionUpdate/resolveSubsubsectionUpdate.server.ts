@@ -24,6 +24,7 @@ import {
   subsubsectionLogSnapshotSelect,
 } from "@/src/server/subsubsections/subsubsectionLogSnapshot"
 import { GeometryWithTypeSchema } from "@/src/shared/geometry/geometrySchemas"
+import { mapGeoTypeToEnum } from "@/src/shared/geometry/mapGeoTypeToEnum"
 import { setIds } from "@/src/shared/prisma/connectIds"
 import {
   parseDefinitions,
@@ -148,10 +149,9 @@ export async function resolveSubsubsectionUpdate({
   const geometryWarnings: string[] = []
 
   if (patch.geometry !== undefined) {
-    const matched = GeometryWithTypeSchema.safeParse({
-      type: subsubsection.type,
-      geometry: patch.geometry,
-    })
+    // A Maßnahme ohne Geometrie takes its type from the first geometry it gets
+    const type = subsubsection.type ?? mapGeoTypeToEnum(patch.geometry.type)
+    const matched = GeometryWithTypeSchema.safeParse({ type, geometry: patch.geometry })
     if (!matched.success) {
       errors.push(
         "geometry passt nicht zum gespeicherten Typ (POINT/LINE/POLYGON müssen zum GeoJSON-Typ passen).",
@@ -164,6 +164,10 @@ export async function resolveSubsubsectionUpdate({
         if (vertexIssue.warning) geometryWarnings.push(vertexIssue.warning)
         pushChange(changes, "geometry", subsubsection.geometry, geometryPreview(patch.geometry))
         prismaData.geometry = patch.geometry as Prisma.InputJsonValue
+        if (subsubsection.type === null) {
+          pushChange(changes, "type", null, type)
+          prismaData.type = type
+        }
       }
     }
   }

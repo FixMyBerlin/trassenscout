@@ -1,21 +1,43 @@
-import { ArrowPathIcon, DocumentDuplicateIcon, EyeIcon } from "@heroicons/react/20/solid"
+import { Menu, MenuButton, MenuItem, MenuItems, Transition } from "@headlessui/react"
+import {
+  ArrowPathIcon,
+  CheckIcon,
+  DocumentDuplicateIcon,
+  EnvelopeIcon,
+  EyeIcon,
+  ShareIcon,
+} from "@heroicons/react/20/solid"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { useState } from "react"
+import { Fragment, useState } from "react"
 import { twJoin } from "tailwind-merge"
 import { AdminBadge } from "@/src/components/admin/AdminBadge"
+import { primaryButtonSmClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { linkStyles } from "@/src/components/core/components/links/styles"
+import { shortTitle } from "@/src/components/core/components/text/titles"
+import { getFullname } from "@/src/components/core/users/getFullname"
+import {
+  navigationMenuItemLinkStyles,
+  navigationMenuTransitionProps,
+} from "@/src/components/shared/app/layouts/navigation/navigationMenuItemStyles"
 import { isAdmin } from "@/src/components/shared/app/users/utils/isAdmin"
 import { rotateExternalShareTokenFn } from "@/src/server/externalShare/externalShare.functions"
 import { externalShareQueryOptions } from "@/src/server/externalShare/externalShareQueryOptions"
 import { currentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
+import { externalShareMailtoHref } from "@/src/shared/externalShare/externalShareMail"
 import { externalSharePagePath } from "@/src/shared/externalShare/externalShareUrls"
 
 const actionClassName = twJoin(linkStyles, "inline-flex items-center gap-1 text-sm")
+
+const menuItemClassName = (focus: boolean) =>
+  twJoin(navigationMenuItemLinkStyles(focus), "flex w-full cursor-pointer items-center gap-2")
 
 type Props = {
   projectSlug: string
   token: string
 }
+
+const shareUrl = (token: string) =>
+  new URL(externalSharePagePath(token), window.location.origin).toString()
 
 export const ExternalShareLinkActions = ({ projectSlug, token }: Props) => {
   const queryClient = useQueryClient()
@@ -26,9 +48,7 @@ export const ExternalShareLinkActions = ({ projectSlug, token }: Props) => {
 
   const copyLink = async () => {
     try {
-      await navigator.clipboard.writeText(
-        new URL(externalSharePagePath(token), window.location.origin).toString(),
-      )
+      await navigator.clipboard.writeText(shareUrl(token))
       setCopyState("copied")
     } catch {
       setCopyState("failed")
@@ -81,14 +101,60 @@ export const ExternalShareLinkActions = ({ projectSlug, token }: Props) => {
         <EyeIcon className="size-4" aria-hidden />
         Vorschau
       </a>
-      <button type="button" onClick={() => void copyLink()} className={actionClassName}>
-        <DocumentDuplicateIcon className="size-4" aria-hidden />
-        {copyState === "copied"
-          ? "Kopiert"
-          : copyState === "failed"
-            ? "Kopieren nicht möglich"
-            : "Geheimlink kopieren"}
-      </button>
+      <Menu as="div">
+        {({ open }) => (
+          <>
+            <MenuButton className={primaryButtonSmClassName}>
+              {copyState === "copied" ? (
+                <CheckIcon className="size-4" aria-hidden />
+              ) : (
+                <ShareIcon className="size-4" aria-hidden />
+              )}
+              {copyState === "copied"
+                ? "Link kopiert"
+                : copyState === "failed"
+                  ? "Kopieren nicht möglich"
+                  : "Teilen"}
+            </MenuButton>
+            <Transition show={open} as={Fragment} {...navigationMenuTransitionProps}>
+              <MenuItems
+                static
+                modal={false}
+                anchor={{ to: "bottom end", gap: 8 }}
+                className="z-20 w-56 origin-top-right rounded-md bg-white p-1.5 shadow-lg ring-1 ring-gray-200 focus:outline-hidden"
+              >
+                <MenuItem>
+                  {({ focus }) => (
+                    <button
+                      type="button"
+                      onClick={() => void copyLink()}
+                      className={menuItemClassName(focus)}
+                    >
+                      <DocumentDuplicateIcon className="size-4 text-gray-400" aria-hidden />
+                      Link kopieren
+                    </button>
+                  )}
+                </MenuItem>
+                <MenuItem>
+                  {({ focus }) => (
+                    <a
+                      href={externalShareMailtoHref({
+                        shareUrl: shareUrl(token),
+                        projectName: shortTitle(projectSlug),
+                        senderName: getFullname(user),
+                      })}
+                      className={menuItemClassName(focus)}
+                    >
+                      <EnvelopeIcon className="size-4 text-gray-400" aria-hidden />
+                      In E-Mail teilen
+                    </a>
+                  )}
+                </MenuItem>
+              </MenuItems>
+            </Transition>
+          </>
+        )}
+      </Menu>
     </div>
   )
 }

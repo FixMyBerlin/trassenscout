@@ -42,6 +42,35 @@ describe("overlaySubsubsectionMcpDraft", () => {
     })
   })
 
+  test("a withoutGeometry create draft ticks the checkbox and clears type and geometry", async () => {
+    const { overlaySubsubsectionMcpDraft } =
+      await import("@/src/server/mcp/subsubsectionUpdate/overlaySubsubsectionMcpDraft")
+
+    const overlay = await overlaySubsubsectionMcpDraft({
+      projectId: 1,
+      extraFieldDefinitions: [],
+      currentExtraFields: {},
+      patch: { withoutGeometry: true },
+    })
+
+    expect(overlay).toEqual({ withoutGeometry: true, type: null, geometry: null })
+  })
+
+  test("a geometry without type gets its type from the GeoJSON type", async () => {
+    const { overlaySubsubsectionMcpDraft } =
+      await import("@/src/server/mcp/subsubsectionUpdate/overlaySubsubsectionMcpDraft")
+    const geometry = { type: "Point" as const, coordinates: [9.19, 48.89] as [number, number] }
+
+    const overlay = await overlaySubsubsectionMcpDraft({
+      projectId: 1,
+      extraFieldDefinitions: [],
+      currentExtraFields: {},
+      patch: { geometry },
+    })
+
+    expect(overlay).toEqual({ geometry, type: "POINT" })
+  })
+
   test("throws when a relation slug does not resolve", async () => {
     const { overlaySubsubsectionMcpDraft } =
       await import("@/src/server/mcp/subsubsectionUpdate/overlaySubsubsectionMcpDraft")

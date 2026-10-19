@@ -1,8 +1,19 @@
 import { twJoin } from "tailwind-merge"
 import { Link } from "@/src/components/core/components/links/Link"
 import { linkStyles } from "@/src/components/core/components/links/styles"
+import { type TagColor, tagPillColorClassName } from "@/src/components/tags/tagColors"
 
-const tagPillClassName = "inline-block rounded-sm bg-gray-100 px-2 py-1 text-xs"
+type TagPill = { id: number; title: string; color?: TagColor | null; description?: string | null }
+
+const pillClassName = (tag: TagPill) =>
+  twJoin(
+    "inline-block rounded-sm border px-2 py-1 text-left text-xs",
+    tagPillColorClassName(tag.color),
+  )
+
+// Coloured tags darken their text on hover like links do; neutral ones stay link-blue.
+const clickablePillClassName = (tag: TagPill) =>
+  twJoin(pillClassName(tag), "cursor-pointer", tag.color ? "hover:text-gray-900" : linkStyles)
 
 export const ProjectRecordTagsList = ({
   tags,
@@ -10,10 +21,9 @@ export const ProjectRecordTagsList = ({
   onTagClick,
   getTagHref,
 }: {
-  tags: { id: number; title: string }[]
+  tags: TagPill[]
   isInteractive?: boolean
   onTagClick?: (tag: string) => void
-  /** Links each tag somewhere, for lists that cannot filter themselves — the dashboard's tasks. */
   getTagHref?: (tag: string) => string
 }) => {
   if (tags.length === 0) return
@@ -27,25 +37,27 @@ export const ProjectRecordTagsList = ({
   return (
     <div className="flex flex-wrap gap-1">
       {tags.map((tag) =>
-        getTagHref ? (
-          <Link
-            key={tag.id}
-            to={getTagHref(tag.title)}
-            className={twJoin(linkStyles, tagPillClassName)}
-          >
-            #{tag.title}
-          </Link>
-        ) : isInteractive ? (
+        isInteractive ? (
           <button
             key={tag.id}
-            className={twJoin(linkStyles, "cursor-pointer", tagPillClassName)}
+            className={clickablePillClassName(tag)}
+            title={tag.description ?? undefined}
             onClick={(e) => handleTagClick(e, tag.title)}
             type="button"
           >
             #{tag.title}
           </button>
+        ) : getTagHref ? (
+          <Link
+            key={tag.id}
+            to={getTagHref(tag.title)}
+            classNameOverwrites={clickablePillClassName(tag)}
+            title={tag.description ?? undefined}
+          >
+            #{tag.title}
+          </Link>
         ) : (
-          <span key={tag.id} className={tagPillClassName}>
+          <span key={tag.id} className={pillClassName(tag)} title={tag.description ?? undefined}>
             #{tag.title}
           </span>
         ),

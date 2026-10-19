@@ -6,6 +6,7 @@ import {
   type TextFieldProps,
 } from "@/src/components/core/components/forms/fields/TextField"
 import { useFieldContext } from "@/src/components/core/components/forms/hooks/formContext"
+import { useFormValue } from "@/src/components/core/components/forms/hooks/useFormValue"
 import { GeometryTypeEnum } from "@/src/prisma/generated/browser"
 import type { SupportedGeometry } from "@/src/shared/geometry/geometrySchemas"
 import { lineStringToGeoJSON } from "../../Map/utils/lineStringToGeoJSON"
@@ -15,8 +16,9 @@ export function TextFieldCalculateLength({
   ...rest
 }: Omit<TextFieldProps, "type" | "inlineLeadingAddon" | "step" | "trailingControl">) {
   const field = useFieldContext<string>()
-  const geometryType =
-    (field.form.getFieldValue("type") as GeometryTypeEnum | undefined) || GeometryTypeEnum.LINE
+  // undefined: nothing drawn yet (defaults to a line); null: Maßnahme ohne Geometrie
+  const storedType = useFormValue<GeometryTypeEnum | null | undefined>("type")
+  const geometryType = storedType === undefined ? GeometryTypeEnum.LINE : storedType
 
   const calculateLength = () => {
     const geo = field.form.getFieldValue("geometry") as SupportedGeometry | undefined

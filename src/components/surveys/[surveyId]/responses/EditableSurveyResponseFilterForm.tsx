@@ -98,6 +98,10 @@ export function EditableSurveyResponseFilterForm({
           value={effectiveFilter.searchterm}
           onChange={(searchterm) => void handleSearchtermChange(searchterm)}
           onReset={() => void handleStandardFilterReset()}
+          hasFilter={
+            Boolean(effectiveFilter.searchterm) ||
+            defaultFilters.status.some((status) => !effectiveFilter.status.includes(status))
+          }
           placeholder="Eingaben filtern"
         >
           <div className="w-[300px] max-w-full">

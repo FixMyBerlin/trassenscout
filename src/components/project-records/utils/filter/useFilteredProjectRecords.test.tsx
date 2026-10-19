@@ -31,7 +31,7 @@ const records = [
     userId: 3,
     assignedToId: 7,
     assignedById: 3,
-    tags: [],
+    tags: [{ id: 11, title: "Brücke" }],
     assignedTo: null,
   },
   {
@@ -42,7 +42,10 @@ const records = [
     userId: 4,
     assignedToId: 4,
     assignedById: 7,
-    tags: [],
+    tags: [
+      { id: 11, title: "Brücke" },
+      { id: 12, title: "Kreuzung" },
+    ],
     assignedTo: null,
   },
   {
@@ -97,6 +100,21 @@ describe("useFilteredProjectRecords", () => {
   test("finds records the current user wrote after they were assigned on", () => {
     filterState.filter = { searchterm: "", status: "all", direction: "createdByMe" }
     expect(filteredIds()).toEqual([3])
+  })
+
+  test("filters by tag title, ignoring case", () => {
+    filterState.filter = { searchterm: "", status: "all", direction: "all", tag: "brücke" }
+    expect(filteredIds()).toEqual([1, 2])
+  })
+
+  test("combines the tag with the other filters", () => {
+    filterState.filter = { searchterm: "", status: "COMPLETED", direction: "all", tag: "Brücke" }
+    expect(filteredIds()).toEqual([2])
+  })
+
+  test("does not match tag titles in the search", () => {
+    filterState.filter = { searchterm: "kreuzung", status: "all", direction: "all" }
+    expect(filteredIds()).toEqual([])
   })
 
   test("keeps the list while the current user is still loading", () => {

@@ -26,6 +26,15 @@ describe("projectRecordsSearchSchema filter", () => {
     ).toBeUndefined()
   })
 
+  test("keeps a tag and drops an invalid one", () => {
+    expect(projectRecordFilterSearchValue({ tag: "Brücke", status: "all" })).toEqual({
+      tag: "Brücke",
+    })
+    expect(projectRecordsSearchSchema.parse({ filter: { searchterm: "", tag: 4 } }).filter).toEqual(
+      { searchterm: "", status: "all", direction: "all", tag: undefined },
+    )
+  })
+
   test("falls back to all when status or direction is unknown", () => {
     expect(
       projectRecordsSearchSchema.parse({

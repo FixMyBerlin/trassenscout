@@ -3,7 +3,11 @@ import { getRouteApi } from "@tanstack/react-router"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeaderSearchFilter } from "@/src/components/core/components/PageHeader/PageHeaderSearchFilter"
+import { FilteredZeroCase } from "@/src/components/core/components/text/FilteredZeroCase"
+import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
+import { TagFilterCombobox } from "@/src/components/tags/TagFilterCombobox"
+import { useTagFilterOptions } from "@/src/components/tags/useTagFilterOptions"
 import { UploadsPageUploadSection } from "@/src/components/uploads/uploads-page/UploadsPageUploadSection"
 import { UploadTable } from "@/src/components/uploads/UploadTable"
 import { useFilteredUploads } from "@/src/components/uploads/useFilteredUploads"
@@ -29,9 +33,8 @@ export const UploadsPageContent = () => {
   const { filter, setFilter } = useUploadFilters()
   const visibleUploads = uploads.filter((upload) => !isSurveyOnlyUpload(upload))
   const filteredUploads = useFilteredUploads(visibleUploads)
-  const handleTagClick = (tag: string) => {
-    if (tag) void setFilter({ ...filter, searchterm: tag })
-  }
+  const tagOptions = useTagFilterOptions(visibleUploads, projectSlug)
+  const resetFilter = () => void setFilter(undefined)
 
   return (
     <>
@@ -43,20 +46,32 @@ export const UploadsPageContent = () => {
           <div className="mt-6">
             <PageHeaderSearchFilter
               value={filter?.searchterm ?? ""}
-              onChange={(searchterm) => setFilter({ searchterm })}
-              onReset={() => void setFilter({ searchterm: "" })}
-              placeholder="Tags, Dateinamen, Titel und Inhalte durchsuchen"
-            />
+              onChange={(searchterm) => void setFilter({ searchterm })}
+              onReset={resetFilter}
+              hasFilter={Boolean(filter?.searchterm || filter?.tag)}
+              placeholder="Dateinamen, Titel und Inhalte durchsuchen"
+            >
+              <TagFilterCombobox
+                tags={tagOptions}
+                value={filter?.tag}
+                onChange={(tag) => void setFilter({ tag })}
+              />
+            </PageHeaderSearchFilter>
           </div>
+          <ZeroCase visible={visibleUploads.length} name="Dokumente" verb="hochgeladen" />
         </div>
 
-        <UploadTable
-          projectSlug={projectSlug}
-          withAction
-          withRelations
-          uploads={filteredUploads}
-          onTagClick={handleTagClick}
-        />
+        {visibleUploads.length === 0 ? null : filteredUploads.length === 0 ? (
+          <FilteredZeroCase name="Dokumente" onReset={resetFilter} />
+        ) : (
+          <UploadTable
+            projectSlug={projectSlug}
+            withAction
+            withRelations
+            uploads={filteredUploads}
+            onTagClick={(tag) => void setFilter({ tag })}
+          />
+        )}
       </div>
 
       <SuperAdminBox>

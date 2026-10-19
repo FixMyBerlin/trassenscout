@@ -100,7 +100,12 @@ async function main() {
     await ensureTestDbRunning()
     return
   }
-  console.error("Usage: bun scripts/test/docker.ts <start|ensure>")
+  if (command === "reset") {
+    await ensureTestDbRunning()
+    await resetAndSeedTestDb()
+    return
+  }
+  console.error("Usage: bun scripts/test/docker.ts <start|ensure|reset>")
   process.exit(1)
 }
 

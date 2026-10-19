@@ -64,7 +64,7 @@ test.describe("Project records deep link", () => {
     })
 
     const filterInput = page.getByPlaceholder(
-      "Tags, Titel, Inhalte, Maßnahmen und Zugewiesene durchsuchen",
+      "Titel, Inhalte, Maßnahmen und Zugewiesene durchsuchen",
     )
     await expect(filterInput).toHaveValue(fixture.searchterm)
     await expect(page.getByRole("link", { name: fixture.title, exact: true })).toBeVisible({

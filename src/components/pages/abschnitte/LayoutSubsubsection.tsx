@@ -30,7 +30,8 @@ export function LayoutSubsubsection() {
         params: subsubsectionParams,
       }).href,
     },
-    ...(subsubsection.subsection.project.landAcquisitionModuleEnabled
+    // Grunderwerb works on the Maßnahme geometry
+    ...(subsubsection.subsection.project.landAcquisitionModuleEnabled && subsubsection.geometry
       ? [
           {
             name: "Grunderwerb",

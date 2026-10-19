@@ -3,7 +3,7 @@ import { useNavigate } from "@tanstack/react-router"
 import { featureCollection, point } from "@turf/helpers"
 import { bbox } from "@turf/turf"
 import type { FeatureCollection, LineString, Polygon } from "geojson"
-import { type RefObject, useEffect, useEffectEvent, useRef, useState } from "react"
+import { type RefObject, useEffect, useEffectEvent, useMemo, useRef, useState } from "react"
 import type { MapLayerMouseEvent, MapProps } from "react-map-gl/maplibre"
 import { useMap } from "react-map-gl/maplibre"
 import { BaseMap } from "@/src/components/core/components/Map/BaseMap"
@@ -13,6 +13,7 @@ import { ProjectMarkers } from "@/src/components/core/components/Map/markers/Pro
 import type { Bbox2D } from "@/src/components/core/components/Map/utils/bboxHelpers"
 import { projectDashboardGeometriesQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 import type { ProjectsWithGeometryWithMembershipRole } from "@/src/server/projects/types"
+import { DashboardPartOfLabelsLayer } from "./DashboardPartOfLabelsLayer"
 
 const DASHBOARD_LABEL_MIN_ZOOM = 5
 
@@ -150,6 +151,15 @@ export const DashboardMap = ({ projects, classHeight }: Props) => {
     ? dashboardGeometries.polygons
     : undefined
   const hasDashboardGeometry = Boolean(lines || polygons)
+  const projectSlugsWithGeometry = useMemo(
+    () =>
+      new Set(
+        [...dashboardGeometries.lines.features, ...dashboardGeometries.polygons.features].flatMap(
+          (feature) => feature.properties.projectSlug ?? [],
+        ),
+      ),
+    [dashboardGeometries],
+  )
 
   const handleSelect = (projectSlug: string) => {
     if (!projectSlug) return
@@ -203,7 +213,13 @@ export const DashboardMap = ({ projects, classHeight }: Props) => {
           maxZoom={fitBoundsOptions.maxZoom}
           userInteractedRef={userInteractedRef}
         />
-        <ProjectMarkers projects={projects} dotMode={dotMode} onSelect={handleSelect} />
+        <DashboardPartOfLabelsLayer labels={dashboardGeometries.partOfLabels} />
+        <ProjectMarkers
+          projects={projects}
+          dotMode={dotMode}
+          hoverOnlySlugs={projectSlugsWithGeometry}
+          onSelect={handleSelect}
+        />
       </BaseMap>
     </section>
   )

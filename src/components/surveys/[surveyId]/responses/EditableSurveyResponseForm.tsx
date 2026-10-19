@@ -9,7 +9,7 @@ import { primaryButtonClassName } from "@/src/components/core/components/buttons
 import { Link } from "@/src/components/core/components/links/Link"
 import { pillShellClasses } from "@/src/components/core/utils/pillClassNames"
 import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
-import { buildTagCheckboxItems } from "@/src/components/tags/buildTagCheckboxItems"
+import { buildTagItems } from "@/src/components/tags/buildTagItems"
 import { Operator } from "@/src/prisma/generated/browser"
 import { patchSurveyResponseFn } from "@/src/server/survey-responses/surveyResponses.functions"
 import { createSurveyResponseTagFn } from "@/src/server/surveyResponseTags/surveyResponseTags.functions"
@@ -87,11 +87,11 @@ export function EditableSurveyResponseForm({
   const operatorsOptions = operators.map((operator: Operator) => {
     return { value: String(operator.id), label: operator.title }
   })
-  const topicsOptions = buildTagCheckboxItems(topics, responseTopics)
+  const topicsOptions = buildTagItems(topics, responseTopics)
   const responseOperatorLabel = response.operator?.title || "Nicht zugeordnet"
   const responseStatusOption = statusOptions.find((item) => item.value === response.status)
   const responseTagIds = response.surveyResponseTags.map(String)
-  const selectedTopicOptions = buildTagCheckboxItems(topics, responseTagIds).filter((item) =>
+  const selectedTopicOptions = buildTagItems(topics, responseTagIds).filter((item) =>
     responseTagIds.includes(item.value),
   )
 

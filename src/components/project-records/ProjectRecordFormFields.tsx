@@ -205,11 +205,7 @@ export const ProjectRecordFormFields = ({
         </div>
       </FieldLayout>
 
-      <TagsFormSection
-        projectSlug={projectSlug}
-        showManageLink
-        classNameItemWrapper="grid grid-cols-2 gap-1.5 w-full"
-      />
+      <TagsFormSection projectSlug={projectSlug} showManageLink />
 
       <SuperAdminLogData data={{ uploadsValue, uploadIds }} />
     </>

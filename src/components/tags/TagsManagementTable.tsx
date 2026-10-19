@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { twJoin } from "tailwind-merge"
 import { ButtonWrapper } from "@/src/components/core/components/links/ButtonWrapper"
 import { Link, linkIcons, type LinkProps } from "@/src/components/core/components/links/Link"
@@ -12,12 +13,15 @@ import {
 } from "@/src/components/core/components/Table/tableClasses"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
+import { ProjectRecordTagsList } from "@/src/components/project-records/ProjectRecordTagsList"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
+import type { TagColor } from "./tagColors"
 
 export type TagManagementRow = {
   id: number
   title: string
   description?: string | null
+  color?: TagColor | null
   archivedAt: Date | string | null
   usageCount: number
 }
@@ -41,6 +45,16 @@ export const TagsManagementTable = ({
   zeroCaseName = "Tags",
   showDescription = false,
 }: Props) => {
+  const [isPending, setIsPending] = useState(false)
+  const runAction = async (action: () => Promise<void>) => {
+    setIsPending(true)
+    try {
+      await action()
+    } finally {
+      setIsPending(false)
+    }
+  }
+
   return (
     <TableWrapper>
       <table className={tableClassName}>
@@ -75,7 +89,11 @@ export const TagsManagementTable = ({
               )}
             >
               <td className="py-4 pr-3 pl-4 text-sm whitespace-nowrap sm:pl-6">
-                <strong className="font-semibold">{tag.title}</strong>
+                {tag.color ? (
+                  <ProjectRecordTagsList tags={[tag]} />
+                ) : (
+                  <strong className="font-semibold">{tag.title}</strong>
+                )}
               </td>
               {showDescription && (
                 <td className="max-w-md px-3 py-4 text-sm wrap-break-word text-gray-500">
@@ -96,7 +114,8 @@ export const TagsManagementTable = ({
                     </Link>
                     <button
                       type="button"
-                      onClick={() => onArchive(tag)}
+                      onClick={() => runAction(() => onArchive(tag))}
+                      disabled={isPending}
                       className={twJoin(
                         linkStyles,
                         "inline-flex items-center justify-center gap-1",
@@ -106,8 +125,8 @@ export const TagsManagementTable = ({
                     </button>
                     <button
                       type="button"
-                      onClick={() => onDelete(tag)}
-                      disabled={tag.usageCount > 0}
+                      onClick={() => runAction(() => onDelete(tag))}
+                      disabled={isPending || tag.usageCount > 0}
                       title={
                         tag.usageCount > 0
                           ? "Tag wird noch verwendet und kann nicht gelöscht werden."

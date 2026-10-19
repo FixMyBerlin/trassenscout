@@ -30,6 +30,7 @@ const projectSelect = {
   landAcquisitionModuleEnabled: true,
   logoSrc: true,
   partnerLogoSrcs: true,
+  partOf: true,
   showLogEntries: true,
   slug: true,
   subTitle: true,
@@ -89,6 +90,7 @@ const updateProjectSelect = {
   id: true,
   slug: true,
   subTitle: true,
+  partOf: true,
   description: true,
   logoSrc: true,
   partnerLogoSrcs: true,
@@ -102,7 +104,7 @@ export async function updateProject(headers: Headers, input: z.infer<typeof Upda
   const session = await endpointAuth.session(headers)
   await authorizeProjectMemberByProjectSlug(session, input.projectSlug, editorRoles)
 
-  const { projectSlug, partnerLogoSrcs, ...data } = input
+  const { projectSlug, partnerLogoSrcs, partOf, alkisStateKey, ...data } = input
   const previous = await db.project.findFirstOrThrow({
     where: { slug: projectSlug },
     select: updateProjectSelect,
@@ -111,7 +113,12 @@ export async function updateProject(headers: Headers, input: z.infer<typeof Upda
   // Explicit select: editors get this row back, and it must not carry the share token.
   const project = await db.project.update({
     where: { slug: projectSlug },
-    data: { ...data, partnerLogoSrcs: partnerLogoSrcs || undefined },
+    data: {
+      ...data,
+      partnerLogoSrcs: partnerLogoSrcs || undefined,
+      // Admin-only fields (SuperAdminBox); editors keep the stored values.
+      ...(session.role === UserRoleEnum.ADMIN ? { partOf, alkisStateKey } : {}),
+    },
     select: updateProjectSelect,
   })
 
@@ -124,6 +131,7 @@ export async function updateProject(headers: Headers, input: z.infer<typeof Upda
       id: previous.id,
       slug: previous.slug,
       subTitle: previous.subTitle,
+      partOf: previous.partOf,
       description: previous.description,
       logoSrc: previous.logoSrc,
       partnerLogoSrcs: previous.partnerLogoSrcs,
@@ -136,6 +144,7 @@ export async function updateProject(headers: Headers, input: z.infer<typeof Upda
       id: project.id,
       slug: project.slug,
       subTitle: project.subTitle,
+      partOf: project.partOf,
       description: project.description,
       logoSrc: project.logoSrc,
       partnerLogoSrcs: project.partnerLogoSrcs,
@@ -211,6 +220,7 @@ export async function createProject(headers: Headers, input: z.infer<typeof Crea
       id: project.id,
       slug: project.slug,
       subTitle: project.subTitle,
+      partOf: project.partOf,
       description: project.description,
       logoSrc: project.logoSrc,
       partnerLogoSrcs: project.partnerLogoSrcs,

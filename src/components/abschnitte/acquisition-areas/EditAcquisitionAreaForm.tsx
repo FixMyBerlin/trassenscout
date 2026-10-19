@@ -5,6 +5,7 @@ import { BackLink } from "@/src/components/core/components/forms/BackLink"
 import { DeleteActionBar } from "@/src/components/core/components/forms/DeleteActionBar"
 import { improveErrorMessage } from "@/src/components/core/components/forms/improveErrorMessage"
 import { FORM_ERROR } from "@/src/components/core/components/forms/utils/formSubmitResult"
+import { Notice } from "@/src/components/core/components/Notice/Notice"
 import {
   deleteAcquisitionAreaFn,
   updateAcquisitionAreaFn,
@@ -40,9 +41,9 @@ export const EditAcquisitionAreaForm = ({
   const parcelGeometry = AcquisitionAreaFormSchema.shape.geometry.parse(
     acquisitionArea.parcel.geometry,
   )
-  const subsubsectionGeometry = SupportedGeometrySchema.parse(
+  const subsubsectionGeometry = SupportedGeometrySchema.safeParse(
     acquisitionArea.subsubsection.geometry,
-  )
+  ).data
 
   type HandleSubmit = z.infer<typeof AcquisitionAreaFormSchema>
   const handleSubmit = async (values: HandleSubmit) => {
@@ -66,6 +67,14 @@ export const EditAcquisitionAreaForm = ({
     } catch (error: unknown) {
       return improveErrorMessage(error, FORM_ERROR, [])
     }
+  }
+
+  if (!subsubsectionGeometry) {
+    return (
+      <Notice type="info" title="Die Maßnahme hat keine Geometrie mehr.">
+        Verhandlungsflächen lassen sich nur an einer Maßnahme mit Geometrie bearbeiten.
+      </Notice>
+    )
   }
 
   return (

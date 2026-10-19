@@ -7,7 +7,7 @@ import {
   Transition,
 } from "@headlessui/react"
 import { ChevronDownIcon, XMarkIcon } from "@heroicons/react/20/solid"
-import { Fragment, type ReactNode, useState } from "react"
+import { Fragment, type ReactNode, useRef, useState } from "react"
 import { twJoin } from "tailwind-merge"
 import {
   checkmarkListboxOptionsPanelClassName,
@@ -24,12 +24,20 @@ import { linkStyles } from "@/src/components/core/components/links/styles"
 type ComboboxItem = {
   value: string
   label: string | ReactNode
+  /** Text for search and duplicate check when it differs from the label. */
+  searchText?: string
   disabled?: boolean
 }
 
 function itemLabelText(item: ComboboxItem) {
   return typeof item.label === "string" ? item.label : undefined
 }
+
+function itemSearchText(item: ComboboxItem) {
+  return item.searchText ?? String(item.label)
+}
+
+const CREATE_OPTION = "__create__"
 
 export type ComboboxProps = {
   label?: string
@@ -42,6 +50,8 @@ export type ComboboxProps = {
   trailingControl?: ReactNode
   /** Dropdown option layout. Defaults to left checkmarks. */
   optionUi?: ListboxOptionUi
+  chips?: boolean
+  onCreate?: (title: string) => Promise<void> | void
 }
 
 export function Combobox({
@@ -54,10 +64,15 @@ export function Combobox({
   classLabelOverwrite,
   trailingControl,
   optionUi = "checkmark",
+  chips = false,
+  onCreate,
 }: ComboboxProps) {
   const field = useFieldContext<string[]>()
   const fieldDisabled = useFieldDisabled(disabled)
   const [query, setQuery] = useState("")
+  const [isCreating, setIsCreating] = useState(false)
+  const [createError, setCreateError] = useState<string | null>(null)
+  const creatingRef = useRef(false)
   const [pinnedSelected, setPinnedSelected] = useState<string[]>(() => {
     const initial = field.form.getFieldValue(field.name)
     return Array.isArray(initial) ? initial.filter((v): v is string => typeof v === "string") : []
@@ -67,23 +82,50 @@ export function Combobox({
   const value = Array.isArray(field.state.value)
     ? field.state.value.filter((v): v is string => typeof v === "string")
     : []
-  const disabledOrEmpty = Boolean(fieldDisabled || items.length === 0)
+  const disabledOrEmpty = Boolean(fieldDisabled || (items.length === 0 && !onCreate))
 
   const pinned = new Set(pinnedSelected)
-  const orderedItems = [...items].sort(
-    (a, b) => Number(pinned.has(b.value)) - Number(pinned.has(a.value)),
-  )
+  const orderedItems = chips
+    ? items
+    : [...items].sort((a, b) => Number(pinned.has(b.value)) - Number(pinned.has(a.value)))
   const filteredItems =
     query === ""
       ? orderedItems
-      : orderedItems.filter((i) => String(i.label).toLowerCase().includes(query.toLowerCase()))
+      : orderedItems.filter((i) => itemSearchText(i).toLowerCase().includes(query.toLowerCase()))
 
-  const selectedLabels = value
-    .map((selectedValue) => items.find((item) => item.value === selectedValue)?.label)
-    .filter((itemLabel): itemLabel is string => typeof itemLabel === "string" && itemLabel !== "")
+  const selected = value
+    .map((selectedValue) => items.find((item) => item.value === selectedValue))
+    .filter((item): item is ComboboxItem => typeof item?.label === "string" && item.label !== "")
+  const selectedLabels = selected.map((item) => item.label as string)
+
+  const createTitle = query.trim()
+  const showCreateOption =
+    Boolean(onCreate) &&
+    createTitle !== "" &&
+    !items.some(
+      (item) =>
+        itemSearchText(item).toLocaleLowerCase("de") === createTitle.toLocaleLowerCase("de"),
+    )
+
+  const handleCreate = async (title: string) => {
+    if (!onCreate || creatingRef.current) return
+    creatingRef.current = true
+    setIsCreating(true)
+    setCreateError(null)
+    try {
+      await onCreate(title)
+      setQuery("")
+    } catch (error) {
+      console.error(error)
+      setCreateError(`„${title}“ konnte nicht erstellt werden. Bitte erneut versuchen.`)
+    } finally {
+      creatingRef.current = false
+      setIsCreating(false)
+    }
+  }
 
   const inputPlaceholder =
-    items.length === 0
+    items.length === 0 && !onCreate
       ? label
         ? `keine ${label} zur Auswahl`
         : "keine Einträge zur Auswahl"
@@ -91,7 +133,27 @@ export function Combobox({
 
   const control = (
     <>
-      {value.length > 0 && (
+      {chips && selected.length > 0 && (
+        <ul className="mb-2 flex flex-wrap gap-1">
+          {selected.map((item) => (
+            <li
+              key={item.value}
+              className="inline-flex items-center gap-1 rounded-sm bg-gray-100 py-1 pr-1 pl-2 text-xs text-gray-700"
+            >
+              {item.label}
+              <button
+                type="button"
+                aria-label={`${item.label} entfernen`}
+                className="cursor-pointer rounded-sm text-gray-500 hover:bg-gray-200 hover:text-gray-800"
+                onClick={() => field.handleChange(value.filter((v) => v !== item.value))}
+              >
+                <XMarkIcon className="size-3.5" />
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+      {!chips && value.length > 0 && (
         <div className="mb-2 flex items-center gap-2">
           <span className="inline-flex size-4.5 shrink-0 items-center justify-center rounded-full bg-gray-400 p-1 text-xs font-bold text-white">
             {value.length}
@@ -125,7 +187,13 @@ export function Combobox({
         immediate
         multiple
         value={value}
-        onChange={(next) => field.handleChange(next)}
+        onChange={(next) => {
+          if (next.includes(CREATE_OPTION)) {
+            void handleCreate(createTitle)
+            return
+          }
+          field.handleChange(next)
+        }}
         onClose={() => {
           setQuery("")
           setPinnedSelected(value)
@@ -141,7 +209,10 @@ export function Combobox({
               value={query}
               onBlur={field.handleBlur}
               placeholder={inputPlaceholder}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => {
+                setQuery(e.target.value)
+                setCreateError(null)
+              }}
               className={twJoin(
                 "block w-full appearance-none rounded-md border border-gray-200 px-3 py-2 pr-10 placeholder-gray-400 shadow-xs focus:outline-hidden sm:text-sm",
                 hasError
@@ -184,12 +255,28 @@ export function Combobox({
                       </ListboxOptionLabel>
                     </ComboboxOption>
                   ))}
+                  {showCreateOption && (
+                    <ComboboxOption
+                      value={CREATE_OPTION}
+                      disabled={isCreating}
+                      className={listboxOptionClassName(optionUi, "data-disabled:opacity-50")}
+                    >
+                      <ListboxOptionLabel ui={optionUi}>
+                        „{createTitle}“ {isCreating ? "wird erstellt…" : "erstellen"}
+                      </ListboxOptionLabel>
+                    </ComboboxOption>
+                  )}
                 </ComboboxOptions>
               </div>
             </Transition>
           </div>
         )}
       </HeadlessCombobox>
+      {createError && (
+        <p role="alert" className="mt-1 text-sm text-red-800">
+          {createError}
+        </p>
+      )}
     </>
   )
 

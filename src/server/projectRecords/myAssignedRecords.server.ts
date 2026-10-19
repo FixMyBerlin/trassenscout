@@ -58,7 +58,7 @@ export async function getMyAssignedRecords(
       editingState: true,
       assignedAt: true,
       project: { select: { slug: true } },
-      tags: { select: { id: true, title: true } },
+      tags: { select: { id: true, title: true, color: true, description: true } },
       assignedTo: { select: { id: true, firstName: true, lastName: true, institution: true } },
       _count: { select: { uploads: true, projectRecordComments: true } },
     },

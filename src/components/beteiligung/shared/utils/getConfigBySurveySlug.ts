@@ -5,15 +5,15 @@ import {
 } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { formConfig as FRM7Config } from "@/src/components/beteiligung/surveys/frm7/config"
 import { formConfig as SurveyOhvHaltestellenfoerderungConfig } from "@/src/components/beteiligung/surveys/ohv-haltestellenfoerderung/config"
-import { formConfig as SurveyOhvRadverkehrMassnahmenmeldungKommunenConfig } from "@/src/components/beteiligung/surveys/ohv-radverkehr-massnahmenmeldung-kommunen/config"
-import { formConfig as SurveyOhvRadverkehrConfig } from "@/src/components/beteiligung/surveys/ohv-radverkehr/config"
+import { formConfig as SurveyOhvRadverkehrConfig } from "@/src/components/beteiligung/surveys/ohv-rad-anhoerung/config"
+import { formConfig as SurveyOhvRadMeldungConfig } from "@/src/components/beteiligung/surveys/ohv-rad-meldung/config"
 import { formConfig as BBConfig } from "@/src/components/beteiligung/surveys/radnetz-brandenbrug/config"
-import { formConfig as SurveyRadschnellverbindungenInfoFeedbackConfig } from "@/src/components/beteiligung/surveys/radschnellverbindungen-info-feedback/config"
 import { formConfig as RS8Config } from "@/src/components/beteiligung/surveys/rs8/config"
 import { formConfig as TestConfig } from "@/src/components/beteiligung/surveys/rstest-1-2-3/config"
 import { formConfig as Test1Config } from "@/src/components/beteiligung/surveys/rstest-1/config"
 import { formConfig as Test23Config } from "@/src/components/beteiligung/surveys/rstest-2-3/config"
 import { formConfig as Test2Config } from "@/src/components/beteiligung/surveys/rstest-2/config"
+import { formConfig as SurveyRsvHinweisConfig } from "@/src/components/beteiligung/surveys/rsv-hinweis/config"
 
 // New surveys: add one line here (and the slug in `allowedSurveySlugs.ts`).
 // See `src/components/beteiligung/surveys/AGENTS.md`.
@@ -26,9 +26,9 @@ const surveyConfigs: Record<AllowedSurveySlugs, FormConfig> = {
   rs8: RS8Config,
   "radnetz-brandenburg": BBConfig,
   "ohv-haltestellenfoerderung": SurveyOhvHaltestellenfoerderungConfig,
-  "ohv-radverkehr": SurveyOhvRadverkehrConfig,
-  "ohv-radverkehr-massnahmenmeldung-kommunen": SurveyOhvRadverkehrMassnahmenmeldungKommunenConfig,
-  "radschnellverbindungen-info-feedback": SurveyRadschnellverbindungenInfoFeedbackConfig,
+  "ohv-rad-anhoerung": SurveyOhvRadverkehrConfig,
+  "ohv-rad-meldung": SurveyOhvRadMeldungConfig,
+  "rsv-hinweis": SurveyRsvHinweisConfig,
 }
 
 export const getConfigBySurveySlug = <K extends keyof FormConfig>(

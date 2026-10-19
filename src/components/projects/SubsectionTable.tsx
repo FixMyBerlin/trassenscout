@@ -12,7 +12,7 @@ import {
   tableRowClassName,
 } from "@/src/components/core/components/Table/tableClasses"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
-import { shortTitle } from "@/src/components/core/components/text/titles"
+import { compareSlugs, shortTitle } from "@/src/components/core/components/text/titles"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { Tooltip } from "@/src/components/core/components/Tooltip/Tooltip"
 import type { SubsectionsList } from "@/src/server/subsections/types"
@@ -33,6 +33,7 @@ const tableHeadClasses = tableHeadCellClassName
 export const SubsectionTable = ({ subsections, interactive = true }: Props) => {
   const navigate = useNavigate()
   const { projectSlug } = loggedInProjectRouteApi.useParams()
+  const sortedSubsections = [...subsections].sort((a, b) => compareSlugs(a.slug, b.slug))
 
   return (
     <section>
@@ -61,7 +62,7 @@ export const SubsectionTable = ({ subsections, interactive = true }: Props) => {
             </tr>
           </thead>
           <tbody className={tableBodyClassName}>
-            {subsections.map((subsection) => (
+            {sortedSubsections.map((subsection) => (
               <tr
                 key={subsection.id}
                 className={twJoin(

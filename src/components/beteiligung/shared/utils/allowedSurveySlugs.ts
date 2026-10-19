@@ -13,9 +13,9 @@ export const allowedSurveySlugs = [
   "rstest-1",
   "rstest-2",
   "ohv-haltestellenfoerderung",
-  "ohv-radverkehr",
-  "ohv-radverkehr-massnahmenmeldung-kommunen",
-  "radschnellverbindungen-info-feedback",
+  "ohv-rad-anhoerung",
+  "ohv-rad-meldung",
+  "rsv-hinweis",
 ] as const
 export type AllowedSurveySlugs = (typeof allowedSurveySlugs)[number]
 export const AllowedSurveySlugsSchema = z.looseObject({ slug: z.enum(allowedSurveySlugs) })

@@ -1,15 +1,20 @@
 import { ReactNode, useState } from "react"
 import { z } from "zod"
+import { FieldLayout } from "@/src/components/core/components/forms/FieldLayout"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
 import {
   applyFormSubmitResult,
   type OnSubmitResult,
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
+import { ProjectRecordTagsList } from "@/src/components/project-records/ProjectRecordTagsList"
+import { TagColorEnum } from "@/src/prisma/generated/browser"
+import { TagColorField } from "./TagColorField"
 
 const tagFormSchema = z.object({
   title: z.string().trim().min(1, { error: "Pflichtfeld." }),
   description: z.string().trim().nullable(),
+  color: z.enum(TagColorEnum).optional(),
 })
 
 export type TagFormValues = z.infer<typeof tagFormSchema>
@@ -28,6 +33,7 @@ export type TagFormProps = {
   actionBarClassName?: string
   titleLabel?: string
   withDescription?: boolean
+  withColor?: boolean
 }
 
 export function TagForm({
@@ -44,6 +50,7 @@ export function TagForm({
   actionBarClassName,
   titleLabel = "Titel",
   withDescription = false,
+  withColor = false,
 }: TagFormProps) {
   const [formError, setFormError] = useState<string | null>(null)
 
@@ -85,6 +92,18 @@ export function TagForm({
             />
           )}
         </form.AppField>
+      )}
+      {withColor && (
+        <>
+          <form.AppField name="color">{() => <TagColorField />}</form.AppField>
+          <form.Subscribe selector={(state) => [state.values.title, state.values.color] as const}>
+            {([title, color]) => (
+              <FieldLayout label="Vorschau">
+                <ProjectRecordTagsList tags={[{ id: 0, title: title.trim() || "Tag", color }]} />
+              </FieldLayout>
+            )}
+          </form.Subscribe>
+        </>
       )}
     </FormShell>
   )

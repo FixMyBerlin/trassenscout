@@ -81,6 +81,16 @@ export function ProjectForm<S extends z.ZodType>({
         {(field) => <field.TextField type="text" label="Untertitel" optional />}
       </form.AppField>
       <SuperAdminBox>
+        <form.AppField name="partOf">
+          {(field) => (
+            <field.TextField
+              type="text"
+              label="Teilprojekt von"
+              optional
+              help="Wird auf der Karte „Meine Projekte“ klein neben der Trassenführung angezeigt."
+            />
+          )}
+        </form.AppField>
         <form.AppField name="alkisStateKey">
           {(field) => (
             <field.SelectField

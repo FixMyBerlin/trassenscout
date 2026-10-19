@@ -99,7 +99,8 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: "bun tests/prepareAndStartDev.ts",
+    // CI: production build from the e2e job (DB reset + tests/buildForE2e.ts run before Playwright).
+    command: process.env.CI ? "bun run preview" : "bun tests/prepareAndStartDev.ts",
     url: baseURL,
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,

@@ -1,6 +1,7 @@
 import { z } from "zod"
 import { ASSIGNMENT_DIRECTIONS } from "@/src/shared/projectRecords/assignmentDirection"
 import { jsonSearchParam } from "@/src/shared/routing/jsonSearchParam"
+import { searchtermTagFilterSearchValue, tagFilterSchema } from "@/src/shared/tags/tagFilter"
 
 export const PROJECT_RECORD_FILTER_DEFAULTS = {
   searchterm: "",
@@ -18,6 +19,7 @@ const projectRecordFilterSchema = z.object({
     .enum(ASSIGNMENT_DIRECTIONS)
     .default(PROJECT_RECORD_FILTER_DEFAULTS.direction)
     .catch(PROJECT_RECORD_FILTER_DEFAULTS.direction),
+  tag: tagFilterSchema,
 })
 
 export type ProjectRecordFilter = z.infer<typeof projectRecordFilterSchema>
@@ -28,8 +30,7 @@ export function projectRecordFilterSearchValue(
 ): Partial<ProjectRecordFilter> | undefined {
   if (!filter) return undefined
 
-  const next: Partial<ProjectRecordFilter> = {}
-  if (filter.searchterm) next.searchterm = filter.searchterm
+  const next: Partial<ProjectRecordFilter> = { ...searchtermTagFilterSearchValue(filter) }
   if (filter.status && filter.status !== PROJECT_RECORD_FILTER_DEFAULTS.status) {
     next.status = filter.status
   }

@@ -1,3 +1,4 @@
+import { FilteredZeroCase } from "@/src/components/core/components/text/FilteredZeroCase"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { ProjectRecordsTable } from "@/src/components/project-records/ProjectRecordTable"
 import type { ProjectRecordsList } from "@/src/server/projectRecords/types"
@@ -10,26 +11,25 @@ type Props = {
 }
 
 export const FilteredProjectRecords = ({ projectRecords, highlightId }: Props) => {
-  const { filter, setFilter } = useProjectRecordFilters()
+  const { setFilter } = useProjectRecordFilters()
   const filteredProjectRecords = useFilteredProjectRecords(projectRecords)
-  const handleTopicClick = (topic: string) => {
-    if (topic) void setFilter({ ...filter, searchterm: topic })
-  }
   const handleAssigneeClick = (assigneeSearchText: string) => {
-    if (assigneeSearchText) void setFilter({ ...filter, searchterm: assigneeSearchText })
+    if (assigneeSearchText) void setFilter({ searchterm: assigneeSearchText })
   }
 
   return (
     <>
       {projectRecords.length === 0 ? (
         <ZeroCase visible={projectRecords.length} name="Protokolleinträge" />
+      ) : filteredProjectRecords.length === 0 ? (
+        <FilteredZeroCase name="Protokolleinträge" onReset={() => void setFilter(undefined)} />
       ) : (
         <ProjectRecordsTable
           isTopicFilter
           projectRecords={filteredProjectRecords}
           highlightId={highlightId}
           showRelationsColumn
-          onTopicClick={handleTopicClick}
+          onTopicClick={(tag) => void setFilter({ tag })}
           onAssigneeClick={handleAssigneeClick}
         />
       )}
