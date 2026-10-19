@@ -1,4 +1,5 @@
 import { twJoin } from "tailwind-merge"
+import { Link } from "@/src/components/core/components/links/Link"
 import { linkStyles } from "@/src/components/core/components/links/styles"
 
 const tagPillClassName = "inline-block rounded-sm bg-gray-100 px-2 py-1 text-left text-xs"
@@ -7,10 +8,12 @@ export const ProjectRecordTagsList = ({
   tags,
   isInteractive = false,
   onTagClick,
+  getTagHref,
 }: {
   tags: { id: number; title: string }[]
   isInteractive?: boolean
   onTagClick?: (tag: string) => void
+  getTagHref?: (tag: string) => string
 }) => {
   if (tags.length === 0) return
 
@@ -32,6 +35,10 @@ export const ProjectRecordTagsList = ({
           >
             #{tag.title}
           </button>
+        ) : getTagHref ? (
+          <Link key={tag.id} to={getTagHref(tag.title)} className={tagPillClassName}>
+            #{tag.title}
+          </Link>
         ) : (
           <span key={tag.id} className={tagPillClassName}>
             #{tag.title}
