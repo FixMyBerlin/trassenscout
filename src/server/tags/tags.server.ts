@@ -1,5 +1,5 @@
 import type { z } from "zod"
-import { Prisma, UserRoleEnum } from "@/src/prisma/generated/client"
+import { Prisma, type TagColorEnum, UserRoleEnum } from "@/src/prisma/generated/client"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
@@ -11,6 +11,18 @@ export const TAG_TITLE_TAKEN = "Tag title already exists"
 
 function sameTitleWhere(projectId: number, title: string) {
   return { projectId, title: { equals: title, mode: "insensitive" as const } }
+}
+
+function adminTagData(
+  role: string,
+  { description, color }: { description?: string | null; color?: TagColorEnum },
+) {
+  if (description === undefined && color === undefined) return null
+  if (role !== UserRoleEnum.ADMIN) throw new AuthorizationError(authMessages.adminAccessRequired)
+  return {
+    ...(description !== undefined ? { description: description || null } : {}),
+    ...(color !== undefined ? { color } : {}),
+  }
 }
 
 function tagInProjectWhere(projectSlug: string, id?: number) {
@@ -56,31 +68,35 @@ export async function getTagsWithUsageCount(
 }
 
 export async function createTag(headers: Headers, input: z.infer<typeof CreateTagSchema>) {
-  const { projectId } = await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
+  const { projectId, session } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    editorRoles,
+  )
   const { title } = input
+  const adminData = adminTagData(session.role, input)
 
   const existing = await db.tag.findFirst({ where: sameTitleWhere(projectId, title) })
   if (existing) {
+    if (adminData) throw new Error(TAG_TITLE_TAKEN)
     if (!existing.archivedAt) return existing
     return db.tag.update({ where: { id: existing.id }, data: { archivedAt: null } })
   }
 
   try {
-    return await db.tag.create({ data: { title, projectId } })
+    return await db.tag.create({ data: { title, projectId, ...adminData } })
   } catch (error) {
     if (!(error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002"))
       throw error
+    if (adminData) throw new Error(TAG_TITLE_TAKEN)
     return db.tag.findFirstOrThrow({ where: sameTitleWhere(projectId, title) })
   }
 }
 
 export async function updateTag(headers: Headers, input: z.infer<typeof UpdateTagSchema>) {
   const { session } = await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
-  const { id, projectSlug, title, description, color } = input
-  const changesAdminFields = description !== undefined || color !== undefined
-  if (changesAdminFields && session.role !== UserRoleEnum.ADMIN) {
-    throw new AuthorizationError(authMessages.adminAccessRequired)
-  }
+  const { id, projectSlug, title } = input
+  const adminData = adminTagData(session.role, input)
 
   const tag = await db.tag.findFirstOrThrow({
     where: tagInProjectWhere(projectSlug, id),
@@ -93,11 +109,7 @@ export async function updateTag(headers: Headers, input: z.infer<typeof UpdateTa
 
   return db.tag.update({
     where: { id: tag.id },
-    data: {
-      title,
-      ...(description !== undefined ? { description: description || null } : {}),
-      ...(color !== undefined ? { color } : {}),
-    },
+    data: { title, ...adminData },
   })
 }
 

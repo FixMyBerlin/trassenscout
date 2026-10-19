@@ -32,6 +32,7 @@ describe("TagColorField", () => {
   test("offers the ten design colours and selects one on click", async () => {
     render(<Harness />)
 
+    expect(screen.getByRole("radiogroup", { name: "Farbe" })).toBeVisible()
     expect(screen.getAllByRole("radio")).toHaveLength(10)
     expect(screen.getByRole("radio", { name: "Hellblau" })).toBeChecked()
 

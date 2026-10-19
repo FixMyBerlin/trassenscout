@@ -76,8 +76,12 @@ export function useTagMutations(projectSlug: string, search: TagListSearch = {})
   const unarchiveTagMutation = useMutation({ mutationFn: unarchiveTagFn })
   const deleteTagMutation = useMutation({ mutationFn: deleteTagFn })
 
-  const createTag = async (title: string) => {
-    await createTagMutation.mutateAsync({ data: { projectSlug, title } })
+  const createTag = async (values: {
+    title: string
+    description?: string | null
+    color?: TagColorEnum
+  }) => {
+    await createTagMutation.mutateAsync({ data: { projectSlug, ...values } })
     invalidateTags()
     void router.navigate(listNavigateOptions)
   }

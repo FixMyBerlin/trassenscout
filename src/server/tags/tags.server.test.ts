@@ -16,9 +16,47 @@ vi.mock("@/src/server/auth/endpointAuth.server", () => ({ endpointAuth: mockEndp
 const headers = new Headers()
 
 describe("createTag", () => {
+  const asRole = (role: "ADMIN" | "USER") =>
+    mockEndpointAuth.projectRole.mockResolvedValue({ projectId: 1, session: { role } })
+
   beforeEach(() => {
     vi.clearAllMocks()
-    mockEndpointAuth.projectRole.mockResolvedValue({ projectId: 1 })
+    asRole("USER")
+  })
+
+  test("lets admins create a tag with colour and description", async () => {
+    asRole("ADMIN")
+    mockDb.tag.findFirst.mockResolvedValue(null)
+    mockDb.tag.create.mockResolvedValue({ id: 8 })
+
+    await createTag(headers, {
+      projectSlug: "lb",
+      title: "Finanzierung",
+      color: "PINK",
+      description: "Förderung",
+    })
+
+    expect(mockDb.tag.create).toHaveBeenCalledWith({
+      data: { title: "Finanzierung", projectId: 1, color: "PINK", description: "Förderung" },
+    })
+  })
+
+  test("rejects colour or description from non-admins", async () => {
+    await expect(
+      createTag(headers, { projectSlug: "lb", title: "Finanzierung", color: "PINK" }),
+    ).rejects.toThrow(AuthorizationError)
+    expect(mockDb.tag.create).not.toHaveBeenCalled()
+  })
+
+  test("reports a taken name instead of reusing it when colour or description are set", async () => {
+    asRole("ADMIN")
+    mockDb.tag.findFirst.mockResolvedValue({ id: 7, title: "Finanzierung", archivedAt: null })
+
+    await expect(
+      createTag(headers, { projectSlug: "lb", title: "finanzierung", color: "PINK" }),
+    ).rejects.toThrow(TAG_TITLE_TAKEN)
+    expect(mockDb.tag.create).not.toHaveBeenCalled()
+    expect(mockDb.tag.update).not.toHaveBeenCalled()
   })
 
   test("reuses a tag whose name differs only in case", async () => {
@@ -41,7 +79,10 @@ describe("createTag", () => {
 
     const result = await createTag(headers, { projectSlug: "lb", title: "RADVERKEHR" })
 
-    expect(mockDb.tag.update).toHaveBeenCalledWith({ where: { id: 7 }, data: { archivedAt: null } })
+    expect(mockDb.tag.update).toHaveBeenCalledWith({
+      where: { id: 7 },
+      data: { archivedAt: null },
+    })
     expect(result).toEqual({ id: 7, title: "Radverkehr", archivedAt: null })
     expect(mockDb.tag.create).not.toHaveBeenCalled()
   })

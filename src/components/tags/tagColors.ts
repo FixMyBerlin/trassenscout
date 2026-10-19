@@ -58,6 +58,9 @@ export type TagColor = keyof typeof tagColors
 
 export const TAG_COLORS = Object.keys(tagColors) as TagColor[]
 
+/** Same as the database default (prisma/schema.prisma, Tag.color). */
+export const DEFAULT_TAG_COLOR: TagColor = "LIGHT_BLUE"
+
 /** Tags without a colour (e.g. Beteiligung tags) keep the neutral pill. */
 export function tagPillColorClassName(color: TagColor | null | undefined) {
   return color ? tagColors[color].pill : "border-transparent bg-gray-100"
