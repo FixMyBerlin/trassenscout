@@ -24,7 +24,7 @@ export const formConfig: FormConfig = {
 
 ## Wie geht es weiter?
 
-Die Plattform ist für das Anmelde- und Antragsverfahren grundsätzlich immer geöffnet. Sie können daher jederzeit Vorhaben melden bzw. Anträge stellen und Unterlagen hochladen. Die eingegangenen Meldungen werden durch die OHBV gesichtet und in Rücksprache mit dem Landkreis geprüft. Die Entscheidung über die Aufnahme in das 5-Jahresprogramm liegt beim Landkreis. Der Landkreis zieht ggf. intern weitere Abteilungen hinzu, wie z. B. für Schulwegsicherheit.
+Die Plattform ist für das Anmelde- und Antragsverfahren grundsätzlich immer geöffnet. Sie können daher jederzeit Vorhaben melden und Unterlagen hochladen. Die eingegangenen Meldungen werden durch die OHBV gesichtet und in Rücksprache mit dem Landkreis geprüft. Die Entscheidung über die Aufnahme in das 5-Jahresprogramm liegt beim Landkreis. Der Landkreis zieht ggf. intern weitere Abteilungen hinzu, wie z. B. für Schulwegsicherheit.
 
 Nach Erstellung des Maßnahmenprogramms wird dieses per E-Mail an die Kommunen übermittelt. Die E-Mail enthält als Anlage die Zusammenstellung der aufgenommenen Maßnahmen. Die Kommunen erhalten auf dieser Grundlage in einem gesonderten Schritt die Aufforderung zur Antragstellung.
 `,
