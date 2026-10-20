@@ -2,7 +2,6 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { EditAcquisitionAreaStatusForm } from "@/src/components/acquisition-area-status/EditAcquisitionAreaStatusForm"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
-import { shortTitle } from "@/src/components/core/components/text/titles"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
 import { adminLookupRowQueryOptions } from "@/src/server/adminLookupTables/adminLookupTablesQueryOptions"
 
@@ -27,9 +26,7 @@ export function PageAcquisitionAreaStatusEdit() {
           <ProjectPageBreadcrumb
             section="Flächenerwerb-Status"
             sectionTo="/$projectSlug/acquisition-area-status"
-            item={
-              "slug" in acquisitionAreaStatus ? shortTitle(acquisitionAreaStatus.slug) : undefined
-            }
+            item={"title" in acquisitionAreaStatus ? acquisitionAreaStatus.title : undefined}
             current="bearbeiten"
           />
         }
