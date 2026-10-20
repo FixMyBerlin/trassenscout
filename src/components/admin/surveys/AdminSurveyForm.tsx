@@ -10,7 +10,7 @@ import {
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { projectsAdminQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 import {
-  CreateSurveySchema,
+  CreateSurveyFormSchema,
   createSurveyFormDefaultValues,
   type CreateSurveyFormValues,
   type CreateSurveyType,
@@ -59,7 +59,7 @@ export function AdminSurveyForm({
       ...(fixedProjectId ? { projectId: fixedProjectId } : {}),
       ...initialValues,
     },
-    validators: { onSubmit: CreateSurveySchema } as never,
+    validators: { onSubmit: CreateSurveyFormSchema } as never,
     onSubmit: async ({ value }) => {
       const result = (await onSubmit(value as CreateSurveyType)) || {}
       applyFormSubmitResult(form, result, setFormError)
