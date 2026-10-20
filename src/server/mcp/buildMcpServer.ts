@@ -11,7 +11,11 @@ import {
 import { deleteSubsectionForMcp } from "@/src/server/mcp/direct/deleteSubsectionForMcp.server"
 import { deleteSubsubsectionForMcp } from "@/src/server/mcp/direct/deleteSubsubsectionForMcp.server"
 import { mcpEnvLabel } from "@/src/server/mcp/mcpCursorConfig"
-import { MCP_LIST_DEFAULT_LIMIT, MCP_LIST_MAX_LIMIT } from "@/src/server/mcp/mcpListLimit.const"
+import {
+  MCP_GEOMETRY_MAX_ITEMS,
+  MCP_LIST_DEFAULT_LIMIT,
+  MCP_LIST_MAX_LIMIT,
+} from "@/src/server/mcp/mcpListLimit.const"
 import { mcpToolOk, runMcpTool } from "@/src/server/mcp/mcpToolHelpers"
 import {
   createProjectRecordForMcp,
@@ -89,7 +93,7 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
         `projects_list returns slug, subTitle, shortTitle, url, paCount, subsubsectionCount, mcpMode, mcpDirectUntil. ` +
         `subsections_list requires projectSlug and returns slug, description, and url per Planungsabschnitt. ` +
         `subsubsections_list requires projectSlug; optional subsectionSlug filters to one Planungsabschnitt. ` +
-        `It returns slug, description, and url per Maßnahme. ` +
+        `It returns slug, description, and url per Maßnahme; with includeFields or includeGeometry it returns full rows (see subsubsections_list). ` +
         `Catalog tools (Baulastträger operators_*, Führungsform/RVA subsubsection_infras_*, Phase subsubsection_statuses_*, Maßnahmentyp subsubsection_tasks_*): ` +
         `list returns slug, title, url, and style for Phasen and works in DRAFT or DIRECT. ` +
         `create, update, and delete require DIRECT. create takes items (1–${MCP_LIST_MAX_LIMIT}) with projectSlug, slug, title (style REGULAR|GREEN for Phasen). ` +
@@ -233,17 +237,45 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
     {
       description:
         `List subsubsections (Maßnahmen) for a project (default limit ${MCP_LIST_DEFAULT_LIMIT}, ` +
-        `max ${MCP_LIST_MAX_LIMIT}). Requires mcpMode DRAFT or DIRECT. Response includes limit, returned, truncated. ` +
+        `max ${MCP_LIST_MAX_LIMIT}). Requires mcpMode DRAFT or DIRECT. Response includes limit, offset, returned, truncated, nextOffset. ` +
         "Requires projectSlug; optional subsectionSlug (Planungsabschnitt). Per row: projectSlug, subsectionSlug, slug (Maßnahme), " +
-        "description, hasGeometry, url — no extraFields or geometry. When subsectionSlug is set and returned > 1, disambiguationRequired is true.",
+        "description, hasGeometry, url — no extraFields or geometry by default. When subsectionSlug is set and returned > 1, disambiguationRequired is true. " +
+        "includeFields: true adds the stored values (type, location, lengthM, costs, extraFields, relation slugs, " +
+        "projectRecordCount, uploadCount, acquisitionAreaCount), still without geometry. " +
+        `includeGeometry: true adds the complete GeoJSON geometry (WGS84 [lng, lat]) and implies includeFields; it is capped at ${MCP_GEOMETRY_MAX_ITEMS} rows per call. ` +
+        "When truncated is true, call again with offset set to nextOffset to get the following rows. " +
+        "Read only; MCP drafts are not applied.",
       inputSchema: {
         projectSlug: z.string(),
         subsectionSlug: z.string().optional().describe("Planungsabschnitt slug"),
         limit: mcpListLimitSchema,
+        offset: z
+          .number()
+          .int()
+          .min(0)
+          .optional()
+          .describe("Rows to skip (default 0); pass nextOffset from the previous call"),
+        includeFields: z.boolean().optional().describe("Add all stored fields except geometry"),
+        includeGeometry: z
+          .boolean()
+          .optional()
+          .describe(
+            `Add complete geometry; implies includeFields; max ${MCP_GEOMETRY_MAX_ITEMS} rows`,
+          ),
       },
     },
-    ({ projectSlug, subsectionSlug, limit }) =>
-      runMcpTool(() => listSubsubsectionsForMcp({ projectSlug, subsectionSlug, origin, limit })),
+    ({ projectSlug, subsectionSlug, limit, offset, includeFields, includeGeometry }) =>
+      runMcpTool(() =>
+        listSubsubsectionsForMcp({
+          projectSlug,
+          subsectionSlug,
+          origin,
+          limit,
+          offset,
+          includeFields,
+          includeGeometry,
+        }),
+      ),
   )
 
   server.registerTool(

@@ -391,4 +391,116 @@ describe("MCP read queries", () => {
     await expect(getSubsectionsSchemaForMcp("frm9-ra3")).rejects.toThrow("MCP is not enabled")
     expect(mockDb.operator.findMany).not.toHaveBeenCalled()
   })
+
+  test("subsubsections_list with includeGeometry returns full rows and caps the limit", async () => {
+    const { listSubsubsectionsForMcp } =
+      await import("@/src/server/mcp/queries/listSubsubsectionsForMcp.server")
+
+    const geometry = {
+      type: "LineString",
+      coordinates: [
+        [13.1, 52.9],
+        [13.2, 52.95],
+      ],
+    }
+    mockDb.project.findUnique.mockResolvedValue(enabledProject)
+    mockDb.subsubsection.findMany.mockResolvedValue([
+      {
+        slug: "137-gra",
+        description: "Zielnetz BB ID: 137",
+        type: "LINE",
+        geometry,
+        extraFields: { klassifizierung: "A" },
+        qualityLevel: null,
+        SubsubsectionStatus: { slug: "planung" },
+        SubsubsectionTask: null,
+        SubsubsectionInfra: null,
+        SubsubsectionInfrastructureTypes: [{ slug: "radweg" }],
+        subsection: { slug: "gransee" },
+        _count: { projectRecords: 2, uploads: 0, acquisitionAreas: 1 },
+      },
+    ])
+
+    const result = await listSubsubsectionsForMcp({
+      projectSlug: "frm9-ra3",
+      subsectionSlug: "gransee",
+      origin: "http://127.0.0.1:4000",
+      limit: 50,
+      includeGeometry: true,
+    })
+
+    expect(mockDb.subsubsection.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        take: 11,
+        select: expect.objectContaining({ geometry: true, extraFields: true }),
+      }),
+    )
+    expect(result.subsubsections[0]).toMatchObject({
+      slug: "137-gra",
+      subsectionSlug: "gransee",
+      hasGeometry: true,
+      type: "LINE",
+      geometry,
+      extraFields: { klassifizierung: "A" },
+      subsubsectionStatusSlug: "planung",
+      qualityLevelSlug: null,
+      subsubsectionInfrastructureTypeSlugs: ["radweg"],
+      projectRecordCount: 2,
+      acquisitionAreaCount: 1,
+    })
+  })
+
+  test("subsubsections_list with includeFields omits geometry", async () => {
+    const { listSubsubsectionsForMcp } =
+      await import("@/src/server/mcp/queries/listSubsubsectionsForMcp.server")
+
+    mockDb.project.findUnique.mockResolvedValue(enabledProject)
+    mockDb.subsubsection.findMany.mockResolvedValue([])
+
+    await listSubsubsectionsForMcp({
+      projectSlug: "frm9-ra3",
+      origin: "http://127.0.0.1:4000",
+      includeFields: true,
+    })
+
+    const call = mockDb.subsubsection.findMany.mock.calls[0]?.[0]
+    expect(call.select.extraFields).toBe(true)
+    expect(call.select.geometry).toBeUndefined()
+  })
+
+  test("subsubsections_list pages with offset and returns nextOffset", async () => {
+    const { listSubsubsectionsForMcp } =
+      await import("@/src/server/mcp/queries/listSubsubsectionsForMcp.server")
+
+    mockDb.project.findUnique.mockResolvedValue(enabledProject)
+    mockDb.subsubsection.findMany.mockResolvedValue(
+      Array.from({ length: 11 }, (_, i) => ({
+        slug: `m-${i}`,
+        description: null,
+        type: "LINE",
+        geometry: null,
+        extraFields: {},
+        qualityLevel: null,
+        SubsubsectionStatus: null,
+        SubsubsectionTask: null,
+        SubsubsectionInfra: null,
+        SubsubsectionInfrastructureTypes: [],
+        subsection: { slug: "gransee" },
+        _count: { projectRecords: 0, uploads: 0, acquisitionAreas: 0 },
+      })),
+    )
+
+    const result = await listSubsubsectionsForMcp({
+      projectSlug: "frm9-ra3",
+      subsectionSlug: "gransee",
+      origin: "http://127.0.0.1:4000",
+      offset: 10,
+      includeGeometry: true,
+    })
+
+    expect(mockDb.subsubsection.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({ skip: 10, take: 11 }),
+    )
+    expect(result).toMatchObject({ offset: 10, returned: 10, truncated: true, nextOffset: 20 })
+  })
 })
