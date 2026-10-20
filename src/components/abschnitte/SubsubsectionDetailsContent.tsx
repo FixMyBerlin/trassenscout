@@ -23,7 +23,6 @@ import {
   formattedWidth,
 } from "@/src/components/core/components/text/formattedProperties"
 import { H2 } from "@/src/components/core/components/text/Headings"
-import { shortTitle } from "@/src/components/core/components/text/titles"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { subsubsectionLocationLabelMap } from "@/src/components/core/utils/subsubsectionLocationLabelMap"
@@ -335,7 +334,6 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
                         Führungsform
                       </th>
                       <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
-                        {shortTitle(subsubsection.SubsubsectionInfra.slug)} -{" "}
                         {subsubsection.SubsubsectionInfra.title}
                       </td>
                     </tr>
@@ -346,7 +344,6 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
                         Phase
                       </th>
                       <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">
-                        {shortTitle(subsubsection.SubsubsectionStatus.slug)} -{" "}
                         {subsubsection.SubsubsectionStatus.title}
                       </td>
                     </tr>
