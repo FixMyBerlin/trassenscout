@@ -7,7 +7,7 @@ export const assignmentDirectionOptions: { value: AssignmentDirection; label: st
   { value: "all", label: "Alle Protokolleinträge" },
   { value: "byMe", label: "Von mir zugewiesen" },
   { value: "toMe", label: "An mich zugewiesen" },
-  { value: "createdByMe", label: "Erstellt von mir" },
+  { value: "createdByMe", label: "Von mir erstellt" },
 ]
 
 /** Aufgaben: every option only covers records that have an assignee. */
