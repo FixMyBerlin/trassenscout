@@ -8,6 +8,7 @@ import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { selectUserFieldsForSession } from "@/src/server/auth/shared/selectUserFieldsForSession"
 import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
+import { AuthorizationError, authMessages } from "@/src/shared/auth/errors"
 import { ProjectSlugRequiredSchema } from "@/src/shared/authorization/projectSlugSchema"
 import { MembershipSchema, SaveUserMembershipsSchema } from "@/src/shared/memberships/schemas"
 import { authorizeProjectMemberByProjectSlug } from "../authorization/authorizeProjectMember.server"
@@ -209,6 +210,12 @@ export async function getProjectUsers(
   })
 }
 
+function assertNotOwnMembership(membership: { userId: number }, sessionUserId: number | string) {
+  if (membership.userId === Number(sessionUserId)) {
+    throw new AuthorizationError(authMessages.ownMembershipChange)
+  }
+}
+
 export async function deleteProjectMembership(
   headers: Headers,
   input: z.infer<typeof DeleteProjectMembershipSchema>,
@@ -220,6 +227,7 @@ export async function deleteProjectMembership(
     where: { id: input.membershipId, project: { slug: input.projectSlug } },
     include: membershipForLogInclude,
   })
+  assertNotOwnMembership(previous, session.userId)
   await membershipUpdateSession(previous.userId)
   await db.$transaction(async (tx) => {
     await cleanupBeforeMembershipDelete({
@@ -255,6 +263,7 @@ export async function updateProjectMembershipRole(
     where: { id: input.membershipId, project: { slug: input.projectSlug } },
     include: membershipForLogInclude,
   })
+  assertNotOwnMembership(previous, session.userId)
 
   const updated = await db.membership.update({
     where: { id: previous.id },

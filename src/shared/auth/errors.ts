@@ -2,6 +2,7 @@ export const authMessages = {
   adminAccessRequired: "Admin access required.",
   notAuthenticated: "Not authenticated.",
   forbiddenAccess: "Sie haben keine Berechtigung für diese Seite.",
+  ownMembershipChange: "Sie können Ihre eigenen Rechte nicht ändern.",
 } as const
 
 function isErrorWithMessage(error: unknown, message: string) {
