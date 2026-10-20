@@ -53,7 +53,7 @@ export const ProjectRecordCommentsSection = ({ projectRecord }: Props) => {
     <>
       {(hasComments || userCanComment) && (
         <div className={pageContentPaddingClassName}>
-          <h4 className="font-semibold">Anmerkungen</h4>
+          <h4 className="mb-3 font-semibold">Anmerkungen</h4>
           <ul className="flex max-w-3xl flex-col gap-4">
             {projectRecord.projectRecordComments?.map((comment) => {
               return (

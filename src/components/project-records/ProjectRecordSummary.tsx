@@ -132,7 +132,7 @@ export const ProjectRecordSummary = ({ projectRecord, uploadsSection }: Props) =
       )}
 
       <div>
-        <p className={projectRecordSectionLabelClassName}>Dokumente:</p>
+        <p className={twJoin(projectRecordSectionLabelClassName, "mb-2")}>Dokumente:</p>
         {uploadsSection}
       </div>
 
