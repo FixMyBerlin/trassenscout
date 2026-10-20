@@ -30,32 +30,20 @@ import { createProjectRecordFilterUrl } from "./utils/filter/createFilterUrl"
 
 const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
 
-/**
- * Column width classes for `table-fixed` layout. Adjust percentages here only.
- * `default` = without Verhandlungsfläche; `withAcquisitionArea` = extra column on all breakpoints.
- */
+// Columns without a width (Titel, Verknüpfungen, Tags) share what the fixed ones leave.
 const projectRecordTableColWidths = {
-  editingState: "w-[6%] @xl:w-[3%]",
-  date: {
-    default: "w-[20%] @xl:w-[9%]",
-    withAcquisitionArea: "w-[16%] @xl:w-[9%]",
-  },
-  title: {
-    default: "w-[52%] @xl:w-[35%]",
-    withAcquisitionArea: "min-w-0 w-[32%] @xl:w-[18%]",
-  },
-  acquisitionArea: "w-[28%] @xl:w-[14%]",
-  tags: "hidden @xl:table-column @xl:w-[24%]",
-  relations: "hidden @xl:table-column @xl:w-[24%]",
-  assignedTo: "hidden @xl:table-column @xl:w-[16%]",
-  documents: "w-[18%] @xl:w-[10%]",
+  editingState: "w-8",
+  date: "w-24",
+  relations: "hidden @3xl:table-column",
+  tags: "hidden @xl:table-column",
+  assignedTo: "hidden @xl:table-column w-36",
+  documents: "w-14 @4xl:w-24",
 } as const
 
 export const ProjectRecordsTable = ({
   projectRecords,
   highlightId,
   isTopicFilter,
-  showAcquisitionAreaColumn = false,
   showRelationsColumn = false,
   withTopBorder = false,
   onTopicClick,
@@ -68,7 +56,6 @@ export const ProjectRecordsTable = ({
     | ProjectRecordsNeedsReviewList
   highlightId?: number | null
   isTopicFilter?: boolean
-  showAcquisitionAreaColumn?: boolean
   showRelationsColumn?: boolean
   withTopBorder?: boolean
   onTopicClick?: (topic: string) => void
@@ -83,72 +70,48 @@ export const ProjectRecordsTable = ({
     <>
       <TableWrapper withTopBorder={withTopBorder}>
         <div className="@container w-full">
-          <table className={tableFixedClassName}>
+          <table className={twJoin(tableFixedClassName, "w-full")}>
             <colgroup>
               <col className={projectRecordTableColWidths.editingState} />
-              <col
-                className={
-                  showAcquisitionAreaColumn
-                    ? projectRecordTableColWidths.date.withAcquisitionArea
-                    : projectRecordTableColWidths.date.default
-                }
-              />
-              <col
-                className={
-                  showAcquisitionAreaColumn
-                    ? projectRecordTableColWidths.title.withAcquisitionArea
-                    : projectRecordTableColWidths.title.default
-                }
-              />
-              {showAcquisitionAreaColumn ? (
-                <col className={projectRecordTableColWidths.acquisitionArea} />
-              ) : showRelationsColumn ? (
-                <col className={projectRecordTableColWidths.relations} />
-              ) : null}
+              <col className={projectRecordTableColWidths.date} />
+              <col />
+              {showRelationsColumn && <col className={projectRecordTableColWidths.relations} />}
               <col className={projectRecordTableColWidths.tags} />
               <col className={projectRecordTableColWidths.assignedTo} />
               <col className={projectRecordTableColWidths.documents} />
             </colgroup>
             <thead>
               <tr className={tableHeadRowClassName}>
-                <th scope="col" className={twJoin(tableHeadCellClassName, "sr-only")}>
-                  Status
+                <th scope="col" className={tableHeadCellClassName}>
+                  <span className="sr-only">Status</span>
                 </th>
-                <th scope="col" className={twJoin(tableHeadCellClassName)}>
+                <th scope="col" className={tableHeadCellClassName}>
                   Datum
                 </th>
-                <th scope="col" className={twJoin(tableHeadCellClassName)}>
+                <th scope="col" className={tableHeadCellClassName}>
                   Titel
                 </th>
-                {showAcquisitionAreaColumn ? (
-                  <th scope="col" className={twJoin(tableHeadCellClassName)}>
-                    Verhandlungsfläche
-                  </th>
-                ) : showRelationsColumn ? (
+                {showRelationsColumn && (
                   <th
                     scope="col"
-                    className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}
+                    className={twJoin(tableHeadCellClassName, "hidden @3xl:table-cell")}
                   >
                     Verknüpfungen
                   </th>
-                ) : null}
+                )}
                 <th scope="col" className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}>
                   Tags
                 </th>
                 <th scope="col" className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}>
                   Zugewiesen
                 </th>
-                <th scope="col" className={twJoin(tableHeadCellClassName, "sr-only")}>
-                  Dokumente
+                <th scope="col" className={tableHeadCellClassName}>
+                  <span className="sr-only">Anzahl</span>
                 </th>
               </tr>
             </thead>
             <tbody className={tableBodyClassName}>
               {projectRecords.map((projectRecord) => {
-                const acquisitionAreaId =
-                  "acquisitionArea" in projectRecord && projectRecord.acquisitionArea
-                    ? projectRecord.acquisitionArea.id
-                    : projectRecord.acquisitionAreaId
                 const projectRecordTags = "tags" in projectRecord ? projectRecord.tags : []
                 const assignedTo = "assignedTo" in projectRecord ? projectRecord.assignedTo : null
                 const uploadCount =
@@ -199,7 +162,7 @@ export const ProjectRecordsTable = ({
                             "bg-gray-50/90 text-gray-500",
                     )}
                   >
-                    <td className={twJoin(tableCellClassName, "align-top")}>
+                    <td className={twJoin(tableCellClassName, "pr-0 align-top")}>
                       <ProjectRecordEditingStateIndicator
                         editingState={projectRecord.editingState}
                         variant="table"
@@ -210,7 +173,12 @@ export const ProjectRecordsTable = ({
                         ? format(new Date(projectRecord.date), "P", { locale: de })
                         : "—"}
                     </td>
-                    <td className={twJoin("align-top", tableCellClassName)}>
+                    <td
+                      className={twJoin(
+                        "align-top wrap-break-word hyphens-auto",
+                        tableCellClassName,
+                      )}
+                    >
                       <Link
                         className="w-full"
                         to={projectRecordModal.getProjectRecordDetailHref({
@@ -222,12 +190,13 @@ export const ProjectRecordsTable = ({
                         {projectRecord.title}
                       </Link>
                     </td>
-                    {showAcquisitionAreaColumn ? (
-                      <td className={twJoin("align-top wrap-break-word", tableCellClassName)}>
-                        {acquisitionAreaId ?? "—"}
-                      </td>
-                    ) : showRelationsColumn ? (
-                      <td className={twJoin("hidden align-top @xl:table-cell", tableCellClassName)}>
+                    {showRelationsColumn && (
+                      <td
+                        className={twJoin(
+                          "hidden align-top wrap-break-word hyphens-auto @3xl:table-cell",
+                          tableCellClassName,
+                        )}
+                      >
                         <ProjectRecordVerknuepfungen
                           projectSlug={projectSlug}
                           landAcquisitionModuleEnabled={landAcquisitionEnabled}
@@ -237,16 +206,19 @@ export const ProjectRecordsTable = ({
                           acquisitionAreas={relationAcquisitionAreas}
                         />
                       </td>
-                    ) : null}
-                    <td className={twJoin("hidden align-top @xl:table-cell", tableCellClassName)}>
-                      <div className="flex items-center justify-between gap-2">
-                        <ProjectRecordTagsList
-                          tags={projectRecordTags}
-                          isInteractive={isTopicFilter}
-                          onTagClick={onTopicClick}
-                          getTagHref={(tag) => createProjectRecordFilterUrl(projectSlug, { tag })}
-                        />
-                      </div>
+                    )}
+                    <td
+                      className={twJoin(
+                        "hidden align-top wrap-anywhere hyphens-auto @xl:table-cell",
+                        tableCellClassName,
+                      )}
+                    >
+                      <ProjectRecordTagsList
+                        tags={projectRecordTags}
+                        isInteractive={isTopicFilter}
+                        onTagClick={onTopicClick}
+                        getTagHref={(tag) => createProjectRecordFilterUrl(projectSlug, { tag })}
+                      />
                     </td>
                     <td
                       className={twJoin(
@@ -265,20 +237,19 @@ export const ProjectRecordsTable = ({
                         )}
                       </div>
                     </td>
-                    <td
-                      className={twJoin(
-                        tableCellClassName,
-                        "flex items-center justify-end gap-2 tabular-nums @xl:gap-4",
-                      )}
-                    >
-                      <span className="inline-flex items-center justify-end gap-1 text-xs">
-                        <DocumentIcon className="size-4 shrink-0" />
-                        {uploadCount}
-                      </span>
-                      <span className="inline-flex items-center justify-end gap-1 text-xs">
-                        <ChatBubbleBottomCenterTextIcon className="size-4 shrink-0" />
-                        {commentCount}
-                      </span>
+                    <td className={twJoin(tableCellClassName, "pl-0 align-top")}>
+                      <div className="flex flex-col gap-1 text-xs tabular-nums @4xl:flex-row @4xl:gap-3">
+                        <span className="flex items-center gap-1">
+                          <DocumentIcon className="size-4 shrink-0" />
+                          <span className="sr-only">Dokumente: </span>
+                          {uploadCount}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <ChatBubbleBottomCenterTextIcon className="size-4 shrink-0" />
+                          <span className="sr-only">Anmerkungen: </span>
+                          {commentCount}
+                        </span>
+                      </div>
                     </td>
                   </tr>
                 )
