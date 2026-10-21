@@ -53,13 +53,12 @@ describe("getExternalShare", () => {
     mockLoadContent.mockResolvedValue({ uploads: [], subsubsectionCount: 4 })
   })
 
-  test("refuses viewers before reading the link", async () => {
+  test("gives viewers the link too, so they can pass it on", async () => {
     signInAs("VIEWER")
 
-    await expect(getExternalShare(headers, { projectSlug: "rs23" })).rejects.toBeInstanceOf(
-      AuthorizationError,
-    )
-    expect(mockDb.project.findUniqueOrThrow).not.toHaveBeenCalled()
+    await expect(getExternalShare(headers, { projectSlug: "rs23" })).resolves.toMatchObject({
+      token: "secret-link",
+    })
   })
 
   test("answers 404 while the admin switch is off, even though the link is kept", async () => {

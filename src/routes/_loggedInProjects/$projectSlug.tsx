@@ -10,11 +10,7 @@ import { loggedInProjectModalSearchSchema } from "@/src/shared/projectModals/sea
 import { viewModeSearchMiddlewares, withViewModeSearch } from "@/src/shared/routing/viewModeSearch"
 
 function isProjectEditorRoute(pathname: string) {
-  return (
-    /\/new\/?$/.test(pathname) ||
-    /\/edit\/?$/.test(pathname) ||
-    /\/external-share\/?$/.test(pathname)
-  )
+  return /\/new\/?$/.test(pathname) || /\/edit\/?$/.test(pathname)
 }
 
 export const Route = createFileRoute("/_loggedInProjects/$projectSlug")({

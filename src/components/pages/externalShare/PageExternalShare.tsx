@@ -9,6 +9,7 @@ import { ExternalShareLinkActions } from "@/src/components/externalShare/Externa
 import { ExternalShareSectionRow } from "@/src/components/externalShare/ExternalShareSectionRow"
 import { ExternalShareUploadsTable } from "@/src/components/externalShare/ExternalShareUploadsTable"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
+import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { invalidateUploadLists } from "@/src/components/uploads/uploadQueryCache"
 import { uploadDownloadUrl, uploadUrl } from "@/src/components/uploads/utils/uploadUrl"
 import { removeUploadFromExternalShareFn } from "@/src/server/externalShare/externalShare.functions"
@@ -19,7 +20,7 @@ import { externalShareGeojsonUrl } from "@/src/shared/externalShare/externalShar
 const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/external-share/")
 
 const info =
-  "Über den Geheimlink sehen externe Personen ohne Konto alle Maßnahmen dieses Projekts (GeoJSON mit allen Feldern) und die hier gelisteten Dokumente. Dokumente geben Sie unter „Dokument bearbeiten“ frei. Jede Person mit dem Link hat Zugriff; gerät er in falsche Hände, kann ein Admin ihn erneuern."
+  "Über den Geheimlink sehen externe Personen ohne Konto alle Maßnahmen dieses Projekts (GeoJSON mit allen Feldern) und die hier gelisteten Dokumente. Dokumente werden unter „Dokument bearbeiten“ freigegeben. Jede Person mit dem Link hat Zugriff; gerät er in falsche Hände, kann ein Admin ihn erneuern."
 
 export function PageExternalShare() {
   const { projectSlug } = routeApi.useParams()
@@ -73,15 +74,17 @@ export function PageExternalShare() {
         fileUrl={(id) => uploadUrl({ id }, projectSlug)}
         downloadUrl={(id) => uploadDownloadUrl({ id }, projectSlug)}
         renderAction={(upload) => (
-          <button
-            type="button"
-            onClick={() => void removeUpload(upload.id)}
-            disabled={removeMutation.isPending}
-            className={twJoin(linkStyles, "inline-flex items-center gap-1")}
-          >
-            <XMarkIcon className="size-4" aria-hidden />
-            Aus Freigabe entfernen
-          </button>
+          <IfUserCanEdit>
+            <button
+              type="button"
+              onClick={() => void removeUpload(upload.id)}
+              disabled={removeMutation.isPending}
+              className={twJoin(linkStyles, "inline-flex items-center gap-1")}
+            >
+              <XMarkIcon className="size-4" aria-hidden />
+              Aus Freigabe entfernen
+            </button>
+          </IfUserCanEdit>
         )}
       />
     </>
