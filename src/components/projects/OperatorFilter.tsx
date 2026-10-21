@@ -1,39 +1,32 @@
 import { RadioGroup, RadioGroupLabel, RadioGroupOption } from "@headlessui/react"
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { getRouteApi, useLocation, useNavigate } from "@tanstack/react-router"
+import { getRouteApi } from "@tanstack/react-router"
 import { twJoin } from "tailwind-merge"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { projectBySlugQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 
-const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
+const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/")
 
 export const OperatorFilter = () => {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const { projectSlug } = loggedInProjectRouteApi.useParams()
-  const searchParams = new URLSearchParams(location.searchStr)
+  const navigate = routeApi.useNavigate()
+  const { projectSlug } = routeApi.useParams()
+  const { operator } = routeApi.useSearch()
   const { data: project } = useSuspenseQuery(projectBySlugQueryOptions(projectSlug))
-  const currentOperator = searchParams.get("operator") || ""
+  const currentOperator = operator || ""
 
   return (
     <div>
       <RadioGroup
         value={currentOperator}
         onChange={(value) => {
-          const params = new URLSearchParams(location.searchStr)
-          if (value) {
-            params.set("operator", value)
-          } else {
-            params.delete("operator")
-          }
-          const search = params.toString()
           void navigate({
-            to: search ? `${location.pathname}?${search}` : location.pathname,
+            search: (previous) => ({ ...previous, operator: value || undefined }),
+            resetScroll: false,
           })
         }}
       >
         <RadioGroupLabel className="sr-only">Baulastträger auswählen</RadioGroupLabel>
-        <div className="space-x-2">
+        <div className="flex flex-wrap gap-2">
           <RadioGroupOption
             value=""
             className={({ checked }) =>
