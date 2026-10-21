@@ -22,12 +22,12 @@ export const uploadsSearchSchema = z.object({
 
 export type UploadsSearch = z.infer<typeof uploadsSearchSchema>
 
-export const uploadEditSearchSchema = z.object({
+export const uploadReturnSearchSchema = z.object({
   returnTo: z
     .string()
     .optional()
-    .transform((value) => sanitizeInternalReturnPath(value)),
-  returnProjectRecordId: z.coerce.string().optional(),
+    .transform((value) => sanitizeInternalReturnPath(value))
+    .catch(undefined),
 })
 
 export const projectUploadModalViewSchema = z.enum(["detail", "edit"])

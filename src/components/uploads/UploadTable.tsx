@@ -230,6 +230,7 @@ const UploadTableRow = ({
           <Link
             to="/$projectSlug/uploads/$uploadId/view"
             params={{ projectSlug, uploadId: String(upload.id) }}
+            search={returnTo ? { returnTo } : undefined}
             className="block min-w-0 break-all"
             title={filename || undefined}
           >

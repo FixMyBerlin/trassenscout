@@ -1,6 +1,7 @@
 import { twJoin } from "tailwind-merge"
 import { Link } from "@/src/components/core/components/links/Link"
 import { Markdown } from "@/src/components/core/components/Markdown/Markdown"
+import { useCurrentReturnTo } from "@/src/components/core/routes/useCurrentPathWithSearch"
 import { formatFileSize } from "@/src/components/core/utils/formatFileSize"
 import { ExternalShareBadge } from "@/src/components/uploads/ExternalShareBadge"
 import { LuckyCloudDocumentLink } from "@/src/components/uploads/LuckyCloudDocumentLink"
@@ -21,6 +22,7 @@ type Props = {
 export const UploadDetailPanelContent = ({ upload, projectSlug }: Props) => {
   const isUploadPdf = isPdf(upload)
   const linkedProjectRecords = upload.projectRecords ?? []
+  const returnTo = useCurrentReturnTo()
 
   return (
     <div className="space-y-6">
@@ -53,6 +55,7 @@ export const UploadDetailPanelContent = ({ upload, projectSlug }: Props) => {
                   button
                   to="/$projectSlug/uploads/$uploadId/view"
                   params={{ projectSlug, uploadId: String(upload.id) }}
+                  search={returnTo ? { returnTo } : undefined}
                 >
                   In Vollansicht öffnen
                 </Link>

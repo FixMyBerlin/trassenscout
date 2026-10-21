@@ -5,12 +5,12 @@ import { absoluteTitleHead } from "@/src/routeHead"
 import { acquisitionAreasQueryOptions } from "@/src/server/acquisitionAreas/acquisitionAreasQueryOptions"
 import { subsubsectionsQueryOptions } from "@/src/server/subsubsections/subsubsectionsQueryOptions"
 import { uploadQueryOptions } from "@/src/server/uploads/uploadQueryOptions"
-import { uploadEditSearchSchema } from "@/src/shared/uploads/searchSchemas"
+import { uploadReturnSearchSchema } from "@/src/shared/uploads/searchSchemas"
 
 export const Route = createFileRoute("/_loggedInProjects/$projectSlug/uploads/$uploadId/edit/")({
   head: () => absoluteTitleHead(seoEditTitle("Dokument")),
   ssr: true,
-  validateSearch: uploadEditSearchSchema,
+  validateSearch: uploadReturnSearchSchema,
   loader: ({ context, params }) =>
     Promise.all([
       context.queryClient.ensureQueryData(
