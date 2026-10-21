@@ -204,6 +204,7 @@ export const DashboardMap = ({ projects, classHeight }: Props) => {
         points={hasDashboardGeometry ? undefined : (projectPoints ?? undefined)}
         colorSchema="subsection"
         restrictHighlightToLevel="project"
+        zoomScaledLines
         classHeight={classHeight}
       >
         <DashboardGeometryAutoFit

@@ -72,6 +72,7 @@ export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
     interactiveUnifiedFeatures?: boolean
     colorSchema?: "subsection" | "subsubsection"
     restrictHighlightToLevel?: MapHighlightLevel
+    zoomScaledLines?: boolean
   }
 
 export const BaseMap = ({
@@ -103,6 +104,7 @@ export const BaseMap = ({
   interactiveUnifiedFeatures = true,
   colorSchema,
   restrictHighlightToLevel,
+  zoomScaledLines,
 }: BaseMapProps) => {
   const { markMapLoaded, resetMapLoaded } = useMapLoadedActions()
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
@@ -298,6 +300,7 @@ export const BaseMap = ({
                 layerIdSuffix={selectableLayerIdSuffix}
                 interactive={interactiveUnifiedFeatures}
                 colorSchema={colorSchema}
+                zoomScaledLines={zoomScaledLines}
                 layersBetweenLinesAndPoints={
                   lineEndPoints ? (
                     <LineEndPointsLayer

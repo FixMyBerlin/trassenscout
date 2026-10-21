@@ -46,7 +46,21 @@ export type UnifiedFeaturesLayerProps = {
   colorSchema: "subsection" | "subsubsection"
   /** Rendered between line layers and point layers (e.g. LineEndPointsLayer) for correct draw order. */
   layersBetweenLinesAndPoints?: ReactNode
+  zoomScaledLines?: boolean
 }
+
+// Overview maps: lines thin out below zoom 11 so long corridors don't merge into blobs.
+const zoomScaledWidth = (width: number): ExpressionSpecification => [
+  "interpolate",
+  ["linear"],
+  ["zoom"],
+  5,
+  width * 0.3,
+  8,
+  width * 0.5,
+  11,
+  width,
+]
 
 /**
  * Unified layer component that renders polygons, lines, and points from a single FeatureCollection.
@@ -59,12 +73,17 @@ export const UnifiedFeaturesLayer = ({
   interactive = true,
   colorSchema,
   layersBetweenLinesAndPoints,
+  zoomScaledLines = false,
 }: UnifiedFeaturesLayerProps) => {
   if (!features || features.features.length === 0) return null
 
   const sourceId = getUnifiedLayerId(layerIdSuffix)
   const layerId = getUnifiedLayerId(layerIdSuffix)
   const colors = mapLayerColorConfigs[colorSchema]
+  const lineWidth = zoomScaledLines ? zoomScaledWidth(colors.line.width) : colors.line.width
+  const lineOutlineWidth = zoomScaledLines
+    ? zoomScaledWidth(colors.line.outlineWidth)
+    : colors.line.outlineWidth
 
   // Polygon color expression (slugMatch → selected → GREEN → current/unselected)
   const polygonColorExpression: ExpressionSpecification = [
@@ -204,7 +223,7 @@ export const UnifiedFeaturesLayer = ({
           "line-join": "round",
         }}
         paint={{
-          "line-width": colors.line.outlineWidth,
+          "line-width": lineOutlineWidth,
           "line-color": colors.line.borderColor,
           "line-opacity": 0.6,
         }}
@@ -219,7 +238,7 @@ export const UnifiedFeaturesLayer = ({
           "line-join": "round",
         }}
         paint={{
-          "line-width": colors.line.width,
+          "line-width": lineWidth,
           "line-color": colors.line.dashedSecondary,
           "line-opacity": 0.9,
         }}
@@ -234,7 +253,7 @@ export const UnifiedFeaturesLayer = ({
           "line-join": "round",
         }}
         paint={{
-          "line-width": colors.line.width,
+          "line-width": lineWidth,
           "line-color": lineColorExpression,
           "line-opacity": 1,
         }}
@@ -249,7 +268,7 @@ export const UnifiedFeaturesLayer = ({
           "line-join": "round",
         }}
         paint={{
-          "line-width": colors.line.width,
+          "line-width": lineWidth,
           "line-color": lineColorExpression,
           "line-opacity": 1,
           "line-dasharray": [1, 1],
