@@ -97,7 +97,8 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
         `projects_list returns slug, subTitle, shortTitle, url, paCount, subsubsectionCount, mcpMode, mcpDirectUntil. ` +
         `subsections_list requires projectSlug and returns slug, description, and url per Planungsabschnitt. ` +
         `subsubsections_list requires projectSlug; optional subsectionSlug filters to one Planungsabschnitt. ` +
-        `It returns slug, description, and url per Maßnahme; with includeFields or includeGeometry it returns full rows (see subsubsections_list). ` +
+        `It returns slug, description, and url per Maßnahme; with includeFields it returns full rows without geometry (see subsubsections_list). ` +
+        `Geometry is expensive: use includeGeometry only when the user explicitly asks for the geometry; for everything else use includeFields. ` +
         `Catalog tools (Baulastträger operators_*, Führungsform/RVA subsubsection_infras_*, Phase subsubsection_statuses_*, Maßnahmentyp subsubsection_tasks_*): ` +
         `list returns slug, title, url, and style for Phasen and works in DRAFT or DIRECT. ` +
         `create, update, and delete require DIRECT. create takes items (1–${MCP_LIST_MAX_LIMIT}) with projectSlug, slug, title (style REGULAR|GREEN for Phasen). ` +
@@ -246,7 +247,9 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
         "description, hasGeometry, url — no extraFields or geometry by default. When subsectionSlug is set and returned > 1, disambiguationRequired is true. " +
         "includeFields: true adds the stored values (type, location, lengthM, costs, extraFields, relation slugs, " +
         "projectRecordCount, uploadCount, acquisitionAreaCount), still without geometry. " +
+        "Use includeFields when you need the values of a Maßnahme. " +
         `includeGeometry: true adds the complete GeoJSON geometry (WGS84 [lng, lat]) and implies includeFields; it is capped at ${MCP_GEOMETRY_MAX_ITEMS} rows per call. ` +
+        "Geometry is expensive: set includeGeometry only when the user explicitly asks for the geometry, never by default. " +
         "When truncated is true, call again with offset set to nextOffset to get the following rows. " +
         "Read only; MCP drafts are not applied.",
       inputSchema: {
@@ -264,7 +267,7 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
           .boolean()
           .optional()
           .describe(
-            `Add complete geometry; implies includeFields; max ${MCP_GEOMETRY_MAX_ITEMS} rows`,
+            `Add complete geometry; implies includeFields; max ${MCP_GEOMETRY_MAX_ITEMS} rows. Expensive: only when the user explicitly asks for geometry`,
           ),
       },
     },
