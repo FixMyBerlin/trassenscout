@@ -87,6 +87,11 @@ export const ProjectRecordFormFields = ({
     ...queryBehavior,
   })
   const selectedUploads = allUploads.filter((upload) => uploadIds.includes(upload.id))
+  const removeUpload = (uploadId: number) =>
+    form.setFieldValue(
+      "uploads",
+      uploadIds.filter((id) => id !== uploadId),
+    )
 
   const assignedToItems = getUserComboboxItems(users)
 
@@ -184,13 +189,11 @@ export const ProjectRecordFormFields = ({
           <UploadTable
             projectSlug={projectSlug}
             withAction={false}
+            withDelete
             withRelations={false}
             uploads={selectedUploads}
-            onDelete={async (uploadId) => {
-              const existingUploads = NumberArraySchema.parse(uploadsValue)
-              const newUploads = existingUploads.filter((id) => id !== uploadId)
-              form.setFieldValue("uploads", newUploads)
-            }}
+            onDelete={async (uploadId) => removeUpload(uploadId)}
+            onRemove={removeUpload}
           />
           <ProjectUploadDropzone
             projectSlug={projectSlug}

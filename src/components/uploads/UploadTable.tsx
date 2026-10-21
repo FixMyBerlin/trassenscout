@@ -1,6 +1,7 @@
-import { MapPinIcon, UserGroupIcon } from "@heroicons/react/24/outline"
+import { LinkSlashIcon, MapPinIcon, UserGroupIcon } from "@heroicons/react/24/outline"
 import { twJoin } from "tailwind-merge"
 import { Link } from "@/src/components/core/components/links/Link"
+import { linkStyles } from "@/src/components/core/components/links/styles"
 import { useIsInsideModal } from "@/src/components/core/components/Modal"
 import {
   tableBodyClassName,
@@ -53,10 +54,12 @@ type Props = Prettify<{
   projectSlug: string
   uploads: UploadTableUpload[]
   withAction?: boolean
+  withDelete?: boolean
   withRelations: boolean
   withSource?: boolean
   withTags?: boolean
   onDelete?: (uploadId: number) => Promise<void>
+  onRemove?: (uploadId: number) => void
   onTagClick?: (tag: string) => void
 }>
 
@@ -64,10 +67,12 @@ export const UploadTable = ({
   projectSlug,
   uploads,
   withAction = true,
+  withDelete = false,
   withRelations,
   withSource = false,
   withTags = true,
   onDelete,
+  onRemove,
   onTagClick,
 }: Props) => {
   if (!uploads.length) {
@@ -145,10 +150,12 @@ export const UploadTable = ({
                   upload={upload}
                   projectSlug={projectSlug}
                   withAction={withAction}
+                  withDelete={withDelete}
                   withRelations={withRelations}
                   withSource={withSource}
                   withTags={withTags}
                   onDelete={onDelete}
+                  onRemove={onRemove}
                   onTagClick={onTagClick}
                 />
               ))}
@@ -164,19 +171,23 @@ const UploadTableRow = ({
   upload,
   projectSlug,
   withAction,
+  withDelete,
   withRelations,
   withSource,
   withTags,
   onDelete,
+  onRemove,
   onTagClick,
 }: {
   upload: UploadTableUpload
   projectSlug: string
   withAction: boolean
+  withDelete: boolean
   withRelations: boolean
   withSource: boolean
   withTags: boolean
   onDelete?: (uploadId: number) => Promise<void>
+  onRemove?: (uploadId: number) => void
   onTagClick?: (tag: string) => void
 }) => {
   const hasLocation = upload.latitude !== null && upload.longitude !== null
@@ -305,6 +316,19 @@ const UploadTableRow = ({
               Download
             </Link>
           )}
+          {onRemove && (
+            <IfUserCanEdit>
+              <button
+                type="button"
+                onClick={() => onRemove(upload.id)}
+                className={twJoin(linkStyles, "inline-flex items-center justify-center gap-1")}
+                title="Verknüpfung entfernen – das Dokument bleibt erhalten"
+              >
+                <LinkSlashIcon className="size-3.5" />
+                Entfernen
+              </button>
+            </IfUserCanEdit>
+          )}
           {withAction && (
             <IfUserCanEdit>
               <Link
@@ -321,15 +345,18 @@ const UploadTableRow = ({
               >
                 bearbeiten
               </Link>
-              {handleDelete && (
-                <DeleteUploadButton
-                  projectSlug={projectSlug}
-                  uploadId={upload.id}
-                  uploadTitle={upload.title}
-                  uploadLinks={upload}
-                  onDeleted={handleDelete}
-                />
-              )}
+            </IfUserCanEdit>
+          )}
+          {(withAction || withDelete) && handleDelete && (
+            <IfUserCanEdit>
+              <DeleteUploadButton
+                projectSlug={projectSlug}
+                uploadId={upload.id}
+                uploadTitle={upload.title}
+                uploadLinks={upload}
+                unlinkHint={Boolean(onRemove)}
+                onDeleted={handleDelete}
+              />
             </IfUserCanEdit>
           )}
         </div>
