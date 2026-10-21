@@ -10,7 +10,7 @@ import { FormHydratedProvider } from "@/src/components/core/components/forms/hoo
 import { TagsFormSection } from "./TagsFormSection"
 
 const { tags, createTagFn, useUserCan } = vi.hoisted(() => ({
-  tags: [] as { id: number; title: string; archivedAt: null }[],
+  tags: [] as { id: number; title: string; archivedAt: null; color?: "PINK" }[],
   createTagFn: vi.fn(),
   useUserCan: vi.fn(),
 }))
@@ -34,8 +34,8 @@ const { useAppForm } = createFormHook({
   formComponents: {},
 })
 
-function Harness() {
-  const form = useAppForm({ defaultValues: { tags: [] as string[] } })
+function Harness({ initialTags = [] }: { initialTags?: string[] }) {
+  const form = useAppForm({ defaultValues: { tags: initialTags } })
 
   return (
     <QueryClientProvider client={new QueryClient()}>
@@ -83,6 +83,31 @@ describe("TagsFormSection", () => {
     expect(createTagFn.mock.calls[0]?.[0]).toEqual({
       data: { projectSlug: "lb", title: "Lastenrad" },
     })
+  })
+
+  test("clears the search after picking an existing tag", async () => {
+    useUserCan.mockReturnValue({ edit: true })
+    render(<Harness />)
+
+    const input = search("Rad")
+    expect(await screen.findByRole("option", { name: "Radverkehr" })).toBeVisible()
+    expect(screen.getByRole("option", { name: "„Rad“ erstellen" })).toBeVisible()
+    fireEvent.keyDown(input, { key: "Enter" })
+
+    expect(await screen.findByRole("button", { name: "Radverkehr entfernen" })).toBeVisible()
+    expect(screen.getByTestId("value")).toHaveTextContent(/^1$/)
+    expect(input).toHaveValue("")
+    expect(createTagFn).not.toHaveBeenCalled()
+  })
+
+  test("shows chosen tags in their colour", async () => {
+    useUserCan.mockReturnValue({ edit: true })
+    tags.splice(0, tags.length, { id: 1, title: "Radverkehr", archivedAt: null, color: "PINK" })
+    render(<Harness initialTags={["1"]} />)
+
+    const chip = (await screen.findByRole("button", { name: "Radverkehr entfernen" })).closest("li")
+    expect(chip).toHaveClass("bg-[#FFB9DD]", "border-[#EE99C7]", "text-[#7A2851]")
+    expect(chip).not.toHaveClass("bg-gray-100")
   })
 
   test("lets viewers assign but not create tags", async () => {

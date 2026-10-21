@@ -1,7 +1,10 @@
+import { type TagColor, tagPillColorClassName } from "./tagColors"
+
 type TagLike = {
   id: number
   title: string
   archivedAt?: Date | string | null
+  color?: TagColor | null
 }
 
 export function buildTagItems(tags: TagLike[], assignedIds: string[]) {
@@ -13,5 +16,6 @@ export function buildTagItems(tags: TagLike[], assignedIds: string[]) {
       value: String(tag.id),
       label: tag.archivedAt ? `${tag.title} (archiviert)` : tag.title,
       searchText: tag.title,
+      chipClassName: tagPillColorClassName(tag.color),
     }))
 }

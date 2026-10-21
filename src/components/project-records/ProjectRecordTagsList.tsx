@@ -27,6 +27,7 @@ export const ProjectRecordTagsList = ({
   getTagHref?: (tag: string) => string
 }) => {
   if (tags.length === 0) return
+  const sortedTags = [...tags].sort((a, b) => a.title.localeCompare(b.title, "de"))
 
   const handleTagClick = (e: React.MouseEvent, tag: string) => {
     e.stopPropagation()
@@ -36,7 +37,7 @@ export const ProjectRecordTagsList = ({
 
   return (
     <div className="flex flex-wrap gap-1">
-      {tags.map((tag) =>
+      {sortedTags.map((tag) =>
         isInteractive ? (
           <button
             key={tag.id}
