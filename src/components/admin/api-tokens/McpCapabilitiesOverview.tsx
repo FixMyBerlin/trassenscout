@@ -92,6 +92,13 @@ const groups: { title: string; rows: CapabilityRow[] }[] = [
         draft: "none",
         direct: "confirm",
       },
+      {
+        action: "Grunderwerbsflächen löschen",
+        tools: "acquisition_areas_delete",
+        disabled: "none",
+        draft: "none",
+        direct: "confirm",
+      },
     ],
   },
   {

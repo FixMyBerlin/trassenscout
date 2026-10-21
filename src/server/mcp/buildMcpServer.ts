@@ -8,6 +8,7 @@ import {
   listCatalogForMcp,
   updateCatalogForMcp,
 } from "@/src/server/mcp/catalog/catalogMcp.server"
+import { deleteAcquisitionAreasForMcp } from "@/src/server/mcp/direct/deleteAcquisitionAreasForMcp.server"
 import { deleteSubsectionForMcp } from "@/src/server/mcp/direct/deleteSubsectionForMcp.server"
 import { deleteSubsubsectionForMcp } from "@/src/server/mcp/direct/deleteSubsubsectionForMcp.server"
 import { mcpEnvLabel } from "@/src/server/mcp/mcpCursorConfig"
@@ -38,6 +39,7 @@ import {
   subsectionMcpUpdateInputSchema,
 } from "@/src/server/mcp/subsectionUpdate/patchSchema"
 import {
+  acquisitionAreaMcpDeleteInputSchema,
   subsubsectionMcpCreateInputSchema,
   subsubsectionMcpDeleteInputSchema,
   subsubsectionMcpUpdateInputSchema,
@@ -76,6 +78,8 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
         `Delete tools (subsections_delete, subsubsections_delete) exist only in "DIRECT". ` +
         `Without confirm they preview and write nothing. Show the user the preview (counts of protocols, uploads, acquisition areas, and for a Planungsabschnitt the Maßnahme count). ` +
         `Only then call again with confirm true. Confirm rejects a Maßnahme that still has protocols, uploads, or acquisition areas, and a Planungsabschnitt that still has Maßnahmen. ` +
+        `acquisition_areas_delete removes all acquisition areas (Grunderwerbsflächen) of a Maßnahme; same preview-then-confirm flow. ` +
+        `Never call it on your own to unblock subsubsections_delete. Call it with confirm true only after the user has explicitly approved deleting the Grunderwerbsflächen of that Maßnahme. ` +
         `User-facing terms: subsection = Planungsabschnitt, subsubsection = Maßnahme. ` +
         `After env_info and an enabled slug: subsections_schema then subsections_list, and/or subsubsections_schema then subsubsections_list. ` +
         `To change Planungsabschnitte: subsections_update with items (1–${MCP_LIST_MAX_LIMIT}). Identity is projectSlug + slug (PA Kürzel). ` +
@@ -357,6 +361,28 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
     (input) =>
       runMcpTool(() =>
         deleteSubsubsectionForMcp({
+          ...input,
+          origin,
+          createdById: auth.createdById,
+        }),
+      ),
+  )
+
+  server.registerTool(
+    "acquisition_areas_delete",
+    {
+      description:
+        `Delete all acquisition areas (Grunderwerbsflächen) of subsubsections (Maßnahmen). Requires effective mcpMode DIRECT. Pass items (1–${MCP_LIST_MAX_LIMIT}) with projectSlug, subsectionSlug, slug of the Maßnahme. ` +
+        "Without confirm, writes nothing and returns acquisitionAreaCount and linkedAcquisitionAreaCount (areas with protocols or uploads). " +
+        "With confirm true, deletes the areas of each Maßnahme (and parcels left without areas) only when linkedAcquisitionAreaCount is 0. " +
+        "The Maßnahme itself stays. " +
+        "Never call this on your own because subsubsections_delete refused a Maßnahme with acquisition areas. " +
+        "Show the preview to the user and call with confirm true only after the user explicitly approved deleting these Grunderwerbsflächen.",
+      inputSchema: acquisitionAreaMcpDeleteInputSchema.shape,
+    },
+    (input) =>
+      runMcpTool(() =>
+        deleteAcquisitionAreasForMcp({
           ...input,
           origin,
           createdById: auth.createdById,

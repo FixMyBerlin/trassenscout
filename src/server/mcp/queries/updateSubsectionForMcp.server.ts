@@ -1,4 +1,5 @@
 import { applySubsectionUpdateForMcp } from "@/src/server/mcp/direct/applyMcpDirectWrite.server"
+import { lastWinsItems } from "@/src/server/mcp/lastWinsItems"
 import { mcpEnvLabel } from "@/src/server/mcp/mcpCursorConfig"
 import { upsertSubsectionMcpDraft } from "@/src/server/mcp/mcpDrafts/mcpDrafts.server"
 import { mcpWriteFields, writeResolvedItem } from "@/src/server/mcp/mcpWriteMode"
@@ -12,16 +13,6 @@ type SubsectionMcpIdentityItem = {
   projectSlug: string
   slug: string
   patch: SubsectionMcpPatch
-}
-
-function lastWinsItems(items: SubsectionMcpIdentityItem[]) {
-  const map = new Map<string, SubsectionMcpIdentityItem>()
-  for (const item of items) {
-    const key = `${item.projectSlug}\0${item.slug}`
-    map.delete(key)
-    map.set(key, item)
-  }
-  return [...map.values()]
 }
 
 function identityFromItem(item: SubsectionMcpIdentityItem) {
@@ -46,7 +37,7 @@ export async function updateSubsectionForMcp(input: {
   origin: string
   createdById: number
 }) {
-  const items = lastWinsItems(input.items)
+  const items = lastWinsItems(input.items, (item) => [item.projectSlug, item.slug])
   const results = []
   let draftedCount = 0
   let appliedCount = 0

@@ -111,3 +111,13 @@ export const subsubsectionMcpDeleteInputSchema = z.object({
       "Omit or false: preview only, writes nothing. true: delete items that have no protocols, uploads, or acquisition areas.",
     ),
 })
+
+export const acquisitionAreaMcpDeleteInputSchema = z.object({
+  items: z.array(subsubsectionMcpIdentitySchema).min(1).max(MCP_LIST_MAX_LIMIT),
+  confirm: z
+    .boolean()
+    .optional()
+    .describe(
+      "Omit or false: preview only, writes nothing. true: delete all acquisition areas of each Maßnahme that has none with protocols or uploads.",
+    ),
+})

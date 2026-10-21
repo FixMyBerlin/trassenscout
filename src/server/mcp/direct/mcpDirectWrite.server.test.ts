@@ -2,6 +2,12 @@ import { beforeEach, describe, expect, test, vi } from "vitest"
 import { LabelPositionEnum } from "@/src/prisma/generated/browser"
 
 const mockCreateLogEntry = vi.fn().mockResolvedValue(undefined)
+const mockDeleteAreas = vi.fn()
+
+const mockTx = {
+  $queryRaw: vi.fn(),
+  acquisitionArea: { count: vi.fn(), findMany: vi.fn() },
+}
 
 const mockDb = {
   project: { findUnique: vi.fn() },
@@ -14,6 +20,8 @@ const mockDb = {
     update: vi.fn(),
     delete: vi.fn(),
   },
+  acquisitionArea: { count: vi.fn() },
+  $transaction: vi.fn(),
   qualityLevel: { findFirst: vi.fn() },
   subsubsectionStatus: { findFirst: vi.fn() },
   subsubsectionTask: { findFirst: vi.fn() },
@@ -24,6 +32,10 @@ const mockDb = {
 
 vi.mock("@/src/server/db.server", () => ({
   default: mockDb,
+}))
+
+vi.mock("@/src/server/acquisitionAreas/_utils/deleteAcquisitionAreasAndOrphanParcels", () => ({
+  deleteAcquisitionAreasAndOrphanParcels: (...args: unknown[]) => mockDeleteAreas(...args),
 }))
 
 vi.mock("@/src/server/logEntries/create/createLogEntry", () => ({
@@ -126,6 +138,13 @@ describe("MCP direct write", () => {
     mockDb.subsubsection.create.mockResolvedValue(mockMeasure({ id: 11, slug: "neu1" }))
     mockDb.subsubsection.delete.mockResolvedValue(mockMeasure())
     mockDb.subsection.delete.mockResolvedValue({ id: 3 })
+    mockDb.$transaction.mockImplementation((callback: (tx: unknown) => unknown) => callback(mockTx))
+    mockTx.$queryRaw.mockResolvedValue([{ id: 1 }, { id: 2 }, { id: 3 }])
+    mockTx.acquisitionArea.count.mockResolvedValue(0)
+    mockTx.acquisitionArea.findMany.mockResolvedValue(
+      [1, 2, 3].map((id) => ({ id, description: null, parcel: { alkisParcelId: `DE-${id}` } })),
+    )
+    mockDeleteAreas.mockResolvedValue({ deletedAcquisitionAreas: 3 })
     mockDb.subsection.aggregate.mockResolvedValue({ _max: { order: 4 } })
     mockDb.subsection.create.mockResolvedValue({
       id: 4,
@@ -626,5 +645,107 @@ describe("MCP direct write", () => {
 
     mockDb.project.findUnique.mockResolvedValue(directProject)
     await expect(requireMcpDirectProject("frm9-ra3")).resolves.toMatchObject({ mcpMode: "DIRECT" })
+  })
+  describe("acquisition areas delete", () => {
+    const areasItem = { projectSlug: "frm9-ra3", subsectionSlug: "pa8", slug: "dre34" }
+
+    test("preview writes nothing", async () => {
+      const { deleteAcquisitionAreasForMcp } =
+        await import("@/src/server/mcp/direct/deleteAcquisitionAreasForMcp.server")
+      mockDb.project.findUnique.mockResolvedValue(directProject)
+      mockDb.subsubsection.findFirst.mockResolvedValue({ id: 10, slug: "dre34" })
+      mockDb.acquisitionArea.count.mockResolvedValueOnce(3).mockResolvedValueOnce(0)
+
+      const result = await deleteAcquisitionAreasForMcp({
+        origin: "http://127.0.0.1:4000",
+        createdById: 42,
+        items: [areasItem],
+      })
+
+      expect(result.deletedAcquisitionAreaCount).toBe(0)
+      expect(result.items[0]).toMatchObject({
+        acquisitionAreaCount: 3,
+        linkedAcquisitionAreaCount: 0,
+        deletedAcquisitionAreaCount: 0,
+        errors: [],
+      })
+      expect(mockDeleteAreas).not.toHaveBeenCalled()
+    })
+
+    test("confirm deletes the areas and logs it", async () => {
+      const { deleteAcquisitionAreasForMcp } =
+        await import("@/src/server/mcp/direct/deleteAcquisitionAreasForMcp.server")
+      mockDb.project.findUnique.mockResolvedValue(directProject)
+      mockDb.subsubsection.findFirst.mockResolvedValue({ id: 10, slug: "dre34" })
+
+      const result = await deleteAcquisitionAreasForMcp({
+        origin: "http://127.0.0.1:4000",
+        createdById: 42,
+        confirm: true,
+        items: [areasItem],
+      })
+
+      expect(result.deletedAcquisitionAreaCount).toBe(3)
+      expect(mockTx.$queryRaw).toHaveBeenCalled()
+      expect(mockTx.acquisitionArea.count).toHaveBeenCalledWith({
+        where: expect.objectContaining({ id: { in: [1, 2, 3] } }),
+      })
+      expect(mockDeleteAreas).toHaveBeenCalledWith(mockTx, { id: { in: [1, 2, 3] } })
+      expect(mockCreateLogEntry).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: "DELETE",
+          subsubsectionId: 10,
+          message: "3 Erwerbsfläche(n) der Maßnahme »DRE34« wurden gelöscht.",
+          previousRecord: {
+            acquisitionAreas: [
+              { id: 1, alkisParcelId: "DE-1", description: null },
+              { id: 2, alkisParcelId: "DE-2", description: null },
+              { id: 3, alkisParcelId: "DE-3", description: null },
+            ],
+          },
+        }),
+      )
+    })
+
+    test("confirm rejects areas that have protocols or uploads", async () => {
+      const { deleteAcquisitionAreasForMcp } =
+        await import("@/src/server/mcp/direct/deleteAcquisitionAreasForMcp.server")
+      mockDb.project.findUnique.mockResolvedValue(directProject)
+      mockDb.subsubsection.findFirst.mockResolvedValue({ id: 10, slug: "dre34" })
+      mockTx.acquisitionArea.count.mockResolvedValue(2)
+
+      const result = await deleteAcquisitionAreasForMcp({
+        origin: "http://127.0.0.1:4000",
+        createdById: 42,
+        confirm: true,
+        items: [areasItem],
+      })
+
+      expect(result.deletedAcquisitionAreaCount).toBe(0)
+      expect(result.items[0]).toMatchObject({
+        acquisitionAreaCount: 3,
+        linkedAcquisitionAreaCount: 2,
+      })
+      expect(result.items[0]?.errors[0]).toContain("2 Fläche(n) mit Protokollen oder Uploads")
+      expect(mockTx.acquisitionArea.findMany).not.toHaveBeenCalled()
+      expect(mockDeleteAreas).not.toHaveBeenCalled()
+      expect(mockCreateLogEntry).not.toHaveBeenCalled()
+    })
+
+    test("refuses outside direct mode", async () => {
+      const { deleteAcquisitionAreasForMcp } =
+        await import("@/src/server/mcp/direct/deleteAcquisitionAreasForMcp.server")
+      mockDb.project.findUnique.mockResolvedValue(draftProject)
+
+      const result = await deleteAcquisitionAreasForMcp({
+        origin: "http://127.0.0.1:4000",
+        createdById: 42,
+        confirm: true,
+        items: [areasItem],
+      })
+
+      expect(result.items[0]?.errors[0]).toContain("only available while MCP direct write")
+      expect(mockDeleteAreas).not.toHaveBeenCalled()
+    })
   })
 })
