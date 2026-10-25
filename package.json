@@ -185,9 +185,6 @@
     "@typescript/typescript-darwin-arm64": "7.0.1-rc",
     "@typescript/typescript-linux-x64": "7.0.1-rc"
   },
-  "overrides": {
-    "zod": "4.6.7"
-  },
   "browserslist": [
     "> 1%",
     "last 2 versions",
