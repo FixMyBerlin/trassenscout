@@ -10,8 +10,12 @@ export const GetSubsectionSchema = ProjectSlugRequiredSchema.extend({ id: z.numb
 export const GetSubsectionBySlugSchema = ProjectSlugRequiredSchema.extend({
   subsectionSlug: z.string(),
 })
-export const CreateSubsectionSchema = ProjectSlugRequiredSchema.extend(SubsectionInputSchema.shape)
-export const UpdateSubsectionSchema = GetSubsectionSchema.extend(SubsectionInputSchema.shape)
+export const CreateSubsectionSchema = subsectionGeometryTypeValidationRefine(
+  ProjectSlugRequiredSchema.extend(SubsectionInputSchema.shape),
+)
+export const UpdateSubsectionSchema = subsectionGeometryTypeValidationRefine(
+  GetSubsectionSchema.extend(SubsectionInputSchema.shape),
+)
 export const DeleteSubsectionSchema = GetSubsectionSchema
 export const CreateSubsectionsSchema = ProjectSlugRequiredSchema.extend({
   subsections: z.array(

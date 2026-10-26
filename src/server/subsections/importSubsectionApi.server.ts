@@ -90,7 +90,7 @@ export async function importSubsectionFromApi(request: Request) {
       projectId: project.id,
     }
 
-    if (subsectionData.geometry && subsectionData.type) {
+    if (subsectionData.geometry || subsectionData.type) {
       const validationSchema = subsectionGeometryTypeValidationRefine(
         z.object({
           geometry: z.any(),
@@ -98,8 +98,8 @@ export async function importSubsectionFromApi(request: Request) {
         }),
       )
       const validationResult = validationSchema.safeParse({
-        geometry: subsectionData.geometry,
-        type: subsectionData.type,
+        geometry: subsectionData.geometry ?? existing?.geometry,
+        type: subsectionData.type ?? existing?.type,
       })
       if (!validationResult.success) {
         return Response.json(

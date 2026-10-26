@@ -84,6 +84,14 @@ export const PolygonLikeGeometrySchema = z.discriminatedUnion("type", [
   MultiPolygonGeometrySchema,
 ])
 
+/** Planungsabschnitte are lines or polygons, never points. */
+export const SubsectionGeoJsonGeometrySchema = z.discriminatedUnion("type", [
+  LineStringGeometrySchema,
+  MultiLineStringGeometrySchema,
+  PolygonGeometrySchema,
+  MultiPolygonGeometrySchema,
+])
+
 /** All supported GeoJSON geometry types (excludes GeometryCollection). */
 export const SupportedGeoJsonGeometrySchema = z.discriminatedUnion("type", [
   PointGeometrySchema,

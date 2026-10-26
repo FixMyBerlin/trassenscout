@@ -6,24 +6,12 @@ import { FieldLayout } from "@/src/components/core/components/forms/FieldLayout"
 import { useFieldContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { useFieldDisabled } from "@/src/components/core/components/forms/hooks/useFormHydrated"
 import { GeometryTypeEnum } from "@/src/prisma/generated/browser"
-import {
-  LineStringGeometrySchema,
-  MultiLineStringGeometrySchema,
-  MultiPolygonGeometrySchema,
-  PolygonGeometrySchema,
-} from "@/src/shared/geometry/geojsonSchemas"
+import { SubsectionGeoJsonGeometrySchema } from "@/src/shared/geometry/geojsonSchemas"
 import { SupportedGeometrySchema } from "@/src/shared/geometry/geometrySchemas"
 import { mapGeoTypeToEnum } from "@/src/shared/geometry/mapGeoTypeToEnum"
 import { clearImperativeFieldSubmitErrors } from "../utils/clearImperativeFieldSubmitErrors"
 import { extractGeometryFromGeoJSON } from "../utils/extractGeometryFromGeoJSON"
 import { GeometryFieldPreview } from "./GeometryFieldPreview"
-
-const SubsectionGeometrySchema = z.union([
-  LineStringGeometrySchema,
-  MultiLineStringGeometrySchema,
-  PolygonGeometrySchema,
-  MultiPolygonGeometrySchema,
-])
 
 export type GeometryFieldProps = {
   label: string
@@ -68,7 +56,9 @@ export function GeometryField({
   const hasError = field.state.meta.errors.length > 0
 
   const allowedGeometrySchema =
-    allowedGeometryTypesFor === "subsection" ? SubsectionGeometrySchema : SupportedGeometrySchema
+    allowedGeometryTypesFor === "subsection"
+      ? SubsectionGeoJsonGeometrySchema
+      : SupportedGeometrySchema
 
   const handlePaste = (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
     const pastedText = event.clipboardData.getData("text")
