@@ -77,3 +77,46 @@ describe("buildFieldValues map fields", () => {
     expect(result.costs).toBe("")
   })
 })
+
+/**
+ * Option fields store keys. The mail has to show the labels, also for `SurveySelect` (e.g. the
+ * Kommune in kmp-messwerte), which used to fall through to `String(value)`.
+ */
+describe("buildFieldValues option fields", () => {
+  const options = [
+    { key: "bietigheimBissingen", label: "Bietigheim-Bissingen" },
+    { key: "tamm", label: "Tamm" },
+  ]
+  const optionField = (name: string, component: string) =>
+    ({ name, component, props: { options } }) as never
+
+  test.each(["SurveySelect", "SurveyRadiobuttonGroup"])("renders the %s label", (component) => {
+    const result = build({
+      data: { commune: "bietigheimBissingen" },
+      fields: ["commune"],
+      part2Fields: [optionField("commune", component)],
+    })
+
+    expect(result.commune).toBe("Bietigheim-Bissingen")
+  })
+
+  test("joins the checkbox labels", () => {
+    const result = build({
+      data: { communes: ["tamm", "bietigheimBissingen"] },
+      fields: ["communes"],
+      part2Fields: [optionField("communes", "SurveyCheckboxGroup")],
+    })
+
+    expect(result.communes).toBe("Tamm, Bietigheim-Bissingen")
+  })
+
+  test("keeps a key that has no option", () => {
+    const result = build({
+      data: { commune: "unknown" },
+      fields: ["commune"],
+      part2Fields: [optionField("commune", "SurveySelect")],
+    })
+
+    expect(result.commune).toBe("unknown")
+  })
+})
