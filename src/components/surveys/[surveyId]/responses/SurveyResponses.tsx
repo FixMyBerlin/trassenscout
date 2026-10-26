@@ -23,6 +23,7 @@ import { EditableSurveyResponseFilterForm } from "@/src/components/surveys/[surv
 import EditableSurveyResponseListItem, {
   surveyResponseListGridClassName,
 } from "@/src/components/surveys/[surveyId]/responses/EditableSurveyResponseListItem"
+import { getFlatSurveyFormFields } from "@/src/components/surveys/[surveyId]/responses/getFlatSurveyFormFields"
 import { useDefaultFilterValues } from "@/src/components/surveys/[surveyId]/responses/useDefaultFilterValues"
 import { useFilteredResponses } from "@/src/components/surveys/[surveyId]/responses/useFilteredResponses"
 import { useSurveyResponseDetails } from "@/src/components/surveys/[surveyId]/responses/useSurveyResponseDetails"
@@ -134,10 +135,16 @@ function SurveyResponsesConfigured({ projectSlug, survey, tabs, surveySlug }: Co
   }
 
   const locationId = getQuestionIdBySurveySlug(surveySlug, "location")
+  const geometryCategoryId = getQuestionIdBySurveySlug(surveySlug, "geometryCategory")
 
   const mapProps = feedbackDefinition?.pages
     .find((page) => page.fields.some((field) => field.name === String(locationId)))
-    ?.fields.find((q) => q.name === String(locationId))!.props
+    ?.fields.find((q) => q.name === String(locationId))?.props
+
+  // Surveys without a map field (e.g. kmp-messwerte) get no map and no map view.
+  const hasMapField = getFlatSurveyFormFields(feedbackDefinition).some((field) =>
+    [String(locationId), String(geometryCategoryId)].includes(String(field.name)),
+  )
 
   return (
     <>
@@ -151,7 +158,7 @@ function SurveyResponsesConfigured({ projectSlug, survey, tabs, surveySlug }: Co
         }
         info={`Tabellarische Übersicht aller eingegangenen Rückmeldungen der Eingabe ${survey.title}.`}
         tabs={<SurveyTabs tabs={tabs} embedded />}
-        viewMode="list"
+        viewMode={hasMapField ? "list" : undefined}
         onViewModeChange={(mode) => {
           void navigate({
             to:
@@ -209,7 +216,7 @@ function SurveyResponsesConfigured({ projectSlug, survey, tabs, surveySlug }: Co
             ref={(element) => (accordionRefs.current[response.id] = element)}
           >
             <EditableSurveyResponseListItem
-              showMap
+              showMap={hasMapField}
               isAccordion
               response={response}
               operators={operators}

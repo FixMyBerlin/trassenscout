@@ -38,7 +38,10 @@ Bei Fragen zum Formular erreichen Sie uns unter [trassenscout@fixmycity.de](mail
       color: "white",
     },
   },
-  backend: backendConfig,
+  backend: {
+    ...backendConfig,
+    labels: { ...backendConfig.labels, category: { sg: "Indikator" } },
+  },
   email: {
     subject: "Bestätigung Ihrer Messwerterfassung – Klimamobilitätsplan Landkreis Ludwigsburg",
     markdown: `Guten Tag,
@@ -48,7 +51,7 @@ vielen Dank für Ihre Übermittlung. Ihre Angaben zum Klimamobilitätsplan im La
 Zur Dokumentation erhalten Sie eine Zusammenfassung Ihrer Angaben:
 
 - **Kommune:** {{commune}}
-- **Indikator:** {{indicator}}
+- **Indikator:** {{category}}
 - **Messwert:** {{feedbackText}}
 - **Messdatum / Bezugszeitraum:** {{measurementDate}}
 - **Kommentar:** {{comment}}
@@ -58,7 +61,7 @@ Bei Fragen zum Formular erreichen Sie uns unter [trassenscout@fixmycity.de](mail
 Mit freundlichen Grüßen
 
 Ihr Trassenscout-Team`,
-    fields: ["commune", "indicator", "feedbackText", "measurementDate", "comment"],
+    fields: ["commune", "category", "feedbackText", "measurementDate", "comment"],
   },
   adminEmail: null,
 } satisfies FormConfig

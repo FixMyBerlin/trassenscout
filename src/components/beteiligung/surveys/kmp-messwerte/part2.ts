@@ -134,7 +134,7 @@ Alle personenbezogenen Daten werden gemäß DSGVO verarbeitet und nur für die D
           },
         },
         {
-          name: "indicator",
+          name: "category",
           component: "SurveySelect",
           componentType: "form",
           validation: fieldValidationEnum.requiredString,

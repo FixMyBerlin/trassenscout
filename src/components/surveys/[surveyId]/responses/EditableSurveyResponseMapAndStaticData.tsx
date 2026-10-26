@@ -28,6 +28,7 @@ type FormFieldConfig = Extract<FieldConfig, { componentType: "form" }>
 /**
  * Retrieve the `config.bounds` from the survey field config to use as the map's
  * initial viewport when a response has neither a location pin nor geometry coordinates.
+ * `undefined` for surveys without a map field; those show no map.
  */
 const getConfigBoundsFromFieldConfig = (
   feedbackQuestions: FormFieldConfig[],
@@ -46,7 +47,7 @@ const getConfigBoundsFromFieldConfig = (
     return geoCategoryQuestion.props.mapProps.config.bounds
   }
 
-  throw new Error("Survey config must have either a location or geometryCategory field")
+  return undefined
 }
 
 type Props = {
@@ -181,7 +182,7 @@ const EditableSurveyResponseMapAndStaticData = ({ response, showMap, categoryLab
           />
         </div>
         {/* RIGHT SIDE */}
-        {showMap && (
+        {showMap && configBounds && (
           <div>
             <MapProvider>
               <EditableSurveyResponseFormMap
