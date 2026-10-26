@@ -20,7 +20,7 @@ Wire local ESLint-compatible rules as Oxlint `jsPlugins` in `oxlint.config.mjs`:
 - `lint/plugins/no-auth-boundary-import.mjs` — blocks direct imports from low-level auth/session helpers outside `src/server/auth/`
 - `lint/utils/endpoint-auth-ast.mjs` — AST helper for `endpointAuth.*` and allowed route auth functions
 
-Copy from [trassenscout `lint/`](https://github.com/FixMyBerlin/trassenscout/tree/develop/lint) when adopting in a new app. Base oxlint setup: `tech-stack` → [oxc-config.md](../../tech-stack/references/oxc-config.md).
+Copy from [trassenscout `lint/`](https://github.com/FixMyBerlin/trassenscout/tree/develop/lint) when adopting in a new app. Base oxlint setup: `tech-stack` → `references/oxc-config.md`.
 
 The public API is `src/server/auth/endpointAuth.server.ts`. Boundary functions start with calls like:
 

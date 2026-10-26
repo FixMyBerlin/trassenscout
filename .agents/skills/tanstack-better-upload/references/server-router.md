@@ -62,7 +62,7 @@ if (!user) throw new RejectUpload("Not logged in")
 
 **Why `RejectUpload` over a plain `Error`:** `handleRequest` catches `RejectUpload` internally and returns **HTTP 400** with body `{ error: { type: 'rejected', message } }` — exactly the envelope `@better-upload/client` parses (`onError` reads `error.message`). A plain `Error` is **rethrown out of `handleRequest`** (there is no outer try/catch); left alone it surfaces as a 500 with no client-parseable message.
 
-In Trassenscout the `onBeforeUpload` paths throw `RejectUpload`, so `handleRequest` shapes the 400 envelope itself; the `uploadErrorResponse` wrapper is only a catch-all that maps unexpected/auth errors to a fallback `Response`. If you instead rely on a plain `Error`, that wrapper must emit the same `{ error: { message } }` envelope the client reads — a bare `{ error: 'string' }` body is **not** parsed (`error.message` is `undefined`), so the message is dropped to a generic fallback.
+In Trassenscout the `onBeforeUpload` paths throw `RejectUpload`; the `uploadErrorResponse` wrapper is only a catch-all that maps unexpected/auth errors to a fallback `Response`. If you rely on a plain `Error`, that wrapper must emit the same `{ error: { message } }` envelope — a bare `{ error: 'string' }` body is **not** parsed (`error.message` is `undefined`), so the client shows a generic fallback.
 
 ## onAfterSignedUrl
 
@@ -81,24 +81,21 @@ const params = SurveyUploadParamsSchema.safeParse({
   surveyResponseId: clientMetadata?.surveyResponseId,
   surveySessionId: clientMetadata?.surveySessionId,
 })
-if (!params.success) throw new Error("Missing or invalid survey session")
+if (!params.success) throw new RejectUpload("Missing or invalid survey session")
 ```
 
 Validate metadata with Zod in `onBeforeUpload`, not on the client alone.
 
 ## Key naming
 
-- Sanitize filenames (`sanitizeKey`) — avoid path traversal
-- Include tenant scope (`projectSlug`, user id folder)
-- Use UUID segment to prevent collisions
-- Store `source: "uploadDropzone"` (or enum) in object metadata for debugging
+Keys combine tenant scope (`projectSlug`, user id), a UUID segment and a sanitized filename (`sanitizeKey`); store `source: "uploadDropzone"` (or enum) in object metadata for debugging.
 
 ## handleRequest
 
 Single entry for all Better Upload protocol steps (sign, complete multipart, etc.):
 
 ```ts
-return handleRequest(request, router)
+return await handleRequest(request, router) // await inside try/catch so errors reach the catch
 ```
 
 Do not reimplement presign logic manually unless using low-level TanStack Query `uploadFiles()` API.
@@ -124,4 +121,4 @@ upload(files, { metadata: { surveyResponseId, surveySessionId } })
 
 ## Non-upload S3 operations
 
-For reads/deletes outside the upload flow, use `@better-upload/server/helpers` with `getConfiguredS3Client()` — see [s3-helpers.md](s3-helpers.md). Do not use `putObject` for browser uploads; do not reach for raw `@aws-sdk/client-s3` when a helper exists.
+Reads/deletes outside the upload flow: see [s3-helpers.md](s3-helpers.md). Do not use `putObject` for browser uploads.

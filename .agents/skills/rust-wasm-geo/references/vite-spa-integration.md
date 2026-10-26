@@ -29,23 +29,24 @@ Install: `vite-plugin-wasm`, `vite-plugin-top-level-await` (WASM modules often n
 From repo root (adjust paths):
 
 ```bash
-cd wasm/geo-isochrone
-wasm-pack build --target web --out-dir ../../src/features/isochrone/pkg
+cd wasm/geo-isochrone && wasm-pack build --target web
 ```
+
+wasm-pack writes the JS glue and `.wasm` to `wasm/geo-isochrone/pkg/` (its default out-dir), so no `--out-dir` flag is needed.
 
 Add to app scripts:
 
 ```json
 {
   "scripts": {
-    "wasm:build": "wasm-pack build --target web --out-dir src/features/isochrone/pkg",
+    "wasm:build": "cd wasm/geo-isochrone && wasm-pack build --target web",
     "dev": "bun run wasm:build && vite",
     "build": "bun run wasm:build && vite build"
   }
 }
 ```
 
-Commit `pkg/` or regenerate in CI before `vite build` — pick one policy per repo and document it.
+Commit `wasm/geo-isochrone/pkg/` or regenerate in CI before `vite build` — pick one policy per repo and document it.
 
 ---
 
@@ -59,6 +60,15 @@ src/
 │   └── IsochronePanel.tsx   # imports wasm.ts / hook only
 └── components/map/
     └── MapView.tsx          # React Map GL — no WASM imports
+```
+
+Crate and generated output (outside `src/`):
+
+```
+wasm/geo-isochrone/
+├── Cargo.toml
+├── pkg/                     # wasm-pack output; only src/features/isochrone/wasm.ts imports it
+└── src/
 ```
 
 ---

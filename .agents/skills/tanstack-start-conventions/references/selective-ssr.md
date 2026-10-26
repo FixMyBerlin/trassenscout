@@ -1,35 +1,15 @@
 # TanStack Start — Selective SSR
 
-How to use TanStack Start selective SSR and how it differs from `@tanstack/react-router-ssr-query`.
+Same route `ssr` rules for all FMC Start apps (TILDA, Trassenscout). Loader + Query conventions: `tanstack-router-conventions` → `references/router-and-query.md`; this file covers only Start `ssr` + Query dehydration.
 
-Applies to FMC TanStack Start apps (e.g. **TILDA**, **Trassenscout**): same route `ssr` rules under each app’s `src/routes/` tree.
-
-**Loader + Query conventions** (cache priming, `useSuspenseQuery`, router defaults) → skill `tanstack-router-conventions` → [router-and-query.md](../../tanstack-router-conventions/references/router-and-query.md). This file covers only Start `ssr` + Query dehydration.
-
-Official docs:
-
-- TanStack Start Selective SSR: <https://tanstack.com/start/latest/docs/framework/react/guide/selective-ssr>
-- TanStack Router Query integration: <https://tanstack.com/router/latest/docs/integrations/query>
-
----
+Official: [Selective SSR](https://tanstack.com/start/latest/docs/framework/react/guide/selective-ssr) · [Router Query integration](https://tanstack.com/router/latest/docs/integrations/query)
 
 ## What controls what
 
-Two features are related, but they solve different problems:
+- **Route `ssr` (`true` / `'data-only'` / `false`):** whether the component renders on the server and whether `beforeLoad` / `loader` run there.
+- **`@tanstack/react-router-ssr-query`:** how QueryClient state is dehydrated/streamed/hydrated. Complementary; used together.
 
-- **Route `ssr` option (`true` / `'data-only'` / `false`):** controls route execution and rendering behavior on the initial server request.
-- **`@tanstack/react-router-ssr-query`:** controls React Query dehydration, streaming, and hydration between server and client.
-
-In short:
-
-- `ssr` decides if a route component is rendered on the server and whether `beforeLoad` / `loader` run on the server.
-- `@tanstack/react-router-ssr-query` decides how QueryClient state moves from server to client.
-
-They are complementary and used together.
-
-## Route defaults and rule of thumb
-
-Keep the app default as full SSR and set selective SSR per route where needed.
+## Route defaults
 
 - **Convention:** always set `ssr` explicitly in route definitions (do not rely on implicit defaults).
 - **Default:** full SSR (`ssr: true` behavior).
@@ -38,34 +18,17 @@ Keep the app default as full SSR and set selective SSR per route where needed.
 
 ## API routes (`server.handlers`)
 
-Handler-only route files have no React `component` — only `server.handlers` (REST, webhooks, Better Auth, uploads, exports). In FMC apps these usually live under **`src/routes/api/**`** (flat or nested files; TILDA may use `api/\*.ts` at the routes root with the same pattern).
+Handler-only route files (no `component`; REST, webhooks, Better Auth, uploads, exports; usually `src/routes/api/**`, TILDA may use flat `api/*.ts`) set **`ssr: false`** explicitly: it documents that the route is outside the React SSR pipeline and avoids accidental server `beforeLoad` / `loader`. `server.handlers` still run on the server. Never `ssr: true` on API-only routes; migrate legacy ones when touched.
 
-Set **`ssr: false`** explicitly on every handler-only route:
+## Map-heavy route with `data-only`
 
-- Documents that the route is not part of the React SSR pipeline.
-- Avoids accidental server `beforeLoad` / `loader` if someone adds them later.
-- `server.handlers` still run on the server; `ssr` does **not** disable handlers.
-
-Do not use `ssr: true` on API-only routes — it suggests React SSR is intended. Legacy `ssr: true` on API files should be migrated to `ssr: false` when touched.
-
-## Example: map-heavy route with `data-only`
-
-Typical pattern for a client-heavy page that still needs server auth and cache priming:
-
-- Route: e.g. `/regionen/$regionSlug` (TILDA) or `/items/$itemId/map`
-- Setting: `ssr: 'data-only'`
-
-Why:
-
-- Main UI is MapLibre/canvas-based and client-heavy.
-- You still need server `beforeLoad` and `loader` for redirect normalization, auth context, and initial data work.
-- Loader preloads React Query cache (`ensureQueryData(...)`); `@tanstack/react-router-ssr-query` dehydrates/hydrates that cache for the client.
+e.g. `/regionen/$regionSlug` (TILDA): `ssr: 'data-only'` because the UI is MapLibre/canvas-heavy but server `beforeLoad` / `loader` still do redirect normalization, auth context and `ensureQueryData(...)` cache priming; `@tanstack/react-router-ssr-query` dehydrates/hydrates that cache.
 
 ## Operational notes
 
 - Keep `setupRouterSsrQueryIntegration(...)` in `router.tsx`.
 - Prefer configuring selective SSR at leaf routes instead of broad parent routes unless all children should inherit that restriction.
-- SSR inheritance is one-way to stricter modes only (`true` -> `'data-only'` -> `false`), so setting `ssr: true` at higher levels is safe because child routes can still become more restrictive later, but a child route cannot become less restrictive than its parent. See TanStack docs: <https://tanstack.com/start/latest/docs/framework/react/guide/selective-ssr#inheritance>.
+- Inheritance only gets stricter (`true` -> `'data-only'` -> `false`), so `ssr: true` on parents is safe; a child cannot be less restrictive than its parent ([docs](https://tanstack.com/start/latest/docs/framework/react/guide/selective-ssr#inheritance)).
 - Ensure data-only routes have a useful route `pendingComponent`, because fallback UI is what is rendered server-side for the first matching non-SSR route.
 
 ## Server Components + selective SSR

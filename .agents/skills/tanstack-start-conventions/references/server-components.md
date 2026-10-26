@@ -6,21 +6,19 @@ Server Components render React on the server and stream to the client. Heavy dep
 
 **Official docs:** [Server Components](https://tanstack.com/start/latest/docs/framework/react/guide/server-components)
 
-**Related FMC refs:** [execution-model.md](execution-model.md) · [client-server-boundaries.md](client-server-boundaries.md) (where RSC code lives) · [selective-ssr.md](selective-ssr.md) (pairing with `ssr`) · `tanstack-router-conventions` → [router-and-query.md](../../tanstack-router-conventions/references/router-and-query.md) (Query loaders)
+**Related:** [client-server-boundaries.md](client-server-boundaries.md) (where RSC code lives) · [selective-ssr.md](selective-ssr.md) (pairing with `ssr`)
 
 ---
 
 ## When to use RSC
 
-Default FMC data/UI flow is isomorphic loaders + `createServerFn` + React Query — see [client-server-boundaries.md](client-server-boundaries.md) and `tanstack-router-conventions` → [router-and-query.md](../../tanstack-router-conventions/references/router-and-query.md). Reach for RSC when you need:
+Default FMC data/UI flow is isomorphic loaders + `createServerFn` + React Query ([execution-model.md](execution-model.md), `tanstack-router-conventions` → `references/router-and-query.md`). Reach for RSC when you need:
 
 - Heavy server-only rendering (markdown, syntax highlighting) without bloating the client bundle
 - Server-rendered UI composed with client interactivity via **slots**
 - Progressive streaming of server-rendered widgets
 
 RSC is **not** async server components in route files. Create UI in `*.functions.ts` (`createServerFn`), return through the route `loader`, render as `{Renderable}` or `<CompositeComponent src={...} />`.
-
-For the default isomorphic data path, see [execution-model.md](execution-model.md).
 
 ---
 
@@ -32,19 +30,19 @@ RSC is additive on that baseline. Follow the official [**Setup → Vite**](https
 
 ---
 
-## Official docs — read there, not here
+## Official docs - read there, not here
 
-| Topic                                                            | Official section                                                                                                                                                                                                                                |
-| ---------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Helpers (`renderServerComponent`, `createCompositeComponent`)    | [Quick Start](https://tanstack.com/start/latest/docs/framework/react/guide/server-components#quick-start)                                                                                                                                       |
-| Slot types (`children`, render props, component props)           | [Passing Props and Composition](https://tanstack.com/start/latest/docs/framework/react/guide/server-components#passing-props-and-composition)                                                                                                   |
-| Router / Query caching, `structuralSharing: false`, invalidation | [Caching](https://tanstack.com/start/latest/docs/framework/react/guide/server-components#caching)                                                                                                                                               |
-| `ssr: 'data-only'` / `ssr: false` with RSC                       | [Combining with Selective SSR](https://tanstack.com/start/latest/docs/framework/react/guide/server-components#combining-with-selective-ssr)                                                                                                     |
-| Parallel fetches, bundling, streaming, generators                | [Advanced Patterns](https://tanstack.com/start/latest/docs/framework/react/guide/server-components#advanced-patterns)                                                                                                                           |
-| Route vs widget errors                                           | [Error Handling](https://tanstack.com/start/latest/docs/framework/react/guide/server-components#error-handling)                                                                                                                                 |
-| `React.cache`, `Link`, CSS                                       | [Tips](https://tanstack.com/start/latest/docs/framework/react/guide/server-components#tips)                                                                                                                                                     |
-| Slot opacity, serialization rules, experimental status           | [Rules and Limitations](https://tanstack.com/start/latest/docs/framework/react/guide/server-components#rules-and-limitations) · [Current Status](https://tanstack.com/start/latest/docs/framework/react/guide/server-components#current-status) |
-| `renderToReadableStream`, `createFromFetch`                      | [Low-Level Flight Stream APIs](https://tanstack.com/start/latest/docs/framework/react/guide/server-components#low-level-flight-stream-apis)                                                                                                     |
+All sections of [Server Components](https://tanstack.com/start/latest/docs/framework/react/guide/server-components):
+
+- Helpers (`renderServerComponent`, `createCompositeComponent`): `#quick-start`
+- Slot types (`children`, render props, component props): `#passing-props-and-composition`
+- Router / Query caching, `structuralSharing: false`, invalidation: `#caching`
+- `ssr: 'data-only'` / `ssr: false` with RSC: `#combining-with-selective-ssr`
+- Parallel fetches, bundling, streaming, generators: `#advanced-patterns`
+- Route vs widget errors: `#error-handling`
+- `React.cache`, `Link`, CSS: `#tips`
+- Slot opacity, serialization rules, experimental status: `#rules-and-limitations`, `#current-status`
+- `renderToReadableStream`, `createFromFetch`: `#low-level-flight-stream-apis`
 
 ---
 
@@ -52,7 +50,7 @@ RSC is additive on that baseline. Follow the official [**Setup → Vite**](https
 
 ### Caching with Query
 
-Use the FMC loader + Query pattern from `tanstack-router-conventions` → [router-and-query.md](../../tanstack-router-conventions/references/router-and-query.md). RSC adds one constraint on top of official [Caching → TanStack Query](https://tanstack.com/start/latest/docs/framework/react/guide/server-components#tanstack-query): **`structuralSharing: false`** on any `*QueryOptions` that cache RSC values.
+Use the FMC loader + Query pattern from `tanstack-router-conventions` → `references/router-and-query.md`. RSC adds one constraint on top of official [Caching → TanStack Query](https://tanstack.com/start/latest/docs/framework/react/guide/server-components#tanstack-query): **`structuralSharing: false`** on any `*QueryOptions` that cache RSC values.
 
 ### Selective SSR
 

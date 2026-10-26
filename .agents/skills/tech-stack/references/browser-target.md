@@ -2,17 +2,6 @@
 
 `package.json` `browserslist` is the **single source of truth**. Three layers read it:
 
-```mermaid
-flowchart LR
-  browserslist["package.json browserslist"]
-  vite["Vite client build.target"]
-  compat["eslint-plugin-compat"]
-  caniuse["caniuse-lite stats"]
-  browserslist --> vite
-  browserslist --> compat
-  caniuse --> browserslist
-```
-
 | Layer                                       | Role                                             | Reads browserslist?                |
 | ------------------------------------------- | ------------------------------------------------ | ---------------------------------- |
 | `browserslist` queries                      | Which browser versions we support                | —                                  |
@@ -22,15 +11,13 @@ flowchart LR
 | Polyfills (`core-js`, etc.)                 | Shim missing runtime APIs                        | Only if you add them               |
 | Server code (`*.server.ts`, Nitro/Bun)      | Node/Bun APIs                                    | No — unrestricted                  |
 
-**Syntax** → Vite transpiles. **New built-in methods** (`Set.prototype.union`, etc.) → check compat lint / MDN vs resolved target. **Server** → use modern Bun/Node freely.
-
 ---
 
 ## Current config (tilda-geo `app/`)
 
 ### `package.json` — queries + direct dependency
 
-`browserslist` is a **direct devDependency** so Dependabot weekly bumps refresh `caniuse-lite` data.
+`browserslist` is a **direct devDependency** (why: [dependabot.md](dependabot.md)).
 
 ```json
 {
@@ -43,14 +30,7 @@ flowchart LR
 }
 ```
 
-Query semantics:
-
-- **`> 1%`** — versions with ≥1% global usage (includes mobile when they cross the threshold)
-- **`last 2 versions`** — two latest releases per browser (keeps Firefox/others current)
-- **`not dead`** — drop browsers without support for 24+ months
-- **`not op_mini all`, `not kaios > 0`** — exclude low-capability mobile browsers
-
-Browserslist has **no per-platform threshold** (e.g. “30% of iOS users”). Stats are global. For site-specific audiences: `> X in my stats` with [custom usage data](https://github.com/browserslist/browserslist#custom-usage-data).
+`not op_mini all` and `not kaios > 0` exclude low-capability mobile browsers.
 
 ### `vite.config.ts` — client build target only
 

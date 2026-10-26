@@ -10,35 +10,17 @@ description: >-
 
 # Review Dependabot PRs
 
-Workflow for FMC geo React apps. Dependabot **config** (groups, schedule, ignores) lives in skill `tech-stack` — [dependabot.md](../tech-stack/references/dependabot.md). This skill covers **review and merge decisions**.
-
-After merge, use skill `babysit` only if the PR needs conflict/CI/comment follow-up on a feature branch — not for routine scheduled bumps on `develop`.
+Workflow for FMC geo React apps. Dependabot **config** (groups, schedule, ignores, `dependabot.yml` changes) lives in skill `tech-stack` → `references/dependabot.md`. This skill covers **review and merge decisions**.
 
 ## Repo scope
 
-**Work only in the Git repository of the current workspace.** List, review, and merge Dependabot PRs for that repo — never for other repos.
+**Work only in the Git repository of the current workspace** — never review or merge Dependabot PRs for other repos. Run `gh` from the project root without `--repo`. Stop if the workspace is not a git repo or has no `.github/dependabot.yml`.
 
-Run all `gh` commands from the project root **without `--repo`** so GitHub CLI uses the checkout. Stop if the workspace is not a git repo or has no `.github/dependabot.yml`.
-
-Typical FMC app repos target **`develop`** — never merge Dependabot PRs to `main`. Confirm `baseRefName` on each PR; use **AskQuestion** if it looks wrong.
+Typical FMC app repos target **`develop`** — never merge Dependabot PRs to `main`. Confirm `baseRefName` on each PR; use **AskUserQuestion** if it looks wrong.
 
 Policy: **one open Dependabot PR per ecosystem** — merge or explicitly defer (close + ignore) before the next opens.
 
 ## Review workflow
-
-Copy and track:
-
-```
-- [ ] List open Dependabot PRs in this repo
-- [ ] List open security alerts — Bun repos get no PR for them (see below)
-- [ ] Identify PR type (security / grouped patch / major / actions / docker)
-- [ ] Read release notes from the PR body (primary changelog source)
-- [ ] Classify risk (see below)
-- [ ] Scan lockfile + manifest diff for surprises
-- [ ] Confirm CI green on latest commit
-- [ ] Run extra local checks if risk ≥ medium
-- [ ] Merge with rebase, or AskQuestion / defer
-```
 
 ### 1. Gather context
 
@@ -53,7 +35,7 @@ gh pr view <number> --json title,body,baseRefName,headRefName,mergeable,statusCh
 gh pr diff <number> --name-only
 ```
 
-**The PR body is the changelog.** Dependabot embeds release notes for every bumped package (version range, compare link, and excerpted release notes). Read `body` from `gh pr view` first and use that text for triage — do **not** fetch GitHub releases, npm pages, or other external changelogs unless the body is empty or clearly incomplete for a package you must decide on.
+**The PR body is the changelog.** Use `body` from `gh pr view` for triage — do **not** fetch GitHub releases, npm pages, or other external changelogs unless the body is empty or clearly incomplete for a package you must decide on.
 
 In grouped PRs, each package has its own section — scan all of them; one risky entry can block the whole group. Follow **breaking change**, **migration**, and **deprecation** headings in the body before reading the diff or grepping the codebase.
 
@@ -68,12 +50,12 @@ gh api repos/{owner}/{repo}/dependabot/alerts \
 
 ### 2. Classify risk
 
-| Tier                  | Examples                                                                                                                  | Action                                                                                                                                             |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Low**               | Patch dev tools (`knip`, `husky`), typings, isolated utilities                                                            | CI green → merge                                                                                                                                   |
-| **Medium**            | Grouped minor/patch framework deps, `vite`, `oxlint`/`oxfmt`, Playwright                                                  | Read PR-body release notes; spot-check usage; `bun run build` + `bun oxlint` locally if notes mention behavior changes                             |
-| **High**              | `react`, `@tanstack/*`, `maplibre-gl`, `react-map-gl`, `prisma`, `better-auth`, `zod`, `tailwindcss`, `typescript` majors | Read all PR-body notes + migration sections; grep codebase for affected APIs; run build, lint, unit tests; Playwright if maps/auth/routing touched |
-| **Critical decision** | Semver **major**, explicit breaking changes, peer-dep conflicts, CI red, or changelog unclear                             | **AskQuestion** — do not merge until human chooses                                                                                                 |
+| Tier                  | Examples                                                                                                                  | Action                                                                                                                                                                    |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Low**               | Patch dev tools (`knip`, `husky`), typings, isolated utilities                                                            | CI green → merge                                                                                                                                                          |
+| **Medium**            | Grouped minor/patch framework deps, `vite`, `oxlint`/`oxfmt`, Playwright                                                  | Read PR-body release notes; spot-check usage; `bun run build` + `bun oxlint` locally if notes mention behavior changes                                                    |
+| **High**              | `react`, `@tanstack/*`, `maplibre-gl`, `react-map-gl`, `prisma`, `better-auth`, `zod`, `tailwindcss`, `typescript` majors | Read all PR-body notes + migration sections; grep codebase for affected APIs; run build, lint, unit tests; Playwright if maps/auth/routing touched; then merge when green |
+| **Critical decision** | Semver **major**, explicit breaking changes, peer-dep conflicts, CI red, or changelog unclear                             | **AskUserQuestion** — do not merge until human chooses (the only tier that asks)                                                                                          |
 
 Security updates: treat as **medium** minimum — still read notes; do not merge blind even when labeled security. They bypass cooldown and may propose very fresh releases.
 
@@ -81,12 +63,12 @@ Security updates: treat as **medium** minimum — still read notes; do not merge
 
 When PR-body release notes or tier say investigate:
 
-1. `gh pr diff <number>` — focus on `package.json`, `bun.lock`, not only lockfile noise.
+1. `gh pr diff <number>` — focus on `package.json`, not only lockfile noise.
 2. Grep the local checkout for APIs mentioned in breaking sections (deprecated props, renamed exports, config keys).
 3. Load the relevant FMC skill if the bump touches that area (`react-dev`, `react-map-gl`, `tanstack-router-conventions`, `tanstack-start-conventions`, `playwright-skill`, etc.).
-4. Check **peer dependency** warnings in CI logs.
+4. Check peer-dependency warnings in CI logs.
 
-**browserslist** bumps: Dependabot does not change the browserslist query — but lockfile may refresh `caniuse-lite`. After merge, ensure `bun oxlint` and `bun run build` still pass ([browser-target.md](../tech-stack/references/browser-target.md)).
+**browserslist** bumps: Dependabot does not change the browserslist query — but lockfile may refresh `caniuse-lite`. After merge, ensure `bun oxlint` and `bun run build` still pass (skill `tech-stack` → `references/browser-target.md`).
 
 **GitHub Actions** bumps: prefer grouped minor/patch; verify action release notes for runner/input renames; workflow must stay compatible with org secrets and `permissions`.
 
@@ -99,14 +81,14 @@ In Bun repos Dependabot **cannot open security-update PRs**. GitHub files the al
 This is not fixable in `dependabot.yml` or a workflow — do not try. **We keep the failed run as the signal to bump by hand:**
 
 1. Take package, directory and fixed version from the alert list above.
-2. Direct dependency: set the fixed version in `package.json`, then `bun install` in that directory. Transitive (`bun why <package>`): bump the parent, or use **AskQuestion** before adding an `overrides` entry.
+2. Direct dependency: set the fixed version in `package.json`, then `bun install` in that directory. Transitive (`bun why <package>`): bump the parent, or use **AskUserQuestion** before adding an `overrides` entry.
 3. Risk tier is **medium** minimum, as for any security update; read the advisory (`gh api repos/{owner}/{repo}/dependabot/alerts/<number>`) since there is no PR body.
-4. Run the project check, commit as `chore(deps): bump <package> to <version>` with a line saying it is a security fix, and push the way the repo normally takes changes.
+4. Run the project check, commit via skill `finish-work` as `Dev: Bump <package> to <version>` with a body line saying it is a security fix, and push the way the repo normally takes changes.
 5. Confirm the alert list is empty and the next push has no failed `npm_and_yarn` run.
 
-### 5. When to use AskQuestion
+### 5. When to use AskUserQuestion
 
-Use Cursor **AskQuestion** when the agent cannot safely decide alone:
+Use **AskUserQuestion** when the agent cannot safely decide alone:
 
 - Semver **major** for any production or framework dependency
 - Breaking change affects code paths you cannot fully verify in session
@@ -123,7 +105,7 @@ Present concrete options, e.g. merge after local build, close and add `ignore`, 
 
 Requirements:
 
-- All required checks **success**
+- All required checks **success** (never merge red “to unblock the queue”)
 - Risk tier handled per table above
 - No unresolved review threads that block merge
 
@@ -149,43 +131,9 @@ Close without merging when:
 
 Prefer adding a targeted `ignore` in `.github/dependabot.yml` (document why in PR comment) over leaving the PR open — remember `open-pull-requests-limit: 1` blocks the queue.
 
-Config changes: follow skill `tech-stack` [dependabot.md](../tech-stack/references/dependabot.md).
-
-## Quick decision flow
-
-```mermaid
-flowchart TD
-  start[Dependabot PR] --> ci{CI green?}
-  ci -->|no| fix{Fix in scope?}
-  fix -->|yes| fixCi[Fix + push]
-  fix -->|no| ask[AskQuestion]
-  ci -->|yes| notes[Read PR body release notes]
-  notes --> major{Major or breaking?}
-  major -->|yes| investigate[Code + migration check]
-  investigate --> ask
-  major -->|no| tier{Risk tier}
-  tier -->|low| merge[Rebase merge]
-  tier -->|medium| local[Spot-check + build/lint]
-  local --> merge
-  tier -->|high| deep[Tests + domain skill]
-  deep --> ask
-  fixCi --> ci
-```
-
 ## What not to do
 
-- Do not fetch external changelogs when the PR body already has release notes — use `gh pr view` `body` first
-- Do not review or merge Dependabot PRs outside the **current workspace repo**
-- Do not merge with failing required checks “to unblock the queue”
 - Do not refactor app code in the same session as a routine Dependabot merge unless the bump **requires** it
 - Do not change CI workflows to make a bad bump pass — flag instead
 - Do not report "all Dependabot work done" while a security alert is open, and do not try to silence the failed `npm_and_yarn` security run
-- Do not batch-merge multiple open Dependabot PRs without reviewing each (limit should be 1 per ecosystem anyway)
-
-## Related skills
-
-| Skill              | When                                                           |
-| ------------------ | -------------------------------------------------------------- |
-| `tech-stack`       | dependabot.yml, groups, ignores, browserslist                  |
-| `babysit`          | Feature PR stuck on CI/comments — not standard Dependabot flow |
-| `playwright-skill` | After bumps to Playwright, maps, or auth-related deps          |
+- Do not batch-merge multiple open Dependabot PRs without reviewing each

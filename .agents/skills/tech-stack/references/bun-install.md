@@ -15,7 +15,7 @@ Load for global store setup, Vite dev with globalStore, phantom deps, Docker ima
 - Explicit dep enforcement (your imports): [knip.md](knip.md)
 - **Docker images:** Do **not** `COPY` `bunfig.toml` before image `bun install` — `globalStore` links into `/root/.bun/…` and breaks non-root `USER` (`EACCES`). Install from `package.json` + lockfile only (or `BUN_INSTALL_GLOBAL_STORE=0`)
 - **Netlify SSR / functions:** Netlify’s `bun install` must not use the local `bunfig.toml` — see [below](#netlify-ssr-and-function-packaging)
-- **TanStack Start** (Nitro `start` / `preview`, matching production `preset: bun`): skill `tanstack-start-conventions` → [local-runtime.md](../../tanstack-start-conventions/references/local-runtime.md)
+- **TanStack Start** (Nitro `start` / `preview`, matching production `preset: bun`): skill `tanstack-start-conventions` → `references/local-runtime.md`
 
 ## Netlify SSR and function packaging
 

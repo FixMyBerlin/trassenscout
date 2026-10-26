@@ -4,8 +4,7 @@ description: >-
   Better Auth on TanStack Start: betterAuth() config, plugins, adapters, sessions,
   and FMC route protection (layout beforeLoad for route UX, endpointAuth/guards
   for data boundaries, headers, tanstackStartCookies plugin, OAuth sign-in).
-  Use for auth.ts, Better Auth, sign-in flows, session helpers, or secured routes/APIs.
-disable-model-invocation: true
+  Use for auth.server.ts, Better Auth, sign-in flows, session helpers, or secured routes/APIs.
 ---
 
 # TanStack Start + Better Auth
@@ -41,7 +40,7 @@ Single skill for **library configuration** and **Start-specific wiring** in FMC 
 1. Session helpers always receive `headers: Headers` from the current request.
 2. Route `beforeLoad` does not call DB/session directly — server functions + `getRequestHeaders()`.
 3. Use official `tanstackStartCookies()` as the **last** plugin; verify no client-bundle leak after `better-auth` version changes ([auth.md](references/auth.md)).
-4. `/api/auth/$` and other handler-only API routes: `ssr: false` ([selective-ssr.md](../tanstack-start-conventions/references/selective-ssr.md)).
+4. `/api/auth/$` and other handler-only API routes: `ssr: false` (skill `tanstack-start-conventions` → `references/selective-ssr.md`).
 5. API routes: auth inside each handler (no route-level `beforeLoad`).
 6. Admin/role checks with cookie cache: `getSession({ query: { disableCookieCache: true } })`.
 7. Compare API secrets with timing-safe equality.

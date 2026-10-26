@@ -11,7 +11,7 @@ Most FMC apps share the same core (plugins, type-aware lint, switch exhaustivene
 - **`singleQuote`** — template defaults to `true`; flip to match an existing codebase.
 - **`ignorePatterns`** — keep oxlint and oxfmt in sync; add generated paths or tool folders for your repo layout.
 - **`sortTailwindcss.stylesheet`** — point at your global CSS entry.
-- **Custom oxlint `jsPlugins`** — e.g. TanStack Start auth-boundary rules; see skill `tanstack-start-auth` → [endpoint-auth-lint.md](../../tanstack-start-auth/references/endpoint-auth-lint.md).
+- **Custom oxlint `jsPlugins`** — e.g. TanStack Start auth-boundary rules; see skill `tanstack-start-auth` → `references/endpoint-auth-lint.md`.
 - **`eslint-plugin-compat`** — `compat/compat` on client-shipped paths; scoped override in [browser-target.md](browser-target.md). JS-plugin load issues under Bun `globalStore`: [bun-install.md](bun-install.md).
 - **`eslint/no-unused-vars`** — configuring the rule with an object clears oxlint’s defaults, so the template restates the `^_` patterns (oxlint ignores `_foo` but not bare `_`).
 

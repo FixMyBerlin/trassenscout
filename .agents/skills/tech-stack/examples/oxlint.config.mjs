@@ -8,6 +8,7 @@ export default defineConfig({
   options: { typeAware: true },
   ignorePatterns: [
     ".agents/**",
+    ".claude/**",
     ".cursor/**",
     ".output/**",
     "playwright-report/**",

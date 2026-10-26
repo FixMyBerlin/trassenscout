@@ -1,6 +1,6 @@
 # First-time setup
 
-One-time **Better Upload** wiring before domain-specific upload UIs. For ongoing patterns, see [server-router.md](server-router.md) and [client-hooks.md](client-hooks.md). Add [dropzone-ui.md](dropzone-ui.md) only when building multi-file drag-and-drop UX.
+One-time **Better Upload** wiring before domain-specific upload UIs. For ongoing patterns, see [server-router.md](server-router.md) and [client-hooks.md](client-hooks.md).
 
 ## Checklist
 
@@ -20,27 +20,16 @@ Task progress (serving — when previews/downloads use GET /api/ routes):
 - [ ] forwardApiRequestsPastViteAssetMiddleware in vite.config.ts (if previews use `<img src="/api/...">`)
 
 Task progress (react-dropzone — only if multi-file dropzone UX):
-- [ ] bun add react-dropzone
-- [ ] Wire useDropzone onDrop → upload() — see dropzone-ui.md
+- [ ] Install and wire per dropzone-ui.md
 ```
 
 ## Packages
-
-**Better Upload (required for any upload flow):**
 
 ```bash
 bun add @better-upload/server @better-upload/client
 ```
 
 Pin `@better-upload/server` and `@better-upload/client` to the **same version**.
-
-**react-dropzone (optional — multi-file drag-and-drop only):**
-
-```bash
-bun add react-dropzone
-```
-
-Do not install react-dropzone for single-file `useUploadFile` flows or a plain `<input type="file">` that calls `upload()`.
 
 ## Environment & constants
 
@@ -63,34 +52,11 @@ Mirror `maxFileSize` and `maxFiles` in server `route()` from the same constants.
 
 ## S3 CORS (required)
 
-Bucket must allow browser PUT to presigned URLs:
-
-```json
-[
-  {
-    "AllowedOrigins": ["http://localhost:3000", "https://your-domain.com"],
-    "AllowedMethods": ["GET", "PUT", "POST", "DELETE"],
-    "AllowedHeaders": ["*"],
-    "ExposeHeaders": ["ETag"]
-  }
-]
-```
+Bucket CORS must allow browser `PUT` to presigned URLs: `AllowedOrigins` = app origins (localhost + prod), `AllowedMethods` `["GET","PUT","POST","DELETE"]`, `AllowedHeaders` `["*"]`, `ExposeHeaders` `["ETag"]`.
 
 ## S3 client factory
 
-```ts
-import { aws } from "@better-upload/server/clients"
-
-export function getConfiguredS3Client() {
-  return aws({
-    accessKeyId: process.env.S3_UPLOAD_KEY,
-    secretAccessKey: process.env.S3_UPLOAD_SECRET,
-    region: S3_REGION,
-  })
-}
-```
-
-Use the same `getConfiguredS3Client()` (`aws()`) for the upload router and all helper calls. Do not add `@aws-sdk/client-s3` unless a helper gap is confirmed — [s3-helpers.md](s3-helpers.md).
+One shared `getConfiguredS3Client()` (`aws()`) for the upload router and all helper calls — see [s3-helpers.md](s3-helpers.md).
 
 ## API route (POST handler)
 
@@ -164,7 +130,7 @@ export async function handleProjectUploadRoute(request: Request, projectSlug: st
         assertSupportedUploadMimeTypes(files)
       },
     })
-    return handleRequest(request, router)
+    return await handleRequest(request, router)
   } catch (error) {
     return uploadErrorResponse(error)
   }
@@ -188,4 +154,4 @@ Better Upload only uploads. Serving bytes back uses separate GET API routes — 
 
 ## Smoke test
 
-Authenticated page with dropzone → upload small file → assert DB row + S3 key. Network tab: POST to upload API, then PUT to S3.
+Authenticated upload UI → upload small file → assert DB row + S3 key. Network tab: POST to upload API, then PUT to S3.

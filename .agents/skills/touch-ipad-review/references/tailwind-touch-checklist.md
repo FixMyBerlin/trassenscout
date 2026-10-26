@@ -235,11 +235,11 @@ For `react-map-gl` and similar — see skill `react-map-gl`. Additionally:
 
 ## Severity quick reference
 
-| Signal                                                     | Severity     |
-| ---------------------------------------------------------- | ------------ |
-| Primary CTA &lt; 44px, or hover-only menu                  | Critical     |
-| Open menu (Headless/Radix): hover-only, no focus/highlight | Warning      |
-| Inline sidebar list: hover-only rows, no touch-over        | Warning      |
-| Sticky hover changes layout / hides actions                | Warning      |
-| Missing `select-none` / `cursor-pointer` on some controls  | Warning      |
-| Thumb-zone / `dvh` / safe-area polish                      | Nice to have |
+| Signal                                                    | Severity     |
+| --------------------------------------------------------- | ------------ |
+| Primary CTA &lt; 44px, or menu that only opens on hover   | Critical     |
+| Open menu (Headless/Radix): hover-only item highlight     | Warning      |
+| Inline sidebar list: hover-only rows, no touch-over       | Warning      |
+| Sticky hover changes layout / hides actions               | Warning      |
+| Missing `select-none` / `cursor-pointer` on some controls | Warning      |
+| Thumb-zone / `dvh` / safe-area polish                     | Nice to have |

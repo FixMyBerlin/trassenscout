@@ -1,55 +1,37 @@
 # Server Functions (TanStack Start)
 
-Server functions run on the server and are callable from routes and components like async functions.
-
 **Official docs:** [Server Functions](https://tanstack.com/start/latest/docs/framework/react/guide/server-functions)
 
-**Related:** [execution-model.md](execution-model.md) · [client-server-boundaries.md](client-server-boundaries.md) (file suffixes) · `tanstack-start-auth` (auth inside handlers) · client mutation wrappers: `tanstack-router-conventions` → [router-and-query.md](../../tanstack-router-conventions/references/router-and-query.md#client-mutations)
-
----
+**Related:** [execution-model.md](execution-model.md) · [client-server-boundaries.md](client-server-boundaries.md) (file suffixes, `*Fn` naming) · `tanstack-start-auth` (auth inside handlers) · client mutation wrappers: `tanstack-router-conventions` → `references/router-and-query.md#client-mutations`
 
 ## createServerFn
 
-**Isomorphic behavior:** On the server, the handler runs directly. On the client (e.g. loader during soft nav), the call becomes a typed RPC request.
-
-**Definition:** Use `.validator()`; the client receives a function that expects `{ data: T }`.
+Use `.validator()` (Zod schema or function); the client calls it with `{ data }`.
 
 ```tsx
 import { createServerFn } from "@tanstack/react-start"
+import { z } from "zod"
+
+const schema = z.object({ name: z.string().min(2) })
 
 export const updateNameFn = createServerFn({ method: "POST" })
-  .validator((data: { name: string }) => {
-    if (typeof data.name !== "string" || data.name.length < 2) throw new Error("Invalid name")
-    return data
-  })
+  .validator(schema)
   .handler(async ({ data }) => {
     await db.user.update({ where: { id: currentUser.id }, data: { name: data.name } })
     return { ok: true }
   })
-```
 
-**From client or route:**
-
-```tsx
-import { updateNameFn } from "@/server/profile/profile.functions"
-
+// caller
 await updateNameFn({ data: { name: "Jane" } })
 ```
 
-- **method:** `'POST'` for mutations; `'GET'` (or omit) for idempotent reads.
-- **validator:** Validate before handler; handler receives `{ data }`.
-- **handler:** Async; DB, external APIs, fs. Return serializable value.
+Multiple arguments: pass a single object through the validator.
 
-That is the RPC shape. Loaders call `*Fn` directly. In components, wrap non-form calls in `useMutation` and form submits in Form `onSubmit` — `tanstack-router-conventions` → [router-and-query.md](../../tanstack-router-conventions/references/router-and-query.md#client-mutations). On Start, `mutationFn` is `await deleteItemFn({ data: { id } })` (throw if `{ success: false }`).
+Loaders call `*Fn` directly. In components, non-form calls go through `useMutation` (`mutationFn` is `await deleteItemFn({ data: { id } })`, throw if `{ success: false }`); form submits go through Form `onSubmit`.
 
-## FMC file conventions
+## FMC file layout
 
-| Suffix           | Purpose                                                                                             |
-| ---------------- | --------------------------------------------------------------------------------------------------- |
-| `*.server.ts`    | Server-only modules; use `createServerOnlyFn` for exports — **never** imported by routes/components |
-| `*.functions.ts` | `createServerFn` exports (`*Fn` naming); imported by routes and components                          |
-
-Example layout:
+`*.server.ts` and `*.functions.ts` rules: [client-server-boundaries.md](client-server-boundaries.md).
 
 ```
 server/profile/
@@ -58,82 +40,13 @@ server/profile/
 └── profile.functions.ts    # updateProfileFn, getProfileFn
 ```
 
-Route files call server fns in `loader` / `beforeLoad` — not direct `*.server.ts` imports.
+## Forms and invalidation
 
-## Validation (Zod)
-
-```tsx
-import { z } from "zod"
-
-const schema = z.object({ name: z.string().min(2), email: z.string().email() })
-
-export const submitFormFn = createServerFn({ method: "POST" })
-  .validator(schema)
-  .handler(async ({ data }) => {
-    // data: { name: string; email: string }
-  })
-```
-
-## Form submit (no formAction)
-
-**Forms only** — not delete/revoke/import buttons (those use `useMutation`). `onSubmit` → server fn → invalidate/redirect. Optional `useTransition` for pending on a native `<form>`; with TanStack Form, use `isSubmitting` instead.
-
-```tsx
-import { useTransition } from "react"
-import { useQueryClient } from "@tanstack/react-query"
-import { updateNameFn } from "@/server/profile/profile.functions"
-
-function ProfileForm() {
-  const [isPending, startTransition] = useTransition()
-  const queryClient = useQueryClient()
-
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    const formData = new FormData(e.currentTarget)
-    const name = String(formData.get("name") ?? "")
-    startTransition(async () => {
-      await updateNameFn({ data: { name } })
-      await queryClient.invalidateQueries({ queryKey: ["profile"] })
-    })
-  }
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <input name="name" disabled={isPending} />
-      <button type="submit" disabled={isPending}>
-        Save
-      </button>
-    </form>
-  )
-}
-```
-
-## Errors
-
-- Throw in handler → client receives error. Use `try/catch` at call site and/or route `errorComponent`.
-- For validation errors, throw structured errors for field-level UI.
-
-## Invalidation after mutations
-
-After a mutation that changes loader/Query data:
-
-- **React Query:** `queryClient.invalidateQueries({ queryKey: [...] })`
-- **Router:** `router.invalidate()` for loader-only routes
-
-Where to call these (Form `onSubmit` vs `useMutation` `onSuccess`) is in [router-and-query.md](../../tanstack-router-conventions/references/router-and-query.md#client-mutations).
+- **Forms only** use `onSubmit` -> server fn -> invalidate/redirect. Delete/revoke/import buttons use `useMutation`.
+- Pending state: `useTransition` on a native `<form>`; `isSubmitting` with TanStack Form.
+- After a mutation call `queryClient.invalidateQueries({ queryKey })` for Query data, `router.invalidate()` for loader-only routes. Where to call them (`onSubmit` vs `onSuccess`): `tanstack-router-conventions` → `references/router-and-query.md#client-mutations`.
+- Validation errors: throw structured errors for field-level UI.
 
 ## Auth note
 
 Route `beforeLoad` protects the page UX; it does **not** stop direct RPC to a server function. Apply auth checks inside every server function handler that needs it. See `tanstack-start-auth`.
-
-## Multiple arguments
-
-Pass a single object via validator:
-
-```tsx
-export const updateItemFn = createServerFn({ method: 'POST' })
-  .validator((input: { id: string; name: string }) => input)
-  .handler(async ({ data }) => { ... })
-```
-
-Call: `updateItemFn({ data: { id: '1', name: 'Foo' } })`.

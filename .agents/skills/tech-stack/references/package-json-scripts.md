@@ -2,7 +2,7 @@
 
 Template: [examples/package-json-scripts.md.template](../examples/package-json-scripts.md.template).
 
-Copy to `.cursor/rules/package-json-scripts.md` on scaffold; tune per app layout.
+Copy to `.claude/rules/package-json-scripts.md` on scaffold; tune per app layout.
 
 ## Policy
 
@@ -22,7 +22,7 @@ Who runs what — agents and docs only reference these names:
 
 | Script               | Who runs it                                           | Role                                                                                                  |
 | -------------------- | ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| **`check`**          | [finish-work](../../finish-work/SKILL.md) skill       | **Mutating** — `--parallel type-check lint format test-run [knip-warn]`                               |
+| **`check`**          | skill `finish-work` → `SKILL.md`                      | **Mutating** — `--parallel type-check lint format test-run [knip-warn]`                               |
 | **`check-ci`**       | CI (`bun run check-ci`)                               | **Read-only** — `--parallel type-check lint-check format-check test-run` (reuses leaf scripts)        |
 | **`check-pre-push`** | husky [pre-push](../examples/husky/pre-push.template) | **Mutating** — parallel leaves; swap in repo-specific steps (e.g. `type-check-deploy`, strict `knip`) |
 | **`check-full`**     | Optional (e.g. trassenscout)                          | `check-pre-push` then `e2e`                                                                           |
@@ -60,6 +60,6 @@ Multi-path lint/format (tilda-geo style): write-mode uses `lint: "bun run --para
 ## Scaffold setup
 
 ```bash
-mkdir -p .cursor/rules
-cp path/to/package-json-scripts.md.template .cursor/rules/package-json-scripts.md
+mkdir -p .claude/rules
+cp path/to/package-json-scripts.md.template .claude/rules/package-json-scripts.md
 ```

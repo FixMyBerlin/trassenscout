@@ -7,64 +7,63 @@ description: >-
   missing images. Use when building or reviewing Map components, layers, click/hover handlers,
   setFeatureState, map URL sync, or agent/test map inspection in TanStack Start / Vite apps.
   Reference implementation: tilda-geo/app.
-disable-model-invocation: true
 ---
 
 # react-map-gl (MapLibre)
 
 Conventions for `react-map-gl/maplibre` in FixMyBerlin / FMC projects. Import from `react-map-gl/maplibre` (not `react-map-gl` alone). Always import `maplibre-gl/dist/maplibre-gl.css`.
 
-## When to apply
-
-- Adding or changing `<Map>`, `<Source>`, `<Layer>`, controls, markers
-- Click/hover/feature inspection wired to map events
-- Syncing viewport to URL (`map=zoom/lat/lng`)
-- Child components that need the map instance (feature state, fitBounds, queryRenderedFeatures)
-- Debugging “map half loaded” errors, missing style images, or wrong click targets
-- Highlighting selected/hovered features (`setFeatureState` vs layer `filter`)
-- Reviewing code that uses `useEffect` to sync map camera, clicks, or hover
-- Code calling `map.addSource`, `map.addLayer`, or effect-driven layer lifecycle
-- Agent or E2E inspection of layer order, zoom, or rendered features (`window.__mainMap`)
-
-## Reference reading order
-
-1. [declarative-source-layer.md](references/declarative-source-layer.md) — **`<Source>` / `<Layer>` only; never `map.addSource` / `map.addLayer`**
-2. [map-event-handlers.md](references/map-event-handlers.md) — **which `<Map>` handler for which use case; not useEffect**
-3. [map-provider-wrapper.md](references/map-provider-wrapper.md) — **MapProvider parent; useMap(); never manual refs**
-4. [interactive-layer-ids.md](references/interactive-layer-ids.md) — `interactiveLayerIds` + `event.features` (not raw MapLibre)
-5. [map-loaded-hook.md](references/map-loaded-hook.md) — guard map API calls until `onLoad` / `useMapLoaded()`
-6. [map-debug-exposure.md](references/map-debug-exposure.md) — **`window.__mainMap` in dev/Playwright; `exposeMainMapForDebugging` in `onLoad`**
-7. [feature-state.md](references/feature-state.md) — **`setFeatureState` vs React `filter`; reset/diff; inspector sync**
-8. [flat-source-layer.md](references/flat-source-layer.md) — sibling `<Source>` + `<Layer>`, required props
-9. [layer-visibility-vs-unmount.md](references/layer-visibility-vs-unmount.md) — `layout.visibility` vs conditional render
-10. [map-props-attribution-locale.md](references/map-props-attribution-locale.md) — `attributionControl={false}`, `locale`, `RTLTextPlugin`
-11. [cursor-handling.md](references/cursor-handling.md) — `cursor` prop from hover state
-12. [initial-view-state.md](references/initial-view-state.md) — uncontrolled `initialViewState` vs URL-driven vs bounds
-13. [map-url-state.md](references/map-url-state.md) — Map ↔ URL sync (`onMoveEnd`); URL format → `tanstack-router-conventions` → `map-search-param.md`
-14. [map-images-missing.md](references/map-images-missing.md) — `styleimagemissing` + dynamic icons
-15. [map-images-proactive.md](references/map-images-proactive.md) — proactive `addImage` for known sprites (vzk-bw)
-
-Pair with: skill `tanstack-router-conventions` (`?map=` URL contract), skill `nuqs` (legacy URL parsers), skill `zustand-state-management` (map UI store like `useMapLoaded`), skill `playwright-skill` (E2E map helpers, `getMapLayerIds`).
-
-## Non-negotiable rules
-
-| Topic             | Rule                                                                                                                                                                                                      |
-| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Sources / layers  | **`<Source>` + `<Layer>` in JSX only.** **Never** `map.addSource` / `map.addLayer` (or remove\*) for app data. Show/hide via `layout.visibility` or conditional render — see declarative-source-layer.md. |
-| Map events        | Camera, pointer, load, and tile lifecycle → `<Map>` callback props. **Not** `useEffect` + `map.on(…)` for the same behavior.                                                                              |
-| Map access        | Wrap app map UI in `<MapProvider>`. Use `useMap()` keyed by `<Map id="…">`. **Never** pass `ref` to `<Map>` for child access.                                                                             |
-| Map ready         | Guard `getStyle`, `queryRenderedFeatures`, `setFeatureState`, etc. with `useMapLoaded()` (set in `onLoad`).                                                                                               |
-| Debug exposure    | In `onLoad`, call `exposeMainMapForDebugging(event.target)` (dev + Playwright only). Agents/tests read `window.__mainMap` — see map-debug-exposure.md.                                                    |
-| Layers            | Flat siblings: one `<Source>` per source id, then `<Layer>` siblings (not nested layers under Source for refactorability).                                                                                |
-| Clicks            | Put layer ids in `interactiveLayerIds`; read `event.features` in handlers — do not call `queryRenderedFeatures` for primary click picking unless syncing URL features.                                    |
-| Feature highlight | Inspector/form truth in React; map tint via `setFeatureState` (paint) or React `filter` layer — see feature-state.md. Clear old state before applying new.                                                |
-| Attribution       | `attributionControl={false}` on `<Map>`; add `<AttributionControl compact>` as child. `compact` is not start-closed — see map-props-attribution-locale.md.                                                |
-| Viewport URL      | Serialize `zoom/lat/lng` with zoom-aware lat/lng rounding; write on `onMoveEnd` with `history: 'replace'`.                                                                                                |
-| View state        | Prefer **uncontrolled** `initialViewState` seeded from URL; do not mirror full viewState in React state unless you need programmatic camera control.                                                      |
-
-## Quick import
-
 ```tsx
 import "maplibre-gl/dist/maplibre-gl.css"
 import { MapProvider, Map, Source, Layer, useMap } from "react-map-gl/maplibre"
 ```
+
+## Rules
+
+| Topic             | Rule                                                                                                                                                                                                     |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Sources / layers  | `<Source>` + `<Layer>` in JSX only. Never `map.addSource` / `map.addLayer` (or remove\*) for app data. Show/hide via `layout.visibility` or conditional render.                                          |
+| Layer structure   | Flat siblings: one `<Source>` per source id, then `<Layer>` siblings (not nested).                                                                                                                       |
+| Map events        | Camera, pointer, load, tile lifecycle go on `<Map>` callback props. Not `useEffect` + `map.on(…)`. `useEffect` only for React → map sync after load, or events without a Map prop (`styleimagemissing`). |
+| Map access        | Wrap app map UI in `<MapProvider>`. `useMap()` keyed by `<Map id="…">`. Never pass `ref` to `<Map>` for child access.                                                                                    |
+| Map ready         | Guard `getStyle`, `queryRenderedFeatures`, `setFeatureState` with `useMapLoaded()` (set in `onLoad`).                                                                                                    |
+| Debug exposure    | In `onLoad`, call `exposeMainMapForDebugging(event.target)` (dev + Playwright only). Agents/tests read `window.__mainMap`.                                                                               |
+| Clicks            | Layer ids in `interactiveLayerIds`; read `event.features`. No `queryRenderedFeatures` for primary click picking unless syncing URL features.                                                             |
+| Feature highlight | Inspector/form truth in React; map tint via `setFeatureState` (paint) or React `filter` layer. Clear old state before applying new.                                                                      |
+| Attribution       | `attributionControl={false}` on `<Map>`, `<AttributionControl compact>` as child. `RTLTextPlugin={false}` on every `<Map>`.                                                                              |
+| Viewport URL      | `zoom/lat/lng` with zoom-aware rounding; write on `onMoveEnd` with `history: 'replace'`.                                                                                                                 |
+| View state        | Uncontrolled `initialViewState` seeded from URL; no mirrored viewState in React unless programmatic camera is needed.                                                                                    |
+
+## Which file to read
+
+Read only the file for your task.
+
+| Task                                                      | Read                                                  |
+| --------------------------------------------------------- | ----------------------------------------------------- |
+| Add or review `<Source>` / `<Layer>`, remove `addSource`  | `declarative-source-layer.md`, `flat-source-layer.md` |
+| Show/hide layers                                          | `layer-visibility-vs-unmount.md`                      |
+| Click/hover handler, choose a `<Map>` callback            | `map-event-handlers.md`, `interactive-layer-ids.md`   |
+| Cursor over features                                      | `cursor-handling.md`                                  |
+| Child/sibling needs the map instance                      | `map-provider-wrapper.md`                             |
+| `getStyle` / `queryRenderedFeatures` before load          | `map-loaded-hook.md`                                  |
+| Agent/E2E map inspection                                  | `map-debug-exposure.md`                               |
+| Selected/hovered feature highlight, `setFeatureState`     | `feature-state.md`                                    |
+| Initial camera, fitBounds, bounds                         | `initial-view-state.md`                               |
+| `?map=` URL sync                                          | `map-url-state.md`                                    |
+| Attribution, locale, RTL text plugin                      | `map-props-attribution-locale.md`                     |
+| Missing or dynamic icons, `styleimagemissing`, `addImage` | `map-images.md`                                       |
+
+All files are in `references/`. Pair with skills `tanstack-router-conventions` (`?map=` contract), `zustand-state-management` (`useMapLoaded` store), `playwright-skill` (E2E map helpers).
+
+## Review checklist
+
+- [ ] No `addSource` / `addLayer` / `removeSource` / `removeLayer` / `setLayoutProperty` for app data; flat `<Source>` + `<Layer>`
+- [ ] `<MapProvider>` parent, `useMap()`, no `ref` on `<Map>`
+- [ ] No `useEffect` + `map.on` for move/click/hover; viewport sync on `onMoveEnd` / `onMove`
+- [ ] Effects touching the map are React → map sync guarded by `mainMap` + `mapLoaded`
+- [ ] `onLoad` sets map-ready flag and calls `exposeMainMapForDebugging`
+- [ ] Every pickable layer id is in `interactiveLayerIds`; handlers use `event.features`
+- [ ] Old feature state cleared before new applied; features have ids (`promoteId` for vector)
+- [ ] `attributionControl={false}` + child `<AttributionControl>`; `RTLTextPlugin={false}`
+- [ ] URL: shared `parseMapParam` / `serializeMapParam`, `replace` on pan/zoom, no `encodeURIComponent` around the serialized value
+- [ ] Fixed icons via `useMapImages`; dynamic icons via `styleimagemissing` in `useEffect` with `off()` cleanup and `hasImage` guard

@@ -13,7 +13,7 @@ disable-model-invocation: true
 
 Weekly workflow: summarize changes since the last run as plain German bullet points — **only** what end users can see, do, or notice. Not a technical changelog.
 
-If there are **pending changes** when done (e.g. `docs/user-changelog.md`), use [finish-work](../finish-work/SKILL.md) to run `bun run check` and draft the English commit message before committing.
+If there are **pending changes** when done (e.g. `docs/user-changelog.md`), use skill `finish-work` to run `bun run check` and draft the English commit message before committing.
 
 ## File
 
@@ -43,13 +43,15 @@ Read [`docs/user-changelog.md`](references/user-changelog.md) (project path). Th
 - **Start this run:** `def5678` (`bis` from the latest section)
 - **End:** `HEAD` — omit in `git log` (`<FROM>..`); use `git rev-parse --short HEAD` for the new heading’s `bis` SHA
 
-To resolve `FROM` before `git log` (optional — same result as reading the file):
+To resolve `FROM` in the shell (same result as reading the file):
 
 ```bash
 FROM=$(grep -m1 '^## Zusammenfassung von' docs/user-changelog.md 2>/dev/null \
-  | sed -E 's/.*bis `([^`]+)`.*/\1/')
+  | sed -E 's/.*bis `([^`]+)`.*/\1/'); echo "FROM=$FROM"
 # FROM empty → first run (ask user for a start SHA/tag/range)
 ```
+
+Shell variables do not survive between agent tool calls: use the printed SHA literally in Step 2 (an empty `FROM` there makes `git log ..` print nothing, which looks like an empty week).
 
 **First run** (`FROM` empty — file missing, empty, or no heading): ask the user — e.g. since tag `v1.2.0`, last 2 weeks, or an explicit SHA. Do not guess.
 
@@ -60,7 +62,7 @@ FROM=$(grep -m1 '^## Zusammenfassung von' docs/user-changelog.md 2>/dev/null \
 Use **`--reverse`** (oldest first): work landed in that order, follow-up commits for the same feature usually come later, and merging several commits into one bullet is easier when reading forward in time. Write bullets in the same order.
 
 ```bash
-git log "${FROM}".. --no-merges --reverse \
+git log <FROM>.. --no-merges --reverse \
   --format='%h%n%s%n%b%n---'
 ```
 
@@ -82,8 +84,9 @@ Merge multiple commits into **one** bullet when they describe the same visible c
 Write bullets in **German**:
 
 - Active voice, short, no jargon (no “refactor”, “loader”, “PR”, package names).
+- No direct address (neither du nor Sie): „Karten laden schneller“, not „Sie können jetzt …“.
 - **Area prefix** when it helps scanning — e.g. **Karte:**, **Export:**, **Anmeldung:**. In a **monorepo**, one shared `docs/user-changelog.md`; use the prefix for the package or surface (e.g. **Processing:** for `processing/`, **Karte:** for the app map UI).
-- Fixes: describe the user-visible problem, not the broken code.
+- Fixes start with **Behoben:** and describe the user-visible problem, not the broken code.
 - No issue/PR numbers, author names, or SHAs inside bullets.
 
 Good and bad examples: [examples.md](references/examples.md).
@@ -106,12 +109,12 @@ Good and bad examples: [examples.md](references/examples.md).
 
 ## Step 6: Commit
 
-Only when the user explicitly asks to commit — follow [finish-work](../finish-work/SKILL.md) for `bun run check` and the commit message:
+Only when the user explicitly asks to commit — follow skill `finish-work` for `bun run check` and the commit message:
 
 ```bash
 git add docs/user-changelog.md
 git commit -m "$(cat <<'EOF'
-Docs: Update changelog notes
+Dev: Update user changelog
 
 Summary def5678..f0a1b2c
 EOF
@@ -129,5 +132,5 @@ Changelog file content stays **German**; the commit subject/body for this doc up
 
 ## Related
 
-- [finish-work](../finish-work/SKILL.md) — `bun run check` + commit when landing the changelog
-- [review-dependabot](../review-dependabot/SKILL.md) — do not list Dependabot commits as user changes
+- skill `finish-work` — `bun run check` + commit when landing the changelog
+- skill `review-dependabot` — do not list Dependabot commits as user changes

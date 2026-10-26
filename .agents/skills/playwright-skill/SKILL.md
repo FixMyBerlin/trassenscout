@@ -1,9 +1,7 @@
 ---
 name: playwright-skill
-description: E2E testing and browser automation for TanStack Start apps (FMC/TILDA). Use @playwright/test for committed suites/CI; agent-browser MCP (skill tech-stack) for agent exploration; this skill for smoke tests, stubbed auth, map hooks, and quick /tmp scripts. Not for Next.js.
+description: E2E testing and browser automation for TanStack Start apps (FMC/TILDA). Use @playwright/test for committed suites/CI; agent-browser MCP (skill tech-stack) for agent exploration; this skill for smoke tests, stubbed auth, map hooks, and quick ad-hoc scripts.
 ---
-
-**Path resolution:** Discover `$SKILL_DIR` from where this file was loaded (plugin, global `~/.claude/skills/`, or project `.agents/skills/`).
 
 **Read the project’s `tests/README.md` first** — env vars, Docker, and scripts live there.
 
@@ -31,13 +29,14 @@ Playwright has **no** official `llms.txt` ([request closed](https://github.com/m
 
 ## Three layers (pick the right tool)
 
-| Layer                   | When                                                          | Where                                                                                                             |
-| ----------------------- | ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| **Project E2E**         | Suites, CI, regression                                        | `@playwright/test` in `tests/*.spec.ts`, repo `playwright.config.ts`                                              |
-| **Agent exploration**   | Interactive debugging, hydration, React tree, quick UI checks | **agent-browser MCP** — skill `tech-stack`, [agent-browser-mcp.md](../tech-stack/references/agent-browser-mcp.md) |
-| **Ad-hoc** (this skill) | One-off scripts, external sites, no MCP                       | `/tmp/playwright-test-*.js` via `run.js`                                                                          |
+| Layer                   | When                                                          | Where                                                                                              |
+| ----------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| **Project E2E**         | Suites, CI, regression                                        | `@playwright/test` in `tests/*.spec.ts`, repo `playwright.config.ts`                               |
+| **Agent exploration**   | Interactive debugging, hydration, React tree, quick UI checks | **agent-browser MCP** — skill `tech-stack`, skill `tech-stack` → `references/agent-browser-mcp.md` |
+| **Ad-hoc** (this skill) | One-off scripts, external sites, no MCP                       | `/tmp/playwright-test-*.js` via `run.js`                                                           |
+| **DB schema / queries** | Inspecting tables                                             | Postgres MCP — skill `tech-stack` → `references/postgres-mcp.md`                                   |
 
-For in-repo work, **prefer project E2E** for anything that should regress. Use **agent-browser MCP** for interactive debugging — setup and usage in skill `tech-stack` ([agent-browser-mcp.md](../tech-stack/references/agent-browser-mcp.md)). Use ad-hoc scripts for one-off work outside MCP or without committing tests.
+For in-repo work, **prefer project E2E** for anything that should regress.
 
 ### Boundaries (Playwright vs agent-browser)
 
@@ -46,6 +45,8 @@ For in-repo work, **prefer project E2E** for anything that should regress. Use *
 | Regression, CI, stubbed auth, map test hooks | ✓                                               | —                             |
 | Hydration, React tree, quick UI debugging    | —                                               | ✓                             |
 | Maps (WebGL)                                 | `waitForMapLoad`, tile/network helpers, MapGrab | Annotated screenshots, `eval` |
+
+**tilda-geo smoke / stubbed-auth / map specs:** read [references/tilda-patterns.md](references/tilda-patterns.md) when writing them (env gating, smoke suite, stubbed-session flow, map steps, route fixtures).
 
 Exploration findings that should stick → add `tests/*.spec.ts` and run `bun run e2e`.
 
@@ -57,18 +58,7 @@ Reference implementation: **tilda-geo** `app/playwright.config.ts`.
 
 ### Environment loading
 
-Load env **before** `defineConfig` so `webServer` gets `DATABASE_*` etc.:
-
-```typescript
-import path from "node:path"
-import { fileURLToPath } from "node:url"
-import dotenv from "dotenv"
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-dotenv.config({ path: path.resolve(__dirname, "../.env") }) // repo
-dotenv.config({ path: path.resolve(__dirname, ".env") }) // app (optional)
-dotenv.config({ path: path.resolve(__dirname, ".env.test") }) // test-only
-```
+Load env **before** `defineConfig` so `webServer` gets `DATABASE_*` etc., layered: repo `.env`, app `.env` (optional), `.env.test` (test-only).
 
 ### Server tiers
 
@@ -80,37 +70,9 @@ dotenv.config({ path: path.resolve(__dirname, ".env.test") }) // test-only
 
 **Docker / DB:** If the app needs Postgres or tiles, start compose **outside** Playwright (`docker compose up db tiles -d`). Do not cram compose into `webServer.command` unless CI already proves it works.
 
-**Shared DB:** Use `workers: 1` or `test.describe.configure({ mode: 'serial' })` when tests create/delete the same DB rows (stubbed auth).
+### Config template
 
-### Minimal config (TILDA-style smoke)
-
-```typescript
-import { defineConfig, devices } from "@playwright/test"
-
-const baseURL = "http://127.0.0.1:5173"
-
-export default defineConfig({
-  testDir: "./tests",
-  fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
-  reporter: "html",
-  use: {
-    baseURL,
-    trace: "on-first-retry",
-  },
-  webServer: {
-    command: "bun run dev",
-    url: baseURL,
-    reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
-  },
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
-})
-```
-
-Copy the full template from `playwright.config.ts.template` in this skill directory.
+Copy `playwright.config.ts.template` from this skill directory (baseURL `http://127.0.0.1:5173`, `webServer: bun run dev`, chromium project).
 
 ---
 
@@ -177,7 +139,7 @@ export const firePlaywrightMapLoadedEvent = createIsomorphicFn()
   })
 ```
 
-Call both helpers from the map `onLoad` handler: `exposeMainMapForDebugging(event.target)` and `firePlaywrightMapLoadedEvent()`. `window.__mainMap` is available in dev and Playwright mode; the `mapLoaded` event remains Playwright-gated. Why expose the map and `onLoad` wiring: skill `react-map-gl` → [map-debug-exposure.md](../react-map-gl/references/map-debug-exposure.md). Tests use `tests/utils/maps.ts` (`waitForMapLoad`, `verifyMapRendered`, `checkMapTilesLoaded`, `getMapLayerIds`). For tile/API coverage on region pages, use `verifyMapNetworkRequests` from `tests/utils/network.ts` (after `waitForMapLoad`).
+Call both helpers from the map `onLoad` handler: `exposeMainMapForDebugging(event.target)` and `firePlaywrightMapLoadedEvent()`. `window.__mainMap` is available in dev and Playwright mode; the `mapLoaded` event remains Playwright-gated. Why expose the map and `onLoad` wiring: skill `react-map-gl` → `references/map-debug-exposure.md`. Tests use `tests/utils/maps.ts` (`waitForMapLoad`, `verifyMapRendered`, `checkMapTilesLoaded`, `getMapLayerIds`). For tile/API coverage on region pages, use `verifyMapNetworkRequests` from `tests/utils/network.ts` (after `waitForMapLoad`).
 
 For **click/drag on map canvas**, consider [MapGrab](https://mapgrab.github.io/docs/getting-started/stage-two/playwright) (used in legacy Trassenscout surveys; adopt when migrating those flows to Start).
 
@@ -192,11 +154,6 @@ After **Next → TanStack Start**, add or run smoke specs:
 
 Route lists live in `tests/fixtures/routes.ts` (`PUBLIC_SMOKE_ROUTES`, `ADMIN_ROUTES`, `ADMIN_REDIRECT_SMOKE_ROUTE`, etc.). Run: `bun run e2e -- tests/smoke`.
 
-Additional smoke specs (no OAuth):
-
-- **Trailing slash:** `trailing-slash-redirect.spec.ts` — `__root` `beforeLoad` strips slashes (`trailingSlash: 'never'`); public routes + stubbed admin for `/admin/`.
-- **Region `beforeLoad`:** `region-before-load.spec.ts` — catch invalid `URL` construction errors on region pages with search params.
-
 ### Auth
 
 | Strategy          | When                         | TILDA                                                                                           |
@@ -205,7 +162,7 @@ Additional smoke specs (no OAuth):
 | **Stubbed user**  | Non-admin / modal flows      | `createStubbedUserSession(page, baseURL, { identityKey })`                                      |
 | **Real OAuth**    | Map + regions regression     | `auth-setup.spec.ts` + `regions.spec.ts` when `RUN_OAUTH_E2E=1` + `TEST_OSM_*` in `.env.test`   |
 
-**Parallel safety:** Stubbed admin suites use `mode: 'serial'` and **nested** `test.describe` per route so `afterEach` cleanup does not delete another worker’s session (`cleanupStubbedSessionData('ADMIN' | 'USER', identityKey)`).
+**Parallel safety:** Stubbed admin suites share DB rows, so use `mode: 'serial'` and **nested** `test.describe` per route so `afterEach` cleanup does not delete another worker’s session (`cleanupStubbedSessionData('ADMIN' | 'USER', identityKey)`).
 
 **Dynamic URLs:** Use `escapeRegExp(route)` from `tests/utils/regex.ts` when building `toHaveURL(new RegExp(...))` from fixture paths that may contain `?` or special characters.
 
@@ -220,7 +177,7 @@ Extend allowlists in the util files when a known benign error appears.
 
 ### Locators
 
-Prefer `getByRole`, `getByLabel`, `getByText`. Use `playwrightTestId('…')` only when roles are insufficient. Avoid brittle CSS chains.
+Use `playwrightTestId('…')` only when role/label/text locators are insufficient.
 
 ---
 
@@ -240,13 +197,7 @@ Prefer `getByRole`, `getByLabel`, `getByText`. Use `playwrightTestId('…')` onl
 bun add -d @playwright/test dotenv
 bunx playwright install chromium
 # Start DB/tiles if required (see tests/README.md)
-bun run e2e
-bun run e2e -- tests/smoke
-bun run e2e -- --ui
-bun run e2e -- --debug
 ```
-
-Write tests in `tests/**/*.spec.ts` with TypeScript. Use web-first assertions (`expect(locator).toBeVisible()`).
 
 ---
 
@@ -255,7 +206,7 @@ Write tests in `tests/**/*.spec.ts` with TypeScript. Use web-first assertions (`
 **Setup (once):**
 
 ```bash
-cd $SKILL_DIR && bun run setup
+cd ${CLAUDE_SKILL_DIR} && bun run setup
 ```
 
 **Workflow:**
@@ -263,46 +214,24 @@ cd $SKILL_DIR && bun run setup
 1. For localhost: detect dev servers first:
 
    ```bash
-   cd $SKILL_DIR && bun -e "require('./lib/helpers').detectDevServers().then(s => console.log(JSON.stringify(s)))"
+   bun -e "require('${CLAUDE_SKILL_DIR}/lib/helpers').detectDevServers().then(s => console.log(JSON.stringify(s)))"
    ```
 
 2. Write script to `/tmp/playwright-test-*.js` (never commit ad-hoc scripts to the skill dir).
 3. Parameterize `TARGET_URL` at the top.
-4. Run: `cd $SKILL_DIR && bun run.js /tmp/playwright-test-*.js`
+4. Run from the project directory (not the skill folder): `bun ${CLAUDE_SKILL_DIR}/run.js /tmp/playwright-test-*.js`. `run.js` resolves relative script paths and `takeScreenshot` output against the directory you ran it from; for raw `page.screenshot({ path })` use an absolute path.
 
 **Headers** (identify automated traffic):
 
 ```bash
 PW_HEADER_NAME=X-Automated-By PW_HEADER_VALUE=playwright-skill \
-  cd $SKILL_DIR && bun run.js /tmp/my-script.js
+  bun ${CLAUDE_SKILL_DIR}/run.js /tmp/my-script.js
 ```
 
 Multiple headers: `PW_EXTRA_HEADERS='{"X-Automated-By":"playwright-skill"}'`.
 
-**Defaults:** Use `headless: false` for ad-hoc unless the user asks for headless. Prefer semantic locators in ad-hoc scripts too.
+**Defaults:** Run headless by default (agents cannot watch a window); use `headless: false` only when a human wants to watch.
 
-**Helpers** (`lib/helpers.js`): `detectDevServers`, `createContext` / `getExtraHeadersFromEnv`, `takeScreenshot`. Avoid custom retry click helpers — use Playwright auto-waiting.
-
----
-
-## Checklist (new Start app E2E)
-
-- [ ] `playwright.config.ts` with layered dotenv and `baseURL` matching Vite port
-- [ ] `tests/README.md` documents compose, `.env.test`, and bun scripts
-- [ ] `VITE_PLAYWRIGHT_ENABLED` + `src/.../playwright.ts` hooks
-- [ ] `tests/smoke/` for public routes (+ trailing-slash / `beforeLoad` edge cases)
-- [ ] Stubbed auth fixtures if admin or role-gated routes need login
-- [ ] `collectConsoleErrors` / `collectServerErrors` on critical suites
-- [ ] Map: `mapLoaded` event + `waitForMapLoad` + optional `verifyMapNetworkRequests` (MapGrab if clicking the map)
+**Helpers** (`lib/helpers.js`): `detectDevServers`, `createContext` / `getExtraHeadersFromEnv`, `takeScreenshot`.
 
 ---
-
-## When to use what
-
-| Need                             | Tool                                                                            |
-| -------------------------------- | ------------------------------------------------------------------------------- |
-| Committed regression / CI        | `@playwright/test` in repo                                                      |
-| Post–TanStack Start smoke        | `tests/smoke/` + this skill                                                     |
-| Agent debugging (SSR, React, UI) | agent-browser MCP — [tech-stack](../tech-stack/references/agent-browser-mcp.md) |
-| Quick screenshot / external site | Ad-hoc `run.js` or agent-browser                                                |
-| DB schema / queries              | Postgres MCP — [tech-stack](../tech-stack/references/cursor-mcp.md)             |

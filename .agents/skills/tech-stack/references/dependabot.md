@@ -8,7 +8,7 @@ Derived from [tilda-geo](https://github.com/FixMyBerlin/tilda-geo/blob/develop/.
 
 ## Schedule
 
-Pick **one** schedule and apply it to every `bun` and `github-actions` entry. If FixMyCity vs private OSS is unclear, **AskQuestion** — do not guess.
+Pick **one** schedule and apply it to every `bun` and `github-actions` entry. If FixMyCity vs private OSS is unclear, **AskUserQuestion** — do not guess.
 
 | Project                       | Schedule                                              |
 | ----------------------------- | ----------------------------------------------------- |
@@ -65,7 +65,7 @@ Knip / husky / verify scripts: [package-json-scripts.md](package-json-scripts.md
 - **`directories`** — single-package apps use `/`. Monorepos list each Bun workspace root (tilda-geo: `/app`, `/processing`).
 - **`groups`** — add patterns for project-specific packages; split or merge groups if PRs become too large or too fragmented.
 - **`ignore`** — tilda-geo pins `nitro` (TanStack Start stack); drop or adjust if your deploy target changes.
-- **`exclude-paths`** — extend for generated or vendored trees (`.cursor/**` is excluded by default).
+- **`exclude-paths`** — extend for generated or vendored trees (`.claude/**` and `.cursor/**` are excluded by default).
 - **Docker** — remove the `docker` ecosystem block if the repo has no `Dockerfile`; keep monthly schedule when present.
 
 ## Monorepo processing package

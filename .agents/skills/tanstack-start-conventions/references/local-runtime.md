@@ -2,7 +2,7 @@
 
 Production FMC Start apps run the Nitro server on **Bun** (`preset: bun`). Local `dev` / `start` / `preview` must see the same runtime so SSR and server code do not silently diverge onto Node.
 
-**General Bun install / `bun --bun` / `.nvmrc`:** skill `tech-stack` → [bun-install.md](../../tech-stack/references/bun-install.md). This page is Start-only script shape.
+**General Bun install / `bun --bun` / `.nvmrc`:** skill `tech-stack` → `references/bun-install.md`. This page is Start-only script shape.
 
 ## Scripts
 
