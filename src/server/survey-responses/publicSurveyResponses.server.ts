@@ -5,6 +5,7 @@ import {
   type AllowedSurveySlugs,
 } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
+import { getSelectedOptionLabels } from "@/src/components/beteiligung/shared/utils/getSelectedOptionLabels"
 import { getFlatSurveyFormFields } from "@/src/components/surveys/responses/getFlatSurveyFormFields"
 import { SurveyResponseStateEnum } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
@@ -156,35 +157,9 @@ export function buildFieldValues({
       continue
     }
 
-    if (field?.component === "SurveyRadiobuttonGroup") {
-      const props = field.props as { options?: { key: string; label: string }[] }
-      if (props.options) {
-        const option = props.options.find((opt) => opt.key === value)
-        fieldValues[fieldName] = option?.label || String(value)
-      } else {
-        fieldValues[fieldName] = String(value)
-      }
-      continue
-    }
-
-    if (field?.component === "SurveyCheckboxGroup") {
-      const props = field.props as { options?: { key: string; label: string }[] }
-      const selectedValues = Array.isArray(value)
-        ? value.map((v) => String(v))
-        : value != null && value !== ""
-          ? [String(value)]
-          : []
-
-      if (props.options) {
-        const labels = selectedValues.map((selectedValue) => {
-          const normalizedValue = selectedValue.trim()
-          const option = props.options!.find((opt) => opt.key === normalizedValue)
-          return option?.label || normalizedValue
-        })
-        fieldValues[fieldName] = labels.join(", ")
-      } else {
-        fieldValues[fieldName] = selectedValues.join(", ")
-      }
+    const optionLabels = getSelectedOptionLabels(field, value)
+    if (optionLabels) {
+      fieldValues[fieldName] = optionLabels.join(", ")
       continue
     }
 
