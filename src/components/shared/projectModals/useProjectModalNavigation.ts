@@ -38,12 +38,14 @@ export function useProjectModalNavigation() {
   const projectSlug = useProjectModalSlug()
   const currentSearch = activeSearch ?? {}
   const backgroundSearch = clearAllProjectModalSearch(currentSearch)
-  const modalProjectSlug = routeProjectSlug ? undefined : projectSlug
 
   const withProjectScope = (searchPatch: ModalSearchPatch) =>
     stringifyModalSearchPatch({
       ...searchPatch,
-      modalProjectSlug: searchPatch.modalProjectSlug ?? modalProjectSlug,
+      // The path wins, as in useProjectModalSlug.
+      modalProjectSlug: routeProjectSlug
+        ? undefined
+        : (searchPatch.modalProjectSlug ?? projectSlug),
     })
 
   const buildModalHref = (searchPatch: ModalSearchPatch) =>

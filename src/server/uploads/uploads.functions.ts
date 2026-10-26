@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start"
 import { getRequestHeaders } from "@tanstack/react-start/server"
 import { getGeolocatedUploads } from "./geolocatedUploads.server"
 import { copyToLuckyCloud, endCollaboration } from "./luckycloud.server"
+import { getMyUploads, getMyUploadTags } from "./myUploads.server"
 import {
   createSurveyUploadPublic,
   deleteSurveyUploadPublic,
@@ -16,6 +17,8 @@ import {
   DeleteUploadSchema,
   EndCollaborationSchema,
   GetGeolocatedUploadsSchema,
+  GetMyUploadsSchema,
+  GetMyUploadTagsSchema,
   GetSurveyResponseUploadsSplitSchema,
   GetUploadSchema,
   GetUploadsMetaPublicSchema,
@@ -39,6 +42,14 @@ import {
 export const getUploadsFn = createServerFn({ method: "GET" })
   .validator(GetUploadsSchema)
   .handler(({ data }) => getUploads(getRequestHeaders(), data))
+
+export const getMyUploadsFn = createServerFn({ method: "GET" })
+  .validator(GetMyUploadsSchema)
+  .handler(({ data }) => getMyUploads(getRequestHeaders(), data))
+
+export const getMyUploadTagsFn = createServerFn({ method: "GET" })
+  .validator(GetMyUploadTagsSchema)
+  .handler(({ data }) => getMyUploadTags(getRequestHeaders(), data))
 
 export const getUploadsWithSubsectionsFn = createServerFn({ method: "GET" })
   .validator(GetUploadsWithSubsectionsSchema)

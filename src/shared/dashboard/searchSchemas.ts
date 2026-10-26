@@ -3,6 +3,7 @@ import { ASSIGNMENT_DIRECTIONS } from "@/src/shared/projectRecords/assignmentDir
 import { projectRecordModalSearchShape } from "@/src/shared/projectRecords/searchSchemas"
 import { withViewModeSearch } from "@/src/shared/routing/viewModeSearch"
 import { tagFilterSchema } from "@/src/shared/tags/tagFilter"
+import { projectUploadModalSearchShape } from "@/src/shared/uploads/searchSchemas"
 
 export const DASHBOARD_ALL_PROJECTS = ""
 export const DASHBOARD_ALL_MONTHS = 0
@@ -19,9 +20,9 @@ const dashboardSearchSchema = z.object({
 
 export type DashboardSearch = z.infer<typeof dashboardSearchSchema>
 
-/** On the layout, so one place owns the middlewares. The overlay keys open a task in place. */
+/** On the layout, so one place owns the middlewares. Overlay keys open tasks and documents in place. */
 export const dashboardLayoutSearchSchema = withViewModeSearch(
-  dashboardSearchSchema.extend(projectRecordModalSearchShape),
+  dashboardSearchSchema.extend(projectRecordModalSearchShape).extend(projectUploadModalSearchShape),
 )
 
 export type DashboardLayoutSearch = z.infer<typeof dashboardLayoutSearchSchema>
@@ -53,3 +54,16 @@ export const hasAssignmentsFilter = (search: AssignmentsSearch) =>
   search.status !== ASSIGNMENTS_DEFAULTS.status ||
   search.direction !== ASSIGNMENTS_DEFAULTS.direction ||
   search.tag !== undefined
+
+// The router reads `?searchterm=2024` and `?tag=2024` as numbers.
+export const dashboardUploadsSearchSchema = z.object({
+  searchterm: z.coerce.string().optional().catch(undefined),
+  tag: z.coerce.string().min(1).optional().catch(undefined),
+})
+
+export type DashboardUploadsSearch = z.infer<typeof dashboardUploadsSearchSchema>
+
+export const DASHBOARD_UPLOADS_RESET = { searchterm: undefined, tag: undefined }
+
+export const hasDashboardUploadsFilter = (search: DashboardUploadsSearch) =>
+  Boolean(search.searchterm) || search.tag !== undefined

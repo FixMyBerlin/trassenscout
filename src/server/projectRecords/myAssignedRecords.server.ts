@@ -1,6 +1,7 @@
 import type { z } from "zod"
-import { ProjectRecordEditingState, UserRoleEnum } from "@/src/prisma/generated/browser"
+import { ProjectRecordEditingState } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
+import { readableProjectWhere } from "@/src/server/authorization/readableProjectWhere.server"
 import db from "@/src/server/db.server"
 import type { GetMyAssignedRecordsSchema } from "./projectRecords.inputSchemas"
 
@@ -13,13 +14,6 @@ function directionWhere(
   // Authorship survives a reassignment, assignedById does not: it moves to whoever reassigned last.
   if (direction === "createdByMe") return { userId }
   return {}
-}
-
-function readableProjectWhere(userId: number, role: string, projectSlug: string | undefined) {
-  return {
-    ...(projectSlug ? { slug: projectSlug } : {}),
-    ...(role === UserRoleEnum.ADMIN ? {} : { memberships: { some: { userId } } }),
-  }
 }
 
 export async function countMyAssignedRecords(headers: Headers, projectSlug?: string) {

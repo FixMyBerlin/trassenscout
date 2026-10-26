@@ -12,6 +12,7 @@ import {
   tableHeadRowClassName,
   tableRowClassName,
 } from "@/src/components/core/components/Table/tableClasses"
+import { shortTitle } from "@/src/components/core/components/text/titles"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { Tooltip } from "@/src/components/core/components/Tooltip/Tooltip"
 import { useCurrentReturnTo } from "@/src/components/core/routes/useCurrentPathWithSearch"
@@ -19,7 +20,7 @@ import { Prettify } from "@/src/components/core/types"
 import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { formatBerlinTime } from "@/src/components/core/utils/formatBerlinTime"
 import { ProjectRecordTagsList } from "@/src/components/project-records/ProjectRecordTagsList"
-import { IfUserCanEdit } from "@/src/components/shared/memberships/IfUserCan"
+import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { DeleteUploadButton } from "@/src/components/uploads/DeleteUploadButton"
 import { ExternalShareBadge } from "@/src/components/uploads/ExternalShareBadge"
 import { useProjectUploadModal } from "@/src/components/uploads/ProjectUploadModalHost"
@@ -39,7 +40,9 @@ const uploadTableColWidths = {
   title: {
     default: "min-w-0 w-[86%] @xl:w-[24%]",
     withSource: "min-w-0 w-[54%] @xl:w-[24%]",
+    withProject: "min-w-0 w-[86%] @xl:w-[14%]",
   },
+  project: "hidden @xl:table-column @xl:w-[10%]",
   location: "hidden @xl:table-column @xl:w-[4%]",
   uploaded: "hidden @xl:table-column @xl:w-[16%]",
   tags: "hidden @xl:table-column @xl:w-[18%]",
@@ -49,9 +52,8 @@ const uploadTableColWidths = {
 } as const
 
 type Props = Prettify<{
-  // Passed as a prop (not read from the route) so the table also works outside
-  // `/_loggedInProjects/$projectSlug`, e.g. on admin routes
-  projectSlug: string
+  // Omit to list several projects.
+  projectSlug?: string
   uploads: UploadTableUpload[]
   withAction?: boolean
   withDelete?: boolean
@@ -75,6 +77,8 @@ export const UploadTable = ({
   onRemove,
   onTagClick,
 }: Props) => {
+  const showProject = projectSlug === undefined
+
   if (!uploads.length) {
     return <ZeroCase small visible={uploads.length} name="Dokumente" verb="hochgeladen" />
   }
@@ -88,11 +92,14 @@ export const UploadTable = ({
               <col className={uploadTableColWidths.icon} />
               <col
                 className={
-                  withSource
-                    ? uploadTableColWidths.title.withSource
-                    : uploadTableColWidths.title.default
+                  showProject
+                    ? uploadTableColWidths.title.withProject
+                    : withSource
+                      ? uploadTableColWidths.title.withSource
+                      : uploadTableColWidths.title.default
                 }
               />
+              {showProject && <col className={uploadTableColWidths.project} />}
               <col className={uploadTableColWidths.location} />
               <col className={uploadTableColWidths.uploaded} />
               {withTags && <col className={uploadTableColWidths.tags} />}
@@ -108,6 +115,14 @@ export const UploadTable = ({
                 <th scope="col" className={tableHeadCellClassName}>
                   Titel
                 </th>
+                {showProject && (
+                  <th
+                    scope="col"
+                    className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}
+                  >
+                    Projekt
+                  </th>
+                )}
                 <th scope="col" className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}>
                   <span className="sr-only">Standort</span>
                 </th>
@@ -144,21 +159,27 @@ export const UploadTable = ({
               </tr>
             </thead>
             <tbody className={tableBodyClassName}>
-              {uploads.map((upload) => (
-                <UploadTableRow
-                  key={upload.id}
-                  upload={upload}
-                  projectSlug={projectSlug}
-                  withAction={withAction}
-                  withDelete={withDelete}
-                  withRelations={withRelations}
-                  withSource={withSource}
-                  withTags={withTags}
-                  onDelete={onDelete}
-                  onRemove={onRemove}
-                  onTagClick={onTagClick}
-                />
-              ))}
+              {uploads.map((upload) => {
+                const rowProjectSlug = projectSlug ?? upload.project?.slug
+                if (!rowProjectSlug) return null
+
+                return (
+                  <UploadTableRow
+                    key={upload.id}
+                    upload={upload}
+                    projectSlug={rowProjectSlug}
+                    showProject={showProject}
+                    withAction={withAction}
+                    withDelete={withDelete}
+                    withRelations={withRelations}
+                    withSource={withSource}
+                    withTags={withTags}
+                    onDelete={onDelete}
+                    onRemove={onRemove}
+                    onTagClick={onTagClick}
+                  />
+                )
+              })}
             </tbody>
           </table>
         </div>
@@ -170,6 +191,7 @@ export const UploadTable = ({
 const UploadTableRow = ({
   upload,
   projectSlug,
+  showProject,
   withAction,
   withDelete,
   withRelations,
@@ -181,6 +203,7 @@ const UploadTableRow = ({
 }: {
   upload: UploadTableUpload
   projectSlug: string
+  showProject: boolean
   withAction: boolean
   withDelete: boolean
   withRelations: boolean
@@ -248,6 +271,13 @@ const UploadTableRow = ({
         )}
         <ExternalShareBadge upload={upload} className="mt-0.5 block" />
       </td>
+      {showProject && (
+        <td className={twJoin("hidden align-top @xl:table-cell", tableCellClassName)}>
+          <Link to="/$projectSlug/uploads" params={{ projectSlug }} className="break-all">
+            {shortTitle(projectSlug)}
+          </Link>
+        </td>
+      )}
       <td className={twJoin("hidden align-top @xl:table-cell", tableCellClassName)}>
         {hasLocation && (
           <div className="flex items-center justify-center">
@@ -318,7 +348,7 @@ const UploadTableRow = ({
             </Link>
           )}
           {onRemove && (
-            <IfUserCanEdit>
+            <IfUserCanEdit projectSlug={projectSlug}>
               <button
                 type="button"
                 onClick={() => onRemove(upload.id)}
@@ -331,12 +361,15 @@ const UploadTableRow = ({
             </IfUserCanEdit>
           )}
           {withAction && (
-            <IfUserCanEdit>
+            <IfUserCanEdit projectSlug={projectSlug}>
               <Link
                 icon="edit"
                 to={
                   useHostedUploadModal
-                    ? projectUploadModal.getUploadEditHref({ uploadId: upload.id })
+                    ? projectUploadModal.getUploadEditHref({
+                        uploadId: upload.id,
+                        forProjectSlug: projectSlug,
+                      })
                     : editLink.to
                 }
                 params={useHostedUploadModal ? undefined : editLink.params}
@@ -349,7 +382,7 @@ const UploadTableRow = ({
             </IfUserCanEdit>
           )}
           {(withAction || withDelete) && handleDelete && (
-            <IfUserCanEdit>
+            <IfUserCanEdit projectSlug={projectSlug}>
               <DeleteUploadButton
                 projectSlug={projectSlug}
                 uploadId={upload.id}

@@ -6,8 +6,6 @@ import { linkStyles } from "@/src/components/core/components/links/styles"
 type Props = {
   value: string
   onChange: (value: string) => void
-  onReset: () => void
-  hasFilter: boolean
   placeholder?: string
   hint?: string
   name?: string
@@ -15,7 +13,7 @@ type Props = {
   children?: ReactNode
   actions?: ReactNode
   debounceMs?: number
-}
+} & ({ onReset: () => void; hasFilter: boolean } | { onReset?: never; hasFilter?: never })
 
 export function PageHeaderSearchFilter({
   value,
@@ -46,11 +44,11 @@ export function PageHeaderSearchFilter({
 
   const handleReset = () => {
     setDraft(null)
-    onReset()
+    onReset?.()
   }
 
   return (
-    <div>
+    <div className="min-w-0">
       <form
         id={formId}
         onSubmit={(e) => e.preventDefault()}
@@ -67,7 +65,7 @@ export function PageHeaderSearchFilter({
           />
         </div>
         {children}
-        {hasFilter || draftValue ? (
+        {onReset && (hasFilter || draftValue) ? (
           <button
             type="button"
             className={twJoin(linkStyles, "flex items-center gap-2")}

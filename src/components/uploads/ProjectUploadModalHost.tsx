@@ -28,27 +28,39 @@ export function useProjectUploadModal() {
   const modalSearch = useProjectModalSearch()
   const { buildModalHref, updateModalSearch } = useProjectModalNavigation()
 
-  const getUploadEditHref = ({ uploadId }: { uploadId: number }) =>
+  const getUploadEditHref = ({
+    uploadId,
+    forProjectSlug,
+  }: {
+    uploadId: number
+    forProjectSlug?: string
+  }) =>
     buildModalHref({
       modalUploadId: uploadId,
       modalUploadView: "edit",
+      modalProjectSlug: forProjectSlug,
     })
 
   const openUploadDetail = (input: {
     uploadId: number
     previewUpload?: PreviewUpload
     onDeleted?: HostedUploadDeletedHandler
+    forProjectSlug?: string
   }) => {
     // Omitting `onDeleted` keeps the current handler: the edit view re-opens the detail
     // view after saving and must not drop the callback of the row that opened it.
     if ("onDeleted" in input) hostedUploadDeletedHandler = input.onDeleted
-    if (projectSlug) {
-      void queryClient.ensureQueryData(uploadQueryOptions({ projectSlug, id: input.uploadId }))
+    const uploadProjectSlug = input.forProjectSlug ?? projectSlug
+    if (uploadProjectSlug) {
+      void queryClient.ensureQueryData(
+        uploadQueryOptions({ projectSlug: uploadProjectSlug, id: input.uploadId }),
+      )
     }
     void updateModalSearch(
       {
         modalUploadId: input.uploadId,
         modalUploadView: "detail",
+        modalProjectSlug: input.forProjectSlug,
       },
       {
         replace: modalSearch.modalUploadId === input.uploadId,

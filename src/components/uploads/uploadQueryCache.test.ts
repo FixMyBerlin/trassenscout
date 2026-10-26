@@ -1,7 +1,10 @@
 import { QueryClient } from "@tanstack/react-query"
 import { describe, expect, it } from "vitest"
 import { projectRecordQueryOptions } from "@/src/server/projectRecords/projectRecordsQueryOptions"
-import { uploadsQueryOptions } from "@/src/server/uploads/uploadsQueryOptions"
+import {
+  myUploadsInfiniteQueryOptions,
+  uploadsQueryOptions,
+} from "@/src/server/uploads/uploadsQueryOptions"
 import { uploadsWithSubsectionsQueryOptions } from "@/src/server/uploads/uploadsWithSubsectionsQueryOptions"
 import { invalidateAfterUploadChange, markUploadDeletedInCache } from "./uploadQueryCache"
 
@@ -28,6 +31,23 @@ describe("uploadQueryCache", () => {
 
     expect(queryClient.getQueryState(projectRecordKey)?.isInvalidated).toBe(true)
     expect(queryClient.getQueryState(uploadsWithSubsectionsKey)?.isInvalidated).toBe(true)
+  })
+
+  it("invalidates the dashboard document list across projects", async () => {
+    const queryClient = createQueryClient()
+    const allProjectsKey = myUploadsInfiniteQueryOptions({}).queryKey
+    const searchKey = myUploadsInfiniteQueryOptions({ searchterm: "plan" }).queryKey
+    const page = { pages: [{ uploads: [{ id: 10 }], nextCursor: null }], pageParams: [null] }
+
+    queryClient.setQueryData(allProjectsKey, page as never)
+    queryClient.setQueryData(searchKey, page as never)
+
+    await markUploadDeletedInCache(queryClient, projectSlug, 10)
+    await invalidateAfterUploadChange(queryClient, projectSlug)
+
+    expect(queryClient.getQueryData(allProjectsKey)).toEqual(page)
+    expect(queryClient.getQueryState(allProjectsKey)?.isInvalidated).toBe(true)
+    expect(queryClient.getQueryState(searchKey)?.isInvalidated).toBe(true)
   })
 
   it("removes the deleted document from upload and protocol-entry caches", async () => {

@@ -42,6 +42,7 @@ export function invalidateUploadLists(queryClient: QueryClient, projectSlug: str
       queryKey: geolocatedUploadsQueryOptions({ projectSlug }).queryKey,
     }),
     queryClient.invalidateQueries({ queryKey: ["uploadsWithSubsections"] }),
+    queryClient.invalidateQueries({ queryKey: ["uploads", "mine"] }),
   ])
 }
 

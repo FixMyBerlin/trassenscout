@@ -101,6 +101,7 @@ import { Route as LoggedInProjectsProjectSlugAssignmentsIndexRouteImport } from 
 import { Route as LoggedInProjectsProjectSlugActivityIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/activity/index'
 import { Route as LoggedInProjectsProjectSlugAcquisitionAreaStatusIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/acquisition-area-status/index'
 import { Route as LoggedInGeneralUserEditIndexRouteImport } from './routes/_loggedInGeneral/user/edit/index'
+import { Route as LoggedInGeneralDashboardUploadsIndexRouteImport } from './routes/_loggedInGeneral/dashboard/uploads/index'
 import { Route as LoggedInGeneralDashboardAssignmentsIndexRouteImport } from './routes/_loggedInGeneral/dashboard/assignments/index'
 import { Route as LoggedInGeneralDashboardActivityIndexRouteImport } from './routes/_loggedInGeneral/dashboard/activity/index'
 import { Route as AdminSubsubsectionExtraFieldsProjectSlugEditRouteImport } from './routes/admin/subsubsection-extra-fields/$projectSlug/edit'
@@ -702,6 +703,12 @@ const LoggedInGeneralUserEditIndexRoute =
     id: '/user/edit/',
     path: '/user/edit/',
     getParentRoute: () => LoggedInGeneralRoute,
+  } as any)
+const LoggedInGeneralDashboardUploadsIndexRoute =
+  LoggedInGeneralDashboardUploadsIndexRouteImport.update({
+    id: '/uploads/',
+    path: '/uploads/',
+    getParentRoute: () => LoggedInGeneralDashboardRouteRoute,
   } as any)
 const LoggedInGeneralDashboardAssignmentsIndexRoute =
   LoggedInGeneralDashboardAssignmentsIndexRouteImport.update({
@@ -1349,6 +1356,7 @@ export interface FileRoutesByFullPath {
   '/admin/subsubsection-extra-fields/$projectSlug/edit': typeof AdminSubsubsectionExtraFieldsProjectSlugEditRoute
   '/dashboard/activity/': typeof LoggedInGeneralDashboardActivityIndexRoute
   '/dashboard/assignments/': typeof LoggedInGeneralDashboardAssignmentsIndexRoute
+  '/dashboard/uploads/': typeof LoggedInGeneralDashboardUploadsIndexRoute
   '/user/edit/': typeof LoggedInGeneralUserEditIndexRoute
   '/$projectSlug/acquisition-area-status/': typeof LoggedInProjectsProjectSlugAcquisitionAreaStatusIndexRoute
   '/$projectSlug/activity/': typeof LoggedInProjectsProjectSlugActivityIndexRoute
@@ -1520,6 +1528,7 @@ export interface FileRoutesByTo {
   '/admin/subsubsection-extra-fields/$projectSlug/edit': typeof AdminSubsubsectionExtraFieldsProjectSlugEditRoute
   '/dashboard/activity': typeof LoggedInGeneralDashboardActivityIndexRoute
   '/dashboard/assignments': typeof LoggedInGeneralDashboardAssignmentsIndexRoute
+  '/dashboard/uploads': typeof LoggedInGeneralDashboardUploadsIndexRoute
   '/user/edit': typeof LoggedInGeneralUserEditIndexRoute
   '/$projectSlug/acquisition-area-status': typeof LoggedInProjectsProjectSlugAcquisitionAreaStatusIndexRoute
   '/$projectSlug/activity': typeof LoggedInProjectsProjectSlugActivityIndexRoute
@@ -1702,6 +1711,7 @@ export interface FileRoutesById {
   '/admin/subsubsection-extra-fields/$projectSlug/edit': typeof AdminSubsubsectionExtraFieldsProjectSlugEditRoute
   '/_loggedInGeneral/dashboard/activity/': typeof LoggedInGeneralDashboardActivityIndexRoute
   '/_loggedInGeneral/dashboard/assignments/': typeof LoggedInGeneralDashboardAssignmentsIndexRoute
+  '/_loggedInGeneral/dashboard/uploads/': typeof LoggedInGeneralDashboardUploadsIndexRoute
   '/_loggedInGeneral/user/edit/': typeof LoggedInGeneralUserEditIndexRoute
   '/_loggedInProjects/$projectSlug/acquisition-area-status/': typeof LoggedInProjectsProjectSlugAcquisitionAreaStatusIndexRoute
   '/_loggedInProjects/$projectSlug/activity/': typeof LoggedInProjectsProjectSlugActivityIndexRoute
@@ -1881,6 +1891,7 @@ export interface FileRouteTypes {
     | '/admin/subsubsection-extra-fields/$projectSlug/edit'
     | '/dashboard/activity/'
     | '/dashboard/assignments/'
+    | '/dashboard/uploads/'
     | '/user/edit/'
     | '/$projectSlug/acquisition-area-status/'
     | '/$projectSlug/activity/'
@@ -2052,6 +2063,7 @@ export interface FileRouteTypes {
     | '/admin/subsubsection-extra-fields/$projectSlug/edit'
     | '/dashboard/activity'
     | '/dashboard/assignments'
+    | '/dashboard/uploads'
     | '/user/edit'
     | '/$projectSlug/acquisition-area-status'
     | '/$projectSlug/activity'
@@ -2233,6 +2245,7 @@ export interface FileRouteTypes {
     | '/admin/subsubsection-extra-fields/$projectSlug/edit'
     | '/_loggedInGeneral/dashboard/activity/'
     | '/_loggedInGeneral/dashboard/assignments/'
+    | '/_loggedInGeneral/dashboard/uploads/'
     | '/_loggedInGeneral/user/edit/'
     | '/_loggedInProjects/$projectSlug/acquisition-area-status/'
     | '/_loggedInProjects/$projectSlug/activity/'
@@ -3042,6 +3055,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoggedInGeneralUserEditIndexRouteImport
       parentRoute: typeof LoggedInGeneralRoute
     }
+    '/_loggedInGeneral/dashboard/uploads/': {
+      id: '/_loggedInGeneral/dashboard/uploads/'
+      path: '/uploads'
+      fullPath: '/dashboard/uploads/'
+      preLoaderRoute: typeof LoggedInGeneralDashboardUploadsIndexRouteImport
+      parentRoute: typeof LoggedInGeneralDashboardRouteRoute
+    }
     '/_loggedInGeneral/dashboard/assignments/': {
       id: '/_loggedInGeneral/dashboard/assignments/'
       path: '/assignments'
@@ -3714,6 +3734,7 @@ interface LoggedInGeneralDashboardRouteRouteChildren {
   LoggedInGeneralDashboardIndexRoute: typeof LoggedInGeneralDashboardIndexRoute
   LoggedInGeneralDashboardActivityIndexRoute: typeof LoggedInGeneralDashboardActivityIndexRoute
   LoggedInGeneralDashboardAssignmentsIndexRoute: typeof LoggedInGeneralDashboardAssignmentsIndexRoute
+  LoggedInGeneralDashboardUploadsIndexRoute: typeof LoggedInGeneralDashboardUploadsIndexRoute
 }
 
 const LoggedInGeneralDashboardRouteRouteChildren: LoggedInGeneralDashboardRouteRouteChildren =
@@ -3723,6 +3744,8 @@ const LoggedInGeneralDashboardRouteRouteChildren: LoggedInGeneralDashboardRouteR
       LoggedInGeneralDashboardActivityIndexRoute,
     LoggedInGeneralDashboardAssignmentsIndexRoute:
       LoggedInGeneralDashboardAssignmentsIndexRoute,
+    LoggedInGeneralDashboardUploadsIndexRoute:
+      LoggedInGeneralDashboardUploadsIndexRoute,
   }
 
 const LoggedInGeneralDashboardRouteRouteWithChildren =

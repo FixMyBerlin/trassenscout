@@ -32,11 +32,13 @@ export const uploadReturnSearchSchema = z.object({
 
 export const projectUploadModalViewSchema = z.enum(["detail", "edit"])
 
+export const projectUploadModalSearchShape = {
+  modalUploadId: z.coerce.number().int().positive().optional().catch(undefined),
+  modalUploadView: projectUploadModalViewSchema.optional().catch(undefined),
+}
+
 export const projectUploadModalSearchSchema = z
-  .object({
-    modalUploadId: z.coerce.number().int().positive().optional(),
-    modalUploadView: projectUploadModalViewSchema.optional(),
-  })
+  .object(projectUploadModalSearchShape)
   .transform((search) => {
     if (search.modalUploadId && search.modalUploadView) {
       return search

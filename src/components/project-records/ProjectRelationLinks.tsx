@@ -117,11 +117,13 @@ export function AcquisitionAreaRelationLink({
 export function ProjectRecordRelationLink({
   projectRecord,
   withDate,
+  forProjectSlug,
   className,
   children,
 }: RelationLinkProps & {
   projectRecord: ProjectRecordRelation
   withDate?: boolean
+  forProjectSlug?: string
 }) {
   const projectRecordModal = useProjectRecordModal()
 
@@ -129,6 +131,7 @@ export function ProjectRecordRelationLink({
     <Link
       to={projectRecordModal.getProjectRecordDetailHref({
         projectRecordId: projectRecord.id,
+        forProjectSlug,
       })}
       resetScroll={false}
       className={className}
