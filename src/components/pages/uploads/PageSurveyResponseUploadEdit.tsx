@@ -30,7 +30,12 @@ export function PageSurveyResponseUploadEdit() {
           />
         }
       />
-      <EditUploadForm upload={upload} returnPath={returnPath} returnText="Zurück zu den Eingaben" />
+      <EditUploadForm
+        upload={upload}
+        projectSlug={projectSlug}
+        returnPath={returnPath}
+        returnText="Zurück zu den Eingaben"
+      />
     </>
   )
 }

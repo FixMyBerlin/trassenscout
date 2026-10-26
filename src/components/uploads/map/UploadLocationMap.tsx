@@ -1,6 +1,5 @@
 import { XMarkIcon } from "@heroicons/react/16/solid"
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { getRouteApi } from "@tanstack/react-router"
 import { Marker, MarkerDragEvent } from "react-map-gl/maplibre"
 import { twMerge } from "tailwind-merge"
 import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
@@ -17,19 +16,22 @@ import { subsubsectionsQueryOptions } from "@/src/server/subsubsections/subsubse
 import { hasGeometry } from "@/src/shared/geometry/hasGeometry"
 import { UploadPin } from "./UploadPin"
 
-const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
-
 function subsubsectionIdsFromForm(v: unknown) {
   if (!Array.isArray(v)) return []
   return v.map((x) => Number(x)).filter((n) => !Number.isNaN(n))
 }
 
-export const UploadLocationMap = ({ excludeUploadId }: { excludeUploadId?: number }) => {
+export const UploadLocationMap = ({
+  projectSlug,
+  excludeUploadId,
+}: {
+  projectSlug: string
+  excludeUploadId?: number
+}) => {
   const { form } = useFormShellState()
   const latitude = useFormValue("latitude")
   const longitude = useFormValue("longitude")
   const subsubsectionIds = subsubsectionIdsFromForm(useFormValue("subsubsections"))
-  const { projectSlug } = loggedInProjectRouteApi.useParams()
 
   const subsections = useSuspenseQuery(subsectionsQueryOptions({ projectSlug })).data
   const subsubsections = useSuspenseQuery(subsubsectionsQueryOptions({ projectSlug })).data

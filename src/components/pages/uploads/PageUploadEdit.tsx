@@ -33,7 +33,12 @@ export function PageUploadEdit() {
           />
         }
       />
-      <EditUploadForm upload={upload} returnPath={returnPath} returnText={returnText} />
+      <EditUploadForm
+        upload={upload}
+        projectSlug={projectSlug}
+        returnPath={returnPath}
+        returnText={returnText}
+      />
     </>
   )
 }
