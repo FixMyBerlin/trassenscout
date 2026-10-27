@@ -54,7 +54,8 @@ const mcpListLimitSchema = z
   .describe(`Max rows to return (default ${MCP_LIST_DEFAULT_LIMIT}, max ${MCP_LIST_MAX_LIMIT})`)
 
 const patchSemantics =
-  "MCP patch semantics differ from the form: omit a key to leave it unchanged. null and empty string do not clear values. " +
+  "MCP patch semantics differ from the form: omit a key to leave it unchanged. null and empty string are rejected. " +
+  "To reset a text field, name it in patch.clear (Maßnahme: description, estimatedConstructionDateString, extraFields.<key>; Planungsabschnitt: description, estimatedCompletionDateString); the preview lists it as kind clear. " +
   "Empty arrays are not allowed for subsubsectionInfrastructureTypeSlugs (omit the key instead). " +
   "subsubsectionInfrastructureTypeSlugs replaces the whole set when present with at least one slug."
 

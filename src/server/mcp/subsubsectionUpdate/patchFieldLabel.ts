@@ -36,6 +36,12 @@ export function subsubsectionMcpPatchFieldLabels(
       }
       continue
     }
+    if (key === "clear" && Array.isArray(value)) {
+      for (const field of value as string[]) {
+        labels.push(`${subsubsectionMcpFieldLabel(field)} (leeren)`)
+      }
+      continue
+    }
     labels.push(subsubsectionMcpFieldLabel(key))
   }
   return labels

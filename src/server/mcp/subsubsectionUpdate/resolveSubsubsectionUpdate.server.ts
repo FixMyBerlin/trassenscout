@@ -13,7 +13,10 @@ import {
   geometryVertexIssue,
 } from "@/src/server/mcp/subsubsectionUpdate/geometryPreview"
 import { subsubsectionMcpFieldLabel } from "@/src/server/mcp/subsubsectionUpdate/patchFieldLabel"
-import type { SubsubsectionMcpPatch } from "@/src/server/mcp/subsubsectionUpdate/patchSchema"
+import type {
+  SubsubsectionMcpClearableKey,
+  SubsubsectionMcpPatch,
+} from "@/src/server/mcp/subsubsectionUpdate/patchSchema"
 import { buildSubsubsectionUrl } from "@/src/server/mcp/subsubsectionUrl"
 import {
   resolveSubsubsectionInfrastructureTypeSlugs,
@@ -78,6 +81,20 @@ function pushChange(
     kind: isEmptyCurrentValue(current) ? "set" : "overwrite",
     proposed,
   })
+  return true
+}
+
+function pushClear(
+  changes: SubsubsectionPreviewChange[],
+  notes: string[],
+  field: string,
+  current: unknown,
+) {
+  if (isEmptyCurrentValue(current)) {
+    notes.push(`${fieldLabel(field)} ist bereits leer.`)
+    return false
+  }
+  changes.push({ field, label: fieldLabel(field), kind: "clear", proposed: null })
   return true
 }
 
@@ -172,12 +189,27 @@ export async function resolveSubsubsectionUpdate({
     }
   }
 
+  // Checked before any change is recorded so the preview never shows a rejected value
+  const clearFields = new Set(patch.clear)
+  const conflictingFields = new Set<string>()
+  for (const field of clearFields) {
+    const inPatch = field.startsWith("extraFields.")
+      ? patch.extraFields?.[field.slice("extraFields.".length)] !== undefined
+      : patch[field as SubsubsectionMcpClearableKey] !== undefined
+    if (!inPatch) continue
+    conflictingFields.add(field)
+    errors.push(
+      `${fieldLabel(field)} (${field}): send it either in the patch or in clear, not both.`,
+    )
+  }
+  const clearNotes: string[] = []
+
   for (const key of SCALAR_KEYS) {
-    if (!(key in patch) || patch[key] === undefined) continue
+    if (!(key in patch) || patch[key] === undefined || conflictingFields.has(key)) continue
     const proposed = patch[key]
     if (proposed === null) {
       errors.push(
-        `${fieldLabel(key)} (${key}): MCP cannot clear fields with null. Omit the key to leave the value unchanged.`,
+        `${fieldLabel(key)} (${key}): MCP rejects null. Omit the key to leave the value unchanged.`,
       )
       continue
     }
@@ -188,6 +220,17 @@ export async function resolveSubsubsectionUpdate({
     if (!pushChange(changes, key, subsubsection[key as keyof typeof subsubsection], proposedValue))
       continue
     ;(prismaData as Record<string, unknown>)[key] = proposedValue
+  }
+
+  const clearExtraFieldKeys: string[] = []
+  for (const field of clearFields) {
+    if (conflictingFields.has(field)) continue
+    if (field.startsWith("extraFields.")) {
+      clearExtraFieldKeys.push(field.slice("extraFields.".length))
+      continue
+    }
+    const key = field as SubsubsectionMcpClearableKey
+    if (pushClear(changes, clearNotes, key, subsubsection[key])) prismaData[key] = null
   }
 
   const relationSlugs = {
@@ -285,23 +328,34 @@ export async function resolveSubsubsectionUpdate({
     }
   }
 
-  if (patch.extraFields !== undefined) {
+  if (patch.extraFields !== undefined || clearExtraFieldKeys.length > 0) {
     const allowed = new Set(definitions.map((definition) => definition.name))
     const merged = { ...currentExtraFields }
     let extraFieldsDirty = false
-    for (const [key, value] of Object.entries(patch.extraFields)) {
+    for (const [key, value] of Object.entries(patch.extraFields ?? {})) {
       if (!allowed.has(key)) {
         errors.push(`Unknown extraFields key: "${key}"`)
         continue
       }
+      if (conflictingFields.has(`extraFields.${key}`)) continue
       if (value.trim() === "") {
         errors.push(
-          `extraFields.${key}: MCP cannot clear fields with empty string. Omit the key to leave the value unchanged.`,
+          `extraFields.${key}: MCP rejects empty strings. To reset it, send clear: ["extraFields.${key}"].`,
         )
         continue
       }
       if (pushChange(changes, `extraFields.${key}`, currentExtraFields[key] ?? null, value)) {
         merged[key] = value
+        extraFieldsDirty = true
+      }
+    }
+    for (const key of clearExtraFieldKeys) {
+      if (!allowed.has(key)) {
+        errors.push(`Unknown extraFields key in clear: "${key}"`)
+        continue
+      }
+      if (pushClear(changes, clearNotes, `extraFields.${key}`, currentExtraFields[key])) {
+        delete merged[key]
         extraFieldsDirty = true
       }
     }
@@ -314,7 +368,8 @@ export async function resolveSubsubsectionUpdate({
   }
 
   const warnings = [
-    ...changes.filter((change) => change.kind === "overwrite").map(formatPreviewWarning),
+    ...changes.filter((change) => change.kind !== "set").map(formatPreviewWarning),
+    ...clearNotes,
     ...geometryWarnings,
   ]
 

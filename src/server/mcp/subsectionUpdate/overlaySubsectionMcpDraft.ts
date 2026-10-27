@@ -17,9 +17,9 @@ type SubsectionMcpFormOverlay = {
   slug?: string
   type?: GeometryTypeEnum
   geometry?: SupportedGeometry
-  description?: string
+  description?: string | null
   lengthM?: number
-  estimatedCompletionDateString?: string
+  estimatedCompletionDateString?: string | null
   operatorId?: number
   networkHierarchyId?: number
   subsectionStatusId?: number
@@ -59,6 +59,11 @@ export async function overlaySubsectionMcpDraft({
   for (const key of SCALAR_FORM_KEYS) {
     if (!(key in overlayPatch) || overlayPatch[key] === undefined) continue
     ;(overlay as Record<string, unknown>)[key] = overlayPatch[key]
+  }
+
+  // Cleared fields look like never-filled ones: null like the DB row
+  if (!createDraft) {
+    for (const key of (overlayPatch as SubsectionMcpPatch).clear ?? []) overlay[key] = null
   }
 
   const relationSlugs = {

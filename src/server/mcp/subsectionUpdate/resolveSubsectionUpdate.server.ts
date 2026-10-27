@@ -44,6 +44,20 @@ function pushChange(
   return true
 }
 
+function pushClear(
+  changes: SubsubsectionPreviewChange[],
+  notes: string[],
+  field: string,
+  current: unknown,
+) {
+  if (isEmptyCurrentValue(current)) {
+    notes.push(`${fieldLabel(field)} ist bereits leer.`)
+    return false
+  }
+  changes.push({ field, label: fieldLabel(field), kind: "clear", proposed: null })
+  return true
+}
+
 export type ResolveSubsectionUpdateResult = {
   environment: ReturnType<typeof mcpEnvLabel>
   mcpMode: Awaited<ReturnType<typeof requireMcpEnabledProject>>["mcpMode"]
@@ -120,17 +134,32 @@ export async function resolveSubsectionUpdate({
     }
   }
 
+  // Checked before any change is recorded so the preview never shows a rejected value
+  const clearFields = new Set(patch.clear)
+  const conflictingFields = new Set<string>()
+  for (const key of clearFields) {
+    if (patch[key] === undefined) continue
+    conflictingFields.add(key)
+    errors.push(`${fieldLabel(key)} (${key}): send it either in the patch or in clear, not both.`)
+  }
+  const clearNotes: string[] = []
+
   for (const key of SCALAR_KEYS) {
-    if (!(key in patch) || patch[key] === undefined) continue
+    if (!(key in patch) || patch[key] === undefined || conflictingFields.has(key)) continue
     const proposed = patch[key]
     if (proposed === null) {
       errors.push(
-        `${fieldLabel(key)} (${key}): MCP cannot clear fields with null. Omit the key to leave the value unchanged.`,
+        `${fieldLabel(key)} (${key}): MCP rejects null. Omit the key to leave the value unchanged.`,
       )
       continue
     }
     if (!pushChange(changes, key, subsection[key], proposed)) continue
     ;(prismaData as Record<string, unknown>)[key] = proposed
+  }
+
+  for (const key of clearFields) {
+    if (conflictingFields.has(key)) continue
+    if (pushClear(changes, clearNotes, key, subsection[key])) prismaData[key] = null
   }
 
   const relationSlugs = {
@@ -182,7 +211,8 @@ export async function resolveSubsectionUpdate({
   }
 
   const warnings = [
-    ...changes.filter((change) => change.kind === "overwrite").map(formatPreviewWarning),
+    ...changes.filter((change) => change.kind !== "set").map(formatPreviewWarning),
+    ...clearNotes,
     ...geometryWarnings,
   ]
 

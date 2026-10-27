@@ -67,6 +67,27 @@ describe("overlaySubsectionMcpDraft", () => {
     expect(result).toEqual({ overlay: {}, overlayErrors: [] })
   })
 
+  test("clear empties update drafts and is ignored on create drafts", async () => {
+    const { overlaySubsectionMcpDraft } =
+      await import("@/src/server/mcp/subsectionUpdate/overlaySubsectionMcpDraft")
+
+    const updateResult = await overlaySubsectionMcpDraft({
+      projectId: 1,
+      patch: { clear: ["description", "estimatedCompletionDateString"] },
+    })
+    expect(updateResult.overlay).toEqual({
+      description: null,
+      estimatedCompletionDateString: null,
+    })
+
+    const createResult = await overlaySubsectionMcpDraft({
+      projectId: 1,
+      createDraft: true,
+      patch: { type: "LINE", clear: ["description"] },
+    })
+    expect(createResult.overlay).toEqual({ type: "LINE" })
+  })
+
   test("overlays geometry on update drafts and type only for create drafts", async () => {
     const { overlaySubsectionMcpDraft } =
       await import("@/src/server/mcp/subsectionUpdate/overlaySubsectionMcpDraft")

@@ -153,7 +153,7 @@ export async function getSubsubsectionsSchemaForMcp(projectSlug: string) {
     notes: [
       "Relations use slugs, not IDs. Options are in this payload (qualityLevels, subsubsectionStatuses, subsubsectionTasks, subsubsectionInfras, subsubsectionInfrastructureTypes, location).",
       "extraFields keys are listed in extraFields (project-specific).",
-      "MCP patch: omit a key to leave it unchanged. null and empty string do not clear values.",
+      "MCP patch: omit a key to leave it unchanged. null and empty string are rejected. To reset a text field on subsubsections_update, name it in clear: description, estimatedConstructionDateString, extraFields.<key>.",
       "subsubsectionInfrastructureTypeSlugs: omit to leave unchanged; present with ≥1 slug = replace the whole set (empty array rejected).",
       `type (GeometryTypeEnum) is not writable on subsubsections_update: ${Object.values(GeometryTypeEnum).join(", ")}. geometry is optional on update: omit it to leave the geometry unchanged; when present it replaces the stored geometry and must match the stored type. subsubsections_create requires type and matching GeoJSON geometry in the patch.`,
       "Maßnahme ohne Geometrie: send withoutGeometry: true on subsubsections_create instead of type and geometry. A later subsubsections_update with geometry adds one; its type is taken from the GeoJSON type.",

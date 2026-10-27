@@ -24,6 +24,12 @@ export function subsectionMcpPatchFieldLabels(
   const labels: string[] = []
   for (const [key, value] of Object.entries(patch)) {
     if (value === undefined) continue
+    if (key === "clear" && Array.isArray(value)) {
+      for (const field of value as string[]) {
+        labels.push(`${subsectionMcpFieldLabel(field)} (leeren)`)
+      }
+      continue
+    }
     labels.push(subsectionMcpFieldLabel(key))
   }
   return labels

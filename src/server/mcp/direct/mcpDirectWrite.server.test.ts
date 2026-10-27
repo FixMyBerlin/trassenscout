@@ -229,6 +229,49 @@ describe("MCP direct write", () => {
     expect(JSON.stringify(mockCreateLogEntry.mock.calls)).not.toContain("MCP")
   })
 
+  test("direct update writes null for cleared fields", async () => {
+    const { updateSubsubsectionForMcp } =
+      await import("@/src/server/mcp/queries/updateSubsubsectionForMcp.server")
+    const { updateSubsectionForMcp } =
+      await import("@/src/server/mcp/queries/updateSubsectionForMcp.server")
+    mockDb.project.findUnique.mockResolvedValue(directProject)
+    mockDb.subsubsection.findFirst.mockResolvedValue(mockMeasure({ description: "Alt" }))
+
+    const measure = await updateSubsubsectionForMcp({
+      origin: "http://127.0.0.1:4000",
+      createdById: 42,
+      items: [{ ...updateItem, patch: { clear: ["description"] } }],
+    })
+    expect(measure.items[0]?.mode).toBe("applied")
+    expect(mockDb.subsubsection.update).toHaveBeenCalledWith(
+      expect.objectContaining({ data: { description: null } }),
+    )
+
+    const pa = {
+      id: 3,
+      slug: "pa8",
+      type: "LINE",
+      geometry: {},
+      description: "Alt",
+      lengthM: null,
+      estimatedCompletionDateString: null,
+      operator: null,
+      networkHierarchy: null,
+      SubsectionStatus: null,
+    }
+    mockDb.subsection.findFirst.mockResolvedValue(pa)
+    mockDb.subsection.findFirstOrThrow.mockResolvedValue(pa)
+    const subsection = await updateSubsectionForMcp({
+      origin: "http://127.0.0.1:4000",
+      createdById: 42,
+      items: [{ projectSlug: "frm9-ra3", slug: "pa8", patch: { clear: ["description"] } }],
+    })
+    expect(subsection.items[0]?.mode).toBe("applied")
+    expect(mockDb.subsection.update).toHaveBeenCalledWith(
+      expect.objectContaining({ data: expect.objectContaining({ description: null }) }),
+    )
+  })
+
   test("direct measure update writes the new geometry", async () => {
     const { updateSubsubsectionForMcp } =
       await import("@/src/server/mcp/queries/updateSubsubsectionForMcp.server")

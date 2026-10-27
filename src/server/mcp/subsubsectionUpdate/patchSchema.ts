@@ -5,7 +5,8 @@ import { SupportedGeometrySchema } from "@/src/shared/geometry/geometrySchemas"
 import { SubsubsectionExtraFieldsValuesSchema } from "@/src/shared/subsubsections/extraFieldSchemas"
 
 const nonEmptyString = z.string().min(1, {
-  error: "MCP cannot clear fields with empty string. Omit the key to leave the value unchanged.",
+  error:
+    "MCP rejects empty strings. Omit the key to leave the value unchanged. On update, reset a text field (description, estimatedConstructionDateString, extraFields.<key>) by listing it in clear.",
 })
 
 /** ISO calendar date as a string so MCP `tools/list` can emit JSON Schema (Zod Date cannot). */
@@ -21,6 +22,28 @@ const subsubsectionMcpIdentitySchema = z.object({
   subsectionSlug: z.string().min(1).describe("Planungsabschnitt slug"),
   slug: z.string().min(1).describe("Maßnahme slug"),
 })
+
+/** String fields MCP may reset; "" and null stay rejected so a reset is always named in `clear`. */
+export const SUBSUBSECTION_MCP_CLEARABLE_KEYS = [
+  "description",
+  "estimatedConstructionDateString",
+] as const
+
+export type SubsubsectionMcpClearableKey = (typeof SUBSUBSECTION_MCP_CLEARABLE_KEYS)[number]
+
+const subsubsectionMcpClearSchema = z
+  .array(
+    z.union([
+      z.enum(SUBSUBSECTION_MCP_CLEARABLE_KEYS),
+      z.string().regex(/^extraFields\..+$/, {
+        error: `Clearable fields: ${SUBSUBSECTION_MCP_CLEARABLE_KEYS.join(", ")}, extraFields.<key>.`,
+      }),
+    ]),
+  )
+  .min(1, { error: "Omit clear instead of sending an empty array." })
+  .describe(
+    `Fields to reset to empty. Only these: ${SUBSUBSECTION_MCP_CLEARABLE_KEYS.join(", ")}, extraFields.<key>. Do not also send the same field in the patch.`,
+  )
 
 const subsubsectionMcpPatchObjectSchema = z.object({
   description: nonEmptyString.optional(),
@@ -66,6 +89,7 @@ const subsubsectionMcpPatchObjectSchema = z.object({
     .optional(),
   extraFields: SubsubsectionExtraFieldsValuesSchema.optional(),
   geometry: SupportedGeometrySchema.optional(),
+  clear: subsubsectionMcpClearSchema.optional(),
 })
 
 export const subsubsectionMcpPatchSchema = subsubsectionMcpPatchObjectSchema.strict()
@@ -78,7 +102,10 @@ const subsubsectionMcpCreatePatchObjectSchema = subsubsectionMcpPatchObjectSchem
     .describe("Create the Maßnahme without geometry. Do not send type or geometry with it."),
 })
 
-const subsubsectionMcpCreatePatchSchema = subsubsectionMcpCreatePatchObjectSchema.strict()
+// A new Maßnahme has nothing to clear
+const subsubsectionMcpCreatePatchSchema = subsubsectionMcpCreatePatchObjectSchema
+  .omit({ clear: true })
+  .strict()
 
 /** Overlay drops unknown keys instead of rejecting the whole patch. */
 export const subsubsectionMcpPatchOverlaySchema = subsubsectionMcpCreatePatchObjectSchema

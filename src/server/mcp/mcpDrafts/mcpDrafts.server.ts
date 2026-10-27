@@ -155,11 +155,13 @@ async function overlayFromSubsubsectionDraft({
   extraFieldDefinitions,
   projectId,
   currentExtraFields,
+  createDraft,
 }: {
   patch: Prisma.JsonValue
   extraFieldDefinitions: unknown
   projectId: number
   currentExtraFields: Record<string, string>
+  createDraft: boolean
 }) {
   const parsedPatch = subsubsectionMcpPatchOverlaySchema.safeParse(patch)
   const formOverlay = await overlaySubsubsectionMcpDraft({
@@ -167,6 +169,7 @@ async function overlayFromSubsubsectionDraft({
     extraFieldDefinitions,
     projectId,
     currentExtraFields,
+    createDraft,
   })
   return {
     fieldLabels: parsedPatch.success ? subsubsectionMcpPatchFieldLabels(parsedPatch.data) : [],
@@ -273,6 +276,7 @@ export async function getSubsubsectionMcpDraft(
       extraFieldDefinitions: subsubsection.subsection.project.subsubsectionExtraFieldDefinitions,
       projectId: subsubsection.subsection.projectId,
       currentExtraFields: parseExtraFields(subsubsection.extraFields),
+      createDraft: false,
     })
     return {
       id: draft.id,
@@ -319,6 +323,7 @@ export async function getSubsubsectionMcpDraft(
     extraFieldDefinitions: subsection.project.subsubsectionExtraFieldDefinitions,
     projectId: subsection.projectId,
     currentExtraFields: {},
+    createDraft: true,
   })
   return {
     id: draft.id,

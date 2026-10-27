@@ -105,6 +105,42 @@ describe("Subsection MCP patch", () => {
     expect(mockDb.subsection.update).not.toHaveBeenCalled()
   })
 
+  test("clear resets named text fields, not together with a value", async () => {
+    mockDb.subsection.findFirst.mockResolvedValue(mockSubsection({ description: "Alt" }))
+    const result = await updateSubsectionForMcp({
+      origin: "http://127.0.0.1:4000",
+      createdById: 42,
+      items: [item({ clear: ["description", "estimatedCompletionDateString"] })],
+    })
+    expect(result.items[0]?.drafted).toBe(true)
+    expect(result.items[0]?.changes).toEqual([
+      expect.objectContaining({ field: "description", kind: "clear", proposed: null }),
+    ])
+    expect(result.items[0]?.warnings).toEqual([
+      "Beschreibung wird geleert.",
+      "Jahr und Monat der geplanten Fertigstellung ist bereits leer.",
+    ])
+
+    const both = await updateSubsectionForMcp({
+      origin: "http://127.0.0.1:4000",
+      createdById: 42,
+      items: [item({ description: "Neu", clear: ["description"] })],
+    })
+    expect(both.items[0]?.drafted).toBe(false)
+    expect(both.items[0]?.errors[0]).toContain("not both")
+    expect(both.items[0]?.changes).toEqual([])
+
+    expect(subsectionMcpPatchSchema.safeParse({ clear: ["lengthM"] }).success).toBe(false)
+
+    const { subsectionMcpCreateInputSchema } =
+      await import("@/src/server/mcp/subsectionUpdate/patchSchema")
+    expect(
+      subsectionMcpCreateInputSchema.safeParse({
+        items: [{ ...identity, patch: { clear: ["description"] } }],
+      }).success,
+    ).toBe(false)
+  })
+
   test("null is rejected by the patch schema", async () => {
     expect(subsectionMcpPatchSchema.safeParse({ lengthM: null }).success).toBe(false)
     expect(subsectionMcpPatchSchema.safeParse({ description: "" }).success).toBe(false)

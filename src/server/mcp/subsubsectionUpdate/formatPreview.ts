@@ -1,4 +1,4 @@
-type SubsubsectionPreviewChangeKind = "set" | "overwrite"
+type SubsubsectionPreviewChangeKind = "set" | "overwrite" | "clear"
 
 export type SubsubsectionPreviewChange = {
   field: string
@@ -8,6 +8,7 @@ export type SubsubsectionPreviewChange = {
 }
 
 export function formatPreviewWarning(change: SubsubsectionPreviewChange) {
+  if (change.kind === "clear") return `${change.label} wird geleert.`
   return `${change.label} wird überschrieben.`
 }
 
