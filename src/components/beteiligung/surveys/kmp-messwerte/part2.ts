@@ -201,7 +201,7 @@ Alle personenbezogenen Daten werden gemäß DSGVO verarbeitet und nur für die D
           name: "measurementDate",
           component: "SurveyTextfield",
           componentType: "form",
-          validation: fieldValidationEnum.requiredString,
+          validation: fieldValidationEnum.requiredDateString,
           defaultValue: "",
           props: {
             label: "Messdatum",
