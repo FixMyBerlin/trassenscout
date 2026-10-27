@@ -101,8 +101,9 @@ function faviconMimeType(url: string) {
 
 /** Public survey participation layout – per-survey icon, canonical URL, and noindex. */
 export function surveyLayoutHead(surveySlug: AllowedSurveySlugs) {
-  const { logoUrl, canonicalUrl, title } = getConfigBySurveySlug(surveySlug, "meta")
-  const iconType = faviconMimeType(logoUrl)
+  const { logoUrl, faviconUrl, canonicalUrl, title } = getConfigBySurveySlug(surveySlug, "meta")
+  const iconUrl = faviconUrl ?? logoUrl
+  const iconType = faviconMimeType(iconUrl)
   return {
     meta: [
       { title: `${title} ${surveySlug.toUpperCase()}` },
@@ -112,7 +113,7 @@ export function surveyLayoutHead(surveySlug: AllowedSurveySlugs) {
     ],
     links: [
       { rel: "canonical", href: canonicalUrl },
-      { rel: "icon", href: logoUrl, ...(iconType ? { type: iconType } : {}) },
+      { rel: "icon", href: iconUrl, ...(iconType ? { type: iconType } : {}) },
     ],
   }
 }
