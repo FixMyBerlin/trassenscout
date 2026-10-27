@@ -10,7 +10,7 @@ import {
   sanitizeExtraFieldsForSave,
 } from "@/src/shared/subsubsections/extraFieldSchemas"
 import type { SubsubsectionMcpPatch } from "./patchSchema"
-import { subsubsectionMcpPatchOverlaySchema } from "./patchSchema"
+import { extraFieldKey, isExtraFieldPath, subsubsectionMcpPatchOverlaySchema } from "./patchSchema"
 
 const SCALAR_FORM_KEYS = [
   "description",
@@ -45,7 +45,7 @@ export type SubsubsectionMcpFormOverlay = {
   withoutGeometry?: boolean
   type?: GeometryTypeEnum | null
   geometry?: SupportedGeometry | null
-  description?: string
+  description?: string | null
   location?: LocationEnum | ""
   lengthM?: number
   width?: number
@@ -57,7 +57,7 @@ export type SubsubsectionMcpFormOverlay = {
   planningPeriod?: number
   constructionPeriod?: number
   estimatedCompletionDate?: string
-  estimatedConstructionDateString?: string
+  estimatedConstructionDateString?: string | null
   planningCosts?: number
   deliveryCosts?: number
   constructionCosts?: number
@@ -90,11 +90,13 @@ export async function overlaySubsubsectionMcpDraft({
   extraFieldDefinitions,
   projectId,
   currentExtraFields,
+  createDraft = false,
 }: {
   patch: unknown
   extraFieldDefinitions: unknown
   projectId: number
   currentExtraFields: Record<string, string>
+  createDraft?: boolean
 }): Promise<SubsubsectionMcpFormOverlay> {
   const parsed = subsubsectionMcpPatchOverlaySchema.safeParse(patch)
   if (!parsed.success) return {}
@@ -172,6 +174,19 @@ export async function overlaySubsubsectionMcpDraft({
     if (Object.keys(sanitized).length > 0) {
       overlay.extraFields = { ...currentExtraFields, ...sanitized }
     }
+  }
+
+  // Cleared fields look like never-filled ones: null like the DB row, extra fields dropped on save
+  const clearFields = createDraft ? [] : (overlayPatch.clear ?? [])
+  const allowedExtraFields = new Set(definitions.map((definition) => definition.name))
+  for (const field of clearFields) {
+    if (isExtraFieldPath(field)) {
+      const key = extraFieldKey(field)
+      if (!allowedExtraFields.has(key)) continue
+      overlay.extraFields = { ...(overlay.extraFields ?? currentExtraFields), [key]: "" }
+      continue
+    }
+    overlay[field] = null
   }
 
   return overlay

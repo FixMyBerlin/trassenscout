@@ -1,19 +1,20 @@
 import type { Prisma } from "@/src/prisma/generated/client"
 import db from "@/src/server/db.server"
 import { mcpEnvLabel } from "@/src/server/mcp/mcpCursorConfig"
-import { requireMcpEnabledProject } from "@/src/server/mcp/requireMcpEnabledProject.server"
+import { geometryPreview, geometryVertexIssue } from "@/src/server/mcp/preview/geometryPreview"
 import {
   formatPreviewWarning,
-  isEmptyCurrentValue,
-  valuesEqual,
-  type SubsubsectionPreviewChange,
-} from "@/src/server/mcp/subsubsectionUpdate/formatPreview"
+  pushChange,
+  pushClear,
+  type McpPreviewChange,
+} from "@/src/server/mcp/preview/previewChange"
+import { requireMcpEnabledProject } from "@/src/server/mcp/requireMcpEnabledProject.server"
+import { subsubsectionMcpFieldLabel as fieldLabel } from "@/src/server/mcp/subsubsectionUpdate/patchFieldLabel"
 import {
-  geometryPreview,
-  geometryVertexIssue,
-} from "@/src/server/mcp/subsubsectionUpdate/geometryPreview"
-import { subsubsectionMcpFieldLabel } from "@/src/server/mcp/subsubsectionUpdate/patchFieldLabel"
-import type { SubsubsectionMcpPatch } from "@/src/server/mcp/subsubsectionUpdate/patchSchema"
+  extraFieldKey,
+  isExtraFieldPath,
+  type SubsubsectionMcpPatch,
+} from "@/src/server/mcp/subsubsectionUpdate/patchSchema"
 import { buildSubsubsectionUrl } from "@/src/server/mcp/subsubsectionUrl"
 import {
   resolveSubsubsectionInfrastructureTypeSlugs,
@@ -61,32 +62,12 @@ const SCALAR_KEYS = [
   "disbursedFunding",
 ] as const satisfies readonly (keyof SubsubsectionMcpPatch)[]
 
-function fieldLabel(field: string) {
-  return subsubsectionMcpFieldLabel(field)
-}
-
-function pushChange(
-  changes: SubsubsectionPreviewChange[],
-  field: string,
-  current: unknown,
-  proposed: unknown,
-): boolean {
-  if (valuesEqual(current, proposed)) return false
-  changes.push({
-    field,
-    label: fieldLabel(field),
-    kind: isEmptyCurrentValue(current) ? "set" : "overwrite",
-    proposed,
-  })
-  return true
-}
-
 export type ResolveSubsubsectionUpdateResult = {
   environment: ReturnType<typeof mcpEnvLabel>
   mcpMode: Awaited<ReturnType<typeof requireMcpEnabledProject>>["mcpMode"]
   url: string
   okToWrite: boolean
-  changes: SubsubsectionPreviewChange[]
+  changes: McpPreviewChange[]
   errors: string[]
   warnings: string[]
   prismaData: Prisma.SubsubsectionUpdateInput
@@ -145,7 +126,7 @@ export async function resolveSubsubsectionUpdate({
   const definitions = parseDefinitions(project.subsubsectionExtraFieldDefinitions)
   const currentExtraFields = parseExtraFields(subsubsection.extraFields)
   const prismaData: Prisma.SubsubsectionUpdateInput = {}
-  const changes: SubsubsectionPreviewChange[] = []
+  const changes: McpPreviewChange[] = []
   const geometryWarnings: string[] = []
 
   if (patch.geometry !== undefined) {
@@ -162,22 +143,43 @@ export async function resolveSubsubsectionUpdate({
         errors.push(vertexIssue.error)
       } else {
         if (vertexIssue.warning) geometryWarnings.push(vertexIssue.warning)
-        pushChange(changes, "geometry", subsubsection.geometry, geometryPreview(patch.geometry))
+        pushChange(
+          changes,
+          fieldLabel,
+          "geometry",
+          subsubsection.geometry,
+          geometryPreview(patch.geometry),
+        )
         prismaData.geometry = patch.geometry as Prisma.InputJsonValue
         if (subsubsection.type === null) {
-          pushChange(changes, "type", null, type)
+          pushChange(changes, fieldLabel, "type", null, type)
           prismaData.type = type
         }
       }
     }
   }
 
+  // Checked before any change is recorded so the preview never shows a rejected value
+  const clearFields = new Set(patch.clear)
+  const conflictingFields = new Set<string>()
+  for (const field of clearFields) {
+    const inPatch = isExtraFieldPath(field)
+      ? patch.extraFields?.[extraFieldKey(field)] !== undefined
+      : patch[field] !== undefined
+    if (!inPatch) continue
+    conflictingFields.add(field)
+    errors.push(
+      `${fieldLabel(field)} (${field}): send it either in the patch or in clear, not both.`,
+    )
+  }
+  const clearNotes: string[] = []
+
   for (const key of SCALAR_KEYS) {
-    if (!(key in patch) || patch[key] === undefined) continue
+    if (!(key in patch) || patch[key] === undefined || conflictingFields.has(key)) continue
     const proposed = patch[key]
     if (proposed === null) {
       errors.push(
-        `${fieldLabel(key)} (${key}): MCP cannot clear fields with null. Omit the key to leave the value unchanged.`,
+        `${fieldLabel(key)} (${key}): MCP rejects null. Omit the key to leave the value unchanged.`,
       )
       continue
     }
@@ -185,9 +187,29 @@ export async function resolveSubsubsectionUpdate({
       key === "trafficLoadDate" || key === "estimatedCompletionDate"
         ? new Date(proposed as string)
         : proposed
-    if (!pushChange(changes, key, subsubsection[key as keyof typeof subsubsection], proposedValue))
+    if (
+      !pushChange(
+        changes,
+        fieldLabel,
+        key,
+        subsubsection[key as keyof typeof subsubsection],
+        proposedValue,
+      )
+    )
       continue
     ;(prismaData as Record<string, unknown>)[key] = proposedValue
+  }
+
+  const clearExtraFieldKeys: string[] = []
+  for (const field of clearFields) {
+    if (conflictingFields.has(field)) continue
+    if (isExtraFieldPath(field)) {
+      clearExtraFieldKeys.push(extraFieldKey(field))
+      continue
+    }
+    if (pushClear(changes, clearNotes, fieldLabel, field, subsubsection[field])) {
+      prismaData[field] = null
+    }
   }
 
   const relationSlugs = {
@@ -207,6 +229,7 @@ export async function resolveSubsubsectionUpdate({
         if (
           pushChange(
             changes,
+            fieldLabel,
             "qualityLevelSlug",
             subsubsection.qualityLevel?.slug ?? null,
             patch.qualityLevelSlug,
@@ -222,6 +245,7 @@ export async function resolveSubsubsectionUpdate({
         if (
           pushChange(
             changes,
+            fieldLabel,
             "subsubsectionStatusSlug",
             subsubsection.SubsubsectionStatus?.slug ?? null,
             patch.subsubsectionStatusSlug,
@@ -234,6 +258,7 @@ export async function resolveSubsubsectionUpdate({
         if (
           pushChange(
             changes,
+            fieldLabel,
             "subsubsectionTaskSlug",
             subsubsection.SubsubsectionTask?.slug ?? null,
             patch.subsubsectionTaskSlug,
@@ -249,6 +274,7 @@ export async function resolveSubsubsectionUpdate({
         if (
           pushChange(
             changes,
+            fieldLabel,
             "subsubsectionInfraSlug",
             subsubsection.SubsubsectionInfra?.slug ?? null,
             patch.subsubsectionInfraSlug,
@@ -273,6 +299,7 @@ export async function resolveSubsubsectionUpdate({
       if (
         pushChange(
           changes,
+          fieldLabel,
           "subsubsectionInfrastructureTypeSlugs",
           currentSlugs,
           patch.subsubsectionInfrastructureTypeSlugs,
@@ -285,23 +312,44 @@ export async function resolveSubsubsectionUpdate({
     }
   }
 
-  if (patch.extraFields !== undefined) {
+  if (patch.extraFields !== undefined || clearExtraFieldKeys.length > 0) {
     const allowed = new Set(definitions.map((definition) => definition.name))
     const merged = { ...currentExtraFields }
     let extraFieldsDirty = false
-    for (const [key, value] of Object.entries(patch.extraFields)) {
+    for (const [key, value] of Object.entries(patch.extraFields ?? {})) {
       if (!allowed.has(key)) {
         errors.push(`Unknown extraFields key: "${key}"`)
         continue
       }
+      if (conflictingFields.has(`extraFields.${key}`)) continue
       if (value.trim() === "") {
         errors.push(
-          `extraFields.${key}: MCP cannot clear fields with empty string. Omit the key to leave the value unchanged.`,
+          `extraFields.${key}: MCP rejects empty strings. To reset it, send clear: ["extraFields.${key}"].`,
         )
         continue
       }
-      if (pushChange(changes, `extraFields.${key}`, currentExtraFields[key] ?? null, value)) {
+      if (
+        pushChange(
+          changes,
+          fieldLabel,
+          `extraFields.${key}`,
+          currentExtraFields[key] ?? null,
+          value,
+        )
+      ) {
         merged[key] = value
+        extraFieldsDirty = true
+      }
+    }
+    for (const key of clearExtraFieldKeys) {
+      if (!allowed.has(key)) {
+        errors.push(`Unknown extraFields key in clear: "${key}"`)
+        continue
+      }
+      if (
+        pushClear(changes, clearNotes, fieldLabel, `extraFields.${key}`, currentExtraFields[key])
+      ) {
+        delete merged[key]
         extraFieldsDirty = true
       }
     }
@@ -314,7 +362,8 @@ export async function resolveSubsubsectionUpdate({
   }
 
   const warnings = [
-    ...changes.filter((change) => change.kind === "overwrite").map(formatPreviewWarning),
+    ...changes.filter((change) => change.kind !== "set").map(formatPreviewWarning),
+    ...clearNotes,
     ...geometryWarnings,
   ]
 

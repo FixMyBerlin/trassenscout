@@ -91,7 +91,7 @@ export async function getSubsectionsSchemaForMcp(projectSlug: string) {
     projectSlug: project.slug,
     notes: [
       "Relations use slugs, not IDs. Options are in this payload (operators, networkHierarchies, subsectionStatuses).",
-      "MCP patch: omit a key to leave it unchanged. null and empty string do not clear values.",
+      "MCP patch: omit a key to leave it unchanged. null and empty string are rejected. To reset a text field on subsections_update, name it in clear: description, estimatedCompletionDateString.",
       `type is not writable on subsections_update. geometry is optional on update: omit it to leave the geometry unchanged; when present it replaces the stored geometry and must match the stored type (${GeometryTypeEnum.LINE} | ${GeometryTypeEnum.POLYGON}). subsections_create requires type and matching GeoJSON geometry in the patch. POINT is not allowed.`,
       "slug is identity on both tools; for create it is the proposed Kürzel and must be unique within the project.",
       "labelPos defaults to bottom on create and is not MCP-writable. order is assigned as maxOrder + 1 on apply.",

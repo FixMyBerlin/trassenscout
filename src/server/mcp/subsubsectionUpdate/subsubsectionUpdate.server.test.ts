@@ -179,9 +179,90 @@ describe("Subsubsection MCP patch", () => {
     expect(mockDb.subsubsection.update).not.toHaveBeenCalled()
   })
 
+  test("clear resets named text fields and warns", async () => {
+    mockDb.subsubsection.findFirst.mockResolvedValue(
+      mockSubsubsection({
+        description: "Alt",
+        estimatedConstructionDateString: null,
+        extraFields: { klassifizierung: "Kreisstraße" },
+      }),
+    )
+    const result = await updateSubsubsectionForMcp({
+      origin: "http://127.0.0.1:4000",
+      createdById: 42,
+      items: [
+        item({
+          clear: [
+            "description",
+            "description",
+            "estimatedConstructionDateString",
+            "extraFields.klassifizierung",
+          ],
+        }),
+      ],
+    })
+
+    expect(result.items[0]?.drafted).toBe(true)
+    expect(result.items[0]?.errors).toEqual([])
+    // Duplicates count once; already empty fields only get a note
+    expect(result.items[0]?.changes).toEqual([
+      expect.objectContaining({ field: "description", kind: "clear", proposed: null }),
+      expect.objectContaining({ field: "extraFields.klassifizierung", kind: "clear" }),
+    ])
+    expect(result.items[0]?.warnings).toEqual([
+      "Beschreibung wird geleert.",
+      "klassifizierung wird geleert.",
+      "Angestrebtes Baujahr ist bereits leer.",
+    ])
+  })
+
+  test("clear rejects a field that is also in the patch or unknown", async () => {
+    const both = await updateSubsubsectionForMcp({
+      origin: "http://127.0.0.1:4000",
+      createdById: 42,
+      items: [
+        item({
+          description: "Neu",
+          extraFields: { klassifizierung: "Landesstraße" },
+          clear: ["description", "extraFields.klassifizierung"],
+        }),
+      ],
+    })
+    expect(both.items[0]?.drafted).toBe(false)
+    expect(both.items[0]?.errors).toEqual([
+      expect.stringContaining("(description): send it either in the patch or in clear, not both"),
+      expect.stringContaining(
+        "(extraFields.klassifizierung): send it either in the patch or in clear, not both",
+      ),
+    ])
+    // The preview does not list values that were rejected
+    expect(both.items[0]?.changes).toEqual([])
+
+    const unknown = await updateSubsubsectionForMcp({
+      origin: "http://127.0.0.1:4000",
+      createdById: 42,
+      items: [item({ clear: ["extraFields.unknown"] })],
+    })
+    expect(unknown.items[0]?.drafted).toBe(false)
+    expect(unknown.items[0]?.errors[0]).toContain("Unknown extraFields key in clear")
+
+    expect(subsubsectionMcpPatchSchema.safeParse({ clear: ["lengthM"] }).success).toBe(false)
+    expect(subsubsectionMcpPatchSchema.safeParse({ clear: [] }).success).toBe(false)
+  })
+
+  test("create input rejects clear", async () => {
+    const { subsubsectionMcpCreateInputSchema } =
+      await import("@/src/server/mcp/subsubsectionUpdate/patchSchema")
+    const parsed = subsubsectionMcpCreateInputSchema.safeParse({
+      items: [{ ...identity, patch: { withoutGeometry: true, clear: ["description"] } }],
+    })
+    expect(parsed.success).toBe(false)
+  })
+
   test("null is rejected by the patch schema", async () => {
     expect(subsubsectionMcpPatchSchema.safeParse({ lengthM: null }).success).toBe(false)
     expect(subsubsectionMcpPatchSchema.safeParse({ description: "" }).success).toBe(false)
+    expect(subsubsectionMcpPatchSchema.safeParse({ description: null }).success).toBe(false)
     expect(subsubsectionMcpPatchSchema.safeParse({ managerId: 1 }).success).toBe(false)
     expect(subsubsectionMcpPatchSchema.safeParse({ labelPos: "bottom" }).success).toBe(false)
     expect(subsubsectionMcpPatchSchema.safeParse({ lengthM: Number.NaN }).success).toBe(false)

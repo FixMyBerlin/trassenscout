@@ -1,3 +1,4 @@
+import { parseProjectModalSearch } from "@/src/shared/projectModals/searchSchemas"
 import { splitResolvedTo } from "@/src/shared/routing/resolvedTo"
 import { isProjectScopedReturnPath } from "@/src/shared/routing/sanitizeReturnTo"
 
@@ -9,7 +10,8 @@ type ReturnTarget = {
 const isProjectRecordTarget = (pathname: string, search: Record<string, unknown> | undefined) => {
   const [, , section, recordId = ""] = pathname.split("/")
   return (
-    search?.modalProjectRecordId !== undefined ||
+    // Same rules as the modal host: a record modal needs its view, and two open modals close both
+    parseProjectModalSearch(search).modalProjectRecordId !== undefined ||
     (section === "project-records" && /^\d+$/.test(recordId))
   )
 }

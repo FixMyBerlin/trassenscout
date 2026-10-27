@@ -4,13 +4,20 @@ import { MCP_LIST_MAX_LIMIT } from "@/src/server/mcp/mcpListLimit.const"
 import { SupportedGeometrySchema } from "@/src/shared/geometry/geometrySchemas"
 
 const nonEmptyString = z.string().min(1, {
-  error: "MCP cannot clear fields with empty string. Omit the key to leave the value unchanged.",
+  error:
+    "MCP rejects empty strings. Omit the key to leave the value unchanged. On update, reset a text field (description, estimatedCompletionDateString) by listing it in clear.",
 })
 
 const subsectionMcpIdentitySchema = z.object({
   projectSlug: z.string().min(1),
   slug: z.string().min(1).describe("Planungsabschnitt Kürzel"),
 })
+
+/** String fields MCP may reset; "" and null stay rejected so a reset is always named in `clear`. */
+export const SUBSECTION_MCP_CLEARABLE_KEYS = [
+  "description",
+  "estimatedCompletionDateString",
+] as const
 
 const subsectionMcpPatchObjectSchema = z.object({
   description: nonEmptyString.optional(),
@@ -23,13 +30,23 @@ const subsectionMcpPatchObjectSchema = z.object({
   networkHierarchySlug: nonEmptyString.optional(),
   subsectionStatusSlug: nonEmptyString.optional(),
   geometry: SupportedGeometrySchema.optional(),
+  clear: z
+    .array(z.enum(SUBSECTION_MCP_CLEARABLE_KEYS))
+    .min(1, { error: "Omit clear instead of sending an empty array." })
+    .optional()
+    .describe(
+      `Fields to reset to empty. Only these: ${SUBSECTION_MCP_CLEARABLE_KEYS.join(", ")}. Do not also send the same field in the patch.`,
+    ),
 })
 
 export const subsectionMcpPatchSchema = subsectionMcpPatchObjectSchema.strict()
 
-const subsectionMcpCreatePatchObjectSchema = subsectionMcpPatchObjectSchema.extend({
-  type: z.enum([GeometryTypeEnum.LINE, GeometryTypeEnum.POLYGON]).optional(),
-})
+// A new Planungsabschnitt has nothing to clear
+const subsectionMcpCreatePatchObjectSchema = subsectionMcpPatchObjectSchema
+  .omit({ clear: true })
+  .extend({
+    type: z.enum([GeometryTypeEnum.LINE, GeometryTypeEnum.POLYGON]).optional(),
+  })
 
 const subsectionMcpCreatePatchSchema = subsectionMcpCreatePatchObjectSchema.strict()
 

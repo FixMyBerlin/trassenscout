@@ -1,3 +1,4 @@
+import { clearFieldLabels } from "@/src/server/mcp/preview/previewChange"
 import type {
   SubsectionMcpCreatePatch,
   SubsectionMcpPatch,
@@ -24,6 +25,10 @@ export function subsectionMcpPatchFieldLabels(
   const labels: string[] = []
   for (const [key, value] of Object.entries(patch)) {
     if (value === undefined) continue
+    if (key === "clear" && Array.isArray(value)) {
+      labels.push(...clearFieldLabels(value, subsectionMcpFieldLabel))
+      continue
+    }
     labels.push(subsectionMcpFieldLabel(key))
   }
   return labels
