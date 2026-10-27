@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { endOfDay, format, formatDistanceStrict, subDays } from "date-fns"
+import { addDays, format, formatDistanceStrict } from "date-fns"
 import { de } from "date-fns/locale"
 import { twJoin } from "tailwind-merge"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
@@ -28,7 +28,7 @@ import { isAdmin } from "@/src/components/shared/app/users/utils/isAdmin"
 import { useCurrentUser } from "@/src/components/user/useCurrentUser"
 import { InviteStatusEnum } from "@/src/prisma/generated/browser"
 import { revokeInviteFn } from "@/src/server/invites/invites.functions"
-import { INVITE_DAYS_TO_DELETION } from "@/src/server/invites/inviteSettings.const"
+import { INVITE_DAYS_TO_EXPIRED } from "@/src/server/invites/inviteSettings.const"
 import type { InvitesResult } from "@/src/server/invites/types"
 
 /**
@@ -53,7 +53,7 @@ type Props = {
 export const TeamInvitesTable = ({ canEdit, invites, projectSlug }: Props) => {
   const queryClient = useQueryClient()
   const revokeMutation = useMutation({ mutationFn: revokeInviteFn })
-  const currentDate = endOfDay(new Date())
+  const now = new Date()
   // Non-admins only get the placeholder "Projektmitglied" here, so the column tells them nothing.
   const showInviter = isAdmin(useCurrentUser())
 
@@ -145,11 +145,12 @@ export const TeamInvitesTable = ({ canEdit, invites, projectSlug }: Props) => {
                   <td className={twJoin("hidden align-middle @xl:table-cell", tableCellClassName)}>
                     {invite.status === InviteStatusEnum.PENDING
                       ? formatDistanceStrict(
-                          subDays(currentDate, INVITE_DAYS_TO_DELETION),
-                          invite.updatedAt,
+                          addDays(invite.updatedAt, INVITE_DAYS_TO_EXPIRED),
+                          now,
                           {
                             locale: de,
                             unit: "day",
+                            roundingMethod: "ceil",
                           },
                         )
                       : "—"}

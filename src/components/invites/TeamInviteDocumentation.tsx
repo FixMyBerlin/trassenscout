@@ -1,7 +1,10 @@
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { twJoin } from "tailwind-merge"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
-import { INVITE_DAYS_TO_DELETION } from "@/src/server/invites/inviteSettings.const"
+import {
+  INVITE_DAYS_TO_DELETION,
+  INVITE_DAYS_TO_EXPIRED,
+} from "@/src/server/invites/inviteSettings.const"
 
 export const TeamInviteDocumentation = () => {
   return (
@@ -30,8 +33,12 @@ export const TeamInviteDocumentation = () => {
               Editor-Rechte haben, eine Hinweis-E-Mail dazu.
             </li>
             <li>
-              Nach {INVITE_DAYS_TO_DELETION} Tagen werden Einladungen aus der Liste gelöscht. Damit
-              ist der Link in der Einladungs-E-Mail nicht mehr gültig.
+              Eine Einladung ist {INVITE_DAYS_TO_EXPIRED} Tage gültig. Danach funktioniert der Link
+              in der Einladungs-E-Mail nicht mehr.
+            </li>
+            <li>
+              Abgelaufene und angenommene Einladungen werden nach weiteren {INVITE_DAYS_TO_DELETION}{" "}
+              Tagen aus der Liste gelöscht.
             </li>
           </ul>
         </div>
