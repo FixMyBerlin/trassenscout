@@ -175,6 +175,7 @@ const EditableSurveyResponseMapAndStaticData = ({ response, showMap, categoryLab
           {/* TABEL */}
           <EditableSurveyResponseAdditionalFilterFields
             additionalFilterFields={additionalFilterFields}
+            projectSlug={projectSlug}
             surveySlug={surveySlug}
             surveyPart1ResponseData={response.surveyPart1ResponseData}
             surveyPart3ResponseData={response.surveyPart3ResponseData}

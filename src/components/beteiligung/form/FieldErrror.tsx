@@ -47,7 +47,7 @@ export const FieldError = ({ field }: { field: AnyFieldApi }) => {
     <div className="pt-2">
       {hasError ? (
         <p id={getFieldErrorId(field.name)} className="text-sm font-semibold text-red-800">
-          {errors.map((err) => err.message || err).join(",")}
+          {errors.map((err) => err.message || err).join(" ")}
         </p>
       ) : field.state.meta.isValidating ? (
         <p role="status" className="text-sm text-gray-600">

@@ -378,7 +378,7 @@ export function EditableSurveyResponseForm({
               <fieldset className="max-w-3xl">
                 <FormElementWrapper
                   label={labels.note?.sg || defaultBackendConfig.labels.note.sg}
-                  help={labels.note?.help || defaultBackendConfig.labels.note.help}
+                  help={labels.note?.help ?? defaultBackendConfig.labels.note.help}
                 >
                   <LabeledTextarea
                     name="note"

@@ -8,6 +8,7 @@ import { getFlatSurveyFormFields } from "@/src/components/surveys/[surveyId]/res
 
 type Props = {
   additionalFilterFields: TBackendConfig["additionalFilters"]
+  projectSlug: string
   surveyPart1ResponseData: Record<string, any> | null
   surveyPart3ResponseData: Record<string, any> | null
   surveyPart2ResponseData: Record<string, any>
@@ -16,6 +17,7 @@ type Props = {
 
 const EditableSurveyResponseAdditionalFilterFields = ({
   additionalFilterFields,
+  projectSlug,
   surveyPart1ResponseData,
   surveyPart3ResponseData,
   surveyPart2ResponseData,
@@ -106,7 +108,11 @@ const EditableSurveyResponseAdditionalFilterFields = ({
                     {field?.props?.label || item.label}
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-500">
-                    <SurveyResponseFieldValue field={field} value={value} />
+                    <SurveyResponseFieldValue
+                      field={field}
+                      value={value}
+                      projectSlug={projectSlug}
+                    />
                   </td>
                 </tr>
               )
@@ -121,7 +127,7 @@ const EditableSurveyResponseAdditionalFilterFields = ({
                   {field?.props?.label || key}
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-500">
-                  <SurveyResponseFieldValue field={field} value={value} />
+                  <SurveyResponseFieldValue field={field} value={value} projectSlug={projectSlug} />
                 </td>
               </tr>
             )

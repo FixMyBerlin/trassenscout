@@ -1,7 +1,9 @@
+import { Link } from "@/src/components/core/components/links/Link"
 import { LinkMail } from "@/src/components/core/components/links/LinkMail"
 import { formattedEuro } from "@/src/components/core/components/text/formattedProperties"
 
 type FieldConfig = {
+  name?: string
   component?: string
   props?: {
     options?: Array<{ key: string | number; label: string }>
@@ -14,6 +16,7 @@ type FieldConfig = {
 type SurveyFieldValueProps = {
   field: FieldConfig | undefined
   value: unknown
+  projectSlug?: string
   /** What to display for empty/null values. Defaults to "-" */
   emptyLabel?: React.ReactNode
 }
@@ -21,10 +24,20 @@ type SurveyFieldValueProps = {
 export const SurveyResponseFieldValue = ({
   field,
   value,
+  projectSlug,
   emptyLabel = "-",
 }: SurveyFieldValueProps) => {
   if (value == null || value === "" || (Array.isArray(value) && value.length === 0)) {
     return <>{emptyLabel}</>
+  }
+
+  if (field?.name === "geometryCategoryId" && projectSlug) {
+    const subsectionSlug = String(value)
+    return (
+      <Link to="/$projectSlug/abschnitte/$subsectionSlug" params={{ projectSlug, subsectionSlug }}>
+        {subsectionSlug}
+      </Link>
+    )
   }
 
   switch (field?.component) {

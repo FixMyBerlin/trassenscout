@@ -42,6 +42,7 @@ export const AdminSurveyResponsesNew = ({ projectSlug, surveyId, survey }: Props
                   <AnswerDisplay
                     partConfig={config}
                     answers={JSON.parse(response.data) as Record<string, unknown>}
+                    projectSlug={projectSlug}
                   />
                 </div>
               ))
@@ -56,9 +57,10 @@ export const AdminSurveyResponsesNew = ({ projectSlug, surveyId, survey }: Props
 type AnswerDisplayProps = {
   partConfig: SurveyPart1and3 | SurveyPart2
   answers: Record<string, unknown>
+  projectSlug: string
 }
 
-const AnswerDisplay = ({ partConfig, answers }: AnswerDisplayProps) => {
+const AnswerDisplay = ({ partConfig, answers, projectSlug }: AnswerDisplayProps) => {
   return (
     <div className="space-y-6">
       {partConfig.pages.map((page) => (
@@ -73,6 +75,7 @@ const AnswerDisplay = ({ partConfig, answers }: AnswerDisplayProps) => {
                 <SurveyResponseFieldValue
                   field={field}
                   value={answers[field.name]}
+                  projectSlug={projectSlug}
                   emptyLabel={<em>Keine Antwort</em>}
                 />
               </div>
