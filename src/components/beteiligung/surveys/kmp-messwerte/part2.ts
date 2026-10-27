@@ -5,10 +5,8 @@ export const part2Config: SurveyPart2 = {
   progressBarDefinition: 1,
   intro: {
     type: "standard",
-    title: "Messwerte zum Klimamobilitätsplan übermitteln",
-    description: `**Landkreis Ludwigsburg**
-
-Mit diesem Formular übermitteln Sie für Ihre Kommune Messwerte zu den Indikatoren des Klimamobilitätsplans. Die Angaben werden im Trassenscout erfasst und für das Monitoring dokumentiert.
+    title: "Messwerte zum Klimamobilitätsplan im Landkreis Ludwigsburg übermitteln",
+    description: `Mit diesem Formular übermitteln Sie für Ihre Kommune im Landkreis Ludwigsburg Messwerte zu den Indikatoren des Klimamobilitätsplans. Die Angaben werden im Trassenscout erfasst und für das Monitoring dokumentiert.
 
 Das Formular richtet sich an Mitarbeitende der Städte und Gemeinden im Landkreis Ludwigsburg, die diese Daten für ihre Kommune übermitteln.
 
@@ -69,7 +67,9 @@ Alle personenbezogenen Daten werden gemäß DSGVO verarbeitet und nur für die D
           name: "measurementTitle",
           component: "SurveyPageTitle",
           componentType: "content",
-          props: { title: "Messwerte zum Klimamobilitätsplan übermitteln" },
+          props: {
+            title: "Messwerte zum Klimamobilitätsplan im Landkreis Ludwigsburg übermitteln",
+          },
         },
         {
           name: "measurementDescription",
@@ -88,7 +88,6 @@ Alle personenbezogenen Daten werden gemäß DSGVO verarbeitet und nur für die D
           defaultValue: "",
           props: {
             label: "Name der meldenden Kommune",
-            description: "Bitte wählen Sie die Kommune aus, für die Sie den Messwert übermitteln.",
             placeholder: "Kommune auswählen",
             options: [
               { key: "affalterbach", label: "Affalterbach" },
@@ -141,8 +140,6 @@ Alle personenbezogenen Daten werden gemäß DSGVO verarbeitet und nur für die D
           defaultValue: "",
           props: {
             label: "Indikator",
-            description:
-              "Bitte wählen Sie den Indikator aus, zu dem Sie einen Messwert übermitteln möchten.",
             placeholder: "Indikator auswählen",
             options: [
               { key: "radverkehrsstaerke", label: "Radverkehrsstärke" },
@@ -197,19 +194,18 @@ Alle personenbezogenen Daten werden gemäß DSGVO verarbeitet und nur für die D
           defaultValue: "",
           props: {
             label: "Messwert",
-            description: "Bitte geben Sie hier Ihren erfassten Messwert ein.",
+            type: "text",
           },
         },
         {
           name: "measurementDate",
           component: "SurveyTextfield",
           componentType: "form",
-          validation: fieldValidationEnum.requiredString,
+          validation: fieldValidationEnum.requiredDateString,
           defaultValue: "",
           props: {
             label: "Messdatum",
-            description:
-              "Bitte geben Sie den Stichtag oder den Zeitraum an, auf den sich der Messwert bezieht.",
+            description: "Bitte geben Sie das Datum im Format TT.MM.JJJJ ein (z. B. 01.12.2025).",
           },
         },
         {

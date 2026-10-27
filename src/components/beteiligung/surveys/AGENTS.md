@@ -11,6 +11,7 @@ Erst fragen, dann schreiben. Zum Schluss zusammenfassen und bestätigen lassen.
 - Pro Seite: Titel, Text, Fragen; pro Frage: Feldtyp, Pflicht/optional, Optionen, Bedingung, Hilfetext
 - Texte: Intros, Buttons, Danke-Seite, Startseiten-Link
 - Meta: Titel, Logo-URL, `primaryColor` / `darkColor` / `lightColor`, `canonicalUrl`
+  - `meta.logoUrl` wird auch als Favicon verwendet und sollte daher quadratisch sein. Ohne eigenes Logo: `https://trassenscout.de/favicon.svg` (Trassenscout-Favicon) setzen.
 - Karte: Gebiet, Pflicht? (siehe „Karten = Dummy“)
 - E-Mails: Inhalte für Teilnehmende und Team (siehe „E-Mails“)
 - Vorgangs-ID: ja oder nein? (siehe „Vorgangs-ID“)
@@ -29,6 +30,7 @@ Feldtypen und Props: `shared/types.ts` (`FieldConfig`). Validierungen: `shared/f
 - Bedingte Pflichtfelder: `condition` + `conditionalRequiredString` (Beispiel: `rstest-2-3/part2.ts`)
 - `progressBarDefinition` über Teile und `end` aufsteigend
 - `part2` nutzt feste Namen für den Admin: `feedbackText` (Pflicht), `category`, `enableLocation`, `location`
+  - `category` möglichst setzen: Gibt es ein kategorieartiges Feld (Thema, Indikator, Art des Hinweises …), dieses Feld `category` nennen (Beispiel: `kmp-messwerte`).
 
 ### enableLocation und location
 

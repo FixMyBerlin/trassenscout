@@ -5,8 +5,8 @@ import { part2Config } from "@/src/components/beteiligung/surveys/kmp-messwerte/
 export const formConfig: FormConfig = {
   meta: {
     version: 1,
-    title: "Messwerte zum Klimamobilitätsplan übermitteln",
-    logoUrl: "https://trassenscout.de/emails/trassenscout-logo-mail-black.png",
+    title: "Messwerte zum Klimamobilitätsplan im Landkreis Ludwigsburg übermitteln",
+    logoUrl: "https://trassenscout.de/favicon.svg",
     canonicalUrl: "https://trassenscout.de/beteiligung/kmp-messwerte",
     maptilerUrl: "https://api.maptiler.com/maps/positron/style.json",
     primaryColor: "#059669",
