@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
-import { getRouteApi, useNavigate } from "@tanstack/react-router"
+import { useNavigate } from "@tanstack/react-router"
 import { useState } from "react"
 import { z } from "zod"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
@@ -26,7 +26,6 @@ import { subsubsectionsQueryOptions } from "@/src/server/subsubsections/subsubse
 import type { SubsubsectionsList } from "@/src/server/subsubsections/types"
 import { uploadQueryOptions } from "@/src/server/uploads/uploadQueryOptions"
 import { updateUploadFn } from "@/src/server/uploads/uploads.functions"
-import { uploadsQueryOptions } from "@/src/server/uploads/uploadsQueryOptions"
 import { resolvedToNavigateOptions } from "@/src/shared/routing/resolvedTo"
 import { canExternallyShareUpload } from "@/src/shared/uploads/externalShare"
 import {
@@ -45,9 +44,8 @@ import { SuperAdminLuckyCloud } from "./SuperAdminLuckyCloud"
 import { UploadAuthorAndDates } from "./UploadAuthorAndDates"
 import { UploadPreview } from "./UploadPreview"
 import { UploadProjectRecordLinks } from "./UploadProjectRecordLinks"
+import { invalidateUploadLists } from "./uploadQueryCache"
 import type { UploadWithRelations } from "./uploadTypes"
-
-const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
 
 type UploadSubsectionFieldsProps = {
   landAcquisitionModuleEnabled: boolean
@@ -116,6 +114,7 @@ const UploadSubsectionFields = ({
 
 type Props = {
   upload: UploadWithRelations
+  projectSlug: string
   returnPath: string
   returnText: string
   hideBackLink?: boolean
@@ -150,6 +149,7 @@ const getUploadFormKey = (upload: UploadWithRelations) => {
 
 export const EditUploadForm = ({
   upload,
+  projectSlug,
   returnPath,
   returnText,
   hideBackLink = false,
@@ -162,7 +162,6 @@ export const EditUploadForm = ({
   const queryClient = useQueryClient()
   const [isGeneratingSummary, setIsGeneratingSummary] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
-  const { projectSlug } = loggedInProjectRouteApi.useParams()
   const { data: subsubsectionsData } = useSuspenseQuery(subsubsectionsQueryOptions({ projectSlug }))
   const { data: acquisitionAreasData } = useSuspenseQuery(
     acquisitionAreasQueryOptions({ projectSlug }),
@@ -194,12 +193,11 @@ export const EditUploadForm = ({
           ...nextProjectRecordIds,
         ])
 
+        // Not awaited, so long lists don't hold up the save.
+        void invalidateUploadLists(queryClient, projectSlug)
         await Promise.all([
           queryClient.invalidateQueries({
             queryKey: uploadQueryOptions({ projectSlug, id: upload.id }).queryKey,
-          }),
-          queryClient.invalidateQueries({
-            queryKey: uploadsQueryOptions({ projectSlug }).queryKey,
           }),
           ...Array.from(projectRecordIdsToRefresh).map((projectRecordId) =>
             queryClient.invalidateQueries({
@@ -337,6 +335,7 @@ export const EditUploadForm = ({
           <TagsFormSection projectSlug={projectSlug} showManageLink />
           {upload.id && (
             <SummaryField
+              projectSlug={projectSlug}
               uploadId={upload.id}
               mimeType={upload.mimeType}
               isGeneratingSummary={isGeneratingSummary}
@@ -353,7 +352,7 @@ export const EditUploadForm = ({
               der Karte verorten. <br />
               Sobald ein Standort gesetzt ist, erscheint das Dokument auf der Karte.
             </p>
-            <UploadLocationMap excludeUploadId={upload.id} />
+            <UploadLocationMap projectSlug={projectSlug} excludeUploadId={upload.id} />
           </div>
 
           <LuckyCloudNotice collaborationUrl={upload.collaborationUrl} mimeType={upload.mimeType} />

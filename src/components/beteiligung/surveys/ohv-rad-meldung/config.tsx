@@ -55,8 +55,8 @@ Folgende Angaben wurden übermittelt:
 - **Vorgangs-ID**: {{referenceId}}
 - **Meldende Kommune**: {{municipality}}
 - **Kategorie der Maßnahme**: {{category}}
-- **Bezug auf eine Maßnahme im Bestand**: {{existingNetworkMeasure}}
-- **Ortsangabe per Pin**: {{enableLocation}}
+- **Ausgewählter Planungsabschnitt (Kürzel)**: {{geometryCategoryId}}
+- **Pin-Verortung**: {{location}}
 - **Beschreibung der Meldung**: {{feedbackText}}
 - **Priorisierung der Maßnahme**: {{priority}}
 - **Begründung der Priorität**: {{priorityReason}}
@@ -64,7 +64,6 @@ Folgende Angaben wurden übermittelt:
 - **Name einer zuständigen Kontaktperson**: {{contact}}
 - **Telefonnummer für Rückfragen**: {{phone}}
 - **E-Mail-Adresse**: {{email}}
-- **Verortung**: {{location}}
 
 Ihre Meldung wird nun durch die zuständige Stelle geprüft. Bei Rückfragen werden wir uns gegebenenfalls bei Ihnen melden.
 
@@ -77,8 +76,8 @@ im Auftrag des Landkreises Oberhavel`,
       "referenceId",
       "municipality",
       "category",
-      "existingNetworkMeasure",
-      "enableLocation",
+      "geometryCategoryId",
+      "location",
       "feedbackText",
       "priority",
       "priorityReason",
@@ -86,7 +85,6 @@ im Auftrag des Landkreises Oberhavel`,
       "contact",
       "phone",
       "email",
-      "location",
       "surveyUrl",
     ],
   },
@@ -101,8 +99,8 @@ Folgende Angaben wurden übermittelt:
 - **Vorgangs-ID**: {{referenceId}}
 - **Meldende Kommune**: {{municipality}}
 - **Kategorie der Maßnahme**: {{category}}
-- **Bezug auf eine Maßnahme im Bestand**: {{existingNetworkMeasure}}
-- **Ortsangabe per Pin**: {{enableLocation}}
+- **Ausgewählter Planungsabschnitt (Kürzel)**: {{geometryCategoryId}}
+- **Pin-Verortung**: {{location}}
 - **Beschreibung der Meldung**: {{feedbackText}}
 - **Priorisierung der Maßnahme**: {{priority}}
 - **Begründung der Priorität**: {{priorityReason}}
@@ -110,7 +108,6 @@ Folgende Angaben wurden übermittelt:
 - **Name einer zuständigen Kontaktperson**: {{contact}}
 - **Telefonnummer für Rückfragen**: {{phone}}
 - **E-Mail-Adresse**: {{email}}
-- **Verortung**: {{location}}
 
 Das Formular erreichen Sie unter folgendem Link:
 {{surveyUrl}}
@@ -122,8 +119,8 @@ das Team vom Trassenscout`,
       "referenceId",
       "municipality",
       "category",
-      "existingNetworkMeasure",
-      "enableLocation",
+      "geometryCategoryId",
+      "location",
       "feedbackText",
       "priority",
       "priorityReason",
@@ -131,7 +128,6 @@ das Team vom Trassenscout`,
       "contact",
       "phone",
       "email",
-      "location",
       "surveyUrl",
     ],
     recipients: ["noreply@trassenscout.de"],

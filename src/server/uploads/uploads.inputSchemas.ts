@@ -4,6 +4,12 @@ import { S3_MAX_FILES_PROJECT } from "@/src/shared/uploads/config"
 import { UploadSchema } from "@/src/shared/uploads/schemas"
 
 export const GetUploadsSchema = ProjectSlugRequiredSchema
+export const GetMyUploadTagsSchema = z.object({ projectSlug: z.string().optional() })
+export const GetMyUploadsSchema = GetMyUploadTagsSchema.extend({
+  searchterm: z.string().optional(),
+  tag: z.string().optional(),
+  cursor: z.number().int().positive().optional(),
+})
 export const GetUploadsWithSubsectionsSchema = ProjectSlugRequiredSchema.extend({
   subsubsectionId: z.number().int().positive().optional(),
   acquisitionAreaId: z.number().int().positive().optional(),
@@ -70,4 +76,6 @@ export const DeleteSurveyUploadPublicSchema = z.object({
 })
 
 export type GetUploadsInput = z.infer<typeof GetUploadsSchema>
+export type GetMyUploadsInput = z.infer<typeof GetMyUploadsSchema>
+export type GetMyUploadTagsInput = z.infer<typeof GetMyUploadTagsSchema>
 export type GetSurveyResponseUploadsSplitInput = z.infer<typeof GetSurveyResponseUploadsSplitSchema>

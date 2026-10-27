@@ -1,5 +1,6 @@
-// Copy into ~/.cursor/mcp.json (user).
-// Merge the "mcpServers" entries into your existing config — do not overwrite other servers.
+// Claude Code, user scope: add each server block with
+//   claude mcp add-json --scope user <name> '<block>'
+// (stored in ~/.claude.json — never in a project .mcp.json).
 // Replace DATABASE_URL placeholders from local .env — never commit real credentials here.
 // Browser MCP: agent-browser — see references/agent-browser-mcp.md
 {

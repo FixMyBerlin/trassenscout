@@ -1,10 +1,10 @@
 # Better Upload — client hooks
 
-`@better-upload/client` hooks — no react-dropzone dependency. Wire any file input: `<input onChange>`, button + picker, or optional [dropzone-ui.md](dropzone-ui.md) for multi-file drag-and-drop.
+`@better-upload/client` hooks. Wire any file input: `<input onChange>`, button + picker, or optional [dropzone-ui.md](dropzone-ui.md).
 
 ## useUploadFiles (multiple files)
 
-Primary hook for **multi-file** uploads with batch progress. Wire it to a multi-select `<input type="file" multiple>` or, for drag-and-drop, the dropzone in [dropzone-ui.md](dropzone-ui.md).
+Primary hook for **multi-file** uploads with batch progress.
 
 ```tsx
 import { useUploadFiles } from "@better-upload/client"
@@ -23,7 +23,7 @@ const uploader = useUploadFiles({
   onUploadComplete: async ({ files }: { files: FileUploadInfo<"complete">[] }) => {
     // Phase 2: persist each completed upload as a DB row (server fn)
     for (const file of files) {
-      await createUploadRecord(file)
+      await createUploadRecord(file) // app helper: wraps the persist server fn (trassenscout: `src/components/uploads/useUploadRecordCreation.ts`)
     }
   },
 })
@@ -39,11 +39,11 @@ const { upload, control, isPending, progresses } = uploader
 file.name
 file.size
 file.type
-file.objectInfo.key // S3 key — store as externalUrl or resolve via getS3Url(key)
+file.objectInfo.key // S3 key — store as externalUrl or resolve via `getS3Url(key)` (app helper, trassenscout: `src/shared/uploads/url.ts`; tilda-geo: `s3VirtualHostedUrl({ bucket, key })` in `app/src/server/s3VirtualHostedUrl.server.ts`)
 file.progress // 0–1 during upload
 ```
 
-Build DB payload from completed file:
+Build DB payload from completed file (`createUploadFn` is an app server fn; trassenscout: `src/server/uploads/uploads.functions.ts`, called through `useMutation` in `createUploadRecord`):
 
 ```ts
 await createUploadFn({
@@ -76,20 +76,15 @@ await createUploadFn({
 upload(files, { metadata: { surveyResponseId, surveySessionId } })
 ```
 
-Read on server as `clientMetadata` in `onBeforeUpload`.
+Read on server as `clientMetadata` in `onBeforeUpload`. It is a client hint only — validate it there with Zod ([server-router.md](server-router.md)).
 
 ## useUploadFile (single file)
 
-For button + single file picker — **no react-dropzone**. Use `useUploadFile` with `UploadHookControl<false>`.
+For button + single file picker. Use `useUploadFile` with `UploadHookControl<false>`.
 
 ## TanStack Query integration
 
-**Recommended FMC split:**
-
-- **Upload bytes:** `useUploadFiles` (progress, presign, S3)
-- **Persist metadata:** `useMutation({ mutationFn: createUploadFn })` inside `onUploadComplete`
-
-Alternative (manual progress): `uploadFiles()` / `uploadFile()` inside `useMutation` — only without `UploadHookControl` UI. Prefer `useUploadFiles` when you need progress UI ([troubleshooting.md](troubleshooting.md)).
+Bytes go through `useUploadFiles`; the DB row is `useMutation({ mutationFn: createUploadFn })` inside `onUploadComplete` (wrapped as `createUploadRecord(file)`, see above). `uploadFiles()` / `uploadFile()` inside `useMutation` only when there is no `UploadHookControl` UI — otherwise prefer `useUploadFiles`.
 
 ## Helpers
 

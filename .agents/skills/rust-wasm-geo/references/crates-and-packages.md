@@ -90,16 +90,14 @@ pub fn buffer_polygon(geojson: &str, distance_m: f64) -> Result<String, JsValue>
 crate-type = ["cdylib"]
 
 [dependencies]
-wasm-bindgen = "0.2"
-serde = { version = "1", features = ["derive"] }
-serde-wasm-bindgen = "0.6"
-geo = "0.29"
-geojson = "0.24"
+# add with `cargo add <crate>` to get the latest
+# wasm-bindgen
+# serde (cargo add serde --features derive)
+# serde-wasm-bindgen
+# geo
+# geojson
 # domain crates: rstar, fast_paths, petgraph, …
-
-[dependencies.getrandom]
-version = "0.2"
-features = ["js"]
+# getrandom: WASM in the browser needs getrandom's wasm/js backend; check the getrandom docs for the version you get (0.2 used the `js` feature, 0.3+ uses a cfg flag)
 ```
 
 Dev/build: `wasm-pack`, `console_error_panic_hook`, `web-time` as needed.
@@ -112,10 +110,13 @@ Dev/build: `wasm-pack`, `console_error_panic_hook`, `web-time` as needed.
 import init, { buffer_polygon } from "../../../wasm/geo-isochrone/pkg/geo_isochrone"
 import { z } from "zod"
 
-let ready: Promise<void> | null = null
+let ready: Promise<unknown> | null = null
 
 export function ensureWasm() {
-  if (!ready) ready = init()
+  ready ??= init().catch((error) => {
+    ready = null
+    throw error
+  })
   return ready
 }
 
@@ -132,4 +133,5 @@ export async function bufferPolygon(geojson: GeoJSON.FeatureCollection, distance
 ```
 
 - Single init promise — concurrent callers share one `init()`.
+- A failed `init()` clears the cached promise, so the next call retries.
 - Zod-validate every string coming back from Rust before it hits React state or the map.

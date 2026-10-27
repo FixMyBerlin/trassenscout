@@ -6,51 +6,40 @@ description: >-
   search param, loader + React Query patterns, typed Link/params, and TanStack
   devtools. Use when scaffolding a Vite + TanStack Router SPA, wiring router.tsx
   search serialization, route search params (including map viewport URLs),
-  loaders, or Query integration — without TanStack Start server/SSR topics.
-disable-model-invocation: true
+  loaders, Query integration, or client mutations (useMutation vs Form
+  onSubmit) — without TanStack Start server/SSR topics.
 ---
 
 # TanStack Router conventions
 
-Stack conventions for **TanStack Router** apps (Vite SPA or the router layer of TanStack Start). Pair with `tanstack-start-conventions` only when the app uses Start (SSR, server functions, API routes).
+Stack conventions for **TanStack Router** apps (Vite SPA or the router layer of TanStack Start). Start-only topics (`createServerFn`, `.server.ts` / `.functions.ts`, selective SSR, RSC, API `server.handlers`) belong to `tanstack-start-conventions`; auth `beforeLoad` to `tanstack-start-auth`.
 
-## When to apply
+## Which file for which task
 
-- Scaffolding a TanStack Router SPA (`@tanstack/react-router` + Vite)
-- Adding or changing UI routes, loaders, or `validateSearch`
-- Configuring `router.tsx` (`parseSearch`, `stringifySearch`, trailing slash)
-- Viewport URL param `?map=zoom/lat/lng` (parse/serialize, validateSearch)
-- Loader + React Query integration (client-side)
-- Typed `Link`, `useParams` / `useSearch`, `getRouteApi`
-- Installing the TanStack devtools debug panel
-
-**Not in this skill:** `createServerFn`, `.server.ts` / `.functions.ts`, selective SSR, RSC, API `server.handlers` — those are `tanstack-start-conventions`.
-
-## Reference reading order
-
-1. [router-search-serialization.md](references/router-search-serialization.md) — **required** `parseSearch` / `stringifySearch`, pretty JSON URLs, per-param encodings, optional jsurl
-2. [map-search-param.md](references/map-search-param.md) — `?map=zoom/lat/lng` (tilda-geo format, rounding, validateSearch)
-3. [params-search-ui-routes.md](references/params-search-ui-routes.md) — Zod `validateSearch` on UI routes
-4. [router-and-query.md](references/router-and-query.md) — Query options, loaders, router defaults
-5. [router-typescript.md](references/router-typescript.md) — typed hooks, `from`, `Link` params, `Register`
-6. [devtools.md](references/devtools.md) — unified TanStack debug panel
+| Task                                                                                      | Read                                                                        |
+| ----------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `router.tsx` search serialization, share URLs, per-param encodings, jsurl, `updateSearch` | [router-search-serialization.md](references/router-search-serialization.md) |
+| `?map=zoom/lat/lng` viewport param                                                        | [map-search-param.md](references/map-search-param.md)                       |
+| Zod `validateSearch` / path params on UI routes                                           | [params-search-ui-routes.md](references/params-search-ui-routes.md)         |
+| Loaders, Query options, derived data, mutations, router defaults                          | [router-and-query.md](references/router-and-query.md)                       |
+| Typed hooks, `from`, `Register`                                                           | [router-typescript.md](references/router-typescript.md)                     |
+| Devtools panel                                                                            | [devtools.md](references/devtools.md)                                       |
 
 ## Non-negotiable rules
 
-| Topic              | Rule                                                                                                                                                                                                                                                                                    |
-| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Validation         | Zod 4 for path params and UI search; export search schema when reused outside the route; `Route.useSearch()` for types — no manual casts                                                                                                                                                |
-| Router search URLs | **`parseSearch` + `stringifySearch`** in `router.tsx` (pretty JSON baseline); `trailingSlash: 'never'` + root trailing-slash redirect; per-param compact/JSON encodings; jsurl **only** for large objects — [router-search-serialization.md](references/router-search-serialization.md) |
-| Map viewport URL   | `?map=zoom/lat/lng` via shared `parseMapParam` / `serializeMapParam`; round on serialize; never `encodeURIComponent` the value; keep `map` out of `loaderDeps` — [map-search-param.md](references/map-search-param.md)                                                                  |
-| jsurl (optional)   | Large nested route params only → key in `jsurlSearchKeys` + search registry; reuse `jsurlParse` / `jurlStringify`                                                                                                                                                                       |
-| Query-backed UI    | Loader primes cache; component uses `useQuery` / `useSuspenseQuery` — not `useLoaderData` alone                                                                                                                                                                                         |
-| Devtools panel     | `TanStackAppDevtools` in `components/shared/devtools/` — inline panels; prod strip via `@tanstack/devtools-vite` (see [devtools.md](references/devtools.md))                                                                                                                            |
+- **Validation:** Zod 4 for path params and UI search; export the search schema when reused outside the route; types from `Route.useSearch()`, no manual casts.
+- **Search URLs:** `parseSearch` + `stringifySearch` (pretty JSON) in `router.tsx`, `trailingSlash: 'never'` plus a root trailing-slash redirect.
+- **Map URL:** `?map=zoom/lat/lng` via shared `parseMapParam` / `serializeMapParam`; never `encodeURIComponent` the value.
+- **jsurl:** only for large nested objects, via `jsurlParse` / `jurlStringify`.
+- **Query-backed UI:** loader primes the cache, component uses `useQuery` / `useSuspenseQuery`, not `useLoaderData` alone.
+- **Devtools:** `TanStackAppDevtools` in `components/shared/devtools/`.
 
 ## Quick decisions
 
-**Loader vs Query:** Shared, invalidatable, multi-route data → `*QueryOptions` + `ensureQueryData` in loader + `useSuspenseQuery` in UI. One-off page data → loader return value + `useLoaderData`.
-
-**Search writes:** Prefer `replace: true` for filters/toggles; set keys to `undefined` to clear; use a route-local `updateSearch` wrapper — [router-search-serialization.md](references/router-search-serialization.md).
+- **Loader vs Query:** shared, invalidatable, multi-route data -> `*QueryOptions` + `ensureQueryData` in loader + `useSuspenseQuery`. One-off page data -> loader return + `useLoaderData`.
+- **Multi-query joins:** prefer a server/API join; else compose in a wrapper hook ([derived data](references/router-and-query.md#derived--combined-query-data)).
+- **Search writes:** `replace: true` for filters, toggles and viewport; `undefined` clears a key; route-local `updateSearch` wrapper.
+- **Form vs mutation:** non-form actions -> `useMutation`; form submits -> TanStack Form `onSubmit` ([mutations](references/router-and-query.md#client-mutations)).
 
 ## Related skills
 
@@ -59,6 +48,6 @@ Stack conventions for **TanStack Router** apps (Vite SPA or the router layer of 
 | TanStack Start (SSR, server) | `tanstack-start-conventions` |
 | Auth / session (Start)       | `tanstack-start-auth`        |
 | Zustand                      | `zustand-state-management`   |
-| nuqs (Next.js / legacy only) | `nuqs`                       |
+| URL state without the router | `nuqs`                       |
 | React TS / Compiler          | `react-dev`                  |
 | Map component + URL sync     | `react-map-gl`               |

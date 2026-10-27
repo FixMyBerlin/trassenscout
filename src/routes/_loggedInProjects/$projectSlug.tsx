@@ -4,17 +4,16 @@ import { LayoutLoggedInProject } from "@/src/components/shared/layouts/LayoutNav
 import { UserRoleEnum } from "@/src/prisma/generated/browser"
 import { privateLayoutHead } from "@/src/routeHead"
 import { getSessionForRouteFn, routeProjectFn } from "@/src/server/auth/auth.functions"
-import { projectsForCurrentUserQueryOptions } from "@/src/server/projects/projectsQueryOptions"
+import {
+  projectBySlugQueryOptions,
+  projectsForCurrentUserQueryOptions,
+} from "@/src/server/projects/projectsQueryOptions"
 import { currentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
 import { loggedInProjectModalSearchSchema } from "@/src/shared/projectModals/searchSchemas"
 import { viewModeSearchMiddlewares, withViewModeSearch } from "@/src/shared/routing/viewModeSearch"
 
 function isProjectEditorRoute(pathname: string) {
-  return (
-    /\/new\/?$/.test(pathname) ||
-    /\/edit\/?$/.test(pathname) ||
-    /\/external-share\/?$/.test(pathname)
-  )
+  return /\/new\/?$/.test(pathname) || /\/edit\/?$/.test(pathname)
 }
 
 export const Route = createFileRoute("/_loggedInProjects/$projectSlug")({
@@ -42,10 +41,11 @@ export const Route = createFileRoute("/_loggedInProjects/$projectSlug")({
 
     return { membershipRole: authorization.membershipRole }
   },
-  loader: ({ context }) =>
+  loader: ({ context, params }) =>
     Promise.all([
       context.queryClient.ensureQueryData(currentUserQueryOptions()),
       context.queryClient.ensureQueryData(projectsForCurrentUserQueryOptions()),
+      context.queryClient.ensureQueryData(projectBySlugQueryOptions(params.projectSlug)),
     ]),
   component: LayoutLoggedInProject,
 })

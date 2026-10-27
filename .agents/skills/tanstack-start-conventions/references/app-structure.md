@@ -14,102 +14,31 @@ Portable layout for `app/src` (or equivalent) in TanStack Start projects. For pr
 
 Plus root files such as `router.tsx`. Prefer `shared/` for isomorphic code, `server/` for RPC/DB, or `components/shared/` for cross-cutting React UI — not a vague top-level `lib/`.
 
-## Root route (`__root.tsx`) + `LayoutRoot`
+## Root route and document shell
 
-FMC apps split the document shell across a **thin root route** and **`components/layouts/LayoutRoot.tsx`** (or `components/shared/layouts/` in Trassenscout). The route file owns router config; `LayoutRoot` owns `<html>` / `<body>` / providers / `<Outlet />`.
+Real implementations (copy from there, do not re-invent): tilda-geo `app/src/routes/__root.tsx` + `app/src/components/layouts/LayoutRoot.tsx` ([GitHub](https://github.com/FixMyBerlin/tilda-geo/tree/main/app/src)); Trassenscout `src/routes/__root.tsx` (+ `components/shared/layouts/`).
 
-**References:** [tilda-geo `__root.tsx`](https://github.com/FixMyBerlin/tilda-geo/blob/main/app/src/routes/__root.tsx) · [Trassenscout `__root.tsx`](https://github.com/FixMyBerlin/trassenscout/blob/main/src/routes/__root.tsx)
+The route file owns router config; `LayoutRoot` owns `<html>` / `<body>` / providers / `<Outlet />` / `<HeadContent />` / `<Scripts />`. App chrome (header, footer, devtools) lives in `LayoutRoot` or child layouts, not in `__root.tsx`.
 
-### Route file (`routes/__root.tsx`)
+`routes/__root.tsx`:
 
-Typical FMC root route:
+- `createRootRouteWithContext<{ queryClient: QueryClient }>()` with `ssr: true`.
+- `beforeLoad`: trailing-slash redirect (`trailingSlash: 'never'`; keep search + hash). Trassenscout also calls `endpointAuth.public(...)` here.
+- `head()`: default meta/links (inline `APP_META` in tilda-geo, `resolveRootHead(matches)` in Trassenscout for 404 metadata). Child routes override via their own `head()`. Map-heavy apps add `viewport-fit=cover`.
+- `component: LayoutRoot` - single import, **no inline `<html>` in the route file**.
 
-- **`createRootRouteWithContext<{ queryClient: QueryClient }>()`** — typed router context (Query + SSR integration in `router.tsx`).
-- **`ssr: true`** on the root route.
-- **`beforeLoad`** — trailing-slash redirect when `trailingSlash: 'never'` is set on the router (strip `/path/` → `/path`, preserve search + hash). Trassenscout also calls `endpointAuth.public(...)` here for the auth lint boundary.
-- **`head()`** — default document meta/links. Inline `APP_META` (tilda-geo) or `resolveRootHead(matches)` helper (Trassenscout — switches to 404 metadata when a match is `notFound`). Child routes override title/description via their own `head()`.
-- **`notFoundComponent`** — optional at root (Trassenscout); otherwise rely on router default.
-- **`component: LayoutRoot`** — single import from `@/components/layouts/LayoutRoot` (or app-equivalent path). **No inline `<html>` in the route file.**
+FMC defaults:
 
-```tsx
-import type { QueryClient } from "@tanstack/react-query"
-import { createRootRouteWithContext, redirect } from "@tanstack/react-router"
-import { LayoutRoot } from "@/components/layouts/LayoutRoot"
-import { APP_META } from "@/meta.const"
-import appCss from "@/components/layouts/global.css?url"
+| Piece                      | Convention                                                                                |
+| -------------------------- | ----------------------------------------------------------------------------------------- |
+| `lang`                     | `de` for FixMyBerlin public apps                                                          |
+| CSS                        | Global stylesheet imported in root `head()` via `?url` (path under `components/layouts/`) |
+| Query                      | `useRouteContext({ from: '__root__' })` -> same `queryClient` as router context           |
+| `<Scripts />`              | End of `<body>`                                                                           |
+| `suppressHydrationWarning` | On `<body>` when needed (tilda-geo map routes)                                            |
+| Portal root                | Trassenscout: `<div id="headlessui-portal-root" />` before `<Scripts />` (Headless UI)    |
 
-type RouterContext = { queryClient: QueryClient }
-
-export const Route = createRootRouteWithContext<RouterContext>()({
-  ssr: true,
-  beforeLoad: ({ location }) => {
-    const { pathname, searchStr, hash } = location
-    if (pathname.length <= 1 || !pathname.endsWith("/")) return
-    const stripped = pathname.replace(/\/+$/, "") || "/"
-    throw redirect({ href: `${stripped}${searchStr}${hash ? `#${hash}` : ""}`, replace: true })
-  },
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { name: "theme-color", content: APP_META.themeColor },
-      { title: APP_META.title },
-      { name: "description", content: APP_META.description },
-      { property: "og:locale", content: "de_DE" },
-      ...(import.meta.env.VITE_APP_ENV !== "production"
-        ? [{ name: "robots", content: "noindex" }]
-        : []),
-    ],
-    links: [{ rel: "stylesheet", href: appCss }, ...APP_META.faviconLinks],
-  }),
-  component: LayoutRoot,
-})
-```
-
-Map-heavy apps (tilda-geo): add `viewport-fit=cover` to viewport meta for `env(safe-area-inset-*)`. SEO/social tags, Matomo, per-route `head()` helpers — add when the app needs them; see repo `meta.const` / `routeHead.ts`.
-
-### Document shell (`LayoutRoot.tsx`)
-
-Wrapper only — app chrome (header, footer, map full-bleed rules, devtools) lives here or in child layouts, not in `__root.tsx`.
-
-```tsx
-import { HeadContent, Outlet, Scripts, useRouteContext } from "@tanstack/react-router"
-import { StrictMode } from "react"
-import { Provider as TanStackQueryProvider } from "@/components/shared/providers/tanstack-query/root-provider"
-
-export function LayoutRoot() {
-  const { queryClient } = useRouteContext({ from: "__root__" })
-
-  return (
-    <html lang="de" className="h-full">
-      <head>
-        <HeadContent />
-      </head>
-      <body className="flex min-h-dvh w-full flex-col bg-white text-gray-800 antialiased">
-        <StrictMode>
-          <TanStackQueryProvider queryClient={queryClient}>
-            <Outlet />
-          </TanStackQueryProvider>
-        </StrictMode>
-        <Scripts />
-      </body>
-    </html>
-  )
-}
-```
-
-**FMC defaults:**
-
-| Piece                      | Convention                                                                                      |
-| -------------------------- | ----------------------------------------------------------------------------------------------- |
-| `lang`                     | **`de`** for FixMyBerlin public apps                                                            |
-| CSS                        | Import global stylesheet in route `head()` via `?url` (path under `components/layouts/`)        |
-| Query                      | `useRouteContext({ from: '__root__' })` → same `queryClient` as router context                  |
-| `<Scripts />`              | End of `<body>` — required for hydration                                                        |
-| `suppressHydrationWarning` | On `<body>` when needed (tilda-geo map routes)                                                  |
-| Portal root                | Trassenscout: `<div id="headlessui-portal-root" />` before `<Scripts />` when using Headless UI |
-
-**Index and param routes:** `/` → `routes/index.tsx`; dynamic segments use `$param` (e.g. `posts.$slug.tsx`). Read params with `Route.useParams()`.
+**Index and param routes:** `/` -> `routes/index.tsx`; dynamic segments use `$param` (e.g. `posts.$slug.tsx`). Read params with `Route.useParams()`.
 
 ## `components/` folder standards
 
@@ -127,11 +56,11 @@ Route files import layouts from `@/components/layouts/...` only. See `components
 
 - Route files export `createFileRoute` config: `beforeLoad`, `loader`, `head`, `component`.
 - **`component`** is always one import from `@/components/...` — no inline components or heavy UI in route files.
-- Route files call server logic only via server functions in `loader` / `beforeLoad` (not direct DB/`getRequestHeaders` except API handlers).
+- Route files call server logic only via server functions in `loader` / `beforeLoad` ([client-server-boundaries.md](client-server-boundaries.md)).
 
 ## Components: Layout vs Page
 
-- **Layouts:** `Layout*.tsx` in **`components/layouts/`** — route shell, providers, outlet for child page. `LayoutRoot` is the document shell (`html`/`body`, app header/footer). Devtools: `tanstack-router-conventions` → [devtools.md](../../tanstack-router-conventions/references/devtools.md).
+- **Layouts:** `Layout*.tsx` in **`components/layouts/`** — route shell, providers, outlet for child page. `LayoutRoot` is the document shell (`html`/`body`, app header/footer). Devtools: `tanstack-router-conventions` → `references/devtools.md`.
 - **Pages:** `Page*.tsx` — actual screen content, colocated with the feature domain (`components/pages/`, `components/regionen/`, …).
 - **Deliberate asymmetry:** Route segments may use `_segment` for grouping while `components/` uses a readable folder name (e.g. route `_pages` → `components/pages/` for pages, `components/layouts/LayoutPages.tsx` for the layout).
 
@@ -148,18 +77,15 @@ Domain Zod and URL search schemas live in `shared/<domain>/` (or `shared/<topic>
 
 ## URL state (search params)
 
-Owned by skill **`tanstack-router-conventions`** (install alongside this skill):
+Owned by skill **`tanstack-router-conventions`** (`validateSearch`, `router.tsx` `parseSearch` / `stringifySearch` + `trailingSlash: 'never'`, `?map=zoom/lat/lng`).
 
-- **Default:** route `validateSearch` (Zod) + `Route.useSearch()` — [params-search-ui-routes.md](../../tanstack-router-conventions/references/params-search-ui-routes.md).
-- **Router `router.tsx`:** required pretty-JSON `parseSearch` / `stringifySearch` + `trailingSlash: 'never'` — [router-search-serialization.md](../../tanstack-router-conventions/references/router-search-serialization.md).
-- **Map viewport:** `?map=zoom/lat/lng` — [map-search-param.md](../../tanstack-router-conventions/references/map-search-param.md).
 - **API routes:** no route-level `validateSearch` — [params-search-api-routes.md](params-search-api-routes.md).
 - **Search schema placement** (keep `routes/` for route files only — no `-` prefixed colocated helpers):
   - **Route-only:** inline `const …SearchSchema = z.object({ … })` in the route file.
   - **Shared** (route + `navigate({ search })`, components, or multiple routes): `shared/<domain>/searchSchemas.ts`, or `shared/routing/` for cross-cutting params (e.g. back links). Not `*.server.ts` — routes and components import from `shared/`.
 - Colocate search hooks under `components/` when they wrap `Route.useSearch()` + `navigate({ search })`.
 
-Do not add nuqs on greenfield TanStack routes. Skill `nuqs` covers Next.js and legacy interop only.
+No nuqs in TanStack Router apps; use route search params. Skill `nuqs` is for Vite apps without TanStack Router.
 
 ## Client state (Zustand)
 

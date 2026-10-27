@@ -2,17 +2,17 @@ import { SlugSchema } from "@/src/components/core/utils/schema-shared"
 import { LabelPositionEnum, McpDraftKind, type Prisma } from "@/src/prisma/generated/client"
 import db from "@/src/server/db.server"
 import { mcpEnvLabel } from "@/src/server/mcp/mcpCursorConfig"
-import { requireMcpEnabledProject } from "@/src/server/mcp/requireMcpEnabledProject.server"
-import { subsectionMcpFieldLabel } from "@/src/server/mcp/subsectionUpdate/patchFieldLabel"
-import type { SubsectionMcpCreatePatch } from "@/src/server/mcp/subsectionUpdate/patchSchema"
-import { buildSubsectionNewUrl, buildSubsectionUrl } from "@/src/server/mcp/subsectionUrl"
-import type { SubsubsectionPreviewChange } from "@/src/server/mcp/subsubsectionUpdate/formatPreview"
 import {
   countGeometryVertices,
   geometryPreview,
   MCP_GEOMETRY_MAX_VERTICES,
   MCP_GEOMETRY_WARN_VERTICES,
-} from "@/src/server/mcp/subsubsectionUpdate/geometryPreview"
+} from "@/src/server/mcp/preview/geometryPreview"
+import { pushSet, type McpPreviewChange } from "@/src/server/mcp/preview/previewChange"
+import { requireMcpEnabledProject } from "@/src/server/mcp/requireMcpEnabledProject.server"
+import { subsectionMcpFieldLabel as fieldLabel } from "@/src/server/mcp/subsectionUpdate/patchFieldLabel"
+import type { SubsectionMcpCreatePatch } from "@/src/server/mcp/subsectionUpdate/patchSchema"
+import { buildSubsectionNewUrl, buildSubsectionUrl } from "@/src/server/mcp/subsectionUrl"
 import { resolveSubsectionRelationSlugs } from "@/src/server/subsections/resolveSubsectionRelationSlugs.server"
 import { SubsectionGeometryWithTypeSchema } from "@/src/shared/geometry/geometrySchemas"
 
@@ -21,14 +21,6 @@ const SCALAR_KEYS = [
   "lengthM",
   "estimatedCompletionDateString",
 ] as const satisfies readonly (keyof SubsectionMcpCreatePatch)[]
-
-function fieldLabel(field: string) {
-  return subsectionMcpFieldLabel(field)
-}
-
-function pushSet(changes: SubsubsectionPreviewChange[], field: string, proposed: unknown) {
-  changes.push({ field, label: fieldLabel(field), kind: "set", proposed })
-}
 
 type SubsectionMcpSlugConflict = {
   kind: "subsection" | "createDraft"
@@ -40,7 +32,7 @@ export type ResolveSubsectionCreateResult = {
   mcpMode: Awaited<ReturnType<typeof requireMcpEnabledProject>>["mcpMode"]
   url: string
   okToWrite: boolean
-  changes: SubsubsectionPreviewChange[]
+  changes: McpPreviewChange[]
   errors: string[]
   warnings: string[]
   missingRequired: string[]
@@ -67,7 +59,7 @@ export async function resolveSubsectionCreate({
   const errors: string[] = []
   const warnings: string[] = []
   const missingRequired: string[] = []
-  const changes: SubsubsectionPreviewChange[] = []
+  const changes: McpPreviewChange[] = []
 
   const slugParsed = SlugSchema.safeParse(slug)
   if (!slugParsed.success) {
@@ -127,8 +119,8 @@ export async function resolveSubsectionCreate({
             `Geometrie hat ${vertexCount} Stützpunkte. Bitte vorher vereinfachen; große Batches splitten.`,
           )
         }
-        pushSet(changes, "type", patch.type)
-        pushSet(changes, "geometry", geometryPreview(patch.geometry))
+        pushSet(changes, fieldLabel, "type", patch.type)
+        pushSet(changes, fieldLabel, "geometry", geometryPreview(patch.geometry))
       }
     }
   }
@@ -142,7 +134,7 @@ export async function resolveSubsectionCreate({
       )
       continue
     }
-    pushSet(changes, key, proposed)
+    pushSet(changes, fieldLabel, key, proposed)
   }
 
   const prismaData: Prisma.SubsectionUncheckedCreateInput = {
@@ -177,13 +169,13 @@ export async function resolveSubsectionCreate({
         prismaData.subsectionStatusId = resolved.subsectionStatusId
       }
       if (patch.operatorSlug !== undefined) {
-        pushSet(changes, "operatorSlug", patch.operatorSlug)
+        pushSet(changes, fieldLabel, "operatorSlug", patch.operatorSlug)
       }
       if (patch.networkHierarchySlug !== undefined) {
-        pushSet(changes, "networkHierarchySlug", patch.networkHierarchySlug)
+        pushSet(changes, fieldLabel, "networkHierarchySlug", patch.networkHierarchySlug)
       }
       if (patch.subsectionStatusSlug !== undefined) {
-        pushSet(changes, "subsectionStatusSlug", patch.subsectionStatusSlug)
+        pushSet(changes, fieldLabel, "subsectionStatusSlug", patch.subsectionStatusSlug)
       }
     } catch (error) {
       errors.push(error instanceof Error ? error.message : String(error))

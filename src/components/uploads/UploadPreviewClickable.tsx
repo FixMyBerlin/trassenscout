@@ -58,6 +58,7 @@ export const UploadPreviewClickable = ({
           uploadId: effectiveUploadId,
           previewUpload: upload,
           onDeleted,
+          forProjectSlug: projectSlug,
         })
       }
       return

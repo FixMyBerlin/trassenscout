@@ -42,6 +42,29 @@ describe("overlaySubsubsectionMcpDraft", () => {
     })
   })
 
+  test("clear empties the form fields", async () => {
+    const { overlaySubsubsectionMcpDraft } =
+      await import("@/src/server/mcp/subsubsectionUpdate/overlaySubsubsectionMcpDraft")
+
+    const overlay = await overlaySubsubsectionMcpDraft({
+      projectId: 1,
+      extraFieldDefinitions: [{ name: "klassifizierung", label: "Klassifizierung", order: 0 }],
+      currentExtraFields: { klassifizierung: "Kreisstraße" },
+      patch: { clear: ["description", "extraFields.klassifizierung", "extraFields.removed"] },
+    })
+
+    expect(overlay).toEqual({ description: null, extraFields: { klassifizierung: "" } })
+
+    const createOverlay = await overlaySubsubsectionMcpDraft({
+      projectId: 1,
+      extraFieldDefinitions: [],
+      currentExtraFields: {},
+      createDraft: true,
+      patch: { withoutGeometry: true, clear: ["description"] },
+    })
+    expect(createOverlay).not.toHaveProperty("description")
+  })
+
   test("a withoutGeometry create draft ticks the checkbox and clears type and geometry", async () => {
     const { overlaySubsubsectionMcpDraft } =
       await import("@/src/server/mcp/subsubsectionUpdate/overlaySubsubsectionMcpDraft")

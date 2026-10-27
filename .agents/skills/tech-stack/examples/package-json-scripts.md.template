@@ -1,10 +1,9 @@
 ---
-description: package.json scripts naming — colons only for parallel/sequential groups
-globs: **/package.json
-alwaysApply: false
+paths:
+  - '**/package.json'
 ---
 
-<!-- Copy to .cursor/rules/package-json-scripts.md on scaffold — @see references/package-json-scripts.md -->
+<!-- Copy to .claude/rules/package-json-scripts.md on scaffold — @see references/package-json-scripts.md -->
 
 # package.json script names
 

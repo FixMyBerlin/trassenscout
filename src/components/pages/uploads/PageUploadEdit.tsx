@@ -3,12 +3,8 @@ import { getRouteApi } from "@tanstack/react-router"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
 import { EditUploadForm } from "@/src/components/uploads/EditUploadForm"
-import {
-  getUploadReturnTarget,
-  parseReturnProjectRecordId,
-} from "@/src/components/uploads/getUploadReturnTarget"
+import { getUploadReturnTarget } from "@/src/components/uploads/getUploadReturnTarget"
 import { uploadQueryOptions } from "@/src/server/uploads/uploadQueryOptions"
-import { isProjectScopedReturnPath } from "@/src/shared/routing/sanitizeReturnTo"
 
 const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/uploads/$uploadId/edit/")
 
@@ -21,11 +17,7 @@ export function PageUploadEdit() {
 
   const { returnPath, returnText } = getUploadReturnTarget({
     projectSlug,
-    returnTo:
-      search.returnTo && isProjectScopedReturnPath(search.returnTo, projectSlug)
-        ? search.returnTo
-        : undefined,
-    returnProjectRecordId: parseReturnProjectRecordId(search.returnProjectRecordId),
+    returnTo: search.returnTo,
   })
 
   return (
@@ -41,7 +33,12 @@ export function PageUploadEdit() {
           />
         }
       />
-      <EditUploadForm upload={upload} returnPath={returnPath} returnText={returnText} />
+      <EditUploadForm
+        upload={upload}
+        projectSlug={projectSlug}
+        returnPath={returnPath}
+        returnText={returnText}
+      />
     </>
   )
 }

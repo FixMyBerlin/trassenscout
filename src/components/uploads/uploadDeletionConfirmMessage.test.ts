@@ -49,6 +49,28 @@ describe("uploadDeletionConfirmMessage", () => {
     )
   })
 
+  test("points to Entfernen when the document can be detached instead", () => {
+    const links = {
+      ...noLinks,
+      projectRecords: [record(1)],
+      subsubsections: [{ slug: "die02", subsection: { slug: "abschnitt-1" } }],
+    }
+    const lines = uploadDeletionConfirmMessage("plan.pdf", links, { unlinkHint: true }).split("\n")
+
+    expect(lines.at(-1)).toBe(
+      "Um es nur von diesem Protokolleintrag zu lösen, nutzen Sie stattdessen „Entfernen“.",
+    )
+    expect(
+      uploadDeletionConfirmMessage(
+        "plan.pdf",
+        { ...noLinks, projectRecords: [record(1)] },
+        {
+          unlinkHint: true,
+        },
+      ),
+    ).toBe(question)
+  })
+
   test("counts what does not fit instead of growing the dialog", () => {
     const links = { ...noLinks, projectRecords: [1, 2, 3, 4, 5, 6, 7, 8].map(record) }
     const lines = uploadDeletionConfirmMessage("plan.pdf", links).split("\n")

@@ -2,8 +2,6 @@
 
 Load **only what the task needs** — do not preload the full list.
 
-**Usually load (maps):** skill `react-map-gl` — not raw MapLibre patterns without it.
-
 **Load when the task touches…**
 
 - **TanStack Query / Router / Form** — <https://tanstack.com/llms.txt>

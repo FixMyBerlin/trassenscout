@@ -40,6 +40,7 @@ const projectSelect = {
       id: true,
       slug: true,
     },
+    orderBy: { order: "asc" },
   },
 } as const
 

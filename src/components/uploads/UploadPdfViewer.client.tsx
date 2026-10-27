@@ -38,8 +38,8 @@ export const UploadPdfViewer = ({
   const containerRef = useRef<HTMLDivElement>(null)
   const [containerWidth, setContainerWidth] = useState<number>()
   const [containerHeight, setContainerHeight] = useState<number>()
-  // Intrinsic page aspect ratio (width / height) at rotation 0, from the loaded page.
-  const [pageAspectRatio, setPageAspectRatio] = useState<number>()
+  // The loaded page's aspect ratio and own rotation (/Rotate), which <Page rotate> replaces.
+  const [loadedPage, setLoadedPage] = useState<{ aspectRatio: number; rotate: number }>()
 
   useEffect(() => {
     const el = containerRef.current
@@ -66,10 +66,10 @@ export const UploadPdfViewer = ({
 
   // Base width handed to <Page> before the zoom factor is applied.
   let baseWidth = containerWidth
-  if (fit && containerWidth && containerHeight && pageAspectRatio) {
+  if (fit && containerWidth && containerHeight && loadedPage) {
     // Account for 90°/270° rotation swapping the page's width and height.
     const rotated = effectiveRotation % 180 !== 0
-    const aspect = rotated ? 1 / pageAspectRatio : pageAspectRatio
+    const aspect = rotated ? 1 / loadedPage.aspectRatio : loadedPage.aspectRatio
     // Width that would make the page exactly as tall as the container.
     const widthConstrainedByHeight = containerHeight * aspect
     // Fit within both dimensions so the whole page is visible on initial render.
@@ -182,9 +182,12 @@ export const UploadPdfViewer = ({
                 pageNumber={pageNumber}
                 width={baseWidth}
                 scale={effectiveZoom}
-                rotate={effectiveRotation}
+                rotate={loadedPage && (loadedPage.rotate + effectiveRotation) % 360}
                 onLoadSuccess={(page) =>
-                  setPageAspectRatio(page.originalWidth / page.originalHeight)
+                  setLoadedPage({
+                    aspectRatio: page.originalWidth / page.originalHeight,
+                    rotate: page.rotate,
+                  })
                 }
               />
             )}

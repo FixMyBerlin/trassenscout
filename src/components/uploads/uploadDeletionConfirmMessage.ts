@@ -16,7 +16,11 @@ export type UploadLinks = {
 
 const MAX_LISTED_PLACES = 6
 
-export function uploadDeletionConfirmMessage(uploadTitle: string, links: UploadLinks | null) {
+export function uploadDeletionConfirmMessage(
+  uploadTitle: string,
+  links: UploadLinks | null,
+  options: { unlinkHint?: boolean } = {},
+) {
   const question = `Möchten Sie das Dokument ${frenchQuote(uploadTitle)} wirklich unwiderruflich löschen?`
   if (!links) return question
 
@@ -36,5 +40,8 @@ export function uploadDeletionConfirmMessage(uploadTitle: string, links: UploadL
     "Es ist an mehreren Stellen verknüpft und wird überall entfernt:",
     ...listed.map((place) => `– ${place}`),
     ...(notListed > 0 ? [`– und ${notListed} weitere`] : []),
+    ...(options.unlinkHint
+      ? ["", "Um es nur von diesem Protokolleintrag zu lösen, nutzen Sie stattdessen „Entfernen“."]
+      : []),
   ].join("\n")
 }

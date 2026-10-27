@@ -1,6 +1,9 @@
-import type {
-  SubsubsectionMcpCreatePatch,
-  SubsubsectionMcpPatch,
+import { clearFieldLabels } from "@/src/server/mcp/preview/previewChange"
+import {
+  extraFieldKey,
+  isExtraFieldPath,
+  type SubsubsectionMcpCreatePatch,
+  type SubsubsectionMcpPatch,
 } from "@/src/server/mcp/subsubsectionUpdate/patchSchema"
 import { subsubsectionFieldTranslations } from "@/src/shared/subsubsections/subsubsectionFieldMappings"
 
@@ -15,9 +18,7 @@ const SLUG_FIELD_LABELS: Record<string, string> = {
 }
 
 export function subsubsectionMcpFieldLabel(field: string) {
-  if (field.startsWith("extraFields.")) {
-    return field.slice("extraFields.".length)
-  }
+  if (isExtraFieldPath(field)) return extraFieldKey(field)
   if (field in subsubsectionFieldTranslations) {
     return subsubsectionFieldTranslations[field as keyof typeof subsubsectionFieldTranslations]
   }
@@ -34,6 +35,10 @@ export function subsubsectionMcpPatchFieldLabels(
       for (const extraKey of Object.keys(value as Record<string, string>)) {
         labels.push(extraKey)
       }
+      continue
+    }
+    if (key === "clear" && Array.isArray(value)) {
+      labels.push(...clearFieldLabels(value, subsubsectionMcpFieldLabel))
       continue
     }
     labels.push(subsubsectionMcpFieldLabel(key))

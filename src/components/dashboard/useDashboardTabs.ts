@@ -22,6 +22,7 @@ export function useDashboardTabs() {
     tabs.push({ name: "Aktivitäten", to: "/dashboard/activity" })
   }
   tabs.push({ name: "Aufgaben", count: openTaskCount, to: "/dashboard/assignments" })
+  tabs.push({ name: "Dokumente", to: "/dashboard/uploads" })
 
   return tabs
 }

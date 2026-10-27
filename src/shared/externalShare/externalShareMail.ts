@@ -5,7 +5,7 @@ type Input = {
 }
 
 export const externalShareMailtoHref = ({ shareUrl, projectName, senderName }: Input) => {
-  const subject = `Ihr Zugang zu Projektunterlagen von ${projectName}`
+  const subject = `Ihr Zugang zu den Projektunterlagen von ${projectName}`
   const body = [
     `Über den folgenden Link erhalten Sie Zugriff auf die Anwendung „Trassenscout“ für den Radschnellweg „${projectName}“.`,
     "",
@@ -14,7 +14,6 @@ export const externalShareMailtoHref = ({ shareUrl, projectName, senderName }: I
     "Die dort bereitgestellten Informationen und Daten sind ausschließlich für den internen Gebrauch und nur im Zusammenhang mit diesem Vorhaben bestimmt. Der Link sowie die darüber zugänglichen Inhalte und Dokumente dürfen nicht ohne unsere schriftliche Freigabe an Dritte weitergegeben werden.",
     "",
     "Mit freundlichen Grüßen",
-    "Im Auftrag",
     ...(senderName ? [senderName] : []),
   ].join("\r\n")
 

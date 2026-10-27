@@ -1,5 +1,6 @@
 import { z } from "zod"
 import { SlugSchema } from "@/src/components/core/utils/schema-shared"
+import { NullableDateSchema } from "@/src/shared/subsubsections/schemas"
 
 export const CreateSurveySchema = z.object({
   projectId: z.coerce.number().int().positive({ error: "Bitte Projekt auswählen." }),
@@ -17,6 +18,11 @@ export const CreateSurveySchema = z.object({
 })
 
 export type CreateSurveyType = z.infer<typeof CreateSurveySchema>
+
+export const CreateSurveyFormSchema = CreateSurveySchema.extend({
+  startDate: NullableDateSchema,
+  endDate: NullableDateSchema,
+})
 
 export type CreateSurveyFormValues = {
   projectId: number | ""

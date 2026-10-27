@@ -5,7 +5,8 @@ import { SupportedGeometrySchema } from "@/src/shared/geometry/geometrySchemas"
 import { SubsubsectionExtraFieldsValuesSchema } from "@/src/shared/subsubsections/extraFieldSchemas"
 
 const nonEmptyString = z.string().min(1, {
-  error: "MCP cannot clear fields with empty string. Omit the key to leave the value unchanged.",
+  error:
+    "MCP rejects empty strings. Omit the key to leave the value unchanged. On update, reset a text field (description, estimatedConstructionDateString, extraFields.<key>) by listing it in clear.",
 })
 
 /** ISO calendar date as a string so MCP `tools/list` can emit JSON Schema (Zod Date cannot). */
@@ -21,6 +22,39 @@ const subsubsectionMcpIdentitySchema = z.object({
   subsectionSlug: z.string().min(1).describe("Planungsabschnitt slug"),
   slug: z.string().min(1).describe("Maßnahme slug"),
 })
+
+/** String fields MCP may reset; "" and null stay rejected so a reset is always named in `clear`. */
+export const SUBSUBSECTION_MCP_CLEARABLE_KEYS = [
+  "description",
+  "estimatedConstructionDateString",
+] as const
+
+const EXTRA_FIELD_PATH_PREFIX = "extraFields."
+
+/** `extraFields.<key>`, how patch fields and `clear` address one extra field. */
+type SubsubsectionMcpExtraFieldPath = `${typeof EXTRA_FIELD_PATH_PREFIX}${string}`
+
+export function isExtraFieldPath(field: string): field is SubsubsectionMcpExtraFieldPath {
+  return field.startsWith(EXTRA_FIELD_PATH_PREFIX)
+}
+
+export function extraFieldKey(path: SubsubsectionMcpExtraFieldPath) {
+  return path.slice(EXTRA_FIELD_PATH_PREFIX.length)
+}
+
+const subsubsectionMcpClearSchema = z
+  .array(
+    z.union([
+      z.enum(SUBSUBSECTION_MCP_CLEARABLE_KEYS),
+      z.templateLiteral([EXTRA_FIELD_PATH_PREFIX, z.string().min(1)], {
+        error: `Clearable fields: ${SUBSUBSECTION_MCP_CLEARABLE_KEYS.join(", ")}, extraFields.<key>.`,
+      }),
+    ]),
+  )
+  .min(1, { error: "Omit clear instead of sending an empty array." })
+  .describe(
+    `Fields to reset to empty. Only these: ${SUBSUBSECTION_MCP_CLEARABLE_KEYS.join(", ")}, extraFields.<key>. Do not also send the same field in the patch.`,
+  )
 
 const subsubsectionMcpPatchObjectSchema = z.object({
   description: nonEmptyString.optional(),
@@ -66,6 +100,7 @@ const subsubsectionMcpPatchObjectSchema = z.object({
     .optional(),
   extraFields: SubsubsectionExtraFieldsValuesSchema.optional(),
   geometry: SupportedGeometrySchema.optional(),
+  clear: subsubsectionMcpClearSchema.optional(),
 })
 
 export const subsubsectionMcpPatchSchema = subsubsectionMcpPatchObjectSchema.strict()
@@ -78,7 +113,10 @@ const subsubsectionMcpCreatePatchObjectSchema = subsubsectionMcpPatchObjectSchem
     .describe("Create the Maßnahme without geometry. Do not send type or geometry with it."),
 })
 
-const subsubsectionMcpCreatePatchSchema = subsubsectionMcpCreatePatchObjectSchema.strict()
+// A new Maßnahme has nothing to clear
+const subsubsectionMcpCreatePatchSchema = subsubsectionMcpCreatePatchObjectSchema
+  .omit({ clear: true })
+  .strict()
 
 /** Overlay drops unknown keys instead of rejecting the whole patch. */
 export const subsubsectionMcpPatchOverlaySchema = subsubsectionMcpCreatePatchObjectSchema
@@ -109,5 +147,15 @@ export const subsubsectionMcpDeleteInputSchema = z.object({
     .optional()
     .describe(
       "Omit or false: preview only, writes nothing. true: delete items that have no protocols, uploads, or acquisition areas.",
+    ),
+})
+
+export const acquisitionAreaMcpDeleteInputSchema = z.object({
+  items: z.array(subsubsectionMcpIdentitySchema).min(1).max(MCP_LIST_MAX_LIMIT),
+  confirm: z
+    .boolean()
+    .optional()
+    .describe(
+      "Omit or false: preview only, writes nothing. true: delete all acquisition areas of each Maßnahme that has none with protocols or uploads.",
     ),
 })

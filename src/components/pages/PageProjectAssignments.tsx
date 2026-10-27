@@ -32,7 +32,10 @@ export function PageProjectAssignments() {
   const tabs = useProjectPageTabs()
   const search = routeApi.useSearch()
   const navigate = useNavigate({ from: "/$projectSlug/assignments/" })
-  const { records, isPlaceholderData, tagOptions } = useAssignedRecords(projectSlug, search)
+  const { records, isError, isPlaceholderData, tagOptions } = useAssignedRecords(
+    projectSlug,
+    search,
+  )
 
   const updateSearch = (updates: Partial<AssignmentsSearch>) =>
     void navigate({
@@ -90,6 +93,7 @@ export function PageProjectAssignments() {
       />
       <AssignmentsList
         records={records}
+        isError={isError}
         isPlaceholderData={isPlaceholderData}
         showProject={false}
         onTagClick={(tag) => updateSearch({ tag })}

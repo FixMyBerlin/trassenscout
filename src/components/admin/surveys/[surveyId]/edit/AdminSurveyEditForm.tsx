@@ -2,6 +2,7 @@ import { useMutation, useSuspenseQuery } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 import { DeleteActionBar } from "@/src/components/core/components/forms/DeleteActionBar"
 import { FORM_ERROR } from "@/src/components/core/components/forms/utils/formSubmitResult"
+import { getDate } from "@/src/components/project-records/utils/splitStartAt"
 import { deleteAdminSurveyFn, updateAdminSurveyFn } from "@/src/server/surveys/surveys.functions"
 import { adminSurveyQueryOptions } from "@/src/server/surveys/surveysQueryOptions"
 import { type CreateSurveyType } from "@/src/shared/surveys/schemas"
@@ -40,7 +41,11 @@ export const AdminSurveyEditForm = ({ projectSlug, surveyId }: Props) => {
   return (
     <AdminSurveyForm
       submitText="Aktualisieren"
-      initialValues={survey}
+      initialValues={{
+        ...survey,
+        startDate: survey.startDate ? getDate(survey.startDate) : "",
+        endDate: survey.endDate ? getDate(survey.endDate) : "",
+      }}
       fixedProjectId={survey.projectId}
       onSubmit={handleSubmit}
       actionBarRight={

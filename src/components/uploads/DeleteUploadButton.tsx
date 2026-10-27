@@ -12,6 +12,7 @@ type Props = {
   uploadId: number
   uploadTitle: string
   uploadLinks: UploadLinks
+  unlinkHint?: boolean
   onDeleted: () => Promise<void> | void
   variant?: "link" | "icon" | "linkWithIcon"
   className?: string
@@ -22,6 +23,7 @@ export const DeleteUploadButton = ({
   uploadId,
   uploadTitle,
   uploadLinks,
+  unlinkHint,
   onDeleted,
   variant = "linkWithIcon",
   className,
@@ -32,7 +34,9 @@ export const DeleteUploadButton = ({
   })
 
   const handleDelete = async () => {
-    if (!window.confirm(uploadDeletionConfirmMessage(uploadTitle, uploadLinks))) return
+    if (!window.confirm(uploadDeletionConfirmMessage(uploadTitle, uploadLinks, { unlinkHint }))) {
+      return
+    }
 
     try {
       await markUploadDeletedInCache(queryClient, projectSlug, uploadId)

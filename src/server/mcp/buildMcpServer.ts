@@ -1,5 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
 import { z } from "zod"
+import { TagColorEnum } from "@/src/prisma/generated/client"
 import type { AdminApiAuth } from "@/src/server/api/admin/guardAdminApi.server"
 import { catalogConfigs, type CatalogConfig } from "@/src/server/mcp/catalog/catalogMcp.config"
 import {
@@ -8,10 +9,15 @@ import {
   listCatalogForMcp,
   updateCatalogForMcp,
 } from "@/src/server/mcp/catalog/catalogMcp.server"
+import { deleteAcquisitionAreasForMcp } from "@/src/server/mcp/direct/deleteAcquisitionAreasForMcp.server"
 import { deleteSubsectionForMcp } from "@/src/server/mcp/direct/deleteSubsectionForMcp.server"
 import { deleteSubsubsectionForMcp } from "@/src/server/mcp/direct/deleteSubsubsectionForMcp.server"
 import { mcpEnvLabel } from "@/src/server/mcp/mcpCursorConfig"
-import { MCP_LIST_DEFAULT_LIMIT, MCP_LIST_MAX_LIMIT } from "@/src/server/mcp/mcpListLimit.const"
+import {
+  MCP_GEOMETRY_MAX_ITEMS,
+  MCP_LIST_DEFAULT_LIMIT,
+  MCP_LIST_MAX_LIMIT,
+} from "@/src/server/mcp/mcpListLimit.const"
 import { mcpToolOk, runMcpTool } from "@/src/server/mcp/mcpToolHelpers"
 import {
   createProjectRecordForMcp,
@@ -34,10 +40,16 @@ import {
   subsectionMcpUpdateInputSchema,
 } from "@/src/server/mcp/subsectionUpdate/patchSchema"
 import {
+  acquisitionAreaMcpDeleteInputSchema,
   subsubsectionMcpCreateInputSchema,
   subsubsectionMcpDeleteInputSchema,
   subsubsectionMcpUpdateInputSchema,
 } from "@/src/server/mcp/subsubsectionUpdate/patchSchema"
+import {
+  createTagsForMcp,
+  listTagsForMcp,
+  updateTagsForMcp,
+} from "@/src/server/mcp/tags/tagsMcp.server"
 
 const mcpListLimitSchema = z
   .number()
@@ -48,7 +60,8 @@ const mcpListLimitSchema = z
   .describe(`Max rows to return (default ${MCP_LIST_DEFAULT_LIMIT}, max ${MCP_LIST_MAX_LIMIT})`)
 
 const patchSemantics =
-  "MCP patch semantics differ from the form: omit a key to leave it unchanged. null and empty string do not clear values. " +
+  "MCP patch semantics differ from the form: omit a key to leave it unchanged. null and empty string are rejected. " +
+  "To reset a text field, name it in patch.clear (Maßnahme: description, estimatedConstructionDateString, extraFields.<key>; Planungsabschnitt: description, estimatedCompletionDateString); the preview lists it as kind clear. " +
   "Empty arrays are not allowed for subsubsectionInfrastructureTypeSlugs (omit the key instead). " +
   "subsubsectionInfrastructureTypeSlugs replaces the whole set when present with at least one slug."
 
@@ -72,6 +85,8 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
         `Delete tools (subsections_delete, subsubsections_delete) exist only in "DIRECT". ` +
         `Without confirm they preview and write nothing. Show the user the preview (counts of protocols, uploads, acquisition areas, and for a Planungsabschnitt the Maßnahme count). ` +
         `Only then call again with confirm true. Confirm rejects a Maßnahme that still has protocols, uploads, or acquisition areas, and a Planungsabschnitt that still has Maßnahmen. ` +
+        `acquisition_areas_delete removes all acquisition areas (Grunderwerbsflächen) of a Maßnahme; same preview-then-confirm flow. ` +
+        `Never call it on your own to unblock subsubsections_delete. Call it with confirm true only after the user has explicitly approved deleting the Grunderwerbsflächen of that Maßnahme. ` +
         `User-facing terms: subsection = Planungsabschnitt, subsubsection = Maßnahme. ` +
         `After env_info and an enabled slug: subsections_schema then subsections_list, and/or subsubsections_schema then subsubsections_list. ` +
         `To change Planungsabschnitte: subsections_update with items (1–${MCP_LIST_MAX_LIMIT}). Identity is projectSlug + slug (PA Kürzel). ` +
@@ -89,13 +104,20 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
         `projects_list returns slug, subTitle, shortTitle, url, paCount, subsubsectionCount, mcpMode, mcpDirectUntil. ` +
         `subsections_list requires projectSlug and returns slug, description, and url per Planungsabschnitt. ` +
         `subsubsections_list requires projectSlug; optional subsectionSlug filters to one Planungsabschnitt. ` +
-        `It returns slug, description, and url per Maßnahme. ` +
+        `It returns slug, description, and url per Maßnahme; with includeFields it returns full rows without geometry (see subsubsections_list). ` +
+        `Geometry is expensive: use includeGeometry only when the user explicitly asks for the geometry; for everything else use includeFields. ` +
         `Catalog tools (Baulastträger operators_*, Führungsform/RVA subsubsection_infras_*, Phase subsubsection_statuses_*, Maßnahmentyp subsubsection_tasks_*): ` +
         `list returns slug, title, url, and style for Phasen and works in DRAFT or DIRECT. ` +
         `create, update, and delete require DIRECT. create takes items (1–${MCP_LIST_MAX_LIMIT}) with projectSlug, slug, title (style REGULAR|GREEN for Phasen). ` +
         `An existing slug is rejected. update is one object (projectSlug, slug, patch), not a batch. ` +
         `delete is a batch plus confirm: without confirm, preview and write nothing; with confirm, refuse when a Planungsabschnitt or Maßnahme still references the row. ` +
-        `Protokolleinträge project_records_*: list returns id, title, editingState, and linked Maßnahme slugs. There is no user or tag directory. ` +
+        `Tags tags_*: a tag belongs to one project; filters across projects (Meine Projekte) match tags by title, ignoring case. ` +
+        `tags_list returns title, color, description, archived, and url and works in DRAFT or DIRECT. ` +
+        `tags_create requires DIRECT and takes items (1–${MCP_LIST_MAX_LIMIT}) with projectSlug, title, optional color and description, so one call can give several projects the same tags. ` +
+        `An existing title (any case) is left unchanged; an archived one is restored. ` +
+        `tags_update requires DIRECT and takes items with projectSlug, the current title (any case), and a patch (title, color, description, clear: ["description"]), so the same tag can be renamed or recolored in several projects. ` +
+        `A new title that another tag of the project already has is rejected; tags are not merged. ` +
+        `Protokolleinträge project_records_*: list returns id, title, editingState, and linked Maßnahme slugs. There is no user directory; tags must already exist in the project (tags_list). ` +
         `create is one record (title required, editingState PENDING|COMPLETED default PENDING, body, optional subsectionSlug + subsubsectionSlug for exactly one Maßnahme, optional ref, optional assignedTo, optional tags). ` +
         `assignedTo is only a name or numeric id the user already named. tags is titles and replaces the whole set; an empty array is rejected. ` +
         `A repeated DRAFT create with the same ref upserts; without ref each call is a new draft. update is one record by numeric id. ` +
@@ -233,17 +255,47 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
     {
       description:
         `List subsubsections (Maßnahmen) for a project (default limit ${MCP_LIST_DEFAULT_LIMIT}, ` +
-        `max ${MCP_LIST_MAX_LIMIT}). Requires mcpMode DRAFT or DIRECT. Response includes limit, returned, truncated. ` +
+        `max ${MCP_LIST_MAX_LIMIT}). Requires mcpMode DRAFT or DIRECT. Response includes limit, offset, returned, truncated, nextOffset. ` +
         "Requires projectSlug; optional subsectionSlug (Planungsabschnitt). Per row: projectSlug, subsectionSlug, slug (Maßnahme), " +
-        "description, hasGeometry, url — no extraFields or geometry. When subsectionSlug is set and returned > 1, disambiguationRequired is true.",
+        "description, hasGeometry, url — no extraFields or geometry by default. When subsectionSlug is set and returned > 1, disambiguationRequired is true. " +
+        "includeFields: true adds the stored values (type, location, lengthM, costs, extraFields, relation slugs, " +
+        "projectRecordCount, uploadCount, acquisitionAreaCount), still without geometry. " +
+        "Use includeFields when you need the values of a Maßnahme. " +
+        `includeGeometry: true adds the complete GeoJSON geometry (WGS84 [lng, lat]) and implies includeFields; it is capped at ${MCP_GEOMETRY_MAX_ITEMS} rows per call. ` +
+        "Geometry is expensive: set includeGeometry only when the user explicitly asks for the geometry, never by default. " +
+        "When truncated is true, call again with offset set to nextOffset to get the following rows. " +
+        "Read only; MCP drafts are not applied.",
       inputSchema: {
         projectSlug: z.string(),
         subsectionSlug: z.string().optional().describe("Planungsabschnitt slug"),
         limit: mcpListLimitSchema,
+        offset: z
+          .number()
+          .int()
+          .min(0)
+          .optional()
+          .describe("Rows to skip (default 0); pass nextOffset from the previous call"),
+        includeFields: z.boolean().optional().describe("Add all stored fields except geometry"),
+        includeGeometry: z
+          .boolean()
+          .optional()
+          .describe(
+            `Add complete geometry; implies includeFields; max ${MCP_GEOMETRY_MAX_ITEMS} rows. Expensive: only when the user explicitly asks for geometry`,
+          ),
       },
     },
-    ({ projectSlug, subsectionSlug, limit }) =>
-      runMcpTool(() => listSubsubsectionsForMcp({ projectSlug, subsectionSlug, origin, limit })),
+    ({ projectSlug, subsectionSlug, limit, offset, includeFields, includeGeometry }) =>
+      runMcpTool(() =>
+        listSubsubsectionsForMcp({
+          projectSlug,
+          subsectionSlug,
+          origin,
+          limit,
+          offset,
+          includeFields,
+          includeGeometry,
+        }),
+      ),
   )
 
   server.registerTool(
@@ -325,6 +377,28 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
     (input) =>
       runMcpTool(() =>
         deleteSubsubsectionForMcp({
+          ...input,
+          origin,
+          createdById: auth.createdById,
+        }),
+      ),
+  )
+
+  server.registerTool(
+    "acquisition_areas_delete",
+    {
+      description:
+        `Delete all acquisition areas (Grunderwerbsflächen) of subsubsections (Maßnahmen). Requires effective mcpMode DIRECT. Pass items (1–${MCP_LIST_MAX_LIMIT}) with projectSlug, subsectionSlug, slug of the Maßnahme. ` +
+        "Without confirm, writes nothing and returns acquisitionAreaCount and linkedAcquisitionAreaCount (areas with protocols or uploads). " +
+        "With confirm true, deletes the areas of each Maßnahme (and parcels left without areas) only when linkedAcquisitionAreaCount is 0. " +
+        "The Maßnahme itself stays. " +
+        "Never call this on your own because subsubsections_delete refused a Maßnahme with acquisition areas. " +
+        "Show the preview to the user and call with confirm true only after the user explicitly approved deleting these Grunderwerbsflächen.",
+      inputSchema: acquisitionAreaMcpDeleteInputSchema.shape,
+    },
+    (input) =>
+      runMcpTool(() =>
+        deleteAcquisitionAreasForMcp({
           ...input,
           origin,
           createdById: auth.createdById,
@@ -422,6 +496,75 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
   }
 
   server.registerTool(
+    "tags_list",
+    {
+      description:
+        `List the tags of a project (default ${MCP_LIST_DEFAULT_LIMIT}, max ${MCP_LIST_MAX_LIMIT}). Requires mcpMode DRAFT or DIRECT. ` +
+        "Returns title, color, description, archived, url.",
+      inputSchema: { projectSlug: z.string(), limit: mcpListLimitSchema },
+    },
+    ({ projectSlug, limit }) => runMcpTool(() => listTagsForMcp({ projectSlug, origin, limit })),
+  )
+
+  server.registerTool(
+    "tags_create",
+    {
+      description:
+        `Create tags. Requires effective mcpMode DIRECT in each project. items 1–${MCP_LIST_MAX_LIMIT}: projectSlug, title, optional color, optional description. ` +
+        "Repeat an item per project to give several projects the same tags. " +
+        "An existing title (any case) is left unchanged (outcome unchanged); an archived one is restored (outcome restored). Writes the live row.",
+      inputSchema: {
+        items: z
+          .array(
+            z.object({
+              projectSlug: z.string(),
+              title: z.string(),
+              color: z.enum(TagColorEnum).optional(),
+              description: z.string().optional(),
+            }),
+          )
+          .min(1)
+          .max(MCP_LIST_MAX_LIMIT),
+      },
+    },
+    (input) => runMcpTool(() => createTagsForMcp({ ...input, origin })),
+  )
+
+  server.registerTool(
+    "tags_update",
+    {
+      description:
+        `Update tags. Requires effective mcpMode DIRECT in each project. items 1–${MCP_LIST_MAX_LIMIT}: projectSlug, title (the current title, any case), patch. ` +
+        'patch: title (rename), color, description; clear: ["description"] empties the description. Omit a key to leave it unchanged; empty strings are rejected. ' +
+        "Repeat an item per project to rename or recolor the same tag everywhere. A new title that another tag of the project already has is rejected; tags are not merged. " +
+        "Each item returns outcome updated or unchanged. Writes the live row.",
+      inputSchema: {
+        items: z
+          .array(
+            z.object({
+              projectSlug: z.string(),
+              title: z.string(),
+              patch: z
+                .object({
+                  title: z.string().min(1).optional(),
+                  color: z.enum(TagColorEnum).optional(),
+                  description: z.string().min(1).optional(),
+                  clear: z
+                    .array(z.enum(["description"]))
+                    .min(1)
+                    .optional(),
+                })
+                .strict(),
+            }),
+          )
+          .min(1)
+          .max(MCP_LIST_MAX_LIMIT),
+      },
+    },
+    (input) => runMcpTool(() => updateTagsForMcp({ ...input, origin })),
+  )
+
+  server.registerTool(
     "project_records_list",
     {
       description:
@@ -440,7 +583,7 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
         "Create one Protokolleintrag. title required. editingState PENDING|COMPLETED (default PENDING). body is the Nachricht. " +
         "Optional subsectionSlug + subsubsectionSlug link exactly one Maßnahme; omit both to hang the entry on the project. " +
         "Optional assignedTo: a display name or numeric user id the user already named. Optional tags: titles; a non-empty array replaces the set. " +
-        "No user or tag directory. Omit a key to leave it unchanged. null and empty string do not clear. An empty tags array is rejected. " +
+        "No user directory; tags must already exist in the project (tags_list). Omit a key to leave it unchanged. null and empty string do not clear. An empty tags array is rejected. " +
         "Optional ref: DRAFT repeats with the same ref upsert; without ref each call is a new draft. DIRECT inserts one ProjectRecord and does not persist ref.",
       inputSchema: {
         projectSlug: z.string(),
@@ -467,7 +610,7 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
         "Update one Protokolleintrag by numeric id. Omit a key to leave it unchanged. " +
         "Sending subsectionSlug + subsubsectionSlug replaces the Maßnahme link set with that one Maßnahme. " +
         "assignedTo is a display name or numeric user id the user already named. tags titles replace the whole set; an empty array is rejected. " +
-        "No user or tag directory. " +
+        "No user directory; tags must already exist in the project (tags_list). " +
         patchSemantics,
       inputSchema: {
         projectSlug: z.string(),

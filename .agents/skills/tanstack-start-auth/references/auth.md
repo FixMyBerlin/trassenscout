@@ -47,7 +47,7 @@ export const Route = createFileRoute("/api/auth/$")({
 })
 ```
 
-> **Version caveat.** On `1.6.x` the plugin loads `@tanstack/react-start/server` via a **dynamic** `await import(...)`, so it stays server-only (older versions static-imported it → client leak). Re-verify after any `better-auth` change: build, then grep client chunks (`.output/public/assets/*.js`) for `react-start/server`/Prisma/server markers. If a leak returns, forward cookies manually in a `*.server.ts` handler.
+> **Version caveat.** The Better Auth version comes from the app's `package.json`. Whether the plugin loads `@tanstack/react-start/server` via a **dynamic** `await import(...)` (server-only) or a static import (client leak) depends on the version. After any Better Auth upgrade, re-run the client-bundle leak check: build, then grep client chunks (`.output/public/assets/*.js`) for `react-start/server`/Prisma/server markers. If a leak returns, forward cookies manually in a `*.server.ts` handler.
 
 ---
 
@@ -142,6 +142,7 @@ Session probe for route guards (`getSessionForRouteFn`) returns `null` when logg
 Some endpoints accept **session OR** shared API key.
 
 - Compare with `crypto.timingSafeEqual` (equal-length buffers)
+- Accept the API key in a request header only (e.g. `Authorization: Bearer …` or `x-api-key`), never as a query-string parameter — query strings end up in server and proxy logs
 - Valid key → allow; else session/role rules
 
 ---

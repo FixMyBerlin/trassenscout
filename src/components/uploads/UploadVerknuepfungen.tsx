@@ -204,7 +204,10 @@ export const UploadVerknuepfungen = ({
               {projectRecords!.length === 1 ? (
                 <>
                   <strong className="font-medium">Protokolleintrag: </strong>
-                  <ProjectRecordRelationLink projectRecord={projectRecords![0]!} />
+                  <ProjectRecordRelationLink
+                    projectRecord={projectRecords![0]!}
+                    forProjectSlug={projectSlug}
+                  />
                 </>
               ) : (
                 <>
@@ -212,7 +215,10 @@ export const UploadVerknuepfungen = ({
                   <ul className="mt-0.5 flex list-none flex-wrap gap-x-2 pl-0">
                     {projectRecords!.map((record, index) => (
                       <li key={projectRecordRelationKey(record)} className="inline-flex">
-                        <ProjectRecordRelationLink projectRecord={record} />
+                        <ProjectRecordRelationLink
+                          projectRecord={record}
+                          forProjectSlug={projectSlug}
+                        />
                         {index < projectRecords!.length - 1 ? <span>,</span> : null}
                       </li>
                     ))}

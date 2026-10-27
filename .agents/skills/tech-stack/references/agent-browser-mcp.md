@@ -20,7 +20,7 @@ agent-browser doctor                # verify daemon + browser launch
 
 ## Setup (user only)
 
-User-level config only — never commit MCP config to a repo ([cursor-mcp.md](cursor-mcp.md)).
+User-level config only ([postgres-mcp.md](postgres-mcp.md)).
 
 Use the same `agent-browser` server block in both clients (from [mcp.json.template](../examples/mcp.json.template)):
 
@@ -50,17 +50,16 @@ If `agent-browser` is not on PATH:
 
 Add `state` to `--tools` when you need saved login cookies often (`restore` / storage-state tools).
 
-### Cursor
+### Claude Code
 
-1. Merge the `agent-browser` entry into `~/.cursor/mcp.json` under `mcpServers`.
-2. Restart Cursor.
-3. Confirm **Cursor Settings → MCP** shows `agent-browser` connected.
+1. Add the `agent-browser` block at user scope: `claude mcp add-json --scope user agent-browser '<block>'`.
+2. Start a new session and confirm `/mcp` shows `agent-browser` connected.
 
-Postgres MCP setup for Cursor: [cursor-mcp.md](cursor-mcp.md).
+Postgres MCP setup: [postgres-mcp.md](postgres-mcp.md).
 
 ### Claude Desktop
 
-Claude uses a **different config file** than Cursor. Setup steps (paths, `Edit Config`, restart): [Connect to local MCP servers](https://modelcontextprotocol.io/docs/develop/connect-local-servers) (MCP docs).
+Claude Desktop chat uses a **different config file** than Claude Code. Setup steps (paths, `Edit Config`, restart): [Connect to local MCP servers](https://modelcontextprotocol.io/docs/develop/connect-local-servers) (MCP docs).
 
 1. Open **Claude menu → Settings → Developer → Edit Config** (creates the file if missing).
 2. Merge the same `agent-browser` entry into `mcpServers` in `claude_desktop_config.json`:
@@ -118,8 +117,8 @@ For layer-order bugs:
 
 ## Other MCP tools
 
-| Task                     | Tool                                          |
-| ------------------------ | --------------------------------------------- |
-| Repeatable regression    | `@playwright/test` — skill `playwright-skill` |
-| Schema / DB inspection   | Postgres MCP — [cursor-mcp.md](cursor-mcp.md) |
-| App-specific admin tools | Project MCP (e.g. `tilda-geo-admin--DEV`)     |
+| Task                     | Tool                                              |
+| ------------------------ | ------------------------------------------------- |
+| Repeatable regression    | `@playwright/test` — skill `playwright-skill`     |
+| Schema / DB inspection   | Postgres MCP — [postgres-mcp.md](postgres-mcp.md) |
+| App-specific admin tools | Project MCP (e.g. `tilda-geo-admin--DEV`)         |

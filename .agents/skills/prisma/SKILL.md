@@ -23,7 +23,7 @@ Use for FMC `schema.prisma` work. Relation field names are Prisma Client API nam
 
 ## Relation Rules
 
-- Do not add PascalCase relation fields like `Membership`, `Note`, `LogEntry`.
+- Do not add PascalCase relation fields like `Membership`, `Note`, `LogEntry`. Applies to new relations; do not bulk-rename legacy ones (trassenscout has many), rename them when you touch them.
 - Derive simple list names from the related model and pluralize: `Note[]` -> `notes`, `NoteComment[]` -> `noteComments`.
 - For multiple relations to the same model, use role names: `projectRecordsAuthored`, `uploadsCreated`.
 - Add `@relation("RoleName")` only when Prisma needs disambiguation.
@@ -42,13 +42,20 @@ Adding schema: add singular model, camelCase scalars, `{name}Id` FK scalars, rel
 
 Renaming relation fields: rename only in `schema.prisma`; no DB migration is needed for the rename itself. Regenerate Prisma Client, grep old names in `include`, `select`, `_count`, and nested writes, update TypeScript, then run checks.
 
-Undeployed PR-local migrations (several files from one branch that never shipped) may be squashed into the fewest files that express the final schema — skill `unslop-code` → `undeployed-wip.md`. Do not squash migrations already applied to a live DB.
+Squash undeployed migrations (several files from one branch that never shipped) into one. tilda-geo and trassenscout share these script names:
+
+1. `bun run migrate-compare` lists the migrations this branch adds vs `origin/main`.
+2. Stop and ask unless the user confirms none of them ran on staging or production. Never squash applied migrations.
+3. Delete those migration folders.
+4. Reset the local DB (`bunx prisma migrate reset`, or the repo's db-pull/restore script); otherwise Prisma reports drift.
+5. `bun run migrate-create:1write --name <name>`, review the SQL, then `bun run migrate-create:2format`.
+6. `bun run migrate`, then `bun run check`.
 
 ## Related
 
-- DB inspection: skill `tech-stack` -> `references/cursor-mcp.md`
+- DB inspection: skill `tech-stack` -> `references/postgres-mcp.md`
 - Better Auth adapter: skill `tanstack-start-auth`
-- Undeployed PR-local migration squash: skill `unslop-code` → `references/undeployed-wip.md`
+- Deploy gate before a squash during branch cleanup: skill `unslop-code` → `references/undeployed-wip.md`
 
 ## Sources
 

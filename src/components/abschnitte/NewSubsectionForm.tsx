@@ -17,13 +17,13 @@ import {
 } from "@/src/server/mcp/mcpDrafts/mcpDraftsQueryOptions"
 import { subsectionMaxOrderQueryOptions } from "@/src/server/subsections/subsectionMaxOrderQueryOptions"
 import { createSubsectionFn } from "@/src/server/subsections/subsections.functions"
-import { geometryTypeValidationRefine } from "@/src/shared/geometry/geometryTypeValidation"
+import { subsectionGeometryTypeValidationRefine } from "@/src/shared/geometry/geometryTypeValidation"
 import { SubsectionBaseSchema } from "@/src/shared/subsections/schemas"
 import { isSubsectionMcpDraftSearch } from "@/src/shared/subsections/searchSchemas"
 
 const newSubsectionRouteApi = getRouteApi("/_loggedInProjects/$projectSlug/abschnitte/new/")
 
-const NewSubsectionSchema = geometryTypeValidationRefine(
+const NewSubsectionSchema = subsectionGeometryTypeValidationRefine(
   SubsectionBaseSchema.omit({ projectId: true }),
 )
 

@@ -69,4 +69,10 @@ describe("PageHeaderSearchFilter", () => {
     )
     expect(screen.queryByText("Filter zurücksetzen")).not.toBeNull()
   })
+
+  test("leaves the reset to the surrounding filter bar without onReset", () => {
+    render(<PageHeaderSearchFilter value="abc" onChange={vi.fn()} placeholder="Suchen" />)
+
+    expect(screen.queryByText("Filter zurücksetzen")).toBeNull()
+  })
 })

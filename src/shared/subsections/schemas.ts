@@ -1,17 +1,20 @@
 import { z } from "zod"
 import { InputNumberOrNullSchema, SlugSchema } from "@/src/components/core/utils/schema-shared"
 import { GeometryTypeEnum, LabelPositionEnum } from "@/src/prisma/generated/browser"
-import { SupportedGeoJsonGeometrySchema } from "@/src/shared/geometry/geojsonSchemas"
+import {
+  SubsectionGeoJsonGeometrySchema,
+  SupportedGeoJsonGeometrySchema,
+} from "@/src/shared/geometry/geojsonSchemas"
 import { subsectionGeometryTypeValidationRefine } from "@/src/shared/geometry/geometryTypeValidation"
 
 export const SubsectionBaseSchema = z.object({
   slug: SlugSchema,
   order: z.coerce.number(),
-  type: z.enum(GeometryTypeEnum),
+  type: z.enum([GeometryTypeEnum.LINE, GeometryTypeEnum.POLYGON]),
   lengthM: InputNumberOrNullSchema,
   description: z.string().nullish(),
   labelPos: z.enum(LabelPositionEnum),
-  geometry: SupportedGeoJsonGeometrySchema,
+  geometry: SubsectionGeoJsonGeometrySchema,
   projectId: z.coerce.number(),
   managerId: InputNumberOrNullSchema,
   operatorId: InputNumberOrNullSchema,

@@ -6,7 +6,6 @@ import { Notice } from "@/src/components/core/components/Notice/Notice"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { useCurrentReturnTo } from "@/src/components/core/routes/useCurrentPathWithSearch"
-import { useTryRouteParam } from "@/src/components/core/routes/useTryRouteParam"
 import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { Upload } from "@/src/prisma/generated/browser"
 import { uploadQueryOptions } from "@/src/server/uploads/uploadQueryOptions"
@@ -70,7 +69,6 @@ function UploadDetailModalInner({
   const upload = uploadQuery.data
   // This modal also opens from the dashboard, which has no project route match.
   const userCanEdit = useUserCan(projectSlug).edit
-  const routeProjectSlug = useTryRouteParam("projectSlug")
   const [view, setView] = useState<"detail" | "edit">("detail")
   const [isDirty, setIsDirty] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -85,8 +83,6 @@ function UploadDetailModalInner({
       : (upload?.title ?? previewUpload?.title ?? "Dokument wird geladen …")
 
   const canEditInLocalModal = editLink?.to === "/$projectSlug/uploads/$uploadId/edit"
-  // In-place editing reads params from the project route. Off that route, follow the edit link.
-  const canEditInPlace = canEditInLocalModal && routeProjectSlug !== undefined
   const returnTo = useCurrentReturnTo()
   const editSearch =
     editLink && returnTo && !editLink.search?.returnTo
@@ -128,7 +124,7 @@ function UploadDetailModalInner({
                 replace
                 resetScroll={false}
                 onClick={(event) => {
-                  if (!canEditInPlace) {
+                  if (!canEditInLocalModal) {
                     onClose()
                     return
                   }

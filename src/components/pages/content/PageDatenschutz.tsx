@@ -1,4 +1,4 @@
-import { Fragment, type ReactNode } from "react"
+import { Fragment, type ReactNode, useEffect } from "react"
 import { twMerge } from "tailwind-merge"
 import { LinkMail } from "@/src/components/core/components/links/LinkMail"
 import { LinkTel } from "@/src/components/core/components/links/LinkTel"
@@ -6,13 +6,35 @@ import { Breadcrumb, BreadcrumbStep } from "@/src/components/core/components/Pag
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { proseClasses } from "@/src/components/core/components/text/prose"
+import { MATOMO_OPT_OUT_DIV_ID, matomoConfig } from "@/src/shared/analytics/matomoConfig"
 
-const MatomoIframe = () => {
+const isProduction = import.meta.env.VITE_APP_ENV === "production"
+
+// Matomo's script fills the div and sets the opt-out cookie on our own domain via the tracker.
+const MatomoOptOut = () => {
+  useEffect(function loadMatomoOptOutScript() {
+    if (!isProduction) return
+    const script = document.createElement("script")
+    script.src = matomoConfig.optOutScriptSrc
+    script.async = true
+    document.body.append(script)
+    return function removeMatomoOptOutScript() {
+      script.remove()
+    }
+  }, [])
+
+  if (!isProduction) {
+    return (
+      <p className="rounded-md bg-gray-100 px-4 py-3 text-sm text-gray-500">
+        Matomo-Opt-out wird nur in Produktion geladen.
+      </p>
+    )
+  }
+
   return (
-    <iframe
-      title="Matomo Opt Out Tracking"
-      className="h-52 w-full border border-gray-200 bg-[#f0fdf4] p-2"
-      src="https://s.fixmycity.de/index.php?module=CoreAdminHome&action=optOut&language=de&backgroundColor=f0fdf4&fontColor=374151&fontSize=16px&fontFamily=Arial"
+    <div
+      id={MATOMO_OPT_OUT_DIV_ID}
+      className="min-h-32 rounded-md border border-gray-200 bg-[#f0fdf4] px-4 py-3 [&_input]:mr-2 [&_p]:mt-0"
     />
   )
 }
@@ -563,7 +585,7 @@ export function PageDatenschutz() {
           Sie die Erfassung durch Matomo für Ihren Besuch jederzeit über die nachfolgende Auswahl
           deaktivieren:
         </p>
-        <MatomoIframe />
+        <MatomoOptOut />
         <p>
           Ihre Auswahl wird in einem Cookie gespeichert; Einzelheiten finden Sie im Abschnitt
           „Cookies“.

@@ -37,7 +37,6 @@ export function RouteErrorPage({ error }: ErrorComponentProps) {
             <h1 className="mt-2 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
               Ein Fehler ist aufgetreten
             </h1>
-            <p className="mt-2 text-base text-gray-500">Leider ist ein Fehler aufgetreten.</p>
             <div className="mt-6">
               <Link to="/" button>
                 Zur Startseite

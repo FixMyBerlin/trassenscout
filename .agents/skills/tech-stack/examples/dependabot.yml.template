@@ -16,6 +16,7 @@ updates:
       default-days: 5
     open-pull-requests-limit: 1
     exclude-paths:
+      - .claude/**
       - .cursor/**
     commit-message:
       prefix: chore

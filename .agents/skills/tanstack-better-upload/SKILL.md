@@ -13,25 +13,9 @@ description: >-
 
 **@better-upload/server** + **@better-upload/client** — presigned direct-to-S3 uploads via TanStack Start POST handlers and `useUploadFiles` / `useUploadFile`.
 
-**react-dropzone** — optional FMC add-on for drag-and-drop **multi-file** UX. Add it only when the product needs that interaction (`multipleFiles`, batch progress). Single-file button/picker flows use Better Upload hooks alone — no dropzone dependency.
+**react-dropzone** — optional FMC add-on for drag-and-drop **multi-file** UX. Add it only when the product needs that interaction (`multipleFiles`, batch progress). Single-file pickers, plain `<input>` and paste areas call `upload()` directly — no dropzone dependency ([dropzone-ui.md](references/dropzone-ui.md)).
 
 **Upstream (Better Upload):** [llms-full.txt](https://better-upload.com/llms-full.txt) · [quickstart](https://better-upload.com/docs/quickstart-single.mdx)
-
-## When to apply
-
-**Better Upload (always relevant for uploads):**
-
-- New upload endpoint under `routes/api/`
-- `useUploadFiles` / `useUploadFile` and upload progress
-- S3 object helpers (`getObject`, `deleteObject`, `presignGetObject`, `putObject`) via Better Upload — not raw `@aws-sdk/client-s3`
-- Post-upload DB records via `createServerFn` + TanStack Query
-
-**react-dropzone (only when UX needs it):**
-
-- Drag-and-drop multi-file dropzone with batch progress
-- FMC `UploadDropzone*` component stack
-
-Single-file pickers, plain `<input>`, and paste areas call `upload()` directly — no react-dropzone. Details: [dropzone-ui.md](references/dropzone-ui.md).
 
 ## Architecture (FMC)
 
@@ -72,9 +56,9 @@ file picker / dropzone* onDrop
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Route name      | Client `route: 'upload'` must match `routes: { upload: route({...}) }`                                                                                                                      |
 | API path        | Client defaults to `/api/upload`; set `api` when the TanStack route differs                                                                                                                 |
-| Handler         | `return handleRequest(request, router)` — no Next.js adapter                                                                                                                                |
+| Handler         | `return handleRequest(request, router)`, or `return await handleRequest(...)` inside try/catch — no Next.js adapter                                                                         |
 | Auth            | Enforce in handler or `onBeforeUpload`; `endpointAuth.inherited(...)` when auth lives in handler                                                                                            |
-| DB after upload | `useMutation({ mutationFn: createUploadFn })` in `onUploadComplete`                                                                                                                         |
+| DB after upload | `useMutation({ mutationFn: createUploadFn })` in `onUploadComplete` (app server fn; trassenscout: `src/server/uploads/uploads.functions.ts`)                                                |
 | Boundaries      | Post-upload persistence in `*.functions.ts` + `createServerFn`; never import `@better-upload/server` in client components                                                                   |
 | S3 access       | `getConfiguredS3Client()` (`aws()`) + `@better-upload/server/helpers` — not `@aws-sdk/client-s3` unless helpers lack the op ([s3-helpers.md](references/s3-helpers.md))                     |
 | Serve via API   | GET `/api/` routes for `<img>` / `<video>` previews need `forwardApiRequestsPastViteAssetMiddleware()` in `vite.config.ts` (dev only) — [serving-uploads.md](references/serving-uploads.md) |

@@ -157,7 +157,7 @@ export function SurveyResponsesMap({ projectSlug, survey, tabs }: Props) {
         map={
           <SurveyResponseOverviewMap
             maptilerUrl={maptilerUrl}
-            defaultViewState={mapProps.config.bounds}
+            defaultViewState={mapProps?.config.bounds}
             categoryGeometryRef={geometryCategoryId}
             surveyResponses={feedbackSurveyResponses}
             locationRef={locationId}

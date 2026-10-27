@@ -4,7 +4,7 @@ import { useState } from "react"
 import { twJoin } from "tailwind-merge"
 import { secondaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { Tooltip } from "@/src/components/core/components/Tooltip/Tooltip"
-import { IfUserCanEdit } from "@/src/components/shared/memberships/IfUserCan"
+import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import {
   canCollaborateInLuckyCloud,
   getCollaborationSupportedExtensions,
@@ -79,7 +79,7 @@ export const LuckyCloudActionBar = ({ upload, projectSlug }: Props) => {
   }
 
   return (
-    <IfUserCanEdit>
+    <IfUserCanEdit projectSlug={projectSlug}>
       {!hasCollaborationUrl &&
         (tooltipText ? (
           <Tooltip content={tooltipText}>

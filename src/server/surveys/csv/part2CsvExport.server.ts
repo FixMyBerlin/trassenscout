@@ -1,8 +1,8 @@
 import { format } from "date-fns"
 import { backendConfig as backendConfigDefault } from "@/src/components/beteiligung/shared/backend-types"
-import type { SurveyFieldRadioOrCheckboxGroupConfig } from "@/src/components/beteiligung/shared/types"
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
 import { getQuestionIdBySurveySlug } from "@/src/components/beteiligung/shared/utils/getQuestionIdBySurveySlug"
+import { getSelectedOptionLabels } from "@/src/components/beteiligung/shared/utils/getSelectedOptionLabels"
 import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { getFlatSurveyFormFields } from "@/src/components/surveys/[surveyId]/responses/getFlatSurveyFormFields"
 import { SurveyResponseStateEnum } from "@/src/prisma/generated/browser"
@@ -172,29 +172,10 @@ export async function exportPart2ResultsCsv(
               const questionId = String(question.name)
               if (!surveyPartData[questionId]) return
 
-              if (question.component === "SurveyRadiobuttonGroup") {
-                const singleResponseProps =
-                  question.props as SurveyFieldRadioOrCheckboxGroupConfig["props"]
-                row[questionId] = singleResponseProps.options.find(
-                  (r) => String(r.key) === String(surveyPartData[questionId]),
-                )?.label
-              } else if (question.component === "SurveyCheckboxGroup") {
-                const multipleResponseProps =
-                  question.props as SurveyFieldRadioOrCheckboxGroupConfig["props"]
-                const values = surveyPartData[questionId] as number[]
-                row[questionId] = values?.length
-                  ? values
-                      .map(
-                        (resultId) =>
-                          multipleResponseProps.options.find(
-                            (r) => String(r.key) === String(resultId),
-                          )?.label,
-                      )
-                      .join(" | ")
-                  : ""
-              } else {
-                row[questionId] = String(surveyPartData[questionId] ?? "")
-              }
+              const optionLabels = getSelectedOptionLabels(question, surveyPartData[questionId])
+              row[questionId] = optionLabels
+                ? optionLabels.join(" | ")
+                : String(surveyPartData[questionId] ?? "")
             })
           }
 
@@ -202,26 +183,9 @@ export async function exportPart2ResultsCsv(
             const questionId = String(question.name)
             if (!data[questionId]) return
 
-            if (question.component === "SurveyRadiobuttonGroup") {
-              const singleResponseProps =
-                question.props as SurveyFieldRadioOrCheckboxGroupConfig["props"]
-              row[questionId] = singleResponseProps.options.find(
-                (r) => String(r.key) === String(data[questionId]),
-              )?.label
-            } else if (question.component === "SurveyCheckboxGroup") {
-              const multipleResponseProps =
-                question.props as SurveyFieldRadioOrCheckboxGroupConfig["props"]
-              const values = data[questionId] as number[]
-              row[questionId] = values
-                ? values
-                    .map(
-                      (resultId) =>
-                        multipleResponseProps.options.find(
-                          (r) => String(r.key) === String(resultId),
-                        )?.label,
-                    )
-                    .join(" | ")
-                : ""
+            const optionLabels = getSelectedOptionLabels(question, data[questionId])
+            if (optionLabels) {
+              row[questionId] = optionLabels.join(" | ")
             } else if (question.component === "SurveySimpleMapWithLegend") {
               if (questionId === String(locationId) && data[questionId]) {
                 const location = data[questionId] as { lat: number; lng: number }

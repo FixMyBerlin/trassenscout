@@ -8,7 +8,7 @@ import {
 } from "@headlessui/react"
 import { ChevronDownIcon, XMarkIcon } from "@heroicons/react/20/solid"
 import { Fragment, type ReactNode, useRef, useState } from "react"
-import { twJoin } from "tailwind-merge"
+import { twJoin, twMerge } from "tailwind-merge"
 import {
   checkmarkListboxOptionsPanelClassName,
   type ListboxOptionUi,
@@ -26,6 +26,7 @@ type ComboboxItem = {
   label: string | ReactNode
   /** Text for search and duplicate check when it differs from the label. */
   searchText?: string
+  chipClassName?: string
   disabled?: boolean
 }
 
@@ -138,7 +139,10 @@ export function Combobox({
           {selected.map((item) => (
             <li
               key={item.value}
-              className="inline-flex items-center gap-1 rounded-sm bg-gray-100 py-1 pr-1 pl-2 text-xs text-gray-700"
+              className={twMerge(
+                "inline-flex items-center gap-1 rounded-sm border border-transparent bg-gray-100 py-1 pr-1 pl-2 text-xs text-gray-700",
+                item.chipClassName,
+              )}
             >
               {item.label}
               <button
@@ -193,6 +197,8 @@ export function Combobox({
             return
           }
           field.handleChange(next)
+          // Chips: the next search starts from an empty field.
+          if (chips) setQuery("")
         }}
         onClose={() => {
           setQuery("")

@@ -1,7 +1,7 @@
 import type { z } from "zod"
 import { frenchQuote } from "@/src/components/core/components/text/quote"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
-import { editorRoles } from "@/src/server/authorization/constants"
+import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { NotFoundError } from "@/src/shared/auth/errors"
@@ -17,7 +17,7 @@ export async function getExternalShare(
   headers: Headers,
   input: z.infer<typeof GetExternalShareSchema>,
 ) {
-  const { projectId } = await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
+  const { projectId } = await endpointAuth.projectRole(headers, input.projectSlug, viewerRoles)
 
   const project = await db.project.findUniqueOrThrow({
     where: { id: projectId },

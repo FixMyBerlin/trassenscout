@@ -6,7 +6,6 @@ description: >-
   wasm-bindgen boundaries, and Vite integration for SPAs and TanStack Start.
   Use when adding WASM geo crates, profiling slow Turf, OSM/routing/isochrones,
   spatial indexes, or wiring wasm-pack into Vite.
-disable-model-invocation: true
 ---
 
 # Rust / WASM geo
@@ -58,6 +57,7 @@ app/
 ├── wasm/
 │   └── geo-isochrone/          # Rust crate (wasm-pack output → pkg/)
 │       ├── Cargo.toml
+│       ├── pkg/                # wasm-pack output (generated, not hand-edited)
 │       └── src/
 │           ├── lib.rs          # #[wasm_bindgen] surface only
 │           └── isochrone.rs    # pure geo logic
@@ -73,14 +73,14 @@ app/
 
 ## WASM stack (Cargo)
 
-| Crate                                | Role                                  |
-| ------------------------------------ | ------------------------------------- |
-| `wasm-bindgen`                       | JS ↔ Rust boundary                    |
-| `serde-wasm-bindgen`                 | Serialize/deserialize across boundary |
-| `wasm-bindgen-futures`               | Async exports                         |
-| `console_error_panic_hook`           | Readable panics in devtools           |
-| `getrandom` with `features = ["js"]` | RNG in browser                        |
-| `web-time`                           | Time in WASM                          |
+| Crate                         | Role                                  |
+| ----------------------------- | ------------------------------------- |
+| `wasm-bindgen`                | JS ↔ Rust boundary                    |
+| `serde-wasm-bindgen`          | Serialize/deserialize across boundary |
+| `wasm-bindgen-futures`        | Async exports                         |
+| `console_error_panic_hook`    | Readable panics in devtools           |
+| `getrandom` (wasm/js backend) | RNG in browser                        |
+| `web-time`                    | Time in WASM                          |
 
 **Build:** `wasm-pack` (`--target web`), `vite-plugin-wasm`, target `wasm32-unknown-unknown`.
 
@@ -95,7 +95,7 @@ Reference setups: [a-b-street/ltn](https://github.com/a-b-street/ltn), [a-b-stre
 | Vite SPA (no Start) | [vite-spa-integration.md](references/vite-spa-integration.md)             |
 | TanStack Start      | [tanstack-start-integration.md](references/tanstack-start-integration.md) |
 
-Both: dynamic-import WASM from `wasm.ts` only; never top-level `import` of `.wasm` in shared modules that may load on the server.
+Both: only `wasm.ts` imports `pkg`; call `ensureWasm()` from handlers or mutations, never at module load.
 
 ## Non-negotiable rules
 

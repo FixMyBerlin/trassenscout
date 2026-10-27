@@ -4,12 +4,10 @@ Better Upload handles **upload** (POST → presigned PUT). Serving bytes back to
 
 ## When to proxy through the app
 
-| Pattern                                                               | Use when                                                                               |
-| --------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| **GET API route** (`ssr: false`) + `getObject` or shared `proxyS3Url` | Private bucket; per-request auth; inline `<img src>`, `<video src>`, or `<a download>` |
-| **`presignGetObject`**                                                | Time-limited direct S3 URL; no per-load auth gate (e.g. email link, export)            |
-
-For inline previews of private uploads, prefer the GET proxy — `presignGetObject` bypasses your auth handler on every image load.
+| Pattern                                                                           | Use when                                                                                       |
+| --------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| **GET API route** (`ssr: false`) + `getObject` or shared `proxyS3Url` (preferred) | Private bucket; per-request auth; inline `<img src>`, `<video src>`, or `<a download>`         |
+| **`presignGetObject`**                                                            | Time-limited direct S3 URL; bypasses your auth handler on every load (e.g. email link, export) |
 
 ## FMC route shapes
 
@@ -102,9 +100,3 @@ export default defineConfig({
 ```
 
 **Not needed when:** uploads are served only via presigned S3 URLs or blob URLs — no `/api/` subresource loads in dev.
-
-## Related
-
-- [s3-helpers.md](s3-helpers.md) — `getObject`, `presignGetObject`
-- [troubleshooting.md](troubleshooting.md) — dev 404 symptom row
-- [first-time-setup.md](first-time-setup.md) — serving checklist

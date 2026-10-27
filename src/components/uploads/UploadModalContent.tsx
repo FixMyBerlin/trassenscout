@@ -74,6 +74,7 @@ export const UploadModalContent = ({
       <Suspense fallback={<UploadDetailModalSkeleton />}>
         <EditUploadForm
           upload={upload}
+          projectSlug={projectSlug}
           returnPath={returnPath}
           returnText="Zurück"
           hideBackLink

@@ -1,16 +1,8 @@
 import { z } from "zod"
 import {
-  GeometryWithTypeSchema,
   SubsectionGeometryWithTypeSchema,
   SubsubsectionGeometryWithTypeSchema,
 } from "@/src/shared/geometry/geometrySchemas"
-
-/**
- * Shared refinement function for geometry type validation
- * Validates that geometry type matches enum type via discriminated union.
- */
-export const geometryTypeValidationRefine = <T extends z.ZodTypeAny>(schema: T) =>
-  schema.and(GeometryWithTypeSchema)
 
 /**
  * Validation refinement for subsections

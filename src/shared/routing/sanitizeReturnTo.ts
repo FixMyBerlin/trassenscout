@@ -1,5 +1,3 @@
-import { DEFAULT_PROTOCOL_ALLOWLIST, isDangerousProtocol } from "@tanstack/router-core"
-
 const decodeReturnPath = (value: string): string | undefined => {
   try {
     return decodeURIComponent(value)
@@ -8,11 +6,14 @@ const decodeReturnPath = (value: string): string | undefined => {
   }
 }
 
-/** TanStack Router open-redirect guard for internal hrefs (redirect + Link). */
+/** Open-redirect guard: browsers must resolve the path to our own site, also `//host` and `/\host`. */
 const isSafeInternalReturnPath = (path: string): boolean => {
-  if (!path.startsWith("/") || path.startsWith("//")) return false
-  if (isDangerousProtocol(path, new Set(DEFAULT_PROTOCOL_ALLOWLIST))) return false
-  return true
+  if (!path.startsWith("/")) return false
+  try {
+    return new URL(path, "http://localhost").origin === "http://localhost"
+  } catch {
+    return false
+  }
 }
 
 export const sanitizeInternalReturnPath = (value: string | undefined): string | undefined => {
@@ -22,9 +23,4 @@ export const sanitizeInternalReturnPath = (value: string | undefined): string | 
   if (!decoded || !isSafeInternalReturnPath(decoded)) return undefined
 
   return decoded
-}
-
-export const isProjectScopedReturnPath = (path: string, projectSlug: string): boolean => {
-  const projectRoot = `/${projectSlug}`
-  return path === projectRoot || path.startsWith(`${projectRoot}/`)
 }

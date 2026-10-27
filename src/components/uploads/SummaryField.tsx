@@ -1,5 +1,4 @@
 import { SparklesIcon } from "@heroicons/react/16/solid"
-import { getRouteApi } from "@tanstack/react-router"
 import { Dispatch, SetStateAction, useState } from "react"
 import { twJoin } from "tailwind-merge"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
@@ -10,9 +9,8 @@ import { Link } from "@/src/components/core/components/links/Link"
 import { isPdfByMimeType } from "@/src/components/uploads/utils/getFileType"
 import { summarizeUploadFn } from "@/src/server/uploads/summarizeUpload.functions"
 
-const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
-
 type Props = {
+  projectSlug: string
   uploadId: number
   mimeType: string | null
   isGeneratingSummary: boolean
@@ -22,6 +20,7 @@ type Props = {
 }
 
 export const SummaryField = ({
+  projectSlug,
   uploadId,
   mimeType,
   isGeneratingSummary,
@@ -30,7 +29,6 @@ export const SummaryField = ({
   initialSummary,
 }: Props) => {
   const form = useCoreAppFormContext()
-  const { projectSlug } = loggedInProjectRouteApi.useParams()
   const [isFocused, setIsFocused] = useState(false)
   const summaryValue = useFormValue("summary")
 

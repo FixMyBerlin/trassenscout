@@ -11,7 +11,7 @@ import {
   invalidateMcpDraftQueries,
   subsubsectionMcpDraftQueryOptions,
 } from "@/src/server/mcp/mcpDrafts/mcpDraftsQueryOptions"
-import { patchWithGeometryPreview } from "@/src/server/mcp/subsubsectionUpdate/geometryPreview"
+import { patchWithGeometryPreview } from "@/src/server/mcp/preview/geometryPreview"
 import { currentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
 
 type Props = {

@@ -2,7 +2,7 @@
 
 ## Default rule
 
-**Do not** use `@aws-sdk/client-s3` or `S3Client` for routine S3 work. Use Better Upload end-to-end:
+**Do not** use `@aws-sdk/client-s3`, `S3Client` or `PutObjectCommand` for routine S3 work (only for a confirmed helper gap, see [below](#when-raw-aws-sdk-is-justified)). Use Better Upload end-to-end:
 
 | Layer             | Package                                             | Use for                                                         |
 | ----------------- | --------------------------------------------------- | --------------------------------------------------------------- |
@@ -11,8 +11,6 @@
 | Server object ops | `@better-upload/server/helpers`                     | `getObject`, `deleteObject`, `presignGetObject`, `putObject`, … |
 
 FMC pattern: one `getConfiguredS3Client()` in `s3Client.server.ts` — return `aws({ ... })` — shared by the upload router and all helper calls.
-
-Do **not** add `@aws-sdk/client-s3` unless you have confirmed a helper gap (see [When raw AWS SDK is justified](#when-raw-aws-sdk-is-justified)).
 
 ## Client factory
 
@@ -41,8 +39,6 @@ Also available: `cloudflare`, `backblaze`, `minio`, `custom`, etc. See [helpers-
 | Signed download link                                           | `presignGetObject`                                                                                                                                                                       |
 | Metadata only                                                  | `headObject`                                                                                                                                                                             |
 
-**Direction:** browser-scale uploads → router; server-side small puts → `putObject` helper; never `PutObjectCommand` from `@aws-sdk/client-s3` when the helper suffices.
-
 ## Common helpers
 
 ```ts
@@ -69,17 +65,12 @@ await putObject(s3, {
 })
 ```
 
-## Trassenscout audit (reference app)
+## Trassenscout (reference app)
 
 **Better Upload path (the norm):**
 
 - Upload router / `handleRequest` → `getConfiguredS3Client()`
 - Serve, fetch PDF, delete → `getObject` / `deleteObject` + `getConfiguredS3Client()`
-
-**Raw `@aws-sdk/client-s3` today (should migrate to helpers):**
-
-- `uploadEmailAttachment.server.ts` — `PutObjectCommand` + `getAwsSdkS3Client()` → prefer `putObject()`
-- `luckycloud.server.ts` `endCollaboration` — same overwrite pattern → prefer `putObject()`
 
 **Not used in Trassenscout despite comments:** Range/partial reads via `GetObjectCommand` (the documented reason for a separate `getAwsSdkS3Client()`).
 
@@ -92,17 +83,8 @@ Add `@aws-sdk/client-s3` and a separate `getAwsSdkS3Client()` only when Better U
 ## Object keys and URLs
 
 - Keys come from `generateObjectInfo` in `onBeforeUpload` (browser uploads) or shared key helpers (server puts)
-- Store key or full URL in DB via `getS3Url(key)`
-- Do not expose bucket credentials to the client
+- Store key or full URL in DB via an app URL helper (trassenscout: `getS3Url(key)` in `src/shared/uploads/url.ts`; tilda-geo: `s3VirtualHostedUrl` in `app/src/server/s3VirtualHostedUrl.server.ts`)
 
 ## Multipart
 
-Enable on **route** for very large browser uploads:
-
-```ts
-route({ multipleFiles: true, multipart: true, partSize: 20 * 1024 * 1024 })
-```
-
-Client unchanged. Empty (0-byte) files fail with multipart enabled — [troubleshooting.md](troubleshooting.md).
-
-Package version pin: [first-time-setup.md](first-time-setup.md).
+`multipart: true` / `partSize` are route options — [server-router.md](server-router.md); 0-byte gotcha in [troubleshooting.md](troubleshooting.md). Package version pin: [first-time-setup.md](first-time-setup.md).

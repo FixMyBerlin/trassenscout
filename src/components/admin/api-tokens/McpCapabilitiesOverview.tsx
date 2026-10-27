@@ -92,6 +92,13 @@ const groups: { title: string; rows: CapabilityRow[] }[] = [
         draft: "none",
         direct: "confirm",
       },
+      {
+        action: "Grunderwerbsflächen löschen",
+        tools: "acquisition_areas_delete",
+        disabled: "none",
+        draft: "none",
+        direct: "confirm",
+      },
     ],
   },
   {
@@ -118,6 +125,25 @@ const groups: { title: string; rows: CapabilityRow[] }[] = [
         disabled: "none",
         draft: "none",
         direct: "confirm",
+      },
+    ],
+  },
+  {
+    title: "Tags",
+    rows: [
+      {
+        action: "Auflisten",
+        tools: "tags_list",
+        disabled: "none",
+        draft: "read",
+        direct: "read",
+      },
+      {
+        action: "Anlegen und ändern, auch in mehreren Projekten",
+        tools: "tags_create, tags_update",
+        disabled: "none",
+        draft: "none",
+        direct: "live",
       },
     ],
   },

@@ -16,3 +16,6 @@ export function mcpListResult<T>(items: T[], limit: number) {
     items: slice,
   }
 }
+
+// Rows with complete geometries are large, so list calls with includeGeometry take fewer rows
+export const MCP_GEOMETRY_MAX_ITEMS = 10

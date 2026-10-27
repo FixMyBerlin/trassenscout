@@ -19,17 +19,17 @@ describe("externalShareMailtoHref", () => {
     )
 
     expect(mail.recipient).toBe("")
-    expect(mail.subject).toBe("Ihr Zugang zu Projektunterlagen von RS23")
+    expect(mail.subject).toBe("Ihr Zugang zu den Projektunterlagen von RS23")
     expect(mail.lines[0]).toBe(
       "Über den folgenden Link erhalten Sie Zugriff auf die Anwendung „Trassenscout“ für den Radschnellweg „RS23“.",
     )
     expect(mail.lines[2]).toBe(shareUrl)
-    expect(mail.lines.slice(-3)).toEqual(["Mit freundlichen Grüßen", "Im Auftrag", "Erika Muster"])
+    expect(mail.lines.slice(-3)).toEqual(["", "Mit freundlichen Grüßen", "Erika Muster"])
   })
 
-  test("ends with „Im Auftrag“ when the sender has no name", () => {
+  test("ends with the greeting when the sender has no name", () => {
     const mail = parse(externalShareMailtoHref({ shareUrl, projectName: "RS23", senderName: null }))
 
-    expect(mail.lines.at(-1)).toBe("Im Auftrag")
+    expect(mail.lines.slice(-2)).toEqual(["", "Mit freundlichen Grüßen"])
   })
 })

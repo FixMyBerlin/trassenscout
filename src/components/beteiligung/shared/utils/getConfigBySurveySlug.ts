@@ -4,6 +4,7 @@ import {
   SurveyLegacySlugs,
 } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { formConfig as FRM7Config } from "@/src/components/beteiligung/surveys/frm7/config"
+import { formConfig as SurveyKmpMesswerteConfig } from "@/src/components/beteiligung/surveys/kmp-messwerte/config"
 import { formConfig as SurveyOhvHaltestellenfoerderungConfig } from "@/src/components/beteiligung/surveys/ohv-haltestellenfoerderung/config"
 import { formConfig as SurveyOhvRadverkehrConfig } from "@/src/components/beteiligung/surveys/ohv-rad-anhoerung/config"
 import { formConfig as SurveyOhvRadMeldungConfig } from "@/src/components/beteiligung/surveys/ohv-rad-meldung/config"
@@ -29,6 +30,7 @@ const surveyConfigs: Record<AllowedSurveySlugs, FormConfig> = {
   "ohv-rad-anhoerung": SurveyOhvRadverkehrConfig,
   "ohv-rad-meldung": SurveyOhvRadMeldungConfig,
   "rsv-hinweis": SurveyRsvHinweisConfig,
+  "kmp-messwerte": SurveyKmpMesswerteConfig,
 }
 
 export const getConfigBySurveySlug = <K extends keyof FormConfig>(

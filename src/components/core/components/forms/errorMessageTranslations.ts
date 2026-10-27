@@ -71,6 +71,16 @@ const errorMessageTranslations: TranslatedMessages = {
   // TAGS (key matches TAG_TITLE_TAKEN in server/tags/tags.server.ts)
   "Tag title already exists":
     "Ein Tag mit diesem Namen existiert bereits (Groß-/Kleinschreibung wird nicht unterschieden).",
+  // AUTH (Better Auth messages, verbatim)
+  "Invalid email or password": "E-Mail-Adresse oder Passwort ist falsch.",
+  "User already exists. Use another email.":
+    "Für diese E-Mail-Adresse gibt es bereits ein Konto. Bitte melden Sie sich an oder verwenden Sie eine andere E-Mail-Adresse.",
+  "Invalid token":
+    "Der Link zum Zurücksetzen des Passworts ist ungültig oder abgelaufen. Bitte fordern Sie über „Passwort vergessen“ einen neuen an.",
+  "Password too short": "Das Passwort ist zu kurz.",
+  "Password too long": "Das Passwort ist zu lang.",
+  "Too many requests. Please try again later.":
+    "Zu viele Versuche. Bitte warten Sie einen Moment und versuchen Sie es erneut.",
   // NETWORK / SERVER ERRORS (e.g. 502 Bad Gateway from staging)
   Error: "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
   "Bad Gateway":

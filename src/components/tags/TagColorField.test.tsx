@@ -59,4 +59,22 @@ describe("ProjectRecordTagsList colours", () => {
     expect(colored).toHaveAttribute("title", "Förderung und Budget")
     expect(screen.getByText("#Beteiligung")).toHaveClass("bg-gray-100")
   })
+
+  test("lists tags alphabetically in German order", () => {
+    render(
+      <ProjectRecordTagsList
+        tags={[
+          { id: 1, title: "Vergabe" },
+          { id: 2, title: "antrag" },
+          { id: 3, title: "Änderung" },
+        ]}
+      />,
+    )
+
+    expect(screen.getAllByText(/^#/).map((pill) => pill.textContent)).toEqual([
+      "#Änderung",
+      "#antrag",
+      "#Vergabe",
+    ])
+  })
 })

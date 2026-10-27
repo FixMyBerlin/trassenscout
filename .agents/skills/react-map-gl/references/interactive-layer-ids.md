@@ -1,101 +1,39 @@
 # interactiveLayerIds and event.features
 
-In **react-map-gl**, pointer handlers on `<Map>` receive **`event.features`** already filtered to layers listed in **`interactiveLayerIds`**. This is different from raw MapLibre, where you typically call `queryRenderedFeatures(e.point, { layers: [...] })` yourself.
+react-map-gl pre-filters `event.features` (`MapGeoJSONFeature[] | undefined`) on `onClick` / `onMouseMove` / `onMouseLeave` to the layer ids in `<Map interactiveLayerIds>` (the `id` prop of `<Layer>`). Layers not listed never appear. This replaces raw MapLibre's `queryRenderedFeatures(e.point, { layers })`.
 
-## Mental model
+## Tilda
 
-```mermaid
-flowchart LR
-  A[User click] --> B[Map interactiveLayerIds]
-  B --> C[react-map-gl queries those layers]
-  C --> D[onClick event.features]
-```
-
-- **`interactiveLayerIds`**: string array of **MapLibre layer ids** (the `id` prop on `<Layer>`).
-- **`onClick` / `onMouseMove` / `onMouseLeave`**: `features` is `MapGeoJSONFeature[] | undefined`, pre-filtered.
-- Layers **not** in the list do not appear in `event.features` (as if they were not interactive).
-
-## Tilda: building the list
-
-Layer ids are derived from config + URL toggles, not hard-coded in `RegionMap`:
+Ids are derived from config + URL toggles via `useInteractiveLayers()` (categories, notes, QA, datasets, mask layers; `interactive: false` excluded; mask layers added manually because `inspector.enabled: false`).
 
 ```tsx
-// tilda-geo: RegionMap.tsx
-const interactiveLayerIds = useInteractiveLayers()
-
 <MapGl
-  interactiveLayerIds={interactiveLayerIds}
+  interactiveLayerIds={useInteractiveLayers()}
   onClick={handleClick}
   onMouseMove={handleMouseMove}
   onMouseLeave={handleMouseLeave}
 />
 ```
 
-`useInteractiveLayers` collects ids from active categories, notes, QA, datasets, and mask layers. Layers with `interactive: false` in config are excluded; mask layers are **manually** added because they use `inspector.enabled: false`.
-
-## Tilda: click handler
-
-One click can return the **same feature more than once** when several stacked layers in `interactiveLayerIds` all hit the same geometry (e.g. fill + outline, base + highlight). Dedupe before updating inspector / URL state:
+Click: stacked layers (fill + outline, base + highlight) can return the same feature twice, so dedupe before updating inspector/URL:
 
 ```tsx
-import { uniqBy } from "es-toolkit/compat"
-
-const handleClick = ({ features, ...event }: MapLayerMouseEvent) => {
-  if (!features?.length) {
-    clearInspectorFeatures()
-    return
-  }
-
-  const uniqueFeatures = uniqBy(features, (f) => `${f.source}-${f.id}`)
-  replaceInspectorFeatures(uniqueFeatures)
-  // …persist to URL
-}
+const uniqueFeatures = uniqBy(features, (f) => `${f.source}-${f.id}`)
 ```
 
-## Tilda: hover + cursor
+Hover: the same `features` drive `updateCursor(features)` and `updateHover(features)`.
 
-Same `features` array drives cursor and feature-state hover:
+Secondary maps that should not pick: `<MapGl interactiveLayerIds={[]} cursor="grab" />` (`NotesNewMap`).
 
-```tsx
-const handleMouseMove = ({ features }: MapLayerMouseEvent) => {
-  updateCursor(features)
-  updateHover(features)
-}
-```
+## Keep in sync with rendered layers
 
-## Contrast with MapLibre core
-
-| MapLibre (imperative)                                                        | react-map-gl (declarative)                                       |
-| ---------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| `map.on('click', (e) => { map.queryRenderedFeatures(e.point, { layers }) })` | `interactiveLayerIds={layers}` + `onClick={({ features }) => …}` |
-| You choose layers per event                                                  | Layer set fixed on `<Map>` props                                 |
-| Full map instance required                                                   | Handlers on `<Map>`; features delivered                          |
-
-## Keep interactiveLayerIds in sync with rendered layers
-
-`interactiveLayerIds` can be **one render ahead** of the style (layer id listed but not yet in style). Guard queries:
+The list can be one render ahead of the style. Guard manual queries:
 
 ```tsx
 // tilda-geo: useSelectedFeatures.ts
 const styleLayerIds = new Set(mapInstance.getLayersOrder())
 const layersToQuery = interactiveLayers.filter((id) => styleLayerIds.has(id))
-const renderedFeatures = map.queryRenderedFeatures({ layers: layersToQuery })
+map.queryRenderedFeatures({ layers: layersToQuery })
 ```
 
-Same guard applies if you manually call `queryRenderedFeatures` while syncing URL-selected features.
-
-## Empty interactive set
-
-Secondary maps that should not pick features:
-
-```tsx
-// tilda-geo: NotesNewMap.tsx
-<MapGl interactiveLayerIds={[]} cursor="grab" onMove={handleMove} />
-```
-
-## Checklist
-
-- [ ] Every pickable layer’s `id` is included in `interactiveLayerIds` when that layer should receive clicks/hover.
-- [ ] Toggle visibility via config/URL updates **both** layer visibility and `interactiveLayerIds` (hidden layers should drop out of the list when they should not be clickable).
-- [ ] Use `event.features` in handlers; avoid duplicate `queryRenderedFeatures` on click unless loading from URL.
-- [ ] Features need stable `feature.id` (integer) for selection/hover state — MapLibre drops non-integer ids unless `promoteId` is set on the source.
+Hiding a layer (`visibility: 'none'`) or unmounting it must also drop its id when it should no longer be clickable. Features need stable `feature.id` for selection/hover state (vector tiles need integer ids or `promoteId`, see [feature-state.md](feature-state.md)).

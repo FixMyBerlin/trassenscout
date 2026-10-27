@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query"
 import { twJoin } from "tailwind-merge"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { LinkMail } from "@/src/components/core/components/links/LinkMail"
@@ -16,6 +17,7 @@ import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { UserCanIcon } from "@/src/components/shared/app/memberships/UserCanIcon"
 import type { ProjectUsersList } from "@/src/server/memberships/types"
+import { currentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
 import { TeamTableEditMembershipDelete } from "./TeamTableEditMembershipDelete"
 import { TeamTableEditMembershipModal } from "./TeamTableEditMembershipModal"
 
@@ -37,6 +39,8 @@ type Props = {
 const editableMembershipRoles = ["VIEWER", "EDITOR"]
 
 export const TeamTable = ({ users }: Props) => {
+  const { data: currentUser } = useQuery(currentUserQueryOptions())
+
   if (!users.length) {
     return (
       <>
@@ -117,10 +121,12 @@ export const TeamTable = ({ users }: Props) => {
                         tableCellClassName,
                       )}
                     >
-                      <div className="flex flex-col items-end gap-1">
-                        {canEditMembership && <TeamTableEditMembershipModal editUser={user} />}
-                        <TeamTableEditMembershipDelete membershipId={user.currentMembershipId} />
-                      </div>
+                      {user.id !== currentUser?.id && (
+                        <div className="flex flex-col items-end gap-1">
+                          {canEditMembership && <TeamTableEditMembershipModal editUser={user} />}
+                          <TeamTableEditMembershipDelete membershipId={user.currentMembershipId} />
+                        </div>
+                      )}
                     </td>
                   </tr>
                 )

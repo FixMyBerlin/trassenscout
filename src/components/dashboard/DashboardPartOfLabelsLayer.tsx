@@ -5,6 +5,8 @@ import { subsectionColors } from "@/src/components/core/components/Map/colors/su
 import type { PartOfLabelProperties } from "@/src/shared/dashboard/partOfLabels"
 
 const SOURCE_ID = "dashboard-part-of-labels"
+// Hidden in the zoomed-out overview, where the labels of neighbouring projects overlap.
+const PART_OF_LABEL_MIN_ZOOM = 8
 
 type Props = {
   labels: FeatureCollection<Point, PartOfLabelProperties>
@@ -20,6 +22,7 @@ export const DashboardPartOfLabelsLayer = ({ labels }: Props) => {
         id={SOURCE_ID}
         type="symbol"
         source={SOURCE_ID}
+        minzoom={PART_OF_LABEL_MIN_ZOOM}
         layout={{
           "text-field": ["get", "label"],
           "text-font": ["Red Hat Text Regular", "Arial Unicode MS Regular"],

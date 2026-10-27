@@ -1,38 +1,43 @@
+import { parseProjectModalSearch } from "@/src/shared/projectModals/searchSchemas"
+import { splitResolvedTo } from "@/src/shared/routing/resolvedTo"
+
 type ReturnTarget = {
   returnPath: string
   returnText: string
 }
 
-export const parseReturnProjectRecordId = (value?: string) => {
-  const parsedValue = Number(value)
-  return Number.isInteger(parsedValue) && parsedValue > 0 ? parsedValue : undefined
+const isProjectRecordTarget = (pathname: string, search: Record<string, unknown> | undefined) => {
+  const [, , section, recordId = ""] = pathname.split("/")
+  return (
+    // Same rules as the modal host: a record modal needs its view, and two open modals close both
+    parseProjectModalSearch(search).modalProjectRecordId !== undefined ||
+    (section === "project-records" && /^\d+$/.test(recordId))
+  )
 }
 
 export const getUploadReturnTarget = ({
   projectSlug,
   returnTo,
-  returnProjectRecordId,
 }: {
   projectSlug: string
   returnTo?: string
-  returnProjectRecordId?: number
 }) => {
-  if (returnTo) {
-    return {
-      returnPath: returnTo,
-      returnText: "Zurück",
-    } satisfies ReturnTarget
-  }
+  const uploadsPath = `/${projectSlug}/uploads`
+  const { to: pathname, search } = splitResolvedTo(returnTo ?? "")
 
-  if (returnProjectRecordId !== undefined) {
+  if (!returnTo) {
     return {
-      returnPath: `/${projectSlug}/project-records/${returnProjectRecordId}`,
-      returnText: "Zurück zum Protokoll",
+      returnPath: uploadsPath,
+      returnText: "Zurück zu den Dokumenten",
     } satisfies ReturnTarget
   }
 
   return {
-    returnPath: `/${projectSlug}/uploads`,
-    returnText: "Zurück zu den Dokumenten",
+    returnPath: returnTo,
+    returnText: isProjectRecordTarget(pathname, search)
+      ? "Zurück zum Protokolleintrag"
+      : pathname === uploadsPath
+        ? "Zurück zu den Dokumenten"
+        : "Zurück",
   } satisfies ReturnTarget
 }

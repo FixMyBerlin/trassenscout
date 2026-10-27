@@ -2,19 +2,14 @@
 
 **Scope:** FMC drag-and-drop **multi-file** UX on top of Better Upload. Not part of Better Upload itself.
 
-Add **react-dropzone** only when the product needs batch drag-and-drop (`multipleFiles`, progress list). Skip for:
-
-- Single-file `useUploadFile` + button/picker
-- Plain `<input type="file">` calling `upload()` without drag-and-drop
-- Paste-to-upload wired directly to `upload()` (no react-dropzone)
+Add **react-dropzone** (`bun add react-dropzone`) only when the product needs batch drag-and-drop (`multipleFiles`, progress list); single-file, plain-input and paste flows skip it.
 
 Better Upload exposes the `UploadHookControl` contract; it does not ship a dropzone. Better Upload's [shadcn UploadDropzone](https://better-upload.com/docs/components/upload-dropzone) is built on react-dropzone — FMC apps use a custom styled variant with the same wiring.
-
-Install react-dropzone in [first-time-setup.md](first-time-setup.md) when this doc applies.
 
 ## Core wiring
 
 ```tsx
+import { useId } from "react"
 import { useDropzone } from "react-dropzone"
 import type { UploadHookControl } from "@better-upload/client"
 
@@ -38,16 +33,24 @@ function UploadDropzoneProgress({
           upload(files, { metadata })
         }
       }
-      if (inputRef.current) inputRef.current.value = ""
+      if (inputRef.current) inputRef.current.value = "" // lets the same file be re-selected
     },
     noClick: true,
   })
 
   const inputProps = getInputProps()
+  const inputId = useId()
 
   return (
-    <label {...getRootProps()} htmlFor={id}>
-      <input {...inputProps} type="file" multiple accept={accept} disabled={isPending} />
+    <label {...getRootProps()} htmlFor={inputId}>
+      <input
+        {...inputProps}
+        id={inputId}
+        type="file"
+        multiple
+        accept={accept}
+        disabled={isPending}
+      />
       {/* drag overlay when isDragActive */}
       {/* progress list from progresses */}
     </label>
@@ -55,27 +58,7 @@ function UploadDropzoneProgress({
 }
 ```
 
-## Why `noClick: true`
-
-- Dropzone root handles **drag-and-drop** only
-- Visible `<label htmlFor={inputId}>` + `<input type="file">` handles **click-to-select**
-- Prevents double-open file dialog
-
-## Input reset
-
-Always clear after drop/select so the same file can be re-selected:
-
-```ts
-inputRef.current.value = ""
-```
-
-## accept attribute
-
-```tsx
-accept={getAcceptAttribute()} // e.g. "image/*,.pdf,..."
-```
-
-Client hint only — server validates. See [troubleshooting.md](troubleshooting.md).
+`noClick: true`: the root handles drag-and-drop only; click-to-select goes through the visible `<label htmlFor={inputId}>` + input (avoids a double file dialog). `accept` is a client hint mirroring server `fileTypes` ([troubleshooting.md](troubleshooting.md)).
 
 ## Progress UI
 
@@ -91,19 +74,12 @@ Use `formatBytes` from `@better-upload/client/helpers`.
 
 ## Extended UX (FMC patterns)
 
-Optional enhancements on top of the shadcn template:
-
-- **beforeunload** when `isPending` — warn on tab close mid-upload
-- **Modal close guard** during upload
-- **Auto-hide** completed rows after animation
-- **Manual dismiss** for failed rows
-- **Spinner overlay** when `isPending && progresses.length === 0` (awaiting first progress event)
-- **Translated errors** via shared `translateServerError` for server messages
+On top of the shadcn template: `beforeunload` guard and modal close guard while `isPending`, auto-hide completed rows, manual dismiss for failed rows, spinner overlay when `isPending && progresses.length === 0`, server messages through shared `translateServerError`.
 
 ## Component stack
 
 ```text
-UploadDropzone (domain: API path, createUploadRecord, relations)
+UploadDropzone (domain: API path, createUploadRecord app helper, relations)
   └─ UploadDropzoneBase (useUploadFiles, onUploadComplete → DB)
        └─ UploadDropzoneProgress (react-dropzone + progress list)
             └─ wrapped by UploadDropzoneContainer (layout)
@@ -122,6 +98,6 @@ Either way: pass `control` from `useUploadFiles`, do not call S3 from dropzone d
 
 ## Paste uploads
 
-A paste handler can feed the same `control.upload`: `onPasteCapture` → collect `clipboardData` files → `upload(files, { metadata })`. No react-dropzone needed — same contract as the dropzone.
+A paste handler feeds the same `control.upload`: `onPasteCapture` → collect `clipboardData` files → `upload(files, { metadata })`.
 
 Dropzone anti-patterns: [troubleshooting.md](troubleshooting.md).

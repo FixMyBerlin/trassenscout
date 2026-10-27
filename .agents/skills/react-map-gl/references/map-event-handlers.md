@@ -1,201 +1,64 @@
 # Map event handlers (not useEffect)
 
-react-map-gl wraps MapLibre as a **reactive** React component. Map-driven behavior belongs on **`<Map>` callback props**, not on `useEffect` + `map.on(…)` or polling `useMap()` in effects.
+Map-driven behavior belongs on `<Map>` callback props, not `useEffect` + `map.on(…)` or polling `useMap()`. Upstream: [State management](https://visgl.github.io/react-map-gl/docs/get-started/state-management) · [Map callbacks](https://visgl.github.io/react-map-gl/docs/api-reference/maplibre/map#callbacks).
 
-Upstream: [State management](https://visgl.github.io/react-map-gl/docs/get-started/state-management) · [Map callbacks](https://visgl.github.io/react-map-gl/docs/api-reference/maplibre/map#callbacks) · [MapLayerMouseEvent](https://visgl.github.io/react-map-gl/docs/api-reference/maplibre/types#maplayermouseevent) · [Examples (controlled / basic)](https://github.com/visgl/react-map-gl/tree/master/examples/get-started)
+## Rule (read each Do with its Don't)
 
-## Rule
+1. Do: camera, pointer, load, tile lifecycle on `<Map>` props. Don't: `useEffect` + `map.on('moveend' | 'click' | 'mousemove')`.
+2. Do: read `event.features` with `interactiveLayerIds`. Don't: `useEffect` + `queryRenderedFeatures` on every pointer move, or poll with `setInterval`.
+3. Do: `onMove` / `onMoveEnd` for viewport → URL ([initial-view-state.md](initial-view-state.md)). Don't: watch `map.getCenter()` in an effect.
+4. Do: `onLoad` once for map ready ([map-loaded-hook.md](map-loaded-hook.md)).
+5. Do: `useEffect` only to push external React state into the map after load, or for APIs without a Map prop (`styleimagemissing`). Don't: use it as the input path for user gestures.
 
-Read each pair together — a **Don't** line is never a recommendation on its own.
+## Use case → handler
 
-1. **Do:** Handle camera, pointer, load, and tile lifecycle on `<Map>` props.  
-   **Don't:** `useEffect` + `map.on('moveend' | 'click' | 'mousemove' …)` to mirror the same behavior.
+| Use case                            | Handler                                           | FMC examples / notes                                                                                                                                                                                                                                                                                             |
+| ----------------------------------- | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Map ready, one-time setup           | `onLoad`                                          | Tilda `RegionMap` `markMapLoaded()`, disable rotation; Trassenscout `SwitchableMap` Playwright hook. Not "tiles finished".                                                                                                                                                                                       |
+| Tile/style loading UI               | `onData` + `onIdle`                               | Tilda `RegionMap`; Trassenscout `onIdle={() => setMapLoading(false)}`                                                                                                                                                                                                                                            |
+| Viewport → URL / bounds             | `onMoveEnd` (+ `onMove` if UI tracks the gesture) | Tilda `RegionMap`, `NotesNewMap`. Not `onZoomEnd` alone.                                                                                                                                                                                                                                                         |
+| Feature click / pick                | `onClick`                                         | Needs `interactiveLayerIds`; use `event.features`                                                                                                                                                                                                                                                                |
+| Right-click                         | `onContextMenu`                                   | Trassenscout `AcquisitionAreaMap`; same `features`                                                                                                                                                                                                                                                               |
+| Hover cursor / highlight            | `onMouseMove` + `onMouseLeave`                    | [cursor-handling.md](cursor-handling.md); Tilda `RegionMap` hover feature-state; Trassenscout `useMapHighlight` called from the handler                                                                                                                                                                          |
+| Click selection + `setFeatureState` | `onClick` (same handler)                          | Trassenscout `BaseMap.handleClickInternal`; Tilda `RegionMap.handleClick` → store                                                                                                                                                                                                                                |
+| Camera move after click             | `onClick` → `event.target.fitBounds(…)`           | Trassenscout `SubsubsectionMap`                                                                                                                                                                                                                                                                                  |
+| Draggable pin                       | `<Marker onDrag / onDragEnd>`                     | Not Map `onDrag*`. Trassenscout `SwitchableMap`                                                                                                                                                                                                                                                                  |
+| Drawing tools                       | `{...draw.mapProps}` on `<Map>` + `<DrawLayers>`  | [`@osm-editor-kit/react-map-gl-draw`](https://github.com/osm-editor-kit/react-map-gl-draw/tree/main/packages/react-map-gl-draw): controlled `value` / `onChange`, no `useControl`. Spread `draw.mapProps` after your own handlers; merge `onMouseMove` and `cursor`. Tilda `useCalculatorDraw`, `useReviewDraw`. |
 
-2. **Do:** Read `event.features` from pointer handlers when using `interactiveLayerIds`.  
-   **Don't:** `useEffect` + `queryRenderedFeatures` on every pointer move.
+Skip: `onRender` (fires every frame, not `onMove`); `onZoom` / `onZoomEnd` (redundant with `onMove*`); `onMouseEnter` / `onMouseOver`; controlled `onMove` + `longitude`/`latitude`/`zoom`.
 
-3. **Do:** Use `onMove` / `onMoveEnd` for viewport → URL (see initial-view-state.md).  
-   **Don't:** `useEffect` watching `map.getCenter()` / bounds to write URL.
-
-4. **Do:** Use `onLoad` once for “map ready” (see map-loaded-hook.md).  
-   **Don't:** Assume `useMap()` ref means the style is ready.
-
-5. **Do:** Use `useEffect` only to **push external React state into the map** after load, or for APIs **without** a Map prop (e.g. `styleimagemissing`).  
-   **Don't:** Use `useEffect` as the primary input path for user gestures.
-
-## Use-case → handler
-
-| Use case                                        | Handler                                                              | FMC examples                                                                                            | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| ----------------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Map/style ready; one-time setup                 | **`onLoad`**                                                         | Tilda `RegionMap` → `markMapLoaded()`, disable rotation; Trassenscout `SwitchableMap` → Playwright hook | Sets `useMapLoaded`. Not the same as “tiles finished”.                                                                                                                                                                                                                                                                                                                                                                                                |
-| Tiles/style loading UI                          | **`onData`** + **`onIdle`**                                          | Tilda `RegionMap` → loading indicator on/off                                                            | `onData` fires often; `onIdle` = no camera transition + tiles loaded + animations done ([docs](https://visgl.github.io/react-map-gl/docs/api-reference/maplibre/map#onidle)). Trassenscout: `onIdle={() => setMapLoading(false)}`.                                                                                                                                                                                                                    |
-| Viewport → URL or bounds state                  | **`onMoveEnd`** (and **`onMove`** when UI must track during gesture) | Tilda `RegionMap`, `NotesNewMap`                                                                        | Do not use `onZoomEnd` alone — zoom is a move ([RegionMap comment](https://github.com/FixMyBerlin/tilda-geo)).                                                                                                                                                                                                                                                                                                                                        |
-| Feature click / pick                            | **`onClick`**                                                        | Tilda inspector; Trassenscout `BaseMap`, `SwitchableMap`, `AcquisitionAreaMap`                          | Requires `interactiveLayerIds`. Use `event.features`, not manual hit-test in effects.                                                                                                                                                                                                                                                                                                                                                                 |
-| Right-click / context menu                      | **`onContextMenu`**                                                  | Trassenscout `AcquisitionAreaMap`                                                                       | Same `features` as click when `interactiveLayerIds` set.                                                                                                                                                                                                                                                                                                                                                                                              |
-| Hover cursor                                    | **`onMouseMove`** + **`onMouseLeave`**                               | Tilda `RegionMap`; Trassenscout `BaseMap`, `SwitchableMap`                                              | See cursor-handling.md.                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| Hover highlight (feature-state or global state) | **`onMouseMove`** + **`onMouseLeave`**                               | Tilda `RegionMap` (`setFeatureState` hover); Trassenscout `useMapHighlight` wired in `BaseMap`          | Keep handler on Map, not `mousemove` listener in effect.                                                                                                                                                                                                                                                                                                                                                                                              |
-| Click selection + `setFeatureState`             | **`onClick`** (in handler)                                           | Trassenscout `BaseMap.handleClickInternal`; Tilda `RegionMap.handleClick` → store                       | Prefer updating map in the **same** handler as the click when possible.                                                                                                                                                                                                                                                                                                                                                                               |
-| Imperative camera after click                   | **`onClick`** → `event.target.fitBounds(…)`                          | Trassenscout `SubsubsectionMap`                                                                         | Use `event.target` (MapLibre map) inside the handler.                                                                                                                                                                                                                                                                                                                                                                                                 |
-| Draggable pin                                   | **`<Marker onDrag` / `onDragEnd>`**                                  | Trassenscout `SwitchableMap`, upload location maps                                                      | Not Map `onDrag*` — marker is a separate component ([Marker docs](https://visgl.github.io/react-map-gl/docs/api-reference/maplibre/marker)).                                                                                                                                                                                                                                                                                                          |
-| Drawing tools                                   | **`{...draw.mapProps}`** on `<Map>` + **`<DrawLayers>`**             | Tilda calculator and Prüflisten (`useCalculatorDraw`, `useReviewDraw`)                                  | [`@osm-editor-kit/react-map-gl-draw`](https://github.com/osm-editor-kit/react-map-gl-draw/tree/main/packages/react-map-gl-draw): shapes are a controlled `value` / `onChange`, no `useControl`, no effects. API and gestures: its README. Spread `draw.mapProps` after your own handlers; merge `onMouseMove` and `cursor` when both exist. Alternative we used before: [TerraDraw](https://github.com/JamesLMilner/terra-draw) through `useControl`. |
-
-### Handlers we rarely use
-
-| Handler                                                   | Why skip in FMC apps                                                                     |
-| --------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| `onZoom` / `onZoomEnd`                                    | Redundant with `onMove` / `onMoveEnd` for viewport sync                                  |
-| `onRender`                                                | Fires every frame; avoid for app logic                                                   |
-| `onMouseEnter` / `onMouseOver`                            | `onMouseMove` + `onMouseLeave` cover our cursor/hover needs                              |
-| Controlled `onMove` + `longitude`/`latitude`/`zoom` props | Prefer uncontrolled + URL (initial-view-state.md) unless you need full controlled camera |
-
-## Anti-pattern vs allowed `useEffect`
-
-### Anti-pattern — map events in `useEffect`
+## Anti-pattern vs allowed effect
 
 ```tsx
-// ❌ Duplicates onMoveEnd; fights React lifecycle; easy to leak listeners
+// ❌ duplicates onMoveEnd, leaks listeners
 useEffect(() => {
   const map = mainMap?.getMap()
   if (!map) return
-  const onMoveEnd = () => {
-    const c = map.getCenter()
-    setMapParam({ lat: c.lat, lng: c.lng, zoom: map.getZoom() })
-  }
-  map.on("moveend", onMoveEnd)
-  return () => {
-    map.off("moveend", onMoveEnd)
-  }
+  const onMoveEnd = () => { const c = map.getCenter(); setMapParam({ lat: c.lat, lng: c.lng, zoom: map.getZoom() }) }
+  map.on('moveend', onMoveEnd)
+  return () => { map.off('moveend', onMoveEnd) }
 }, [mainMap])
-```
 
-```tsx
 // ✅
-<Map
-  onMoveEnd={(e) => {
-    const { latitude, longitude, zoom } = e.viewState
-    void setMapParam({ lat: latitude, lng: longitude, zoom }, { history: "replace" })
-  }}
-/>
-```
-
-```tsx
-// ❌ Polling map state for hover
-useEffect(() => {
-  if (!mainMap) return
-  const id = setInterval(() => {
-    /* queryRenderedFeatures … */
-  }, 50)
-  return () => clearInterval(id)
-}, [mainMap, pointer])
-```
-
-```tsx
-// ✅
-<Map
+<Map onMoveEnd={(e) => { const { latitude, longitude, zoom } = e.viewState
+  void setMapParam({ lat: latitude, lng: longitude, zoom }, { history: 'replace' }) }}
   interactiveLayerIds={layerIds}
   onMouseMove={({ features }) => updateCursor(features)}
-  onMouseLeave={() => updateCursor([])}
-/>
+  onMouseLeave={() => updateCursor([])} />
 ```
 
-### Allowed — bridge **React → map** after load
+Allowed: guarded effect bridging React → map after load, when selection comes from store/URL rather than the gesture (guard `mainMap && mapLoaded`, example in [map-loaded-hook.md](map-loaded-hook.md)):
 
-When selection/bounds come from **React state or URL** (not from the gesture that just happened), a guarded effect is fine:
+- Tilda `UpdateFeatureState`: inspector selection store → `setFeatureState`
+- Trassenscout `SwitchableMap`: restore form selection highlight after remount
+- Trassenscout `AcquisitionAreaMap`: parent state → `setFeatureState`
 
-```tsx
-// Tilda: UpdateFeatureState.tsx — inspector selection from store → setFeatureState
-useEffect(
-  function syncSelectedFeatureStateToMap() {
-    if (!mainMap || !mapLoaded) return
-    // diff previous vs current; safeSetFeatureState(…)
-  },
-  [currentSelectedFeatures, mainMap, mapLoaded],
-)
-```
+Prefer the handler when gesture and map update are the same turn (Trassenscout `BaseMap` sets `selected` inside `onClick`).
 
-```tsx
-// Trassenscout: SwitchableMap — restore form selection highlight after remount
-useEffect(() => {
-  if (isPin || !mainMap || mapLoading) return
-  // setFeatureState({ selected: true }) from form field values
-}, [mainMap, mapLoading, …])
-```
+Allowed, no Map prop: `styleimagemissing` subscribe with `off()` cleanup ([map-images.md](map-images.md)); `pmtiles` protocol registration on mount.
 
-```tsx
-// Trassenscout: AcquisitionAreaMap — React toggles selection, effect paints feature-state
-// (Could also setFeatureState inside onClick; effect is OK when state lives in parent.)
-useEffect(function syncPotentialAreaFeatureState() {
-  if (!mainMap) return
-  const map = mainMap.getMap()
-  if (!map.getSource(SOURCE_ID)) return
-  for (const area of potentialAcquisitionAreas) {
-    map.setFeatureState(…, { selected: area.selected })
-  }
-}, [mainMap, potentialAcquisitionAreas])
-```
+## Wiring references
 
-**Prefer the handler when the gesture and the map update are the same turn:** Trassenscout `BaseMap` clears/sets `selected` inside `onClick`; Tilda `RegionMap` runs click logic in `handleClick` and uses a child effect only for **store-driven** highlight sync.
+Tilda `RegionMap`: `interactiveLayerIds`, `onLoad={handleLoad}`, `onData={startMapDataLoading}`, `onIdle={finishMapDataLoading}`, `onMoveEnd` (URL + bounds), `onClick` (inspector + URL features), `onMouseMove` (cursor + hover), `onMouseLeave`.
 
-### Allowed — no Map callback prop
-
-```tsx
-// Tilda: RegionMap — styleimagemissing has no react-map-gl prop
-useEffect(function subscribeToMissingStyleImages() {
-  if (!mainMap) return
-  const handler = (e: MapStyleImageMissingEvent) => { … }
-  mainMap.on('styleimagemissing', handler)
-  return () => { mainMap.off('styleimagemissing', handler) }
-}, [mainMap])
-```
-
-Protocol registration (`pmtiles`) in `useEffect` on mount is also fine — not map gesture sync.
-
-## Tilda `RegionMap` wiring (reference)
-
-```tsx
-<MapGl
-  interactiveLayerIds={interactiveLayerIds}
-  onLoad={handleLoad} // map ready
-  onData={startMapDataLoading} // loading indicator
-  onIdle={finishMapDataLoading}
-  onMoveEnd={handleMoveEnd} // URL + bounds
-  onClick={handleClick} // inspector + URL features
-  onMouseMove={handleMouseMove} // cursor + hover feature-state
-  onMouseLeave={handleMouseLeave}
-/>
-```
-
-## Trassenscout `BaseMap` pattern
-
-Central map wraps handlers once; consumers pass through:
-
-```tsx
-<MapComponent
-  onMouseMove={handleMouseMoveInternal}  // highlight + cursor + parent
-  onMouseLeave={handleMouseLeaveInternal}
-  onClick={handleClickInternal}          // selection feature-state + parent
-  onLoad={onLoad}
-  onIdle={onIdle}
-  interactiveLayerIds={[…]}
-/>
-```
-
-Compose domain logic in the handler or a small hook (`useMapHighlight`) — still invoked **from** `onMouseMove`, not from an effect.
-
-## Checklist for reviews
-
-- [ ] Viewport sync uses `onMoveEnd` / `onMove`, not `map.on('moveend')` in `useEffect`
-- [ ] Clicks/hover use `onClick` / `onMouseMove` with `interactiveLayerIds`
-- [ ] `onLoad` sets map-ready flag before `queryRenderedFeatures` / `getStyle`
-- [ ] Loading UI uses `onData`/`onIdle` or similar, not guessing from render
-- [ ] Any `useEffect` touching the map is **React → map** sync with `mapLoaded` guard, or a MapLibre event without a prop
-- [ ] Marker drag uses `<Marker onDragEnd>`, not Map drag handlers
-
-## Related chapters
-
-- [declarative-source-layer.md](declarative-source-layer.md) — `<Source>` / `<Layer>` only; handlers assume declarative layers
-- [feature-state.md](feature-state.md) — `setFeatureState` vs React filter, reset/diff, inspector sync, limitations
-- [interactive-layer-ids.md](interactive-layer-ids.md) — `event.features`
-- [map-loaded-hook.md](map-loaded-hook.md) — `onLoad`
-- [initial-view-state.md](initial-view-state.md) — `onMoveEnd` / `onMove`
-- [cursor-handling.md](cursor-handling.md) — `onMouseMove` / `onMouseLeave`
+Trassenscout `BaseMap` wraps handlers once (`handleMouseMoveInternal`, `handleMouseLeaveInternal`, `handleClickInternal` run highlight, cursor, selection feature-state, then the parent's handler); consumers pass through. Domain logic may live in a hook (`useMapHighlight`), still invoked from `onMouseMove`, not an effect.

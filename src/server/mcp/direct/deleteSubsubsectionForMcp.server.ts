@@ -3,6 +3,7 @@ import { shortTitle } from "@/src/components/core/components/text/titles"
 import db from "@/src/server/db.server"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { requireMcpDirectProject } from "@/src/server/mcp/direct/requireMcpDirectProject.server"
+import { lastWinsItems } from "@/src/server/mcp/lastWinsItems"
 import { mcpEnvLabel } from "@/src/server/mcp/mcpCursorConfig"
 import { buildSubsubsectionUrl } from "@/src/server/mcp/subsubsectionUrl"
 import {
@@ -14,16 +15,6 @@ type SubsubsectionDeleteItem = {
   projectSlug: string
   subsectionSlug: string
   slug: string
-}
-
-function lastWinsItems(items: SubsubsectionDeleteItem[]) {
-  const map = new Map<string, SubsubsectionDeleteItem>()
-  for (const item of items) {
-    const key = `${item.projectSlug}\0${item.subsectionSlug}\0${item.slug}`
-    map.delete(key)
-    map.set(key, item)
-  }
-  return [...map.values()]
 }
 
 const dependencySelect = {
@@ -67,7 +58,11 @@ export async function deleteSubsubsectionForMcp(input: {
   origin: string
   createdById: number
 }) {
-  const items = lastWinsItems(input.items)
+  const items = lastWinsItems(input.items, (item) => [
+    item.projectSlug,
+    item.subsectionSlug,
+    item.slug,
+  ])
   const results = []
   let deletedCount = 0
 

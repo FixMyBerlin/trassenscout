@@ -14,6 +14,11 @@ const fs = require("fs")
 const path = require("path")
 const { execSync } = require("child_process")
 
+// Remember the caller's cwd: relative script paths and output paths (screenshots)
+// must resolve against the caller's project, not the skill folder.
+const CALLER_CWD = process.cwd()
+process.env.PW_CALLER_CWD = CALLER_CWD
+
 // Change to skill directory for proper module resolution
 process.chdir(__dirname)
 
@@ -53,8 +58,8 @@ function getCodeToExecute() {
   const args = process.argv.slice(2)
 
   // Case 1: File path provided
-  if (args.length > 0 && fs.existsSync(args[0])) {
-    const filePath = path.resolve(args[0])
+  if (args.length > 0 && fs.existsSync(path.resolve(CALLER_CWD, args[0]))) {
+    const filePath = path.resolve(CALLER_CWD, args[0])
     console.log(`📄 Executing file: ${filePath}`)
     return fs.readFileSync(filePath, "utf8")
   }

@@ -1,107 +1,60 @@
-# TanStack Start — Client vs. Server Boundaries
+# TanStack Start - Client vs. Server Boundaries
 
-This doc describes how we keep server-only and client-only code in the right bundles: file naming, import protection, and when to use loaders vs. server functions vs. React Query.
+How server-only and client-only code stay in the right bundles: file naming, import protection, `beforeLoad` vs `loader`.
 
-**Execution model (isomorphic loaders, soft nav):** [execution-model.md](execution-model.md) · **Server fn API:** [server-functions.md](server-functions.md)
-
-**Official docs:** [TanStack Start](https://tanstack.com/start/), [TanStack Router](https://tanstack.com/router/latest), [TanStack Query](https://tanstack.com/query/latest)
-
----
+**Related:** [execution-model.md](execution-model.md) · [server-functions.md](server-functions.md) · [selective-ssr.md](selective-ssr.md) · Official: [TanStack Start](https://tanstack.com/start/), [Import Protection](https://tanstack.com/start/latest/docs/framework/react/guide/import-protection)
 
 ## Folder `/server`
 
-`/server` holds all modules and helpers that are server-only or define RPC (server function) handlers.
+All server-only modules and RPC (server function) handlers.
 
 ## Filename conventions
 
-### Server-only modules: `/server/*.server.ts`
+### `/server/*.server.ts` - server-only modules
 
-We mark modules that only ever run on the server with the **`.server.ts`** suffix. See [Import Protection](https://tanstack.com/start/latest/docs/framework/react/guide/import-protection). We do _not_ use `import '@tanstack/react-start/server-only'`.
+- Use `@tanstack/react-start/server` APIs (`getRequestHeaders()`, `getRequest()`, `setCookie()`), the DB, or other server-only APIs.
+- Never imported by route files or components. Two exceptions: API route files under `routes/api/`, and handler-only routes outside it (route files exporting only server handlers and no component, e.g. tilda-geo `src/routes/mcp.ts`). Both may statically import `*.server.ts` modules used only inside handlers.
+- Use **`createServerOnlyFn`** for any exported callable (never `createServerFn`).
+- We do _not_ use `import '@tanstack/react-start/server-only'`.
 
-Characteristics of those files:
+### API routes and handler-only routes - no server-only marker
 
-- use functions from `@tanstack/react-start/server` (e.g. `getRequestHeaders()`, `getRequest()`, `setCookie()`), the DB, or other server-only APIs
-- are _never_ imported by route files or components (so they stay out of the client bundle)
+`routeTree.gen.ts` imports every route file, so route modules (including `routes/api/*`) load in the client bundle. A server-only marker there makes import protection fail the **build**. `server.handlers` still run only on the server. Keep these files free of the marker and import server-only code only where the bundler tree-shakes it (used only inside the handler), or import it inside the handler.
 
-In `.server.ts` files, **use `createServerOnlyFn`** for any exported callable (never `createServerFn`).
+No broad `importProtection.ignoreImporters` (e.g. `['**/routes/**', '**/server/**']`) in Vite config: the plugin checks after tree-shaking, so imports used only in handler code are pruned and not reported. API routes, handler-only routes and `*.functions.ts` can import such `*.server.ts` modules without overrides.
 
-### API routes under `routes/api/` — do not use the server-only marker
+### `/server/*.functions.ts` - client-callable server fns
 
-We **do not** add `import '@tanstack/react-start/server-only'` to API route files. The TanStack Router file-based route tree (`routeTree.gen.ts`) imports every route file, including `routes/api/*`, so those modules are loaded in the client bundle. If they contain the server-only marker, import protection correctly denies them in the client and the **build fails**. The route’s `server.handlers` still run only on the server; only the route module is loaded on both sides. Keep API route files free of the marker, and avoid top-level imports that would pull `*.server.ts` or other server-only code into the client. Use static imports only for modules that are safe on both sides or that the bundler tree-shakes when the handler is replaced (e.g. many `@/server` utilities are only used inside the handler and may be dropped from the client bundle). If you need to call server-only logic from an API route, import it inside the handler or use a pattern that does not require the route file itself to be marked server-only.
+Files exporting `createServerFn` that routes or components import. Not `*.server.ts` (client could not import) and not `*.client.ts` (they run in both environments).
 
-We do **not** use a broad `importProtection.ignoreImporters` (e.g. `['**/routes/**', '**/server/**']`) in Vite config. The [TanStack Import Protection](https://tanstack.com/start/latest/docs/framework/react/guide/import-protection) plugin defers violation checks until after tree-shaking: imports that are only used in server handler code are pruned from the client bundle, so no violation is reported. So API routes and `*.functions.ts` files can statically import `*.server.ts` modules used only inside handlers without any config override.
+- **Names:** all `createServerFn` / `createServerOnlyFn` use **`functionNameFn`** (e.g. `getRegionPageLoaderFn`).
+- **Public (unauthenticated):** `public*.functions.ts` (e.g. `publicSurveys.functions.ts`). No auth middleware or `requireAuth` unless the handler validates a public token/session pair; global auth middleware is not the FMC pattern. See `tanstack-start-auth` → `references/auth.md` §5.
 
-### Client-callable server Fns: `/server/*.functions.ts`
+### `routes/` is routes only
 
-Files that export `createServerFn` and are imported by route files or components use the **`.functions.ts`** suffix. They must not be `*.server.ts` (client could not import) or `*.client.ts` (they run in both environments). See [TanStack Start — Server Functions](https://tanstack.com/start/latest/docs/framework/react/guide/server-functions).
-
-**Function names:** All `createServerFn` / `createServerOnlyFn` use the pattern **`functionNameFn`** (e.g. `getRegionPageLoaderFn`, `getUploadsForRegionUserFn`).
-
-**Public (unauthenticated) server functions:** Use the **`public*.functions.ts`** filename (e.g. `publicSurveys.functions.ts`, `publicInvite.functions.ts`). Do not attach auth middleware or `requireAuth` unless the handler intentionally validates a public token/session pair. Global auth middleware is not the FMC pattern because these exports must stay callable. See `tanstack-start-auth` → [auth.md](../../tanstack-start-auth/references/auth.md) §5.
-
-### Route folder: routes only
-
-Keep `routes/` limited to route definitions. TanStack Router supports a **`-`** ignore prefix for colocated non-route files, but we **do not** use it.
-
-Put shared helpers next to their domain under `server/`:
-
-| Kind                        | Location                                                              |
-| --------------------------- | --------------------------------------------------------------------- |
-| Query options               | `server/<domain>/queries/` or `*QueryOptions.ts` in the domain folder |
-| URL search schemas (shared) | `server/<domain>/searchSchemas.ts` or `server/shared/<name>Search.ts` |
-| Route-only search schema    | Inline `const` in the route file                                      |
-
-Routes and components may import `searchSchemas.ts` (not `*.server.ts`). Import paths stay short and `routes/` stays obviously route-only.
-
----
+No `-` prefixed colocated helpers. Query options: `server/<domain>/queries/` or `*QueryOptions.ts` in the domain folder. Search schemas: `shared/<domain>/searchSchemas.ts` or `shared/routing/` (shared), inline `const` in the route file (route-only). Routes and components may import `searchSchemas.ts`, never `*.server.ts`.
 
 ## Route files: no server-only code
 
-Route files must always import and call server Fns in `loader`/`beforeLoad`; they cannot import `getRequestHeaders` or the DB directly (except API route files, where handler code runs on the server). They may call multiple server Fns, handle redirects, or `fetch` external APIs — see below.
+Route files call server Fns in `loader` / `beforeLoad`; they cannot import `getRequestHeaders` or the DB directly (except API route files, where handler code runs on the server). They may call several server Fns, redirect, or `fetch` external APIs.
 
-## Routes: When to use `beforeLoad` vs `loader`
+## `beforeLoad` vs `loader`
 
-- **`beforeLoad`:** Redirects (URL normalization, auth redirect), auth/authorization, and returning context for the route (e.g. `isAuthorized`, `region`). Keep it light; server work is fine for ordinary route entry, but see the hot-route caveat below.
-- **`loader`:** Page data and cache priming. Can use `context` from `beforeLoad`. For React Query–backed data, see `tanstack-router-conventions` → [router-and-query.md](../../tanstack-router-conventions/references/router-and-query.md); otherwise return serializable data for `useLoaderData()` (e.g. admin pages).
+- **`beforeLoad`:** redirects (URL normalization, auth redirect), auth/authorization, route context (e.g. `isAuthorized`, `region`). Keep it light.
+- **`loader`:** page data and cache priming; may use `context` from `beforeLoad`. Query-backed data: `tanstack-router-conventions` → `references/router-and-query.md`; otherwise return serializable data for `useLoaderData()` (e.g. admin pages).
 
-### `beforeLoad` runs on **every** navigation — gate server work with `loaderDeps`
+### `beforeLoad` re-runs on every navigation
 
-`beforeLoad` is **not** gated by `loaderDeps`: it re-runs on **every** navigation to the route, **including search-param-only changes on the same route** (a map pan writing `?map=`, a layer toggle, a feature selection). The `loader` is different — it only re-runs when `loaderDeps` or path params change ([TanStack Router — data loading](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#using-loaderdeps-to-access-search-params)). Map URL format: `tanstack-router-conventions` → [map-search-param.md](../../tanstack-router-conventions/references/map-search-param.md).
+`beforeLoad` is **not** gated by `loaderDeps`: it re-runs on every navigation to the route, **including search-param-only changes** (map pan writing `?map=`, layer toggle, feature selection). The `loader` re-runs only when `loaderDeps` or path params change ([docs](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#using-loaderdeps-to-access-search-params)). Map URL format: `tanstack-router-conventions` → `references/map-search-param.md`.
 
-Consequence: **any server round-trip in `beforeLoad` runs on every search-param change.** For a route whose search params are high-frequency and client-only (map viewport, feature selection, layer toggles), a redirect resolver or auth check that hits the DB in `beforeLoad` turns every client-side interaction into a server request — and can flash the `pendingComponent` / remount the map on a spurious redirect.
+So any server round-trip in `beforeLoad` runs on every search-param change, turning client-only interactions into server requests and possibly flashing `pendingComponent` / remounting the map on a spurious redirect.
 
-**Rule for hot routes (map pages, anything with client-only search state):** put the redirect + auth + region resolution in the **`loader`** and keep those client-only params **out of `loaderDeps`**. The loader then runs on entry / path change / the params you _did_ list (e.g. `qa`), but **not** on map pans or layer toggles — so client-only params stay client-only (no round-trip, no pending). If you do this, decouple the `pendingComponent` (and any `useRouterState` / `useRouteContext` reader) from `beforeLoad` context — read `region` from `loaderData`, not route context. Reference: `routes/regionen/$regionSlug.tsx` in tilda-geo.
+**Rule for hot routes (map pages, any client-only search state):** put redirect + auth + region resolution in the **`loader`** and keep client-only params **out of `loaderDeps`**. The loader then runs on entry / path change / listed params (e.g. `qa`), not on pans or toggles. Decouple `pendingComponent` (and any `useRouterState` / `useRouteContext` reader) from `beforeLoad` context: read `region` from `loaderData`. Reference: `routes/regionen/$regionSlug/route.tsx` in tilda-geo. Ordinary routes keep the light `beforeLoad` default.
 
-Keep the `beforeLoad` default (light redirect/auth) for ordinary routes where navigations are path changes, not high-frequency search-param writes.
-
-Use **`beforeLoad`, not request middleware**, for route redirects and layout auth. Pathless layout routes make open vs protected URLs obvious, and Trassenscout's lint pattern enforces this shape.
-
-TanStack **function middleware** (`createMiddleware({ type: 'function' })`) is a server-function data-boundary topic only. It is not a replacement for layout `beforeLoad`, and it should not be recommended for FMC route auth. See [auth.md](../../tanstack-start-auth/references/auth.md) §5 and [endpoint-auth-lint.md](../../tanstack-start-auth/references/endpoint-auth-lint.md).
-
-See also: [auth.md](../../tanstack-start-auth/references/auth.md) in the `tanstack-start-auth` skill. API route handlers and server modules that need the current user must receive the request’s headers and pass them to session helpers.
-
-## Selective SSR (`ssr` option)
-
-There are two separate concepts:
-
-- **Route `ssr`:** controls route-level server behavior on first request (rendering and `beforeLoad`/`loader` execution).
-- **`@tanstack/react-router-ssr-query`:** controls React Query cache dehydration/hydration/streaming.
-
-Our default is explicit `ssr: true` on UI routes unless a leaf needs a more restrictive mode. **Handler-only API routes** (`server.handlers`, usually `src/routes/api/**` or flat `api/*.ts` in TILDA) use **`ssr: false`**. See [selective-ssr.md](selective-ssr.md).
-
-**Server components (experimental, opt-in):** RSC in `*.functions.ts` + route `loader` — not async route components. Default data path remains loaders + Query above. See [server-components.md](server-components.md).
-
-## Router + React Query
-
-See **`tanstack-router-conventions` → [router-and-query.md](../../tanstack-router-conventions/references/router-and-query.md)** for loader vs `useLoaderData` vs `useQuery` / `useSuspenseQuery` and shared `*QueryOptions`. SSR / dehydration: [selective-ssr.md](selective-ssr.md). This file covers server/client boundaries only.
+Use **`beforeLoad`, not request middleware**, for route redirects and layout auth (pathless layout routes make open vs protected URLs obvious; Trassenscout's lint enforces this). Function middleware (`createMiddleware({ type: 'function' })`) is a server-function data-boundary topic only, not a replacement for layout `beforeLoad`. See `tanstack-start-auth` → `references/auth.md` §5 and `references/endpoint-auth-lint.md`. API route handlers and server modules needing the current user must receive the request headers and pass them to session helpers.
 
 ## Error handling
 
-Two layers:
+Set a router `defaultErrorComponent`; override `errorComponent` per route for domain-specific messaging. Root React Error Boundary for render errors.
 
-- **Route-level (loader/beforeLoad):** Use TanStack Router’s `errorComponent` for errors thrown in `loader` or `beforeLoad`. Set a `defaultErrorComponent` on the router; override per route when you need domain-specific messaging.
-- **Render errors:** Wrap the outlet in a React Error Boundary at root (and optionally on subtrees) for uncaught render errors.
-
-**Server vs client logging:** Use `createIsomorphicFn()` with `.server()` and `.client()` branches so logs are prefixed distinctly (e.g. `[SERVER ERROR]` / `[CLIENT ERROR]`). Use in Error Boundary `componentDidCatch` and route error components.
-
-See also: [TanStack Start — Error Boundaries](https://tanstack.com/start/latest/docs/framework/react/guide/error-boundaries).
+Logging: `createIsomorphicFn()` with `.server()` / `.client()` branches so logs are prefixed `[SERVER ERROR]` / `[CLIENT ERROR]`; use in Error Boundary `componentDidCatch` and route error components. See [Error Boundaries](https://tanstack.com/start/latest/docs/framework/react/guide/error-boundaries).
