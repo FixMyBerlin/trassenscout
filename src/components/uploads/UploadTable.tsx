@@ -85,7 +85,7 @@ export const UploadTable = ({
 
   return (
     <div className="w-full overflow-x-auto">
-      <div className="not-prose overflow-hidden border border-gray-200">
+      <div className="not-prose overflow-x-auto border border-gray-200">
         <div className="@container w-full">
           <table className={tableFixedClassName}>
             <colgroup>
@@ -330,7 +330,7 @@ const UploadTableRow = ({
           tableCellClassName,
         )}
       >
-        <div className="flex flex-col items-end gap-1">
+        <div className="flex flex-col items-end gap-3">
           {upload.collaborationUrl && (
             <Link
               blank

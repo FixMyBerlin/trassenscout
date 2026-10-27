@@ -104,7 +104,7 @@ export const ModalCloseButton = ({ onClose }: { onClose: () => void }) => {
       type="button"
       ref={registerInitialFocus}
       onClick={onClose}
-      className="text-gray-400 hover:cursor-pointer hover:text-gray-500 focus:outline-hidden"
+      className="-m-2.5 p-2.5 text-gray-400 hover:cursor-pointer hover:text-gray-500 focus:outline-hidden"
       aria-label="Schließen"
     >
       <span className="sr-only">Schließen</span>

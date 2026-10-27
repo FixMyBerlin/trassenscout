@@ -36,7 +36,7 @@ export const ProjectRecordTagsList = ({
   }
 
   return (
-    <div className="flex flex-wrap gap-1">
+    <div className="flex flex-wrap gap-2">
       {sortedTags.map((tag) =>
         isInteractive ? (
           <button
