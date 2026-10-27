@@ -339,8 +339,6 @@ export type FormConfig = {
     version: number
     title: string
     logoUrl: string
-    /** Optional icon override; falls back to logoUrl when omitted. */
-    faviconUrl?: string
     canonicalUrl: string
     maptilerUrl: string
     hideProgressBar?: boolean
