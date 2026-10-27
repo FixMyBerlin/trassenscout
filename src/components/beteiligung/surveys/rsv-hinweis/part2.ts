@@ -15,7 +15,7 @@ export const part2Config: SurveyPart2 = {
   intro: {
     type: "standard",
     title: "Hinweis zu Radschnellverbindungen",
-    description: `Willkommen beim digitalen Beteiligungsportal für Radschnellverbindungen in Deutschland. Über dieses Formular können Sie als Projektleitung Hinweise mit räumlichem Bezug auf Grundlage des vorliegenden Radschnellverbindungsnetzes zügig, systematisch und transparent an FixMyCity übermitteln.
+    description: `Willkommen beim digitalen Beteiligungsportal für Radschnellverbindungen in Deutschland. Über dieses Formular können Sie als Projektleitung oder als projektbeteiligte Person Hinweise mit räumlichem Bezug auf Grundlage der vorliegenden Radschnellverbindungen zügig, systematisch und transparent an FixMyCity übermitteln.
 
 ## Zweck und Ziel
 
@@ -37,9 +37,8 @@ Bitte füllen Sie das Formular vollständig aus. Nach dem Absenden wird Ihr Hinw
 
 [Datenschutzhinweis](https://radschnellverbindungen.info/datenschutz): Alle angegebenen personenbezogenen Daten werden ausschließlich für die Durchführung und Nachbereitung dieses Hinweisverfahrens gemäß DSGVO verarbeitet.
 
-Mit dem Aufrufen des Formulars stimme ich der Datenschutzerklärung zu. Die Daten werden gemäß DSGVO verarbeitet und nur für die Durchführung dieses digitalen Hinweisverfahrens gespeichert.
 
-Sind Sie eine **Projektleitung** einer **Radschnellverbindung**?
+Sind Sie eine Projektleitung oder projektbeteiligte Person einer Radschnellverbindung?
 
 Dann klicken Sie bitte auf den untenstehenden Button, um einen Hinweis abzugeben.`,
     buttons: [{ action: "next", label: "Weiter", position: "right", color: "primaryColor" }],
@@ -270,18 +269,6 @@ Dann klicken Sie bitte auf den untenstehenden Button, um einen Hinweis abzugeben
           validation: fieldValidationEnum["optionalString"],
           defaultValue: "",
           props: { label: "Persönliche Nachricht" },
-        },
-        {
-          name: "declaration",
-          componentType: "form",
-          component: "SurveyCheckbox",
-          validation: fieldValidationEnum["requiredTrueBoolean"],
-          defaultValue: false,
-          props: {
-            label: "Erklärung",
-            itemLabel:
-              "Ich bestätige, dass ich zur Abgabe dieses Hinweises im Namen der angegebenen Stelle/Behörde berechtigt bin.",
-          },
         },
       ],
     },
