@@ -1,6 +1,8 @@
 import { keepPreviousData, useInfiniteQuery } from "@tanstack/react-query"
 import type { ReactNode } from "react"
 import { LogEntriesTable } from "@/src/components/admin/log-entries/LogEntriesTable"
+import { Notice } from "@/src/components/core/components/Notice/Notice"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { LoadMoreButton } from "@/src/components/core/pagination/LoadMoreButton"
 import { logEntriesInfiniteQueryOptions } from "@/src/server/logEntries/logEntriesQueryOptions"
 
@@ -23,13 +25,23 @@ export function LogEntriesFeed({
   modalsInPlace,
   fallback,
 }: Props) {
-  const { data, isPlaceholderData, hasNextPage, isFetchingNextPage, fetchNextPage } =
+  const { data, isError, isPlaceholderData, hasNextPage, isFetchingNextPage, fetchNextPage } =
     useInfiniteQuery({
       ...logEntriesInfiniteQueryOptions({ projectSlug, months }),
       placeholderData: keepPreviousData,
     })
 
-  if (!data) return fallback
+  if (!data) {
+    return isError ? (
+      <div className={pageContentPaddingClassName}>
+        <Notice type="error" title="Die Einträge konnten nicht geladen werden.">
+          <p>Bitte laden Sie die Seite neu.</p>
+        </Notice>
+      </div>
+    ) : (
+      fallback
+    )
+  }
 
   const entries = data.pages.flatMap((page) => page.logEntries)
   const isAdmin = data.pages[0]?.isAdmin ?? false

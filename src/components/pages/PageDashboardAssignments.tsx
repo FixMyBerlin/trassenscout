@@ -37,7 +37,10 @@ export function PageDashboardAssignments() {
   const navigate = useNavigate({ from: "/dashboard/assignments/" })
   const { data: projects = [] } = useQuery(projectsWithGeometryWithMembershipRoleQueryOptions())
   const filter = dashboardFilterValues(search)
-  const { records, isPlaceholderData, tagOptions } = useAssignedRecords(filter.projectSlug, search)
+  const { records, isError, isPlaceholderData, tagOptions } = useAssignedRecords(
+    filter.projectSlug,
+    search,
+  )
 
   const updateSearch = (updates: Partial<AssignmentsSearch>) =>
     void navigate({
@@ -107,6 +110,7 @@ export function PageDashboardAssignments() {
       />
       <AssignmentsList
         records={records}
+        isError={isError}
         isPlaceholderData={isPlaceholderData}
         onTagClick={(tag) => updateSearch({ tag })}
       />

@@ -5,7 +5,11 @@ import { myAssignedRecordsQueryOptions } from "@/src/server/projectRecords/proje
 import type { AssignmentsSearch } from "@/src/shared/dashboard/searchSchemas"
 
 export function useAssignedRecords(projectSlug: string | undefined, search: AssignmentsSearch) {
-  const { data: records, isPlaceholderData } = useQuery({
+  const {
+    data: records,
+    isError,
+    isPlaceholderData,
+  } = useQuery({
     ...myAssignedRecordsQueryOptions({
       projectSlug,
       direction: search.direction,
@@ -17,6 +21,7 @@ export function useAssignedRecords(projectSlug: string | undefined, search: Assi
 
   return {
     records: records?.filter((record) => matchesTagFilter(record, search.tag)),
+    isError,
     isPlaceholderData,
     tagOptions,
   }

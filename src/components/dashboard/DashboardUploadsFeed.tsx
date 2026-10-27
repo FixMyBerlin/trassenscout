@@ -1,4 +1,6 @@
 import { keepPreviousData, useInfiniteQuery } from "@tanstack/react-query"
+import { Notice } from "@/src/components/core/components/Notice/Notice"
+import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { Spinner } from "@/src/components/core/components/Spinner"
 import { FilteredZeroCase } from "@/src/components/core/components/text/FilteredZeroCase"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
@@ -23,13 +25,23 @@ export function DashboardUploadsFeed({
   onResetFilters,
   onTagClick,
 }: Props) {
-  const { data, isPlaceholderData, hasNextPage, isFetchingNextPage, fetchNextPage } =
+  const { data, isError, isPlaceholderData, hasNextPage, isFetchingNextPage, fetchNextPage } =
     useInfiniteQuery({
       ...myUploadsInfiniteQueryOptions({ projectSlug, searchterm, tag }),
       placeholderData: keepPreviousData,
     })
 
-  if (!data) return <Spinner page />
+  if (!data) {
+    return isError ? (
+      <div className={pageContentPaddingClassName}>
+        <Notice type="error" title="Die Dokumente konnten nicht geladen werden.">
+          <p>Bitte laden Sie die Seite neu.</p>
+        </Notice>
+      </div>
+    ) : (
+      <Spinner page />
+    )
+  }
 
   const uploads = data.pages.flatMap((page) => page.uploads)
   // After a reset, the old "0 Ergebnisse" stays until the new list arrives.
