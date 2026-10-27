@@ -1,8 +1,10 @@
 import { z } from "zod"
 
-// Checks that a "TT.MM.JJJJ" string is a real calendar date (rejects e.g. 31.02.2025)
-const isExistingGermanDate = (value: string) => {
-  const [day, month, year] = value.split(".").map(Number)
+// Checks for "TT.MM.JJJJ" and that the date exists (rejects e.g. 31.02.2025)
+const isValidGermanDate = (value: string) => {
+  const match = /^(\d{2})\.(\d{2})\.(\d{4})$/.exec(value)
+  if (!match) return false
+  const [day, month, year] = match.slice(1).map(Number)
   const date = new Date(Date.UTC(year, month - 1, day))
   return (
     date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day
@@ -43,14 +45,9 @@ export const fieldValidationEnum = {
     required: true,
   },
   requiredDateString: {
-    zodSchema: z
-      .string({ error: "Pflichtfeld." })
-      .trim()
-      .min(1, { error: "Pflichtfeld." })
-      .regex(/^\d{2}\.\d{2}\.\d{4}$/, { error: "Datum im Format TT.MM.JJJJ" })
-      .refine(isExistingGermanDate, {
-        error: "Bitte ein gültiges Datum im Format TT.MM.JJJJ eingeben.",
-      }),
+    zodSchema: z.string({ error: "Pflichtfeld." }).trim().refine(isValidGermanDate, {
+      error: "Bitte ein gültiges Datum im Format TT.MM.JJJJ eingeben.",
+    }),
     required: true,
   },
   // the optional zod schema with "required: true" seems contradictory, but it is used for a field that is required, but only if a condition is met
