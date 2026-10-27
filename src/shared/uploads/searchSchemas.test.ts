@@ -9,10 +9,14 @@ describe("uploadReturnSearchSchema", () => {
   })
 
   // The router's JSON search parser turns `?returnTo=5` into a number and `{…}` into an object.
-  test.each([5, { a: 1 }, "https://example.com", "//example.com"])(
-    "drops %j instead of failing the route",
-    (returnTo) => {
-      expect(uploadReturnSearchSchema.parse({ returnTo })).toEqual({ returnTo: undefined })
-    },
-  )
+  test.each([
+    5,
+    { a: 1 },
+    "https://example.com",
+    "//example.com",
+    "/\\example.com",
+    "/%5Cexample.com",
+  ])("drops %j instead of failing the route", (returnTo) => {
+    expect(uploadReturnSearchSchema.parse({ returnTo })).toEqual({ returnTo: undefined })
+  })
 })

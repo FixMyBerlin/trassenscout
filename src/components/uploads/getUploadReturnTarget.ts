@@ -1,6 +1,5 @@
 import { parseProjectModalSearch } from "@/src/shared/projectModals/searchSchemas"
 import { splitResolvedTo } from "@/src/shared/routing/resolvedTo"
-import { isProjectScopedReturnPath } from "@/src/shared/routing/sanitizeReturnTo"
 
 type ReturnTarget = {
   returnPath: string
@@ -26,7 +25,7 @@ export const getUploadReturnTarget = ({
   const uploadsPath = `/${projectSlug}/uploads`
   const { to: pathname, search } = splitResolvedTo(returnTo ?? "")
 
-  if (!returnTo || !isProjectScopedReturnPath(pathname, projectSlug)) {
+  if (!returnTo) {
     return {
       returnPath: uploadsPath,
       returnText: "Zurück zu den Dokumenten",

@@ -10,11 +10,15 @@ describe("getUploadReturnTarget", () => {
     expect(target()).toEqual(documents)
   })
 
-  test("ignores return paths outside the project", () => {
-    expect(target("/rs8/project-records/12")).toEqual(documents)
-    expect(target("/dashboard?modalProjectRecordId=12&modalProjectRecordView=detail")).toEqual(
-      documents,
-    )
+  test("leads back to pages outside the project, like the dashboard", () => {
+    expect(target("/dashboard/uploads?projectSlug=rs23")).toEqual({
+      returnPath: "/dashboard/uploads?projectSlug=rs23",
+      returnText: "Zurück",
+    })
+    expect(target("/dashboard?modalProjectRecordId=12&modalProjectRecordView=detail")).toEqual({
+      returnPath: "/dashboard?modalProjectRecordId=12&modalProjectRecordView=detail",
+      returnText: "Zurück zum Protokolleintrag",
+    })
   })
 
   test.each([
