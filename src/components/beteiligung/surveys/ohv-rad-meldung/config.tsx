@@ -1,7 +1,5 @@
-import { backendConfig } from "@/src/components/beteiligung/shared/backend-types"
 import { FormConfig } from "@/src/components/beteiligung/shared/types"
 import { part2Config } from "@/src/components/beteiligung/surveys/ohv-rad-meldung/part2"
-
 export const formConfig: FormConfig = {
   meta: {
     version: 1,
@@ -40,7 +38,15 @@ Nach Erstellung des Maßnahmenprogramms wird dieses per E-Mail an die Kommunen �
       color: "primaryColor",
     },
   },
-  backend: backendConfig,
+  backend: {
+    status: [
+      { value: "PENDING", label: "Ausstehend", color: "#FDEEBF", icon: "CLOCK" },
+      { value: "IRRELEVANT", label: "Nicht relevant", color: "#f3f4f6", icon: "XMARK" },
+      { value: "REJECTED", label: "Abgelehnt", color: "#FECACA", icon: "XMARK" },
+      { value: "DONE", label: "Erledigt", color: "#D1FAE5", icon: "CHECKMARK" },
+    ],
+    labels: { note: { sg: "Notiz", help: "" } },
+  },
   email: {
     subject: "Bestätigung Ihrer Maßnahmenmeldung zum Radnetzkonzept im Landkreis Oberhavel",
     markdown: `Sehr geehrte Damen und Herren,
