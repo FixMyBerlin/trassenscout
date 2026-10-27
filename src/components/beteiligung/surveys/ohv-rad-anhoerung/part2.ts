@@ -32,9 +32,7 @@ Auf Basis des hinterlegten Radnetzkonzepts können Sie Ihr formelles Votum sowie
 
 Bitte füllen Sie das Formular vollständig aus. Nach dem Absenden wird Ihre Meldung direkt im System erfasst und dem zuständigen Planungsteam zur Auswertung bereitgestellt.
 
-[Datenschutzhinweis](https://trassenscout.de/datenschutz): Alle angegebenen personenbezogenen Daten werden ausschließlich für die Durchführung und Nachbereitung dieses Beteiligungsverfahrens gemäß DSGVO verarbeitet.
-
-Mit dem Aufrufen des Formulars stimme ich der Datenschutzerklärung zu. Die Daten werden gemäß DSGVO verarbeitet und nur für die Durchführung dieses digitalen Meldeverfahrens gespeichert.`,
+[Datenschutzhinweis](https://trassenscout.de/datenschutz): Alle angegebenen personenbezogenen Daten werden ausschließlich für die Durchführung und Nachbereitung dieses Beteiligungsverfahrens gemäß DSGVO verarbeitet.`,
     buttons: [
       { action: "next", label: "Zur Stellungnahme", position: "right", color: "primaryColor" },
     ],
@@ -271,18 +269,6 @@ Mit dem Aufrufen des Formulars stimme ich der Datenschutzerklärung zu. Die Date
             label: "E-Mail-Adresse zur Bestätigung der Stellungnahme",
             type: "email",
             autoComplete: "email",
-          },
-        },
-        {
-          name: "declaration",
-          componentType: "form",
-          component: "SurveyCheckbox",
-          validation: fieldValidationEnum["requiredTrueBoolean"],
-          defaultValue: false,
-          props: {
-            label: "Erklärung",
-            itemLabel:
-              "Ich bestätige, dass ich zur Abgabe dieser Stellungnahme im Namen der angegebenen Stelle / Behörde berechtigt bin.",
           },
         },
       ],
