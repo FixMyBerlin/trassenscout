@@ -30,14 +30,14 @@ export function clearAllProjectModalSearch<TSearch extends Record<string, unknow
 
 export const loggedInProjectModalSearchSchema = z
   .object({
-    modalUploadId: z.coerce.number().int().positive().optional(),
-    modalUploadView: projectUploadModalViewSchema.optional(),
-    modalProjectRecordId: z.coerce.number().int().positive().optional(),
-    modalProjectRecordView: projectRecordModalViewSchema.optional(),
-    modalProjectSlug: z.string().optional(),
-    modalContactId: z.coerce.number().int().positive().optional(),
-    modalContactView: contactModalViewSchema.optional(),
-    modalInviteView: inviteModalViewSchema.optional(),
+    modalUploadId: z.coerce.number().int().positive().optional().catch(undefined),
+    modalUploadView: projectUploadModalViewSchema.optional().catch(undefined),
+    modalProjectRecordId: z.coerce.number().int().positive().optional().catch(undefined),
+    modalProjectRecordView: projectRecordModalViewSchema.optional().catch(undefined),
+    modalProjectSlug: z.string().optional().catch(undefined),
+    modalContactId: z.coerce.number().int().positive().optional().catch(undefined),
+    modalContactView: contactModalViewSchema.optional().catch(undefined),
+    modalInviteView: inviteModalViewSchema.optional().catch(undefined),
   })
   .transform((search) => {
     const uploadSearch = projectUploadModalSearchSchema.parse(search)

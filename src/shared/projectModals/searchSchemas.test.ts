@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest"
 import {
   clearAllProjectModalSearch,
+  loggedInProjectModalSearchSchema,
   parseProjectModalSearch,
 } from "@/src/shared/projectModals/searchSchemas"
 
@@ -55,6 +56,14 @@ describe("parseProjectModalSearch", () => {
 
   test("reads a missing search as no modal", () => {
     expect(parseProjectModalSearch(undefined).modalProjectRecordView).toBeUndefined()
+  })
+})
+
+describe("loggedInProjectModalSearchSchema", () => {
+  test("drops invalid values instead of failing the page", () => {
+    expect(
+      loggedInProjectModalSearchSchema.parse({ modalUploadId: "5", modalUploadView: "foo" }),
+    ).toMatchObject({ modalUploadId: undefined, modalUploadView: undefined })
   })
 })
 

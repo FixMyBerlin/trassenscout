@@ -2,11 +2,13 @@ import { z } from "zod"
 import { ASSIGNMENT_DIRECTIONS } from "@/src/shared/projectRecords/assignmentDirection"
 import { projectRecordModalSearchShape } from "@/src/shared/projectRecords/searchSchemas"
 import { withViewModeSearch } from "@/src/shared/routing/viewModeSearch"
-import { tagFilterSchema } from "@/src/shared/tags/tagFilter"
 import { projectUploadModalSearchShape } from "@/src/shared/uploads/searchSchemas"
 
 export const DASHBOARD_ALL_PROJECTS = ""
 export const DASHBOARD_ALL_MONTHS = 0
+
+// The router reads `?tag=2024` and `?searchterm=2024` as numbers.
+const tagSearchParamSchema = z.coerce.string().min(1).optional().catch(undefined)
 
 const dashboardSearchSchema = z.object({
   projectSlug: z.string().default(DASHBOARD_ALL_PROJECTS).catch(DASHBOARD_ALL_PROJECTS),
@@ -43,7 +45,7 @@ export const assignmentsSearchSchema = z.object({
     .enum(ASSIGNMENT_DIRECTIONS)
     .default(ASSIGNMENTS_DEFAULTS.direction)
     .catch(ASSIGNMENTS_DEFAULTS.direction),
-  tag: tagFilterSchema,
+  tag: tagSearchParamSchema,
 })
 
 export type AssignmentsSearch = z.infer<typeof assignmentsSearchSchema>
@@ -55,10 +57,9 @@ export const hasAssignmentsFilter = (search: AssignmentsSearch) =>
   search.direction !== ASSIGNMENTS_DEFAULTS.direction ||
   search.tag !== undefined
 
-// The router reads `?searchterm=2024` and `?tag=2024` as numbers.
 export const dashboardUploadsSearchSchema = z.object({
   searchterm: z.coerce.string().optional().catch(undefined),
-  tag: z.coerce.string().min(1).optional().catch(undefined),
+  tag: tagSearchParamSchema,
 })
 
 export type DashboardUploadsSearch = z.infer<typeof dashboardUploadsSearchSchema>

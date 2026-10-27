@@ -79,9 +79,9 @@ export const projectRecordModalViewSchema = z.enum(["detail", "edit"])
 
 /** `modalProjectSlug` is only written by links from outside a project. */
 export const projectRecordModalSearchShape = {
-  modalProjectRecordId: z.coerce.number().int().positive().optional(),
-  modalProjectRecordView: projectRecordModalViewSchema.optional(),
-  modalProjectSlug: z.string().optional(),
+  modalProjectRecordId: z.coerce.number().int().positive().optional().catch(undefined),
+  modalProjectRecordView: projectRecordModalViewSchema.optional().catch(undefined),
+  modalProjectSlug: z.string().optional().catch(undefined),
 }
 
 export const projectRecordModalSearchSchema = z
