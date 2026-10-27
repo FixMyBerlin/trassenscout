@@ -9,8 +9,8 @@ import {
   parseDefinitions,
   sanitizeExtraFieldsForSave,
 } from "@/src/shared/subsubsections/extraFieldSchemas"
-import type { SubsubsectionMcpClearableKey, SubsubsectionMcpPatch } from "./patchSchema"
-import { subsubsectionMcpPatchOverlaySchema } from "./patchSchema"
+import type { SubsubsectionMcpPatch } from "./patchSchema"
+import { extraFieldKey, isExtraFieldPath, subsubsectionMcpPatchOverlaySchema } from "./patchSchema"
 
 const SCALAR_FORM_KEYS = [
   "description",
@@ -180,13 +180,13 @@ export async function overlaySubsubsectionMcpDraft({
   const clearFields = createDraft ? [] : (overlayPatch.clear ?? [])
   const allowedExtraFields = new Set(definitions.map((definition) => definition.name))
   for (const field of clearFields) {
-    if (field.startsWith("extraFields.")) {
-      const key = field.slice("extraFields.".length)
+    if (isExtraFieldPath(field)) {
+      const key = extraFieldKey(field)
       if (!allowedExtraFields.has(key)) continue
       overlay.extraFields = { ...(overlay.extraFields ?? currentExtraFields), [key]: "" }
       continue
     }
-    overlay[field as SubsubsectionMcpClearableKey] = null
+    overlay[field] = null
   }
 
   return overlay

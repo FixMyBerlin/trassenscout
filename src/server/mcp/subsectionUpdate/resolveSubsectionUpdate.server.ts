@@ -1,20 +1,17 @@
 import type { Prisma } from "@/src/prisma/generated/client"
 import db from "@/src/server/db.server"
 import { mcpEnvLabel } from "@/src/server/mcp/mcpCursorConfig"
-import { requireMcpEnabledProject } from "@/src/server/mcp/requireMcpEnabledProject.server"
-import { subsectionMcpFieldLabel } from "@/src/server/mcp/subsectionUpdate/patchFieldLabel"
-import type { SubsectionMcpPatch } from "@/src/server/mcp/subsectionUpdate/patchSchema"
-import { buildSubsectionUrl } from "@/src/server/mcp/subsectionUrl"
+import { geometryPreview, geometryVertexIssue } from "@/src/server/mcp/preview/geometryPreview"
 import {
   formatPreviewWarning,
-  isEmptyCurrentValue,
-  valuesEqual,
-  type SubsubsectionPreviewChange,
-} from "@/src/server/mcp/subsubsectionUpdate/formatPreview"
-import {
-  geometryPreview,
-  geometryVertexIssue,
-} from "@/src/server/mcp/subsubsectionUpdate/geometryPreview"
+  pushChange,
+  pushClear,
+  type McpPreviewChange,
+} from "@/src/server/mcp/preview/previewChange"
+import { requireMcpEnabledProject } from "@/src/server/mcp/requireMcpEnabledProject.server"
+import { subsectionMcpFieldLabel as fieldLabel } from "@/src/server/mcp/subsectionUpdate/patchFieldLabel"
+import type { SubsectionMcpPatch } from "@/src/server/mcp/subsectionUpdate/patchSchema"
+import { buildSubsectionUrl } from "@/src/server/mcp/subsectionUrl"
 import { resolveSubsectionRelationSlugs } from "@/src/server/subsections/resolveSubsectionRelationSlugs.server"
 import { SubsectionGeometryWithTypeSchema } from "@/src/shared/geometry/geometrySchemas"
 
@@ -24,46 +21,12 @@ const SCALAR_KEYS = [
   "estimatedCompletionDateString",
 ] as const satisfies readonly (keyof SubsectionMcpPatch)[]
 
-function fieldLabel(field: string) {
-  return subsectionMcpFieldLabel(field)
-}
-
-function pushChange(
-  changes: SubsubsectionPreviewChange[],
-  field: string,
-  current: unknown,
-  proposed: unknown,
-): boolean {
-  if (valuesEqual(current, proposed)) return false
-  changes.push({
-    field,
-    label: fieldLabel(field),
-    kind: isEmptyCurrentValue(current) ? "set" : "overwrite",
-    proposed,
-  })
-  return true
-}
-
-function pushClear(
-  changes: SubsubsectionPreviewChange[],
-  notes: string[],
-  field: string,
-  current: unknown,
-) {
-  if (isEmptyCurrentValue(current)) {
-    notes.push(`${fieldLabel(field)} ist bereits leer.`)
-    return false
-  }
-  changes.push({ field, label: fieldLabel(field), kind: "clear", proposed: null })
-  return true
-}
-
 export type ResolveSubsectionUpdateResult = {
   environment: ReturnType<typeof mcpEnvLabel>
   mcpMode: Awaited<ReturnType<typeof requireMcpEnabledProject>>["mcpMode"]
   url: string
   okToWrite: boolean
-  changes: SubsubsectionPreviewChange[]
+  changes: McpPreviewChange[]
   errors: string[]
   warnings: string[]
   prismaData: Prisma.SubsectionUpdateInput
@@ -110,7 +73,7 @@ export async function resolveSubsectionUpdate({
 
   const url = buildSubsectionUrl(origin, project.slug, subsection.slug)
   const prismaData: Prisma.SubsectionUpdateInput = {}
-  const changes: SubsubsectionPreviewChange[] = []
+  const changes: McpPreviewChange[] = []
   const geometryWarnings: string[] = []
 
   if (patch.geometry !== undefined) {
@@ -128,7 +91,13 @@ export async function resolveSubsectionUpdate({
         errors.push(vertexIssue.error)
       } else {
         if (vertexIssue.warning) geometryWarnings.push(vertexIssue.warning)
-        pushChange(changes, "geometry", subsection.geometry, geometryPreview(patch.geometry))
+        pushChange(
+          changes,
+          fieldLabel,
+          "geometry",
+          subsection.geometry,
+          geometryPreview(patch.geometry),
+        )
         prismaData.geometry = patch.geometry as Prisma.InputJsonValue
       }
     }
@@ -153,13 +122,13 @@ export async function resolveSubsectionUpdate({
       )
       continue
     }
-    if (!pushChange(changes, key, subsection[key], proposed)) continue
+    if (!pushChange(changes, fieldLabel, key, subsection[key], proposed)) continue
     ;(prismaData as Record<string, unknown>)[key] = proposed
   }
 
   for (const key of clearFields) {
     if (conflictingFields.has(key)) continue
-    if (pushClear(changes, clearNotes, key, subsection[key])) prismaData[key] = null
+    if (pushClear(changes, clearNotes, fieldLabel, key, subsection[key])) prismaData[key] = null
   }
 
   const relationSlugs = {
@@ -176,7 +145,13 @@ export async function resolveSubsectionUpdate({
       })
       if (patch.operatorSlug !== undefined && resolved.operatorId !== undefined) {
         if (
-          pushChange(changes, "operatorSlug", subsection.operator?.slug ?? null, patch.operatorSlug)
+          pushChange(
+            changes,
+            fieldLabel,
+            "operatorSlug",
+            subsection.operator?.slug ?? null,
+            patch.operatorSlug,
+          )
         ) {
           prismaData.operator = { connect: { id: resolved.operatorId } }
         }
@@ -185,6 +160,7 @@ export async function resolveSubsectionUpdate({
         if (
           pushChange(
             changes,
+            fieldLabel,
             "networkHierarchySlug",
             subsection.networkHierarchy?.slug ?? null,
             patch.networkHierarchySlug,
@@ -197,6 +173,7 @@ export async function resolveSubsectionUpdate({
         if (
           pushChange(
             changes,
+            fieldLabel,
             "subsectionStatusSlug",
             subsection.SubsectionStatus?.slug ?? null,
             patch.subsectionStatusSlug,

@@ -29,13 +29,24 @@ export const SUBSUBSECTION_MCP_CLEARABLE_KEYS = [
   "estimatedConstructionDateString",
 ] as const
 
-export type SubsubsectionMcpClearableKey = (typeof SUBSUBSECTION_MCP_CLEARABLE_KEYS)[number]
+const EXTRA_FIELD_PATH_PREFIX = "extraFields."
+
+/** `extraFields.<key>`, how patch fields and `clear` address one extra field. */
+type SubsubsectionMcpExtraFieldPath = `${typeof EXTRA_FIELD_PATH_PREFIX}${string}`
+
+export function isExtraFieldPath(field: string): field is SubsubsectionMcpExtraFieldPath {
+  return field.startsWith(EXTRA_FIELD_PATH_PREFIX)
+}
+
+export function extraFieldKey(path: SubsubsectionMcpExtraFieldPath) {
+  return path.slice(EXTRA_FIELD_PATH_PREFIX.length)
+}
 
 const subsubsectionMcpClearSchema = z
   .array(
     z.union([
       z.enum(SUBSUBSECTION_MCP_CLEARABLE_KEYS),
-      z.string().regex(/^extraFields\..+$/, {
+      z.templateLiteral([EXTRA_FIELD_PATH_PREFIX, z.string().min(1)], {
         error: `Clearable fields: ${SUBSUBSECTION_MCP_CLEARABLE_KEYS.join(", ")}, extraFields.<key>.`,
       }),
     ]),

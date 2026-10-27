@@ -2,15 +2,15 @@ import { SlugSchema } from "@/src/components/core/utils/schema-shared"
 import { LabelPositionEnum, Prisma } from "@/src/prisma/generated/client"
 import db from "@/src/server/db.server"
 import { mcpEnvLabel } from "@/src/server/mcp/mcpCursorConfig"
-import { requireMcpEnabledProject } from "@/src/server/mcp/requireMcpEnabledProject.server"
-import type { SubsubsectionPreviewChange } from "@/src/server/mcp/subsubsectionUpdate/formatPreview"
 import {
   countGeometryVertices,
   geometryPreview,
   MCP_GEOMETRY_MAX_VERTICES,
   MCP_GEOMETRY_WARN_VERTICES,
-} from "@/src/server/mcp/subsubsectionUpdate/geometryPreview"
-import { subsubsectionMcpFieldLabel } from "@/src/server/mcp/subsubsectionUpdate/patchFieldLabel"
+} from "@/src/server/mcp/preview/geometryPreview"
+import { pushSet, type McpPreviewChange } from "@/src/server/mcp/preview/previewChange"
+import { requireMcpEnabledProject } from "@/src/server/mcp/requireMcpEnabledProject.server"
+import { subsubsectionMcpFieldLabel as fieldLabel } from "@/src/server/mcp/subsubsectionUpdate/patchFieldLabel"
 import type { SubsubsectionMcpCreatePatch } from "@/src/server/mcp/subsubsectionUpdate/patchSchema"
 import { buildSubsubsectionUrl } from "@/src/server/mcp/subsubsectionUrl"
 import {
@@ -53,14 +53,6 @@ const SCALAR_KEYS = [
   "disbursedFunding",
 ] as const satisfies readonly (keyof SubsubsectionMcpCreatePatch)[]
 
-function fieldLabel(field: string) {
-  return subsubsectionMcpFieldLabel(field)
-}
-
-function pushSet(changes: SubsubsectionPreviewChange[], field: string, proposed: unknown) {
-  changes.push({ field, label: fieldLabel(field), kind: "set", proposed })
-}
-
 type SubsubsectionMcpSlugConflict = {
   kind: "measure" | "createDraft"
   url: string
@@ -71,7 +63,7 @@ export type ResolveSubsubsectionCreateResult = {
   mcpMode: Awaited<ReturnType<typeof requireMcpEnabledProject>>["mcpMode"]
   url: string
   okToWrite: boolean
-  changes: SubsubsectionPreviewChange[]
+  changes: McpPreviewChange[]
   errors: string[]
   warnings: string[]
   missingRequired: string[]
@@ -114,7 +106,7 @@ export async function resolveSubsubsectionCreate({
   const errors: string[] = []
   const warnings: string[] = []
   const missingRequired: string[] = []
-  const changes: SubsubsectionPreviewChange[] = []
+  const changes: McpPreviewChange[] = []
 
   const slugParsed = SlugSchema.safeParse(slug)
   if (!slugParsed.success) {
@@ -165,7 +157,7 @@ export async function resolveSubsubsectionCreate({
     if (patch.type !== undefined || patch.geometry !== undefined) {
       errors.push("withoutGeometry kann nicht zusammen mit type oder geometry gesendet werden.")
     } else {
-      pushSet(changes, "withoutGeometry", true)
+      pushSet(changes, fieldLabel, "withoutGeometry", true)
     }
   } else {
     if (patch.type === undefined) missingRequired.push("type")
@@ -193,8 +185,8 @@ export async function resolveSubsubsectionCreate({
             `Geometrie hat ${vertexCount} Stützpunkte. Bitte vorher vereinfachen; große Batches splitten.`,
           )
         }
-        pushSet(changes, "type", patch.type)
-        pushSet(changes, "geometry", geometryPreview(patch.geometry))
+        pushSet(changes, fieldLabel, "type", patch.type)
+        pushSet(changes, fieldLabel, "geometry", geometryPreview(patch.geometry))
       }
     }
   }
@@ -214,7 +206,7 @@ export async function resolveSubsubsectionCreate({
       key === "trafficLoadDate" || key === "estimatedCompletionDate"
         ? new Date(proposed as string)
         : proposed
-    pushSet(changes, key, proposedValue)
+    pushSet(changes, fieldLabel, key, proposedValue)
   }
 
   const prismaData: Prisma.SubsubsectionUncheckedCreateInput = {
@@ -262,16 +254,16 @@ export async function resolveSubsubsectionCreate({
         prismaData.subsubsectionInfraId = resolved.subsubsectionInfraId
       }
       if (patch.qualityLevelSlug !== undefined) {
-        pushSet(changes, "qualityLevelSlug", patch.qualityLevelSlug)
+        pushSet(changes, fieldLabel, "qualityLevelSlug", patch.qualityLevelSlug)
       }
       if (patch.subsubsectionStatusSlug !== undefined) {
-        pushSet(changes, "subsubsectionStatusSlug", patch.subsubsectionStatusSlug)
+        pushSet(changes, fieldLabel, "subsubsectionStatusSlug", patch.subsubsectionStatusSlug)
       }
       if (patch.subsubsectionTaskSlug !== undefined) {
-        pushSet(changes, "subsubsectionTaskSlug", patch.subsubsectionTaskSlug)
+        pushSet(changes, fieldLabel, "subsubsectionTaskSlug", patch.subsubsectionTaskSlug)
       }
       if (patch.subsubsectionInfraSlug !== undefined) {
-        pushSet(changes, "subsubsectionInfraSlug", patch.subsubsectionInfraSlug)
+        pushSet(changes, fieldLabel, "subsubsectionInfraSlug", patch.subsubsectionInfraSlug)
       }
     } catch (error) {
       errors.push(error instanceof Error ? error.message : String(error))
@@ -288,6 +280,7 @@ export async function resolveSubsubsectionCreate({
       prismaData.SubsubsectionInfrastructureTypes = { connect: ids.map((id) => ({ id })) }
       pushSet(
         changes,
+        fieldLabel,
         "subsubsectionInfrastructureTypeSlugs",
         patch.subsubsectionInfrastructureTypeSlugs,
       )
@@ -309,7 +302,7 @@ export async function resolveSubsubsectionCreate({
         )
         continue
       }
-      pushSet(changes, `extraFields.${key}`, value)
+      pushSet(changes, fieldLabel, `extraFields.${key}`, value)
     }
     prismaData.extraFields = sanitizeExtraFieldsForSave(
       patch.extraFields,
