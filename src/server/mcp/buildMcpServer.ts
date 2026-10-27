@@ -1,5 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
 import { z } from "zod"
+import { TagColorEnum } from "@/src/prisma/generated/client"
 import type { AdminApiAuth } from "@/src/server/api/admin/guardAdminApi.server"
 import { catalogConfigs, type CatalogConfig } from "@/src/server/mcp/catalog/catalogMcp.config"
 import {
@@ -44,6 +45,11 @@ import {
   subsubsectionMcpDeleteInputSchema,
   subsubsectionMcpUpdateInputSchema,
 } from "@/src/server/mcp/subsubsectionUpdate/patchSchema"
+import {
+  createTagsForMcp,
+  listTagsForMcp,
+  updateTagsForMcp,
+} from "@/src/server/mcp/tags/tagsMcp.server"
 
 const mcpListLimitSchema = z
   .number()
@@ -105,7 +111,13 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
         `create, update, and delete require DIRECT. create takes items (1–${MCP_LIST_MAX_LIMIT}) with projectSlug, slug, title (style REGULAR|GREEN for Phasen). ` +
         `An existing slug is rejected. update is one object (projectSlug, slug, patch), not a batch. ` +
         `delete is a batch plus confirm: without confirm, preview and write nothing; with confirm, refuse when a Planungsabschnitt or Maßnahme still references the row. ` +
-        `Protokolleinträge project_records_*: list returns id, title, editingState, and linked Maßnahme slugs. There is no user or tag directory. ` +
+        `Tags tags_*: a tag belongs to one project; filters across projects (Meine Projekte) match tags by title, ignoring case. ` +
+        `tags_list returns title, color, description, archived, and url and works in DRAFT or DIRECT. ` +
+        `tags_create requires DIRECT and takes items (1–${MCP_LIST_MAX_LIMIT}) with projectSlug, title, optional color and description, so one call can give several projects the same tags. ` +
+        `An existing title (any case) is left unchanged; an archived one is restored. ` +
+        `tags_update requires DIRECT and takes items with projectSlug, the current title (any case), and a patch (title, color, description, clear: ["description"]), so the same tag can be renamed or recolored in several projects. ` +
+        `A new title that another tag of the project already has is rejected; tags are not merged. ` +
+        `Protokolleinträge project_records_*: list returns id, title, editingState, and linked Maßnahme slugs. There is no user directory; tags must already exist in the project (tags_list). ` +
         `create is one record (title required, editingState PENDING|COMPLETED default PENDING, body, optional subsectionSlug + subsubsectionSlug for exactly one Maßnahme, optional ref, optional assignedTo, optional tags). ` +
         `assignedTo is only a name or numeric id the user already named. tags is titles and replaces the whole set; an empty array is rejected. ` +
         `A repeated DRAFT create with the same ref upserts; without ref each call is a new draft. update is one record by numeric id. ` +
@@ -484,6 +496,75 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
   }
 
   server.registerTool(
+    "tags_list",
+    {
+      description:
+        `List the tags of a project (default ${MCP_LIST_DEFAULT_LIMIT}, max ${MCP_LIST_MAX_LIMIT}). Requires mcpMode DRAFT or DIRECT. ` +
+        "Returns title, color, description, archived, url.",
+      inputSchema: { projectSlug: z.string(), limit: mcpListLimitSchema },
+    },
+    ({ projectSlug, limit }) => runMcpTool(() => listTagsForMcp({ projectSlug, origin, limit })),
+  )
+
+  server.registerTool(
+    "tags_create",
+    {
+      description:
+        `Create tags. Requires effective mcpMode DIRECT in each project. items 1–${MCP_LIST_MAX_LIMIT}: projectSlug, title, optional color, optional description. ` +
+        "Repeat an item per project to give several projects the same tags. " +
+        "An existing title (any case) is left unchanged (outcome unchanged); an archived one is restored (outcome restored). Writes the live row.",
+      inputSchema: {
+        items: z
+          .array(
+            z.object({
+              projectSlug: z.string(),
+              title: z.string(),
+              color: z.enum(TagColorEnum).optional(),
+              description: z.string().optional(),
+            }),
+          )
+          .min(1)
+          .max(MCP_LIST_MAX_LIMIT),
+      },
+    },
+    (input) => runMcpTool(() => createTagsForMcp({ ...input, origin })),
+  )
+
+  server.registerTool(
+    "tags_update",
+    {
+      description:
+        `Update tags. Requires effective mcpMode DIRECT in each project. items 1–${MCP_LIST_MAX_LIMIT}: projectSlug, title (the current title, any case), patch. ` +
+        'patch: title (rename), color, description; clear: ["description"] empties the description. Omit a key to leave it unchanged; empty strings are rejected. ' +
+        "Repeat an item per project to rename or recolor the same tag everywhere. A new title that another tag of the project already has is rejected; tags are not merged. " +
+        "Each item returns outcome updated or unchanged. Writes the live row.",
+      inputSchema: {
+        items: z
+          .array(
+            z.object({
+              projectSlug: z.string(),
+              title: z.string(),
+              patch: z
+                .object({
+                  title: z.string().min(1).optional(),
+                  color: z.enum(TagColorEnum).optional(),
+                  description: z.string().min(1).optional(),
+                  clear: z
+                    .array(z.enum(["description"]))
+                    .min(1)
+                    .optional(),
+                })
+                .strict(),
+            }),
+          )
+          .min(1)
+          .max(MCP_LIST_MAX_LIMIT),
+      },
+    },
+    (input) => runMcpTool(() => updateTagsForMcp({ ...input, origin })),
+  )
+
+  server.registerTool(
     "project_records_list",
     {
       description:
@@ -502,7 +583,7 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
         "Create one Protokolleintrag. title required. editingState PENDING|COMPLETED (default PENDING). body is the Nachricht. " +
         "Optional subsectionSlug + subsubsectionSlug link exactly one Maßnahme; omit both to hang the entry on the project. " +
         "Optional assignedTo: a display name or numeric user id the user already named. Optional tags: titles; a non-empty array replaces the set. " +
-        "No user or tag directory. Omit a key to leave it unchanged. null and empty string do not clear. An empty tags array is rejected. " +
+        "No user directory; tags must already exist in the project (tags_list). Omit a key to leave it unchanged. null and empty string do not clear. An empty tags array is rejected. " +
         "Optional ref: DRAFT repeats with the same ref upsert; without ref each call is a new draft. DIRECT inserts one ProjectRecord and does not persist ref.",
       inputSchema: {
         projectSlug: z.string(),
@@ -529,7 +610,7 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
         "Update one Protokolleintrag by numeric id. Omit a key to leave it unchanged. " +
         "Sending subsectionSlug + subsubsectionSlug replaces the Maßnahme link set with that one Maßnahme. " +
         "assignedTo is a display name or numeric user id the user already named. tags titles replace the whole set; an empty array is rejected. " +
-        "No user or tag directory. " +
+        "No user directory; tags must already exist in the project (tags_list). " +
         patchSemantics,
       inputSchema: {
         projectSlug: z.string(),

@@ -129,6 +129,25 @@ const groups: { title: string; rows: CapabilityRow[] }[] = [
     ],
   },
   {
+    title: "Tags",
+    rows: [
+      {
+        action: "Auflisten",
+        tools: "tags_list",
+        disabled: "none",
+        draft: "read",
+        direct: "read",
+      },
+      {
+        action: "Anlegen und ändern, auch in mehreren Projekten",
+        tools: "tags_create, tags_update",
+        disabled: "none",
+        draft: "none",
+        direct: "live",
+      },
+    ],
+  },
+  {
     title: "Protokolleinträge",
     rows: [
       {
