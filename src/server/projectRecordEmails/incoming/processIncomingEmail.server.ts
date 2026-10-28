@@ -31,9 +31,28 @@ export async function processIncomingProjectRecordEmail({
         })
       : null
 
-    const { body, attachments, from, fromAddress, to, cc, subject, date } = await parseEmail({
-      rawEmailText,
-    })
+    const { body, attachments, from, fromAddress, to, cc, subject, date, isAutoReply } =
+      await parseEmail({ rawEmailText })
+
+    // Out-of-office replies must not trigger mails or become Protokolleinträge.
+    if (isAutoReply) {
+      const projectRecordEmail = await db.projectRecordEmail.create({
+        data: {
+          text: rawEmailText,
+          textBody: body,
+          from,
+          subject,
+          date,
+          projectId: project?.id ?? null,
+        },
+      })
+
+      return {
+        success: false,
+        projectRecordEmailId: projectRecordEmail.id,
+        message: "Automatic reply. Email stored but not processed.",
+      }
+    }
 
     await notifySenderLegacyProtocolMailboxMoved({
       senderEmail: fromAddress,

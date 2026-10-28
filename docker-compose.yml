@@ -26,6 +26,7 @@ services:
       LANGFUSE_PUBLIC_KEY:
       LANGFUSE_BASEURL:
       LUCKY_CLOUD_TOKEN:
+      IMAP_USER:
     # We access `.env` variables directly here
     labels:
       traefik.enable: true

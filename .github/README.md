@@ -63,7 +63,7 @@
 | `ECR_REGISTRY`         | `vars.ECR_REGISTRY`           | yes      | AWS ECR registry for app and imap-listener images.           |
 | `IMAP_HOST`            | `vars.IMAP_HOST`              | yes      | IMAP server hostname.                                        |
 | `IMAP_PORT`            | `vars.IMAP_PORT`              | yes      | IMAP server port.                                            |
-| `IMAP_USER`            | `vars.IMAP_USER`              | yes      | IMAP mailbox username.                                       |
+| `IMAP_USER`            | `vars.IMAP_USER`              | yes      | IMAP mailbox address; also Reply-To of assignment mails.     |
 | `IMAP_PASSWORD`        | `secrets.IMAP_PASSWORD`       | yes      | IMAP mailbox password. Sensitive.                            |
 
 <!-- GENERATED_ENV_TABLE_END -->

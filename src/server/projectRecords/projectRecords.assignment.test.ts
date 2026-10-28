@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, test, vi } from "vitest"
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest"
 import {
   ProjectRecordEditingState,
   ProjectRecordReviewState,
@@ -82,6 +82,10 @@ describe("PatchProjectRecordAssignmentSchema", () => {
 })
 
 describe("patchProjectRecordAssignment", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs()
+  })
+
   beforeEach(() => {
     vi.clearAllMocks()
     mockEndpointAuth.projectRole.mockResolvedValue({
@@ -242,9 +246,37 @@ describe("patchProjectRecordAssignment", () => {
       expect.objectContaining({
         recordTitle: "Protokoll",
         recordText: "Bitte die <b>Ausführungsplanung</b> prüfen.",
+        replyToEmail: null,
       }),
     )
     expect(mockSend).toHaveBeenCalledTimes(1)
+  })
+
+  test("sets the project's protocol mailbox as Reply-To when replies are enabled", async () => {
+    vi.stubEnv("IMAP_USER", "protokoll@trassenscout.de")
+    mockDb.project.findUnique.mockResolvedValue({ aiEnabled: true, assignmentRepliesEnabled: true })
+    mockDb.projectRecord.findFirstOrThrow.mockResolvedValueOnce(previousRecord)
+    mockDb.projectRecord.update.mockResolvedValueOnce({
+      id: 12,
+      title: "Protokoll",
+      body: null,
+      assignedToId: 3,
+      editingState: ProjectRecordEditingState.PENDING,
+    })
+    const { projectRecordAssignedNotificationToUser } =
+      await import("@/emails/mailers/projectRecordAssignedNotificationToUser")
+    const { patchProjectRecordAssignment } = await import("./projectRecords.server")
+
+    await patchProjectRecordAssignment(headers, {
+      projectSlug: "rs23",
+      id: 12,
+      assignedToId: 3,
+      editingState: ProjectRecordEditingState.PENDING,
+    })
+
+    expect(projectRecordAssignedNotificationToUser).toHaveBeenCalledWith(
+      expect.objectContaining({ replyToEmail: "protokoll+rs23@trassenscout.de" }),
+    )
   })
 
   test("rejects assignees who are not project members", async () => {

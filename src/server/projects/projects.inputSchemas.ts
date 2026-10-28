@@ -12,6 +12,7 @@ export const CreateProjectSchema = ProjectSchema
 const projectFeatureFlagKeys = [
   "exportEnabled",
   "aiEnabled",
+  "assignmentRepliesEnabled",
   "landAcquisitionModuleEnabled",
   "showLogEntries",
   "evaluationsEnabled",

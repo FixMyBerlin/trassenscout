@@ -155,7 +155,7 @@
       "sourceEnv": "VAR_IMAP_USER",
       "required": true,
       "githubSource": "vars.IMAP_USER",
-      "description": "IMAP mailbox username."
+      "description": "IMAP mailbox address; also Reply-To of assignment mails."
     },
     {
       "name": "IMAP_PASSWORD",

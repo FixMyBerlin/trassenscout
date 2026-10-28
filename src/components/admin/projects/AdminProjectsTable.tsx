@@ -1,5 +1,6 @@
 import {
   ArrowDownTrayIcon,
+  ArrowUturnLeftIcon,
   ChartBarIcon,
   CommandLineIcon,
   DocumentTextIcon,
@@ -73,6 +74,15 @@ const projectFeatureColumns: ProjectFeatureColumn[] = [
       enabled
         ? "KI-Features ausschalten (E-Mail-Protokoll, KI-Verarbeitung)"
         : "KI-Features einschalten (E-Mail-Protokoll, KI-Verarbeitung)",
+  },
+  {
+    key: "assignmentRepliesEnabled",
+    header: "Reply-To",
+    icon: <ArrowUturnLeftIcon className="size-4" aria-hidden />,
+    label: (enabled) =>
+      enabled
+        ? "Antworten auf Zuweisungs-E-Mails ausschalten (Antworten gehen an noreply@)"
+        : "Antworten auf Zuweisungs-E-Mails einschalten (Antworten gehen an das Protokoll-Postfach des Projekts)",
   },
   {
     key: "landAcquisitionModuleEnabled",

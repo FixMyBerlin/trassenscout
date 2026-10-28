@@ -32,6 +32,7 @@ const envServerSchema = z.object({
   LANGFUSE_PUBLIC_KEY: z.string().optional(),
   LANGFUSE_BASEURL: z.url().optional(),
   LUCKY_CLOUD_TOKEN: z.string().optional(),
+  IMAP_USER: z.string().optional(),
 })
 
 const envScriptOnlySchemaPart = z.object({

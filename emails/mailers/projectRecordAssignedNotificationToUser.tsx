@@ -1,5 +1,5 @@
 import { resolveAndRenderEmailTemplate } from "@/src/server/emailTemplates/render"
-import { emailTemplateKeys } from "@/src/shared/emailTemplates/registry"
+import { assignmentReplyHintText, emailTemplateKeys } from "@/src/shared/emailTemplates/registry"
 import { toTemplateText } from "@/src/shared/templates/templateText"
 import { addressNoreply } from "./utils/addresses"
 import { mailUrl } from "./utils/mailUrl"
@@ -14,6 +14,7 @@ type Props = {
   recordText: string | null
   projectName: string
   recordPath: string
+  replyToEmail: string | null
 }
 
 export async function projectRecordAssignedNotificationToUser(props: Props) {
@@ -25,6 +26,7 @@ export async function projectRecordAssignedNotificationToUser(props: Props) {
       recordTitle: props.recordTitle,
       recordText: toTemplateText(props.recordText),
       projectName: props.projectName,
+      replyHintText: props.replyToEmail ? assignmentReplyHintText : "",
     },
   )
   assertValidRenderedTemplate(renderedTemplate)
@@ -32,6 +34,9 @@ export async function projectRecordAssignedNotificationToUser(props: Props) {
   const message = buildTemplateMail({
     from: addressNoreply,
     to: [{ Email: props.assigneeEmail }],
+    replyTo: props.replyToEmail
+      ? { Email: props.replyToEmail, Name: `Trassenscout Protokoll ${props.projectName}` }
+      : undefined,
     template: renderedTemplate,
     ctaLink: mailUrl(props.recordPath),
   })

@@ -20,6 +20,7 @@ import {
   loadUserRedactionContexts,
   redactProjectRecordUsers,
 } from "@/src/server/memberships/redactFormerProjectMemberUser.server"
+import { projectProtocolMailboxAddress } from "@/src/server/projectRecordEmails/projectProtocolMailboxAddress.server"
 import { deleteUploadFileAndDbRecord } from "@/src/server/uploads/_utils/deleteUploadFileAndDbRecord"
 import { AuthorizationError, NotFoundError } from "@/src/shared/auth/errors"
 import { ProjectSlugRequiredSchema } from "@/src/shared/authorization/projectSlugSchema"
@@ -320,7 +321,7 @@ export async function sendProjectRecordAssignmentNotification({
   projectSlug: string
   recordId: number
 }) {
-  const [assignee, actor] = await Promise.all([
+  const [assignee, actor, project] = await Promise.all([
     db.user.findUnique({
       where: { id: assigneeId },
       select: { email: true, firstName: true, institution: true, lastName: true },
@@ -328,6 +329,10 @@ export async function sendProjectRecordAssignmentNotification({
     db.user.findUnique({
       where: { id: actorUserId },
       select: { firstName: true, institution: true, lastName: true },
+    }),
+    db.project.findUnique({
+      where: { slug: projectSlug },
+      select: { assignmentRepliesEnabled: true },
     }),
   ])
 
@@ -345,6 +350,9 @@ export async function sendProjectRecordAssignmentNotification({
       recordText,
       projectName: shortTitle(projectSlug),
       recordPath: projectRecordDetailPath(projectSlug, recordId),
+      replyToEmail: project?.assignmentRepliesEnabled
+        ? projectProtocolMailboxAddress(projectSlug)
+        : null,
     })
   ).send()
 }

@@ -17,6 +17,9 @@ const signatureMarkdown = `Mit freundlichen Grüßen
 
 i.A. das Team vom Trassenscout`
 
+export const assignmentReplyHintText =
+  "Sie können direkt auf diese E-Mail antworten. Ihre Antwort wird im Trassenscout als neuer Protokolleintrag gespeichert."
+
 export type EmailTemplateDefinition = {
   key: EmailTemplateKey
   name: string
@@ -134,7 +137,14 @@ Alle Teammitglieder finden Sie unter {{teamUrl}}.`,
     description:
       "Benachrichtigung an zugewiesene Personen, dass ihnen ein Protokolleintrag zugewiesen wurde.",
     supportsCta: true,
-    allowedVariables: ["assigneeName", "actorName", "recordTitle", "recordText", "projectName"],
+    allowedVariables: [
+      "assigneeName",
+      "actorName",
+      "recordTitle",
+      "recordText",
+      "projectName",
+      "replyHintText",
+    ],
     sampleContext: {
       assigneeName: "Name Beispiel",
       actorName: "Name Beispiel",
@@ -142,6 +152,7 @@ Alle Teammitglieder finden Sie unter {{teamUrl}}.`,
       recordText:
         "Die Ausführungsplanung für den Knotenpunkt wurde besprochen. Die offenen Punkte werden bis zum nächsten Termin geklärt.",
       projectName: "Radschnellweg Nord",
+      replyHintText: assignmentReplyHintText,
     },
     defaults: {
       subject:
@@ -151,7 +162,9 @@ Alle Teammitglieder finden Sie unter {{teamUrl}}.`,
 # Neue Zuweisung: {{recordTitle}}
 
 **{{actorName}}** hat Ihnen einen Protokolleintrag im Projekt **{{projectName}}** zugewiesen.`,
-      outroMarkdown: signatureMarkdown,
+      outroMarkdown: `{{replyHintText}}
+
+${signatureMarkdown}`,
       ctaText: "Protokolleintrag öffnen",
     },
   },

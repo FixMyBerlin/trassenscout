@@ -17,7 +17,8 @@
       "LANGFUSE_SECRET_KEY",
       "LANGFUSE_PUBLIC_KEY",
       "LANGFUSE_BASEURL",
-      "LUCKY_CLOUD_TOKEN"
+      "LUCKY_CLOUD_TOKEN",
+      "IMAP_USER"
     ],
     "imap-listener": ["TS_API_KEY", "IMAP_HOST", "IMAP_PORT", "IMAP_USER", "IMAP_PASSWORD"]
   }
