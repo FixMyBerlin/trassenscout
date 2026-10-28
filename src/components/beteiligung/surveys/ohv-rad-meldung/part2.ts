@@ -33,8 +33,6 @@ Bitte füllen Sie das Formular vollständig aus. Nach dem Absenden wird Ihre Mel
 
 [Datenschutzhinweis](https://trassenscout.de/datenschutz): Alle angegebenen personenbezogenen Daten werden ausschließlich für die Durchführung und Nachbereitung dieses Beteiligungsverfahrens gemäß DSGVO verarbeitet.
 
-Mit dem Aufrufen des Formulars stimme ich der Datenschutzerklärung zu. Die Daten werden gemäß DSGVO verarbeitet und nur für die Durchführung dieses digitalen Meldeverfahrens gespeichert.
-
 Sind Sie eine **Kommune** im **Landkreis Oberhavel**?
 
 Dann klicken Sie bitte auf den untenstehenden Button, um eine Maßnahme zu melden.`,
@@ -298,18 +296,6 @@ Dann klicken Sie bitte auf den untenstehenden Button, um eine Maßnahme zu melde
             label: "E-Mail-Adresse zur Bestätigung der Maßnahmenmeldung",
             type: "email",
             autoComplete: "email",
-          },
-        },
-        {
-          name: "declaration",
-          componentType: "form",
-          component: "SurveyCheckbox",
-          validation: fieldValidationEnum["requiredTrueBoolean"],
-          defaultValue: false,
-          props: {
-            label: "Erklärung",
-            itemLabel:
-              "Ich bestätige, dass ich zur Abgabe dieser Maßnahmenmeldung im Namen der angegebenen Stelle/Behörde berechtigt bin.",
           },
         },
       ],
