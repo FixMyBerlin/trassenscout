@@ -35,7 +35,6 @@ ${footerTextMarkdown}
   const mailMessage: MailMessage = {
     From: message.From,
     To: message.To,
-    ReplyTo: message.ReplyTo,
     Subject: message.Subject,
     TextPart: textPart,
     HTMLPart: htmlPart,
@@ -45,7 +44,6 @@ ${footerTextMarkdown}
     console.log("📧 Email (dev/test mode - no preview):")
     console.log("From:", formattedEmailAddress(mailMessage.From))
     console.log("To:", mailMessage.To.map((to) => formattedEmailAddress(to)).join(";"))
-    if (mailMessage.ReplyTo) console.log("Reply-To:", formattedEmailAddress(mailMessage.ReplyTo))
     console.log("Subject:", mailMessage.Subject)
     console.log("Text:", mailMessage.TextPart)
     return
@@ -64,10 +62,6 @@ ${footerTextMarkdown}
         email: recipient.Email,
         name: recipient.Name,
       })),
-      replyTo: mailMessage.ReplyTo && {
-        email: mailMessage.ReplyTo.Email,
-        name: mailMessage.ReplyTo.Name,
-      },
       subject: mailMessage.Subject,
       textContent: mailMessage.TextPart,
       htmlContent: mailMessage.HTMLPart,

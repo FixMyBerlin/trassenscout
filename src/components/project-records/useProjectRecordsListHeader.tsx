@@ -14,15 +14,24 @@ export function useProjectRecordsListHeader() {
   })
   const { data: tabCounts } = useSuspenseQuery(projectRecordsTabCountsQueryOptions({ projectSlug }))
 
-  const canEdit =
-    membershipRole === null || (membershipRole && editorRoles.includes(membershipRole))
+  const isAdmin = membershipRole === null
+  const canEdit = isAdmin || (membershipRole && editorRoles.includes(membershipRole))
 
   const tabs = [
     {
       name: `Protokolleinträge (${tabCounts.approvedCount})`,
       to: `/${projectSlug}/project-records`,
     },
-    ...(canEdit && tabCounts.aiEnabled
+    ...(isAdmin && tabCounts.aiEnabled
+      ? [
+          {
+            name: `Posteingang (${tabCounts.inboxCount})`,
+            to: `/${projectSlug}/project-records/inbox`,
+          },
+        ]
+      : []),
+    // Stays until the AI entries created before the Posteingang are confirmed.
+    ...(canEdit && tabCounts.aiEnabled && tabCounts.needsReviewCount > 0
       ? [
           {
             name: `Bestätigung erforderlich (${tabCounts.needsReviewCount})`,

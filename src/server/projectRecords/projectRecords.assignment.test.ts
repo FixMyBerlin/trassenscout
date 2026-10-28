@@ -246,13 +246,13 @@ describe("patchProjectRecordAssignment", () => {
       expect.objectContaining({
         recordTitle: "Protokoll",
         recordText: "Bitte die <b>Ausführungsplanung</b> prüfen.",
-        replyToEmail: null,
+        protocolMailboxEmail: null,
       }),
     )
     expect(mockSend).toHaveBeenCalledTimes(1)
   })
 
-  test("sets the project's protocol mailbox as Reply-To when replies are enabled", async () => {
+  test("sends from the project's protocol mailbox when replies are enabled", async () => {
     vi.stubEnv("IMAP_USER", "protokoll@trassenscout.de")
     mockDb.project.findUnique.mockResolvedValue({ aiEnabled: true, assignmentRepliesEnabled: true })
     mockDb.projectRecord.findFirstOrThrow.mockResolvedValueOnce(previousRecord)
@@ -275,7 +275,7 @@ describe("patchProjectRecordAssignment", () => {
     })
 
     expect(projectRecordAssignedNotificationToUser).toHaveBeenCalledWith(
-      expect.objectContaining({ replyToEmail: "protokoll+rs23@trassenscout.de" }),
+      expect.objectContaining({ protocolMailboxEmail: "protokoll+rs23@trassenscout.de" }),
     )
   })
 

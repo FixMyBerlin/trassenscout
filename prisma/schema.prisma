@@ -49,6 +49,7 @@ model User {
   projectRecordsUpdated    ProjectRecord[]         @relation("ProjectRecordUpdatedBy")
   projectRecordsReviewed   ProjectRecord[]         @relation("ProjectRecordReviewedBy")
   projectRecordsAssignedTo ProjectRecord[]         @relation("ProjectRecordAssignedTo")
+  recordEmailsDiscarded    ProjectRecordEmail[]    @relation("ProjectRecordEmailDiscardedBy")
   projectRecordsAssignedBy ProjectRecord[]         @relation("ProjectRecordAssignedBy")
   uploadsCreated           Upload[]                @relation("UploadCreatedBy")
   uploadsUpdated           Upload[]                @relation("UploadUpdatedBy")
@@ -209,7 +210,7 @@ model Project {
   partnerLogoSrcs                    String[] // - UNUSED
   exportEnabled                      Boolean                           @default(false)
   aiEnabled                          Boolean                           @default(false)
-  assignmentRepliesEnabled           Boolean                           @default(false) // Assignment mails get Reply-To protokoll+slug@ instead of none.
+  assignmentRepliesEnabled           Boolean                           @default(false) // Assignment mails are sent from protokoll+slug@ instead of noreply@.
   landAcquisitionModuleEnabled       Boolean                           @default(false)
   showLogEntries                     Boolean                           @default(false) // When true, non-admins see this project's log entries ("Änderungen in …") on the "Meine Projekte" dashboard. Admins always see all projects.
   evaluationsEnabled                 Boolean                           @default(false)
@@ -967,6 +968,10 @@ model ProjectRecordEmail {
   from           String?
   subject        String?
   textBody       String?
+  // Discarded in the Posteingang; processed means a ProjectRecord links this mail.
+  discardedAt    DateTime?
+  discardedBy    User?           @relation("ProjectRecordEmailDiscardedBy", fields: [discardedById], references: [id], onDelete: SetNull)
+  discardedById  Int?
   //
   project        Project?        @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId      Int?

@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
-import { useState } from "react"
+import { ReactNode, useState } from "react"
 import { z } from "zod"
 import { FormDirtyStateReporter } from "@/src/components/core/components/forms/FormDirtyStateReporter"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
@@ -14,6 +14,7 @@ import { Modal, ModalCloseButton } from "@/src/components/core/components/Modal"
 import { FormModal } from "@/src/components/core/components/Modal/FormModal"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
+import type { ProjectRecordEmailSourceValue } from "@/src/components/project-records/ProjectRecordEmailSource"
 import { ProjectRecordFormFields } from "@/src/components/project-records/ProjectRecordFormFields"
 import { useProjectRecordModal } from "@/src/components/project-records/ProjectRecordModalHost"
 import { getDate } from "@/src/components/project-records/utils/splitStartAt"
@@ -52,11 +53,16 @@ type ProjectRecordCreateFormProps = {
   projectSlug: string
   createRelationContext: "project" | "subsubsection" | "acquisitionArea"
   landAcquisitionModuleEnabled: boolean
-  onDirtyChange: (isDirty: boolean) => void
+  onDirtyChange?: (isDirty: boolean) => void
   onSubmit: (values: z.infer<typeof NewProjectRecordFormSchema>) => Promise<void | OnSubmitResult>
+  // The Posteingang shows the source mail next to the form, with its own actions.
+  emailSource?: ProjectRecordEmailSourceValue
+  submitText?: string
+  actionBarRight?: ReactNode
+  backLink?: ReactNode
 }
 
-function ProjectRecordCreateForm({
+export function ProjectRecordCreateForm({
   formKey: _formKey,
   formInitialValues,
   projectSlug,
@@ -64,6 +70,10 @@ function ProjectRecordCreateForm({
   landAcquisitionModuleEnabled,
   onDirtyChange,
   onSubmit,
+  emailSource,
+  submitText = "Protokolleintrag speichern",
+  actionBarRight,
+  backLink = null,
 }: ProjectRecordCreateFormProps) {
   const [formError, setFormError] = useState<string | null>(null)
 
@@ -84,8 +94,9 @@ function ProjectRecordCreateForm({
     <FormShell
       form={form}
       formError={formError}
-      submitText="Protokolleintrag speichern"
-      backLink={null}
+      submitText={submitText}
+      actionBarRight={actionBarRight}
+      backLink={backLink}
     >
       <FormDirtyStateReporter onDirtyChange={onDirtyChange} />
       <ProjectRecordFormFields
@@ -93,6 +104,8 @@ function ProjectRecordCreateForm({
         relationContext={createRelationContext}
         projectSlug={projectSlug}
         landAcquisitionModuleEnabled={landAcquisitionModuleEnabled}
+        splitView={Boolean(emailSource)}
+        emailSource={emailSource}
         disableSuspenseQueries
       />
     </FormShell>

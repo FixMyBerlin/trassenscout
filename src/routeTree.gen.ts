@@ -133,6 +133,7 @@ import { Route as LoggedInProjectsProjectSlugSubsubsectionInfraNewIndexRouteImpo
 import { Route as LoggedInProjectsProjectSlugSubsectionStatusNewIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/subsection-status/new/index'
 import { Route as LoggedInProjectsProjectSlugQualityLevelsNewIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/quality-levels/new/index'
 import { Route as LoggedInProjectsProjectSlugProjectRecordsNeedreviewIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/project-records/needreview/index'
+import { Route as LoggedInProjectsProjectSlugProjectRecordsInboxIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/project-records/inbox/index'
 import { Route as LoggedInProjectsProjectSlugProjectRecordsProjectRecordIdIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/project-records/$projectRecordId/index'
 import { Route as LoggedInProjectsProjectSlugOperatorsNewIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/operators/new/index'
 import { Route as LoggedInProjectsProjectSlugNetworkHierarchyNewIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/network-hierarchy/new/index'
@@ -165,6 +166,7 @@ import { Route as LoggedInProjectsProjectSlugSubsubsectionInfrastructureTypeSubs
 import { Route as LoggedInProjectsProjectSlugSubsubsectionInfraSubsubsectionInfraIdEditIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/subsubsection-infra/$subsubsectionInfraId/edit/index'
 import { Route as LoggedInProjectsProjectSlugSubsectionStatusSubsectionStatusIdEditIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/subsection-status/$subsectionStatusId/edit/index'
 import { Route as LoggedInProjectsProjectSlugQualityLevelsQualityLevelIdEditIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/quality-levels/$qualityLevelId/edit/index'
+import { Route as LoggedInProjectsProjectSlugProjectRecordsInboxProjectRecordEmailIdIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/project-records/inbox/$projectRecordEmailId/index'
 import { Route as LoggedInProjectsProjectSlugProjectRecordsProjectRecordIdEditIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/project-records/$projectRecordId/edit/index'
 import { Route as LoggedInProjectsProjectSlugProjectRecordsProjectRecordIdDeleteIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/project-records/$projectRecordId/delete/index'
 import { Route as LoggedInProjectsProjectSlugOperatorsOperatorIdEditIndexRouteImport } from './routes/_loggedInProjects/$projectSlug/operators/$operatorId/edit/index'
@@ -898,6 +900,12 @@ const LoggedInProjectsProjectSlugProjectRecordsNeedreviewIndexRoute =
     path: '/needreview/',
     getParentRoute: () => LoggedInProjectsProjectSlugProjectRecordsRouteRoute,
   } as any)
+const LoggedInProjectsProjectSlugProjectRecordsInboxIndexRoute =
+  LoggedInProjectsProjectSlugProjectRecordsInboxIndexRouteImport.update({
+    id: '/inbox/',
+    path: '/inbox/',
+    getParentRoute: () => LoggedInProjectsProjectSlugProjectRecordsRouteRoute,
+  } as any)
 const LoggedInProjectsProjectSlugProjectRecordsProjectRecordIdIndexRoute =
   LoggedInProjectsProjectSlugProjectRecordsProjectRecordIdIndexRouteImport.update(
     {
@@ -1107,6 +1115,14 @@ const LoggedInProjectsProjectSlugQualityLevelsQualityLevelIdEditIndexRoute =
       id: '/quality-levels/$qualityLevelId/edit/',
       path: '/quality-levels/$qualityLevelId/edit/',
       getParentRoute: () => LoggedInProjectsProjectSlugRoute,
+    } as any,
+  )
+const LoggedInProjectsProjectSlugProjectRecordsInboxProjectRecordEmailIdIndexRoute =
+  LoggedInProjectsProjectSlugProjectRecordsInboxProjectRecordEmailIdIndexRouteImport.update(
+    {
+      id: '/inbox/$projectRecordEmailId/',
+      path: '/inbox/$projectRecordEmailId/',
+      getParentRoute: () => LoggedInProjectsProjectSlugProjectRecordsRouteRoute,
     } as any,
   )
 const LoggedInProjectsProjectSlugProjectRecordsProjectRecordIdEditIndexRoute =
@@ -1406,6 +1422,7 @@ export interface FileRoutesByFullPath {
   '/$projectSlug/network-hierarchy/new/': typeof LoggedInProjectsProjectSlugNetworkHierarchyNewIndexRoute
   '/$projectSlug/operators/new/': typeof LoggedInProjectsProjectSlugOperatorsNewIndexRoute
   '/$projectSlug/project-records/$projectRecordId/': typeof LoggedInProjectsProjectSlugProjectRecordsProjectRecordIdIndexRoute
+  '/$projectSlug/project-records/inbox/': typeof LoggedInProjectsProjectSlugProjectRecordsInboxIndexRoute
   '/$projectSlug/project-records/needreview/': typeof LoggedInProjectsProjectSlugProjectRecordsNeedreviewIndexRoute
   '/$projectSlug/quality-levels/new/': typeof LoggedInProjectsProjectSlugQualityLevelsNewIndexRoute
   '/$projectSlug/subsection-status/new/': typeof LoggedInProjectsProjectSlugSubsectionStatusNewIndexRoute
@@ -1441,6 +1458,7 @@ export interface FileRoutesByFullPath {
   '/$projectSlug/operators/$operatorId/edit/': typeof LoggedInProjectsProjectSlugOperatorsOperatorIdEditIndexRoute
   '/$projectSlug/project-records/$projectRecordId/delete/': typeof LoggedInProjectsProjectSlugProjectRecordsProjectRecordIdDeleteIndexRoute
   '/$projectSlug/project-records/$projectRecordId/edit/': typeof LoggedInProjectsProjectSlugProjectRecordsProjectRecordIdEditIndexRoute
+  '/$projectSlug/project-records/inbox/$projectRecordEmailId/': typeof LoggedInProjectsProjectSlugProjectRecordsInboxProjectRecordEmailIdIndexRoute
   '/$projectSlug/quality-levels/$qualityLevelId/edit/': typeof LoggedInProjectsProjectSlugQualityLevelsQualityLevelIdEditIndexRoute
   '/$projectSlug/subsection-status/$subsectionStatusId/edit/': typeof LoggedInProjectsProjectSlugSubsectionStatusSubsectionStatusIdEditIndexRoute
   '/$projectSlug/subsubsection-infra/$subsubsectionInfraId/edit/': typeof LoggedInProjectsProjectSlugSubsubsectionInfraSubsubsectionInfraIdEditIndexRoute
@@ -1577,6 +1595,7 @@ export interface FileRoutesByTo {
   '/$projectSlug/network-hierarchy/new': typeof LoggedInProjectsProjectSlugNetworkHierarchyNewIndexRoute
   '/$projectSlug/operators/new': typeof LoggedInProjectsProjectSlugOperatorsNewIndexRoute
   '/$projectSlug/project-records/$projectRecordId': typeof LoggedInProjectsProjectSlugProjectRecordsProjectRecordIdIndexRoute
+  '/$projectSlug/project-records/inbox': typeof LoggedInProjectsProjectSlugProjectRecordsInboxIndexRoute
   '/$projectSlug/project-records/needreview': typeof LoggedInProjectsProjectSlugProjectRecordsNeedreviewIndexRoute
   '/$projectSlug/quality-levels/new': typeof LoggedInProjectsProjectSlugQualityLevelsNewIndexRoute
   '/$projectSlug/subsection-status/new': typeof LoggedInProjectsProjectSlugSubsectionStatusNewIndexRoute
@@ -1612,6 +1631,7 @@ export interface FileRoutesByTo {
   '/$projectSlug/operators/$operatorId/edit': typeof LoggedInProjectsProjectSlugOperatorsOperatorIdEditIndexRoute
   '/$projectSlug/project-records/$projectRecordId/delete': typeof LoggedInProjectsProjectSlugProjectRecordsProjectRecordIdDeleteIndexRoute
   '/$projectSlug/project-records/$projectRecordId/edit': typeof LoggedInProjectsProjectSlugProjectRecordsProjectRecordIdEditIndexRoute
+  '/$projectSlug/project-records/inbox/$projectRecordEmailId': typeof LoggedInProjectsProjectSlugProjectRecordsInboxProjectRecordEmailIdIndexRoute
   '/$projectSlug/quality-levels/$qualityLevelId/edit': typeof LoggedInProjectsProjectSlugQualityLevelsQualityLevelIdEditIndexRoute
   '/$projectSlug/subsection-status/$subsectionStatusId/edit': typeof LoggedInProjectsProjectSlugSubsectionStatusSubsectionStatusIdEditIndexRoute
   '/$projectSlug/subsubsection-infra/$subsubsectionInfraId/edit': typeof LoggedInProjectsProjectSlugSubsubsectionInfraSubsubsectionInfraIdEditIndexRoute
@@ -1761,6 +1781,7 @@ export interface FileRoutesById {
   '/_loggedInProjects/$projectSlug/network-hierarchy/new/': typeof LoggedInProjectsProjectSlugNetworkHierarchyNewIndexRoute
   '/_loggedInProjects/$projectSlug/operators/new/': typeof LoggedInProjectsProjectSlugOperatorsNewIndexRoute
   '/_loggedInProjects/$projectSlug/project-records/$projectRecordId/': typeof LoggedInProjectsProjectSlugProjectRecordsProjectRecordIdIndexRoute
+  '/_loggedInProjects/$projectSlug/project-records/inbox/': typeof LoggedInProjectsProjectSlugProjectRecordsInboxIndexRoute
   '/_loggedInProjects/$projectSlug/project-records/needreview/': typeof LoggedInProjectsProjectSlugProjectRecordsNeedreviewIndexRoute
   '/_loggedInProjects/$projectSlug/quality-levels/new/': typeof LoggedInProjectsProjectSlugQualityLevelsNewIndexRoute
   '/_loggedInProjects/$projectSlug/subsection-status/new/': typeof LoggedInProjectsProjectSlugSubsectionStatusNewIndexRoute
@@ -1796,6 +1817,7 @@ export interface FileRoutesById {
   '/_loggedInProjects/$projectSlug/operators/$operatorId/edit/': typeof LoggedInProjectsProjectSlugOperatorsOperatorIdEditIndexRoute
   '/_loggedInProjects/$projectSlug/project-records/$projectRecordId/delete/': typeof LoggedInProjectsProjectSlugProjectRecordsProjectRecordIdDeleteIndexRoute
   '/_loggedInProjects/$projectSlug/project-records/$projectRecordId/edit/': typeof LoggedInProjectsProjectSlugProjectRecordsProjectRecordIdEditIndexRoute
+  '/_loggedInProjects/$projectSlug/project-records/inbox/$projectRecordEmailId/': typeof LoggedInProjectsProjectSlugProjectRecordsInboxProjectRecordEmailIdIndexRoute
   '/_loggedInProjects/$projectSlug/quality-levels/$qualityLevelId/edit/': typeof LoggedInProjectsProjectSlugQualityLevelsQualityLevelIdEditIndexRoute
   '/_loggedInProjects/$projectSlug/subsection-status/$subsectionStatusId/edit/': typeof LoggedInProjectsProjectSlugSubsectionStatusSubsectionStatusIdEditIndexRoute
   '/_loggedInProjects/$projectSlug/subsubsection-infra/$subsubsectionInfraId/edit/': typeof LoggedInProjectsProjectSlugSubsubsectionInfraSubsubsectionInfraIdEditIndexRoute
@@ -1941,6 +1963,7 @@ export interface FileRouteTypes {
     | '/$projectSlug/network-hierarchy/new/'
     | '/$projectSlug/operators/new/'
     | '/$projectSlug/project-records/$projectRecordId/'
+    | '/$projectSlug/project-records/inbox/'
     | '/$projectSlug/project-records/needreview/'
     | '/$projectSlug/quality-levels/new/'
     | '/$projectSlug/subsection-status/new/'
@@ -1976,6 +1999,7 @@ export interface FileRouteTypes {
     | '/$projectSlug/operators/$operatorId/edit/'
     | '/$projectSlug/project-records/$projectRecordId/delete/'
     | '/$projectSlug/project-records/$projectRecordId/edit/'
+    | '/$projectSlug/project-records/inbox/$projectRecordEmailId/'
     | '/$projectSlug/quality-levels/$qualityLevelId/edit/'
     | '/$projectSlug/subsection-status/$subsectionStatusId/edit/'
     | '/$projectSlug/subsubsection-infra/$subsubsectionInfraId/edit/'
@@ -2112,6 +2136,7 @@ export interface FileRouteTypes {
     | '/$projectSlug/network-hierarchy/new'
     | '/$projectSlug/operators/new'
     | '/$projectSlug/project-records/$projectRecordId'
+    | '/$projectSlug/project-records/inbox'
     | '/$projectSlug/project-records/needreview'
     | '/$projectSlug/quality-levels/new'
     | '/$projectSlug/subsection-status/new'
@@ -2147,6 +2172,7 @@ export interface FileRouteTypes {
     | '/$projectSlug/operators/$operatorId/edit'
     | '/$projectSlug/project-records/$projectRecordId/delete'
     | '/$projectSlug/project-records/$projectRecordId/edit'
+    | '/$projectSlug/project-records/inbox/$projectRecordEmailId'
     | '/$projectSlug/quality-levels/$qualityLevelId/edit'
     | '/$projectSlug/subsection-status/$subsectionStatusId/edit'
     | '/$projectSlug/subsubsection-infra/$subsubsectionInfraId/edit'
@@ -2295,6 +2321,7 @@ export interface FileRouteTypes {
     | '/_loggedInProjects/$projectSlug/network-hierarchy/new/'
     | '/_loggedInProjects/$projectSlug/operators/new/'
     | '/_loggedInProjects/$projectSlug/project-records/$projectRecordId/'
+    | '/_loggedInProjects/$projectSlug/project-records/inbox/'
     | '/_loggedInProjects/$projectSlug/project-records/needreview/'
     | '/_loggedInProjects/$projectSlug/quality-levels/new/'
     | '/_loggedInProjects/$projectSlug/subsection-status/new/'
@@ -2330,6 +2357,7 @@ export interface FileRouteTypes {
     | '/_loggedInProjects/$projectSlug/operators/$operatorId/edit/'
     | '/_loggedInProjects/$projectSlug/project-records/$projectRecordId/delete/'
     | '/_loggedInProjects/$projectSlug/project-records/$projectRecordId/edit/'
+    | '/_loggedInProjects/$projectSlug/project-records/inbox/$projectRecordEmailId/'
     | '/_loggedInProjects/$projectSlug/quality-levels/$qualityLevelId/edit/'
     | '/_loggedInProjects/$projectSlug/subsection-status/$subsectionStatusId/edit/'
     | '/_loggedInProjects/$projectSlug/subsubsection-infra/$subsubsectionInfraId/edit/'
@@ -3279,6 +3307,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoggedInProjectsProjectSlugProjectRecordsNeedreviewIndexRouteImport
       parentRoute: typeof LoggedInProjectsProjectSlugProjectRecordsRouteRoute
     }
+    '/_loggedInProjects/$projectSlug/project-records/inbox/': {
+      id: '/_loggedInProjects/$projectSlug/project-records/inbox/'
+      path: '/inbox'
+      fullPath: '/$projectSlug/project-records/inbox/'
+      preLoaderRoute: typeof LoggedInProjectsProjectSlugProjectRecordsInboxIndexRouteImport
+      parentRoute: typeof LoggedInProjectsProjectSlugProjectRecordsRouteRoute
+    }
     '/_loggedInProjects/$projectSlug/project-records/$projectRecordId/': {
       id: '/_loggedInProjects/$projectSlug/project-records/$projectRecordId/'
       path: '/$projectRecordId'
@@ -3502,6 +3537,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/$projectSlug/quality-levels/$qualityLevelId/edit/'
       preLoaderRoute: typeof LoggedInProjectsProjectSlugQualityLevelsQualityLevelIdEditIndexRouteImport
       parentRoute: typeof LoggedInProjectsProjectSlugRoute
+    }
+    '/_loggedInProjects/$projectSlug/project-records/inbox/$projectRecordEmailId/': {
+      id: '/_loggedInProjects/$projectSlug/project-records/inbox/$projectRecordEmailId/'
+      path: '/inbox/$projectRecordEmailId'
+      fullPath: '/$projectSlug/project-records/inbox/$projectRecordEmailId/'
+      preLoaderRoute: typeof LoggedInProjectsProjectSlugProjectRecordsInboxProjectRecordEmailIdIndexRouteImport
+      parentRoute: typeof LoggedInProjectsProjectSlugProjectRecordsRouteRoute
     }
     '/_loggedInProjects/$projectSlug/project-records/$projectRecordId/edit/': {
       id: '/_loggedInProjects/$projectSlug/project-records/$projectRecordId/edit/'
@@ -3775,9 +3817,11 @@ const LoggedInGeneralRouteWithChildren = LoggedInGeneralRoute._addFileChildren(
 interface LoggedInProjectsProjectSlugProjectRecordsRouteRouteChildren {
   LoggedInProjectsProjectSlugProjectRecordsIndexRoute: typeof LoggedInProjectsProjectSlugProjectRecordsIndexRoute
   LoggedInProjectsProjectSlugProjectRecordsProjectRecordIdIndexRoute: typeof LoggedInProjectsProjectSlugProjectRecordsProjectRecordIdIndexRoute
+  LoggedInProjectsProjectSlugProjectRecordsInboxIndexRoute: typeof LoggedInProjectsProjectSlugProjectRecordsInboxIndexRoute
   LoggedInProjectsProjectSlugProjectRecordsNeedreviewIndexRoute: typeof LoggedInProjectsProjectSlugProjectRecordsNeedreviewIndexRoute
   LoggedInProjectsProjectSlugProjectRecordsProjectRecordIdDeleteIndexRoute: typeof LoggedInProjectsProjectSlugProjectRecordsProjectRecordIdDeleteIndexRoute
   LoggedInProjectsProjectSlugProjectRecordsProjectRecordIdEditIndexRoute: typeof LoggedInProjectsProjectSlugProjectRecordsProjectRecordIdEditIndexRoute
+  LoggedInProjectsProjectSlugProjectRecordsInboxProjectRecordEmailIdIndexRoute: typeof LoggedInProjectsProjectSlugProjectRecordsInboxProjectRecordEmailIdIndexRoute
 }
 
 const LoggedInProjectsProjectSlugProjectRecordsRouteRouteChildren: LoggedInProjectsProjectSlugProjectRecordsRouteRouteChildren =
@@ -3786,12 +3830,16 @@ const LoggedInProjectsProjectSlugProjectRecordsRouteRouteChildren: LoggedInProje
       LoggedInProjectsProjectSlugProjectRecordsIndexRoute,
     LoggedInProjectsProjectSlugProjectRecordsProjectRecordIdIndexRoute:
       LoggedInProjectsProjectSlugProjectRecordsProjectRecordIdIndexRoute,
+    LoggedInProjectsProjectSlugProjectRecordsInboxIndexRoute:
+      LoggedInProjectsProjectSlugProjectRecordsInboxIndexRoute,
     LoggedInProjectsProjectSlugProjectRecordsNeedreviewIndexRoute:
       LoggedInProjectsProjectSlugProjectRecordsNeedreviewIndexRoute,
     LoggedInProjectsProjectSlugProjectRecordsProjectRecordIdDeleteIndexRoute:
       LoggedInProjectsProjectSlugProjectRecordsProjectRecordIdDeleteIndexRoute,
     LoggedInProjectsProjectSlugProjectRecordsProjectRecordIdEditIndexRoute:
       LoggedInProjectsProjectSlugProjectRecordsProjectRecordIdEditIndexRoute,
+    LoggedInProjectsProjectSlugProjectRecordsInboxProjectRecordEmailIdIndexRoute:
+      LoggedInProjectsProjectSlugProjectRecordsInboxProjectRecordEmailIdIndexRoute,
   }
 
 const LoggedInProjectsProjectSlugProjectRecordsRouteRouteWithChildren =

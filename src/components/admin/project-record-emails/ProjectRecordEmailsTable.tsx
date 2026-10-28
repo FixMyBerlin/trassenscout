@@ -1,7 +1,4 @@
 import { SparklesIcon } from "@heroicons/react/20/solid"
-import { useMutation } from "@tanstack/react-query"
-import { useNavigate } from "@tanstack/react-router"
-import { useState } from "react"
 import { twJoin } from "tailwind-merge"
 import {
   adminTableBodyClassName,
@@ -13,18 +10,12 @@ import {
   adminTableHeaderRightClassName,
   adminTableHeadRowClassName,
 } from "@/src/components/admin/adminListClasses"
-import {
-  AdminTableActions,
-  AdminTableEditLink,
-  AdminTablePrimaryButton,
-} from "@/src/components/admin/AdminTableActions"
+import { AdminTableActions, AdminTableEditLink } from "@/src/components/admin/AdminTableActions"
 import { Link } from "@/src/components/core/components/links/Link"
 import { TableDateTime } from "@/src/components/core/components/Table/TableDateTime"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
-import { Tooltip } from "@/src/components/core/components/Tooltip/Tooltip"
-import { processProjectRecordEmailFn } from "@/src/server/projectRecordEmails/projectRecordEmails.functions"
 import type { ProjectRecordEmailWithRelations } from "@/src/server/projectRecordEmails/types"
 
 type Props = {
@@ -32,38 +23,6 @@ type Props = {
 }
 
 export const ProjectRecordEmailsTable = ({ projectRecordEmails }: Props) => {
-  const [processing, setProcessing] = useState<number | null>(null)
-  const navigate = useNavigate()
-
-  const processEmailMutation = useMutation({ mutationFn: processProjectRecordEmailFn })
-
-  const handleProcessEmail = async (projectRecordEmailId: number) => {
-    setProcessing(projectRecordEmailId)
-    try {
-      const result = await processEmailMutation.mutateAsync({ data: { projectRecordEmailId } })
-
-      const message = `Protokolleintrag erfolgreich erstellt! ID: ${result.projectRecordId}`
-      const documentsMessage = result.uploadIds?.length
-        ? `\nDokumente mit den IDs: ${result.uploadIds.join(", ")} erstellt und verknüpft.`
-        : ""
-      const aiDisabledMessage =
-        result.isAiEnabled === false
-          ? "\nHinweis: KI-Unterstützung ist für dieses Projekt deaktiviert. Protokolleintrag muss manuell überprüft und  bestätigt werden."
-          : ""
-      const isSenderUnapprovedMessage =
-        result.isSenderApproved === false
-          ? "\nHinweis: Der Absender ist nicht für dieses Projekt genehmigt. Protokolleintrag muss manuell überprüft und  bestätigt werden."
-          : ""
-      alert(message + documentsMessage + aiDisabledMessage + isSenderUnapprovedMessage)
-      navigate({ to: "/admin/project-records" })
-    } catch (error) {
-      console.error("Error:", error)
-      alert("Fehler beim Verarbeiten der E-Mail")
-    } finally {
-      setProcessing(null)
-    }
-  }
-
   if (!projectRecordEmails.length) {
     return (
       <div className="px-4">
@@ -80,12 +39,10 @@ export const ProjectRecordEmailsTable = ({ projectRecordEmails }: Props) => {
       <div className="px-4">
         <div className="rounded-md border border-blue-200 bg-blue-50 p-4 text-sm text-blue-900">
           <p className="mb-2">
-            <strong>Hinweis:</strong> E-Mails ohne Protokolleinträge (gelb markiert) müssen noch
-            prozessiert werden. <br />
-            ‼️ E-Mails ohne zugeordnetes Projekt können nicht mit KI prozessiert werden und müssen
-            zuerst bearbeitet werden.
+            <strong>Hinweis:</strong> Unverarbeitete E-Mails (gelb markiert) werden im Posteingang
+            des Projekts mit Protokollvorlage und KI verarbeitet. <br />
+            ‼️ E-Mails ohne zugeordnetes Projekt müssen zuerst einem Projekt zugeordnet werden.
           </p>
-          <p>* Dokumente werden erst mit KI-Prozessierung erstellt und verknüpft.</p>
         </div>
       </div>
 
@@ -100,7 +57,7 @@ export const ProjectRecordEmailsTable = ({ projectRecordEmails }: Props) => {
               <th className={adminTableHeaderClassName}>Von</th>
               <th className={adminTableHeaderClassName}>Betreff</th>
               <th className={adminTableHeaderClassName}>Protokolleinträge</th>
-              <th className={adminTableHeaderClassName}>Dokumente*</th>
+              <th className={adminTableHeaderClassName}>Dokumente</th>
               <th className={adminTableHeaderRightClassName}>Aktion</th>
             </tr>
           </thead>
@@ -109,7 +66,7 @@ export const ProjectRecordEmailsTable = ({ projectRecordEmails }: Props) => {
               <tr
                 key={email.id}
                 className={
-                  email.projectRecords.length === 0
+                  email.projectRecords.length === 0 && !email.discardedAt
                     ? "border-b border-gray-100 bg-yellow-50 hover:bg-yellow-100"
                     : "border-b border-gray-100 hover:bg-gray-50"
                 }
@@ -173,23 +130,18 @@ export const ProjectRecordEmailsTable = ({ projectRecordEmails }: Props) => {
                 </td>
                 <td className={adminTableCellRightClassName}>
                   <AdminTableActions>
-                    <Tooltip
-                      content={
-                        !email.projectId
-                          ? "Kein Projekt zugeordnet – bitte zuerst Projekt zuweisen"
-                          : undefined
-                      }
-                    >
-                      <span className="inline-flex">
-                        <AdminTablePrimaryButton
-                          onClick={() => handleProcessEmail(email.id)}
-                          disabled={processing === email.id || !email.projectId}
-                          icon={<SparklesIcon aria-hidden />}
-                        >
-                          {processing === email.id ? "Prozessiere..." : "Prozessieren"}
-                        </AdminTablePrimaryButton>
-                      </span>
-                    </Tooltip>
+                    {email.discardedAt ? (
+                      <span className="text-gray-500">Verworfen</span>
+                    ) : email.projectRecords.length === 0 &&
+                      email.project &&
+                      email.project.aiEnabled ? (
+                      <AdminTableEditLink
+                        to={`/${email.project.slug}/project-records/inbox/${email.id}`}
+                        icon={<SparklesIcon aria-hidden />}
+                      >
+                        Im Posteingang öffnen
+                      </AdminTableEditLink>
+                    ) : null}
                     <AdminTableEditLink to={`/admin/project-record-emails/${email.id}/edit`} />
                   </AdminTableActions>
                 </td>

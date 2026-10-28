@@ -10,13 +10,11 @@ export type Mail = Prettify<
   {
     From: MailAddress
     To: MailAddress[]
-    ReplyTo?: MailAddress
     Subject: string
   } & MarkdownMailProps
 >
 
-export type MailMessage = Required<Pick<Mail, "From" | "To" | "Subject">> &
-  Pick<Mail, "ReplyTo"> & {
-    TextPart: string
-    HTMLPart: string
-  }
+export type MailMessage = Required<Pick<Mail, "From" | "To" | "Subject">> & {
+  TextPart: string
+  HTMLPart: string
+}

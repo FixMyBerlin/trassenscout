@@ -31,7 +31,6 @@ ${footerTextMarkdown}
   const mailMessage: MailMessage = {
     From: message.From,
     To: message.To,
-    ReplyTo: message.ReplyTo,
     Subject: message.Subject,
     TextPart: textPart,
     HTMLPart: htmlPart,
@@ -44,7 +43,6 @@ ${footerTextMarkdown}
       {
         from: formattedEmailAddress(mailMessage.From),
         to: mailMessage.To.map((to) => formattedEmailAddress(to)).join(";"),
-        replyTo: mailMessage.ReplyTo && formattedEmailAddress(mailMessage.ReplyTo),
         subject: mailMessage.Subject,
         text: mailMessage.TextPart,
         html: mailMessage.HTMLPart,
@@ -67,10 +65,6 @@ ${footerTextMarkdown}
         email: recipient.Email,
         name: recipient.Name,
       })),
-      replyTo: mailMessage.ReplyTo && {
-        email: mailMessage.ReplyTo.Email,
-        name: mailMessage.ReplyTo.Name,
-      },
       subject: mailMessage.Subject,
       textContent: mailMessage.TextPart,
       htmlContent: mailMessage.HTMLPart,

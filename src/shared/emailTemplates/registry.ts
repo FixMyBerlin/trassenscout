@@ -4,9 +4,9 @@ export const emailTemplateKeys = {
   invitationCreatedEditorsNotification: "invitation_created_editors_notification",
   membershipCreatedEditorsNotification: "membership_created_editors_notification",
   projectRecordAssignedUser: "project_record_assigned_user",
+  projectRecordEmailReceivedAdmin: "project_record_email_received_admin",
   projectRecordEmailWithoutProjectAdmin: "project_record_email_without_project_admin",
   projectRecordLegacyMailboxMovedSender: "project_record_legacy_mailbox_moved_sender",
-  projectRecordNeedsReviewAdmin: "project_record_needs_review_admin",
   userCreatedAdminNotification: "user_created_admin_notification",
   userCreatedUserNotification: "user_created_user_notification",
 } as const
@@ -18,7 +18,7 @@ const signatureMarkdown = `Mit freundlichen Grüßen
 i.A. das Team vom Trassenscout`
 
 export const assignmentReplyHintText =
-  "Sie können direkt auf diese E-Mail antworten. Ihre Antwort wird im Trassenscout als neuer Protokolleintrag gespeichert."
+  "Sie können direkt auf diese E-Mail antworten. Ihre Antwort geht im Posteingang des Projekts ein und wird dort als Protokolleintrag übernommen."
 
 export type EmailTemplateDefinition = {
   key: EmailTemplateKey
@@ -168,6 +168,32 @@ ${signatureMarkdown}`,
       ctaText: "Protokolleintrag öffnen",
     },
   },
+  [emailTemplateKeys.projectRecordEmailReceivedAdmin]: {
+    key: emailTemplateKeys.projectRecordEmailReceivedAdmin,
+    name: "Admin: Neue E-Mail im Posteingang",
+    description:
+      "Benachrichtigung an Admins, wenn eine E-Mail im Posteingang eines Projekts eingegangen ist.",
+    supportsCta: true,
+    allowedVariables: ["projectSlug", "senderEmail", "emailSubject"],
+    sampleContext: {
+      projectSlug: "demo-projekt",
+      senderEmail: "buerger@example.org",
+      emailSubject: "Neue Hinweise zur Strecke",
+    },
+    defaults: {
+      subject: "[Admin] Trassenscout: Neue E-Mail im Posteingang von Projekt {{projectSlug}}",
+      introMarkdown: `Hallo Trassenscout-Admin!
+
+# Neue E-Mail im Posteingang von Projekt {{projectSlug}}
+
+Die E-Mail wurde unverarbeitet im Posteingang gespeichert. Wählen Sie dort eine Protokollvorlage, starten Sie die KI-Verarbeitung und speichern Sie den Entwurf als Protokolleintrag, oder verwerfen Sie die E-Mail.
+
+**Absenderadresse:** {{senderEmail}}
+**Betreff:** {{emailSubject}}`,
+      outroMarkdown: signatureMarkdown,
+      ctaText: "E-Mail im Posteingang öffnen",
+    },
+  },
   [emailTemplateKeys.projectRecordEmailWithoutProjectAdmin]: {
     key: emailTemplateKeys.projectRecordEmailWithoutProjectAdmin,
     name: "Admin: E-Mail keinem Projekt zugeordnet",
@@ -218,47 +244,6 @@ ${signatureMarkdown}`,
 Bitte senden Sie zukünftige KI-Protokoll-E-Mails an:
 - \`protokoll@trassenscout.de\``,
       outroMarkdown: signatureMarkdown,
-    },
-  },
-  [emailTemplateKeys.projectRecordNeedsReviewAdmin]: {
-    key: emailTemplateKeys.projectRecordNeedsReviewAdmin,
-    name: "Admin: E-Mail braucht Prüfung",
-    description:
-      "Benachrichtigung an Admins, wenn eine eingehende Projekt-Record-E-Mail manuell geprüft werden muss.",
-    supportsCta: true,
-    allowedVariables: [
-      "projectSlug",
-      "subjectSuffix",
-      "reviewReason",
-      "senderEmail",
-      "emailSubject",
-      "actionItemsMarkdown",
-    ],
-    sampleContext: {
-      projectSlug: "demo-projekt",
-      subjectSuffix: "E-Mail benötigt Admin-Prüfung",
-      reviewReason:
-        "die Absenderadresse nicht als Teammitglied oder Kontakt im Projekt hinterlegt ist",
-      senderEmail: "buerger@example.org",
-      emailSubject: "Neue Hinweise zur Strecke",
-      actionItemsMarkdown:
-        "- Die Absenderadresse als Kontakt zum Projekt hinzugefügt werden soll\n- Der Protokolleintrag genehmigt oder abgelehnt werden soll",
-    },
-    defaults: {
-      subject: "[Admin] Trassenscout: {{subjectSuffix}} in Projekt {{projectSlug}}",
-      introMarkdown: `Hallo Trassenscout-Admin!
-
-# Eine E-Mail benötigt Admin-Prüfung im Projekt {{projectSlug}}
-
-Die E-Mail wurde automatisch als Protokolleintrag erfasst, benötigt jedoch eine Admin-Prüfung, da {{reviewReason}}.
-
-**Absenderadresse:** {{senderEmail}}
-**Betreff:** {{emailSubject}}
-
-Bitte prüfen Sie den erstellten Protokolleintrag und entscheiden Sie, ob:
-{{actionItemsMarkdown}}`,
-      outroMarkdown: signatureMarkdown,
-      ctaText: "Protokolleintrag prüfen",
     },
   },
   [emailTemplateKeys.userCreatedAdminNotification]: {

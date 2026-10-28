@@ -1,23 +1,11 @@
 import { z } from "zod"
-import { frenchQuote } from "@/src/components/core/components/text/quote"
-import {
-  ProjectRecordEditingState,
-  ProjectRecordReviewState,
-  ProjectRecordType,
-} from "@/src/prisma/generated/browser"
-import { extractProjectRecordFromEmail } from "@/src/server/ai/extractProjectRecordFromEmail.server"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import db from "@/src/server/db.server"
-import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
-import { flushLangfuseSpans } from "@/src/server/observability/langfuseSpanProcessor.server"
 import {
   DeleteProjectRecordEmailSchema,
   ProjectRecordEmailSchema,
   UpdateProjectRecordEmailSchema,
 } from "@/src/shared/projectRecordEmails/schemas"
-import { checkProjectAiEnabled } from "./incoming/checkProjectAiEnabled.server"
-import { isAdminOrProjectMember } from "./incoming/checkSenderApproval.server"
-import { fetchProjectContext } from "./incoming/fetchProjectContext.server"
 import { parseEmail } from "./incoming/parseEmail.server"
 import { uploadEmailAttachments } from "./incoming/uploadEmailAttachments.server"
 import { GetProjectRecordEmailsSchema } from "./projectRecordEmails.inputSchemas"
@@ -42,8 +30,36 @@ const projectRecordEmailListSelect = {
   from: true,
   subject: true,
   projectId: true,
+  discardedAt: true,
   ...projectRecordEmailInclude,
 } as const
+
+// Mails added or assigned by an admin get the parsing and attachment upload the listener does.
+async function prepareProjectRecordEmailForInbox(projectRecordEmailId: number) {
+  const email = await db.projectRecordEmail.findUniqueOrThrow({
+    where: { id: projectRecordEmailId },
+    select: {
+      text: true,
+      project: { select: { id: true, slug: true } },
+      _count: { select: { uploads: true } },
+    },
+  })
+  const { body, attachments, from, subject, date } = await parseEmail({ rawEmailText: email.text })
+
+  await db.projectRecordEmail.update({
+    where: { id: projectRecordEmailId },
+    data: { textBody: body, from, subject, date },
+  })
+
+  if (email.project && email._count.uploads === 0) {
+    await uploadEmailAttachments({
+      attachments,
+      projectId: email.project.id,
+      projectSlug: email.project.slug,
+      projectRecordEmailId,
+    })
+  }
+}
 
 export async function getProjectRecordEmails(
   headers: Headers,
@@ -76,8 +92,11 @@ export async function createProjectRecordEmail(
 ) {
   await endpointAuth.admin(headers)
 
-  return db.projectRecordEmail.create({
-    data: input,
+  const { id } = await db.projectRecordEmail.create({ data: input, select: { id: true } })
+  await prepareProjectRecordEmailForInbox(id)
+
+  return db.projectRecordEmail.findUniqueOrThrow({
+    where: { id },
     include: projectRecordEmailInclude,
   })
 }
@@ -89,9 +108,11 @@ export async function updateProjectRecordEmail(
   await endpointAuth.admin(headers)
   const { id, ...data } = input
 
-  return db.projectRecordEmail.update({
+  await db.projectRecordEmail.update({ where: { id }, data })
+  await prepareProjectRecordEmailForInbox(id)
+
+  return db.projectRecordEmail.findUniqueOrThrow({
     where: { id },
-    data,
     include: projectRecordEmailInclude,
   })
 }
@@ -106,132 +127,4 @@ export async function deleteProjectRecordEmail(
     where: { id: input.id },
     include: projectRecordEmailInclude,
   })
-}
-
-export const ProcessProjectRecordEmailSchema = z.object({
-  projectRecordEmailId: z.number(),
-})
-
-export async function processProjectRecordEmail(
-  headers: Headers,
-  input: z.infer<typeof ProcessProjectRecordEmailSchema>,
-) {
-  const session = await endpointAuth.admin(headers)
-  const { projectRecordEmailId } = input
-
-  const initialProjectRecordEmail = await db.projectRecordEmail.findFirst({
-    where: { id: projectRecordEmailId },
-    include: { uploads: { select: { id: true } } },
-  })
-
-  if (!initialProjectRecordEmail?.projectId) {
-    throw new Error("ProjectRecordEmail not found or has no associated project")
-  }
-
-  const project = await db.project.findUnique({
-    where: { id: initialProjectRecordEmail.projectId },
-  })
-  if (!project) {
-    throw new Error(`Project with ID '${initialProjectRecordEmail.projectId}' not found`)
-  }
-
-  const { body, attachments, from, subject, date } = await parseEmail({
-    rawEmailText: initialProjectRecordEmail.text,
-  })
-
-  const projectId = project.id
-  const projectSlug = project.slug
-  const isAiEnabled = await checkProjectAiEnabled(project.id)
-  const isSenderApproved = await isAdminOrProjectMember({ projectId, email: from })
-
-  const projectRecordEmail = await db.projectRecordEmail.update({
-    where: { id: projectRecordEmailId },
-    data: { textBody: body, from, subject, date },
-  })
-
-  const { uploadIds, skippedAttachments } = await uploadEmailAttachments({
-    attachments,
-    projectId,
-    projectSlug,
-    projectRecordEmailId: projectRecordEmail.id,
-  })
-
-  const reviewNotes: string[] = []
-  if (!isSenderApproved) {
-    reviewNotes.push(
-      `Email von unbekannter Absenderadresse erhalten: ${from || "Unbekannt"}. Bitte prüfen Sie, ob dieser Absender berechtigt ist, Protokolleinträge für Projekt ${projectSlug} einzureichen.`,
-    )
-  }
-  if (!isAiEnabled) {
-    reviewNotes.push(
-      "AI-Funktionen sind für dieses Projekt deaktiviert. Manuelle Überprüfung erforderlich.",
-    )
-  }
-  if (skippedAttachments.length > 0) {
-    const skippedFilesList = skippedAttachments
-      .map((att) => `"${att.filename}" (${att.reason})`)
-      .join(", ")
-    reviewNotes.push(
-      `${skippedAttachments.length} Anhang/Anhänge wurden nicht hochgeladen: ${skippedFilesList}`,
-    )
-  }
-
-  const projectContext = await fetchProjectContext({ projectId })
-  const finalResult = await extractProjectRecordFromEmail({
-    body,
-    subject,
-    from,
-    projectContext,
-    userId: String(session.userId),
-  })
-
-  const projectRecord = await db.projectRecord.create({
-    data: {
-      editingState: ProjectRecordEditingState.PENDING,
-      title: finalResult.title,
-      body: finalResult.body,
-      date: finalResult.date ? new Date(finalResult.date) : date || new Date(),
-      projectId,
-      projectRecordAuthorType: ProjectRecordType.SYSTEM,
-      reviewState:
-        isSenderApproved && isAiEnabled
-          ? ProjectRecordReviewState.NEEDSREVIEW
-          : ProjectRecordReviewState.NEEDSADMINREVIEW,
-      projectRecordEmailId: projectRecordEmail.id,
-      reviewNotes: reviewNotes.join(" ") || null,
-      tags: {
-        connect: (finalResult.topics ?? []).map((id) => ({ id: Number(id) })),
-      },
-      uploads: { connect: uploadIds.map((id) => ({ id })) },
-    },
-  })
-
-  await createLogEntry({
-    action: "CREATE",
-    message: `Neuer Protokolleintrag ${frenchQuote(projectRecord.title)} aus E-Mail #${projectRecordEmailId} wurde erstellt.`,
-    userId: Number(session.userId),
-    projectId: projectRecord.projectId,
-    projectRecordId: projectRecord.id,
-    updatedRecord: {
-      id: projectRecord.id,
-      title: projectRecord.title,
-      body: projectRecord.body,
-      date: projectRecord.date,
-      editingState: projectRecord.editingState,
-      reviewState: projectRecord.reviewState,
-      reviewNotes: projectRecord.reviewNotes,
-      projectRecordEmailId: projectRecord.projectRecordEmailId,
-      tagIds: (finalResult.topics ?? []).map((id) => Number(id)),
-      uploadIds,
-    },
-  })
-
-  await flushLangfuseSpans()
-
-  return {
-    isAiEnabled,
-    isSenderApproved,
-    projectRecordId: projectRecord.id,
-    uploadIds,
-  }
 }

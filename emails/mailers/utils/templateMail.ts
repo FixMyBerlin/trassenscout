@@ -19,7 +19,6 @@ export const assertValidRenderedTemplate = (template: RenderedEmailTemplate) => 
 type BuildTemplateMailParams = {
   from: Mail["From"]
   to: Mail["To"]
-  replyTo?: Mail["ReplyTo"]
   template: RenderedEmailTemplate
   ctaLink?: string
 }
@@ -27,14 +26,12 @@ type BuildTemplateMailParams = {
 export const buildTemplateMail = ({
   from,
   to,
-  replyTo,
   template,
   ctaLink,
 }: BuildTemplateMailParams): Mail => {
   const baseMail: Mail = {
     From: from,
     To: to,
-    ReplyTo: replyTo,
     Subject: template.rendered.subject,
     introMarkdown: template.rendered.introMarkdown,
     outroMarkdown: template.rendered.outroMarkdown,

@@ -12,7 +12,20 @@ type ExtractProjectRecordFromEmailParams = {
   subject?: string | null
   from?: string | null
   projectContext: Pick<CreateProjectRecordExtractionSchemaParams, "tags">
+  template?: { entryTitle: string; body: string | null; purpose: string | null } | null
   userId: string
+}
+
+const createTemplateSection = (template: ExtractProjectRecordFromEmailParams["template"]) => {
+  if (!template) return ""
+
+  return `### PROTOKOLLVORLAGE
+The project record must follow the selected template (Protokollvorlage). Its rules take precedence over the general TITLE and BODY rules below.
+${template.purpose ? `- Purpose of the template: ${template.purpose}\n` : ""}- TITLE: start from the template's entry title "${template.entryTitle}" and add the specific topic of the email.
+${template.body ? `- BODY: fill this Markdown structure with the information from the email. Keep its headings and their order, fill placeholders and checkboxes, and write "–" under a heading when the email says nothing about it:\n\n${template.body}\n` : ""}
+---
+
+`
 }
 
 export async function extractProjectRecordFromEmail({
@@ -20,6 +33,7 @@ export async function extractProjectRecordFromEmail({
   subject,
   from,
   projectContext,
+  template,
   userId,
 }: ExtractProjectRecordFromEmailParams) {
   return runWithLangfuseAiObservation({
@@ -59,7 +73,7 @@ Your task is to extract structured information to create a **project record entr
 
 ---
 
-### TASK
+${createTemplateSection(template)}### TASK
 Analyze the email and identify the following fields:
 
 ${fieldInstructions}

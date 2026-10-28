@@ -21,6 +21,7 @@ import {
   redactProjectRecordUsers,
 } from "@/src/server/memberships/redactFormerProjectMemberUser.server"
 import { projectProtocolMailboxAddress } from "@/src/server/projectRecordEmails/projectProtocolMailboxAddress.server"
+import { projectRecordEmailInboxWhere } from "@/src/server/projectRecordEmails/projectRecordEmailInboxWhere"
 import { deleteUploadFileAndDbRecord } from "@/src/server/uploads/_utils/deleteUploadFileAndDbRecord"
 import { AuthorizationError, NotFoundError } from "@/src/shared/auth/errors"
 import { ProjectSlugRequiredSchema } from "@/src/shared/authorization/projectSlugSchema"
@@ -211,6 +212,7 @@ function createProjectRecordData(
   projectId: number,
   userId: number,
   formTemplateIds: number[],
+  projectRecordEmailId?: number,
 ) {
   const { acquisitionAreas, tags, subsubsections, uploads, formTemplates: _, ...data } = input
 
@@ -219,9 +221,17 @@ function createProjectRecordData(
     ...assignmentMetadata(null, data.assignedToId ?? null, userId),
     date: normalizeDate(data.date),
     projectId,
-    projectRecordAuthorType: ProjectRecordType.USER,
+    projectRecordAuthorType: projectRecordEmailId
+      ? ProjectRecordType.SYSTEM
+      : ProjectRecordType.USER,
     projectRecordUpdatedByType: ProjectRecordType.USER,
     reviewState: ProjectRecordReviewState.APPROVED,
+    // Saving a Posteingang draft is the confirmation of the AI result.
+    ...(projectRecordEmailId && {
+      projectRecordEmailId,
+      reviewedById: userId,
+      reviewedAt: new Date(),
+    }),
     userId,
     updatedById: userId,
     acquisitionAreas: connectIds(idsFromFormValue(acquisitionAreas)),
@@ -350,7 +360,7 @@ export async function sendProjectRecordAssignmentNotification({
       recordText,
       projectName: shortTitle(projectSlug),
       recordPath: projectRecordDetailPath(projectSlug, recordId),
-      replyToEmail: project?.assignmentRepliesEnabled
+      protocolMailboxEmail: project?.assignmentRepliesEnabled
         ? projectProtocolMailboxAddress(projectSlug)
         : null,
     })
@@ -591,6 +601,7 @@ async function assertViewerOwnsUnattachedUploads({
 export async function createProjectRecord(
   headers: Headers,
   input: z.infer<typeof CreateProjectRecordBySlugSchema>,
+  { projectRecordEmailId }: { projectRecordEmailId?: number } = {},
 ) {
   const { projectId, membershipRole, session } = await endpointAuth.projectRole(
     headers,
@@ -618,7 +629,7 @@ export async function createProjectRecord(
   const userId = Number(session.userId)
 
   const record = await db.projectRecord.create({
-    data: createProjectRecordData(data, projectId, userId, formTemplateIds),
+    data: createProjectRecordData(data, projectId, userId, formTemplateIds, projectRecordEmailId),
     include: projectRecordInclude,
   })
 
@@ -635,7 +646,9 @@ export async function createProjectRecord(
 
   await createLogEntry({
     action: "CREATE",
-    message: `Neuer Protokolleintrag ${frenchQuote(record.title)} wurde erstellt.`,
+    message: projectRecordEmailId
+      ? `Neuer Protokolleintrag ${frenchQuote(record.title)} aus E-Mail #${projectRecordEmailId} wurde erstellt.`
+      : `Neuer Protokolleintrag ${frenchQuote(record.title)} wurde erstellt.`,
     userId,
     projectSlug,
     projectRecordId: record.id,
@@ -946,7 +959,7 @@ export async function getProjectRecordsTabCounts(
   headers: Headers,
   input: z.infer<typeof GetProjectRecordsSchema>,
 ) {
-  await endpointAuth.projectRole(headers, input.projectSlug, viewerRoles)
+  const { membershipRole } = await endpointAuth.projectRole(headers, input.projectSlug, viewerRoles)
 
   const project = await db.project.findUnique({
     where: { slug: input.projectSlug },
@@ -954,7 +967,7 @@ export async function getProjectRecordsTabCounts(
   })
 
   if (!project) {
-    return { approvedCount: 0, needsReviewCount: 0, aiEnabled: false }
+    return { approvedCount: 0, needsReviewCount: 0, inboxCount: 0, aiEnabled: false }
   }
 
   const approvedCount = await db.projectRecord.count({
@@ -968,7 +981,13 @@ export async function getProjectRecordsTabCounts(
     },
   })
 
-  return { approvedCount, needsReviewCount, aiEnabled: project.aiEnabled }
+  // The Posteingang is admin-only for now; membershipRole null means admin.
+  const inboxCount =
+    membershipRole === null
+      ? await db.projectRecordEmail.count({ where: projectRecordEmailInboxWhere(project.id) })
+      : 0
+
+  return { approvedCount, needsReviewCount, inboxCount, aiEnabled: project.aiEnabled }
 }
 
 export async function getProjectRecordDeleteInfo(

@@ -592,6 +592,22 @@ describe("getUploadsWithSubsections", () => {
       }),
     )
   })
+
+  test("hides attachments of unprocessed mails from members, not from admins", async () => {
+    const { getUploadsWithSubsections } = await import("./uploads.server")
+    const hidden = { projectRecordEmailId: { not: null }, projectRecords: { none: {} } }
+
+    await getUploadsWithSubsections(headers, { projectSlug: "rs23" })
+    expect(mockDb.upload.findMany.mock.calls[0]?.[0]?.where?.NOT).toEqual(hidden)
+
+    mockEndpointAuth.projectRole.mockResolvedValueOnce({
+      projectId: 1,
+      membershipRole: null,
+      session: { userId: "1", role: "ADMIN" },
+    })
+    await getUploadsWithSubsections(headers, { projectSlug: "rs23" })
+    expect(mockDb.upload.findMany.mock.calls[1]?.[0]?.where).not.toHaveProperty("NOT")
+  })
 })
 
 describe("updateUpload", () => {

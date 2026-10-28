@@ -31,6 +31,7 @@ import {
 } from "./_utils/deleteUploadFileAndDbRecord"
 import { extractExifFromS3 } from "./_utils/extractExifFromS3.server"
 import { findFilenameCollisions } from "./_utils/filenameCollisions"
+import { hideUnprocessedMailAttachments } from "./_utils/hideUnprocessedMailAttachments"
 import { isProjectUploadS3Url } from "./_utils/keys"
 import { matchSlugFromFilename } from "./_utils/matchSlugFromFilename"
 import {
@@ -229,7 +230,7 @@ function assertUploadExternalUrlBelongsToProject(projectSlug: string, externalUr
 }
 
 export async function getUploads(headers: Headers, input: z.infer<typeof GetUploadsSchema>) {
-  const { projectId, session } = await endpointAuth.projectRole(
+  const { projectId, session, membershipRole } = await endpointAuth.projectRole(
     headers,
     input.projectSlug,
     viewerRoles,
@@ -237,7 +238,10 @@ export async function getUploads(headers: Headers, input: z.infer<typeof GetUplo
   const uploads = await db.upload.findMany({
     include: uploadWithSubsectionsInclude,
     orderBy: { id: "desc" },
-    where: { project: { slug: input.projectSlug } },
+    where: {
+      project: { slug: input.projectSlug },
+      ...hideUnprocessedMailAttachments(membershipRole),
+    },
   })
   const redactionContext = await loadUserRedactionContext(
     projectId,
@@ -251,7 +255,7 @@ export async function getUploadsWithSubsections(
   headers: Headers,
   input: z.infer<typeof GetUploadsWithSubsectionsSchema>,
 ) {
-  const { projectId, session } = await endpointAuth.projectRole(
+  const { projectId, session, membershipRole } = await endpointAuth.projectRole(
     headers,
     input.projectSlug,
     viewerRoles,
@@ -259,6 +263,7 @@ export async function getUploadsWithSubsections(
   const { projectSlug, subsubsectionId, acquisitionAreaId, uploadIds, skip = 0, take = 100 } = input
   const safeWhere: Prisma.UploadWhereInput = {
     project: { slug: projectSlug },
+    ...hideUnprocessedMailAttachments(membershipRole),
     OR: [
       { projectRecords: { none: {} } },
       {

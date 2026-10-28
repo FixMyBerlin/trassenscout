@@ -77,12 +77,12 @@ const projectFeatureColumns: ProjectFeatureColumn[] = [
   },
   {
     key: "assignmentRepliesEnabled",
-    header: "Reply-To",
+    header: "Absender",
     icon: <ArrowUturnLeftIcon className="size-4" aria-hidden />,
     label: (enabled) =>
       enabled
-        ? "Antworten auf Zuweisungs-E-Mails ausschalten (Antworten gehen an noreply@)"
-        : "Antworten auf Zuweisungs-E-Mails einschalten (Antworten gehen an das Protokoll-Postfach des Projekts)",
+        ? "Zuweisungs-E-Mails wieder von noreply@ senden"
+        : "Zuweisungs-E-Mails vom Protokoll-Postfach des Projekts senden (Antworten landen im Posteingang)",
   },
   {
     key: "landAcquisitionModuleEnabled",

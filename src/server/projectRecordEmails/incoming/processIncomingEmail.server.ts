@@ -1,18 +1,6 @@
-import { frenchQuote } from "@/src/components/core/components/text/quote"
-import {
-  ProjectRecordEditingState,
-  ProjectRecordReviewState,
-  ProjectRecordType,
-} from "@/src/prisma/generated/browser"
-import { extractProjectRecordFromEmail } from "@/src/server/ai/extractProjectRecordFromEmail.server"
 import db from "@/src/server/db.server"
-import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
-import { flushLangfuseSpans } from "@/src/server/observability/langfuseSpanProcessor.server"
-import { checkProjectAiEnabled } from "./checkProjectAiEnabled.server"
-import { isAdminOrProjectMember } from "./checkSenderApproval.server"
-import { fetchProjectContext } from "./fetchProjectContext.server"
+import { notifyAdminsProjectRecordEmailReceived } from "./notifyAdminsProjectRecordEmailReceived.server"
 import { notifyAdminsProjectRecordEmailWithoutProject } from "./notifyAdminsProjectRecordEmailWithoutProject.server"
-import { notifyAdminsProjectRecordNeedsReview } from "./notifyAdminsProjectRecordNeedsReview.server"
 import { notifySenderLegacyProtocolMailboxMoved } from "./notifySenderLegacyProtocolMailboxMoved.server"
 import { parseEmail } from "./parseEmail.server"
 import { uploadEmailAttachments } from "./uploadEmailAttachments.server"
@@ -24,208 +12,100 @@ export async function processIncomingProjectRecordEmail({
   rawEmailText: string
   projectSlug?: string
 }) {
-  try {
-    const project = projectSlug
-      ? await db.project.findUnique({
-          where: { slug: projectSlug },
-        })
-      : null
-
-    const { body, attachments, from, fromAddress, to, cc, subject, date, isAutoReply } =
-      await parseEmail({ rawEmailText })
-
-    // Out-of-office replies must not trigger mails or become Protokolleinträge.
-    if (isAutoReply) {
-      const projectRecordEmail = await db.projectRecordEmail.create({
-        data: {
-          text: rawEmailText,
-          textBody: body,
-          from,
-          subject,
-          date,
-          projectId: project?.id ?? null,
-        },
+  const project = projectSlug
+    ? await db.project.findUnique({
+        where: { slug: projectSlug },
       })
+    : null
 
-      return {
-        success: false,
-        projectRecordEmailId: projectRecordEmail.id,
-        message: "Automatic reply. Email stored but not processed.",
-      }
-    }
+  const { body, attachments, from, fromAddress, to, cc, subject, date, isAutoReply } =
+    await parseEmail({ rawEmailText })
 
-    await notifySenderLegacyProtocolMailboxMoved({
-      senderEmail: fromAddress,
-      to,
-      cc,
-    })
-
-    if (!project) {
-      const projectRecordEmail = await db.projectRecordEmail.create({
-        data: {
-          text: rawEmailText,
-          textBody: body,
-          from,
-          subject,
-          date,
-          projectId: null,
-        },
-      })
-
-      await notifyAdminsProjectRecordEmailWithoutProject({
-        projectSlug,
-        senderEmail: from || "Unbekannt",
-        emailSubject: subject,
-        projectRecordEmailId: projectRecordEmail.id,
-      })
-
-      return {
-        success: false,
-        projectRecordEmailId: projectRecordEmail.id,
-        message: !projectSlug
-          ? "No Project Slug provided. Email stored but not processed."
-          : `Project with slug '${projectSlug}' not found. Email stored but not processed.`,
-      }
-    }
-
-    const projectId = project.id
-    const isAiEnabled = await checkProjectAiEnabled(projectId)
-    const isSenderApproved = await isAdminOrProjectMember({
-      projectId,
-      email: from,
-    })
-
+  // Out-of-office replies must not trigger mails or land in the Posteingang.
+  if (isAutoReply) {
     const projectRecordEmail = await db.projectRecordEmail.create({
       data: {
         text: rawEmailText,
-        projectId,
         textBody: body,
         from,
         subject,
         date,
+        projectId: project?.id ?? null,
+        discardedAt: new Date(),
       },
     })
 
-    const { uploadIds, skippedAttachments } = await uploadEmailAttachments({
-      attachments,
-      projectId,
-      projectSlug: project.slug,
+    return {
+      success: false,
+      projectRecordEmailId: projectRecordEmail.id,
+      message: "Automatic reply. Email stored as discarded.",
+    }
+  }
+
+  await notifySenderLegacyProtocolMailboxMoved({
+    senderEmail: fromAddress,
+    to,
+    cc,
+  })
+
+  if (!project) {
+    const projectRecordEmail = await db.projectRecordEmail.create({
+      data: {
+        text: rawEmailText,
+        textBody: body,
+        from,
+        subject,
+        date,
+        projectId: null,
+      },
+    })
+
+    await notifyAdminsProjectRecordEmailWithoutProject({
+      projectSlug,
+      senderEmail: from || "Unbekannt",
+      emailSubject: subject,
       projectRecordEmailId: projectRecordEmail.id,
     })
 
-    if (!body?.trim() && uploadIds.length === 0) {
-      return {
-        success: false,
-        projectRecordEmailId: projectRecordEmail.id,
-        message: "Email body is empty and no attachments. No ProjectRecord created.",
-      }
-    }
-
-    const reviewNotes: string[] = []
-
-    if (!isSenderApproved) {
-      reviewNotes.push(
-        `Email von unbekannter Absenderadresse erhalten: ${from || "Unbekannt"}. Bitte prüfen Sie, ob dieser Absender berechtigt ist, Protokolleinträge für Projekt ${projectSlug} einzureichen.`,
-      )
-    }
-
-    if (!isAiEnabled) {
-      reviewNotes.push(
-        "AI-Funktionen sind für dieses Projekt deaktiviert. Manuelle Überprüfung erforderlich.",
-      )
-    }
-
-    if (skippedAttachments.length > 0) {
-      const skippedFilesList = skippedAttachments
-        .map((att) => `"${att.filename}" (${att.reason})`)
-        .join(", ")
-      reviewNotes.push(
-        `${skippedAttachments.length} Anhang/Anhänge wurden nicht hochgeladen: ${skippedFilesList}`,
-      )
-    }
-    const reviewNote = reviewNotes.join(" ")
-
-    const projectContext = await fetchProjectContext({ projectId })
-
-    const finalResult = await extractProjectRecordFromEmail({
-      body,
-      subject,
-      from,
-      projectContext,
-      userId: "SYSTEM",
-    })
-
-    const combinedResult = {
-      ...finalResult,
-      projectId,
-      tags:
-        finalResult.topics && Array.isArray(finalResult.topics)
-          ? finalResult.topics.map((id) => parseInt(id, 10))
-          : [],
-    }
-
-    const projectRecord = await db.projectRecord.create({
-      data: {
-        editingState: ProjectRecordEditingState.PENDING,
-        title: combinedResult.title,
-        body: combinedResult.body,
-        date: combinedResult.date ? new Date(combinedResult.date) : date || new Date(),
-        projectId: combinedResult.projectId,
-        projectRecordAuthorType: ProjectRecordType.SYSTEM,
-        reviewState:
-          isSenderApproved && isAiEnabled
-            ? ProjectRecordReviewState.NEEDSREVIEW
-            : ProjectRecordReviewState.NEEDSADMINREVIEW,
-        projectRecordEmailId: projectRecordEmail.id,
-        reviewNotes: reviewNote || null,
-        tags: {
-          connect: combinedResult.tags.map((id) => ({ id })),
-        },
-        uploads: {
-          connect: uploadIds.map((id) => ({ id })),
-        },
-      },
-    })
-
-    await createLogEntry({
-      action: "CREATE",
-      message: `Neuer Protokolleintrag ${frenchQuote(projectRecord.title)} aus E-Mail #${projectRecordEmail.id} wurde erstellt.`,
-      userId: null,
-      projectId: projectRecord.projectId,
-      projectRecordId: projectRecord.id,
-      updatedRecord: {
-        id: projectRecord.id,
-        title: projectRecord.title,
-        body: projectRecord.body,
-        date: projectRecord.date,
-        editingState: projectRecord.editingState,
-        reviewState: projectRecord.reviewState,
-        reviewNotes: projectRecord.reviewNotes,
-        projectRecordEmailId: projectRecord.projectRecordEmailId,
-        tagIds: combinedResult.tags,
-        uploadIds,
-      },
-    })
-
-    if (!isSenderApproved || !isAiEnabled) {
-      await notifyAdminsProjectRecordNeedsReview({
-        projectId,
-        projectSlug: project.slug,
-        senderEmail: from || "Unbekannt",
-        emailSubject: subject,
-        projectRecordId: projectRecord.id,
-        isAiEnabled,
-        isSenderApproved,
-      })
-    }
-
     return {
-      success: true,
-      projectRecordId: projectRecord.id,
-      uploadIds,
-      message: `ProjectRecord created successfully with ${uploadIds.length} attachment(s)`,
+      success: false,
+      projectRecordEmailId: projectRecordEmail.id,
+      message: !projectSlug
+        ? "No Project Slug provided. Email stored but not processed."
+        : `Project with slug '${projectSlug}' not found. Email stored but not processed.`,
     }
-  } finally {
-    await flushLangfuseSpans()
+  }
+
+  const projectRecordEmail = await db.projectRecordEmail.create({
+    data: {
+      text: rawEmailText,
+      projectId: project.id,
+      textBody: body,
+      from,
+      subject,
+      date,
+    },
+  })
+
+  // The AI only runs when someone processes the mail in the Posteingang.
+  const { uploadIds } = await uploadEmailAttachments({
+    attachments,
+    projectId: project.id,
+    projectSlug: project.slug,
+    projectRecordEmailId: projectRecordEmail.id,
+  })
+
+  await notifyAdminsProjectRecordEmailReceived({
+    projectSlug: project.slug,
+    senderEmail: from || "Unbekannt",
+    emailSubject: subject,
+    projectRecordEmailId: projectRecordEmail.id,
+  })
+
+  return {
+    success: true,
+    projectRecordEmailId: projectRecordEmail.id,
+    uploadIds,
+    message: `Email stored in the Posteingang with ${uploadIds.length} attachment(s)`,
   }
 }

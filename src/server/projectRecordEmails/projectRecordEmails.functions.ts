@@ -8,14 +8,12 @@ import {
   CreateProjectRecordEmailSchema,
   GetProjectRecordEmailSchema,
   GetProjectRecordEmailsSchema,
-  ProcessProjectRecordEmailSchema,
 } from "./projectRecordEmails.inputSchemas"
 import {
   createProjectRecordEmail,
   deleteProjectRecordEmail,
   getProjectRecordEmail,
   getProjectRecordEmails,
-  processProjectRecordEmail,
   updateProjectRecordEmail,
 } from "./projectRecordEmails.server"
 export const getProjectRecordEmailsFn = createServerFn({ method: "GET" })
@@ -37,7 +35,3 @@ export const updateProjectRecordEmailFn = createServerFn({ method: "POST" })
 export const deleteProjectRecordEmailFn = createServerFn({ method: "POST" })
   .validator(DeleteProjectRecordEmailSchema)
   .handler(({ data }) => deleteProjectRecordEmail(getRequestHeaders(), data))
-
-export const processProjectRecordEmailFn = createServerFn({ method: "POST" })
-  .validator(ProcessProjectRecordEmailSchema)
-  .handler(({ data }) => processProjectRecordEmail(getRequestHeaders(), data))

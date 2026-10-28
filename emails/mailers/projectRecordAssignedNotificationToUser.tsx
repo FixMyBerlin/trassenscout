@@ -14,7 +14,7 @@ type Props = {
   recordText: string | null
   projectName: string
   recordPath: string
-  replyToEmail: string | null
+  protocolMailboxEmail: string | null
 }
 
 export async function projectRecordAssignedNotificationToUser(props: Props) {
@@ -26,24 +26,33 @@ export async function projectRecordAssignedNotificationToUser(props: Props) {
       recordTitle: props.recordTitle,
       recordText: toTemplateText(props.recordText),
       projectName: props.projectName,
-      replyHintText: props.replyToEmail ? assignmentReplyHintText : "",
+      replyHintText: props.protocolMailboxEmail ? assignmentReplyHintText : "",
     },
   )
   assertValidRenderedTemplate(renderedTemplate)
 
   const message = buildTemplateMail({
-    from: addressNoreply,
+    // Sent from the project's protocol mailbox so that replies land in its Posteingang.
+    from: props.protocolMailboxEmail
+      ? { Email: props.protocolMailboxEmail, Name: `Trassenscout Protokoll ${props.projectName}` }
+      : addressNoreply,
     to: [{ Email: props.assigneeEmail }],
-    replyTo: props.replyToEmail
-      ? { Email: props.replyToEmail, Name: `Trassenscout Protokoll ${props.projectName}` }
-      : undefined,
     template: renderedTemplate,
     ctaLink: mailUrl(props.recordPath),
   })
 
   return {
     async send() {
-      await sendMail(message)
+      try {
+        await sendMail(message)
+      } catch (error) {
+        if (!props.protocolMailboxEmail) throw error
+        // A provider that rejects the protocol mailbox as sender must not block the assignment.
+        console.error("Sending from the protocol mailbox failed, retrying from noreply@:", error)
+        await (
+          await projectRecordAssignedNotificationToUser({ ...props, protocolMailboxEmail: null })
+        ).send()
+      }
     },
   }
 }

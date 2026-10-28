@@ -2,7 +2,9 @@
 export function projectProtocolMailboxAddress(projectSlug: string) {
   const [localPart, domain, ...rest] = (process.env.IMAP_USER ?? "").trim().split("@")
   if (!localPart || !domain || rest.length > 0) {
-    console.warn("Assignment replies are on, but IMAP_USER is no mailbox address: no Reply-To.")
+    console.warn(
+      "Assignment replies are on, but IMAP_USER is no mailbox address: sending from noreply@.",
+    )
     return null
   }
   return `${localPart.split("+")[0]}+${projectSlug}@${domain}`
