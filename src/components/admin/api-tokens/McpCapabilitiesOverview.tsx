@@ -177,11 +177,18 @@ const groups: { title: string; rows: CapabilityRow[] }[] = [
     title: "Eingaben",
     rows: [
       {
-        action: "Beteiligungen und Eingaben auflisten",
-        tools: "surveys_list, survey_responses_list",
+        action: "Beteiligungen, Fragen und Eingaben auflisten",
+        tools: "surveys_list, survey_responses_schema, survey_responses_list",
         disabled: "none",
         draft: "read",
         direct: "read",
+      },
+      {
+        action: "Anlegen",
+        tools: "survey_responses_create",
+        disabled: "none",
+        draft: "none",
+        direct: "live",
       },
       {
         action: "Löschen",
@@ -310,10 +317,11 @@ export function McpCapabilitiesDetails() {
             Protokolle ohne Kommentare oder Uploads.
           </li>
           <li>
-            <strong>Eingaben</strong> lassen sich nicht bearbeiten. Löschen ist endgültig: Mit der
-            Eingabe gehen ihre Kommentare und die Uploads, die nirgends sonst hängen. Eingaben, die
-            mit einer Maßnahme verknüpft sind, bleiben stehen. Kontaktdaten (Name, Telefon, E-Mail)
-            gibt MCP nicht heraus.
+            <strong>Eingaben</strong> lassen sich nicht bearbeiten. Neue Eingaben legt MCP ohne
+            Uploads an und verschickt dabei keine E-Mails. Löschen ist endgültig: Mit der Eingabe
+            gehen ihre Kommentare und die Uploads, die nirgends sonst hängen. Eingaben, die mit
+            einer Maßnahme verknüpft sind, bleiben stehen. Kontaktdaten (Name, Telefon, E-Mail) kann
+            MCP beim Anlegen eintragen, gibt sie aber nie heraus.
           </li>
           <li>
             Kataloge haben keinen Entwurfsmodus. Weggelassenes Feld bleibt unverändert;{" "}

@@ -1,26 +1,37 @@
-import { beforeEach, describe, expect, test, vi } from "vitest"
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest"
+import { allowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
 import { getFlatSurveyFormFields } from "@/src/components/surveys/[surveyId]/responses/getFlatSurveyFormFields"
 import {
+  createSurveyResponsesForMcp,
   deleteSurveyResponsesForMcp,
+  getSurveyResponsesSchemaForMcp,
   listSurveyResponsesForMcp,
   listSurveysForMcp,
 } from "./surveyResponsesMcp.server"
 
-const { mockDb, mockDeleteResponses, mockFindLinkedSubsubsection, mockCreateLogEntry } = vi.hoisted(
-  () => ({
-    mockDb: {
-      project: { findUnique: vi.fn() },
-      survey: { findMany: vi.fn(), findFirst: vi.fn() },
-      surveyResponse: { findMany: vi.fn(), findFirst: vi.fn(), count: vi.fn() },
-      upload: { findMany: vi.fn() },
-      membership: { findMany: vi.fn() },
-    },
-    mockDeleteResponses: vi.fn(),
-    mockFindLinkedSubsubsection: vi.fn(),
-    mockCreateLogEntry: vi.fn(),
-  }),
-)
+const {
+  mockDb,
+  mockDeleteResponses,
+  mockFindLinkedSubsubsection,
+  mockCreateLogEntry,
+  mockCreateNextOhvReferenceId,
+} = vi.hoisted(() => ({
+  mockDb: {
+    project: { findUnique: vi.fn() },
+    survey: { findMany: vi.fn(), findFirst: vi.fn() },
+    surveySession: { create: vi.fn() },
+    surveyResponse: { findMany: vi.fn(), findFirst: vi.fn(), count: vi.fn(), create: vi.fn() },
+    upload: { findMany: vi.fn() },
+    membership: { findMany: vi.fn() },
+    $transaction: vi.fn(),
+    $executeRaw: vi.fn(),
+  },
+  mockDeleteResponses: vi.fn(),
+  mockFindLinkedSubsubsection: vi.fn(),
+  mockCreateLogEntry: vi.fn(),
+  mockCreateNextOhvReferenceId: vi.fn(),
+}))
 
 vi.mock("@/src/server/db.server", () => ({ default: mockDb }))
 vi.mock("@/src/server/survey-responses/surveyResponses.server", () => ({
@@ -30,6 +41,9 @@ vi.mock("@/src/server/survey-responses/surveyResponses.server", () => ({
 }))
 vi.mock("@/src/server/logEntries/create/createLogEntry", () => ({
   createLogEntry: mockCreateLogEntry,
+}))
+vi.mock("@/src/server/survey-responses/utils/ohvReferenceId", () => ({
+  createNextOhvReferenceId: mockCreateNextOhvReferenceId,
 }))
 
 const origin = "http://localhost"
@@ -372,6 +386,260 @@ describe("deleteSurveyResponsesForMcp", () => {
     expect(result.items[0]).toMatchObject({
       deleted: false,
       errors: ["Eingabe nicht gefunden: 99"],
+    })
+  })
+})
+
+describe("getSurveyResponsesSchemaForMcp", () => {
+  test("lists the questions MCP can answer, without contact data and uploads", async () => {
+    mockDb.survey.findFirst.mockResolvedValue({ id: 5, slug: surveySlug })
+
+    const result = await getSurveyResponsesSchemaForMcp({ projectSlug: "ohv", surveySlug })
+
+    expect(result.statuses).toEqual(statuses.map(({ value, label }) => ({ value, label })))
+    expect(result.parts.map((part) => part.part)).toEqual([2])
+    const questions = new Map(
+      result.parts[0]!.questions.map((question) => [question.name, question]),
+    )
+    expect(questions.has("uploads")).toBe(false)
+    expect(questions.get("email")).toMatchObject({
+      answerType: "text",
+      required: false,
+      contact: true,
+    })
+    expect(questions.get("category")).toMatchObject({
+      answerType: "options",
+      required: true,
+      options: expect.arrayContaining([
+        { key: "haltestelleneinrichtungen", label: "Haltestelleneinrichtungen" },
+      ]),
+    })
+    expect(questions.get("fundingSource")).toMatchObject({
+      required: false,
+      dependsOn: "coFinancing",
+    })
+    expect(questions.get("location")).toMatchObject({ answerType: "latLng", required: false })
+  })
+})
+
+describe("createSurveyResponsesForMcp", () => {
+  const testSurveySlug = "rstest-2-3"
+  type Item = Parameters<typeof createSurveyResponsesForMcp>[0]["items"][number]
+  const create = (item: Partial<Item>) =>
+    createSurveyResponsesForMcp({
+      items: [{ projectSlug: "ohv", surveySlug: testSurveySlug, part2: {}, ...item }],
+      origin,
+      createdById: 1,
+    })
+  const storedData = () => JSON.parse(mockDb.surveyResponse.create.mock.calls[0]?.[0].data.data)
+
+  beforeEach(() => {
+    mockDb.project.findUnique.mockResolvedValue(ohv("DIRECT"))
+    mockDb.survey.findFirst.mockResolvedValue({ id: 6, slug: testSurveySlug })
+    mockDb.$transaction.mockImplementation((fn: (tx: typeof mockDb) => unknown) => fn(mockDb))
+    mockDb.surveySession.create.mockResolvedValue({ id: 11 })
+    mockDb.surveyResponse.create.mockResolvedValue({ id: 77 })
+  })
+
+  test("refuses to create while the project is in DRAFT", async () => {
+    mockDb.project.findUnique.mockResolvedValue(ohv("DRAFT"))
+
+    const result = await create({ part2: { category: "nutzung", feedbackText: "Test" } })
+
+    expect(mockDb.$transaction).not.toHaveBeenCalled()
+    expect(result.items[0]).toMatchObject({
+      created: false,
+      errors: [
+        'Creating Eingaben is only available while MCP direct write is active for "ohv". The effective mode is drafts.',
+      ],
+    })
+  })
+
+  test("submits an Eingabe like the form: own session, defaults, first status, log entry", async () => {
+    const result = await create({
+      part2: {
+        category: "nutzung",
+        location: { lat: 50.12, lng: 8.71 },
+        feedbackText: "Test: Radweg zu schmal",
+      },
+    })
+
+    expect(mockDb.surveySession.create).toHaveBeenCalledWith({
+      data: { surveyId: 6 },
+      select: { id: true },
+    })
+    expect(mockDb.surveyResponse.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        surveySessionId: 11,
+        surveyPart: 2,
+        source: "FORM",
+        status: getConfigBySurveySlug(testSurveySlug, "backend").status[0].value,
+        state: "SUBMITTED",
+      }),
+      select: { id: true },
+    })
+    expect(storedData()).toEqual({
+      category: "nutzung",
+      enableLocation: "ja",
+      location: { lat: 50.12, lng: 8.71 },
+      feedbackText: "Test: Radweg zu schmal",
+    })
+    expect(mockCreateLogEntry).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action: "CREATE",
+        userId: 1,
+        projectId: 3,
+        surveyId: 6,
+        surveyResponseId: 77,
+      }),
+    )
+    expect(result.items).toEqual([
+      {
+        projectSlug: "ohv",
+        surveySlug: testSurveySlug,
+        id: 77,
+        referenceId: null,
+        url: "http://localhost/ohv/surveys/6/responses?responseDetails=77",
+        created: true,
+        errors: [],
+      },
+    ])
+  })
+
+  test("leaves out the location when the Eingabe has no place, as the form does", async () => {
+    await create({
+      part2: { category: "umwelt", enableLocation: "nein", feedbackText: "Test allgemein" },
+    })
+
+    expect(storedData()).toEqual({
+      category: "umwelt",
+      enableLocation: "nein",
+      feedbackText: "Test allgemein",
+    })
+  })
+
+  test("asks for the location when the Eingabe has a place", async () => {
+    const result = await create({ part2: { category: "nutzung", feedbackText: "Test" } })
+
+    expect(result.items[0]?.errors).toEqual(["Teil 2: location: Pflichtfeld."])
+  })
+
+  test("names each answer it cannot take and writes nothing", async () => {
+    const result = await create({
+      part2: {
+        category: "parken",
+        enableLocation: "nein",
+        location: { lat: 50.12, lng: 8.71 },
+        farbe: "blau",
+      },
+    })
+
+    expect(mockDb.$transaction).not.toHaveBeenCalled()
+    expect(result.items[0]?.created).toBe(false)
+    expect(result.items[0]?.errors).toEqual([
+      "Teil 2: unbekannte Frage farbe",
+      "Teil 2: category: unbekannte Option parken",
+      "Teil 2: location: passt nicht zur Antwort in enableLocation",
+      "Teil 2: feedbackText: Pflichtfeld.",
+    ])
+  })
+
+  test.each(allowedSurveySlugs)("checks empty answers for %s without crashing", async (slug) => {
+    mockDb.survey.findFirst.mockResolvedValue({ id: 6, slug })
+    const schema = await getSurveyResponsesSchemaForMcp({ projectSlug: "ohv", surveySlug: slug })
+
+    const result = await create({
+      surveySlug: slug,
+      ...Object.fromEntries(schema.parts.map(({ part }) => [`part${part}`, {}])),
+    })
+
+    for (const error of result.items[0]?.errors ?? []) {
+      expect(error).toMatch(/^Teil \d/)
+      expect(error).not.toContain("unbekannte")
+    }
+  })
+
+  test("rejects a status the Beteiligung does not have", async () => {
+    const result = await create({
+      part2: { category: "nutzung", enableLocation: "nein", feedbackText: "Test" },
+      status: "NOPE",
+    })
+
+    expect(result.items[0]?.errors).toEqual(["Unbekannter Status: NOPE"])
+  })
+
+  describe("for an OHV Maßnahmenmeldung", () => {
+    const meldung = {
+      category: ["zob"],
+      commune: "unknown",
+      feedbackText: "Test: neue Haltestelle",
+      costs: 12000,
+      coFinancing: "no",
+      sharedBuilding: "no",
+      realisationYear: "2028",
+      declaration: true,
+    }
+
+    beforeEach(() => {
+      vi.useFakeTimers({ now: new Date("2026-10-29T12:00:00Z"), toFake: ["Date"] })
+      mockDb.survey.findFirst.mockResolvedValue({ id: 5, slug: surveySlug })
+      mockCreateNextOhvReferenceId.mockResolvedValue("547010_13")
+    })
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
+    test("gives it the next Vorgangs-ID under the lock and no place when none is sent", async () => {
+      const result = await create({ surveySlug, part2: meldung })
+
+      expect(mockDb.$executeRaw).toHaveBeenCalled()
+      expect(mockCreateNextOhvReferenceId).toHaveBeenCalledWith(5, mockDb)
+      expect(storedData()).toMatchObject({
+        referenceId: "547010_13",
+        location: null,
+        locationMode: "none",
+        email: "",
+      })
+      expect(result.items[0]).toMatchObject({ created: true, referenceId: "547010_13" })
+    })
+
+    test("applies the form's own field rules", async () => {
+      const result = await create({ surveySlug, part2: { ...meldung, realisationYear: "2027" } })
+
+      expect(result.items[0]?.errors).toEqual([
+        "Teil 2: realisationYear: Das Realisierungsjahr muss mindestens 2028 sein.",
+      ])
+    })
+
+    test("stores the contact data it is sent without returning it", async () => {
+      const result = await create({
+        surveySlug,
+        part2: {
+          ...meldung,
+          contact: "Erika Test",
+          phone: "0331 123456",
+          email: "erika@example.org",
+        },
+      })
+
+      expect(storedData()).toMatchObject({
+        contact: "Erika Test",
+        phone: "0331 123456",
+        email: "erika@example.org",
+      })
+      expect(JSON.stringify(result)).not.toContain("erika@example.org")
+    })
+
+    test("checks contact data like the form and refuses uploads", async () => {
+      const result = await create({
+        surveySlug,
+        part2: { ...meldung, email: "erika-at-example.org", uploads: [618] },
+      })
+
+      expect(result.items[0]?.errors).toEqual([
+        "Teil 2: uploads nimmt MCP nicht an",
+        "Teil 2: email: Bitte eine gültige E-Mail-Adresse eingeben.",
+      ])
     })
   })
 })

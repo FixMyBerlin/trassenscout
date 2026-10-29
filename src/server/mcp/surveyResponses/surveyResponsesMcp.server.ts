@@ -1,10 +1,18 @@
 import { z } from "zod"
-import { allowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
+import {
+  allowedSurveySlugs,
+  type AllowedSurveySlugs,
+} from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/components/beteiligung/shared/utils/getConfigBySurveySlug"
+import { getQuestionIdBySurveySlug } from "@/src/components/beteiligung/shared/utils/getQuestionIdBySurveySlug"
 import { getSelectedOptionLabels } from "@/src/components/beteiligung/shared/utils/getSelectedOptionLabels"
 import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { getFlatSurveyFormFields } from "@/src/components/surveys/[surveyId]/responses/getFlatSurveyFormFields"
-import { SurveyResponseStateEnum, UserRoleEnum } from "@/src/prisma/generated/client"
+import {
+  SurveyResponseSourceEnum,
+  SurveyResponseStateEnum,
+  UserRoleEnum,
+} from "@/src/prisma/generated/client"
 import db from "@/src/server/db.server"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { requireMcpDirectProject } from "@/src/server/mcp/direct/requireMcpDirectProject.server"
@@ -20,8 +28,12 @@ import {
   findLinkedSubsubsectionForSurveyResponse,
   orphanedUploadWhere,
 } from "@/src/server/survey-responses/surveyResponses.server"
+import { createNextOhvReferenceId } from "@/src/server/survey-responses/utils/ohvReferenceId"
 
 type FlatField = ReturnType<typeof getFlatSurveyFormFields>[number]
+type AnswerField = Exclude<FlatField, { component: "hidden" }>
+type ConditionValue = Parameters<NonNullable<AnswerField["condition"]>["conditionFn"]>[0]
+type Answers = Record<string, unknown>
 
 // Eingaben are the submitted part-2 responses, as in the app's Eingaben list.
 const eingabeWhere = (projectId: number, surveySlug?: string | null) => ({
@@ -44,6 +56,7 @@ function surveyConfig(slug: string) {
   const configSlug = surveySlugSchema.safeParse(slug).data
   if (!configSlug) return null
   return {
+    slug: configSlug,
     statuses: getConfigBySurveySlug(configSlug, "backend").status,
     fieldsByPart: new Map([
       [1, getFlatSurveyFormFields(getConfigBySurveySlug(configSlug, "part1"))],
@@ -64,7 +77,7 @@ function parseResponseData(raw: string) {
 const isEmptyAnswer = (value: unknown) =>
   value == null || value === "" || (Array.isArray(value) && value.length === 0)
 
-// Contact data stays out of MCP; radnetz-brandenburg asks name, email and PIN in part 1 under numeric keys.
+// MCP never returns contact data; radnetz-brandenburg asks name, email and PIN in part 1 under numeric keys.
 const contactKeys = new Set(["contact", "phone", "email", "firstName", "lastName"])
 const isContactAnswer = (surveySlug: string, part: number, key: string, field?: FlatField) =>
   contactKeys.has(key) ||
@@ -105,6 +118,52 @@ function labelledAnswers(
   ]
 }
 
+async function surveyOfProject(projectId: number, surveySlug: string) {
+  const survey = await db.survey.findFirst({
+    where: { projectId, slug: surveySlug },
+    select: { id: true, slug: true },
+  })
+  if (!survey) throw new Error(`Beteiligung nicht gefunden: ${surveySlug}`)
+  return survey
+}
+
+function requireSurveyConfig(slug: string) {
+  const config = surveyConfig(slug)
+  if (!config) throw new Error(`Beteiligung ${slug} hat kein Formular in der App`)
+  return config
+}
+
+// Uploads need files and the app sets the Vorgangs-ID, so MCP answers only these components.
+const answerTypes: Partial<Record<FlatField["component"], string>> = {
+  SurveyTextfield: "text",
+  SurveyTextarea: "text",
+  SurveyReadonlyTextfield: "text",
+  SurveyNumberfield: "number",
+  SurveyCheckbox: "boolean",
+  SurveyRadiobuttonGroup: "option",
+  SurveySelect: "option",
+  SurveyCheckboxGroup: "options",
+  SurveySimpleMapWithLegend: "latLng",
+  SwitchableMap: "latLng",
+  SurveyGeoCategoryMapWithLegend: "geometry",
+  hidden: "text",
+}
+
+const isAnswerField = (field: FlatField): field is AnswerField => field.component !== "hidden"
+
+const optionsOf = (field: FlatField) =>
+  (field.props as { options?: { key: string | number; label: string }[] }).options
+
+const writableFields = (fields: FlatField[]) =>
+  fields.filter((field) => answerTypes[field.component] != null)
+
+// Required as create checks it: the form schema rejects the default, or a condition asks for it.
+const isRequiredAnswer = (field: FlatField) =>
+  isAnswerField(field) &&
+  (field.condition
+    ? field.validation.required
+    : !field.validation.zodSchema.safeParse(field.defaultValue).success)
+
 export async function listSurveysForMcp(input: { projectSlug: string; origin: string }) {
   const project = await requireMcpEnabledProject(input.projectSlug)
   const surveys = await db.survey.findMany({
@@ -144,13 +203,7 @@ export async function listSurveyResponsesForMcp(input: {
 }) {
   const limit = resolveMcpListLimit(input.limit)
   const project = await requireMcpEnabledProject(input.projectSlug)
-  if (input.surveySlug) {
-    const survey = await db.survey.findFirst({
-      where: { projectId: project.id, slug: input.surveySlug },
-      select: { id: true },
-    })
-    if (!survey) throw new Error(`Beteiligung nicht gefunden: ${input.surveySlug}`)
-  }
+  if (input.surveySlug) await surveyOfProject(project.id, input.surveySlug)
 
   const idFilter = {
     ...(input.ids?.length ? { in: input.ids } : {}),
@@ -347,6 +400,245 @@ export async function deleteSurveyResponsesForMcp(input: {
     confirm: input.confirm === true,
     returned: results.length,
     deletedCount,
+    items: results,
+  }
+}
+
+export async function getSurveyResponsesSchemaForMcp(input: {
+  projectSlug: string
+  surveySlug: string
+}) {
+  const project = await requireMcpEnabledProject(input.projectSlug)
+  const survey = await surveyOfProject(project.id, input.surveySlug)
+  const config = requireSurveyConfig(survey.slug)
+  return {
+    projectSlug: project.slug,
+    surveySlug: survey.slug,
+    statuses: config.statuses.map(({ value, label }) => ({ value, label })),
+    parts: [...config.fieldsByPart]
+      .filter(([, fields]) => fields.length > 0)
+      .map(([part, fields]) => ({
+        part,
+        questions: writableFields(fields).map((field) => {
+          const options = optionsOf(field)
+          const contact = isContactAnswer(survey.slug, part, String(field.name), field)
+          return {
+            name: String(field.name),
+            label: field.props.label || String(field.name),
+            answerType: answerTypes[field.component],
+            required: !contact && isRequiredAnswer(field),
+            ...(contact ? { contact: true } : {}),
+            ...(options
+              ? { options: options.map(({ key, label }) => ({ key: String(key), label })) }
+              : {}),
+            ...(isAnswerField(field) && field.condition
+              ? { dependsOn: field.condition.fieldName }
+              : {}),
+          }
+        }),
+      })),
+  }
+}
+
+// The config's own field validators, given the parts of the field API they read.
+function fieldRuleError(field: AnswerField, data: Answers, answers: Answers) {
+  const name = String(field.name)
+  const fieldApi = {
+    name,
+    state: { value: data[name], meta: { isPristine: !(name in answers) } },
+    form: { getFieldValue: (other: string) => data[other] },
+  }
+  for (const validate of Object.values(field.validators ?? {})) {
+    if (typeof validate !== "function") continue
+    const message: unknown = validate({ value: data[name], fieldApi } as never)
+    if (typeof message === "string") return message
+  }
+  return null
+}
+
+function answerError(field: FlatField, data: Answers, answers: Answers) {
+  const name = String(field.name)
+  const value = data[name]
+  if (!isAnswerField(field)) {
+    return value === undefined || typeof value === "string" || typeof value === "number"
+      ? null
+      : "Text erwartet"
+  }
+  if (field.condition) {
+    const { fieldName, conditionFn } = field.condition
+    if (!conditionFn(data[fieldName] as ConditionValue)) {
+      return name in answers ? `passt nicht zur Antwort in ${fieldName}` : null
+    }
+    if (field.validation.required && isEmptyAnswer(answers[name])) return "Pflichtfeld."
+  }
+  const parsed = field.validation.zodSchema.safeParse(value)
+  if (!parsed.success) return parsed.error.issues[0]?.message ?? "ungültig"
+  const options = optionsOf(field)
+  if (options && name in answers && !isEmptyAnswer(value)) {
+    const keys = new Set(options.map((option) => String(option.key)))
+    const unknown = (Array.isArray(value) ? value : [value]).filter((v) => !keys.has(String(v)))
+    if (unknown.length > 0) return `unbekannte Option ${unknown.join(", ")}`
+  }
+  return fieldRuleError(field, data, answers)
+}
+
+// Same checks and defaults as the public form, so the answers land in the shape the app reads.
+function partData(surveySlug: string, part: number, fields: FlatField[], answers: Answers) {
+  const writable = writableFields(fields)
+  const writableNames = new Set(writable.map((field) => String(field.name)))
+  const knownNames = new Set(fields.map((field) => String(field.name)))
+  const errors = Object.keys(answers)
+    .filter((key) => !writableNames.has(key))
+    .map((key) =>
+      knownNames.has(key)
+        ? `Teil ${part}: ${key} nimmt MCP nicht an`
+        : `Teil ${part}: unbekannte Frage ${key}`,
+    )
+  const data: Answers = {
+    ...Object.fromEntries(
+      fields.filter(isAnswerField).map((field) => [String(field.name), field.defaultValue]),
+    ),
+    ...Object.fromEntries(Object.entries(answers).filter(([key]) => writableNames.has(key))),
+  }
+  // The SwitchableMap stores how the place was given; MCP sets a pin or none.
+  const switchableMap = fields.find((field) => field.component === "SwitchableMap")
+  if (switchableMap) data.locationMode = data[String(switchableMap.name)] ? "pin" : "none"
+  for (const field of writable) {
+    const name = String(field.name)
+    // Contact data is optional over MCP and checked like the form only when sent.
+    if (isContactAnswer(surveySlug, part, name, field) && isEmptyAnswer(answers[name])) continue
+    const error = answerError(field, data, answers)
+    if (error) errors.push(`Teil ${part}: ${name}: ${error}`)
+  }
+  return { data, errors }
+}
+
+// Like the form: an Eingabe without a place keeps no location.
+function dropUnusedLocation(slug: AllowedSurveySlugs, data: Answers) {
+  const enableLocation = data[getQuestionIdBySurveySlug(slug, "enableLocation")]
+  if (enableLocation === "nein" || String(enableLocation) === "2") {
+    delete data[getQuestionIdBySurveySlug(slug, "location")]
+  }
+}
+
+type SurveyResponseCreateItem = {
+  projectSlug: string
+  surveySlug: string
+  part1?: Answers
+  part2: Answers
+  part3?: Answers
+  status?: string
+  source?: SurveyResponseSourceEnum
+}
+
+export async function createSurveyResponsesForMcp(input: {
+  items: SurveyResponseCreateItem[]
+  origin: string
+  createdById: number
+}) {
+  const results = []
+  for (const item of input.items) {
+    const failed = (errors: string[]) => ({
+      projectSlug: item.projectSlug,
+      surveySlug: item.surveySlug,
+      id: null,
+      referenceId: null,
+      url: null,
+      created: false,
+      errors,
+    })
+    try {
+      const project = await requireMcpDirectProject(
+        item.projectSlug,
+        new Date(),
+        "Creating Eingaben",
+      )
+      const survey = await surveyOfProject(project.id, item.surveySlug)
+      const config = requireSurveyConfig(survey.slug)
+      if (item.status && !config.statuses.some((status) => status.value === item.status)) {
+        throw new Error(`Unbekannter Status: ${item.status}`)
+      }
+
+      const errors: string[] = []
+      const dataByPart = new Map<number, Answers>()
+      for (const [part, answers] of [
+        [1, item.part1],
+        [2, item.part2],
+        [3, item.part3],
+      ] as const) {
+        if (!answers) continue
+        const fields = config.fieldsByPart.get(part) ?? []
+        if (fields.length === 0) {
+          errors.push(`Teil ${part} gibt es in dieser Beteiligung nicht`)
+          continue
+        }
+        const checked = partData(survey.slug, part, fields, answers)
+        errors.push(...checked.errors)
+        dataByPart.set(part, checked.data)
+      }
+      const eingabeData = dataByPart.get(2)
+      if (errors.length > 0 || !eingabeData) {
+        results.push(failed(errors))
+        continue
+      }
+      dropUnusedLocation(config.slug, eingabeData)
+
+      const defaultStatus = config.statuses[0].value
+      const source = item.source ?? SurveyResponseSourceEnum.FORM
+      const id = await db.$transaction(async (tx) => {
+        if (survey.slug === "ohv-haltestellenfoerderung") {
+          await tx.$executeRaw`SELECT pg_advisory_xact_lock(${survey.id})`
+          eingabeData.referenceId = await createNextOhvReferenceId(survey.id, tx)
+        }
+        const session = await tx.surveySession.create({
+          data: { surveyId: survey.id },
+          select: { id: true },
+        })
+        const createPart = (part: number, data: Answers, status: string) =>
+          tx.surveyResponse.create({
+            data: {
+              surveySessionId: session.id,
+              surveyPart: part,
+              data: JSON.stringify(data),
+              source,
+              status,
+              state: SurveyResponseStateEnum.SUBMITTED,
+            },
+            select: { id: true },
+          })
+        const part1 = dataByPart.get(1)
+        if (part1) await createPart(1, part1, defaultStatus)
+        const eingabe = await createPart(2, eingabeData, item.status ?? defaultStatus)
+        const part3 = dataByPart.get(3)
+        if (part3) await createPart(3, part3, defaultStatus)
+        return eingabe.id
+      })
+
+      await createLogEntry({
+        action: "CREATE",
+        message: `Eingabe ${id} wurde angelegt.`,
+        userId: input.createdById,
+        projectId: project.id,
+        surveyId: survey.id,
+        surveyResponseId: id,
+      })
+      results.push({
+        projectSlug: project.slug,
+        surveySlug: survey.slug,
+        id,
+        referenceId: typeof eingabeData.referenceId === "string" ? eingabeData.referenceId : null,
+        url: responseUrl(input.origin, project.slug, survey.id, id),
+        created: true,
+        errors: [] as string[],
+      })
+    } catch (error) {
+      results.push(failed([error instanceof Error ? error.message : String(error)]))
+    }
+  }
+  return {
+    environment: mcpEnvLabel(process.env.VITE_APP_ENV),
+    returned: results.length,
+    createdCount: results.filter((result) => result.created).length,
     items: results,
   }
 }
