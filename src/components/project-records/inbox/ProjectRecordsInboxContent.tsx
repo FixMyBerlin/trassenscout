@@ -16,6 +16,8 @@ import { TableDateTime } from "@/src/components/core/components/Table/TableDateT
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { useProjectRecordsListHeader } from "@/src/components/project-records/useProjectRecordsListHeader"
+import { formatEmailAddresses } from "@/src/components/project-records/utils/formatEmailAddresses"
+import { useProjectModalNavigation } from "@/src/components/shared/projectModals/useProjectModalNavigation"
 import { projectRecordEmailInboxQueryOptions } from "@/src/server/projectRecordEmails/queries/projectRecordEmailInboxQueryOptions"
 
 const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
@@ -23,6 +25,7 @@ const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
 export const ProjectRecordsInboxContent = () => {
   const { projectSlug } = loggedInProjectRouteApi.useParams()
   const { breadcrumb, tabs } = useProjectRecordsListHeader()
+  const { buildModalHref } = useProjectModalNavigation()
   const { data: emails } = useSuspenseQuery(projectRecordEmailInboxQueryOptions({ projectSlug }))
 
   return (
@@ -61,14 +64,16 @@ export const ProjectRecordsInboxContent = () => {
             <tbody className={tableBodyClassName}>
               {emails.map((email) => (
                 <tr key={email.id} className={tableRowClassName}>
-                  <td className={tableCellClassName}>{email.from || "Unbekannt"}</td>
+                  <td className={tableCellClassName}>
+                    {email.from ? formatEmailAddresses(email.from) : "Unbekannt"}
+                  </td>
                   <td className={tableCellClassName}>
                     <TableDateTime value={email.date ?? email.createdAt} />
                   </td>
                   <td className={tableCellClassName}>
                     <Link
-                      to="/$projectSlug/project-records/inbox/$projectRecordEmailId"
-                      params={{ projectSlug, projectRecordEmailId: String(email.id) }}
+                      to={buildModalHref({ modalProjectRecordEmailId: email.id })}
+                      resetScroll={false}
                     >
                       {email.subject || "(kein Betreff)"}
                     </Link>

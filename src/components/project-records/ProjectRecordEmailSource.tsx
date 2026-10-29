@@ -1,5 +1,7 @@
 import { twJoin } from "tailwind-merge"
 import { linkStyles } from "@/src/components/core/components/links/styles"
+import { formatEmailAddresses } from "@/src/components/project-records/utils/formatEmailAddresses"
+import { splitEmailQuotes } from "@/src/components/project-records/utils/splitEmailQuotes"
 
 export type ProjectRecordEmailSourceValue = {
   from: string | null
@@ -15,12 +17,39 @@ type Props = {
   email: ProjectRecordEmailSourceValue
 }
 
+const QuoteLevel = ({ depth, children }: { depth: number; children: string }) =>
+  depth === 0 ? (
+    <p>{children}</p>
+  ) : (
+    <div className="border-l-2 border-gray-500 pl-3 text-gray-600">
+      <QuoteLevel depth={depth - 1}>{children}</QuoteLevel>
+    </div>
+  )
+
+// Quoted replies and forwards show as bars instead of ">" markers.
+export const ProjectRecordEmailBody = ({
+  text,
+  className,
+}: {
+  text: string
+  className?: string
+}) => (
+  <div className={twJoin("space-y-3 wrap-break-word whitespace-pre-wrap", className)}>
+    {splitEmailQuotes(text).map((block, index) => (
+      <QuoteLevel key={index} depth={block.depth}>
+        {block.text}
+      </QuoteLevel>
+    ))}
+  </div>
+)
+
 const ProjectRecordEmailSourceText = ({ email }: { email: Props["email"] }) => {
   return (
     <div className="space-y-2 text-sm text-gray-700">
       {email.from && (
         <div>
-          <span className="font-semibold">Von:</span> <span>{email.from}</span>
+          <span className="font-semibold">Von:</span>{" "}
+          <span>{formatEmailAddresses(email.from)}</span>
         </div>
       )}
       {email.subject && (
@@ -37,7 +66,7 @@ const ProjectRecordEmailSourceText = ({ email }: { email: Props["email"] }) => {
       {email.textBody && (
         <div className="mt-3 max-h-[600px] overflow-y-auto">
           <span className="font-semibold">Nachrichtentext:</span>
-          <div className="mt-1 whitespace-pre-wrap">{email.textBody}</div>
+          <ProjectRecordEmailBody text={email.textBody} className="mt-1" />
         </div>
       )}
       {email.uploads && email.uploads.length > 0 && (

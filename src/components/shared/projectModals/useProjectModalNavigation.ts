@@ -21,6 +21,10 @@ function stringifyModalSearchPatch(searchPatch: ModalSearchPatch) {
       searchPatch.modalProjectRecordId === undefined
         ? undefined
         : String(searchPatch.modalProjectRecordId),
+    modalProjectRecordEmailId:
+      searchPatch.modalProjectRecordEmailId === undefined
+        ? undefined
+        : String(searchPatch.modalProjectRecordEmailId),
     modalUploadId:
       searchPatch.modalUploadId === undefined ? undefined : String(searchPatch.modalUploadId),
   }

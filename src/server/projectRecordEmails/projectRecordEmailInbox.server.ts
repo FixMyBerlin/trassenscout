@@ -7,6 +7,7 @@ import { flushLangfuseSpans } from "@/src/server/observability/langfuseSpanProce
 import { createProjectRecord } from "@/src/server/projectRecords/projectRecords.server"
 import { NotFoundError } from "@/src/shared/auth/errors"
 import { ProjectSlugRequiredSchema } from "@/src/shared/authorization/projectSlugSchema"
+import { assertProjectAiEnabled } from "./incoming/checkProjectAiEnabled.server"
 import { isAdminOrProjectMember } from "./incoming/checkSenderApproval.server"
 import { parseEmail } from "./incoming/parseEmail.server"
 import { projectRecordEmailInboxWhere } from "./projectRecordEmailInboxWhere"
@@ -93,7 +94,7 @@ export async function getProjectRecordEmailInboxItem(
   const isSenderKnown = await isAdminOrProjectMember({ projectId, email: email.from })
 
   // Attachments the listener could not upload (too large or failed) only exist in the raw mail.
-  const { attachments } = await parseEmail({ rawEmailText: text })
+  const { attachments, to, cc } = await parseEmail({ rawEmailText: text })
   const uploadedTitles = email.uploads.map(({ title }) => title)
   const skippedAttachments = attachments.flatMap(({ filename }) => {
     const index = uploadedTitles.indexOf(filename)
@@ -102,7 +103,7 @@ export async function getProjectRecordEmailInboxItem(
     return []
   })
 
-  return { ...emailWithoutRawText, isSenderKnown, skippedAttachments }
+  return { ...emailWithoutRawText, to, cc, isSenderKnown, skippedAttachments }
 }
 
 export async function draftProjectRecordFromEmail(
@@ -111,6 +112,7 @@ export async function draftProjectRecordFromEmail(
 ) {
   const session = await endpointAuth.admin(headers)
   const projectId = await findProjectId(input.projectSlug)
+  await assertProjectAiEnabled(projectId)
   const email = await findInboxEmail(projectId, input.projectRecordEmailId)
 
   const template = input.projectRecordTemplateId

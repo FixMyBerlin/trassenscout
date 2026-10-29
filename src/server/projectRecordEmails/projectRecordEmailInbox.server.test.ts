@@ -60,7 +60,7 @@ describe("Posteingang", () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mocks.admin.mockResolvedValue({ userId: "3", role: "ADMIN" })
-    mocks.findProject.mockResolvedValue({ id: 1 })
+    mocks.findProject.mockResolvedValue({ id: 1, aiEnabled: true })
     mocks.findEmail.mockResolvedValue({
       id: 61,
       from: "Brit Beispiel <brit@example.org>",
@@ -121,6 +121,19 @@ describe("Posteingang", () => {
     expect(mocks.findTemplate).not.toHaveBeenCalled()
     expect(mocks.extract).toHaveBeenCalledWith(expect.objectContaining({ template: null }))
     expect(draft).toEqual(expect.objectContaining({ tags: [11], projectRecordTemplateId: null }))
+  })
+
+  test("does not draft for a project without KI", async () => {
+    mocks.findProject.mockResolvedValue({ id: 1, aiEnabled: false })
+
+    await expect(
+      draftProjectRecordFromEmail(headers, {
+        projectSlug: "rs8",
+        projectRecordEmailId: 61,
+        projectRecordTemplateId: null,
+      }),
+    ).rejects.toThrow()
+    expect(mocks.extract).not.toHaveBeenCalled()
   })
 
   test("does not draft mails that are processed, discarded or from another project", async () => {
@@ -194,6 +207,8 @@ describe("Posteingang", () => {
     })
     mocks.parseEmail.mockResolvedValue({
       attachments: [{ filename: "plan.pdf" }, { filename: "luftbild.tif" }],
+      to: "protokoll+rs8@example.org",
+      cc: null,
     })
 
     const email = await getProjectRecordEmailInboxItem(headers, {
@@ -202,6 +217,7 @@ describe("Posteingang", () => {
     })
 
     expect(email.skippedAttachments).toEqual(["luftbild.tif"])
+    expect(email.to).toBe("protokoll+rs8@example.org")
     expect(email).not.toHaveProperty("text")
   })
 

@@ -1,5 +1,5 @@
-import { useMutation, useQuery } from "@tanstack/react-query"
-import { ReactNode, useState } from "react"
+import { useMutation } from "@tanstack/react-query"
+import { useState } from "react"
 import { z } from "zod"
 import { FormDirtyStateReporter } from "@/src/components/core/components/forms/FormDirtyStateReporter"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
@@ -10,17 +10,14 @@ import {
   FORM_ERROR,
   type OnSubmitResult,
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
-import { Modal, ModalCloseButton } from "@/src/components/core/components/Modal"
 import { FormModal } from "@/src/components/core/components/Modal/FormModal"
-import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
-import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import type { ProjectRecordEmailSourceValue } from "@/src/components/project-records/ProjectRecordEmailSource"
 import { ProjectRecordFormFields } from "@/src/components/project-records/ProjectRecordFormFields"
 import { useProjectRecordModal } from "@/src/components/project-records/ProjectRecordModalHost"
+import { ProjectRecordTemplatePickerModal } from "@/src/components/project-records/ProjectRecordTemplatePickerModal"
 import { getDate } from "@/src/components/project-records/utils/splitStartAt"
 import { ProjectRecordEditingState } from "@/src/prisma/generated/browser"
 import { createProjectRecordFn } from "@/src/server/projectRecords/projectRecords.functions"
-import { projectRecordTemplatesByProjectQueryOptions } from "@/src/server/projectRecordTemplates/projectRecordTemplatesQueryOptions"
 import type { ProjectRecordTemplateOption } from "@/src/server/projectRecordTemplates/types"
 import {
   newProjectRecordFormDefaultValues,
@@ -44,9 +41,6 @@ type Props = {
   }
 }
 
-const pickerOptionButtonClassName =
-  "flex w-full cursor-pointer items-center justify-between rounded-md border border-gray-300 px-3 py-2 text-left text-blue-700 hover:bg-blue-50"
-
 type ProjectRecordCreateFormProps = {
   formKey: string
   formInitialValues: Record<string, unknown>
@@ -55,11 +49,9 @@ type ProjectRecordCreateFormProps = {
   landAcquisitionModuleEnabled: boolean
   onDirtyChange?: (isDirty: boolean) => void
   onSubmit: (values: z.infer<typeof NewProjectRecordFormSchema>) => Promise<void | OnSubmitResult>
-  // The Posteingang shows the source mail next to the form, with its own actions.
+  // The Posteingang shows the source mail next to the form.
   emailSource?: ProjectRecordEmailSourceValue
   submitText?: string
-  actionBarRight?: ReactNode
-  backLink?: ReactNode
 }
 
 export function ProjectRecordCreateForm({
@@ -72,8 +64,6 @@ export function ProjectRecordCreateForm({
   onSubmit,
   emailSource,
   submitText = "Protokolleintrag speichern",
-  actionBarRight,
-  backLink = null,
 }: ProjectRecordCreateFormProps) {
   const [formError, setFormError] = useState<string | null>(null)
 
@@ -91,13 +81,7 @@ export function ProjectRecordCreateForm({
   })
 
   return (
-    <FormShell
-      form={form}
-      formError={formError}
-      submitText={submitText}
-      actionBarRight={actionBarRight}
-      backLink={backLink}
-    >
+    <FormShell form={form} formError={formError} submitText={submitText} backLink={null}>
       <FormDirtyStateReporter onDirtyChange={onDirtyChange} />
       <ProjectRecordFormFields
         formMode="create"
@@ -122,9 +106,6 @@ export const ProjectRecordNewModal = ({
 }: Props) => {
   const createProjectRecordMutation = useMutation({ mutationFn: createProjectRecordFn })
   const { openProjectRecordDetail } = useProjectRecordModal()
-  const { data: templates = [] } = useQuery(
-    projectRecordTemplatesByProjectQueryOptions({ projectSlug }),
-  )
   const [isDirty, setIsDirty] = useState(false)
   const [modalStep, setModalStep] = useState<"picker" | "form">(
     initialValues?.title ? "form" : "picker",
@@ -227,45 +208,12 @@ export const ProjectRecordNewModal = ({
 
   return (
     <>
-      <Modal open={pickerOpen} handleClose={resetAndClose} align="center" className="sm:max-w-2xl">
-        <PageHeader
-          title="Neuer Protokolleintrag"
-          action={<ModalCloseButton onClose={resetAndClose} />}
-        />
-
-        <div className={`space-y-4 ${pageContentPaddingClassName}`}>
-          <p className="text-gray-600">
-            Möchten Sie eine Vorlage nutzen oder ohne Vorlage starten?
-          </p>
-          <button
-            type="button"
-            onClick={() => switchToForm(null)}
-            className={pickerOptionButtonClassName}
-          >
-            <span>Ohne Vorlage</span>
-            <span>→</span>
-          </button>
-
-          {!!templates.length && (
-            <>
-              <h4 className="text-lg font-semibold text-gray-700">Vorlagen</h4>
-              <div className="space-y-2">
-                {templates.map((template) => (
-                  <button
-                    key={template.id}
-                    type="button"
-                    onClick={() => switchToForm(template)}
-                    className={pickerOptionButtonClassName}
-                  >
-                    <span>{template.templateTitle}</span>
-                    <span>→</span>
-                  </button>
-                ))}
-              </div>
-            </>
-          )}
-        </div>
-      </Modal>
+      <ProjectRecordTemplatePickerModal
+        projectSlug={projectSlug}
+        open={pickerOpen}
+        onClose={resetAndClose}
+        onSelect={switchToForm}
+      />
 
       <FormModal open={formOpen} title="Neuer Protokolleintrag" onClose={handleClose} align="right">
         <ProjectRecordCreateForm

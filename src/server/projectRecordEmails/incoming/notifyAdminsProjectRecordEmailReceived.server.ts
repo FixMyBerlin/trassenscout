@@ -21,7 +21,9 @@ export async function notifyAdminsProjectRecordEmailReceived({
         projectSlug,
         senderEmail,
         emailSubject,
-        inboxEmailUrl: mailUrl(`/${projectSlug}/project-records/inbox/${projectRecordEmailId}`),
+        inboxEmailUrl: mailUrl(
+          `/${projectSlug}/project-records/inbox?modalProjectRecordEmailId=${projectRecordEmailId}`,
+        ),
       })
     ).send()
   } catch (error) {

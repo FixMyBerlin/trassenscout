@@ -15,6 +15,7 @@ import { PageHeader } from "@/src/components/core/components/PageHeader/PageHead
 import { Spinner } from "@/src/components/core/components/Spinner"
 import { MultiProjectInviteForm } from "@/src/components/invites/MultiProjectInviteForm"
 import { EditProjectRecordForm } from "@/src/components/project-records/EditProjectRecordForm"
+import { ProjectRecordInboxEmailModal } from "@/src/components/project-records/inbox/ProjectRecordInboxEmailModal"
 import { ProjectRecordDetailClient } from "@/src/components/project-records/ProjectRecordDetailClient"
 import { useProjectRecordModal } from "@/src/components/project-records/ProjectRecordModalHost"
 import { getProjectRecordEditSuccessNavigateOptions } from "@/src/components/project-records/utils/getProjectRecordEditSuccessRoute"
@@ -70,6 +71,7 @@ function ProjectModalContent({ projectSlug }: { projectSlug: string }) {
     modalUploadView,
     modalProjectRecordId,
     modalProjectRecordView,
+    modalProjectRecordEmailId,
     modalContactId,
     modalContactView,
     modalInviteView,
@@ -80,6 +82,7 @@ function ProjectModalContent({ projectSlug }: { projectSlug: string }) {
     modalUploadView,
     modalProjectRecordId,
     modalProjectRecordView,
+    modalProjectRecordEmailId,
     modalContactId,
     modalContactView,
     modalInviteView,
@@ -381,6 +384,16 @@ function ProjectModalContent({ projectSlug }: { projectSlug: string }) {
           </div>
         )}
       </Modal>
+    )
+  }
+
+  if (modalProjectRecordEmailId !== undefined) {
+    return (
+      <ProjectRecordInboxEmailModal
+        projectSlug={projectSlug}
+        projectRecordEmailId={modalProjectRecordEmailId}
+        onClose={closeModal}
+      />
     )
   }
 

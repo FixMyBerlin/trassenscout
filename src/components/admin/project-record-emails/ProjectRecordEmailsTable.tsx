@@ -136,7 +136,7 @@ export const ProjectRecordEmailsTable = ({ projectRecordEmails }: Props) => {
                       email.project &&
                       email.project.aiEnabled ? (
                       <AdminTableEditLink
-                        to={`/${email.project.slug}/project-records/inbox/${email.id}`}
+                        to={`/${email.project.slug}/project-records/inbox?modalProjectRecordEmailId=${email.id}`}
                         icon={<SparklesIcon aria-hidden />}
                       >
                         Im Posteingang öffnen
