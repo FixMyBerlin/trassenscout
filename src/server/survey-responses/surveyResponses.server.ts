@@ -71,6 +71,19 @@ function surveyResponseInProjectWhere(projectSlug: string, id: number) {
   return { id, surveySession: { survey: { project: { slug: projectSlug } } } }
 }
 
+export function orphanedUploadWhere(responseIds: number[]) {
+  return {
+    surveyResponseId: { in: responseIds },
+    projectRecordEmailId: null,
+    supportDocumentId: null,
+    projectRecords: { none: {} },
+    projectRecordTemplates: { none: {} },
+    subsubsections: { none: {} },
+    acquisitionAreas: { none: {} },
+    tags: { none: {} },
+  } satisfies Prisma.UploadWhereInput
+}
+
 function parseSurveyResponseData(data: string): SurveyResponseJsonData | null {
   try {
     return JSON.parse(data) as SurveyResponseJsonData
@@ -86,7 +99,7 @@ function responseFilterOptionValues(value: SurveyResponseJsonValue | undefined) 
     .map((item) => String(item))
 }
 
-async function findLinkedSubsubsectionForSurveyResponse(responseId: number) {
+export async function findLinkedSubsubsectionForSurveyResponse(responseId: number) {
   const uploadLink = await db.upload.findFirst({
     where: {
       surveyResponseId: responseId,
@@ -157,29 +170,23 @@ async function assertResponsesHaveNoLinkedSubsubsection(responseIds: number[]) {
  * - `SurveySession`s left without any linked `SurveyResponse`.
  * - `Upload`s whose only meaningful link was one of the deleted responses (their S3 /
  *   Luckycloud file and DB record are removed). Uploads still attached to something else
- *   (subsubsection, acquisition area, project record, tag, project-record email) are kept
- *   and their `surveyResponseId` is simply nulled by Prisma's default `SetNull`.
+ *   (subsubsection, acquisition area, project record, project-record template, tag,
+ *   project-record email, support document) are kept and their `surveyResponseId` is
+ *   simply nulled by Prisma's default `SetNull`.
  *
  * Response/session removal runs in a single transaction; upload file deletion is external
  * I/O and is therefore performed after the transaction commits (best-effort cleanup).
  * Callers are responsible for authorization and for scoping `responseIds` to what the
  * caller may delete.
  */
-async function deleteResponsesWithOrphanedRelations(responseIds: number[]) {
+export async function deleteResponsesWithOrphanedRelations(responseIds: number[]) {
   if (responseIds.length === 0) return
 
   await assertResponsesHaveNoLinkedSubsubsection(responseIds)
 
   // Capture uploads that will be orphaned before the responses (and their FK links) are gone.
   const orphanedUploads = await db.upload.findMany({
-    where: {
-      surveyResponseId: { in: responseIds },
-      projectRecordEmailId: null,
-      projectRecords: { none: {} },
-      subsubsections: { none: {} },
-      acquisitionAreas: { none: {} },
-      tags: { none: {} },
-    },
+    where: orphanedUploadWhere(responseIds),
     select: { id: true, externalUrl: true, collaborationUrl: true, collaborationPath: true },
   })
 

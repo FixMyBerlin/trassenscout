@@ -173,6 +173,25 @@ const groups: { title: string; rows: CapabilityRow[] }[] = [
       },
     ],
   },
+  {
+    title: "Eingaben",
+    rows: [
+      {
+        action: "Beteiligungen und Eingaben auflisten",
+        tools: "surveys_list, survey_responses_list",
+        disabled: "none",
+        draft: "read",
+        direct: "read",
+      },
+      {
+        action: "Löschen",
+        tools: "survey_responses_delete",
+        disabled: "none",
+        draft: "none",
+        direct: "confirm",
+      },
+    ],
+  },
 ]
 
 const cellLabel: Record<ModeCell, string> = {
@@ -289,6 +308,12 @@ export function McpCapabilitiesDetails() {
             geschrieben. Mit Bestätigung nur leere Datensätze — Maßnahmen ohne Protokoll, Upload
             oder Grunderwerb, Planungsabschnitte ohne Maßnahmen, unbenutzte Katalogzeilen,
             Protokolle ohne Kommentare oder Uploads.
+          </li>
+          <li>
+            <strong>Eingaben</strong> lassen sich nicht bearbeiten. Löschen ist endgültig: Mit der
+            Eingabe gehen ihre Kommentare und die Uploads, die nirgends sonst hängen. Eingaben, die
+            mit einer Maßnahme verknüpft sind, bleiben stehen. Kontaktdaten (Name, Telefon, E-Mail)
+            gibt MCP nicht heraus.
           </li>
           <li>
             Kataloge haben keinen Entwurfsmodus. Weggelassenes Feld bleibt unverändert;{" "}
