@@ -45,7 +45,10 @@ Nach Erstellung des Maßnahmenprogramms wird dieses per E-Mail an die Kommunen �
       { value: "REJECTED", label: "Abgelehnt", color: "#FECACA", icon: "XMARK" },
       { value: "DONE", label: "Erledigt", color: "#D1FAE5", icon: "CHECKMARK" },
     ],
-    labels: { note: { sg: "Notiz", help: "" } },
+    labels: {
+      note: { sg: "Notiz", help: "" },
+      comment: { sg: "Kommentar", pl: "Kommentare", help: "" },
+    },
   },
   email: {
     subject: "Bestätigung Ihrer Maßnahmenmeldung zum Radnetzkonzept im Landkreis Oberhavel",
