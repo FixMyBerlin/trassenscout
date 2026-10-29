@@ -10,6 +10,7 @@ import { ProjectSlugRequiredSchema } from "@/src/shared/authorization/projectSlu
 import { assertProjectAiEnabled } from "./incoming/checkProjectAiEnabled.server"
 import { isAdminOrProjectMember } from "./incoming/checkSenderApproval.server"
 import { parseEmail } from "./incoming/parseEmail.server"
+import { notifyProjectRecordCreatedFromEmail } from "./notifyProjectRecordCreatedFromEmail.server"
 import { projectRecordEmailInboxWhere } from "./projectRecordEmailInboxWhere"
 import {
   CreateProjectRecordFromEmailSchema,
@@ -172,12 +173,23 @@ export async function createProjectRecordFromEmail(
   headers: Headers,
   input: z.infer<typeof CreateProjectRecordFromEmailSchema>,
 ) {
-  await endpointAuth.admin(headers)
+  const session = await endpointAuth.admin(headers)
   const projectId = await findProjectId(input.projectSlug)
+  await assertProjectAiEnabled(projectId)
   const { projectRecordEmailId, ...recordInput } = input
-  await findInboxEmail(projectId, projectRecordEmailId)
+  const email = await findInboxEmail(projectId, projectRecordEmailId)
 
-  return createProjectRecord(headers, recordInput, { projectRecordEmailId })
+  const projectRecord = await createProjectRecord(headers, recordInput, { projectRecordEmailId })
+  // Not awaited: the save must not wait for the mail provider.
+  void notifyProjectRecordCreatedFromEmail({
+    projectId,
+    projectSlug: input.projectSlug,
+    projectRecord,
+    emailFrom: email.from,
+    actorUserId: Number(session.userId),
+  })
+
+  return projectRecord
 }
 
 export async function discardProjectRecordEmail(

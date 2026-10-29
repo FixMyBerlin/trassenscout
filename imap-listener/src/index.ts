@@ -114,8 +114,11 @@ async function processUnseenMails(client: ImapFlow, folderPath: string) {
               headers: {
                 "Content-Type": "application/json",
               },
-              // todo: projectSlug should be dynamic based on email sub adressing
-              body: JSON.stringify({ rawEmailText, projectSlug: folderPath }),
+              // Mail without subaddress stays in INBOX, so it has no project slug.
+              body: JSON.stringify({
+                rawEmailText,
+                projectSlug: folderPath === config.folders.inbox ? undefined : folderPath,
+              }),
             })
 
             if (!response.ok) {

@@ -26,6 +26,7 @@ import { deleteUploadFileAndDbRecord } from "@/src/server/uploads/_utils/deleteU
 import { AuthorizationError, NotFoundError } from "@/src/shared/auth/errors"
 import { ProjectSlugRequiredSchema } from "@/src/shared/authorization/projectSlugSchema"
 import { connectIds, idsFromFormValue, setIds } from "@/src/shared/prisma/connectIds"
+import { projectRecordDetailPath } from "@/src/shared/projectRecords/projectRecordDetailPath"
 import { projectRecordEditingStateLabel } from "@/src/shared/projectRecords/projectRecordEditingStateLabel"
 import {
   DeleteProjectRecordSchema,
@@ -310,10 +311,6 @@ function updateProjectRecordData(
       ? { projectRecordTemplateId, formTemplates: setIds(idsFromFormValue(formTemplates)) }
       : {}),
   }
-}
-
-function projectRecordDetailPath(projectSlug: string, recordId: number) {
-  return `/${projectSlug}/project-records/${recordId}`
 }
 
 export async function sendProjectRecordAssignmentNotification({

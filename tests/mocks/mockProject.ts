@@ -23,5 +23,6 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
   mcpMode: McpModeEnum.DISABLED,
   mcpDirectUntil: null,
   alkisStateKey: StateKeyEnum.DISABLED,
+  projectLeadId: null,
   subsubsectionExtraFieldDefinitions: [],
 }

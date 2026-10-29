@@ -4,9 +4,12 @@ export const emailTemplateKeys = {
   invitationCreatedEditorsNotification: "invitation_created_editors_notification",
   membershipCreatedEditorsNotification: "membership_created_editors_notification",
   projectRecordAssignedUser: "project_record_assigned_user",
+  projectRecordCreatedProjectLead: "project_record_created_project_lead",
+  projectRecordCreatedSender: "project_record_created_sender",
   projectRecordEmailReceivedAdmin: "project_record_email_received_admin",
   projectRecordEmailWithoutProjectAdmin: "project_record_email_without_project_admin",
   projectRecordLegacyMailboxMovedSender: "project_record_legacy_mailbox_moved_sender",
+  surveyResponseSubmittedProjectLead: "survey_response_submitted_project_lead",
   userCreatedAdminNotification: "user_created_admin_notification",
   userCreatedUserNotification: "user_created_user_notification",
 } as const
@@ -168,6 +171,50 @@ ${signatureMarkdown}`,
       ctaText: "Protokolleintrag öffnen",
     },
   },
+  [emailTemplateKeys.projectRecordCreatedProjectLead]: {
+    key: emailTemplateKeys.projectRecordCreatedProjectLead,
+    name: "Projektleitung: Neuer Protokolleintrag aus E-Mail",
+    description:
+      "Hinweis an die Projektleitung, wenn eine E-Mail aus dem Posteingang als Protokolleintrag gespeichert wurde.",
+    supportsCta: true,
+    allowedVariables: ["projectName", "recordTitle"],
+    sampleContext: {
+      projectName: "RS 8",
+      recordTitle: "Abstimmung Knotenpunkt Nord",
+    },
+    defaults: {
+      subject: "Neuer Protokolleintrag im Projekt {{projectName}}",
+      introMarkdown: `Guten Tag,
+
+zu Ihrem Projekt {{projectName}} wurde ein neuer Protokolleintrag angelegt: „{{recordTitle}}“.
+
+Der Eintrag basiert auf einer eingegangenen E-Mail und kann nun im Trassenscout-System eingesehen werden.`,
+      outroMarkdown: signatureMarkdown,
+      ctaText: "Protokolleintrag öffnen",
+    },
+  },
+  [emailTemplateKeys.projectRecordCreatedSender]: {
+    key: emailTemplateKeys.projectRecordCreatedSender,
+    name: "Absender: Protokolleintrag erstellt",
+    description:
+      "Bestätigung an Absender:innen aus dem Projektteam, wenn ihre E-Mail im Posteingang als Protokolleintrag gespeichert wurde.",
+    supportsCta: false,
+    allowedVariables: ["projectName"],
+    sampleContext: {
+      projectName: "RS 8",
+    },
+    defaults: {
+      subject: "Ihr Protokolleintrag wurde erfolgreich erstellt",
+      introMarkdown: `Guten Tag,
+
+Ihre E-Mail wurde erfolgreich im Trassenscout-System als Protokolleintrag gespeichert.
+
+**Was bedeutet das für Sie?**
+
+Der Protokolleintrag ist nun dem Projekt {{projectName}} zugeordnet. Sie müssen aktuell nichts weiter tun.`,
+      outroMarkdown: signatureMarkdown,
+    },
+  },
   [emailTemplateKeys.projectRecordEmailReceivedAdmin]: {
     key: emailTemplateKeys.projectRecordEmailReceivedAdmin,
     name: "Admin: Neue E-Mail im Posteingang",
@@ -244,6 +291,28 @@ Die E-Mail wurde unverarbeitet im Posteingang gespeichert. Wählen Sie dort eine
 Bitte senden Sie zukünftige KI-Protokoll-E-Mails an:
 - \`protokoll@trassenscout.de\``,
       outroMarkdown: signatureMarkdown,
+    },
+  },
+  [emailTemplateKeys.surveyResponseSubmittedProjectLead]: {
+    key: emailTemplateKeys.surveyResponseSubmittedProjectLead,
+    name: "Projektleitung: Neue Eingabe",
+    description:
+      "Hinweis an die Projektleitung, wenn über eine Beteiligung eine neue Eingabe eingegangen ist.",
+    supportsCta: true,
+    allowedVariables: ["projectName", "surveyTitle"],
+    sampleContext: {
+      projectName: "RS 8",
+      surveyTitle: "Hinweise zur Trasse",
+    },
+    defaults: {
+      subject: "Neue Eingabe im Projekt {{projectName}}",
+      introMarkdown: `Guten Tag,
+
+zu Ihrem Projekt {{projectName}} ist über die Beteiligung „{{surveyTitle}}“ eine neue Eingabe eingegangen.
+
+Die Eingabe kann nun im Trassenscout-System eingesehen werden.`,
+      outroMarkdown: signatureMarkdown,
+      ctaText: "Eingabe öffnen",
     },
   },
   [emailTemplateKeys.userCreatedAdminNotification]: {

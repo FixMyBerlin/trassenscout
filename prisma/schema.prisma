@@ -39,6 +39,7 @@ model User {
   verifications            Verification[]
   subsections              Subsection[]
   memberships              Membership[]
+  projectsLed              Project[]
   Subsubsection            Subsubsection[]
   invites                  Invite[]
   SurveyResponseComment    SurveyResponseComment[]
@@ -219,6 +220,8 @@ model Project {
   mcpMode                            McpModeEnum                       @default(DISABLED)
   mcpDirectUntil                     DateTime?
   alkisStateKey                      StateKeyEnum                      @default(DISABLED)
+  projectLeadId                      Int?
+  projectLead                        User?                             @relation(fields: [projectLeadId], references: [id], onDelete: SetNull)
   //
   surveyResponseTags                 SurveyResponseTag[]
   subsections                        Subsection[]

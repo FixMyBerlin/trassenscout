@@ -16,6 +16,7 @@ const mocks = vi.hoisted(() => ({
   extract: vi.fn(),
   createProjectRecord: vi.fn(),
   parseEmail: vi.fn(),
+  notify: vi.fn(),
 }))
 
 vi.mock("@/src/server/db.server", () => ({
@@ -47,6 +48,9 @@ vi.mock("./incoming/checkSenderApproval.server", () => ({
 vi.mock("./incoming/parseEmail.server", () => ({
   parseEmail: (...args: unknown[]) => mocks.parseEmail(...args),
 }))
+vi.mock("./notifyProjectRecordCreatedFromEmail.server", () => ({
+  notifyProjectRecordCreatedFromEmail: (...args: unknown[]) => mocks.notify(...args),
+}))
 
 const headers = new Headers()
 const inboxWhere = {
@@ -59,7 +63,11 @@ const inboxWhere = {
 describe("Posteingang", () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mocks.admin.mockResolvedValue({ userId: "3", role: "ADMIN" })
+    mocks.admin.mockResolvedValue({
+      userId: "3",
+      role: "ADMIN",
+      user: { email: "admin@example.org" },
+    })
     mocks.findProject.mockResolvedValue({ id: 1, aiEnabled: true })
     mocks.findEmail.mockResolvedValue({
       id: 61,
@@ -176,8 +184,9 @@ describe("Posteingang", () => {
     formTemplates: [21],
   }
 
-  test("saves the draft as a Protokolleintrag linked to the mail", async () => {
-    mocks.createProjectRecord.mockResolvedValue({ id: 99 })
+  test("saves the draft as a Protokolleintrag linked to the mail and sends the notices", async () => {
+    const projectRecord = { id: 99, title: "Abstimmung Knotenpunkt", assignedToId: null }
+    mocks.createProjectRecord.mockResolvedValue(projectRecord)
 
     await createProjectRecordFromEmail(headers, saveInput)
 
@@ -186,6 +195,21 @@ describe("Posteingang", () => {
     expect(mocks.createProjectRecord).toHaveBeenCalledWith(headers, recordInput, {
       projectRecordEmailId: 61,
     })
+    expect(mocks.notify).toHaveBeenCalledWith({
+      projectId: 1,
+      projectSlug: "rs8",
+      projectRecord,
+      emailFrom: "Brit Beispiel <brit@example.org>",
+      actorUserId: 3,
+    })
+  })
+
+  test("does not save for a project without KI", async () => {
+    mocks.findProject.mockResolvedValue({ id: 1, aiEnabled: false })
+
+    await expect(createProjectRecordFromEmail(headers, saveInput)).rejects.toThrow()
+    expect(mocks.createProjectRecord).not.toHaveBeenCalled()
+    expect(mocks.notify).not.toHaveBeenCalled()
   })
 
   test("does not save a mail that is no longer in the Posteingang", async () => {
@@ -195,6 +219,7 @@ describe("Posteingang", () => {
       NotFoundError,
     )
     expect(mocks.createProjectRecord).not.toHaveBeenCalled()
+    expect(mocks.notify).not.toHaveBeenCalled()
   })
 
   test("lists attachments that only exist in the raw mail", async () => {

@@ -191,21 +191,24 @@ export async function getProjectUsers(
       institution: true,
       phone: true,
       ...selectUserFieldsForSession,
+      projectsLed: { where: { slug: input.projectSlug }, select: { id: true } },
     },
   })
 
-  type NonLeakingUser = Omit<(typeof users)[number], "memberships"> & {
+  type NonLeakingUser = Omit<(typeof users)[number], "memberships" | "projectsLed"> & {
     currentMembershipId: number
     currentMembershipRole: MembershipRoleEnum
+    isProjectLead: boolean
   }
 
   return users.map((user) => {
-    const { memberships, ...secureUser } = user
+    const { memberships, projectsLed, ...secureUser } = user
     const membership = memberships.find((m) => m.project.slug === input.projectSlug)
     return {
       ...secureUser,
       currentMembershipId: membership?.id,
       currentMembershipRole: membership?.role,
+      isProjectLead: projectsLed.length > 0 && membership?.role === MembershipRoleEnum.EDITOR,
     } as NonLeakingUser
   })
 }

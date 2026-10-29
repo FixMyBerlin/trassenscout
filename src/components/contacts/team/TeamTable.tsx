@@ -114,6 +114,9 @@ export const TeamTable = ({ users }: Props) => {
                         role={user.currentMembershipRole}
                         isAdmin={user.role === "ADMIN"}
                       />
+                      {user.isProjectLead && (
+                        <div className="text-sm text-gray-500">Projektleitung</div>
+                      )}
                     </td>
                     <td
                       className={twJoin(

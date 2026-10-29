@@ -11,6 +11,7 @@ import { SurveyResponseStateEnum } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { enforcePublicEndpointRateLimit } from "@/src/server/auth/publicEndpointRateLimit.server"
 import db from "@/src/server/db.server"
+import { notifyProjectLeadSurveyResponseSubmitted } from "./notifyProjectLeadSurveyResponseSubmitted.server"
 import { GetOrCreateCreatedSurveyResponsePublicSchema } from "./publicSurveyResponses.inputSchemas"
 import { createNextOhvReferenceId } from "./utils/ohvReferenceId"
 
@@ -73,7 +74,7 @@ export async function updateSurveyResponsePublic(
   enforcePublicEndpointRateLimit(headers, "updateSurveyResponsePublic")
   const { id, surveySessionId, data, state } = input
 
-  return db.$transaction(async (tx) => {
+  const surveyResponse = await db.$transaction(async (tx) => {
     const existingResponse = await tx.surveyResponse.findFirst({
       where: { id, surveySessionId },
     })
@@ -116,6 +117,20 @@ export async function updateSurveyResponsePublic(
       data: { data: nextData, state },
     })
   })
+
+  // Part 2 holds the Eingaben; not awaited, so the participant never waits for the mail.
+  if (
+    surveyResponse.state === SurveyResponseStateEnum.SUBMITTED &&
+    surveyResponse.surveyPart === 2
+  ) {
+    void notifyProjectLeadSurveyResponseSubmitted({
+      headers,
+      surveyResponseId: surveyResponse.id,
+      surveySessionId,
+    })
+  }
+
+  return surveyResponse
 }
 
 const MAP_FIELD_COMPONENTS = ["SwitchableMap", "SurveySimpleMapWithLegend"]
