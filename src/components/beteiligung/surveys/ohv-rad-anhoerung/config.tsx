@@ -49,7 +49,10 @@ Nach Fertigstellung der Abwägung und Fortschreibung des Radnetzkonzepts werden 
       { value: "REJECTED", label: "Abgelehnt", color: "#FECACA", icon: "XMARK" },
       { value: "DONE", label: "Erledigt", color: "#D1FAE5", icon: "CHECKMARK" },
     ],
-    labels: { note: { sg: "Notiz", help: "" } },
+    labels: {
+      note: { sg: "Notiz", help: "" },
+      comment: { sg: "Kommentar", pl: "Kommentare", help: "" },
+    },
   },
   email: {
     subject: "Bestätigung Ihrer Stellungnahme zum Radnetzkonzept im Landkreis Oberhavel",
