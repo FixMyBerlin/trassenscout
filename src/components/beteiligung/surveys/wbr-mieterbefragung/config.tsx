@@ -1,6 +1,6 @@
 import { backendConfig } from "@/src/components/beteiligung/shared/backend-types"
 import type { FormConfig } from "@/src/components/beteiligung/shared/types"
-import { part1Config } from "@/src/components/beteiligung/surveys/wbr-mieterbefragung/part1"
+import { part2Config } from "@/src/components/beteiligung/surveys/wbr-mieterbefragung/part2"
 
 export const formConfig: FormConfig = {
   meta: {
@@ -14,10 +14,11 @@ export const formConfig: FormConfig = {
     darkColor: "#047857",
     lightColor: "#d1fae5",
   },
-  part1: part1Config,
-  part2: null,
+  part1: null,
+  part2: part2Config,
   part3: null,
   end: {
+    // part2 starts at 1 and has 3 pages
     progressBarDefinition: 4,
     title: "Vielen Dank für Ihre Teilnahme!",
     description:
@@ -26,7 +27,12 @@ export const formConfig: FormConfig = {
     homeUrl: "https://fixmycity.de/wohnbaurad/",
     buttonLink: { label: "Mehr über WohnBauRad erfahren", color: "white" },
   },
-  backend: backendConfig,
+  backend: {
+    ...backendConfig,
+    additionalFilters: [
+      { label: "Quartier", id: "quartier", value: "quartier", surveyPart: "part2" },
+    ],
+  },
   email: null,
   adminEmail: null,
 }

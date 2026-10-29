@@ -8,6 +8,8 @@ Erst fragen, dann schreiben. Zum Schluss zusammenfassen und bestätigen lassen.
 
 - Slug (muss im Admin unter `/admin/projects/<projekt>/surveys/new` existieren)
 - Teile: `part1` / `part3` = Fragebogen, `part2` = Hinweise (mehrfach, oft mit Karte)
+  - Karte / Ortsangabe (`location`) immer in `part2`. Der Admin (Beitragsliste, Karte, Zählung „mit Ortsangabe“) liest nur `part2`; ein Pin in `part1`/`part3` ist dort unsichtbar. Fragebogen mit Karte → komplett als `part2` (Vorlage: `wbr-mieterbefragung`).
+  - Auswertung im Admin: `part1`/`part3` als Diagramme, aber nur Radio- und Checkbox-Fragen (`SurveyRadiobuttonGroup`, `SurveyCheckboxGroup`); Select und Freitext nur im CSV. `part2` erscheint als Beitragsliste mit allen Antworten.
 - Pro Seite: Titel, Text, Fragen; pro Frage: Feldtyp, Pflicht/optional, Optionen, Bedingung, Hilfetext
 - Texte: Intros, Buttons, Danke-Seite, Startseiten-Link
 - Meta: Titel, Logo-URL, `primaryColor` / `darkColor` / `lightColor`, `canonicalUrl`
@@ -28,7 +30,9 @@ Feldtypen und Props: `shared/types.ts` (`FieldConfig`). Validierungen: `shared/f
 
 - `name` = ID in der DB: eindeutig pro Teil, camelCase, stabil; Options-`key`s ebenso
 - Bedingte Pflichtfelder: `condition` + `conditionalRequiredString` (Beispiel: `rstest-2-3/part2.ts`)
-- `progressBarDefinition` über Teile und `end` aufsteigend
+- `progressBarDefinition`: Jede Seite rückt den Fortschrittsbalken einen Schritt weiter (Anzeige = Wert des Teils + Seitenindex, geteilt durch `end`).
+  - Erster Teil: `1`. Jeder folgende Teil: Wert des vorigen Teils + dessen Seitenzahl. `end`: Wert des letzten Teils + dessen Seitenzahl.
+  - Beispiel: `part2` mit 3 Seiten → `part2: 1`, `end: 4`. Ist `end` zu klein, läuft der Balken über 100 %; ist er zu groß, springt er am Ende.
 - `part2` nutzt feste Namen für den Admin: `feedbackText` (Pflicht), `category`, `enableLocation`, `location`
   - `category` möglichst setzen: Gibt es ein kategorieartiges Feld (Thema, Indikator, Art des Hinweises …), dieses Feld `category` nennen (Beispiel: `kmp-messwerte`).
 
@@ -96,5 +100,10 @@ Basemap: `config.tsx` → `meta.maptilerUrl` (MapLibre-Style).
 1. Fork von `FixMyBerlin/trassenscout` mit `develop` synchronisieren („Sync fork“).
 2. Branch `survey/<slug>` von `develop`, committen, pushen.
 3. PR gegen `FixMyBerlin/trassenscout:develop`. Geht das nicht: Link zum Branch — „Compare & pull request“.
-4. Beschreibung: Slug, `https://staging.trassenscout.de/beteiligung/<slug>`, Teile/Fragen/Karte, „Offen für Dev“.
-5. CI prüft u. a. `surveyConfigs.test.ts` — Fehler im selben Branch beheben.
+4. Titel: `Survey: <meta.title>` (Beispiel: `Survey: WohnBauRad-Mieter:innenbefragung`).
+5. Beschreibung immer mitliefern (auch wenn nur der Branch-Link geht: Text zum Einfügen ausgeben), mit diesen Abschnitten:
+   - Slug und `https://staging.trassenscout.de/beteiligung/<slug>`
+   - Teile, Seiten und Fragen kurz (Pflicht/optional, Bedingungen, Karte ja/nein)
+   - „Offen für Dev“ als Liste
+   - „Prüfung“: welche Checks liefen, was nicht (DB, E2E, Deployment)
+6. CI prüft u. a. `surveyConfigs.test.ts` — Fehler im selben Branch beheben.

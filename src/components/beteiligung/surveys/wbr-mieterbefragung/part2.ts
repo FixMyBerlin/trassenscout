@@ -1,6 +1,6 @@
 import type { AnyFieldApi } from "@tanstack/react-form"
 import { fieldValidationEnum } from "@/src/components/beteiligung/shared/fieldvalidationEnum"
-import type { SurveyPart1and3 } from "@/src/components/beteiligung/shared/types"
+import type { SurveyPart2 } from "@/src/components/beteiligung/shared/types"
 
 const hasParkingNeed = (value: unknown) => value === "ja" || value === "vielleicht"
 
@@ -25,7 +25,9 @@ const validateLocation = ({ fieldApi }: { fieldApi: AnyFieldApi }) => {
   return undefined
 }
 
-export const part1Config: SurveyPart1and3 = {
+// Whole questionnaire lives in part2: the admin (response list, map, location counts)
+// only reads part2, and the map pin must show up there.
+export const part2Config: SurveyPart2 = {
   progressBarDefinition: 1,
   intro: {
     type: "standard",
@@ -87,14 +89,10 @@ Alle personenbezogenen Daten werden gemäß DSGVO verarbeitet und nur für die D
           props: {
             label: "1. In welchem Quartier wohnen Sie?",
             placeholder: "Bitte Quartier auswählen",
-            description:
-              "Demo-Auswahl: Die Untersuchungsquartiere werden vor Veröffentlichung ergänzt.",
-            // Offen für Dev: abgestimmte Quartiersliste mit stabilen Keys einsetzen.
             options: [
-              {
-                key: "beispielquartier",
-                label: "Beispielquartier – vor Veröffentlichung ersetzen",
-              },
+              { key: "moosach", label: "Moosach" },
+              { key: "sanktMichaelStrasse", label: "Sankt-Michael-Straße" },
+              { key: "harthof", label: "Harthof" },
             ],
           },
         },
@@ -271,17 +269,9 @@ Alle personenbezogenen Daten werden gemäß DSGVO verarbeitet und nur für die D
           name: "enableLocation",
           component: "SurveyRadiobuttonGroup",
           componentType: "form",
-          validation: fieldValidationEnum["optionalString"],
-          defaultValue: "nein",
-          listeners: {
-            onChange: ({ fieldApi }) => {
-              // This map belongs to part1, so clear the pin locally rather than
-              // relying on SurveyMainPage's part2-only location cleanup.
-              if (fieldApi.state.value !== "ja") {
-                fieldApi.form.setFieldValue("location", null)
-              }
-            },
-          },
+          // SurveyMainPage removes `location` on submit when this is "nein".
+          validation: fieldValidationEnum["requiredString"],
+          defaultValue: "ja",
           props: {
             label: "8. Wo in Ihrer Wohnanlage wünschen Sie sich bessere Fahrradstellplätze?",
             description:
@@ -333,7 +323,8 @@ Alle personenbezogenen Daten werden gemäß DSGVO verarbeitet und nur für die D
           },
         },
         {
-          name: "weitereAnregungen",
+          // Admin shows `feedbackText` as the response text.
+          name: "feedbackText",
           component: "SurveyTextarea",
           componentType: "form",
           validation: fieldValidationEnum["optionalString"],
