@@ -15,6 +15,7 @@ import { formConfig as Test1Config } from "@/src/components/beteiligung/surveys/
 import { formConfig as Test23Config } from "@/src/components/beteiligung/surveys/rstest-2-3/config"
 import { formConfig as Test2Config } from "@/src/components/beteiligung/surveys/rstest-2/config"
 import { formConfig as SurveyRsvHinweisConfig } from "@/src/components/beteiligung/surveys/rsv-hinweis/config"
+import { formConfig as SurveyWbrMieterbefragungConfig } from "@/src/components/beteiligung/surveys/wbr-mieterbefragung/config"
 
 // New surveys: add one line here (and the slug in `allowedSurveySlugs.ts`).
 // See `src/components/beteiligung/surveys/AGENTS.md`.
@@ -31,6 +32,7 @@ const surveyConfigs: Record<AllowedSurveySlugs, FormConfig> = {
   "ohv-rad-meldung": SurveyOhvRadMeldungConfig,
   "rsv-hinweis": SurveyRsvHinweisConfig,
   "kmp-messwerte": SurveyKmpMesswerteConfig,
+  "wbr-mieterbefragung": SurveyWbrMieterbefragungConfig,
 }
 
 export const getConfigBySurveySlug = <K extends keyof FormConfig>(
