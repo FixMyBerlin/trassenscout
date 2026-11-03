@@ -6,8 +6,10 @@ import {
   ProjectRecordEmailSchema,
   UpdateProjectRecordEmailSchema,
 } from "@/src/shared/projectRecordEmails/schemas"
+import { notifyProjectLeadProjectRecordEmailReceived } from "./incoming/notifyProjectLeadProjectRecordEmailReceived.server"
 import { parseEmail } from "./incoming/parseEmail.server"
 import { uploadEmailAttachments } from "./incoming/uploadEmailAttachments.server"
+import { projectRecordEmailInboxWhere } from "./projectRecordEmailInboxWhere"
 import { GetProjectRecordEmailsSchema } from "./projectRecordEmails.inputSchemas"
 
 export const GetProjectRecordEmailSchema = z.object({ id: z.number() })
@@ -34,14 +36,17 @@ const projectRecordEmailListSelect = {
   ...projectRecordEmailInclude,
 } as const
 
-// Mails added or assigned by an admin get the parsing and attachment upload the listener does.
-async function prepareProjectRecordEmailForInbox(projectRecordEmailId: number) {
+// Mails added or assigned by an admin get the parsing, upload and notice the listener does.
+async function prepareProjectRecordEmailForInbox(
+  projectRecordEmailId: number,
+  { isNewInProject }: { isNewInProject: boolean },
+) {
   const email = await db.projectRecordEmail.findUniqueOrThrow({
     where: { id: projectRecordEmailId },
     select: {
       text: true,
-      project: { select: { id: true, slug: true } },
-      _count: { select: { uploads: true } },
+      project: { select: { id: true, slug: true, aiEnabled: true } },
+      uploads: { select: { projectId: true } },
     },
   })
   const { body, attachments, from, subject, date } = await parseEmail({ rawEmailText: email.text })
@@ -51,13 +56,26 @@ async function prepareProjectRecordEmailForInbox(projectRecordEmailId: number) {
     data: { textBody: body, from, subject, date },
   })
 
-  if (email.project && email._count.uploads === 0) {
+  const { project } = email
+  if (!project) return
+
+  // A mail moved from another project gets its own copies of the attachments here.
+  if (!email.uploads.some((upload) => upload.projectId === project.id)) {
     await uploadEmailAttachments({
       attachments,
-      projectId: email.project.id,
-      projectSlug: email.project.slug,
+      projectId: project.id,
+      projectSlug: project.slug,
       projectRecordEmailId,
     })
+  }
+
+  const isInInbox =
+    isNewInProject &&
+    (await db.projectRecordEmail.count({
+      where: { id: projectRecordEmailId, ...projectRecordEmailInboxWhere(project.id) },
+    })) > 0
+  if (isInInbox) {
+    void notifyProjectLeadProjectRecordEmailReceived({ project, projectRecordEmailId })
   }
 }
 
@@ -93,7 +111,7 @@ export async function createProjectRecordEmail(
   await endpointAuth.admin(headers)
 
   const { id } = await db.projectRecordEmail.create({ data: input, select: { id: true } })
-  await prepareProjectRecordEmailForInbox(id)
+  await prepareProjectRecordEmailForInbox(id, { isNewInProject: true })
 
   return db.projectRecordEmail.findUniqueOrThrow({
     where: { id },
@@ -108,8 +126,14 @@ export async function updateProjectRecordEmail(
   await endpointAuth.admin(headers)
   const { id, ...data } = input
 
+  const previous = await db.projectRecordEmail.findUniqueOrThrow({
+    where: { id },
+    select: { projectId: true },
+  })
   await db.projectRecordEmail.update({ where: { id }, data })
-  await prepareProjectRecordEmailForInbox(id)
+  await prepareProjectRecordEmailForInbox(id, {
+    isNewInProject: data.projectId != null && data.projectId !== previous.projectId,
+  })
 
   return db.projectRecordEmail.findUniqueOrThrow({
     where: { id },

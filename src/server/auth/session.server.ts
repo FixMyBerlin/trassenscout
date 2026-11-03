@@ -22,8 +22,8 @@ export async function getFreshSession(headers: Headers) {
   return result as Session | null
 }
 
-export async function getAppSession(headers: Headers) {
-  const session = await getSession(headers)
+export async function getAppSession(headers: Headers, { fresh = false }: { fresh?: boolean } = {}) {
+  const session = fresh ? await getFreshSession(headers) : await getSession(headers)
   if (!session) return null
 
   return {

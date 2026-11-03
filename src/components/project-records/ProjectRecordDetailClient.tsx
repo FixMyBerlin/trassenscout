@@ -4,6 +4,7 @@ import { ProjectRecordCommentsSection } from "@/src/components/project-records/P
 import { CreateEditReviewHistory } from "@/src/components/project-records/ProjectRecordCreateEditReviewHistory"
 import { ProjectRecordNeedsReviewBanner } from "@/src/components/project-records/ProjectRecordNeedsReviewBanner"
 import { ProjectRecordSummary } from "@/src/components/project-records/ProjectRecordSummary"
+import { useIsProjectLeadOrAdmin } from "@/src/components/shared/app/memberships/hooks/useIsProjectLeadOrAdmin"
 import { ProjectUploadDropzone } from "@/src/components/uploads/ProjectUploadDropzone"
 import { UploadDropzoneContainer } from "@/src/components/uploads/UploadDropzoneContainer"
 import { invalidateAfterUploadChange } from "@/src/components/uploads/uploadQueryCache"
@@ -54,6 +55,7 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord, needsReviewEdi
     ...projectRecordQueryOptions({ projectSlug, id: initialProjectRecord.id }),
     initialData: initialProjectRecord,
   })
+  const canConfirm = useIsProjectLeadOrAdmin(projectRecord.project)
   const refreshProjectRecord = () => {
     void invalidateAfterUploadChange(queryClient, projectSlug)
   }
@@ -96,7 +98,7 @@ export const ProjectRecordDetailClient = ({ initialProjectRecord, needsReviewEdi
     <>
       {needsReview && (
         <ProjectRecordNeedsReviewBanner
-          withAction
+          withAction={canConfirm}
           editHref={needsReviewEditHref}
           projectSlug={projectSlug}
           projectRecordId={projectRecord.id}

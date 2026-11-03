@@ -16,13 +16,21 @@ export async function getGeolocatedUploads(
   headers: Headers,
   input: z.infer<typeof GetGeolocatedUploadsSchema>,
 ) {
-  const { membershipRole } = await endpointAuth.projectRole(headers, input.projectSlug, viewerRoles)
+  const { projectId, session, membershipRole } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    viewerRoles,
+  )
   const uploads = await db.upload.findMany({
     where: {
       project: { slug: input.projectSlug },
       latitude: { not: null },
       longitude: { not: null },
-      ...hideUnprocessedMailAttachments(membershipRole),
+      ...(await hideUnprocessedMailAttachments({
+        projectId,
+        userId: Number(session.userId),
+        membershipRole,
+      })),
     },
     orderBy: { id: "desc" },
     select: {

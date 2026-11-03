@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { PageProjectRecordsInbox } from "@/src/components/pages/project-records/PageProjectRecordsInbox"
-import { assertProjectRecordInboxAccess } from "@/src/components/project-records/inbox/assertProjectRecordInboxAccess"
+import { assertProjectLeadRouteAccess } from "@/src/components/project-records/assertProjectLeadRouteAccess"
 import { privateTitleHead } from "@/src/routeHead"
 import { endpointAuth } from "@/src/server/auth/endpointAuthBoundary"
 import { projectRecordEmailInboxQueryOptions } from "@/src/server/projectRecordEmails/queries/projectRecordEmailInboxQueryOptions"
@@ -10,9 +10,8 @@ export const Route = createFileRoute("/_loggedInProjects/$projectSlug/project-re
   ssr: true,
   beforeLoad: async ({ context, params }) => {
     endpointAuth.inherited("auth enforced by _loggedInProjects layout")
-    await assertProjectRecordInboxAccess({
+    await assertProjectLeadRouteAccess({
       queryClient: context.queryClient,
-      membershipRole: context.membershipRole,
       projectSlug: params.projectSlug,
     })
   },

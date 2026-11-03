@@ -1,5 +1,5 @@
 import type { z } from "zod"
-import { ProjectRecordEditingState } from "@/src/prisma/generated/browser"
+import { ProjectRecordEditingState, ProjectRecordReviewState } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { readableProjectWhere } from "@/src/server/authorization/readableProjectWhere.server"
 import db from "@/src/server/db.server"
@@ -24,6 +24,7 @@ export async function countMyAssignedRecords(headers: Headers, projectSlug?: str
     where: {
       assignedToId: userId,
       editingState: ProjectRecordEditingState.PENDING,
+      reviewState: ProjectRecordReviewState.APPROVED,
       project: readableProjectWhere(userId, session.role, projectSlug),
     },
   })
@@ -38,8 +39,9 @@ export async function getMyAssignedRecords(
 
   const records = await db.projectRecord.findMany({
     where: {
-      // A task is a record with an assignee, whichever direction is picked.
+      // A task is an approved record with an assignee, whichever direction is picked.
       assignedToId: { not: null },
+      reviewState: ProjectRecordReviewState.APPROVED,
       ...directionWhere(input.direction, userId),
       ...(input.editingState ? { editingState: input.editingState } : {}),
       project: readableProjectWhere(userId, session.role, input.projectSlug),

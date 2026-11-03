@@ -114,7 +114,7 @@ describe("countMyAssignedRecords", () => {
     expect(countWhere().project).toEqual({ memberships: { some: { userId: 99 } } })
   })
 
-  test("counts only open tasks assigned to me, the work waiting on me", async () => {
+  test("counts only open, approved tasks assigned to me, the work waiting on me", async () => {
     const { countMyAssignedRecords } = await import("./myAssignedRecords.server")
 
     await countMyAssignedRecords(headers)
@@ -122,6 +122,7 @@ describe("countMyAssignedRecords", () => {
     expect(countWhere()).toEqual({
       assignedToId: 99,
       editingState: "PENDING",
+      reviewState: "APPROVED",
       project: { memberships: { some: { userId: 99 } } },
     })
   })

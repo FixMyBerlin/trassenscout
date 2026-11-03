@@ -8,6 +8,7 @@ const mocks = vi.hoisted(() => ({
   notifyLegacyMailbox: vi.fn(),
   notifyAdminsWithoutProject: vi.fn(),
   notifyAdminsReceived: vi.fn(),
+  notifyProjectLeadReceived: vi.fn(),
 }))
 
 vi.mock("@/src/server/db.server", () => ({
@@ -31,6 +32,10 @@ vi.mock("./notifyAdminsProjectRecordEmailReceived.server", () => ({
   notifyAdminsProjectRecordEmailReceived: (...args: unknown[]) =>
     mocks.notifyAdminsReceived(...args),
 }))
+vi.mock("./notifyProjectLeadProjectRecordEmailReceived.server", () => ({
+  notifyProjectLeadProjectRecordEmailReceived: (...args: unknown[]) =>
+    mocks.notifyProjectLeadReceived(...args),
+}))
 
 const rawEmail = (header?: string) =>
   [
@@ -47,7 +52,7 @@ const rawEmail = (header?: string) =>
 describe("processIncomingProjectRecordEmail", () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mocks.findProject.mockResolvedValue({ id: 1, slug: "rs8" })
+    mocks.findProject.mockResolvedValue({ id: 1, slug: "rs8", aiEnabled: true })
     mocks.createProjectRecordEmail.mockResolvedValue({ id: 61 })
     mocks.uploadEmailAttachments.mockResolvedValue({ uploadIds: [5], skippedAttachments: [] })
   })
@@ -67,6 +72,10 @@ describe("processIncomingProjectRecordEmail", () => {
     expect(mocks.notifyAdminsReceived).toHaveBeenCalledWith(
       expect.objectContaining({ projectSlug: "rs8", projectRecordEmailId: 61 }),
     )
+    expect(mocks.notifyProjectLeadReceived).toHaveBeenCalledWith({
+      project: { id: 1, slug: "rs8", aiEnabled: true },
+      projectRecordEmailId: 61,
+    })
     expect(result).toEqual(
       expect.objectContaining({ success: true, projectRecordEmailId: 61, uploadIds: [5] }),
     )
@@ -85,6 +94,7 @@ describe("processIncomingProjectRecordEmail", () => {
     )
     expect(mocks.uploadEmailAttachments).not.toHaveBeenCalled()
     expect(mocks.notifyAdminsReceived).not.toHaveBeenCalled()
+    expect(mocks.notifyProjectLeadReceived).not.toHaveBeenCalled()
   })
 
   test.each(["Auto-Submitted: auto-replied", "X-Autoreply: yes", "Precedence: bulk"])(
@@ -100,6 +110,7 @@ describe("processIncomingProjectRecordEmail", () => {
       })
       expect(mocks.notifyLegacyMailbox).not.toHaveBeenCalled()
       expect(mocks.notifyAdminsReceived).not.toHaveBeenCalled()
+      expect(mocks.notifyProjectLeadReceived).not.toHaveBeenCalled()
       expect(mocks.notifyAdminsWithoutProject).not.toHaveBeenCalled()
       expect(mocks.uploadEmailAttachments).not.toHaveBeenCalled()
       expect(result).toEqual(expect.objectContaining({ success: false, projectRecordEmailId: 61 }))

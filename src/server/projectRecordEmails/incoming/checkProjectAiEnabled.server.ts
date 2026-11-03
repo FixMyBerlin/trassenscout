@@ -1,6 +1,6 @@
 import db from "@/src/server/db.server"
 
-async function checkProjectAiEnabled(projectId: number) {
+export async function checkProjectAiEnabled(projectId: number) {
   const project = await db.project.findUnique({
     where: { id: projectId },
     select: { aiEnabled: true },

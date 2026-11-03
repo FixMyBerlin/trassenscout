@@ -7,8 +7,10 @@ export const emailTemplateKeys = {
   projectRecordCreatedProjectLead: "project_record_created_project_lead",
   projectRecordCreatedSender: "project_record_created_sender",
   projectRecordEmailReceivedAdmin: "project_record_email_received_admin",
+  projectRecordEmailReceivedProjectLead: "project_record_email_received_project_lead",
   projectRecordEmailWithoutProjectAdmin: "project_record_email_without_project_admin",
   projectRecordLegacyMailboxMovedSender: "project_record_legacy_mailbox_moved_sender",
+  projectRecordPendingSender: "project_record_pending_sender",
   surveyResponseSubmittedProjectLead: "survey_response_submitted_project_lead",
   userCreatedAdminNotification: "user_created_admin_notification",
   userCreatedUserNotification: "user_created_user_notification",
@@ -173,9 +175,9 @@ ${signatureMarkdown}`,
   },
   [emailTemplateKeys.projectRecordCreatedProjectLead]: {
     key: emailTemplateKeys.projectRecordCreatedProjectLead,
-    name: "Projektleitung: Neuer Protokolleintrag aus E-Mail",
+    name: "Projektleitung: Protokolleintrag aus E-Mail bestätigen",
     description:
-      "Hinweis an die Projektleitung, wenn eine E-Mail aus dem Posteingang als Protokolleintrag gespeichert wurde.",
+      "Bitte an die Projektleitung, einen Protokolleintrag zu bestätigen, den ein Admin aus einer E-Mail im Posteingang angelegt hat.",
     supportsCta: true,
     allowedVariables: ["projectName", "recordTitle"],
     sampleContext: {
@@ -183,21 +185,21 @@ ${signatureMarkdown}`,
       recordTitle: "Abstimmung Knotenpunkt Nord",
     },
     defaults: {
-      subject: "Neuer Protokolleintrag im Projekt {{projectName}}",
+      subject: "Neuer Protokolleintrag zur Bestätigung im Projekt {{projectName}}",
       introMarkdown: `Guten Tag,
 
-zu Ihrem Projekt {{projectName}} wurde ein neuer Protokolleintrag angelegt: „{{recordTitle}}“.
+zu Ihrem Projekt {{projectName}} wurde aus einer eingegangenen E-Mail ein neuer Protokolleintrag angelegt: „{{recordTitle}}“.
 
-Der Eintrag basiert auf einer eingegangenen E-Mail und kann nun im Trassenscout-System eingesehen werden.`,
+Der Eintrag wartet auf Ihre Bestätigung. Erst danach ist er für alle Projektbeteiligten sichtbar.`,
       outroMarkdown: signatureMarkdown,
-      ctaText: "Protokolleintrag öffnen",
+      ctaText: "Protokolleintrag prüfen",
     },
   },
   [emailTemplateKeys.projectRecordCreatedSender]: {
     key: emailTemplateKeys.projectRecordCreatedSender,
     name: "Absender: Protokolleintrag erstellt",
     description:
-      "Bestätigung an Absender:innen aus dem Projektteam, wenn ihre E-Mail im Posteingang als Protokolleintrag gespeichert wurde.",
+      "Bestätigung an Absender:innen aus dem Projektteam, wenn ihre E-Mail als Protokolleintrag gespeichert und bestätigt wurde.",
     supportsCta: false,
     allowedVariables: ["projectName"],
     sampleContext: {
@@ -237,6 +239,27 @@ Die E-Mail wurde unverarbeitet im Posteingang gespeichert. Wählen Sie dort eine
 
 **Absenderadresse:** {{senderEmail}}
 **Betreff:** {{emailSubject}}`,
+      outroMarkdown: signatureMarkdown,
+      ctaText: "E-Mail im Posteingang öffnen",
+    },
+  },
+  [emailTemplateKeys.projectRecordEmailReceivedProjectLead]: {
+    key: emailTemplateKeys.projectRecordEmailReceivedProjectLead,
+    name: "Projektleitung: Neue E-Mail im Posteingang",
+    description:
+      "Hinweis an die Projektleitung, wenn eine E-Mail im Posteingang ihres Projekts eingegangen ist.",
+    supportsCta: true,
+    allowedVariables: ["projectName"],
+    sampleContext: {
+      projectName: "RS 8",
+    },
+    defaults: {
+      subject: "Neue E-Mail im Posteingang von Projekt {{projectName}}",
+      introMarkdown: `Guten Tag,
+
+im Posteingang Ihres Projekts {{projectName}} ist eine neue E-Mail eingegangen.
+
+Sie können die E-Mail im Trassenscout als Protokolleintrag übernehmen oder verwerfen.`,
       outroMarkdown: signatureMarkdown,
       ctaText: "E-Mail im Posteingang öffnen",
     },
@@ -290,6 +313,26 @@ Die E-Mail wurde unverarbeitet im Posteingang gespeichert. Wählen Sie dort eine
 
 Bitte senden Sie zukünftige KI-Protokoll-E-Mails an:
 - \`protokoll@trassenscout.de\``,
+      outroMarkdown: signatureMarkdown,
+    },
+  },
+  [emailTemplateKeys.projectRecordPendingSender]: {
+    key: emailTemplateKeys.projectRecordPendingSender,
+    name: "Absender: Protokolleintrag wartet auf Bestätigung",
+    description:
+      "Hinweis an Absender:innen aus dem Projektteam, wenn ein Admin ihre E-Mail als Protokolleintrag gespeichert hat und die Projektleitung ihn noch bestätigen muss.",
+    supportsCta: false,
+    allowedVariables: ["projectName"],
+    sampleContext: {
+      projectName: "RS 8",
+    },
+    defaults: {
+      subject: "Protokolleintrag erstellt – Bestätigung ausstehend",
+      introMarkdown: `Guten Tag,
+
+Ihre E-Mail wurde als Protokolleintrag im Projekt {{projectName}} angelegt und wartet auf die Bestätigung durch die Projektleitung.
+
+Nach der Bestätigung ist der Eintrag für alle Projektbeteiligten sichtbar. Sie müssen aktuell nichts weiter tun.`,
       outroMarkdown: signatureMarkdown,
     },
   },

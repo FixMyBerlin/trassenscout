@@ -8,6 +8,7 @@ import { PageHeader } from "@/src/components/core/components/PageHeader/PageHead
 import { ProjectRecordDeleteActionBar } from "@/src/components/project-records/ProjectRecordDeleteActionBar"
 import { ProjectRecordDetailClient } from "@/src/components/project-records/ProjectRecordDetailClient"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
+import { useIsProjectLeadOrAdmin } from "@/src/components/shared/app/memberships/hooks/useIsProjectLeadOrAdmin"
 import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { ProjectRecordReviewState } from "@/src/prisma/generated/browser"
@@ -24,12 +25,14 @@ export function PageProjectRecordDetail() {
   const canEdit = useUserCan().edit
   const id = Number(projectRecordId)
   const { data: projectRecord } = useSuspenseQuery(projectRecordQueryOptions({ projectSlug, id }))
+  const canConfirm = useIsProjectLeadOrAdmin(projectRecord.project)
+  const returnsToReview =
+    canConfirm && projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
 
   const returnPath = router.buildLocation({
-    to:
-      projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
-        ? "/$projectSlug/project-records/needreview"
-        : "/$projectSlug/project-records",
+    to: returnsToReview
+      ? "/$projectSlug/project-records/needreview"
+      : "/$projectSlug/project-records",
     params: { projectSlug },
   }).href
 
@@ -76,7 +79,7 @@ export function PageProjectRecordDetail() {
         <BackLink
           to={returnPath}
           text={
-            projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
+            returnsToReview
               ? "Zurück zu den Protokolleinträgen zur Bestätigung"
               : "Zurück zu den Protokolleinträgen"
           }

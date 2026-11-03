@@ -240,7 +240,11 @@ export async function getUploads(headers: Headers, input: z.infer<typeof GetUplo
     orderBy: { id: "desc" },
     where: {
       project: { slug: input.projectSlug },
-      ...hideUnprocessedMailAttachments(membershipRole),
+      ...(await hideUnprocessedMailAttachments({
+        projectId,
+        userId: Number(session.userId),
+        membershipRole,
+      })),
     },
   })
   const redactionContext = await loadUserRedactionContext(
@@ -263,7 +267,11 @@ export async function getUploadsWithSubsections(
   const { projectSlug, subsubsectionId, acquisitionAreaId, uploadIds, skip = 0, take = 100 } = input
   const safeWhere: Prisma.UploadWhereInput = {
     project: { slug: projectSlug },
-    ...hideUnprocessedMailAttachments(membershipRole),
+    ...(await hideUnprocessedMailAttachments({
+      projectId,
+      userId: Number(session.userId),
+      membershipRole,
+    })),
     OR: [
       { projectRecords: { none: {} } },
       {

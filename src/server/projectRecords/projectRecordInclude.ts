@@ -3,7 +3,14 @@
  * This ensures consistent data structure across all project record queries.
  */
 export const projectRecordInclude = {
-  project: { select: { slug: true, aiEnabled: true, landAcquisitionModuleEnabled: true } },
+  project: {
+    select: {
+      slug: true,
+      aiEnabled: true,
+      landAcquisitionModuleEnabled: true,
+      projectLeadId: true,
+    },
+  },
   tags: true,
   subsubsection: {
     include: {

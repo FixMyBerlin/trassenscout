@@ -1,28 +1,26 @@
-import { useSuspenseQuery } from "@tanstack/react-query"
-import { getRouteApi, useRouteContext } from "@tanstack/react-router"
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query"
+import { getRouteApi } from "@tanstack/react-router"
 import { TabsApp } from "@/src/components/core/components/Tabs/TabsApp"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
-import { editorRoles } from "@/src/server/authorization/constants"
+import { useIsProjectLeadOrAdmin } from "@/src/components/shared/app/memberships/hooks/useIsProjectLeadOrAdmin"
 import { projectRecordsTabCountsQueryOptions } from "@/src/server/projectRecords/projectRecordsQueryOptions"
+import { projectBySlugQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 
 const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
 
 export function useProjectRecordsListHeader() {
   const { projectSlug } = loggedInProjectRouteApi.useParams()
-  const { membershipRole } = useRouteContext({
-    from: "/_loggedInProjects/$projectSlug",
-  })
   const { data: tabCounts } = useSuspenseQuery(projectRecordsTabCountsQueryOptions({ projectSlug }))
-
-  const isAdmin = membershipRole === null
-  const canEdit = isAdmin || (membershipRole && editorRoles.includes(membershipRole))
+  const { data: project } = useQuery(projectBySlugQueryOptions(projectSlug))
+  const isProjectLeadOrAdmin = useIsProjectLeadOrAdmin(project)
+  const showLeadTabs = isProjectLeadOrAdmin && tabCounts.aiEnabled
 
   const tabs = [
     {
       name: `Protokolleinträge (${tabCounts.approvedCount})`,
       to: `/${projectSlug}/project-records`,
     },
-    ...(isAdmin && tabCounts.aiEnabled
+    ...(showLeadTabs
       ? [
           {
             name: `Posteingang (${tabCounts.inboxCount})`,
@@ -30,8 +28,8 @@ export function useProjectRecordsListHeader() {
           },
         ]
       : []),
-    // Stays until the AI entries created before the Posteingang are confirmed.
-    ...(canEdit && tabCounts.aiEnabled && tabCounts.needsReviewCount > 0
+    // Entries an admin saved from the Posteingang, and older KI entries.
+    ...(showLeadTabs && tabCounts.needsReviewCount > 0
       ? [
           {
             name: `Bestätigung erforderlich (${tabCounts.needsReviewCount})`,

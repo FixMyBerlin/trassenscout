@@ -37,6 +37,9 @@ const mockDb = {
     update: vi.fn(),
     count: vi.fn(),
   },
+  user: {
+    findFirst: vi.fn(),
+  },
 }
 
 const mockEndpointAuth = {
@@ -593,12 +596,29 @@ describe("getUploadsWithSubsections", () => {
     )
   })
 
-  test("hides attachments of unprocessed mails from members, not from admins", async () => {
+  test("shows mail attachments only once an entry the user may see uses them", async () => {
     const { getUploadsWithSubsections } = await import("./uploads.server")
-    const hidden = { projectRecordEmailId: { not: null }, projectRecords: { none: {} } }
+    const hiddenUnless = (reviewStates: ProjectRecordReviewState[]) => ({
+      projectRecordEmailId: { not: null },
+      projectRecords: { none: { reviewState: { in: reviewStates } } },
+    })
+    const asEditor = (userId: string) =>
+      mockEndpointAuth.projectRole.mockResolvedValueOnce({
+        projectId: 1,
+        membershipRole: "EDITOR",
+        session: { userId, role: "USER" },
+      })
+    const whereOfCall = (index: number) => mockDb.upload.findMany.mock.calls[index]?.[0]?.where
+    mockDb.user.findFirst.mockResolvedValue({ id: 7, email: "brit@example.org" })
 
     await getUploadsWithSubsections(headers, { projectSlug: "rs23" })
-    expect(mockDb.upload.findMany.mock.calls[0]?.[0]?.where?.NOT).toEqual(hidden)
+    expect(whereOfCall(0)?.NOT).toEqual(hiddenUnless([ProjectRecordReviewState.APPROVED]))
+
+    asEditor("8")
+    await getUploadsWithSubsections(headers, { projectSlug: "rs23" })
+    expect(whereOfCall(1)?.NOT).toEqual(
+      hiddenUnless([ProjectRecordReviewState.APPROVED, ProjectRecordReviewState.NEEDSREVIEW]),
+    )
 
     mockEndpointAuth.projectRole.mockResolvedValueOnce({
       projectId: 1,
@@ -606,7 +626,20 @@ describe("getUploadsWithSubsections", () => {
       session: { userId: "1", role: "ADMIN" },
     })
     await getUploadsWithSubsections(headers, { projectSlug: "rs23" })
-    expect(mockDb.upload.findMany.mock.calls[1]?.[0]?.where).not.toHaveProperty("NOT")
+    expect(whereOfCall(2)).not.toHaveProperty("NOT")
+
+    asEditor("7")
+    mockDb.project.findUnique.mockResolvedValueOnce({ aiEnabled: true })
+    await getUploadsWithSubsections(headers, { projectSlug: "rs23" })
+    expect(whereOfCall(3)).not.toHaveProperty("NOT")
+
+    // Without KI there is no Posteingang, so the Projektleitung sees what other editors see.
+    asEditor("7")
+    mockDb.project.findUnique.mockResolvedValueOnce({ aiEnabled: false })
+    await getUploadsWithSubsections(headers, { projectSlug: "rs23" })
+    expect(whereOfCall(4)?.NOT).toEqual(
+      hiddenUnless([ProjectRecordReviewState.APPROVED, ProjectRecordReviewState.NEEDSREVIEW]),
+    )
   })
 })
 

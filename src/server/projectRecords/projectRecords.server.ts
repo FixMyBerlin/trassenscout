@@ -5,6 +5,7 @@ import { shortTitle } from "@/src/components/core/components/text/titles"
 import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import type { Prisma } from "@/src/prisma/generated/browser"
 import {
+  type MembershipRoleEnum,
   ProjectRecordReviewState,
   ProjectRecordType,
   UserRoleEnum,
@@ -20,8 +21,13 @@ import {
   loadUserRedactionContexts,
   redactProjectRecordUsers,
 } from "@/src/server/memberships/redactFormerProjectMemberUser.server"
+import { notifyProjectRecordFromEmailConfirmed } from "@/src/server/projectRecordEmails/notifyProjectRecordCreatedFromEmail.server"
 import { projectProtocolMailboxAddress } from "@/src/server/projectRecordEmails/projectProtocolMailboxAddress.server"
 import { projectRecordEmailInboxWhere } from "@/src/server/projectRecordEmails/projectRecordEmailInboxWhere"
+import {
+  assertProjectLeadOrAdmin,
+  isProjectLeadOrAdmin,
+} from "@/src/server/projects/findProjectLead.server"
 import { deleteUploadFileAndDbRecord } from "@/src/server/uploads/_utils/deleteUploadFileAndDbRecord"
 import { AuthorizationError, NotFoundError } from "@/src/shared/auth/errors"
 import { ProjectSlugRequiredSchema } from "@/src/shared/authorization/projectSlugSchema"
@@ -208,12 +214,14 @@ function assignmentMetadata(
     : { assignedById: actorUserId, assignedAt: new Date() }
 }
 
+type CreateProjectRecordOptions = { projectRecordEmailId?: number; needsConfirmation?: boolean }
+
 function createProjectRecordData(
   input: CreateProjectRecordInput,
   projectId: number,
   userId: number,
   formTemplateIds: number[],
-  projectRecordEmailId?: number,
+  { projectRecordEmailId, needsConfirmation = false }: CreateProjectRecordOptions,
 ) {
   const { acquisitionAreas, tags, subsubsections, uploads, formTemplates: _, ...data } = input
 
@@ -226,13 +234,12 @@ function createProjectRecordData(
       ? ProjectRecordType.SYSTEM
       : ProjectRecordType.USER,
     projectRecordUpdatedByType: ProjectRecordType.USER,
-    reviewState: ProjectRecordReviewState.APPROVED,
-    // Saving a Posteingang draft is the confirmation of the AI result.
-    ...(projectRecordEmailId && {
-      projectRecordEmailId,
-      reviewedById: userId,
-      reviewedAt: new Date(),
-    }),
+    reviewState: needsConfirmation
+      ? ProjectRecordReviewState.NEEDSREVIEW
+      : ProjectRecordReviewState.APPROVED,
+    ...(projectRecordEmailId && { projectRecordEmailId }),
+    ...(projectRecordEmailId &&
+      !needsConfirmation && { reviewedById: userId, reviewedAt: new Date() }),
     userId,
     updatedById: userId,
     acquisitionAreas: connectIds(idsFromFormValue(acquisitionAreas)),
@@ -598,13 +605,14 @@ async function assertViewerOwnsUnattachedUploads({
 export async function createProjectRecord(
   headers: Headers,
   input: z.infer<typeof CreateProjectRecordBySlugSchema>,
-  { projectRecordEmailId }: { projectRecordEmailId?: number } = {},
+  options: CreateProjectRecordOptions = {},
 ) {
   const { projectId, membershipRole, session } = await endpointAuth.projectRole(
     headers,
     input.projectSlug,
     viewerRoles,
   )
+  const { projectRecordEmailId } = options
   const { projectSlug, ...data } = input
   const canEdit = membershipRole === null || editorRoles.includes(membershipRole)
 
@@ -626,11 +634,12 @@ export async function createProjectRecord(
   const userId = Number(session.userId)
 
   const record = await db.projectRecord.create({
-    data: createProjectRecordData(data, projectId, userId, formTemplateIds, projectRecordEmailId),
+    data: createProjectRecordData(data, projectId, userId, formTemplateIds, options),
     include: projectRecordInclude,
   })
 
-  if (record.assignedToId !== null) {
+  // A waiting entry tells its assignee on approval, see updateProjectRecord.
+  if (record.assignedToId !== null && record.reviewState === ProjectRecordReviewState.APPROVED) {
     await sendProjectRecordAssignmentNotification({
       assigneeId: record.assignedToId,
       actorUserId: userId,
@@ -675,7 +684,7 @@ export async function updateProjectRecord(
   headers: Headers,
   input: z.infer<typeof UpdateProjectRecordBySlugSchema>,
 ) {
-  const { projectId, session } = await endpointAuth.projectRole(
+  const { projectId, session, membershipRole } = await endpointAuth.projectRole(
     headers,
     input.projectSlug,
     editorRoles,
@@ -697,6 +706,9 @@ export async function updateProjectRecord(
       assignedToId: true,
       reviewState: true,
       reviewNotes: true,
+      reviewedAt: true,
+      userId: true,
+      projectRecordEmailId: true,
       tags: { select: { id: true } },
       subsubsections: { select: { id: true } },
       acquisitionAreas: { select: { id: true } },
@@ -704,17 +716,54 @@ export async function updateProjectRecord(
     },
   })
 
+  // Review fields only come with a review decision, which the Projektleitung and admins make.
+  if (data.reviewState !== undefined || data.reviewNotes !== undefined) {
+    await assertProjectLeadOrAdmin({ projectId, userId, membershipRole })
+  }
+  if (data.assignedToId != null && data.assignedToId !== previousRecord.assignedToId) {
+    await assertAssigneeIsProjectMember(projectSlug, data.assignedToId)
+  }
+  const isReviewChange =
+    data.reviewState !== undefined && data.reviewState !== previousRecord.reviewState
+  // A rejected Posteingang entry hands its mail back to the Posteingang.
+  const releasesEmail =
+    isReviewChange &&
+    data.reviewState === ProjectRecordReviewState.REJECTED &&
+    previousRecord.projectRecordEmailId !== null &&
+    previousRecord.userId !== null
+
   const record = await db.projectRecord.update({
     where: { id: previousRecord.id },
-    data: updateProjectRecordData(data, userId, allowAdminFields, previousRecord.assignedToId),
+    data: {
+      ...updateProjectRecordData(data, userId, allowAdminFields, previousRecord.assignedToId),
+      ...(isReviewChange && { reviewedById: userId, reviewedAt: new Date() }),
+      ...(releasesEmail && { projectRecordEmailId: null }),
+    },
     include: projectRecordInclude,
   })
+
+  const isFirstApproval =
+    isReviewChange &&
+    record.reviewState === ProjectRecordReviewState.APPROVED &&
+    previousRecord.reviewedAt === null
+  if (isFirstApproval) {
+    void notifyProjectRecordFromEmailConfirmed({
+      projectId,
+      projectSlug,
+      projectRecord: record,
+      actorUserId: userId,
+    })
+  }
 
   const newAssigneeId = record.assignedToId
   const previousAssigneeId = previousRecord.assignedToId ?? null
   const isNewAssignment = newAssigneeId !== null && newAssigneeId !== previousAssigneeId
 
-  if (isNewAssignment) {
+  if (
+    newAssigneeId !== null &&
+    record.reviewState === ProjectRecordReviewState.APPROVED &&
+    (isNewAssignment || isFirstApproval)
+  ) {
     await sendProjectRecordAssignmentNotification({
       assigneeId: newAssigneeId,
       actorUserId: userId,
@@ -826,7 +875,7 @@ export async function patchProjectRecordAssignment(
   const newAssigneeId = record.assignedToId
   const isNewAssignment = newAssigneeId !== null && newAssigneeId !== previousAssigneeId
 
-  if (isNewAssignment) {
+  if (isNewAssignment && record.reviewState === ProjectRecordReviewState.APPROVED) {
     await sendProjectRecordAssignmentNotification({
       assigneeId: newAssigneeId,
       actorUserId: userId,
@@ -956,7 +1005,11 @@ export async function getProjectRecordsTabCounts(
   headers: Headers,
   input: z.infer<typeof GetProjectRecordsSchema>,
 ) {
-  const { membershipRole } = await endpointAuth.projectRole(headers, input.projectSlug, viewerRoles)
+  const { membershipRole, session } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    viewerRoles,
+  )
 
   const project = await db.project.findUnique({
     where: { slug: input.projectSlug },
@@ -978,11 +1031,16 @@ export async function getProjectRecordsTabCounts(
     },
   })
 
-  // The Posteingang is admin-only for now; membershipRole null means admin.
-  const inboxCount =
-    membershipRole === null
-      ? await db.projectRecordEmail.count({ where: projectRecordEmailInboxWhere(project.id) })
-      : 0
+  const canUseInbox =
+    project.aiEnabled &&
+    (await isProjectLeadOrAdmin({
+      projectId: project.id,
+      userId: Number(session.userId),
+      membershipRole,
+    }))
+  const inboxCount = canUseInbox
+    ? await db.projectRecordEmail.count({ where: projectRecordEmailInboxWhere(project.id) })
+    : 0
 
   return { approvedCount, needsReviewCount, inboxCount, aiEnabled: project.aiEnabled }
 }
@@ -1236,23 +1294,38 @@ function mapProjectRecordListRows(
   })
 }
 
+// Lists only show entries the detail page opens for this user.
+async function listVisibilityWhere(projectId: number, membershipRole: MembershipRoleEnum | null) {
+  const project = await db.project.findUnique({
+    where: { id: projectId },
+    select: { aiEnabled: true },
+  })
+  const canEdit = membershipRole === null || editorRoles.includes(membershipRole)
+  return projectRecordDetailVisibilityWhere(project?.aiEnabled ?? false, canEdit)
+}
+
 export async function getProjectRecordsBySubsubsection(
   headers: Headers,
   input: z.infer<typeof GetProjectRecordsBySubsubsectionSchema>,
 ) {
-  const { projectId, session } = await endpointAuth.projectRole(
+  const { projectId, session, membershipRole } = await endpointAuth.projectRole(
     headers,
     input.projectSlug,
     viewerRoles,
   )
+  const visibilityWhere = await listVisibilityWhere(projectId, membershipRole)
 
   const projectRecords = await db.projectRecord.findMany({
     where: {
       project: { slug: input.projectSlug },
-      reviewState: { in: ["NEEDSREVIEW", "APPROVED"] },
-      OR: [
-        { subsubsectionId: input.subsubsectionId },
-        { subsubsections: { some: { id: input.subsubsectionId } } },
+      AND: [
+        visibilityWhere,
+        {
+          OR: [
+            { subsubsectionId: input.subsubsectionId },
+            { subsubsections: { some: { id: input.subsubsectionId } } },
+          ],
+        },
       ],
     },
     orderBy: projectRecordListOrder,
@@ -1271,19 +1344,24 @@ export async function getProjectRecordsByAcquisitionArea(
   headers: Headers,
   input: z.infer<typeof GetProjectRecordsByAcquisitionAreaSchema>,
 ) {
-  const { projectId, session } = await endpointAuth.projectRole(
+  const { projectId, session, membershipRole } = await endpointAuth.projectRole(
     headers,
     input.projectSlug,
     viewerRoles,
   )
+  const visibilityWhere = await listVisibilityWhere(projectId, membershipRole)
 
   const projectRecords = await db.projectRecord.findMany({
     where: {
       project: { slug: input.projectSlug },
-      reviewState: { in: ["NEEDSREVIEW", "APPROVED"] },
-      OR: [
-        { acquisitionAreaId: input.acquisitionAreaId },
-        { acquisitionAreas: { some: { id: input.acquisitionAreaId } } },
+      AND: [
+        visibilityWhere,
+        {
+          OR: [
+            { acquisitionAreaId: input.acquisitionAreaId },
+            { acquisitionAreas: { some: { id: input.acquisitionAreaId } } },
+          ],
+        },
       ],
     },
     orderBy: projectRecordListOrder,

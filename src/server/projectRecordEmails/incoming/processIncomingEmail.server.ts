@@ -1,6 +1,7 @@
 import db from "@/src/server/db.server"
 import { notifyAdminsProjectRecordEmailReceived } from "./notifyAdminsProjectRecordEmailReceived.server"
 import { notifyAdminsProjectRecordEmailWithoutProject } from "./notifyAdminsProjectRecordEmailWithoutProject.server"
+import { notifyProjectLeadProjectRecordEmailReceived } from "./notifyProjectLeadProjectRecordEmailReceived.server"
 import { notifySenderLegacyProtocolMailboxMoved } from "./notifySenderLegacyProtocolMailboxMoved.server"
 import { parseEmail } from "./parseEmail.server"
 import { uploadEmailAttachments } from "./uploadEmailAttachments.server"
@@ -95,12 +96,18 @@ export async function processIncomingProjectRecordEmail({
     projectRecordEmailId: projectRecordEmail.id,
   })
 
-  await notifyAdminsProjectRecordEmailReceived({
-    projectSlug: project.slug,
-    senderEmail: from || "Unbekannt",
-    emailSubject: subject,
-    projectRecordEmailId: projectRecordEmail.id,
-  })
+  await Promise.all([
+    notifyAdminsProjectRecordEmailReceived({
+      projectSlug: project.slug,
+      senderEmail: from || "Unbekannt",
+      emailSubject: subject,
+      projectRecordEmailId: projectRecordEmail.id,
+    }),
+    notifyProjectLeadProjectRecordEmailReceived({
+      project,
+      projectRecordEmailId: projectRecordEmail.id,
+    }),
+  ])
 
   return {
     success: true,

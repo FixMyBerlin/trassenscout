@@ -2,9 +2,14 @@ import { z } from "zod"
 import { formatBerlinTime } from "@/src/components/core/utils/formatBerlinTime"
 import { extractProjectRecordFromEmail } from "@/src/server/ai/extractProjectRecordFromEmail.server"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
+import { editorRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
 import { flushLangfuseSpans } from "@/src/server/observability/langfuseSpanProcessor.server"
 import { createProjectRecord } from "@/src/server/projectRecords/projectRecords.server"
+import {
+  assertProjectLeadOrAdmin,
+  findProjectLead,
+} from "@/src/server/projects/findProjectLead.server"
 import { NotFoundError } from "@/src/shared/auth/errors"
 import { ProjectSlugRequiredSchema } from "@/src/shared/authorization/projectSlugSchema"
 import { assertProjectAiEnabled } from "./incoming/checkProjectAiEnabled.server"
@@ -18,16 +23,6 @@ import {
   ProjectRecordEmailInboxItemSchema,
 } from "./projectRecordEmails.inputSchemas"
 
-async function findProjectId(projectSlug: string) {
-  const project = await db.project.findUnique({
-    where: { slug: projectSlug },
-    select: { id: true },
-  })
-  if (!project) throw new NotFoundError()
-
-  return project.id
-}
-
 async function findInboxEmail(projectId: number, projectRecordEmailId: number) {
   const email = await db.projectRecordEmail.findFirst({
     where: { id: projectRecordEmailId, ...projectRecordEmailInboxWhere(projectId) },
@@ -37,7 +32,7 @@ async function findInboxEmail(projectId: number, projectRecordEmailId: number) {
       subject: true,
       date: true,
       textBody: true,
-      uploads: { select: { id: true } },
+      uploads: { where: { projectId }, select: { id: true } },
     },
   })
   if (!email) throw new NotFoundError()
@@ -45,13 +40,22 @@ async function findInboxEmail(projectId: number, projectRecordEmailId: number) {
   return email
 }
 
+async function assertInboxAccess(input: Parameters<typeof assertProjectLeadOrAdmin>[0]) {
+  await assertProjectLeadOrAdmin(input)
+  await assertProjectAiEnabled(input.projectId)
+}
+
 export async function getProjectRecordEmailInbox(
   headers: Headers,
   input: z.infer<typeof ProjectSlugRequiredSchema>,
 ) {
-  // Only admins work the Posteingang for now; editors follow later.
-  await endpointAuth.admin(headers)
-  const projectId = await findProjectId(input.projectSlug)
+  const { projectId, session, membershipRole } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    editorRoles,
+    { fresh: true },
+  )
+  await assertInboxAccess({ projectId, userId: Number(session.userId), membershipRole })
 
   return db.projectRecordEmail.findMany({
     where: projectRecordEmailInboxWhere(projectId),
@@ -61,7 +65,7 @@ export async function getProjectRecordEmailInbox(
       date: true,
       from: true,
       subject: true,
-      uploads: { select: { id: true, title: true } },
+      uploads: { where: { projectId }, select: { id: true, title: true } },
     },
     orderBy: { createdAt: "desc" },
   })
@@ -71,8 +75,13 @@ export async function getProjectRecordEmailInboxItem(
   headers: Headers,
   input: z.infer<typeof ProjectRecordEmailInboxItemSchema>,
 ) {
-  await endpointAuth.admin(headers)
-  const projectId = await findProjectId(input.projectSlug)
+  const { projectId, session, membershipRole } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    editorRoles,
+    { fresh: true },
+  )
+  await assertInboxAccess({ projectId, userId: Number(session.userId), membershipRole })
 
   const email = await db.projectRecordEmail.findFirst({
     where: { id: input.projectRecordEmailId, projectId },
@@ -85,7 +94,7 @@ export async function getProjectRecordEmailInboxItem(
       text: true,
       textBody: true,
       discardedAt: true,
-      uploads: { select: { id: true, title: true } },
+      uploads: { where: { projectId }, select: { id: true, title: true } },
       projectRecords: { select: { id: true, title: true } },
     },
   })
@@ -111,9 +120,13 @@ export async function draftProjectRecordFromEmail(
   headers: Headers,
   input: z.infer<typeof DraftProjectRecordFromEmailSchema>,
 ) {
-  const session = await endpointAuth.admin(headers)
-  const projectId = await findProjectId(input.projectSlug)
-  await assertProjectAiEnabled(projectId)
+  const { projectId, session, membershipRole } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    editorRoles,
+    { fresh: true },
+  )
+  await assertInboxAccess({ projectId, userId: Number(session.userId), membershipRole })
   const email = await findInboxEmail(projectId, input.projectRecordEmailId)
 
   const template = input.projectRecordTemplateId
@@ -173,20 +186,31 @@ export async function createProjectRecordFromEmail(
   headers: Headers,
   input: z.infer<typeof CreateProjectRecordFromEmailSchema>,
 ) {
-  const session = await endpointAuth.admin(headers)
-  const projectId = await findProjectId(input.projectSlug)
-  await assertProjectAiEnabled(projectId)
+  const { projectId, session, membershipRole } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    editorRoles,
+    { fresh: true },
+  )
+  const actorUserId = Number(session.userId)
+  await assertInboxAccess({ projectId, userId: actorUserId, membershipRole })
   const { projectRecordEmailId, ...recordInput } = input
   const email = await findInboxEmail(projectId, projectRecordEmailId)
 
-  const projectRecord = await createProjectRecord(headers, recordInput, { projectRecordEmailId })
+  // The Projektleitung's own save is the confirmation; an admin's save waits for it.
+  const projectLead = await findProjectLead(projectId)
+  const projectRecord = await createProjectRecord(headers, recordInput, {
+    projectRecordEmailId,
+    needsConfirmation: projectLead !== null && projectLead.id !== actorUserId,
+  })
   // Not awaited: the save must not wait for the mail provider.
   void notifyProjectRecordCreatedFromEmail({
     projectId,
     projectSlug: input.projectSlug,
     projectRecord,
+    projectLead,
     emailFrom: email.from,
-    actorUserId: Number(session.userId),
+    actorUserId,
   })
 
   return projectRecord
@@ -196,8 +220,13 @@ export async function discardProjectRecordEmail(
   headers: Headers,
   input: z.infer<typeof ProjectRecordEmailInboxItemSchema>,
 ) {
-  const session = await endpointAuth.admin(headers)
-  const projectId = await findProjectId(input.projectSlug)
+  const { projectId, session, membershipRole } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    editorRoles,
+    { fresh: true },
+  )
+  await assertInboxAccess({ projectId, userId: Number(session.userId), membershipRole })
 
   const { count } = await db.projectRecordEmail.updateMany({
     where: { id: input.projectRecordEmailId, ...projectRecordEmailInboxWhere(projectId) },

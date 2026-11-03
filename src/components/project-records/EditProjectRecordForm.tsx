@@ -26,6 +26,7 @@ import { getM2MInitialValues } from "@/src/components/project-records/utils/getM
 import { getProjectRecordAuthorLabel } from "@/src/components/project-records/utils/getProjectRecordAuthorLabel"
 import { getProjectRecordEditSuccessNavigateOptions } from "@/src/components/project-records/utils/getProjectRecordEditSuccessRoute"
 import { getDate } from "@/src/components/project-records/utils/splitStartAt"
+import { useIsProjectLeadOrAdmin } from "@/src/components/shared/app/memberships/hooks/useIsProjectLeadOrAdmin"
 import { ProjectRecordReviewState } from "@/src/prisma/generated/browser"
 import { deleteMcpDraftFn } from "@/src/server/mcp/mcpDrafts/mcpDrafts.functions"
 import { invalidateMcpDraftQueries } from "@/src/server/mcp/mcpDrafts/mcpDraftsQueryOptions"
@@ -104,6 +105,7 @@ export const EditProjectRecordForm = ({
     ...projectRecordQueryOptions({ projectSlug, id: initialProjectRecord.id }),
     initialData: initialProjectRecord,
   })
+  const canConfirm = useIsProjectLeadOrAdmin(projectRecord.project)
 
   const editRelationContext: "project" | "subsubsection" | "acquisitionArea" =
     projectRecord.acquisitionAreas.length > 0
@@ -139,13 +141,18 @@ export const EditProjectRecordForm = ({
       ...(overlay?.tags != null ? { tags: overlay.tags } : {}),
     },
     validators: { onSubmit: ProjectRecordFormSchema } as never,
-    onSubmit: async ({ value }) => {
-      const values = value as unknown as z.infer<typeof ProjectRecordFormSchema>
+    onSubmit: async ({ value, formApi }) => {
+      const { reviewState, reviewNotes, ...values } = value as unknown as z.infer<
+        typeof ProjectRecordFormSchema
+      >
+      const nextReviewState = reviewState ?? projectRecord.reviewState
       onSubmittingChange?.(true)
       try {
         await updateProjectRecordMutation.mutateAsync({
           data: {
             ...values,
+            ...(formApi.getFieldMeta("reviewState")?.isDirty && { reviewState }),
+            ...(formApi.getFieldMeta("reviewNotes")?.isDirty && { reviewNotes }),
             id: projectRecord.id,
             date: values.date,
             projectSlug,
@@ -169,14 +176,14 @@ export const EditProjectRecordForm = ({
           invalidateAfterProjectRecordChange(queryClient, projectSlug),
         ])
         if (onSuccess) {
-          onSuccess(values.reviewState)
+          onSuccess(nextReviewState)
         } else {
           navigate(
             getProjectRecordEditSuccessNavigateOptions({
               projectSlug,
               projectRecordId: projectRecord.id,
               initialReviewState: projectRecord.reviewState,
-              nextReviewState: values.reviewState,
+              nextReviewState,
             }),
           )
         }
@@ -220,7 +227,7 @@ export const EditProjectRecordForm = ({
         formError={formError}
         submitText="Änderungen speichern"
         hideSubmitButton
-        edgeToEdgeFooter={needsReview ? <ReviewProjectRecordForm /> : undefined}
+        edgeToEdgeFooter={needsReview && canConfirm ? <ReviewProjectRecordForm /> : undefined}
         actionBarLeft={<ProjectRecordSubmitButton />}
         actionBarRight={
           <ProjectRecordDeleteActionBar

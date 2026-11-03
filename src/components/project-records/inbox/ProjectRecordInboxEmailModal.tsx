@@ -27,7 +27,7 @@ import {
 } from "@/src/components/project-records/ProjectRecordSummary"
 import { ProjectRecordTemplatePickerModal } from "@/src/components/project-records/ProjectRecordTemplatePickerModal"
 import { formatEmailAddresses } from "@/src/components/project-records/utils/formatEmailAddresses"
-import { isAdmin } from "@/src/components/shared/app/users/utils/isAdmin"
+import { useIsProjectLeadOrAdmin } from "@/src/components/shared/app/memberships/hooks/useIsProjectLeadOrAdmin"
 import { UploadTable } from "@/src/components/uploads/UploadTable"
 import {
   createProjectRecordFromEmailFn,
@@ -38,7 +38,6 @@ import { projectRecordEmailInboxItemQueryOptions } from "@/src/server/projectRec
 import type { ProjectRecordTemplateOption } from "@/src/server/projectRecordTemplates/types"
 import { projectBySlugQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 import { uploadsWithSubsectionsQueryOptions } from "@/src/server/uploads/uploadsWithSubsectionsQueryOptions"
-import { currentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
 import { NewProjectRecordFormSchema } from "@/src/shared/projectRecords/schemas"
 
 type Props = {
@@ -65,7 +64,7 @@ const EmailRow = ({ label, children }: { label: string; children: ReactNode }) =
   </div>
 )
 
-// Admins on KI projects: read the mail, let the KI draft an entry from a Vorlage, check and save it.
+// Admins and the Projektleitung: read the mail, let the KI draft an entry from a Vorlage, save it.
 export function ProjectRecordInboxEmailModal({
   projectSlug,
   projectRecordEmailId,
@@ -73,10 +72,10 @@ export function ProjectRecordInboxEmailModal({
 }: Props) {
   const queryClient = useQueryClient()
   const { openProjectRecordDetail, getProjectRecordDetailHref } = useProjectRecordModal()
-  const { data: user } = useQuery(currentUserQueryOptions())
   const { data: project } = useQuery(projectBySlugQueryOptions(projectSlug))
+  const isProjectLeadOrAdmin = useIsProjectLeadOrAdmin(project)
   // Same gate as the Posteingang route.
-  const canUseInbox = isAdmin(user ?? null) && Boolean(project?.aiEnabled)
+  const canUseInbox = isProjectLeadOrAdmin && Boolean(project?.aiEnabled)
   const emailQuery = useQuery({
     ...projectRecordEmailInboxItemQueryOptions({ projectSlug, projectRecordEmailId }),
     enabled: canUseInbox,

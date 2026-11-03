@@ -1,5 +1,6 @@
 import { projectRecordEmailReceivedNotificationToAdmins } from "@/emails/mailers/projectRecordEmailReceivedNotificationToAdmins"
 import { mailUrl } from "@/emails/mailers/utils/mailUrl"
+import { projectRecordInboxEmailPath } from "@/src/shared/projectRecordEmails/projectRecordInboxEmailPath"
 
 type Props = {
   projectSlug: string
@@ -21,9 +22,7 @@ export async function notifyAdminsProjectRecordEmailReceived({
         projectSlug,
         senderEmail,
         emailSubject,
-        inboxEmailUrl: mailUrl(
-          `/${projectSlug}/project-records/inbox?modalProjectRecordEmailId=${projectRecordEmailId}`,
-        ),
+        inboxEmailUrl: mailUrl(projectRecordInboxEmailPath(projectSlug, projectRecordEmailId)),
       })
     ).send()
   } catch (error) {
