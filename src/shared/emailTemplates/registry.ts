@@ -102,7 +102,7 @@ Diese E-Mail dient zur Information aller Personen mit der Rolle "Editor" bei {{p
 
 Geplante Rechte: {{projectRoles}}
 
-Die Liste aller offenen Einladungen finden Sie unter {{invitesUrl}}.`,
+Die Liste aller offenen Einladungen finden Sie [im Trassenscout]({{invitesUrl}}).`,
       outroMarkdown: signatureMarkdown,
     },
   },
@@ -130,7 +130,7 @@ Diese E-Mail dient zur Information aller Personen mit der Rolle "Editor" bei {{p
 
 Neue Rechte: {{projectRoles}}
 
-Alle Teammitglieder finden Sie unter {{teamUrl}}.`,
+Alle Teammitglieder finden Sie [im Trassenscout]({{teamUrl}}).`,
       outroMarkdown: signatureMarkdown,
     },
   },

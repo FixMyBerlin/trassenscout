@@ -825,8 +825,7 @@ export function PageDatenschutz() {
 
         <h2 id="updates">Aktualität und Änderungen der Datenschutzhinweise</h2>
         <p>
-          Diese Datenschutzhinweise sind aktuell gültig und haben den folgenden Stand: Oktober
-          2026.
+          Diese Datenschutzhinweise sind aktuell gültig und haben den folgenden Stand: Oktober 2026.
         </p>
         <p>
           Wenn wir unsere Website und unsere Angebote weiterentwickeln oder sich gesetzliche oder
