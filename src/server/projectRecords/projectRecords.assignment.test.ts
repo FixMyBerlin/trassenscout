@@ -100,7 +100,6 @@ describe("patchProjectRecordAssignment", () => {
       title: "Protokoll",
       assignedToId: 3,
       editingState: ProjectRecordEditingState.COMPLETED,
-      reviewState: ProjectRecordReviewState.APPROVED,
     })
     mockDb.user.findUnique.mockResolvedValue({
       email: "a@example.com",
@@ -231,7 +230,6 @@ describe("patchProjectRecordAssignment", () => {
       body: "Bitte die <b>Ausführungsplanung</b> prüfen.",
       assignedToId: 3,
       editingState: ProjectRecordEditingState.COMPLETED,
-      reviewState: ProjectRecordReviewState.APPROVED,
     })
     const { projectRecordAssignedNotificationToUser } =
       await import("@/emails/mailers/projectRecordAssignedNotificationToUser")
@@ -264,7 +262,6 @@ describe("patchProjectRecordAssignment", () => {
       body: null,
       assignedToId: 3,
       editingState: ProjectRecordEditingState.PENDING,
-      reviewState: ProjectRecordReviewState.APPROVED,
     })
     const { projectRecordAssignedNotificationToUser } =
       await import("@/emails/mailers/projectRecordAssignedNotificationToUser")
@@ -280,28 +277,6 @@ describe("patchProjectRecordAssignment", () => {
     expect(projectRecordAssignedNotificationToUser).toHaveBeenCalledWith(
       expect.objectContaining({ protocolMailboxEmail: "protokoll+rs23@trassenscout.de" }),
     )
-  })
-
-  test("a new assignee of a waiting entry is told once it is approved", async () => {
-    mockDb.projectRecord.findFirstOrThrow.mockResolvedValueOnce(previousRecord)
-    mockDb.projectRecord.update.mockResolvedValueOnce({
-      id: 12,
-      title: "Protokoll",
-      body: null,
-      assignedToId: 3,
-      editingState: ProjectRecordEditingState.PENDING,
-      reviewState: ProjectRecordReviewState.NEEDSREVIEW,
-    })
-    const { patchProjectRecordAssignment } = await import("./projectRecords.server")
-
-    await patchProjectRecordAssignment(headers, {
-      projectSlug: "rs23",
-      id: 12,
-      assignedToId: 3,
-      editingState: ProjectRecordEditingState.PENDING,
-    })
-
-    expect(mockSend).not.toHaveBeenCalled()
   })
 
   test("rejects assignees who are not project members", async () => {

@@ -6,10 +6,7 @@ import { editorRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
 import { flushLangfuseSpans } from "@/src/server/observability/langfuseSpanProcessor.server"
 import { createProjectRecord } from "@/src/server/projectRecords/projectRecords.server"
-import {
-  assertProjectLeadOrAdmin,
-  findProjectLead,
-} from "@/src/server/projects/findProjectLead.server"
+import { assertProjectLeadOrAdmin } from "@/src/server/projects/findProjectLead.server"
 import { NotFoundError } from "@/src/shared/auth/errors"
 import { ProjectSlugRequiredSchema } from "@/src/shared/authorization/projectSlugSchema"
 import { assertProjectAiEnabled } from "./incoming/checkProjectAiEnabled.server"
@@ -197,18 +194,12 @@ export async function createProjectRecordFromEmail(
   const { projectRecordEmailId, ...recordInput } = input
   const email = await findInboxEmail(projectId, projectRecordEmailId)
 
-  // The Projektleitung's own save is the confirmation; an admin's save waits for it.
-  const projectLead = await findProjectLead(projectId)
-  const projectRecord = await createProjectRecord(headers, recordInput, {
-    projectRecordEmailId,
-    needsConfirmation: projectLead !== null && projectLead.id !== actorUserId,
-  })
+  const projectRecord = await createProjectRecord(headers, recordInput, { projectRecordEmailId })
   // Not awaited: the save must not wait for the mail provider.
   void notifyProjectRecordCreatedFromEmail({
     projectId,
     projectSlug: input.projectSlug,
     projectRecord,
-    projectLead,
     emailFrom: email.from,
     actorUserId,
   })

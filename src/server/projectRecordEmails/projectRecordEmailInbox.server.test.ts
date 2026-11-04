@@ -11,7 +11,6 @@ import {
 const mocks = vi.hoisted(() => ({
   projectRole: vi.fn(),
   assertProjectLeadOrAdmin: vi.fn(),
-  findProjectLead: vi.fn(),
   findProject: vi.fn(),
   findEmail: vi.fn(),
   updateEmails: vi.fn(),
@@ -38,7 +37,6 @@ vi.mock("@/src/server/auth/endpointAuth.server", () => ({
 }))
 vi.mock("@/src/server/projects/findProjectLead.server", () => ({
   assertProjectLeadOrAdmin: (...args: unknown[]) => mocks.assertProjectLeadOrAdmin(...args),
-  findProjectLead: (...args: unknown[]) => mocks.findProjectLead(...args),
 }))
 vi.mock("@/src/server/ai/extractProjectRecordFromEmail.server", () => ({
   extractProjectRecordFromEmail: (...args: unknown[]) => mocks.extract(...args),
@@ -76,7 +74,6 @@ describe("Posteingang", () => {
       session: { userId: "3", role: "ADMIN" },
     })
     mocks.assertProjectLeadOrAdmin.mockResolvedValue(undefined)
-    mocks.findProjectLead.mockResolvedValue(null)
     mocks.findProject.mockResolvedValue({ id: 1, aiEnabled: true })
     mocks.findEmail.mockResolvedValue({
       id: 61,
@@ -215,7 +212,6 @@ describe("Posteingang", () => {
 
   const projectRecord = { id: 99, title: "Abstimmung Knotenpunkt", assignedToId: null }
   const { projectRecordEmailId: _, ...recordInput } = saveInput
-  const projectLead = { id: 7, email: "brit@example.org" }
 
   test("saves the draft as a Protokolleintrag linked to the mail and sends the notices", async () => {
     mocks.createProjectRecord.mockResolvedValue(projectRecord)
@@ -225,38 +221,22 @@ describe("Posteingang", () => {
     expect(mocks.findEmail).toHaveBeenCalledWith(expect.objectContaining({ where: inboxWhere }))
     expect(mocks.createProjectRecord).toHaveBeenCalledWith(headers, recordInput, {
       projectRecordEmailId: 61,
-      needsConfirmation: false,
     })
     expect(mocks.notify).toHaveBeenCalledWith({
       projectId: 1,
       projectSlug: "rs8",
       projectRecord,
-      projectLead: null,
       emailFrom: "Brit Beispiel <brit@example.org>",
       actorUserId: 3,
     })
   })
 
-  test("an admin's save waits for the Projektleitung to confirm", async () => {
-    mocks.findProjectLead.mockResolvedValue(projectLead)
-    mocks.createProjectRecord.mockResolvedValue(projectRecord)
-
-    await createProjectRecordFromEmail(headers, saveInput)
-
-    expect(mocks.createProjectRecord).toHaveBeenCalledWith(headers, recordInput, {
-      projectRecordEmailId: 61,
-      needsConfirmation: true,
-    })
-    expect(mocks.notify).toHaveBeenCalledWith(expect.objectContaining({ projectLead }))
-  })
-
-  test("the Projektleitung's own save is the confirmation", async () => {
+  test("the Projektleitung saves the same way as an admin", async () => {
     mocks.projectRole.mockResolvedValue({
       projectId: 1,
       membershipRole: "EDITOR",
       session: { userId: "7", role: "USER" },
     })
-    mocks.findProjectLead.mockResolvedValue(projectLead)
     mocks.createProjectRecord.mockResolvedValue(projectRecord)
 
     await createProjectRecordFromEmail(headers, saveInput)
@@ -268,7 +248,6 @@ describe("Posteingang", () => {
     })
     expect(mocks.createProjectRecord).toHaveBeenCalledWith(headers, recordInput, {
       projectRecordEmailId: 61,
-      needsConfirmation: false,
     })
   })
 

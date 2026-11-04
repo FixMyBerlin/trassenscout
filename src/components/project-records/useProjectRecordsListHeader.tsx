@@ -28,7 +28,7 @@ export function useProjectRecordsListHeader() {
           },
         ]
       : []),
-    // Entries an admin saved from the Posteingang, and older KI entries.
+    // Stays until the AI entries created before the Posteingang are confirmed.
     ...(showLeadTabs && tabCounts.needsReviewCount > 0
       ? [
           {

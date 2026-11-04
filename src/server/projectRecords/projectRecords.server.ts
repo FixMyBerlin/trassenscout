@@ -21,7 +21,6 @@ import {
   loadUserRedactionContexts,
   redactProjectRecordUsers,
 } from "@/src/server/memberships/redactFormerProjectMemberUser.server"
-import { notifyProjectRecordFromEmailConfirmed } from "@/src/server/projectRecordEmails/notifyProjectRecordCreatedFromEmail.server"
 import { projectProtocolMailboxAddress } from "@/src/server/projectRecordEmails/projectProtocolMailboxAddress.server"
 import { projectRecordEmailInboxWhere } from "@/src/server/projectRecordEmails/projectRecordEmailInboxWhere"
 import {
@@ -214,14 +213,12 @@ function assignmentMetadata(
     : { assignedById: actorUserId, assignedAt: new Date() }
 }
 
-type CreateProjectRecordOptions = { projectRecordEmailId?: number; needsConfirmation?: boolean }
-
 function createProjectRecordData(
   input: CreateProjectRecordInput,
   projectId: number,
   userId: number,
   formTemplateIds: number[],
-  { projectRecordEmailId, needsConfirmation = false }: CreateProjectRecordOptions,
+  projectRecordEmailId?: number,
 ) {
   const { acquisitionAreas, tags, subsubsections, uploads, formTemplates: _, ...data } = input
 
@@ -234,12 +231,13 @@ function createProjectRecordData(
       ? ProjectRecordType.SYSTEM
       : ProjectRecordType.USER,
     projectRecordUpdatedByType: ProjectRecordType.USER,
-    reviewState: needsConfirmation
-      ? ProjectRecordReviewState.NEEDSREVIEW
-      : ProjectRecordReviewState.APPROVED,
-    ...(projectRecordEmailId && { projectRecordEmailId }),
-    ...(projectRecordEmailId &&
-      !needsConfirmation && { reviewedById: userId, reviewedAt: new Date() }),
+    reviewState: ProjectRecordReviewState.APPROVED,
+    // Saving a Posteingang draft is the confirmation of the AI result.
+    ...(projectRecordEmailId && {
+      projectRecordEmailId,
+      reviewedById: userId,
+      reviewedAt: new Date(),
+    }),
     userId,
     updatedById: userId,
     acquisitionAreas: connectIds(idsFromFormValue(acquisitionAreas)),
@@ -605,14 +603,13 @@ async function assertViewerOwnsUnattachedUploads({
 export async function createProjectRecord(
   headers: Headers,
   input: z.infer<typeof CreateProjectRecordBySlugSchema>,
-  options: CreateProjectRecordOptions = {},
+  { projectRecordEmailId }: { projectRecordEmailId?: number } = {},
 ) {
   const { projectId, membershipRole, session } = await endpointAuth.projectRole(
     headers,
     input.projectSlug,
     viewerRoles,
   )
-  const { projectRecordEmailId } = options
   const { projectSlug, ...data } = input
   const canEdit = membershipRole === null || editorRoles.includes(membershipRole)
 
@@ -634,12 +631,11 @@ export async function createProjectRecord(
   const userId = Number(session.userId)
 
   const record = await db.projectRecord.create({
-    data: createProjectRecordData(data, projectId, userId, formTemplateIds, options),
+    data: createProjectRecordData(data, projectId, userId, formTemplateIds, projectRecordEmailId),
     include: projectRecordInclude,
   })
 
-  // A waiting entry tells its assignee on approval, see updateProjectRecord.
-  if (record.assignedToId !== null && record.reviewState === ProjectRecordReviewState.APPROVED) {
+  if (record.assignedToId !== null) {
     await sendProjectRecordAssignmentNotification({
       assigneeId: record.assignedToId,
       actorUserId: userId,
@@ -706,9 +702,6 @@ export async function updateProjectRecord(
       assignedToId: true,
       reviewState: true,
       reviewNotes: true,
-      reviewedAt: true,
-      userId: true,
-      projectRecordEmailId: true,
       tags: { select: { id: true } },
       subsubsections: { select: { id: true } },
       acquisitionAreas: { select: { id: true } },
@@ -725,45 +718,21 @@ export async function updateProjectRecord(
   }
   const isReviewChange =
     data.reviewState !== undefined && data.reviewState !== previousRecord.reviewState
-  // A rejected Posteingang entry hands its mail back to the Posteingang.
-  const releasesEmail =
-    isReviewChange &&
-    data.reviewState === ProjectRecordReviewState.REJECTED &&
-    previousRecord.projectRecordEmailId !== null &&
-    previousRecord.userId !== null
 
   const record = await db.projectRecord.update({
     where: { id: previousRecord.id },
     data: {
       ...updateProjectRecordData(data, userId, allowAdminFields, previousRecord.assignedToId),
       ...(isReviewChange && { reviewedById: userId, reviewedAt: new Date() }),
-      ...(releasesEmail && { projectRecordEmailId: null }),
     },
     include: projectRecordInclude,
   })
-
-  const isFirstApproval =
-    isReviewChange &&
-    record.reviewState === ProjectRecordReviewState.APPROVED &&
-    previousRecord.reviewedAt === null
-  if (isFirstApproval) {
-    void notifyProjectRecordFromEmailConfirmed({
-      projectId,
-      projectSlug,
-      projectRecord: record,
-      actorUserId: userId,
-    })
-  }
 
   const newAssigneeId = record.assignedToId
   const previousAssigneeId = previousRecord.assignedToId ?? null
   const isNewAssignment = newAssigneeId !== null && newAssigneeId !== previousAssigneeId
 
-  if (
-    newAssigneeId !== null &&
-    record.reviewState === ProjectRecordReviewState.APPROVED &&
-    (isNewAssignment || isFirstApproval)
-  ) {
+  if (isNewAssignment) {
     await sendProjectRecordAssignmentNotification({
       assigneeId: newAssigneeId,
       actorUserId: userId,
@@ -875,7 +844,7 @@ export async function patchProjectRecordAssignment(
   const newAssigneeId = record.assignedToId
   const isNewAssignment = newAssigneeId !== null && newAssigneeId !== previousAssigneeId
 
-  if (isNewAssignment && record.reviewState === ProjectRecordReviewState.APPROVED) {
+  if (isNewAssignment) {
     await sendProjectRecordAssignmentNotification({
       assigneeId: newAssigneeId,
       actorUserId: userId,
