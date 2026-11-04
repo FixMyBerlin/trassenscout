@@ -69,14 +69,14 @@ test.describe("Admin projects matrix", () => {
     await expect(projectRow(page, seedProjects.secondaryForbiddenProject)).toBeVisible()
     await expect(page).toHaveURL(/project=rs0v/)
 
-    // Numeric queries arrive as numbers after the router's JSON parsing and must not crash the route
+    // A numeric query stays text in the URL and must not crash the route
     await searchInput.fill("")
     await searchInput.fill("23")
-    await expect(page).toHaveURL(/project=23/)
+    await expect(page).toHaveURL(/project=(%22|")23/)
     await expect(projectRow(page, seedProjects.richProject)).toBeVisible()
     await expect(projectRow(page, seedProjects.forbiddenProject)).toBeHidden()
 
-    // Same for a direct load with a numeric search param
+    // A direct load with a bare number reaches the route as a number
     await page.goto(`${projectsPath}?project=23`)
     await expect(projectRow(page, seedProjects.richProject)).toBeVisible({ timeout: 30_000 })
     await expect(projectRow(page, seedProjects.forbiddenProject)).toBeHidden()
