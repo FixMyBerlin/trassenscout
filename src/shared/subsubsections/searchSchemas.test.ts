@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest"
 import {
   isSubsubsectionMcpDraftSearch,
+  subsectionDashboardSearchSchema,
   subsubsectionEditSearchSchema,
   subsubsectionNewSearchSchema,
 } from "@/src/shared/subsubsections/searchSchemas"
@@ -29,5 +30,17 @@ describe("subsubsectionNewSearchSchema", () => {
       mcpDraft: true,
       slug: "dre34",
     })
+  })
+})
+
+describe("subsectionDashboardSearchSchema", () => {
+  test("keeps a numeric searchterm as text, the router parses `?searchterm=2024` as a number", () => {
+    expect(subsectionDashboardSearchSchema.parse({ searchterm: 2024 })).toEqual({
+      searchterm: "2024",
+    })
+  })
+
+  test("leaves the searchterm out when it is not set", () => {
+    expect(subsectionDashboardSearchSchema.parse({})).toEqual({})
   })
 })

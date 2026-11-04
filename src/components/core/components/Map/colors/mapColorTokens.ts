@@ -9,6 +9,7 @@ export const mapColorTokens = {
   yellow400: "#f8c62b",
   pink200: "#fbcfe8",
   gray200: "#e5e7eb",
+  gray400: "#9ca3af",
   gray600: "#4b5563",
   slate900: "#0f172a",
   black: "#000000",

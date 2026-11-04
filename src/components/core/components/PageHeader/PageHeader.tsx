@@ -10,6 +10,7 @@ type Props = {
   breadcrumb?: React.ReactNode
   info?: React.ReactNode
   tabs?: React.ReactNode
+  search?: React.ReactNode
   viewMode?: ViewMode
   onViewModeChange?: (mode: ViewMode) => void
   title?: string
@@ -26,6 +27,7 @@ export const PageHeader = ({
   breadcrumb,
   info,
   tabs,
+  search,
   viewMode,
   onViewModeChange,
   title,
@@ -69,7 +71,7 @@ export const PageHeader = ({
       <PageHeaderLayout
         className={className}
         row1={{ left: breadcrumb, right: row1Right }}
-        row2={{ left: tabs, right: row2Right }}
+        row2={{ left: tabs ?? search, right: row2Right }}
         row3={{ left: row3Left }}
         row4={{ left: filters, right: filtersAction }}
       />

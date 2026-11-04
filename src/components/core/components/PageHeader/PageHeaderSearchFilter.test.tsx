@@ -47,6 +47,42 @@ describe("PageHeaderSearchFilter", () => {
     expect(screen.getByPlaceholderText<HTMLInputElement>("Suchen").value).toBe("")
   })
 
+  test("keeps what was typed while a committed search is on its way", () => {
+    const onChange = vi.fn()
+    const { rerender } = renderFilter({ value: "", hasFilter: false, onChange })
+    const input = screen.getByPlaceholderText<HTMLInputElement>("Suchen")
+
+    fireEvent.change(input, { target: { value: "a" } })
+    act(() => vi.advanceTimersByTime(300))
+    expect(onChange).toHaveBeenLastCalledWith("a")
+
+    fireEvent.change(input, { target: { value: "ab" } })
+    rerender(
+      <PageHeaderSearchFilter
+        value="a"
+        hasFilter
+        onChange={onChange}
+        onReset={() => {}}
+        placeholder="Suchen"
+      />,
+    )
+    expect(input.value).toBe("ab")
+
+    act(() => vi.advanceTimersByTime(300))
+    expect(onChange).toHaveBeenLastCalledWith("ab")
+  })
+
+  test("commits a search only once while it is on its way", () => {
+    const onChange = vi.fn()
+    renderFilter({ value: "", hasFilter: false, onChange })
+
+    fireEvent.change(screen.getByPlaceholderText("Suchen"), { target: { value: "abc" } })
+    act(() => vi.advanceTimersByTime(300))
+    act(() => vi.advanceTimersByTime(1000))
+
+    expect(onChange).toHaveBeenCalledTimes(1)
+  })
+
   test("shows the reset link only while a filter or search draft is set", () => {
     const onChange = vi.fn()
     const { rerender } = renderFilter({ value: "", hasFilter: false, onChange })
@@ -68,6 +104,26 @@ describe("PageHeaderSearchFilter", () => {
       />,
     )
     expect(screen.queryByText("Filter zurücksetzen")).not.toBeNull()
+  })
+
+  test("hands the typed text to onSubmit on Enter, before the debounce commits it", () => {
+    const onChange = vi.fn()
+    const onSubmit = vi.fn()
+    render(
+      <PageHeaderSearchFilter
+        value=""
+        onChange={onChange}
+        onSubmit={onSubmit}
+        placeholder="Suchen"
+      />,
+    )
+    const input = screen.getByPlaceholderText<HTMLInputElement>("Suchen")
+
+    fireEvent.change(input, { target: { value: "abc" } })
+    fireEvent.submit(input)
+
+    expect(onSubmit).toHaveBeenCalledWith("abc")
+    expect(onChange).not.toHaveBeenCalled()
   })
 
   test("leaves the reset to the surrounding filter bar without onReset", () => {
