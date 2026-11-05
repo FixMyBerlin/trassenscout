@@ -1,11 +1,13 @@
 import { createServerFn } from "@tanstack/react-start"
 import { getRequestHeaders } from "@tanstack/react-start/server"
+import { getAssigneeRanking } from "./assigneeRanking.server"
 import { countMyAssignedRecords, getMyAssignedRecords } from "./myAssignedRecords.server"
 import {
   CreateProjectRecordBySlugSchema,
   DeleteProjectRecordBySlugSchema,
   DeleteProjectRecordWithUploadsDecisionSchema,
   CountMyAssignedRecordsSchema,
+  GetAssigneeRankingSchema,
   GetMyAssignedRecordsSchema,
   GetProjectRecordAdminSchema,
   GetProjectRecordSchema,
@@ -95,3 +97,7 @@ export const countMyAssignedRecordsFn = createServerFn({ method: "GET" })
 export const getMyAssignedRecordsFn = createServerFn({ method: "GET" })
   .validator(GetMyAssignedRecordsSchema)
   .handler(({ data }) => getMyAssignedRecords(getRequestHeaders(), data))
+
+export const getAssigneeRankingFn = createServerFn({ method: "POST" })
+  .validator(GetAssigneeRankingSchema)
+  .handler(({ data }) => getAssigneeRanking(getRequestHeaders(), data))

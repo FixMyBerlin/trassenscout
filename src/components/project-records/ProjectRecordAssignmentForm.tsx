@@ -3,6 +3,7 @@ import { useRef, useState } from "react"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
 import { FormHydratedProvider } from "@/src/components/core/components/forms/hooks/useFormHydrated"
 import { useIsHydrated } from "@/src/components/core/components/forms/hooks/useIsHydrated"
+import { useAssignedToItems } from "@/src/components/project-records/hooks/useAssignedToItems"
 import { ProjectRecordAssignmentFields } from "@/src/components/project-records/ProjectRecordAssignmentFields"
 import { getProjectRecordAuthorLabel } from "@/src/components/project-records/utils/getProjectRecordAuthorLabel"
 import { getUserComboboxItems } from "@/src/components/shared/app/users/utils/getUserSelectOptions"
@@ -42,6 +43,18 @@ export const ProjectRecordAssignmentForm = ({ projectRecord }: Props) => {
   const isHydrated = useIsHydrated()
   const queryClient = useQueryClient()
   const { data: users = [] } = useQuery(projectUsersQueryOptions({ projectSlug }))
+  const assignedToItems = useAssignedToItems({
+    projectSlug,
+    users,
+    subsubsectionIds: [
+      projectRecord.subsubsectionId,
+      ...projectRecord.subsubsections.map(({ id }) => id),
+    ],
+    acquisitionAreaIds: [
+      projectRecord.acquisitionAreaId,
+      ...projectRecord.acquisitionAreas.map(({ id }) => id),
+    ],
+  })
   const lastPersistedRef = useRef<AssignmentValues>({
     assignedToId: projectRecord.assignedToId ?? null,
     editingState: projectRecord.editingState,
@@ -126,7 +139,7 @@ export const ProjectRecordAssignmentForm = ({ projectRecord }: Props) => {
           }}
         >
           <ProjectRecordAssignmentFields
-            assignedToItems={getUserComboboxItems(users)}
+            assignedToItems={assignedToItems}
             fromLabel={getProjectRecordAuthorLabel({
               type: projectRecord.projectRecordAuthorType,
               author: projectRecord.author,

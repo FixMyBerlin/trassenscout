@@ -67,9 +67,7 @@ function SubsectionFormWithQuery<S extends z.ZodTypeAny>({
     },
   })
 
-  const { data: users } = useSuspenseQuery(
-    projectUsersQueryOptions({ projectSlug, role: "EDITOR" }),
-  )
+  const { data: users } = useSuspenseQuery(projectUsersQueryOptions({ projectSlug }))
   const { data: operatorsData } = useSuspenseQuery(
     adminLookupRowsWithCountQueryOptions({ projectSlug, table: "operators" }),
   )

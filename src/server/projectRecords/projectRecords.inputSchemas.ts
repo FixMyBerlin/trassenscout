@@ -41,3 +41,8 @@ export const GetMyAssignedRecordsSchema = z.object({
 export const CountMyAssignedRecordsSchema = z.object({
   projectSlug: z.string().optional(),
 })
+
+export const GetAssigneeRankingSchema = ProjectSlugRequiredSchema.extend({
+  subsubsectionIds: z.array(z.number()),
+  acquisitionAreaIds: z.array(z.number()),
+})

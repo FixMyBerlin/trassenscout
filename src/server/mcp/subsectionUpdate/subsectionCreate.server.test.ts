@@ -1,14 +1,16 @@
-import { beforeAll, beforeEach, describe, expect, test, vi } from "vitest"
+import { beforeEach, describe, expect, test, vi } from "vitest"
 import { GeometryTypeEnum } from "@/src/prisma/generated/browser"
+import { Prisma } from "@/src/prisma/generated/client"
+import { createSubsectionForMcp } from "@/src/server/mcp/queries/createSubsectionForMcp.server"
 
-const mockDb = {
+const mockDb = vi.hoisted(() => ({
   project: { findUnique: vi.fn() },
   subsection: { findFirst: vi.fn(), create: vi.fn() },
   operator: { findFirst: vi.fn() },
   networkHierarchy: { findFirst: vi.fn() },
   subsectionStatus: { findFirst: vi.fn() },
   mcpDraft: { findFirst: vi.fn(), create: vi.fn(), update: vi.fn(), upsert: vi.fn() },
-}
+}))
 
 vi.mock("@/src/server/db.server", () => ({
   default: mockDb,
@@ -39,13 +41,6 @@ function item(patch: Record<string, unknown>, slug = "pa8") {
 }
 
 describe("Subsection MCP create", () => {
-  let createSubsectionForMcp: (typeof import("@/src/server/mcp/queries/createSubsectionForMcp.server"))["createSubsectionForMcp"]
-
-  beforeAll(async () => {
-    ;({ createSubsectionForMcp } =
-      await import("@/src/server/mcp/queries/createSubsectionForMcp.server"))
-  })
-
   beforeEach(() => {
     vi.clearAllMocks()
     mockDb.project.findUnique.mockResolvedValue(enabledProject)
@@ -144,7 +139,6 @@ describe("Subsection MCP create", () => {
   })
 
   test("existing create draft is last-wins with warning", async () => {
-    const { Prisma } = await import("@/src/prisma/generated/client")
     mockDb.mcpDraft.findFirst.mockResolvedValue({ id: 9 })
     mockDb.mcpDraft.create.mockRejectedValue(
       new Prisma.PrismaClientKnownRequestError("Unique constraint", {

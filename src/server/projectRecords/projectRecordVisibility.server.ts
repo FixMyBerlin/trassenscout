@@ -13,6 +13,15 @@ export function projectRecordOverviewVisibilityWhere(aiEnabled: boolean) {
   }
 }
 
+export const projectRecordTaskWhere = {
+  assignedToId: { not: null },
+  reviewState: ProjectRecordReviewState.APPROVED,
+  NOT: {
+    projectRecordAuthorType: ProjectRecordType.SYSTEM,
+    project: { aiEnabled: false },
+  },
+}
+
 export function projectRecordDetailVisibilityWhere(aiEnabled: boolean, canEdit: boolean) {
   return {
     OR: [

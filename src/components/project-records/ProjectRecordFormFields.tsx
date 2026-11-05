@@ -5,6 +5,7 @@ import { useCoreAppFormContext } from "@/src/components/core/components/forms/ho
 import { useFormValue } from "@/src/components/core/components/forms/hooks/useFormValue"
 import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { NumberArraySchema } from "@/src/components/core/utils/schema-shared"
+import { useAssignedToItems } from "@/src/components/project-records/hooks/useAssignedToItems"
 import { useSessionUploadCleanup } from "@/src/components/project-records/hooks/useSessionUploadCleanup"
 import { ProjectRecordAssignmentFields } from "@/src/components/project-records/ProjectRecordAssignmentFields"
 import {
@@ -22,7 +23,6 @@ import {
   formatAcquisitionAreaRelationOptionLabel,
   formatSubsubsectionRelationOptionLabel,
 } from "@/src/components/project-records/ProjectRelationLinks"
-import { getUserComboboxItems } from "@/src/components/shared/app/users/utils/getUserSelectOptions"
 import { TagsFormSection } from "@/src/components/tags/TagsFormSection"
 import { ProjectUploadDropzone } from "@/src/components/uploads/ProjectUploadDropzone"
 import { UploadTable } from "@/src/components/uploads/UploadTable"
@@ -93,7 +93,16 @@ export const ProjectRecordFormFields = ({
       uploadIds.filter((id) => id !== uploadId),
     )
 
-  const assignedToItems = getUserComboboxItems(users)
+  const subsubsectionId = useFormValue<number | null>("subsubsectionId")
+  const subsubsectionsValue = useFormValue("subsubsections")
+  const acquisitionAreaId = useFormValue<number | null>("acquisitionAreaId")
+  const acquisitionAreasValue = useFormValue("acquisitionAreas")
+  const assignedToItems = useAssignedToItems({
+    projectSlug,
+    users,
+    subsubsectionIds: [subsubsectionId, ...NumberArraySchema.parse(subsubsectionsValue)],
+    acquisitionAreaIds: [acquisitionAreaId, ...NumberArraySchema.parse(acquisitionAreasValue)],
+  })
 
   const subsubsectionItems = subsubsections
     .sort((a, b) => a.subsection.slug.localeCompare(b.subsection.slug))

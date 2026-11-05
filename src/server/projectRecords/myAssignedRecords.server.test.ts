@@ -21,6 +21,7 @@ const headers = new Headers()
 
 const listWhere = () => mockDb.projectRecord.findMany.mock.calls[0]?.[0]?.where
 const countWhere = () => mockDb.projectRecord.count.mock.calls[0]?.[0]?.where
+const hiddenWithoutAi = { projectRecordAuthorType: "SYSTEM", project: { aiEnabled: false } }
 
 describe("getMyAssignedRecords", () => {
   beforeEach(() => {
@@ -97,6 +98,14 @@ describe("getMyAssignedRecords", () => {
 
     expect(listWhere().project).toEqual({ memberships: { some: { userId: 99 } } })
   })
+
+  test("hides system-created records of projects without AI, their detail page cannot open", async () => {
+    const { getMyAssignedRecords } = await import("./myAssignedRecords.server")
+
+    await getMyAssignedRecords(headers, { direction: "all" })
+
+    expect(listWhere().NOT).toEqual(hiddenWithoutAi)
+  })
 })
 
 describe("countMyAssignedRecords", () => {
@@ -123,6 +132,7 @@ describe("countMyAssignedRecords", () => {
       assignedToId: 99,
       editingState: "PENDING",
       reviewState: "APPROVED",
+      NOT: hiddenWithoutAi,
       project: { memberships: { some: { userId: 99 } } },
     })
   })

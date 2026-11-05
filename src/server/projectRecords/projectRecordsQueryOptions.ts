@@ -3,6 +3,7 @@ import type { z } from "zod"
 import {
   countMyAssignedRecordsFn,
   getAllProjectRecordsAdminFn,
+  getAssigneeRankingFn,
   getMyAssignedRecordsFn,
   getProjectRecordAdminFn,
   getProjectRecordDeleteInfoFn,
@@ -11,7 +12,10 @@ import {
   getProjectRecordsNeedsReviewFn,
   getProjectRecordsTabCountsFn,
 } from "./projectRecords.functions"
-import type { GetMyAssignedRecordsSchema } from "./projectRecords.inputSchemas"
+import type {
+  GetAssigneeRankingSchema,
+  GetMyAssignedRecordsSchema,
+} from "./projectRecords.inputSchemas"
 import type { GetProjectRecordsInput } from "./projectRecords.server"
 import { GetProjectRecordSchema } from "./projectRecords.server"
 
@@ -75,5 +79,12 @@ export function myAssignedRecordsQueryOptions(input: z.infer<typeof GetMyAssigne
   return queryOptions({
     queryKey: ["projectRecords", "assignedToMe", input],
     queryFn: () => getMyAssignedRecordsFn({ data: input }),
+  })
+}
+
+export function assigneeRankingQueryOptions(input: z.infer<typeof GetAssigneeRankingSchema>) {
+  return queryOptions({
+    queryKey: ["assigneeRanking", input],
+    queryFn: () => getAssigneeRankingFn({ data: input }),
   })
 }
