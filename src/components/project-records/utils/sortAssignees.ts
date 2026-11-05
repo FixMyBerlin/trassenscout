@@ -1,3 +1,8 @@
+import {
+  getUserComboboxItems,
+  type UserSelectOptions,
+} from "@/src/components/shared/app/users/utils/getUserSelectOptions"
+
 type AssigneeRanking = {
   leadIds: number[]
   assignmentCounts: Record<string, number>
@@ -13,7 +18,12 @@ export const sortAssignees = <TUser extends { id: number }>(
   const { leadIds, assignmentCounts } = ranking
   return [...users].sort(
     (a, b) =>
-      Number(leadIds.includes(b.id)) - Number(leadIds.includes(a.id)) ||
-      (assignmentCounts[b.id] ?? 0) - (assignmentCounts[a.id] ?? 0),
+      (assignmentCounts[b.id] ?? 0) - (assignmentCounts[a.id] ?? 0) ||
+      Number(leadIds.includes(b.id)) - Number(leadIds.includes(a.id)),
   )
 }
+
+export const getAssigneeItems = (users: UserSelectOptions, ranking: AssigneeRanking | undefined) =>
+  getUserComboboxItems(sortAssignees(users, ranking), ({ id }) =>
+    ranking?.leadIds.includes(id) || ranking?.assignmentCounts[id] ? "Systemvorschläge" : undefined,
+  )

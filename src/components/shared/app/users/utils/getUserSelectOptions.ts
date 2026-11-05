@@ -16,12 +16,16 @@ export const getUserSelectOptions = (users: UserSelectOptions) => {
   return result
 }
 
-export const getUserComboboxItems = (users: UserSelectOptions): ComboboxSingleItem[] => {
+export const getUserComboboxItems = (
+  users: UserSelectOptions,
+  getGroup?: (user: UserSelectOptions[number]) => string | undefined,
+): ComboboxSingleItem[] => {
   const result: ComboboxSingleItem[] = [{ value: "", label: "(Keine Auswahl)" }]
   users.forEach((user) => {
     result.push({
       value: String(user.id),
       label: userOptionLabel(user),
+      group: getGroup?.(user),
     })
   })
   return result

@@ -24,6 +24,7 @@ export type ComboboxSingleItem = {
   /** Optional text for the closed trigger button when it should differ from the option label. */
   triggerText?: string
   disabled?: boolean
+  group?: string
 }
 
 export type ComboboxSingleBaseProps = {
@@ -152,18 +153,33 @@ export function ComboboxSingleBase({
                     optionUi === "classic" ? "border border-gray-300" : "",
                   )}
                 >
-                  {filteredItems.map((item) => (
-                    <ComboboxOption
-                      key={item.value}
-                      value={item.value}
-                      disabled={item.disabled}
-                      className={listboxOptionClassName(optionUi, "data-disabled:opacity-50")}
-                    >
-                      <ListboxOptionLabel ui={optionUi} title={itemLabelText(item)}>
-                        {item.label}
-                      </ListboxOptionLabel>
-                    </ComboboxOption>
-                  ))}
+                  {filteredItems.map((item, index) => {
+                    const previousGroup = filteredItems[index - 1]?.group
+                    return (
+                      <Fragment key={item.value}>
+                        {item.group && item.group !== previousGroup && (
+                          <div
+                            role="presentation"
+                            className="cursor-default px-3 pt-2 pb-1 text-xs font-semibold text-gray-500 select-none"
+                          >
+                            {item.group}
+                          </div>
+                        )}
+                        {previousGroup && !item.group && (
+                          <div role="presentation" className="my-1 border-t border-gray-200" />
+                        )}
+                        <ComboboxOption
+                          value={item.value}
+                          disabled={item.disabled}
+                          className={listboxOptionClassName(optionUi, "data-disabled:opacity-50")}
+                        >
+                          <ListboxOptionLabel ui={optionUi} title={itemLabelText(item)}>
+                            {item.label}
+                          </ListboxOptionLabel>
+                        </ComboboxOption>
+                      </Fragment>
+                    )
+                  })}
                 </ComboboxOptions>
               </div>
             </div>

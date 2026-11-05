@@ -1,9 +1,6 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import { sortAssignees } from "@/src/components/project-records/utils/sortAssignees"
-import {
-  getUserComboboxItems,
-  type UserSelectOptions,
-} from "@/src/components/shared/app/users/utils/getUserSelectOptions"
+import { getAssigneeItems } from "@/src/components/project-records/utils/sortAssignees"
+import type { UserSelectOptions } from "@/src/components/shared/app/users/utils/getUserSelectOptions"
 import { assigneeRankingQueryOptions } from "@/src/server/projectRecords/projectRecordsQueryOptions"
 
 type Props = {
@@ -30,5 +27,5 @@ export const useAssignedToItems = ({
     refetchOnReconnect: false,
   })
 
-  return getUserComboboxItems(sortAssignees(users, ranking))
+  return getAssigneeItems(users, ranking)
 }
