@@ -19,7 +19,15 @@ export type GetProjectRecordEmailsInput = z.infer<typeof GetProjectRecordEmailsS
 
 const projectRecordEmailInclude = {
   project: { select: { id: true, slug: true, subTitle: true, aiEnabled: true } },
-  projectRecords: { select: { id: true, title: true } },
+  projectRecords: {
+    select: {
+      id: true,
+      title: true,
+      reviewState: true,
+      projectRecordAuthorType: true,
+      project: { select: { slug: true, aiEnabled: true } },
+    },
+  },
   uploads: { select: { id: true, title: true } },
 } as const
 

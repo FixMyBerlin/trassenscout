@@ -8,7 +8,6 @@ import {
   type MembershipRoleEnum,
   ProjectRecordReviewState,
   ProjectRecordType,
-  UserRoleEnum,
 } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
@@ -16,9 +15,7 @@ import db from "@/src/server/db.server"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { relationIds } from "@/src/server/logEntries/create/relationIds"
 import {
-  getUserRedactionContext,
   loadUserRedactionContext,
-  loadUserRedactionContexts,
   redactProjectRecordUsers,
 } from "@/src/server/memberships/redactFormerProjectMemberUser.server"
 import { projectProtocolMailboxAddress } from "@/src/server/projectRecordEmails/projectProtocolMailboxAddress.server"
@@ -40,7 +37,6 @@ import {
   ProjectRecordFormSchema,
 } from "@/src/shared/projectRecords/schemas"
 import { projectRecordInclude } from "./projectRecordInclude"
-import { GetProjectRecordAdminSchema } from "./projectRecords.inputSchemas"
 import {
   projectRecordDetailVisibilityWhere,
   projectRecordOverviewVisibilityWhere,
@@ -51,8 +47,6 @@ const projectRecordListOrder = [
   { date: { sort: "desc", nulls: "last" } },
   { id: "desc" },
 ] satisfies Prisma.ProjectRecordOrderByWithRelationInput[]
-
-export { GetProjectRecordAdminSchema }
 
 export const GetProjectRecordsSchema = ProjectSlugRequiredSchema
 export const GetProjectRecordSchema = ProjectSlugRequiredSchema.extend({ id: z.number() })
@@ -367,140 +361,6 @@ export async function sendProjectRecordAssignmentNotification({
         : null,
     })
   ).send()
-}
-
-export async function getAllProjectRecordsAdmin(headers: Headers) {
-  const adminSession = await endpointAuth.admin(headers)
-
-  const records = await db.projectRecord.findMany({
-    orderBy: { createdAt: "desc" },
-    include: {
-      project: { select: { id: true, slug: true } },
-      tags: true,
-      author: { select: { id: true, firstName: true, institution: true, lastName: true } },
-      updatedBy: { select: { id: true, firstName: true, institution: true, lastName: true } },
-    },
-  })
-
-  const projectIds = [...new Set(records.map((record) => record.project.id))]
-  const contexts = await loadUserRedactionContexts(
-    projectIds,
-    UserRoleEnum.ADMIN,
-    Number(adminSession.userId),
-  )
-
-  return records.map((record) =>
-    redactProjectRecordUsers(record, getUserRedactionContext(contexts, record.project.id)),
-  )
-}
-
-export async function getProjectRecordAdmin(
-  headers: Headers,
-  input: z.infer<typeof GetProjectRecordAdminSchema>,
-) {
-  const adminSession = await endpointAuth.admin(headers)
-
-  const projectRecord = await db.projectRecord.findFirst({
-    where: { id: input.id },
-    include: {
-      project: {
-        select: {
-          id: true,
-          slug: true,
-          aiEnabled: true,
-        },
-      },
-      tags: true,
-      // Every `m2mFields` entry must be here: the edit form resubmits what this returns, so a
-      // missing relation arrives back as [] and the save wipes it.
-      formTemplates: {
-        select: {
-          id: true,
-          title: true,
-          slug: true,
-          type: true,
-          projects: { select: { slug: true } },
-        },
-        orderBy: { title: "asc" },
-      },
-      subsubsection: {
-        include: {
-          subsection: {
-            select: { slug: true },
-          },
-        },
-      },
-      subsubsections: {
-        select: {
-          id: true,
-          slug: true,
-          subsection: { select: { slug: true } },
-        },
-      },
-      acquisitionAreas: {
-        select: {
-          id: true,
-          subsubsection: {
-            select: {
-              slug: true,
-              subsection: { select: { slug: true } },
-            },
-          },
-          parcel: { select: { alkisParcelId: true } },
-        },
-      },
-      uploads: {
-        orderBy: { id: "desc" },
-        select: {
-          title: true,
-          id: true,
-        },
-      },
-      author: {
-        select: {
-          id: true,
-          firstName: true,
-          institution: true,
-          lastName: true,
-        },
-      },
-      updatedBy: {
-        select: {
-          id: true,
-          firstName: true,
-          institution: true,
-          lastName: true,
-        },
-      },
-      reviewedBy: {
-        select: {
-          id: true,
-          firstName: true,
-          institution: true,
-          lastName: true,
-        },
-      },
-      projectRecordEmail: {
-        select: {
-          id: true,
-          textBody: true,
-          from: true,
-          date: true,
-          subject: true,
-          uploads: { select: { id: true, title: true } },
-        },
-      },
-    },
-  })
-
-  if (!projectRecord) throw new NotFoundError()
-
-  const redactionContext = await loadUserRedactionContext(
-    projectRecord.project.id,
-    UserRoleEnum.ADMIN,
-    Number(adminSession.userId),
-  )
-  return redactProjectRecordUsers(projectRecord, redactionContext)
 }
 
 export async function getProjectRecords(

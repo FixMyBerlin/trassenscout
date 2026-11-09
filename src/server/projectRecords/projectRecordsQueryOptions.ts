@@ -2,10 +2,8 @@ import { queryOptions } from "@tanstack/react-query"
 import type { z } from "zod"
 import {
   countMyAssignedRecordsFn,
-  getAllProjectRecordsAdminFn,
   getAssigneeRankingFn,
   getMyAssignedRecordsFn,
-  getProjectRecordAdminFn,
   getProjectRecordDeleteInfoFn,
   getProjectRecordFn,
   getProjectRecordsFn,
@@ -18,20 +16,6 @@ import type {
 } from "./projectRecords.inputSchemas"
 import type { GetProjectRecordsInput } from "./projectRecords.server"
 import { GetProjectRecordSchema } from "./projectRecords.server"
-
-export function allProjectRecordsAdminQueryOptions() {
-  return queryOptions({
-    queryKey: ["projectRecordsAdmin"],
-    queryFn: () => getAllProjectRecordsAdminFn(),
-  })
-}
-
-export function projectRecordAdminQueryOptions(id: number) {
-  return queryOptions({
-    queryKey: ["projectRecordAdmin", id],
-    queryFn: () => getProjectRecordAdminFn({ data: { id } }),
-  })
-}
 
 export function projectRecordsQueryOptions(input: GetProjectRecordsInput) {
   return queryOptions({

@@ -47,7 +47,6 @@ import { Route as AdminSurveysIndexRouteImport } from './routes/admin/surveys/in
 import { Route as AdminSupportDocumentsIndexRouteImport } from './routes/admin/support-documents/index'
 import { Route as AdminSubsubsectionExtraFieldsIndexRouteImport } from './routes/admin/subsubsection-extra-fields/index'
 import { Route as AdminProjectsIndexRouteImport } from './routes/admin/projects/index'
-import { Route as AdminProjectRecordsIndexRouteImport } from './routes/admin/project-records/index'
 import { Route as AdminProjectRecordTemplatesIndexRouteImport } from './routes/admin/project-record-templates/index'
 import { Route as AdminProjectRecordEmailsIndexRouteImport } from './routes/admin/project-record-emails/index'
 import { Route as AdminMembershipsIndexRouteImport } from './routes/admin/memberships/index'
@@ -117,7 +116,6 @@ import { Route as AdminProjectsProjectSlugSurveysIndexRouteImport } from './rout
 import { Route as AdminProjectsProjectSlugSubsubsectionExtraFieldsIndexRouteImport } from './routes/admin/projects/$projectSlug/subsubsection-extra-fields/index'
 import { Route as AdminProjectsProjectSlugSubsectionsIndexRouteImport } from './routes/admin/projects/$projectSlug/subsections/index'
 import { Route as AdminProjectsProjectSlugEvaluationsIndexRouteImport } from './routes/admin/projects/$projectSlug/evaluations/index'
-import { Route as AdminProjectRecordsProjectRecordIdEditIndexRouteImport } from './routes/admin/project-records/$projectRecordId/edit/index'
 import { Route as AdminProjectRecordTemplatesTemplateIdEditIndexRouteImport } from './routes/admin/project-record-templates/$templateId/edit/index'
 import { Route as AdminProjectRecordEmailsProjectRecordEmailIdEditIndexRouteImport } from './routes/admin/project-record-emails/$projectRecordEmailId/edit/index'
 import { Route as AdminFormTemplatesTemplateIdEditIndexRouteImport } from './routes/admin/form-templates/$templateId/edit/index'
@@ -390,12 +388,6 @@ const AdminProjectsIndexRoute = AdminProjectsIndexRouteImport.update({
   path: '/projects/',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminProjectRecordsIndexRoute =
-  AdminProjectRecordsIndexRouteImport.update({
-    id: '/project-records/',
-    path: '/project-records/',
-    getParentRoute: () => AdminRoute,
-  } as any)
 const AdminProjectRecordTemplatesIndexRoute =
   AdminProjectRecordTemplatesIndexRouteImport.update({
     id: '/project-record-templates/',
@@ -800,12 +792,6 @@ const AdminProjectsProjectSlugEvaluationsIndexRoute =
     id: '/evaluations/',
     path: '/evaluations/',
     getParentRoute: () => AdminProjectsProjectSlugRouteRoute,
-  } as any)
-const AdminProjectRecordsProjectRecordIdEditIndexRoute =
-  AdminProjectRecordsProjectRecordIdEditIndexRouteImport.update({
-    id: '/project-records/$projectRecordId/edit/',
-    path: '/project-records/$projectRecordId/edit/',
-    getParentRoute: () => AdminRoute,
   } as any)
 const AdminProjectRecordTemplatesTemplateIdEditIndexRoute =
   AdminProjectRecordTemplatesTemplateIdEditIndexRouteImport.update({
@@ -1346,7 +1332,6 @@ export interface FileRoutesByFullPath {
   '/admin/memberships/': typeof AdminMembershipsIndexRoute
   '/admin/project-record-emails/': typeof AdminProjectRecordEmailsIndexRoute
   '/admin/project-record-templates/': typeof AdminProjectRecordTemplatesIndexRoute
-  '/admin/project-records/': typeof AdminProjectRecordsIndexRoute
   '/admin/projects/': typeof AdminProjectsIndexRoute
   '/admin/subsubsection-extra-fields/': typeof AdminSubsubsectionExtraFieldsIndexRoute
   '/admin/support-documents/': typeof AdminSupportDocumentsIndexRoute
@@ -1429,7 +1414,6 @@ export interface FileRoutesByFullPath {
   '/admin/form-templates/$templateId/edit/': typeof AdminFormTemplatesTemplateIdEditIndexRoute
   '/admin/project-record-emails/$projectRecordEmailId/edit/': typeof AdminProjectRecordEmailsProjectRecordEmailIdEditIndexRoute
   '/admin/project-record-templates/$templateId/edit/': typeof AdminProjectRecordTemplatesTemplateIdEditIndexRoute
-  '/admin/project-records/$projectRecordId/edit/': typeof AdminProjectRecordsProjectRecordIdEditIndexRoute
   '/admin/projects/$projectSlug/evaluations/': typeof AdminProjectsProjectSlugEvaluationsIndexRoute
   '/admin/projects/$projectSlug/subsections/': typeof AdminProjectsProjectSlugSubsectionsIndexRoute
   '/admin/projects/$projectSlug/subsubsection-extra-fields/': typeof AdminProjectsProjectSlugSubsubsectionExtraFieldsIndexRoute
@@ -1519,7 +1503,6 @@ export interface FileRoutesByTo {
   '/admin/memberships': typeof AdminMembershipsIndexRoute
   '/admin/project-record-emails': typeof AdminProjectRecordEmailsIndexRoute
   '/admin/project-record-templates': typeof AdminProjectRecordTemplatesIndexRoute
-  '/admin/project-records': typeof AdminProjectRecordsIndexRoute
   '/admin/projects': typeof AdminProjectsIndexRoute
   '/admin/subsubsection-extra-fields': typeof AdminSubsubsectionExtraFieldsIndexRoute
   '/admin/support-documents': typeof AdminSupportDocumentsIndexRoute
@@ -1601,7 +1584,6 @@ export interface FileRoutesByTo {
   '/admin/form-templates/$templateId/edit': typeof AdminFormTemplatesTemplateIdEditIndexRoute
   '/admin/project-record-emails/$projectRecordEmailId/edit': typeof AdminProjectRecordEmailsProjectRecordEmailIdEditIndexRoute
   '/admin/project-record-templates/$templateId/edit': typeof AdminProjectRecordTemplatesTemplateIdEditIndexRoute
-  '/admin/project-records/$projectRecordId/edit': typeof AdminProjectRecordsProjectRecordIdEditIndexRoute
   '/admin/projects/$projectSlug/evaluations': typeof AdminProjectsProjectSlugEvaluationsIndexRoute
   '/admin/projects/$projectSlug/subsections': typeof AdminProjectsProjectSlugSubsectionsIndexRoute
   '/admin/projects/$projectSlug/subsubsection-extra-fields': typeof AdminProjectsProjectSlugSubsubsectionExtraFieldsIndexRoute
@@ -1703,7 +1685,6 @@ export interface FileRoutesById {
   '/admin/memberships/': typeof AdminMembershipsIndexRoute
   '/admin/project-record-emails/': typeof AdminProjectRecordEmailsIndexRoute
   '/admin/project-record-templates/': typeof AdminProjectRecordTemplatesIndexRoute
-  '/admin/project-records/': typeof AdminProjectRecordsIndexRoute
   '/admin/projects/': typeof AdminProjectsIndexRoute
   '/admin/subsubsection-extra-fields/': typeof AdminSubsubsectionExtraFieldsIndexRoute
   '/admin/support-documents/': typeof AdminSupportDocumentsIndexRoute
@@ -1786,7 +1767,6 @@ export interface FileRoutesById {
   '/admin/form-templates/$templateId/edit/': typeof AdminFormTemplatesTemplateIdEditIndexRoute
   '/admin/project-record-emails/$projectRecordEmailId/edit/': typeof AdminProjectRecordEmailsProjectRecordEmailIdEditIndexRoute
   '/admin/project-record-templates/$templateId/edit/': typeof AdminProjectRecordTemplatesTemplateIdEditIndexRoute
-  '/admin/project-records/$projectRecordId/edit/': typeof AdminProjectRecordsProjectRecordIdEditIndexRoute
   '/admin/projects/$projectSlug/evaluations/': typeof AdminProjectsProjectSlugEvaluationsIndexRoute
   '/admin/projects/$projectSlug/subsections/': typeof AdminProjectsProjectSlugSubsectionsIndexRoute
   '/admin/projects/$projectSlug/subsubsection-extra-fields/': typeof AdminProjectsProjectSlugSubsubsectionExtraFieldsIndexRoute
@@ -1884,7 +1864,6 @@ export interface FileRouteTypes {
     | '/admin/memberships/'
     | '/admin/project-record-emails/'
     | '/admin/project-record-templates/'
-    | '/admin/project-records/'
     | '/admin/projects/'
     | '/admin/subsubsection-extra-fields/'
     | '/admin/support-documents/'
@@ -1967,7 +1946,6 @@ export interface FileRouteTypes {
     | '/admin/form-templates/$templateId/edit/'
     | '/admin/project-record-emails/$projectRecordEmailId/edit/'
     | '/admin/project-record-templates/$templateId/edit/'
-    | '/admin/project-records/$projectRecordId/edit/'
     | '/admin/projects/$projectSlug/evaluations/'
     | '/admin/projects/$projectSlug/subsections/'
     | '/admin/projects/$projectSlug/subsubsection-extra-fields/'
@@ -2057,7 +2035,6 @@ export interface FileRouteTypes {
     | '/admin/memberships'
     | '/admin/project-record-emails'
     | '/admin/project-record-templates'
-    | '/admin/project-records'
     | '/admin/projects'
     | '/admin/subsubsection-extra-fields'
     | '/admin/support-documents'
@@ -2139,7 +2116,6 @@ export interface FileRouteTypes {
     | '/admin/form-templates/$templateId/edit'
     | '/admin/project-record-emails/$projectRecordEmailId/edit'
     | '/admin/project-record-templates/$templateId/edit'
-    | '/admin/project-records/$projectRecordId/edit'
     | '/admin/projects/$projectSlug/evaluations'
     | '/admin/projects/$projectSlug/subsections'
     | '/admin/projects/$projectSlug/subsubsection-extra-fields'
@@ -2240,7 +2216,6 @@ export interface FileRouteTypes {
     | '/admin/memberships/'
     | '/admin/project-record-emails/'
     | '/admin/project-record-templates/'
-    | '/admin/project-records/'
     | '/admin/projects/'
     | '/admin/subsubsection-extra-fields/'
     | '/admin/support-documents/'
@@ -2323,7 +2298,6 @@ export interface FileRouteTypes {
     | '/admin/form-templates/$templateId/edit/'
     | '/admin/project-record-emails/$projectRecordEmailId/edit/'
     | '/admin/project-record-templates/$templateId/edit/'
-    | '/admin/project-records/$projectRecordId/edit/'
     | '/admin/projects/$projectSlug/evaluations/'
     | '/admin/projects/$projectSlug/subsections/'
     | '/admin/projects/$projectSlug/subsubsection-extra-fields/'
@@ -2688,13 +2662,6 @@ declare module '@tanstack/react-router' {
       path: '/projects'
       fullPath: '/admin/projects/'
       preLoaderRoute: typeof AdminProjectsIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/project-records/': {
-      id: '/admin/project-records/'
-      path: '/project-records'
-      fullPath: '/admin/project-records/'
-      preLoaderRoute: typeof AdminProjectRecordsIndexRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/project-record-templates/': {
@@ -3179,13 +3146,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/projects/$projectSlug/evaluations/'
       preLoaderRoute: typeof AdminProjectsProjectSlugEvaluationsIndexRouteImport
       parentRoute: typeof AdminProjectsProjectSlugRouteRoute
-    }
-    '/admin/project-records/$projectRecordId/edit/': {
-      id: '/admin/project-records/$projectRecordId/edit/'
-      path: '/project-records/$projectRecordId/edit'
-      fullPath: '/admin/project-records/$projectRecordId/edit/'
-      preLoaderRoute: typeof AdminProjectRecordsProjectRecordIdEditIndexRouteImport
-      parentRoute: typeof AdminRoute
     }
     '/admin/project-record-templates/$templateId/edit/': {
       id: '/admin/project-record-templates/$templateId/edit/'
@@ -4149,7 +4109,6 @@ interface AdminRouteChildren {
   AdminMembershipsIndexRoute: typeof AdminMembershipsIndexRoute
   AdminProjectRecordEmailsIndexRoute: typeof AdminProjectRecordEmailsIndexRoute
   AdminProjectRecordTemplatesIndexRoute: typeof AdminProjectRecordTemplatesIndexRoute
-  AdminProjectRecordsIndexRoute: typeof AdminProjectRecordsIndexRoute
   AdminProjectsIndexRoute: typeof AdminProjectsIndexRoute
   AdminSubsubsectionExtraFieldsIndexRoute: typeof AdminSubsubsectionExtraFieldsIndexRoute
   AdminSupportDocumentsIndexRoute: typeof AdminSupportDocumentsIndexRoute
@@ -4168,7 +4127,6 @@ interface AdminRouteChildren {
   AdminFormTemplatesTemplateIdEditIndexRoute: typeof AdminFormTemplatesTemplateIdEditIndexRoute
   AdminProjectRecordEmailsProjectRecordEmailIdEditIndexRoute: typeof AdminProjectRecordEmailsProjectRecordEmailIdEditIndexRoute
   AdminProjectRecordTemplatesTemplateIdEditIndexRoute: typeof AdminProjectRecordTemplatesTemplateIdEditIndexRoute
-  AdminProjectRecordsProjectRecordIdEditIndexRoute: typeof AdminProjectRecordsProjectRecordIdEditIndexRoute
   AdminSupportDocumentsSupportDocumentIdEditIndexRoute: typeof AdminSupportDocumentsSupportDocumentIdEditIndexRoute
   AdminSurveysSurveyIdEditIndexRoute: typeof AdminSurveysSurveyIdEditIndexRoute
   AdminSurveysSurveyIdResponsesIndexRoute: typeof AdminSurveysSurveyIdResponsesIndexRoute
@@ -4189,7 +4147,6 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminMembershipsIndexRoute: AdminMembershipsIndexRoute,
   AdminProjectRecordEmailsIndexRoute: AdminProjectRecordEmailsIndexRoute,
   AdminProjectRecordTemplatesIndexRoute: AdminProjectRecordTemplatesIndexRoute,
-  AdminProjectRecordsIndexRoute: AdminProjectRecordsIndexRoute,
   AdminProjectsIndexRoute: AdminProjectsIndexRoute,
   AdminSubsubsectionExtraFieldsIndexRoute:
     AdminSubsubsectionExtraFieldsIndexRoute,
@@ -4216,8 +4173,6 @@ const AdminRouteChildren: AdminRouteChildren = {
     AdminProjectRecordEmailsProjectRecordEmailIdEditIndexRoute,
   AdminProjectRecordTemplatesTemplateIdEditIndexRoute:
     AdminProjectRecordTemplatesTemplateIdEditIndexRoute,
-  AdminProjectRecordsProjectRecordIdEditIndexRoute:
-    AdminProjectRecordsProjectRecordIdEditIndexRoute,
   AdminSupportDocumentsSupportDocumentIdEditIndexRoute:
     AdminSupportDocumentsSupportDocumentIdEditIndexRoute,
   AdminSurveysSurveyIdEditIndexRoute: AdminSurveysSurveyIdEditIndexRoute,

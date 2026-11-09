@@ -16,11 +16,24 @@ import { TableDateTime } from "@/src/components/core/components/Table/TableDateT
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
+import { ProjectRecordReviewState, ProjectRecordType } from "@/src/prisma/generated/browser"
 import type { ProjectRecordEmailWithRelations } from "@/src/server/projectRecordEmails/types"
+import { projectRecordDetailPath } from "@/src/shared/projectRecords/projectRecordDetailPath"
 
 type Props = {
   projectRecordEmails: ProjectRecordEmailWithRelations[]
 }
+
+const hasProjectPage = ({
+  reviewState,
+  projectRecordAuthorType,
+  project,
+}: ProjectRecordEmailWithRelations["projectRecords"][number]) =>
+  project.aiEnabled
+    ? reviewState === ProjectRecordReviewState.APPROVED ||
+      reviewState === ProjectRecordReviewState.NEEDSREVIEW
+    : reviewState === ProjectRecordReviewState.APPROVED &&
+      projectRecordAuthorType !== ProjectRecordType.SYSTEM
 
 export const ProjectRecordEmailsTable = ({ projectRecordEmails }: Props) => {
   if (!projectRecordEmails.length) {
@@ -113,9 +126,18 @@ export const ProjectRecordEmailsTable = ({ projectRecordEmails }: Props) => {
                     <ul className="space-y-1">
                       {email.projectRecords.map((projectRecord) => (
                         <li key={projectRecord.id}>
-                          <Link to={`/admin/project-records/${projectRecord.id}/edit`}>
-                            {projectRecord.id}
-                          </Link>
+                          {hasProjectPage(projectRecord) ? (
+                            <Link
+                              to={projectRecordDetailPath(
+                                projectRecord.project.slug,
+                                projectRecord.id,
+                              )}
+                            >
+                              {projectRecord.id}
+                            </Link>
+                          ) : (
+                            projectRecord.id
+                          )}
                         </li>
                       ))}
                     </ul>

@@ -9,7 +9,6 @@ describe("invalidateAfterProjectRecordChange", () => {
       list: ["projectRecords", { projectSlug: "ohv" }],
       assignedToMe: ["projectRecords", "assignedToMe", { projectSlug: "ohv" }],
       tabCounts: ["projectRecordsTabCounts", { projectSlug: "ohv" }],
-      adminList: ["projectRecordsAdmin"],
       bySubsubsection: ["projectRecordsBySubsubsection", { projectSlug: "ohv" }],
       documentDetail: ["upload", { projectSlug: "ohv", id: 615 }],
       record: ["projectRecord", { projectSlug: "ohv", id: 272 }],
@@ -23,7 +22,6 @@ describe("invalidateAfterProjectRecordChange", () => {
     expect(isInvalidated(keys.list)).toBe(true)
     expect(isInvalidated(keys.assignedToMe)).toBe(true)
     expect(isInvalidated(keys.tabCounts)).toBe(true)
-    expect(isInvalidated(keys.adminList)).toBe(true)
     expect(isInvalidated(keys.bySubsubsection)).toBe(true)
     // Cached forever by `uploadQueryOptions`: only an invalidation refreshes its links.
     expect(isInvalidated(keys.documentDetail)).toBe(true)

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
-import { ProjectRecordReviewStatePill } from "@/src/components/admin/project-records/AdminProjectRecordTable"
+import { AdminBadge, type AdminBadgeVariant } from "@/src/components/admin/AdminBadge"
 import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import { formatBerlinTime } from "@/src/components/core/utils/formatBerlinTime"
 import {
@@ -12,11 +12,27 @@ import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUse
 import { isAdmin } from "@/src/components/shared/app/users/utils/isAdmin"
 import { useCurrentUser } from "@/src/components/user/useCurrentUser"
 import { ProjectRecordReviewState, ProjectRecordType } from "@/src/prisma/generated/browser"
-import type {
-  ProjectRecord,
-  ProjectRecordAdmin,
-  ProjectRecordListItem,
-} from "@/src/server/projectRecords/types"
+import type { ProjectRecord, ProjectRecordListItem } from "@/src/server/projectRecords/types"
+
+const projectRecordReviewStateBadgeVariant: Record<ProjectRecordReviewState, AdminBadgeVariant> = {
+  [ProjectRecordReviewState.NEEDSREVIEW]: "yellow",
+  [ProjectRecordReviewState.NEEDSADMINREVIEW]: "yellow",
+  [ProjectRecordReviewState.REJECTED]: "red",
+  [ProjectRecordReviewState.APPROVED]: "green",
+}
+
+const projectRecordReviewStateLabel: Record<ProjectRecordReviewState, string> = {
+  [ProjectRecordReviewState.NEEDSREVIEW]: "Benötigt Bestätigung",
+  [ProjectRecordReviewState.NEEDSADMINREVIEW]: "Benötigt Admin-Bestätigung",
+  [ProjectRecordReviewState.REJECTED]: "Abgelehnt",
+  [ProjectRecordReviewState.APPROVED]: "Bestätigt",
+}
+
+const ProjectRecordReviewStatePill = ({ state }: { state: ProjectRecordReviewState }) => (
+  <AdminBadge variant={projectRecordReviewStateBadgeVariant[state]}>
+    {projectRecordReviewStateLabel[state]}
+  </AdminBadge>
+)
 
 const formatAuthorWithTimestamp = ({
   label,
@@ -34,7 +50,7 @@ const CreateEditReviewHistoryComponent = ({
   projectRecord,
   showReview,
 }: {
-  projectRecord: ProjectRecordAdmin | ProjectRecordListItem | ProjectRecord
+  projectRecord: ProjectRecordListItem | ProjectRecord
   showReview: boolean
 }) => {
   const rows: { label: string; value: ReactNode }[] = []
@@ -121,7 +137,7 @@ const CreateEditReviewHistoryComponent = ({
 export const CreateEditReviewHistory = ({
   projectRecord,
 }: {
-  projectRecord: ProjectRecordAdmin | ProjectRecordListItem | ProjectRecord
+  projectRecord: ProjectRecordListItem | ProjectRecord
 }) => {
   const isUserAdmin = isAdmin(useCurrentUser())
   const userCanEdit = useUserCan(projectRecord.project.slug).edit

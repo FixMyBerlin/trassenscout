@@ -340,11 +340,6 @@ export function buildAdminNavigation() {
           link: { to: "/admin/project-record-emails" },
           countKey: "unprocessedEmails",
         },
-        {
-          name: "Protokolleinträge (Review)",
-          link: { to: "/admin/project-records" },
-          countKey: "projectRecordsReview",
-        },
       ],
     },
     {

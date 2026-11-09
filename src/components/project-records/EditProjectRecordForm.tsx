@@ -2,7 +2,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useNavigate, useRouter } from "@tanstack/react-router"
 import { useState } from "react"
 import { z } from "zod"
-import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { BackLink } from "@/src/components/core/components/forms/BackLink"
 import { FormDirtyStateReporter } from "@/src/components/core/components/forms/FormDirtyStateReporter"
@@ -14,8 +13,6 @@ import {
   applyFormSubmitResult,
   FORM_ERROR,
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
-import { Link } from "@/src/components/core/components/links/Link"
-import { optionalPageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { CreateEditReviewHistory } from "@/src/components/project-records/ProjectRecordCreateEditReviewHistory"
 import { ProjectRecordDeleteActionBar } from "@/src/components/project-records/ProjectRecordDeleteActionBar"
 import { ProjectRecordFormFields } from "@/src/components/project-records/ProjectRecordFormFields"
@@ -206,22 +203,6 @@ export const EditProjectRecordForm = ({
   return (
     <>
       {needsReview && <ProjectRecordNeedsReviewBanner />}
-      {projectRecord.projectRecordAuthorType === "SYSTEM" && (
-        <div className={optionalPageContentPaddingClassName}>
-          <SuperAdminBox className="mb-6">
-            In die{" "}
-            <Link
-              blank
-              to="/admin/project-records/$projectRecordId/edit"
-              params={{ projectRecordId: String(projectRecord.id) }}
-              className="text-blue-500 hover:underline"
-            >
-              Admin-Ansicht
-            </Link>{" "}
-            wechseln, um Bestätigungsstatus zu ändern.
-          </SuperAdminBox>
-        </div>
-      )}
       <FormShell
         form={form}
         formError={formError}

@@ -1,4 +1,3 @@
-import { ProjectRecordReviewState } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import db from "@/src/server/db.server"
 import { emailTemplateDefinitions } from "@/src/shared/emailTemplates/registry"
@@ -10,7 +9,6 @@ export async function getAdminNavCounts(headers: Headers) {
     projects,
     users,
     unprocessedEmails,
-    projectRecordsReview,
     logEntries,
     supportDocuments,
     surveys,
@@ -22,17 +20,6 @@ export async function getAdminNavCounts(headers: Headers) {
     db.user.count(),
     db.projectRecordEmail.count({
       where: { projectRecords: { none: {} } },
-    }),
-    db.projectRecord.count({
-      where: {
-        reviewState: {
-          in: [
-            ProjectRecordReviewState.NEEDSADMINREVIEW,
-            ProjectRecordReviewState.NEEDSREVIEW,
-            ProjectRecordReviewState.REJECTED,
-          ],
-        },
-      },
     }),
     db.systemLogEntry.count(),
     db.supportDocument.count(),
@@ -46,7 +33,6 @@ export async function getAdminNavCounts(headers: Headers) {
     projects,
     users,
     unprocessedEmails,
-    projectRecordsReview,
     logEntries,
     emailTemplates: emailTemplateDefinitions.length,
     supportDocuments,

@@ -9,8 +9,6 @@ import {
   ProjectRecordFormSchema,
 } from "@/src/shared/projectRecords/schemas"
 
-export const GetProjectRecordAdminSchema = z.object({ id: z.number() })
-
 export const GetProjectRecordsSchema = ProjectSlugRequiredSchema
 export const GetProjectRecordSchema = ProjectSlugRequiredSchema.extend({ id: z.number() })
 export const GetProjectRecordsBySubsubsectionSchema = ProjectSlugRequiredSchema.extend({
