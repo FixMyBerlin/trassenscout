@@ -11,6 +11,24 @@ const getAddressText = (address: AddressObject | AddressObject[] | undefined) =>
   return address.text || null
 }
 
+const AUTO_REPLY_PRECEDENCE = ["bulk", "junk", "auto_reply"]
+
+const isAutoReplyEmail = (headers: ParsedMail["headers"]) => {
+  const autoSubmitted = String(headers.get("auto-submitted") ?? "no")
+    .split(";")[0]
+    ?.trim()
+    .toLowerCase()
+  const precedence = String(headers.get("precedence") ?? "")
+    .trim()
+    .toLowerCase()
+  return (
+    autoSubmitted !== "no" ||
+    AUTO_REPLY_PRECEDENCE.includes(precedence) ||
+    headers.has("x-autoreply") ||
+    headers.has("x-autorespond")
+  )
+}
+
 export async function parseEmail({ rawEmailText }: { rawEmailText: string }) {
   console.log("Parsing email to extract body and attachments...")
 
@@ -45,6 +63,7 @@ export async function parseEmail({ rawEmailText }: { rawEmailText: string }) {
       cc,
       subject,
       date,
+      isAutoReply: isAutoReplyEmail(parsed.headers),
     }
   } catch (error) {
     console.error("Error parsing email:", error)
@@ -58,6 +77,7 @@ export async function parseEmail({ rawEmailText }: { rawEmailText: string }) {
       cc: null,
       subject: null,
       date: null,
+      isAutoReply: false,
     }
   }
 }

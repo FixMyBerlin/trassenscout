@@ -97,7 +97,9 @@ describe("deleteSurveyResponseAsAdmin", () => {
       where: {
         surveyResponseId: { in: [42] },
         projectRecordEmailId: null,
+        supportDocumentId: null,
         projectRecords: { none: {} },
+        projectRecordTemplates: { none: {} },
         subsubsections: { none: {} },
         acquisitionAreas: { none: {} },
         tags: { none: {} },

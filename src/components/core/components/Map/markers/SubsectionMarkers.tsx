@@ -19,16 +19,19 @@ const markerStyles = {
 type Props = {
   subsections: TSubsections
   dotMode: boolean | null
+  /** While searching, labels of the other Planungsabschnitte step back. */
+  matchedSubsectionSlugs?: Set<string>
   onSelect: (props: { subsectionSlug: string; edit: boolean }) => void
 }
 
 type SubsectionMarkerProps = {
   subsection: TSubsections[number]
   dotMode: boolean
+  dimmed: boolean
   onSelect: (props: { subsectionSlug: string; edit: boolean }) => void
 }
 
-const SubsectionMarker = ({ subsection, dotMode, onSelect }: SubsectionMarkerProps) => {
+const SubsectionMarker = ({ subsection, dotMode, dimmed, onSelect }: SubsectionMarkerProps) => {
   const [longitude, latitude] = getLabelPosition(subsection.geometry, subsection.labelPos)
   const { isHighlighted, handleMouseEnter, handleMouseLeave } = useMarkerHighlight(
     "subsection",
@@ -38,6 +41,7 @@ const SubsectionMarker = ({ subsection, dotMode, onSelect }: SubsectionMarkerPro
   const label = (
     <TipMarker
       anchor={subsection.labelPos}
+      className={dimmed && !isHighlighted ? "opacity-50" : undefined}
       slug={subsection.slug}
       highlightLevel="subsection"
       syncHighlightOnHover={false}
@@ -79,13 +83,24 @@ const SubsectionMarker = ({ subsection, dotMode, onSelect }: SubsectionMarkerPro
   )
 }
 
-export const SubsectionMarkers = ({ subsections, dotMode, onSelect }: Props) => {
+export const SubsectionMarkers = ({
+  subsections,
+  dotMode,
+  matchedSubsectionSlugs,
+  onSelect,
+}: Props) => {
   if (dotMode === null) return null
 
   return (
     <>
       {subsections.map((sub) => (
-        <SubsectionMarker key={sub.id} subsection={sub} dotMode={dotMode} onSelect={onSelect} />
+        <SubsectionMarker
+          key={sub.id}
+          subsection={sub}
+          dotMode={dotMode}
+          dimmed={Boolean(matchedSubsectionSlugs && !matchedSubsectionSlugs.has(sub.slug))}
+          onSelect={onSelect}
+        />
       ))}
     </>
   )

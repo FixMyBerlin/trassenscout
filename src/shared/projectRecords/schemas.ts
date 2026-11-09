@@ -127,5 +127,6 @@ export const ProjectRecordFormSchema = ProjectRecordSchema.omit({
   projectRecordEmailId: true,
 }).extend({
   date: NullableDateSchemaForm,
+  reviewState: z.enum(ProjectRecordReviewState).optional(),
   ...m2mFormFields,
 })

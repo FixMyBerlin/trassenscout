@@ -30,6 +30,11 @@ type Props =
       highlight: "currentSubsection"
       selectedSubsectionSlug: string
     }
+  | {
+      subsections: SubsectionForFeatures[]
+      highlight: "matches"
+      matchedSubsectionSlugs: Set<string>
+    }
 
 export type LineProperties = {
   subsectionSlug: string
@@ -51,6 +56,17 @@ type LineEndPointProperties = {
   featureId: string
 }
 
+function isCurrentSubsection(props: Props, subsectionSlug: string) {
+  switch (props.highlight) {
+    case "all":
+      return true
+    case "currentSubsection":
+      return subsectionSlug === props.selectedSubsectionSlug
+    case "matches":
+      return props.matchedSubsectionSlugs.has(subsectionSlug)
+  }
+}
+
 export const getSubsectionFeatures = (props: Props) => {
   const { subsections } = props
   const lineFeatures: Feature<LineString, LineProperties>[] = []
@@ -59,8 +75,7 @@ export const getSubsectionFeatures = (props: Props) => {
 
   for (const subsection of subsections) {
     const isDashed = subsection.SubsectionStatus?.style === "DASHED"
-    const isCurrent =
-      props.highlight === "all" ? true : subsection.slug === props.selectedSubsectionSlug
+    const isCurrent = isCurrentSubsection(props, subsection.slug)
     switch (subsection.type) {
       case "LINE": {
         const features = lineStringToGeoJSON(subsection.geometry, {

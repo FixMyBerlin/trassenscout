@@ -42,7 +42,7 @@ export function useProjectRecordModal() {
     previewProjectRecord?: PreviewProjectRecord
   }) => {
     prefetchProjectRecord(input.projectRecordId)
-    void updateModalSearch(
+    return updateModalSearch(
       {
         modalProjectRecordId: input.projectRecordId,
         modalProjectRecordView: "detail",

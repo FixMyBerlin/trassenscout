@@ -1,7 +1,8 @@
 import { parseSearchWith, stringifySearchWith } from "@tanstack/react-router"
 
 const parseSearch = parseSearchWith(JSON.parse)
-const stringifySearchDefault = stringifySearchWith(JSON.stringify)
+// The parser quotes text like `1.10`, which would otherwise come back as the number 1.1.
+const stringifySearchDefault = stringifySearchWith(JSON.stringify, JSON.parse)
 
 function makeSearchPretty(searchString: string) {
   return searchString

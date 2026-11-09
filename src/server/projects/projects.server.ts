@@ -1,7 +1,7 @@
 import { z } from "zod"
 import { frenchQuote } from "@/src/components/core/components/text/quote"
 import { shortTitle } from "@/src/components/core/components/text/titles"
-import { UserRoleEnum } from "@/src/prisma/generated/browser"
+import { MembershipRoleEnum, UserRoleEnum } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { authorizeProjectMemberByProjectSlug } from "@/src/server/authorization/authorizeProjectMember.server"
 import { editorRoles } from "@/src/server/authorization/constants"
@@ -31,6 +31,7 @@ const projectSelect = {
   logoSrc: true,
   partnerLogoSrcs: true,
   partOf: true,
+  projectLeadId: true,
   showLogEntries: true,
   slug: true,
   subTitle: true,
@@ -99,17 +100,30 @@ const updateProjectSelect = {
   aiEnabled: true,
   alkisStateKey: true,
   landAcquisitionModuleEnabled: true,
+  projectLeadId: true,
 } as const
 
 export async function updateProject(headers: Headers, input: z.infer<typeof UpdateProjectSchema>) {
   const session = await endpointAuth.session(headers)
   await authorizeProjectMemberByProjectSlug(session, input.projectSlug, editorRoles)
 
-  const { projectSlug, partnerLogoSrcs, partOf, alkisStateKey, ...data } = input
+  const { projectSlug, partnerLogoSrcs, partOf, alkisStateKey, projectLeadId, ...data } = input
   const previous = await db.project.findFirstOrThrow({
     where: { slug: projectSlug },
     select: updateProjectSelect,
   })
+  const isAdmin = session.role === UserRoleEnum.ADMIN
+
+  // Only an editor of the project can be its Projektleitung.
+  if (isAdmin && projectLeadId != null && projectLeadId !== previous.projectLeadId) {
+    const projectLeadMembership = await db.membership.findFirst({
+      where: { projectId: previous.id, userId: projectLeadId, role: MembershipRoleEnum.EDITOR },
+      select: { id: true },
+    })
+    if (!projectLeadMembership) {
+      throw new Error("Die Projektleitung braucht Bearbeitungsrechte in diesem Projekt.")
+    }
+  }
 
   // Explicit select: editors get this row back, and it must not carry the share token.
   const project = await db.project.update({
@@ -118,7 +132,7 @@ export async function updateProject(headers: Headers, input: z.infer<typeof Upda
       ...data,
       partnerLogoSrcs: partnerLogoSrcs || undefined,
       // Admin-only fields (SuperAdminBox); editors keep the stored values.
-      ...(session.role === UserRoleEnum.ADMIN ? { partOf, alkisStateKey } : {}),
+      ...(isAdmin ? { partOf, alkisStateKey, projectLeadId } : {}),
     },
     select: updateProjectSelect,
   })
@@ -140,6 +154,7 @@ export async function updateProject(headers: Headers, input: z.infer<typeof Upda
       aiEnabled: previous.aiEnabled,
       alkisStateKey: previous.alkisStateKey,
       landAcquisitionModuleEnabled: previous.landAcquisitionModuleEnabled,
+      projectLeadId: previous.projectLeadId,
     },
     updatedRecord: {
       id: project.id,
@@ -153,6 +168,7 @@ export async function updateProject(headers: Headers, input: z.infer<typeof Upda
       aiEnabled: project.aiEnabled,
       alkisStateKey: project.alkisStateKey,
       landAcquisitionModuleEnabled: project.landAcquisitionModuleEnabled,
+      projectLeadId: project.projectLeadId,
     },
   })
 

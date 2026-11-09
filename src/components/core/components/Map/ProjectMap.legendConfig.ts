@@ -10,3 +10,18 @@ export const projectLegendConfig: LegendItemConfig[] = [
     iconIds: ["subsectionLineDashed", "subsectionPolygonDashed"],
   },
 ]
+
+export const projectSearchLegendConfig: LegendItemConfig[] = [
+  {
+    text: "Planungsabschnitte mit Treffern",
+    iconIds: ["subsectionLineDefault", "subsectionPolygonDefault"],
+  },
+  {
+    text: "Planungsabschnitte ohne Treffer",
+    iconIds: ["subsectionLineFaded", "subsectionHullPolygonFaded"],
+  },
+  {
+    text: "Verlauf ungeklärt",
+    iconIds: ["subsectionLineDashed", "subsectionPolygonDashed"],
+  },
+]

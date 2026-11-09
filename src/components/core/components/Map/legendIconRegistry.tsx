@@ -1,4 +1,5 @@
 import { acquisitionAreaColors } from "@/src/components/core/components/Map/colors/acquisitionAreaColors"
+import { mapColorTokens } from "@/src/components/core/components/Map/colors/mapColorTokens"
 import { subsectionColors } from "@/src/components/core/components/Map/colors/subsectionColors"
 import { subsubsectionColors } from "@/src/components/core/components/Map/colors/subsubsectionColors"
 import {
@@ -55,6 +56,17 @@ export const legendIconRegistry = {
   subsectionHullPolygonUnselected: {
     type: GeometryTypeEnum.POLYGON,
     color: subsectionColors.hull.unselected,
+    borderWidth: 1,
+    borderStyle: "solid",
+  },
+  subsectionLineFaded: {
+    type: GeometryTypeEnum.LINE,
+    color: mapColorTokens.gray400,
+    lineWidth: 3,
+  },
+  subsectionHullPolygonFaded: {
+    type: GeometryTypeEnum.POLYGON,
+    color: mapColorTokens.gray400,
     borderWidth: 1,
     borderStyle: "solid",
   },

@@ -4,12 +4,14 @@ import { RouteMapShellPending } from "@/src/components/pages/RouteMapShellPendin
 import { privateTitleHead } from "@/src/routeHead"
 import { subsectionsQueryOptions } from "@/src/server/subsections/subsectionsQueryOptions"
 import { subsubsectionsQueryOptions } from "@/src/server/subsubsections/subsubsectionsQueryOptions"
+import { subsectionDashboardSearchSchema } from "@/src/shared/subsubsections/searchSchemas"
 
 export const Route = createFileRoute("/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/")(
   {
     head: () => privateTitleHead("Planungsabschnitt"),
     ssr: "data-only",
     pendingComponent: RouteMapShellPending,
+    validateSearch: subsectionDashboardSearchSchema,
     loader: async ({ context, params }) => {
       const subsections = await context.queryClient.ensureQueryData(
         subsectionsQueryOptions({ projectSlug: params.projectSlug }),

@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query"
 import { ReactNode, useState } from "react"
 import { twMerge } from "tailwind-merge"
 import { z } from "zod"
@@ -8,8 +9,13 @@ import {
   applyFormSubmitResult,
   type OnSubmitResult,
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
-import { UserSelectOptions } from "@/src/components/shared/app/users/utils/getUserSelectOptions"
+import {
+  getUserSelectOptions,
+  UserSelectOptions,
+} from "@/src/components/shared/app/users/utils/getUserSelectOptions"
+import { isAdmin } from "@/src/components/shared/app/users/utils/isAdmin"
 import { getBundeslandSelectOptions } from "@/src/server/alkis/alkisStateConfig"
+import { currentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
 import { projectFormDefaultValues } from "@/src/shared/projects/schemas"
 
 export type ProjectFormProps<S extends z.ZodType> = {
@@ -25,6 +31,8 @@ export type ProjectFormProps<S extends z.ZodType> = {
   submitDisabled?: boolean
   submitClassName?: string
   users: UserSelectOptions
+  // The project's editors; a new project has none, so its form has no Projektleitung.
+  projectLeadOptions?: UserSelectOptions
 }
 
 export function ProjectForm<S extends z.ZodType>({
@@ -39,8 +47,11 @@ export function ProjectForm<S extends z.ZodType>({
   submitDisabled,
   submitClassName,
   schema,
+  projectLeadOptions,
 }: ProjectFormProps<S>) {
   const [formError, setFormError] = useState<string | null>(null)
+  const { data: user } = useQuery(currentUserQueryOptions())
+  const userIsAdmin = isAdmin(user ?? null)
 
   const form = useAppForm({
     defaultValues: { ...projectFormDefaultValues, ...initialValues },
@@ -54,6 +65,26 @@ export function ProjectForm<S extends z.ZodType>({
       }
     },
   })
+
+  // Admins set the Projektleitung; editors see it read-only.
+  const projectLeadField = (readOnly: boolean) =>
+    projectLeadOptions && (
+      <form.AppField name="projectLeadId">
+        {(field) => (
+          <field.SelectField
+            label="Projektleitung"
+            optional
+            disabled={readOnly}
+            options={getUserSelectOptions(projectLeadOptions)}
+            help={
+              readOnly
+                ? "Wird von Admins festgelegt."
+                : "Zur Auswahl stehen Teammitglieder mit Bearbeitungsrechten."
+            }
+          />
+        )}
+      </form.AppField>
+    )
 
   return (
     <FormShell
@@ -80,7 +111,9 @@ export function ProjectForm<S extends z.ZodType>({
       <form.AppField name="subTitle">
         {(field) => <field.TextField type="text" label="Untertitel" optional />}
       </form.AppField>
+      {!userIsAdmin && projectLeadField(true)}
       <SuperAdminBox>
+        {projectLeadField(false)}
         <form.AppField name="partOf">
           {(field) => (
             <field.TextField

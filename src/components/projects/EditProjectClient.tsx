@@ -4,6 +4,7 @@ import { z } from "zod"
 import { BackLink } from "@/src/components/core/components/forms/BackLink"
 import { improveErrorMessage } from "@/src/components/core/components/forms/improveErrorMessage"
 import { FORM_ERROR } from "@/src/components/core/components/forms/utils/formSubmitResult"
+import { MembershipRoleEnum } from "@/src/prisma/generated/browser"
 import type { ProjectUsersList } from "@/src/server/memberships/types"
 import { updateProjectFn } from "@/src/server/projects/projects.functions"
 import type { ProjectBySlug } from "@/src/server/projects/types"
@@ -40,6 +41,14 @@ export const EditProjectClient = ({ initialProject, initialUsers }: Props) => {
     }
   }
 
+  const projectLeadOptions = initialUsers.filter(
+    ({ currentMembershipRole }) => currentMembershipRole === MembershipRoleEnum.EDITOR,
+  )
+  // A Projektleitung without edit rights no longer counts, so the form shows and saves none.
+  const projectLeadId = projectLeadOptions.some(({ id }) => id === initialProject.projectLeadId)
+    ? initialProject.projectLeadId
+    : null
+
   return (
     <>
       <ProjectForm
@@ -47,10 +56,12 @@ export const EditProjectClient = ({ initialProject, initialUsers }: Props) => {
         schema={ProjectFormSchema}
         initialValues={{
           ...initialProject,
+          projectLeadId,
           partnerLogoSrcs: initialProject.partnerLogoSrcs?.join("\n") ?? "",
         }}
         onSubmit={handleSubmit}
         users={initialUsers}
+        projectLeadOptions={projectLeadOptions}
         backLink={
           <BackLink to="/$projectSlug" params={{ projectSlug }} text="Zurück zum Projekt" />
         }

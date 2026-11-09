@@ -12,3 +12,9 @@ export const subsubsectionNewSearchSchema = subsubsectionEditSearchSchema.extend
 export function isSubsubsectionMcpDraftSearch(mcpDraft: true | "true" | undefined) {
   return mcpDraft === true || mcpDraft === "true"
 }
+
+export const subsubsectionSearchtermSchema = z.coerce.string().optional().catch(undefined)
+
+export const subsectionDashboardSearchSchema = z.object({
+  searchterm: subsubsectionSearchtermSchema,
+})

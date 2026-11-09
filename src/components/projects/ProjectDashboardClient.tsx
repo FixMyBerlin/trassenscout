@@ -1,8 +1,15 @@
-import { useSuspenseQuery } from "@tanstack/react-query"
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { MapProvider } from "react-map-gl/maplibre"
 import { twJoin } from "tailwind-merge"
 import { ProjectSubsectionMcpCreateDraftsAdminBox } from "@/src/components/abschnitte/ProjectSubsectionMcpCreateDraftsAdminBox"
+import { SubsubsectionSearchFilter } from "@/src/components/abschnitte/SubsubsectionSearchFilter"
+import { SubsubsectionSearchMapNotice } from "@/src/components/abschnitte/SubsubsectionSearchMapNotice"
+import { useSubsubsectionSearch } from "@/src/components/abschnitte/useSubsubsectionSearch"
+import {
+  projectSearchResults,
+  searchMatchSummary,
+} from "@/src/components/abschnitte/utils/filterSubsubsections"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "@/src/components/core/components/links/Link"
@@ -17,13 +24,17 @@ import { optionalPageContentPaddingClassName } from "@/src/components/core/compo
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { PageHeaderToolbarLink } from "@/src/components/core/components/PageHeader/PageHeaderToolbarLink"
 import { shortTitle } from "@/src/components/core/components/text/titles"
+import { preserveScrollNavigateOptions } from "@/src/components/core/routes/preserveScrollNavigateOptions"
 import { useViewMode } from "@/src/components/core/routes/useViewMode"
+import { normalizeSearchterm } from "@/src/components/core/utils/normalizeSearchterm"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import { projectBySlugQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 import { subsectionsQueryOptions } from "@/src/server/subsections/subsectionsQueryOptions"
+import { subsubsectionsQueryOptions } from "@/src/server/subsubsections/subsubsectionsQueryOptions"
 import { brokenGeometryItems } from "@/src/shared/geometry/brokenGeometryItems"
 import { OperatorFilter } from "./OperatorFilter"
+import { ProjectSearchResults } from "./ProjectSearchResults"
 import { SubsectionTable } from "./SubsectionTable"
 
 const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/")
@@ -31,7 +42,9 @@ const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/")
 export const ProjectDashboardClient = () => {
   const { projectSlug } = routeApi.useParams()
   const { operator: operatorParam } = routeApi.useSearch()
+  const navigate = routeApi.useNavigate()
   const { viewMode, setViewMode } = useViewMode()
+  const { searchterm, isSearching } = useSubsubsectionSearch()
   const isMapMode = viewMode === "map"
 
   const { data: project } = useSuspenseQuery(projectBySlugQueryOptions(projectSlug))
@@ -43,12 +56,68 @@ export const ProjectDashboardClient = () => {
     : subsections
   const hasAnySubsubsections = subsections.some((s) => (s.subsubsectionCount ?? 0) > 0)
 
+  // All Maßnahmen of the project load only with the first search.
+  const { data: subsubsections } = useQuery({
+    ...subsubsectionsQueryOptions({ projectSlug }),
+    enabled: isSearching,
+    throwOnError: true,
+  })
+  const searchResults =
+    isSearching && subsubsections
+      ? projectSearchResults(filteredSubsections, subsubsections, searchterm)
+      : undefined
+
+  const showSearchInList = (value: string) => {
+    void navigate({
+      search: (previous) => ({
+        ...previous,
+        searchterm: value || undefined,
+        view: normalizeSearchterm(value) ? "list" : previous.view,
+      }),
+      resetScroll: false,
+    })
+  }
+
+  const resetFilters = () => {
+    void navigate({
+      search: (previous) => ({ ...previous, operator: undefined, searchterm: undefined }),
+      ...preserveScrollNavigateOptions,
+    })
+  }
+
   const renderMap = (classHeight: string) => {
     if (subsections.length) {
       if (filteredSubsections.length) {
         return (
           <MapProvider>
-            <ProjectMap subsections={filteredSubsections} classHeight={classHeight} />
+            <div className="relative flex min-h-0 flex-1 flex-col">
+              {isSearching ? (
+                <SubsubsectionSearchMapNotice
+                  onShowList={
+                    searchResults?.matchedSubsectionSlugs.size
+                      ? () => setViewMode("list")
+                      : undefined
+                  }
+                >
+                  {!searchResults
+                    ? "Suche läuft…"
+                    : searchResults.matchedSubsectionSlugs.size
+                      ? searchMatchSummary(searchResults)
+                      : "Keine passenden Planungsabschnitte oder Maßnahmen"}
+                </SubsubsectionSearchMapNotice>
+              ) : null}
+              <ProjectMap
+                subsections={filteredSubsections}
+                classHeight={classHeight}
+                search={
+                  searchResults && {
+                    searchterm,
+                    matchedSubsectionSlugs: searchResults.matchedSubsectionSlugs,
+                    slugsWithSubsubsectionMatches: searchResults.slugsWithSubsubsectionMatches,
+                  }
+                }
+              />
+            </div>
           </MapProvider>
         )
       }
@@ -69,6 +138,15 @@ export const ProjectDashboardClient = () => {
         titleVisuallyHidden
         breadcrumb={<ProjectPageBreadcrumb />}
         info="Übersicht über alle Planungsabschnitte des Projekts."
+        search={
+          subsections.length ? (
+            <SubsubsectionSearchFilter
+              placeholder="Planungsabschnitte und Maßnahmen suchen"
+              resetLabel="Suche löschen"
+              onSubmit={showSearchInList}
+            />
+          ) : undefined
+        }
         viewMode={viewMode}
         onViewModeChange={setViewMode}
         filters={showOperatorFilter ? <OperatorFilter /> : undefined}
@@ -115,9 +193,27 @@ export const ProjectDashboardClient = () => {
       <MapListViewLayout
         mode={viewMode}
         map={renderMap}
-        list={({ interactive }) => (
-          <SubsectionTable subsections={filteredSubsections} interactive={interactive} />
-        )}
+        list={({ interactive }) => {
+          if (!isSearching) {
+            return <SubsectionTable subsections={filteredSubsections} interactive={interactive} />
+          }
+          if (interactive) {
+            return (
+              <ProjectSearchResults
+                results={searchResults}
+                searchterm={searchterm}
+                onReset={resetFilters}
+              />
+            )
+          }
+          // Screen-reader list in map mode: the same Planungsabschnitte the map highlights.
+          const subsectionsWithMatches = filteredSubsections.filter((subsection) =>
+            searchResults?.matchedSubsectionSlugs.has(subsection.slug),
+          )
+          return subsectionsWithMatches.length ? (
+            <SubsectionTable subsections={subsectionsWithMatches} interactive={false} />
+          ) : null
+        }}
       >
         <ProjectSubsectionMcpCreateDraftsAdminBox projectSlug={projectSlug} />
         <SuperAdminBox className="flex flex-col items-start gap-4">

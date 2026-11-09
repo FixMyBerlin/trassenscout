@@ -77,10 +77,6 @@ const adminPages = [
     visibleText: "Passwort zurücksetzen",
   },
   {
-    path: "/admin/project-records",
-    visibleText: "Protokolleinträge",
-  },
-  {
     path: "/admin/project-record-emails",
     visibleText: "Neue E-Mail manuell hinzufügen",
   },

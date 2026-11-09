@@ -3,6 +3,10 @@ import { getRouteApi } from "@tanstack/react-router"
 import { twJoin } from "tailwind-merge"
 import { AbschnitteBreadcrumb } from "@/src/components/abschnitte/AbschnitteBreadcrumb"
 import { SubsectionMcpCreateDraftsAdminBox } from "@/src/components/abschnitte/SubsectionMcpCreateDraftsAdminBox"
+import { SubsubsectionSearchFilter } from "@/src/components/abschnitte/SubsubsectionSearchFilter"
+import { SubsubsectionSearchMapNotice } from "@/src/components/abschnitte/SubsubsectionSearchMapNotice"
+import { useSubsubsectionSearch } from "@/src/components/abschnitte/useSubsubsectionSearch"
+import { filterSubsubsections } from "@/src/components/abschnitte/utils/filterSubsubsections"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "@/src/components/core/components/links/Link"
 import { SubsubsectionMapWithProvider } from "@/src/components/core/components/Map/SubsubsectionMapWithProvider"
@@ -13,6 +17,7 @@ import {
 } from "@/src/components/core/components/PageHeader/MapListViewLayout"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { PageHeaderToolbarLink } from "@/src/components/core/components/PageHeader/PageHeaderToolbarLink"
+import { FilteredZeroCase } from "@/src/components/core/components/text/FilteredZeroCase"
 import { useViewMode } from "@/src/components/core/routes/useViewMode"
 import { IfUserCanEdit } from "@/src/components/shared/memberships/IfUserCan"
 import { subsectionsQueryOptions } from "@/src/server/subsections/subsectionsQueryOptions"
@@ -41,9 +46,13 @@ function SubsectionDashboardContent({
 }) {
   const { viewMode, setViewMode } = useViewMode()
   const isMapMode = viewMode === "map"
+  const { searchterm, isSearching, setSearchterm } = useSubsubsectionSearch()
   const { data: subsubsections } = useSuspenseQuery(
     subsubsectionsQueryOptions({ projectSlug, subsectionId: subsection.id }),
   )
+  const filteredSubsubsections = filterSubsubsections(subsubsections, searchterm)
+  const mapSubsubsections = filteredSubsubsections.filter(hasGeometry)
+  const matchCountWithoutGeometry = filteredSubsubsections.length - mapSubsubsections.length
 
   return (
     <div className={twJoin(isMapMode && MAP_VIEWPORT_SHELL_CLASS)}>
@@ -51,6 +60,11 @@ function SubsectionDashboardContent({
         className={isMapMode ? "mb-0 shrink-0" : undefined}
         breadcrumb={<AbschnitteBreadcrumb />}
         info="Übersicht über alle Maßnahmen dieses Planungsabschnitts."
+        search={
+          subsubsections.length > 0 ? (
+            <SubsubsectionSearchFilter placeholder="Maßnahmen nach Kürzel, Titel und Beschreibung filtern" />
+          ) : undefined
+        }
         viewMode={viewMode}
         onViewModeChange={setViewMode}
         action={
@@ -111,24 +125,42 @@ function SubsectionDashboardContent({
       <MapListViewLayout
         mode={viewMode}
         map={(classHeight) => (
-          <SubsubsectionMapWithProvider
-            key="map-subsection"
-            projectSlug={projectSlug}
-            subsectionSlug={subsectionSlug}
-            subsections={subsections}
-            selectedSubsection={subsection}
-            subsubsections={subsubsections.filter(hasGeometry)}
-            clusterSubsubsections
-            classHeight={classHeight}
-          />
+          <div className="relative flex min-h-0 flex-1 flex-col">
+            {isSearching && !filteredSubsubsections.length ? (
+              <SubsubsectionSearchMapNotice>Keine passenden Maßnahmen</SubsubsectionSearchMapNotice>
+            ) : null}
+            {isSearching && matchCountWithoutGeometry > 0 ? (
+              <SubsubsectionSearchMapNotice onShowList={() => setViewMode("list")}>
+                {matchCountWithoutGeometry} Treffer ohne Geometrie
+              </SubsubsectionSearchMapNotice>
+            ) : null}
+            <SubsubsectionMapWithProvider
+              key="map-subsection"
+              projectSlug={projectSlug}
+              subsectionSlug={subsectionSlug}
+              subsections={subsections}
+              selectedSubsection={subsection}
+              subsubsections={mapSubsubsections}
+              clusterSubsubsections
+              classHeight={classHeight}
+            />
+          </div>
         )}
-        list={({ interactive }) => (
-          <SubsubsectionTable
-            subsubsections={subsubsections}
-            compact={false}
-            interactive={interactive}
-          />
-        )}
+        list={({ interactive }) => {
+          if (isSearching && !filteredSubsubsections.length) {
+            return interactive ? (
+              <FilteredZeroCase name="Maßnahmen" onReset={() => setSearchterm("")} />
+            ) : null
+          }
+          return (
+            <SubsubsectionTable
+              subsubsections={filteredSubsubsections}
+              compact={false}
+              interactive={interactive}
+              searchterm={searchterm}
+            />
+          )
+        }}
       >
         <SuperAdminLogData data={{ subsections, subsection, subsubsections }} />
       </MapListViewLayout>

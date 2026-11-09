@@ -2,6 +2,7 @@ import { z } from "zod"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
+import { hideUnprocessedMailAttachments } from "./_utils/hideUnprocessedMailAttachments"
 import { GetGeolocatedUploadsSchema } from "./uploads.inputSchemas"
 
 const GeolocatedUploadSchema = z.object({
@@ -15,12 +16,21 @@ export async function getGeolocatedUploads(
   headers: Headers,
   input: z.infer<typeof GetGeolocatedUploadsSchema>,
 ) {
-  await endpointAuth.projectRole(headers, input.projectSlug, viewerRoles)
+  const { projectId, session, membershipRole } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    viewerRoles,
+  )
   const uploads = await db.upload.findMany({
     where: {
       project: { slug: input.projectSlug },
       latitude: { not: null },
       longitude: { not: null },
+      ...(await hideUnprocessedMailAttachments({
+        projectId,
+        userId: Number(session.userId),
+        membershipRole,
+      })),
     },
     orderBy: { id: "desc" },
     select: {

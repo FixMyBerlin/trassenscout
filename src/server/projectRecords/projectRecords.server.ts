@@ -5,9 +5,9 @@ import { shortTitle } from "@/src/components/core/components/text/titles"
 import { getFullnameWithInstitution } from "@/src/components/core/users/getFullname"
 import type { Prisma } from "@/src/prisma/generated/browser"
 import {
+  type MembershipRoleEnum,
   ProjectRecordReviewState,
   ProjectRecordType,
-  UserRoleEnum,
 } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
@@ -15,15 +15,20 @@ import db from "@/src/server/db.server"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { relationIds } from "@/src/server/logEntries/create/relationIds"
 import {
-  getUserRedactionContext,
   loadUserRedactionContext,
-  loadUserRedactionContexts,
   redactProjectRecordUsers,
 } from "@/src/server/memberships/redactFormerProjectMemberUser.server"
+import { projectProtocolMailboxAddress } from "@/src/server/projectRecordEmails/projectProtocolMailboxAddress.server"
+import { projectRecordEmailInboxWhere } from "@/src/server/projectRecordEmails/projectRecordEmailInboxWhere"
+import {
+  assertProjectLeadOrAdmin,
+  isProjectLeadOrAdmin,
+} from "@/src/server/projects/findProjectLead.server"
 import { deleteUploadFileAndDbRecord } from "@/src/server/uploads/_utils/deleteUploadFileAndDbRecord"
 import { AuthorizationError, NotFoundError } from "@/src/shared/auth/errors"
 import { ProjectSlugRequiredSchema } from "@/src/shared/authorization/projectSlugSchema"
 import { connectIds, idsFromFormValue, setIds } from "@/src/shared/prisma/connectIds"
+import { projectRecordDetailPath } from "@/src/shared/projectRecords/projectRecordDetailPath"
 import { projectRecordEditingStateLabel } from "@/src/shared/projectRecords/projectRecordEditingStateLabel"
 import {
   DeleteProjectRecordSchema,
@@ -32,7 +37,6 @@ import {
   ProjectRecordFormSchema,
 } from "@/src/shared/projectRecords/schemas"
 import { projectRecordInclude } from "./projectRecordInclude"
-import { GetProjectRecordAdminSchema } from "./projectRecords.inputSchemas"
 import {
   projectRecordDetailVisibilityWhere,
   projectRecordOverviewVisibilityWhere,
@@ -43,8 +47,6 @@ const projectRecordListOrder = [
   { date: { sort: "desc", nulls: "last" } },
   { id: "desc" },
 ] satisfies Prisma.ProjectRecordOrderByWithRelationInput[]
-
-export { GetProjectRecordAdminSchema }
 
 export const GetProjectRecordsSchema = ProjectSlugRequiredSchema
 export const GetProjectRecordSchema = ProjectSlugRequiredSchema.extend({ id: z.number() })
@@ -210,6 +212,7 @@ function createProjectRecordData(
   projectId: number,
   userId: number,
   formTemplateIds: number[],
+  projectRecordEmailId?: number,
 ) {
   const { acquisitionAreas, tags, subsubsections, uploads, formTemplates: _, ...data } = input
 
@@ -218,9 +221,17 @@ function createProjectRecordData(
     ...assignmentMetadata(null, data.assignedToId ?? null, userId),
     date: normalizeDate(data.date),
     projectId,
-    projectRecordAuthorType: ProjectRecordType.USER,
+    projectRecordAuthorType: projectRecordEmailId
+      ? ProjectRecordType.SYSTEM
+      : ProjectRecordType.USER,
     projectRecordUpdatedByType: ProjectRecordType.USER,
     reviewState: ProjectRecordReviewState.APPROVED,
+    // Saving a Posteingang draft is the confirmation of the AI result.
+    ...(projectRecordEmailId && {
+      projectRecordEmailId,
+      reviewedById: userId,
+      reviewedAt: new Date(),
+    }),
     userId,
     updatedById: userId,
     acquisitionAreas: connectIds(idsFromFormValue(acquisitionAreas)),
@@ -301,10 +312,6 @@ function updateProjectRecordData(
   }
 }
 
-function projectRecordDetailPath(projectSlug: string, recordId: number) {
-  return `/${projectSlug}/project-records/${recordId}`
-}
-
 export async function sendProjectRecordAssignmentNotification({
   assigneeId,
   actorUserId,
@@ -320,7 +327,7 @@ export async function sendProjectRecordAssignmentNotification({
   projectSlug: string
   recordId: number
 }) {
-  const [assignee, actor] = await Promise.all([
+  const [assignee, actor, project] = await Promise.all([
     db.user.findUnique({
       where: { id: assigneeId },
       select: { email: true, firstName: true, institution: true, lastName: true },
@@ -328,6 +335,10 @@ export async function sendProjectRecordAssignmentNotification({
     db.user.findUnique({
       where: { id: actorUserId },
       select: { firstName: true, institution: true, lastName: true },
+    }),
+    db.project.findUnique({
+      where: { slug: projectSlug },
+      select: { assignmentRepliesEnabled: true },
     }),
   ])
 
@@ -345,142 +356,11 @@ export async function sendProjectRecordAssignmentNotification({
       recordText,
       projectName: shortTitle(projectSlug),
       recordPath: projectRecordDetailPath(projectSlug, recordId),
+      protocolMailboxEmail: project?.assignmentRepliesEnabled
+        ? projectProtocolMailboxAddress(projectSlug)
+        : null,
     })
   ).send()
-}
-
-export async function getAllProjectRecordsAdmin(headers: Headers) {
-  const adminSession = await endpointAuth.admin(headers)
-
-  const records = await db.projectRecord.findMany({
-    orderBy: { createdAt: "desc" },
-    include: {
-      project: { select: { id: true, slug: true } },
-      tags: true,
-      author: { select: { id: true, firstName: true, institution: true, lastName: true } },
-      updatedBy: { select: { id: true, firstName: true, institution: true, lastName: true } },
-    },
-  })
-
-  const projectIds = [...new Set(records.map((record) => record.project.id))]
-  const contexts = await loadUserRedactionContexts(
-    projectIds,
-    UserRoleEnum.ADMIN,
-    Number(adminSession.userId),
-  )
-
-  return records.map((record) =>
-    redactProjectRecordUsers(record, getUserRedactionContext(contexts, record.project.id)),
-  )
-}
-
-export async function getProjectRecordAdmin(
-  headers: Headers,
-  input: z.infer<typeof GetProjectRecordAdminSchema>,
-) {
-  const adminSession = await endpointAuth.admin(headers)
-
-  const projectRecord = await db.projectRecord.findFirst({
-    where: { id: input.id },
-    include: {
-      project: {
-        select: {
-          id: true,
-          slug: true,
-          aiEnabled: true,
-        },
-      },
-      tags: true,
-      // Every `m2mFields` entry must be here: the edit form resubmits what this returns, so a
-      // missing relation arrives back as [] and the save wipes it.
-      formTemplates: {
-        select: {
-          id: true,
-          title: true,
-          slug: true,
-          type: true,
-          projects: { select: { slug: true } },
-        },
-        orderBy: { title: "asc" },
-      },
-      subsubsection: {
-        include: {
-          subsection: {
-            select: { slug: true },
-          },
-        },
-      },
-      subsubsections: {
-        select: {
-          id: true,
-          slug: true,
-          subsection: { select: { slug: true } },
-        },
-      },
-      acquisitionAreas: {
-        select: {
-          id: true,
-          subsubsection: {
-            select: {
-              slug: true,
-              subsection: { select: { slug: true } },
-            },
-          },
-          parcel: { select: { alkisParcelId: true } },
-        },
-      },
-      uploads: {
-        orderBy: { id: "desc" },
-        select: {
-          title: true,
-          id: true,
-        },
-      },
-      author: {
-        select: {
-          id: true,
-          firstName: true,
-          institution: true,
-          lastName: true,
-        },
-      },
-      updatedBy: {
-        select: {
-          id: true,
-          firstName: true,
-          institution: true,
-          lastName: true,
-        },
-      },
-      reviewedBy: {
-        select: {
-          id: true,
-          firstName: true,
-          institution: true,
-          lastName: true,
-        },
-      },
-      projectRecordEmail: {
-        select: {
-          id: true,
-          textBody: true,
-          from: true,
-          date: true,
-          subject: true,
-          uploads: { select: { id: true, title: true } },
-        },
-      },
-    },
-  })
-
-  if (!projectRecord) throw new NotFoundError()
-
-  const redactionContext = await loadUserRedactionContext(
-    projectRecord.project.id,
-    UserRoleEnum.ADMIN,
-    Number(adminSession.userId),
-  )
-  return redactProjectRecordUsers(projectRecord, redactionContext)
 }
 
 export async function getProjectRecords(
@@ -583,6 +463,7 @@ async function assertViewerOwnsUnattachedUploads({
 export async function createProjectRecord(
   headers: Headers,
   input: z.infer<typeof CreateProjectRecordBySlugSchema>,
+  { projectRecordEmailId }: { projectRecordEmailId?: number } = {},
 ) {
   const { projectId, membershipRole, session } = await endpointAuth.projectRole(
     headers,
@@ -610,7 +491,7 @@ export async function createProjectRecord(
   const userId = Number(session.userId)
 
   const record = await db.projectRecord.create({
-    data: createProjectRecordData(data, projectId, userId, formTemplateIds),
+    data: createProjectRecordData(data, projectId, userId, formTemplateIds, projectRecordEmailId),
     include: projectRecordInclude,
   })
 
@@ -627,7 +508,9 @@ export async function createProjectRecord(
 
   await createLogEntry({
     action: "CREATE",
-    message: `Neuer Protokolleintrag ${frenchQuote(record.title)} wurde erstellt.`,
+    message: projectRecordEmailId
+      ? `Neuer Protokolleintrag ${frenchQuote(record.title)} aus E-Mail #${projectRecordEmailId} wurde erstellt.`
+      : `Neuer Protokolleintrag ${frenchQuote(record.title)} wurde erstellt.`,
     userId,
     projectSlug,
     projectRecordId: record.id,
@@ -657,7 +540,7 @@ export async function updateProjectRecord(
   headers: Headers,
   input: z.infer<typeof UpdateProjectRecordBySlugSchema>,
 ) {
-  const { projectId, session } = await endpointAuth.projectRole(
+  const { projectId, session, membershipRole } = await endpointAuth.projectRole(
     headers,
     input.projectSlug,
     editorRoles,
@@ -686,9 +569,22 @@ export async function updateProjectRecord(
     },
   })
 
+  // Review fields only come with a review decision, which the Projektleitung and admins make.
+  if (data.reviewState !== undefined || data.reviewNotes !== undefined) {
+    await assertProjectLeadOrAdmin({ projectId, userId, membershipRole })
+  }
+  if (data.assignedToId != null && data.assignedToId !== previousRecord.assignedToId) {
+    await assertAssigneeIsProjectMember(projectSlug, data.assignedToId)
+  }
+  const isReviewChange =
+    data.reviewState !== undefined && data.reviewState !== previousRecord.reviewState
+
   const record = await db.projectRecord.update({
     where: { id: previousRecord.id },
-    data: updateProjectRecordData(data, userId, allowAdminFields, previousRecord.assignedToId),
+    data: {
+      ...updateProjectRecordData(data, userId, allowAdminFields, previousRecord.assignedToId),
+      ...(isReviewChange && { reviewedById: userId, reviewedAt: new Date() }),
+    },
     include: projectRecordInclude,
   })
 
@@ -938,7 +834,11 @@ export async function getProjectRecordsTabCounts(
   headers: Headers,
   input: z.infer<typeof GetProjectRecordsSchema>,
 ) {
-  await endpointAuth.projectRole(headers, input.projectSlug, viewerRoles)
+  const { membershipRole, session } = await endpointAuth.projectRole(
+    headers,
+    input.projectSlug,
+    viewerRoles,
+  )
 
   const project = await db.project.findUnique({
     where: { slug: input.projectSlug },
@@ -946,7 +846,7 @@ export async function getProjectRecordsTabCounts(
   })
 
   if (!project) {
-    return { approvedCount: 0, needsReviewCount: 0, aiEnabled: false }
+    return { approvedCount: 0, needsReviewCount: 0, inboxCount: 0, aiEnabled: false }
   }
 
   const approvedCount = await db.projectRecord.count({
@@ -960,7 +860,18 @@ export async function getProjectRecordsTabCounts(
     },
   })
 
-  return { approvedCount, needsReviewCount, aiEnabled: project.aiEnabled }
+  const canUseInbox =
+    project.aiEnabled &&
+    (await isProjectLeadOrAdmin({
+      projectId: project.id,
+      userId: Number(session.userId),
+      membershipRole,
+    }))
+  const inboxCount = canUseInbox
+    ? await db.projectRecordEmail.count({ where: projectRecordEmailInboxWhere(project.id) })
+    : 0
+
+  return { approvedCount, needsReviewCount, inboxCount, aiEnabled: project.aiEnabled }
 }
 
 export async function getProjectRecordDeleteInfo(
@@ -1212,23 +1123,38 @@ function mapProjectRecordListRows(
   })
 }
 
+// Lists only show entries the detail page opens for this user.
+async function listVisibilityWhere(projectId: number, membershipRole: MembershipRoleEnum | null) {
+  const project = await db.project.findUnique({
+    where: { id: projectId },
+    select: { aiEnabled: true },
+  })
+  const canEdit = membershipRole === null || editorRoles.includes(membershipRole)
+  return projectRecordDetailVisibilityWhere(project?.aiEnabled ?? false, canEdit)
+}
+
 export async function getProjectRecordsBySubsubsection(
   headers: Headers,
   input: z.infer<typeof GetProjectRecordsBySubsubsectionSchema>,
 ) {
-  const { projectId, session } = await endpointAuth.projectRole(
+  const { projectId, session, membershipRole } = await endpointAuth.projectRole(
     headers,
     input.projectSlug,
     viewerRoles,
   )
+  const visibilityWhere = await listVisibilityWhere(projectId, membershipRole)
 
   const projectRecords = await db.projectRecord.findMany({
     where: {
       project: { slug: input.projectSlug },
-      reviewState: { in: ["NEEDSREVIEW", "APPROVED"] },
-      OR: [
-        { subsubsectionId: input.subsubsectionId },
-        { subsubsections: { some: { id: input.subsubsectionId } } },
+      AND: [
+        visibilityWhere,
+        {
+          OR: [
+            { subsubsectionId: input.subsubsectionId },
+            { subsubsections: { some: { id: input.subsubsectionId } } },
+          ],
+        },
       ],
     },
     orderBy: projectRecordListOrder,
@@ -1247,19 +1173,24 @@ export async function getProjectRecordsByAcquisitionArea(
   headers: Headers,
   input: z.infer<typeof GetProjectRecordsByAcquisitionAreaSchema>,
 ) {
-  const { projectId, session } = await endpointAuth.projectRole(
+  const { projectId, session, membershipRole } = await endpointAuth.projectRole(
     headers,
     input.projectSlug,
     viewerRoles,
   )
+  const visibilityWhere = await listVisibilityWhere(projectId, membershipRole)
 
   const projectRecords = await db.projectRecord.findMany({
     where: {
       project: { slug: input.projectSlug },
-      reviewState: { in: ["NEEDSREVIEW", "APPROVED"] },
-      OR: [
-        { acquisitionAreaId: input.acquisitionAreaId },
-        { acquisitionAreas: { some: { id: input.acquisitionAreaId } } },
+      AND: [
+        visibilityWhere,
+        {
+          OR: [
+            { acquisitionAreaId: input.acquisitionAreaId },
+            { acquisitionAreas: { some: { id: input.acquisitionAreaId } } },
+          ],
+        },
       ],
     },
     orderBy: projectRecordListOrder,

@@ -1,13 +1,14 @@
 import { createServerFn } from "@tanstack/react-start"
 import { getRequestHeaders } from "@tanstack/react-start/server"
+import { getAssigneeRanking } from "./assigneeRanking.server"
 import { countMyAssignedRecords, getMyAssignedRecords } from "./myAssignedRecords.server"
 import {
   CreateProjectRecordBySlugSchema,
   DeleteProjectRecordBySlugSchema,
   DeleteProjectRecordWithUploadsDecisionSchema,
   CountMyAssignedRecordsSchema,
+  GetAssigneeRankingSchema,
   GetMyAssignedRecordsSchema,
-  GetProjectRecordAdminSchema,
   GetProjectRecordSchema,
   GetProjectRecordsByAcquisitionAreaSchema,
   GetProjectRecordsBySubsubsectionSchema,
@@ -19,9 +20,7 @@ import {
   createProjectRecord,
   deleteProjectRecord,
   deleteProjectRecordWithUploadsDecision,
-  getAllProjectRecordsAdmin,
   getProjectRecord,
-  getProjectRecordAdmin,
   getProjectRecordDeleteInfo,
   getProjectRecords,
   getProjectRecordsByAcquisitionArea,
@@ -31,14 +30,6 @@ import {
   patchProjectRecordAssignment,
   updateProjectRecord,
 } from "./projectRecords.server"
-
-export const getAllProjectRecordsAdminFn = createServerFn({ method: "GET" }).handler(() =>
-  getAllProjectRecordsAdmin(getRequestHeaders()),
-)
-
-export const getProjectRecordAdminFn = createServerFn({ method: "GET" })
-  .validator(GetProjectRecordAdminSchema)
-  .handler(({ data }) => getProjectRecordAdmin(getRequestHeaders(), data))
 
 export const getProjectRecordsFn = createServerFn({ method: "GET" })
   .validator(GetProjectRecordsSchema)
@@ -95,3 +86,7 @@ export const countMyAssignedRecordsFn = createServerFn({ method: "GET" })
 export const getMyAssignedRecordsFn = createServerFn({ method: "GET" })
   .validator(GetMyAssignedRecordsSchema)
   .handler(({ data }) => getMyAssignedRecords(getRequestHeaders(), data))
+
+export const getAssigneeRankingFn = createServerFn({ method: "POST" })
+  .validator(GetAssigneeRankingSchema)
+  .handler(({ data }) => getAssigneeRanking(getRequestHeaders(), data))

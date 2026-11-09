@@ -7,10 +7,17 @@ const mockDb = {
   surveyResponse: {
     findFirst: vi.fn(),
   },
+  $transaction: vi.fn(),
 }
+
+const mockNotifyProjectLead = vi.fn()
 
 vi.mock("@/src/server/db.server", () => ({
   default: mockDb,
+}))
+
+vi.mock("./notifyProjectLeadSurveyResponseSubmitted.server", () => ({
+  notifyProjectLeadSurveyResponseSubmitted: (...args: unknown[]) => mockNotifyProjectLead(...args),
 }))
 
 vi.mock("@/emails/mailers/surveyEntryCreatedNotificationToUser", () => ({
@@ -97,5 +104,48 @@ describe("sendSurveyPart2Email", () => {
     expect(surveyEntryCreatedNotificationToUser).toHaveBeenCalledWith(
       expect.objectContaining({ userEmail: "participant@example.com" }),
     )
+  })
+})
+
+describe("updateSurveyResponsePublic", () => {
+  const tx = {
+    surveyResponse: { findFirst: vi.fn(), update: vi.fn() },
+    surveySession: { findFirstOrThrow: vi.fn() },
+  }
+  const submitInput = { id: 9, surveySessionId: 3, data: "{}", state: "SUBMITTED" as const }
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockDb.$transaction.mockImplementation((callback: (client: typeof tx) => unknown) =>
+      callback(tx),
+    )
+    tx.surveySession.findFirstOrThrow.mockResolvedValue({
+      surveyId: 5,
+      survey: { slug: "rsv-hinweis" },
+    })
+  })
+
+  test("a submitted Eingabe notifies the Projektleitung", async () => {
+    const { updateSurveyResponsePublic } = await import("./publicSurveyResponses.server")
+    tx.surveyResponse.findFirst.mockResolvedValue({ id: 9, surveyPart: 2 })
+    tx.surveyResponse.update.mockResolvedValue({ id: 9, surveyPart: 2, state: "SUBMITTED" })
+
+    await updateSurveyResponsePublic(headers, submitInput)
+
+    expect(mockNotifyProjectLead).toHaveBeenCalledWith({
+      headers,
+      surveyResponseId: 9,
+      surveySessionId: 3,
+    })
+  })
+
+  test("answers from part 1 are no Eingabe", async () => {
+    const { updateSurveyResponsePublic } = await import("./publicSurveyResponses.server")
+    tx.surveyResponse.findFirst.mockResolvedValue({ id: 9, surveyPart: 1 })
+    tx.surveyResponse.update.mockResolvedValue({ id: 9, surveyPart: 1, state: "SUBMITTED" })
+
+    await updateSurveyResponsePublic(headers, submitInput)
+
+    expect(mockNotifyProjectLead).not.toHaveBeenCalled()
   })
 })

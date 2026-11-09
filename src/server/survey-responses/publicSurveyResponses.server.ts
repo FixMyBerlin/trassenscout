@@ -1,5 +1,6 @@
 import { z } from "zod"
 import { surveyEntryCreatedNotificationToUser } from "@/emails/mailers/surveyEntryCreatedNotificationToUser"
+import { mailUrl } from "@/emails/mailers/utils/mailUrl"
 import {
   allowedSurveySlugs,
   type AllowedSurveySlugs,
@@ -11,6 +12,8 @@ import { SurveyResponseStateEnum } from "@/src/prisma/generated/browser"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { enforcePublicEndpointRateLimit } from "@/src/server/auth/publicEndpointRateLimit.server"
 import db from "@/src/server/db.server"
+import { routerSearch } from "@/src/shared/routing/routerSearch"
+import { notifyProjectLeadSurveyResponseSubmitted } from "./notifyProjectLeadSurveyResponseSubmitted.server"
 import { GetOrCreateCreatedSurveyResponsePublicSchema } from "./publicSurveyResponses.inputSchemas"
 import { createNextOhvReferenceId } from "./utils/ohvReferenceId"
 
@@ -73,7 +76,7 @@ export async function updateSurveyResponsePublic(
   enforcePublicEndpointRateLimit(headers, "updateSurveyResponsePublic")
   const { id, surveySessionId, data, state } = input
 
-  return db.$transaction(async (tx) => {
+  const surveyResponse = await db.$transaction(async (tx) => {
     const existingResponse = await tx.surveyResponse.findFirst({
       where: { id, surveySessionId },
     })
@@ -116,6 +119,20 @@ export async function updateSurveyResponsePublic(
       data: { data: nextData, state },
     })
   })
+
+  // Part 2 holds the Eingaben; not awaited, so the participant never waits for the mail.
+  if (
+    surveyResponse.state === SurveyResponseStateEnum.SUBMITTED &&
+    surveyResponse.surveyPart === 2
+  ) {
+    void notifyProjectLeadSurveyResponseSubmitted({
+      headers,
+      surveyResponseId: surveyResponse.id,
+      surveySessionId,
+    })
+  }
+
+  return surveyResponse
 }
 
 const MAP_FIELD_COMPONENTS = ["SwitchableMap", "SurveySimpleMapWithLegend"]
@@ -149,11 +166,9 @@ export function buildFieldValues({
     const field = part2Fields.find((f) => String(f.name) === fieldName)
     const value = data[fieldName] ?? ""
 
-    if (fieldName === "surveyUrl" && searchParams) {
-      const queryParams = Object.entries(searchParams)
-        .map(([key, val]) => `${encodeURIComponent(key)}=${encodeURIComponent(val)}`)
-        .join("&")
-      fieldValues[fieldName] = `https://trassenscout.de/beteiligung/${surveySlug}/?${queryParams}`
+    if (fieldName === "surveyUrl") {
+      const query = routerSearch.stringify(searchParams ?? {})
+      fieldValues[fieldName] = mailUrl(`/beteiligung/${surveySlug}/${query}`)
       continue
     }
 

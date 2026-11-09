@@ -58,9 +58,14 @@ export const endpointAuth = {
     )
     return { ...session, membershipRole }
   },
-  /** Require project membership; returns `{ projectId, session, membershipRole }`. Primary guard for `*.server.ts` exports. */
-  projectRole: async (headers: Headers, projectSlug: string, roles: MembershipRole[]) => {
-    const session = await getAppSession(headers)
+  /** Require project membership; returns `{ projectId, session, membershipRole }`. Primary guard for `*.server.ts` exports. `fresh` bypasses the session cookie cache. */
+  projectRole: async (
+    headers: Headers,
+    projectSlug: string,
+    roles: MembershipRole[],
+    options: { fresh?: boolean } = {},
+  ) => {
+    const session = await getAppSession(headers, options)
     if (!session) {
       throw new AuthorizationError(authMessages.notAuthenticated)
     }

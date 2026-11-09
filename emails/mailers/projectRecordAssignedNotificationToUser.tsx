@@ -1,5 +1,5 @@
 import { resolveAndRenderEmailTemplate } from "@/src/server/emailTemplates/render"
-import { emailTemplateKeys } from "@/src/shared/emailTemplates/registry"
+import { assignmentReplyHintText, emailTemplateKeys } from "@/src/shared/emailTemplates/registry"
 import { toTemplateText } from "@/src/shared/templates/templateText"
 import { addressNoreply } from "./utils/addresses"
 import { mailUrl } from "./utils/mailUrl"
@@ -14,6 +14,7 @@ type Props = {
   recordText: string | null
   projectName: string
   recordPath: string
+  protocolMailboxEmail: string | null
 }
 
 export async function projectRecordAssignedNotificationToUser(props: Props) {
@@ -25,12 +26,16 @@ export async function projectRecordAssignedNotificationToUser(props: Props) {
       recordTitle: props.recordTitle,
       recordText: toTemplateText(props.recordText),
       projectName: props.projectName,
+      replyHintText: props.protocolMailboxEmail ? assignmentReplyHintText : "",
     },
   )
   assertValidRenderedTemplate(renderedTemplate)
 
   const message = buildTemplateMail({
-    from: addressNoreply,
+    // Sent from the project's protocol mailbox so that replies land in its Posteingang.
+    from: props.protocolMailboxEmail
+      ? { Email: props.protocolMailboxEmail, Name: `Trassenscout Protokoll ${props.projectName}` }
+      : addressNoreply,
     to: [{ Email: props.assigneeEmail }],
     template: renderedTemplate,
     ctaLink: mailUrl(props.recordPath),
@@ -38,7 +43,16 @@ export async function projectRecordAssignedNotificationToUser(props: Props) {
 
   return {
     async send() {
-      await sendMail(message)
+      try {
+        await sendMail(message)
+      } catch (error) {
+        if (!props.protocolMailboxEmail) throw error
+        // A provider that rejects the protocol mailbox as sender must not block the assignment.
+        console.error("Sending from the protocol mailbox failed, retrying from noreply@:", error)
+        await (
+          await projectRecordAssignedNotificationToUser({ ...props, protocolMailboxEmail: null })
+        ).send()
+      }
     },
   }
 }

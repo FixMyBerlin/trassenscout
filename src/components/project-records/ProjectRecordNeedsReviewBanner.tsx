@@ -66,9 +66,9 @@ export const ProjectRecordsNeedsReviewInfoBanner = () => {
         <h3 className="font-semibold">Bestätigung erforderlich</h3>
       </div>
       <p className="text-sm">
-        Diese Protokolleinträge wurde per KI-Assistent erstellt und müssen noch freigegeben werden.
+        Diese Protokolleinträge wurden per KI-Assistent erstellt und müssen noch freigegeben werden.
         <br />
-        Alle unbestätigten Protkolleinträge sind für Nutzer mit Leserechten nicht sichtbar.
+        Alle unbestätigten Protokolleinträge sind für Nutzer mit Leserechten nicht sichtbar.
       </p>
     </BannerShell>
   )

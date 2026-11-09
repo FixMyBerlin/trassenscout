@@ -26,3 +26,14 @@ describe("ProjectSchema partOf", () => {
     expect(ProjectSchema.safeParse({ ...project, partOf: "x".repeat(21) }).success).toBe(false)
   })
 })
+
+describe("ProjectSchema projectLeadId", () => {
+  it("keeps an omitted value undefined", () => {
+    expect(ProjectSchema.parse(project).projectLeadId).toBeUndefined()
+  })
+
+  it("stores the empty choice as null and an id as a number", () => {
+    expect(ProjectSchema.parse({ ...project, projectLeadId: "" }).projectLeadId).toBeNull()
+    expect(ProjectSchema.parse({ ...project, projectLeadId: "7" }).projectLeadId).toBe(7)
+  })
+})

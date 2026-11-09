@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest"
+import { afterEach, describe, expect, test, vi } from "vitest"
 import { buildFieldValues } from "./publicSurveyResponses.server"
 
 const field = (name: string, component: string) => ({ name, component, props: {} }) as never
@@ -118,5 +118,21 @@ describe("buildFieldValues option fields", () => {
     })
 
     expect(result.commune).toBe("unknown")
+  })
+})
+
+describe("buildFieldValues surveyUrl", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs()
+  })
+
+  test("links the survey on this deployment, also without URL parameters", () => {
+    vi.stubEnv("VITE_APP_ORIGIN", "https://staging.trassenscout.de")
+
+    const result = build({ data: {}, fields: ["surveyUrl"], part2Fields: [] })
+
+    expect(result.surveyUrl).toBe(
+      "https://staging.trassenscout.de/beteiligung/ohv-haltestellenfoerderung/",
+    )
   })
 })

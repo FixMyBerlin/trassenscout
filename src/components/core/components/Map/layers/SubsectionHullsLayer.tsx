@@ -18,12 +18,14 @@ export type SubsectionHullsLayerProps = {
   lines: FeatureCollection<LineString, LineProperties> | undefined
   polygons: FeatureCollection<Polygon, PolygonProperties> | undefined
   layerIdSuffix: string
+  fadedOthers?: boolean
 }
 
 export const SubsectionHullsLayer = ({
   lines,
   polygons,
   layerIdSuffix,
+  fadedOthers = false,
 }: SubsectionHullsLayerProps) => {
   const hullFeatures: Array<Feature<Polygon | MultiPolygon, LineProperties | PolygonProperties>> =
     []
@@ -34,9 +36,11 @@ export const SubsectionHullsLayer = ({
 
       try {
         const hullGeometry = lineToHullGeometry(lineFeature.geometry)
-        const hullFeature = feature(hullGeometry, lineFeature.properties, {
-          id: `hull-${lineFeature.properties.featureId}`,
-        })
+        const hullFeature = feature(
+          hullGeometry,
+          { ...lineFeature.properties, isLineHull: true },
+          { id: `hull-${lineFeature.properties.featureId}` },
+        )
         hullFeatures.push(hullFeature)
       } catch (error) {
         console.error("Failed to convert line to hull:", error)
@@ -62,16 +66,26 @@ export const SubsectionHullsLayer = ({
   const filterCurrent: FilterSpecification = ["==", ["get", "isCurrent"], true]
   const filterOther: FilterSpecification = ["==", ["get", "isCurrent"], false]
 
+  const isOtherHovered: ExpressionSpecification = [
+    "==",
+    ["get", "subsectionSlug"],
+    ["coalesce", ["global-state", "highlightSubsectionSlug"], ""],
+  ]
+
   const colorOtherExpression: ExpressionSpecification = [
     "case",
-    [
-      "==",
-      ["get", "subsectionSlug"],
-      ["coalesce", ["global-state", "highlightSubsectionSlug"], ""],
-    ],
+    isOtherHovered,
     subsectionColors.hull.hovered,
     subsectionColors.hull.unselected,
   ]
+
+  const isLineHull: ExpressionSpecification = ["boolean", ["get", "isLineHull"], false]
+  const otherOpacity = (
+    opacity: number,
+    fadedLineHull: number,
+    fadedArea: number,
+  ): number | ExpressionSpecification =>
+    fadedOthers ? ["case", isOtherHovered, opacity, isLineHull, fadedLineHull, fadedArea] : opacity
 
   return (
     <Source id={sourceId} key={sourceId} type="geojson" data={allFeatures} promoteId="featureId">
@@ -82,7 +96,7 @@ export const SubsectionHullsLayer = ({
         filter={filterOther}
         paint={{
           "fill-color": colorOtherExpression,
-          "fill-opacity": 0.28,
+          "fill-opacity": otherOpacity(0.28, 0.25, 0.08),
         }}
       />
       <Layer
@@ -94,9 +108,9 @@ export const SubsectionHullsLayer = ({
           "line-join": "round",
         }}
         paint={{
-          "line-width": 1,
+          "line-width": fadedOthers ? ["case", isLineHull, 1.5, 1] : 1,
           "line-color": colorOtherExpression,
-          "line-opacity": 0.7,
+          "line-opacity": otherOpacity(0.7, 0.75, 0.35),
         }}
       />
       {/* Current subsection on top: always blue, non-transparent line, not interactive */}

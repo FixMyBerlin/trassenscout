@@ -2,7 +2,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useNavigate, useRouter } from "@tanstack/react-router"
 import { useState } from "react"
 import { z } from "zod"
-import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { BackLink } from "@/src/components/core/components/forms/BackLink"
 import { FormDirtyStateReporter } from "@/src/components/core/components/forms/FormDirtyStateReporter"
@@ -14,8 +13,6 @@ import {
   applyFormSubmitResult,
   FORM_ERROR,
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
-import { Link } from "@/src/components/core/components/links/Link"
-import { optionalPageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { CreateEditReviewHistory } from "@/src/components/project-records/ProjectRecordCreateEditReviewHistory"
 import { ProjectRecordDeleteActionBar } from "@/src/components/project-records/ProjectRecordDeleteActionBar"
 import { ProjectRecordFormFields } from "@/src/components/project-records/ProjectRecordFormFields"
@@ -26,6 +23,7 @@ import { getM2MInitialValues } from "@/src/components/project-records/utils/getM
 import { getProjectRecordAuthorLabel } from "@/src/components/project-records/utils/getProjectRecordAuthorLabel"
 import { getProjectRecordEditSuccessNavigateOptions } from "@/src/components/project-records/utils/getProjectRecordEditSuccessRoute"
 import { getDate } from "@/src/components/project-records/utils/splitStartAt"
+import { useIsProjectLeadOrAdmin } from "@/src/components/shared/app/memberships/hooks/useIsProjectLeadOrAdmin"
 import { ProjectRecordReviewState } from "@/src/prisma/generated/browser"
 import { deleteMcpDraftFn } from "@/src/server/mcp/mcpDrafts/mcpDrafts.functions"
 import { invalidateMcpDraftQueries } from "@/src/server/mcp/mcpDrafts/mcpDraftsQueryOptions"
@@ -104,6 +102,7 @@ export const EditProjectRecordForm = ({
     ...projectRecordQueryOptions({ projectSlug, id: initialProjectRecord.id }),
     initialData: initialProjectRecord,
   })
+  const canConfirm = useIsProjectLeadOrAdmin(projectRecord.project)
 
   const editRelationContext: "project" | "subsubsection" | "acquisitionArea" =
     projectRecord.acquisitionAreas.length > 0
@@ -139,13 +138,18 @@ export const EditProjectRecordForm = ({
       ...(overlay?.tags != null ? { tags: overlay.tags } : {}),
     },
     validators: { onSubmit: ProjectRecordFormSchema } as never,
-    onSubmit: async ({ value }) => {
-      const values = value as unknown as z.infer<typeof ProjectRecordFormSchema>
+    onSubmit: async ({ value, formApi }) => {
+      const { reviewState, reviewNotes, ...values } = value as unknown as z.infer<
+        typeof ProjectRecordFormSchema
+      >
+      const nextReviewState = reviewState ?? projectRecord.reviewState
       onSubmittingChange?.(true)
       try {
         await updateProjectRecordMutation.mutateAsync({
           data: {
             ...values,
+            ...(formApi.getFieldMeta("reviewState")?.isDirty && { reviewState }),
+            ...(formApi.getFieldMeta("reviewNotes")?.isDirty && { reviewNotes }),
             id: projectRecord.id,
             date: values.date,
             projectSlug,
@@ -169,14 +173,14 @@ export const EditProjectRecordForm = ({
           invalidateAfterProjectRecordChange(queryClient, projectSlug),
         ])
         if (onSuccess) {
-          onSuccess(values.reviewState)
+          onSuccess(nextReviewState)
         } else {
           navigate(
             getProjectRecordEditSuccessNavigateOptions({
               projectSlug,
               projectRecordId: projectRecord.id,
               initialReviewState: projectRecord.reviewState,
-              nextReviewState: values.reviewState,
+              nextReviewState,
             }),
           )
         }
@@ -199,28 +203,12 @@ export const EditProjectRecordForm = ({
   return (
     <>
       {needsReview && <ProjectRecordNeedsReviewBanner />}
-      {projectRecord.projectRecordAuthorType === "SYSTEM" && (
-        <div className={optionalPageContentPaddingClassName}>
-          <SuperAdminBox className="mb-6">
-            In die{" "}
-            <Link
-              blank
-              to="/admin/project-records/$projectRecordId/edit"
-              params={{ projectRecordId: String(projectRecord.id) }}
-              className="text-blue-500 hover:underline"
-            >
-              Admin-Ansicht
-            </Link>{" "}
-            wechseln, um Bestätigungsstatus zu ändern.
-          </SuperAdminBox>
-        </div>
-      )}
       <FormShell
         form={form}
         formError={formError}
         submitText="Änderungen speichern"
         hideSubmitButton
-        edgeToEdgeFooter={needsReview ? <ReviewProjectRecordForm /> : undefined}
+        edgeToEdgeFooter={needsReview && canConfirm ? <ReviewProjectRecordForm /> : undefined}
         actionBarLeft={<ProjectRecordSubmitButton />}
         actionBarRight={
           <ProjectRecordDeleteActionBar

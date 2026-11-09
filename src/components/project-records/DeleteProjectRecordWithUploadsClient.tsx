@@ -1,5 +1,5 @@
 import { Switch } from "@headlessui/react"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 import { useState, type ReactElement } from "react"
 import { twJoin } from "tailwind-merge"
@@ -15,10 +15,12 @@ import {
   SubsubsectionRelationLink,
   subsubsectionRelationKey,
 } from "@/src/components/project-records/ProjectRelationLinks"
+import { useIsProjectLeadOrAdmin } from "@/src/components/shared/app/memberships/hooks/useIsProjectLeadOrAdmin"
 import { UploadPreviewClickable } from "@/src/components/uploads/UploadPreviewClickable"
 import { ProjectRecordReviewState } from "@/src/prisma/generated/browser"
 import { deleteProjectRecordWithUploadsDecisionFn } from "@/src/server/projectRecords/projectRecords.functions"
 import type { ProjectRecordDeleteInfo } from "@/src/server/projectRecords/types"
+import { projectBySlugQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 import { resolvedToNavigateOptions } from "@/src/shared/routing/resolvedTo"
 
 type DeleteInfo = ProjectRecordDeleteInfo
@@ -51,8 +53,10 @@ export const DeleteProjectRecordWithUploadsClient = ({ deleteInfo, projectSlug }
     }))
   }
 
+  const { data: project } = useQuery(projectBySlugQueryOptions(projectSlug))
+  const canConfirm = useIsProjectLeadOrAdmin(project)
   const returnPath =
-    deleteInfo.projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
+    canConfirm && deleteInfo.projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
       ? `/${projectSlug}/project-records/needreview`
       : `/${projectSlug}/project-records`
 

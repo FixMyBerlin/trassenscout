@@ -5,10 +5,10 @@ import { useCoreAppFormContext } from "@/src/components/core/components/forms/ho
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { ProjectRecordReviewState } from "@/src/prisma/generated/browser"
 
-export const ReviewProjectRecordForm = ({ admin }: { admin?: boolean }) => {
+export const ReviewProjectRecordForm = () => {
   const form = useCoreAppFormContext()
 
-  let reviewStateOptions: { value: ProjectRecordReviewState; label: string }[] = [
+  const reviewStateOptions: { value: ProjectRecordReviewState; label: string }[] = [
     {
       value: ProjectRecordReviewState.APPROVED,
       label: "Genehmigt - Protokolleintrag ist korrekt",
@@ -22,16 +22,6 @@ export const ReviewProjectRecordForm = ({ admin }: { admin?: boolean }) => {
       label: "Abgelehnt - Protokolleintrag entspricht nicht den Standards",
     },
   ]
-
-  if (admin) {
-    reviewStateOptions = [
-      ...reviewStateOptions,
-      {
-        value: ProjectRecordReviewState.NEEDSADMINREVIEW,
-        label: "Benötigt Admin-Bestätigung",
-      },
-    ]
-  }
 
   return (
     <div className="w-full border-t border-gray-200 bg-yellow-50 text-gray-700">

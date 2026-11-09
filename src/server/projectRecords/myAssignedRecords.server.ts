@@ -4,6 +4,7 @@ import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { readableProjectWhere } from "@/src/server/authorization/readableProjectWhere.server"
 import db from "@/src/server/db.server"
 import type { GetMyAssignedRecordsSchema } from "./projectRecords.inputSchemas"
+import { projectRecordTaskWhere } from "./projectRecordVisibility.server"
 
 function directionWhere(
   direction: z.infer<typeof GetMyAssignedRecordsSchema>["direction"],
@@ -22,6 +23,7 @@ export async function countMyAssignedRecords(headers: Headers, projectSlug?: str
 
   return db.projectRecord.count({
     where: {
+      ...projectRecordTaskWhere,
       assignedToId: userId,
       editingState: ProjectRecordEditingState.PENDING,
       project: readableProjectWhere(userId, session.role, projectSlug),
@@ -38,8 +40,7 @@ export async function getMyAssignedRecords(
 
   const records = await db.projectRecord.findMany({
     where: {
-      // A task is a record with an assignee, whichever direction is picked.
-      assignedToId: { not: null },
+      ...projectRecordTaskWhere,
       ...directionWhere(input.direction, userId),
       ...(input.editingState ? { editingState: input.editingState } : {}),
       project: readableProjectWhere(userId, session.role, input.projectSlug),

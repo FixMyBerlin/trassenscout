@@ -1,5 +1,9 @@
 import { z } from "zod"
-import { blankToNull, SlugSchema } from "@/src/components/core/utils/schema-shared"
+import {
+  blankToNull,
+  InputNumberOrNullSchema,
+  SlugSchema,
+} from "@/src/components/core/utils/schema-shared"
 import { StateKeyEnum } from "@/src/prisma/generated/browser"
 import { ProjectSlugRequiredSchema } from "@/src/shared/authorization/projectSlugSchema"
 
@@ -20,6 +24,8 @@ export const ProjectSchema = z.object({
   aiEnabled: z.coerce.boolean(),
   alkisStateKey: z.enum(StateKeyEnum),
   landAcquisitionModuleEnabled: z.coerce.boolean(),
+  // Optional like partOf: a payload without it keeps the stored Projektleitung.
+  projectLeadId: InputNumberOrNullSchema.optional(),
 })
 
 const ProjectLogoSrcsInputSchema = z.object({
@@ -43,4 +49,5 @@ export const projectFormDefaultValues: ProjectFormType = {
   aiEnabled: false,
   alkisStateKey: StateKeyEnum.DISABLED,
   landAcquisitionModuleEnabled: false,
+  projectLeadId: null,
 }

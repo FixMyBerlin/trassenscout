@@ -4,7 +4,7 @@ import db from "@/src/server/db.server"
 
 function extractEmailAddress(emailString: string) {
   let emailAddress = emailString.trim()
-  const emailMatch = emailString.match(/<(.+?)>/)
+  const emailMatch = emailString.match(/<([^<>]+)>\s*$/)
   if (emailMatch?.[1]) {
     emailAddress = emailMatch[1].trim()
   }
@@ -13,43 +13,25 @@ function extractEmailAddress(emailString: string) {
   return result.success ? result.data : null
 }
 
-export async function isAdminOrProjectMember({
+export async function findAdminOrProjectMember({
   projectId,
   email,
 }: {
   projectId: number
   email: string | null
 }) {
-  if (!email) {
-    return false
-  }
+  const emailAddress = email ? extractEmailAddress(email) : null
+  if (!emailAddress) return null
 
-  const emailAddress = extractEmailAddress(email)
-  if (!emailAddress) {
-    return false
-  }
-
-  const normalizedEmail = emailAddress.toLowerCase()
-
-  const adminUser = await db.user.findFirst({
+  return db.user.findFirst({
     where: {
-      email: normalizedEmail,
-      role: UserRoleEnum.ADMIN,
+      email: emailAddress.toLowerCase(),
+      OR: [{ role: UserRoleEnum.ADMIN }, { memberships: { some: { projectId } } }],
     },
+    select: { id: true, email: true },
   })
+}
 
-  if (adminUser) {
-    return true
-  }
-
-  const membership = await db.membership.findFirst({
-    where: {
-      projectId,
-      user: {
-        email: normalizedEmail,
-      },
-    },
-  })
-
-  return Boolean(membership)
+export async function isAdminOrProjectMember(input: { projectId: number; email: string | null }) {
+  return Boolean(await findAdminOrProjectMember(input))
 }

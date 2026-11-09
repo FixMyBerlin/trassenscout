@@ -7,11 +7,12 @@ export const GetProjectBySlugSchema = z.object({
 })
 
 export const GetProjectsAdminSchema = z.object({})
-export const CreateProjectSchema = ProjectSchema
+export const CreateProjectSchema = ProjectSchema.omit({ projectLeadId: true })
 
 const projectFeatureFlagKeys = [
   "exportEnabled",
   "aiEnabled",
+  "assignmentRepliesEnabled",
   "landAcquisitionModuleEnabled",
   "showLogEntries",
   "evaluationsEnabled",

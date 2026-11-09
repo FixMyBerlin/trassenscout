@@ -2,32 +2,20 @@ import { queryOptions } from "@tanstack/react-query"
 import type { z } from "zod"
 import {
   countMyAssignedRecordsFn,
-  getAllProjectRecordsAdminFn,
+  getAssigneeRankingFn,
   getMyAssignedRecordsFn,
-  getProjectRecordAdminFn,
   getProjectRecordDeleteInfoFn,
   getProjectRecordFn,
   getProjectRecordsFn,
   getProjectRecordsNeedsReviewFn,
   getProjectRecordsTabCountsFn,
 } from "./projectRecords.functions"
-import type { GetMyAssignedRecordsSchema } from "./projectRecords.inputSchemas"
+import type {
+  GetAssigneeRankingSchema,
+  GetMyAssignedRecordsSchema,
+} from "./projectRecords.inputSchemas"
 import type { GetProjectRecordsInput } from "./projectRecords.server"
 import { GetProjectRecordSchema } from "./projectRecords.server"
-
-export function allProjectRecordsAdminQueryOptions() {
-  return queryOptions({
-    queryKey: ["projectRecordsAdmin"],
-    queryFn: () => getAllProjectRecordsAdminFn(),
-  })
-}
-
-export function projectRecordAdminQueryOptions(id: number) {
-  return queryOptions({
-    queryKey: ["projectRecordAdmin", id],
-    queryFn: () => getProjectRecordAdminFn({ data: { id } }),
-  })
-}
 
 export function projectRecordsQueryOptions(input: GetProjectRecordsInput) {
   return queryOptions({
@@ -75,5 +63,12 @@ export function myAssignedRecordsQueryOptions(input: z.infer<typeof GetMyAssigne
   return queryOptions({
     queryKey: ["projectRecords", "assignedToMe", input],
     queryFn: () => getMyAssignedRecordsFn({ data: input }),
+  })
+}
+
+export function assigneeRankingQueryOptions(input: z.infer<typeof GetAssigneeRankingSchema>) {
+  return queryOptions({
+    queryKey: ["assigneeRanking", input],
+    queryFn: () => getAssigneeRankingFn({ data: input }),
   })
 }

@@ -45,6 +45,20 @@ describe("parseProjectModalSearch", () => {
     expect(search.modalContactId).toBeUndefined()
   })
 
+  test("opens a Posteingang mail on its own, never next to another modal", () => {
+    expect(
+      parseProjectModalSearch({ modalProjectRecordEmailId: "61" }).modalProjectRecordEmailId,
+    ).toBe(61)
+
+    const search = parseProjectModalSearch({
+      modalProjectRecordEmailId: "61",
+      modalProjectRecordId: "42",
+      modalProjectRecordView: "detail",
+    })
+    expect(search.modalProjectRecordEmailId).toBeUndefined()
+    expect(search.modalProjectRecordId).toBeUndefined()
+  })
+
   test("falls back instead of throwing on values a URL can always contain", () => {
     const search = parseProjectModalSearch({
       modalProjectRecordId: "nonsense",
@@ -75,10 +89,12 @@ describe("clearAllProjectModalSearch", () => {
       modalProjectRecordId: 42,
       modalProjectRecordView: "detail",
       modalProjectSlug: "ohv-radverkehr",
+      modalProjectRecordEmailId: 61,
     })
 
     expect(search.modalProjectRecordId).toBeUndefined()
     expect(search.modalProjectSlug).toBeUndefined()
+    expect(search.modalProjectRecordEmailId).toBeUndefined()
     expect(search.projectSlug).toBe("ohv-radverkehr")
   })
 })

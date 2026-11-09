@@ -28,6 +28,8 @@ const SwitchableMapLocationPointSchema = z.object({
 })
 export type SwitchableMapLocationPoint = z.infer<typeof SwitchableMapLocationPointSchema>
 
+export type SurveyMapArea = { id: string; bbox: [number, number, number, number] }
+
 /** Survey map fields store bare coordinates (not full GeoJSON `{ type, coordinates }`). */
 const SurveyPointCoordsSchema = PositionSchema
 const SurveyLineStringCoordsSchema = PositionArraySchema.min(2)

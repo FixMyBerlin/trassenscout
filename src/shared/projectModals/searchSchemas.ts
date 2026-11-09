@@ -10,6 +10,10 @@ import {
   inviteModalViewSchema,
 } from "@/src/shared/invites/searchSchemas"
 import {
+  clearProjectRecordEmailModalSearch,
+  projectRecordEmailModalSearchSchema,
+} from "@/src/shared/projectRecordEmails/searchSchemas"
+import {
   clearProjectRecordModalSearch,
   projectRecordModalSearchSchema,
   projectRecordModalViewSchema,
@@ -24,7 +28,11 @@ export function clearAllProjectModalSearch<TSearch extends Record<string, unknow
   search: TSearch,
 ) {
   return clearInviteModalSearch(
-    clearContactModalSearch(clearProjectRecordModalSearch(clearProjectUploadModalSearch(search))),
+    clearContactModalSearch(
+      clearProjectRecordEmailModalSearch(
+        clearProjectRecordModalSearch(clearProjectUploadModalSearch(search)),
+      ),
+    ),
   )
 }
 
@@ -35,6 +43,7 @@ export const loggedInProjectModalSearchSchema = z
     modalProjectRecordId: z.coerce.number().int().positive().optional().catch(undefined),
     modalProjectRecordView: projectRecordModalViewSchema.optional().catch(undefined),
     modalProjectSlug: z.string().optional().catch(undefined),
+    modalProjectRecordEmailId: z.coerce.number().int().positive().optional().catch(undefined),
     modalContactId: z.coerce.number().int().positive().optional().catch(undefined),
     modalContactView: contactModalViewSchema.optional().catch(undefined),
     modalInviteView: inviteModalViewSchema.optional().catch(undefined),
@@ -42,6 +51,7 @@ export const loggedInProjectModalSearchSchema = z
   .transform((search) => {
     const uploadSearch = projectUploadModalSearchSchema.parse(search)
     const projectRecordSearch = projectRecordModalSearchSchema.parse(search)
+    const projectRecordEmailSearch = projectRecordEmailModalSearchSchema.parse(search)
     const contactSearch = contactModalSearchSchema.parse(search)
     const inviteSearch = inviteModalSearchSchema.parse(search)
     const hasUploadModal =
@@ -49,12 +59,15 @@ export const loggedInProjectModalSearchSchema = z
     const hasProjectRecordModal =
       projectRecordSearch.modalProjectRecordId !== undefined &&
       projectRecordSearch.modalProjectRecordView !== undefined
+    const hasProjectRecordEmailModal =
+      projectRecordEmailSearch.modalProjectRecordEmailId !== undefined
     const hasContactModal = contactSearch.modalContactView !== undefined
     const hasInviteModal = inviteSearch.modalInviteView !== undefined
 
     const activeModalCount = [
       hasUploadModal,
       hasProjectRecordModal,
+      hasProjectRecordEmailModal,
       hasContactModal,
       hasInviteModal,
     ].filter(Boolean).length
@@ -66,6 +79,7 @@ export const loggedInProjectModalSearchSchema = z
     return {
       ...uploadSearch,
       ...projectRecordSearch,
+      ...projectRecordEmailSearch,
       ...contactSearch,
       ...inviteSearch,
     }
