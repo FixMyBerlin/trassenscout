@@ -192,23 +192,43 @@ export const SubsubsectionTable = ({
           {subsectionGroups ? (
             groupBySubsectionSlug(sortedSubsubsections).map(([subsectionSlug, rows]) => {
               const isCollapsed = subsectionGroups.collapsedSlugs.has(subsectionSlug)
+              const toggle = () => subsectionGroups.onToggle(subsectionSlug)
 
               return (
                 <Fragment key={subsectionSlug}>
                   <tbody className={tableBodyClassName}>
-                    <tr className="border-b border-gray-200 bg-gray-50">
+                    <tr
+                      className="group cursor-pointer border-b border-gray-200 bg-gray-50 hover:bg-gray-100"
+                      onClick={toggle}
+                    >
                       <th
                         scope="rowgroup"
-                        colSpan={6}
-                        className="relative h-20 py-4 pr-12 pl-4 text-left text-sm font-normal text-gray-500 sm:pl-6"
+                        className="size-20 py-4 pr-3 pl-4 text-left font-normal whitespace-nowrap sm:pl-6"
                       >
+                        <SubsectionIcon label={shortTitle(subsectionSlug)} />
+                      </th>
+                      <td className="py-4 pr-3 pl-4 text-sm">
+                        <Link
+                          to="/$projectSlug/abschnitte/$subsectionSlug"
+                          params={{ projectSlug, subsectionSlug }}
+                          search={{ searchterm }}
+                          onClick={(event) => event.stopPropagation()}
+                        >
+                          Planungsabschnitt öffnen
+                        </Link>
+                      </td>
+                      <td colSpan={4} className="py-4 pr-4 pl-3 text-right sm:pr-6">
                         <button
                           type="button"
                           aria-expanded={!isCollapsed}
-                          aria-label={`Treffer in ${shortTitle(subsectionSlug)}`}
-                          onClick={() => subsectionGroups.onToggle(subsectionSlug)}
-                          className="absolute inset-0 flex cursor-pointer items-center justify-end pr-4 hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-blue-500"
+                          aria-label={`${rows.length} Treffer in ${shortTitle(subsectionSlug)}`}
+                          onClick={(event) => {
+                            event.stopPropagation()
+                            toggle()
+                          }}
+                          className="inline-flex cursor-pointer items-center gap-3 rounded text-sm whitespace-nowrap text-gray-500 group-hover:text-gray-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-500"
                         >
+                          {rows.length} Treffer
                           <ChevronDownIcon
                             aria-hidden="true"
                             className={twJoin(
@@ -217,19 +237,7 @@ export const SubsubsectionTable = ({
                             )}
                           />
                         </button>
-                        <div className="pointer-events-none relative flex items-center gap-3">
-                          <SubsectionIcon label={shortTitle(subsectionSlug)} />
-                          <span>{rows.length} Treffer</span>
-                          <Link
-                            className="pointer-events-auto"
-                            to="/$projectSlug/abschnitte/$subsectionSlug"
-                            params={{ projectSlug, subsectionSlug }}
-                            search={{ searchterm }}
-                          >
-                            Planungsabschnitt öffnen
-                          </Link>
-                        </div>
-                      </th>
+                      </td>
                     </tr>
                   </tbody>
                   {/* Fade only: table rows can't animate their height like our other accordions. */}

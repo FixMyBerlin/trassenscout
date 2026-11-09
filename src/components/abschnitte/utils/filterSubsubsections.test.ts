@@ -1,8 +1,12 @@
 import { describe, expect, test } from "vitest"
 import {
   collapsedSubsectionSlugs,
+  filterSubsections,
   filterSubsubsections,
   hiddenMatchSnippet,
+  projectSearchResults,
+  searchMatchSummary,
+  subsectionMatchSummary,
   subsubsectionMatchSummary,
 } from "./filterSubsubsections"
 
@@ -141,5 +145,108 @@ describe("subsubsectionMatchSummary", () => {
   test("uses singular and plural", () => {
     expect(subsubsectionMatchSummary(1, 1)).toBe("1 Maßnahme in 1 Planungsabschnitt")
     expect(subsubsectionMatchSummary(18, 10)).toBe("18 Maßnahmen in 10 Planungsabschnitten")
+  })
+})
+
+describe("subsectionMatchSummary", () => {
+  test("uses singular and plural", () => {
+    expect(subsectionMatchSummary(1)).toBe("1 Planungsabschnitt")
+    expect(subsectionMatchSummary(3)).toBe("3 Planungsabschnitte")
+  })
+})
+
+const projectSubsections = [
+  { id: 10, slug: "birkenwerder" },
+  { id: 11, slug: "hohen-neuendorf" },
+  { id: 12, slug: "gransee" },
+]
+
+const projectSubsubsections = [
+  { slug: "b1", subsectionId: 10, description: "Radweg in Birkenwerder" },
+  { slug: "h1", subsectionId: 11, description: "Anschluss Richtung Birkenwerder" },
+  { slug: "g1", subsectionId: 12, description: "Ortsmitte" },
+].map((subsubsection) => ({
+  ...subsubsection,
+  subTitle: null,
+  SubsubsectionTask: null,
+  subsection: {
+    slug: projectSubsections.find(({ id }) => id === subsubsection.subsectionId)?.slug ?? "",
+  },
+}))
+
+describe("filterSubsections", () => {
+  test("finds the Kürzel, ignoring case, # and surrounding whitespace", () => {
+    expect(filterSubsections(projectSubsections, " #Gransee ").map(({ slug }) => slug)).toEqual([
+      "gransee",
+    ])
+    expect(filterSubsections(projectSubsections, "neuen").map(({ slug }) => slug)).toEqual([
+      "hohen-neuendorf",
+    ])
+  })
+
+  test("returns everything without a searchterm", () => {
+    expect(filterSubsections(projectSubsections, "")).toHaveLength(3)
+  })
+
+  test("finds place names typed with umlauts, ß and spaces", () => {
+    const placeSubsections = [
+      "fuerstenberg",
+      "grossbeeren",
+      "hohen-neuendorf",
+      "loewenberger-land",
+      "muehlenbecker-land",
+      "oberkraemer",
+    ].map((slug) => ({ slug }))
+    const found = (searchterm: string) =>
+      filterSubsections(placeSubsections, searchterm).map(({ slug }) => slug)
+
+    expect(found("Mühlenbecker Land")).toEqual(["muehlenbecker-land"])
+    expect(found("Oberkrämer")).toEqual(["oberkraemer"])
+    expect(found("Hohen  Neuendorf")).toEqual(["hohen-neuendorf"])
+    expect(found("Löwenberger")).toEqual(["loewenberger-land"])
+    expect(found("Fürstenberg")).toEqual(["fuerstenberg"])
+    expect(found("Großbeeren")).toEqual(["grossbeeren"])
+    expect(found("muehlenbecker")).toEqual(["muehlenbecker-land"])
+  })
+})
+
+describe("projectSearchResults", () => {
+  test("finds a Planungsabschnitt by its Kürzel alone", () => {
+    const results = projectSearchResults(projectSubsections, projectSubsubsections, "gransee")
+
+    expect(results.subsectionMatches.map(({ slug }) => slug)).toEqual(["gransee"])
+    expect(results.subsubsectionMatches).toEqual([])
+    expect([...results.matchedSubsectionSlugs]).toEqual(["gransee"])
+    expect(results.slugsWithSubsubsectionMatches.size).toBe(0)
+  })
+
+  test("keeps Planungsabschnitt and Maßnahmen matches apart", () => {
+    const results = projectSearchResults(projectSubsections, projectSubsubsections, "BIRKENWERDER")
+
+    expect(results.subsectionMatches.map(({ slug }) => slug)).toEqual(["birkenwerder"])
+    expect(results.subsubsectionMatches.map(({ slug }) => slug)).toEqual(["b1", "h1"])
+    expect([...results.slugsWithSubsubsectionMatches]).toEqual(["birkenwerder", "hohen-neuendorf"])
+    expect([...results.matchedSubsectionSlugs]).toEqual(["birkenwerder", "hohen-neuendorf"])
+  })
+
+  test("leaves out Maßnahmen of filtered out Planungsabschnitte", () => {
+    const results = projectSearchResults(
+      projectSubsections.slice(0, 1),
+      projectSubsubsections,
+      "birkenwerder",
+    )
+
+    expect(results.subsubsectionMatches.map(({ slug }) => slug)).toEqual(["b1"])
+  })
+})
+
+describe("searchMatchSummary", () => {
+  const summaryFor = (searchterm: string) =>
+    searchMatchSummary(projectSearchResults(projectSubsections, projectSubsubsections, searchterm))
+
+  test("names what matched", () => {
+    expect(summaryFor("gransee")).toBe("1 Planungsabschnitt")
+    expect(summaryFor("richtung")).toBe("1 Maßnahme in 1 Planungsabschnitt")
+    expect(summaryFor("birkenwerder")).toBe("1 Planungsabschnitt und 2 Maßnahmen")
   })
 })

@@ -32,8 +32,13 @@ const filterByCurrent = <G extends Geometry, P extends { isCurrent: boolean }>(
 type Props = {
   subsections: TSubsections
   classHeight?: string
-  /** Set while Maßnahmen are searched: matches keep their original blue, the others fade out. */
-  search?: { searchterm: string; matchedSubsectionSlugs: Set<string> }
+  /** Set while searching: matches keep their original blue, the others fade out. */
+  search?: {
+    searchterm: string
+    matchedSubsectionSlugs: Set<string>
+    /** Opening one of these keeps the term, so its page lists the matching subsubsections. */
+    slugsWithSubsubsectionMatches: Set<string>
+  }
 }
 
 export const ProjectMap = ({ subsections, classHeight, search }: Props) => {
@@ -77,7 +82,7 @@ export const ProjectMap = ({ subsections, classHeight, search }: Props) => {
     void navigate({
       to: "/$projectSlug/abschnitte/$subsectionSlug",
       params: { projectSlug, subsectionSlug },
-      search: search?.matchedSubsectionSlugs.has(subsectionSlug)
+      search: search?.slugsWithSubsubsectionMatches.has(subsectionSlug)
         ? { searchterm: search.searchterm }
         : undefined,
     })

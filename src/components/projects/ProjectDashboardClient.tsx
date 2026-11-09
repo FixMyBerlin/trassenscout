@@ -7,8 +7,8 @@ import { SubsubsectionSearchFilter } from "@/src/components/abschnitte/Subsubsec
 import { SubsubsectionSearchMapNotice } from "@/src/components/abschnitte/SubsubsectionSearchMapNotice"
 import { useSubsubsectionSearch } from "@/src/components/abschnitte/useSubsubsectionSearch"
 import {
-  filterSubsubsections,
-  subsubsectionMatchSummary,
+  projectSearchResults,
+  searchMatchSummary,
 } from "@/src/components/abschnitte/utils/filterSubsubsections"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
@@ -34,7 +34,7 @@ import { subsectionsQueryOptions } from "@/src/server/subsections/subsectionsQue
 import { subsubsectionsQueryOptions } from "@/src/server/subsubsections/subsubsectionsQueryOptions"
 import { brokenGeometryItems } from "@/src/shared/geometry/brokenGeometryItems"
 import { OperatorFilter } from "./OperatorFilter"
-import { ProjectSubsubsectionSearchResults } from "./ProjectSubsubsectionSearchResults"
+import { ProjectSearchResults } from "./ProjectSearchResults"
 import { SubsectionTable } from "./SubsectionTable"
 
 const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/")
@@ -62,15 +62,10 @@ export const ProjectDashboardClient = () => {
     enabled: isSearching,
     throwOnError: true,
   })
-  const filteredSubsectionIds = new Set(filteredSubsections.map((subsection) => subsection.id))
-  const searchMatches =
+  const searchResults =
     isSearching && subsubsections
-      ? filterSubsubsections(subsubsections, searchterm).filter((subsubsection) =>
-          filteredSubsectionIds.has(subsubsection.subsectionId),
-        )
+      ? projectSearchResults(filteredSubsections, subsubsections, searchterm)
       : undefined
-  const matchedSubsectionSlugs =
-    searchMatches && new Set(searchMatches.map((subsubsection) => subsubsection.subsection.slug))
 
   const showSearchInList = (value: string) => {
     void navigate({
@@ -98,19 +93,29 @@ export const ProjectDashboardClient = () => {
             <div className="relative flex min-h-0 flex-1 flex-col">
               {isSearching ? (
                 <SubsubsectionSearchMapNotice
-                  onShowList={searchMatches?.length ? () => setViewMode("list") : undefined}
+                  onShowList={
+                    searchResults?.matchedSubsectionSlugs.size
+                      ? () => setViewMode("list")
+                      : undefined
+                  }
                 >
-                  {!searchMatches || !matchedSubsectionSlugs
+                  {!searchResults
                     ? "Suche läuft…"
-                    : searchMatches.length
-                      ? subsubsectionMatchSummary(searchMatches.length, matchedSubsectionSlugs.size)
-                      : "Keine passenden Maßnahmen"}
+                    : searchResults.matchedSubsectionSlugs.size
+                      ? searchMatchSummary(searchResults)
+                      : "Keine passenden Planungsabschnitte oder Maßnahmen"}
                 </SubsubsectionSearchMapNotice>
               ) : null}
               <ProjectMap
                 subsections={filteredSubsections}
                 classHeight={classHeight}
-                search={matchedSubsectionSlugs && { searchterm, matchedSubsectionSlugs }}
+                search={
+                  searchResults && {
+                    searchterm,
+                    matchedSubsectionSlugs: searchResults.matchedSubsectionSlugs,
+                    slugsWithSubsubsectionMatches: searchResults.slugsWithSubsubsectionMatches,
+                  }
+                }
               />
             </div>
           </MapProvider>
@@ -134,9 +139,9 @@ export const ProjectDashboardClient = () => {
         breadcrumb={<ProjectPageBreadcrumb />}
         info="Übersicht über alle Planungsabschnitte des Projekts."
         search={
-          hasAnySubsubsections ? (
+          subsections.length ? (
             <SubsubsectionSearchFilter
-              placeholder="Maßnahmen nach Kürzel, Titel und Beschreibung suchen"
+              placeholder="Planungsabschnitte und Maßnahmen suchen"
               resetLabel="Suche löschen"
               onSubmit={showSearchInList}
             />
@@ -194,8 +199,8 @@ export const ProjectDashboardClient = () => {
           }
           if (interactive) {
             return (
-              <ProjectSubsubsectionSearchResults
-                matches={searchMatches}
+              <ProjectSearchResults
+                results={searchResults}
                 searchterm={searchterm}
                 onReset={resetFilters}
               />
@@ -203,7 +208,7 @@ export const ProjectDashboardClient = () => {
           }
           // Screen-reader list in map mode: the same Planungsabschnitte the map highlights.
           const subsectionsWithMatches = filteredSubsections.filter((subsection) =>
-            matchedSubsectionSlugs?.has(subsection.slug),
+            searchResults?.matchedSubsectionSlugs.has(subsection.slug),
           )
           return subsectionsWithMatches.length ? (
             <SubsectionTable subsections={subsectionsWithMatches} interactive={false} />

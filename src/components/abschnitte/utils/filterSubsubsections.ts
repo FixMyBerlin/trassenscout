@@ -23,6 +23,25 @@ export function filterSubsubsections<T extends SearchableSubsubsection>(
   )
 }
 
+const toSlugForm = (cleanedSearchterm: string) =>
+  cleanedSearchterm
+    .replaceAll("ä", "ae")
+    .replaceAll("ö", "oe")
+    .replaceAll("ü", "ue")
+    .replaceAll("ß", "ss")
+    .replace(/\s+/g, "-")
+
+export function filterSubsections<T extends { slug: string }>(
+  subsections: T[],
+  searchterm: string,
+) {
+  const cleanedSearchterm = normalizeSearchterm(searchterm)
+  if (!cleanedSearchterm) return subsections
+
+  const slugSearchterm = toSlugForm(cleanedSearchterm)
+  return subsections.filter(({ slug }) => slug.toLowerCase().includes(slugSearchterm))
+}
+
 function excerptAround(text: string, cleanedSearchterm: string) {
   const flatText = text.replace(/\s+/g, " ").trim()
   const matchIndex = Math.max(0, flatText.toLowerCase().indexOf(cleanedSearchterm))
@@ -66,10 +85,60 @@ export function collapsedSubsectionSlugs(
   return new Set(subsectionSlugs.filter((slug) => overrides.get(slug) ?? startClosed))
 }
 
+const countLabel = (count: number, singular: string, plural: string) =>
+  `${count} ${count === 1 ? singular : plural}`
+
+export function subsectionMatchSummary(matchCount: number) {
+  return countLabel(matchCount, "Planungsabschnitt", "Planungsabschnitte")
+}
+
 export function subsubsectionMatchSummary(matchCount: number, subsectionCount: number) {
-  const massnahmen = matchCount === 1 ? "1 Maßnahme" : `${matchCount} Maßnahmen`
-  const abschnitte =
-    subsectionCount === 1 ? "1 Planungsabschnitt" : `${subsectionCount} Planungsabschnitten`
+  const massnahmen = countLabel(matchCount, "Maßnahme", "Maßnahmen")
+  const abschnitte = countLabel(subsectionCount, "Planungsabschnitt", "Planungsabschnitten")
 
   return `${massnahmen} in ${abschnitte}`
+}
+
+/** Planungsabschnitte match by Kürzel, Maßnahmen by their own fields. */
+export function projectSearchResults<
+  S extends { id: number; slug: string },
+  T extends SearchableSubsubsection & { subsectionId: number; subsection: { slug: string } },
+>(subsections: S[], subsubsections: T[], searchterm: string) {
+  const subsectionIds = new Set(subsections.map(({ id }) => id))
+  const subsectionMatches = filterSubsections(subsections, searchterm)
+  const subsubsectionMatches = filterSubsubsections(subsubsections, searchterm).filter(
+    ({ subsectionId }) => subsectionIds.has(subsectionId),
+  )
+  const slugsWithSubsubsectionMatches = new Set(
+    subsubsectionMatches.map(({ subsection }) => subsection.slug),
+  )
+
+  return {
+    subsectionMatches,
+    subsubsectionMatches,
+    slugsWithSubsubsectionMatches,
+    matchedSubsectionSlugs: new Set([
+      ...subsectionMatches.map(({ slug }) => slug),
+      ...slugsWithSubsubsectionMatches,
+    ]),
+  }
+}
+
+export function searchMatchSummary({
+  subsectionMatches,
+  subsubsectionMatches,
+  slugsWithSubsubsectionMatches,
+}: {
+  subsectionMatches: readonly unknown[]
+  subsubsectionMatches: readonly unknown[]
+  slugsWithSubsubsectionMatches: ReadonlySet<string>
+}) {
+  if (!subsubsectionMatches.length) return subsectionMatchSummary(subsectionMatches.length)
+  if (!subsectionMatches.length) {
+    return subsubsectionMatchSummary(
+      subsubsectionMatches.length,
+      slugsWithSubsubsectionMatches.size,
+    )
+  }
+  return `${subsectionMatchSummary(subsectionMatches.length)} und ${countLabel(subsubsectionMatches.length, "Maßnahme", "Maßnahmen")}`
 }
