@@ -174,7 +174,7 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           validation: fieldValidationEnum["requiredString"],
           defaultValue: "",
           props: {
-            label: "Name der meldenden Kommune",
+            label: "Name der Kommune",
             description: "Die Karte weiter unten zeigt dann diese Kommune.",
             placeholder: "Kommune auswählen",
             options: communes.map((c) => ({ key: c.id, label: c.name })),
@@ -204,9 +204,9 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
             description:
               "Wählen Sie eine Bushaltestelle aus, zu welcher Sie eine Maßnahme melden möchten. Die Bushaltestellen sind auf der Karte mit orangen Punkten markiert. Klicken Sie auf einen Punkt, um die Haltestelle auszuwählen. Die Karte kann bei Bedarf verschoben oder über die Schaltflächen „+/-“ verkleinert oder vergrößert werden.",
             modeSelector: {
-              question: "Bezieht sich Ihre Anmeldung auf eine Haltestelle im Bestand?",
+              question: "Bezieht sich Ihre Meldung auf eine Haltestelle im Bestand?",
               description:
-                "Wenn sich ihre Anmeldung nicht auf eine Haltestelle im Bestand bezieht, können Sie einen individuellen Pin setzen.",
+                "Wenn sich ihre Meldung nicht auf eine Haltestelle im Bestand bezieht, können Sie einen individuellen Pin setzen.",
               existingLabel: "Ja",
               pinLabel: "Nein, ich möchte einen Pin setzen",
               noneLabel: "Ich möchte eine Maßnahme ohne Karte abschicken",
