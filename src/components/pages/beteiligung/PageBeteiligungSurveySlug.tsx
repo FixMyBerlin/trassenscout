@@ -1,7 +1,6 @@
 import type { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import SurveyInactivePage from "@/src/components/beteiligung/SurveyInactivePage"
 import { SurveyMainPage } from "@/src/components/beteiligung/SurveyMainPage"
-import { SurveyOhvHaltestellenfoerderung } from "@/src/components/beteiligung/surveys/ohv-haltestellenfoerderung/SurveyOhvHaltestellenfoerderung"
 import { SurveyBB } from "@/src/components/beteiligung/surveys/radnetz-brandenbrug/SurveyBB"
 import { Route } from "@/src/routes/beteiligung/$surveySlug/index"
 
@@ -14,9 +13,6 @@ function SurveyBySlug({
 }) {
   // Only surveys with custom page logic need a branch here. All others use SurveyMainPage.
   if (surveySlug === "radnetz-brandenburg") return <SurveyBB surveyId={surveyId} />
-  if (surveySlug === "ohv-haltestellenfoerderung") {
-    return <SurveyOhvHaltestellenfoerderung surveyId={surveyId} />
-  }
   return <SurveyMainPage surveyId={surveyId} />
 }
 

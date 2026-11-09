@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query"
 import { useSearch } from "@tanstack/react-router"
 import { useState } from "react"
+import { MapProvider } from "react-map-gl/maplibre"
 import { SurveyEnd } from "@/src/components/beteiligung/End"
 import { ProgressBar } from "@/src/components/beteiligung/layout/ProgressBar"
 import { SurveyContainer } from "@/src/components/beteiligung/layout/SurveyContainer"
@@ -68,6 +69,7 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
   const sendSurveyPart2EmailMutation = useMutation({ mutationFn: sendSurveyPart2EmailFn })
   // to reset form when repeated
   const [formKey, setFormKey] = useState(1)
+  const [part2KeptValues, setPart2KeptValues] = useState<Record<string, unknown>>({})
   const search = useSearch({ from: "/beteiligung/$surveySlug/" })
   const allParams = Object.fromEntries(
     Object.entries(search).filter(([, value]) => value !== undefined),
@@ -163,6 +165,8 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
   // @ts-expect-error todo
   const handleSurveyPart2Submit = async ({ value, meta }) => {
     setIsSpinner(true)
+    const keptFieldNames = getConfigBySurveySlug(surveySlug, "part2")?.keepValuesOnRepeat ?? []
+    setPart2KeptValues(Object.fromEntries(keptFieldNames.map((name) => [name, value[name]])))
     // if the user selected "nein" ("2" in legacy surveys) in the enableLocation-location question, we need to delete the location field from the value object
     const enableLocationId = getQuestionIdBySurveySlug(surveySlug, "enableLocation")
     const locationId = getQuestionIdBySurveySlug(surveySlug, "location")
@@ -186,7 +190,7 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
           surveySessionId: surveySessionId_,
           data: submittedData,
           surveySlug,
-          searchParams: Object.keys(allParams).length > 0 ? allParams : null,
+          searchParams: allParams,
         },
       })
       // If part2 is repeated, create a new pending (CREATED) response immediately
@@ -262,6 +266,7 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
           setStage={setStage}
           stage="part2"
           handleSubmit={handleSurveyPart2Submit}
+          initialValues={part2KeptValues}
           surveyResponseId={responseIdByPart[2]}
           vorgangsId={referenceIdByPart[2]}
           surveySessionId={surveySessionId}
@@ -299,7 +304,10 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
             {surveySessionId ?? "null"} · responses: {JSON.stringify(responseIdByPart)}
           </p>
         </DevAdminBox>
-        <div className={isSpinner ? "blur-sm" : ""}>{component}</div>
+        <div className={isSpinner ? "blur-sm" : ""}>
+          {/* Lets a select with `mapBounds` reach the SwitchableMap of the same part. */}
+          <MapProvider>{component}</MapProvider>
+        </div>
         {isSpinner && <SurveySpinnerLayover />}
       </SurveyContainer>
     </ProgressContext.Provider>

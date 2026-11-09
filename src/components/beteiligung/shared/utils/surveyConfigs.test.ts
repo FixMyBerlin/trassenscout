@@ -30,12 +30,21 @@ describe.each(allowedSurveySlugs)("survey config %s", (slug) => {
     expect(new Set(ids).size).toBe(ids.length)
   })
 
-  test.each(partConfigs)("$part: conditions reference existing fields", ({ config }) => {
+  test.each(partConfigs)("$part: field references point to existing fields", ({ config }) => {
     const fields = config!.pages.flatMap((page) => page.fields)
     const names = new Set(fields.map((field) => field.name))
-    const missing = fields
-      .map((field) => ("condition" in field ? field.condition?.fieldName : undefined))
-      .filter((fieldName) => fieldName !== undefined && !names.has(fieldName))
+    const references = [
+      ...fields.map((field) => ("condition" in field ? field.condition?.fieldName : undefined)),
+      ...fields.map((field) =>
+        field.component === "SwitchableMap"
+          ? field.props.mapProps.boundsFromField?.fieldName
+          : undefined,
+      ),
+      ...("keepValuesOnRepeat" in config! ? (config.keepValuesOnRepeat ?? []) : []),
+    ]
+    const missing = references.filter(
+      (fieldName) => fieldName !== undefined && !names.has(fieldName),
+    )
     expect(missing).toEqual([])
   })
 

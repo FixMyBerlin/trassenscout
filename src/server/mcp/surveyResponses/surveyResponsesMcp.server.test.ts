@@ -571,7 +571,7 @@ describe("createSurveyResponsesForMcp", () => {
   describe("for an OHV Maßnahmenmeldung", () => {
     const meldung = {
       category: ["zob"],
-      commune: "unknown",
+      commune: "birkenwerder",
       feedbackText: "Test: neue Haltestelle",
       costs: 12000,
       coFinancing: "no",

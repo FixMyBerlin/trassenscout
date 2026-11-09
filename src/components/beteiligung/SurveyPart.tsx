@@ -77,6 +77,7 @@ type Props = {
   vorgangsId: string | null
   surveySessionId: number | null
   onStartPart: () => Promise<void>
+  initialValues?: Record<string, unknown>
 }
 
 export const SurveyPart = ({
@@ -89,6 +90,7 @@ export const SurveyPart = ({
   vorgangsId,
   surveySessionId,
   onStartPart,
+  initialValues,
 }: Props) => {
   const surveySlug = useAllowedSurveySlug()
   const [page, setPage] = useState(0)
@@ -118,7 +120,12 @@ export const SurveyPart = ({
 
   const form = useAppForm({
     defaultValues: allPagesFormFields
-      ? Object.fromEntries(allPagesFormFields.map((field) => [field.name, field.defaultValue]))
+      ? {
+          ...Object.fromEntries(
+            allPagesFormFields.map((field) => [field.name, field.defaultValue]),
+          ),
+          ...initialValues,
+        }
       : undefined,
     onSubmitMeta: {} as { again: boolean; surveyResponseId: number },
     onSubmit: handleSubmit,

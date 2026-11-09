@@ -1,6 +1,5 @@
-import { Description, Field, Input, Label, Select } from "@headlessui/react"
-import { useSearch } from "@tanstack/react-router"
-import { useEffect } from "react"
+import { Description, Field, Label, Select } from "@headlessui/react"
+import { useMap } from "react-map-gl/maplibre"
 import { FieldWithErrorContainer } from "@/src/components/beteiligung/form/ErrorContainer"
 import {
   FieldError,
@@ -8,51 +7,37 @@ import {
   useFieldHasVisibleError,
   getFieldDescriptionId,
 } from "@/src/components/beteiligung/form/FieldErrror"
+import type { SurveyMapArea } from "@/src/components/beteiligung/form/map/utils"
 import { formClasses } from "@/src/components/beteiligung/form/styles"
 import { useFieldContext } from "@/src/components/beteiligung/shared/hooks/form-context"
 
 type SelectProps = {
   description?: string
-  readOnly?: boolean
   required: boolean
   label: string
-  queryId?: string
   placeholder?: string
   options: { key: string; label: string }[]
+  // Choosing an option frames the survey map (SwitchableMap) on the area with that id.
+  mapBounds?: SurveyMapArea[]
 }
 
 export const SurveySelect = ({
   description,
-  readOnly,
   label,
   options,
   placeholder,
   required,
-  queryId,
+  mapBounds,
 }: SelectProps) => {
   const field = useFieldContext<string>()
   const hasError = useFieldHasVisibleError(field)
-  const selectedOptionLabel =
-    options.find((option) => option.key === field.state.value)?.label || field.state.value || ""
+  const { mainMap } = useMap()
 
-  // if queryId is set, we update the value of the input field with the value of the query parameter
-  // in Survey[surveyName].tsx we update the query parameter to include the [queryId]
-  // here we get the value of [queryId] from the url, display it and set the value of the input field
-  // the queryId is configured in the field of the respective config file
-
-  const search = useSearch({ from: "/beteiligung/$surveySlug/" })
-  useEffect(() => {
-    if (queryId) {
-      const paramValue = search[queryId]
-      if (paramValue) {
-        const isValidOption = options.some((option) => option.key === paramValue)
-        const newValue = isValidOption ? paramValue : "unknown"
-        if (field.state.value !== newValue) {
-          field.setValue(newValue)
-        }
-      }
-    }
-  }, [field, search, queryId, options])
+  const handleChange = (value: string) => {
+    field.handleChange(value)
+    const bbox = mapBounds?.find((area) => area.id === value)?.bbox
+    if (bbox) mainMap?.fitBounds(bbox, { padding: 70 })
+  }
 
   return (
     <FieldWithErrorContainer hasError={hasError}>
@@ -70,41 +55,27 @@ export const SurveySelect = ({
             </Description>
           )}
         </div>
-        {readOnly ? (
-          <Input
-            id={field.name}
-            name={field.name}
-            invalid={hasError}
-            value={selectedOptionLabel}
-            readOnly
-            aria-label={label}
-            className={`block w-full appearance-none rounded-md border border-gray-300 bg-gray-100 px-3 py-2 shadow-xs sm:text-sm ${formClasses.fieldFocus}`}
-            {...getFieldA11yProps({ description, fieldName: field.name, hasError, required })}
-          />
-        ) : (
-          <Select
-            id={field.name}
-            name={field.name}
-            invalid={hasError}
-            disabled={readOnly}
-            value={field.state.value}
-            onChange={(e) => field.handleChange(e.target.value)}
-            aria-label={label}
-            className={`block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 shadow-xs data-disabled:bg-gray-100 sm:text-sm ${formClasses.fieldFocus}`}
-            {...getFieldA11yProps({ description, fieldName: field.name, hasError, required })}
-          >
-            {placeholder && (
-              <option disabled value="">
-                {placeholder}
-              </option>
-            )}
-            {options.map((option) => (
-              <option key={option.key} value={option.key}>
-                {option.label}
-              </option>
-            ))}
-          </Select>
-        )}
+        <Select
+          id={field.name}
+          name={field.name}
+          invalid={hasError}
+          value={field.state.value}
+          onChange={(e) => handleChange(e.target.value)}
+          aria-label={label}
+          className={`block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 shadow-xs data-disabled:bg-gray-100 sm:text-sm ${formClasses.fieldFocus}`}
+          {...getFieldA11yProps({ description, fieldName: field.name, hasError, required })}
+        >
+          {placeholder && (
+            <option disabled value="">
+              {placeholder}
+            </option>
+          )}
+          {options.map((option) => (
+            <option key={option.key} value={option.key}>
+              {option.label}
+            </option>
+          ))}
+        </Select>
       </Field>
       <FieldError field={field} />
     </FieldWithErrorContainer>

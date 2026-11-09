@@ -327,6 +327,8 @@ export type SurveyPart2 = {
   progressBarDefinition: number
   intro: TIntro
   buttonLabels: { next: string; back: string; submit: string; again?: string }
+  // answers that prefill the next Maßnahme ("Weitere Maßnahme melden")
+  keepValuesOnRepeat?: string[]
   // we want to type part2 has fields with id "location" "feedback"...
   // so checking field names across an array of objects
   // TypeScript can't fully enforce this constraint afaik

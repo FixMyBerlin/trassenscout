@@ -1,10 +1,9 @@
 import { Radio, RadioGroup } from "@headlessui/react"
-import { useSearch } from "@tanstack/react-router"
+import { useStore } from "@tanstack/react-form"
 import { useState, type ComponentProps } from "react"
 import Map, {
   MapGeoJSONFeature,
   MapLayerMouseEvent,
-  MapProvider,
   Marker,
   MarkerDragEvent,
   NavigationControl,
@@ -32,6 +31,7 @@ import {
 import {
   applySelectedGeometryCategoryFeatureState,
   featureStateTargetForMapSource,
+  type SurveyMapArea,
   type SwitchableMapLocationPoint,
 } from "@/src/components/beteiligung/form/map/utils"
 import { formClasses } from "@/src/components/beteiligung/form/styles"
@@ -73,15 +73,9 @@ type SwitchableMapContentProps = {
     minZoom: number
     maxZoom: number
   }
-  setInitialBounds?: {
-    initialBoundsDefinition: ({
-      id: string
-      name: string
-      bbox: [number, number, number, number]
-    } & Record<string, any>)[]
-    // the query parameter that we use to set the initial bounds
-    // e.g. "id" or "institution"
-    queryParameter: string
+  boundsFromField?: {
+    fieldName: string
+    bounds: SurveyMapArea[]
   }
 }
 
@@ -113,8 +107,8 @@ type LocationMode = SwitchableMapLocationMode
  * Use case: one survey question with a mode radio (existing / pin / optional none) over a
  * single map — e.g. OHV Haltestelle vs individual pin vs “ohne Karte”.
  *
- * Camera: restored `{ lat, lng }` → `setInitialBounds` query lookup (OHV `?id=` commune
- * bbox) → `config.bounds`.
+ * Camera: restored `{ lat, lng }` → area chosen in `boundsFromField` (OHV commune) →
+ * `config.bounds`.
  */
 export const SwitchableMap = ({
   label,
@@ -127,23 +121,21 @@ export const SwitchableMap = ({
   const hasError = useFieldHasVisibleError(field)
 
   return (
-    <MapProvider>
-      <div className={twJoin("mt-8 mb-12 w-full p-2", hasError ? "rounded-sm bg-red-50" : "")}>
-        <p className={formClasses.fieldLabel}>{label}</p>
-        {description && (
-          <p className={formClasses.fieldDescription} id={getFieldDescriptionId(field.name)}>
-            {description}
-          </p>
-        )}
-        <SwitchableMapContent
-          description={description}
-          mapProps={mapProps}
-          legendProps={legendProps}
-          modeSelector={modeSelector}
-        />
-        <FieldError field={field} />
-      </div>
-    </MapProvider>
+    <div className={twJoin("mt-8 mb-12 w-full p-2", hasError ? "rounded-sm bg-red-50" : "")}>
+      <p className={formClasses.fieldLabel}>{label}</p>
+      {description && (
+        <p className={formClasses.fieldDescription} id={getFieldDescriptionId(field.name)}>
+          {description}
+        </p>
+      )}
+      <SwitchableMapContent
+        description={description}
+        mapProps={mapProps}
+        legendProps={legendProps}
+        modeSelector={modeSelector}
+      />
+      <FieldError field={field} />
+    </div>
   )
 }
 
@@ -159,7 +151,7 @@ const SwitchableMapContent = ({
     config,
     additionalData,
     geoCategoryIdDefinition,
-    setInitialBounds,
+    boundsFromField,
     mapData,
     infoPanelText,
     geometryDataKey,
@@ -172,7 +164,6 @@ const SwitchableMapContent = ({
   const { mainMap } = useMap()
   const field = useFieldContext<SwitchableMapLocationPoint | null>()
   const hasError = useFieldHasVisibleError(field)
-  const search = useSearch({ from: "/beteiligung/$surveySlug/" })
   // we keep the selected mode in the form state as well (field name `locationMode`) so the survey config
   // can read it in a custom validator to decide whether the location value is required
   const [mode, setMode] = useState<LocationMode>(
@@ -192,13 +183,12 @@ const SwitchableMapContent = ({
 
   usePmtilesProtocol()
 
-  const initialBoundsMatch = setInitialBounds?.initialBoundsDefinition.find(
-    (d) => d[setInitialBounds.queryParameter] === search[setInitialBounds.queryParameter],
+  const boundsFieldValue = useStore(field.form.store, (state) =>
+    boundsFromField ? state.values[boundsFromField.fieldName] : undefined,
   )
-  // setInitialBounds wins over config.bounds when matched via query param lookup (OHV/BB).
-  // Camera: location already set → ?id= commune bbox / config.bounds.
+  const selectedArea = boundsFromField?.bounds.find((area) => area.id === boundsFieldValue)
   const boundsViewState = {
-    bounds: initialBoundsMatch?.bbox ?? config.bounds,
+    bounds: selectedArea?.bbox ?? config.bounds,
     fitBoundsOptions: { padding: 70 },
   }
   const pinViewState =

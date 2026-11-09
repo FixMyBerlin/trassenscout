@@ -1,13 +1,13 @@
 import { AnyFieldApi } from "@tanstack/react-form"
 import { getYear, isBefore } from "date-fns"
+import type { SurveyMapArea } from "@/src/components/beteiligung/form/map/utils"
 import { fieldValidationEnum } from "@/src/components/beteiligung/shared/fieldvalidationEnum"
-import {
-  geoCategorySetInitialBoundsDefinition,
-  SurveyPart2,
-} from "@/src/components/beteiligung/shared/types"
+import { SurveyPart2 } from "@/src/components/beteiligung/shared/types"
 import communes_bboxes from "@/src/components/beteiligung/surveys/ohv-haltestellenfoerderung/communes_bboxes.json"
 import { mapData } from "@/src/components/beteiligung/surveys/ohv-haltestellenfoerderung/mapData.const"
 import { isDev } from "@/src/components/core/utils/isEnv"
+
+const communes = communes_bboxes as (SurveyMapArea & { name: string })[]
 
 const validateRealisationYear = ({ fieldApi }: { fieldApi: AnyFieldApi }) => {
   // we can be sure that it is numeric as we use the requiredYearString validation
@@ -113,6 +113,7 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
     back: "Zurück",
     submit: "Meldung abschicken",
   },
+  keepValuesOnRepeat: ["commune"],
   pages: [
     {
       id: "feedback",
@@ -171,17 +172,13 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           component: "SurveySelect",
           componentType: "form",
           validation: fieldValidationEnum["requiredString"],
-          defaultValue: "unknown",
+          defaultValue: "",
           props: {
             label: "Name der meldenden Kommune",
-            readOnly: true,
-            description: "Dieses Feld wird automatisch ausgefüllt.",
-            // placeholder: "Kommune auswählen",
-            queryId: "id",
-            options: [
-              ...communes_bboxes.map((c) => ({ key: c.id, label: c.name })),
-              { key: "unknown", label: "unbekannt" },
-            ],
+            description: "Die Karte weiter unten zeigt dann diese Kommune.",
+            placeholder: "Kommune auswählen",
+            options: communes.map((c) => ({ key: c.id, label: c.name })),
+            mapBounds: communes,
           },
         },
         {
@@ -218,11 +215,7 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
             },
             mapProps: {
               mapData: mapData,
-              setInitialBounds: {
-                initialBoundsDefinition:
-                  communes_bboxes as unknown as geoCategorySetInitialBoundsDefinition,
-                queryParameter: "id",
-              },
+              boundsFromField: { fieldName: "commune", bounds: communes },
               additionalData: [
                 { dataKey: "hsName", propertyName: "stop_name", label: "Name der Haltestelle" },
               ],
