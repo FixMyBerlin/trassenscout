@@ -39,11 +39,6 @@ export const PageHeader = ({
   className,
 }: Props) => {
   const hasViewSwitch = viewMode !== undefined && onViewModeChange !== undefined
-  const viewSwitch = hasViewSwitch ? (
-    <PageHeaderViewSwitch value={viewMode} onChange={onViewModeChange} />
-  ) : null
-  // Without tabs the switch leads row 2, before the search; tab rows keep it on the right.
-  const switchLeadsRow2 = hasViewSwitch && !tabs
 
   const row1Right =
     action || info ? (
@@ -53,20 +48,13 @@ export const PageHeader = ({
       </PageHeaderRowActions>
     ) : undefined
 
-  const row2Left = switchLeadsRow2 ? (
-    <div className="flex min-w-0 items-center gap-3">
-      {viewSwitch}
-      {search}
-    </div>
-  ) : (
-    (tabs ?? search)
-  )
-
   const row2Right =
-    (hasViewSwitch && !switchLeadsRow2) || primaryAction ? (
-      <PageHeaderRowActions>
+    hasViewSwitch || primaryAction ? (
+      <PageHeaderRowActions className="flex-wrap justify-end">
         {primaryAction}
-        {switchLeadsRow2 ? null : viewSwitch}
+        {hasViewSwitch ? (
+          <PageHeaderViewSwitch value={viewMode} onChange={onViewModeChange} />
+        ) : null}
       </PageHeaderRowActions>
     ) : undefined
 
@@ -83,7 +71,7 @@ export const PageHeader = ({
       <PageHeaderLayout
         className={className}
         row1={{ left: breadcrumb, right: row1Right }}
-        row2={{ left: row2Left, right: row2Right }}
+        row2={{ left: tabs ?? search, right: row2Right }}
         row3={{ left: row3Left }}
         row4={{ left: filters, right: filtersAction }}
       />
