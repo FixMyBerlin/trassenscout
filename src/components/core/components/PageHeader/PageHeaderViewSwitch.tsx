@@ -27,7 +27,7 @@ export function PageHeaderViewSwitch({ value, onChange }: Props) {
           <button
             type="button"
             className={twJoin(
-              "relative inline-flex cursor-pointer items-center gap-1.5 border px-3 py-2.5 text-sm font-medium focus-visible:z-20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 sm:py-2",
+              "relative inline-flex cursor-pointer items-center gap-1.5 border px-3 py-2 text-sm font-medium focus-visible:z-20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 sm:py-1.5",
               index === 0 ? "rounded-l-md" : "-ml-px rounded-r-md",
               value === mode
                 ? "z-10 border-blue-500 bg-blue-500 text-white"

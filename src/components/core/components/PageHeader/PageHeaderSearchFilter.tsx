@@ -65,7 +65,7 @@ export function PageHeaderSearchFilter({
   }
 
   return (
-    <div className="min-w-0">
+    <div className="min-w-0" data-compact>
       <form
         id={formId}
         onSubmit={(e) => {
@@ -83,7 +83,7 @@ export function PageHeaderSearchFilter({
               setDraft((current) => ({ ...current, baseValue: value, value: e.target.value }))
             }
             placeholder={placeholder}
-            className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-xs focus:border-blue-500 focus:ring-blue-500 focus:outline-hidden sm:text-sm"
+            className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-1.5 placeholder-gray-400 shadow-xs focus:border-blue-500 focus:ring-blue-500 focus:outline-hidden sm:text-sm"
           />
         </div>
         {children}

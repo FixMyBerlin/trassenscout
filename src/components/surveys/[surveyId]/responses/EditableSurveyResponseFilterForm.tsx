@@ -91,7 +91,7 @@ export function EditableSurveyResponseFilterForm({
   }
 
   return (
-    <nav className="w-full border-b border-gray-200 bg-white">
+    <nav className="w-full border-b border-gray-200 bg-white" data-compact>
       <DebugFilterForm filter={filter} />
       <div className={twJoin(pageContentPaddingClassName, "relative z-10 py-5")}>
         <PageHeaderSearchFilter
