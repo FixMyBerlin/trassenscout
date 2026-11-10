@@ -14,7 +14,7 @@ const rowClassName = "flex h-12 items-center justify-between gap-4 border-b bord
 
 // The action row breaks onto a second 48px line when search and actions don't fit side by side.
 const wrappingRowClassName =
-  "flex min-h-12 flex-wrap items-center justify-between gap-x-4 border-b border-gray-200 px-4"
+  "flex min-h-12 flex-wrap items-center justify-between gap-x-4 gap-y-1.5 border-b border-gray-200 px-4"
 
 function hasRowContent({ left, right }: RowSlots) {
   return Boolean(left || right)
@@ -37,7 +37,14 @@ function PageHeaderRow({
         {left}
       </div>
       {right ? (
-        <div className={twJoin("ml-auto flex shrink-0 items-center", lineClassName)}>{right}</div>
+        <div
+          className={twJoin(
+            "ml-auto flex max-w-full shrink-0 flex-col justify-center",
+            lineClassName,
+          )}
+        >
+          {right}
+        </div>
       ) : null}
     </div>
   )
