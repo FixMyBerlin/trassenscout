@@ -74,7 +74,7 @@ export function PageHeaderSearchFilter({
         }}
         className={twJoin("flex items-center gap-3", !singleLine && "flex-wrap")}
       >
-        <div className="w-[450px] max-w-full">
+        <div className={singleLine ? "w-[450px] max-w-full" : "w-full sm:w-[450px]"}>
           <input
             type="text"
             name={name}
@@ -90,11 +90,13 @@ export function PageHeaderSearchFilter({
         {onReset && (hasFilter || draftValue) ? (
           <button
             type="button"
+            aria-label={resetLabel}
             className={twJoin(linkStyles, "flex shrink-0 items-center gap-2 whitespace-nowrap")}
             onClick={handleReset}
           >
-            <XMarkIcon className="size-4" />
-            <span>{resetLabel}</span>
+            <XMarkIcon className="size-4" aria-hidden="true" />
+            {/* A single-line search shares its row with other actions, so only the × shows below xl. */}
+            <span className={singleLine ? "hidden xl:inline" : undefined}>{resetLabel}</span>
           </button>
         ) : null}
         {actions}

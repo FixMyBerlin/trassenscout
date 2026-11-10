@@ -42,7 +42,7 @@ export function SelectListbox<T extends string | number>({
   return (
     <Listbox value={value} onChange={onChange} disabled={disabled}>
       {({ open }) => (
-        <div className={twJoin("relative", className)}>
+        <div className={twJoin("relative", className, "max-sm:w-full")}>
           <ListboxButton className="relative w-full cursor-pointer rounded-md border border-gray-300 bg-white px-3 py-2 pr-10 text-left text-gray-900 shadow-xs focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-hidden focus:ring-inset data-disabled:cursor-not-allowed data-disabled:bg-gray-100 data-disabled:text-gray-400 sm:text-sm">
             <span className="block truncate" title={selectedLabel}>
               {selectedLabel}

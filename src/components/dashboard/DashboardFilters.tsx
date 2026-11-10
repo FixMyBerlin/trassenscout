@@ -63,7 +63,7 @@ export const DashboardFilters = ({
   return (
     <div className="flex flex-wrap items-center gap-3">
       {showProjectFilter ? (
-        <div className="w-[450px] max-w-full">
+        <div className="w-full sm:w-[450px]">
           <ComboboxSingleBase
             value={projectSlug}
             onChange={(value) => onChange({ projectSlug: value ?? DASHBOARD_ALL_PROJECTS, months })}

@@ -12,17 +12,33 @@ type Props = {
 
 const rowClassName = "flex h-12 items-center justify-between gap-4 border-b border-gray-200 px-4"
 
+// The action row breaks onto a second 48px line when search and actions don't fit side by side.
+const wrappingRowClassName =
+  "flex min-h-12 flex-wrap items-center justify-between gap-x-4 border-b border-gray-200 px-4"
+
 function hasRowContent({ left, right }: RowSlots) {
   return Boolean(left || right)
 }
 
-function PageHeaderRow({ left, right, className }: RowSlots & { className?: string }) {
+function PageHeaderRow({
+  left,
+  right,
+  className,
+  wrap = false,
+}: RowSlots & { className?: string; wrap?: boolean }) {
   if (!hasRowContent({ left, right })) return null
+
+  // Each line of a wrapping row is as tall as a row: 48px including the 1px bottom border.
+  const lineClassName = wrap ? "min-h-[47px]" : undefined
 
   return (
     <div className={className}>
-      <div className="min-w-0 flex-1">{left}</div>
-      {right ? <div className="shrink-0">{right}</div> : null}
+      <div className={twJoin("flex min-w-0 flex-auto flex-col justify-center", lineClassName)}>
+        {left}
+      </div>
+      {right ? (
+        <div className={twJoin("ml-auto flex shrink-0 items-center", lineClassName)}>{right}</div>
+      ) : null}
     </div>
   )
 }
@@ -49,7 +65,8 @@ export function PageHeaderLayout({ row1, row2, row3, row4, className }: Props) {
         <PageHeaderRow
           left={row2.left}
           right={row2.right}
-          className={twJoin(rowClassName, "bg-white")}
+          className={twJoin(wrappingRowClassName, "bg-white")}
+          wrap
         />
       ) : null}
 
