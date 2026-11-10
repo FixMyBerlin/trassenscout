@@ -18,9 +18,9 @@ type Props = {
 }
 
 const buttonClassName =
-  "inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-md border border-gray-200 text-sm font-medium text-gray-500 hover:text-gray-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+  "inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-md border border-gray-200 text-base font-medium text-gray-500 hover:text-gray-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 sm:text-sm"
 
-/** Compact header action link, sized to match `PageHeaderViewSwitch`. */
+/** Header action link, as tall as the row's inputs and buttons. */
 export function PageHeaderToolbarLink({
   href,
   label,

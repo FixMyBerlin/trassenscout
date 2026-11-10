@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { twJoin } from "tailwind-merge"
+import { twMerge } from "tailwind-merge"
 import { DevAdminBox } from "@/src/components/core/components/AdminBox/DevAdminBox"
 import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { DEV_LOGIN_USERS } from "./loginDevQuickLogin.const"
@@ -40,7 +40,7 @@ export function LoginDevQuickLogin({ hasInvite, inviteToken, onQuickLogin }: Pro
         {DEV_LOGIN_USERS.map(([displayName, email]) => (
           <button
             key={displayName}
-            className={twJoin(primaryButtonClassName, "px-2 py-1 text-xs")}
+            className={twMerge(primaryButtonClassName, "px-2 py-1 text-xs sm:text-xs")}
             disabled={pendingEmail !== null}
             type="button"
             onClick={() => void handleQuickLogin(email)}
