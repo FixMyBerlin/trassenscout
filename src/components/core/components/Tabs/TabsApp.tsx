@@ -40,7 +40,10 @@ export const TabsApp = ({ tabs, className, embedded = false }: Props) => {
         <select
           id="tabs"
           name="tabs"
-          className="block w-full rounded-md border-gray-300 focus:border-gray-100 focus:ring-gray-500"
+          className={twJoin(
+            "block w-full rounded-md border-gray-300 focus:border-gray-100 focus:ring-gray-500",
+            embedded && "py-1.5",
+          )}
           defaultValue={tabs.find((tab) => isTabActive(pathname, tab))?.name}
           onChange={(event) => {
             const tab = tabs.find((tab) => tab.name === event.target.value)

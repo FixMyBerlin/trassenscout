@@ -61,7 +61,7 @@ export const DashboardFilters = ({
   ]
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div className="flex flex-wrap items-center gap-3" data-compact>
       {showProjectFilter ? (
         <div className="w-full sm:w-[450px]">
           <ComboboxSingleBase

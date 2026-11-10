@@ -105,7 +105,7 @@ export function ComboboxMultiBase({
   const triggerClassName =
     classNameButton ??
     twJoin(
-      "flex w-full cursor-pointer items-center justify-between gap-2 rounded-md border px-3 py-2 text-left shadow-xs focus:outline-hidden sm:text-sm",
+      "flex w-full cursor-pointer items-center justify-between gap-2 rounded-md border px-3 py-2 text-left shadow-xs focus:outline-hidden in-data-compact:py-1.5 sm:text-sm",
       invalid
         ? "border-red-800 shadow-red-200 focus:border-red-800 focus:ring-red-800"
         : disabledOrEmpty
