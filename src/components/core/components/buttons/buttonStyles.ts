@@ -2,22 +2,23 @@ import { twJoin } from "tailwind-merge"
 
 /** Compact action button base — Tailwind UI sizing, icon-ready via gap-x-1.5. */
 export const compactButtonBase =
-  "inline-flex w-full cursor-pointer items-center justify-center gap-x-1.5 rounded-md text-sm font-medium shadow-xs no-underline transition-colors sm:w-auto"
+  "inline-flex w-full cursor-pointer items-center justify-center gap-x-1.5 rounded-md text-base font-medium shadow-xs no-underline transition-colors sm:w-auto sm:text-sm"
 
 export type CompactButtonSize = "md" | "sm" | "icon"
 
-const compactPadding = "border border-transparent px-4 py-2"
+const transparentBorder = "border border-transparent"
 
-/** Smaller text button — PageHeader primary actions ("Neu …"). */
-export const compactPaddingSm = "px-3 py-1.5"
+const compactPadding = twJoin(transparentBorder, "px-4 py-2")
 
-/** Icon-only control — PageHeader map/list switch. */
-export const compactPaddingIcon = "px-1.5 py-1.5"
+export const compactPaddingSm = "px-3 py-2"
+
+/** Icon-only control — PageHeader toolbar icon links. */
+export const compactPaddingIcon = "p-2.5 sm:p-2"
 
 const compactPaddingBySize: Record<CompactButtonSize, string> = {
   md: compactPadding,
-  sm: compactPaddingSm,
-  icon: compactPaddingIcon,
+  sm: twJoin(transparentBorder, compactPaddingSm),
+  icon: twJoin(transparentBorder, compactPaddingIcon),
 }
 
 const primaryColors =
