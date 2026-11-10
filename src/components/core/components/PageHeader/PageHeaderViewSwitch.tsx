@@ -1,6 +1,5 @@
-import { MapIcon, TableCellsIcon } from "@heroicons/react/24/outline"
+import { MapIcon, PanelsTopLeftIcon } from "lucide-react"
 import { twJoin } from "tailwind-merge"
-import { compactPaddingIcon } from "@/src/components/core/components/buttons/buttonStyles"
 import { Tooltip } from "@/src/components/core/components/Tooltip/Tooltip"
 import type { ViewMode } from "@/src/shared/routing/viewModeSearch"
 
@@ -11,48 +10,38 @@ type Props = {
   onChange: (mode: ViewMode) => void
 }
 
-const buttonClassName = twJoin(
-  "flex cursor-pointer items-center justify-center text-gray-400 hover:text-gray-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500",
-  compactPaddingIcon,
-)
+const options = [
+  { mode: "map", label: "Karte", name: "Kartenansicht", Icon: MapIcon },
+  { mode: "list", label: "Liste", name: "Listenansicht", Icon: PanelsTopLeftIcon },
+] as const
 
 export function PageHeaderViewSwitch({ value, onChange }: Props) {
   return (
     <div
-      className="flex shrink-0 cursor-pointer rounded-md border border-gray-200"
+      className="isolate flex shrink-0 rounded-md shadow-xs"
       role="group"
       aria-label="Ansicht wechseln"
     >
-      <Tooltip content="Kartenansicht" variant="light" placement="top-start">
-        <button
-          type="button"
-          className={twJoin(
-            buttonClassName,
-            "rounded-l-md",
-            value === "map" && "bg-gray-100 text-gray-700",
-          )}
-          aria-label="Kartenansicht"
-          aria-pressed={value === "map"}
-          onClick={() => onChange("map")}
-        >
-          <MapIcon className="pointer-events-none size-5" aria-hidden="true" />
-        </button>
-      </Tooltip>
-      <Tooltip content="Listenansicht" variant="light" placement="top-start">
-        <button
-          type="button"
-          className={twJoin(
-            buttonClassName,
-            "rounded-r-md",
-            value === "list" && "bg-gray-100 text-gray-700",
-          )}
-          aria-label="Listenansicht"
-          aria-pressed={value === "list"}
-          onClick={() => onChange("list")}
-        >
-          <TableCellsIcon className="pointer-events-none size-5" aria-hidden="true" />
-        </button>
-      </Tooltip>
+      {options.map(({ mode, label, name, Icon }, index) => (
+        <Tooltip key={mode} content={name} variant="light" placement="top-start">
+          <button
+            type="button"
+            className={twJoin(
+              "relative inline-flex cursor-pointer items-center gap-1.5 border px-3 py-2.5 text-sm font-medium focus-visible:z-20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 sm:py-2",
+              index === 0 ? "rounded-l-md" : "-ml-px rounded-r-md",
+              value === mode
+                ? "z-10 border-blue-500 bg-blue-500 text-white"
+                : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50",
+            )}
+            aria-label={name}
+            aria-pressed={value === mode}
+            onClick={() => onChange(mode)}
+          >
+            <Icon className="pointer-events-none size-5" strokeWidth={1.5} aria-hidden="true" />
+            <span className="hidden sm:inline">{label}</span>
+          </button>
+        </Tooltip>
+      ))}
     </div>
   )
 }

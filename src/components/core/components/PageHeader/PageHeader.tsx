@@ -18,7 +18,7 @@ type Props = {
   action?: React.ReactNode
   filters?: React.ReactNode
   filtersAction?: React.ReactNode
-  /** Row 2 actions next to the view switch (e.g. CSV download, create buttons). */
+  /** Row 2 actions on the right (e.g. CSV download, create buttons). */
   primaryAction?: React.ReactNode
   className?: string
 }
@@ -39,6 +39,11 @@ export const PageHeader = ({
   className,
 }: Props) => {
   const hasViewSwitch = viewMode !== undefined && onViewModeChange !== undefined
+  const viewSwitch = hasViewSwitch ? (
+    <PageHeaderViewSwitch value={viewMode} onChange={onViewModeChange} />
+  ) : null
+  // Without tabs the switch leads row 2, before the search; tab rows keep it on the right.
+  const switchLeadsRow2 = hasViewSwitch && !tabs
 
   const row1Right =
     action || info ? (
@@ -48,13 +53,20 @@ export const PageHeader = ({
       </PageHeaderRowActions>
     ) : undefined
 
+  const row2Left = switchLeadsRow2 ? (
+    <div className="flex min-w-0 items-center gap-3">
+      {viewSwitch}
+      {search}
+    </div>
+  ) : (
+    (tabs ?? search)
+  )
+
   const row2Right =
-    hasViewSwitch || primaryAction ? (
+    (hasViewSwitch && !switchLeadsRow2) || primaryAction ? (
       <PageHeaderRowActions>
         {primaryAction}
-        {hasViewSwitch ? (
-          <PageHeaderViewSwitch value={viewMode} onChange={onViewModeChange} />
-        ) : null}
+        {switchLeadsRow2 ? null : viewSwitch}
       </PageHeaderRowActions>
     ) : undefined
 
@@ -71,7 +83,7 @@ export const PageHeader = ({
       <PageHeaderLayout
         className={className}
         row1={{ left: breadcrumb, right: row1Right }}
-        row2={{ left: tabs ?? search, right: row2Right }}
+        row2={{ left: row2Left, right: row2Right }}
         row3={{ left: row3Left }}
         row4={{ left: filters, right: filtersAction }}
       />
