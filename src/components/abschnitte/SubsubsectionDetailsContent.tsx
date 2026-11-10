@@ -1,14 +1,14 @@
+import { PlusIcon } from "@heroicons/react/16/solid"
 import { useQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { format } from "date-fns"
 import { de } from "date-fns/locale"
 import { useState } from "react"
-import { twJoin } from "tailwind-merge"
 import { SubsubsectionPanel } from "@/src/components/abschnitte/SubsubsectionPanel"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
+import { primaryButtonSmClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { FormSuccess } from "@/src/components/core/components/forms/FormSuccess"
-import { linkIcons, Link } from "@/src/components/core/components/links/Link"
-import { linkStyles } from "@/src/components/core/components/links/styles"
+import { Link } from "@/src/components/core/components/links/Link"
 import { Markdown } from "@/src/components/core/components/Markdown/Markdown"
 import {
   tableBodyClassName,
@@ -492,14 +492,14 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
       </section>
 
       <section className="mt-6 space-y-3">
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <H2 className="text-lg font-semibold text-gray-700 sm:text-lg">Protokolleinträge</H2>
           <button
             type="button"
             onClick={() => setIsProjectRecordModalOpen(true)}
-            className={twJoin("inline-flex cursor-pointer items-center gap-1", linkStyles)}
+            className={primaryButtonSmClassName}
           >
-            {linkIcons.plus}
+            <PlusIcon className="size-3.5" aria-hidden="true" />
             Neuer Protokolleintrag
           </button>
         </div>

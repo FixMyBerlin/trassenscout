@@ -1,3 +1,4 @@
+import { PlusIcon } from "@heroicons/react/16/solid"
 import { TrashIcon } from "@heroicons/react/24/outline"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
@@ -11,11 +12,13 @@ import {
   SUBSUBSECTION_LAND_ACQUISITION_MAP_ID,
 } from "@/src/components/abschnitte/utils/landAcquisitionMapCamera"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
-import { secondaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import {
+  primaryButtonSmClassName,
+  secondaryButtonClassName,
+} from "@/src/components/core/components/buttons/buttonStyles"
 import { FormSuccess } from "@/src/components/core/components/forms/FormSuccess"
 import { SelectListbox } from "@/src/components/core/components/forms/SelectListbox"
-import { linkIcons, Link } from "@/src/components/core/components/links/Link"
-import { linkStyles } from "@/src/components/core/components/links/styles"
+import { Link } from "@/src/components/core/components/links/Link"
 import {
   tableBodyClassName,
   tableClassName,
@@ -267,16 +270,16 @@ export const SubsubsectionLandAcquisitionContent = ({
               </div>
 
               <section className="mt-10 space-y-3">
-                <div className="flex items-center justify-between gap-3">
+                <div className="flex flex-wrap items-center justify-between gap-3">
                   <h2 className="text-lg font-semibold text-gray-700 sm:text-lg">
                     Protokolleinträge
                   </h2>
                   <button
                     type="button"
                     onClick={() => setIsProjectRecordModalOpen(true)}
-                    className={twJoin("inline-flex cursor-pointer items-center gap-1", linkStyles)}
+                    className={primaryButtonSmClassName}
                   >
-                    {linkIcons.plus}
+                    <PlusIcon className="size-3.5" aria-hidden="true" />
                     Neuer Protokolleintrag
                   </button>
                 </div>
