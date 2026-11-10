@@ -123,7 +123,7 @@ export function ComboboxSingleBase({
             <span className="truncate" title={selectedText}>
               {selectedText}
             </span>
-            <ChevronDownIcon className="size-5 shrink-0 text-current" aria-hidden="true" />
+            <ChevronDownIcon className="size-5 shrink-0 text-gray-400" aria-hidden="true" />
           </ComboboxButton>
 
           <Transition

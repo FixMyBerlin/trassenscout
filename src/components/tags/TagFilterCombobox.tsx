@@ -17,7 +17,7 @@ export function TagFilterCombobox({ tags, value, onChange }: Props) {
   ]
 
   return (
-    <div className="w-56 max-w-full">
+    <div className="w-full sm:w-56">
       <ComboboxSingleBase
         value={selected ?? ALL_TAGS}
         onChange={(next) => onChange(next || undefined)}
