@@ -137,6 +137,8 @@ const ConvertSurveyResponseToSubsubsectionOhvForm = ({
       const description = response.data["stateOfConstruction"]
         ? `${String(response.data["feedbackText"] ?? "")}\n\nStand der Bauvorbereitung:\n${String(response.data["stateOfConstruction"])}`
         : String(response.data["feedbackText"] ?? "")
+      const stopName =
+        typeof response.data["hsName"] === "string" ? response.data["hsName"].trim() : ""
 
       const createInput: CreateSubsubsectionInput = {
         projectSlug,
@@ -158,7 +160,7 @@ const ConvertSurveyResponseToSubsubsectionOhvForm = ({
             : null,
         planningCosts: null,
         location: null,
-        subTitle: null,
+        subTitle: stopName || null,
         lengthM: null,
         width: null,
         widthExisting: null,
