@@ -256,6 +256,11 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
           />
         )}
       </form.AppField>
+      <form.AppField name="subTitle">
+        {(field) => (
+          <field.TextField type="text" label={subsubsectionFieldTranslations.subTitle} optional />
+        )}
+      </form.AppField>
       {showSubsectionReassign && subsections && (
         <AdminBox label="Admin">
           <form.AppField

@@ -41,6 +41,7 @@ function formatAmount(value: number | null | undefined) {
 function toCsvString(rows: ExportRow[]) {
   const headers = [
     { id: "vorgangsId", title: "Vorgangs-ID" },
+    { id: "titel", title: "Titel" },
     { id: "kommune", title: "Kommune" },
     { id: "foerdergegenstaende", title: "Fördergegenstände" },
     { id: "gesamtkosten", title: "Gesamtkosten" },
@@ -50,6 +51,7 @@ function toCsvString(rows: ExportRow[]) {
 
   const csvData = rows.map((s) => ({
     vorgangsId: s.slug,
+    titel: s.subTitle?.trim() ?? "",
     kommune: communeName(s.subsection.slug),
     foerdergegenstaende: s.SubsubsectionInfrastructureTypes.map((type) => type.title).join("; "),
     gesamtkosten: formatAmount(sumCostStructure(s)),

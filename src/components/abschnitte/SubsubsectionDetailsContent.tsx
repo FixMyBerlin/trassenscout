@@ -149,8 +149,10 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
   const hasFundingSection = fundingRows.length > 0
 
   const withoutGeometry = subsubsection.type === null
+  const title = subsubsection.subTitle?.trim()
   const hasGeneralInfoRows = Boolean(
     withoutGeometry ||
+    title ||
     subsubsection.SubsubsectionTask?.title ||
     locationLabel ||
     hasLength ||
@@ -221,6 +223,14 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
                   </tr>
                 </thead>
                 <tbody className={tableBodyClassName}>
+                  {title && (
+                    <tr className={tableRowClassName}>
+                      <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
+                        {subsubsectionFieldTranslations.subTitle}
+                      </th>
+                      <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">{title}</td>
+                    </tr>
+                  )}
                   {withoutGeometry && (
                     <tr className={tableRowClassName}>
                       <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
