@@ -1,6 +1,6 @@
 export const subsubsectionFieldTranslations = {
   subsectionId: "Planungsabschnitt ID",
-  slug: "Kürzel",
+  slug: "Kürzel/Vorgangsnummer",
   description: "Beschreibung",
   type: "Typ der Geometrie",
   geometry: "Geometrie",
@@ -38,7 +38,7 @@ export const subsubsectionFieldTranslations = {
   planningPeriod: "Planungszeit (in Monaten)",
   constructionPeriod: "Bauzeit (in Monaten)",
   estimatedCompletionDate: "Datum geplante Fertigstellung",
-  subTitle: "Untertitel",
+  subTitle: "Titel",
   specialFeatures: "Besonderheiten",
   widthExisting: "Breite Bestand",
 } as const

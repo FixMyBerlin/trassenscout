@@ -34,9 +34,13 @@ export type SubsubsectionExportRow = Prisma.SubsubsectionGetPayload<{
 function getExportColumns(projectSlug: string, redactionContext: UserRedactionContext) {
   const origin = getPrdOrStgDomain()
   return {
+    kuerzel: {
+      title: "Kürzel/Vorgangsnummer",
+      value: (s: SubsubsectionExportRow) => s.slug,
+    },
     titel: {
       title: "Titel",
-      value: (s: SubsubsectionExportRow) => s.slug,
+      value: (s: SubsubsectionExportRow) => s.subTitle?.trim() ?? "",
     },
     status: {
       title: "Status",
