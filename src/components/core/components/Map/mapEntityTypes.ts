@@ -32,6 +32,7 @@ export type SubsubsectionMapEntity =
       subsection: { slug: string }
       SubsubsectionStatus?: { style: string } | null
       SubsubsectionTask?: { title?: string | null } | null
+      subTitle?: string | null
     }
   | {
       id: number
@@ -43,6 +44,7 @@ export type SubsubsectionMapEntity =
       subsection: { slug: string }
       SubsubsectionStatus?: { style: string } | null
       SubsubsectionTask?: { title?: string | null } | null
+      subTitle?: string | null
     }
   | {
       id: number
@@ -54,4 +56,5 @@ export type SubsubsectionMapEntity =
       subsection: { slug: string }
       SubsubsectionStatus?: { style: string } | null
       SubsubsectionTask?: { title?: string | null } | null
+      subTitle?: string | null
     }

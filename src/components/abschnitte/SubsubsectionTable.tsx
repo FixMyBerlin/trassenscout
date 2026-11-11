@@ -74,6 +74,7 @@ export const SubsubsectionTable = ({
 
   const renderRow = (subsubsection: SubsubsectionWithPosition) => {
     const snippet = hiddenMatchSnippet(subsubsection, searchterm ?? "")
+    const title = subsubsection.subTitle?.trim()
 
     return (
       <tr
@@ -107,10 +108,7 @@ export const SubsubsectionTable = ({
             interactive ? "text-blue-500 group-hover:text-blue-800" : "text-gray-900",
           )}
         >
-          <HighlightedText
-            text={subsubsection.SubsubsectionTask?.title || "k.A."}
-            searchterm={searchterm}
-          />
+          {title ? <HighlightedText text={title} searchterm={searchterm} /> : null}
           {snippet ? (
             <div className="mt-1 text-xs font-normal text-gray-500">
               {snippet.label}: <HighlightedText text={snippet.text} searchterm={searchterm} />
@@ -173,7 +171,7 @@ export const SubsubsectionTable = ({
                 Maßnahmen
               </th>
               <th scope="col" className={tableHeadCellClassName}>
-                Maßnahmentyp
+                Titel
               </th>
               <th scope="col" className={tableHeadCellClassName}>
                 <span className="sr-only">Geometrietyp</span>
