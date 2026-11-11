@@ -10,7 +10,7 @@ services:
       FORCE_COLOR: 1
       VITE_APP_ENV:
       VITE_APP_ORIGIN:
-      BREVO_API_KEY:
+      SCALEWAY_TEM_SECRET_KEY:
       # Postgres compose service name on the internal network (not DATABASE_HOST from .env — that is localhost for host-side dev).
       DATABASE_HOST: db
       DATABASE_USER: ${DATABASE_USER}

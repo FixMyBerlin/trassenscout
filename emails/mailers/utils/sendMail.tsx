@@ -1,11 +1,10 @@
-import { BrevoClient } from "@getbrevo/brevo"
 import { render } from "@react-email/render"
 import { footerTextMarkdown } from "@/emails/templats/footerTextMarkdown"
 import { MarkdownMail } from "@/emails/templats/MarkdownMail"
 import { isDev, isPlaywright, isTest } from "@/src/components/core/utils/isEnv"
 import { guardedCreateSystemLogEntry } from "@/src/server/systemLogEntries/create/guardedCreateSystemLogEntry"
 import { formattedEmailAddress } from "./formattedEmailAddress"
-import { getBrevoApiKeyForSending } from "./getBrevoApiKeyForSending"
+import { sendWithScalewayTem } from "./sendWithScalewayTem.server"
 import { Mail, MailMessage } from "./types"
 
 export const sendMail = async (message: Mail) => {
@@ -53,28 +52,14 @@ ${footerTextMarkdown}
   }
 
   // === Only on Staging, Production ===
-  const brevo = new BrevoClient({ apiKey: getBrevoApiKeyForSending() })
-
   try {
-    const result = await brevo.transactionalEmails.sendTransacEmail({
-      sender: {
-        email: mailMessage.From.Email,
-        name: mailMessage.From.Name,
-      },
-      to: mailMessage.To.map((recipient) => ({
-        email: recipient.Email,
-        name: recipient.Name,
-      })),
-      subject: mailMessage.Subject,
-      textContent: mailMessage.TextPart,
-      htmlContent: mailMessage.HTMLPart,
-    })
+    const temEmailIds = await sendWithScalewayTem(mailMessage)
 
     await guardedCreateSystemLogEntry({
       apiKey: process.env.TS_API_KEY,
       logLevel: "INFO",
       message: `SEND MAIL: ${mailMessage.Subject}`,
-      context: { messageId: result.messageId, text: mailMessage.TextPart },
+      context: { temEmailIds, text: mailMessage.TextPart },
     })
   } catch (error) {
     await guardedCreateSystemLogEntry({

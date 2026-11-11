@@ -26,7 +26,7 @@ const envServerSchema = z.object({
   S3_UPLOAD_KEY: requiredString,
   S3_UPLOAD_SECRET: requiredString,
   TS_API_KEY: requiredString,
-  BREVO_API_KEY: z.string().optional(),
+  SCALEWAY_TEM_SECRET_KEY: z.string().optional(),
   OPENAI_API_KEY: z.string().optional(),
   LANGFUSE_SECRET_KEY: z.string().optional(),
   LANGFUSE_PUBLIC_KEY: z.string().optional(),
@@ -47,10 +47,13 @@ const envScriptOnlySchemaPart = z.object({
 
 export const envAppStartupValidationSchema = envViteSchema
   .extend(envServerSchema.shape)
-  .refine((env) => env.VITE_APP_ENV === "development" || Boolean(env.BREVO_API_KEY?.trim()), {
-    error: "BREVO_API_KEY is required outside development.",
-    path: ["BREVO_API_KEY"],
-  })
+  .refine(
+    (env) => env.VITE_APP_ENV === "development" || Boolean(env.SCALEWAY_TEM_SECRET_KEY?.trim()),
+    {
+      error: "SCALEWAY_TEM_SECRET_KEY is required outside development.",
+      path: ["SCALEWAY_TEM_SECRET_KEY"],
+    },
+  )
 
 export const envFullSchema = envViteSchema
   .extend(envServerSchema.shape)
