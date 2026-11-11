@@ -12,7 +12,6 @@
         "@cantoo/pdf-lib": "^2.9.1",
         "@date-fns/tz": "1.5.0",
         "@fontsource/red-hat-text": "5.2.8",
-        "@getbrevo/brevo": "5.0.4",
         "@headlessui/react": "2.2.10",
         "@heroicons/react": "2.2.0",
         "@langfuse/otel": "5.4.1",
@@ -390,8 +389,6 @@
     "@floating-ui/utils": ["@floating-ui/utils@0.2.10", "", {}, "sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ=="],
 
     "@fontsource/red-hat-text": ["@fontsource/red-hat-text@5.2.8", "", {}, "sha512-tIHFmGAXxHcDErF8+szaJ3yaujPxjmYi9CdavtxCXik75LfUlldunRawycL0xF7KPrnakO2tVY1iQ1+PPrA8vw=="],
-
-    "@getbrevo/brevo": ["@getbrevo/brevo@5.0.4", "", {}, "sha512-wN4mHE6O0Pb/d/Dh3E4MAm2zCHbLLUcFF8/wgwTeMPy9KzHBYLu7S/nsJbzd0AWL09MHn8vwue8ULL9YOzluOQ=="],
 
     "@grpc/grpc-js": ["@grpc/grpc-js@1.14.4", "", { "dependencies": { "@grpc/proto-loader": "^0.8.0", "@js-sdsl/ordered-map": "^4.4.2" } }, "sha512-k9Dj3DV/itK9D06Y8f190Qgop7/Ui+D0njFV3LHMPwPT75DpXLQohE9Wmz0QElrJnzsjB7KPWiKJbOl7IPDArQ=="],
 

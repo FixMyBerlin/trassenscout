@@ -22,12 +22,12 @@
       "description": "Traefik host rule for the app container."
     },
     {
-      "name": "BREVO_API_KEY",
-      "sourceEnv": "SECRET_BREVO_API_KEY",
+      "name": "SCALEWAY_TEM_SECRET_KEY",
+      "sourceEnv": "SECRET_SCALEWAY_TEM_SECRET_KEY",
       "required": false,
       "sensitive": true,
-      "githubSource": "secrets.BREVO_API_KEY",
-      "description": "Brevo transactional email API key."
+      "githubSource": "secrets.SCALEWAY_TEM_SECRET_KEY",
+      "description": "Scaleway Transactional Email secret key (sending only)."
     },
     {
       "name": "DATABASE_USER",

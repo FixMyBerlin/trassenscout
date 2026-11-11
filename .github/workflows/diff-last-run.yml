@@ -74,7 +74,7 @@ jobs:
           VITE_APP_ENV: ${{ inputs.ENVIRONMENT }}
           VITE_APP_ORIGIN: ${{ vars.APP_ORIGIN }}
           APP_DOMAIN: ${{ vars.APP_DOMAIN }}
-          BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+          SCALEWAY_TEM_SECRET_KEY: ${{ secrets.SCALEWAY_TEM_SECRET_KEY }}
           DATABASE_USER: ${{ secrets.DATABASE_USER }}
           DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
           SESSION_SECRET_KEY: ${{ secrets.SESSION_SECRET_KEY }}

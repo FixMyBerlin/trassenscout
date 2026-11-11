@@ -72,7 +72,6 @@
     "@cantoo/pdf-lib": "^2.9.1",
     "@date-fns/tz": "1.5.0",
     "@fontsource/red-hat-text": "5.2.8",
-    "@getbrevo/brevo": "5.0.4",
     "@headlessui/react": "2.2.10",
     "@heroicons/react": "2.2.0",
     "@langfuse/otel": "5.4.1",

@@ -4,7 +4,7 @@
       "VITE_APP_ENV",
       "VITE_APP_ORIGIN",
       "APP_DOMAIN",
-      "BREVO_API_KEY",
+      "SCALEWAY_TEM_SECRET_KEY",
       "DATABASE_USER",
       "DATABASE_PASSWORD",
       "SESSION_SECRET_KEY",

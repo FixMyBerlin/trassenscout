@@ -29,7 +29,7 @@ jobs:
           INPUT_ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
           VAR_APP_ORIGIN: ${{ vars.APP_ORIGIN }}
           VAR_APP_DOMAIN: ${{ vars.APP_DOMAIN }}
-          SECRET_BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+          SECRET_SCALEWAY_TEM_SECRET_KEY: ${{ secrets.SCALEWAY_TEM_SECRET_KEY }}
           SECRET_DATABASE_USER: ${{ secrets.DATABASE_USER }}
           SECRET_DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
           SECRET_SESSION_SECRET_KEY: ${{ secrets.SESSION_SECRET_KEY }}
