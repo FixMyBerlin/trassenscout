@@ -62,7 +62,7 @@ const SubsubsectionMarker = ({
             )}
           />
         }
-        subtitle={subsubsection.SubsubsectionTask?.title}
+        title={subsubsection.subTitle?.trim() || undefined}
       />
     </TipMarker>
   )

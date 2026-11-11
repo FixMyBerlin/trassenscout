@@ -59,10 +59,9 @@ export function hiddenMatchSnippet(subsubsection: SearchableSubsubsection, searc
   const matches = (value: string | null | undefined) =>
     value?.toLowerCase().includes(cleanedSearchterm)
 
-  if (matches(subsubsection.slug) || matches(subsubsection.SubsubsectionTask?.title)) return null
-  if (subsubsection.subTitle && matches(subsubsection.subTitle)) {
-    return { label: "Titel", text: subsubsection.subTitle }
-  }
+  const taskTitle = subsubsection.SubsubsectionTask?.title
+  if (matches(subsubsection.slug) || matches(subsubsection.subTitle)) return null
+  if (taskTitle && matches(taskTitle)) return { label: "Maßnahmentyp", text: taskTitle }
   if (subsubsection.description && matches(subsubsection.description)) {
     return {
       label: "Beschreibung",

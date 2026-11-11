@@ -74,7 +74,7 @@ describe("hiddenMatchSnippet", () => {
   ]
 
   test("stays empty when a visible column already shows the match", () => {
-    expect(hiddenMatchSnippet(withDescription, "radweg")).toBeNull()
+    expect(hiddenMatchSnippet(withSubTitle, "süd")).toBeNull()
     expect(hiddenMatchSnippet(withDescription, "rf-1")).toBeNull()
   })
 
@@ -90,10 +90,10 @@ describe("hiddenMatchSnippet", () => {
     })
   })
 
-  test("quotes the title", () => {
-    expect(hiddenMatchSnippet(withSubTitle, "süd")).toEqual({
-      label: "Titel",
-      text: "Ortsdurchfahrt Süd",
+  test("quotes the Maßnahmentyp", () => {
+    expect(hiddenMatchSnippet(withDescription, "radweg")).toEqual({
+      label: "Maßnahmentyp",
+      text: "Radweg",
     })
   })
 
