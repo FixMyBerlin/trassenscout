@@ -148,6 +148,7 @@ export const EditProjectRecordForm = ({
         await updateProjectRecordMutation.mutateAsync({
           data: {
             ...values,
+            editingState: overlay?.editingState,
             ...(formApi.getFieldMeta("reviewState")?.isDirty && { reviewState }),
             ...(formApi.getFieldMeta("reviewNotes")?.isDirty && { reviewNotes }),
             id: projectRecord.id,

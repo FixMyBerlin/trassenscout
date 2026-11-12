@@ -130,6 +130,14 @@ describe("updateProjectRecord review", () => {
     expect(data).not.toHaveProperty("reviewedById")
   })
 
+  test("a save without a status keeps it, even if someone closed the record meanwhile", async () => {
+    mocks.findRecord.mockResolvedValue(approvedRecord)
+
+    await updateProjectRecord(headers, { ...recordInput, id: 42, editingState: undefined })
+
+    expect(mocks.updateRecord.mock.calls[0]?.[0]?.data.editingState).toBeUndefined()
+  })
+
   test("a review decision records who made it", async () => {
     await review(ProjectRecordReviewState.APPROVED)
 

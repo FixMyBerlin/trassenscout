@@ -5,16 +5,11 @@ import { FormHydratedProvider } from "@/src/components/core/components/forms/hoo
 import { useIsHydrated } from "@/src/components/core/components/forms/hooks/useIsHydrated"
 import { useAssignedToItems } from "@/src/components/project-records/hooks/useAssignedToItems"
 import { ProjectRecordAssignmentFields } from "@/src/components/project-records/ProjectRecordAssignmentFields"
+import { invalidateAfterProjectRecordPatch } from "@/src/components/project-records/projectRecordQueryCache"
 import { getProjectRecordAuthorLabel } from "@/src/components/project-records/utils/getProjectRecordAuthorLabel"
 import { getUserComboboxItems } from "@/src/components/shared/app/users/utils/getUserSelectOptions"
-import { ProjectRecordEditingState } from "@/src/prisma/generated/browser"
 import { projectUsersQueryOptions } from "@/src/server/memberships/projectUsersQueryOptions"
 import { patchProjectRecordAssignmentFn } from "@/src/server/projectRecords/projectRecords.functions"
-import {
-  projectRecordQueryOptions,
-  projectRecordsNeedsReviewQueryOptions,
-  projectRecordsQueryOptions,
-} from "@/src/server/projectRecords/projectRecordsQueryOptions"
 import type { ProjectRecord } from "@/src/server/projectRecords/types"
 
 type Props = {
@@ -23,7 +18,6 @@ type Props = {
 
 type AssignmentValues = {
   assignedToId: number | null
-  editingState: ProjectRecordEditingState
 }
 
 function toAssignedToId(value: unknown) {
@@ -57,7 +51,6 @@ export const ProjectRecordAssignmentForm = ({ projectRecord }: Props) => {
   })
   const lastPersistedRef = useRef<AssignmentValues>({
     assignedToId: projectRecord.assignedToId ?? null,
-    editingState: projectRecord.editingState,
   })
   const skipNextChangeListenerRef = useRef(false)
   const [saveError, setSaveError] = useState<string | null>(null)
@@ -66,7 +59,6 @@ export const ProjectRecordAssignmentForm = ({ projectRecord }: Props) => {
   const form = useAppForm({
     defaultValues: {
       assignedToId: projectRecord.assignedToId,
-      editingState: projectRecord.editingState,
     },
     listeners: {
       onChange: async ({ formApi }) => {
@@ -76,7 +68,6 @@ export const ProjectRecordAssignmentForm = ({ projectRecord }: Props) => {
         }
 
         const assignedToId = toAssignedToId(formApi.state.values.assignedToId)
-        const { editingState } = formApi.state.values
         const previous = lastPersistedRef.current
         const willNotify = assignedToId !== previous.assignedToId && assignedToId != null
 
@@ -103,27 +94,18 @@ export const ProjectRecordAssignmentForm = ({ projectRecord }: Props) => {
               projectSlug,
               id: projectRecord.id,
               assignedToId,
-              editingState,
             },
           })
-          lastPersistedRef.current = { assignedToId, editingState }
+          lastPersistedRef.current = { assignedToId }
           setSaveError(null)
-          await Promise.all([
-            queryClient.invalidateQueries({
-              queryKey: projectRecordQueryOptions({ projectSlug, id: projectRecord.id }).queryKey,
-            }),
-            queryClient.invalidateQueries({
-              queryKey: projectRecordsQueryOptions({ projectSlug }).queryKey,
-            }),
-            queryClient.invalidateQueries({
-              queryKey: projectRecordsNeedsReviewQueryOptions({ projectSlug }).queryKey,
-            }),
-          ])
+          await invalidateAfterProjectRecordPatch(queryClient, {
+            projectSlug,
+            id: projectRecord.id,
+          })
         } catch {
           skipNextChangeListenerRef.current = true
           formApi.setFieldValue("assignedToId", previous.assignedToId)
-          formApi.setFieldValue("editingState", previous.editingState)
-          setSaveError("Zuweisung oder Status konnte nicht gespeichert werden.")
+          setSaveError("Zuweisung konnte nicht gespeichert werden.")
         }
       },
     },
@@ -140,6 +122,7 @@ export const ProjectRecordAssignmentForm = ({ projectRecord }: Props) => {
         >
           <ProjectRecordAssignmentFields
             assignedToItems={assignedToItems}
+            editingState={projectRecord.editingState}
             fromLabel={getProjectRecordAuthorLabel({
               type: projectRecord.projectRecordAuthorType,
               author: projectRecord.author,

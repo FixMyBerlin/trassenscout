@@ -56,9 +56,13 @@ export const DeleteProjectRecordSchema = ProjectSlugRequiredSchema.extend({
 
 export const PatchProjectRecordAssignmentSchema = ProjectSlugRequiredSchema.extend({
   id: z.number(),
-  assignedToId: InputNumberOrNullSchema,
-  editingState: z.enum(ProjectRecordEditingState),
-}).strict()
+  assignedToId: InputNumberOrNullSchema.optional(),
+  editingState: z.enum(ProjectRecordEditingState).optional(),
+})
+  .strict()
+  .refine((input) => input.assignedToId !== undefined || input.editingState !== undefined, {
+    error: "assignedToId or editingState is required",
+  })
 
 export const projectRecordFormDefaultValues = {
   date: "",
@@ -128,5 +132,6 @@ export const ProjectRecordFormSchema = ProjectRecordSchema.omit({
 }).extend({
   date: NullableDateSchemaForm,
   reviewState: z.enum(ProjectRecordReviewState).optional(),
+  editingState: z.enum(ProjectRecordEditingState).optional(),
   ...m2mFormFields,
 })
