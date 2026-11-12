@@ -159,18 +159,17 @@ test.describe("Project records permissions", () => {
           timeout: 30_000,
         })
 
-        const statusSwitch = page.getByRole("switch", { name: /Status/ })
-        await expect(statusSwitch).toBeVisible({ timeout: 30_000 })
-        await expect(statusSwitch).toHaveAttribute("aria-checked", "false")
-        await statusSwitch.click()
-        await expect(statusSwitch).toHaveAttribute("aria-checked", "true", { timeout: 15_000 })
+        const completeButton = page.getByRole("button", { name: "Als abgeschlossen markieren" })
+        const reopenButton = page.getByRole("button", {
+          name: "Wiedereröffnung und als in Bearbeitung markieren",
+        })
+        await completeButton.click({ timeout: 30_000 })
+        await expect(reopenButton).toBeVisible({ timeout: 15_000 })
 
         await page.reload()
-        await expect(page.getByRole("switch", { name: /Status/ })).toHaveAttribute(
-          "aria-checked",
-          "true",
-          { timeout: 30_000 },
-        )
+        await expect(reopenButton).toBeVisible({ timeout: 30_000 })
+        await reopenButton.click()
+        await expect(completeButton).toBeVisible({ timeout: 15_000 })
       })
     })
 

@@ -15,6 +15,7 @@ type Props = {
   onViewModeChange?: (mode: ViewMode) => void
   title?: string
   titleVisuallyHidden?: boolean
+  titleAction?: React.ReactNode
   action?: React.ReactNode
   filters?: React.ReactNode
   filtersAction?: React.ReactNode
@@ -32,6 +33,7 @@ export const PageHeader = ({
   onViewModeChange,
   title,
   titleVisuallyHidden = false,
+  titleAction,
   action,
   filters,
   filtersAction,
@@ -72,7 +74,7 @@ export const PageHeader = ({
         className={className}
         row1={{ left: breadcrumb, right: row1Right }}
         row2={{ left: tabs ?? search, right: row2Right }}
-        row3={{ left: row3Left }}
+        row3={{ left: row3Left, right: titleAction }}
         row4={{ left: filters, right: filtersAction }}
       />
     </>

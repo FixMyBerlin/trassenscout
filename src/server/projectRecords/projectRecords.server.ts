@@ -691,8 +691,10 @@ export async function patchProjectRecordAssignment(
   const record = await db.projectRecord.update({
     where: { id },
     data: {
-      assignedToId,
-      ...assignmentMetadata(previous.assignedToId ?? null, assignedToId ?? null, userId),
+      ...(assignedToId !== undefined && {
+        assignedToId,
+        ...assignmentMetadata(previous.assignedToId ?? null, assignedToId, userId),
+      }),
       editingState,
       updatedById: userId,
       projectRecordUpdatedByType: ProjectRecordType.USER,

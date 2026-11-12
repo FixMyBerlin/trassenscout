@@ -7,6 +7,7 @@ import { Link } from "@/src/components/core/components/links/Link"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { ProjectRecordDeleteActionBar } from "@/src/components/project-records/ProjectRecordDeleteActionBar"
 import { ProjectRecordDetailClient } from "@/src/components/project-records/ProjectRecordDetailClient"
+import { ProjectRecordEditingStateButton } from "@/src/components/project-records/ProjectRecordEditingStateButton"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
 import { useIsProjectLeadOrAdmin } from "@/src/components/shared/app/memberships/hooks/useIsProjectLeadOrAdmin"
 import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
@@ -40,12 +41,13 @@ export function PageProjectRecordDetail() {
     <>
       <PageHeader
         title={projectRecord.title}
-        titleVisuallyHidden
+        titleAction={
+          <ProjectRecordEditingStateButton key={projectRecord.id} projectRecord={projectRecord} />
+        }
         breadcrumb={
           <ProjectPageBreadcrumb
             section="Projektprotokoll"
             sectionTo="/$projectSlug/project-records"
-            current={projectRecord.title}
           />
         }
         action={

@@ -17,6 +17,7 @@ import { MultiProjectInviteForm } from "@/src/components/invites/MultiProjectInv
 import { EditProjectRecordForm } from "@/src/components/project-records/EditProjectRecordForm"
 import { ProjectRecordInboxEmailModal } from "@/src/components/project-records/inbox/ProjectRecordInboxEmailModal"
 import { ProjectRecordDetailClient } from "@/src/components/project-records/ProjectRecordDetailClient"
+import { ProjectRecordEditingStateButton } from "@/src/components/project-records/ProjectRecordEditingStateButton"
 import { useProjectRecordModal } from "@/src/components/project-records/ProjectRecordModalHost"
 import { getProjectRecordEditSuccessNavigateOptions } from "@/src/components/project-records/utils/getProjectRecordEditSuccessRoute"
 import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
@@ -299,6 +300,14 @@ function ProjectModalContent({ projectSlug }: { projectSlug: string }) {
       <Modal open handleClose={closeModal} align="right">
         <PageHeader
           title={modalTitle}
+          titleAction={
+            !isProjectRecordEditView && projectRecord ? (
+              <ProjectRecordEditingStateButton
+                key={projectRecord.id}
+                projectRecord={projectRecord}
+              />
+            ) : undefined
+          }
           action={
             <div className="flex items-center gap-4">
               {!isProjectRecordEditView && projectRecord ? (

@@ -26,6 +26,7 @@ import {
 import { TagsFormSection } from "@/src/components/tags/TagsFormSection"
 import { ProjectUploadDropzone } from "@/src/components/uploads/ProjectUploadDropzone"
 import { UploadTable } from "@/src/components/uploads/UploadTable"
+import type { ProjectRecordEditingState } from "@/src/prisma/generated/browser"
 import { acquisitionAreasQueryOptions } from "@/src/server/acquisitionAreas/acquisitionAreasQueryOptions"
 import { projectUsersQueryOptions } from "@/src/server/memberships/projectUsersQueryOptions"
 import { subsubsectionsQueryOptions } from "@/src/server/subsubsections/subsubsectionsQueryOptions"
@@ -97,6 +98,7 @@ export const ProjectRecordFormFields = ({
   const subsubsectionsValue = useFormValue("subsubsections")
   const acquisitionAreaId = useFormValue<number | null>("acquisitionAreaId")
   const acquisitionAreasValue = useFormValue("acquisitionAreas")
+  const editingState = useFormValue<ProjectRecordEditingState>("editingState")
   const assignedToItems = useAssignedToItems({
     projectSlug,
     users,
@@ -126,6 +128,7 @@ export const ProjectRecordFormFields = ({
   const assignmentAndStatusFields = (
     <ProjectRecordAssignmentFields
       assignedToItems={assignedToItems}
+      editingState={editingState}
       fromLabel={
         isCreateMode ? (getFullnameWithInstitution(currentUser) ?? currentUser?.email) : authorLabel
       }

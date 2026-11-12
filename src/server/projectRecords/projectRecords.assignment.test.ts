@@ -70,14 +70,27 @@ describe("PatchProjectRecordAssignmentSchema", () => {
     expect(parsed.success).toBe(false)
   })
 
-  test("rejects missing required fields", () => {
-    const parsed = PatchProjectRecordAssignmentSchema.safeParse({
-      projectSlug: "rs23",
-      id: 12,
-      assignedToId: 3,
-    })
+  test("accepts the assignee or the status alone", () => {
+    const base = { projectSlug: "rs23", id: 12 }
 
-    expect(parsed.success).toBe(false)
+    expect(PatchProjectRecordAssignmentSchema.safeParse({ ...base, assignedToId: 3 }).data).toEqual(
+      { ...base, assignedToId: 3 },
+    )
+    expect(
+      PatchProjectRecordAssignmentSchema.safeParse({ ...base, assignedToId: null }).success,
+    ).toBe(true)
+    expect(
+      PatchProjectRecordAssignmentSchema.safeParse({
+        ...base,
+        editingState: ProjectRecordEditingState.COMPLETED,
+      }).data,
+    ).toEqual({ ...base, editingState: ProjectRecordEditingState.COMPLETED })
+  })
+
+  test("rejects a patch without assignee and status", () => {
+    const parsed = PatchProjectRecordAssignmentSchema.safeParse({ projectSlug: "rs23", id: 12 })
+
+    expect(parsed.error?.issues[0]?.message).toBe("assignedToId or editingState is required")
   })
 })
 
@@ -220,6 +233,50 @@ describe("patchProjectRecordAssignment", () => {
     const { data } = mockDb.projectRecord.update.mock.calls[0]![0]
     expect(data).not.toHaveProperty("assignedById")
     expect(data).not.toHaveProperty("assignedAt")
+  })
+
+  test("keeps the assignee when only the status is sent", async () => {
+    mockDb.projectRecord.findFirstOrThrow.mockResolvedValueOnce({
+      ...previousRecord,
+      assignedToId: 3,
+    })
+    const { patchProjectRecordAssignment } = await import("./projectRecords.server")
+
+    await patchProjectRecordAssignment(headers, {
+      projectSlug: "rs23",
+      id: 12,
+      editingState: ProjectRecordEditingState.COMPLETED,
+    })
+
+    const { data } = mockDb.projectRecord.update.mock.calls[0]![0]
+    expect(data).not.toHaveProperty("assignedToId")
+    expect(data).not.toHaveProperty("assignedById")
+    expect(data.editingState).toBe(ProjectRecordEditingState.COMPLETED)
+    expect(mockSend).not.toHaveBeenCalled()
+    expect(mockCreateLogEntry).toHaveBeenCalledTimes(1)
+    expect(mockCreateLogEntry).toHaveBeenCalledWith(
+      expect.objectContaining({ message: expect.stringContaining("Bearbeitungsstatus") }),
+    )
+  })
+
+  test("keeps the status when only the assignee is sent", async () => {
+    mockDb.projectRecord.findFirstOrThrow.mockResolvedValueOnce(previousRecord)
+    mockDb.projectRecord.update.mockResolvedValueOnce({
+      title: "Protokoll",
+      assignedToId: 3,
+      editingState: ProjectRecordEditingState.PENDING,
+    })
+    const { patchProjectRecordAssignment } = await import("./projectRecords.server")
+
+    await patchProjectRecordAssignment(headers, { projectSlug: "rs23", id: 12, assignedToId: 3 })
+
+    const { data } = mockDb.projectRecord.update.mock.calls[0]![0]
+    expect(data.assignedToId).toBe(3)
+    expect(data.editingState).toBeUndefined()
+    expect(mockCreateLogEntry).toHaveBeenCalledTimes(1)
+    expect(mockCreateLogEntry).toHaveBeenCalledWith(
+      expect.objectContaining({ message: expect.stringContaining("zugewiesen") }),
+    )
   })
 
   test("passes the record title and text to the assignment notification", async () => {

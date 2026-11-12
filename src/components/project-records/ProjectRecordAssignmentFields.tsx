@@ -1,14 +1,20 @@
 import type { ComboboxSingleItem } from "@/src/components/core/components/forms/ComboboxSingleBase"
 import { fieldLayoutLabelClassName } from "@/src/components/core/components/forms/fieldLayoutStyles"
 import { useCoreAppFormContext } from "@/src/components/core/components/forms/hooks/formContext"
-import { ProjectRecordEditingState } from "@/src/prisma/generated/browser"
+import { ProjectRecordEditingStateIndicator } from "@/src/components/project-records/ProjectRecordEditingStateIndicator"
+import type { ProjectRecordEditingState } from "@/src/prisma/generated/browser"
 
 type Props = {
   assignedToItems: ComboboxSingleItem[]
   fromLabel?: string | null
+  editingState: ProjectRecordEditingState
 }
 
-export const ProjectRecordAssignmentFields = ({ assignedToItems, fromLabel }: Props) => {
+export const ProjectRecordAssignmentFields = ({
+  assignedToItems,
+  fromLabel,
+  editingState,
+}: Props) => {
   const form = useCoreAppFormContext()
 
   return (
@@ -22,26 +28,12 @@ export const ProjectRecordAssignmentFields = ({ assignedToItems, fromLabel }: Pr
           />
         )}
       </form.AppField>
-      <form.AppField name="editingState">
-        {(field) => (
-          <field.Switch
-            values={{
-              off: ProjectRecordEditingState.PENDING,
-              on: ProjectRecordEditingState.COMPLETED,
-            }}
-            label="Status"
-            contentClassName="pt-2"
-            stateLabels={{
-              off: "In Bearbeitung",
-              on: "Abgeschlossen",
-            }}
-            trackClassNames={{
-              off: "bg-blue-500",
-              on: "bg-gray-300",
-            }}
-          />
-        )}
-      </form.AppField>
+      <div>
+        <p className={fieldLayoutLabelClassName}>Status</p>
+        <div className="pt-2">
+          <ProjectRecordEditingStateIndicator editingState={editingState} variant="detail" />
+        </div>
+      </div>
       {fromLabel && (
         <div>
           <p className={fieldLayoutLabelClassName}>Erstellt von</p>

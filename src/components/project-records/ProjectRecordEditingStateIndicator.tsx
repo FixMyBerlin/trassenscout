@@ -44,15 +44,14 @@ export const ProjectRecordEditingStateIndicator = ({ editingState, variant }: Pr
     )
   }
 
-  const isPending = editingState === ProjectRecordEditingState.PENDING
   return (
-    <span
-      className={twJoin(
-        "inline-flex items-center text-sm font-normal",
-        isPending ? "text-gray-600" : "text-gray-500",
+    <span className="flex items-center gap-1.5 text-sm text-gray-700">
+      {editingState === ProjectRecordEditingState.COMPLETED ? (
+        <CheckCircleIcon className="size-5 shrink-0" aria-hidden />
+      ) : (
+        <PendingEditingIcon className="mr-0.5" />
       )}
-    >
-      <span>{projectRecordEditingStateLabel[editingState]}</span>
+      {projectRecordEditingStateLabel[editingState]}
     </span>
   )
 }
