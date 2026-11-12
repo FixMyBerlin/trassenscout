@@ -16,12 +16,3 @@ export const SubsubsectionIcon = ({ slug, ...props }: Props) => {
     </div>
   )
 }
-
-export const SubsubsectionMapIcon = ({ slug, ...props }: Props) => {
-  const label = shortTitle(slug)
-  return (
-    <div className={twJoin(defaultIconClass, "h-5 w-auto rounded-md px-1.5 text-xs")} {...props}>
-      {label}
-    </div>
-  )
-}

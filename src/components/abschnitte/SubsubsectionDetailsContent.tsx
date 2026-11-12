@@ -225,7 +225,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
                 <tbody className={tableBodyClassName}>
                   {title && (
                     <tr className={tableRowClassName}>
-                      <th className="py-4 pr-3 pl-4 text-left text-sm font-normal text-gray-700">
+                      <th className="py-4 pr-3 pl-4 text-left align-top text-sm font-normal text-gray-700">
                         {subsubsectionFieldTranslations.subTitle}
                       </th>
                       <td className="px-4 py-4 text-sm wrap-break-word text-gray-400">{title}</td>
