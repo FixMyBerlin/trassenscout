@@ -16,8 +16,6 @@ const rowClassName = "flex h-12 items-center justify-between gap-4 border-b bord
 const wrappingRowClassName =
   "flex min-h-12 flex-wrap items-center justify-between gap-x-4 gap-y-1.5 border-b border-gray-200 px-4"
 
-const titleActionRowClassName = twJoin(wrappingRowClassName, "sm:flex-nowrap")
-
 function hasRowContent({ left, right }: RowSlots) {
   return Boolean(left || right)
 }
@@ -83,8 +81,7 @@ export function PageHeaderLayout({ row1, row2, row3, row4, className }: Props) {
         <PageHeaderRow
           left={row3.left}
           right={row3.right}
-          className={twJoin(row3.right ? titleActionRowClassName : rowClassName, "bg-white")}
-          wrap={Boolean(row3.right)}
+          className={twJoin(rowClassName, "bg-white")}
         />
       ) : null}
 

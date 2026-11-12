@@ -8,7 +8,7 @@ import { projectBySlugQueryOptions } from "@/src/server/projects/projectsQueryOp
 const loggedInProjectRouteApi = getRouteApi(loggedInProjectRoute.id)
 
 type Props = {
-  /** Middle crumb label. Linked when `sectionTo` is provided. */
+  /** Middle crumb label. Linked when `current` is set or `sectionTo` is provided. */
   section?: string
   sectionTo?: string
   sectionParams?: Record<string, string>
@@ -23,6 +23,7 @@ export function ProjectPageBreadcrumb({ section, sectionTo, sectionParams, item,
   const { data: project } = useSuspenseQuery(projectBySlugQueryOptions(projectSlug))
 
   const projectLinksToDashboard = Boolean(section || current)
+  const sectionLinks = Boolean(current && (sectionTo || section))
 
   return (
     <Breadcrumb>
@@ -34,7 +35,7 @@ export function ProjectPageBreadcrumb({ section, sectionTo, sectionParams, item,
         {shortTitle(project.slug)}
       </BreadcrumbStep>
       {section ? (
-        sectionTo ? (
+        sectionLinks && sectionTo ? (
           <BreadcrumbStep to={sectionTo} params={{ projectSlug, ...sectionParams }}>
             {section}
           </BreadcrumbStep>

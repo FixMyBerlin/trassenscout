@@ -40,10 +40,12 @@ export function PageProjectRecordDetail() {
     <>
       <PageHeader
         title={projectRecord.title}
+        titleVisuallyHidden
         breadcrumb={
           <ProjectPageBreadcrumb
             section="Projektprotokoll"
             sectionTo="/$projectSlug/project-records"
+            current={projectRecord.title}
           />
         }
         action={
