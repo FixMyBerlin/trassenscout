@@ -11,7 +11,7 @@ import {
 import "react-datasheet-grid/dist/style.css"
 import { twJoin } from "tailwind-merge"
 import { ObjectDump } from "@/src/components/admin/ObjectDump"
-import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { blueButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { BackLink } from "@/src/components/core/components/forms/BackLink"
 import { BackLinkSection } from "@/src/components/core/components/forms/BackLinkSection"
 import { improveErrorMessage } from "@/src/components/core/components/forms/improveErrorMessage"
@@ -131,7 +131,7 @@ export const ContactsTable = () => {
         {!formDirty && isSaved && <span className="text-green-500">Gespeichert</span>}
         <button
           onClick={() => void handleUpdate()}
-          className={primaryButtonClassName}
+          className={blueButtonClassName}
           disabled={!formDirty}
         >
           Speichern

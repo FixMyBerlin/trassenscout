@@ -21,38 +21,39 @@ const compactPaddingBySize: Record<CompactButtonSize, string> = {
   icon: twJoin(transparentBorder, compactPaddingIcon),
 }
 
-const primaryColors =
+const blueColors =
   "bg-blue-500 text-white hover:bg-blue-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 active:bg-blue-500"
 
-const primaryColorsForButton =
+const blueColorsForButton =
   "enabled:bg-blue-500 enabled:text-white enabled:hover:bg-blue-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 enabled:active:bg-blue-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
 
-const secondaryColors =
+const whiteColors =
   "bg-white text-gray-900 inset-ring inset-ring-gray-300 hover:bg-gray-50 hover:text-gray-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-300"
 
-const secondaryColorsForButton =
+const whiteColorsForButton =
   "enabled:bg-white enabled:text-gray-900 inset-ring inset-ring-gray-300 enabled:hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-300 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
 
-const pinkColors =
+const greenColorsForButton =
+  "enabled:bg-green-600 enabled:text-white enabled:hover:bg-green-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600 enabled:active:bg-green-600 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
+
+const pinkColorsForButton =
   "bg-pink-500 text-white hover:bg-pink-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500 active:bg-pink-500"
 
 function compactClassName(colors: string, size: CompactButtonSize = "md") {
   return twMerge(compactButtonBase, compactPaddingBySize[size], colors)
 }
 
-/** Primary action — button element (`<button>`). */
-export const primaryButtonClassName = compactClassName(primaryColorsForButton)
+export const blueButtonClassName = compactClassName(blueColorsForButton)
 
-export const primaryButtonSmClassName = compactClassName(primaryColorsForButton, "sm")
+export const blueButtonSmClassName = compactClassName(blueColorsForButton, "sm")
 
-/** Secondary action — button element (`<button>`). */
-export const secondaryButtonClassName = compactClassName(secondaryColorsForButton)
+export const whiteButtonClassName = compactClassName(whiteColorsForButton)
 
-export const secondaryButtonSmClassName = compactClassName(secondaryColorsForButton, "sm")
+export const greenButtonClassName = compactClassName(greenColorsForButton)
 
 export const iconButtonClassName = twJoin(
   "inline-flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-md shadow-xs transition-colors",
-  secondaryColorsForButton,
+  whiteColorsForButton,
 )
 
 export function buttonLinkClassName(
@@ -61,10 +62,10 @@ export function buttonLinkClassName(
 ) {
   switch (variant) {
     case "white":
-      return compactClassName(secondaryColors, size)
+      return compactClassName(whiteColors, size)
     case "pink":
-      return compactClassName(pinkColors, size)
+      return compactClassName(pinkColorsForButton, size)
     case "blue":
-      return compactClassName(primaryColors, size)
+      return compactClassName(blueColors, size)
   }
 }

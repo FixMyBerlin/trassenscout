@@ -1,5 +1,5 @@
 import { twJoin } from "tailwind-merge"
-import { secondaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { whiteButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 
 const codeBlockClassName = twJoin(
   "overflow-x-auto rounded-lg bg-white/90 p-3 text-xs text-gray-800 shadow-sm ring-1 ring-gray-900/10",
@@ -28,7 +28,7 @@ export function McpCursorConfigPreview({
       <pre className={twJoin(codeBlockClassName, ringClassName)}>
         <code>{configJson}</code>
       </pre>
-      <button type="button" className={secondaryButtonClassName} onClick={handleCopy}>
+      <button type="button" className={whiteButtonClassName} onClick={handleCopy}>
         {copyLabel}
       </button>
     </div>

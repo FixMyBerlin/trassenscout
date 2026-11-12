@@ -1,6 +1,6 @@
 import { length } from "@turf/turf"
 import { twJoin } from "tailwind-merge"
-import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { blueButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import {
   TextField,
   type TextFieldProps,
@@ -51,7 +51,7 @@ export function TextFieldCalculateLength({
           <button
             type="button"
             onClick={calculateLength}
-            className={twJoin(primaryButtonClassName, "px-2! py-1!")}
+            className={twJoin(blueButtonClassName, "px-2! py-1!")}
           >
             Länge aus Geometrie ermitteln
           </button>

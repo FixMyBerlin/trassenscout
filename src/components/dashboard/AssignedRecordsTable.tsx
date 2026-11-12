@@ -1,4 +1,4 @@
-import { ChatBubbleBottomCenterTextIcon, DocumentIcon } from "@heroicons/react/24/outline"
+import { ChatBubbleBottomCenterTextIcon, PaperClipIcon } from "@heroicons/react/24/outline"
 import { format } from "date-fns"
 import { de } from "date-fns/locale/de"
 import { twJoin } from "tailwind-merge"
@@ -160,7 +160,7 @@ export const AssignedRecordsTable = ({ records, showProject = true, onTagClick }
                   )}
                 >
                   <span className="inline-flex items-center justify-end gap-1 text-xs">
-                    <DocumentIcon className="size-4 shrink-0" />
+                    <PaperClipIcon className="size-4 shrink-0" />
                     {record._count.uploads}
                   </span>
                   <span className="inline-flex items-center justify-end gap-1 text-xs">

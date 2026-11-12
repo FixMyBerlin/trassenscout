@@ -1,5 +1,5 @@
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
-import { secondaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { whiteButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { BackLink } from "@/src/components/core/components/forms/BackLink"
 import { DeleteActionBar } from "@/src/components/core/components/forms/DeleteActionBar"
 import { improveErrorMessage } from "@/src/components/core/components/forms/improveErrorMessage"
@@ -78,7 +78,7 @@ export const EditSurveyResponseTagForm = ({
         actionBarRight={
           isModalLayout
             ? onCancel && (
-                <button type="button" className={secondaryButtonClassName} onClick={onCancel}>
+                <button type="button" className={whiteButtonClassName} onClick={onCancel}>
                   Abbrechen
                 </button>
               )

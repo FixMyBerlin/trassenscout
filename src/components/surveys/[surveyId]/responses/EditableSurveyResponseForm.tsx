@@ -5,7 +5,7 @@ import { twJoin, twMerge } from "tailwind-merge"
 import { backendConfig as defaultBackendConfig } from "@/src/components/beteiligung/shared/backend-types"
 import { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
-import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { blueButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { Link } from "@/src/components/core/components/links/Link"
 import { pillShellClasses } from "@/src/components/core/utils/pillClassNames"
 import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
@@ -362,7 +362,7 @@ export function EditableSurveyResponseForm({
               <button
                 type="submit"
                 disabled={!userCanEdit}
-                className={twJoin(primaryButtonClassName, "shrink-0 px-3!")}
+                className={twJoin(blueButtonClassName, "shrink-0 px-3!")}
               >
                 Tag hinzufügen
               </button>
@@ -397,7 +397,7 @@ export function EditableSurveyResponseForm({
                   <button
                     type="submit"
                     disabled={!userCanEdit}
-                    className={twJoin(primaryButtonClassName, "px-3!")}
+                    className={twJoin(blueButtonClassName, "px-3!")}
                   >
                     {labels.note?.sg || defaultBackendConfig.labels.note.sg} speichern
                   </button>

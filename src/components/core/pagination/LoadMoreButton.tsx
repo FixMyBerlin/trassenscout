@@ -1,4 +1,4 @@
-import { secondaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { whiteButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { SpinnerIcon } from "@/src/components/core/components/Spinner"
 
 type Props = {
@@ -20,7 +20,7 @@ export function LoadMoreButton({
       {hasNextPage ? (
         <button
           type="button"
-          className={secondaryButtonClassName}
+          className={whiteButtonClassName}
           onClick={onLoadMore}
           disabled={isFetchingNextPage}
         >

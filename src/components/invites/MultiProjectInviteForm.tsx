@@ -14,7 +14,7 @@ import {
   membershipRegionDisplay,
   membershipRegionToggleOptions,
 } from "@/src/components/admin/memberships/membershipRegionDisplay"
-import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { blueButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { ActionBar } from "@/src/components/core/components/forms/ActionBar"
 import { translateServerError } from "@/src/components/core/components/forms/errorMessageTranslations"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
@@ -318,7 +318,7 @@ export function MultiProjectInviteForm({ onSuccess, projectSlug }: Props) {
         left={
           <button
             type="button"
-            className={primaryButtonClassName}
+            className={blueButtonClassName}
             disabled={
               !liveEmailIsValid ||
               statusLookupPending ||

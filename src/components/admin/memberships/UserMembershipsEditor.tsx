@@ -17,7 +17,7 @@ import {
   type MembershipAccess,
 } from "@/src/components/admin/memberships/membershipAccessUtils"
 import { membershipRegionToggleOptions } from "@/src/components/admin/memberships/membershipRegionDisplay"
-import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { blueButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { ActionBar } from "@/src/components/core/components/forms/ActionBar"
 import { translateServerError } from "@/src/components/core/components/forms/errorMessageTranslations"
 import { Notice } from "@/src/components/core/components/Notice/Notice"
@@ -220,7 +220,7 @@ export function UserMembershipsEditor({ userId }: Props) {
         left={
           <button
             type="button"
-            className={primaryButtonClassName}
+            className={blueButtonClassName}
             disabled={!isDirty || saveMutation.isPending}
             onClick={handleSave}
           >

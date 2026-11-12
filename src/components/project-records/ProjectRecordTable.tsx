@@ -1,4 +1,4 @@
-import { ChatBubbleBottomCenterTextIcon, DocumentIcon } from "@heroicons/react/24/outline"
+import { ChatBubbleBottomCenterTextIcon, PaperClipIcon } from "@heroicons/react/24/outline"
 import { getRouteApi } from "@tanstack/react-router"
 import { format } from "date-fns"
 import { de } from "date-fns/locale"
@@ -240,7 +240,7 @@ export const ProjectRecordsTable = ({
                     <td className={twJoin(tableCellClassName, "pl-0 align-top")}>
                       <div className="flex flex-col gap-1 text-xs tabular-nums @4xl:flex-row @4xl:gap-3">
                         <span className="flex items-center gap-1">
-                          <DocumentIcon className="size-4 shrink-0" />
+                          <PaperClipIcon className="size-4 shrink-0" />
                           <span className="sr-only">Dokumente: </span>
                           {uploadCount}
                         </span>

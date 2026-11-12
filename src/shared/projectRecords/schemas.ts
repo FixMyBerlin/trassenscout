@@ -112,6 +112,7 @@ export const NewProjectRecordFormSchema = ProjectRecordSchema.omit({
   reviewedById: true,
   projectId: true,
   projectRecordEmailId: true,
+  editingState: true,
 }).extend({
   date: NullableDateSchemaForm,
   ...m2mFormFields,

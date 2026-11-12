@@ -13,8 +13,8 @@ import {
 } from "@/src/components/abschnitte/utils/landAcquisitionMapCamera"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import {
-  primaryButtonSmClassName,
-  secondaryButtonClassName,
+  blueButtonSmClassName,
+  whiteButtonClassName,
 } from "@/src/components/core/components/buttons/buttonStyles"
 import { FormSuccess } from "@/src/components/core/components/forms/FormSuccess"
 import { SelectListbox } from "@/src/components/core/components/forms/SelectListbox"
@@ -277,7 +277,7 @@ export const SubsubsectionLandAcquisitionContent = ({
                   <button
                     type="button"
                     onClick={() => setIsProjectRecordModalOpen(true)}
-                    className={primaryButtonSmClassName}
+                    className={blueButtonSmClassName}
                   >
                     <PlusIcon className="size-3.5" aria-hidden="true" />
                     Neuer Protokolleintrag
@@ -351,7 +351,7 @@ export const SubsubsectionLandAcquisitionContent = ({
               <IfUserCanEdit>
                 <button
                   type="button"
-                  className={twJoin(secondaryButtonClassName, "gap-2 ring-inset")}
+                  className={twJoin(whiteButtonClassName, "gap-2 ring-inset")}
                   disabled={deleteAllAcquisitionAreasMutation.isPending}
                   onClick={() => void handleDeleteAllAcquisitionAreas()}
                 >

@@ -206,7 +206,6 @@ function fieldChanges(patch: {
 export async function createProjectRecordForMcp(input: {
   projectSlug: string
   title: string
-  editingState?: ProjectRecordEditingState | null
   body?: string | null
   subsectionSlug?: string | null
   subsubsectionSlug?: string | null
@@ -219,7 +218,6 @@ export async function createProjectRecordForMcp(input: {
   try {
     const title = keptString(input.title)
     if (!title) throw new Error("title ist erforderlich")
-    const editingState = assertEditingState(input.editingState) ?? ProjectRecordEditingState.PENDING
     const body = keptString(input.body)
     const ref = keptString(input.ref)
     const project = await requireMcpEnabledProject(input.projectSlug)
@@ -228,7 +226,6 @@ export async function createProjectRecordForMcp(input: {
     const tagSet = await resolveTagTitles(project.id, input)
     const patch = {
       title,
-      editingState,
       ...(body ? { body } : {}),
       ...(measure.mentioned
         ? { subsectionSlug: measure.subsectionSlug, subsubsectionSlug: measure.subsubsectionSlug }
@@ -266,7 +263,6 @@ export async function createProjectRecordForMcp(input: {
           data: {
             projectId: project.id,
             title,
-            editingState,
             body: body ?? null,
             userId: input.createdById,
             projectRecordAuthorType: ProjectRecordType.USER,
@@ -323,7 +319,6 @@ export async function createProjectRecordForMcp(input: {
       ...mcpWriteFields(mode),
       changes: fieldChanges({
         title,
-        editingState,
         body,
         measure: measure.mentioned
           ? `${measure.subsectionSlug}/${measure.subsubsectionSlug}`

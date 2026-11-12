@@ -1,4 +1,4 @@
-import { secondaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { whiteButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { BackLink } from "@/src/components/core/components/forms/BackLink"
 import { improveErrorMessage } from "@/src/components/core/components/forms/improveErrorMessage"
 import { FORM_ERROR } from "@/src/components/core/components/forms/utils/formSubmitResult"
@@ -36,7 +36,7 @@ export const NewSurveyResponseTagForm = ({ projectSlug, layout = "page", onCance
         onSubmit={handleSubmit}
         actionBarRight={
           isModalLayout && onCancel ? (
-            <button type="button" className={secondaryButtonClassName} onClick={onCancel}>
+            <button type="button" className={whiteButtonClassName} onClick={onCancel}>
               Abbrechen
             </button>
           ) : undefined

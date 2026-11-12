@@ -2,7 +2,7 @@ import { Transition } from "@headlessui/react"
 import { ArrowPathIcon, InformationCircleIcon } from "@heroicons/react/20/solid"
 import { useRef, useState } from "react"
 import { twJoin } from "tailwind-merge"
-import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { blueButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import {
   fieldLayoutControlClassName,
   fieldLayoutLabelClassName,
@@ -174,7 +174,7 @@ export const SubsubsectionFundingCalculation = ({ baseline, onApply }: Props) =>
                         </div>
                         <button
                           type="button"
-                          className={twJoin(primaryButtonClassName, "shrink-0")}
+                          className={twJoin(blueButtonClassName, "shrink-0")}
                           onClick={() => {
                             form.setFieldValue("grantAmount", suggested.grantAmount)
                             form.setFieldValue("ownFunds", suggested.ownFunds)

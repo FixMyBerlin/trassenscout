@@ -1,5 +1,5 @@
 import { twJoin } from "tailwind-merge"
-import { secondaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { whiteButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 
 type Props = {
   /** Plural noun for the entries, e.g. "Dokumente". */
@@ -15,7 +15,7 @@ export const FilteredZeroCase = ({ name, onReset }: Props) => {
         Für die ausgewählten Filter gibt es keine passenden {name}. Passen Sie Ihre Suche an oder
         setzen Sie die Filter zurück.
       </p>
-      <button type="button" onClick={onReset} className={twJoin(secondaryButtonClassName, "mt-6")}>
+      <button type="button" onClick={onReset} className={twJoin(whiteButtonClassName, "mt-6")}>
         Alle Filter zurücksetzen
       </button>
     </div>

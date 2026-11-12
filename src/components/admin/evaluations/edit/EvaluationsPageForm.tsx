@@ -4,7 +4,7 @@ import { ReactNode, useState } from "react"
 import { z } from "zod"
 import {
   iconButtonClassName,
-  primaryButtonClassName,
+  blueButtonClassName,
 } from "@/src/components/core/components/buttons/buttonStyles"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
@@ -182,7 +182,7 @@ export function EvaluationsPageForm<S extends z.ZodType>({
 
             <button
               type="button"
-              className={primaryButtonClassName}
+              className={blueButtonClassName}
               onClick={() => setSections([...sections, createSection()])}
             >
               {linkIcons.plus}

@@ -3,7 +3,7 @@ import type { QueryClient } from "@tanstack/react-query"
 import { type ReactNode, useState } from "react"
 import { twJoin } from "tailwind-merge"
 import { z } from "zod"
-import { primaryButtonSmClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { blueButtonSmClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { translateServerError } from "@/src/components/core/components/forms/errorMessageTranslations"
 import { improveErrorMessage } from "@/src/components/core/components/forms/improveErrorMessage"
 import { FORM_ERROR } from "@/src/components/core/components/forms/utils/formSubmitResult"
@@ -197,7 +197,7 @@ export function ProjectRecordInboxEmailModal({
                   type="button"
                   onClick={openPicker}
                   disabled={isDiscarding}
-                  className={primaryButtonSmClassName}
+                  className={blueButtonSmClassName}
                 >
                   E-Mail verarbeiten
                 </button>

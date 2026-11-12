@@ -1,8 +1,8 @@
 import { useId, useState } from "react"
 import { twJoin } from "tailwind-merge"
 import {
-  primaryButtonClassName,
-  secondaryButtonClassName,
+  blueButtonClassName,
+  whiteButtonClassName,
 } from "@/src/components/core/components/buttons/buttonStyles"
 import { FormModal } from "@/src/components/core/components/Modal/FormModal"
 import type {
@@ -99,14 +99,14 @@ export function UploadFilenameConflictDialog({ collisions, onChoose }: Props) {
         <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <button
             type="button"
-            className={twJoin(secondaryButtonClassName, "shadow-none")}
+            className={twJoin(whiteButtonClassName, "shadow-none")}
             onClick={() => onChoose("cancel")}
           >
             Abbrechen
           </button>
           <button
             type="button"
-            className={twJoin(primaryButtonClassName, "shadow-none")}
+            className={twJoin(blueButtonClassName, "shadow-none")}
             onClick={() => onChoose(choice)}
           >
             Hochladen

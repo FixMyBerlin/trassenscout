@@ -2,7 +2,7 @@ import { SparklesIcon } from "@heroicons/react/16/solid"
 import { Dispatch, SetStateAction, useState } from "react"
 import { twJoin } from "tailwind-merge"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
-import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { blueButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { useCoreAppFormContext } from "@/src/components/core/components/forms/hooks/formContext"
 import { useFormValue } from "@/src/components/core/components/forms/hooks/useFormValue"
 import { Link } from "@/src/components/core/components/links/Link"
@@ -97,7 +97,7 @@ export const SummaryField = ({
           type="button"
           onClick={handleSummarize}
           disabled={isGeneratingSummary}
-          className={twJoin(primaryButtonClassName, "mt-2 gap-1")}
+          className={twJoin(blueButtonClassName, "mt-2 gap-1")}
         >
           <SparklesIcon className="size-3" />
           <p className={isGeneratingSummary ? "animate-pulse" : ""}>

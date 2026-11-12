@@ -20,7 +20,7 @@ import {
 } from "@/src/components/admin/AdminTableActions"
 import {
   iconButtonClassName,
-  primaryButtonClassName,
+  blueButtonClassName,
 } from "@/src/components/core/components/buttons/buttonStyles"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
@@ -226,7 +226,7 @@ export function AdminSubsubsectionExtraFieldsForm({
             <ButtonWrapper className="flex-wrap items-end">
               <button
                 type="button"
-                className={primaryButtonClassName}
+                className={blueButtonClassName}
                 onClick={() => {
                   setAddModalKey((current) => current + 1)
                   setModalState({ mode: "add" })

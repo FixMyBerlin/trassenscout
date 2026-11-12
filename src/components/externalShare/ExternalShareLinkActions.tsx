@@ -11,7 +11,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Fragment, useState } from "react"
 import { twJoin } from "tailwind-merge"
 import { AdminBadge } from "@/src/components/admin/AdminBadge"
-import { primaryButtonSmClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { blueButtonSmClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { linkStyles } from "@/src/components/core/components/links/styles"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { getFullname } from "@/src/components/core/users/getFullname"
@@ -104,7 +104,7 @@ export const ExternalShareLinkActions = ({ projectSlug, token }: Props) => {
       <Menu as="div">
         {({ open }) => (
           <>
-            <MenuButton className={primaryButtonSmClassName}>
+            <MenuButton className={blueButtonSmClassName}>
               {copyState === "copied" ? (
                 <CheckIcon className="size-4" aria-hidden />
               ) : (

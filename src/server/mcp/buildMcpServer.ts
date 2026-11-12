@@ -125,7 +125,7 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
         `tags_update requires DIRECT and takes items with projectSlug, the current title (any case), and a patch (title, color, description, clear: ["description"]), so the same tag can be renamed or recolored in several projects. ` +
         `A new title that another tag of the project already has is rejected; tags are not merged. ` +
         `Protokolleinträge project_records_*: list returns id, title, editingState, and linked Maßnahme slugs. There is no user directory; tags must already exist in the project (tags_list). ` +
-        `create is one record (title required, editingState PENDING|COMPLETED default PENDING, body, optional subsectionSlug + subsubsectionSlug for exactly one Maßnahme, optional ref, optional assignedTo, optional tags). ` +
+        `create is one record (title required, always created as PENDING, body, optional subsectionSlug + subsubsectionSlug for exactly one Maßnahme, optional ref, optional assignedTo, optional tags). ` +
         `assignedTo is only a name or numeric id the user already named. tags is titles and replaces the whole set; an empty array is rejected. ` +
         `A repeated DRAFT create with the same ref upserts; without ref each call is a new draft. update is one record by numeric id. ` +
         `Sending the Maßnahme pair replaces the link set with that one Maßnahme. delete is DIRECT only, preview then confirm, and refuses while comments or uploads are attached. ` +
@@ -592,7 +592,7 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
     "project_records_create",
     {
       description:
-        "Create one Protokolleintrag. title required. editingState PENDING|COMPLETED (default PENDING). body is the Nachricht. " +
+        "Create one Protokolleintrag. title required. It is always created as PENDING; change editingState with project_records_update. body is the Nachricht. " +
         "Optional subsectionSlug + subsubsectionSlug link exactly one Maßnahme; omit both to hang the entry on the project. " +
         "Optional assignedTo: a display name or numeric user id the user already named. Optional tags: titles; a non-empty array replaces the set. " +
         "No user directory; tags must already exist in the project (tags_list). Omit a key to leave it unchanged. null and empty string do not clear. An empty tags array is rejected. " +
@@ -600,7 +600,12 @@ export function buildMcpServer({ auth, request }: { auth: AdminApiAuth; request:
       inputSchema: {
         projectSlug: z.string(),
         title: z.string(),
-        editingState: z.enum(["PENDING", "COMPLETED"]).optional(),
+        editingState: z
+          .never({
+            error:
+              "editingState is not allowed on create: records are always created as PENDING. Use project_records_update.",
+          })
+          .optional(),
         body: z.string().nullish(),
         subsectionSlug: z.string().nullish(),
         subsubsectionSlug: z.string().nullish(),
