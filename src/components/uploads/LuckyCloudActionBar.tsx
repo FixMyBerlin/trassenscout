@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "@tanstack/react-router"
 import { useState } from "react"
 import { twJoin } from "tailwind-merge"
-import { secondaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { whiteButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { Tooltip } from "@/src/components/core/components/Tooltip/Tooltip"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
 import {
@@ -89,7 +89,7 @@ export const LuckyCloudActionBar = ({ upload, projectSlug }: Props) => {
               disabled={isCopyingToLuckyCloud || isEndingCollaboration || !canCollaborate}
               className={twJoin(
                 "rounded px-4 py-2 text-sm font-medium",
-                secondaryButtonClassName,
+                whiteButtonClassName,
                 "disabled:cursor-not-allowed disabled:opacity-50",
               )}
             >
@@ -103,7 +103,7 @@ export const LuckyCloudActionBar = ({ upload, projectSlug }: Props) => {
             disabled={isCopyingToLuckyCloud || isEndingCollaboration || !canCollaborate}
             className={twJoin(
               "rounded px-4 py-2 text-sm font-medium",
-              secondaryButtonClassName,
+              whiteButtonClassName,
               "disabled:cursor-not-allowed disabled:opacity-50",
             )}
           >
@@ -117,7 +117,7 @@ export const LuckyCloudActionBar = ({ upload, projectSlug }: Props) => {
           disabled={isCopyingToLuckyCloud || isEndingCollaboration}
           className={twJoin(
             "rounded px-4 py-2 text-sm font-medium",
-            secondaryButtonClassName,
+            whiteButtonClassName,
             "disabled:cursor-not-allowed disabled:opacity-50",
           )}
         >

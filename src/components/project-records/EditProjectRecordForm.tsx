@@ -15,6 +15,7 @@ import {
 } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { CreateEditReviewHistory } from "@/src/components/project-records/ProjectRecordCreateEditReviewHistory"
 import { ProjectRecordDeleteActionBar } from "@/src/components/project-records/ProjectRecordDeleteActionBar"
+import { ProjectRecordEditingStateSubmitButton } from "@/src/components/project-records/ProjectRecordEditingStateSubmitButton"
 import { ProjectRecordFormFields } from "@/src/components/project-records/ProjectRecordFormFields"
 import { ProjectRecordNeedsReviewBanner } from "@/src/components/project-records/ProjectRecordNeedsReviewBanner"
 import { invalidateAfterProjectRecordChange } from "@/src/components/project-records/projectRecordQueryCache"
@@ -148,7 +149,10 @@ export const EditProjectRecordForm = ({
         await updateProjectRecordMutation.mutateAsync({
           data: {
             ...values,
-            editingState: overlay?.editingState,
+            editingState:
+              values.editingState !== initialProjectRecord.editingState
+                ? values.editingState
+                : undefined,
             ...(formApi.getFieldMeta("reviewState")?.isDirty && { reviewState }),
             ...(formApi.getFieldMeta("reviewNotes")?.isDirty && { reviewNotes }),
             id: projectRecord.id,
@@ -210,7 +214,12 @@ export const EditProjectRecordForm = ({
         submitText="Änderungen speichern"
         hideSubmitButton
         edgeToEdgeFooter={needsReview && canConfirm ? <ReviewProjectRecordForm /> : undefined}
-        actionBarLeft={<ProjectRecordSubmitButton />}
+        actionBarLeft={
+          <>
+            <ProjectRecordSubmitButton />
+            {!needsReview && <ProjectRecordEditingStateSubmitButton />}
+          </>
+        }
         actionBarRight={
           <ProjectRecordDeleteActionBar
             projectSlug={projectSlug}

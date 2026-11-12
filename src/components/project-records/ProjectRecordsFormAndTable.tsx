@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from "@tansta
 import { getRouteApi } from "@tanstack/react-router"
 import { useEffect, useRef, useState } from "react"
 import { twJoin } from "tailwind-merge"
-import { primaryButtonSmClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { blueButtonSmClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { FormSuccess } from "@/src/components/core/components/forms/FormSuccess"
 import { SelectListbox } from "@/src/components/core/components/forms/SelectListbox"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
@@ -115,7 +115,7 @@ export const ProjectRecordsFormAndTable = () => {
             ref={createRecordButtonRef}
             type="button"
             onClick={() => setManualModalOpen(true)}
-            className={twJoin(primaryButtonSmClassName, "items-center justify-center gap-1")}
+            className={twJoin(blueButtonSmClassName, "items-center justify-center gap-1")}
           >
             <PlusIcon className="size-3.5" /> Neuer Protokolleintrag
           </button>
@@ -134,7 +134,6 @@ export const ProjectRecordsFormAndTable = () => {
               ? {
                   title: mcpDraftQuery.data.formOverlay.title,
                   body: mcpDraftQuery.data.formOverlay.body,
-                  editingState: mcpDraftQuery.data.formOverlay.editingState,
                   subsubsectionId: mcpDraftQuery.data.formOverlay.subsubsectionId,
                   assignedToId: mcpDraftQuery.data.formOverlay.assignedToId,
                   tags: mcpDraftQuery.data.formOverlay.tags,

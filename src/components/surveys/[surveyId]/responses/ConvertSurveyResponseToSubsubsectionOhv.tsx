@@ -9,12 +9,11 @@ import { useState } from "react"
 import { parseSwitchableMapLocationFieldValue } from "@/src/components/beteiligung/form/map/utils"
 import { AllowedSurveySlugs } from "@/src/components/beteiligung/shared/utils/allowedSurveySlugs"
 import { getQuestionIdBySurveySlug } from "@/src/components/beteiligung/shared/utils/getQuestionIdBySurveySlug"
-import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { blueButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { Link } from "@/src/components/core/components/links/Link"
 import { linkStyles } from "@/src/components/core/components/links/styles"
 import { Prettify } from "@/src/components/core/types"
 import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
-import { ProjectRecordEditingState } from "@/src/prisma/generated/browser"
 import { adminLookupRowsQueryOptions } from "@/src/server/adminLookupTables/adminLookupTablesQueryOptions"
 import { createProjectRecordFn } from "@/src/server/projectRecords/projectRecords.functions"
 import { getSubsectionBySlugFn } from "@/src/server/subsections/subsections.functions"
@@ -206,7 +205,6 @@ const ConvertSurveyResponseToSubsubsectionOhvForm = ({
             title: "Maßnahme aus Eingabe erstellt",
             body: `Maßnahme wurde aus [Eingabe ${response.id}](/${projectSlug}/surveys/${response.surveySession.survey.id}/responses?responseDetails=${response.id}) erstellt.`,
             subsubsections: [result.id],
-            editingState: ProjectRecordEditingState.COMPLETED,
             // The conversion happened today; the form uses "" for "no date", which would leave
             // the entry unsorted in the date-ordered Protokoll list.
             date: new Date().toISOString().slice(0, 10),
@@ -268,7 +266,7 @@ const ConvertSurveyResponseToSubsubsectionOhvForm = ({
           <button
             type="button"
             onClick={handleConvertToSubsubsection}
-            className={primaryButtonClassName}
+            className={blueButtonClassName}
             disabled={createSubsubsectionMutation.isPending || !hasCheckedExistingEntry}
           >
             {createSubsubsectionMutation.isPending ? "Wird erstellt..." : "In Maßnahme überführen"}

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
-import { secondaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { whiteButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { DeleteActionBar } from "@/src/components/core/components/forms/DeleteActionBar"
 import { improveErrorMessage } from "@/src/components/core/components/forms/improveErrorMessage"
 import { FORM_ERROR } from "@/src/components/core/components/forms/utils/formSubmitResult"
@@ -79,7 +79,7 @@ export const EditTagForm = ({ tag, projectSlug, onCancel }: Props) => {
       onSubmit={handleSubmit}
       actionBarLeft={deleteAction}
       actionBarRight={
-        <button type="button" className={secondaryButtonClassName} onClick={onCancel}>
+        <button type="button" className={whiteButtonClassName} onClick={onCancel}>
           Abbrechen
         </button>
       }

@@ -11,7 +11,7 @@ import {
   adminTableRowClassName,
 } from "@/src/components/admin/adminListClasses"
 import { AdminPageHeader } from "@/src/components/admin/AdminPageHeader"
-import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { blueButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { translateServerError } from "@/src/components/core/components/forms/errorMessageTranslations"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
@@ -131,7 +131,7 @@ export function PageApiTokens({ tokens }: Props) {
               className="block w-full min-w-48 appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-xs focus:border-blue-500 focus:ring-blue-500 focus:outline-hidden sm:text-sm"
             />
           </label>
-          <button type="submit" disabled={isPending} className={primaryButtonClassName}>
+          <button type="submit" disabled={isPending} className={blueButtonClassName}>
             {isPending ? "Wird erstellt…" : "Token erstellen"}
           </button>
         </form>

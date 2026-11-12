@@ -4,7 +4,7 @@ import type { Feature, MultiPolygon, Polygon } from "geojson"
 import { type KeyboardEvent, useMemo, useState } from "react"
 import { MapProvider } from "react-map-gl/maplibre"
 import { twJoin } from "tailwind-merge"
-import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { blueButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { TextField } from "@/src/components/core/components/forms/fields/TextField"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useCoreAppFormContext } from "@/src/components/core/components/forms/hooks/formContext"
@@ -57,7 +57,7 @@ function BufferRadiusControls({ onApplyRadius }: { onApplyRadius: (radius: numbe
       <div className="mt-1">
         <button
           type="button"
-          className={twJoin(primaryButtonClassName, "shrink-0")}
+          className={twJoin(blueButtonClassName, "shrink-0")}
           onClick={applyBufferRadius}
         >
           Puffer übernehmen

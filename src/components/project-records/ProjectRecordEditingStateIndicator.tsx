@@ -1,12 +1,12 @@
 import { CheckCircleIcon } from "@heroicons/react/24/outline"
-import { twJoin } from "tailwind-merge"
+import { twMerge } from "tailwind-merge"
 import { ProjectRecordEditingState } from "@/src/prisma/generated/browser"
 import { projectRecordEditingStateLabel } from "@/src/shared/projectRecords/projectRecordEditingStateLabel"
 
-function PendingEditingIcon({ className }: { className?: string }) {
+export function PendingEditingIcon({ className }: { className?: string }) {
   return (
     <span
-      className={twJoin(
+      className={twMerge(
         "ml-0.5 inline-flex size-4 shrink-0 items-center justify-center rounded-full border border-current",
         className,
       )}
@@ -45,13 +45,13 @@ export const ProjectRecordEditingStateIndicator = ({ editingState, variant }: Pr
   }
 
   return (
-    <span className="flex items-center gap-1.5 text-sm text-gray-700">
-      {editingState === ProjectRecordEditingState.COMPLETED ? (
-        <CheckCircleIcon className="size-5 shrink-0" aria-hidden />
+    <span className="inline-flex items-center gap-2 text-sm text-gray-700">
+      {editingState === ProjectRecordEditingState.PENDING ? (
+        <PendingEditingIcon className="mx-0.5 size-4 border-[1.5px] text-gray-600" />
       ) : (
-        <PendingEditingIcon className="mr-0.5" />
+        <CheckCircleIcon className="size-5 shrink-0 text-gray-600" aria-hidden />
       )}
-      {projectRecordEditingStateLabel[editingState]}
+      <span>{projectRecordEditingStateLabel[editingState]}</span>
     </span>
   )
 }

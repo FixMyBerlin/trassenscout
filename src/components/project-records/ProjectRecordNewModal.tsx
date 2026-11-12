@@ -35,7 +35,6 @@ type Props = {
     acquisitionAreaId?: number
     title?: string
     body?: string
-    editingState?: ProjectRecordEditingState
     assignedToId?: number
     tags?: string[]
   }
@@ -165,7 +164,7 @@ export const ProjectRecordNewModal = ({
 
   const formInitialValues = {
     date: getDate(new Date()),
-    editingState: initialValues?.editingState ?? ProjectRecordEditingState.PENDING,
+    editingState: ProjectRecordEditingState.PENDING,
     ...(initialValues?.title ? { title: initialValues.title } : {}),
     ...(initialValues?.body != null ? { body: initialValues.body } : {}),
     ...(initialValues?.assignedToId != null ? { assignedToId: initialValues.assignedToId } : {}),

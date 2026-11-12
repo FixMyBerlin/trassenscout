@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { twJoin } from "tailwind-merge"
-import { secondaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { whiteButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
 import { ButtonWrapper } from "@/src/components/core/components/links/ButtonWrapper"
@@ -221,7 +221,7 @@ export const ContactTable = ({ contacts, currentUserEmail, onTagClick, projectSl
                       <>
                         <button
                           disabled={contactIds.length === 0 || allContactsSelected || isSubmitting}
-                          className={secondaryButtonClassName}
+                          className={whiteButtonClassName}
                           type="button"
                           onClick={() =>
                             field.handleChange(
@@ -233,7 +233,7 @@ export const ContactTable = ({ contacts, currentUserEmail, onTagClick, projectSl
                         </button>
                         <button
                           disabled={visibleSelectedCount === 0 || isSubmitting}
-                          className={secondaryButtonClassName}
+                          className={whiteButtonClassName}
                           type="submit"
                         >
                           {isSubmitting ? "…" : "E-Mail schreiben"}

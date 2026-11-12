@@ -1,23 +1,27 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { useRef, useState } from "react"
+import { type ReactNode, useRef, useState } from "react"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
 import { FormHydratedProvider } from "@/src/components/core/components/forms/hooks/useFormHydrated"
 import { useIsHydrated } from "@/src/components/core/components/forms/hooks/useIsHydrated"
 import { useAssignedToItems } from "@/src/components/project-records/hooks/useAssignedToItems"
 import { ProjectRecordAssignmentFields } from "@/src/components/project-records/ProjectRecordAssignmentFields"
+import { ProjectRecordEditingStateButton } from "@/src/components/project-records/ProjectRecordEditingStateButton"
 import { invalidateAfterProjectRecordPatch } from "@/src/components/project-records/projectRecordQueryCache"
 import { getProjectRecordAuthorLabel } from "@/src/components/project-records/utils/getProjectRecordAuthorLabel"
 import { getUserComboboxItems } from "@/src/components/shared/app/users/utils/getUserSelectOptions"
+import { ProjectRecordEditingState, ProjectRecordReviewState } from "@/src/prisma/generated/browser"
 import { projectUsersQueryOptions } from "@/src/server/memberships/projectUsersQueryOptions"
 import { patchProjectRecordAssignmentFn } from "@/src/server/projectRecords/projectRecords.functions"
 import type { ProjectRecord } from "@/src/server/projectRecords/types"
 
 type Props = {
   projectRecord: ProjectRecord
+  children: ReactNode
 }
 
 type AssignmentValues = {
   assignedToId: number | null
+  editingState: ProjectRecordEditingState
 }
 
 function toAssignedToId(value: unknown) {
@@ -32,7 +36,7 @@ function confirmAssignmentNotification(assigneeLabel: string) {
   )
 }
 
-export const ProjectRecordAssignmentForm = ({ projectRecord }: Props) => {
+export const ProjectRecordAssignmentForm = ({ projectRecord, children }: Props) => {
   const projectSlug = projectRecord.project.slug
   const isHydrated = useIsHydrated()
   const queryClient = useQueryClient()
@@ -51,6 +55,7 @@ export const ProjectRecordAssignmentForm = ({ projectRecord }: Props) => {
   })
   const lastPersistedRef = useRef<AssignmentValues>({
     assignedToId: projectRecord.assignedToId ?? null,
+    editingState: projectRecord.editingState,
   })
   const skipNextChangeListenerRef = useRef(false)
   const [saveError, setSaveError] = useState<string | null>(null)
@@ -59,6 +64,7 @@ export const ProjectRecordAssignmentForm = ({ projectRecord }: Props) => {
   const form = useAppForm({
     defaultValues: {
       assignedToId: projectRecord.assignedToId,
+      editingState: projectRecord.editingState,
     },
     listeners: {
       onChange: async ({ formApi }) => {
@@ -68,7 +74,9 @@ export const ProjectRecordAssignmentForm = ({ projectRecord }: Props) => {
         }
 
         const assignedToId = toAssignedToId(formApi.state.values.assignedToId)
+        const { editingState } = formApi.state.values
         const previous = lastPersistedRef.current
+        if (assignedToId === previous.assignedToId && editingState === previous.editingState) return
         const willNotify = assignedToId !== previous.assignedToId && assignedToId != null
 
         if (willNotify) {
@@ -93,10 +101,11 @@ export const ProjectRecordAssignmentForm = ({ projectRecord }: Props) => {
             data: {
               projectSlug,
               id: projectRecord.id,
-              assignedToId,
+              ...(assignedToId !== previous.assignedToId && { assignedToId }),
+              ...(editingState !== previous.editingState && { editingState }),
             },
           })
-          lastPersistedRef.current = { assignedToId }
+          lastPersistedRef.current = { assignedToId, editingState }
           setSaveError(null)
           await invalidateAfterProjectRecordPatch(queryClient, {
             projectSlug,
@@ -105,38 +114,61 @@ export const ProjectRecordAssignmentForm = ({ projectRecord }: Props) => {
         } catch {
           skipNextChangeListenerRef.current = true
           formApi.setFieldValue("assignedToId", previous.assignedToId)
-          setSaveError("Zuweisung konnte nicht gespeichert werden.")
+          formApi.setFieldValue("editingState", previous.editingState)
+          setSaveError("Zuweisung oder Status konnte nicht gespeichert werden.")
         }
       },
     },
   })
 
   return (
-    <FormHydratedProvider value={isHydrated}>
-      <form.AppForm>
-        <form
-          onSubmit={(event) => {
-            event.preventDefault()
-            event.stopPropagation()
-          }}
-        >
-          <ProjectRecordAssignmentFields
-            assignedToItems={assignedToItems}
-            editingState={projectRecord.editingState}
-            fromLabel={getProjectRecordAuthorLabel({
-              type: projectRecord.projectRecordAuthorType,
-              author: projectRecord.author,
-            })}
-          />
-          {saveError ? (
-            <div className="pt-2">
-              <p role="alert" className="text-sm font-semibold text-red-800">
-                {saveError}
-              </p>
-            </div>
-          ) : null}
-        </form>
-      </form.AppForm>
-    </FormHydratedProvider>
+    <>
+      <FormHydratedProvider value={isHydrated}>
+        <form.AppForm>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault()
+              event.stopPropagation()
+            }}
+          >
+            <form.Subscribe selector={(state) => state.values.editingState}>
+              {(editingState) => (
+                <ProjectRecordAssignmentFields
+                  assignedToItems={assignedToItems}
+                  editingState={editingState}
+                  fromLabel={getProjectRecordAuthorLabel({
+                    type: projectRecord.projectRecordAuthorType,
+                    author: projectRecord.author,
+                  })}
+                />
+              )}
+            </form.Subscribe>
+            {saveError ? (
+              <div className="pt-2">
+                <p role="alert" className="text-sm font-semibold text-red-800">
+                  {saveError}
+                </p>
+              </div>
+            ) : null}
+          </form>
+        </form.AppForm>
+      </FormHydratedProvider>
+      {children}
+      {projectRecord.reviewState === ProjectRecordReviewState.APPROVED && (
+        <form.AppField name="editingState">
+          {(field) => (
+            <ProjectRecordEditingStateButton
+              editingState={field.state.value}
+              disabled={patchAssignmentMutation.isPending}
+              labels={{
+                complete: "Als abgeschlossen markieren",
+                reopen: "Wiedereröffnung und als in Bearbeitung markieren",
+              }}
+              onToggle={field.handleChange}
+            />
+          )}
+        </form.AppField>
+      )}
+    </>
   )
 }

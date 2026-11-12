@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import type { PDFDocumentProxy } from "pdfjs-dist"
 import { useCallback, useState } from "react"
-import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { blueButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { ActionBar } from "@/src/components/core/components/forms/ActionBar"
 import {
   checkboxInputClassName,
@@ -216,7 +216,7 @@ export const FormTemplateFillModal = ({
             <>
               <button
                 type="button"
-                className={primaryButtonClassName}
+                className={blueButtonClassName}
                 disabled={!ready}
                 onClick={() => void download()}
               >

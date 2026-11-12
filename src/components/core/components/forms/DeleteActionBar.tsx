@@ -1,7 +1,7 @@
 import { TrashIcon } from "@heroicons/react/24/outline"
 import { useNavigate } from "@tanstack/react-router"
 import { twJoin } from "tailwind-merge"
-import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { blueButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { linkIcons } from "@/src/components/core/components/links/Link"
 import { linkStyles } from "@/src/components/core/components/links/styles"
 import { frenchQuote } from "@/src/components/core/components/text/quote"
@@ -88,7 +88,7 @@ export const DeleteActionBar = ({
       <button
         type="button"
         onClick={handleDelete}
-        className={primaryButtonClassName}
+        className={blueButtonClassName}
         title={`${itemTitle} löschen`}
       >
         {variant === "icon" ? <TrashIcon className="size-5" /> : "Löschen"}

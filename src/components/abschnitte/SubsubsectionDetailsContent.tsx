@@ -6,7 +6,7 @@ import { de } from "date-fns/locale"
 import { useState } from "react"
 import { SubsubsectionPanel } from "@/src/components/abschnitte/SubsubsectionPanel"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
-import { primaryButtonSmClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { blueButtonSmClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { FormSuccess } from "@/src/components/core/components/forms/FormSuccess"
 import { Link } from "@/src/components/core/components/links/Link"
 import { Markdown } from "@/src/components/core/components/Markdown/Markdown"
@@ -507,7 +507,7 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
           <button
             type="button"
             onClick={() => setIsProjectRecordModalOpen(true)}
-            className={primaryButtonSmClassName}
+            className={blueButtonSmClassName}
           >
             <PlusIcon className="size-3.5" aria-hidden="true" />
             Neuer Protokolleintrag

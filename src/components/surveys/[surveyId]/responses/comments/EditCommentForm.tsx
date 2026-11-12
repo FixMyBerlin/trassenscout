@@ -2,7 +2,7 @@ import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline"
 import dompurify from "dompurify"
 import { useState } from "react"
 import { twJoin } from "tailwind-merge"
-import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { blueButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { FormDirtyStateReporter } from "@/src/components/core/components/forms/FormDirtyStateReporter"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
@@ -110,7 +110,7 @@ export const EditCommentForm = ({ comment, commentLabel, projectSlug, mutateComm
                   }
                 }
               }}
-              className={primaryButtonClassName}
+              className={blueButtonClassName}
             >
               <TrashIcon className="size-5" />
             </button>

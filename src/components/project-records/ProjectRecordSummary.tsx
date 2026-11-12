@@ -57,98 +57,101 @@ export const ProjectRecordSummary = ({ projectRecord, uploadsSection }: Props) =
 
   return (
     <div className="my-6 space-y-6">
-      <ProjectRecordAssignmentForm key={projectRecord.id} projectRecord={projectRecord} />
+      <ProjectRecordAssignmentForm key={projectRecord.id} projectRecord={projectRecord}>
+        {projectRecord.body && (
+          <section className="rounded-md bg-blue-50 p-4">
+            <Markdown
+              className="prose prose-sm max-w-none text-gray-700 prose-p:my-2 prose-p:text-sm prose-ol:my-2 prose-ol:pl-4 prose-ol:leading-tight prose-ul:my-2 prose-ul:list-disc prose-ul:pl-4 prose-ul:leading-tight"
+              markdown={projectRecord.body}
+            />
+          </section>
+        )}
 
-      {projectRecord.body && (
-        <section className="rounded-md bg-blue-50 p-4">
-          <Markdown
-            className="prose prose-sm max-w-none text-gray-700 prose-p:my-2 prose-p:text-sm prose-ol:my-2 prose-ol:pl-4 prose-ol:leading-tight prose-ul:my-2 prose-ul:list-disc prose-ul:pl-4 prose-ul:leading-tight"
-            markdown={projectRecord.body}
+        {projectRecord.projectRecordEmail && (
+          <ProjectRecordEmailSourceDisclosure
+            email={projectRecord.projectRecordEmail}
+            className="mb-6"
           />
-        </section>
-      )}
+        )}
 
-      {projectRecord.projectRecordEmail && (
-        <ProjectRecordEmailSourceDisclosure
-          email={projectRecord.projectRecordEmail}
-          className="mb-6"
-        />
-      )}
-
-      <div className={projectRecordSectionClassName}>
-        <p className={projectRecordSectionLabelClassName}>Am/bis:</p>
-        <p className={projectRecordSectionValueClassName}>
-          {projectRecord.date ? format(new Date(projectRecord.date), "P", { locale: de }) : "—"}
-        </p>
-      </div>
-
-      {/* One row for both relation types, rendered by the same component the list uses. */}
-      <div className={projectRecordSectionClassName}>
-        <p className={projectRecordSectionLabelClassName}>Verknüpfungen:</p>
-        <ProjectRecordVerknuepfungen
-          projectSlug={projectSlug}
-          landAcquisitionModuleEnabled={projectRecord.project.landAcquisitionModuleEnabled}
-          subsubsection={projectRecord.subsubsection}
-          subsubsections={projectRecord.subsubsections}
-          acquisitionArea={projectRecord.acquisitionArea}
-          acquisitionAreas={projectRecord.acquisitionAreas}
-          className={twJoin(projectRecordSectionValueClassName, "[&>ul]:mt-0")}
-        />
-      </div>
-
-      {templateUploads.length > 0 && (
         <div className={projectRecordSectionClassName}>
-          <p className={projectRecordSectionLabelClassName}>Dokumente zum Herunterladen:</p>
-          <div className={projectRecordSectionValueClassName}>
-            <ProjectRecordTemplateUploadsList projectSlug={projectSlug} uploads={templateUploads} />
-          </div>
+          <p className={projectRecordSectionLabelClassName}>Am/bis:</p>
+          <p className={projectRecordSectionValueClassName}>
+            {projectRecord.date ? format(new Date(projectRecord.date), "P", { locale: de }) : "—"}
+          </p>
         </div>
-      )}
 
-      {!FORM_TEMPLATES_HIDDEN && attachedFormTemplates.length > 0 && (
+        {/* One row for both relation types, rendered by the same component the list uses. */}
         <div className={projectRecordSectionClassName}>
-          <p className={projectRecordSectionLabelClassName}>Formulare:</p>
-          {formTemplates.length === 0 ? (
-            <div className="flex flex-col gap-1 text-sm">
-              {attachedFormTemplates.map((formTemplate) => (
-                <p key={formTemplate.id} className="flex items-center gap-1 text-gray-500">
-                  <DocumentTextIcon className="size-4 shrink-0" aria-hidden />
-                  {formTemplate.title}
+          <p className={projectRecordSectionLabelClassName}>Verknüpfungen:</p>
+          <ProjectRecordVerknuepfungen
+            projectSlug={projectSlug}
+            landAcquisitionModuleEnabled={projectRecord.project.landAcquisitionModuleEnabled}
+            subsubsection={projectRecord.subsubsection}
+            subsubsections={projectRecord.subsubsections}
+            acquisitionArea={projectRecord.acquisitionArea}
+            acquisitionAreas={projectRecord.acquisitionAreas}
+            className={twJoin(projectRecordSectionValueClassName, "[&>ul]:mt-0")}
+          />
+        </div>
+
+        {templateUploads.length > 0 && (
+          <div className={projectRecordSectionClassName}>
+            <p className={projectRecordSectionLabelClassName}>Dokumente zum Herunterladen:</p>
+            <div className={projectRecordSectionValueClassName}>
+              <ProjectRecordTemplateUploadsList
+                projectSlug={projectSlug}
+                uploads={templateUploads}
+              />
+            </div>
+          </div>
+        )}
+
+        {!FORM_TEMPLATES_HIDDEN && attachedFormTemplates.length > 0 && (
+          <div className={projectRecordSectionClassName}>
+            <p className={projectRecordSectionLabelClassName}>Formulare:</p>
+            {formTemplates.length === 0 ? (
+              <div className="flex flex-col gap-1 text-sm">
+                {attachedFormTemplates.map((formTemplate) => (
+                  <p key={formTemplate.id} className="flex items-center gap-1 text-gray-500">
+                    <DocumentTextIcon className="size-4 shrink-0" aria-hidden />
+                    {formTemplate.title}
+                  </p>
+                ))}
+                <p className="text-sm text-gray-500">
+                  Zum Ausfüllen muss der Eintrag mit einer Maßnahme
+                  {landAcquisitionModuleEnabled ? " oder Verhandlungsfläche" : ""} verknüpft sein.
                 </p>
-              ))}
-              <p className="text-sm text-gray-500">
-                Zum Ausfüllen muss der Eintrag mit einer Maßnahme
-                {landAcquisitionModuleEnabled ? " oder Verhandlungsfläche" : ""} verknüpft sein.
-              </p>
+              </div>
+            ) : (
+              <ProjectRecordFormTemplatesSection
+                projectSlug={projectSlug}
+                projectRecord={projectRecord}
+                formTemplates={formTemplates}
+              />
+            )}
+          </div>
+        )}
+
+        <div>
+          <p className={twJoin(projectRecordSectionLabelClassName, "mb-2")}>Dokumente:</p>
+          {uploadsSection}
+        </div>
+
+        <div className={projectRecordSectionClassName}>
+          <p className={projectRecordSectionLabelClassName}>Tags:</p>
+          {projectRecord.tags.length ? (
+            <div className={projectRecordSectionValueClassName}>
+              <ProjectRecordTagsList
+                tags={projectRecord.tags}
+                getTagHref={(tag) => createProjectRecordFilterUrl(projectSlug, { tag })}
+              />
             </div>
           ) : (
-            <ProjectRecordFormTemplatesSection
-              projectSlug={projectSlug}
-              projectRecord={projectRecord}
-              formTemplates={formTemplates}
-            />
+            <span className="text-sm text-gray-500">Keine Tags zugeordnet</span>
           )}
         </div>
-      )}
-
-      <div>
-        <p className={twJoin(projectRecordSectionLabelClassName, "mb-2")}>Dokumente:</p>
-        {uploadsSection}
-      </div>
-
-      <div className={projectRecordSectionClassName}>
-        <p className={projectRecordSectionLabelClassName}>Tags:</p>
-        {projectRecord.tags.length ? (
-          <div className={projectRecordSectionValueClassName}>
-            <ProjectRecordTagsList
-              tags={projectRecord.tags}
-              getTagHref={(tag) => createProjectRecordFilterUrl(projectSlug, { tag })}
-            />
-          </div>
-        ) : (
-          <span className="text-sm text-gray-500">Keine Tags zugeordnet</span>
-        )}
-      </div>
+      </ProjectRecordAssignmentForm>
     </div>
   )
 }

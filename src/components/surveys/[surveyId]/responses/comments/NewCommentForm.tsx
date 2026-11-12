@@ -1,6 +1,6 @@
 import dompurify from "dompurify"
 import { twJoin } from "tailwind-merge"
-import { primaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { blueButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { FormShell } from "@/src/components/core/components/forms/FormShell"
 import { useAppForm } from "@/src/components/core/components/forms/hooks/useAppForm"
 import { useIsHydrated } from "@/src/components/core/components/forms/hooks/useIsHydrated"
@@ -38,7 +38,7 @@ export const NewCommentForm = ({ commentLabel, createComment }: Props) => {
             form={form}
             formError={null}
             submitText={`${commentLabel} hinzufügen`}
-            submitClassName={twJoin(primaryButtonClassName, "px-3!")}
+            submitClassName={twJoin(blueButtonClassName, "px-3!")}
             submitDisabled={!isHydrated}
             hideSubmitButton={!hasBody}
             className="p-0"

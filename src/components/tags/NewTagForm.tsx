@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
-import { secondaryButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
+import { whiteButtonClassName } from "@/src/components/core/components/buttons/buttonStyles"
 import { improveErrorMessage } from "@/src/components/core/components/forms/improveErrorMessage"
 import { FORM_ERROR } from "@/src/components/core/components/forms/utils/formSubmitResult"
 import { isAdmin } from "@/src/components/shared/app/users/utils/isAdmin"
@@ -43,7 +43,7 @@ export const NewTagForm = ({ projectSlug, onCancel }: Props) => {
       initialValues={{ color: DEFAULT_TAG_COLOR }}
       onSubmit={handleSubmit}
       actionBarRight={
-        <button type="button" className={secondaryButtonClassName} onClick={onCancel}>
+        <button type="button" className={whiteButtonClassName} onClick={onCancel}>
           Abbrechen
         </button>
       }
