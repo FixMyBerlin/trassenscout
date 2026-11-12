@@ -27,6 +27,7 @@ import { compareSlugs, shortTitle } from "@/src/components/core/components/text/
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { Tooltip } from "@/src/components/core/components/Tooltip/Tooltip"
 import { useTryRouteParam } from "@/src/components/core/routes/useTryRouteParam"
+import { normalizeSearchterm } from "@/src/components/core/utils/normalizeSearchterm"
 import type { SubsubsectionWithPosition } from "@/src/server/subsubsections/types"
 import { SubsubsectionTableFooter } from "./SubsubsectionTableFooter"
 
@@ -71,6 +72,8 @@ export const SubsubsectionTable = ({
   const sortedSubsubsections = [...subsubsections].sort(
     (a, b) => compareSlugs(a.subsection.slug, b.subsection.slug) || compareSlugs(a.slug, b.slug),
   )
+  // Full Titel while searching, so a match late in a long Titel stays visible
+  const clampTitle = !normalizeSearchterm(searchterm ?? "")
 
   const renderRow = (subsubsection: SubsubsectionWithPosition) => {
     const snippet = hiddenMatchSnippet(subsubsection, searchterm ?? "")
@@ -108,7 +111,11 @@ export const SubsubsectionTable = ({
             interactive ? "text-blue-500 group-hover:text-blue-800" : "text-gray-900",
           )}
         >
-          {title ? <HighlightedText text={title} searchterm={searchterm} /> : null}
+          {title ? (
+            <div className={twJoin("min-w-48", clampTitle && "line-clamp-2")}>
+              <HighlightedText text={title} searchterm={searchterm} />
+            </div>
+          ) : null}
           {snippet ? (
             <div className="mt-1 text-xs font-normal text-gray-500">
               {snippet.label}: <HighlightedText text={snippet.text} searchterm={searchterm} />

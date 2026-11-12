@@ -1,19 +1,26 @@
+import { twJoin } from "tailwind-merge"
+import { shortTitle } from "../../text/titles"
+
 type Props = {
-  icon: React.ReactNode
-  title?: string | null
+  slug: string
+  title?: string
+  highlighted: boolean
 }
 
-export const TitleLabel = ({ icon, title }: Props) => {
+export const TitleLabel = ({ slug, title, highlighted }: Props) => {
   return (
     <div className="p-1.5">
-      <div className="flex items-center">
-        <div className="flex items-center">{icon}</div>
-        {title && (
-          <div className="ml-1.5 line-clamp-2 w-max max-w-52 text-xs leading-4 whitespace-normal">
-            {title}
-          </div>
-        )}
-      </div>
+      <div>{shortTitle(slug)}</div>
+      {title && (
+        <div
+          className={twJoin(
+            "mt-1 line-clamp-2 w-max max-w-52 text-xs leading-4 wrap-break-word whitespace-normal transition-colors",
+            highlighted ? "text-gray-700" : "text-gray-500",
+          )}
+        >
+          {title}
+        </div>
+      )}
     </div>
   )
 }

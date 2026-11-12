@@ -1,6 +1,5 @@
 import { Marker } from "react-map-gl/maplibre"
 import { twJoin } from "tailwind-merge"
-import { SubsubsectionMapIcon } from "../Icons/SubsubsectionIcon"
 import { TitleLabel } from "../Labels/TitleLabel"
 import type { SubsubsectionMapEntity as SubsubsectionWithPosition } from "../mapEntityTypes"
 import { useIsMapHighlighted } from "../mapHighlightContext"
@@ -53,16 +52,9 @@ const SubsubsectionMarker = ({
       highlightVariant="filled"
     >
       <TitleLabel
-        icon={
-          <SubsubsectionMapIcon
-            slug={subsubsection.slug}
-            className={twJoin(
-              "transition-colors",
-              isHighlighted ? "border-yellow-400 bg-yellow-400 text-gray-900" : "",
-            )}
-          />
-        }
+        slug={subsubsection.slug}
         title={subsubsection.subTitle?.trim() || undefined}
+        highlighted={isHighlighted}
       />
     </TipMarker>
   )
