@@ -201,6 +201,7 @@ export const ProjectDashboardClient = () => {
             return (
               <ProjectSearchResults
                 results={searchResults}
+                projectSlug={projectSlug}
                 searchterm={searchterm}
                 onReset={resetFilters}
               />

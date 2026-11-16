@@ -18,6 +18,7 @@ import {
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { PageHeaderToolbarLink } from "@/src/components/core/components/PageHeader/PageHeaderToolbarLink"
 import { FilteredZeroCase } from "@/src/components/core/components/text/FilteredZeroCase"
+import { compareSlugs } from "@/src/components/core/components/text/titles"
 import { useViewMode } from "@/src/components/core/routes/useViewMode"
 import { IfUserCanEdit } from "@/src/components/shared/memberships/IfUserCan"
 import { subsectionsQueryOptions } from "@/src/server/subsections/subsectionsQueryOptions"
@@ -154,8 +155,9 @@ function SubsectionDashboardContent({
           }
           return (
             <SubsubsectionTable
-              subsubsections={filteredSubsubsections}
-              compact={false}
+              rows={filteredSubsubsections
+                .map((subsubsection) => ({ ...subsubsection, project: { slug: projectSlug } }))
+                .sort((a, b) => compareSlugs(a.slug, b.slug))}
               interactive={interactive}
               searchterm={searchterm}
             />

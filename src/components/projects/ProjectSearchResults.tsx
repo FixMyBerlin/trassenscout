@@ -10,6 +10,7 @@ import { linkStyles } from "@/src/components/core/components/links/styles"
 import { Spinner } from "@/src/components/core/components/Spinner"
 import { FilteredZeroCase } from "@/src/components/core/components/text/FilteredZeroCase"
 import { quote } from "@/src/components/core/components/text/quote"
+import { compareSlugs } from "@/src/components/core/components/text/titles"
 import type { SubsectionsList } from "@/src/server/subsections/types"
 import type { SubsubsectionsList } from "@/src/server/subsubsections/types"
 import { SubsectionTable } from "./SubsectionTable"
@@ -26,13 +27,14 @@ type Props = {
         slugsWithSubsubsectionMatches: ReadonlySet<string>
       }
     | undefined
+  projectSlug: string
   searchterm: string
   onReset: () => void
 }
 
 const countLineClassName = "border-b border-gray-200 px-4 py-2 text-sm"
 
-export const ProjectSearchResults = ({ results, searchterm, onReset }: Props) => {
+export const ProjectSearchResults = ({ results, projectSlug, searchterm, onReset }: Props) => {
   const overrides = useSubsubsectionSearchGroupOverrides(searchterm)
   const { collapseGroups, expandGroups } = useSubsubsectionSearchGroupsActions()
 
@@ -83,8 +85,13 @@ export const ProjectSearchResults = ({ results, searchterm, onReset }: Props) =>
             ) : null}
           </div>
           <SubsubsectionTable
-            subsubsections={subsubsectionMatches}
-            compact={false}
+            rows={subsubsectionMatches
+              .map((subsubsection) => ({ ...subsubsection, project: { slug: projectSlug } }))
+              .sort(
+                (a, b) =>
+                  compareSlugs(a.subsection.slug, b.subsection.slug) ||
+                  compareSlugs(a.slug, b.slug),
+              )}
             searchterm={searchterm}
             subsectionGroups={{
               collapsedSlugs,
