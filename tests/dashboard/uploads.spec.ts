@@ -41,7 +41,7 @@ test.describe("Dashboard documents", () => {
     test.use({ storageState: authFile("viewer") })
 
     test("keeps the project filter when switching to the tab", async ({ page }) => {
-      await page.goto(`/dashboard/assignments?projectSlug=${projectSlug}`)
+      await page.goto(`/dashboard?projectSlug=${projectSlug}`)
       await expect(page.getByRole("button", { name: "User-Menü" })).toBeVisible({
         timeout: 30_000,
       })

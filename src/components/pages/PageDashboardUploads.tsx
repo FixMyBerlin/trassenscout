@@ -66,7 +66,7 @@ export function PageDashboardUploads() {
           </Breadcrumb>
         }
         info="Alle Dokumente aus den Projekten, in denen Sie mitarbeiten – neueste zuerst."
-        tabs={<TabsApp tabs={tabs} embedded />}
+        tabs={tabs.length > 1 ? <TabsApp tabs={tabs} embedded /> : undefined}
         filters={
           <DashboardFilters
             projectSlug={search.projectSlug}
