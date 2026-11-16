@@ -10,7 +10,7 @@ export const DASHBOARD_ALL_MONTHS = 0
 // The router reads `?tag=2024` and `?searchterm=2024` as numbers.
 const tagSearchParamSchema = z.coerce.string().min(1).optional().catch(undefined)
 
-const dashboardSearchSchema = z.object({
+export const dashboardSearchSchema = z.object({
   projectSlug: z.string().default(DASHBOARD_ALL_PROJECTS).catch(DASHBOARD_ALL_PROJECTS),
   months: z.coerce
     .number()

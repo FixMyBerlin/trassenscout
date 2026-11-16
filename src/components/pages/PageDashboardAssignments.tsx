@@ -7,8 +7,8 @@ import { TabsApp } from "@/src/components/core/components/Tabs/TabsApp"
 import { preserveScrollNavigateOptions } from "@/src/components/core/routes/preserveScrollNavigateOptions"
 import { AssignmentsList } from "@/src/components/dashboard/AssignmentsList"
 import { DashboardFilters } from "@/src/components/dashboard/DashboardFilters"
+import { useActivityTabs } from "@/src/components/dashboard/useActivityTabs"
 import { useAssignedRecords } from "@/src/components/dashboard/useAssignedRecords"
-import { useDashboardTabs } from "@/src/components/dashboard/useDashboardTabs"
 import { TagFilterCombobox } from "@/src/components/tags/TagFilterCombobox"
 import { projectsWithGeometryWithMembershipRoleQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 import { mergeDashboardSearch } from "@/src/shared/dashboard/mergeDashboardSearch"
@@ -28,18 +28,20 @@ const routeApi = getRouteApi("/_loggedInGeneral/dashboard/assignments/")
 const statusOptions: { value: AssignmentsSearch["status"]; label: string }[] = [
   { value: "PENDING", label: "In Bearbeitung" },
   { value: "COMPLETED", label: "Abgeschlossen" },
-  { value: "all", label: "Alle Status" },
+  { value: "all", label: "Status: Alle" },
 ]
 
 export function PageDashboardAssignments() {
-  const tabs = useDashboardTabs()
+  const tabs = useActivityTabs()
   const search = routeApi.useSearch()
   const navigate = useNavigate({ from: "/dashboard/assignments/" })
   const { data: projects = [] } = useQuery(projectsWithGeometryWithMembershipRoleQueryOptions())
   const filter = dashboardFilterValues(search)
+  // Tags belong to a project, so the filter only applies while one is selected.
+  const assignmentsSearch = { ...search, tag: filter.projectSlug ? search.tag : undefined }
   const { records, isError, isPlaceholderData, tagOptions } = useAssignedRecords(
     filter.projectSlug,
-    search,
+    assignmentsSearch,
   )
 
   const updateSearch = (updates: Partial<AssignmentsSearch>) =>
@@ -59,7 +61,7 @@ export function PageDashboardAssignments() {
           </Breadcrumb>
         }
         info="Protokolleinträge, die Ihnen zugewiesen sind oder die Sie zugewiesen haben."
-        tabs={<TabsApp tabs={tabs} embedded />}
+        tabs={tabs.length > 1 ? <TabsApp tabs={tabs} embedded /> : undefined}
         filters={
           <DashboardFilters
             projectSlug={search.projectSlug}
@@ -71,7 +73,7 @@ export function PageDashboardAssignments() {
                 ...preserveScrollNavigateOptions,
               })
             }
-            hasAdditionalFilters={hasAssignmentsFilter(search)}
+            hasAdditionalFilters={hasAssignmentsFilter(assignmentsSearch)}
             // One navigation, so the status and the project cannot undo each other.
             onReset={() =>
               void navigate({
@@ -86,11 +88,13 @@ export function PageDashboardAssignments() {
               })
             }
           >
-            <TagFilterCombobox
-              tags={tagOptions}
-              value={search.tag}
-              onChange={(tag) => updateSearch({ tag })}
-            />
+            {filter.projectSlug ? (
+              <TagFilterCombobox
+                tags={tagOptions}
+                value={assignmentsSearch.tag}
+                onChange={(tag) => updateSearch({ tag })}
+              />
+            ) : null}
             <SelectListbox
               className="w-48"
               value={search.status}
@@ -112,7 +116,8 @@ export function PageDashboardAssignments() {
         records={records}
         isError={isError}
         isPlaceholderData={isPlaceholderData}
-        onTagClick={(tag) => updateSearch({ tag })}
+        showProject={!filter.projectSlug}
+        onTagClick={filter.projectSlug ? (tag) => updateSearch({ tag }) : undefined}
       />
     </>
   )

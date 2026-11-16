@@ -10,8 +10,7 @@ import { Spinner } from "@/src/components/core/components/Spinner"
 import { TabsApp } from "@/src/components/core/components/Tabs/TabsApp"
 import { preserveScrollNavigateOptions } from "@/src/components/core/routes/preserveScrollNavigateOptions"
 import { DashboardFilters } from "@/src/components/dashboard/DashboardFilters"
-import { useDashboardTabs } from "@/src/components/dashboard/useDashboardTabs"
-import { canSeeProjectActivity } from "@/src/components/dashboard/useProjectPageTabs"
+import { canSeeProjectActivity, useActivityTabs } from "@/src/components/dashboard/useActivityTabs"
 import { projectsWithGeometryWithMembershipRoleQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 import { currentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
 import { mergeDashboardSearch } from "@/src/shared/dashboard/mergeDashboardSearch"
@@ -21,7 +20,7 @@ import { logEntriesExportHref } from "@/src/shared/logEntries/exportHref"
 const routeApi = getRouteApi("/_loggedInGeneral/dashboard/activity/")
 
 export function PageDashboardActivity() {
-  const tabs = useDashboardTabs()
+  const tabs = useActivityTabs()
   const search = routeApi.useSearch()
   const navigate = useNavigate({ from: "/dashboard/activity/" })
   const { data: user } = useQuery(currentUserQueryOptions())
@@ -53,7 +52,7 @@ export function PageDashboardActivity() {
           </Breadcrumb>
         }
         info="Alle Änderungen in den Projekten, in denen Sie mitarbeiten – neueste zuerst."
-        tabs={<TabsApp tabs={tabs} embedded />}
+        tabs={tabs.length > 1 ? <TabsApp tabs={tabs} embedded /> : undefined}
         filtersAction={
           <PageHeaderToolbarLink
             href={logEntriesExportHref(dashboardFilterValues(search))}
@@ -80,7 +79,7 @@ export function PageDashboardActivity() {
       {canSeeSelected ? (
         <LogEntriesFeed
           {...dashboardFilterValues(search)}
-          showProject
+          showProject={!search.projectSlug}
           fallback={<Spinner page />}
           emptyText="Kein Zugriff auf das Aktivitätenlog"
         />

@@ -9,7 +9,7 @@ type Props = {
   isError: boolean
   isPlaceholderData: boolean
   showProject?: boolean
-  onTagClick: (tag: string) => void
+  onTagClick?: (tag: string) => void
 }
 
 export function AssignmentsList({
