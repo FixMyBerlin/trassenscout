@@ -15,6 +15,7 @@ const projectFeatureFlagKeys = [
   "assignmentRepliesEnabled",
   "landAcquisitionModuleEnabled",
   "showLogEntries",
+  "bookmarksEnabled",
   "evaluationsEnabled",
   "externalShareEnabled",
 ] as const

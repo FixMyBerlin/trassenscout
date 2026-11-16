@@ -56,6 +56,8 @@ describe("buildExternalShareGeojson", () => {
       "type",
       "labelPos",
       "managerId",
+      "createdById",
+      "updatedById",
       "subsectionId",
       "qualityLevelId",
       "subsubsectionStatusId",

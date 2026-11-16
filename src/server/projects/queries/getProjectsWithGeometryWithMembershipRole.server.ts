@@ -16,6 +16,7 @@ export async function getProjectsWithGeometryWithMembershipRole(headers: Headers
       slug: true,
       subTitle: true,
       showLogEntries: true,
+      bookmarksEnabled: true,
       _count: { select: { subsections: true } },
       subsections: {
         orderBy: { order: "asc" },

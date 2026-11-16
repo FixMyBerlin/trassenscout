@@ -33,6 +33,7 @@ const projectSelect = {
   partOf: true,
   projectLeadId: true,
   showLogEntries: true,
+  bookmarksEnabled: true,
   slug: true,
   subTitle: true,
   subsubsectionExtraFieldDefinitions: true,
@@ -47,22 +48,21 @@ const projectSelect = {
 
 export async function getProjectsForCurrentUser(headers: Headers) {
   const session = await endpointAuth.session(headers)
+  const userId = Number(session.userId)
+  // The caller's own membership, so the client can apply role-based rules per project.
+  const select = {
+    ...projectSelect,
+    memberships: { where: { userId }, select: { role: true } },
+  } as const
 
   if (session.role === UserRoleEnum.ADMIN) {
-    return db.project.findMany({
-      orderBy: { slug: "asc" },
-      select: projectSelect,
-    })
+    return db.project.findMany({ orderBy: { slug: "asc" }, select })
   }
 
   return db.project.findMany({
     orderBy: { slug: "asc" },
-    select: projectSelect,
-    where: {
-      memberships: {
-        some: { userId: Number(session.userId) },
-      },
-    },
+    select,
+    where: { memberships: { some: { userId } } },
   })
 }
 

@@ -40,7 +40,12 @@ model User {
   subsections              Subsection[]
   memberships              Membership[]
   projectsLed              Project[]
-  Subsubsection            Subsubsection[]
+  subsubsectionsManaged    Subsubsection[]         @relation("SubsubsectionManager")
+  subsubsectionsCreated    Subsubsection[]         @relation("SubsubsectionCreatedBy")
+  subsubsectionsUpdated    Subsubsection[]         @relation("SubsubsectionUpdatedBy")
+  acquisitionAreasCreated  AcquisitionArea[]       @relation("AcquisitionAreaCreatedBy")
+  acquisitionAreasUpdated  AcquisitionArea[]       @relation("AcquisitionAreaUpdatedBy")
+  subsubsectionBookmarks   SubsubsectionBookmark[]
   invites                  Invite[]
   SurveyResponseComment    SurveyResponseComment[]
   LogEntry                 LogEntry[]
@@ -214,6 +219,7 @@ model Project {
   assignmentRepliesEnabled           Boolean                           @default(false) // Assignment mails are sent from protokoll+slug@ instead of noreply@.
   landAcquisitionModuleEnabled       Boolean                           @default(false)
   showLogEntries                     Boolean                           @default(false) // When true, non-admins see this project's log entries ("Änderungen in …") on the "Meine Projekte" dashboard. Admins always see all projects.
+  bookmarksEnabled                   Boolean                           @default(false) // When true, members see "Meine Maßnahmen" and the bookmark button for this project. Bookmarks are recorded for every project regardless.
   evaluationsEnabled                 Boolean                           @default(false)
   externalShareEnabled               Boolean                           @default(false)
   externalShareToken                 String?                           @unique // Rotating it revokes the public /share link.
@@ -501,8 +507,14 @@ model Subsubsection {
   qualityLevel                     QualityLevel?                     @relation(fields: [qualityLevelId], references: [id])
   qualityLevelId                   Int?
   //
-  manager                          User?                             @relation(fields: [managerId], references: [id])
+  manager                          User?                             @relation("SubsubsectionManager", fields: [managerId], references: [id])
   managerId                        Int?
+  bookmarks                        SubsubsectionBookmark[]
+  //
+  createdBy                        User?                             @relation("SubsubsectionCreatedBy", fields: [createdById], references: [id])
+  createdById                      Int?
+  updatedBy                        User?                             @relation("SubsubsectionUpdatedBy", fields: [updatedById], references: [id])
+  updatedById                      Int?
   //
   subsection                       Subsection                        @relation(fields: [subsectionId], references: [id])
   subsectionId                     Int
@@ -529,6 +541,19 @@ model Subsubsection {
   mcpDraft        McpDraft?
 
   @@unique([subsectionId, slug])
+}
+
+model SubsubsectionBookmark {
+  id              Int           @id @default(autoincrement())
+  createdAt       DateTime      @default(now())
+  //
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          Int
+  subsubsection   Subsubsection @relation(fields: [subsubsectionId], references: [id], onDelete: Cascade)
+  subsubsectionId Int
+
+  @@unique([userId, subsubsectionId])
+  @@index([subsubsectionId])
 }
 
 model Parcel {
@@ -575,6 +600,11 @@ model AcquisitionArea {
   projectRecords          ProjectRecord[]
   projectRecordRelations  ProjectRecord[]        @relation("ProjectRecordAcquisitionAreas")
   logEntries              LogEntry[]
+  //
+  createdBy               User?                  @relation("AcquisitionAreaCreatedBy", fields: [createdById], references: [id])
+  createdById             Int?
+  updatedBy               User?                  @relation("AcquisitionAreaUpdatedBy", fields: [updatedById], references: [id])
+  updatedById             Int?
 }
 
 enum GeometryTypeEnum {

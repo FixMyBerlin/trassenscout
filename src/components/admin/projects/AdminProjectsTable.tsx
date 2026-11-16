@@ -1,4 +1,5 @@
 import {
+  BookmarkIcon,
   ArrowDownTrayIcon,
   ArrowUturnLeftIcon,
   ChartBarIcon,
@@ -97,6 +98,15 @@ const projectFeatureColumns: ProjectFeatureColumn[] = [
     icon: <DocumentTextIcon className="size-4" aria-hidden />,
     label: (enabled) =>
       enabled ? "Log-Einträge für Editoren ausschalten" : "Log-Einträge für Editoren einschalten",
+  },
+  {
+    key: "bookmarksEnabled",
+    header: "Lese\u00ADzeichen",
+    icon: <BookmarkIcon className="size-4" aria-hidden />,
+    label: (enabled) =>
+      enabled
+        ? "Lesezeichen (Meine Maßnahmen) ausschalten"
+        : "Lesezeichen (Meine Maßnahmen) einschalten",
   },
   {
     key: "evaluationsEnabled",
