@@ -12,6 +12,8 @@ type MapAsideSplitLayoutProps = {
   map: ReactNode
   className?: string
   asideClassName?: string
+  /** "end" puts the map first (left from lg, above the aside below lg). @default "start" */
+  asideSide?: "start" | "end"
 }
 
 export function MapAsideSplitLayout({
@@ -19,7 +21,31 @@ export function MapAsideSplitLayout({
   map,
   className,
   asideClassName,
+  asideSide = "start",
 }: MapAsideSplitLayoutProps) {
+  const asideElement = (
+    <aside
+      className={twJoin(
+        "min-h-0 w-full overflow-y-auto lg:h-full lg:w-[45%] lg:shrink-0",
+        asideClassName,
+      )}
+    >
+      {aside}
+    </aside>
+  )
+  const mapElement = (
+    <div
+      className={twJoin(
+        "flex min-h-0 min-w-0 flex-1 flex-col border-gray-200",
+        asideSide === "start"
+          ? "border-t lg:border-t-0 lg:border-l"
+          : "border-b lg:border-r lg:border-b-0",
+      )}
+    >
+      {map}
+    </div>
+  )
+
   return (
     <div
       className={twJoin(
@@ -27,17 +53,17 @@ export function MapAsideSplitLayout({
         className,
       )}
     >
-      <aside
-        className={twJoin(
-          "min-h-0 w-full overflow-y-auto lg:h-full lg:w-[45%] lg:shrink-0",
-          asideClassName,
-        )}
-      >
-        {aside}
-      </aside>
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col border-t border-gray-200 lg:border-t-0 lg:border-l">
-        {map}
-      </div>
+      {asideSide === "start" ? (
+        <>
+          {asideElement}
+          {mapElement}
+        </>
+      ) : (
+        <>
+          {mapElement}
+          {asideElement}
+        </>
+      )}
     </div>
   )
 }
