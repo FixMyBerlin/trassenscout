@@ -33,6 +33,16 @@ describe("uploadQueryCache", () => {
     expect(queryClient.getQueryState(uploadsWithSubsectionsKey)?.isInvalidated).toBe(true)
   })
 
+  it("invalidates the bookmark of a Maßnahme, which the server sets when a document is linked", async () => {
+    const queryClient = createQueryClient()
+    const bookmarkKey = ["subsubsectionBookmarks", "single", { projectSlug, subsubsectionId: 1 }]
+    queryClient.setQueryData(bookmarkKey, { bookmarked: false })
+
+    await invalidateAfterUploadChange(queryClient, projectSlug)
+
+    expect(queryClient.getQueryState(bookmarkKey)?.isInvalidated).toBe(true)
+  })
+
   it("invalidates the dashboard document list across projects", async () => {
     const queryClient = createQueryClient()
     const allProjectsKey = myUploadsInfiniteQueryOptions({}).queryKey

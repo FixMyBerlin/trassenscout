@@ -15,6 +15,7 @@ describe("invalidateAfterProjectRecordChange", () => {
       bySubsubsection: ["projectRecordsBySubsubsection", { projectSlug: "ohv" }],
       documentDetail: ["upload", { projectSlug: "ohv", id: 615 }],
       record: ["projectRecord", { projectSlug: "ohv", id: 272 }],
+      bookmark: ["subsubsectionBookmarks", "single", { projectSlug: "ohv", subsubsectionId: 1 }],
     }
     for (const queryKey of Object.values(keys)) queryClient.setQueryData(queryKey, {})
 
@@ -26,6 +27,8 @@ describe("invalidateAfterProjectRecordChange", () => {
     expect(isInvalidated(keys.assignedToMe)).toBe(true)
     expect(isInvalidated(keys.tabCounts)).toBe(true)
     expect(isInvalidated(keys.bySubsubsection)).toBe(true)
+    // The server bookmarks the Maßnahmen of a changed Protokoll for the user.
+    expect(isInvalidated(keys.bookmark)).toBe(true)
     // Cached forever by `uploadQueryOptions`: only an invalidation refreshes its links.
     expect(isInvalidated(keys.documentDetail)).toBe(true)
     // Still on screen after a delete until the navigation; refetching it would show a not-found.

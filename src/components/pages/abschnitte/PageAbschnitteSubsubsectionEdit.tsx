@@ -3,6 +3,7 @@ import { getRouteApi } from "@tanstack/react-router"
 import { Suspense } from "react"
 import { AbschnitteBreadcrumb } from "@/src/components/abschnitte/AbschnitteBreadcrumb"
 import { EditSubsubsectionForm } from "@/src/components/abschnitte/EditSubsubsectionForm"
+import { SubsubsectionBookmarkButton } from "@/src/components/abschnitte/SubsubsectionBookmarkButton"
 import { SubsubsectionMcpDraftAdminBox } from "@/src/components/abschnitte/SubsubsectionMcpDraftAdminBox"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import {
@@ -11,6 +12,7 @@ import {
 } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { Spinner } from "@/src/components/core/components/Spinner"
+import { projectBySlugQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 import { subsubsectionBySlugQueryOptions } from "@/src/server/subsubsections/subsubsectionQueryOptions"
 import { isSubsubsectionMcpDraftSearch } from "@/src/shared/subsubsections/searchSchemas"
 
@@ -22,12 +24,23 @@ export function PageAbschnitteSubsubsectionEdit() {
   const { projectSlug, subsectionSlug, subsubsectionSlug } = routeApi.useParams()
   const { mcpDraft } = routeApi.useSearch()
   const applyMcpDraft = isSubsubsectionMcpDraftSearch(mcpDraft)
+  const { data: project } = useSuspenseQuery(projectBySlugQueryOptions(projectSlug))
   const { data: subsubsection } = useSuspenseQuery(
     subsubsectionBySlugQueryOptions({ projectSlug, subsectionSlug, subsubsectionSlug }),
   )
   return (
     <>
-      <PageHeader breadcrumb={<AbschnitteBreadcrumb current="bearbeiten" />} />
+      <PageHeader
+        breadcrumb={<AbschnitteBreadcrumb current="bearbeiten" />}
+        action={
+          project.bookmarksEnabled ? (
+            <SubsubsectionBookmarkButton
+              projectSlug={projectSlug}
+              subsubsectionId={subsubsection.id}
+            />
+          ) : undefined
+        }
+      />
       <Suspense fallback={<Spinner />}>
         <div className={pageContentPaddingClassName}>
           <SubsubsectionMcpDraftAdminBox

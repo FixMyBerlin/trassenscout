@@ -1,5 +1,6 @@
 import type { FileUploadInfo } from "@better-upload/client"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { subsubsectionBookmarksQueryKey } from "@/src/server/subsubsectionBookmarks/subsubsectionBookmarksQueryOptions"
 import { createUploadFn, replaceUploadFileFn } from "@/src/server/uploads/uploads.functions"
 import { REPLACES_UPLOAD_ID_METADATA_KEY } from "@/src/shared/uploads/config"
 import { getS3Url } from "@/src/shared/uploads/url"
@@ -47,8 +48,14 @@ export function useUploadRecordCreation({
   assignSubsubsectionFromFilename,
   onFileRecordResult,
 }: Props) {
-  const createUpload = useMutation({ mutationFn: createUploadFn })
-  const replaceUploadFile = useMutation({ mutationFn: replaceUploadFileFn })
+  const queryClient = useQueryClient()
+  const refreshBookmarks = () =>
+    queryClient.invalidateQueries({ queryKey: subsubsectionBookmarksQueryKey })
+  const createUpload = useMutation({ mutationFn: createUploadFn, onSuccess: refreshBookmarks })
+  const replaceUploadFile = useMutation({
+    mutationFn: replaceUploadFileFn,
+    onSuccess: refreshBookmarks,
+  })
 
   return async function createUploadRecord(file: FileUploadInfo<"complete">) {
     const shared = {
