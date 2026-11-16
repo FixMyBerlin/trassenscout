@@ -1,6 +1,7 @@
 import type { QueryClient } from "@tanstack/react-query"
 import { invalidateUploadLists } from "@/src/components/uploads/uploadQueryCache"
 import { projectRecordQueryOptions } from "@/src/server/projectRecords/projectRecordsQueryOptions"
+import { subsubsectionBookmarksQueryKey } from "@/src/server/subsubsectionBookmarks/subsubsectionBookmarksQueryOptions"
 
 function invalidateProjectRecordLists(queryClient: QueryClient) {
   return Promise.all([
@@ -9,6 +10,7 @@ function invalidateProjectRecordLists(queryClient: QueryClient) {
     queryClient.invalidateQueries({ queryKey: ["projectRecordsTabCounts"] }),
     queryClient.invalidateQueries({ queryKey: ["projectRecordsBySubsubsection"] }),
     queryClient.invalidateQueries({ queryKey: ["projectRecordsByAcquisitionArea"] }),
+    queryClient.invalidateQueries({ queryKey: subsubsectionBookmarksQueryKey }),
   ])
 }
 

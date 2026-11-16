@@ -1,12 +1,14 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi, Outlet, useRouter } from "@tanstack/react-router"
 import { AbschnitteBreadcrumb } from "@/src/components/abschnitte/AbschnitteBreadcrumb"
+import { SubsubsectionBookmarkButton } from "@/src/components/abschnitte/SubsubsectionBookmarkButton"
 import { SubsubsectionMcpDraftAdminBox } from "@/src/components/abschnitte/SubsubsectionMcpDraftAdminBox"
 import { Link } from "@/src/components/core/components/links/Link"
 import { MAP_VIEWPORT_SHELL_CLASS } from "@/src/components/core/components/PageHeader/MapListViewLayout"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { TabsApp } from "@/src/components/core/components/Tabs/TabsApp"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
+import { projectBySlugQueryOptions } from "@/src/server/projects/projectsQueryOptions"
 import { subsubsectionBySlugQueryOptions } from "@/src/server/subsubsections/subsubsectionQueryOptions"
 
 const layoutRouteApi = getRouteApi(
@@ -18,6 +20,7 @@ export function LayoutSubsubsection() {
   const router = useRouter()
   const subsubsectionParams = { projectSlug, subsectionSlug, subsubsectionSlug }
 
+  const { data: project } = useSuspenseQuery(projectBySlugQueryOptions(projectSlug))
   const { data: subsubsection } = useSuspenseQuery(
     subsubsectionBySlugQueryOptions({ projectSlug, subsectionSlug, subsubsectionSlug }),
   )
@@ -52,15 +55,23 @@ export function LayoutSubsubsection() {
         info="Detailansicht der Maßnahme mit allgemeinen Informationen und Grunderwerb."
         tabs={tabs.length > 1 ? <TabsApp tabs={tabs} embedded /> : undefined}
         action={
-          <IfUserCanEdit>
-            <Link
-              icon="edit"
-              to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/edit"
-              params={subsubsectionParams}
-            >
-              bearbeiten
-            </Link>
-          </IfUserCanEdit>
+          <>
+            {project.bookmarksEnabled ? (
+              <SubsubsectionBookmarkButton
+                projectSlug={projectSlug}
+                subsubsectionId={subsubsection.id}
+              />
+            ) : null}
+            <IfUserCanEdit>
+              <Link
+                icon="edit"
+                to="/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/edit"
+                params={subsubsectionParams}
+              >
+                bearbeiten
+              </Link>
+            </IfUserCanEdit>
+          </>
         }
       />
       <SubsubsectionMcpDraftAdminBox

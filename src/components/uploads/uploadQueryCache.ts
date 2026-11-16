@@ -1,4 +1,5 @@
 import type { QueryClient } from "@tanstack/react-query"
+import { subsubsectionBookmarksQueryKey } from "@/src/server/subsubsectionBookmarks/subsubsectionBookmarksQueryOptions"
 import { geolocatedUploadsQueryOptions } from "@/src/server/uploads/geolocatedUploadsQueryOptions"
 import { uploadQueryOptions } from "@/src/server/uploads/uploadQueryOptions"
 import { uploadsQueryOptions } from "@/src/server/uploads/uploadsQueryOptions"
@@ -43,6 +44,7 @@ export function invalidateUploadLists(queryClient: QueryClient, projectSlug: str
     }),
     queryClient.invalidateQueries({ queryKey: ["uploadsWithSubsections"] }),
     queryClient.invalidateQueries({ queryKey: ["uploads", "mine"] }),
+    queryClient.invalidateQueries({ queryKey: subsubsectionBookmarksQueryKey }),
   ])
 }
 

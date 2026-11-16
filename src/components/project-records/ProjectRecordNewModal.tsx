@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { z } from "zod"
 import { FormDirtyStateReporter } from "@/src/components/core/components/forms/FormDirtyStateReporter"
@@ -19,6 +19,7 @@ import { getDate } from "@/src/components/project-records/utils/splitStartAt"
 import { ProjectRecordEditingState } from "@/src/prisma/generated/browser"
 import { createProjectRecordFn } from "@/src/server/projectRecords/projectRecords.functions"
 import type { ProjectRecordTemplateOption } from "@/src/server/projectRecordTemplates/types"
+import { subsubsectionBookmarksQueryKey } from "@/src/server/subsubsectionBookmarks/subsubsectionBookmarksQueryOptions"
 import {
   newProjectRecordFormDefaultValues,
   NewProjectRecordFormSchema,
@@ -103,7 +104,11 @@ export const ProjectRecordNewModal = ({
   landAcquisitionModuleEnabled = false,
   initialValues,
 }: Props) => {
-  const createProjectRecordMutation = useMutation({ mutationFn: createProjectRecordFn })
+  const queryClient = useQueryClient()
+  const createProjectRecordMutation = useMutation({
+    mutationFn: createProjectRecordFn,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: subsubsectionBookmarksQueryKey }),
+  })
   const { openProjectRecordDetail } = useProjectRecordModal()
   const [isDirty, setIsDirty] = useState(false)
   const [modalStep, setModalStep] = useState<"picker" | "form">(
