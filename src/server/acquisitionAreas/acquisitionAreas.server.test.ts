@@ -16,6 +16,7 @@ const mockDb = {
     create: vi.fn(),
     update: vi.fn(),
     findFirstOrThrow: vi.fn(),
+    findMany: vi.fn(),
   },
   acquisitionAreaStatus: {
     findMany: vi.fn(),
@@ -156,5 +157,83 @@ describe("createAcquisitionAreasFromSelection", () => {
 
     expect(mockTx.acquisitionArea.create).not.toHaveBeenCalled()
     expect(mockRecordSubsubsectionActivity).not.toHaveBeenCalled()
+  })
+})
+
+describe("user ids are not sent to the client", () => {
+  const row = {
+    id: 3,
+    subsubsectionId: 5,
+    parcel: { alkisParcelId: "1" },
+    createdById: 9,
+    updatedById: 8,
+  }
+
+  test("getAcquisitionArea selects only needed Maßnahme fields and strips the ids", async () => {
+    const { getAcquisitionArea } = await import("./acquisitionAreas.server")
+    mockDb.acquisitionArea.findFirstOrThrow.mockResolvedValue(row)
+
+    const result = await getAcquisitionArea(headers, { projectSlug: "rs23", id: 3 })
+
+    const { include } = mockDb.acquisitionArea.findFirstOrThrow.mock.calls[0]![0]
+    expect(include.subsubsection).not.toHaveProperty("include")
+    expect(include.subsubsection.select).not.toHaveProperty("createdById")
+    expect(include.subsubsection.select).not.toHaveProperty("updatedById")
+    expect(include.subsubsection.select).not.toHaveProperty("managerId")
+    expect(result).not.toHaveProperty("createdById")
+    expect(result).not.toHaveProperty("updatedById")
+  })
+
+  test("getAcquisitionAreas strips the ids, also of the session user", async () => {
+    const { getAcquisitionAreas } = await import("./acquisitionAreas.server")
+    mockDb.acquisitionArea.findMany.mockResolvedValue([
+      row,
+      { ...row, id: 4, createdById: 7, updatedById: null },
+    ])
+
+    const result = await getAcquisitionAreas(headers, { projectSlug: "rs23" })
+
+    expect(result).toHaveLength(2)
+    for (const area of result) {
+      expect(area).not.toHaveProperty("createdById")
+      expect(area).not.toHaveProperty("updatedById")
+    }
+  })
+
+  test("updateAcquisitionArea strips the ids from the returned row", async () => {
+    const { updateAcquisitionArea } = await import("./acquisitionAreas.server")
+    mockDb.acquisitionArea.findFirstOrThrow.mockResolvedValue({ id: 3 })
+    mockDb.acquisitionArea.update.mockResolvedValue(row)
+
+    const result = await updateAcquisitionArea(headers, { projectSlug: "rs23", id: 3 } as never)
+
+    expect(result).not.toHaveProperty("createdById")
+    expect(result).not.toHaveProperty("updatedById")
+  })
+
+  test("createAcquisitionArea strips the ids from the returned row", async () => {
+    const { createAcquisitionArea } = await import("./acquisitionAreas.server")
+    mockDb.acquisitionArea.create.mockResolvedValue(row)
+
+    const result = await createAcquisitionArea(headers, {
+      projectSlug: "rs23",
+      subsubsectionId: 5,
+    } as never)
+
+    expect(result).not.toHaveProperty("createdById")
+    expect(result).not.toHaveProperty("updatedById")
+  })
+
+  test("getAcquisitionAreasBySubsubsection strips the ids", async () => {
+    const { getAcquisitionAreasBySubsubsection } = await import("./acquisitionAreas.server")
+    mockDb.acquisitionArea.findMany.mockResolvedValue([{ ...row, geometry: { type: "Polygon" } }])
+
+    const [result] = await getAcquisitionAreasBySubsubsection(headers, {
+      projectSlug: "rs23",
+      subsubsectionId: 5,
+    })
+
+    expect(result).not.toHaveProperty("createdById")
+    expect(result).not.toHaveProperty("updatedById")
   })
 })

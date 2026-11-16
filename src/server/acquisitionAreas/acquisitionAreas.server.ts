@@ -33,14 +33,28 @@ type AcquisitionAreaInput = z.infer<typeof AcquisitionAreaSchema>
 const acquisitionAreaInclude = {
   acquisitionAreaStatus: true,
   parcel: true,
+  // Narrow `select`: the full Maßnahme row would send its `createdById` / `updatedById` / `managerId`
+  // to the client unredacted.
   subsubsection: {
-    include: {
+    select: {
+      id: true,
+      slug: true,
+      type: true,
+      geometry: true,
       subsection: {
         select: { slug: true },
       },
     },
   },
 } as const
+
+/** Who created or last edited a Grunderwerbsfläche is stored, but not sent to the client. */
+function omitAuditUserIds<T extends { createdById: number | null; updatedById: number | null }>(
+  row: T,
+) {
+  const { createdById: _createdById, updatedById: _updatedById, ...rest } = row
+  return rest
+}
 
 function acquisitionAreaInProjectWhere(projectSlug: string, id: number) {
   return { id, subsubsection: { subsection: { project: { slug: projectSlug } } } }
@@ -58,7 +72,7 @@ export async function getAcquisitionAreas(
   input: z.infer<typeof GetAcquisitionAreasSchema>,
 ) {
   await endpointAuth.projectRole(headers, input.projectSlug, viewerRoles)
-  return db.acquisitionArea.findMany({
+  const rows = await db.acquisitionArea.findMany({
     include: acquisitionAreaInclude,
     orderBy: { id: "asc" },
     where: {
@@ -68,6 +82,7 @@ export async function getAcquisitionAreas(
       },
     },
   })
+  return rows.map(omitAuditUserIds)
 }
 
 export async function getAcquisitionArea(
@@ -75,10 +90,11 @@ export async function getAcquisitionArea(
   input: z.infer<typeof GetAcquisitionAreaSchema>,
 ) {
   await endpointAuth.projectRole(headers, input.projectSlug, viewerRoles)
-  return db.acquisitionArea.findFirstOrThrow({
+  const row = await db.acquisitionArea.findFirstOrThrow({
     include: acquisitionAreaInclude,
     where: acquisitionAreaInProjectWhere(input.projectSlug, input.id),
   })
+  return omitAuditUserIds(row)
 }
 
 export async function createAcquisitionArea(
@@ -117,7 +133,7 @@ export async function createAcquisitionArea(
     },
   })
 
-  return record
+  return omitAuditUserIds(record)
 }
 
 export async function updateAcquisitionArea(
@@ -164,7 +180,7 @@ export async function updateAcquisitionArea(
     },
   })
 
-  return record
+  return omitAuditUserIds(record)
 }
 
 export async function deleteAcquisitionArea(
@@ -204,7 +220,7 @@ export async function getAcquisitionAreasBySubsubsection(
   input: z.infer<typeof GetAcquisitionAreasBySubsubsectionSchema>,
 ) {
   await endpointAuth.projectRole(headers, input.projectSlug, viewerRoles)
-  const acquisitionAreas = await db.acquisitionArea.findMany({
+  const rows = await db.acquisitionArea.findMany({
     where: {
       subsubsectionId: input.subsubsectionId,
       subsubsection: {
@@ -226,6 +242,7 @@ export async function getAcquisitionAreasBySubsubsection(
     },
     orderBy: { id: "asc" },
   })
+  const acquisitionAreas = rows.map(omitAuditUserIds)
 
   return acquisitionAreas.map(
     (acquisitionArea) =>
