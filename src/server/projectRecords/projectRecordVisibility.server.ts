@@ -1,4 +1,9 @@
-import { ProjectRecordReviewState, ProjectRecordType } from "@/src/prisma/generated/browser"
+import {
+  type MembershipRoleEnum,
+  ProjectRecordReviewState,
+  ProjectRecordType,
+} from "@/src/prisma/generated/browser"
+import { editorRoles } from "@/src/server/authorization/constants"
 
 export function projectRecordOverviewVisibilityWhere(aiEnabled: boolean) {
   const where = {
@@ -29,4 +34,16 @@ export function projectRecordDetailVisibilityWhere(aiEnabled: boolean, canEdit: 
       ...(canEdit && aiEnabled ? [{ reviewState: ProjectRecordReviewState.NEEDSREVIEW }] : []),
     ],
   }
+}
+
+/**
+ * Visibility for Protokoll lists: only entries the detail page opens for this user.
+ * `membershipRole` is null for global admins, who may edit everywhere.
+ */
+export function projectRecordListVisibilityWhere(
+  aiEnabled: boolean,
+  membershipRole: MembershipRoleEnum | null,
+) {
+  const canEdit = membershipRole === null || editorRoles.includes(membershipRole)
+  return projectRecordDetailVisibilityWhere(aiEnabled, canEdit)
 }

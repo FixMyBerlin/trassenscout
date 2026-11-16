@@ -17,6 +17,7 @@ import {
   redactUploadUsers,
 } from "@/src/server/memberships/redactFormerProjectMemberUser.server"
 import { projectRecordDetailVisibilityWhere } from "@/src/server/projectRecords/projectRecordVisibility.server"
+import { recordSubsubsectionActivity } from "@/src/server/subsubsectionBookmarks/recordSubsubsectionActivity.server"
 import { AuthorizationError } from "@/src/shared/auth/errors"
 import {
   connectIds,
@@ -383,6 +384,11 @@ export async function createUpload(headers: Headers, input: z.infer<typeof Creat
     include: uploadWithSubsectionsInclude,
   })
 
+  await recordSubsubsectionActivity({
+    subsubsectionIds: relationIds(upload.subsubsections),
+    userId: Number(session.userId),
+  })
+
   const parentMessages: string[] = []
   for (const subsubsection of upload.subsubsections ?? []) {
     parentMessages.push(`zur Maßnahme ${frenchQuote(shortTitle(subsubsection.slug))}`)
@@ -481,6 +487,18 @@ export async function updateUpload(headers: Headers, input: z.infer<typeof Updat
     data: updateUploadData(data, projectId, Number(session.userId)),
     include: uploadWithSubsectionsInclude,
   })
+
+  const previousSubsubsectionIds = new Set(relationIds(previousUpload.subsubsections))
+  const newSubsubsectionIds = relationIds(upload.subsubsections).filter(
+    (subsubsectionId) => !previousSubsubsectionIds.has(subsubsectionId),
+  )
+  if (newSubsubsectionIds.length > 0) {
+    await recordSubsubsectionActivity({
+      subsubsectionIds: newSubsubsectionIds,
+      userId: Number(session.userId),
+    })
+  }
+
   await createLogEntry({
     action: "UPDATE",
     message: `Dokument ${frenchQuote(upload.title)} wurde bearbeitet.`,
@@ -633,6 +651,17 @@ export async function replaceUploadFile(
     },
     include: uploadWithSubsectionsInclude,
   })
+
+  const previousSubsubsectionIds = new Set(relationIds(previousUpload.subsubsections))
+  const newSubsubsectionIds = relationIds(upload.subsubsections).filter(
+    (subsubsectionId) => !previousSubsubsectionIds.has(subsubsectionId),
+  )
+  if (newSubsubsectionIds.length > 0) {
+    await recordSubsubsectionActivity({
+      subsubsectionIds: newSubsubsectionIds,
+      userId: Number(session.userId),
+    })
+  }
 
   await createLogEntry({
     action: "UPDATE",

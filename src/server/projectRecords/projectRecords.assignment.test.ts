@@ -45,6 +45,13 @@ vi.mock("@/src/server/logEntries/create/createLogEntry", () => ({
   createLogEntry: mockCreateLogEntry,
 }))
 
+const mockAddSubsubsectionBookmarks = vi.fn().mockResolvedValue(undefined)
+
+vi.mock("@/src/server/subsubsectionBookmarks/recordSubsubsectionActivity.server", () => ({
+  addSubsubsectionBookmarks: mockAddSubsubsectionBookmarks,
+  recordSubsubsectionActivity: vi.fn(),
+}))
+
 vi.mock("@/emails/mailers/projectRecordAssignedNotificationToUser", () => ({
   projectRecordAssignedNotificationToUser: vi.fn(async () => ({ send: mockSend })),
 }))
@@ -170,6 +177,73 @@ describe("patchProjectRecordAssignment", () => {
         message: expect.stringContaining("Bearbeitungsstatus"),
       }),
     )
+  })
+
+  test("bookmarks all linked Maßnahmen for the new assignee and the acting user", async () => {
+    mockDb.projectRecord.findFirstOrThrow.mockResolvedValueOnce(previousRecord)
+    mockDb.projectRecord.update.mockResolvedValueOnce({
+      title: "Protokoll",
+      assignedToId: 3,
+      editingState: ProjectRecordEditingState.PENDING,
+      subsubsectionId: 21,
+      subsubsections: [{ id: 22 }, { id: 21 }],
+    })
+    const { patchProjectRecordAssignment } = await import("./projectRecords.server")
+
+    await patchProjectRecordAssignment(headers, {
+      projectSlug: "rs23",
+      id: 12,
+      assignedToId: 3,
+      editingState: ProjectRecordEditingState.PENDING,
+    })
+
+    expect(mockAddSubsubsectionBookmarks).toHaveBeenCalledWith({
+      subsubsectionIds: [22, 21],
+      userIds: [3, 2],
+    })
+  })
+
+  test("bookmarks nothing when the assignment is removed or unchanged", async () => {
+    const { patchProjectRecordAssignment } = await import("./projectRecords.server")
+    mockDb.projectRecord.findFirstOrThrow.mockResolvedValueOnce({
+      ...previousRecord,
+      assignedToId: 3,
+    })
+    mockDb.projectRecord.update.mockResolvedValueOnce({
+      title: "Protokoll",
+      assignedToId: null,
+      editingState: ProjectRecordEditingState.PENDING,
+      subsubsectionId: 21,
+      subsubsections: [],
+    })
+
+    await patchProjectRecordAssignment(headers, {
+      projectSlug: "rs23",
+      id: 12,
+      assignedToId: null,
+      editingState: ProjectRecordEditingState.PENDING,
+    })
+
+    mockDb.projectRecord.findFirstOrThrow.mockResolvedValueOnce({
+      ...previousRecord,
+      assignedToId: 3,
+    })
+    mockDb.projectRecord.update.mockResolvedValueOnce({
+      title: "Protokoll",
+      assignedToId: 3,
+      editingState: ProjectRecordEditingState.COMPLETED,
+      subsubsectionId: 21,
+      subsubsections: [],
+    })
+
+    await patchProjectRecordAssignment(headers, {
+      projectSlug: "rs23",
+      id: 12,
+      assignedToId: 3,
+      editingState: ProjectRecordEditingState.COMPLETED,
+    })
+
+    expect(mockAddSubsubsectionBookmarks).not.toHaveBeenCalled()
   })
 
   test("records who assigned and when", async () => {

@@ -215,7 +215,12 @@ describe("MCP direct write", () => {
 
     expect(result.items[0]?.mode).toBe("applied")
     expect(result.appliedCount).toBe(1)
-    expect(mockDb.subsubsection.update).toHaveBeenCalled()
+    expect(mockDb.subsubsection.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ updatedBy: { connect: { id: 42 } } }),
+      }),
+    )
+    expect(mockDb.subsubsection.update.mock.calls[0]?.[0].data).not.toHaveProperty("createdBy")
     expect(mockDb.mcpDraft.deleteMany).toHaveBeenCalledWith({ where: { subsubsectionId: 10 } })
     expect(mockDb.mcpDraft.upsert).not.toHaveBeenCalled()
     expect(mockCreateLogEntry).toHaveBeenCalledWith(
@@ -244,7 +249,7 @@ describe("MCP direct write", () => {
     })
     expect(measure.items[0]?.mode).toBe("applied")
     expect(mockDb.subsubsection.update).toHaveBeenCalledWith(
-      expect.objectContaining({ data: { description: null } }),
+      expect.objectContaining({ data: { description: null, updatedBy: { connect: { id: 42 } } } }),
     )
 
     const pa = {
@@ -335,7 +340,13 @@ describe("MCP direct write", () => {
     expect(result.appliedCount).toBe(1)
     expect(mockDb.subsubsection.create).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: expect.objectContaining({ slug: "neu1", subsectionId: 1, lengthM: 12 }),
+        data: expect.objectContaining({
+          slug: "neu1",
+          subsectionId: 1,
+          lengthM: 12,
+          createdById: 42,
+          updatedById: 42,
+        }),
       }),
     )
     expect(mockDb.mcpDraft.deleteMany).toHaveBeenCalledWith({

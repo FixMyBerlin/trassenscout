@@ -55,6 +55,11 @@ vi.mock("@/src/server/auth/endpointAuth.server", () => ({
 }))
 
 const mockCreateLogEntry = vi.fn().mockResolvedValue(undefined)
+const mockRecordSubsubsectionActivity = vi.fn().mockResolvedValue(undefined)
+
+vi.mock("@/src/server/subsubsectionBookmarks/recordSubsubsectionActivity.server", () => ({
+  recordSubsubsectionActivity: mockRecordSubsubsectionActivity,
+}))
 
 vi.mock("@/src/server/logEntries/create/createLogEntry", () => ({
   createLogEntry: mockCreateLogEntry,
@@ -319,6 +324,45 @@ describe("createUpload", () => {
     )
   })
 
+  test("records upload activity for the linked Maßnahmen", async () => {
+    const { createUpload } = await import("./uploads.server")
+    mockEndpointAuth.projectRole.mockResolvedValueOnce({
+      projectId: 1,
+      membershipRole: "EDITOR",
+      session: { userId: 2, role: "USER" },
+    })
+    mockDb.subsubsection.findMany.mockResolvedValue([{ id: 5 }, { id: 6 }])
+    mockDb.upload.create.mockResolvedValue({
+      id: 77,
+      title: "Foto.jpg",
+      subsubsections: [
+        { id: 5, slug: "rf1" },
+        { id: 6, slug: "rf2" },
+      ],
+    })
+
+    await createUpload(headers, {
+      ...baseInput,
+      surveyResponseId: null,
+      subsubsections: [5, 6],
+    })
+
+    expect(mockRecordSubsubsectionActivity).toHaveBeenCalledWith({
+      subsubsectionIds: [5, 6],
+      userId: 2,
+    })
+  })
+
+  test("passes an empty list, which the helper ignores, without linked Maßnahmen", async () => {
+    const { createUpload } = await import("./uploads.server")
+
+    await createUpload(headers, baseInput)
+
+    expect(mockRecordSubsubsectionActivity).toHaveBeenCalledWith(
+      expect.objectContaining({ subsubsectionIds: [] }),
+    )
+  })
+
   test("rejects viewer project-record uploads that also set extra relations", async () => {
     const { createUpload } = await import("./uploads.server")
 
@@ -513,6 +557,67 @@ describe("createUpload", () => {
     ).rejects.toBeInstanceOf(AuthorizationError)
     expect(mockDb.upload.update).not.toHaveBeenCalled()
   })
+
+  describe("upload activity", () => {
+    const previousUpload = {
+      id: 77,
+      collaborationPath: null,
+      collaborationUrl: null,
+      externalUrl: projectExternalUrl,
+      subsubsections: [{ id: 5 }],
+    }
+
+    beforeEach(() => {
+      mockEndpointAuth.projectRole.mockResolvedValueOnce({
+        projectId: 1,
+        membershipRole: "EDITOR",
+        session: { userId: "7", role: "USER" },
+      })
+      mockDb.upload.findFirstOrThrow.mockResolvedValueOnce(previousUpload)
+    })
+
+    test("records activity only for newly linked Maßnahmen", async () => {
+      const { replaceUploadFile } = await import("./uploads.server")
+      mockDb.subsubsection.findMany.mockResolvedValueOnce([{ id: 5 }, { id: 6 }])
+      mockDb.upload.update.mockResolvedValueOnce({
+        id: 77,
+        externalUrl: replacementExternalUrl,
+        subsubsections: [{ id: 5 }, { id: 6 }],
+      })
+
+      await replaceUploadFile(headers, {
+        id: 77,
+        projectSlug: "rs23",
+        externalUrl: replacementExternalUrl,
+        subsubsections: [5, 6],
+      })
+
+      expect(mockRecordSubsubsectionActivity).toHaveBeenCalledTimes(1)
+      expect(mockRecordSubsubsectionActivity).toHaveBeenCalledWith({
+        subsubsectionIds: [6],
+        userId: 7,
+      })
+    })
+
+    test("records no activity when no Maßnahme is newly linked", async () => {
+      const { replaceUploadFile } = await import("./uploads.server")
+      mockDb.subsubsection.findMany.mockResolvedValueOnce([{ id: 5 }])
+      mockDb.upload.update.mockResolvedValueOnce({
+        id: 77,
+        externalUrl: replacementExternalUrl,
+        subsubsections: [{ id: 5 }],
+      })
+
+      await replaceUploadFile(headers, {
+        id: 77,
+        projectSlug: "rs23",
+        externalUrl: replacementExternalUrl,
+        subsubsections: [5],
+      })
+
+      expect(mockRecordSubsubsectionActivity).not.toHaveBeenCalled()
+    })
+  })
 })
 
 describe("deleteUploadIfOrphan", () => {
@@ -691,5 +796,40 @@ describe("updateUpload", () => {
         updatedRecord: expect.objectContaining({ externalShareEnabled: true }),
       }),
     )
+  })
+
+  test("records upload activity only for newly linked Maßnahmen", async () => {
+    const { updateUpload } = await import("./uploads.server")
+    mockDb.subsubsection.findMany.mockResolvedValue([{ id: 5 }, { id: 6 }])
+    mockDb.upload.findFirstOrThrow.mockResolvedValue({
+      ...previousUpload,
+      subsubsections: [{ id: 5 }],
+    })
+    mockDb.upload.update.mockResolvedValue({
+      ...previousUpload,
+      subsubsections: [{ id: 5 }, { id: 6 }],
+    })
+
+    await updateUpload(headers, { ...input, subsubsections: [5, 6] })
+
+    expect(mockRecordSubsubsectionActivity).toHaveBeenCalledTimes(1)
+    expect(mockRecordSubsubsectionActivity).toHaveBeenCalledWith({
+      subsubsectionIds: [6],
+      userId: 7,
+    })
+  })
+
+  test("records no upload activity when the Maßnahmen stay the same", async () => {
+    const { updateUpload } = await import("./uploads.server")
+    mockDb.subsubsection.findMany.mockResolvedValue([{ id: 5 }])
+    mockDb.upload.findFirstOrThrow.mockResolvedValue({
+      ...previousUpload,
+      subsubsections: [{ id: 5 }],
+    })
+    mockDb.upload.update.mockResolvedValue({ ...previousUpload, subsubsections: [{ id: 5 }] })
+
+    await updateUpload(headers, { ...input, subsubsections: [5] })
+
+    expect(mockRecordSubsubsectionActivity).not.toHaveBeenCalled()
   })
 })

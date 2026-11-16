@@ -190,7 +190,7 @@ export async function importSubsubsectionFromApi(request: Request) {
 
       result = await db.subsubsection.update({
         where: { id: existing.id },
-        data: { ...subsubsectionData, ...connect },
+        data: { ...subsubsectionData, ...connect, updatedById: userId },
         select: { id: true, ...subsubsectionLogSnapshotSelect },
       })
       action = "updated"
@@ -206,9 +206,12 @@ export async function importSubsubsectionFromApi(request: Request) {
       })
     } else {
       result = await db.subsubsection.create({
-        data: { ...subsubsectionData, ...connect } as Parameters<
-          typeof db.subsubsection.create
-        >[0]["data"],
+        data: {
+          ...subsubsectionData,
+          ...connect,
+          createdById: userId,
+          updatedById: userId,
+        } as Parameters<typeof db.subsubsection.create>[0]["data"],
         select: { id: true, ...subsubsectionLogSnapshotSelect },
       })
       action = "created"

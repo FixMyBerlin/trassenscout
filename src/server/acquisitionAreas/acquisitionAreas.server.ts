@@ -7,6 +7,7 @@ import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
 import db from "@/src/server/db.server"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
+import { recordSubsubsectionActivity } from "@/src/server/subsubsectionBookmarks/recordSubsubsectionActivity.server"
 import { AcquisitionAreaSchema } from "@/src/shared/acquisitionAreas/schemas"
 import { NotFoundError } from "@/src/shared/auth/errors"
 import { deleteAcquisitionAreasAndOrphanParcels } from "./_utils/deleteAcquisitionAreasAndOrphanParcels"
@@ -88,9 +89,15 @@ export async function createAcquisitionArea(
   const { projectSlug, ...data } = input
   await validateAcquisitionAreaInput({ projectSlug, ...data })
 
+  const userId = Number(session.userId)
   const record = await db.acquisitionArea.create({
-    data: acquisitionAreaData(data),
+    data: { ...acquisitionAreaData(data), createdById: userId, updatedById: userId },
     include: acquisitionAreaInclude,
+  })
+
+  await recordSubsubsectionActivity({
+    subsubsectionIds: [record.subsubsectionId],
+    userId: Number(session.userId),
   })
 
   await createLogEntry({
@@ -135,7 +142,7 @@ export async function updateAcquisitionArea(
 
   const record = await db.acquisitionArea.update({
     where: { id: previous.id },
-    data: acquisitionAreaData(data),
+    data: { ...acquisitionAreaData(data), updatedById: Number(session.userId) },
     include: acquisitionAreaInclude,
   })
 
@@ -292,6 +299,7 @@ export async function createAcquisitionAreasFromSelection(
 ) {
   const { session } = await endpointAuth.projectRole(headers, input.projectSlug, editorRoles)
   const { projectSlug, subsubsectionId, acquisitionAreas } = input
+  const userId = Number(session.userId)
 
   const subsubsection = await db.subsubsection.findFirstOrThrow({
     where: {
@@ -376,6 +384,7 @@ export async function createAcquisitionAreasFromSelection(
           data: {
             geometry: acquisitionArea.geometry,
             bufferRadiusM: acquisitionArea.bufferRadiusM ?? null,
+            updatedById: userId,
           },
         })
         updatedAcquisitionAreasCount += 1
@@ -394,6 +403,8 @@ export async function createAcquisitionAreasFromSelection(
           bufferRadiusM: acquisitionArea.bufferRadiusM ?? null,
           description: acquisitionArea.description ?? null,
           acquisitionAreaStatusId: acquisitionArea.acquisitionAreaStatusId ?? null,
+          createdById: userId,
+          updatedById: userId,
         },
         select: { id: true, parcelId: true },
       })
@@ -413,6 +424,11 @@ export async function createAcquisitionAreasFromSelection(
   const created = result.createdAcquisitionAreas.length
 
   if (created > 0) {
+    await recordSubsubsectionActivity({
+      subsubsectionIds: [subsubsection.id],
+      userId,
+    })
+
     await createLogEntry({
       action: "CREATE",
       message: `${created} Erwerbsflächen für Maßnahme ${frenchQuote(shortTitle(subsubsection.slug))} wurden erstellt.`,

@@ -1,6 +1,7 @@
 import { z } from "zod"
 import { frenchQuote } from "@/src/components/core/components/text/quote"
 import { shortTitle } from "@/src/components/core/components/text/titles"
+import { type MembershipRoleEnum, UserRoleEnum } from "@/src/prisma/generated/browser"
 import { Prisma } from "@/src/prisma/generated/client"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
@@ -11,7 +12,11 @@ import {
   formerMemberFk,
   loadUserRedactionContext,
   serializeProjectUser,
+  type ProjectUserDto,
+  type UserRedactionContext,
 } from "@/src/server/memberships/redactFormerProjectMemberUser.server"
+import { projectRecordListVisibilityWhere } from "@/src/server/projectRecords/projectRecordVisibility.server"
+import { addSubsubsectionBookmarks } from "@/src/server/subsubsectionBookmarks/recordSubsubsectionActivity.server"
 import { connectIds, idsFromFormValue, setIds } from "@/src/shared/prisma/connectIds"
 import {
   parseDefinitions,
@@ -44,6 +49,36 @@ const subsubsectionListInclude = {
   SubsubsectionInfra: { select: { title: true, slug: true } },
   specialFeatures: { select: { id: true, title: true } },
 } as const
+
+// Only for list rows: `updatedBy` must be redacted, so the detail include must not inherit it.
+// `role` only decides whether a non-member is a global admin (see `mapSubsubsectionListRows`);
+// it is not passed on to the client.
+export const subsubsectionListRowInclude = {
+  ...subsubsectionListInclude,
+  updatedBy: { select: { id: true, firstName: true, lastName: true, role: true } },
+  _count: { select: { uploads: true } },
+} as const
+
+type SubsubsectionListQueryRow = Prisma.SubsubsectionGetPayload<{
+  include: typeof subsubsectionListRowInclude
+}>
+
+// Distributive, so the `type`/`geometry` union of `SubsubsectionWithPosition` stays intact.
+type DistributiveOmit<T, K extends PropertyKey> = T extends unknown ? Omit<T, K> : never
+
+type SubsubsectionListRowBase = DistributiveOmit<SubsubsectionWithPosition, "subsection">
+
+export type SubsubsectionListRow = SubsubsectionListRowBase & {
+  subsection: { id: number; slug: string }
+  /**
+   * Redacted like `manager`, except that a global admin who is no project member is `null`
+   * (not a "former member").
+   */
+  updatedBy: ProjectUserDto | null
+  uploadCount: number
+  /** Protokolle the current user sees in the Maßnahme's Protokoll list. */
+  projectRecordCount: number
+}
 
 const subsubsectionDetailInclude = {
   ...subsubsectionListInclude,
@@ -190,11 +225,106 @@ function subsubsectionUpdateData(input: SubsubsectionInput, extraFields: Prisma.
   }
 }
 
+export type ProjectRecordVisibilityScope = {
+  projectId: number
+  aiEnabled: boolean
+  /** Null for global admins. */
+  membershipRole: MembershipRoleEnum | null
+}
+
+/**
+ * Number of Protokolle per Maßnahme, as the current user sees them in the Maßnahme's Protokoll list
+ * (`getProjectRecordsBySubsubsection`): linked directly or via the m2n relation, same visibility
+ * filter. One query for all Maßnahmen; a record linked both ways counts once.
+ */
+export async function countVisibleProjectRecordsBySubsubsection(
+  subsubsectionIds: number[],
+  scopes: ProjectRecordVisibilityScope[],
+) {
+  const counts = new Map<number, number>()
+  if (subsubsectionIds.length === 0 || scopes.length === 0) return counts
+
+  const projectRecords = await db.projectRecord.findMany({
+    where: {
+      OR: scopes.map(({ projectId, aiEnabled, membershipRole }) => ({
+        projectId,
+        ...projectRecordListVisibilityWhere(aiEnabled, membershipRole),
+      })),
+      AND: [
+        {
+          OR: [
+            { subsubsectionId: { in: subsubsectionIds } },
+            { subsubsections: { some: { id: { in: subsubsectionIds } } } },
+          ],
+        },
+      ],
+    },
+    select: {
+      subsubsectionId: true,
+      subsubsections: { where: { id: { in: subsubsectionIds } }, select: { id: true } },
+    },
+  })
+
+  const wanted = new Set(subsubsectionIds)
+  for (const record of projectRecords) {
+    const linked = new Set(record.subsubsections.map(({ id }) => id))
+    if (record.subsubsectionId !== null && wanted.has(record.subsubsectionId)) {
+      linked.add(record.subsubsectionId)
+    }
+    for (const id of linked) counts.set(id, (counts.get(id) ?? 0) + 1)
+  }
+  return counts
+}
+
+/**
+ * Global admins can save a Maßnahme without being project members. They are not "former members",
+ * so they get no name at all and the UI shows only the date.
+ */
+function serializeUpdatedBy(
+  user: SubsubsectionListQueryRow["updatedBy"],
+  context: UserRedactionContext,
+) {
+  if (!user) return null
+  const { role, ...publicUser } = user
+  const isMember = user.id === context.sessionUserId || context.memberUserIds.has(user.id)
+  if (role === UserRoleEnum.ADMIN && !isMember) return null
+  return serializeProjectUser(publicUser, context)
+}
+
+export function mapSubsubsectionListRows<Row extends SubsubsectionListQueryRow>(
+  rows: Row[],
+  {
+    redactionContextFor,
+    projectRecordCounts,
+  }: {
+    redactionContextFor: (row: Row) => UserRedactionContext
+    projectRecordCounts: Map<number, number>
+  },
+): SubsubsectionListRow[] {
+  return rows.map((row) => {
+    const redactionContext = redactionContextFor(row)
+    const { _count, ...rest } = row
+    // Same optimistic geometry typing as in `getSubsubsection`.
+    const { updatedBy, ...typed } = typeSubsubsectionGeometry(rest) as typeof rest &
+      SubsubsectionListRowBase
+    return {
+      ...typed,
+      manager: serializeProjectUser(row.manager, redactionContext),
+      managerId: formerMemberFk(row.managerId, redactionContext),
+      updatedBy: serializeUpdatedBy(updatedBy, redactionContext),
+      createdById: formerMemberFk(row.createdById, redactionContext),
+      updatedById: formerMemberFk(row.updatedById, redactionContext),
+      uploadCount: _count.uploads,
+      projectRecordCount: projectRecordCounts.get(row.id) ?? 0,
+    }
+  })
+}
+
 export async function getSubsubsections(
   headers: Headers,
   input: z.infer<typeof GetSubsubsectionsSchema>,
 ) {
-  const { projectId, session } = await endpointAuth.projectRole(
+  const { projectId, session, membershipRole } = await endpointAuth.projectRole(
     headers,
     input.projectSlug,
     viewerRoles,
@@ -207,21 +337,20 @@ export async function getSubsubsections(
         ...(input.subsectionId ? { id: input.subsectionId } : {}),
       },
     },
-    include: subsubsectionListInclude,
+    include: subsubsectionListRowInclude,
   })
-  const redactionContext = await loadUserRedactionContext(
-    projectId,
-    session.role,
-    Number(session.userId),
+  const [redactionContext, project] = await Promise.all([
+    loadUserRedactionContext(projectId, session.role, Number(session.userId)),
+    db.project.findUnique({ where: { id: projectId }, select: { aiEnabled: true } }),
+  ])
+  const projectRecordCounts = await countVisibleProjectRecordsBySubsubsection(
+    subsubsections.map(({ id }) => id),
+    [{ projectId, aiEnabled: project?.aiEnabled ?? false, membershipRole }],
   )
 
-  return subsubsections.map((subsubsection) => {
-    const typed = typeSubsubsectionGeometry(subsubsection) as unknown as SubsubsectionWithPosition
-    return {
-      ...typed,
-      manager: serializeProjectUser(subsubsection.manager, redactionContext),
-      managerId: formerMemberFk(subsubsection.managerId, redactionContext),
-    }
+  return mapSubsubsectionListRows(subsubsections, {
+    redactionContextFor: () => redactionContext,
+    projectRecordCounts,
   })
 }
 
@@ -249,6 +378,8 @@ export async function getSubsubsection(
     ...typed,
     manager: serializeProjectUser(subsubsection.manager, redactionContext),
     managerId: formerMemberFk(subsubsection.managerId, redactionContext),
+    createdById: formerMemberFk(subsubsection.createdById, redactionContext),
+    updatedById: formerMemberFk(subsubsection.updatedById, redactionContext),
   }
 }
 
@@ -282,6 +413,8 @@ export async function getSubsubsectionBySlug(
     ...typed,
     manager: serializeProjectUser(subsubsection.manager, redactionContext),
     managerId: formerMemberFk(subsubsection.managerId, redactionContext),
+    createdById: formerMemberFk(subsubsection.createdById, redactionContext),
+    updatedById: formerMemberFk(subsubsection.updatedById, redactionContext),
   }
 }
 
@@ -295,15 +428,21 @@ export async function createSubsubsection(
     editorRoles,
   )
   const { projectSlug, ...data } = input
+  const userId = Number(session.userId)
   await validateSubsubsectionRelations(projectSlug, data)
   const extraFields = await subsubsectionExtraFieldsData(projectSlug, data.extraFields)
 
   const record = await db.subsubsection.create({
-    data: subsubsectionData(data, extraFields),
+    data: { ...subsubsectionData(data, extraFields), createdById: userId, updatedById: userId },
     include: { manager: subsubsectionListInclude.manager },
   })
 
   await deleteSubsubsectionMcpCreateDraftBySlug(record.subsectionId, record.slug)
+
+  await addSubsubsectionBookmarks({
+    subsubsectionIds: [record.id],
+    userIds: [userId, record.managerId],
+  })
 
   await createLogEntry({
     action: "CREATE",
@@ -368,6 +507,8 @@ export async function createSubsubsection(
     ...record,
     manager: serializeProjectUser(record.manager, redactionContext),
     managerId: formerMemberFk(record.managerId, redactionContext),
+    createdById: formerMemberFk(record.createdById, redactionContext),
+    updatedById: formerMemberFk(record.updatedById, redactionContext),
   }
 }
 
@@ -381,6 +522,7 @@ export async function updateSubsubsection(
     editorRoles,
   )
   const { id, projectSlug, ...data } = input
+  const userId = Number(session.userId)
   await validateSubsubsectionRelations(projectSlug, data)
   const previous = await db.subsubsection.findFirstOrThrow({
     where: subsubsectionInProjectWhere(projectSlug, id),
@@ -406,13 +548,19 @@ export async function updateSubsubsection(
 
   const record = await db.subsubsection.update({
     where: { id: previous.id },
-    data: subsubsectionUpdateData(data, extraFields),
+    data: { ...subsubsectionUpdateData(data, extraFields), updatedById: userId },
     include: {
       subsection: { select: { slug: true } },
       specialFeatures: { select: { id: true } },
       SubsubsectionInfrastructureTypes: { select: { id: true } },
       manager: subsubsectionListInclude.manager,
     },
+  })
+
+  // The previous manager keeps their bookmark.
+  await addSubsubsectionBookmarks({
+    subsubsectionIds: [record.id],
+    userIds: [userId, record.managerId !== previous.managerId ? record.managerId : null],
   })
 
   await createLogEntry({
@@ -440,6 +588,8 @@ export async function updateSubsubsection(
     ...record,
     manager: serializeProjectUser(record.manager, redactionContext),
     managerId: formerMemberFk(record.managerId, redactionContext),
+    createdById: formerMemberFk(record.createdById, redactionContext),
+    updatedById: formerMemberFk(record.updatedById, redactionContext),
   }
 }
 
