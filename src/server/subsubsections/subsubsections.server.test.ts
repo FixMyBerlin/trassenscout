@@ -82,7 +82,7 @@ describe("updateSubsubsection", () => {
     })
   })
 
-  test("redacts createdById and updatedById of a former member in the response", async () => {
+  test("does not send createdById and updatedById in the response", async () => {
     const { updateSubsubsection } = await import("./subsubsections.server")
     mockDb.subsubsection.findFirstOrThrow.mockResolvedValue({
       id: 1,
@@ -105,8 +105,8 @@ describe("updateSubsubsection", () => {
 
     const result = await updateSubsubsection(headers, baseInput)
 
-    expect(result.createdById).toBeNull()
-    expect(result.updatedById).toBeNull()
+    expect(result).not.toHaveProperty("createdById")
+    expect(result).not.toHaveProperty("updatedById")
   })
 
   test("sets updatedById to the acting user and leaves createdById alone", async () => {
@@ -298,7 +298,7 @@ describe("createSubsubsection", () => {
     })
   })
 
-  test("redacts createdById and updatedById of a former member in the response", async () => {
+  test("does not send createdById and updatedById in the response", async () => {
     const { createSubsubsection } = await import("./subsubsections.server")
     mockDb.subsubsection.create.mockResolvedValue({
       id: 1,
@@ -317,8 +317,8 @@ describe("createSubsubsection", () => {
       geometry: null,
     } as never)
 
-    expect(result.createdById).toBeNull()
-    expect(result.updatedById).toBeNull()
+    expect(result).not.toHaveProperty("createdById")
+    expect(result).not.toHaveProperty("updatedById")
   })
 
   test("sets createdById and updatedById to the acting user", async () => {
@@ -401,27 +401,27 @@ describe("getSubsubsection", () => {
     updatedById,
   })
 
-  test("returns createdById and updatedById of a project member", async () => {
+  test("does not send createdById and updatedById, also not of a project member", async () => {
     const { getSubsubsection } = await import("./subsubsections.server")
     mockDb.subsubsection.findFirstOrThrow.mockResolvedValue(detail(2))
 
     const result = await getSubsubsection(headers, { projectSlug: "test-project", id: 1 })
 
-    expect(result.createdById).toBe(2)
-    expect(result.updatedById).toBe(2)
+    expect(result).not.toHaveProperty("createdById")
+    expect(result).not.toHaveProperty("updatedById")
   })
 
-  test("redacts createdById and updatedById of a former member", async () => {
+  test("does not send createdById and updatedById of a former member", async () => {
     const { getSubsubsection } = await import("./subsubsections.server")
     mockDb.subsubsection.findFirstOrThrow.mockResolvedValue(detail(99))
 
     const result = await getSubsubsection(headers, { projectSlug: "test-project", id: 1 })
 
-    expect(result.createdById).toBeNull()
-    expect(result.updatedById).toBeNull()
+    expect(result).not.toHaveProperty("createdById")
+    expect(result).not.toHaveProperty("updatedById")
   })
 
-  test("redacts createdById and updatedById of a former member when loading by slug", async () => {
+  test("does not send createdById and updatedById when loading by slug", async () => {
     const { getSubsubsectionBySlug } = await import("./subsubsections.server")
     mockDb.subsubsection.findFirstOrThrow.mockResolvedValue(detail(99))
 
@@ -431,7 +431,7 @@ describe("getSubsubsection", () => {
       subsubsectionSlug: "rf-1",
     })
 
-    expect(result.createdById).toBeNull()
-    expect(result.updatedById).toBeNull()
+    expect(result).not.toHaveProperty("createdById")
+    expect(result).not.toHaveProperty("updatedById")
   })
 })

@@ -1,7 +1,7 @@
 import { z } from "zod"
 import { frenchQuote } from "@/src/components/core/components/text/quote"
 import { shortTitle } from "@/src/components/core/components/text/titles"
-import { type MembershipRoleEnum, UserRoleEnum } from "@/src/prisma/generated/browser"
+import type { MembershipRoleEnum } from "@/src/prisma/generated/browser"
 import { Prisma } from "@/src/prisma/generated/client"
 import { endpointAuth } from "@/src/server/auth/endpointAuth.server"
 import { editorRoles, viewerRoles } from "@/src/server/authorization/constants"
@@ -12,7 +12,6 @@ import {
   formerMemberFk,
   loadUserRedactionContext,
   serializeProjectUser,
-  type ProjectUserDto,
   type UserRedactionContext,
 } from "@/src/server/memberships/redactFormerProjectMemberUser.server"
 import { projectRecordListVisibilityWhere } from "@/src/server/projectRecords/projectRecordVisibility.server"
@@ -50,12 +49,8 @@ const subsubsectionListInclude = {
   specialFeatures: { select: { id: true, title: true } },
 } as const
 
-// Only for list rows: `updatedBy` must be redacted, so the detail include must not inherit it.
-// `role` only decides whether a non-member is a global admin (see `mapSubsubsectionListRows`);
-// it is not passed on to the client.
 export const subsubsectionListRowInclude = {
   ...subsubsectionListInclude,
-  updatedBy: { select: { id: true, firstName: true, lastName: true, role: true } },
   _count: { select: { uploads: true } },
 } as const
 
@@ -70,11 +65,6 @@ type SubsubsectionListRowBase = DistributiveOmit<SubsubsectionWithPosition, "sub
 
 export type SubsubsectionListRow = SubsubsectionListRowBase & {
   subsection: { id: number; slug: string }
-  /**
-   * Redacted like `manager`, except that a global admin who is no project member is `null`
-   * (not a "former member").
-   */
-  updatedBy: ProjectUserDto | null
   uploadCount: number
   /** Protokolle the current user sees in the Maßnahme's Protokoll list. */
   projectRecordCount: number
@@ -276,19 +266,12 @@ export async function countVisibleProjectRecordsBySubsubsection(
   return counts
 }
 
-/**
- * Global admins can save a Maßnahme without being project members. They are not "former members",
- * so they get no name at all and the UI shows only the date.
- */
-function serializeUpdatedBy(
-  user: SubsubsectionListQueryRow["updatedBy"],
-  context: UserRedactionContext,
+/** Who created or last edited a Maßnahme is stored, but not sent to the client. */
+function omitAuditUserIds<T extends { createdById: number | null; updatedById: number | null }>(
+  row: T,
 ) {
-  if (!user) return null
-  const { role, ...publicUser } = user
-  const isMember = user.id === context.sessionUserId || context.memberUserIds.has(user.id)
-  if (role === UserRoleEnum.ADMIN && !isMember) return null
-  return serializeProjectUser(publicUser, context)
+  const { createdById: _createdById, updatedById: _updatedById, ...rest } = row
+  return rest
 }
 
 export function mapSubsubsectionListRows<Row extends SubsubsectionListQueryRow>(
@@ -303,17 +286,13 @@ export function mapSubsubsectionListRows<Row extends SubsubsectionListQueryRow>(
 ): SubsubsectionListRow[] {
   return rows.map((row) => {
     const redactionContext = redactionContextFor(row)
-    const { _count, ...rest } = row
+    const { _count, ...rest } = omitAuditUserIds(row)
     // Same optimistic geometry typing as in `getSubsubsection`.
-    const { updatedBy, ...typed } = typeSubsubsectionGeometry(rest) as typeof rest &
-      SubsubsectionListRowBase
+    const typed = typeSubsubsectionGeometry(rest) as typeof rest & SubsubsectionListRowBase
     return {
       ...typed,
       manager: serializeProjectUser(row.manager, redactionContext),
       managerId: formerMemberFk(row.managerId, redactionContext),
-      updatedBy: serializeUpdatedBy(updatedBy, redactionContext),
-      createdById: formerMemberFk(row.createdById, redactionContext),
-      updatedById: formerMemberFk(row.updatedById, redactionContext),
       uploadCount: _count.uploads,
       projectRecordCount: projectRecordCounts.get(row.id) ?? 0,
     }
@@ -372,14 +351,14 @@ export async function getSubsubsection(
     session.role,
     Number(session.userId),
   )
-  const typed = typeSubsubsectionGeometry(subsubsection) as SubsubsectionWithPosition
+  const typed = typeSubsubsectionGeometry(
+    omitAuditUserIds(subsubsection),
+  ) as SubsubsectionWithPosition
 
   return {
     ...typed,
     manager: serializeProjectUser(subsubsection.manager, redactionContext),
     managerId: formerMemberFk(subsubsection.managerId, redactionContext),
-    createdById: formerMemberFk(subsubsection.createdById, redactionContext),
-    updatedById: formerMemberFk(subsubsection.updatedById, redactionContext),
   }
 }
 
@@ -407,14 +386,14 @@ export async function getSubsubsectionBySlug(
     session.role,
     Number(session.userId),
   )
-  const typed = typeSubsubsectionGeometry(subsubsection) as SubsubsectionWithPosition
+  const typed = typeSubsubsectionGeometry(
+    omitAuditUserIds(subsubsection),
+  ) as SubsubsectionWithPosition
 
   return {
     ...typed,
     manager: serializeProjectUser(subsubsection.manager, redactionContext),
     managerId: formerMemberFk(subsubsection.managerId, redactionContext),
-    createdById: formerMemberFk(subsubsection.createdById, redactionContext),
-    updatedById: formerMemberFk(subsubsection.updatedById, redactionContext),
   }
 }
 
@@ -504,11 +483,9 @@ export async function createSubsubsection(
     Number(session.userId),
   )
   return {
-    ...record,
+    ...omitAuditUserIds(record),
     manager: serializeProjectUser(record.manager, redactionContext),
     managerId: formerMemberFk(record.managerId, redactionContext),
-    createdById: formerMemberFk(record.createdById, redactionContext),
-    updatedById: formerMemberFk(record.updatedById, redactionContext),
   }
 }
 
@@ -585,11 +562,9 @@ export async function updateSubsubsection(
     Number(session.userId),
   )
   return {
-    ...record,
+    ...omitAuditUserIds(record),
     manager: serializeProjectUser(record.manager, redactionContext),
     managerId: formerMemberFk(record.managerId, redactionContext),
-    createdById: formerMemberFk(record.createdById, redactionContext),
-    updatedById: formerMemberFk(record.updatedById, redactionContext),
   }
 }
 

@@ -8,7 +8,10 @@ import type { ProjectUserDto } from "@/src/server/memberships/redactFormerProjec
 import type { SubsubsectionGeometryWithType } from "@/src/shared/geometry/geometrySchemas"
 import type { getSubsubsections } from "./subsubsections.server"
 
-export type SubsubsectionWithPosition = Omit<Subsubsection, "geometry" | "type"> &
+export type SubsubsectionWithPosition = Omit<
+  Subsubsection,
+  "geometry" | "type" | "createdById" | "updatedById"
+> &
   SubsubsectionGeometryWithType & {
     manager: ProjectUserDto | null
   } & {
