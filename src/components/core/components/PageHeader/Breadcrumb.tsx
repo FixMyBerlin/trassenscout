@@ -30,7 +30,7 @@ type BreadcrumbStepProps = {
   isFirst?: boolean
 }
 
-const stepContentClassName =
+export const stepContentClassName =
   "inline-flex min-h-8 items-center py-1 text-sm font-medium text-gray-500"
 
 export const BreadcrumbStep = ({ children, to, params, isFirst = false }: BreadcrumbStepProps) => {
