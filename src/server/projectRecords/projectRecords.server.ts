@@ -24,6 +24,10 @@ import {
   assertProjectLeadOrAdmin,
   isProjectLeadOrAdmin,
 } from "@/src/server/projects/findProjectLead.server"
+import {
+  addSubsubsectionBookmarks,
+  recordSubsubsectionActivity,
+} from "@/src/server/subsubsectionBookmarks/recordSubsubsectionActivity.server"
 import { deleteUploadFileAndDbRecord } from "@/src/server/uploads/_utils/deleteUploadFileAndDbRecord"
 import { AuthorizationError, NotFoundError } from "@/src/shared/auth/errors"
 import { ProjectSlugRequiredSchema } from "@/src/shared/authorization/projectSlugSchema"
@@ -39,6 +43,7 @@ import {
 import { projectRecordInclude } from "./projectRecordInclude"
 import {
   projectRecordDetailVisibilityWhere,
+  projectRecordListVisibilityWhere,
   projectRecordOverviewVisibilityWhere,
 } from "./projectRecordVisibility.server"
 
@@ -193,6 +198,27 @@ async function validateProjectRecordRelations(
         })
       : undefined,
   ])
+}
+
+// A Protokoll links to Maßnahmen directly (`subsubsectionId`) and through the m2n `subsubsections`.
+function linkedSubsubsectionIds(record: {
+  subsubsectionId: number | null
+  subsubsections: { id: number }[]
+}) {
+  const ids = new Set(relationIds(record.subsubsections))
+  if (record.subsubsectionId != null) ids.add(record.subsubsectionId)
+  return [...ids]
+}
+
+function bookmarkAssignedSubsubsections(
+  subsubsectionIds: number[],
+  assigneeId: number,
+  actorUserId: number,
+) {
+  return addSubsubsectionBookmarks({
+    subsubsectionIds,
+    userIds: [assigneeId, actorUserId],
+  })
 }
 
 function assignmentMetadata(
@@ -495,7 +521,13 @@ export async function createProjectRecord(
     include: projectRecordInclude,
   })
 
+  const linkedIds = linkedSubsubsectionIds(record)
+  await recordSubsubsectionActivity({
+    subsubsectionIds: linkedIds,
+    userId,
+  })
   if (record.assignedToId !== null) {
+    await bookmarkAssignedSubsubsections(linkedIds, record.assignedToId, userId)
     await sendProjectRecordAssignmentNotification({
       assigneeId: record.assignedToId,
       actorUserId: userId,
@@ -592,7 +624,24 @@ export async function updateProjectRecord(
   const previousAssigneeId = previousRecord.assignedToId ?? null
   const isNewAssignment = newAssigneeId !== null && newAssigneeId !== previousAssigneeId
 
+  const linkedIds = linkedSubsubsectionIds(record)
+  const previousLinkedIds = new Set(linkedSubsubsectionIds(previousRecord))
+  const newlyLinkedIds = linkedIds.filter(
+    (subsubsectionId) => !previousLinkedIds.has(subsubsectionId),
+  )
+  if (newlyLinkedIds.length > 0) {
+    await recordSubsubsectionActivity({
+      subsubsectionIds: newlyLinkedIds,
+      userId,
+    })
+  }
+  // Editing a Protokoll bookmarks its Maßnahmen for the editor, but is no activity on the Maßnahme itself.
+  await addSubsubsectionBookmarks({
+    subsubsectionIds: linkedIds,
+    userIds: [userId],
+  })
   if (isNewAssignment) {
+    await bookmarkAssignedSubsubsections(linkedIds, newAssigneeId, userId)
     await sendProjectRecordAssignmentNotification({
       assigneeId: newAssigneeId,
       actorUserId: userId,
@@ -707,6 +756,7 @@ export async function patchProjectRecordAssignment(
   const isNewAssignment = newAssigneeId !== null && newAssigneeId !== previousAssigneeId
 
   if (isNewAssignment) {
+    await bookmarkAssignedSubsubsections(linkedSubsubsectionIds(record), newAssigneeId, userId)
     await sendProjectRecordAssignmentNotification({
       assigneeId: newAssigneeId,
       actorUserId: userId,
@@ -1131,8 +1181,7 @@ async function listVisibilityWhere(projectId: number, membershipRole: Membership
     where: { id: projectId },
     select: { aiEnabled: true },
   })
-  const canEdit = membershipRole === null || editorRoles.includes(membershipRole)
-  return projectRecordDetailVisibilityWhere(project?.aiEnabled ?? false, canEdit)
+  return projectRecordListVisibilityWhere(project?.aiEnabled ?? false, membershipRole)
 }
 
 export async function getProjectRecordsBySubsubsection(

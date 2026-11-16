@@ -27,7 +27,7 @@ export async function applySubsubsectionUpdateForMcp(
   assertMcpDirect(resolved)
   const record = await db.subsubsection.update({
     where: { id: resolved.subsubsectionId },
-    data: resolved.prismaData,
+    data: { ...resolved.prismaData, updatedBy: { connect: { id: createdById } } },
     select: { id: true, ...subsubsectionLogSnapshotSelect },
   })
 
@@ -50,7 +50,7 @@ export async function applySubsubsectionCreateForMcp(
 ) {
   assertMcpDirect(resolved)
   const record = await db.subsubsection.create({
-    data: resolved.prismaData,
+    data: { ...resolved.prismaData, createdById, updatedById: createdById },
     select: { id: true, ...subsubsectionLogSnapshotSelect },
   })
 
