@@ -19,6 +19,7 @@ const project = (subsections: { geometry: unknown; type: string; labelPos: null 
   slug: "rs23",
   subTitle: "Radschnellweg 23",
   showLogEntries: false,
+  bookmarksEnabled: false,
   _count: { subsections: subsections.length },
   subsections,
   memberships: [{ role: "VIEWER" }],
