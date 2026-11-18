@@ -44,6 +44,8 @@ type Props = {
   /** Rendered in the given order. */
   rows: SubsubsectionTableRow[]
   showProject?: boolean
+  /** Short list beside the dashboard map: no Geometrietyp and no "Zuletzt bearbeitet". */
+  compact?: boolean
   /**
    * When false, table is readable only (map-mode screen-reader list): no row navigation,
    * and TableWrapper scroll is off so Firefox does not Tab into the hidden table. Default true.
@@ -71,6 +73,7 @@ function groupBySubsectionSlug(rows: SubsubsectionTableRow[]) {
 export const SubsubsectionTable = ({
   rows,
   showProject = false,
+  compact = false,
   interactive = true,
   searchterm,
   subsectionGroups,
@@ -128,29 +131,33 @@ export const SubsubsectionTable = ({
             <SubsubsectionIcon slug={row.slug} />
           )}
         </td>
-        <td className={twJoin(tableCellClassName, "px-1.5 align-top")}>
-          <div className="flex h-9 items-center justify-center">
-            {row.type ? (
-              <Tooltip content={GEOMETRY_TYPE_TOOLTIPS[row.type]}>
-                <LegendIcon
-                  iconId={getIconIdForSubsubsection(row.type, row.SubsubsectionStatus?.style)}
-                />
-              </Tooltip>
-            ) : (
-              <Tooltip content="Ohne Geometrie">
-                <span className="text-gray-400">—</span>
-              </Tooltip>
-            )}
-          </div>
-        </td>
+        {!compact && (
+          <td className={twJoin(tableCellClassName, "px-1.5 align-top")}>
+            <div className="flex h-9 items-center justify-center">
+              {row.type ? (
+                <Tooltip content={GEOMETRY_TYPE_TOOLTIPS[row.type]}>
+                  <LegendIcon
+                    iconId={getIconIdForSubsubsection(row.type, row.SubsubsectionStatus?.style)}
+                  />
+                </Tooltip>
+              ) : (
+                <Tooltip content="Ohne Geometrie">
+                  <span className="text-gray-400">—</span>
+                </Tooltip>
+              )}
+            </div>
+          </td>
+        )}
         {showProject && (
           <td className={twJoin(tableCellClassName, "align-top font-medium wrap-break-word")}>
             {shortTitle(row.project.slug)}
           </td>
         )}
-        <td className={twJoin(tableCellClassName, "align-top")}>
-          {formatBerlinTime(row.updatedAt, "dd.MM.yyyy, HH:mm")}
-        </td>
+        {!compact && (
+          <td className={twJoin(tableCellClassName, "align-top")}>
+            {formatBerlinTime(row.updatedAt, "dd.MM.yyyy, HH:mm")}
+          </td>
+        )}
         <td
           className={twJoin(
             tableCellClassName,
@@ -194,9 +201,9 @@ export const SubsubsectionTable = ({
           <table className={tableFixedClassName}>
             <colgroup>
               <col className={subsubsectionTableColWidths.slug} />
-              <col className={subsubsectionTableColWidths.geometry} />
+              {!compact && <col className={subsubsectionTableColWidths.geometry} />}
               {showProject && <col className={subsubsectionTableColWidths.project} />}
-              <col className={subsubsectionTableColWidths.lastActivity} />
+              {!compact && <col className={subsubsectionTableColWidths.lastActivity} />}
               <col />
               <col className={subsubsectionTableColWidths.counts} />
             </colgroup>
@@ -205,17 +212,21 @@ export const SubsubsectionTable = ({
                 <th scope="col" className={tableHeadCellClassName}>
                   Maßnahmen
                 </th>
-                <th scope="col" className={tableHeadCellClassName}>
-                  <span className="sr-only">Geometrietyp</span>
-                </th>
+                {!compact && (
+                  <th scope="col" className={tableHeadCellClassName}>
+                    <span className="sr-only">Geometrietyp</span>
+                  </th>
+                )}
                 {showProject && (
                   <th scope="col" className={tableHeadCellClassName}>
                     Projekt
                   </th>
                 )}
-                <th scope="col" className={tableHeadCellClassName}>
-                  Zuletzt bearbeitet
-                </th>
+                {!compact && (
+                  <th scope="col" className={tableHeadCellClassName}>
+                    Zuletzt bearbeitet
+                  </th>
+                )}
                 <th scope="col" className={tableHeadCellClassName}>
                   Titel
                 </th>

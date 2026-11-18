@@ -33,7 +33,7 @@ export const DashboardBookmarksAside = ({ rows, showProject }: Props) => {
       />
       {/* From lg the map beside the aside has a right border; the aside clips the table's left border behind it. */}
       <div className="lg:-ml-px">
-        <SubsubsectionTable rows={rows} showProject={showProject} />
+        <SubsubsectionTable rows={rows} showProject={showProject} compact />
       </div>
       <div className="p-4">
         <Link
