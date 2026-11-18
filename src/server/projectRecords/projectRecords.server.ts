@@ -40,7 +40,7 @@ import {
   PatchProjectRecordAssignmentSchema,
   ProjectRecordFormSchema,
 } from "@/src/shared/projectRecords/schemas"
-import { projectRecordInclude } from "./projectRecordInclude"
+import { projectRecordInclude, subsubsectionAuditUserIds } from "./projectRecordInclude"
 import {
   projectRecordDetailVisibilityWhere,
   projectRecordListVisibilityWhere,
@@ -1135,6 +1135,7 @@ const projectRecordListInclude = {
   project: { select: { landAcquisitionModuleEnabled: true } },
   tags: true,
   subsubsection: {
+    omit: subsubsectionAuditUserIds,
     include: { subsection: { select: { slug: true } } },
   },
   acquisitionArea: {
