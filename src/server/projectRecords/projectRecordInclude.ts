@@ -1,3 +1,6 @@
+/** Who created or last edited a Maßnahme is stored, but not sent with a Protokoll. */
+export const subsubsectionAuditUserIds = { createdById: true, updatedById: true } as const
+
 /**
  * Shared include configuration for project record queries.
  * This ensures consistent data structure across all project record queries.
@@ -13,6 +16,7 @@ export const projectRecordInclude = {
   },
   tags: true,
   subsubsection: {
+    omit: subsubsectionAuditUserIds,
     include: {
       subsection: {
         select: { slug: true },
@@ -20,6 +24,7 @@ export const projectRecordInclude = {
     },
   },
   subsubsections: {
+    omit: subsubsectionAuditUserIds,
     include: {
       subsection: {
         select: { slug: true },
