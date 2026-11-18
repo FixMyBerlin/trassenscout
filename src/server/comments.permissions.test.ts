@@ -40,6 +40,11 @@ vi.mock("@/src/server/auth/endpointAuth.server", () => ({
 }))
 
 const mockCreateLogEntry = vi.fn().mockResolvedValue(undefined)
+const mockBookmarkProjectRecordSubsubsections = vi.fn().mockResolvedValue(undefined)
+
+vi.mock("@/src/server/subsubsectionBookmarks/recordSubsubsectionActivity.server", () => ({
+  bookmarkProjectRecordSubsubsections: mockBookmarkProjectRecordSubsubsections,
+}))
 
 vi.mock("@/src/server/logEntries/create/createLogEntry", () => ({
   createLogEntry: mockCreateLogEntry,
@@ -115,6 +120,10 @@ describe("viewer comment permissions", () => {
     })
 
     expect(mockEndpointAuth.projectRole).toHaveBeenCalledWith(headers, "rs8", ["VIEWER", "EDITOR"])
+    expect(mockBookmarkProjectRecordSubsubsections).toHaveBeenCalledWith({
+      projectRecordIds: [125],
+      userId: 2,
+    })
     expect(mockDb.projectRecordComment.create).toHaveBeenCalledWith(
       expect.objectContaining({
         data: expect.objectContaining({

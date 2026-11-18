@@ -162,6 +162,11 @@ export async function updateAcquisitionArea(
     include: acquisitionAreaInclude,
   })
 
+  await recordSubsubsectionActivity({
+    subsubsectionIds: [record.subsubsectionId],
+    userId: Number(session.userId),
+  })
+
   await createLogEntry({
     action: "UPDATE",
     message: `Erwerbsfläche ${record.parcel.alkisParcelId} wurde bearbeitet.`,

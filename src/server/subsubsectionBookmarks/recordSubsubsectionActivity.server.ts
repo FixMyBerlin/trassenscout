@@ -44,3 +44,30 @@ export async function addSubsubsectionBookmarks({
     skipDuplicates: true,
   })
 }
+
+/**
+ * Work inside a Protokoll (Anmerkung, Dokument) bookmarks its Maßnahmen for the acting user,
+ * like an assignment. The Maßnahme itself is unchanged, so "zuletzt bearbeitet" stays.
+ */
+export async function bookmarkProjectRecordSubsubsections({
+  projectRecordIds,
+  userId,
+}: {
+  projectRecordIds: number[]
+  userId: number
+}) {
+  const ids = uniqueIds(projectRecordIds)
+  if (ids.length === 0) return
+
+  const records = await db.projectRecord.findMany({
+    where: { id: { in: ids } },
+    select: { subsubsectionId: true, subsubsections: { select: { id: true } } },
+  })
+  await addSubsubsectionBookmarks({
+    subsubsectionIds: records.flatMap((record) => [
+      ...(record.subsubsectionId == null ? [] : [record.subsubsectionId]),
+      ...record.subsubsections.map(({ id }) => id),
+    ]),
+    userIds: [userId],
+  })
+}
