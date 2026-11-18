@@ -40,6 +40,7 @@ function row(id: number, project: { id: number; slug: string; role?: "VIEWER" | 
     updatedAt: new Date("2026-05-01T10:00:00Z"),
     createdById: 7,
     updatedById: 7,
+    updatedBy: null as { id: number; firstName: string; lastName: string } | null,
     subsection: {
       id: 100 + id,
       slug: `pa-${id}`,
@@ -142,17 +143,29 @@ describe("getMyBookmarkedSubsubsections", () => {
     expect(mockDb.projectRecord.findMany).toHaveBeenCalledTimes(1)
   })
 
-  test("does not send who created or last edited a Maßnahme", async () => {
+  test("names who last edited a Maßnahme for members, but sends no user ids", async () => {
+    const editor = { id: 7, firstName: "Erika", lastName: "Muster" }
     mockDb.subsubsection.findMany.mockResolvedValue([
-      row(1, { id: 5, slug: "rs23", role: "VIEWER" }),
+      { ...row(1, { id: 5, slug: "rs23", role: "VIEWER" }), updatedBy: editor },
+      { ...row(2, { id: 6, slug: "rs24", role: "VIEWER" }), updatedBy: editor },
+    ])
+    // User 7 is still a member of project 6 only.
+    mockDb.membership.findMany.mockResolvedValue([
+      { projectId: 5, userId: 99 },
+      { projectId: 6, userId: 99 },
+      { projectId: 6, userId: 7 },
     ])
     const { getMyBookmarkedSubsubsections } = await import("./subsubsectionBookmarks.server")
 
-    const [first] = await getMyBookmarkedSubsubsections(headers, {})
+    const [first, second] = await getMyBookmarkedSubsubsections(headers, {})
 
+    expect(first?.updatedBy).toEqual({ firstName: "Ehemalige:r Mitarbeiter:in", lastName: "" })
+    expect(second?.updatedBy).toEqual(editor)
     expect(first).not.toHaveProperty("createdById")
     expect(first).not.toHaveProperty("updatedById")
-    expect(first).not.toHaveProperty("updatedBy")
+    expect(listWhere().include.updatedBy).toEqual({
+      select: { id: true, firstName: true, lastName: true },
+    })
   })
 
   test("uses the member's own role per project for the Protokoll visibility", async () => {

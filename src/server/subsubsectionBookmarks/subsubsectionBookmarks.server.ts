@@ -7,6 +7,7 @@ import db from "@/src/server/db.server"
 import {
   getUserRedactionContext,
   loadUserRedactionContexts,
+  serializeProjectUser,
 } from "@/src/server/memberships/redactFormerProjectMemberUser.server"
 import {
   countVisibleProjectRecordsBySubsubsection,
@@ -20,7 +21,10 @@ import type {
   SetSubsubsectionBookmarkSchema,
 } from "./subsubsectionBookmarks.inputSchemas"
 
-/** Across all projects the user may read, newest activity first. */
+/**
+ * Across all projects the user may read, newest activity first.
+ * Only this list names who last edited a Maßnahme ("zuletzt bearbeitet"), for all project members.
+ */
 export async function getMyBookmarkedSubsubsections(
   headers: Headers,
   input: z.infer<typeof GetMyBookmarkedSubsubsectionsSchema> = {},
@@ -43,6 +47,7 @@ export async function getMyBookmarkedSubsubsections(
     ...(input.limit ? { take: input.limit } : {}),
     include: {
       ...subsubsectionListRowInclude,
+      updatedBy: { select: { id: true, firstName: true, lastName: true } },
       subsection: {
         select: {
           id: true,
@@ -86,8 +91,17 @@ export async function getMyBookmarkedSubsubsections(
   })
 
   return rows.map((row, index) => {
-    const { id, slug, project } = subsubsections[index]!.subsection
-    return { ...row, subsection: { id, slug }, project: { slug: project.slug } }
+    const { subsection, updatedBy } = subsubsections[index]!
+    const { id, slug, project } = subsection
+    return {
+      ...row,
+      subsection: { id, slug },
+      project: { slug: project.slug },
+      updatedBy: serializeProjectUser(
+        updatedBy,
+        getUserRedactionContext(redactionContexts, project.id),
+      ),
+    }
   })
 }
 

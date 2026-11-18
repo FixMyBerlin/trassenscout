@@ -25,8 +25,10 @@ import { shortTitle } from "@/src/components/core/components/text/titles"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { Tooltip } from "@/src/components/core/components/Tooltip/Tooltip"
 import { useTryRouteParam } from "@/src/components/core/routes/useTryRouteParam"
+import { getFullname } from "@/src/components/core/users/getFullname"
 import { formatBerlinTime } from "@/src/components/core/utils/formatBerlinTime"
 import { normalizeSearchterm } from "@/src/components/core/utils/normalizeSearchterm"
+import type { ProjectUserDto } from "@/src/server/memberships/redactFormerProjectMemberUser.server"
 import type { SubsubsectionListRow } from "@/src/server/subsubsections/subsubsections.server"
 
 // Titel has no width: it takes what the fixed columns leave and wraps.
@@ -38,7 +40,11 @@ const subsubsectionTableColWidths = {
   counts: "w-14 @4xl:w-24",
 } as const
 
-export type SubsubsectionTableRow = SubsubsectionListRow & { project: { slug: string } }
+export type SubsubsectionTableRow = SubsubsectionListRow & {
+  project: { slug: string }
+  /** Only the "Meine Maßnahmen" list sends who last edited the Maßnahme. */
+  updatedBy?: ProjectUserDto | null
+}
 
 type Props = {
   /** Rendered in the given order. */
@@ -156,6 +162,9 @@ export const SubsubsectionTable = ({
         {!compact && (
           <td className={twJoin(tableCellClassName, "align-top")}>
             {formatBerlinTime(row.updatedAt, "dd.MM.yyyy, HH:mm")}
+            {row.updatedBy ? (
+              <div className="text-xs text-gray-500">{getFullname(row.updatedBy)}</div>
+            ) : null}
           </td>
         )}
         <td
