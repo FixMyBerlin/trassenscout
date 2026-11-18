@@ -66,7 +66,7 @@ export function PageDashboard() {
       info="Willkommen im Trassenscout. Hier finden Sie alle Projekte, an denen Sie beteiligt sind."
       tabs={tabs.length > 1 ? <TabsApp tabs={tabs} embedded /> : undefined}
       filters={
-        allProjects.length ? (
+        allProjects.length > 1 ? (
           <DashboardFilters
             projectSlug={search.projectSlug}
             months={search.months}
