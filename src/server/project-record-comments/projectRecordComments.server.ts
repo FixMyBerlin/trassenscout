@@ -9,6 +9,7 @@ import {
   loadUserRedactionContext,
   redactCommentAuthor,
 } from "@/src/server/memberships/redactFormerProjectMemberUser.server"
+import { bookmarkProjectRecordSubsubsections } from "@/src/server/subsubsectionBookmarks/recordSubsubsectionActivity.server"
 import { AuthorizationError } from "@/src/shared/auth/errors"
 import {
   CreateProjectRecordCommentBySlugSchema,
@@ -75,6 +76,11 @@ export async function createProjectRecordComment(
       userId: Number(session.userId),
     },
     include: { author: { select: commentAuthorSelect } },
+  })
+
+  await bookmarkProjectRecordSubsubsections({
+    projectRecordIds: [projectRecord.id],
+    userId: Number(session.userId),
   })
 
   await createLogEntry({

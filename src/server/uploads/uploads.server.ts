@@ -17,7 +17,10 @@ import {
   redactUploadUsers,
 } from "@/src/server/memberships/redactFormerProjectMemberUser.server"
 import { projectRecordDetailVisibilityWhere } from "@/src/server/projectRecords/projectRecordVisibility.server"
-import { recordSubsubsectionActivity } from "@/src/server/subsubsectionBookmarks/recordSubsubsectionActivity.server"
+import {
+  bookmarkProjectRecordSubsubsections,
+  recordSubsubsectionActivity,
+} from "@/src/server/subsubsectionBookmarks/recordSubsubsectionActivity.server"
 import { AuthorizationError } from "@/src/shared/auth/errors"
 import {
   connectIds,
@@ -386,6 +389,10 @@ export async function createUpload(headers: Headers, input: z.infer<typeof Creat
 
   await recordSubsubsectionActivity({
     subsubsectionIds: relationIds(upload.subsubsections),
+    userId: Number(session.userId),
+  })
+  await bookmarkProjectRecordSubsubsections({
+    projectRecordIds: relationIds(upload.projectRecords),
     userId: Number(session.userId),
   })
 

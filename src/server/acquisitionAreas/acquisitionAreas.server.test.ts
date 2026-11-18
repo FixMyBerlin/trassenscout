@@ -91,7 +91,7 @@ describe("createAcquisitionArea", () => {
 })
 
 describe("updateAcquisitionArea", () => {
-  test("records no activity", async () => {
+  test("records activity on its Maßnahme, like creating", async () => {
     const { updateAcquisitionArea } = await import("./acquisitionAreas.server")
     mockDb.acquisitionArea.findFirstOrThrow.mockResolvedValue({ id: 3 })
     mockDb.acquisitionArea.update.mockResolvedValue({
@@ -105,7 +105,10 @@ describe("updateAcquisitionArea", () => {
     const { data } = mockDb.acquisitionArea.update.mock.calls[0]![0]
     expect(data).toMatchObject({ updatedById: 7 })
     expect(data).not.toHaveProperty("createdById")
-    expect(mockRecordSubsubsectionActivity).not.toHaveBeenCalled()
+    expect(mockRecordSubsubsectionActivity).toHaveBeenCalledWith({
+      subsubsectionIds: [5],
+      userId: 7,
+    })
   })
 })
 

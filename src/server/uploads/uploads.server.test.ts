@@ -56,9 +56,11 @@ vi.mock("@/src/server/auth/endpointAuth.server", () => ({
 
 const mockCreateLogEntry = vi.fn().mockResolvedValue(undefined)
 const mockRecordSubsubsectionActivity = vi.fn().mockResolvedValue(undefined)
+const mockBookmarkProjectRecordSubsubsections = vi.fn().mockResolvedValue(undefined)
 
 vi.mock("@/src/server/subsubsectionBookmarks/recordSubsubsectionActivity.server", () => ({
   recordSubsubsectionActivity: mockRecordSubsubsectionActivity,
+  bookmarkProjectRecordSubsubsections: mockBookmarkProjectRecordSubsubsections,
 }))
 
 vi.mock("@/src/server/logEntries/create/createLogEntry", () => ({
@@ -351,6 +353,30 @@ describe("createUpload", () => {
       subsubsectionIds: [5, 6],
       userId: 2,
     })
+  })
+
+  test("bookmarks the Maßnahmen of the Protokoll for the uploading viewer", async () => {
+    const { createUpload } = await import("./uploads.server")
+    mockDb.projectRecord.findMany.mockResolvedValue([{ id: 42 }])
+    mockDb.upload.create.mockResolvedValue({
+      id: 77,
+      title: "document.pdf",
+      projectRecords: [{ id: 42 }],
+    })
+
+    await createUpload(headers, {
+      ...baseInput,
+      surveyResponseId: null,
+      projectRecords: [42],
+    })
+
+    expect(mockBookmarkProjectRecordSubsubsections).toHaveBeenCalledWith({
+      projectRecordIds: [42],
+      userId: 2,
+    })
+    expect(mockRecordSubsubsectionActivity).toHaveBeenCalledWith(
+      expect.objectContaining({ subsubsectionIds: [] }),
+    )
   })
 
   test("passes an empty list, which the helper ignores, without linked Maßnahmen", async () => {
