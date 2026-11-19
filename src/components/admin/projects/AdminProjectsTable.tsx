@@ -162,6 +162,7 @@ function mcpModeHint(project: AdminProjectWithCounts, now: Date) {
 export const AdminProjectsTable = ({ projects, isFiltering, hasActiveFilter }: Props) => {
   const queryClient = useQueryClient()
   const [formError, setFormError] = useState<string | null>(null)
+  const [now] = useState(() => new Date())
   const updateMutation = useMutation({ mutationFn: updateProjectsFeatureFlagFn })
   const mcpModeMutation = useMutation({ mutationFn: updateProjectMcpModeFn })
   const isPending = updateMutation.isPending || mcpModeMutation.isPending
@@ -303,7 +304,7 @@ export const AdminProjectsTable = ({ projects, isFiltering, hasActiveFilter }: P
                         aria-label={`MCP-Modus für ${shortTitle(project.slug)}`}
                         className="rounded-sm border border-gray-300 bg-white px-1 py-0.5 text-sm text-gray-900"
                         disabled={isPending}
-                        value={effectiveMcpMode(storedMcp(project), new Date())}
+                        value={effectiveMcpMode(storedMcp(project), now)}
                         onChange={(event) =>
                           void handleMcpMode(project.slug, event.target.value as McpModeEnum)
                         }
@@ -315,7 +316,7 @@ export const AdminProjectsTable = ({ projects, isFiltering, hasActiveFilter }: P
                         ))}
                       </select>
                       <span className="text-xs leading-tight text-gray-500">
-                        {mcpModeHint(project, new Date())}
+                        {mcpModeHint(project, now)}
                       </span>
                     </div>
                   </div>

@@ -111,6 +111,7 @@ export const ProjectRecordNewModal = ({
   })
   const { openProjectRecordDetail } = useProjectRecordModal()
   const [isDirty, setIsDirty] = useState(false)
+  const [today] = useState(() => new Date())
   const [modalStep, setModalStep] = useState<"picker" | "form">(
     initialValues?.title ? "form" : "picker",
   )
@@ -168,7 +169,7 @@ export const ProjectRecordNewModal = ({
   }
 
   const formInitialValues = {
-    date: getDate(new Date()),
+    date: getDate(today),
     editingState: ProjectRecordEditingState.PENDING,
     ...(initialValues?.title ? { title: initialValues.title } : {}),
     ...(initialValues?.body != null ? { body: initialValues.body } : {}),

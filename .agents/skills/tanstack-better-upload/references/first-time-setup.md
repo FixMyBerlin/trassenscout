@@ -63,9 +63,9 @@ One shared `getConfiguredS3Client()` (`aws()`) for the upload router and all hel
 Minimal (official Better Upload snippet):
 
 ```ts
-import { createFileRoute } from "@tanstack/react-router"
 import { handleRequest, route, type Router } from "@better-upload/server"
 import { aws } from "@better-upload/server/clients"
+import { createFileRoute } from "@tanstack/react-router"
 
 const router: Router = {
   client: aws(),
@@ -90,8 +90,8 @@ FMC pattern — thin route, auth in handler module:
 ```ts
 // routes/api/$projectSlug/upload/index.ts
 import { createFileRoute } from "@tanstack/react-router"
-import { handleProjectUploadRoute } from "@/server/uploads/upload-route-handlers.server"
 import { endpointAuth } from "@/server/auth/endpointAuth.server"
+import { handleProjectUploadRoute } from "@/server/uploads/upload-route-handlers.server"
 
 export const Route = createFileRoute("/api/$projectSlug/upload/")({
   ssr: false,
@@ -112,8 +112,8 @@ Keep `handleRequest` wiring in `*.server.ts`:
 
 ```ts
 import { handleRequest } from "@better-upload/server"
-import { createUploadRouter } from "./_utils/createUploadRouter"
 import { endpointAuth } from "@/server/auth/endpointAuth.server"
+import { createUploadRouter } from "./_utils/createUploadRouter"
 
 export async function handleProjectUploadRoute(request: Request, projectSlug: string) {
   const session = await endpointAuth.projectMember({

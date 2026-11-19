@@ -7,10 +7,10 @@ Plain Vite + React SPA (no TanStack Start). Same Bun/Vite 8+ stack as the [tech-
 ## Vite config
 
 ```typescript
-import wasm from "vite-plugin-wasm"
-import topLevelAwait from "vite-plugin-top-level-await"
-import { defineConfig } from "vite"
 import react from "@vitejs/plugin-react"
+import { defineConfig } from "vite"
+import topLevelAwait from "vite-plugin-top-level-await"
+import wasm from "vite-plugin-wasm"
 
 export default defineConfig({
   plugins: [react(), wasm(), topLevelAwait()],

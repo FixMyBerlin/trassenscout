@@ -107,8 +107,8 @@ Dev/build: `wasm-pack`, `console_error_panic_hook`, `web-time` as needed.
 ## `wasm.ts` boundary pattern
 
 ```typescript
-import init, { buffer_polygon } from "../../../wasm/geo-isochrone/pkg/geo_isochrone"
 import { z } from "zod"
+import init, { buffer_polygon } from "../../../wasm/geo-isochrone/pkg/geo_isochrone"
 
 let ready: Promise<unknown> | null = null
 
