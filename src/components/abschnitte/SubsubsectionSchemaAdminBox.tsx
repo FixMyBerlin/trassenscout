@@ -26,7 +26,7 @@ const getAllSchemaFields = () => {
 type LookupRow = { id: number; slug: string; title: string }
 
 export const SubsubsectionSchemaAdminBox = ({ projectSlug, className }: Props) => {
-  const { data: users = [] } = useQuery(projectUsersQueryOptions({ projectSlug, role: "EDITOR" }))
+  const { data: users = [] } = useQuery(projectUsersQueryOptions({ projectSlug }))
   const { data: qualityData } = useQuery(
     adminLookupRowsWithCountQueryOptions({ projectSlug, table: "qualityLevels" }),
   )
