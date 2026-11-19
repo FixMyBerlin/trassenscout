@@ -23,7 +23,12 @@ function panelWithNodeAt(nodeTop: number) {
   Object.defineProperties(panel, {
     scrollHeight: { value: 1000 },
     clientHeight: { value: 400 },
-    scrollTop: { get: () => scrollTop, set: (value: number) => (scrollTop = value) },
+    scrollTop: {
+      get: () => scrollTop,
+      set: (value: number) => {
+        scrollTop = value
+      },
+    },
   })
   panel.getBoundingClientRect = () => ({ top: 0, bottom: 400 }) as DOMRect
   const scrollTo = vi.fn((options: ScrollToOptions) => (scrollTop = options.top ?? scrollTop))
