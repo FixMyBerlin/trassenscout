@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { addDays, format, formatDistanceStrict } from "date-fns"
 import { de } from "date-fns/locale"
+import { useState } from "react"
 import { twJoin } from "tailwind-merge"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { linkIcons } from "@/src/components/core/components/links/Link"
@@ -53,7 +54,7 @@ type Props = {
 export const TeamInvitesTable = ({ canEdit, invites, projectSlug }: Props) => {
   const queryClient = useQueryClient()
   const revokeMutation = useMutation({ mutationFn: revokeInviteFn })
-  const now = new Date()
+  const [now] = useState(() => new Date())
   // Non-admins only get the placeholder "Projektmitglied" here, so the column tells them nothing.
   const showInviter = isAdmin(useCurrentUser())
 

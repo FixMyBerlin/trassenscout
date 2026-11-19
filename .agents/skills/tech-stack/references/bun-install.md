@@ -24,7 +24,7 @@ Load for global store setup, Vite dev with globalStore, phantom deps, Docker ima
 ```toml
 # netlify.toml
 [build.environment]
-  BUN_FLAGS = "--frozen-lockfile --config=bunfig.netlify.toml"
+BUN_FLAGS = "--frozen-lockfile --config=bunfig.netlify.toml"
 ```
 
 `--config` replaces the project `bunfig.toml` instead of merging, so Netlify gets a project-local tree while `bunfig.toml` keeps `globalStore` for local/dev. No `--linker=hoisted` needed.

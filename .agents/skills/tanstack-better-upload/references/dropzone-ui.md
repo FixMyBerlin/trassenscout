@@ -9,9 +9,9 @@ Better Upload exposes the `UploadHookControl` contract; it does not ship a dropz
 ## Core wiring
 
 ```tsx
+import type { UploadHookControl } from "@better-upload/client"
 import { useId } from "react"
 import { useDropzone } from "react-dropzone"
-import type { UploadHookControl } from "@better-upload/client"
 
 function UploadDropzoneProgress({
   control: { upload, isPending, progresses },
