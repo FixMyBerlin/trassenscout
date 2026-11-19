@@ -147,9 +147,7 @@ function SubsubsectionFormWithQuery<S extends z.ZodTypeAny>({
       : shortTitle(subsection.slug),
   ])
 
-  const { data: users } = useSuspenseQuery(
-    projectUsersQueryOptions({ projectSlug, role: "EDITOR" }),
-  )
+  const { data: users } = useSuspenseQuery(projectUsersQueryOptions({ projectSlug }))
   const { data: project } = useSuspenseQuery(projectBySlugQueryOptions(projectSlug))
   const extraFieldDefinitions = sortByOrder(
     parseDefinitions(project.subsubsectionExtraFieldDefinitions),
