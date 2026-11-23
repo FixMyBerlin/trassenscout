@@ -70,7 +70,6 @@ const eingabe = {
     contact: "Max Muster",
     phone: "0331 123456",
     email: "max@example.org",
-    pin: "1234",
   }),
   status: statuses[0].value,
   note: null,

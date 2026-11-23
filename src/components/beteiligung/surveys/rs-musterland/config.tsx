@@ -8,7 +8,7 @@ export const formConfig: FormConfig = {
   meta: {
     version: 1,
     title: "Beteiligung",
-    logoUrl: "https://radschnellweg8-lb-wn.de/_astro/image.BNSTrDGZ_Z1ksyyY.webp",
+    logoUrl: "https://trassenscout.de/favicon.svg",
     canonicalUrl: "https://radschnellweg8-lb-wn.de/beteiligung/",
     maptilerUrl: "https://api.maptiler.com/maps/b09268b1-91d0-42e2-9518-321a1a94738f/style.json",
     primaryColor: "#e5007d",

@@ -80,8 +80,7 @@ export function IntroPart1() {
           die Beteiligung.{" "}
         </li>
         <li>
-          Nach Start der Beteiligung müssen Sie sich bitte zuerst mit Namen, E-Mail-Adresse und PIN
-          registrieren. Die Felder “Institution” und “Landkreis” werden dabei automatisch
+          Nach Start der Beteiligung werden die Felder “Institution” und “Landkreis” automatisch
           ausgefüllt.
         </li>
         <li>

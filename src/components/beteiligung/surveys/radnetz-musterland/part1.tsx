@@ -19,57 +19,6 @@ export const part1Config: SurveyPart1and3 = {
           props: { title: "Angaben zur Identifikation" },
         },
         {
-          name: "descriptionId",
-          component: "SurveyMarkdown",
-          componentType: "content",
-          props: {
-            markdown:
-              "Bitte tragen Sie zunächst Ihren Namen, Ihre E-Mail-Adresse sowie die PIN, die Sie per E-Mail erhalten haben, ein.",
-          },
-        },
-        {
-          name: "firstName",
-          component: "SurveyTextfield",
-          componentType: "form",
-          validation: fieldValidationEnum["requiredString"],
-          defaultValue: "",
-          props: {
-            label: "Vorname",
-          },
-        },
-        {
-          name: "lastName",
-          component: "SurveyTextfield",
-          componentType: "form",
-          validation: fieldValidationEnum["requiredString"],
-          defaultValue: "",
-          props: {
-            label: "Nachname",
-          },
-        },
-        {
-          name: "email",
-          component: "SurveyTextfield",
-          componentType: "form",
-          validation: fieldValidationEnum["requiredString"],
-          defaultValue: "",
-          props: {
-            label: "E-Mail-Adresse",
-          },
-        },
-        {
-          name: "pin",
-          component: "SurveyTextfield",
-          componentType: "form",
-          validation: fieldValidationEnum["requiredString"],
-          defaultValue: "",
-          props: {
-            label: "PIN (4-stellig)",
-            description:
-              "Tragen Sie hier die 4-stellige PIN ein, die Sie von uns per E-Mail erhalten haben.",
-          },
-        },
-        {
           name: "5",
           component: "SurveyReadonlyTextfield",
           componentType: "form",

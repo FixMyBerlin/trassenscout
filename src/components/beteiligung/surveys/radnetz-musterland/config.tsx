@@ -7,7 +7,7 @@ export const formConfig: FormConfig = {
   meta: {
     version: 1,
     title: "Beteiligung",
-    logoUrl: "https://trassenscout.de/radnetz-brandenburg/bb-logo.png",
+    logoUrl: "https://trassenscout.de/favicon.svg",
     canonicalUrl:
       "https://mil.brandenburg.de/mil/de/themen/mobilitaet-verkehr/radverkehr/radnetz-brandenburg/",
     maptilerUrl: "https://api.maptiler.com/maps/1628cd25-069f-45bc-9e1e-9768388fe544/style.json",
