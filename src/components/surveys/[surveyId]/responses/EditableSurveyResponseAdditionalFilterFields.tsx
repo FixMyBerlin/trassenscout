@@ -34,7 +34,7 @@ const EditableSurveyResponseAdditionalFilterFields = ({
     "geometryCategoryFeatureId",
   ]
   const additionaFilterKeysPart2ForFilter =
-    additionalFilterFields?.filter((f) => f.surveyPart === "part2").map((f) => f.id) || []
+    additionalFilterFields?.filter((f) => f.surveyPart === "part2").map((f) => String(f.id)) || []
   const part1Config = getConfigBySurveySlug(surveySlug, "part1")
   const part2Config = getConfigBySurveySlug(surveySlug, "part2")
   const part3Config = getConfigBySurveySlug(surveySlug, "part3")

@@ -66,13 +66,21 @@ const EditableSurveyResponseUserText = ({
       </div>
     )
 
+  const hasSeveralTextQuestions =
+    userTextIndices.filter((index) => feedbackQuestions.some((q) => q.name === index)).length > 1
+
   return (
-    <div>
+    <div className="space-y-4">
       {userTextIndices.map((userTextIndex) => {
         const text = responseText(response.data, userTextIndex)
         if (!text) return null
         return (
           <div key={userTextIndex} className="bg-purple-100 p-4">
+            {hasSeveralTextQuestions && (
+              <h4 className="mb-2 font-semibold">
+                {fieldLabel(feedbackQuestions.find((q) => q.name === userTextIndex))}
+              </h4>
+            )}
             <Markdown markdown={text} />
             <div className="mt-2 text-sm text-gray-500">
               Eingabe vom: {response.surveySession.createdAt.toLocaleDateString()} um{" "}

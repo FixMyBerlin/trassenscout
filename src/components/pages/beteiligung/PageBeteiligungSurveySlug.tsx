@@ -12,7 +12,8 @@ function SurveyBySlug({
   surveyId: number
 }) {
   // Only surveys with custom page logic need a branch here. All others use SurveyMainPage.
-  if (surveySlug === "radnetz-brandenburg") return <SurveyBB surveyId={surveyId} />
+  if (surveySlug === "radnetz-brandenburg" || surveySlug === "radnetz-musterland")
+    return <SurveyBB surveyId={surveyId} />
   return <SurveyMainPage surveyId={surveyId} />
 }
 

@@ -78,7 +78,7 @@ const isEmptyAnswer = (value: unknown) =>
   value == null || value === "" || (Array.isArray(value) && value.length === 0)
 
 // MCP never returns contact data; radnetz-brandenburg asks name, email and PIN in part 1 under numeric keys.
-const contactKeys = new Set(["contact", "phone", "email", "firstName", "lastName"])
+const contactKeys = new Set(["contact", "phone", "email", "firstName", "lastName", "pin"])
 const isContactAnswer = (surveySlug: string, part: number, key: string, field?: FlatField) =>
   contactKeys.has(key) ||
   (surveySlug === "radnetz-brandenburg" && part === 1 && ["1", "2", "3", "4"].includes(key)) ||
