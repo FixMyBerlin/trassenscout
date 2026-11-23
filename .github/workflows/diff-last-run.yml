@@ -37,7 +37,7 @@ jobs:
       env_fingerprint_cache_key: ${{ steps.env_hash.outputs.cache_key }}
     steps:
       - name: Checkout current version
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
