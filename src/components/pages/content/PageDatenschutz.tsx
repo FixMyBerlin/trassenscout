@@ -407,8 +407,8 @@ export function PageDatenschutz() {
           Wir setzen für die Bereitstellung und den Betrieb des Portals folgende Dienstleister ein.
           Die Dienste sind funktional geordnet: Karten (MapTiler); Hosting, Dateien und Backups
           (IONOS, Amazon Web Services, SCALEWAY und luckycloud); E-Mail und Benachrichtigungen
-          (Brevo und Migadu); KI-Verarbeitung (OpenAI); Webanalyse (Matomo, von uns selbst gehostet,
-          siehe Abschnitt „Webanalyse“).
+          (SCALEWAY, Brevo und Migadu); KI-Verarbeitung (OpenAI); Webanalyse (Matomo, von uns selbst
+          gehostet, siehe Abschnitt „Webanalyse“).
         </p>
 
         <ServiceSection
@@ -436,7 +436,7 @@ export function PageDatenschutz() {
           storage="Dateien bis zu ihrer Löschung, der Löschung des zugehörigen Projekts oder dem Wegfall des Verarbeitungszwecks; technische Protokolldaten höchstens 30 Tage"
         />
         <ServiceSection
-          name="SCALEWAY SAS"
+          name="SCALEWAY SAS (Sicherungskopien)"
           data="Bei der Nutzung des Dienstes werden folgende Daten verarbeitet: Sicherungskopien der Registrierungs-, Kontakt-, Projekt-, Planungs- und Inhaltsdaten einschließlich hochgeladener Dateien und technischer Protokolldaten"
           purpose="Erstellung und Speicherung von Sicherungskopien"
           recipient="SCALEWAY SAS, 8 rue de la Ville-l’Évêque, 75008 Paris, Frankreich"
@@ -452,9 +452,17 @@ export function PageDatenschutz() {
           storage="Bis zur Löschung, zum Zweckwegfall oder zur Vertragsbeendigung; längere Speicherung nur aufgrund gesetzlicher Aufbewahrungspflichten"
         />
         <ServiceSection
+          name="SCALEWAY SAS (E-Mail-Versand)"
+          data="Bei der Nutzung des Dienstes werden folgende Daten verarbeitet: E-Mail-Adresse und gegebenenfalls Name der empfangenden Person, Absenderadresse, Betreff und Nachrichteninhalt sowie Versand- und Zustelldaten, insbesondere Zeitpunkte, Zustellversuche und Antworten des empfangenden Mailservers"
+          purpose="Versand von Registrierungs- und Passwort-Links, Einladungen, projektbezogenen Benachrichtigungen und Bestätigungen zu Beiträgen in Beteiligungsverfahren. Öffnungen und Klicks werden nicht ausgewertet."
+          recipient="SCALEWAY SAS, 8 rue de la Ville-l’Évêque, 75008 Paris, Frankreich"
+          thirdCountry="Nein; Verarbeitung in Frankreich beziehungsweise innerhalb der EU. Kein Drittlandtransfer; Auftragsverarbeitungsvertrag gemäß Art. 28 DSGVO"
+          storage="Nachrichteninhalte werden gelöscht, sobald die E-Mail zugestellt oder endgültig abgewiesen wurde, spätestens nach 15 Tagen; verschlüsselte Sicherungskopien 7 Tage. Versand- und Zustellprotokolle werden gespeichert, solange wir den Dienst für die jeweilige Absenderdomain nutzen."
+        />
+        <ServiceSection
           name="Brevo GmbH"
-          data="Bei der Nutzung des Dienstes werden folgende Daten verarbeitet: E-Mail-Adresse der eingeladenen oder benachrichtigten Person, Name der einladenden Person, Nachrichteninhalt sowie Versand-, Zustell- und Ereignisdaten"
-          purpose="Versand von Registrierungslinks, Einladungen, Einladungen zur Beteiligungsbefragung und projektbezogenen Benachrichtigungen sowie Nachweis des Versands von Einladungen im Rahmen der Beteiligungsverfahren"
+          data="Bei der Nutzung des Dienstes werden folgende Daten verarbeitet: E-Mail-Adresse der eingeladenen Person, Name der einladenden Person, Nachrichteninhalt sowie Versand-, Zustell- und Ereignisdaten"
+          purpose="Versand von Einladungen zur Beteiligungsbefragung sowie Nachweis des Versands von Einladungen im Rahmen der Beteiligungsverfahren"
           recipient="Brevo GmbH, Köpenicker Straße 126, 10179 Berlin, Deutschland"
           thirdCountry="Ja, nicht auszuschließen; die Speicherung erfolgt innerhalb der EU, Drittlandzugriffe durch Unterauftragsverarbeiter können jedoch nicht vollständig ausgeschlossen werden. Auftragsverarbeitungsvertrag; bei Drittlandübermittlungen SCC gemäß Art. 46 DSGVO oder Angemessenheitsbeschluss gemäß Art. 45 DSGVO"
           storage="Bis zum Wegfall des Versandzwecks oder zur Löschung; Versand-, Zustell- und Ereignisprotokolle 24 Monate"
