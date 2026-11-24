@@ -1,10 +1,10 @@
+import { compareText } from "@/src/shared/tableSort/sortRows"
+
 export const shortTitle = (slug: string) => {
   return slug.toUpperCase()
 }
 
-const slugCollator = new Intl.Collator("de-DE", { numeric: true, sensitivity: "base" })
-
-export const compareSlugs = (a: string, b: string) => slugCollator.compare(a, b)
+export const compareSlugs = compareText
 
 export const longTitle = (slug: string) => {
   return slug

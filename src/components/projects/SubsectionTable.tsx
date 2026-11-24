@@ -4,6 +4,7 @@ import { LegendIcon } from "@/src/components/core/components/Map/Icons/LegendIco
 import { SubsectionIcon } from "@/src/components/core/components/Map/Icons/SubsectionIcon"
 import { getIconIdForSubsection } from "@/src/components/core/components/Map/legendIconRegistry"
 import { GEOMETRY_TYPE_TOOLTIPS } from "@/src/components/core/components/Map/utils/geometryTypeTranslations"
+import { SortableTableHeader } from "@/src/components/core/components/Table/SortableTableHeader"
 import {
   tableBodyClassName,
   tableClassName,
@@ -12,10 +13,17 @@ import {
   tableRowClassName,
 } from "@/src/components/core/components/Table/tableClasses"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
-import { compareSlugs, shortTitle } from "@/src/components/core/components/text/titles"
+import { shortTitle } from "@/src/components/core/components/text/titles"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { Tooltip } from "@/src/components/core/components/Tooltip/Tooltip"
 import type { SubsectionsList } from "@/src/server/subsections/types"
+import {
+  SUBSECTION_TABLE_DEFAULT_SORT,
+  type SubsectionTableSortColumn,
+} from "@/src/shared/projects/searchSchemas"
+import { sortRows } from "@/src/shared/tableSort/sortRows"
+import type { TableSort } from "@/src/shared/tableSort/tableSort"
+import { subsectionSortValues } from "./subsectionTableSort"
 
 const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
 
@@ -26,14 +34,27 @@ type Props = {
    * and TableWrapper scroll is off so Firefox does not Tab into the hidden table. Default true.
    */
   interactive?: boolean
+  sort?: TableSort<SubsectionTableSortColumn>
+  onSortChange?: (next: TableSort<SubsectionTableSortColumn>) => void
 }
 
 const tableHeadClasses = tableHeadCellClassName
 
-export const SubsectionTable = ({ subsections, interactive = true }: Props) => {
+export const SubsectionTable = ({
+  subsections,
+  interactive = true,
+  sort = SUBSECTION_TABLE_DEFAULT_SORT,
+  onSortChange,
+}: Props) => {
   const navigate = useNavigate()
   const { projectSlug } = loggedInProjectRouteApi.useParams()
-  const sortedSubsections = [...subsections].sort((a, b) => compareSlugs(a.slug, b.slug))
+  const sortedSubsections = sortRows(
+    subsections,
+    subsectionSortValues,
+    sort,
+    SUBSECTION_TABLE_DEFAULT_SORT,
+  )
+  const headerProps = { sort, onSortChange: interactive ? onSortChange : undefined }
 
   return (
     <section>
@@ -41,24 +62,24 @@ export const SubsectionTable = ({ subsections, interactive = true }: Props) => {
         <table className={tableClassName}>
           <thead>
             <tr className={tableHeadRowClassName}>
-              <th scope="col" className={tableHeadClasses}>
+              <SortableTableHeader column="slug" {...headerProps}>
                 Planungsabschnitt
-              </th>
+              </SortableTableHeader>
               <th scope="col" className={tableHeadClasses}>
                 <span className="sr-only">Geometrietyp</span>
               </th>
-              <th scope="col" className={tableHeadClasses}>
+              <SortableTableHeader column="operator" {...headerProps}>
                 Baulastträger
-              </th>
-              <th scope="col" className={tableHeadClasses}>
+              </SortableTableHeader>
+              <SortableTableHeader column="status" {...headerProps}>
                 Status
-              </th>
-              <th scope="col" className={tableHeadClasses}>
+              </SortableTableHeader>
+              <SortableTableHeader column="subsubsectionCount" {...headerProps}>
                 Maßnahmen
-              </th>
-              <th scope="col" className={tableHeadClasses}>
+              </SortableTableHeader>
+              <SortableTableHeader column="estimatedCompletion" {...headerProps}>
                 Fertigstellung
-              </th>
+              </SortableTableHeader>
             </tr>
           </thead>
           <tbody className={tableBodyClassName}>

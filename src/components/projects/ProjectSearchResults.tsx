@@ -8,11 +8,13 @@ import {
 } from "@/src/components/abschnitte/utils/filterSubsubsections"
 import { linkStyles } from "@/src/components/core/components/links/styles"
 import { Spinner } from "@/src/components/core/components/Spinner"
+import type { TableSortState } from "@/src/components/core/components/Table/useTableSort"
 import { FilteredZeroCase } from "@/src/components/core/components/text/FilteredZeroCase"
 import { quote } from "@/src/components/core/components/text/quote"
 import { compareSlugs } from "@/src/components/core/components/text/titles"
 import type { SubsectionsList } from "@/src/server/subsections/types"
 import type { SubsubsectionsList } from "@/src/server/subsubsections/types"
+import type { SubsectionTableSortColumn } from "@/src/shared/projects/searchSchemas"
 import { SubsectionTable } from "./SubsectionTable"
 import {
   useSubsubsectionSearchGroupOverrides,
@@ -30,11 +32,18 @@ type Props = {
   projectSlug: string
   searchterm: string
   onReset: () => void
+  subsectionSort: TableSortState<SubsectionTableSortColumn>
 }
 
 const countLineClassName = "border-b border-gray-200 px-4 py-2 text-sm"
 
-export const ProjectSearchResults = ({ results, projectSlug, searchterm, onReset }: Props) => {
+export const ProjectSearchResults = ({
+  results,
+  projectSlug,
+  searchterm,
+  onReset,
+  subsectionSort,
+}: Props) => {
   const overrides = useSubsubsectionSearchGroupOverrides(searchterm)
   const { collapseGroups, expandGroups } = useSubsubsectionSearchGroupsActions()
 
@@ -60,7 +69,11 @@ export const ProjectSearchResults = ({ results, projectSlug, searchterm, onReset
           <p className={twJoin(countLineClassName, "text-gray-500")}>
             {subsectionMatchSummary(subsectionMatches.length)} {forSearchterm}
           </p>
-          <SubsectionTable subsections={subsectionMatches} />
+          <SubsectionTable
+            subsections={subsectionMatches}
+            sort={subsectionSort.sort}
+            onSortChange={subsectionSort.setSort}
+          />
         </>
       ) : null}
       {subsubsectionMatches.length ? (

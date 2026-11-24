@@ -23,6 +23,7 @@ import {
 import { optionalPageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { PageHeaderToolbarLink } from "@/src/components/core/components/PageHeader/PageHeaderToolbarLink"
+import { useTableSort } from "@/src/components/core/components/Table/useTableSort"
 import { shortTitle } from "@/src/components/core/components/text/titles"
 import { preserveScrollNavigateOptions } from "@/src/components/core/routes/preserveScrollNavigateOptions"
 import { useViewMode } from "@/src/components/core/routes/useViewMode"
@@ -33,6 +34,10 @@ import { projectBySlugQueryOptions } from "@/src/server/projects/projectsQueryOp
 import { subsectionsQueryOptions } from "@/src/server/subsections/subsectionsQueryOptions"
 import { subsubsectionsQueryOptions } from "@/src/server/subsubsections/subsubsectionsQueryOptions"
 import { brokenGeometryItems } from "@/src/shared/geometry/brokenGeometryItems"
+import {
+  SUBSECTION_TABLE_DEFAULT_SORT,
+  SUBSECTION_TABLE_SORT_COLUMNS,
+} from "@/src/shared/projects/searchSchemas"
 import { OperatorFilter } from "./OperatorFilter"
 import { ProjectSearchResults } from "./ProjectSearchResults"
 import { SubsectionTable } from "./SubsectionTable"
@@ -45,6 +50,11 @@ export const ProjectDashboardClient = () => {
   const navigate = routeApi.useNavigate()
   const { viewMode, setViewMode } = useViewMode()
   const { searchterm, isSearching } = useSubsubsectionSearch()
+  const subsectionSort = useTableSort({
+    searchKey: "sort",
+    columns: SUBSECTION_TABLE_SORT_COLUMNS,
+    defaultSort: SUBSECTION_TABLE_DEFAULT_SORT,
+  })
   const isMapMode = viewMode === "map"
 
   const { data: project } = useSuspenseQuery(projectBySlugQueryOptions(projectSlug))
@@ -195,7 +205,14 @@ export const ProjectDashboardClient = () => {
         map={renderMap}
         list={({ interactive }) => {
           if (!isSearching) {
-            return <SubsectionTable subsections={filteredSubsections} interactive={interactive} />
+            return (
+              <SubsectionTable
+                subsections={filteredSubsections}
+                interactive={interactive}
+                sort={subsectionSort.sort}
+                onSortChange={subsectionSort.setSort}
+              />
+            )
           }
           if (interactive) {
             return (
@@ -204,6 +221,7 @@ export const ProjectDashboardClient = () => {
                 projectSlug={projectSlug}
                 searchterm={searchterm}
                 onReset={resetFilters}
+                subsectionSort={subsectionSort}
               />
             )
           }
@@ -212,7 +230,11 @@ export const ProjectDashboardClient = () => {
             searchResults?.matchedSubsectionSlugs.has(subsection.slug),
           )
           return subsectionsWithMatches.length ? (
-            <SubsectionTable subsections={subsectionsWithMatches} interactive={false} />
+            <SubsectionTable
+              subsections={subsectionsWithMatches}
+              interactive={false}
+              sort={subsectionSort.sort}
+            />
           ) : null
         }}
       >
