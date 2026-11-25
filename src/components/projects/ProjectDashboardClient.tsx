@@ -38,6 +38,10 @@ import {
   SUBSECTION_TABLE_DEFAULT_SORT,
   SUBSECTION_TABLE_SORT_COLUMNS,
 } from "@/src/shared/projects/searchSchemas"
+import {
+  SUBSUBSECTION_TABLE_DEFAULT_SORT,
+  SUBSUBSECTION_TABLE_SORT_COLUMNS,
+} from "@/src/shared/subsubsections/searchSchemas"
 import { OperatorFilter } from "./OperatorFilter"
 import { ProjectSearchResults } from "./ProjectSearchResults"
 import { SubsectionTable } from "./SubsectionTable"
@@ -54,6 +58,11 @@ export const ProjectDashboardClient = () => {
     searchKey: "sort",
     columns: SUBSECTION_TABLE_SORT_COLUMNS,
     defaultSort: SUBSECTION_TABLE_DEFAULT_SORT,
+  })
+  const subsubsectionSort = useTableSort({
+    searchKey: "subsubsectionSort",
+    columns: SUBSUBSECTION_TABLE_SORT_COLUMNS,
+    defaultSort: SUBSUBSECTION_TABLE_DEFAULT_SORT,
   })
   const isMapMode = viewMode === "map"
 
@@ -210,7 +219,7 @@ export const ProjectDashboardClient = () => {
                 subsections={filteredSubsections}
                 interactive={interactive}
                 sort={subsectionSort.sort}
-                onSortChange={subsectionSort.setSort}
+                onSortClick={subsectionSort.toggleSort}
               />
             )
           }
@@ -222,6 +231,7 @@ export const ProjectDashboardClient = () => {
                 searchterm={searchterm}
                 onReset={resetFilters}
                 subsectionSort={subsectionSort}
+                subsubsectionSort={subsubsectionSort}
               />
             )
           }

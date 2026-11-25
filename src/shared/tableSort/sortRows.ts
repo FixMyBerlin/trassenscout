@@ -16,7 +16,7 @@ const hasValue = (value: SortValue): value is string | number | Date => {
 }
 
 function compareFilled(a: string | number | Date, b: string | number | Date) {
-  if (typeof a === "string" && typeof b === "string") return compareText(a, b)
+  if (typeof a === "string" && typeof b === "string") return compareText(a.trim(), b.trim())
   if (typeof a === "number" && typeof b === "number") return a - b
   if (a instanceof Date && b instanceof Date) return a.getTime() - b.getTime()
   return compareText(String(a), String(b))
@@ -29,7 +29,7 @@ export function compareSortValues(a: SortValue, b: SortValue, direction: SortDir
   return direction === "asc" ? result : -result
 }
 
-function tableSortComparator<Row, Column extends string>(
+export function tableSortComparator<Row, Column extends string>(
   sortValues: SortValues<Row, Column>,
   sort: TableSort<Column> | undefined,
   fallback?: TableSort<Column>,
@@ -51,12 +51,4 @@ export function sortRows<Row, Column extends string>(
   fallback?: TableSort<Column>,
 ) {
   return [...rows].sort(tableSortComparator(sortValues, sort, fallback))
-}
-
-export function nextTableSort<Column extends string>(
-  current: TableSort<Column> | undefined,
-  column: Column,
-): TableSort<Column> {
-  if (current?.column !== column) return { column, direction: "asc" }
-  return { column, direction: current.direction === "asc" ? "desc" : "asc" }
 }

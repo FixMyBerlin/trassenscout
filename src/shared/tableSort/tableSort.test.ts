@@ -1,6 +1,12 @@
 import { describe, expect, test } from "vitest"
 import { z } from "zod"
-import { parseTableSort, tableSortSearchSchema, tableSortSearchValue } from "./tableSort"
+import {
+  nextTableSort,
+  parseTableSort,
+  tableSortSearchSchema,
+  tableSortSearchValue,
+  toggleTableSortSearchValue,
+} from "./tableSort"
 
 const columns = ["slug", "status", "updatedAt"] as const
 const defaultSort = { column: "slug", direction: "asc" } as const
@@ -28,6 +34,41 @@ describe("tableSortSearchSchema", () => {
     expect(schema.parse({ sort: "foo.asc" }).sort).toBeUndefined()
     expect(schema.parse({ sort: 123 }).sort).toBeUndefined()
     expect(schema.parse({}).sort).toBeUndefined()
+  })
+})
+
+describe("nextTableSort", () => {
+  test("a new column starts ascending, the active one flips", () => {
+    expect(nextTableSort(undefined, "title")).toEqual({ column: "title", direction: "asc" })
+    expect(nextTableSort({ column: "date", direction: "desc" }, "title")).toEqual({
+      column: "title",
+      direction: "asc",
+    })
+    expect(nextTableSort({ column: "title", direction: "asc" }, "title")).toEqual({
+      column: "title",
+      direction: "desc",
+    })
+    expect(nextTableSort({ column: "title", direction: "desc" }, "title")).toEqual({
+      column: "title",
+      direction: "asc",
+    })
+  })
+})
+
+describe("toggleTableSortSearchValue", () => {
+  test("each click toggles from the previous URL value", () => {
+    const first = toggleTableSortSearchValue(undefined, "status", columns, defaultSort)
+    expect(first).toBe("status.asc")
+    expect(toggleTableSortSearchValue(first, "status", columns, defaultSort)).toBe("status.desc")
+  })
+
+  test("the default column flips, and flipping back leaves the URL", () => {
+    expect(toggleTableSortSearchValue(undefined, "slug", columns, defaultSort)).toBe("slug.desc")
+    expect(toggleTableSortSearchValue("slug.desc", "slug", columns, defaultSort)).toBeUndefined()
+  })
+
+  test("an invalid URL value counts as the default", () => {
+    expect(toggleTableSortSearchValue("foo.asc", "slug", columns, defaultSort)).toBe("slug.desc")
   })
 })
 

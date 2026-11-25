@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { type TableSort, tableSortSearchSchema } from "@/src/shared/tableSort/tableSort"
 
 export const subsubsectionEditSearchSchema = z.object({
   // JSON search: `?mcpDraft=true` parses as boolean; a quoted value parses as "true".
@@ -15,6 +16,23 @@ export function isSubsubsectionMcpDraftSearch(mcpDraft: true | "true" | undefine
 
 export const subsubsectionSearchtermSchema = z.coerce.string().optional().catch(undefined)
 
+export const SUBSUBSECTION_TABLE_SORT_COLUMNS = ["slug", "updatedAt", "title"] as const
+
+// Only Meine Maßnahmen with several projects shows a Projekt column
+export const SUBSUBSECTION_TABLE_SORT_COLUMNS_WITH_PROJECT = [
+  ...SUBSUBSECTION_TABLE_SORT_COLUMNS,
+  "project",
+] as const
+
+export type SubsubsectionTableSortColumn =
+  (typeof SUBSUBSECTION_TABLE_SORT_COLUMNS_WITH_PROJECT)[number]
+
+export const SUBSUBSECTION_TABLE_DEFAULT_SORT: TableSort<SubsubsectionTableSortColumn> = {
+  column: "slug",
+  direction: "asc",
+}
+
 export const subsectionDashboardSearchSchema = z.object({
   searchterm: subsubsectionSearchtermSchema,
+  sort: tableSortSearchSchema(SUBSUBSECTION_TABLE_SORT_COLUMNS),
 })

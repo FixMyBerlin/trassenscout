@@ -1,13 +1,12 @@
 import { ArrowDownIcon, ArrowUpIcon, ChevronUpDownIcon } from "@heroicons/react/16/solid"
 import { twJoin } from "tailwind-merge"
 import { tableHeadCellClassName } from "@/src/components/core/components/Table/tableClasses"
-import { nextTableSort } from "@/src/shared/tableSort/sortRows"
 import type { TableSort } from "@/src/shared/tableSort/tableSort"
 
 type Props<Column extends string> = {
   column: Column
   sort: TableSort<Column> | undefined
-  onSortChange?: (next: TableSort<Column>) => void
+  onSortClick?: (column: Column) => void
   className?: string
   colSpan?: number
   children: string
@@ -16,7 +15,7 @@ type Props<Column extends string> = {
 export const SortableTableHeader = <Column extends string>({
   column,
   sort,
-  onSortChange,
+  onSortClick,
   className = tableHeadCellClassName,
   colSpan,
   children,
@@ -24,6 +23,7 @@ export const SortableTableHeader = <Column extends string>({
   const direction = sort?.column === column ? sort.direction : undefined
   const SortIcon =
     direction === "asc" ? ArrowUpIcon : direction === "desc" ? ArrowDownIcon : ChevronUpDownIcon
+  const lastSpace = children.lastIndexOf(" ")
 
   return (
     <th
@@ -32,17 +32,24 @@ export const SortableTableHeader = <Column extends string>({
       className={className}
       aria-sort={direction ? (direction === "asc" ? "ascending" : "descending") : undefined}
     >
-      {onSortChange ? (
+      {onSortClick ? (
         <button
           type="button"
-          onClick={() => onSortChange(nextTableSort(sort, column))}
-          className="inline-flex cursor-pointer items-center gap-1 rounded text-left uppercase hover:text-gray-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+          onClick={() => onSortClick(column)}
+          className="cursor-pointer rounded text-left uppercase hover:text-gray-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
         >
-          {children}
-          <SortIcon
-            aria-hidden="true"
-            className={twJoin("size-4 shrink-0", direction ? "text-gray-900" : "text-gray-400")}
-          />
+          {children.slice(0, lastSpace + 1)}
+          {/* The icon stays with the last word when the label wraps */}
+          <span className="whitespace-nowrap">
+            {children.slice(lastSpace + 1)}
+            <SortIcon
+              aria-hidden="true"
+              className={twJoin(
+                "ml-1 inline-block size-4 align-text-bottom",
+                direction ? "text-gray-500" : "text-gray-400",
+              )}
+            />
+          </span>
         </button>
       ) : (
         children

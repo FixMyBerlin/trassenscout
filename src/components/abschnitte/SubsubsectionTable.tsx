@@ -4,6 +4,7 @@ import { DocumentTextIcon, PaperClipIcon } from "@heroicons/react/24/outline"
 import { useNavigate } from "@tanstack/react-router"
 import { Fragment } from "react"
 import { twJoin } from "tailwind-merge"
+import { subsubsectionRowComparator } from "@/src/components/abschnitte/subsubsectionTableSort"
 import { hiddenMatchSnippet } from "@/src/components/abschnitte/utils/filterSubsubsections"
 import { Link } from "@/src/components/core/components/links/Link"
 import { LegendIcon } from "@/src/components/core/components/Map/Icons/LegendIcon"
@@ -11,6 +12,7 @@ import { SubsectionIcon } from "@/src/components/core/components/Map/Icons/Subse
 import { SubsubsectionIcon } from "@/src/components/core/components/Map/Icons/SubsubsectionIcon"
 import { getIconIdForSubsubsection } from "@/src/components/core/components/Map/legendIconRegistry"
 import { GEOMETRY_TYPE_TOOLTIPS } from "@/src/components/core/components/Map/utils/geometryTypeTranslations"
+import { SortableTableHeader } from "@/src/components/core/components/Table/SortableTableHeader"
 import {
   tableBodyClassName,
   tableCellClassName,
@@ -30,13 +32,15 @@ import { formatBerlinTime } from "@/src/components/core/utils/formatBerlinTime"
 import { normalizeSearchterm } from "@/src/components/core/utils/normalizeSearchterm"
 import type { ProjectUserDto } from "@/src/server/memberships/redactFormerProjectMemberUser.server"
 import type { SubsubsectionListRow } from "@/src/server/subsubsections/subsubsections.server"
+import type { SubsubsectionTableSortColumn } from "@/src/shared/subsubsections/searchSchemas"
+import type { TableSort } from "@/src/shared/tableSort/tableSort"
 
 // Titel has no width: it takes what the fixed columns leave and wraps.
 const subsubsectionTableColWidths = {
   slug: "w-28",
   project: "w-24",
   geometry: "w-10",
-  lastActivity: "w-36 @xl:w-44",
+  lastActivity: "w-36 @xl:w-44 @2xl:w-52",
   counts: "w-14 @4xl:w-24",
 } as const
 
@@ -47,7 +51,7 @@ export type SubsubsectionTableRow = SubsubsectionListRow & {
 }
 
 type Props = {
-  /** Rendered in the given order. */
+  /** Rendered in the given order unless `sort` is set. */
   rows: SubsubsectionTableRow[]
   showProject?: boolean
   /** Short list beside the dashboard map: no Geometrietyp and no "Zuletzt bearbeitet". */
@@ -59,11 +63,13 @@ type Props = {
   interactive?: boolean
   /** Marks the term and quotes the hidden field a row matched in. */
   searchterm?: string
-  /** Rows must be ordered so that each Planungsabschnitt is contiguous. */
+  /** Without `sort`, rows must be ordered so that each Planungsabschnitt is contiguous. */
   subsectionGroups?: {
     collapsedSlugs: ReadonlySet<string>
     onToggle: (subsectionSlug: string) => void
   }
+  sort?: TableSort<SubsubsectionTableSortColumn>
+  onSortClick?: (column: SubsubsectionTableSortColumn) => void
 }
 
 function groupBySubsectionSlug(rows: SubsubsectionTableRow[]) {
@@ -83,8 +89,14 @@ export const SubsubsectionTable = ({
   interactive = true,
   searchterm,
   subsectionGroups,
+  sort,
+  onSortClick,
 }: Props) => {
   const navigate = useNavigate()
+  const sortedRows = sort
+    ? [...rows].sort(subsubsectionRowComparator(sort, { grouped: Boolean(subsectionGroups) }))
+    : rows
+  const headerProps = { sort, onSortClick: interactive ? onSortClick : undefined }
   const currentProjectSlug = useTryRouteParam("projectSlug")
   const currentSubsectionSlug = useTryRouteParam("subsectionSlug")
   const currentSubsubsectionSlug = useTryRouteParam("subsubsectionSlug")
@@ -218,34 +230,34 @@ export const SubsubsectionTable = ({
             </colgroup>
             <thead>
               <tr className={tableHeadRowClassName}>
-                <th scope="col" className={tableHeadCellClassName}>
+                <SortableTableHeader column="slug" {...headerProps}>
                   Maßnahmen
-                </th>
+                </SortableTableHeader>
                 {!compact && (
                   <th scope="col" className={tableHeadCellClassName}>
                     <span className="sr-only">Geometrietyp</span>
                   </th>
                 )}
                 {showProject && (
-                  <th scope="col" className={tableHeadCellClassName}>
+                  <SortableTableHeader column="project" {...headerProps}>
                     Projekt
-                  </th>
+                  </SortableTableHeader>
                 )}
                 {!compact && (
-                  <th scope="col" className={tableHeadCellClassName}>
+                  <SortableTableHeader column="updatedAt" {...headerProps}>
                     Zuletzt bearbeitet
-                  </th>
+                  </SortableTableHeader>
                 )}
-                <th scope="col" className={tableHeadCellClassName}>
+                <SortableTableHeader column="title" {...headerProps}>
                   Titel
-                </th>
+                </SortableTableHeader>
                 <th scope="col" className={tableHeadCellClassName}>
                   <span className="sr-only">Protokolle und Dokumente</span>
                 </th>
               </tr>
             </thead>
             {subsectionGroups ? (
-              groupBySubsectionSlug(rows).map(([subsectionSlug, groupRows]) => {
+              groupBySubsectionSlug(sortedRows).map(([subsectionSlug, groupRows]) => {
                 const isCollapsed = subsectionGroups.collapsedSlugs.has(subsectionSlug)
                 const toggle = () => subsectionGroups.onToggle(subsectionSlug)
                 const projectSlug = groupRows[0]?.project.slug ?? ""
@@ -317,7 +329,7 @@ export const SubsubsectionTable = ({
                 )
               })
             ) : (
-              <tbody className={tableBodyClassName}>{rows.map(renderRow)}</tbody>
+              <tbody className={tableBodyClassName}>{sortedRows.map(renderRow)}</tbody>
             )}
           </table>
         </div>

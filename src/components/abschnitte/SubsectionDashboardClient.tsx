@@ -17,8 +17,8 @@ import {
 } from "@/src/components/core/components/PageHeader/MapListViewLayout"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { PageHeaderToolbarLink } from "@/src/components/core/components/PageHeader/PageHeaderToolbarLink"
+import { useTableSort } from "@/src/components/core/components/Table/useTableSort"
 import { FilteredZeroCase } from "@/src/components/core/components/text/FilteredZeroCase"
-import { compareSlugs } from "@/src/components/core/components/text/titles"
 import { useViewMode } from "@/src/components/core/routes/useViewMode"
 import { IfUserCanEdit } from "@/src/components/shared/memberships/IfUserCan"
 import { subsectionsQueryOptions } from "@/src/server/subsections/subsectionsQueryOptions"
@@ -26,6 +26,10 @@ import type { SubsectionsList } from "@/src/server/subsections/types"
 import { subsubsectionsQueryOptions } from "@/src/server/subsubsections/subsubsectionsQueryOptions"
 import { brokenGeometryItems } from "@/src/shared/geometry/brokenGeometryItems"
 import { hasGeometry } from "@/src/shared/geometry/hasGeometry"
+import {
+  SUBSUBSECTION_TABLE_DEFAULT_SORT,
+  SUBSUBSECTION_TABLE_SORT_COLUMNS,
+} from "@/src/shared/subsubsections/searchSchemas"
 import { SubsubsectionTable } from "./SubsubsectionTable"
 
 const subsectionRouteApi = getRouteApi(
@@ -48,6 +52,11 @@ function SubsectionDashboardContent({
   const { viewMode, setViewMode } = useViewMode()
   const isMapMode = viewMode === "map"
   const { searchterm, isSearching, setSearchterm } = useSubsubsectionSearch()
+  const subsubsectionSort = useTableSort({
+    searchKey: "sort",
+    columns: SUBSUBSECTION_TABLE_SORT_COLUMNS,
+    defaultSort: SUBSUBSECTION_TABLE_DEFAULT_SORT,
+  })
   const { data: subsubsections } = useSuspenseQuery(
     subsubsectionsQueryOptions({ projectSlug, subsectionId: subsection.id }),
   )
@@ -155,9 +164,12 @@ function SubsectionDashboardContent({
           }
           return (
             <SubsubsectionTable
-              rows={filteredSubsubsections
-                .map((subsubsection) => ({ ...subsubsection, project: { slug: projectSlug } }))
-                .sort((a, b) => compareSlugs(a.slug, b.slug))}
+              rows={filteredSubsubsections.map((subsubsection) => ({
+                ...subsubsection,
+                project: { slug: projectSlug },
+              }))}
+              sort={subsubsectionSort.sort}
+              onSortClick={subsubsectionSort.toggleSort}
               interactive={interactive}
               searchterm={searchterm}
             />

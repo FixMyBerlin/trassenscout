@@ -2,6 +2,11 @@ import { z } from "zod"
 import { ASSIGNMENT_DIRECTIONS } from "@/src/shared/projectRecords/assignmentDirection"
 import { projectRecordModalSearchShape } from "@/src/shared/projectRecords/searchSchemas"
 import { withViewModeSearch } from "@/src/shared/routing/viewModeSearch"
+import {
+  SUBSUBSECTION_TABLE_SORT_COLUMNS_WITH_PROJECT,
+  type SubsubsectionTableSortColumn,
+} from "@/src/shared/subsubsections/searchSchemas"
+import { type TableSort, tableSortSearchSchema } from "@/src/shared/tableSort/tableSort"
 import { projectUploadModalSearchShape } from "@/src/shared/uploads/searchSchemas"
 
 export const DASHBOARD_ALL_PROJECTS = ""
@@ -32,6 +37,15 @@ export type DashboardLayoutSearch = z.infer<typeof dashboardLayoutSearchSchema>
 export const dashboardFilterValues = (search: DashboardSearch) => ({
   projectSlug: search.projectSlug || undefined,
   months: search.months || undefined,
+})
+
+export const BOOKMARKS_TABLE_DEFAULT_SORT: TableSort<SubsubsectionTableSortColumn> = {
+  column: "updatedAt",
+  direction: "desc",
+}
+
+export const dashboardBookmarksSearchSchema = z.object({
+  sort: tableSortSearchSchema(SUBSUBSECTION_TABLE_SORT_COLUMNS_WITH_PROJECT),
 })
 
 export const ASSIGNMENTS_DEFAULTS = { status: "PENDING", direction: "toMe" } as const

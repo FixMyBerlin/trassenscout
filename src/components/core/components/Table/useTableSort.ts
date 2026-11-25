@@ -4,14 +4,14 @@ import { useTryRouteSearchKey } from "@/src/components/core/routes/useTryRouteSe
 import {
   parseTableSort,
   type TableSort,
-  tableSortSearchValue,
+  toggleTableSortSearchValue,
 } from "@/src/shared/tableSort/tableSort"
 
-export type TableSortSearchKey = "sort"
+export type TableSortSearchKey = "sort" | "subsubsectionSort"
 
 export type TableSortState<Column extends string> = {
   sort: TableSort<Column> | undefined
-  setSort: (next: TableSort<Column>) => void
+  toggleSort: (column: Column) => void
 }
 
 export function useTableSort<Column extends string>({
@@ -26,16 +26,16 @@ export function useTableSort<Column extends string>({
   const navigate = useNavigate()
   const value = useTryRouteSearchKey(searchKey)
 
-  const setSort = (next: TableSort<Column>) => {
+  const toggleSort = (column: Column) => {
     void navigate({
       to: ".",
       search: (previous) => ({
         ...previous,
-        [searchKey]: tableSortSearchValue(next, defaultSort),
+        [searchKey]: toggleTableSortSearchValue(previous[searchKey], column, columns, defaultSort),
       }),
       ...preserveScrollNavigateOptions,
     })
   }
 
-  return { sort: parseTableSort(value, columns) ?? defaultSort, setSort }
+  return { sort: parseTableSort(value, columns) ?? defaultSort, toggleSort }
 }

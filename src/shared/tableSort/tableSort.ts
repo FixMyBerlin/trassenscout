@@ -44,3 +44,22 @@ export function tableSortSearchValue<Column extends string>(
   const isDefault = defaultSort?.column === sort.column && defaultSort.direction === sort.direction
   return isDefault ? undefined : toSearchValue(sort)
 }
+
+export function nextTableSort<Column extends string>(
+  current: TableSort<Column> | undefined,
+  column: Column,
+): TableSort<Column> {
+  if (current?.column !== column) return { column, direction: "asc" }
+  return { column, direction: current.direction === "asc" ? "desc" : "asc" }
+}
+
+/** Toggles from the URL value, so a quick second click builds on the first. */
+export function toggleTableSortSearchValue<Column extends string>(
+  previous: unknown,
+  column: Column,
+  columns: readonly Column[],
+  defaultSort: TableSort<Column> | undefined,
+) {
+  const current = parseTableSort(previous, columns) ?? defaultSort
+  return tableSortSearchValue(nextTableSort(current, column), defaultSort)
+}

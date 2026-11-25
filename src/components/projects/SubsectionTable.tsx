@@ -35,7 +35,7 @@ type Props = {
    */
   interactive?: boolean
   sort?: TableSort<SubsectionTableSortColumn>
-  onSortChange?: (next: TableSort<SubsectionTableSortColumn>) => void
+  onSortClick?: (column: SubsectionTableSortColumn) => void
 }
 
 const tableHeadClasses = tableHeadCellClassName
@@ -44,7 +44,7 @@ export const SubsectionTable = ({
   subsections,
   interactive = true,
   sort = SUBSECTION_TABLE_DEFAULT_SORT,
-  onSortChange,
+  onSortClick,
 }: Props) => {
   const navigate = useNavigate()
   const { projectSlug } = loggedInProjectRouteApi.useParams()
@@ -54,7 +54,7 @@ export const SubsectionTable = ({
     sort,
     SUBSECTION_TABLE_DEFAULT_SORT,
   )
-  const headerProps = { sort, onSortChange: interactive ? onSortChange : undefined }
+  const headerProps = { sort, onSortClick: interactive ? onSortClick : undefined }
 
   return (
     <section>

@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest"
 import { compareSlugs } from "@/src/components/core/components/text/titles"
-import { compareSortValues, nextTableSort, sortRows, type SortValue } from "./sortRows"
+import { compareSortValues, sortRows, type SortValue } from "./sortRows"
 import type { SortDirection } from "./tableSort"
 
 const sorted = (values: SortValue[], direction: SortDirection) =>
@@ -34,9 +34,16 @@ describe("compareSortValues", () => {
   })
 
   test.each(["asc", "desc"] as const)("empty values come last when sorting %s", (direction) => {
-    const result = sorted([null, "b", "", undefined, "  ", "a"], direction)
-    expect(result.slice(0, 2)).toEqual(direction === "asc" ? ["a", "b"] : ["b", "a"])
-    expect(result.slice(2)).toEqual(expect.arrayContaining([null, "", undefined, "  "]))
+    // Through sortRows: Array.sort never passes bare `undefined` elements to a comparator
+    const rows = [null, "b", "", undefined, "  ", "a"].map((value) => ({ value }))
+    const result = sortRows(rows, { value: (row) => row.value }, { column: "value", direction })
+    expect(result.slice(0, 2).map((row) => row.value)).toEqual(
+      direction === "asc" ? ["a", "b"] : ["b", "a"],
+    )
+  })
+
+  test("leading spaces don't move text to the front", () => {
+    expect(sorted([" Zebra", "Apfel", "Birne"], "asc")).toEqual(["Apfel", "Birne", " Zebra"])
   })
 
   test("NaN and invalid dates count as empty", () => {
@@ -77,23 +84,5 @@ describe("sortRows", () => {
     const result = sortRows(rows, sortValues, undefined)
     expect(result.map((row) => row.slug)).toEqual(["b", "a"])
     expect(result).not.toBe(rows)
-  })
-})
-
-describe("nextTableSort", () => {
-  test("a new column starts ascending, the active one flips", () => {
-    expect(nextTableSort(undefined, "title")).toEqual({ column: "title", direction: "asc" })
-    expect(nextTableSort({ column: "date", direction: "desc" }, "title")).toEqual({
-      column: "title",
-      direction: "asc",
-    })
-    expect(nextTableSort({ column: "title", direction: "asc" }, "title")).toEqual({
-      column: "title",
-      direction: "desc",
-    })
-    expect(nextTableSort({ column: "title", direction: "desc" }, "title")).toEqual({
-      column: "title",
-      direction: "asc",
-    })
   })
 })

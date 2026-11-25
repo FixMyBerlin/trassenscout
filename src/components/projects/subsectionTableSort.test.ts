@@ -34,6 +34,21 @@ describe("subsectionSortValues", () => {
     },
   )
 
+  test.each(["asc", "desc"] as const)(
+    "Fertigstellung with an impossible month sorts with the empty ones (%s)",
+    (direction) => {
+      const rows = [
+        row("pa1", { estimatedCompletionDateString: "2026-13" }),
+        row("pa2", { estimatedCompletionDateString: "2026-12" }),
+        row("pa3", { estimatedCompletionDateString: "2027-01" }),
+        row("pa4", { estimatedCompletionDateString: "2026-00" }),
+      ]
+      expect(
+        slugs(sortRows(rows, subsectionSortValues, { column: "estimatedCompletion", direction })),
+      ).toEqual(direction === "asc" ? ["pa2", "pa3", "pa1", "pa4"] : ["pa3", "pa2", "pa1", "pa4"])
+    },
+  )
+
   test("Maßnahmen count sorts as numbers, 0 first ascending", () => {
     const rows = [
       row("pa1", { subsubsectionCount: 10 }),

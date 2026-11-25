@@ -1,4 +1,5 @@
 import { describe, expect, test } from "vitest"
+import { projectDashboardSearchSchema } from "@/src/shared/projects/searchSchemas"
 import {
   isSubsubsectionMcpDraftSearch,
   subsectionDashboardSearchSchema,
@@ -42,5 +43,13 @@ describe("subsectionDashboardSearchSchema", () => {
 
   test("leaves the searchterm out when it is not set", () => {
     expect(subsectionDashboardSearchSchema.parse({})).toEqual({})
+  })
+
+  test("drops a sort on the Projekt column, which these lists don't show", () => {
+    expect(subsectionDashboardSearchSchema.parse({ sort: "project.asc" }).sort).toBeUndefined()
+    expect(
+      projectDashboardSearchSchema.parse({ subsubsectionSort: "project.asc" }).subsubsectionSort,
+    ).toBeUndefined()
+    expect(subsectionDashboardSearchSchema.parse({ sort: "title.desc" }).sort).toBe("title.desc")
   })
 })

@@ -1,5 +1,8 @@
 import { z } from "zod"
-import { subsubsectionSearchtermSchema } from "@/src/shared/subsubsections/searchSchemas"
+import {
+  SUBSUBSECTION_TABLE_SORT_COLUMNS,
+  subsubsectionSearchtermSchema,
+} from "@/src/shared/subsubsections/searchSchemas"
 import { type TableSort, tableSortSearchSchema } from "@/src/shared/tableSort/tableSort"
 
 export const SUBSECTION_TABLE_SORT_COLUMNS = [
@@ -21,6 +24,7 @@ export const projectDashboardSearchSchema = z.object({
   operator: z.coerce.string().optional(),
   searchterm: subsubsectionSearchtermSchema,
   sort: tableSortSearchSchema(SUBSECTION_TABLE_SORT_COLUMNS),
+  subsubsectionSort: tableSortSearchSchema(SUBSUBSECTION_TABLE_SORT_COLUMNS),
 })
 
 export const adminProjectsSearchSchema = z.object({

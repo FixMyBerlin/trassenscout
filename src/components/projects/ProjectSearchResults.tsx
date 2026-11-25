@@ -11,10 +11,10 @@ import { Spinner } from "@/src/components/core/components/Spinner"
 import type { TableSortState } from "@/src/components/core/components/Table/useTableSort"
 import { FilteredZeroCase } from "@/src/components/core/components/text/FilteredZeroCase"
 import { quote } from "@/src/components/core/components/text/quote"
-import { compareSlugs } from "@/src/components/core/components/text/titles"
 import type { SubsectionsList } from "@/src/server/subsections/types"
 import type { SubsubsectionsList } from "@/src/server/subsubsections/types"
 import type { SubsectionTableSortColumn } from "@/src/shared/projects/searchSchemas"
+import type { SubsubsectionTableSortColumn } from "@/src/shared/subsubsections/searchSchemas"
 import { SubsectionTable } from "./SubsectionTable"
 import {
   useSubsubsectionSearchGroupOverrides,
@@ -33,6 +33,7 @@ type Props = {
   searchterm: string
   onReset: () => void
   subsectionSort: TableSortState<SubsectionTableSortColumn>
+  subsubsectionSort: TableSortState<SubsubsectionTableSortColumn>
 }
 
 const countLineClassName = "border-b border-gray-200 px-4 py-2 text-sm"
@@ -43,6 +44,7 @@ export const ProjectSearchResults = ({
   searchterm,
   onReset,
   subsectionSort,
+  subsubsectionSort,
 }: Props) => {
   const overrides = useSubsubsectionSearchGroupOverrides(searchterm)
   const { collapseGroups, expandGroups } = useSubsubsectionSearchGroupsActions()
@@ -72,7 +74,7 @@ export const ProjectSearchResults = ({
           <SubsectionTable
             subsections={subsectionMatches}
             sort={subsectionSort.sort}
-            onSortChange={subsectionSort.setSort}
+            onSortClick={subsectionSort.toggleSort}
           />
         </>
       ) : null}
@@ -98,13 +100,12 @@ export const ProjectSearchResults = ({
             ) : null}
           </div>
           <SubsubsectionTable
-            rows={subsubsectionMatches
-              .map((subsubsection) => ({ ...subsubsection, project: { slug: projectSlug } }))
-              .sort(
-                (a, b) =>
-                  compareSlugs(a.subsection.slug, b.subsection.slug) ||
-                  compareSlugs(a.slug, b.slug),
-              )}
+            rows={subsubsectionMatches.map((subsubsection) => ({
+              ...subsubsection,
+              project: { slug: projectSlug },
+            }))}
+            sort={subsubsectionSort.sort}
+            onSortClick={subsubsectionSort.toggleSort}
             searchterm={searchterm}
             subsectionGroups={{
               collapsedSlugs,

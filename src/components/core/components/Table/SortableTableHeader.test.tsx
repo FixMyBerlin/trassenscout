@@ -9,15 +9,15 @@ type Column = "slug" | "status"
 
 const sort: TableSort<Column> = { column: "slug", direction: "asc" }
 
-function renderHeaders(onSortChange?: (next: TableSort<Column>) => void) {
+function renderHeaders(onSortClick?: (column: Column) => void) {
   render(
     <table>
       <thead>
         <tr>
-          <SortableTableHeader column="slug" sort={sort} onSortChange={onSortChange}>
+          <SortableTableHeader column="slug" sort={sort} onSortClick={onSortClick}>
             Planungsabschnitt
           </SortableTableHeader>
-          <SortableTableHeader column="status" sort={sort} onSortChange={onSortChange}>
+          <SortableTableHeader column="status" sort={sort} onSortClick={onSortClick}>
             Status
           </SortableTableHeader>
         </tr>
@@ -38,16 +38,16 @@ describe("SortableTableHeader", () => {
     expect(screen.getByRole("columnheader", { name: "Status" })).not.toHaveAttribute("aria-sort")
   })
 
-  test("a new column sorts ascending, the active one flips", () => {
-    const onSortChange = vi.fn()
-    renderHeaders(onSortChange)
+  test("a click reports its column", () => {
+    const onSortClick = vi.fn()
+    renderHeaders(onSortClick)
     fireEvent.click(screen.getByRole("button", { name: "Status" }))
-    expect(onSortChange).toHaveBeenLastCalledWith({ column: "status", direction: "asc" })
+    expect(onSortClick).toHaveBeenLastCalledWith("status")
     fireEvent.click(screen.getByRole("button", { name: "Planungsabschnitt" }))
-    expect(onSortChange).toHaveBeenLastCalledWith({ column: "slug", direction: "desc" })
+    expect(onSortClick).toHaveBeenLastCalledWith("slug")
   })
 
-  test("without onSortChange it is plain text but keeps aria-sort", () => {
+  test("without onSortClick it is plain text but keeps aria-sort", () => {
     renderHeaders()
     expect(screen.queryByRole("button")).not.toBeInTheDocument()
     expect(screen.getByRole("columnheader", { name: "Planungsabschnitt" })).toHaveAttribute(
