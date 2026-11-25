@@ -13,6 +13,7 @@ import {
 } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { PageHeaderSearchFilter } from "@/src/components/core/components/PageHeader/PageHeaderSearchFilter"
+import { useTableSort } from "@/src/components/core/components/Table/useTableSort"
 import { TabsApp } from "@/src/components/core/components/Tabs/TabsApp"
 import { FilteredZeroCase } from "@/src/components/core/components/text/FilteredZeroCase"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
@@ -22,6 +23,7 @@ import { TagFilterCombobox } from "@/src/components/tags/TagFilterCombobox"
 import { useTagFilterOptions } from "@/src/components/tags/useTagFilterOptions"
 import { contactsQueryOptions } from "@/src/server/contacts/contactsQueryOptions"
 import { currentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
+import { CONTACT_TABLE_SORT_COLUMNS } from "@/src/shared/contacts/searchSchemas"
 
 const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/contacts/")
 
@@ -36,6 +38,11 @@ export function PageContacts() {
   const filteredContacts = useFilteredContacts(contacts)
   const { filter, setFilter } = useContactFilters()
   const tagOptions = useTagFilterOptions(contacts, projectSlug)
+  const { sort, toggleSort } = useTableSort({
+    searchKey: "sort",
+    columns: CONTACT_TABLE_SORT_COLUMNS,
+    defaultSort: undefined,
+  })
   const resetFilter = () => void setFilter(undefined)
 
   return (
@@ -92,6 +99,8 @@ export function PageContacts() {
           currentUserEmail={currentUser?.email}
           onTagClick={(tag) => void setFilter({ tag })}
           projectSlug={projectSlug}
+          sort={sort}
+          onSortClick={toggleSort}
         />
       )}
       <div className={optionalPageContentPaddingClassName}>

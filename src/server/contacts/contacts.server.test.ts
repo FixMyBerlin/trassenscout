@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, test, vi } from "vitest"
 import { contactInProjectWhere } from "@/src/server/contacts/contactScope"
+import { getContacts } from "@/src/server/contacts/queries/contacts.server"
 import { AuthorizationError } from "@/src/shared/auth/errors"
 
-const mockDb = {
+const mockDb = vi.hoisted(() => ({
   contact: {
     findFirstOrThrow: vi.fn(),
     findFirst: vi.fn(),
@@ -12,7 +13,7 @@ const mockDb = {
     count: vi.fn(),
     create: vi.fn(),
   },
-}
+}))
 
 vi.mock("@/src/server/db.server", () => ({
   default: mockDb,
@@ -82,5 +83,18 @@ describe("contacts.server project scoping", () => {
     await expect(deleteContact(headers, { projectSlug: "alpha", id: 9 })).rejects.toBeInstanceOf(
       AuthorizationError,
     )
+  })
+
+  test("getContacts returns every contact of the project, not only the first 100", async () => {
+    const rows = Array.from({ length: 101 }, (_, index) => ({ id: index + 1 }))
+    mockDb.contact.count.mockResolvedValue(rows.length)
+    mockDb.contact.findMany.mockImplementation(
+      ({ skip = 0, take }: { skip?: number; take?: number }) =>
+        Promise.resolve(rows.slice(skip, take === undefined ? undefined : skip + take)),
+    )
+
+    const { contacts } = await getContacts(headers, { projectSlug: "alpha" })
+
+    expect(contacts).toHaveLength(101)
   })
 })

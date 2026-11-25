@@ -3,6 +3,7 @@ import { twJoin } from "tailwind-merge"
 import { Link } from "@/src/components/core/components/links/Link"
 import { linkStyles } from "@/src/components/core/components/links/styles"
 import { useIsInsideModal } from "@/src/components/core/components/Modal"
+import { SortableTableHeader } from "@/src/components/core/components/Table/SortableTableHeader"
 import {
   tableBodyClassName,
   tableCellClassName,
@@ -28,7 +29,14 @@ import { UploadPreviewClickable } from "@/src/components/uploads/UploadPreviewCl
 import { UploadVerknuepfungen } from "@/src/components/uploads/UploadVerknuepfungen"
 import { isPdf } from "@/src/components/uploads/utils/getFileType"
 import { uploadDownloadUrl, uploadUrl } from "@/src/components/uploads/utils/uploadUrl"
+import { sortRows } from "@/src/shared/tableSort/sortRows"
+import type { TableSort } from "@/src/shared/tableSort/tableSort"
+import {
+  UPLOAD_TABLE_DEFAULT_SORT,
+  type UploadTableSortColumn,
+} from "@/src/shared/uploads/searchSchemas"
 import { getFilenameFromS3 } from "@/src/shared/uploads/url"
+import { uploadSortValues } from "./uploadTableSort"
 import type { UploadEditLink, UploadTableUpload } from "./uploadTypes"
 
 /**
@@ -60,6 +68,9 @@ type Props = Prettify<{
   withRelations: boolean
   withSource?: boolean
   withTags?: boolean
+  // Without `sort`, rows keep the given order
+  sort?: TableSort<UploadTableSortColumn>
+  onSortClick?: (column: UploadTableSortColumn) => void
   onDelete?: (uploadId: number) => Promise<void>
   onRemove?: (uploadId: number) => void
   onTagClick?: (tag: string) => void
@@ -73,11 +84,16 @@ export const UploadTable = ({
   withRelations,
   withSource = false,
   withTags = true,
+  sort,
+  onSortClick,
   onDelete,
   onRemove,
   onTagClick,
 }: Props) => {
   const showProject = projectSlug === undefined
+  const sortedUploads = sort
+    ? sortRows(uploads, uploadSortValues, sort, UPLOAD_TABLE_DEFAULT_SORT)
+    : uploads
 
   if (!uploads.length) {
     return <ZeroCase small visible={uploads.length} name="Dokumente" verb="hochgeladen" />
@@ -112,9 +128,9 @@ export const UploadTable = ({
                 <th scope="col" className={twJoin(tableHeadCellClassName, "sr-only")}>
                   Vorschau
                 </th>
-                <th scope="col" className={tableHeadCellClassName}>
+                <SortableTableHeader column="title" sort={sort} onSortClick={onSortClick}>
                   Titel
-                </th>
+                </SortableTableHeader>
                 {showProject && (
                   <th
                     scope="col"
@@ -126,9 +142,14 @@ export const UploadTable = ({
                 <th scope="col" className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}>
                   <span className="sr-only">Standort</span>
                 </th>
-                <th scope="col" className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}>
+                <SortableTableHeader
+                  column="createdAt"
+                  sort={sort}
+                  onSortClick={onSortClick}
+                  className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}
+                >
                   Hochgeladen
-                </th>
+                </SortableTableHeader>
                 {withTags && (
                   <th
                     scope="col"
@@ -159,7 +180,7 @@ export const UploadTable = ({
               </tr>
             </thead>
             <tbody className={tableBodyClassName}>
-              {uploads.map((upload) => {
+              {sortedUploads.map((upload) => {
                 const rowProjectSlug = projectSlug ?? upload.project?.slug
                 if (!rowProjectSlug) return null
 

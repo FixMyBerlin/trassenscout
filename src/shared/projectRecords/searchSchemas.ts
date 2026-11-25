@@ -1,7 +1,17 @@
 import { z } from "zod"
 import { ASSIGNMENT_DIRECTIONS } from "@/src/shared/projectRecords/assignmentDirection"
 import { jsonSearchParam } from "@/src/shared/routing/jsonSearchParam"
+import { type TableSort, tableSortSearchSchema } from "@/src/shared/tableSort/tableSort"
 import { searchtermTagFilterSearchValue, tagFilterSchema } from "@/src/shared/tags/tagFilter"
+
+export const PROJECT_RECORD_TABLE_SORT_COLUMNS = ["date", "title", "assignedTo"] as const
+
+export type ProjectRecordTableSortColumn = (typeof PROJECT_RECORD_TABLE_SORT_COLUMNS)[number]
+
+export const PROJECT_RECORD_TABLE_DEFAULT_SORT: TableSort<ProjectRecordTableSortColumn> = {
+  column: "date",
+  direction: "desc",
+}
 
 export const PROJECT_RECORD_FILTER_DEFAULTS = {
   searchterm: "",
@@ -71,6 +81,7 @@ export const projectRecordsSearchSchema = z.object({
   ),
   mcpDraft: z.union([z.literal(true), z.literal("true")]).optional(),
   ref: z.string().min(1).optional(),
+  sort: tableSortSearchSchema(PROJECT_RECORD_TABLE_SORT_COLUMNS),
 })
 
 export type ProjectRecordsSearch = z.infer<typeof projectRecordsSearchSchema>

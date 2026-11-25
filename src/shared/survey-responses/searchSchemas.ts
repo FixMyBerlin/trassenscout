@@ -1,4 +1,14 @@
 import { z } from "zod"
+import { type TableSort, tableSortSearchSchema } from "@/src/shared/tableSort/tableSort"
+
+export const SURVEY_RESPONSE_SORT_COLUMNS = ["id", "status"] as const
+
+export type SurveyResponseSortColumn = (typeof SURVEY_RESPONSE_SORT_COLUMNS)[number]
+
+export const SURVEY_RESPONSE_DEFAULT_SORT: TableSort<SurveyResponseSortColumn> = {
+  column: "id",
+  direction: "desc",
+}
 
 const surveyResponseFilterSchema = z.looseObject({
   status: z.array(z.string()),
@@ -121,6 +131,7 @@ export const surveyResponsesSearchSchema = z.object({
     (value) => normalizeSelectedResponsesRouteParam(value),
     z.coerce.string().optional(),
   ),
+  sort: tableSortSearchSchema(SURVEY_RESPONSE_SORT_COLUMNS),
 })
 
 export type SurveyResponsesRouteSearch = z.infer<typeof surveyResponsesSearchSchema>

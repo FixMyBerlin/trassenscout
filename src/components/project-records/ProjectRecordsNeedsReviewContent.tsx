@@ -2,11 +2,16 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { getRouteApi } from "@tanstack/react-router"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
+import { useTableSort } from "@/src/components/core/components/Table/useTableSort"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { ProjectRecordsNeedsReviewInfoBanner } from "@/src/components/project-records/ProjectRecordNeedsReviewBanner"
 import { ProjectRecordsTable } from "@/src/components/project-records/ProjectRecordTable"
 import { useProjectRecordsListHeader } from "@/src/components/project-records/useProjectRecordsListHeader"
 import { projectRecordsNeedsReviewQueryOptions } from "@/src/server/projectRecords/projectRecordsQueryOptions"
+import {
+  PROJECT_RECORD_TABLE_DEFAULT_SORT,
+  PROJECT_RECORD_TABLE_SORT_COLUMNS,
+} from "@/src/shared/projectRecords/searchSchemas"
 
 const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
 
@@ -16,6 +21,11 @@ export const ProjectRecordsNeedsReviewContent = () => {
   const { data: projectRecords } = useSuspenseQuery(
     projectRecordsNeedsReviewQueryOptions({ projectSlug }),
   )
+  const { sort, toggleSort } = useTableSort({
+    searchKey: "sort",
+    columns: PROJECT_RECORD_TABLE_SORT_COLUMNS,
+    defaultSort: PROJECT_RECORD_TABLE_DEFAULT_SORT,
+  })
 
   return (
     <>
@@ -34,7 +44,11 @@ export const ProjectRecordsNeedsReviewContent = () => {
       ) : (
         <>
           <ProjectRecordsNeedsReviewInfoBanner />
-          <ProjectRecordsTable projectRecords={projectRecords} />
+          <ProjectRecordsTable
+            projectRecords={projectRecords}
+            sort={sort}
+            onSortClick={toggleSort}
+          />
         </>
       )}
     </>

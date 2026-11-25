@@ -15,7 +15,7 @@ const appendInstitution = (label: string, user: Props["assignedTo"]) => {
   return label && institution ? `${label} (${institution})` : label
 }
 
-const assignedToPillShortLabel = (user: Props["assignedTo"]) => {
+export const assignedToPillShortLabel = (user: Props["assignedTo"]) => {
   if (!("id" in user)) {
     return getFullnameWithInstitution(user)?.trim() ?? ""
   }

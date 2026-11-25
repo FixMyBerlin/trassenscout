@@ -9,8 +9,11 @@ const membershipRoleLabels: Record<MembershipRole, string> = {
   EDITOR: "Editierrechte",
 }
 
+export const userCanLabel = (role: MembershipRole, isAdmin: boolean) =>
+  isAdmin ? "Admin" : membershipRoleLabels[role]
+
 export const UserCanIcon = ({ role, isAdmin, className }: Props) => {
-  const label = isAdmin ? "Admin" : membershipRoleLabels[role]
+  const label = userCanLabel(role, isAdmin)
   const iconClassName = twJoin("size-4 shrink-0", className)
 
   switch (role) {

@@ -7,10 +7,12 @@ import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAd
 import { Link } from "@/src/components/core/components/links/Link"
 import { optionalPageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
+import { useTableSort } from "@/src/components/core/components/Table/useTableSort"
 import { TabsApp } from "@/src/components/core/components/Tabs/TabsApp"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
 import { useUserCan } from "@/src/components/shared/app/memberships/hooks/useUserCan"
 import { projectUsersQueryOptions } from "@/src/server/memberships/projectUsersQueryOptions"
+import { TEAM_TABLE_SORT_COLUMNS } from "@/src/shared/contacts/searchSchemas"
 
 const routeApi = getRouteApi("/_loggedInProjects/$projectSlug/contacts/team/")
 
@@ -20,6 +22,11 @@ export function PageContactsTeam() {
   const tabs = useContactsTabs()
   const contactsModal = useContactsModal()
   const { data: users } = useSuspenseQuery(projectUsersQueryOptions({ projectSlug }))
+  const { sort, toggleSort } = useTableSort({
+    searchKey: "sort",
+    columns: TEAM_TABLE_SORT_COLUMNS,
+    defaultSort: undefined,
+  })
 
   return (
     <>
@@ -41,7 +48,7 @@ export function PageContactsTeam() {
           ) : undefined
         }
       />
-      <TeamTable users={users} />
+      <TeamTable users={users} sort={sort} onSortClick={toggleSort} />
       <div className={optionalPageContentPaddingClassName}>
         <SuperAdminBox>
           <Link button="blue" to="/admin/memberships">

@@ -1,5 +1,7 @@
 import { z } from "zod"
+import { PROJECT_RECORD_TABLE_SORT_COLUMNS } from "@/src/shared/projectRecords/searchSchemas"
 import { type TableSort, tableSortSearchSchema } from "@/src/shared/tableSort/tableSort"
+import { UPLOAD_TABLE_SORT_COLUMNS } from "@/src/shared/uploads/searchSchemas"
 
 export const subsubsectionEditSearchSchema = z.object({
   // JSON search: `?mcpDraft=true` parses as boolean; a quoted value parses as "true".
@@ -35,4 +37,9 @@ export const SUBSUBSECTION_TABLE_DEFAULT_SORT: TableSort<SubsubsectionTableSortC
 export const subsectionDashboardSearchSchema = z.object({
   searchterm: subsubsectionSearchtermSchema,
   sort: tableSortSearchSchema(SUBSUBSECTION_TABLE_SORT_COLUMNS),
+})
+
+export const subsubsectionDashboardSearchSchema = z.object({
+  projectRecordSort: tableSortSearchSchema(PROJECT_RECORD_TABLE_SORT_COLUMNS),
+  uploadSort: tableSortSearchSchema(UPLOAD_TABLE_SORT_COLUMNS),
 })

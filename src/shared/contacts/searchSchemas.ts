@@ -1,6 +1,19 @@
 import { z } from "zod"
 import { jsonSearchParam } from "@/src/shared/routing/jsonSearchParam"
+import { tableSortSearchSchema } from "@/src/shared/tableSort/tableSort"
 import { searchtermTagFilterSchema } from "@/src/shared/tags/tagFilter"
+
+export const CONTACT_TABLE_SORT_COLUMNS = ["name"] as const
+
+export type ContactTableSortColumn = (typeof CONTACT_TABLE_SORT_COLUMNS)[number]
+
+export const TEAM_TABLE_SORT_COLUMNS = ["name", "role"] as const
+
+export type TeamTableSortColumn = (typeof TEAM_TABLE_SORT_COLUMNS)[number]
+
+export const contactsTeamSearchSchema = z.object({
+  sort: tableSortSearchSchema(TEAM_TABLE_SORT_COLUMNS),
+})
 
 const contactFilterSchema = searchtermTagFilterSchema
 
@@ -17,6 +30,7 @@ function parseContactFilterParam(value: string | undefined) {
 
 export const contactsSearchSchema = z.object({
   filter: jsonSearchParam(contactFilterSchema, parseContactFilterParam),
+  sort: tableSortSearchSchema(CONTACT_TABLE_SORT_COLUMNS),
 })
 
 export type ContactsSearch = z.infer<typeof contactsSearchSchema>

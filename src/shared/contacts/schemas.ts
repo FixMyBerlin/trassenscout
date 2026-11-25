@@ -59,9 +59,6 @@ export const UpdateContactSchema = ProjectSlugRequiredSchema.extend({
 
 export const DeleteContactSchema = ProjectSlugRequiredSchema.extend({ id: z.number() })
 
-export const GetContactsSchema = ProjectSlugRequiredSchema.extend({
-  skip: z.number().int().nonnegative().optional(),
-  take: z.number().int().positive().max(100).optional(),
-})
+export const GetContactsSchema = ProjectSlugRequiredSchema
 
 export type GetContactsInput = z.infer<typeof GetContactsSchema>

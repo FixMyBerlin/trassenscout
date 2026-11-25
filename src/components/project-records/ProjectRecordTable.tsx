@@ -5,6 +5,7 @@ import { de } from "date-fns/locale"
 import { twJoin } from "tailwind-merge"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "@/src/components/core/components/links/Link"
+import { SortableTableHeader } from "@/src/components/core/components/Table/SortableTableHeader"
 import {
   tableBodyClassName,
   tableCellClassName,
@@ -21,9 +22,16 @@ import type {
   ProjectRecordsList,
   ProjectRecordsNeedsReviewList,
 } from "@/src/server/projectRecords/types"
+import {
+  PROJECT_RECORD_TABLE_DEFAULT_SORT,
+  type ProjectRecordTableSortColumn,
+} from "@/src/shared/projectRecords/searchSchemas"
+import { sortRows } from "@/src/shared/tableSort/sortRows"
+import type { TableSort } from "@/src/shared/tableSort/tableSort"
 import { ProjectRecordAssignedToPill } from "./ProjectRecordAssignedToPill"
 import { ProjectRecordEditingStateIndicator } from "./ProjectRecordEditingStateIndicator"
 import { useProjectRecordModal } from "./ProjectRecordModalHost"
+import { projectRecordSortValues } from "./projectRecordTableSort"
 import { ProjectRecordTagsList } from "./ProjectRecordTagsList"
 import { ProjectRecordVerknuepfungen } from "./ProjectRecordVerknuepfungen"
 import { createProjectRecordFilterUrl } from "./utils/filter/createFilterUrl"
@@ -46,18 +54,24 @@ export const ProjectRecordsTable = ({
   isTopicFilter,
   showRelationsColumn = false,
   withTopBorder = false,
+  sort,
+  onSortClick,
   onTopicClick,
   onAssigneeClick,
 }: {
-  projectRecords:
-    | ProjectRecordsList
-    | ProjectRecordsByAcquisitionArea
-    | ProjectRecordsBySubsubsection
-    | ProjectRecordsNeedsReviewList
+  projectRecords: (
+    | ProjectRecordsList[number]
+    | ProjectRecordsByAcquisitionArea[number]
+    | ProjectRecordsBySubsubsection[number]
+    | ProjectRecordsNeedsReviewList[number]
+  )[]
   highlightId?: number | null
   isTopicFilter?: boolean
   showRelationsColumn?: boolean
   withTopBorder?: boolean
+  // Without `sort`, rows keep the given order
+  sort?: TableSort<ProjectRecordTableSortColumn>
+  onSortClick?: (column: ProjectRecordTableSortColumn) => void
   onTopicClick?: (topic: string) => void
   onAssigneeClick?: (assigneeSearchText: string) => void
 }) => {
@@ -65,6 +79,10 @@ export const ProjectRecordsTable = ({
   const projectRecordModal = useProjectRecordModal()
 
   if (!projectRecords.length) return null
+
+  const sortedProjectRecords = sort
+    ? sortRows(projectRecords, projectRecordSortValues, sort, PROJECT_RECORD_TABLE_DEFAULT_SORT)
+    : projectRecords
 
   return (
     <>
@@ -85,12 +103,12 @@ export const ProjectRecordsTable = ({
                 <th scope="col" className={tableHeadCellClassName}>
                   <span className="sr-only">Status</span>
                 </th>
-                <th scope="col" className={tableHeadCellClassName}>
+                <SortableTableHeader column="date" sort={sort} onSortClick={onSortClick}>
                   Datum
-                </th>
-                <th scope="col" className={tableHeadCellClassName}>
+                </SortableTableHeader>
+                <SortableTableHeader column="title" sort={sort} onSortClick={onSortClick}>
                   Titel
-                </th>
+                </SortableTableHeader>
                 {showRelationsColumn && (
                   <th
                     scope="col"
@@ -102,16 +120,21 @@ export const ProjectRecordsTable = ({
                 <th scope="col" className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}>
                   Tags
                 </th>
-                <th scope="col" className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}>
+                <SortableTableHeader
+                  column="assignedTo"
+                  sort={sort}
+                  onSortClick={onSortClick}
+                  className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}
+                >
                   Zugewiesen
-                </th>
+                </SortableTableHeader>
                 <th scope="col" className={tableHeadCellClassName}>
                   <span className="sr-only">Anzahl</span>
                 </th>
               </tr>
             </thead>
             <tbody className={tableBodyClassName}>
-              {projectRecords.map((projectRecord) => {
+              {sortedProjectRecords.map((projectRecord) => {
                 const projectRecordTags = "tags" in projectRecord ? projectRecord.tags : []
                 const assignedTo = "assignedTo" in projectRecord ? projectRecord.assignedTo : null
                 const uploadCount =

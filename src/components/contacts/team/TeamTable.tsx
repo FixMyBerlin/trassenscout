@@ -3,6 +3,7 @@ import { twJoin } from "tailwind-merge"
 import { SuperAdminLogData } from "@/src/components/core/components/AdminBox/SuperAdminLogData"
 import { LinkMail } from "@/src/components/core/components/links/LinkMail"
 import { LinkTel } from "@/src/components/core/components/links/LinkTel"
+import { SortableTableHeader } from "@/src/components/core/components/Table/SortableTableHeader"
 import {
   tableBodyClassName,
   tableCellClassName,
@@ -18,8 +19,12 @@ import { getFullnameWithInstitution } from "@/src/components/core/users/getFulln
 import { UserCanIcon } from "@/src/components/shared/app/memberships/UserCanIcon"
 import type { ProjectUsersList } from "@/src/server/memberships/types"
 import { currentUserQueryOptions } from "@/src/server/users/usersQueryOptions"
+import type { TeamTableSortColumn } from "@/src/shared/contacts/searchSchemas"
+import { sortRows } from "@/src/shared/tableSort/sortRows"
+import type { TableSort } from "@/src/shared/tableSort/tableSort"
 import { TeamTableEditMembershipDelete } from "./TeamTableEditMembershipDelete"
 import { TeamTableEditMembershipModal } from "./TeamTableEditMembershipModal"
+import { teamSortValues } from "./teamTableSort"
 
 /**
  * Column width classes for `table-fixed` layout. Adjust percentages here only.
@@ -34,11 +39,13 @@ const teamTableColWidths = {
 
 type Props = {
   users: ProjectUsersList
+  sort?: TableSort<TeamTableSortColumn>
+  onSortClick?: (column: TeamTableSortColumn) => void
 }
 
 const editableMembershipRoles = ["VIEWER", "EDITOR"]
 
-export const TeamTable = ({ users }: Props) => {
+export const TeamTable = ({ users, sort, onSortClick }: Props) => {
   const { data: currentUser } = useQuery(currentUserQueryOptions())
 
   if (!users.length) {
@@ -64,25 +71,25 @@ export const TeamTable = ({ users }: Props) => {
             </colgroup>
             <thead>
               <tr className={tableHeadRowClassName}>
-                <th scope="col" className={tableHeadCellClassName}>
+                <SortableTableHeader column="name" sort={sort} onSortClick={onSortClick}>
                   Name
-                </th>
+                </SortableTableHeader>
                 <th scope="col" className={tableHeadCellClassName}>
                   Telefon
                 </th>
                 <th scope="col" className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}>
                   E-Mail
                 </th>
-                <th scope="col" className={tableHeadCellClassName}>
+                <SortableTableHeader column="role" sort={sort} onSortClick={onSortClick}>
                   Rechte
-                </th>
+                </SortableTableHeader>
                 <th scope="col" className={tableHeadCellRightClassName}>
                   <span className="sr-only">Aktionen</span>
                 </th>
               </tr>
             </thead>
             <tbody className={tableBodyClassName}>
-              {users.map((user) => {
+              {sortRows(users, teamSortValues, sort).map((user) => {
                 const canEditMembership = editableMembershipRoles.includes(
                   user.currentMembershipRole,
                 )

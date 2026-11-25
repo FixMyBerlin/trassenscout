@@ -17,6 +17,7 @@ import {
   tableHeadRowClassName,
   tableRowClassName,
 } from "@/src/components/core/components/Table/tableClasses"
+import { useTableSort } from "@/src/components/core/components/Table/useTableSort"
 import {
   formattedEuro,
   formattedLength,
@@ -40,6 +41,10 @@ import { projectRecordsBySubsubsectionQueryOptions } from "@/src/server/projectR
 import type { SubsubsectionWithPosition } from "@/src/server/subsubsections/types"
 import { uploadsWithSubsectionsQueryOptions } from "@/src/server/uploads/uploadsWithSubsectionsQueryOptions"
 import {
+  PROJECT_RECORD_TABLE_DEFAULT_SORT,
+  PROJECT_RECORD_TABLE_SORT_COLUMNS,
+} from "@/src/shared/projectRecords/searchSchemas"
+import {
   costStructureFieldNames,
   durationFieldNames,
   fundingFieldNames,
@@ -52,6 +57,10 @@ import {
   sortByOrder,
 } from "@/src/shared/subsubsections/extraFieldSchemas"
 import { subsubsectionFieldTranslations } from "@/src/shared/subsubsections/subsubsectionFieldMappings"
+import {
+  UPLOAD_TABLE_DEFAULT_SORT,
+  UPLOAD_TABLE_SORT_COLUMNS,
+} from "@/src/shared/uploads/searchSchemas"
 
 const layoutRouteApi = getRouteApi(
   "/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard",
@@ -195,6 +204,16 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
   const acquisitionAreasWithProjectRecords = acquisitionAreaProjectRecordCounts.filter(
     (acquisitionArea) => acquisitionArea.projectRecordCount > 0,
   )
+  const projectRecordSort = useTableSort({
+    searchKey: "projectRecordSort",
+    columns: PROJECT_RECORD_TABLE_SORT_COLUMNS,
+    defaultSort: PROJECT_RECORD_TABLE_DEFAULT_SORT,
+  })
+  const uploadSort = useTableSort({
+    searchKey: "uploadSort",
+    columns: UPLOAD_TABLE_SORT_COLUMNS,
+    defaultSort: UPLOAD_TABLE_DEFAULT_SORT,
+  })
 
   return (
     <SubsubsectionPanel title="" className={className} header={header}>
@@ -522,6 +541,8 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
               projectRecords={projectRecords}
               highlightId={createdProjectRecordId}
               withTopBorder
+              sort={projectRecordSort.sort}
+              onSortClick={projectRecordSort.toggleSort}
             />
           ) : (
             <div className="border-t border-gray-200 pt-3">
@@ -590,6 +611,8 @@ export const SubsubsectionDetailsContent = ({ subsubsection, className, header }
             withAction={false}
             withRelations={false}
             uploads={uploads}
+            sort={uploadSort.sort}
+            onSortClick={uploadSort.toggleSort}
             onDelete={async () => {
               await refetchUploads()
             }}

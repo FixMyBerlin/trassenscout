@@ -15,7 +15,9 @@ import {
 } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeader } from "@/src/components/core/components/PageHeader/PageHeader"
 import { PageHeaderToolbarLink } from "@/src/components/core/components/PageHeader/PageHeaderToolbarLink"
+import { TableSortButton } from "@/src/components/core/components/Table/SortableTableHeader"
 import { tableHeadCellClassName } from "@/src/components/core/components/Table/tableClasses"
+import { useTableSort } from "@/src/components/core/components/Table/useTableSort"
 import { frenchQuote } from "@/src/components/core/components/text/quote"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { ProjectPageBreadcrumb } from "@/src/components/projects/ProjectPageBreadcrumb"
@@ -24,6 +26,7 @@ import EditableSurveyResponseListItem, {
   surveyResponseListGridClassName,
 } from "@/src/components/surveys/[surveyId]/responses/EditableSurveyResponseListItem"
 import { getFlatSurveyFormFields } from "@/src/components/surveys/[surveyId]/responses/getFlatSurveyFormFields"
+import { surveyResponseSortValues } from "@/src/components/surveys/[surveyId]/responses/surveyResponseSort"
 import { useDefaultFilterValues } from "@/src/components/surveys/[surveyId]/responses/useDefaultFilterValues"
 import { useFilteredResponses } from "@/src/components/surveys/[surveyId]/responses/useFilteredResponses"
 import { useSurveyResponseDetails } from "@/src/components/surveys/[surveyId]/responses/useSurveyResponseDetails"
@@ -42,6 +45,11 @@ import {
   type SurveyResponseTagsResult,
 } from "@/src/server/surveyResponseTags/surveyResponseTagsQueryOptions"
 import type { Survey } from "@/src/server/surveys/types"
+import {
+  SURVEY_RESPONSE_DEFAULT_SORT,
+  SURVEY_RESPONSE_SORT_COLUMNS,
+} from "@/src/shared/survey-responses/searchSchemas"
+import { sortRows } from "@/src/shared/tableSort/sortRows"
 
 type Props = {
   projectSlug: string
@@ -106,6 +114,17 @@ function SurveyResponsesConfigured({ projectSlug, survey, tabs, surveySlug }: Co
   const topics = (topicsData?.surveyResponseTags ??
     []) as SurveyResponseTagsResult["surveyResponseTags"]
   const filteredResponses = useFilteredResponses(feedbackSurveyResponses, surveySlug, topics)
+  const { sort, toggleSort } = useTableSort({
+    searchKey: "sort",
+    columns: SURVEY_RESPONSE_SORT_COLUMNS,
+    defaultSort: SURVEY_RESPONSE_DEFAULT_SORT,
+  })
+  const sortedResponses = sortRows(
+    filteredResponses,
+    surveyResponseSortValues(getConfigBySurveySlug(surveySlug, "backend").status),
+    sort,
+    SURVEY_RESPONSE_DEFAULT_SORT,
+  )
 
   const { responseDetails: paramsSurveyResponseId } = useSurveyResponseDetails()
   const accordionRefs = useRef<Array<HTMLDivElement | null>>([])
@@ -200,15 +219,23 @@ function SurveyResponsesConfigured({ projectSlug, survey, tabs, surveySlug }: Co
             )}
           >
             <div aria-hidden="true" />
-            <div>ID</div>
-            <div>Status</div>
+            <div>
+              <TableSortButton column="id" sort={sort} onSortClick={toggleSort}>
+                ID
+              </TableSortButton>
+            </div>
+            <div>
+              <TableSortButton column="status" sort={sort} onSortClick={toggleSort}>
+                Status
+              </TableSortButton>
+            </div>
             <div>Eingabe</div>
             <div>Tags</div>
             <div className="sr-only">Kommentare</div>
             <div aria-hidden="true" />
           </div>
         </div>
-        {filteredResponses.map((response: FeedbackSurveyResponse) => (
+        {sortedResponses.map((response: FeedbackSurveyResponse) => (
           <div
             key={response.id}
             className="w-full overflow-hidden border border-b-0 border-gray-300 text-sm last:border-b"

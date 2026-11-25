@@ -3,6 +3,7 @@ import { getRouteApi } from "@tanstack/react-router"
 import { SuperAdminBox } from "@/src/components/core/components/AdminBox/SuperAdminBox"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
 import { PageHeaderSearchFilter } from "@/src/components/core/components/PageHeader/PageHeaderSearchFilter"
+import { useTableSort } from "@/src/components/core/components/Table/useTableSort"
 import { FilteredZeroCase } from "@/src/components/core/components/text/FilteredZeroCase"
 import { ZeroCase } from "@/src/components/core/components/text/ZeroCase"
 import { IfUserCanEdit } from "@/src/components/shared/app/memberships/IfUserCan"
@@ -13,6 +14,10 @@ import { UploadTable } from "@/src/components/uploads/UploadTable"
 import { useFilteredUploads } from "@/src/components/uploads/useFilteredUploads"
 import { useUploadFilters } from "@/src/components/uploads/useUploadFilters"
 import { uploadsQueryOptions } from "@/src/server/uploads/uploadsQueryOptions"
+import {
+  UPLOAD_TABLE_DEFAULT_SORT,
+  UPLOAD_TABLE_SORT_COLUMNS,
+} from "@/src/shared/uploads/searchSchemas"
 import type { UploadWithRelations } from "./uploadTypes"
 
 const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
@@ -34,6 +39,11 @@ export const UploadsPageContent = () => {
   const visibleUploads = uploads.filter((upload) => !isSurveyOnlyUpload(upload))
   const filteredUploads = useFilteredUploads(visibleUploads)
   const tagOptions = useTagFilterOptions(visibleUploads, projectSlug)
+  const { sort, toggleSort } = useTableSort({
+    searchKey: "sort",
+    columns: UPLOAD_TABLE_SORT_COLUMNS,
+    defaultSort: UPLOAD_TABLE_DEFAULT_SORT,
+  })
   const resetFilter = () => void setFilter(undefined)
 
   return (
@@ -69,6 +79,8 @@ export const UploadsPageContent = () => {
             withAction
             withRelations
             uploads={filteredUploads}
+            sort={sort}
+            onSortClick={toggleSort}
             onTagClick={(tag) => void setFilter({ tag })}
           />
         )}

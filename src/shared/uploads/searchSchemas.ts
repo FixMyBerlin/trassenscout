@@ -1,7 +1,17 @@
 import { z } from "zod"
 import { jsonSearchParam } from "@/src/shared/routing/jsonSearchParam"
 import { sanitizeInternalReturnPath } from "@/src/shared/routing/sanitizeReturnTo"
+import { type TableSort, tableSortSearchSchema } from "@/src/shared/tableSort/tableSort"
 import { searchtermTagFilterSchema } from "@/src/shared/tags/tagFilter"
+
+export const UPLOAD_TABLE_SORT_COLUMNS = ["title", "createdAt"] as const
+
+export type UploadTableSortColumn = (typeof UPLOAD_TABLE_SORT_COLUMNS)[number]
+
+export const UPLOAD_TABLE_DEFAULT_SORT: TableSort<UploadTableSortColumn> = {
+  column: "createdAt",
+  direction: "desc",
+}
 
 const uploadFilterSchema = searchtermTagFilterSchema
 
@@ -18,6 +28,7 @@ function parseUploadFilterParam(value: string | undefined) {
 
 export const uploadsSearchSchema = z.object({
   filter: jsonSearchParam(uploadFilterSchema, parseUploadFilterParam),
+  sort: tableSortSearchSchema(UPLOAD_TABLE_SORT_COLUMNS),
 })
 
 export type UploadsSearch = z.infer<typeof uploadsSearchSchema>

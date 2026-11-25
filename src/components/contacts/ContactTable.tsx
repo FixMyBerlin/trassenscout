@@ -8,6 +8,7 @@ import { Link } from "@/src/components/core/components/links/Link"
 import { LinkMail } from "@/src/components/core/components/links/LinkMail"
 import { LinkTel } from "@/src/components/core/components/links/LinkTel"
 import { pageContentPaddingClassName } from "@/src/components/core/components/PageHeader/pageContentPadding"
+import { SortableTableHeader } from "@/src/components/core/components/Table/SortableTableHeader"
 import {
   tableBodyClassName,
   tableCellClassName,
@@ -18,6 +19,7 @@ import {
 } from "@/src/components/core/components/Table/tableClasses"
 import { TableWrapper } from "@/src/components/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/components/core/components/text/titles"
+import { getFullname } from "@/src/components/core/users/getFullname"
 import { ProjectRecordTagsList } from "@/src/components/project-records/ProjectRecordTagsList"
 import type { Contact } from "@/src/server/contacts/types"
 import { projectBySlugQueryOptions } from "@/src/server/projects/projectsQueryOptions"
@@ -26,6 +28,9 @@ import {
   ContactTableFormSchema,
   contactTableFormDefaultValues,
 } from "@/src/shared/contacts/schemas"
+import type { ContactTableSortColumn } from "@/src/shared/contacts/searchSchemas"
+import { type SortValues, sortRows } from "@/src/shared/tableSort/sortRows"
+import type { TableSort } from "@/src/shared/tableSort/tableSort"
 import { useContactsModal } from "./ContactsModalHost"
 import { ContactTableDelete } from "./ContactTableDelete"
 
@@ -41,14 +46,27 @@ const contactTableColWidths = {
   actions: "w-[30%] @xl:w-[14%]",
 } as const
 
+const contactSortValues: SortValues<Contact, ContactTableSortColumn> = {
+  name: (contact) => getFullname(contact),
+}
+
 type Props = {
   contacts: Contact[]
   currentUserEmail?: string | null
   onTagClick?: (tag: string) => void
   projectSlug: string
+  sort?: TableSort<ContactTableSortColumn>
+  onSortClick?: (column: ContactTableSortColumn) => void
 }
 
-export const ContactTable = ({ contacts, currentUserEmail, onTagClick, projectSlug }: Props) => {
+export const ContactTable = ({
+  contacts,
+  currentUserEmail,
+  onTagClick,
+  projectSlug,
+  sort,
+  onSortClick,
+}: Props) => {
   const { data: project } = useSuspenseQuery(projectBySlugQueryOptions(projectSlug))
   const contactsModal = useContactsModal()
 
@@ -98,9 +116,9 @@ export const ContactTable = ({ contacts, currentUserEmail, onTagClick, projectSl
                   </colgroup>
                   <thead>
                     <tr className={tableHeadRowClassName}>
-                      <th scope="col" className={tableHeadCellClassName}>
+                      <SortableTableHeader column="name" sort={sort} onSortClick={onSortClick}>
                         Name
-                      </th>
+                      </SortableTableHeader>
                       <th
                         scope="col"
                         className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}
@@ -129,7 +147,7 @@ export const ContactTable = ({ contacts, currentUserEmail, onTagClick, projectSl
                   </thead>
 
                   <tbody className={tableBodyClassName}>
-                    {contacts.map((contact) => (
+                    {sortRows(contacts, contactSortValues, sort).map((contact) => (
                       <tr key={contact.id} className={tableRowClassName}>
                         <td className={twJoin(tableCellClassName, "align-middle")}>
                           <Link
