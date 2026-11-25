@@ -12,6 +12,8 @@ import { getStaticOverlayForProject } from "@/src/components/core/components/Map
 import { TerraDrawHint } from "@/src/components/core/components/Map/TerraDraw/TerraDrawHint"
 import { TerraDrawProvider } from "@/src/components/core/components/Map/TerraDraw/TerraDrawProvider"
 import { TerraDrawToolbar } from "@/src/components/core/components/Map/TerraDraw/TerraDrawToolbar"
+import { useTildaInfraLayerVisible } from "@/src/components/core/components/Map/tildaInfra/tilda-infra-layer-store"
+import { TildaInfraLegend } from "@/src/components/core/components/Map/tildaInfra/TildaInfraLegend"
 import type { SubsectionBySlug } from "@/src/server/subsections/types"
 import { SupportedGeometry } from "@/src/shared/geometry/geometrySchemas"
 import { mapGeoTypeToEnum } from "@/src/shared/geometry/mapGeoTypeToEnum"
@@ -32,6 +34,7 @@ type Props = {
   syncTransformedGeometryToMap?: boolean
   hideUnselectedPolygonOutline?: boolean
   legendItemsConfig?: LegendItemConfig[]
+  showTildaInfraLayer?: boolean
   transformGeometry?: (
     geometry: SupportedGeometry | null,
     geometryType: string | null,
@@ -50,9 +53,11 @@ export const GeometryDrawingMap = ({
   syncTransformedGeometryToMap = true,
   hideUnselectedPolygonOutline = false,
   legendItemsConfig,
+  showTildaInfraLayer = false,
   transformGeometry,
 }: Props) => {
   const { form } = useFormShellState()
+  const showTildaInfraLegend = useTildaInfraLayerVisible() && showTildaInfraLayer
   const geometry = useFormValue<SupportedGeometry | undefined>("geometry")
   const geometryForMap = displayedGeometry ?? geometry
   const updateTerraDrawRef = useRef<
@@ -136,6 +141,7 @@ export const GeometryDrawingMap = ({
           colorSchema="subsection"
           scrollZoom={false}
           staticOverlay={getStaticOverlayForProject(projectSlug)}
+          tildaInfraLayer={showTildaInfraLayer ? "display" : undefined}
         >
           {children}
           <div className="absolute top-4 left-4 z-10 flex flex-col gap-2.5">
@@ -190,7 +196,11 @@ export const GeometryDrawingMap = ({
           </div>
         </BaseMap>
       </div>
-      {legendItemsConfig && <MapFooter legendItemsConfig={legendItemsConfig} pinned />}
+      {(legendItemsConfig || showTildaInfraLegend) && (
+        <MapFooter legendItemsConfig={legendItemsConfig ?? []} pinned>
+          {showTildaInfraLegend && <TildaInfraLegend />}
+        </MapFooter>
+      )}
     </div>
   )
 }

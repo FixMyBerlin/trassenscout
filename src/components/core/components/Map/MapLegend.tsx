@@ -1,3 +1,4 @@
+import type { ReactNode } from "react"
 import { twJoin } from "tailwind-merge"
 import { LegendIcon } from "@/src/components/core/components/Map/Icons/LegendIcon"
 import { type LegendIconId } from "@/src/components/core/components/Map/legendIconRegistry"
@@ -10,9 +11,10 @@ export type LegendItemConfig = {
 type LegendProps = {
   legendItemsConfig?: LegendItemConfig[]
   pinned?: boolean
+  children?: ReactNode
 }
 
-export const MapLegend = ({ legendItemsConfig, pinned = false }: LegendProps) => {
+export const MapLegend = ({ legendItemsConfig, pinned = false, children }: LegendProps) => {
   if (!legendItemsConfig) return null
 
   return (
@@ -32,6 +34,7 @@ export const MapLegend = ({ legendItemsConfig, pinned = false }: LegendProps) =>
           </div>
         )
       })}
+      {children}
     </section>
   )
 }

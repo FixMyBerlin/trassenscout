@@ -14,6 +14,7 @@ import { MapFooter } from "./MapFooter"
 import { SubsectionMarkers, SUBSECTION_LABEL_MIN_ZOOM } from "./markers/SubsectionMarkers"
 import { projectLegendConfig, projectSearchLegendConfig } from "./ProjectMap.legendConfig"
 import { getStaticOverlayForProject } from "./staticOverlay/getStaticOverlayForProject"
+import { TildaInfraLegend } from "./tildaInfra/TildaInfraLegend"
 import { geometriesBbox } from "./utils/bboxHelpers"
 import { getSubsectionFeatures } from "./utils/getSubsectionFeatures"
 
@@ -138,6 +139,7 @@ export const ProjectMap = ({ subsections, classHeight, search }: Props) => {
         lineEndPoints={filterByCurrent(lineEndPointsGeoms, true)}
         colorSchema="subsection"
         staticOverlay={getStaticOverlayForProject(projectSlug)}
+        tildaInfraLayer="interactive"
         onLoad={handleLoad}
         onZoomEnd={handleZoomEnd}
         classHeight={classHeight}
@@ -160,7 +162,9 @@ export const ProjectMap = ({ subsections, classHeight, search }: Props) => {
       <MapFooter
         legendItemsConfig={search ? projectSearchLegendConfig : projectLegendConfig}
         pinned={Boolean(classHeight)}
-      />
+      >
+        <TildaInfraLegend mapId="mainMap" />
+      </MapFooter>
     </section>
   )
 }

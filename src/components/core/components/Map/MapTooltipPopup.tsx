@@ -2,7 +2,10 @@ import { twJoin, twMerge } from "tailwind-merge"
 import { MapBubblePopup, type MapBubblePopupProps } from "./MapBubblePopup"
 import { mapBubbleTextClassName } from "./mapBubbleStyles"
 
-type Props = Omit<MapBubblePopupProps, "closeOnClick" | "contentRole">
+type Props = Omit<MapBubblePopupProps, "closeOnClick" | "contentRole"> & {
+  // Taller tooltips may flip to stay inside the map
+  flip?: boolean
+}
 
 /** Same padding and type scale as `TitleLabel`, so a tooltip reads like a marker label. */
 const tooltipContentClassName = twJoin(
@@ -20,19 +23,20 @@ const tooltipContentClassName = twJoin(
  *
  * `pointer-events-none` on the popup root is not enough — maplibre's own stylesheet sets
  * `.maplibregl-popup-content { pointer-events: auto }`, so that inner wrapper has to be overridden
- * too. `anchor` stays pinned to the bottom: this bubble is small enough never to need flipping.
+ * too. `anchor` stays pinned to the bottom unless `flip` is set.
  */
 export const MapTooltipPopup = ({
   className,
   contentClassName,
   anchor = "bottom",
+  flip = false,
   maxWidth = "none",
   ...props
 }: Props) => {
   return (
     <MapBubblePopup
       {...props}
-      anchor={anchor}
+      anchor={flip ? undefined : anchor}
       maxWidth={maxWidth}
       closeOnClick={false}
       contentRole="tooltip"

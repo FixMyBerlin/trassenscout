@@ -38,7 +38,11 @@ export const SubsubsectionGeometryInput = ({
 
   return (
     <GeometryInputBase label="Geometrie der Maßnahme">
-      <GeometryDrawingMap allowedTypes={["point", "line", "polygon"]} subsection={subsection}>
+      <GeometryDrawingMap
+        allowedTypes={["point", "line", "polygon"]}
+        subsection={subsection}
+        showTildaInfraLayer
+      >
         <GeometryDrawingSubsubsectionContextLayers
           subsections={subsections}
           selectedSubsectionSlug={subsectionSlug}

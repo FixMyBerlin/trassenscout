@@ -25,6 +25,7 @@ import { SUBSECTION_LABEL_MIN_ZOOM } from "./markers/SubsectionMarkers"
 import { SubsubsectionMarkers } from "./markers/SubsubsectionMarkers"
 import { getStaticOverlayForProject } from "./staticOverlay/getStaticOverlayForProject"
 import { subsectionLegendConfig } from "./SubsectionSubsubsectionMap.legendConfig"
+import { TildaInfraLegend } from "./tildaInfra/TildaInfraLegend"
 import { geometriesBbox } from "./utils/bboxHelpers"
 import { getLabelPosition } from "./utils/getLabelPosition"
 import { getSubsectionFeatures } from "./utils/getSubsectionFeatures"
@@ -359,6 +360,7 @@ export const SubsubsectionMap = ({
         selectableLayerIdSuffix="_subsubsection"
         colorSchema="subsubsection"
         staticOverlay={getStaticOverlayForProject(projectSlug)}
+        tildaInfraLayer="interactive"
         onLoad={handleLoad}
         onZoomEnd={handleZoomEnd}
         onIdle={handleIdle}
@@ -380,7 +382,9 @@ export const SubsubsectionMap = ({
           onSelect={handleSelect}
         />
       </BaseMap>
-      <MapFooter legendItemsConfig={subsectionLegendConfig} pinned={Boolean(classHeight)} />
+      <MapFooter legendItemsConfig={subsectionLegendConfig} pinned={Boolean(classHeight)}>
+        <TildaInfraLegend mapId={MAP_ID} />
+      </MapFooter>
     </div>
   )
 }

@@ -6,7 +6,7 @@ import {
   Transition,
 } from "@headlessui/react"
 import { CheckIcon, ChevronDownIcon } from "@heroicons/react/20/solid"
-import { Fragment } from "react"
+import { Fragment, type ReactNode } from "react"
 import { twJoin } from "tailwind-merge"
 
 export type LayerType = "vector" | "satellite" | "osm_carto"
@@ -31,6 +31,7 @@ type Props = {
   onChange: (_: LayerType) => void
   position?: ControlPosition
   className?: string
+  children?: ReactNode
 }
 
 export const BackgroundSwitcher = ({
@@ -38,11 +39,15 @@ export const BackgroundSwitcher = ({
   onChange,
   position = "top-left",
   className,
+  children,
 }: Props) => {
   const isBottomPosition = position === "bottom-left" || position === "bottom-right"
 
   return (
-    <div className={twJoin(positionClasses[position], className)}>
+    <div
+      className={twJoin(positionClasses[position], "flex flex-col items-start gap-1", className)}
+    >
+      {isBottomPosition && children}
       <Listbox value={value} onChange={onChange}>
         {({ open }) => (
           <div className="relative mt-1">
@@ -107,6 +112,7 @@ export const BackgroundSwitcher = ({
           </div>
         )}
       </Listbox>
+      {!isBottomPosition && children}
     </div>
   )
 }

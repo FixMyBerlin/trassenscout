@@ -17,7 +17,7 @@ export const SubsectionGeometryInput = ({ projectSlug, subsectionSlug }: Props) 
       label="Geometrie des Planungsabschnitts"
       allowedGeometryTypesFor="subsection"
     >
-      <GeometryDrawingMap allowedTypes={["line", "polygon"]}>
+      <GeometryDrawingMap allowedTypes={["line", "polygon"]} showTildaInfraLayer>
         <GeometryDrawingSubsectionContextLayers
           subsections={subsections}
           selectedSubsectionSlug={subsectionSlug ?? ""}

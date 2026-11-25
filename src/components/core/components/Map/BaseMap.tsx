@@ -27,7 +27,7 @@ import {
   getUnifiedLayerId,
   type UnifiedFeatureProperties,
 } from "./layers/UnifiedFeaturesLayer"
-import { useMapLoadedActions } from "./map-loaded-store"
+import { useMapLoaded, useMapLoadedActions } from "./map-loaded-store"
 import { MapHighlightContext } from "./mapHighlightContext"
 import { applyMapHighlight, CLEAR_MAP_HIGHLIGHT, type MapHighlightState } from "./mapHighlightState"
 import { getMapStyle } from "./mapStyleConfig"
@@ -35,6 +35,13 @@ import { MapViewportRepair } from "./MapViewportRepair"
 import { usePmtilesProtocol } from "./pmtilesProtocol"
 import { StaticOverlay } from "./staticOverlay/StaticOverlay"
 import type { StaticOverlayConfig } from "./staticOverlay/staticOverlay.types"
+import { splitTildaInfraFeatures } from "./tildaInfra/splitTildaInfraFeatures"
+import { useTildaInfraLayerVisible } from "./tildaInfra/tilda-infra-layer-store"
+import { TILDA_INFRA_HIT_LAYER_ID } from "./tildaInfra/tildaInfra.const"
+import { getNextTildaInfraHover, type TildaInfraHover } from "./tildaInfra/tildaInfraHover"
+import { TildaInfraHoverCard } from "./tildaInfra/TildaInfraHoverCard"
+import { TildaInfraLayer } from "./tildaInfra/TildaInfraLayer"
+import { TildaInfraLayerToggle } from "./tildaInfra/TildaInfraLayerToggle"
 import { useMapHighlight, type MapHighlightLevel } from "./useMapHighlight"
 import { useSlugFeatureMap } from "./useSlugFeatureMap"
 import { mergeFeatureCollections } from "./utils/mergeFeatureCollections"
@@ -73,6 +80,7 @@ export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
     colorSchema?: "subsection" | "subsubsection"
     restrictHighlightToLevel?: MapHighlightLevel
     zoomScaledLines?: boolean
+    tildaInfraLayer?: "interactive" | "display"
   }
 
 export const BaseMap = ({
@@ -105,14 +113,18 @@ export const BaseMap = ({
   colorSchema,
   restrictHighlightToLevel,
   zoomScaledLines,
+  tildaInfraLayer,
 }: BaseMapProps) => {
   const { markMapLoaded, resetMapLoaded } = useMapLoadedActions()
+  const mapLoaded = useMapLoaded(mapId)
+  const tildaInfraVisible = useTildaInfraLayerVisible() && mapLoaded
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
   const handleLayerSwitch = (layer: LayerType) => {
     setSelectedLayer(layer)
   }
 
   const [cursorStyle, setCursorStyle] = useState("grab")
+  const [tildaInfraHover, setTildaInfraHover] = useState<TildaInfraHover | null>(null)
 
   const showScaleControl = backgroundSwitcherPosition !== "bottom-left"
 
@@ -159,15 +171,39 @@ export const BaseMap = ({
   const highlightHandlers = useMapHighlight(restrictHighlightToLevel, syncMapHighlight)
 
   const handleMouseMoveInternal = (event: MapLayerMouseEvent) => {
+    const { hoveredTildaInfraFeatures, otherFeatures } = splitTildaInfraFeatures(event.features)
+    event.features = otherFeatures
+    const overCanvas = event.originalEvent.target === event.target.getCanvas()
+    setTildaInfraHover((previous) =>
+      getNextTildaInfraHover(previous, overCanvas ? hoveredTildaInfraFeatures : [], event.lngLat),
+    )
     highlightHandlers.handleMouseMove(event)
     setCursorStyle((event.features?.length ?? 0) > 0 ? "pointer" : "grab")
     onMouseMove?.(event)
   }
 
   const handleMouseLeaveInternal = (event: MapLayerMouseEvent) => {
+    event.features = splitTildaInfraFeatures(event.features).otherFeatures
     highlightHandlers.handleMouseLeave(event)
     setCursorStyle("grab")
+    setTildaInfraHover(null)
     onMouseLeave?.(event)
+  }
+
+  const handleMouseOutInternal = (event: MapLayerMouseEvent) => {
+    highlightHandlers.handleMouseLeave(event)
+    setCursorStyle("grab")
+    setTildaInfraHover(null)
+  }
+
+  const handleContextMenuInternal = (event: MapLayerMouseEvent) => {
+    event.features = splitTildaInfraFeatures(event.features).otherFeatures
+    onContextMenu?.(event)
+  }
+
+  const handleMoveStartInternal: NonNullable<MapProps["onMoveStart"]> = (event) => {
+    setTildaInfraHover(null)
+    onMoveStart?.(event)
   }
 
   // Build feature map grouped by slug (only needed for selected state, not hover)
@@ -176,6 +212,7 @@ export const BaseMap = ({
 
   // Handle selection state via setFeatureState
   const handleClickInternal = (event: MapLayerMouseEvent) => {
+    event.features = splitTildaInfraFeatures(event.features).otherFeatures
     const map = event.target
     const features = event.features || []
     if (!map || features.length === 0) {
@@ -266,9 +303,10 @@ export const BaseMap = ({
             cursor={cursorStyle}
             onMouseMove={handleMouseMoveInternal}
             onMouseLeave={handleMouseLeaveInternal}
+            onMouseOut={handleMouseOutInternal}
             onClick={handleClickInternal}
-            onContextMenu={onContextMenu}
-            onMoveStart={onMoveStart}
+            onContextMenu={onContextMenu ? handleContextMenuInternal : undefined}
+            onMoveStart={handleMoveStartInternal}
             onMoveEnd={onMoveEnd}
             onZoomEnd={onZoomEnd}
             onLoad={handleLoadInternal}
@@ -282,6 +320,9 @@ export const BaseMap = ({
               ...(lineEndPoints && interactiveUnifiedFeatures
                 ? [getLineEndPointsLayerId(selectableLayerIdSuffix)]
                 : []),
+              ...(tildaInfraLayer === "interactive" && tildaInfraVisible
+                ? [TILDA_INFRA_HIT_LAYER_ID]
+                : []),
             ]}
             hash={hash || false}
             attributionControl={false}
@@ -290,6 +331,15 @@ export const BaseMap = ({
             <AttributionControl compact={true} position="bottom-right" />
             <NavigationControl showCompass={false} />
             {showScaleControl && <ScaleControl />}
+            {tildaInfraLayer && (
+              <TildaInfraLayer
+                visible={tildaInfraVisible}
+                interactive={tildaInfraLayer === "interactive"}
+              />
+            )}
+            {tildaInfraVisible && tildaInfraHover && (
+              <TildaInfraHoverCard hover={tildaInfraHover} />
+            )}
             {staticOverlay && <StaticOverlay config={staticOverlay} />}
             {unifiedFeatures && (
               <UnifiedFeaturesLayer
@@ -316,7 +366,9 @@ export const BaseMap = ({
           position={backgroundSwitcherPosition}
           value={selectedLayer}
           onChange={handleLayerSwitch}
-        />
+        >
+          {tildaInfraLayer && <TildaInfraLayerToggle />}
+        </BackgroundSwitcher>
       </div>
     </div>
   )

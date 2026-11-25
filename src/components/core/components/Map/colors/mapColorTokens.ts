@@ -18,4 +18,5 @@ export const mapColorTokens = {
   subsubsectionStatusGreen: "#4bc556",
   terraDrawSelectionPink: "#ec407a",
   terraDrawMidpointPurple: "#a855f7",
+  tildaInfraViolet: "#7f77dd",
 } as const

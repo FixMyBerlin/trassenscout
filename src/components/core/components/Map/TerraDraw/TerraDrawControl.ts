@@ -6,8 +6,11 @@ import type { SupportedGeometry } from "@/src/shared/geometry/geometrySchemas"
 import { createTerraDrawModes, type TerraDrawModeConfig } from "./terraDrawConfig"
 import type { TerraDrawMode } from "./useTerraDrawControl"
 import { calculateEnabledButtons, getDefaultModeForGeometry } from "./utils/buttonState"
+import { drawLayerIdsToRaise } from "./utils/drawLayerIdsToRaise"
 import { cleanupMixedFeatures } from "./utils/featureFiltering"
 import { convertFeaturesToGeometry, convertGeometryToFeatures } from "./utils/geometryConversion"
+
+const TERRA_DRAW_LAYER_PREFIX = "td"
 
 export class TerraDrawControl {
   private draw: TerraDraw | null = null
@@ -25,6 +28,7 @@ export class TerraDrawControl {
   private restorePending = false
   private modeConfig?: TerraDrawModeConfig
   private styleLoadHandler = () => this.reinitAfterStyleChange()
+  private styleDataHandler = () => this.keepDrawLayersOnTop()
 
   private resetSelectionState() {
     this.selectedIds = []
@@ -47,6 +51,8 @@ export class TerraDrawControl {
     // Re-initialize TerraDraw when map style changes (e.g. vector ↔ satellite).
     // MapLibre replaces the entire style, so TerraDraw's layers are removed and must be re-added.
     map.on("style.load", this.styleLoadHandler)
+    // After a style swap React re-adds its layers on top of TerraDraw's
+    map.on("styledata", this.styleDataHandler)
 
     const init = () => {
       if (!this.draw) return
@@ -72,9 +78,16 @@ export class TerraDrawControl {
 
   private createDrawInstance(map: MapLibreMap) {
     return new TerraDraw({
-      adapter: new TerraDrawMapLibreGLAdapter({ map }),
+      adapter: new TerraDrawMapLibreGLAdapter({ map, prefixId: TERRA_DRAW_LAYER_PREFIX }),
       modes: createTerraDrawModes(this.modeConfig),
     })
+  }
+
+  private keepDrawLayersOnTop() {
+    if (!this.map) return
+    for (const id of drawLayerIdsToRaise(this.map.getLayersOrder(), TERRA_DRAW_LAYER_PREFIX)) {
+      this.map.moveLayer(id)
+    }
   }
 
   /**
@@ -200,6 +213,7 @@ export class TerraDrawControl {
   onRemove() {
     if (this.map) {
       this.map.off("style.load", this.styleLoadHandler)
+      this.map.off("styledata", this.styleDataHandler)
       this.map = null
     }
     if (this.draw) {
