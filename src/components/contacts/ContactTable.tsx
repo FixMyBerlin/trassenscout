@@ -12,6 +12,7 @@ import { SortableTableHeader } from "@/src/components/core/components/Table/Sort
 import {
   tableBodyClassName,
   tableCellClassName,
+  tableColumnTiers,
   tableFixedClassName,
   tableHeadCellClassName,
   tableHeadRowClassName,
@@ -38,12 +39,12 @@ import { ContactTableDelete } from "./ContactTableDelete"
  * Column width classes for `table-fixed` layout. Adjust percentages here only.
  */
 const contactTableColWidths = {
-  name: "min-w-0 w-[40%] @xl:w-[18%]",
-  role: "hidden @xl:table-column @xl:w-[14%]",
-  phone: "w-[30%] @xl:w-[14%]",
-  email: "hidden @xl:table-column @xl:w-[20%]",
-  tags: "hidden @xl:table-column @xl:w-[20%]",
-  actions: "w-[30%] @xl:w-[14%]",
+  name: "min-w-0 w-[50%] @xl:w-[18%]",
+  role: `${tableColumnTiers.from1024.col} @xl:w-[14%]`,
+  phone: `${tableColumnTiers.from576.col} @xl:w-[14%]`,
+  email: `${tableColumnTiers.from1024.col} @xl:w-[20%]`,
+  tags: `${tableColumnTiers.from1024.col} @xl:w-[20%]`,
+  actions: "w-[50%] @xl:w-[14%]",
 } as const
 
 const contactSortValues: SortValues<Contact, ContactTableSortColumn> = {
@@ -103,8 +104,8 @@ export const ContactTable = ({
       <form.AppField name="selectedContacts">
         {(field) => (
           <>
-            <TableWrapper>
-              <div className="@container w-full">
+            <TableWrapper className="@container">
+              <div className="w-full">
                 <table className={tableFixedClassName}>
                   <colgroup>
                     <col className={contactTableColWidths.name} />
@@ -121,22 +122,25 @@ export const ContactTable = ({
                       </SortableTableHeader>
                       <th
                         scope="col"
-                        className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}
+                        className={twJoin(tableHeadCellClassName, tableColumnTiers.from1024.cell)}
                       >
                         Position
                       </th>
-                      <th scope="col" className={tableHeadCellClassName}>
+                      <th
+                        scope="col"
+                        className={twJoin(tableHeadCellClassName, tableColumnTiers.from576.cell)}
+                      >
                         Telefon
                       </th>
                       <th
                         scope="col"
-                        className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}
+                        className={twJoin(tableHeadCellClassName, tableColumnTiers.from1024.cell)}
                       >
                         E-Mail
                       </th>
                       <th
                         scope="col"
-                        className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}
+                        className={twJoin(tableHeadCellClassName, tableColumnTiers.from1024.cell)}
                       >
                         Tags
                       </th>
@@ -160,20 +164,26 @@ export const ContactTable = ({
                         </td>
                         <td
                           className={twJoin(
-                            "hidden align-middle wrap-break-word @xl:table-cell",
+                            "align-middle wrap-break-word",
+                            tableColumnTiers.from1024.cell,
                             tableCellClassName,
                           )}
                         >
                           {contact.role || "—"}
                         </td>
                         <td
-                          className={twJoin(tableCellClassName, "align-middle whitespace-nowrap")}
+                          className={twJoin(
+                            tableCellClassName,
+                            "align-middle whitespace-nowrap",
+                            tableColumnTiers.from576.cell,
+                          )}
                         >
                           {contact.phone ? <LinkTel>{contact.phone}</LinkTel> : "—"}
                         </td>
                         <td
                           className={twJoin(
-                            "hidden align-middle whitespace-nowrap @xl:table-cell",
+                            "align-middle whitespace-nowrap",
+                            tableColumnTiers.from1024.cell,
                             tableCellClassName,
                           )}
                         >
@@ -185,7 +195,8 @@ export const ContactTable = ({
                         </td>
                         <td
                           className={twJoin(
-                            "hidden align-middle @xl:table-cell",
+                            "align-middle",
+                            tableColumnTiers.from1024.cell,
                             tableCellClassName,
                           )}
                         >
@@ -196,10 +207,7 @@ export const ContactTable = ({
                           />
                         </td>
                         <td
-                          className={twJoin(
-                            "align-middle text-sm font-medium whitespace-nowrap",
-                            tableCellClassName,
-                          )}
+                          className={twJoin("align-middle text-sm font-medium", tableCellClassName)}
                         >
                           <div className="flex flex-col items-end gap-1">
                             <field.MultiCheckbox

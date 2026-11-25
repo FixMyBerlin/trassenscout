@@ -5,10 +5,9 @@ import { StatusLabel } from "@/src/components/core/components/Status/StatusLabel
 type Props = {
   status?: string | null
   surveySlug: AllowedSurveySlugs
-  short?: boolean
 }
 
-export const EditableSurveyResponseStatusLabel = ({ status, surveySlug, short }: Props) => {
+export const EditableSurveyResponseStatusLabel = ({ status, surveySlug }: Props) => {
   if (!status) return null
 
   const backendConfigStatus = getConfigBySurveySlug(surveySlug, "backend").status
@@ -23,7 +22,7 @@ export const EditableSurveyResponseStatusLabel = ({ status, surveySlug, short }:
 
   return (
     <StatusLabel
-      className={short ? "max-w-[200px]" : undefined}
+      className="max-w-full @max-xl:gap-2 @max-xl:px-3"
       icon={statusConfig.icon}
       label={statusConfig.label}
       color={statusConfig.color}

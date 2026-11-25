@@ -31,8 +31,9 @@ import { useSurveyResponseDetails as useResponseDetails } from "./useSurveyRespo
 
 const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
 
+// Needs an @container ancestor; columns: pin, ID, Status, text, Tags, comments, chevron
 export const surveyResponseListGridClassName =
-  "grid min-w-0 grid-cols-[2rem_3rem_minmax(14rem,24rem)_minmax(0,1fr)_minmax(12rem,24rem)_3.5rem_1.25rem] items-center gap-4"
+  "grid min-w-0 grid-cols-[3rem_7rem_minmax(0,1fr)_1.25rem] items-center gap-3 px-4 @xl:grid-cols-[2rem_3rem_10rem_minmax(0,1fr)_3.5rem_1.25rem] @xl:gap-4 @xl:px-6 @5xl:grid-cols-[2rem_3rem_10rem_minmax(0,1fr)_12rem_3.5rem_1.25rem]"
 
 export type EditableSurveyResponseListItemProps = {
   response: Prettify<FeedbackSurveyResponse>
@@ -138,25 +139,23 @@ const EditableSurveyResponseListItem = ({
         onClick={isAccordion ? () => (open ? handleClose() : handleOpen()) : undefined}
         onKeyDown={handleHeaderKeyDown}
       >
-        <div className={twJoin(surveyResponseListGridClassName, "px-6 pt-1 pb-2")}>
-          <div className="flex items-center justify-center">
+        <div className={twJoin(surveyResponseListGridClassName, "pt-1 pb-2")}>
+          <div className="hidden items-center justify-center @xl:flex">
             {response.data[locationId] && <SurveyStaticPin surveySlug={surveySlug} small />}
           </div>
           <div>
             <h3 className="text-gray-700">{response.id} </h3>
           </div>
-          <EditableSurveyResponseStatusLabel
-            surveySlug={surveySlug}
-            short={!showMap}
-            status={response.status}
-          />
+          <div className="min-w-0">
+            <EditableSurveyResponseStatusLabel surveySlug={surveySlug} status={response.status} />
+          </div>
 
           <Markdown
             className="line-clamp-2 min-w-0 shrink break-all"
             markdown={typeof userTextPreview === "string" ? userTextPreview : null}
           />
 
-          <div className="min-w-0">
+          <div className="hidden min-w-0 @5xl:block">
             <ProjectRecordTagsList
               tags={responseTags}
               isInteractive={Boolean(onTagClick)}
@@ -164,7 +163,7 @@ const EditableSurveyResponseListItem = ({
             />
           </div>
 
-          <div className="flex items-center justify-end gap-2 text-gray-600">
+          <div className="hidden items-center justify-end gap-2 text-gray-600 @xl:flex">
             <ChatBubbleBottomCenterTextIcon className="size-5 shrink-0" aria-hidden="true" />
             <span>{response.surveyResponseComments?.length ?? 0}</span>
           </div>

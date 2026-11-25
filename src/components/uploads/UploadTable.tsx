@@ -7,6 +7,7 @@ import { SortableTableHeader } from "@/src/components/core/components/Table/Sort
 import {
   tableBodyClassName,
   tableCellClassName,
+  tableColumnTiers,
   tableFixedClassName,
   tableHeadCellClassName,
   tableHeadCellRightClassName,
@@ -41,7 +42,7 @@ import type { UploadEditLink, UploadTableUpload } from "./uploadTypes"
 
 /**
  * Column width classes for `table-fixed` layout. Adjust percentages here only.
- * Narrow containers show icon, title, upload date and source (when enabled); `@xl` reveals the rest.
+ * Narrow containers show icon, title, upload date and source (when enabled); tiers add the rest.
  */
 const uploadTableColWidths = {
   icon: "w-[14%] @xl:w-[5%]",
@@ -50,13 +51,13 @@ const uploadTableColWidths = {
     withSource: "min-w-0 w-[34%] @xl:w-[24%]",
     withProject: "min-w-0 w-[50%] @xl:w-[14%]",
   },
-  project: "hidden @xl:table-column @xl:w-[10%]",
-  location: "hidden @xl:table-column @xl:w-[4%]",
+  project: `${tableColumnTiers.from768.col} @xl:w-[10%]`,
+  location: `${tableColumnTiers.from1024.col} @xl:w-[4%]`,
   uploaded: "w-[36%] @xl:w-[16%]",
-  tags: "hidden @xl:table-column @xl:w-[18%]",
+  tags: `${tableColumnTiers.from768.col} @xl:w-[18%]`,
   source: "w-[16%] @xl:w-[8%]",
-  relations: "hidden @xl:table-column @xl:w-[18%]",
-  actions: "hidden @xl:table-column @xl:w-[14%]",
+  relations: `${tableColumnTiers.from1024.col} @xl:w-[18%]`,
+  actions: `${tableColumnTiers.from576.col} @xl:w-[14%]`,
 } as const
 
 type Props = Prettify<{
@@ -134,12 +135,15 @@ export const UploadTable = ({
                 {showProject && (
                   <th
                     scope="col"
-                    className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}
+                    className={twJoin(tableHeadCellClassName, tableColumnTiers.from768.cell)}
                   >
                     Projekt
                   </th>
                 )}
-                <th scope="col" className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}>
+                <th
+                  scope="col"
+                  className={twJoin(tableHeadCellClassName, tableColumnTiers.from1024.cell)}
+                >
                   <span className="sr-only">Standort</span>
                 </th>
                 <SortableTableHeader column="createdAt" sort={sort} onSortClick={onSortClick}>
@@ -148,7 +152,7 @@ export const UploadTable = ({
                 {withTags && (
                   <th
                     scope="col"
-                    className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}
+                    className={twJoin(tableHeadCellClassName, tableColumnTiers.from768.cell)}
                   >
                     Tags
                   </th>
@@ -161,14 +165,14 @@ export const UploadTable = ({
                 {withRelations && (
                   <th
                     scope="col"
-                    className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}
+                    className={twJoin(tableHeadCellClassName, tableColumnTiers.from1024.cell)}
                   >
                     Verknüpfungen
                   </th>
                 )}
                 <th
                   scope="col"
-                  className={twJoin(tableHeadCellRightClassName, "hidden @xl:table-cell")}
+                  className={twJoin(tableHeadCellRightClassName, tableColumnTiers.from576.cell)}
                 >
                   <span className="sr-only">Aktionen</span>
                 </th>
@@ -288,13 +292,13 @@ const UploadTableRow = ({
         <ExternalShareBadge upload={upload} className="mt-0.5 block" />
       </td>
       {showProject && (
-        <td className={twJoin("hidden align-top @xl:table-cell", tableCellClassName)}>
+        <td className={twJoin("align-top", tableColumnTiers.from768.cell, tableCellClassName)}>
           <Link to="/$projectSlug/uploads" params={{ projectSlug }} className="break-all">
             {shortTitle(projectSlug)}
           </Link>
         </td>
       )}
-      <td className={twJoin("hidden align-top @xl:table-cell", tableCellClassName)}>
+      <td className={twJoin("align-top", tableColumnTiers.from1024.cell, tableCellClassName)}>
         {hasLocation && (
           <div className="flex items-center justify-center">
             <Tooltip content="Ist Geolokalisiert">
@@ -317,7 +321,13 @@ const UploadTableRow = ({
         )}
       </td>
       {withTags && (
-        <td className={twJoin("hidden align-top text-gray-500 @xl:table-cell", tableCellClassName)}>
+        <td
+          className={twJoin(
+            "align-top text-gray-500",
+            tableColumnTiers.from768.cell,
+            tableCellClassName,
+          )}
+        >
           <ProjectRecordTagsList
             tags={"tags" in upload ? upload.tags : []}
             isInteractive={Boolean(onTagClick)}
@@ -331,7 +341,13 @@ const UploadTableRow = ({
         </td>
       )}
       {withRelations && (
-        <td className={twJoin("hidden align-top text-gray-500 @xl:table-cell", tableCellClassName)}>
+        <td
+          className={twJoin(
+            "align-top text-gray-500",
+            tableColumnTiers.from1024.cell,
+            tableCellClassName,
+          )}
+        >
           <UploadVerknuepfungen
             projectSlug={projectSlug}
             landAcquisitionModuleEnabled={upload.project?.landAcquisitionModuleEnabled ?? false}
@@ -345,7 +361,8 @@ const UploadTableRow = ({
       )}
       <td
         className={twJoin(
-          "hidden align-top text-sm font-medium whitespace-nowrap @xl:table-cell",
+          "align-top text-sm font-medium whitespace-nowrap",
+          tableColumnTiers.from576.cell,
           tableCellClassName,
         )}
       >

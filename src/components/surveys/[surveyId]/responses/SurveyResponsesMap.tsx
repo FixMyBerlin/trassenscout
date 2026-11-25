@@ -132,7 +132,7 @@ export function SurveyResponsesMap({ projectSlug, survey, tabs }: Props) {
         className="flex-1 overflow-hidden"
         aside={
           mapSelectedResponses.length > 0 ? (
-            <section>
+            <section className="@container">
               {mapSelectedResponses.map((response) => (
                 <div
                   key={response.id}

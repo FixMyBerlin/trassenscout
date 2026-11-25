@@ -16,6 +16,7 @@ import { SortableTableHeader } from "@/src/components/core/components/Table/Sort
 import {
   tableBodyClassName,
   tableCellClassName,
+  tableColumnTiers,
   tableFixedClassName,
   tableHeadCellClassName,
   tableHeadRowClassName,
@@ -40,7 +41,7 @@ const subsubsectionTableColWidths = {
   slug: "w-28",
   project: "w-24",
   geometry: "w-10",
-  lastActivity: "w-36 @xl:w-44 @2xl:w-52",
+  lastActivity: "w-32 @xl:w-44 @2xl:w-52",
   counts: "w-14 @4xl:w-24",
 } as const
 
@@ -102,6 +103,8 @@ export const SubsubsectionTable = ({
   const currentSubsubsectionSlug = useTryRouteParam("subsubsectionSlug")
   // Full Titel while searching, so a match late in a long Titel stays visible
   const clampTitle = !normalizeSearchterm(searchterm ?? "")
+  // The compact box, the grouped search and the screen-reader copy keep every column
+  const tiers = compact || subsectionGroups || !interactive ? undefined : tableColumnTiers
 
   const renderRow = (row: SubsubsectionTableRow) => {
     const snippet = hiddenMatchSnippet(row, searchterm ?? "")
@@ -150,7 +153,7 @@ export const SubsubsectionTable = ({
           )}
         </td>
         {!compact && (
-          <td className={twJoin(tableCellClassName, "px-1.5 align-top")}>
+          <td className={twJoin(tableCellClassName, "px-1.5 align-top", tiers?.from576.cell)}>
             <div className="flex h-9 items-center justify-center">
               {row.type ? (
                 <Tooltip content={GEOMETRY_TYPE_TOOLTIPS[row.type]}>
@@ -167,7 +170,13 @@ export const SubsubsectionTable = ({
           </td>
         )}
         {showProject && (
-          <td className={twJoin(tableCellClassName, "align-top font-medium wrap-break-word")}>
+          <td
+            className={twJoin(
+              tableCellClassName,
+              "align-top font-medium wrap-break-word",
+              tiers?.from768.cell,
+            )}
+          >
             {shortTitle(row.project.slug)}
           </td>
         )}
@@ -197,7 +206,7 @@ export const SubsubsectionTable = ({
             </div>
           ) : null}
         </td>
-        <td className={twJoin(tableCellClassName, "pl-0 align-top")}>
+        <td className={twJoin(tableCellClassName, "pl-0 align-top", tiers?.from576.cell)}>
           <div className="flex flex-col items-end justify-end gap-1 text-xs tabular-nums @4xl:flex-row @4xl:items-center @4xl:gap-3">
             <span className="flex items-center gap-1">
               <DocumentTextIcon className="size-4 shrink-0" />
@@ -222,11 +231,15 @@ export const SubsubsectionTable = ({
           <table className={tableFixedClassName}>
             <colgroup>
               <col className={subsubsectionTableColWidths.slug} />
-              {!compact && <col className={subsubsectionTableColWidths.geometry} />}
-              {showProject && <col className={subsubsectionTableColWidths.project} />}
+              {!compact && (
+                <col className={twJoin(subsubsectionTableColWidths.geometry, tiers?.from576.col)} />
+              )}
+              {showProject && (
+                <col className={twJoin(subsubsectionTableColWidths.project, tiers?.from768.col)} />
+              )}
               {!compact && <col className={subsubsectionTableColWidths.lastActivity} />}
               <col />
-              <col className={subsubsectionTableColWidths.counts} />
+              <col className={twJoin(subsubsectionTableColWidths.counts, tiers?.from576.col)} />
             </colgroup>
             <thead>
               <tr className={tableHeadRowClassName}>
@@ -234,12 +247,16 @@ export const SubsubsectionTable = ({
                   Maßnahmen
                 </SortableTableHeader>
                 {!compact && (
-                  <th scope="col" className={tableHeadCellClassName}>
+                  <th scope="col" className={twJoin(tableHeadCellClassName, tiers?.from576.cell)}>
                     <span className="sr-only">Geometrietyp</span>
                   </th>
                 )}
                 {showProject && (
-                  <SortableTableHeader column="project" {...headerProps}>
+                  <SortableTableHeader
+                    column="project"
+                    {...headerProps}
+                    className={twJoin(tableHeadCellClassName, tiers?.from768.cell)}
+                  >
                     Projekt
                   </SortableTableHeader>
                 )}
@@ -251,7 +268,7 @@ export const SubsubsectionTable = ({
                 <SortableTableHeader column="title" {...headerProps}>
                   Titel
                 </SortableTableHeader>
-                <th scope="col" className={tableHeadCellClassName}>
+                <th scope="col" className={twJoin(tableHeadCellClassName, tiers?.from576.cell)}>
                   <span className="sr-only">Protokolle und Dokumente</span>
                 </th>
               </tr>

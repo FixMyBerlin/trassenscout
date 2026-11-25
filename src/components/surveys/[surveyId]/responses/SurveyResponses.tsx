@@ -209,16 +209,16 @@ function SurveyResponsesConfigured({ projectSlug, survey, tabs, surveySlug }: Co
           {filteredResponses.length} {filteredResponses.length === 1 ? "Eingabe" : "Eingaben"}
         </p>
       </div>
-      <section>
+      <section className="@container">
         <div className="border-y border-gray-200 bg-gray-50">
           <div
             className={twMerge(
-              surveyResponseListGridClassName,
               tableHeadCellClassName,
-              "px-6 py-4 text-sm text-gray-900",
+              surveyResponseListGridClassName,
+              "py-4 text-sm text-gray-900",
             )}
           >
-            <div aria-hidden="true" />
+            <div aria-hidden="true" className="hidden @xl:block" />
             <div>
               <TableSortButton column="id" sort={sort} onSortClick={toggleSort}>
                 ID
@@ -230,7 +230,7 @@ function SurveyResponsesConfigured({ projectSlug, survey, tabs, surveySlug }: Co
               </TableSortButton>
             </div>
             <div>Eingabe</div>
-            <div>Tags</div>
+            <div className="hidden @5xl:block">Tags</div>
             <div className="sr-only">Kommentare</div>
             <div aria-hidden="true" />
           </div>

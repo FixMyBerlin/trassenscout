@@ -7,6 +7,7 @@ import { SortableTableHeader } from "@/src/components/core/components/Table/Sort
 import {
   tableBodyClassName,
   tableCellClassName,
+  tableColumnTiers,
   tableFixedClassName,
   tableHeadCellClassName,
   tableHeadCellRightClassName,
@@ -30,11 +31,11 @@ import { teamSortValues } from "./teamTableSort"
  * Column width classes for `table-fixed` layout. Adjust percentages here only.
  */
 const teamTableColWidths = {
-  name: "min-w-0 w-[32%] @xl:w-[40%]",
-  phone: "w-[24%] @xl:w-[14%]",
-  email: "hidden @xl:table-column @xl:w-[20%]",
-  rights: "w-[22%] @xl:w-[12%]",
-  actions: "w-[22%] @xl:w-[14%]",
+  name: "min-w-0 w-[65%] @xl:w-[40%]",
+  phone: `${tableColumnTiers.from576.col} @xl:w-[14%]`,
+  email: `${tableColumnTiers.from1024.col} @xl:w-[20%]`,
+  rights: "w-[35%] @xl:w-[12%]",
+  actions: `${tableColumnTiers.from576.col} @xl:w-[14%]`,
 } as const
 
 type Props = {
@@ -59,8 +60,8 @@ export const TeamTable = ({ users, sort, onSortClick }: Props) => {
 
   return (
     <>
-      <TableWrapper>
-        <div className="@container w-full">
+      <TableWrapper className="@container">
+        <div className="w-full">
           <table className={tableFixedClassName}>
             <colgroup>
               <col className={teamTableColWidths.name} />
@@ -74,16 +75,25 @@ export const TeamTable = ({ users, sort, onSortClick }: Props) => {
                 <SortableTableHeader column="name" sort={sort} onSortClick={onSortClick}>
                   Name
                 </SortableTableHeader>
-                <th scope="col" className={tableHeadCellClassName}>
+                <th
+                  scope="col"
+                  className={twJoin(tableHeadCellClassName, tableColumnTiers.from576.cell)}
+                >
                   Telefon
                 </th>
-                <th scope="col" className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}>
+                <th
+                  scope="col"
+                  className={twJoin(tableHeadCellClassName, tableColumnTiers.from1024.cell)}
+                >
                   E-Mail
                 </th>
                 <SortableTableHeader column="role" sort={sort} onSortClick={onSortClick}>
                   Rechte
                 </SortableTableHeader>
-                <th scope="col" className={tableHeadCellRightClassName}>
+                <th
+                  scope="col"
+                  className={twJoin(tableHeadCellRightClassName, tableColumnTiers.from576.cell)}
+                >
                   <span className="sr-only">Aktionen</span>
                 </th>
               </tr>
@@ -105,12 +115,19 @@ export const TeamTable = ({ users, sort, onSortClick }: Props) => {
                         {userLabel}
                       </span>
                     </td>
-                    <td className={twJoin(tableCellClassName, "align-middle whitespace-nowrap")}>
+                    <td
+                      className={twJoin(
+                        tableCellClassName,
+                        "align-middle whitespace-nowrap",
+                        tableColumnTiers.from576.cell,
+                      )}
+                    >
                       {user.phone ? <LinkTel>{user.phone}</LinkTel> : "—"}
                     </td>
                     <td
                       className={twJoin(
-                        "hidden align-middle whitespace-nowrap @xl:table-cell",
+                        "align-middle whitespace-nowrap",
+                        tableColumnTiers.from1024.cell,
                         tableCellClassName,
                       )}
                     >
@@ -128,6 +145,7 @@ export const TeamTable = ({ users, sort, onSortClick }: Props) => {
                     <td
                       className={twJoin(
                         "align-middle text-sm font-medium whitespace-nowrap",
+                        tableColumnTiers.from576.cell,
                         tableCellClassName,
                       )}
                     >

@@ -9,6 +9,7 @@ import { SortableTableHeader } from "@/src/components/core/components/Table/Sort
 import {
   tableBodyClassName,
   tableCellClassName,
+  tableColumnTiers,
   tableFixedClassName,
   tableHeadCellClassName,
   tableHeadRowClassName,
@@ -42,9 +43,9 @@ const loggedInProjectRouteApi = getRouteApi("/_loggedInProjects/$projectSlug")
 const projectRecordTableColWidths = {
   editingState: "w-8",
   date: "w-24",
-  relations: "hidden @3xl:table-column",
-  tags: "hidden @xl:table-column",
-  assignedTo: "hidden @xl:table-column w-36",
+  relations: tableColumnTiers.from768.col,
+  tags: tableColumnTiers.from576.col,
+  assignedTo: `${tableColumnTiers.from576.col} w-36`,
   documents: "w-14 @4xl:w-24",
 } as const
 
@@ -112,19 +113,22 @@ export const ProjectRecordsTable = ({
                 {showRelationsColumn && (
                   <th
                     scope="col"
-                    className={twJoin(tableHeadCellClassName, "hidden @3xl:table-cell")}
+                    className={twJoin(tableHeadCellClassName, tableColumnTiers.from768.cell)}
                   >
                     Verknüpfungen
                   </th>
                 )}
-                <th scope="col" className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}>
+                <th
+                  scope="col"
+                  className={twJoin(tableHeadCellClassName, tableColumnTiers.from576.cell)}
+                >
                   Tags
                 </th>
                 <SortableTableHeader
                   column="assignedTo"
                   sort={sort}
                   onSortClick={onSortClick}
-                  className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}
+                  className={twJoin(tableHeadCellClassName, tableColumnTiers.from576.cell)}
                 >
                   Zugewiesen
                 </SortableTableHeader>
@@ -216,7 +220,8 @@ export const ProjectRecordsTable = ({
                     {showRelationsColumn && (
                       <td
                         className={twJoin(
-                          "hidden align-top wrap-break-word hyphens-auto @3xl:table-cell",
+                          "align-top wrap-break-word hyphens-auto",
+                          tableColumnTiers.from768.cell,
                           tableCellClassName,
                         )}
                       >
@@ -232,7 +237,8 @@ export const ProjectRecordsTable = ({
                     )}
                     <td
                       className={twJoin(
-                        "hidden align-top wrap-anywhere hyphens-auto @xl:table-cell",
+                        "align-top wrap-anywhere hyphens-auto",
+                        tableColumnTiers.from576.cell,
                         tableCellClassName,
                       )}
                     >
@@ -245,7 +251,8 @@ export const ProjectRecordsTable = ({
                     </td>
                     <td
                       className={twJoin(
-                        "hidden min-w-0 align-top @xl:table-cell",
+                        "min-w-0 align-top",
+                        tableColumnTiers.from576.cell,
                         tableCellClassName,
                       )}
                     >
