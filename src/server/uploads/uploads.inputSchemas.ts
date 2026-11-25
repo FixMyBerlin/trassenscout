@@ -14,8 +14,6 @@ export const GetUploadsWithSubsectionsSchema = ProjectSlugRequiredSchema.extend(
   subsubsectionId: z.number().int().positive().optional(),
   acquisitionAreaId: z.number().int().positive().optional(),
   uploadIds: z.array(z.number().int().positive()).optional(),
-  skip: z.number().int().optional(),
-  take: z.number().int().optional(),
 })
 export const GetUploadSchema = ProjectSlugRequiredSchema.extend({ id: z.number() })
 export const CreateUploadSchema = ProjectSlugRequiredSchema.extend({

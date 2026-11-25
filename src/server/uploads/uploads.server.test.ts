@@ -772,6 +772,22 @@ describe("getUploadsWithSubsections", () => {
       hiddenUnless([ProjectRecordReviewState.APPROVED, ProjectRecordReviewState.NEEDSREVIEW]),
     )
   })
+
+  test("returns every document of a Maßnahme, not only the newest 100", async () => {
+    const { getUploadsWithSubsections } = await import("./uploads.server")
+    const rows = Array.from({ length: 101 }, (_, index) => ({ id: 101 - index }))
+    mockDb.upload.findMany.mockImplementation(
+      ({ skip = 0, take }: { skip?: number; take?: number }) =>
+        Promise.resolve(rows.slice(skip, take === undefined ? undefined : skip + take)),
+    )
+
+    const { uploads } = await getUploadsWithSubsections(headers, {
+      projectSlug: "rs23",
+      subsubsectionId: 5,
+    })
+
+    expect(uploads).toHaveLength(101)
+  })
 })
 
 describe("updateUpload", () => {

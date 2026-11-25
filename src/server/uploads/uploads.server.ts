@@ -268,7 +268,7 @@ export async function getUploadsWithSubsections(
     input.projectSlug,
     viewerRoles,
   )
-  const { projectSlug, subsubsectionId, acquisitionAreaId, uploadIds, skip = 0, take = 100 } = input
+  const { projectSlug, subsubsectionId, acquisitionAreaId, uploadIds } = input
   const safeWhere: Prisma.UploadWhereInput = {
     project: { slug: projectSlug },
     ...(await hideUnprocessedMailAttachments({
@@ -293,27 +293,18 @@ export async function getUploadsWithSubsections(
     ...(uploadIds ? { id: { in: uploadIds } } : {}),
   }
 
-  const [uploads, count] = await Promise.all([
-    db.upload.findMany({
-      where: safeWhere,
-      orderBy: { id: "desc" },
-      skip,
-      take,
-      include: uploadWithSubsectionsInclude,
-    }),
-    db.upload.count({ where: safeWhere }),
-  ])
+  const uploads = await db.upload.findMany({
+    where: safeWhere,
+    orderBy: { id: "desc" },
+    include: uploadWithSubsectionsInclude,
+  })
   const redactionContext = await loadUserRedactionContext(
     projectId,
     session.role,
     Number(session.userId),
   )
 
-  return {
-    uploads: uploads.map((upload) => redactUploadUsers(upload, redactionContext)),
-    hasMore: skip + uploads.length < count,
-    count,
-  }
+  return { uploads: uploads.map((upload) => redactUploadUsers(upload, redactionContext)) }
 }
 
 export async function getUpload(headers: Headers, input: z.infer<typeof GetUploadSchema>) {

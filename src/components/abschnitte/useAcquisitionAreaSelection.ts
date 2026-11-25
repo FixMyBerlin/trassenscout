@@ -18,7 +18,7 @@ export function useAcquisitionAreaSelection<TAcquisitionArea extends SelectableA
   const setAcquisitionAreaId = async (value: number | null) => {
     const next = value ?? undefined
     await navigate({
-      search: { acquisitionAreaId: next },
+      search: (previous) => ({ ...previous, acquisitionAreaId: next }),
       ...preserveScrollNavigateOptions,
     })
   }

@@ -41,18 +41,18 @@ import type { UploadEditLink, UploadTableUpload } from "./uploadTypes"
 
 /**
  * Column width classes for `table-fixed` layout. Adjust percentages here only.
- * Narrow containers show icon, title, and source (when enabled); `@xl` reveals the rest.
+ * Narrow containers show icon, title, upload date and source (when enabled); `@xl` reveals the rest.
  */
 const uploadTableColWidths = {
   icon: "w-[14%] @xl:w-[5%]",
   title: {
-    default: "min-w-0 w-[86%] @xl:w-[24%]",
-    withSource: "min-w-0 w-[54%] @xl:w-[24%]",
-    withProject: "min-w-0 w-[86%] @xl:w-[14%]",
+    default: "min-w-0 w-[50%] @xl:w-[24%]",
+    withSource: "min-w-0 w-[34%] @xl:w-[24%]",
+    withProject: "min-w-0 w-[50%] @xl:w-[14%]",
   },
   project: "hidden @xl:table-column @xl:w-[10%]",
   location: "hidden @xl:table-column @xl:w-[4%]",
-  uploaded: "hidden @xl:table-column @xl:w-[16%]",
+  uploaded: "w-[36%] @xl:w-[16%]",
   tags: "hidden @xl:table-column @xl:w-[18%]",
   source: "w-[16%] @xl:w-[8%]",
   relations: "hidden @xl:table-column @xl:w-[18%]",
@@ -142,12 +142,7 @@ export const UploadTable = ({
                 <th scope="col" className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}>
                   <span className="sr-only">Standort</span>
                 </th>
-                <SortableTableHeader
-                  column="createdAt"
-                  sort={sort}
-                  onSortClick={onSortClick}
-                  className={twJoin(tableHeadCellClassName, "hidden @xl:table-cell")}
-                >
+                <SortableTableHeader column="createdAt" sort={sort} onSortClick={onSortClick}>
                   Hochgeladen
                 </SortableTableHeader>
                 {withTags && (
@@ -308,12 +303,15 @@ const UploadTableRow = ({
           </div>
         )}
       </td>
-      <td className={twJoin("hidden align-top text-gray-500 @xl:table-cell", tableCellClassName)}>
+      <td className={twJoin("align-top text-gray-500", tableCellClassName)}>
         <div className="whitespace-nowrap">
           {formatBerlinTime(upload.createdAt, "dd.MM.yyyy, HH:mm")}
         </div>
         {upload.createdBy && (
-          <span className="inline-block max-w-[150px] truncate" title={authorLabel || undefined}>
+          <span
+            className="inline-block max-w-28 truncate @xl:max-w-[150px]"
+            title={authorLabel || undefined}
+          >
             {authorLabel}
           </span>
         )}
