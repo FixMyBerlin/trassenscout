@@ -36,7 +36,7 @@ export function MapAsideSplitLayout({
   const mapElement = (
     <div
       className={twJoin(
-        "flex min-h-0 min-w-0 flex-1 flex-col border-gray-200",
+        "flex min-h-[40dvh] min-w-0 flex-1 flex-col border-gray-200 lg:min-h-0",
         asideSide === "start"
           ? "border-t lg:border-t-0 lg:border-l"
           : "border-b lg:border-r lg:border-b-0",
