@@ -7,7 +7,7 @@ import {
   toggleTableSortSearchValue,
 } from "@/src/shared/tableSort/tableSort"
 
-export type TableSortSearchKey = "sort" | "subsubsectionSort" | "projectRecordSort" | "uploadSort"
+export type TableSortSearchKey = "sort" | "subsubsectionSort"
 
 export type TableSortState<Column extends string> = {
   sort: TableSort<Column> | undefined

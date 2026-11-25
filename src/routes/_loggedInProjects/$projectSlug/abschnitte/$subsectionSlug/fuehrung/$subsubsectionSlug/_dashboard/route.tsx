@@ -5,13 +5,11 @@ import { subsectionBySlugQueryOptions } from "@/src/server/subsections/subsectio
 import { subsectionsQueryOptions } from "@/src/server/subsections/subsectionsQueryOptions"
 import { subsubsectionBySlugQueryOptions } from "@/src/server/subsubsections/subsubsectionQueryOptions"
 import { subsubsectionsQueryOptions } from "@/src/server/subsubsections/subsubsectionsQueryOptions"
-import { subsubsectionDashboardSearchSchema } from "@/src/shared/subsubsections/searchSchemas"
 
 export const Route = createFileRoute(
   "/_loggedInProjects/$projectSlug/abschnitte/$subsectionSlug/fuehrung/$subsubsectionSlug/_dashboard",
 )({
   ssr: "data-only",
-  validateSearch: subsubsectionDashboardSearchSchema,
   pendingComponent: RouteMapShellPending,
   loader: async ({ context, params }) => {
     const subsection = await context.queryClient.ensureQueryData(
